@@ -2,16 +2,26 @@
 
 const fs = require("fs");
 const path = require("path");
-const { spawnSync } = require("child_process");
 
-const result = spawnSync("rg", ["--files", "-g", "*.md"], { encoding: "utf8" });
+const excludedDirs = new Set([".git", "node_modules"]);
 
-if (result.status !== 0 && !result.stdout.trim()) {
-  console.error(result.stderr || "Failed to list Markdown files");
-  process.exit(result.status || 1);
+function walk(dir, files = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (excludedDirs.has(entry.name)) continue;
+
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walk(fullPath, files);
+    } else if (entry.isFile() && entry.name.endsWith(".md")) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
 }
 
-const files = result.stdout.trim().split(/\n/).filter(Boolean);
+const repoRoot = process.cwd();
+const files = walk(repoRoot).map(file => path.relative(repoRoot, file).split(path.sep).join("/")).sort();
 const missing = [];
 const linkPattern = /\[[^\]]+\]\(([^)]+)\)/g;
 
