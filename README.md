@@ -5,6 +5,10 @@
 [![Status: Prototype](https://img.shields.io/badge/Status-Prototype-orange?style=for-the-badge)](#current-maturity)
 [![Runtime: Node.js](https://img.shields.io/badge/Runtime-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](#quick-start)
 
+<p align="center">
+  <img src="assets/cannae-os-meme-banner.svg" alt="Cannae OS meme-style AI command post banner" width="100%">
+</p>
+
 Military-inspired command, control, and validation doctrine for operating LLM agents.
 
 Cannae OS is a documentation-first framework for using LLMs and multi-agent systems with clearer intent, bounded authority, auditable handoffs, source discipline, and executable validation gates. It translates useful military operating patterns into AI work: commander's intent, OPORDs, FRAGOs, staff roles, CCIR, backbriefs, rehearsals, readiness checks, release review, and after-action learning.
