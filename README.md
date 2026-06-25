@@ -1,10 +1,29 @@
 # Cannae OS
 
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge)](LICENSE-APACHE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE-MIT)
+[![Status: Prototype](https://img.shields.io/badge/Status-Prototype-orange?style=for-the-badge)](#current-maturity)
+[![Runtime: Node.js](https://img.shields.io/badge/Runtime-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](#quick-start)
+
 Military-inspired command, control, and validation doctrine for operating LLM agents.
 
 Cannae OS is a documentation-first framework for using LLMs and multi-agent systems with clearer intent, bounded authority, auditable handoffs, source discipline, and executable validation gates. It translates useful military operating patterns into AI work: commander's intent, OPORDs, FRAGOs, staff roles, CCIR, backbriefs, rehearsals, readiness checks, release review, and after-action learning.
 
 The project is not a military operations manual. It is an operating model for complex knowledge work with AI agents.
+
+## Origin
+
+Autonomous AI work and AI transformation are becoming urgent topics. As more teams ask LLMs to perform work with less direct supervision, the central problem becomes harder: how do we preserve context, suppress hallucination, prevent authority drift, and still let AI execute useful work?
+
+This project started from a conversation with a friend in the military. While discussing that problem, he said: "Isn't that exactly the military?"
+
+That landed immediately.
+
+Military organizations bring many different people into one system where intent can move from the highest decision-maker down to actual execution without being casually distorted. Along the way, subordinate units adapt the plan to their scale, function, and operating conditions, then issue more specific orders downward.
+
+That is possible because military systems are built around explicit authority, bounded autonomy, role classification, reporting lines, standard documents, rehearsals, backbriefs, and after-action correction. The system is designed to conserve resources and win under uncertainty.
+
+Cannae OS began from a simple question: is this the missing operating system for human-led AI teams?
 
 ## Why This Exists
 
