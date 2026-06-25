@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
+  <title id="title">Validation stack</title>
+  <desc id="desc">A layered validation stack from Markdown and JSON checks through schema fixtures, runner fixtures, source-map linting, routing coverage, and branch protection.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1d2e"/>
+      <stop offset="1" stop-color="#25373a"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000" flood-opacity="0.24"/>
+    </filter>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 46px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 700; fill: #cdd9dd; letter-spacing: 0; }
+      .layer { font-family: Arial, Helvetica, sans-serif; font-size: 25px; font-weight: 900; fill: #17222c; letter-spacing: 0; }
+      .body { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; fill: #34424a; letter-spacing: 0; }
+      .small { font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .box { stroke: #0b141f; stroke-width: 5; rx: 18; }
+    </style>
+  </defs>
+  <rect width="1400" height="560" fill="url(#bg)"/>
+  <text class="title" x="74" y="76">Validation stack</text>
+  <text class="subtitle" x="76" y="112">a pile of small boring checks, because boring checks beat dramatic AARs</text>
+
+  <g filter="url(#shadow)" transform="translate(250 140)">
+    <rect class="box" width="900" height="62" fill="#f7f1dd"/>
+    <text class="layer" x="34" y="40">1. Markdown links + JSON parse</text>
+    <text class="body" x="530" y="40">files exist, payloads parse</text>
+  </g>
+  <g filter="url(#shadow)" transform="translate(210 212)">
+    <rect class="box" width="980" height="62" fill="#d9f2ff"/>
+    <text class="layer" x="34" y="40">2. Schema validator fixtures</text>
+    <text class="body" x="560" y="40">valid passes, unsafe fails</text>
+  </g>
+  <g filter="url(#shadow)" transform="translate(170 284)">
+    <rect class="box" width="1060" height="62" fill="#e2f4dc"/>
+    <text class="layer" x="34" y="40">3. Focused runner fixtures</text>
+    <text class="body" x="560" y="40">approval, release, access, routing</text>
+  </g>
+  <g filter="url(#shadow)" transform="translate(130 356)">
+    <rect class="box" width="1140" height="62" fill="#fff2d2"/>
+    <text class="layer" x="34" y="40">4. Source-map + doctrine coverage</text>
+    <text class="body" x="640" y="40">no orphan claims, no orphan artifacts</text>
+  </g>
+  <g filter="url(#shadow)" transform="translate(90 428)">
+    <rect class="box" width="1220" height="70" fill="#ffcfc6"/>
+    <text class="layer" x="34" y="44">5. GitHub branch protection</text>
+    <text class="body" x="560" y="44">PR, CODEOWNERS, required check, no force push</text>
+  </g>
+
+  <g transform="translate(978 40)" filter="url(#shadow)">
+    <rect width="286" height="68" rx="18" fill="#ff644d" stroke="#0b141f" stroke-width="5"/>
+    <text class="small" x="28" y="42">CI says: nice try, drift</text>
+  </g>
+</svg>

@@ -47,6 +47,10 @@ Cannae OS treats LLM work as a command-and-control problem:
 intent -> orders -> role-bounded execution -> evidence -> validation -> release -> AAR
 ```
 
+<p align="center">
+  <img src="assets/cannae-os-operating-loop.svg" alt="Cannae OS operating loop from intent to orders, execution, evidence, validation, release, and AAR" width="100%">
+</p>
+
 The goal is not to make agents more autonomous by default. The goal is to make delegated autonomy explicit, narrow, inspectable, and reversible where possible.
 
 ## Project Direction
@@ -61,6 +65,10 @@ Cannae OS is moving toward a practical runtime discipline for AI teams:
 6. Future runtime: a tool-gated orchestrator with approval UI, evidence store, event replay, dashboards, and AAR-driven policy updates.
 
 The current repository is strongest as a doctrine, schema, fixture, and prototype suite. It is not yet a complete production agent runtime.
+
+<p align="center">
+  <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
+</p>
 
 ## What Is In This Repository
 
@@ -141,6 +149,10 @@ When an AI is acting as a role, department, staff section, or task force, it mus
 
 Delegated AI work should be routed through the Controls Doctrine Operator skill before execution.
 
+<p align="center">
+  <img src="assets/cannae-os-routing-preflight.svg" alt="Delegated AI agent routing preflight with wave receipt, agent receipts, and preflight gate" width="100%">
+</p>
+
 ### Routing Receipts
 
 The repository includes a routing receipt contract and preflight gate. A delegated wave should not start only because an agent says it routed its documents. It should produce a machine-checkable receipt.
@@ -177,6 +189,10 @@ The framework keeps these decisions out of ordinary agent autonomy:
 - expansion of mission scope or authority;
 - release of restricted or EEFI-bearing context;
 - creation, expansion, reduction, or disbanding of force structure without a validated order.
+
+<p align="center">
+  <img src="assets/cannae-os-authority-gates.svg" alt="Authority and release gate diagram showing policy, approval, release review, and commander-retained escalation" width="100%">
+</p>
 
 ## Quick Start
 
@@ -242,6 +258,10 @@ Important examples:
 - `run-sof-tf-fixtures.js`: high-risk task force activation gates.
 - `run-force-structure-change-fixtures.js`: organization change evidence, alternatives, readiness, handoff, and sunset gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
+
+<p align="center">
+  <img src="assets/cannae-os-validation-stack.svg" alt="Validation stack diagram from Markdown and JSON checks to schema fixtures, runner fixtures, source-map linting, routing coverage, and branch protection" width="100%">
+</p>
 
 ## Repository Shape
 

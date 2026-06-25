@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc">
+  <title id="title">Cannae OS operating loop</title>
+  <desc id="desc">A loop from intent to orders, execution, evidence, validation, release, and after-action review, with a warning that autonomy without receipts is blocked.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101d2a"/>
+      <stop offset="1" stop-color="#24382e"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#ffcf5c"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 48px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 24px; font-weight: 700; fill: #cdd9dd; letter-spacing: 0; }
+      .nodeTitle { font-family: Arial, Helvetica, sans-serif; font-size: 26px; font-weight: 900; fill: #17222c; letter-spacing: 0; }
+      .nodeText { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; fill: #34424a; letter-spacing: 0; }
+      .small { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 800; fill: #f7f1dd; letter-spacing: 0; }
+      .stamp { font-family: Arial, Helvetica, sans-serif; font-size: 32px; font-weight: 900; fill: #17222c; letter-spacing: 0; }
+      .box { stroke: #0b141f; stroke-width: 5; rx: 24; }
+      .arrow { fill: none; stroke: #ffcf5c; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="620" fill="url(#bg)"/>
+  <circle cx="130" cy="115" r="130" fill="#ffcf5c" opacity="0.12"/>
+  <circle cx="1250" cy="500" r="160" fill="#7ed0f2" opacity="0.1"/>
+  <text class="title" x="80" y="78">Operating loop</text>
+  <text class="subtitle" x="82" y="114">not “vibes -> agent swarm -> surprise bill”</text>
+
+  <path class="arrow" d="M274 238 C360 162 497 145 601 202"/>
+  <path class="arrow" d="M727 214 C841 152 980 176 1061 264"/>
+  <path class="arrow" d="M1112 377 C1064 505 894 553 758 500"/>
+  <path class="arrow" d="M619 495 C474 552 301 502 241 378"/>
+  <path class="arrow" d="M224 297 C210 246 221 196 258 158"/>
+
+  <g filter="url(#shadow)" transform="translate(84 210)">
+    <rect class="box" width="230" height="122" fill="#f7f1dd"/>
+    <text class="nodeTitle" x="32" y="44">1. Intent</text>
+    <text class="nodeText" x="32" y="76">human decides</text>
+    <text class="nodeText" x="32" y="101">what success means</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(502 146)">
+    <rect class="box" width="250" height="132" fill="#d9f2ff"/>
+    <text class="nodeTitle" x="32" y="48">2. Orders</text>
+    <text class="nodeText" x="32" y="82">OPORD, FRAGO,</text>
+    <text class="nodeText" x="32" y="108">backbrief, rehearsal</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(1042 250)">
+    <rect class="box" width="260" height="132" fill="#e2f4dc"/>
+    <text class="nodeTitle" x="32" y="48">3. Execute</text>
+    <text class="nodeText" x="32" y="82">role-bounded work</text>
+    <text class="nodeText" x="32" y="108">with tool ROE</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(798 438)">
+    <rect class="box" width="260" height="124" fill="#fff2d2"/>
+    <text class="nodeTitle" x="32" y="46">4. Evidence</text>
+    <text class="nodeText" x="32" y="80">sources, outputs,</text>
+    <text class="nodeText" x="32" y="104">audit events</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(350 438)">
+    <rect class="box" width="270" height="124" fill="#ffcfc6"/>
+    <text class="nodeTitle" x="32" y="46">5. Validate</text>
+    <text class="nodeText" x="32" y="80">schemas, runners,</text>
+    <text class="nodeText" x="32" y="104">release review</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(618 308) rotate(-7)">
+    <rect width="194" height="70" rx="14" fill="#ffcf5c" stroke="#0b141f" stroke-width="5"/>
+    <text class="stamp" x="28" y="46">ROUTED</text>
+  </g>
+
+  <g transform="translate(930 85)" filter="url(#shadow)">
+    <rect width="330" height="84" rx="20" fill="#ff644d" stroke="#0b141f" stroke-width="5"/>
+    <text class="small" x="30" y="35">no receipt?</text>
+    <text class="small" x="30" y="62">no autonomous cooking.</text>
+  </g>
+</svg>

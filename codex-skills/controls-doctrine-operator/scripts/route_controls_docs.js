@@ -250,7 +250,7 @@ const AUTHORITY_DOCS = [
   }
 ];
 
-const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".sh", ".yaml", ".yml"]);
+const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".sh", ".svg", ".yaml", ".yml"]);
 const EXCLUDED_DIRS = new Set([".git", "node_modules"]);
 
 const ROUTE_HINTS = [
@@ -260,7 +260,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "orientation",
-    keywords: ["readme", "contributing", "code-of-conduct", "governance", "support", "changelog", "military-llm-framework", "military-operating-system", "glossary", "commander-handbook", "sop-library", "case-studies", "functional-domains", "experiments", "implementation-guide"]
+    keywords: ["assets", "banner", "diagram", "image", "operating-loop", "repository-map", "readme", "contributing", "code-of-conduct", "governance", "support", "changelog", "military-llm-framework", "military-operating-system", "glossary", "commander-handbook", "sop-library", "case-studies", "functional-domains", "experiments", "implementation-guide"]
   },
   {
     id: "orders",
@@ -268,11 +268,11 @@ const ROUTE_HINTS = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "decision-packet"]
+    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "decision-packet"]
   },
   {
     id: "multi-agent-organization",
-    keywords: ["agent", "department", "collaboration", "b2c2wg", "working-group", "liaison", "metl", "battle-rhythm", "llm-agent-org-chart", "functional-domains"]
+    keywords: ["agent", "routing-preflight", "department", "collaboration", "b2c2wg", "working-group", "liaison", "metl", "battle-rhythm", "llm-agent-org-chart", "functional-domains"]
   },
   {
     id: "force-structure",
@@ -292,7 +292,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "runtime-validation",
-    keywords: [".github", "github", "workflow", "workflows", "pull-request-template", "issue-template", "bug-report", "docs-change", "dependabot", "check-json", "check-markdown", "schema-files", "sample-payloads", "fixture", "fixtures", "validator", "validate", "linter", "runner", "run-", "prototype", "payloads", "evaluation-metrics"]
+    keywords: ["validation-stack", ".github", "github", "workflow", "workflows", "pull-request-template", "issue-template", "bug-report", "docs-change", "dependabot", "check-json", "check-markdown", "schema-files", "sample-payloads", "fixture", "fixtures", "validator", "validate", "linter", "runner", "run-", "prototype", "payloads", "evaluation-metrics"]
   },
   {
     id: "runtime-architecture-dashboard",
@@ -381,6 +381,7 @@ function walkRoutableFiles(repoRoot) {
 }
 
 function artifactType(file) {
+  if (file.endsWith(".svg")) return "image-asset";
   if (file.endsWith(".html")) return "html-document";
   if (file.endsWith(".md")) return "document";
   if (file.endsWith(".yaml") || file.endsWith(".yml")) return "skill-metadata";

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="620" viewBox="0 0 1400 620" role="img" aria-labelledby="title desc">
+  <title id="title">Delegated agent routing preflight</title>
+  <desc id="desc">A delegated AI wave where the Chief of Staff creates a wave routing receipt and each worker agent creates an agent receipt before preflight allows execution.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101d2a"/>
+      <stop offset="1" stop-color="#263b33"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#ffcf5c"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 46px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 700; fill: #cdd9dd; letter-spacing: 0; }
+      .head { font-family: Arial, Helvetica, sans-serif; font-size: 25px; font-weight: 900; fill: #17222c; letter-spacing: 0; }
+      .body { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; fill: #34424a; letter-spacing: 0; }
+      .white { font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .tiny { font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 800; fill: #17222c; letter-spacing: 0; }
+      .box { stroke: #0b141f; stroke-width: 5; rx: 22; }
+      .line { fill: none; stroke: #ffcf5c; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="620" fill="url(#bg)"/>
+  <text class="title" x="74" y="76">Delegated agent routing preflight</text>
+  <text class="subtitle" x="76" y="112">every agent says “I read the right docs” with evidence, not vibes</text>
+
+  <path class="line" d="M286 292 H420"/>
+  <path class="line" d="M612 292 H746"/>
+  <path class="line" d="M934 292 H1068"/>
+  <path class="line" d="M748 326 C666 392 526 418 394 424"/>
+  <path class="line" d="M830 326 C852 390 954 421 1054 424"/>
+  <path class="line" d="M860 326 C948 384 1078 392 1204 424"/>
+
+  <g filter="url(#shadow)" transform="translate(74 216)">
+    <rect class="box" width="250" height="152" fill="#f7f1dd"/>
+    <text class="head" x="28" y="48">Human</text>
+    <text class="body" x="28" y="82">sets mission,</text>
+    <text class="body" x="28" y="108">risk boundary,</text>
+    <text class="body" x="28" y="134">final authority</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(420 216)">
+    <rect class="box" width="250" height="152" fill="#d9f2ff"/>
+    <text class="head" x="28" y="48">CoS</text>
+    <text class="body" x="28" y="82">opens wave</text>
+    <text class="body" x="28" y="108">with routing</text>
+    <text class="body" x="28" y="134">receipt</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(746 198)">
+    <rect class="box" width="250" height="188" fill="#fff2d2"/>
+    <text class="head" x="28" y="48">Preflight gate</text>
+    <text class="body" x="28" y="82">mission id?</text>
+    <text class="body" x="28" y="108">wave id?</text>
+    <text class="body" x="28" y="134">expected agents?</text>
+    <text class="body" x="28" y="160">fresh receipts?</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(1068 216)">
+    <rect class="box" width="250" height="152" fill="#e2f4dc"/>
+    <text class="head" x="28" y="48">Execution</text>
+    <text class="body" x="28" y="82">starts only when</text>
+    <text class="body" x="28" y="108">projection says</text>
+    <text class="body" x="28" y="134">ready</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(170 438)">
+    <rect class="box" width="210" height="92" fill="#d9f2ff"/>
+    <text class="head" x="28" y="42">S3 agent</text>
+    <text class="body" x="28" y="70">receipt</text>
+  </g>
+  <g filter="url(#shadow)" transform="translate(488 438)">
+    <rect class="box" width="210" height="92" fill="#d9f2ff"/>
+    <text class="head" x="28" y="42">S2 agent</text>
+    <text class="body" x="28" y="70">source route</text>
+  </g>
+  <g filter="url(#shadow)" transform="translate(804 438)">
+    <rect class="box" width="210" height="92" fill="#d9f2ff"/>
+    <text class="head" x="28" y="42">S6 agent</text>
+    <text class="body" x="28" y="70">system route</text>
+  </g>
+
+  <g transform="translate(1034 448)">
+    <rect width="306" height="64" rx="16" fill="#ff644d" stroke="#0b141f" stroke-width="5"/>
+    <text class="white" x="28" y="40">missing receipt = no</text>
+  </g>
+
+  <g transform="translate(760 84)" filter="url(#shadow)">
+    <rect width="388" height="70" rx="18" fill="#ffcf5c" stroke="#0b141f" stroke-width="5"/>
+    <text class="tiny" x="28" y="43">router output becomes audit evidence</text>
+  </g>
+</svg>
