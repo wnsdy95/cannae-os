@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a defect in docs, schemas, runners, fixtures, or skills.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is broken?
+    validations:
+      required: true
+  - type: textarea
+    id: affected
+    attributes:
+      label: Affected files or surfaces
+      description: List documents, schemas, runners, fixtures, skills, or CI surfaces.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Provide commands, inputs, or steps.
+      render: bash
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: control-impact
+    attributes:
+      label: Control impact
+      options:
+        - none or unclear
+        - authority
+        - release
+        - risk
+        - source traceability
+        - document access or context filtering
+        - CI or repository security
+    validations:
+      required: true

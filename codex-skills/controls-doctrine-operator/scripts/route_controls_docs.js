@@ -260,7 +260,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "orientation",
-    keywords: ["readme", "military-llm-framework", "military-operating-system", "glossary", "commander-handbook", "sop-library", "case-studies", "functional-domains", "experiments", "implementation-guide"]
+    keywords: ["readme", "contributing", "code-of-conduct", "governance", "support", "changelog", "military-llm-framework", "military-operating-system", "glossary", "commander-handbook", "sop-library", "case-studies", "functional-domains", "experiments", "implementation-guide"]
   },
   {
     id: "orders",
@@ -268,7 +268,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "approval", "risk", "roe", "release", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "decision-packet"]
+    keywords: ["authority", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "decision-packet"]
   },
   {
     id: "multi-agent-organization",
@@ -292,7 +292,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "runtime-validation",
-    keywords: ["schema-files", "sample-payloads", "fixture", "fixtures", "validator", "validate", "linter", "runner", "run-", "prototype", "payloads", "evaluation-metrics"]
+    keywords: [".github", "github", "workflow", "workflows", "pull-request-template", "issue-template", "bug-report", "docs-change", "dependabot", "check-json", "check-markdown", "schema-files", "sample-payloads", "fixture", "fixtures", "validator", "validate", "linter", "runner", "run-", "prototype", "payloads", "evaluation-metrics"]
   },
   {
     id: "runtime-architecture-dashboard",

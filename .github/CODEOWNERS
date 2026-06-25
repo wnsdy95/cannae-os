@@ -1,0 +1,14 @@
+* @wnsdy95
+
+/docs/source-map.md @wnsdy95
+/docs/research-compendium.md @wnsdy95
+/schema-files/ @wnsdy95
+/sample-payloads/ @wnsdy95
+/*-runner.js @wnsdy95
+/run-*.js @wnsdy95
+/policy-engine-*/ @wnsdy95
+/validator-cli-prototype/ @wnsdy95
+/codex-skills/ @wnsdy95
+/.claude/skills/ @wnsdy95
+/.github/ @wnsdy95
+/.github/workflows/ @wnsdy95

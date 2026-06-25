@@ -308,6 +308,15 @@ Durable truth should live in:
 
 Contributions should preserve the framework's control discipline.
 
+Start with:
+
+- [Contributing Guide](CONTRIBUTING.md)
+- [Governance](GOVERNANCE.md)
+- [Security Policy](SECURITY.md)
+- [Support](SUPPORT.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Changelog](CHANGELOG.md)
+
 Before opening a change:
 
 1. Route the change through the Controls Doctrine Operator skill if the affected surface is unclear.

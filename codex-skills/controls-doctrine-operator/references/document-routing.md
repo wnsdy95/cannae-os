@@ -42,6 +42,7 @@ Preflight requires one CoS wave receipt and one S3 operations receipt for each e
 | Task | Read First | Then Read |
 | --- | --- | --- |
 | Understand the whole framework | `README.md`, `docs/military-llm-framework-v0.1.md` | `docs/military-operating-system.md`, `docs/glossary.md` |
+| Contribute or review project governance | `CONTRIBUTING.md`, `GOVERNANCE.md` | `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` |
 | Find source backing | `docs/source-map.md` | `docs/research-compendium.md`, `docs/source-reliability-rubric.md` |
 | Choose docs for a request | `README.md`, router output | `docs/military-operating-deep-research-queue.md` |
 | Add external military sources | `docs/source-map.md` | `docs/research-compendium.md`, `source-map-linter.js` |
@@ -106,3 +107,4 @@ Preflight requires one CoS wave receipt and one S3 operations receipt for each e
 | Orders/backbrief/rehearsal | `node runtime-demo-runner.js`, `node orders-dissemination-runner.js ...`, relevant routing fixture |
 | Skill update | `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator` |
 | Delegated agent routing | `node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt`, `node run-agent-routing-preflight-fixtures.js` |
+| GitHub/community infrastructure | `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `node .github/scripts/check-json.js`, `node .github/scripts/check-markdown-links.js`, `git diff --check` |

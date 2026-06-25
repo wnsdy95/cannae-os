@@ -1,0 +1,48 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Doctrine and runtime checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Routing coverage
+        run: node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
+
+      - name: JSON parse check
+        run: node .github/scripts/check-json.js
+
+      - name: Markdown local links
+        run: node .github/scripts/check-markdown-links.js
+
+      - name: Validator fixtures
+        run: node validator-cli-prototype/run-fixtures.js
+
+      - name: Runner fixtures
+        shell: bash
+        run: |
+          for f in $(ls run-*.js | sort); do
+            node "$f" || exit 1
+          done
+
+      - name: Source map linter
+        run: node source-map-linter.js
+
+      - name: Diff whitespace check
+        run: git diff --check

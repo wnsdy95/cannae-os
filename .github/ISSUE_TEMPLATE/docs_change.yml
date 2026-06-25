@@ -1,0 +1,36 @@
+name: Documentation change
+description: Propose a clarification, correction, or structural improvement to docs.
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What should change?
+    validations:
+      required: true
+  - type: input
+    id: file
+    attributes:
+      label: Target file
+      placeholder: docs/example.md
+    validations:
+      required: false
+  - type: dropdown
+    id: source-map
+    attributes:
+      label: Does this add or change an external doctrine/source claim?
+      options:
+        - "no"
+        - "yes, source-map update needed"
+        - "unclear"
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Why is this useful for the framework?
+    validations:
+      required: true

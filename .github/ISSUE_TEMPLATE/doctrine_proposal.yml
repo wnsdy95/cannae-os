@@ -1,0 +1,45 @@
+name: Doctrine proposal
+description: Propose a new operating policy, control, role, workflow, or doctrine change.
+title: "[Doctrine]: "
+labels: ["doctrine", "proposal", "needs-triage"]
+body:
+  - type: textarea
+    id: capability-gap
+    attributes:
+      label: Capability gap
+      description: What current gap does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the doctrine or control change.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Could an SOP, schema, fixture, skill instruction, or existing role solve this instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: authority-impact
+    attributes:
+      label: Authority impact
+      options:
+        - none
+        - narrows authority
+        - expands authority
+        - changes approval or release path
+        - unclear
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation path
+      description: What schema, fixture, runner, or review path should enforce it?
+    validations:
+      required: true
