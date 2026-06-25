@@ -1,0 +1,158 @@
+{
+  "schema_version": "0.1",
+  "type": "ContinuityPlan",
+  "id": "CP-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "owner": "COS",
+  "classification": "internal",
+  "essential_functions": [
+    {
+      "function_id": "EF-COMMAND-001",
+      "name": "Commander decision and intent preservation",
+      "owner_role": "COMMANDER",
+      "criticality": "critical",
+      "minimum_readiness": "P",
+      "backup_roles": ["COS", "S3"],
+      "authority_scope": [
+        "Maintain current OPORD within existing authority.",
+        "Hold Red approval, risk acceptance, release, and scope change until explicit commander disposition or predelegation."
+      ],
+      "source_of_truth_files": [
+        "runtime-demo-payloads/opord.json",
+        "schema-files/authority-matrix.schema.json",
+        "docs/commander-handbook.md"
+      ],
+      "handoff_required": true
+    },
+    {
+      "function_id": "EF-KM-001",
+      "name": "Knowledge management and handoff continuity",
+      "owner_role": "S6",
+      "criticality": "high",
+      "minimum_readiness": "P",
+      "backup_roles": ["RECORDER", "COS"],
+      "authority_scope": [
+        "Maintain event log, source map, handoff packet, and release review queue.",
+        "Do not approve external release without target-matched release review."
+      ],
+      "source_of_truth_files": [
+        "docs/knowledge-management-sop.md",
+        "schema-files/handoff-packet.schema.json",
+        "event-fixtures/demo-events.json"
+      ],
+      "handoff_required": true
+    },
+    {
+      "function_id": "EF-EXECUTION-001",
+      "name": "Current operations execution sequencing",
+      "owner_role": "S3",
+      "criticality": "high",
+      "minimum_readiness": "P",
+      "backup_roles": ["COS", "EXECUTOR"],
+      "authority_scope": [
+        "Continue approved Green and Amber tasks.",
+        "Pause new Red execution until scoped approval is present."
+      ],
+      "source_of_truth_files": [
+        "docs/orders-production-pipeline.md",
+        "runtime-demo-payloads/task-order.json",
+        "runtime-demo-payloads/rehearsal.json"
+      ],
+      "handoff_required": true
+    }
+  ],
+  "succession_rules": [
+    {
+      "from_role": "COMMANDER",
+      "successors": ["COS", "S3"],
+      "activation_triggers": ["loss", "unavailable", "rotation", "context_loss"],
+      "authority_limits": [
+        "Acting successor preserves current OPORD only.",
+        "Commander-retained decisions remain blocked unless predelegated."
+      ],
+      "notification_roles": ["COS", "S6", "RECORDER"]
+    },
+    {
+      "from_role": "S6",
+      "successors": ["RECORDER", "COS"],
+      "activation_triggers": ["loss", "rotation", "context_loss"],
+      "authority_limits": [
+        "Successor may maintain records and handoff packets.",
+        "Successor may not expand release targets."
+      ],
+      "notification_roles": ["COMMANDER", "COS", "RECORDER"]
+    },
+    {
+      "from_role": "S3",
+      "successors": ["COS", "EXECUTOR"],
+      "activation_triggers": ["loss", "rotation", "context_loss"],
+      "authority_limits": [
+        "Successor may continue approved execution sequence.",
+        "Successor must backbrief before changing execution order."
+      ],
+      "notification_roles": ["COMMANDER", "COS", "S6"]
+    }
+  ],
+  "rotation_windows": [
+    {
+      "role": "S6",
+      "outgoing": "S6",
+      "incoming": "RECORDER",
+      "overlap_required": true,
+      "backbrief_required": true,
+      "handoff_packet_required": true,
+      "rehearsal_required": true
+    }
+  ],
+  "vital_records": [
+    "README.md",
+    "docs/source-map.md",
+    "event-fixtures/demo-events.json",
+    "schema-files/authority-matrix.schema.json",
+    "schema-files/handoff-packet.schema.json",
+    "source-map-url-coverage-report.json"
+  ],
+  "continuity_triggers": [
+    "role unavailable",
+    "context compaction",
+    "long-running pause",
+    "handoff requested",
+    "agent replacement",
+    "commander decision delayed"
+  ],
+  "degradation_policy": {
+    "minimum_staffing": [
+      "One acting integrator.",
+      "One KM/Recorder role.",
+      "One execution role with current OPORD access."
+    ],
+    "functions_to_pause": [
+      "New Red approvals.",
+      "Risk acceptance.",
+      "External release.",
+      "FRAGO scope change."
+    ],
+    "commander_retained_decisions": [
+      "Risk acceptance.",
+      "Release target expansion.",
+      "Authority matrix expansion.",
+      "Mission scope change."
+    ],
+    "recovery_actions": [
+      "Generate handoff packet.",
+      "Run incoming role backbrief.",
+      "Run focused rehearsal.",
+      "Record AAR readiness update."
+    ]
+  },
+  "validation": {
+    "last_drill_at": "2026-06-19T12:00:00+09:00",
+    "next_drill_due": "2026-06-26T12:00:00+09:00",
+    "tested_scenarios": [
+      "Commander unavailable.",
+      "S6 rotation."
+    ],
+    "open_gaps": []
+  },
+  "created_at": "2026-06-19T12:00:00+09:00"
+}

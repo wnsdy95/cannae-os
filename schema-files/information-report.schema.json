@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/information-report.schema.json",
+  "title": "Information Report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "collected_by",
+    "observed_at",
+    "received_at",
+    "classification",
+    "source_type",
+    "source_reliability",
+    "information_category",
+    "summary",
+    "raw_available",
+    "eefi_risk",
+    "related_ccir",
+    "operational_relevance",
+    "recommended_handling",
+    "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "InformationReport" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "collected_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "observed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "received_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "source_type": {
+      "type": "string",
+      "enum": ["official", "internal_system", "human_report", "tool_output", "open_source", "unknown"]
+    },
+    "source_reliability": {
+      "type": "string",
+      "enum": ["confirmed", "usually_reliable", "unverified", "contradicted", "unknown"]
+    },
+    "information_category": {
+      "type": "string",
+      "enum": ["external_situation", "own_force", "protection", "decision_trigger", "knowledge_update"]
+    },
+    "summary": { "type": "string", "minLength": 1 },
+    "raw_available": { "type": "boolean" },
+    "eefi_risk": { "type": "boolean" },
+    "related_ccir": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/ccir_type" }
+    },
+    "operational_relevance": {
+      "type": "string",
+      "enum": ["record_only", "watch", "report_up", "planning_update", "order_change"]
+    },
+    "recommended_handling": {
+      "type": "string",
+      "enum": ["record", "assess", "report", "suppress_raw", "decision_packet", "frago_review"]
+    },
+    "handling_instructions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

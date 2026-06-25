@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/release-gate-decision-event.schema.json",
+  "title": "Release Gate Decision Event",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "tool_request_id", "actor", "classification", "release_target", "decided_at", "authority", "release_review", "final_decision", "blocked", "reasons", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "RELEASE_GATE_DECISION_EVENT" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "tool_request_id": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "release_target": {
+      "type": "string",
+      "enum": ["FINAL_OUTPUT", "EXTERNAL_TOOL", "PARTNER_RELEASE", "INTERNAL_HANDOFF"]
+    },
+    "decided_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authority": {
+      "type": "object",
+      "required": ["allowed", "blocked", "final_decision", "approval_required", "approval_valid", "risk_acceptance_required", "risk_acceptance_valid"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "blocked": { "type": "boolean" },
+        "final_decision": {
+          "type": "string",
+          "enum": ["prohibit", "blocked_pending_authority", "allow_scoped_execution"]
+        },
+        "approval_required": { "type": "boolean" },
+        "approval_valid": { "type": "boolean" },
+        "risk_acceptance_required": { "type": "boolean" },
+        "risk_acceptance_valid": { "type": "boolean" }
+      }
+    },
+    "release_review": {
+      "type": "object",
+      "required": ["required", "valid", "target", "decision", "finding_count"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "valid": { "type": "boolean" },
+        "target": {
+          "type": "string",
+          "enum": ["FINAL_OUTPUT", "EXTERNAL_TOOL", "PARTNER_RELEASE", "INTERNAL_HANDOFF"]
+        },
+        "review_id": { "$ref": "common.schema.json#/$defs/id" },
+        "decision": {
+          "type": "string",
+          "enum": ["not_required", "missing", "approve", "approve_redacted", "reject", "revise"]
+        },
+        "finding_count": { "type": "integer" }
+      }
+    },
+    "final_decision": {
+      "type": "string",
+      "enum": ["prohibit", "blocked_pending_authority", "blocked_pending_release_review", "allow_scoped_execution", "allow_scoped_execution_and_release"]
+    },
+    "blocked": { "type": "boolean" },
+    "reasons": { "$ref": "common.schema.json#/$defs/string_list" },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "notes": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

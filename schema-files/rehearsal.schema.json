@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/rehearsal.schema.json",
+  "title": "Rehearsal",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "parent_order", "backbriefs", "facilitator", "classification", "rehearsal_type", "sequence", "friction_points", "decision_points", "required_changes", "disposition", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "REHEARSAL" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "parent_order": { "$ref": "common.schema.json#/$defs/id" },
+    "backbriefs": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/id" }
+    },
+    "facilitator": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "rehearsal_type": {
+      "type": "string",
+      "enum": ["confirmation", "backbrief", "combined_arms", "support", "reduced_force", "full_dress", "dry_run"]
+    },
+    "sequence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "actor", "action", "expected_result", "evidence_required"],
+        "additionalProperties": false,
+        "properties": {
+          "step": { "type": "integer" },
+          "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+          "action": { "type": "string", "minLength": 1 },
+          "expected_result": { "type": "string", "minLength": 1 },
+          "evidence_required": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "friction_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["issue", "severity", "mitigation", "owner"],
+        "additionalProperties": false,
+        "properties": {
+          "issue": { "type": "string", "minLength": 1 },
+          "severity": { "$ref": "common.schema.json#/$defs/risk_level" },
+          "mitigation": { "type": "string", "minLength": 1 },
+          "owner": { "$ref": "common.schema.json#/$defs/role_id" }
+        }
+      }
+    },
+    "decision_points": { "$ref": "common.schema.json#/$defs/string_list" },
+    "required_changes": { "$ref": "common.schema.json#/$defs/string_list" },
+    "disposition": { "type": "string", "enum": ["execute", "revise_order", "request_approval", "abort"] },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

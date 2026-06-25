@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/maintenance-readiness.schema.json",
+  "title": "Maintenance Readiness Report",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "owner", "classification", "generated_at", "overall_readiness", "assets", "summary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "MaintenanceReadinessReport" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "overall_readiness": {
+      "type": "string",
+      "enum": ["Fully", "Poorly", "Unavailable", "Unknown"]
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["asset_id", "asset_type", "owner", "readiness", "check_command", "last_result", "dependencies", "fallback", "ccir_trigger"],
+        "additionalProperties": false,
+        "properties": {
+          "asset_id": { "$ref": "common.schema.json#/$defs/id" },
+          "asset_type": {
+            "type": "string",
+            "enum": ["tool", "resource", "context", "verification", "fallback"]
+          },
+          "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+          "readiness": {
+            "type": "string",
+            "enum": ["Fully", "Poorly", "Unavailable", "Unknown"]
+          },
+          "check_command": { "type": "string", "minLength": 1 },
+          "last_result": {
+            "type": "string",
+            "enum": ["pass", "fail", "skipped", "unknown"]
+          },
+          "dependencies": { "$ref": "common.schema.json#/$defs/string_list" },
+          "fallback": { "type": "string", "minLength": 1 },
+          "ccir_trigger": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["unavailable_assets", "degraded_assets", "commander_decision_required", "next_actions"],
+      "additionalProperties": false,
+      "properties": {
+        "unavailable_assets": { "$ref": "common.schema.json#/$defs/string_list" },
+        "degraded_assets": { "$ref": "common.schema.json#/$defs/string_list" },
+        "commander_decision_required": { "type": "boolean" },
+        "next_actions": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    }
+  }
+}

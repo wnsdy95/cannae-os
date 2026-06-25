@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/decision-packet.schema.json",
+  "title": "Decision Packet",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "prepared_by", "classification", "decision_type", "commander_question", "background", "options", "recommended_option", "risk", "authority_required", "evidence", "deadline", "if_no_decision", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "DecisionPacket" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "prepared_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "decision_type": {
+      "type": "string",
+      "enum": ["priority", "approval", "scope", "risk_acceptance", "doctrine_update", "release"]
+    },
+    "commander_question": { "type": "string", "minLength": 1 },
+    "background": { "$ref": "common.schema.json#/$defs/string_list" },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["option_id", "summary", "decision", "benefit", "risk", "tradeoff"],
+        "additionalProperties": false,
+        "properties": {
+          "option_id": { "$ref": "common.schema.json#/$defs/id" },
+          "summary": { "type": "string", "minLength": 1 },
+          "decision": {
+            "type": "string",
+            "enum": ["approve", "approve_with_constraints", "revise", "reject", "issue_frago"]
+          },
+          "benefit": { "$ref": "common.schema.json#/$defs/string_list" },
+          "risk": { "$ref": "common.schema.json#/$defs/string_list" },
+          "tradeoff": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "recommended_option": { "$ref": "common.schema.json#/$defs/id" },
+    "risk": {
+      "type": "object",
+      "required": ["level", "summary", "mitigations"],
+      "additionalProperties": false,
+      "properties": {
+        "level": { "$ref": "common.schema.json#/$defs/risk_level" },
+        "summary": { "type": "string", "minLength": 1 },
+        "mitigations": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "authority_required": { "$ref": "common.schema.json#/$defs/string_list" },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "deadline": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "if_no_decision": { "type": "string", "minLength": 1 },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

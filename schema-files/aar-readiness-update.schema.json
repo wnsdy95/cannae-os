@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/aar-readiness-update.schema.json",
+  "title": "AAR Readiness Update",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "aar_id",
+    "generated_at",
+    "readiness_recommendations",
+    "maintenance_actions",
+    "sop_updates",
+    "commander_decision_required",
+    "ccir_triggers"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "AARReadinessUpdate" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "aar_id": { "$ref": "common.schema.json#/$defs/id" },
+    "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "readiness_recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["agent_id", "task", "readiness_action", "recommended_rating", "rationale", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": { "$ref": "common.schema.json#/$defs/role_id" },
+          "task": { "type": "string", "minLength": 1 },
+          "readiness_action": {
+            "type": "string",
+            "enum": ["sustain_or_raise", "hold_and_train", "downgrade_or_hold"]
+          },
+          "recommended_rating": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+          "rationale": { "type": "string", "minLength": 1 },
+          "evidence": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "maintenance_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["owner", "action_type", "description", "readiness_effect"],
+        "additionalProperties": false,
+        "properties": {
+          "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+          "action_type": {
+            "type": "string",
+            "enum": ["verification_update", "knowledge_management_update", "sustainment_update", "sop_update"]
+          },
+          "description": { "type": "string", "minLength": 1 },
+          "readiness_effect": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sop_updates": { "$ref": "common.schema.json#/$defs/string_list" },
+    "commander_decision_required": { "type": "boolean" },
+    "ccir_triggers": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

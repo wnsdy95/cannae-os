@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/sitrep.schema.json",
+  "title": "SITREP Event",
+  "type": "object",
+  "required": ["id", "mission_id", "timestamp", "status", "completed", "in_progress", "blocked", "ccir", "risk", "next_action"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "timestamp": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "completed": { "$ref": "common.schema.json#/$defs/string_list" },
+    "in_progress": { "$ref": "common.schema.json#/$defs/string_list" },
+    "blocked": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "ccir": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "item", "action"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "$ref": "common.schema.json#/$defs/ccir_type" },
+          "item": { "type": "string", "minLength": 1 },
+          "action": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "risk": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_action": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

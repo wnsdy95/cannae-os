@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1",
+  "type": "RISK_ACCEPTANCE",
+  "id": "RA-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "decision_packet_id": "DP-DEMO-001",
+  "classification": "internal",
+  "decision": "accept",
+  "accepted_by": "S3",
+  "risk_owner": "S3",
+  "action": "deploy_production",
+  "tool": "deploy",
+  "target": "prod.command-post-dashboard",
+  "hazard": "Production deployment may break the dashboard state used for commander review.",
+  "consequence": "Operators may lose current approval queue visibility until rollback completes.",
+  "likelihood": "possible",
+  "initial_risk": "critical",
+  "controls": [],
+  "residual_risk": "high",
+  "reversibility": "irreversible",
+  "duration": {
+    "valid_from": "2026-06-18T16:30:00+09:00",
+    "expires_at": ""
+  },
+  "supervision_plan": [],
+  "evidence_required": [],
+  "aar_trigger": [],
+  "status": "active",
+  "created_at": "2026-06-18T16:30:00+09:00"
+}

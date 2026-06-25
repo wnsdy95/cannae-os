@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/ccir-alert.schema.json",
+  "title": "CCIR Alert",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "ccir_type", "severity", "source_event_id", "owner", "title", "why_it_matters", "recommended_route", "status", "sensitive", "blocks_execution"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "CCIRAlert" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "ccir_type": { "$ref": "common.schema.json#/$defs/ccir_type" },
+    "severity": {
+      "type": "string",
+      "enum": ["Info", "Watch", "Amber", "Red", "Black"]
+    },
+    "source_event_id": { "$ref": "common.schema.json#/$defs/id" },
+    "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "title": { "type": "string", "minLength": 1 },
+    "why_it_matters": { "type": "string", "minLength": 1 },
+    "recommended_route": { "type": "string", "minLength": 1 },
+    "required_decision": { "type": "string" },
+    "deadline": { "type": "string" },
+    "sensitive": { "type": "boolean" },
+    "blocks_execution": { "type": "boolean" },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

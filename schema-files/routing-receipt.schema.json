@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/routing-receipt.schema.json",
+  "title": "Routing Receipt",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "wave_scope",
+    "actor",
+    "agent_role",
+    "department",
+    "authority_scope",
+    "routing_mode",
+    "router_query",
+    "router_command",
+    "matched_routes",
+    "recommended_documents",
+    "route_inventory",
+    "validation_commands",
+    "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "RoutingReceipt" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "minLength": 1 },
+    "agent_id": { "type": "string", "minLength": 1 },
+    "wave_scope": {
+      "type": "string",
+      "enum": ["wave", "agent"]
+    },
+    "actor": {
+      "type": "string",
+      "enum": ["ai"]
+    },
+    "agent_role": { "$ref": "common.schema.json#/$defs/role_id" },
+    "department": {
+      "type": "string",
+      "enum": [
+        "command",
+        "coordination",
+        "research",
+        "intelligence",
+        "operations",
+        "effects",
+        "sustainment",
+        "protection",
+        "systems",
+        "red_team",
+        "recorder",
+        "maintenance"
+      ]
+    },
+    "authority_scope": {
+      "type": "string",
+      "enum": [
+        "tasking",
+        "scoped-execution",
+        "source-verification",
+        "release-review",
+        "risk-review",
+        "maintenance",
+        "coordination",
+        "document-routing"
+      ]
+    },
+    "routing_mode": { "type": "string", "const": "delegated_ai_role_department_authority" },
+    "router_query": { "type": "string", "minLength": 1 },
+    "router_command": { "type": "string", "minLength": 1 },
+    "matched_routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "score"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "score": { "type": "integer" }
+        }
+      }
+    },
+    "recommended_documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "exists"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "exists": { "type": "boolean" }
+        }
+      }
+    },
+    "supporting_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "type", "route_ids"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "minLength": 1 },
+          "route_ids": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "supporting_artifact_count": { "type": "integer" },
+    "route_inventory": {
+      "type": "object",
+      "required": ["routable_artifact_count", "routed_artifact_count", "unrouted_artifact_count"],
+      "additionalProperties": false,
+      "properties": {
+        "routable_artifact_count": { "type": "integer" },
+        "routed_artifact_count": { "type": "integer" },
+        "unrouted_artifact_count": { "type": "integer" }
+      }
+    },
+    "validation_commands": { "$ref": "common.schema.json#/$defs/string_list" },
+    "escalation_required_when": { "$ref": "common.schema.json#/$defs/string_list" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

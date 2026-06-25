@@ -1,0 +1,25 @@
+{
+  "id": "AAR-20260618-UNSUPPORTED",
+  "mission_id": "M-20260618-001",
+  "expected": [
+    "All research claims include source-map evidence."
+  ],
+  "actual": [
+    "Unsupported source claim reached draft output."
+  ],
+  "delta": [
+    "Unsupported source claim reached draft output."
+  ],
+  "causes": [
+    "Research pass did not require source-map evidence."
+  ],
+  "sustain": [
+    "Keep source-map linter in the release gate."
+  ],
+  "improve": [
+    "Add validator fixture for unsupported source claims."
+  ],
+  "sop_updates": [
+    "Require source-map evidence before finalizing research claims."
+  ]
+}

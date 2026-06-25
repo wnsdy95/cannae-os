@@ -1,0 +1,13 @@
+{
+  "id": "TR-20260618-002",
+  "mission_id": "M-20260618-001",
+  "task_id": "T-20260618-002",
+  "actor": "S3",
+  "tool": "database",
+  "action": "update_production",
+  "target": "prod.customers",
+  "risk_level": "high",
+  "roe_class": "Red",
+  "approval_required": false,
+  "reason": "Apply customer cleanup script."
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1",
+  "type": "APPROVAL_REVOCATION_EVENT",
+  "id": "ARE-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "approval_scope_id": "AS-DEMO-003",
+  "approval_request_id": "AR-DEMO-003",
+  "tool_request_id": "TR-DEMO-004",
+  "revocation_order_id": "FRAGO-DEMO-001",
+  "actor": "COMMANDER",
+  "revocation_authority": "COMMANDER",
+  "classification": "internal",
+  "action": "deploy_production",
+  "tool": "deploy",
+  "target": "prod.command-post-dashboard",
+  "revoked_at": "2026-06-18T16:40:00+09:00",
+  "reason": "Pre-execution verification found rollback evidence was stale.",
+  "approval_status_before": "active",
+  "approval_status_after": "revoked",
+  "scope_snapshot": {
+    "decision": "approve_once",
+    "status_before": "active",
+    "granted_by": "COMMANDER",
+    "granted_to": "S3",
+    "action": "deploy_production",
+    "tool": "deploy",
+    "target": "prod.command-post-dashboard",
+    "max_executions": 1,
+    "valid_from": "2026-06-18T16:30:00+09:00",
+    "expires_at": "2026-06-18T17:00:00+09:00"
+  },
+  "notification_required": true,
+  "notified_roles": ["S3", "RECORDER"],
+  "evidence": [
+    "Commander revocation note.",
+    "Pre-execution rollback evidence check."
+  ],
+  "notes": [
+    "Approval AS-DEMO-003 is revoked and cannot be consumed."
+  ]
+}

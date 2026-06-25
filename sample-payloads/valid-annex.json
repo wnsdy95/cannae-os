@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1",
+  "type": "ANNEX",
+  "id": "ANNEX-DEMO-A",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "annex_code": "A",
+  "owner": "S2",
+  "classification": "internal",
+  "purpose": "Control source reliability, claim separation, and uncertainty for the current mission.",
+  "intent_impact": "clarifies",
+  "authority_impact": "none",
+  "inputs": [
+    "docs/source-map.md",
+    "docs/research-compendium.md"
+  ],
+  "outputs": [
+    "Evidence-linked source notes",
+    "Updated source-map entries for new official hosts"
+  ],
+  "constraints": [
+    "Do not change mission purpose or authority boundary in an annex.",
+    "Mark unsupported claims as hypotheses."
+  ],
+  "ccir_links": [
+    "Unsupported claim reaches final output.",
+    "Official source contradicts current assumption."
+  ],
+  "verification": [
+    "node source-map-linter.js",
+    "Review evidence links before final output."
+  ],
+  "releasability": {
+    "allowed_roles": ["COMMANDER", "COS", "S2", "S3", "S6", "RED_TEAM"],
+    "denied_roles": ["EXECUTOR"],
+    "final_output_mode": "summary_only"
+  },
+  "updated_at": "2026-06-18T13:40:00+09:00"
+}

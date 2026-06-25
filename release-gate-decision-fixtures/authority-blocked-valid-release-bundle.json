@@ -1,0 +1,45 @@
+{
+  "integration_bundle_path": "../release-integration-fixtures/blocked-authority-valid-release-bundle.json",
+  "decision_event": {
+    "schema_version": "0.1",
+    "type": "RELEASE_GATE_DECISION_EVENT",
+    "id": "RGD-DEMO-003",
+    "mission_id": "M-DEMO-001",
+    "tool_request_id": "TR-DEMO-002",
+    "actor": "S3",
+    "classification": "internal",
+    "release_target": "FINAL_OUTPUT",
+    "decided_at": "2026-06-18T16:45:00+09:00",
+    "authority": {
+      "allowed": false,
+      "blocked": true,
+      "final_decision": "blocked_pending_authority",
+      "approval_required": true,
+      "approval_valid": true,
+      "risk_acceptance_required": true,
+      "risk_acceptance_valid": false
+    },
+    "release_review": {
+      "required": true,
+      "valid": true,
+      "target": "FINAL_OUTPUT",
+      "review_id": "RR-DEMO-001",
+      "decision": "approve_redacted",
+      "finding_count": 0
+    },
+    "final_decision": "blocked_pending_authority",
+    "blocked": true,
+    "reasons": [
+      "Production, deployment, destructive, or database mutation target.",
+      "Request declares Red ROE class.",
+      "MATCHED_RUL-DEMO-002",
+      "MISSING_RISK_ACCEPTANCE"
+    ],
+    "evidence": [
+      "policy-engine-release-integration.js release gate output.",
+      "Release review RR-DEMO-001.",
+      "Authority integration blocked missing risk acceptance."
+    ]
+  }
+}
+

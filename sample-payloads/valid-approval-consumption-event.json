@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1",
+  "type": "APPROVAL_CONSUMPTION_EVENT",
+  "id": "ACE-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "approval_scope_id": "AS-DEMO-001",
+  "approval_request_id": "AR-DEMO-001",
+  "tool_request_id": "TR-DEMO-002",
+  "risk_acceptance_id": "RA-DEMO-001",
+  "execution_id": "EXEC-DEMO-001",
+  "actor": "S3",
+  "classification": "internal",
+  "action": "deploy_production",
+  "tool": "deploy",
+  "target": "prod.command-post-dashboard",
+  "consumed_at": "2026-06-18T16:45:00+09:00",
+  "execution_count_after": 1,
+  "result": "executed",
+  "approval_status_after": "consumed",
+  "scope_snapshot": {
+    "decision": "approve_once",
+    "status_before": "active",
+    "granted_to": "S3",
+    "action": "deploy_production",
+    "tool": "deploy",
+    "target": "prod.command-post-dashboard",
+    "max_executions": 1,
+    "valid_from": "2026-06-18T16:30:00+09:00",
+    "expires_at": "2026-06-18T17:00:00+09:00"
+  },
+  "evidence": [
+    "Dry-run output.",
+    "Execution log.",
+    "Post-action verification."
+  ],
+  "notes": [
+    "Approval AS-DEMO-001 is now consumed and cannot be reused."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.1",
+  "type": "IntelligenceAssessment",
+  "id": "INTEL-20260619-001",
+  "mission_id": "M-DEMO-001",
+  "information_report_id": "INFO-20260619-001",
+  "assessed_by": "S2",
+  "classification": "internal",
+  "confidence": "high",
+  "key_facts": [
+    "The new official source contradicts one source-annex planning assumption.",
+    "The current mission intent remains valid, but task scope and source plan may need update."
+  ],
+  "assessment": [
+    "The information affects commander decision quality and should be routed as PIR and decision point.",
+    "A FRAGO scope-change draft is appropriate if commander accepts the revised assumption."
+  ],
+  "information_gaps": [
+    "Confirm whether any downstream task depends on the contradicted assumption."
+  ],
+  "ccir_classification": ["PIR", "DECISION_POINT"],
+  "operational_impact": "frago_scope_change",
+  "recommended_outputs": ["CCIR_ALERT", "DECISION_PACKET", "FRAGO_SCOPE_CHANGE", "SITREP"],
+  "commander_decision_required": true,
+  "created_at": "2026-06-19T09:15:00+09:00"
+}

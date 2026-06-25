@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1",
+  "type": "HandoffPacket",
+  "id": "HP-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "created_by": "S6",
+  "classification": "internal",
+  "current_order": "OPORD-DEMO-001",
+  "commander_intent": "Keep the runtime demo local, preserve Red action blocks, and maintain source-of-truth files.",
+  "completed": [
+    "Mission, OPORD, task order, policy, dashboard, event replay, and authority matrix artifacts exist."
+  ],
+  "in_progress": [
+    "Decision packet and alert router prototype."
+  ],
+  "blocked": [
+    "TR-DEMO-002 remains blocked pending commander approval."
+  ],
+  "pending_decisions": [
+    "AR-DEMO-001 commander disposition."
+  ],
+  "active_risks": [
+    "Production deployment would exceed local-only mission authority."
+  ],
+  "source_of_truth_files": [
+    "README.md",
+    "docs/military-llm-framework-v0.1.md",
+    "event-fixtures/demo-events.json",
+    "runtime-demo-payloads/opord.json"
+  ],
+  "verification_status": [
+    "validator fixtures pass.",
+    "event replay fixtures pass."
+  ],
+  "next_actions": [
+    "Implement alert router prototype.",
+    "Implement readiness gate prototype."
+  ],
+  "do_not_do": [
+    "Do not execute production deployment.",
+    "Do not expose credentials or private data."
+  ],
+  "created_at": "2026-06-18T12:10:00+09:00"
+}

@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/sof-tf-charter.schema.json",
+  "title": "AI Special Operations Task Force Charter",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "trigger", "activity_mapping", "commander_intent", "authority", "cells", "ccir", "isolation", "enablers", "rehearsal", "exit_criteria", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "SofTfCharter" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "trigger": {
+      "type": "object",
+      "required": ["conditions", "urgency", "risk_level", "why_general_workflow_insufficient"],
+      "additionalProperties": false,
+      "properties": {
+        "conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "urgency": { "type": "string", "enum": ["routine", "urgent", "critical"] },
+        "risk_level": { "$ref": "common.schema.json#/$defs/risk_level" },
+        "why_general_workflow_insufficient": { "type": "string", "minLength": 1 }
+      }
+    },
+    "activity_mapping": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["direct_action", "special_reconnaissance", "security_force_assistance", "civil_affairs", "misinformation_resilience", "counter_abuse", "incident_recovery", "other"]
+      }
+    },
+    "commander_intent": {
+      "type": "object",
+      "required": ["purpose", "end_state", "failure_to_avoid"],
+      "additionalProperties": false,
+      "properties": {
+        "purpose": { "type": "string", "minLength": 1 },
+        "end_state": { "$ref": "common.schema.json#/$defs/string_list" },
+        "failure_to_avoid": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["allowed", "approval_required", "prohibited", "retained_by_commander"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed": { "$ref": "common.schema.json#/$defs/string_list" },
+        "approval_required": { "$ref": "common.schema.json#/$defs/string_list" },
+        "prohibited": { "$ref": "common.schema.json#/$defs/string_list" },
+        "retained_by_commander": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "cells": {
+      "type": "object",
+      "required": ["lead", "s2_recon", "s3_execution", "s4_s6_enabler", "opsec_release", "red_team", "recorder"],
+      "additionalProperties": false,
+      "properties": {
+        "lead": { "$ref": "common.schema.json#/$defs/role_id" },
+        "s2_recon": { "$ref": "common.schema.json#/$defs/role_id" },
+        "s3_execution": { "$ref": "common.schema.json#/$defs/role_id" },
+        "s4_s6_enabler": { "$ref": "common.schema.json#/$defs/role_id" },
+        "opsec_release": { "$ref": "common.schema.json#/$defs/role_id" },
+        "red_team": { "$ref": "common.schema.json#/$defs/role_id" },
+        "recorder": { "$ref": "common.schema.json#/$defs/role_id" }
+      }
+    },
+    "ccir": {
+      "type": "object",
+      "required": ["pir", "ffir", "eefi", "decision_points"],
+      "additionalProperties": false,
+      "properties": {
+        "pir": { "$ref": "common.schema.json#/$defs/string_list" },
+        "ffir": { "$ref": "common.schema.json#/$defs/string_list" },
+        "eefi": { "$ref": "common.schema.json#/$defs/string_list" },
+        "decision_points": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "isolation": {
+      "type": "object",
+      "required": ["need_to_know_roles", "context_rules", "eefi_controls"],
+      "additionalProperties": false,
+      "properties": {
+        "need_to_know_roles": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/role_id" }
+        },
+        "context_rules": { "$ref": "common.schema.json#/$defs/string_list" },
+        "eefi_controls": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "enablers": {
+      "type": "object",
+      "required": ["source_map_required", "release_review_required", "maintenance_check_required", "fallback_plan", "support_roles"],
+      "additionalProperties": false,
+      "properties": {
+        "source_map_required": { "type": "boolean" },
+        "release_review_required": { "type": "boolean" },
+        "maintenance_check_required": { "type": "boolean" },
+        "fallback_plan": { "$ref": "common.schema.json#/$defs/string_list" },
+        "support_roles": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/role_id" }
+        }
+      }
+    },
+    "rehearsal": {
+      "type": "object",
+      "required": ["backbrief_required", "rehearsal_required", "dry_run_required", "go_no_go_authority"],
+      "additionalProperties": false,
+      "properties": {
+        "backbrief_required": { "type": "boolean" },
+        "rehearsal_required": { "type": "boolean" },
+        "dry_run_required": { "type": "boolean" },
+        "go_no_go_authority": { "$ref": "common.schema.json#/$defs/role_id" }
+      }
+    },
+    "exit_criteria": {
+      "type": "object",
+      "required": ["success", "abort", "handoff"],
+      "additionalProperties": false,
+      "properties": {
+        "success": { "$ref": "common.schema.json#/$defs/string_list" },
+        "abort": { "$ref": "common.schema.json#/$defs/string_list" },
+        "handoff": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

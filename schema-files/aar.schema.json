@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/aar.schema.json",
+  "title": "AAR Event",
+  "type": "object",
+  "required": ["id", "mission_id", "expected", "actual", "delta", "causes", "sustain", "improve", "sop_updates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "expected": { "$ref": "common.schema.json#/$defs/string_list" },
+    "actual": { "$ref": "common.schema.json#/$defs/string_list" },
+    "delta": { "$ref": "common.schema.json#/$defs/string_list" },
+    "causes": { "$ref": "common.schema.json#/$defs/string_list" },
+    "sustain": { "$ref": "common.schema.json#/$defs/string_list" },
+    "improve": { "$ref": "common.schema.json#/$defs/string_list" },
+    "sop_updates": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/common.schema.json",
+  "title": "Common Runtime Definitions",
+  "type": "object",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "classification": {
+      "type": "string",
+      "enum": ["public", "internal", "sensitive", "restricted"]
+    },
+    "role_id": {
+      "type": "string",
+      "enum": ["USER", "COMMANDER", "COS", "S2", "S3", "S4", "S6", "RED_TEAM", "EVALUATOR", "EXECUTOR", "RECORDER"]
+    },
+    "readiness_rating": {
+      "type": "string",
+      "enum": ["T", "P", "U", "X"]
+    },
+    "roe_class": {
+      "type": "string",
+      "enum": ["Green", "Amber", "Red", "Black"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "pending", "in_progress", "blocked", "complete", "cancelled", "failed"]
+    },
+    "ccir_type": {
+      "type": "string",
+      "enum": ["PIR", "FFIR", "EEFI", "DECISION_POINT"]
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "string_list": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

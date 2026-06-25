@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "type": "FRAGOScopeChange",
+  "id": "FSC-20260618-INVALID",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "issued_by": "S3",
+  "classification": "internal",
+  "reason": "Let S3 deploy externally without separate commander approval.",
+  "changed_elements": ["authority_boundary"],
+  "unchanged_intent": [],
+  "scope_changes": [],
+  "authority_changes": [],
+  "affected_roles": [],
+  "requires_backbrief": false,
+  "requires_rehearsal": false,
+  "not_an_annex_update_reason": "",
+  "issued_at": "2026-06-18T13:45:00+09:00"
+}

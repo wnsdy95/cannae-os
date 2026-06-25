@@ -1,0 +1,77 @@
+{
+  "authority_matrix": {
+    "schema_version": "0.1",
+    "type": "AuthorityMatrix",
+    "id": "AM-DEMO-002",
+    "mission_id": "M-DEMO-001",
+    "owner": "COMMANDER",
+    "classification": "internal",
+    "default_decision": "report_required",
+    "rules": [
+      {
+        "rule_id": "RUL-DEMO-010",
+        "role": "S3",
+        "task_scope": ["dashboard sustainment"],
+        "tool_scope": ["orchestrator"],
+        "target_scope": ["staging.command-post-dashboard"],
+        "roe_class": "Amber",
+        "decision": "approval_required",
+        "approval_authority": "COMMANDER",
+        "readiness_min": "P",
+        "expires_at": "2026-06-18T23:59:59+09:00",
+        "conditions": ["Restart only the staging dashboard service.", "No production target."],
+        "evidence_required": ["Approval note.", "Service restart log.", "Post-action health check."],
+        "ccir_triggers": ["Staging service restart fails.", "Production target requested."]
+      }
+    ],
+    "review": {
+      "cadence": "on_aar",
+      "last_reviewed_by": "COMMANDER",
+      "last_reviewed_at": "2026-06-18T12:00:00+09:00"
+    }
+  },
+  "delegation_event": {
+    "schema_version": "0.1",
+    "type": "APPROVAL_DELEGATION_EVENT",
+    "id": "ADG-DEMO-001",
+    "mission_id": "M-DEMO-001",
+    "authority_matrix_id": "AM-DEMO-002",
+    "source_order_id": "FRAGO-DEMO-003",
+    "actor": "COMMANDER",
+    "delegator": "COMMANDER",
+    "delegatee": "COS",
+    "classification": "internal",
+    "delegation_type": "temporary",
+    "approving_for_roles": ["S3"],
+    "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+    "delegation_scope": {
+      "task_scope": ["dashboard sustainment"],
+      "action": "restart_service",
+      "tool": "orchestrator",
+      "target": "staging.command-post-dashboard",
+      "max_roe_class": "Amber",
+      "max_residual_risk": "medium",
+      "max_approval_duration_minutes": 30,
+      "max_approvals": 3,
+      "valid_from": "2026-06-18T16:00:00+09:00",
+      "expires_at": "2026-06-18T18:00:00+09:00",
+      "retained_authorities": [
+        "Red and Black actions remain Commander-retained.",
+        "High, critical, or irreversible residual risk remains Commander-retained.",
+        "Production deployment remains Commander-retained.",
+        "Sensitive or restricted release remains under release review."
+      ],
+      "prohibited_context_classes": ["sensitive", "restricted"]
+    },
+    "delegation_status_after": "active",
+    "subdelegation_allowed": false,
+    "release_review_required_for_sensitive": true,
+    "requires_backbrief": true,
+    "requires_post_action_evidence": true,
+    "notification_required": true,
+    "notified_roles": ["COS", "S3", "RECORDER"],
+    "reason": "Allow the Chief of Staff to handle bounded Amber sustainment approvals during dashboard rehearsal.",
+    "evidence": ["Commander delegation note.", "Authority matrix rule AM-DEMO-002/RUL-DEMO-010."],
+    "notes": ["Delegation does not include Red, Black, production, or sensitive release decisions."]
+  }
+}

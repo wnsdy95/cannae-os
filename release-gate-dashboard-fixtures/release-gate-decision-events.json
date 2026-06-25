@@ -1,0 +1,137 @@
+{
+  "mission_id": "M-DEMO-001",
+  "generated_at": "2026-06-18T16:50:00+09:00",
+  "events": [
+    {
+      "event_type": "ReleaseGateDecided",
+      "timestamp": "2026-06-18T16:45:00+09:00",
+      "payload": {
+        "schema_version": "0.1",
+        "type": "RELEASE_GATE_DECISION_EVENT",
+        "id": "RGD-PROJ-001",
+        "mission_id": "M-DEMO-001",
+        "tool_request_id": "TR-DEMO-002",
+        "actor": "S3",
+        "classification": "internal",
+        "release_target": "FINAL_OUTPUT",
+        "decided_at": "2026-06-18T16:45:00+09:00",
+        "authority": {
+          "allowed": true,
+          "blocked": false,
+          "final_decision": "allow_scoped_execution",
+          "approval_required": true,
+          "approval_valid": true,
+          "risk_acceptance_required": true,
+          "risk_acceptance_valid": true
+        },
+        "release_review": {
+          "required": true,
+          "valid": true,
+          "target": "FINAL_OUTPUT",
+          "review_id": "RR-DEMO-001",
+          "decision": "approve_redacted",
+          "finding_count": 0
+        },
+        "final_decision": "allow_scoped_execution_and_release",
+        "blocked": false,
+        "reasons": [
+          "Production, deployment, destructive, or database mutation target.",
+          "Request declares Red ROE class.",
+          "MATCHED_RUL-DEMO-002"
+        ],
+        "evidence": [
+          "Release review RR-DEMO-001.",
+          "Authority integration allowed scoped execution."
+        ]
+      }
+    },
+    {
+      "event_type": "ReleaseGateDecided",
+      "timestamp": "2026-06-18T16:46:00+09:00",
+      "payload": {
+        "schema_version": "0.1",
+        "type": "RELEASE_GATE_DECISION_EVENT",
+        "id": "RGD-PROJ-002",
+        "mission_id": "M-DEMO-001",
+        "tool_request_id": "TR-DEMO-003",
+        "actor": "S3",
+        "classification": "internal",
+        "release_target": "FINAL_OUTPUT",
+        "decided_at": "2026-06-18T16:46:00+09:00",
+        "authority": {
+          "allowed": true,
+          "blocked": false,
+          "final_decision": "allow_scoped_execution",
+          "approval_required": true,
+          "approval_valid": true,
+          "risk_acceptance_required": true,
+          "risk_acceptance_valid": true
+        },
+        "release_review": {
+          "required": true,
+          "valid": false,
+          "target": "FINAL_OUTPUT",
+          "decision": "missing",
+          "finding_count": 0
+        },
+        "final_decision": "blocked_pending_release_review",
+        "blocked": true,
+        "reasons": [
+          "Production, deployment, destructive, or database mutation target.",
+          "Request declares Red ROE class.",
+          "MATCHED_RUL-DEMO-002",
+          "MISSING_RELEASE_REVIEW"
+        ],
+        "evidence": [
+          "Authority integration allowed scoped execution.",
+          "No release review id was present."
+        ]
+      }
+    },
+    {
+      "event_type": "ReleaseGateDecided",
+      "timestamp": "2026-06-18T16:47:00+09:00",
+      "payload": {
+        "schema_version": "0.1",
+        "type": "RELEASE_GATE_DECISION_EVENT",
+        "id": "RGD-PROJ-003",
+        "mission_id": "M-DEMO-001",
+        "tool_request_id": "TR-DEMO-004",
+        "actor": "S3",
+        "classification": "internal",
+        "release_target": "FINAL_OUTPUT",
+        "decided_at": "2026-06-18T16:47:00+09:00",
+        "authority": {
+          "allowed": false,
+          "blocked": true,
+          "final_decision": "blocked_pending_authority",
+          "approval_required": true,
+          "approval_valid": true,
+          "risk_acceptance_required": true,
+          "risk_acceptance_valid": false
+        },
+        "release_review": {
+          "required": true,
+          "valid": true,
+          "target": "FINAL_OUTPUT",
+          "review_id": "RR-DEMO-001",
+          "decision": "approve_redacted",
+          "finding_count": 0
+        },
+        "final_decision": "blocked_pending_authority",
+        "blocked": true,
+        "reasons": [
+          "Production, deployment, destructive, or database mutation target.",
+          "Request declares Red ROE class.",
+          "MATCHED_RUL-DEMO-002",
+          "MISSING_RISK_ACCEPTANCE"
+        ],
+        "evidence": [
+          "Release review RR-DEMO-001.",
+          "Authority integration blocked missing risk acceptance."
+        ]
+      }
+    }
+  ]
+}
+

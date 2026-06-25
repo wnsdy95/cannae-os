@@ -1,0 +1,79 @@
+{
+  "mission_id": "M-DEMO-001",
+  "generated_at": "2026-06-18T17:10:00+09:00",
+  "owner": "S6",
+  "overall_readiness": "Unavailable",
+  "commander_decision_required": true,
+  "summary": {
+    "total_assets": 3,
+    "fully": 1,
+    "degraded": 1,
+    "unavailable": 1,
+    "next_actions": [
+      "Open FFIR alert for unavailable context filter verification.",
+      "Assign S6 repair task and use manual context releasability fallback."
+    ]
+  },
+  "assets": [
+    {
+      "asset_id": "TOOL-CONTEXT-001",
+      "asset_type": "verification",
+      "owner": "S6",
+      "readiness": "Unavailable",
+      "last_result": "fail",
+      "dependencies": [
+        "context-filter-prototype/context-filter.js",
+        "context-filter-prototype/context-items.demo.json"
+      ],
+      "fallback": "Manually apply context releasability policy.",
+      "ccir_trigger": "Context filter releases EEFI or restricted content.",
+      "dashboard": {
+        "class": "red",
+        "label": "DOWN",
+        "title": "TOOL-CONTEXT-001 Unavailable",
+        "body": "node context-filter-prototype/run-context-filter-fixtures.js fail; fallback: Manually apply context releasability policy.; CCIR: Context filter releases EEFI or restricted content."
+      }
+    },
+    {
+      "asset_id": "TOOL-POLICY-001",
+      "asset_type": "tool",
+      "owner": "S3",
+      "readiness": "Poorly",
+      "last_result": "fail",
+      "dependencies": [
+        "node",
+        "policy-engine-prototype",
+        "sample-payloads"
+      ],
+      "fallback": "Manual ROE review against docs/tool-use-roe.md.",
+      "ccir_trigger": "Policy runner allows Red action or cannot execute.",
+      "dashboard": {
+        "class": "amber",
+        "label": "DEGRADED",
+        "title": "TOOL-POLICY-001 Poorly",
+        "body": "node policy-engine-prototype/run-policy-fixtures.js fail; fallback: Manual ROE review against docs/tool-use-roe.md.; CCIR: Policy runner allows Red action or cannot execute."
+      }
+    },
+    {
+      "asset_id": "TOOL-VALIDATOR-001",
+      "asset_type": "tool",
+      "owner": "S6",
+      "readiness": "Fully",
+      "last_result": "pass",
+      "dependencies": [
+        "node",
+        "schema-files",
+        "sample-payloads"
+      ],
+      "fallback": "Manual schema review and targeted validator patch.",
+      "ccir_trigger": "Validator runner fails or cannot execute.",
+      "dashboard": {
+        "class": "green",
+        "label": "READY",
+        "title": "TOOL-VALIDATOR-001 Fully",
+        "body": "node validator-cli-prototype/run-fixtures.js passed; fallback: Manual schema review and targeted validator patch."
+      }
+    }
+  ]
+}
+

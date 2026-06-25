@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "type": "MaintenanceReadinessReport",
+  "id": "MR-PROJ-001",
+  "mission_id": "M-DEMO-001",
+  "owner": "S6",
+  "classification": "internal",
+  "generated_at": "2026-06-18T17:10:00+09:00",
+  "overall_readiness": "Unavailable",
+  "assets": [
+    {
+      "asset_id": "TOOL-VALIDATOR-001",
+      "asset_type": "tool",
+      "owner": "S6",
+      "readiness": "Fully",
+      "check_command": "node validator-cli-prototype/run-fixtures.js",
+      "last_result": "pass",
+      "dependencies": ["node", "schema-files", "sample-payloads"],
+      "fallback": "Manual schema review and targeted validator patch.",
+      "ccir_trigger": "Validator runner fails or cannot execute."
+    },
+    {
+      "asset_id": "TOOL-POLICY-001",
+      "asset_type": "tool",
+      "owner": "S3",
+      "readiness": "Poorly",
+      "check_command": "node policy-engine-prototype/run-policy-fixtures.js",
+      "last_result": "fail",
+      "dependencies": ["node", "policy-engine-prototype", "sample-payloads"],
+      "fallback": "Manual ROE review against docs/tool-use-roe.md.",
+      "ccir_trigger": "Policy runner allows Red action or cannot execute."
+    },
+    {
+      "asset_id": "TOOL-CONTEXT-001",
+      "asset_type": "verification",
+      "owner": "S6",
+      "readiness": "Unavailable",
+      "check_command": "node context-filter-prototype/run-context-filter-fixtures.js",
+      "last_result": "fail",
+      "dependencies": ["context-filter-prototype/context-filter.js", "context-filter-prototype/context-items.demo.json"],
+      "fallback": "Manually apply context releasability policy.",
+      "ccir_trigger": "Context filter releases EEFI or restricted content."
+    }
+  ],
+  "summary": {
+    "unavailable_assets": ["TOOL-CONTEXT-001"],
+    "degraded_assets": ["TOOL-POLICY-001"],
+    "commander_decision_required": true,
+    "next_actions": [
+      "Open FFIR alert for unavailable context filter verification.",
+      "Assign S6 repair task and use manual context releasability fallback."
+    ]
+  }
+}
+

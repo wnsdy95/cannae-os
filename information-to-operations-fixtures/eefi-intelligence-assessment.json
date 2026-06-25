@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1",
+  "type": "IntelligenceAssessment",
+  "id": "INTEL-20260619-EEFI",
+  "mission_id": "M-DEMO-001",
+  "information_report_id": "INFO-20260619-EEFI",
+  "assessed_by": "S6",
+  "classification": "restricted",
+  "confidence": "high",
+  "key_facts": [
+    "Credential-like content was detected.",
+    "Raw value is suppressed and should not be copied to reports."
+  ],
+  "assessment": [
+    "Final release must be blocked until release review confirms redaction."
+  ],
+  "information_gaps": [],
+  "ccir_classification": ["EEFI"],
+  "operational_impact": "release_block",
+  "recommended_outputs": ["CCIR_ALERT", "SITREP", "RELEASE_REVIEW"],
+  "commander_decision_required": true,
+  "created_at": "2026-06-19T09:08:00+09:00"
+}

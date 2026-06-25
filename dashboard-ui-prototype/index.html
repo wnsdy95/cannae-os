@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Command Post Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f5f2;
+      --panel: #ffffff;
+      --ink: #1d2528;
+      --muted: #667075;
+      --line: #cfd6d3;
+      --green: #2e6f4e;
+      --amber: #a06119;
+      --red: #a33a35;
+      --black: #202020;
+      --blue: #2f5f80;
+      --shadow: 0 1px 2px rgba(20, 28, 31, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #263238;
+      color: white;
+      border-bottom: 4px solid #8fa39b;
+      padding: 14px 20px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .intent {
+      margin-top: 8px;
+      color: #dbe5e2;
+      max-width: 1120px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .status-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid rgba(255,255,255,0.35);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    main {
+      padding: 18px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 0.9fr;
+      gap: 14px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #2b3639;
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .content {
+      padding: 12px;
+    }
+
+    .alert-list,
+    .task-list,
+    .risk-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      padding: 10px;
+      background: #fbfcfb;
+    }
+
+    .item-title {
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .item-meta,
+    .item-body {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .roe {
+      display: inline-block;
+      padding: 2px 7px;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      margin-right: 6px;
+    }
+
+    .roe.red { background: var(--red); }
+    .roe.amber { background: var(--amber); }
+    .roe.green { background: var(--green); }
+    .roe.black { background: var(--black); }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      min-height: 32px;
+      border: 1px solid #87948f;
+      background: white;
+      color: var(--ink);
+      padding: 0 10px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: default;
+    }
+
+    button.primary {
+      background: #2f5f80;
+      color: white;
+      border-color: #2f5f80;
+    }
+
+    button.danger {
+      background: #fff4f2;
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #405057;
+      background: #f0f3f1;
+      font-weight: 800;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .time {
+      color: var(--blue);
+      font-weight: 800;
+      margin-right: 8px;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      header {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-row">
+      <h1 id="mission-title">Command Post Dashboard · M-DEMO-001</h1>
+      <div class="status-strip">
+        <span class="badge" id="mission-status">In Progress</span>
+        <span class="badge" id="mission-risk">Risk Medium</span>
+        <span class="badge" id="mission-decisions">2 Decisions</span>
+      </div>
+    </div>
+    <div class="intent" id="mission-intent">Intent: Turn military-style LLM doctrine into an executable runtime with OPORD validation, ROE policy gates, evidence tracking, and AAR learning.</div>
+  </header>
+
+  <main class="grid">
+    <section>
+      <div class="section-head">
+        <h2>CCIR Alerts</h2>
+        <span class="count">2 active</span>
+      </div>
+      <div class="content alert-list" id="ccir-alerts">
+        <div class="item">
+          <div class="item-title"><span class="roe red">RED</span>Production deploy blocked</div>
+          <div class="item-body">S3 requested deploy_production to prod.command-post-dashboard. Explicit approval and rollback plan required.</div>
+        </div>
+        <div class="item">
+          <div class="item-title"><span class="roe amber">PIR</span>Source interpretation review</div>
+          <div class="item-body">Verify whether local framework claim is source text or LLM interpretation before release.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Approval Queue</h2>
+        <span class="count">1 red · 1 amber</span>
+      </div>
+      <div class="content" id="approval-queue">
+        <div class="item">
+          <div class="item-title"><span class="roe red">RED</span>deploy_production</div>
+          <div class="item-meta">Tool: deploy · Target: prod.command-post-dashboard · Actor: S3</div>
+          <div class="item-body">Risk: incomplete dashboard may misrepresent approval state. Rollback: previous static build.</div>
+          <div class="button-row">
+            <button class="primary">Dry-run only</button>
+            <button>Approve once</button>
+            <button>Revise</button>
+            <button class="danger">Reject</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Active Risks</h2>
+        <span class="count">3 tracked</span>
+      </div>
+      <div class="content risk-list" id="risk-list">
+        <div class="item">
+          <div class="item-title">R-003 Unauthorized action</div>
+          <div class="item-body">Control: tool gateway blocks Red without approval.</div>
+        </div>
+        <div class="item">
+          <div class="item-title">R-012 Context loss</div>
+          <div class="item-body">Control: SITREP checkpoints and runtime state payloads.</div>
+        </div>
+        <div class="item">
+          <div class="item-title">R-020 Learning loop</div>
+          <div class="item-body">Control: AAR updates readiness ledger.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wide">
+      <div class="section-head">
+        <h2>Active Tasks</h2>
+        <span class="count">5 tasks</span>
+      </div>
+      <div class="content">
+        <table>
+          <thead>
+            <tr><th>Agent</th><th>Task</th><th>Status</th><th>Verification</th></tr>
+          </thead>
+          <tbody id="task-table">
+            <tr><td>S2</td><td>Evidence record and source reliability</td><td>Complete</td><td>Claim/interpretation split</td></tr>
+            <tr><td>S3</td><td>Validator CLI prototype</td><td>Complete</td><td>Fixture runner passes</td></tr>
+            <tr><td>S3</td><td>Policy engine prototype</td><td>Complete</td><td>Red request blocked</td></tr>
+            <tr><td>S6</td><td>README/source map/compendium update</td><td>In progress</td><td>Link check</td></tr>
+            <tr><td>Evaluator</td><td>AAR and readiness update</td><td>Pending</td><td>MOP/MOE review</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Evidence Viewer</h2>
+        <span class="count">A-grade local framework</span>
+      </div>
+      <div class="content" id="evidence-viewer">
+        <div class="item">
+          <div class="item-title">Claim</div>
+          <div class="item-body">Production deployment is a Red action requiring explicit approval.</div>
+        </div>
+        <div class="item">
+          <div class="item-title">Interpretation</div>
+          <div class="item-body">The demo Red deploy request must remain blocked until approval is granted.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Readiness</h2>
+        <span class="count">selected agents</span>
+      </div>
+      <div class="content">
+        <table>
+          <thead><tr><th>Agent</th><th>Task</th><th>Rating</th></tr></thead>
+          <tbody id="readiness-table">
+            <tr><td>S2</td><td>Public source research</td><td>T</td></tr>
+            <tr><td>S3</td><td>Runtime prototype</td><td>P</td></tr>
+            <tr><td>Red Team</td><td>Independent review</td><td>U</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Latest SITREP</h2>
+        <span class="count">11:20 KST</span>
+      </div>
+      <div class="content timeline" id="sitrep-list">
+        <div><span class="time">Done</span>Schema files, sample payloads, validator CLI.</div>
+        <div><span class="time">Doing</span>Policy engine and dashboard prototype verification.</div>
+        <div><span class="time">Risk</span>Prototype is local and not production-enforced.</div>
+        <div><span class="time">Next</span>Run fixtures and update compendium.</div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const fallbackState = {
+      mission: {
+        id: "M-DEMO-001",
+        title: "Command Post Dashboard",
+        status: "In Progress",
+        risk: "Medium",
+        decision_count: 2,
+        intent: "Turn military-style LLM doctrine into an executable runtime with OPORD validation, ROE policy gates, evidence tracking, and AAR learning."
+      }
+    };
+
+    const escapeHtml = value => String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+    function render(state) {
+      const mission = state.mission || fallbackState.mission;
+      document.getElementById("mission-title").textContent = `${mission.title} · ${mission.id}`;
+      document.getElementById("mission-status").textContent = mission.status;
+      document.getElementById("mission-risk").textContent = `Risk ${mission.risk}`;
+      document.getElementById("mission-decisions").textContent = `${mission.decision_count} Decisions`;
+      document.getElementById("mission-intent").textContent = `Intent: ${mission.intent}`;
+
+      if (state.ccir_alerts) {
+        document.getElementById("ccir-alerts").innerHTML = state.ccir_alerts.map(item => `
+          <div class="item">
+            <div class="item-title"><span class="roe ${escapeHtml(item.class)}">${escapeHtml(item.label)}</span>${escapeHtml(item.title)}</div>
+            <div class="item-body">${escapeHtml(item.body)}</div>
+          </div>
+        `).join("");
+      }
+
+      if (state.approvals) {
+        document.getElementById("approval-queue").innerHTML = state.approvals.map(item => `
+          <div class="item">
+            <div class="item-title"><span class="roe ${escapeHtml(item.class)}">${escapeHtml(item.label)}</span>${escapeHtml(item.action)}</div>
+            <div class="item-meta">Tool: ${escapeHtml(item.tool)} · Target: ${escapeHtml(item.target)} · Actor: ${escapeHtml(item.actor)}</div>
+            <div class="item-body">Risk: ${escapeHtml(item.risk)} Rollback: ${escapeHtml(item.rollback)}</div>
+            <div class="button-row">
+              <button class="primary">Dry-run only</button>
+              <button>Approve once</button>
+              <button>Revise</button>
+              <button class="danger">Reject</button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      if (state.risks) {
+        document.getElementById("risk-list").innerHTML = state.risks.map(item => `
+          <div class="item">
+            <div class="item-title">${escapeHtml(item.id)} ${escapeHtml(item.title)}</div>
+            <div class="item-body">${escapeHtml(item.body)}</div>
+          </div>
+        `).join("");
+      }
+
+      if (state.tasks) {
+        document.getElementById("task-table").innerHTML = state.tasks.map(item => `
+          <tr><td>${escapeHtml(item.agent)}</td><td>${escapeHtml(item.task)}</td><td>${escapeHtml(item.status)}</td><td>${escapeHtml(item.verification)}</td></tr>
+        `).join("");
+      }
+
+      if (state.evidence) {
+        document.getElementById("evidence-viewer").innerHTML = `
+          <div class="item">
+            <div class="item-title">Claim</div>
+            <div class="item-body">${escapeHtml(state.evidence.claim)}</div>
+          </div>
+          <div class="item">
+            <div class="item-title">Interpretation</div>
+            <div class="item-body">${escapeHtml(state.evidence.interpretation)}</div>
+          </div>
+        `;
+      }
+
+      if (state.readiness) {
+        document.getElementById("readiness-table").innerHTML = state.readiness.map(item => `
+          <tr><td>${escapeHtml(item.agent)}</td><td>${escapeHtml(item.task)}</td><td>${escapeHtml(item.rating)}</td></tr>
+        `).join("");
+      }
+
+      if (state.sitrep) {
+        document.getElementById("sitrep-list").innerHTML = state.sitrep.map(item => `
+          <div><span class="time">${escapeHtml(item.label)}</span>${escapeHtml(item.text)}</div>
+        `).join("");
+      }
+    }
+
+    fetch("dashboard-state.json")
+      .then(response => response.ok ? response.json() : fallbackState)
+      .then(render)
+      .catch(() => render(fallbackState));
+  </script>
+</body>
+</html>

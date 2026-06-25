@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1",
+  "type": "DoctrineConsistencyReview",
+  "id": "DCR-USONLY-001",
+  "review_date": "2026-06-21T14:00:00+09:00",
+  "source_families": [
+    {
+      "family_id": "US",
+      "jurisdiction": "United States",
+      "official_source_urls": [
+        "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN34403-ADP_6-0-000-WEB-3.pdf"
+      ],
+      "doctrine_scope": [
+        "mission command"
+      ],
+      "comparison_use": [
+        "single-source baseline only"
+      ]
+    }
+  ],
+  "policy_findings": [
+    {
+      "finding_id": "DCF-USONLY-001",
+      "category": "role_staff_terminology",
+      "affected_policy": "docs/agent-roles-and-authority.md",
+      "us_assumption": "US staff terminology is sufficient for every force.",
+      "comparative_finding": "No non-US comparison was performed.",
+      "consistency_risk": "high",
+      "disposition": "adopt_us_only",
+      "resolution": "Use US staff labels everywhere.",
+      "policy_update_targets": [
+        "none"
+      ],
+      "verification": {
+        "method": "Read one US document.",
+        "evidence": [
+          "none"
+        ],
+        "status": "needs_follow_up"
+      }
+    },
+    {
+      "finding_id": "DCF-USONLY-002",
+      "category": "roe_legal_authority",
+      "affected_policy": "docs/tool-use-roe.md",
+      "us_assumption": "US ROE analogy is enough for legal controls.",
+      "comparative_finding": "No jurisdiction comparison was performed.",
+      "consistency_risk": "critical",
+      "disposition": "adopt_us_only",
+      "resolution": "Use one global tool rule.",
+      "policy_update_targets": [
+        "none"
+      ],
+      "verification": {
+        "method": "No legal comparison.",
+        "evidence": [
+          "none"
+        ],
+        "status": "needs_follow_up"
+      }
+    }
+  ],
+  "resolution_controls": {
+    "us_not_default": false,
+    "role_alias_map_required": false,
+    "local_jurisdiction_review_required": false,
+    "source_map_update_required": false,
+    "compendium_update_required": false,
+    "schema_fixture_required": false,
+    "commander_retained_conflict_decisions": false
+  },
+  "documentation_updates": {
+    "review_document": [
+      "none"
+    ],
+    "source_map": [
+      "none"
+    ],
+    "compendium": [
+      "none"
+    ],
+    "schema": [
+      "none"
+    ],
+    "samples": [
+      "none"
+    ],
+    "runner": [
+      "none"
+    ]
+  },
+  "classification": "public",
+  "status": "complete",
+  "created_at": "2026-06-21T14:00:00+09:00"
+}

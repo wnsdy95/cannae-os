@@ -1,0 +1,134 @@
+{
+  "schema_version": "0.1",
+  "type": "SofTfCharter",
+  "id": "SOFTF-ReleaseHardening",
+  "mission_id": "M-ReleaseHardening",
+  "trigger": {
+    "conditions": [
+      "External release is blocked by mixed authority and releasability findings.",
+      "Source conflict and EEFI risk require a small independent review team.",
+      "Execution must finish before the next release window."
+    ],
+    "urgency": "urgent",
+    "risk_level": "high",
+    "why_general_workflow_insufficient": "General workflow would combine executor, reviewer, and recorder roles; this mission needs separated cells and commander-retained release authority."
+  },
+  "activity_mapping": [
+    "special_reconnaissance",
+    "direct_action",
+    "counter_abuse"
+  ],
+  "commander_intent": {
+    "purpose": "Resolve release blocker without leaking restricted context or expanding tool authority.",
+    "end_state": [
+      "Release review target matches the actual release target.",
+      "All claims are backed by source-map entries or marked as assumptions.",
+      "No EEFI or restricted context is present in final output."
+    ],
+    "failure_to_avoid": [
+      "Executor self-approves release.",
+      "Internal handoff review authorizes external output.",
+      "Red residual risk is accepted by staff instead of Commander."
+    ]
+  },
+  "authority": {
+    "allowed": [
+      "Read local documentation and fixtures.",
+      "Run validator, source-map linter, and release gate fixtures.",
+      "Draft schema or runner patches in the mission scope."
+    ],
+    "approval_required": [
+      "Any Red tool action.",
+      "Any external release.",
+      "Any production mutation or credential use."
+    ],
+    "prohibited": [
+      "Unauthorized access.",
+      "Secret exfiltration.",
+      "Deceptive or manipulative user communication.",
+      "Release target substitution."
+    ],
+    "retained_by_commander": [
+      "Red approval.",
+      "External release approval.",
+      "High or critical residual risk acceptance.",
+      "Mission scope FRAGO."
+    ]
+  },
+  "cells": {
+    "lead": "COS",
+    "s2_recon": "S2",
+    "s3_execution": "S3",
+    "s4_s6_enabler": "S6",
+    "opsec_release": "EVALUATOR",
+    "red_team": "RED_TEAM",
+    "recorder": "RECORDER"
+  },
+  "ccir": {
+    "pir": [
+      "Which source conflict changes the release decision?"
+    ],
+    "ffir": [
+      "Which tool, fixture, or source-map check is degraded?"
+    ],
+    "eefi": [
+      "Credential-like values.",
+      "Restricted internal handoff content.",
+      "Unreleased customer or partner identifiers."
+    ],
+    "decision_points": [
+      "Release target changes.",
+      "High residual risk remains after mitigation.",
+      "Fixture failure blocks release."
+    ]
+  },
+  "isolation": {
+    "need_to_know_roles": ["COS", "S2", "S3", "S6", "EVALUATOR", "RED_TEAM", "RECORDER"],
+    "context_rules": [
+      "S2 receives raw sources and produces source-tagged claims.",
+      "S3 receives task-scoped execution context only.",
+      "Release reviewer receives redacted final-output candidate plus releasability metadata."
+    ],
+    "eefi_controls": [
+      "Credential-like strings are summarized, not copied.",
+      "Restricted context is denied to final output.",
+      "Release review must compare reviewed target to actual release target."
+    ]
+  },
+  "enablers": {
+    "source_map_required": true,
+    "release_review_required": true,
+    "maintenance_check_required": true,
+    "fallback_plan": [
+      "If source-map linter fails, block release and route to S2.",
+      "If release gate fixture fails, pause execution and create a decision packet.",
+      "If validator fails, return to S3 with exact failing fixture."
+    ],
+    "support_roles": ["S4", "S6", "RECORDER"]
+  },
+  "rehearsal": {
+    "backbrief_required": true,
+    "rehearsal_required": true,
+    "dry_run_required": true,
+    "go_no_go_authority": "COS"
+  },
+  "exit_criteria": {
+    "success": [
+      "All targeted fixtures pass.",
+      "Release gate decision matches authority and release review snapshots.",
+      "AAR/readiness update is queued for any finding."
+    ],
+    "abort": [
+      "Black action requested.",
+      "External release lacks release review.",
+      "Commander-retained decision is attempted by staff."
+    ],
+    "handoff": [
+      "Event log, source map, changed files, unresolved risks, and next action are recorded.",
+      "Recorder stores final SITREP and AAR inputs."
+    ]
+  },
+  "classification": "sensitive",
+  "status": "pending",
+  "created_at": "2026-06-19T09:00:00+09:00"
+}

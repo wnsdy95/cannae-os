@@ -1,0 +1,8 @@
+{
+  "authority_bundle_path": "../authority-integration-fixtures/approved-red-bundle.json",
+  "release": {
+    "required": true,
+    "target": "FINAL_OUTPUT"
+  }
+}
+

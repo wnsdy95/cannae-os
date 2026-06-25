@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/continuity-plan.schema.json",
+  "title": "Continuity Plan",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "owner", "classification", "essential_functions", "succession_rules", "rotation_windows", "vital_records", "continuity_triggers", "degradation_policy", "validation", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ContinuityPlan" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "essential_functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["function_id", "name", "owner_role", "criticality", "minimum_readiness", "backup_roles", "authority_scope", "source_of_truth_files", "handoff_required"],
+        "additionalProperties": false,
+        "properties": {
+          "function_id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string", "minLength": 1 },
+          "owner_role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "criticality": { "$ref": "common.schema.json#/$defs/risk_level" },
+          "minimum_readiness": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+          "backup_roles": {
+            "type": "array",
+            "items": { "$ref": "common.schema.json#/$defs/role_id" }
+          },
+          "authority_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "source_of_truth_files": { "$ref": "common.schema.json#/$defs/string_list" },
+          "handoff_required": { "type": "boolean" }
+        }
+      }
+    },
+    "succession_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from_role", "successors", "activation_triggers", "authority_limits", "notification_roles"],
+        "additionalProperties": false,
+        "properties": {
+          "from_role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "successors": {
+            "type": "array",
+            "items": { "$ref": "common.schema.json#/$defs/role_id" }
+          },
+          "activation_triggers": { "$ref": "common.schema.json#/$defs/string_list" },
+          "authority_limits": { "$ref": "common.schema.json#/$defs/string_list" },
+          "notification_roles": {
+            "type": "array",
+            "items": { "$ref": "common.schema.json#/$defs/role_id" }
+          }
+        }
+      }
+    },
+    "rotation_windows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "outgoing", "incoming", "overlap_required", "backbrief_required", "handoff_packet_required", "rehearsal_required"],
+        "additionalProperties": false,
+        "properties": {
+          "role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "outgoing": { "$ref": "common.schema.json#/$defs/role_id" },
+          "incoming": { "$ref": "common.schema.json#/$defs/role_id" },
+          "overlap_required": { "type": "boolean" },
+          "backbrief_required": { "type": "boolean" },
+          "handoff_packet_required": { "type": "boolean" },
+          "rehearsal_required": { "type": "boolean" }
+        }
+      }
+    },
+    "vital_records": { "$ref": "common.schema.json#/$defs/string_list" },
+    "continuity_triggers": { "$ref": "common.schema.json#/$defs/string_list" },
+    "degradation_policy": {
+      "type": "object",
+      "required": ["minimum_staffing", "functions_to_pause", "commander_retained_decisions", "recovery_actions"],
+      "additionalProperties": false,
+      "properties": {
+        "minimum_staffing": { "$ref": "common.schema.json#/$defs/string_list" },
+        "functions_to_pause": { "$ref": "common.schema.json#/$defs/string_list" },
+        "commander_retained_decisions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "recovery_actions": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["last_drill_at", "next_drill_due", "tested_scenarios", "open_gaps"],
+      "additionalProperties": false,
+      "properties": {
+        "last_drill_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "next_drill_due": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "tested_scenarios": { "$ref": "common.schema.json#/$defs/string_list" },
+        "open_gaps": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

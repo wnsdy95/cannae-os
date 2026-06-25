@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/department-collaboration-charter.schema.json",
+  "title": "Department Collaboration Charter",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "name", "purpose", "departments", "relationships", "liaison_rules", "synchronization", "conflict_resolution", "collaboration_controls", "information_policy", "exit_criteria", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "DepartmentCollaborationCharter" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "name": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "departments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "function", "lead_role", "responsibilities", "outputs", "authority_boundary", "ccir", "source_of_truth_files"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": ["command", "research", "operations", "effects", "sustainment", "protection", "red_team", "recorder"]
+          },
+          "function": {
+            "type": "string",
+            "enum": ["command_and_control", "intelligence", "movement_and_maneuver", "fires_effects", "sustainment", "protection", "assessment", "information"]
+          },
+          "lead_role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "responsibilities": { "$ref": "common.schema.json#/$defs/string_list" },
+          "outputs": { "$ref": "common.schema.json#/$defs/string_list" },
+          "authority_boundary": { "$ref": "common.schema.json#/$defs/string_list" },
+          "ccir": { "$ref": "common.schema.json#/$defs/string_list" },
+          "source_of_truth_files": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["phase", "supported_department", "supporting_department", "support_type", "required_outputs", "quality_gate", "handoff_interface", "escalation_trigger"],
+        "additionalProperties": false,
+        "properties": {
+          "phase": { "type": "string", "minLength": 1 },
+          "supported_department": { "type": "string", "minLength": 1 },
+          "supporting_department": { "type": "string", "minLength": 1 },
+          "support_type": {
+            "type": "string",
+            "enum": ["information", "execution", "sustainment", "protection", "assessment", "recordkeeping", "decision_support"]
+          },
+          "required_outputs": { "$ref": "common.schema.json#/$defs/string_list" },
+          "quality_gate": { "$ref": "common.schema.json#/$defs/string_list" },
+          "handoff_interface": { "type": "string", "minLength": 1 },
+          "escalation_trigger": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "liaison_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["between", "liaison_role", "information_to_exchange", "update_cadence", "conflict_route"],
+        "additionalProperties": false,
+        "properties": {
+          "between": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "liaison_role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "information_to_exchange": { "$ref": "common.schema.json#/$defs/string_list" },
+          "update_cadence": { "type": "string", "minLength": 1 },
+          "conflict_route": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "synchronization": {
+      "type": "object",
+      "required": ["battle_rhythm_events", "decision_points", "dependency_matrix"],
+      "additionalProperties": false,
+      "properties": {
+        "battle_rhythm_events": { "$ref": "common.schema.json#/$defs/string_list" },
+        "decision_points": { "$ref": "common.schema.json#/$defs/string_list" },
+        "dependency_matrix": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from_department", "to_department", "dependency", "required_before"],
+            "additionalProperties": false,
+            "properties": {
+              "from_department": { "type": "string", "minLength": 1 },
+              "to_department": { "type": "string", "minLength": 1 },
+              "dependency": { "type": "string", "minLength": 1 },
+              "required_before": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "conflict_resolution": {
+      "type": "object",
+      "required": ["authority", "method", "decision_packet_required", "commander_escalation"],
+      "additionalProperties": false,
+      "properties": {
+        "authority": { "$ref": "common.schema.json#/$defs/role_id" },
+        "method": { "$ref": "common.schema.json#/$defs/string_list" },
+        "decision_packet_required": { "type": "boolean" },
+        "commander_escalation": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "collaboration_controls": {
+      "type": "object",
+      "required": ["no_silent_scope_change", "source_map_required", "shared_glossary_required", "handoff_required", "aar_required"],
+      "additionalProperties": false,
+      "properties": {
+        "no_silent_scope_change": { "type": "boolean" },
+        "source_map_required": { "type": "boolean" },
+        "shared_glossary_required": { "type": "boolean" },
+        "handoff_required": { "type": "boolean" },
+        "aar_required": { "type": "boolean" }
+      }
+    },
+    "information_policy": {
+      "type": "object",
+      "required": ["need_to_know", "context_sharing", "eefi_controls"],
+      "additionalProperties": false,
+      "properties": {
+        "need_to_know": { "$ref": "common.schema.json#/$defs/string_list" },
+        "context_sharing": { "$ref": "common.schema.json#/$defs/string_list" },
+        "eefi_controls": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "exit_criteria": {
+      "type": "object",
+      "required": ["success", "abort", "handoff"],
+      "additionalProperties": false,
+      "properties": {
+        "success": { "$ref": "common.schema.json#/$defs/string_list" },
+        "abort": { "$ref": "common.schema.json#/$defs/string_list" },
+        "handoff": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

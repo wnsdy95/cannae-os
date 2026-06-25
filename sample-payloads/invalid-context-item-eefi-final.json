@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "type": "ContextItem",
+  "id": "CTX-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "classification": "restricted",
+  "eefi": true,
+  "source": "runtime secret",
+  "summary": "Credential-like value was found.",
+  "raw_value": "password=example",
+  "allowed_roles": [
+    "S3"
+  ],
+  "release_to_final": true,
+  "retention": "audit"
+}

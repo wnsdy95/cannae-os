@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/document-access-manifest.schema.json",
+  "title": "Document Access Manifest",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "default_decision", "role_profiles", "documents", "controls", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "DocumentAccessManifest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "default_decision": { "type": "string", "enum": ["deny"] },
+    "role_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "duty", "authority_level", "required_documents", "optional_documents", "denied_documents", "escalation_role"],
+        "additionalProperties": false,
+        "properties": {
+          "role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "duty": { "type": "string", "minLength": 1 },
+          "authority_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4", "L5"] },
+          "required_documents": { "$ref": "common.schema.json#/$defs/string_list" },
+          "optional_documents": { "$ref": "common.schema.json#/$defs/string_list" },
+          "denied_documents": { "$ref": "common.schema.json#/$defs/string_list" },
+          "escalation_role": { "$ref": "common.schema.json#/$defs/role_id" }
+        }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "title", "classification", "owner_role", "allowed_roles", "duties", "minimum_authority_level", "delivery_mode", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "classification": { "$ref": "common.schema.json#/$defs/classification" },
+          "owner_role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "allowed_roles": {
+            "type": "array",
+            "items": { "$ref": "common.schema.json#/$defs/role_id" }
+          },
+          "duties": { "$ref": "common.schema.json#/$defs/string_list" },
+          "minimum_authority_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4", "L5"] },
+          "delivery_mode": { "type": "string", "enum": ["raw", "summary", "reference_only"] },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "controls": {
+      "type": "object",
+      "required": ["need_to_know", "no_bulk_read", "audit_required", "exception_requires_approval", "source_of_truth"],
+      "additionalProperties": false,
+      "properties": {
+        "need_to_know": { "type": "boolean" },
+        "no_bulk_read": { "type": "boolean" },
+        "audit_required": { "type": "boolean" },
+        "exception_requires_approval": { "type": "boolean" },
+        "source_of_truth": { "type": "string", "minLength": 1 }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

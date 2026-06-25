@@ -1,0 +1,91 @@
+{
+  "schema_version": "0.1",
+  "type": "AgentRoutingPreflightBundle",
+  "mission_id": "MIS-routing",
+  "wave_id": "W2",
+  "expected_agents": ["plans-agent", "terms-agent"],
+  "receipts": [
+    {
+      "schema_version": "0.1",
+      "type": "RoutingReceipt",
+      "id": "RR-W2-COS",
+      "mission_id": "MIS-routing",
+      "wave_id": "W2",
+      "agent_id": "chief-of-staff",
+      "wave_scope": "wave",
+      "actor": "ai",
+      "agent_role": "COS",
+      "department": "coordination",
+      "authority_scope": "tasking",
+      "routing_mode": "delegated_ai_role_department_authority",
+      "router_query": "Open W2 with routing receipts.",
+      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-routing --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking \"Open W2 with routing receipts.\" .",
+      "matched_routes": [
+        {
+          "id": "skill-operations",
+          "score": 2
+        }
+      ],
+      "recommended_documents": [
+        {
+          "path": "README.md",
+          "exists": true
+        },
+        {
+          "path": "docs/source-map.md",
+          "exists": true
+        }
+      ],
+      "route_inventory": {
+        "routable_artifact_count": 331,
+        "routed_artifact_count": 331,
+        "unrouted_artifact_count": 0
+      },
+      "validation_commands": [
+        "node run-agent-routing-preflight-fixtures.js"
+      ],
+      "created_at": "2026-06-24T09:00:00+09:00"
+    },
+    {
+      "schema_version": "0.1",
+      "type": "RoutingReceipt",
+      "id": "RR-W2-plans-agent",
+      "mission_id": "MIS-routing",
+      "wave_id": "W2",
+      "agent_id": "plans-agent",
+      "wave_scope": "agent",
+      "actor": "ai",
+      "agent_role": "S3",
+      "department": "operations",
+      "authority_scope": "scoped-execution",
+      "routing_mode": "delegated_ai_role_department_authority",
+      "router_query": "Route plans-agent for W2.",
+      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution \"Route plans-agent for W2.\" .",
+      "matched_routes": [
+        {
+          "id": "orders",
+          "score": 2
+        }
+      ],
+      "recommended_documents": [
+        {
+          "path": "README.md",
+          "exists": true
+        },
+        {
+          "path": "docs/source-map.md",
+          "exists": true
+        }
+      ],
+      "route_inventory": {
+        "routable_artifact_count": 331,
+        "routed_artifact_count": 331,
+        "unrouted_artifact_count": 0
+      },
+      "validation_commands": [
+        "node validator-cli-prototype/run-fixtures.js"
+      ],
+      "created_at": "2026-06-24T09:02:00+09:00"
+    }
+  ]
+}

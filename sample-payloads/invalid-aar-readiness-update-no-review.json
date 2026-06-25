@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1",
+  "type": "AARReadinessUpdate",
+  "id": "ARU-AAR-20260618-UNSUPPORTED",
+  "mission_id": "M-20260618-001",
+  "aar_id": "AAR-20260618-UNSUPPORTED",
+  "generated_at": "2026-06-18T13:20:00+09:00",
+  "readiness_recommendations": [
+    {
+      "agent_id": "RED_TEAM",
+      "task": "hallucination and unsupported-claim detection",
+      "readiness_action": "downgrade_or_hold",
+      "recommended_rating": "U",
+      "rationale": "AAR contains critical or blocking failure signals.",
+      "evidence": [
+        "delta: Unsupported source claim reached draft output.",
+        "cause: Research pass did not require source-map evidence."
+      ]
+    }
+  ],
+  "maintenance_actions": [
+    {
+      "owner": "S6",
+      "action_type": "verification_update",
+      "description": "Add validator fixture for unsupported source claims.",
+      "readiness_effect": "Adds regression coverage before future autonomous execution."
+    }
+  ],
+  "sop_updates": [
+    "Require source-map evidence before finalizing research claims."
+  ],
+  "commander_decision_required": false,
+  "ccir_triggers": []
+}

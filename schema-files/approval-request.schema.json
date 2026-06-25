@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/approval-request.schema.json",
+  "title": "Approval Request",
+  "type": "object",
+  "required": ["id", "mission_id", "actor", "requested_action", "tool", "target", "roe_class", "why_needed", "risk", "alternatives", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "requested_action": { "type": "string", "minLength": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+    "why_needed": { "type": "string", "minLength": 1 },
+    "risk": { "$ref": "common.schema.json#/$defs/string_list" },
+    "rollback": { "$ref": "common.schema.json#/$defs/string_list" },
+    "alternatives": { "$ref": "common.schema.json#/$defs/string_list" },
+    "status": { "type": "string", "enum": ["pending", "approved", "rejected", "expired"] }
+  }
+}

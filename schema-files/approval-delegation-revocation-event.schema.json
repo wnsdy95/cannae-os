@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/approval-delegation-revocation-event.schema.json",
+  "title": "Approval Delegation Revocation Event",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "authority_matrix_id", "delegation_event_id", "actor", "termination_authority", "delegatee", "classification", "termination_kind", "terminated_at", "reason", "delegation_status_before", "delegation_status_after", "delegation_snapshot", "notification_required", "notified_roles", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "APPROVAL_DELEGATION_REVOCATION_EVENT" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "authority_matrix_id": { "$ref": "common.schema.json#/$defs/id" },
+    "delegation_event_id": { "$ref": "common.schema.json#/$defs/id" },
+    "source_order_id": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "termination_authority": { "$ref": "common.schema.json#/$defs/role_id" },
+    "delegatee": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "termination_kind": {
+      "type": "string",
+      "enum": ["revoked", "expired"]
+    },
+    "terminated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "reason": { "type": "string", "minLength": 1 },
+    "delegation_status_before": {
+      "type": "string",
+      "enum": ["active", "revoked", "expired"]
+    },
+    "delegation_status_after": {
+      "type": "string",
+      "enum": ["revoked", "expired"]
+    },
+    "delegation_snapshot": {
+      "type": "object",
+      "required": ["delegator", "delegatee", "delegation_type", "approving_for_roles", "delegated_decisions", "task_scope", "action", "tool", "target", "max_roe_class", "max_residual_risk", "max_approval_duration_minutes", "max_approvals", "valid_from", "expires_at", "retained_authorities", "prohibited_context_classes", "subdelegation_allowed", "release_review_required_for_sensitive"],
+      "additionalProperties": false,
+      "properties": {
+        "delegator": { "$ref": "common.schema.json#/$defs/role_id" },
+        "delegatee": { "$ref": "common.schema.json#/$defs/role_id" },
+        "delegation_type": {
+          "type": "string",
+          "enum": ["temporary", "standing", "emergency"]
+        },
+        "approving_for_roles": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/role_id" }
+        },
+        "delegated_decisions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["approve_once", "approve_with_constraints", "reject", "revise"]
+          }
+        },
+        "task_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+        "action": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "max_roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+        "max_residual_risk": { "$ref": "common.schema.json#/$defs/risk_level" },
+        "max_approval_duration_minutes": { "type": "integer" },
+        "max_approvals": { "type": "integer" },
+        "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "retained_authorities": { "$ref": "common.schema.json#/$defs/string_list" },
+        "prohibited_context_classes": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/classification" }
+        },
+        "subdelegation_allowed": { "type": "boolean" },
+        "release_review_required_for_sensitive": { "type": "boolean" }
+      }
+    },
+    "notification_required": { "type": "boolean" },
+    "notified_roles": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "notes": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "type": "CCIRAlert",
+  "id": "ALERT-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "ccir_type": "DECISION_POINT",
+  "severity": "Red",
+  "source_event_id": "EVT-DEMO-008",
+  "owner": "COS",
+  "title": "deploy_production blocked",
+  "why_it_matters": "Production deployment changes external state.",
+  "recommended_route": "Commander Board",
+  "required_decision": "",
+  "deadline": "before tool execution",
+  "sensitive": false,
+  "blocks_execution": false,
+  "status": "pending"
+}

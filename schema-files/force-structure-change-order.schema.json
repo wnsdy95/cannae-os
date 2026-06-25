@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/force-structure-change-order.schema.json",
+  "title": "Force Structure Change Order",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "change_type", "target", "capability_gap", "alternatives_considered", "dotmlpf_p", "authority", "resources", "readiness", "transition_plan", "documentation_updates", "assessment", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ForceStructureChangeOrder" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "change_type": {
+      "type": "string",
+      "enum": ["create", "activate", "expand", "reduce", "merge", "split", "deactivate", "disband"]
+    },
+    "target": {
+      "type": "object",
+      "required": ["kind", "id", "name", "current_state", "proposed_state", "essential_functions"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["role", "department", "unit", "task_force", "working_group", "runner", "dashboard_panel"] },
+        "id": { "$ref": "common.schema.json#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "current_state": { "type": "string", "minLength": 1 },
+        "proposed_state": { "type": "string", "minLength": 1 },
+        "essential_functions": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "capability_gap": {
+      "type": "object",
+      "required": ["problem", "evidence", "operational_impact", "why_now"],
+      "additionalProperties": false,
+      "properties": {
+        "problem": { "type": "string", "minLength": 1 },
+        "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+        "operational_impact": { "$ref": "common.schema.json#/$defs/string_list" },
+        "why_now": { "type": "string", "minLength": 1 }
+      }
+    },
+    "alternatives_considered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["option", "type", "reason_not_sufficient"],
+        "additionalProperties": false,
+        "properties": {
+          "option": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["sop", "training", "tooling", "authority", "policy", "automation", "no_change", "organization"] },
+          "reason_not_sufficient": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "dotmlpf_p": {
+      "type": "object",
+      "required": ["doctrine", "organization", "training", "materiel_tooling", "leadership", "personnel_agent", "facilities_context", "policy"],
+      "additionalProperties": false,
+      "properties": {
+        "doctrine": { "$ref": "common.schema.json#/$defs/string_list" },
+        "organization": { "$ref": "common.schema.json#/$defs/string_list" },
+        "training": { "$ref": "common.schema.json#/$defs/string_list" },
+        "materiel_tooling": { "$ref": "common.schema.json#/$defs/string_list" },
+        "leadership": { "$ref": "common.schema.json#/$defs/string_list" },
+        "personnel_agent": { "$ref": "common.schema.json#/$defs/string_list" },
+        "facilities_context": { "$ref": "common.schema.json#/$defs/string_list" },
+        "policy": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["approving_authority", "commander_retained_decisions", "prohibited_changes", "approval_evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "approving_authority": { "$ref": "common.schema.json#/$defs/role_id" },
+        "commander_retained_decisions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "prohibited_changes": { "$ref": "common.schema.json#/$defs/string_list" },
+        "approval_evidence": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "required": ["maintainer_roles", "tooling", "context_budget", "time_budget", "dashboard_or_runner_cost", "fallback"],
+      "additionalProperties": false,
+      "properties": {
+        "maintainer_roles": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/role_id" }
+        },
+        "tooling": { "$ref": "common.schema.json#/$defs/string_list" },
+        "context_budget": { "type": "string", "minLength": 1 },
+        "time_budget": { "type": "string", "minLength": 1 },
+        "dashboard_or_runner_cost": { "$ref": "common.schema.json#/$defs/string_list" },
+        "fallback": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "required": ["required_rating", "metl_tasks", "evidence", "backup_or_successor", "validation_fixture"],
+      "additionalProperties": false,
+      "properties": {
+        "required_rating": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+        "metl_tasks": { "$ref": "common.schema.json#/$defs/string_list" },
+        "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+        "backup_or_successor": { "$ref": "common.schema.json#/$defs/string_list" },
+        "validation_fixture": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "transition_plan": {
+      "type": "object",
+      "required": ["activation_steps", "handoff_required", "data_migration", "deactivation_or_sunset", "rollback"],
+      "additionalProperties": false,
+      "properties": {
+        "activation_steps": { "$ref": "common.schema.json#/$defs/string_list" },
+        "handoff_required": { "type": "boolean" },
+        "data_migration": { "$ref": "common.schema.json#/$defs/string_list" },
+        "deactivation_or_sunset": { "$ref": "common.schema.json#/$defs/string_list" },
+        "rollback": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "documentation_updates": {
+      "type": "object",
+      "required": ["schema_updates", "sample_updates", "runner_updates", "readme_updates", "source_map_updates", "compendium_updates"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_updates": { "$ref": "common.schema.json#/$defs/string_list" },
+        "sample_updates": { "$ref": "common.schema.json#/$defs/string_list" },
+        "runner_updates": { "$ref": "common.schema.json#/$defs/string_list" },
+        "readme_updates": { "$ref": "common.schema.json#/$defs/string_list" },
+        "source_map_updates": { "$ref": "common.schema.json#/$defs/string_list" },
+        "compendium_updates": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["mop", "moe", "aar_trigger", "review_at", "sunset_condition"],
+      "additionalProperties": false,
+      "properties": {
+        "mop": { "$ref": "common.schema.json#/$defs/string_list" },
+        "moe": { "$ref": "common.schema.json#/$defs/string_list" },
+        "aar_trigger": { "$ref": "common.schema.json#/$defs/string_list" },
+        "review_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "sunset_condition": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

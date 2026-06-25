@@ -1,0 +1,70 @@
+{
+  "authority_matrix": {
+    "schema_version": "0.1",
+    "type": "AuthorityMatrix",
+    "id": "AM-DEMO-002",
+    "mission_id": "M-DEMO-001",
+    "owner": "COMMANDER",
+    "classification": "internal",
+    "default_decision": "report_required",
+    "rules": [
+      {
+        "rule_id": "RUL-DEMO-011",
+        "role": "S3",
+        "task_scope": ["deployment"],
+        "tool_scope": ["deploy"],
+        "target_scope": ["prod.command-post-dashboard"],
+        "roe_class": "Red",
+        "decision": "approval_required",
+        "approval_authority": "COMMANDER",
+        "readiness_min": "T",
+        "expires_at": "2026-06-18T23:59:59+09:00",
+        "conditions": ["Rollback plan must be attached."],
+        "evidence_required": ["Approval request.", "Rollback plan.", "Post-action verification."],
+        "ccir_triggers": ["Production deployment requested."]
+      }
+    ],
+    "review": {
+      "cadence": "on_aar",
+      "last_reviewed_by": "COMMANDER",
+      "last_reviewed_at": "2026-06-18T12:00:00+09:00"
+    }
+  },
+  "delegation_event": {
+    "schema_version": "0.1",
+    "type": "APPROVAL_DELEGATION_EVENT",
+    "id": "ADG-DEMO-002",
+    "mission_id": "M-DEMO-001",
+    "authority_matrix_id": "AM-DEMO-002",
+    "actor": "S3",
+    "delegator": "S3",
+    "delegatee": "S3",
+    "classification": "internal",
+    "delegation_type": "temporary",
+    "approving_for_roles": ["S3"],
+    "delegated_decisions": ["approve_once", "approve_with_constraints"],
+    "delegation_scope": {
+      "task_scope": [],
+      "action": "deploy_production",
+      "tool": "deploy",
+      "target": "prod.command-post-dashboard",
+      "max_roe_class": "Red",
+      "max_residual_risk": "high",
+      "max_approval_duration_minutes": 0,
+      "max_approvals": 0,
+      "valid_from": "2026-06-18T18:00:00+09:00",
+      "expires_at": "2026-06-18T16:00:00+09:00",
+      "retained_authorities": [],
+      "prohibited_context_classes": ["public"]
+    },
+    "delegation_status_after": "active",
+    "subdelegation_allowed": true,
+    "release_review_required_for_sensitive": false,
+    "requires_backbrief": false,
+    "requires_post_action_evidence": false,
+    "notification_required": true,
+    "notified_roles": [],
+    "reason": "",
+    "evidence": []
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/annex.schema.json",
+  "title": "OPORD Annex",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "parent_order",
+    "annex_code",
+    "owner",
+    "classification",
+    "purpose",
+    "intent_impact",
+    "authority_impact",
+    "inputs",
+    "outputs",
+    "constraints",
+    "ccir_links",
+    "verification",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ANNEX" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "parent_order": { "$ref": "common.schema.json#/$defs/id" },
+    "annex_code": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E", "F", "G", "H"]
+    },
+    "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "purpose": { "type": "string", "minLength": 1 },
+    "intent_impact": {
+      "type": "string",
+      "enum": ["none", "clarifies", "changes"]
+    },
+    "authority_impact": {
+      "type": "string",
+      "enum": ["none", "clarifies", "changes"]
+    },
+    "inputs": { "$ref": "common.schema.json#/$defs/string_list" },
+    "outputs": { "$ref": "common.schema.json#/$defs/string_list" },
+    "constraints": { "$ref": "common.schema.json#/$defs/string_list" },
+    "ccir_links": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "verification": { "$ref": "common.schema.json#/$defs/string_list" },
+    "releasability": {
+      "type": "object",
+      "required": ["allowed_roles", "denied_roles", "final_output_mode"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed_roles": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/role_id" }
+        },
+        "denied_roles": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/role_id" }
+        },
+        "final_output_mode": {
+          "type": "string",
+          "enum": ["none", "summary_only", "redacted", "raw_if_released"]
+        }
+      }
+    },
+    "updated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

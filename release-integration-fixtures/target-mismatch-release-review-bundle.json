@@ -1,0 +1,9 @@
+{
+  "authority_bundle_path": "../authority-integration-fixtures/approved-red-bundle.json",
+  "release": {
+    "required": true,
+    "target": "FINAL_OUTPUT",
+    "review_path": "../sample-payloads/invalid-release-review-internal-handoff-target.json",
+    "context_items_path": "../context-filter-prototype/context-items.demo.json"
+  }
+}

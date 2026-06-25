@@ -1,0 +1,15 @@
+{
+  "id": "E-20260618-001",
+  "mission_id": "M-20260618-001",
+  "source_title": "ADP 6-0 Mission Command",
+  "url": "https://armypubs.army.mil/",
+  "source_type": "official_doctrine",
+  "reliability": "A",
+  "claim": "Mission command depends on commander's intent and disciplined initiative.",
+  "interpretation": "LLM agents need explicit intent and authority boundaries before autonomous execution.",
+  "linked_docs": [
+    "docs/agent-roles-and-authority.md",
+    "docs/prompt-dsl.md"
+  ],
+  "checked_at": "2026-06-18T10:00:00+09:00"
+}

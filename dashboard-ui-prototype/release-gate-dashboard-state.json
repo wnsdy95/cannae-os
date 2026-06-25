@@ -1,0 +1,135 @@
+{
+  "mission_id": "M-DEMO-001",
+  "generated_at": "2026-06-18T16:50:00+09:00",
+  "summary": {
+    "total": 3,
+    "released": 1,
+    "blocked_release_review": 1,
+    "blocked_authority": 1,
+    "prohibited": 0
+  },
+  "release_gate_decisions": [
+    {
+      "id": "RGD-PROJ-001",
+      "tool_request_id": "TR-DEMO-002",
+      "actor": "S3",
+      "release_target": "FINAL_OUTPUT",
+      "final_decision": "allow_scoped_execution_and_release",
+      "blocked": false,
+      "authority": {
+        "allowed": true,
+        "blocked": false,
+        "final_decision": "allow_scoped_execution",
+        "approval_required": true,
+        "approval_valid": true,
+        "risk_acceptance_required": true,
+        "risk_acceptance_valid": true
+      },
+      "release_review": {
+        "required": true,
+        "valid": true,
+        "target": "FINAL_OUTPUT",
+        "review_id": "RR-DEMO-001",
+        "decision": "approve_redacted",
+        "finding_count": 0
+      },
+      "reasons": [
+        "Production, deployment, destructive, or database mutation target.",
+        "Request declares Red ROE class.",
+        "MATCHED_RUL-DEMO-002"
+      ],
+      "evidence": [
+        "Release review RR-DEMO-001.",
+        "Authority integration allowed scoped execution."
+      ],
+      "dashboard": {
+        "class": "green",
+        "label": "RELEASED",
+        "title": "TR-DEMO-002 allow_scoped_execution_and_release",
+        "body": "Authority and RR-DEMO-001 allow FINAL_OUTPUT."
+      }
+    },
+    {
+      "id": "RGD-PROJ-002",
+      "tool_request_id": "TR-DEMO-003",
+      "actor": "S3",
+      "release_target": "FINAL_OUTPUT",
+      "final_decision": "blocked_pending_release_review",
+      "blocked": true,
+      "authority": {
+        "allowed": true,
+        "blocked": false,
+        "final_decision": "allow_scoped_execution",
+        "approval_required": true,
+        "approval_valid": true,
+        "risk_acceptance_required": true,
+        "risk_acceptance_valid": true
+      },
+      "release_review": {
+        "required": true,
+        "valid": false,
+        "target": "FINAL_OUTPUT",
+        "decision": "missing",
+        "finding_count": 0
+      },
+      "reasons": [
+        "Production, deployment, destructive, or database mutation target.",
+        "Request declares Red ROE class.",
+        "MATCHED_RUL-DEMO-002",
+        "MISSING_RELEASE_REVIEW"
+      ],
+      "evidence": [
+        "Authority integration allowed scoped execution.",
+        "No release review id was present."
+      ],
+      "dashboard": {
+        "class": "red",
+        "label": "REVIEW",
+        "title": "TR-DEMO-003 blocked_pending_release_review",
+        "body": "Authority allows execution, but FINAL_OUTPUT is blocked pending release review."
+      }
+    },
+    {
+      "id": "RGD-PROJ-003",
+      "tool_request_id": "TR-DEMO-004",
+      "actor": "S3",
+      "release_target": "FINAL_OUTPUT",
+      "final_decision": "blocked_pending_authority",
+      "blocked": true,
+      "authority": {
+        "allowed": false,
+        "blocked": true,
+        "final_decision": "blocked_pending_authority",
+        "approval_required": true,
+        "approval_valid": true,
+        "risk_acceptance_required": true,
+        "risk_acceptance_valid": false
+      },
+      "release_review": {
+        "required": true,
+        "valid": true,
+        "target": "FINAL_OUTPUT",
+        "review_id": "RR-DEMO-001",
+        "decision": "approve_redacted",
+        "finding_count": 0
+      },
+      "reasons": [
+        "Production, deployment, destructive, or database mutation target.",
+        "Request declares Red ROE class.",
+        "MATCHED_RUL-DEMO-002",
+        "MISSING_RISK_ACCEPTANCE"
+      ],
+      "evidence": [
+        "Release review RR-DEMO-001.",
+        "Authority integration blocked missing risk acceptance."
+      ],
+      "dashboard": {
+        "class": "amber",
+        "label": "AUTH",
+        "title": "TR-DEMO-004 blocked_pending_authority",
+        "body": "Release review cannot override authority block for TR-DEMO-004."
+      }
+    }
+  ]
+}
+

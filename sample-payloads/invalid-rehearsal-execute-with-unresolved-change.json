@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.1",
+  "type": "REHEARSAL",
+  "id": "RH-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "backbriefs": [],
+  "facilitator": "COS",
+  "classification": "internal",
+  "rehearsal_type": "dry_run",
+  "sequence": [],
+  "friction_points": [
+    {
+      "issue": "Red action may execute without scoped approval.",
+      "severity": "high",
+      "mitigation": "Add approval gate before execution.",
+      "owner": "S3"
+    }
+  ],
+  "decision_points": [],
+  "required_changes": [
+    "Patch OPORD authority boundary before execution."
+  ],
+  "disposition": "execute",
+  "created_at": "2026-06-18T16:26:00+09:00"
+}

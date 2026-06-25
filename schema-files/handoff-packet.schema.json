@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/handoff-packet.schema.json",
+  "title": "Handoff Packet",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "created_by", "classification", "current_order", "commander_intent", "completed", "in_progress", "blocked", "pending_decisions", "active_risks", "source_of_truth_files", "verification_status", "next_actions", "do_not_do", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "HandoffPacket" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "created_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "current_order": { "$ref": "common.schema.json#/$defs/id" },
+    "commander_intent": { "type": "string", "minLength": 1 },
+    "completed": { "$ref": "common.schema.json#/$defs/string_list" },
+    "in_progress": { "$ref": "common.schema.json#/$defs/string_list" },
+    "blocked": { "$ref": "common.schema.json#/$defs/string_list" },
+    "pending_decisions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "active_risks": { "$ref": "common.schema.json#/$defs/string_list" },
+    "source_of_truth_files": { "$ref": "common.schema.json#/$defs/string_list" },
+    "verification_status": { "$ref": "common.schema.json#/$defs/string_list" },
+    "next_actions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "do_not_do": { "$ref": "common.schema.json#/$defs/string_list" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

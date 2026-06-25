@@ -1,0 +1,75 @@
+{
+  "authority_matrix": {
+    "schema_version": "0.1",
+    "type": "AuthorityMatrix",
+    "id": "AM-DEMO-003",
+    "mission_id": "M-DEMO-001",
+    "owner": "COMMANDER",
+    "classification": "internal",
+    "default_decision": "report_required",
+    "rules": [
+      {
+        "rule_id": "RUL-DEMO-012",
+        "role": "S3",
+        "task_scope": ["deployment"],
+        "tool_scope": ["deploy"],
+        "target_scope": ["prod.command-post-dashboard"],
+        "roe_class": "Red",
+        "decision": "approval_required",
+        "approval_authority": "COMMANDER",
+        "readiness_min": "T",
+        "expires_at": "2026-06-18T23:59:59+09:00",
+        "conditions": ["Rollback plan must be attached."],
+        "evidence_required": ["Approval request.", "Rollback plan.", "Post-action verification."],
+        "ccir_triggers": ["Production deployment requested."]
+      }
+    ],
+    "review": {
+      "cadence": "on_aar",
+      "last_reviewed_by": "COMMANDER",
+      "last_reviewed_at": "2026-06-18T12:00:00+09:00"
+    }
+  },
+  "delegation_event": {
+    "schema_version": "0.1",
+    "type": "APPROVAL_DELEGATION_EVENT",
+    "id": "ADG-DEMO-003",
+    "mission_id": "M-DEMO-001",
+    "authority_matrix_id": "AM-DEMO-003",
+    "source_order_id": "FRAGO-DEMO-004",
+    "actor": "COMMANDER",
+    "delegator": "COMMANDER",
+    "delegatee": "COS",
+    "classification": "internal",
+    "delegation_type": "temporary",
+    "approving_for_roles": ["S3"],
+    "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+    "delegation_scope": {
+      "task_scope": ["deployment"],
+      "action": "deploy_production",
+      "tool": "deploy",
+      "target": "prod.command-post-dashboard",
+      "max_roe_class": "Red",
+      "max_residual_risk": "medium",
+      "max_approval_duration_minutes": 30,
+      "max_approvals": 1,
+      "valid_from": "2026-06-18T16:00:00+09:00",
+      "expires_at": "2026-06-18T18:00:00+09:00",
+      "retained_authorities": [
+        "Black actions remain Commander-retained.",
+        "High, critical, or irreversible residual risk remains Commander-retained.",
+        "Sensitive or restricted release remains under release review."
+      ],
+      "prohibited_context_classes": ["sensitive", "restricted"]
+    },
+    "delegation_status_after": "active",
+    "subdelegation_allowed": false,
+    "release_review_required_for_sensitive": true,
+    "requires_backbrief": true,
+    "requires_post_action_evidence": true,
+    "notification_required": true,
+    "notified_roles": ["COS", "S3", "RECORDER"],
+    "reason": "Attempted to delegate a Red production approval.",
+    "evidence": ["Commander delegation attempt note."]
+  }
+}

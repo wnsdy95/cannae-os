@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/intelligence-assessment.schema.json",
+  "title": "Intelligence Assessment",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "information_report_id",
+    "assessed_by",
+    "classification",
+    "confidence",
+    "key_facts",
+    "assessment",
+    "information_gaps",
+    "ccir_classification",
+    "operational_impact",
+    "recommended_outputs",
+    "commander_decision_required",
+    "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "IntelligenceAssessment" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "information_report_id": { "$ref": "common.schema.json#/$defs/id" },
+    "assessed_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "confidence": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "key_facts": { "$ref": "common.schema.json#/$defs/string_list" },
+    "assessment": { "$ref": "common.schema.json#/$defs/string_list" },
+    "information_gaps": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "ccir_classification": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/ccir_type" }
+    },
+    "operational_impact": {
+      "type": "string",
+      "enum": ["none", "running_estimate_update", "sitrep", "decision_packet", "annex_update", "frago_scope_change", "release_block"]
+    },
+    "recommended_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["RUNNING_ESTIMATE", "CCIR_ALERT", "SITREP", "DECISION_PACKET", "ANNEX_UPDATE", "FRAGO_SCOPE_CHANGE", "RELEASE_REVIEW", "AAR_READINESS_UPDATE"]
+      }
+    },
+    "commander_decision_required": { "type": "boolean" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

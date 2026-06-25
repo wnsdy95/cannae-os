@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/release-review.schema.json",
+  "title": "Release Review",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "reviewer", "classification", "target", "decision", "items", "output_constraints", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ReleaseReview" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "reviewer": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "target": {
+      "type": "string",
+      "enum": ["final_output", "external_tool", "partner_release", "internal_handoff"]
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["approve", "approve_redacted", "reject", "revise"]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item_id", "classification", "eefi", "delivery_mode", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "item_id": { "$ref": "common.schema.json#/$defs/id" },
+          "classification": { "$ref": "common.schema.json#/$defs/classification" },
+          "eefi": { "type": "boolean" },
+          "delivery_mode": {
+            "type": "string",
+            "enum": ["raw", "summary", "redacted", "reference_only", "denied"]
+          },
+          "redactions": { "$ref": "common.schema.json#/$defs/string_list" },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "output_constraints": { "$ref": "common.schema.json#/$defs/string_list" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

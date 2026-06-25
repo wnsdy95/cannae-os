@@ -1,0 +1,14 @@
+{
+  "id": "TR-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "task_id": "T-DEMO-001",
+  "actor": "S3",
+  "tool": "deploy",
+  "action": "deploy_production",
+  "target": "prod.command-post-dashboard",
+  "risk_level": "high",
+  "roe_class": "Red",
+  "approval_required": true,
+  "reason": "Publish the command post dashboard to production for users.",
+  "result": "blocked_pending_approval"
+}

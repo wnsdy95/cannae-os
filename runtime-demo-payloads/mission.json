@@ -1,0 +1,26 @@
+{
+  "id": "M-DEMO-001",
+  "title": "Runtime Demo Scenario",
+  "status": "in_progress",
+  "requester": "user",
+  "created_at": "2026-06-18T11:00:00+09:00",
+  "mission_statement": "Turn the military-style LLM framework into a tool-gated runtime demo.",
+  "intent": {
+    "purpose": "Show how mission intake, tasking, policy, approval, evidence, SITREP, and AAR connect.",
+    "success_conditions": [
+      "Runtime payloads validate against schemas.",
+      "Green tool request is allowed.",
+      "Red tool request is blocked until approval."
+    ],
+    "failure_conditions": [
+      "A high-risk action executes without approval.",
+      "Evidence and AAR are not linked to the mission."
+    ]
+  },
+  "constraints": [
+    "Use local files only.",
+    "No external deployment."
+  ],
+  "current_order": "OPORD-DEMO-001",
+  "classification": "internal"
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1",
+  "type": "FRAGOScopeChange",
+  "id": "FSC-20260618-001",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "issued_by": "COMMANDER",
+  "classification": "internal",
+  "reason": "Execution target changed from local dashboard prototype to release-gate dashboard projection.",
+  "changed_elements": ["tasks", "authority_boundary"],
+  "unchanged_intent": [
+    "Prove the framework can represent a machine-checkable control loop.",
+    "Keep production deployment prohibited without separate approval."
+  ],
+  "scope_changes": [
+    {
+      "element": "tasks",
+      "previous": "Render only the baseline command-post dashboard state.",
+      "revised": "Render release-gate dashboard projection and preserve authority/release review reasons.",
+      "rationale": "Release gating became part of the mission control surface."
+    },
+    {
+      "element": "authority_boundary",
+      "previous": "Local dashboard rendering only.",
+      "revised": "Local dashboard rendering plus release-gate projection generation; no external release.",
+      "rationale": "Projection generation is still local, but the new release queue affects commander-facing decisions."
+    }
+  ],
+  "authority_changes": [
+    {
+      "role": "S6",
+      "previous_boundary": "Render dashboard state from mission event replay.",
+      "revised_boundary": "Render dashboard state from mission, release gate, and authority delegation projections.",
+      "approval_required": false
+    }
+  ],
+  "affected_roles": ["COMMANDER", "COS", "S3", "S6", "RED_TEAM"],
+  "requires_backbrief": true,
+  "requires_rehearsal": true,
+  "not_an_annex_update_reason": "The task and authority boundary changed; this cannot be hidden inside an annex update.",
+  "issued_at": "2026-06-18T13:45:00+09:00"
+}

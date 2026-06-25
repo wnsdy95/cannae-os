@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "type": "ReleaseReview",
+  "id": "RR-DEMO-003",
+  "mission_id": "M-DEMO-001",
+  "reviewer": "S6",
+  "classification": "internal",
+  "target": "internal_handoff",
+  "decision": "approve_redacted",
+  "items": [
+    {
+      "item_id": "CTX-DEMO-001",
+      "classification": "internal",
+      "eefi": false,
+      "delivery_mode": "summary",
+      "redactions": [
+        "Exact production target may be summarized if not needed."
+      ],
+      "rationale": "The item is internal, non-EEFI, and relevant to the final status."
+    },
+    {
+      "item_id": "CTX-DEMO-002",
+      "classification": "restricted",
+      "eefi": true,
+      "delivery_mode": "denied",
+      "redactions": [
+        "Credential-like raw value."
+      ],
+      "rationale": "Restricted EEFI must not be released."
+    },
+    {
+      "item_id": "CTX-DEMO-003",
+      "classification": "public",
+      "eefi": false,
+      "delivery_mode": "raw",
+      "redactions": [
+        "None"
+      ],
+      "rationale": "Public CCIR model summary is safe for final output."
+    },
+    {
+      "item_id": "CTX-DEMO-004",
+      "classification": "sensitive",
+      "eefi": false,
+      "delivery_mode": "denied",
+      "redactions": [
+        "Internal architecture details."
+      ],
+      "rationale": "The item is not approved for final output."
+    }
+  ],
+  "output_constraints": [
+    "Do not include secrets, credentials, private user data, or restricted raw values.",
+    "Summarize blocked production state without exposing credentials."
+  ],
+  "created_at": "2026-06-18T12:20:00+09:00"
+}

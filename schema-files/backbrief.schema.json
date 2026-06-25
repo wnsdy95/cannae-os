@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/backbrief.schema.json",
+  "title": "Backbrief",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "parent_order", "task_order", "actor", "classification", "understanding", "planned_actions", "risk_controls", "stop_conditions", "approval_awareness", "assumptions", "requested_clarifications", "confidence", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "BACKBRIEF" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "parent_order": { "$ref": "common.schema.json#/$defs/id" },
+    "task_order": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "understanding": {
+      "type": "object",
+      "required": ["commander_intent", "assigned_task", "purpose", "end_state", "constraints"],
+      "additionalProperties": false,
+      "properties": {
+        "commander_intent": { "type": "string", "minLength": 1 },
+        "assigned_task": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "end_state": { "$ref": "common.schema.json#/$defs/string_list" },
+        "constraints": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "planned_actions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "risk_controls": { "$ref": "common.schema.json#/$defs/string_list" },
+    "stop_conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "approval_awareness": {
+      "type": "object",
+      "required": ["approval_required_actions", "prohibited_actions", "commander_decision_needed"],
+      "additionalProperties": false,
+      "properties": {
+        "approval_required_actions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "prohibited_actions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "commander_decision_needed": { "type": "boolean" }
+      }
+    },
+    "assumptions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "requested_clarifications": { "$ref": "common.schema.json#/$defs/string_list" },
+    "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

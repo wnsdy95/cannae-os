@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/readiness-ledger.schema.json",
+  "title": "Agent Readiness Ledger Entry",
+  "type": "object",
+  "required": ["id", "agent_id", "task", "rating", "evidence", "updated_at"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "agent_id": { "$ref": "common.schema.json#/$defs/role_id" },
+    "task": { "type": "string", "minLength": 1 },
+    "rating": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "updated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "next_training": { "type": "string" }
+  }
+}

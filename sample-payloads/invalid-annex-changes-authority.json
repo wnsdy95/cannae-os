@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.1",
+  "type": "ANNEX",
+  "id": "ANNEX-DEMO-C",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "annex_code": "C",
+  "owner": "S3",
+  "classification": "internal",
+  "purpose": "Expand execution authority for deployment actions.",
+  "intent_impact": "changes",
+  "authority_impact": "changes",
+  "inputs": [
+    "OPORD-DEMO-001"
+  ],
+  "outputs": [
+    "Deployment authority for S3"
+  ],
+  "constraints": [],
+  "ccir_links": [],
+  "verification": [],
+  "updated_at": "2026-06-18T13:40:00+09:00"
+}

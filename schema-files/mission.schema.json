@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/mission.schema.json",
+  "title": "Mission State",
+  "type": "object",
+  "required": ["id", "title", "status", "mission_statement", "intent", "constraints", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "title": { "type": "string", "minLength": 1 },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "requester": { "type": "string", "minLength": 1 },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "updated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "mission_statement": { "type": "string", "minLength": 1 },
+    "intent": {
+      "type": "object",
+      "required": ["purpose", "success_conditions", "failure_conditions"],
+      "additionalProperties": false,
+      "properties": {
+        "purpose": { "type": "string", "minLength": 1 },
+        "success_conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "failure_conditions": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "constraints": { "$ref": "common.schema.json#/$defs/string_list" },
+    "current_order": { "type": "string" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" }
+  }
+}

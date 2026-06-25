@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1",
+  "type": "RoutingReceipt",
+  "id": "RR-W2-plans-agent",
+  "mission_id": "MIS-routing",
+  "wave_id": "W2",
+  "agent_id": "plans-agent",
+  "wave_scope": "agent",
+  "actor": "ai",
+  "agent_role": "S3",
+  "department": "operations",
+  "authority_scope": "scoped-execution",
+  "routing_mode": "delegated_ai_role_department_authority",
+  "router_query": "plans-agent W2 문서 라우팅",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution \"plans-agent W2 문서 라우팅\" .",
+  "matched_routes": [
+    {
+      "id": "orders",
+      "score": 2
+    },
+    {
+      "id": "multi-agent-organization",
+      "score": 1
+    }
+  ],
+  "recommended_documents": [
+    {
+      "path": "docs/orders-production-pipeline.md",
+      "exists": true
+    },
+    {
+      "path": "docs/tool-use-roe.md",
+      "exists": true
+    },
+    {
+      "path": "README.md",
+      "exists": true
+    },
+    {
+      "path": "docs/source-map.md",
+      "exists": true
+    }
+  ],
+  "supporting_artifacts": [
+    {
+      "path": "schema-files/routing-receipt.schema.json",
+      "type": "schema",
+      "route_ids": ["skill-operations", "runtime-validation"]
+    }
+  ],
+  "supporting_artifact_count": 1,
+  "route_inventory": {
+    "routable_artifact_count": 331,
+    "routed_artifact_count": 331,
+    "unrouted_artifact_count": 0
+  },
+  "validation_commands": [
+    "node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt",
+    "node run-agent-routing-preflight-fixtures.js"
+  ],
+  "escalation_required_when": [
+    "Requested action exceeds delegated role, department, or authority.",
+    "Need-to-know cannot justify reading or sharing extra documents."
+  ],
+  "created_at": "2026-06-24T09:02:00+09:00"
+}

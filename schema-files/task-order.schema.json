@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/task-order.schema.json",
+  "title": "Task Order",
+  "type": "object",
+  "required": ["id", "mission_id", "assigned_to", "task", "purpose", "deliverables", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "assigned_to": { "$ref": "common.schema.json#/$defs/role_id" },
+    "task": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "deliverables": { "$ref": "common.schema.json#/$defs/string_list" },
+    "ccir": { "$ref": "common.schema.json#/$defs/string_list" },
+    "verification": { "$ref": "common.schema.json#/$defs/string_list" },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

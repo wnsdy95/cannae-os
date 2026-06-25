@@ -1,0 +1,58 @@
+[
+  {
+    "schema_version": "0.1",
+    "type": "ContextItem",
+    "id": "CTX-DEMO-001",
+    "mission_id": "M-DEMO-001",
+    "classification": "internal",
+    "eefi": false,
+    "source": "event-fixtures/demo-events.json",
+    "summary": "TR-DEMO-002 is blocked pending commander approval.",
+    "raw_value": "Production deployment request TR-DEMO-002 targets prod.command-post-dashboard and is blocked.",
+    "allowed_roles": ["COMMANDER", "COS", "S3", "S6", "EVALUATOR"],
+    "release_to_final": true,
+    "retention": "project"
+  },
+  {
+    "schema_version": "0.1",
+    "type": "ContextItem",
+    "id": "CTX-DEMO-002",
+    "mission_id": "M-DEMO-001",
+    "classification": "restricted",
+    "eefi": true,
+    "source": "runtime secret",
+    "summary": "Credential-like value was detected and must not be released.",
+    "raw_value": "password=example",
+    "allowed_roles": ["COMMANDER", "S6"],
+    "release_to_final": false,
+    "retention": "audit"
+  },
+  {
+    "schema_version": "0.1",
+    "type": "ContextItem",
+    "id": "CTX-DEMO-003",
+    "mission_id": "M-DEMO-001",
+    "classification": "public",
+    "eefi": false,
+    "source": "docs/ccir-alerting-model.md",
+    "summary": "CCIR alerting separates PIR, FFIR, EEFI, and decision points.",
+    "raw_value": "CCIR alerting separates PIR, FFIR, EEFI, and decision points for dashboard routing.",
+    "allowed_roles": ["COMMANDER", "COS", "S2", "S3", "S4", "S6", "RED_TEAM", "EVALUATOR", "EXECUTOR"],
+    "release_to_final": true,
+    "retention": "project"
+  },
+  {
+    "schema_version": "0.1",
+    "type": "ContextItem",
+    "id": "CTX-DEMO-004",
+    "mission_id": "M-DEMO-001",
+    "classification": "sensitive",
+    "eefi": false,
+    "source": "docs/opsec-classification-model.md",
+    "summary": "Sensitive internal architecture should be summarized for Red Team and final output.",
+    "raw_value": "Internal architecture note with implementation-specific paths and control assumptions.",
+    "allowed_roles": ["COMMANDER", "COS", "S6", "RED_TEAM"],
+    "release_to_final": false,
+    "retention": "project"
+  }
+]

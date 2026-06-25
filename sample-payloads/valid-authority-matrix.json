@@ -1,0 +1,107 @@
+{
+  "schema_version": "0.1",
+  "type": "AuthorityMatrix",
+  "id": "AM-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "owner": "COMMANDER",
+  "classification": "internal",
+  "default_decision": "report_required",
+  "rules": [
+    {
+      "rule_id": "RUL-DEMO-001",
+      "role": "S3",
+      "task_scope": [
+        "runtime prototype"
+      ],
+      "tool_scope": [
+        "validator-cli-prototype/validate.js",
+        "runtime-demo-runner.js",
+        "event-replay-prototype/run-event-fixtures.js"
+      ],
+      "target_scope": [
+        "local workspace"
+      ],
+      "roe_class": "Green",
+      "decision": "allow",
+      "readiness_min": "P",
+      "conditions": [
+        "No production target.",
+        "No credential access.",
+        "No destructive command."
+      ],
+      "evidence_required": [
+        "Command output.",
+        "Updated runtime state or AAR note if behavior changes."
+      ],
+      "ccir_triggers": [
+        "Validator fails.",
+        "Policy runner disagrees with expected Red block."
+      ]
+    },
+    {
+      "rule_id": "RUL-DEMO-002",
+      "role": "S3",
+      "task_scope": [
+        "deployment"
+      ],
+      "tool_scope": [
+        "deploy"
+      ],
+      "target_scope": [
+        "production"
+      ],
+      "roe_class": "Red",
+      "decision": "approval_required",
+      "approval_authority": "COMMANDER",
+      "readiness_min": "T",
+      "expires_at": "2026-06-18T23:59:59+09:00",
+      "conditions": [
+        "Approval must be scoped to one target and one execution window.",
+        "Rollback plan must be attached."
+      ],
+      "evidence_required": [
+        "Approval request.",
+        "Rollback plan.",
+        "Post-action verification."
+      ],
+      "ccir_triggers": [
+        "Production deployment requested.",
+        "Rollback unavailable."
+      ]
+    },
+    {
+      "rule_id": "RUL-DEMO-003",
+      "role": "EXECUTOR",
+      "task_scope": [
+        "any"
+      ],
+      "tool_scope": [
+        "env",
+        "secret_store",
+        "credential_dump"
+      ],
+      "target_scope": [
+        "secrets",
+        "private keys",
+        "passwords"
+      ],
+      "roe_class": "Black",
+      "decision": "prohibit",
+      "readiness_min": "T",
+      "conditions": [
+        "No exception through approval."
+      ],
+      "evidence_required": [
+        "Incident note if attempted."
+      ],
+      "ccir_triggers": [
+        "Secret exposure attempted."
+      ]
+    }
+  ],
+  "review": {
+    "cadence": "on_aar",
+    "last_reviewed_by": "COMMANDER",
+    "last_reviewed_at": "2026-06-18T12:00:00+09:00"
+  }
+}

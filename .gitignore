@@ -1,0 +1,50 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs and diagnostics
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Claude Code
+.claude/*
+!.claude/skills/
+!.claude/skills/**
+
+# Dependencies and package manager caches
+node_modules/
+.npm/
+.pnpm-store/
+
+# Build and coverage output
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Local caches and temporary output
+.cache/
+.tmp/
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Generated local reports
+*-report.local.json

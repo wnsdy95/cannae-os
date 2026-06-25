@@ -1,0 +1,56 @@
+[
+  {
+    "event_id": "EVT-WG-001",
+    "mission_id": "M-DEMO-001",
+    "event_type": "WorkingGroupOpened",
+    "actor": "COS",
+    "timestamp": "2026-06-18T12:00:00+09:00",
+    "payload": {
+      "working_group_id": "WG-DEMO-001",
+      "name": "Deployment Approval Working Group",
+      "chair": "COS",
+      "participants": ["COS", "S3", "S6", "RED_TEAM"],
+      "deliverables": ["DP-DEMO-001"],
+      "disband_condition": ["Commander decision recorded."]
+    }
+  },
+  {
+    "event_id": "EVT-WG-002",
+    "mission_id": "M-DEMO-001",
+    "event_type": "DecisionPacketPrepared",
+    "actor": "COS",
+    "timestamp": "2026-06-18T12:08:00+09:00",
+    "causation_id": "WG-DEMO-001",
+    "payload": {
+      "working_group_id": "WG-DEMO-001",
+      "decision_packet_id": "DP-DEMO-001",
+      "decision_type": "approval",
+      "recommended_option": "OPT-DEMO-001"
+    }
+  },
+  {
+    "event_id": "EVT-WG-003",
+    "mission_id": "M-DEMO-001",
+    "event_type": "BoardDecisionMade",
+    "actor": "COMMANDER",
+    "timestamp": "2026-06-18T12:12:00+09:00",
+    "causation_id": "DP-DEMO-001",
+    "payload": {
+      "decision_packet_id": "DP-DEMO-001",
+      "decision": "reject",
+      "rationale": "Production deployment exceeds local-only mission authority."
+    }
+  },
+  {
+    "event_id": "EVT-WG-004",
+    "mission_id": "M-DEMO-001",
+    "event_type": "WorkingGroupClosed",
+    "actor": "COS",
+    "timestamp": "2026-06-18T12:15:00+09:00",
+    "causation_id": "WG-DEMO-001",
+    "payload": {
+      "working_group_id": "WG-DEMO-001",
+      "closure_reason": "Commander decision recorded and packet archived."
+    }
+  }
+]

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/frago-scope-change.schema.json",
+  "title": "FRAGO Scope Change",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "parent_order",
+    "issued_by",
+    "classification",
+    "reason",
+    "changed_elements",
+    "unchanged_intent",
+    "scope_changes",
+    "authority_changes",
+    "affected_roles",
+    "requires_backbrief",
+    "requires_rehearsal",
+    "not_an_annex_update_reason",
+    "issued_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "FRAGOScopeChange" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "parent_order": { "$ref": "common.schema.json#/$defs/id" },
+    "issued_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "reason": { "type": "string", "minLength": 1 },
+    "changed_elements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["mission_purpose", "mission_statement", "tasks", "authority_boundary", "priority", "constraints"]
+      }
+    },
+    "unchanged_intent": { "$ref": "common.schema.json#/$defs/string_list" },
+    "scope_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["element", "previous", "revised", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "element": {
+            "type": "string",
+            "enum": ["mission_purpose", "mission_statement", "tasks", "authority_boundary", "priority", "constraints"]
+          },
+          "previous": { "type": "string", "minLength": 1 },
+          "revised": { "type": "string", "minLength": 1 },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "authority_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "previous_boundary", "revised_boundary", "approval_required"],
+        "additionalProperties": false,
+        "properties": {
+          "role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "previous_boundary": { "type": "string", "minLength": 1 },
+          "revised_boundary": { "type": "string", "minLength": 1 },
+          "approval_required": { "type": "boolean" }
+        }
+      }
+    },
+    "affected_roles": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "requires_backbrief": { "type": "boolean" },
+    "requires_rehearsal": { "type": "boolean" },
+    "not_an_annex_update_reason": { "type": "string", "minLength": 1 },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1",
+  "type": "REHEARSAL",
+  "id": "RH-DEMO-ROUTE-001",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "backbriefs": ["BB-DEMO-001"],
+  "facilitator": "COS",
+  "classification": "internal",
+  "rehearsal_type": "dry_run",
+  "sequence": [
+    {
+      "step": 1,
+      "actor": "S3",
+      "action": "Attempt release-gate projection generation.",
+      "expected_result": "Projection includes release review and authority reasons.",
+      "evidence_required": ["release gate fixture output"]
+    }
+  ],
+  "friction_points": [
+    {
+      "issue": "Scope change may require FRAGO before execution.",
+      "severity": "high",
+      "mitigation": "Route to commander board and issue FRAGO if scope changed.",
+      "owner": "S3"
+    }
+  ],
+  "decision_points": [
+    "If scope changed, issue FRAGO before execution."
+  ],
+  "required_changes": [
+    "Confirm whether dashboard projection scope changed."
+  ],
+  "disposition": "request_approval",
+  "created_at": "2026-06-18T13:55:00+09:00"
+}

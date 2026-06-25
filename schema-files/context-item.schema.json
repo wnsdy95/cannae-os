@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/context-item.schema.json",
+  "title": "Context Item",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "classification", "eefi", "source", "summary", "allowed_roles", "release_to_final", "retention"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ContextItem" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "eefi": { "type": "boolean" },
+    "source": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "raw_value": { "type": "string" },
+    "allowed_roles": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "release_to_final": { "type": "boolean" },
+    "retention": {
+      "type": "string",
+      "enum": ["none", "session", "project", "audit"]
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "AAR-20260618-001",
+  "mission_id": "M-20260618-001",
+  "expected": [
+    "Create runtime contract documents."
+  ],
+  "actual": [
+    "Schema files, validator prototype, runtime playbook, risk register, and readiness ledger were created."
+  ],
+  "delta": [
+    "Executable validator code is still future work."
+  ],
+  "causes": [
+    "This iteration focused on documentation and runtime contracts."
+  ],
+  "sustain": [
+    "Keep linking new artifacts through README, source map, and compendium."
+  ],
+  "improve": [
+    "Add executable validator prototype."
+  ],
+  "sop_updates": [
+    "New schema changes should include valid and invalid fixtures."
+  ]
+}

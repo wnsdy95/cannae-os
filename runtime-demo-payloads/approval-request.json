@@ -1,0 +1,22 @@
+{
+  "id": "AR-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "actor": "S3",
+  "requested_action": "deploy_production",
+  "tool": "deploy",
+  "target": "prod.command-post-dashboard",
+  "roe_class": "Red",
+  "why_needed": "Make the dashboard available outside the local environment.",
+  "risk": [
+    "Production users may see incomplete runtime UI.",
+    "Rollback may be required if dashboard misrepresents approvals."
+  ],
+  "rollback": [
+    "Revert deployment to previous static build."
+  ],
+  "alternatives": [
+    "Use local static HTML only.",
+    "Deploy preview environment first."
+  ],
+  "status": "pending"
+}

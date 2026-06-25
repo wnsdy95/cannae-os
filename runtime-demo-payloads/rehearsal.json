@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1",
+  "type": "REHEARSAL",
+  "id": "RH-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "backbriefs": [
+    "BB-DEMO-001"
+  ],
+  "facilitator": "COS",
+  "classification": "internal",
+  "rehearsal_type": "dry_run",
+  "sequence": [
+    {
+      "step": 1,
+      "actor": "S3",
+      "action": "Run validator on mission, OPORD, task order, SITREP, evidence, and AAR.",
+      "expected_result": "All payloads pass schema and semantic validation.",
+      "evidence_required": [
+        "Validator runner output"
+      ]
+    },
+    {
+      "step": 2,
+      "actor": "S3",
+      "action": "Run policy engine on Green and Red tool requests.",
+      "expected_result": "Green request is allowed and Red request is blocked.",
+      "evidence_required": [
+        "Policy fixture output"
+      ]
+    },
+    {
+      "step": 3,
+      "actor": "S3",
+      "action": "Run event replay and dashboard state renderer.",
+      "expected_result": "Replay projection and dashboard state remain aligned.",
+      "evidence_required": [
+        "Event replay fixture output",
+        "Dashboard renderer comparison"
+      ]
+    }
+  ],
+  "friction_points": [
+    {
+      "issue": "Dashboard projection may diverge from event replay if the projection contract changes.",
+      "severity": "medium",
+      "mitigation": "Stop and patch renderer or saved state before reporting completion.",
+      "owner": "S3"
+    }
+  ],
+  "decision_points": [
+    "If any validation fails, stop execution and issue SITREP.",
+    "If scope requires deployment or credentials, request commander approval before action."
+  ],
+  "required_changes": [
+    "None"
+  ],
+  "disposition": "execute",
+  "created_at": "2026-06-18T16:25:00+09:00"
+}

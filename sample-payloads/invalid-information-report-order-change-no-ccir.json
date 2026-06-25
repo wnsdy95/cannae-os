@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "type": "InformationReport",
+  "id": "INFO-20260619-INVALID",
+  "mission_id": "M-DEMO-001",
+  "collected_by": "S2",
+  "observed_at": "2026-06-19T09:00:00+09:00",
+  "received_at": "2026-06-19T09:05:00+09:00",
+  "classification": "internal",
+  "source_type": "official",
+  "source_reliability": "confirmed",
+  "information_category": "external_situation",
+  "summary": "Official source changes mission scope but no CCIR is attached.",
+  "raw_available": true,
+  "eefi_risk": false,
+  "related_ccir": [],
+  "operational_relevance": "order_change",
+  "recommended_handling": "record",
+  "handling_instructions": [],
+  "created_at": "2026-06-19T09:06:00+09:00"
+}

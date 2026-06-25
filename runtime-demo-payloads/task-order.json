@@ -1,0 +1,21 @@
+{
+  "id": "T-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "assigned_to": "S3",
+  "task": "Create and validate runtime demo payloads.",
+  "purpose": "Prove the framework can represent an end-to-end mission flow.",
+  "deliverables": [
+    "runtime-demo-payloads/mission.json",
+    "runtime-demo-payloads/sitrep.json",
+    "runtime-demo-payloads/aar.json"
+  ],
+  "ccir": [
+    "Validator cannot parse payload.",
+    "Policy engine allows Red action without approval."
+  ],
+  "verification": [
+    "Run validator CLI on mission, task order, SITREP, evidence, AAR.",
+    "Run policy engine on Green and Red tool requests."
+  ],
+  "status": "complete"
+}

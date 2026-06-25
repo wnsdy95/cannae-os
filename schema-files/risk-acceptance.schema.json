@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/risk-acceptance.schema.json",
+  "title": "Risk Acceptance",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "decision_packet_id", "classification", "decision", "accepted_by", "risk_owner", "action", "tool", "target", "hazard", "consequence", "likelihood", "initial_risk", "controls", "residual_risk", "reversibility", "duration", "supervision_plan", "evidence_required", "aar_trigger", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "RISK_ACCEPTANCE" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "decision_packet_id": { "$ref": "common.schema.json#/$defs/id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "decision": { "type": "string", "enum": ["accept", "reject", "revise"] },
+    "accepted_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "risk_owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "action": { "type": "string", "minLength": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "hazard": { "type": "string", "minLength": 1 },
+    "consequence": { "type": "string", "minLength": 1 },
+    "likelihood": {
+      "type": "string",
+      "enum": ["rare", "unlikely", "possible", "likely", "almost_certain"]
+    },
+    "initial_risk": { "$ref": "common.schema.json#/$defs/risk_level" },
+    "controls": { "$ref": "common.schema.json#/$defs/string_list" },
+    "residual_risk": { "$ref": "common.schema.json#/$defs/risk_level" },
+    "reversibility": {
+      "type": "string",
+      "enum": ["reversible", "recoverable", "compensable", "irreversible"]
+    },
+    "duration": {
+      "type": "object",
+      "required": ["valid_from", "expires_at"],
+      "additionalProperties": false,
+      "properties": {
+        "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "supervision_plan": { "$ref": "common.schema.json#/$defs/string_list" },
+    "evidence_required": { "$ref": "common.schema.json#/$defs/string_list" },
+    "aar_trigger": { "$ref": "common.schema.json#/$defs/string_list" },
+    "status": { "type": "string", "enum": ["active", "expired", "superseded", "rejected", "revision_required"] },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "type": "RISK_ACCEPTANCE",
+  "id": "RA-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "decision_packet_id": "DP-DEMO-001",
+  "classification": "internal",
+  "decision": "accept",
+  "accepted_by": "COMMANDER",
+  "risk_owner": "S3",
+  "action": "deploy_production",
+  "tool": "deploy",
+  "target": "prod.command-post-dashboard",
+  "hazard": "Production deployment may break the dashboard state used for commander review.",
+  "consequence": "Operators may lose current approval queue visibility until rollback completes.",
+  "likelihood": "possible",
+  "initial_risk": "high",
+  "controls": [
+    "Run dry-run before deployment.",
+    "Keep previous deployment artifact available.",
+    "Verify dashboard state immediately after deployment."
+  ],
+  "residual_risk": "medium",
+  "reversibility": "recoverable",
+  "duration": {
+    "valid_from": "2026-06-18T16:30:00+09:00",
+    "expires_at": "2026-06-18T17:00:00+09:00"
+  },
+  "supervision_plan": [
+    "S3 reports execution result to CoS.",
+    "Commander is notified if verification fails."
+  ],
+  "evidence_required": [
+    "Dry-run output.",
+    "Deployment log.",
+    "Verification result.",
+    "AAR note."
+  ],
+  "aar_trigger": [
+    "Deployment completed.",
+    "Rollback required.",
+    "Verification failed."
+  ],
+  "status": "active",
+  "created_at": "2026-06-18T16:30:00+09:00"
+}

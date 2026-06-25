@@ -1,0 +1,9 @@
+{
+  "id": "CDE-DEMO-002",
+  "event_type": "role_rotation",
+  "mission_id": "M-DEMO-001",
+  "role": "S6",
+  "unavailable_roles": ["S6"],
+  "reason": "S6 rotates out; Recorder assumes KM continuity duties.",
+  "occurred_at": "2026-06-19T12:25:00+09:00"
+}

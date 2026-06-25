@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1",
+  "type": "RoutingReceipt",
+  "id": "RR-W2-COS",
+  "mission_id": "MIS-routing",
+  "wave_id": "W2",
+  "agent_id": "chief-of-staff",
+  "wave_scope": "wave",
+  "actor": "ai",
+  "agent_role": "COS",
+  "department": "coordination",
+  "authority_scope": "tasking",
+  "routing_mode": "delegated_ai_role_department_authority",
+  "router_query": "W2 시작 전 모든 에이전트 문서 라우팅 강제",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-routing --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking \"W2 시작 전 모든 에이전트 문서 라우팅 강제\" .",
+  "matched_routes": [
+    {
+      "id": "skill-operations",
+      "score": 2
+    },
+    {
+      "id": "multi-agent-organization",
+      "score": 1
+    }
+  ],
+  "recommended_documents": [
+    {
+      "path": "docs/agent-battle-rhythm.md",
+      "exists": true
+    },
+    {
+      "path": "docs/role-document-access-policy.md",
+      "exists": true
+    },
+    {
+      "path": "README.md",
+      "exists": true
+    },
+    {
+      "path": "docs/source-map.md",
+      "exists": true
+    }
+  ],
+  "supporting_artifacts": [
+    {
+      "path": "agent-routing-preflight-runner.js",
+      "type": "runner-or-tool",
+      "route_ids": ["skill-operations", "multi-agent-organization", "runtime-validation"]
+    }
+  ],
+  "supporting_artifact_count": 1,
+  "route_inventory": {
+    "routable_artifact_count": 331,
+    "routed_artifact_count": 331,
+    "unrouted_artifact_count": 0
+  },
+  "validation_commands": [
+    "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
+    "node run-agent-routing-preflight-fixtures.js"
+  ],
+  "escalation_required_when": [
+    "Requested action exceeds delegated role, department, or authority.",
+    "Need-to-know cannot justify reading or sharing extra documents."
+  ],
+  "created_at": "2026-06-24T09:00:00+09:00"
+}

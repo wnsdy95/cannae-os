@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1",
+  "type": "RoutingReceipt",
+  "id": "RR-W2-manual",
+  "mission_id": "MIS-routing",
+  "wave_id": "W2",
+  "agent_id": "manual-agent",
+  "wave_scope": "agent",
+  "actor": "ai",
+  "agent_role": "S3",
+  "department": "operations",
+  "authority_scope": "scoped-execution",
+  "routing_mode": "delegated_ai_role_department_authority",
+  "router_query": "manual routing claim",
+  "router_command": "manual note without router",
+  "matched_routes": [],
+  "recommended_documents": [
+    {
+      "path": "README.md",
+      "exists": true
+    }
+  ],
+  "route_inventory": {
+    "routable_artifact_count": 331,
+    "routed_artifact_count": 330,
+    "unrouted_artifact_count": 1
+  },
+  "validation_commands": [
+    "node run-agent-routing-preflight-fixtures.js"
+  ],
+  "created_at": "2026-06-24T09:03:00+09:00"
+}

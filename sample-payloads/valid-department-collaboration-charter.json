@@ -1,0 +1,463 @@
+{
+  "schema_version": "0.1",
+  "type": "DepartmentCollaborationCharter",
+  "id": "DCC-ReleaseHardening",
+  "mission_id": "M-ReleaseHardening",
+  "name": "Release hardening cross-functional collaboration",
+  "purpose": "Coordinate research, execution, sustainment, protection, red team, and recorder outputs so release hardening is executed without authority or source drift.",
+  "departments": [
+    {
+      "id": "command",
+      "function": "command_and_control",
+      "lead_role": "COS",
+      "responsibilities": [
+        "Integrate department outputs into commander-readable decision packets.",
+        "Resolve sequencing conflicts inside mission scope."
+      ],
+      "outputs": [
+        "Integrated SITREP.",
+        "Decision agenda.",
+        "FRAGO draft when scope changes."
+      ],
+      "authority_boundary": [
+        "May sequence L0-L2 work.",
+        "Must escalate Red approval, external release, high risk acceptance, and scope change."
+      ],
+      "ccir": [
+        "Any department output contradicts commander intent.",
+        "Any support dependency blocks main effort."
+      ],
+      "source_of_truth_files": [
+        "docs/interdepartment-collaboration-policy.md",
+        "docs/source-map.md",
+        "docs/research-compendium.md"
+      ]
+    },
+    {
+      "id": "research",
+      "function": "intelligence",
+      "lead_role": "S2",
+      "responsibilities": [
+        "Verify official sources and source conflicts.",
+        "Separate sourced claims from assumptions."
+      ],
+      "outputs": [
+        "Source-map delta.",
+        "Evidence packet.",
+        "Unresolved PIR list."
+      ],
+      "authority_boundary": [
+        "May collect and summarize sources.",
+        "May not authorize final release or scope change."
+      ],
+      "ccir": [
+        "Primary source conflict changes the release decision.",
+        "No official source supports a critical claim."
+      ],
+      "source_of_truth_files": [
+        "docs/source-map.md",
+        "docs/research-compendium.md"
+      ]
+    },
+    {
+      "id": "operations",
+      "function": "movement_and_maneuver",
+      "lead_role": "S3",
+      "responsibilities": [
+        "Convert commander intent into task sequence.",
+        "Run backbrief and rehearsal before risky execution."
+      ],
+      "outputs": [
+        "Task order.",
+        "Execution sequence.",
+        "Rehearsal friction list."
+      ],
+      "authority_boundary": [
+        "May reorder in-scope tasks.",
+        "Must escalate scope and authority changes."
+      ],
+      "ccir": [
+        "Execution path requires unapproved Red action.",
+        "Rehearsal finds high friction."
+      ],
+      "source_of_truth_files": [
+        "docs/orders-production-pipeline.md",
+        "docs/backbrief-and-rehearsal-sop.md"
+      ]
+    },
+    {
+      "id": "sustainment",
+      "function": "sustainment",
+      "lead_role": "S6",
+      "responsibilities": [
+        "Maintain tool, context, fallback, and documentation readiness.",
+        "Route degraded assets to commander-facing queue."
+      ],
+      "outputs": [
+        "Maintenance readiness report.",
+        "PACE fallback plan.",
+        "Handoff packet input."
+      ],
+      "authority_boundary": [
+        "May mark tools degraded or unavailable.",
+        "May not approve release or accept high residual risk."
+      ],
+      "ccir": [
+        "Critical runner or source-map linter unavailable.",
+        "Fallback path is missing."
+      ],
+      "source_of_truth_files": [
+        "docs/maintenance-readiness-model.md",
+        "continuity-drill-runner.js"
+      ]
+    },
+    {
+      "id": "protection",
+      "function": "protection",
+      "lead_role": "EVALUATOR",
+      "responsibilities": [
+        "Apply EEFI, context releasability, release review, and rollback controls.",
+        "Block release target mismatch."
+      ],
+      "outputs": [
+        "Release review.",
+        "Context filter decision.",
+        "Risk control note."
+      ],
+      "authority_boundary": [
+        "May block unsafe release.",
+        "May not approve external release on behalf of Commander."
+      ],
+      "ccir": [
+        "Reviewed target differs from actual release target.",
+        "Restricted or EEFI context appears in final output."
+      ],
+      "source_of_truth_files": [
+        "docs/context-releasability-policy.md",
+        "release-review-runner.js"
+      ]
+    },
+    {
+      "id": "red_team",
+      "function": "assessment",
+      "lead_role": "RED_TEAM",
+      "responsibilities": [
+        "Identify contradiction, abuse case, hallucination, and unbounded authority risk.",
+        "Recommend no-go when control gaps remain."
+      ],
+      "outputs": [
+        "Red team finding.",
+        "Mitigation option.",
+        "Residual risk note."
+      ],
+      "authority_boundary": [
+        "May recommend block or no-go.",
+        "May not execute or approve release."
+      ],
+      "ccir": [
+        "Critical finding remains unresolved.",
+        "Assumption is being treated as sourced fact."
+      ],
+      "source_of_truth_files": [
+        "docs/military-ai-risk-register.md",
+        "docs/source-reliability-rubric.md"
+      ]
+    },
+    {
+      "id": "recorder",
+      "function": "information",
+      "lead_role": "RECORDER",
+      "responsibilities": [
+        "Maintain event log, source of truth, handoff, and AAR inputs.",
+        "Preserve decisions and unresolved risks for the next worker."
+      ],
+      "outputs": [
+        "Event log.",
+        "Handoff packet.",
+        "AAR input list."
+      ],
+      "authority_boundary": [
+        "May require missing handoff state before phase close.",
+        "May not alter commander decision."
+      ],
+      "ccir": [
+        "Source of truth diverges from executed state.",
+        "Handoff packet is missing before role transition."
+      ],
+      "source_of_truth_files": [
+        "docs/knowledge-management-sop.md",
+        "docs/personnel-continuity-model.md"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "phase": "source verification",
+      "supported_department": "research",
+      "supporting_department": "recorder",
+      "support_type": "recordkeeping",
+      "required_outputs": [
+        "Source-map delta linked to research claim."
+      ],
+      "quality_gate": [
+        "Official source host is covered by source-map linter."
+      ],
+      "handoff_interface": "source_map_entry",
+      "escalation_trigger": [
+        "Official source is missing or conflicts with current doctrine."
+      ]
+    },
+    {
+      "phase": "execution planning",
+      "supported_department": "operations",
+      "supporting_department": "research",
+      "support_type": "information",
+      "required_outputs": [
+        "Sourced constraints and assumptions for the execution plan."
+      ],
+      "quality_gate": [
+        "All mission-changing claims are tagged as source-backed or assumption."
+      ],
+      "handoff_interface": "evidence_packet",
+      "escalation_trigger": [
+        "Low-confidence information would change task order."
+      ]
+    },
+    {
+      "phase": "execution planning",
+      "supported_department": "operations",
+      "supporting_department": "sustainment",
+      "support_type": "sustainment",
+      "required_outputs": [
+        "Tool readiness and fallback plan."
+      ],
+      "quality_gate": [
+        "Critical runners and source-map linter are ready or degraded with fallback."
+      ],
+      "handoff_interface": "maintenance_readiness_report",
+      "escalation_trigger": [
+        "Required tool is unavailable and no fallback exists."
+      ]
+    },
+    {
+      "phase": "release review",
+      "supported_department": "protection",
+      "supporting_department": "research",
+      "support_type": "information",
+      "required_outputs": [
+        "Claim-to-source trace for final output."
+      ],
+      "quality_gate": [
+        "No unsupported claim is presented as fact."
+      ],
+      "handoff_interface": "release_evidence_packet",
+      "escalation_trigger": [
+        "Final output contains claim without source or assumption tag."
+      ]
+    },
+    {
+      "phase": "release review",
+      "supported_department": "protection",
+      "supporting_department": "red_team",
+      "support_type": "assessment",
+      "required_outputs": [
+        "Critical failure modes and residual risk note."
+      ],
+      "quality_gate": [
+        "Critical finding is resolved, accepted by Commander, or release is blocked."
+      ],
+      "handoff_interface": "red_team_finding",
+      "escalation_trigger": [
+        "Critical or high residual risk remains."
+      ]
+    },
+    {
+      "phase": "handoff",
+      "supported_department": "recorder",
+      "supporting_department": "operations",
+      "support_type": "recordkeeping",
+      "required_outputs": [
+        "Executed steps, skipped steps, failed checks, and next action."
+      ],
+      "quality_gate": [
+        "Next worker can resume without reading conversation history."
+      ],
+      "handoff_interface": "handoff_packet",
+      "escalation_trigger": [
+        "Executed state and documented state diverge."
+      ]
+    }
+  ],
+  "liaison_rules": [
+    {
+      "between": ["research", "recorder"],
+      "liaison_role": "RECORDER",
+      "information_to_exchange": [
+        "Source URLs, claim IDs, source-map row, unresolved questions."
+      ],
+      "update_cadence": "after each source-map delta",
+      "conflict_route": [
+        "S2 source review, then CoS decision packet if doctrine conflict remains."
+      ]
+    },
+    {
+      "between": ["operations", "research"],
+      "liaison_role": "COS",
+      "information_to_exchange": [
+        "Task constraints, assumptions, confidence, order-changing findings."
+      ],
+      "update_cadence": "before task order and after rehearsal friction",
+      "conflict_route": [
+        "CoS resolves sequence; Commander decides scope changes."
+      ]
+    },
+    {
+      "between": ["operations", "sustainment"],
+      "liaison_role": "S6",
+      "information_to_exchange": [
+        "Required runner, tool availability, fallback, context budget."
+      ],
+      "update_cadence": "before execution and after tool failure",
+      "conflict_route": [
+        "CoS priority decision; Commander if degraded state affects end state."
+      ]
+    },
+    {
+      "between": ["protection", "research"],
+      "liaison_role": "EVALUATOR",
+      "information_to_exchange": [
+        "Release candidate, claim-source trace, EEFI handling, target metadata."
+      ],
+      "update_cadence": "before release review",
+      "conflict_route": [
+        "Protection blocks release; Commander decides release exception."
+      ]
+    },
+    {
+      "between": ["protection", "red_team"],
+      "liaison_role": "RED_TEAM",
+      "information_to_exchange": [
+        "Critical findings, mitigations, residual risk, release constraints."
+      ],
+      "update_cadence": "before go/no-go",
+      "conflict_route": [
+        "Commander risk acceptance decision."
+      ]
+    },
+    {
+      "between": ["recorder", "operations"],
+      "liaison_role": "RECORDER",
+      "information_to_exchange": [
+        "Executed actions, skipped checks, unresolved blockers, next action."
+      ],
+      "update_cadence": "before handoff or phase close",
+      "conflict_route": [
+        "CoS handoff sync."
+      ]
+    }
+  ],
+  "synchronization": {
+    "battle_rhythm_events": [
+      "Mission analysis sync.",
+      "Source review sync.",
+      "Execution rehearsal.",
+      "Release go/no-go.",
+      "Handoff sync.",
+      "AAR/readiness update."
+    ],
+    "decision_points": [
+      "Source conflict changes task order.",
+      "Tool degradation blocks execution.",
+      "Release target mismatch appears.",
+      "Critical red team finding remains.",
+      "Mission scope change is requested."
+    ],
+    "dependency_matrix": [
+      {
+        "from_department": "research",
+        "to_department": "operations",
+        "dependency": "Sourced constraints and assumptions.",
+        "required_before": "task order finalization"
+      },
+      {
+        "from_department": "sustainment",
+        "to_department": "operations",
+        "dependency": "Tool readiness and fallback.",
+        "required_before": "execution rehearsal"
+      },
+      {
+        "from_department": "research",
+        "to_department": "protection",
+        "dependency": "Claim-source trace.",
+        "required_before": "release review"
+      },
+      {
+        "from_department": "red_team",
+        "to_department": "protection",
+        "dependency": "Critical finding status.",
+        "required_before": "release go/no-go"
+      },
+      {
+        "from_department": "operations",
+        "to_department": "recorder",
+        "dependency": "Executed state.",
+        "required_before": "handoff packet"
+      }
+    ]
+  },
+  "conflict_resolution": {
+    "authority": "COS",
+    "method": [
+      "CoS resolves sequencing and dependency conflicts inside mission scope.",
+      "Commander decides Red approval, release approval, high risk acceptance, and scope FRAGO.",
+      "Conflicts touching source validity, release target, or authority boundary require decision packet."
+    ],
+    "decision_packet_required": true,
+    "commander_escalation": [
+      "Red action required.",
+      "External release approval required.",
+      "High or critical residual risk remains.",
+      "Mission scope or authority boundary changes."
+    ]
+  },
+  "collaboration_controls": {
+    "no_silent_scope_change": true,
+    "source_map_required": true,
+    "shared_glossary_required": true,
+    "handoff_required": true,
+    "aar_required": true
+  },
+  "information_policy": {
+    "need_to_know": [
+      "Departments receive the minimum context needed for their output contract."
+    ],
+    "context_sharing": [
+      "Raw source goes to research and recorder.",
+      "Execution receives task-scoped constraints.",
+      "Release reviewer receives redacted final candidate and releasability metadata."
+    ],
+    "eefi_controls": [
+      "Credential-like values are summarized, not copied.",
+      "Restricted context is denied from final output.",
+      "Release review target must match actual release target."
+    ]
+  },
+  "exit_criteria": {
+    "success": [
+      "Every relationship output is delivered and quality-gated.",
+      "All commander decision points are resolved or explicitly deferred.",
+      "Handoff packet names source of truth and unresolved risk."
+    ],
+    "abort": [
+      "No liaison exists for a blocking dependency.",
+      "A department attempts commander-retained authority.",
+      "Shared source of truth diverges from execution state."
+    ],
+    "handoff": [
+      "Recorder captures event log, decision packet status, changed files, source-map deltas, and next action."
+    ]
+  },
+  "classification": "sensitive",
+  "status": "pending",
+  "created_at": "2026-06-19T10:00:00+09:00"
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": "0.1",
+  "type": "DocumentAccessManifest",
+  "id": "DAM-BAD-001",
+  "mission_id": "M-DEMO-001",
+  "default_decision": "deny",
+  "role_profiles": [
+    {
+      "role": "EXECUTOR",
+      "duty": "assigned_execution",
+      "authority_level": "L0",
+      "required_documents": [
+        "docs/commander-handbook.md",
+        "docs/risk-acceptance-authority.md",
+        "docs/missing-private-plan.md"
+      ],
+      "optional_documents": [
+        "docs/role-document-access-policy.md"
+      ],
+      "denied_documents": [
+        "docs/risk-acceptance-authority.md"
+      ],
+      "escalation_role": "EXECUTOR"
+    }
+  ],
+  "documents": [
+    {
+      "path": "*",
+      "title": "Everything",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": [],
+      "duties": [],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "Everyone can find what they need."
+    },
+    {
+      "path": "docs/commander-handbook.md",
+      "title": "Commander Handbook",
+      "classification": "sensitive",
+      "owner_role": "COMMANDER",
+      "allowed_roles": ["EXECUTOR"],
+      "duties": ["assigned_execution"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "Executor may need command context."
+    },
+    {
+      "path": "docs/risk-acceptance-authority.md",
+      "title": "Risk Acceptance Authority",
+      "classification": "restricted",
+      "owner_role": "COMMANDER",
+      "allowed_roles": ["EXECUTOR"],
+      "duties": ["assigned_execution"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "Executor should know all risk decisions."
+    }
+  ],
+  "controls": {
+    "need_to_know": false,
+    "no_bulk_read": false,
+    "audit_required": false,
+    "exception_requires_approval": false,
+    "source_of_truth": "none"
+  },
+  "classification": "internal",
+  "status": "pending",
+  "created_at": "2026-06-19T00:00:00Z"
+}

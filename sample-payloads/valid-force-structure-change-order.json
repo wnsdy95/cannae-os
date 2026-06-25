@@ -1,0 +1,223 @@
+{
+  "schema_version": "0.1",
+  "type": "ForceStructureChangeOrder",
+  "id": "FSCO-ReleaseCell",
+  "mission_id": "M-ReleaseHardening",
+  "change_type": "create",
+  "target": {
+    "kind": "unit",
+    "id": "UNIT-ReleaseHardeningCell",
+    "name": "Release hardening cell",
+    "current_state": "Release review, source verification, and red-team findings are handled by separate ad hoc tasks.",
+    "proposed_state": "A standing release hardening cell integrates S2, Protection, Red Team, S6, and Recorder outputs for release-required missions.",
+    "essential_functions": [
+      "Compare release target to reviewed target.",
+      "Trace final claims to source-map entries.",
+      "Block EEFI or restricted context from final output.",
+      "Queue commander decisions for high residual risk or release exceptions."
+    ]
+  },
+  "capability_gap": {
+    "problem": "Release-required missions repeatedly need the same cross-functional controls, but current ad hoc coordination risks target mismatch and unsupported claims.",
+    "evidence": [
+      "release-integration fixtures cover missing or invalid release review.",
+      "source-map linter now guards official source coverage.",
+      "SOF TF and department collaboration charters both require independent release/protection review."
+    ],
+    "operational_impact": [
+      "External release can be delayed by missing source trace.",
+      "Internal handoff review can be confused with final output release if controls are not integrated.",
+      "Critical release finding may miss commander queue if protection and red team are not synchronized."
+    ],
+    "why_now": "Release controls have grown from policy into multiple runner contracts and need a stable cell-level ownership model."
+  },
+  "alternatives_considered": [
+    {
+      "option": "Only update SOP text",
+      "type": "sop",
+      "reason_not_sufficient": "SOP text does not assign cross-functional output ownership or fixture coverage."
+    },
+    {
+      "option": "Train S3 executor to perform release review",
+      "type": "training",
+      "reason_not_sufficient": "Executor self-review violates independent protection and release review separation."
+    },
+    {
+      "option": "Run SOF TF for every release",
+      "type": "organization",
+      "reason_not_sufficient": "SOF TF is for high-risk exceptions; routine release-required work needs a standing cell with lower activation overhead."
+    }
+  ],
+  "dotmlpf_p": {
+    "doctrine": [
+      "Update force-structure-change-policy with release cell example.",
+      "Keep release review policy separate from execution approval policy."
+    ],
+    "organization": [
+      "Create release hardening cell as a unit-level coordination node.",
+      "Use supported/supporting relationships from department collaboration charter."
+    ],
+    "training": [
+      "Require release target mismatch fixture and EEFI release-block fixture for cell readiness."
+    ],
+    "materiel_tooling": [
+      "release-review-runner.js",
+      "policy-engine-release-integration.js",
+      "source-map-linter.js"
+    ],
+    "leadership": [
+      "CoS owns cell activation.",
+      "Commander retains external release approval and high risk acceptance."
+    ],
+    "personnel_agent": [
+      "S2 source trace",
+      "EVALUATOR release review",
+      "RED_TEAM failure mode review",
+      "S6 runner readiness",
+      "RECORDER handoff and AAR"
+    ],
+    "facilities_context": [
+      "Use source-map, release review, event log, and dashboard projection as shared context."
+    ],
+    "policy": [
+      "No release without target-matched release review.",
+      "No high residual risk acceptance outside Commander."
+    ]
+  },
+  "authority": {
+    "approving_authority": "COMMANDER",
+    "commander_retained_decisions": [
+      "External release approval.",
+      "High or critical residual risk acceptance.",
+      "Mission scope FRAGO.",
+      "Release exception after protection block."
+    ],
+    "prohibited_changes": [
+      "Merging executor and release reviewer.",
+      "Using internal handoff review to authorize final output release.",
+      "Expanding release target without new review."
+    ],
+    "approval_evidence": [
+      "Decision packet approving release hardening cell creation.",
+      "Validated force structure change order.",
+      "Passing release integration and source-map coverage fixtures."
+    ]
+  },
+  "resources": {
+    "maintainer_roles": ["COS", "S6", "RECORDER"],
+    "tooling": [
+      "node validator-cli-prototype/run-fixtures.js",
+      "node run-release-integration-fixtures.js",
+      "node source-map-linter.js"
+    ],
+    "context_budget": "Cell receives release candidate, release target, source-map delta, red-team findings, and releasability metadata only.",
+    "time_budget": "Run targeted release fixtures and source-map linter before release go/no-go.",
+    "dashboard_or_runner_cost": [
+      "Reuse release gate dashboard projection.",
+      "Add cell status only if release-required workload remains recurring."
+    ],
+    "fallback": [
+      "If release runner fails, block release and route to Protection.",
+      "If source-map linter fails, route to S2 and Recorder.",
+      "If Red Team critical finding remains, route to Commander decision packet."
+    ]
+  },
+  "readiness": {
+    "required_rating": "P",
+    "metl_tasks": [
+      "Validate release review target match.",
+      "Trace claims to source-map entries.",
+      "Block EEFI from final output.",
+      "Route high residual risk to Commander."
+    ],
+    "evidence": [
+      "run-release-integration-fixtures.js passes.",
+      "run-release-review-fixtures.js passes.",
+      "source-map-linter.js passes."
+    ],
+    "backup_or_successor": [
+      "Protection lead backup: RED_TEAM for block recommendation only.",
+      "Recorder backup: S6 for event log preservation.",
+      "Commander retained authority does not transfer."
+    ],
+    "validation_fixture": [
+      "sample-payloads/valid-force-structure-change-order.json",
+      "run-force-structure-change-fixtures.js"
+    ]
+  },
+  "transition_plan": {
+    "activation_steps": [
+      "Validate change order.",
+      "Add README/source-map/compendium references.",
+      "Run release, source-map, and full validator fixtures.",
+      "Record activation in AAR/readiness queue."
+    ],
+    "handoff_required": true,
+    "data_migration": [
+      "Existing release review docs remain source of truth.",
+      "No release history is deleted.",
+      "Future release-required missions reference the cell."
+    ],
+    "deactivation_or_sunset": [
+      "If release-required workload drops below recurring threshold for two review cycles, disband or reduce cell to SOP.",
+      "If automation replaces manual integration, reduce cell to protection reviewer plus runner owner."
+    ],
+    "rollback": [
+      "Remove cell references from README/source-map/compendium.",
+      "Return release work to department collaboration charter.",
+      "Preserve schemas, fixtures, and AAR evidence unless obsolete."
+    ]
+  },
+  "documentation_updates": {
+    "schema_updates": [
+      "schema-files/force-structure-change-order.schema.json"
+    ],
+    "sample_updates": [
+      "sample-payloads/valid-force-structure-change-order.json",
+      "sample-payloads/invalid-force-structure-change-order-unjustified.json"
+    ],
+    "runner_updates": [
+      "force-structure-change-runner.js",
+      "run-force-structure-change-fixtures.js"
+    ],
+    "readme_updates": [
+      "README.md",
+      "schema-files/README.md",
+      "sample-payloads/README.md"
+    ],
+    "source_map_updates": [
+      "docs/source-map.md",
+      "source-map-url-coverage-report.json"
+    ],
+    "compendium_updates": [
+      "docs/research-compendium.md",
+      "docs/military-llm-framework-v0.1.md",
+      "docs/military-operating-deep-research-queue.md"
+    ]
+  },
+  "assessment": {
+    "mop": [
+      "Change order validates.",
+      "Release and source-map fixtures pass.",
+      "Cell outputs are represented in handoff and AAR."
+    ],
+    "moe": [
+      "Release-required missions no longer confuse internal handoff and final output review.",
+      "Unsupported claims are blocked or marked as assumptions before final release.",
+      "Commander queue receives high residual risk and release exceptions."
+    ],
+    "aar_trigger": [
+      "Any release block.",
+      "Any target mismatch.",
+      "Any unsupported claim reaches release candidate."
+    ],
+    "review_at": "2026-07-19T10:00:00+09:00",
+    "sunset_condition": [
+      "No release-required workload for two review cycles.",
+      "Automation covers source trace, release review, and commander queue without manual cell integration."
+    ]
+  },
+  "classification": "internal",
+  "status": "pending",
+  "created_at": "2026-06-19T10:30:00+09:00"
+}

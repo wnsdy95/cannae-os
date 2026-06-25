@@ -1,0 +1,264 @@
+{
+  "schema_version": "0.1",
+  "type": "DoctrineConsistencyReview",
+  "id": "DCR-2026-06-21",
+  "review_date": "2026-06-21T14:00:00+09:00",
+  "source_families": [
+    {
+      "family_id": "US",
+      "jurisdiction": "United States",
+      "official_source_urls": [
+        "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN34403-ADP_6-0-000-WEB-3.pdf",
+        "https://www.jcs.mil/Portals/36/Documents/Doctrine/fp/authorities_fp.pdf"
+      ],
+      "doctrine_scope": [
+        "mission command",
+        "authorities",
+        "force management"
+      ],
+      "comparison_use": [
+        "baseline source family already embedded in current framework"
+      ]
+    },
+    {
+      "family_id": "NATO",
+      "jurisdiction": "NATO allied doctrine",
+      "official_source_urls": [
+        "https://www.gov.uk/government/publications/ajp-01-d-allied-joint-doctrine",
+        "https://assets.publishing.service.gov.uk/media/659ea238e96df5000df843f3/AJP_01_EdF_with_UK_elements.pdf"
+      ],
+      "doctrine_scope": [
+        "allied joint doctrine",
+        "interoperability",
+        "common terminology"
+      ],
+      "comparison_use": [
+        "checks whether five-paragraph orders and common terminology can stay as a multinational contract"
+      ]
+    },
+    {
+      "family_id": "UK",
+      "jurisdiction": "United Kingdom",
+      "official_source_urls": [
+        "https://www.gov.uk/government/publications/uk-defence-doctrine-jdp-0-01",
+        "https://assets.publishing.service.gov.uk/media/63776f4de90e0728553b568b/UK_Defence_Doctrine_Ed6.pdf",
+        "https://www.gov.uk/government/publications/campaigning-a-joint-doctrine-publication"
+      ],
+      "doctrine_scope": [
+        "defence doctrine",
+        "joint operations doctrine",
+        "understanding and decision-making"
+      ],
+      "comparison_use": [
+        "checks whether doctrine, command, decision, and terminology assumptions are not US-only"
+      ]
+    },
+    {
+      "family_id": "CANADA",
+      "jurisdiction": "Canada",
+      "official_source_urls": [
+        "https://www.canada.ca/en/services/defence/caf.html",
+        "https://www.canada.ca/en/department-national-defence/corporate/reports-publications.html",
+        "https://www.canada.ca/en/department-national-defence/corporate/reports-publications/canadian-armed-forces-ethos-trusted-to-serve.html"
+      ],
+      "doctrine_scope": [
+        "Canadian Armed Forces organization",
+        "CAF ethos",
+        "DND/CAF data governance and publications"
+      ],
+      "comparison_use": [
+        "checks that role authority, culture, and information governance are expressed as localizable controls"
+      ]
+    },
+    {
+      "family_id": "KOREA",
+      "jurisdiction": "Republic of Korea",
+      "official_source_urls": [
+        "https://www.mnd.go.kr/",
+        "https://www.law.go.kr/",
+        "https://www.kida.re.kr/"
+      ],
+      "doctrine_scope": [
+        "public defence policy",
+        "legal authority and service law",
+        "Korean defence research context"
+      ],
+      "comparison_use": [
+        "checks that command authority, reporting culture, and legal analogies remain jurisdiction-gated"
+      ]
+    }
+  ],
+  "policy_findings": [
+    {
+      "finding_id": "DCF-ROLE-001",
+      "category": "role_staff_terminology",
+      "affected_policy": "docs/agent-roles-and-authority.md",
+      "us_assumption": "S2/S3/S4/S6 staff codes are treated as if they were universal staff labels.",
+      "comparative_finding": "NATO, UK, Canadian, and Korean public materials share command, staff, and function concepts, but exact staff labels and rank/appointment names vary by force.",
+      "consistency_risk": "medium",
+      "disposition": "retain_with_alias",
+      "resolution": "Keep S2/S3/S4/S6 as internal function IDs only and require an alias map when adapting the framework to a non-US organization.",
+      "policy_update_targets": [
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/glossary.md",
+        "docs/agent-roles-and-authority.md"
+      ],
+      "verification": {
+        "method": "Compared current role policy with NATO/UK terminology sources and non-US public defence organization pages.",
+        "evidence": [
+          "docs/source-map.md multinational doctrine rows",
+          "docs/multinational-doctrine-consistency-review.md section 4"
+        ],
+        "status": "verified"
+      }
+    },
+    {
+      "finding_id": "DCF-AUTH-001",
+      "category": "command_authority",
+      "affected_policy": "docs/agent-roles-and-authority.md",
+      "us_assumption": "Mission command autonomy could be read as blanket decentralized execution.",
+      "comparative_finding": "All reviewed source families support clear authority, intent, and accountability, but the degree of decentralization and retained decisions must be locally set.",
+      "consistency_risk": "high",
+      "disposition": "generalize",
+      "resolution": "Express autonomy as authority-bounded execution: local doctrine may change terminology, but Commander/user retains scope, release, risk, and irreversible decisions.",
+      "policy_update_targets": [
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/commander-handbook.md",
+        "schema-files/authority-matrix.schema.json"
+      ],
+      "verification": {
+        "method": "Checked authority controls against US authorities, UK defence doctrine, NATO allied doctrine, and Korean legal/source anchors.",
+        "evidence": [
+          "docs/source-map.md",
+          "sample-payloads/valid-authority-matrix.json"
+        ],
+        "status": "verified"
+      }
+    },
+    {
+      "finding_id": "DCF-ORDER-001",
+      "category": "orders_format",
+      "affected_policy": "docs/prompt-templates.md",
+      "us_assumption": "The OPORD five-paragraph sequence is the only valid order shape.",
+      "comparative_finding": "STANAG/NATO and UK doctrine support standardized orders and terminology, but national supplements can vary.",
+      "consistency_risk": "medium",
+      "disposition": "retain_with_alias",
+      "resolution": "Keep the five-paragraph order as the normalized runtime contract while allowing source-doctrine aliases and annex naming differences.",
+      "policy_update_targets": [
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/opord-annex-model.md",
+        "schema-files/opord.schema.json"
+      ],
+      "verification": {
+        "method": "Compared STANAG 2014, NATO AJP-01, and UK joint doctrine publication anchors.",
+        "evidence": [
+          "docs/source-map.md command/planning rows",
+          "docs/prompt-templates.md"
+        ],
+        "status": "verified"
+      }
+    },
+    {
+      "finding_id": "DCF-ROE-001",
+      "category": "roe_legal_authority",
+      "affected_policy": "docs/tool-use-roe.md",
+      "us_assumption": "ROE/legal support analogies can be applied uniformly across jurisdictions.",
+      "comparative_finding": "Legal authority, service law, and release constraints are jurisdiction-specific even when the operational need for constraints is common.",
+      "consistency_risk": "critical",
+      "disposition": "jurisdiction_gate",
+      "resolution": "Treat ROE as a tool-use control analogy only. Any legal, public release, personal data, or real-world operational decision must route to local jurisdiction review and Commander/user approval.",
+      "policy_update_targets": [
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/tool-use-roe.md",
+        "docs/risk-acceptance-authority.md"
+      ],
+      "verification": {
+        "method": "Compared US legal support anchors with Korean law source anchors and non-US official defence policy pages.",
+        "evidence": [
+          "docs/source-map.md legal and Korean public source rows",
+          "docs/tool-use-roe.md"
+        ],
+        "status": "verified"
+      }
+    },
+    {
+      "finding_id": "DCF-FORCE-001",
+      "category": "force_structure",
+      "affected_policy": "docs/force-structure-change-policy.md",
+      "us_assumption": "DOTMLPF-P and US force management terminology could be read as the only lifecycle model.",
+      "comparative_finding": "Other source families support capability, authority, readiness, documentation, and sustainment concerns, but not always the same US force-management vocabulary.",
+      "consistency_risk": "high",
+      "disposition": "document_as_us_specific",
+      "resolution": "Keep DOTMLPF-P as a US-derived checklist and require the neutral label capability lifecycle review for multinational use.",
+      "policy_update_targets": [
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/force-structure-change-policy.md",
+        "schema-files/force-structure-change-order.schema.json"
+      ],
+      "verification": {
+        "method": "Compared force management policy with non-US command, organization, and public policy anchors.",
+        "evidence": [
+          "docs/force-structure-change-policy.md",
+          "docs/source-map.md force structure rows"
+        ],
+        "status": "verified"
+      }
+    },
+    {
+      "finding_id": "DCF-SOF-001",
+      "category": "special_operations",
+      "affected_policy": "docs/ai-special-operations-tf.md",
+      "us_assumption": "USSOCOM SOF Truths are universal special operations doctrine.",
+      "comparative_finding": "The SOF Truths are US source material; their safe AI value is as high-risk task-force heuristics, not as universal military doctrine.",
+      "consistency_risk": "medium",
+      "disposition": "document_as_us_specific",
+      "resolution": "Keep the AI SOF TF model as a US-derived high-risk TF pattern and require local doctrine review before naming it as another force's special operations model.",
+      "policy_update_targets": [
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/ai-special-operations-tf.md"
+      ],
+      "verification": {
+        "method": "Checked current SOF policy source anchors and compared them with the broader multinational source review.",
+        "evidence": [
+          "docs/ai-special-operations-tf.md",
+          "docs/source-map.md AI special operations task force row"
+        ],
+        "status": "verified"
+      }
+    }
+  ],
+  "resolution_controls": {
+    "us_not_default": true,
+    "role_alias_map_required": true,
+    "local_jurisdiction_review_required": true,
+    "source_map_update_required": true,
+    "compendium_update_required": true,
+    "schema_fixture_required": true,
+    "commander_retained_conflict_decisions": true
+  },
+  "documentation_updates": {
+    "review_document": [
+      "docs/multinational-doctrine-consistency-review.md"
+    ],
+    "source_map": [
+      "Add NATO/UK/Canada/Korea source family rows and local artifact row."
+    ],
+    "compendium": [
+      "Add multinational doctrine consistency review notes and open research gaps."
+    ],
+    "schema": [
+      "schema-files/doctrine-consistency-review.schema.json"
+    ],
+    "samples": [
+      "sample-payloads/valid-doctrine-consistency-review.json",
+      "sample-payloads/invalid-doctrine-consistency-review-us-only.json"
+    ],
+    "runner": [
+      "doctrine-consistency-runner.js",
+      "run-doctrine-consistency-fixtures.js"
+    ]
+  },
+  "classification": "public",
+  "status": "complete",
+  "created_at": "2026-06-21T14:00:00+09:00"
+}

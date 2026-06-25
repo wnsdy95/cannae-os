@@ -1,0 +1,25 @@
+{
+  "id": "AAR-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "expected": [
+    "Demo payloads represent an end-to-end runtime flow."
+  ],
+  "actual": [
+    "Mission, task order, tool request, approval, SITREP, evidence, and AAR payloads were created."
+  ],
+  "delta": [
+    "Production deploy is represented as blocked, not executed."
+  ],
+  "causes": [
+    "Tool Use ROE classifies production deploy as Red."
+  ],
+  "sustain": [
+    "Keep Red actions blocked until approval is explicit and scoped."
+  ],
+  "improve": [
+    "Add an automated end-to-end runner for demo payloads."
+  ],
+  "sop_updates": [
+    "Every runtime demo should include at least one Green allow and one Red block example."
+  ]
+}

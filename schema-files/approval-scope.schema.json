@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/approval-scope.schema.json",
+  "title": "Approval Scope",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "approval_request_id", "granted_by", "granted_to", "classification", "decision", "scope", "conditions", "rollback", "evidence_required", "release_review_required", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "APPROVAL_SCOPE" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "approval_request_id": { "$ref": "common.schema.json#/$defs/id" },
+    "tool_request_id": { "$ref": "common.schema.json#/$defs/id" },
+    "decision_packet_id": { "$ref": "common.schema.json#/$defs/id" },
+    "granted_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "granted_to": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "decision": {
+      "type": "string",
+      "enum": ["approve_once", "approve_with_constraints", "reject", "revise", "issue_frago", "revoke"]
+    },
+    "scope": {
+      "type": "object",
+      "required": ["action", "tool", "target", "max_executions", "valid_from", "expires_at"],
+      "additionalProperties": false,
+      "properties": {
+        "action": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "task_order": { "$ref": "common.schema.json#/$defs/id" },
+        "max_executions": { "type": "integer" },
+        "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "rollback": { "$ref": "common.schema.json#/$defs/string_list" },
+    "evidence_required": { "$ref": "common.schema.json#/$defs/string_list" },
+    "release_review_required": { "type": "boolean" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "consumed", "expired", "revoked", "rejected", "revision_required", "frago_required"]
+    },
+    "consumed_by": { "$ref": "common.schema.json#/$defs/id" },
+    "consumed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

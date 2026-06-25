@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/doctrine-consistency-review.schema.json",
+  "title": "Doctrine Consistency Review",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "review_date", "source_families", "policy_findings", "resolution_controls", "documentation_updates", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "DoctrineConsistencyReview" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "review_date": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "source_families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["family_id", "jurisdiction", "official_source_urls", "doctrine_scope", "comparison_use"],
+        "additionalProperties": false,
+        "properties": {
+          "family_id": { "type": "string", "minLength": 1 },
+          "jurisdiction": { "type": "string", "minLength": 1 },
+          "official_source_urls": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "doctrine_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "comparison_use": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "policy_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["finding_id", "category", "affected_policy", "us_assumption", "comparative_finding", "consistency_risk", "disposition", "resolution", "policy_update_targets", "verification"],
+        "additionalProperties": false,
+        "properties": {
+          "finding_id": { "$ref": "common.schema.json#/$defs/id" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "role_staff_terminology",
+              "command_authority",
+              "orders_format",
+              "roe_legal_authority",
+              "information_security",
+              "force_structure",
+              "special_operations",
+              "knowledge_management",
+              "culture_and_reporting",
+              "training_readiness"
+            ]
+          },
+          "affected_policy": { "type": "string", "minLength": 1 },
+          "us_assumption": { "type": "string", "minLength": 1 },
+          "comparative_finding": { "type": "string", "minLength": 1 },
+          "consistency_risk": { "$ref": "common.schema.json#/$defs/risk_level" },
+          "disposition": {
+            "type": "string",
+            "enum": [
+              "retain_with_alias",
+              "generalize",
+              "jurisdiction_gate",
+              "document_as_us_specific",
+              "replace",
+              "reject",
+              "adopt_us_only"
+            ]
+          },
+          "resolution": { "type": "string", "minLength": 1 },
+          "policy_update_targets": { "$ref": "common.schema.json#/$defs/string_list" },
+          "verification": {
+            "type": "object",
+            "required": ["method", "evidence", "status"],
+            "additionalProperties": false,
+            "properties": {
+              "method": { "type": "string", "minLength": 1 },
+              "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+              "status": { "type": "string", "enum": ["verified", "needs_follow_up", "blocked"] }
+            }
+          }
+        }
+      }
+    },
+    "resolution_controls": {
+      "type": "object",
+      "required": ["us_not_default", "role_alias_map_required", "local_jurisdiction_review_required", "source_map_update_required", "compendium_update_required", "schema_fixture_required", "commander_retained_conflict_decisions"],
+      "additionalProperties": false,
+      "properties": {
+        "us_not_default": { "type": "boolean" },
+        "role_alias_map_required": { "type": "boolean" },
+        "local_jurisdiction_review_required": { "type": "boolean" },
+        "source_map_update_required": { "type": "boolean" },
+        "compendium_update_required": { "type": "boolean" },
+        "schema_fixture_required": { "type": "boolean" },
+        "commander_retained_conflict_decisions": { "type": "boolean" }
+      }
+    },
+    "documentation_updates": {
+      "type": "object",
+      "required": ["review_document", "source_map", "compendium", "schema", "samples", "runner"],
+      "additionalProperties": false,
+      "properties": {
+        "review_document": { "$ref": "common.schema.json#/$defs/string_list" },
+        "source_map": { "$ref": "common.schema.json#/$defs/string_list" },
+        "compendium": { "$ref": "common.schema.json#/$defs/string_list" },
+        "schema": { "$ref": "common.schema.json#/$defs/string_list" },
+        "samples": { "$ref": "common.schema.json#/$defs/string_list" },
+        "runner": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

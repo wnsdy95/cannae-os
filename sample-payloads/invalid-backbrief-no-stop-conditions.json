@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "type": "BACKBRIEF",
+  "id": "BB-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "task_order": "T-DEMO-001",
+  "actor": "S3",
+  "classification": "internal",
+  "understanding": {
+    "commander_intent": "Build a demo.",
+    "assigned_task": "Do the runtime work.",
+    "purpose": "Make it work.",
+    "end_state": [],
+    "constraints": []
+  },
+  "planned_actions": [],
+  "risk_controls": [],
+  "stop_conditions": [],
+  "approval_awareness": {
+    "approval_required_actions": [],
+    "prohibited_actions": [],
+    "commander_decision_needed": true
+  },
+  "assumptions": [],
+  "requested_clarifications": [],
+  "confidence": "low",
+  "created_at": "2026-06-18T16:21:00+09:00"
+}

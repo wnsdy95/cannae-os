@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.1",
+  "type": "SofTfCharter",
+  "id": "SOFTF-Unbounded",
+  "mission_id": "M-ReleaseHardening",
+  "trigger": {
+    "conditions": [],
+    "urgency": "routine",
+    "risk_level": "low",
+    "why_general_workflow_insufficient": "none"
+  },
+  "activity_mapping": [
+    "direct_action"
+  ],
+  "commander_intent": {
+    "purpose": "Move fast with a small elite team.",
+    "end_state": [
+      "Ship the change."
+    ],
+    "failure_to_avoid": [
+      "none"
+    ]
+  },
+  "authority": {
+    "allowed": [
+      "Use any useful tool."
+    ],
+    "approval_required": [],
+    "prohibited": [],
+    "retained_by_commander": []
+  },
+  "cells": {
+    "lead": "S3",
+    "s2_recon": "S3",
+    "s3_execution": "S3",
+    "s4_s6_enabler": "S3",
+    "opsec_release": "S3",
+    "red_team": "S3",
+    "recorder": "S3"
+  },
+  "ccir": {
+    "pir": [],
+    "ffir": [],
+    "eefi": [],
+    "decision_points": []
+  },
+  "isolation": {
+    "need_to_know_roles": ["S3"],
+    "context_rules": [],
+    "eefi_controls": []
+  },
+  "enablers": {
+    "source_map_required": false,
+    "release_review_required": false,
+    "maintenance_check_required": false,
+    "fallback_plan": [],
+    "support_roles": []
+  },
+  "rehearsal": {
+    "backbrief_required": false,
+    "rehearsal_required": false,
+    "dry_run_required": false,
+    "go_no_go_authority": "S3"
+  },
+  "exit_criteria": {
+    "success": [
+      "Done."
+    ],
+    "abort": [],
+    "handoff": []
+  },
+  "classification": "internal",
+  "status": "draft",
+  "created_at": "2026-06-19T09:00:00+09:00"
+}

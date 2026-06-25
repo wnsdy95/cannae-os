@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "type": "DecisionPacket",
+  "id": "DP-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "prepared_by": "COS",
+  "classification": "internal",
+  "decision_type": "approval",
+  "commander_question": "Should the blocked production deployment request be approved?",
+  "background": [
+    "A Red action was requested."
+  ],
+  "options": [],
+  "recommended_option": "OPT-DEMO-999",
+  "risk": {
+    "level": "high",
+    "summary": "The packet asks for a decision without presenting options.",
+    "mitigations": [
+      "Return to working group."
+    ]
+  },
+  "authority_required": [],
+  "evidence": [],
+  "deadline": "2026-06-18T12:30:00+09:00",
+  "if_no_decision": "No fallback was defined.",
+  "status": "pending"
+}

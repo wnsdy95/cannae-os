@@ -1,0 +1,145 @@
+{
+  "mission_id": "M-DEMO-001",
+  "generated_at": "2026-06-18T18:30:00+09:00",
+  "events": [
+    {
+      "event_type": "ApprovalDelegated",
+      "timestamp": "2026-06-18T16:00:00+09:00",
+      "payload": {
+        "type": "APPROVAL_DELEGATION_EVENT",
+        "id": "ADG-PROJ-001",
+        "mission_id": "M-DEMO-001",
+        "authority_matrix_id": "AM-DEMO-002",
+        "actor": "COMMANDER",
+        "delegator": "COMMANDER",
+        "delegatee": "COS",
+        "delegation_type": "temporary",
+        "approving_for_roles": ["S3"],
+        "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+        "delegation_scope": {
+          "task_scope": ["dashboard sustainment"],
+          "action": "restart_service",
+          "tool": "orchestrator",
+          "target": "staging.command-post-dashboard",
+          "max_roe_class": "Amber",
+          "max_residual_risk": "medium",
+          "valid_from": "2026-06-18T18:00:00+09:00",
+          "expires_at": "2026-06-18T19:00:00+09:00",
+          "retained_authorities": [
+            "Red and Black actions remain Commander-retained.",
+            "Sensitive or restricted release remains under release review."
+          ],
+          "prohibited_context_classes": ["sensitive", "restricted"]
+        },
+        "delegation_status_after": "active",
+        "subdelegation_allowed": false,
+        "release_review_required_for_sensitive": true
+      }
+    },
+    {
+      "event_type": "ApprovalDelegated",
+      "timestamp": "2026-06-18T16:00:00+09:00",
+      "payload": {
+        "type": "APPROVAL_DELEGATION_EVENT",
+        "id": "ADG-PROJ-002",
+        "mission_id": "M-DEMO-001",
+        "authority_matrix_id": "AM-DEMO-002",
+        "actor": "COMMANDER",
+        "delegator": "COMMANDER",
+        "delegatee": "COS",
+        "delegation_type": "temporary",
+        "approving_for_roles": ["S3"],
+        "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+        "delegation_scope": {
+          "task_scope": ["dashboard sustainment"],
+          "action": "restart_service",
+          "tool": "orchestrator",
+          "target": "staging.command-post-dashboard",
+          "max_roe_class": "Amber",
+          "max_residual_risk": "medium",
+          "valid_from": "2026-06-18T16:00:00+09:00",
+          "expires_at": "2026-06-18T18:00:00+09:00",
+          "retained_authorities": [
+            "Red and Black actions remain Commander-retained.",
+            "Sensitive or restricted release remains under release review."
+          ],
+          "prohibited_context_classes": ["sensitive", "restricted"]
+        },
+        "delegation_status_after": "active",
+        "subdelegation_allowed": false,
+        "release_review_required_for_sensitive": true
+      }
+    },
+    {
+      "event_type": "ApprovalDelegationTerminated",
+      "timestamp": "2026-06-18T17:00:00+09:00",
+      "payload": {
+        "type": "APPROVAL_DELEGATION_REVOCATION_EVENT",
+        "id": "ADGR-PROJ-002",
+        "mission_id": "M-DEMO-001",
+        "delegation_event_id": "ADG-PROJ-002",
+        "actor": "COMMANDER",
+        "termination_authority": "COMMANDER",
+        "delegatee": "COS",
+        "termination_kind": "revoked",
+        "terminated_at": "2026-06-18T17:00:00+09:00",
+        "reason": "Rehearsal window closed.",
+        "delegation_status_before": "active",
+        "delegation_status_after": "revoked"
+      }
+    },
+    {
+      "event_type": "ApprovalDelegated",
+      "timestamp": "2026-06-18T16:00:00+09:00",
+      "payload": {
+        "type": "APPROVAL_DELEGATION_EVENT",
+        "id": "ADG-PROJ-003",
+        "mission_id": "M-DEMO-001",
+        "authority_matrix_id": "AM-DEMO-002",
+        "actor": "COMMANDER",
+        "delegator": "COMMANDER",
+        "delegatee": "COS",
+        "delegation_type": "temporary",
+        "approving_for_roles": ["S3"],
+        "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+        "delegation_scope": {
+          "task_scope": ["dashboard sustainment"],
+          "action": "restart_service",
+          "tool": "orchestrator",
+          "target": "staging.command-post-dashboard",
+          "max_roe_class": "Amber",
+          "max_residual_risk": "medium",
+          "valid_from": "2026-06-18T16:00:00+09:00",
+          "expires_at": "2026-06-18T18:00:00+09:00",
+          "retained_authorities": [
+            "Red and Black actions remain Commander-retained.",
+            "Sensitive or restricted release remains under release review."
+          ],
+          "prohibited_context_classes": ["sensitive", "restricted"]
+        },
+        "delegation_status_after": "active",
+        "subdelegation_allowed": false,
+        "release_review_required_for_sensitive": true
+      }
+    },
+    {
+      "event_type": "ApprovalDelegationTerminated",
+      "timestamp": "2026-06-18T18:00:00+09:00",
+      "payload": {
+        "type": "APPROVAL_DELEGATION_REVOCATION_EVENT",
+        "id": "ADGR-PROJ-003",
+        "mission_id": "M-DEMO-001",
+        "delegation_event_id": "ADG-PROJ-003",
+        "actor": "RECORDER",
+        "termination_authority": "COMMANDER",
+        "delegatee": "COS",
+        "termination_kind": "expired",
+        "terminated_at": "2026-06-18T18:00:00+09:00",
+        "reason": "Delegation window expired.",
+        "delegation_status_before": "active",
+        "delegation_status_after": "expired"
+      }
+    }
+  ]
+}
+

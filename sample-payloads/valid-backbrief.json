@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1",
+  "type": "BACKBRIEF",
+  "id": "BB-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "task_order": "T-DEMO-001",
+  "actor": "S3",
+  "classification": "internal",
+  "understanding": {
+    "commander_intent": "Prove that the framework is not only a writing style, but a machine-checkable control loop.",
+    "assigned_task": "Create and validate runtime demo payloads.",
+    "purpose": "Prove the framework can represent an end-to-end mission flow.",
+    "end_state": [
+      "Mission, OPORD, task order, tool request, approval, SITREP, evidence, and AAR payloads validate.",
+      "Red tool request remains blocked and represented in the approval queue."
+    ],
+    "constraints": [
+      "Use local files only.",
+      "Do not execute Red actions without explicit approval.",
+      "Preserve evidence and AAR links to the mission."
+    ]
+  },
+  "planned_actions": [
+    "Validate OPORD and related payloads.",
+    "Run policy checks for Green and Red tool requests.",
+    "Replay mission events into current state.",
+    "Render dashboard state from projection."
+  ],
+  "risk_controls": [
+    "Stop on validator failure.",
+    "Escalate policy disagreement as FFIR.",
+    "Use event replay output as the diagnostic source if dashboard projection fails."
+  ],
+  "stop_conditions": [
+    "Validator cannot parse payload.",
+    "Policy engine allows Red action without approval.",
+    "Event replay projection diverges from dashboard state."
+  ],
+  "approval_awareness": {
+    "approval_required_actions": [
+      "Production deployment.",
+      "Credential use.",
+      "External API mutation.",
+      "Deleting or overwriting unrelated user work."
+    ],
+    "prohibited_actions": [
+      "Bypassing Red action approval.",
+      "Reporting unverified claims as sourced fact.",
+      "Treating generated output as final without verification."
+    ],
+    "commander_decision_needed": false
+  },
+  "assumptions": [
+    "The demo remains local and does not deploy or call production services.",
+    "The validator and policy engine are prototype controls, not a hardened runtime."
+  ],
+  "requested_clarifications": [
+    "None"
+  ],
+  "confidence": "high",
+  "created_at": "2026-06-18T16:20:00+09:00"
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "event_id": "EVT-DEMO-001",
+    "mission_id": "M-DEMO-001",
+    "event_type": "MissionCreated",
+    "actor": "USER",
+    "timestamp": "2026-06-18T11:00:00+09:00",
+    "payload": {
+      "title": "Runtime Demo Scenario",
+      "mission_statement": "Turn the military-style LLM framework into a tool-gated runtime demo.",
+      "intent": "Show how mission intake, tasking, policy, approval, evidence, SITREP, and AAR connect."
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-002",
+    "mission_id": "M-DEMO-001",
+    "event_type": "OPORDCreated",
+    "actor": "COMMANDER",
+    "timestamp": "2026-06-18T11:04:00+09:00",
+    "correlation_id": "M-DEMO-001",
+    "payload": {
+      "order_id": "OPORD-DEMO-001"
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-003",
+    "mission_id": "M-DEMO-001",
+    "event_type": "TaskOrderIssued",
+    "actor": "COS",
+    "timestamp": "2026-06-18T11:07:00+09:00",
+    "correlation_id": "OPORD-DEMO-001",
+    "payload": {
+      "task_id": "T-DEMO-001",
+      "assigned_to": "S3",
+      "task": "Create and validate runtime demo payloads."
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-004",
+    "mission_id": "M-DEMO-001",
+    "event_type": "ToolRequestCreated",
+    "actor": "S3",
+    "timestamp": "2026-06-18T11:10:00+09:00",
+    "causation_id": "T-DEMO-001",
+    "payload": {
+      "tool_request_id": "TR-DEMO-001",
+      "tool": "filesystem",
+      "action": "create_markdown_file",
+      "target": "docs/runtime-demo-scenario.md"
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-005",
+    "mission_id": "M-DEMO-001",
+    "event_type": "PolicyDecisionMade",
+    "actor": "POLICY_ENGINE",
+    "timestamp": "2026-06-18T11:10:01+09:00",
+    "causation_id": "TR-DEMO-001",
+    "payload": {
+      "tool_request_id": "TR-DEMO-001",
+      "roe_class": "Green",
+      "blocked": false
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-006",
+    "mission_id": "M-DEMO-001",
+    "event_type": "ToolExecuted",
+    "actor": "S3",
+    "timestamp": "2026-06-18T11:11:00+09:00",
+    "causation_id": "TR-DEMO-001",
+    "payload": {
+      "tool_request_id": "TR-DEMO-001",
+      "result": "success"
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-007",
+    "mission_id": "M-DEMO-001",
+    "event_type": "ToolRequestCreated",
+    "actor": "S3",
+    "timestamp": "2026-06-18T11:12:00+09:00",
+    "causation_id": "T-DEMO-001",
+    "payload": {
+      "tool_request_id": "TR-DEMO-002",
+      "tool": "deploy",
+      "action": "deploy_production",
+      "target": "prod.command-post-dashboard"
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-008",
+    "mission_id": "M-DEMO-001",
+    "event_type": "PolicyDecisionMade",
+    "actor": "POLICY_ENGINE",
+    "timestamp": "2026-06-18T11:12:01+09:00",
+    "causation_id": "TR-DEMO-002",
+    "payload": {
+      "tool_request_id": "TR-DEMO-002",
+      "roe_class": "Red",
+      "blocked": true
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-009",
+    "mission_id": "M-DEMO-001",
+    "event_type": "ApprovalRequested",
+    "actor": "S3",
+    "timestamp": "2026-06-18T11:13:00+09:00",
+    "causation_id": "TR-DEMO-002",
+    "payload": {
+      "approval_id": "AR-DEMO-001",
+      "tool_request_id": "TR-DEMO-002",
+      "status": "pending"
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-010",
+    "mission_id": "M-DEMO-001",
+    "event_type": "SITREPIssued",
+    "actor": "COS",
+    "timestamp": "2026-06-18T11:20:00+09:00",
+    "payload": {
+      "status": "in_progress",
+      "summary": "Green request executed; Red deploy request blocked pending approval."
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-011",
+    "mission_id": "M-DEMO-001",
+    "event_type": "EvidenceRecorded",
+    "actor": "S2",
+    "timestamp": "2026-06-18T11:21:00+09:00",
+    "payload": {
+      "evidence_id": "E-DEMO-001",
+      "claim": "Production deployment is a Red action requiring explicit approval."
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-012",
+    "mission_id": "M-DEMO-001",
+    "event_type": "AARIssued",
+    "actor": "EVALUATOR",
+    "timestamp": "2026-06-18T11:30:00+09:00",
+    "payload": {
+      "aar_id": "AAR-DEMO-001",
+      "summary": "Demo flow preserved Red action block and recorded learning."
+    }
+  },
+  {
+    "event_id": "EVT-DEMO-013",
+    "mission_id": "M-DEMO-001",
+    "event_type": "ReadinessUpdated",
+    "actor": "EVALUATOR",
+    "timestamp": "2026-06-18T11:31:00+09:00",
+    "payload": {
+      "agent_id": "S3",
+      "task": "runtime prototype",
+      "rating": "P"
+    }
+  }
+]

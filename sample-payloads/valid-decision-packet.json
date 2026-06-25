@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1",
+  "type": "DecisionPacket",
+  "id": "DP-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "prepared_by": "COS",
+  "classification": "internal",
+  "decision_type": "approval",
+  "commander_question": "Should the blocked production deployment request be approved?",
+  "background": [
+    "Policy engine classified TR-DEMO-002 as Red.",
+    "The current OPORD states that production deployment requires explicit commander approval."
+  ],
+  "options": [
+    {
+      "option_id": "OPT-DEMO-001",
+      "summary": "Reject production deployment and keep the demo local.",
+      "decision": "reject",
+      "benefit": [
+        "Preserves current mission constraint.",
+        "Avoids external state change."
+      ],
+      "risk": [
+        "No production validation occurs."
+      ],
+      "tradeoff": [
+        "Safer but less operationally realistic."
+      ]
+    },
+    {
+      "option_id": "OPT-DEMO-002",
+      "summary": "Approve once with rollback and time limit.",
+      "decision": "approve_with_constraints",
+      "benefit": [
+        "Validates end-to-end deployment path."
+      ],
+      "risk": [
+        "External state may change.",
+        "Rollback may fail."
+      ],
+      "tradeoff": [
+        "More realistic but outside current local-only mission constraint."
+      ]
+    }
+  ],
+  "recommended_option": "OPT-DEMO-001",
+  "risk": {
+    "level": "high",
+    "summary": "Production deployment exceeds local demo authority.",
+    "mitigations": [
+      "Reject until mission scope changes through FRAGO.",
+      "Require rollback plan before any future approval."
+    ]
+  },
+  "authority_required": [
+    "COMMANDER approval for Red deployment action."
+  ],
+  "evidence": [
+    "event-fixtures/demo-events.json",
+    "runtime-demo-payloads/opord.json",
+    "sample-payloads/valid-authority-matrix.json"
+  ],
+  "deadline": "2026-06-18T12:30:00+09:00",
+  "if_no_decision": "Keep TR-DEMO-002 blocked and continue local-only demo work.",
+  "status": "pending"
+}

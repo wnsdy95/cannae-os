@@ -1,0 +1,16 @@
+{
+  "id": "E-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "source_title": "Tool Use ROE",
+  "url": "https://controls.local/docs/tool-use-roe.md",
+  "source_type": "local_framework_document",
+  "reliability": "A",
+  "claim": "Production deployment is a Red action requiring explicit approval.",
+  "interpretation": "The demo Red deploy request must remain blocked until approval is granted.",
+  "linked_docs": [
+    "docs/tool-use-roe.md",
+    "docs/policy-engine-rules.md",
+    "docs/runtime-demo-scenario.md"
+  ],
+  "checked_at": "2026-06-18T11:20:00+09:00"
+}

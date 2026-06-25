@@ -1,0 +1,30 @@
+{
+  "id": "SITREP-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "timestamp": "2026-06-18T11:20:00+09:00",
+  "status": "in_progress",
+  "completed": [
+    "Mission payload created.",
+    "Task order payload created.",
+    "Green and Red tool request payloads created."
+  ],
+  "in_progress": [
+    "Policy engine and validator verification."
+  ],
+  "blocked": [
+    "Production deploy remains blocked pending explicit approval."
+  ],
+  "ccir": [
+    {
+      "type": "DECISION_POINT",
+      "item": "Red production deploy request requires human approval.",
+      "action": "Keep blocked and offer preview alternative."
+    }
+  ],
+  "risk": [
+    "Red action must not execute from demo payload."
+  ],
+  "next_action": [
+    "Run validator and policy engine against demo payloads."
+  ]
+}

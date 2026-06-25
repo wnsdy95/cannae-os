@@ -1,0 +1,131 @@
+{
+  "mission_id": "M-DEMO-001",
+  "generated_at": "2026-06-18T18:30:00+09:00",
+  "summary": {
+    "total": 3,
+    "active": 1,
+    "revoked": 1,
+    "expired": 1,
+    "projection_due": 0
+  },
+  "delegations": [
+    {
+      "id": "ADG-PROJ-001",
+      "status": "active",
+      "delegator": "COMMANDER",
+      "delegatee": "COS",
+      "approving_for_roles": ["S3"],
+      "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+      "scope": {
+        "task_scope": ["dashboard sustainment"],
+        "action": "restart_service",
+        "tool": "orchestrator",
+        "target": "staging.command-post-dashboard",
+        "max_roe_class": "Amber",
+        "max_residual_risk": "medium",
+        "valid_from": "2026-06-18T18:00:00+09:00",
+        "expires_at": "2026-06-18T19:00:00+09:00"
+      },
+      "controls": {
+        "retained_authorities": [
+          "Red and Black actions remain Commander-retained.",
+          "Sensitive or restricted release remains under release review."
+        ],
+        "prohibited_context_classes": ["sensitive", "restricted"],
+        "subdelegation_allowed": false,
+        "release_review_required_for_sensitive": true
+      },
+      "lifecycle_alert": null,
+      "dashboard": {
+        "class": "amber",
+        "label": "ACTIVE",
+        "title": "COS active restart_service",
+        "body": "COS may approve restart_service on staging.command-post-dashboard for S3."
+      }
+    },
+    {
+      "id": "ADG-PROJ-002",
+      "status": "revoked",
+      "delegator": "COMMANDER",
+      "delegatee": "COS",
+      "approving_for_roles": ["S3"],
+      "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+      "scope": {
+        "task_scope": ["dashboard sustainment"],
+        "action": "restart_service",
+        "tool": "orchestrator",
+        "target": "staging.command-post-dashboard",
+        "max_roe_class": "Amber",
+        "max_residual_risk": "medium",
+        "valid_from": "2026-06-18T16:00:00+09:00",
+        "expires_at": "2026-06-18T18:00:00+09:00"
+      },
+      "controls": {
+        "retained_authorities": [
+          "Red and Black actions remain Commander-retained.",
+          "Sensitive or restricted release remains under release review."
+        ],
+        "prohibited_context_classes": ["sensitive", "restricted"],
+        "subdelegation_allowed": false,
+        "release_review_required_for_sensitive": true
+      },
+      "termination": {
+        "id": "ADGR-PROJ-002",
+        "actor": "COMMANDER",
+        "authority": "COMMANDER",
+        "terminated_at": "2026-06-18T17:00:00+09:00",
+        "reason": "Rehearsal window closed."
+      },
+      "lifecycle_alert": null,
+      "dashboard": {
+        "class": "gray",
+        "label": "REVOKED",
+        "title": "COS revoked restart_service",
+        "body": "COS may approve restart_service on staging.command-post-dashboard for S3. Terminated by COMMANDER as revoked: Rehearsal window closed."
+      }
+    },
+    {
+      "id": "ADG-PROJ-003",
+      "status": "expired",
+      "delegator": "COMMANDER",
+      "delegatee": "COS",
+      "approving_for_roles": ["S3"],
+      "delegated_decisions": ["approve_once", "approve_with_constraints", "reject", "revise"],
+      "scope": {
+        "task_scope": ["dashboard sustainment"],
+        "action": "restart_service",
+        "tool": "orchestrator",
+        "target": "staging.command-post-dashboard",
+        "max_roe_class": "Amber",
+        "max_residual_risk": "medium",
+        "valid_from": "2026-06-18T16:00:00+09:00",
+        "expires_at": "2026-06-18T18:00:00+09:00"
+      },
+      "controls": {
+        "retained_authorities": [
+          "Red and Black actions remain Commander-retained.",
+          "Sensitive or restricted release remains under release review."
+        ],
+        "prohibited_context_classes": ["sensitive", "restricted"],
+        "subdelegation_allowed": false,
+        "release_review_required_for_sensitive": true
+      },
+      "termination": {
+        "id": "ADGR-PROJ-003",
+        "actor": "RECORDER",
+        "authority": "COMMANDER",
+        "terminated_at": "2026-06-18T18:00:00+09:00",
+        "reason": "Delegation window expired."
+      },
+      "lifecycle_alert": null,
+      "dashboard": {
+        "class": "gray",
+        "label": "EXPIRED",
+        "title": "COS expired restart_service",
+        "body": "COS may approve restart_service on staging.command-post-dashboard for S3. Terminated by RECORDER as expired: Delegation window expired."
+      }
+    }
+  ],
+  "orphan_terminations": []
+}
+

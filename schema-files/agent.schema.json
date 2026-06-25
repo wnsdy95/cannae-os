@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/agent.schema.json",
+  "title": "Agent Registry Entry",
+  "type": "object",
+  "required": ["id", "name", "responsibilities", "authorities", "readiness"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/role_id" },
+    "name": { "type": "string", "minLength": 1 },
+    "model": { "type": "string" },
+    "responsibilities": { "$ref": "common.schema.json#/$defs/string_list" },
+    "authorities": {
+      "type": "object",
+      "required": ["allowed", "approval_required", "prohibited"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed": { "$ref": "common.schema.json#/$defs/string_list" },
+        "approval_required": { "$ref": "common.schema.json#/$defs/string_list" },
+        "prohibited": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": { "$ref": "common.schema.json#/$defs/readiness_rating" }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": { "$ref": "common.schema.json#/$defs/string_list" }
+    }
+  }
+}

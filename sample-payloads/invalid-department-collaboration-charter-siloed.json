@@ -1,0 +1,143 @@
+{
+  "schema_version": "0.1",
+  "type": "DepartmentCollaborationCharter",
+  "id": "DCC-Siloed",
+  "mission_id": "M-ReleaseHardening",
+  "name": "Siloed release work",
+  "purpose": "Let each department work independently and merge later.",
+  "departments": [
+    {
+      "id": "research",
+      "function": "intelligence",
+      "lead_role": "S2",
+      "responsibilities": [
+        "Find sources."
+      ],
+      "outputs": [
+        "Notes."
+      ],
+      "authority_boundary": [],
+      "ccir": [],
+      "source_of_truth_files": []
+    },
+    {
+      "id": "operations",
+      "function": "movement_and_maneuver",
+      "lead_role": "S3",
+      "responsibilities": [
+        "Execute."
+      ],
+      "outputs": [
+        "Patch."
+      ],
+      "authority_boundary": [
+        "May execute as needed."
+      ],
+      "ccir": [],
+      "source_of_truth_files": []
+    },
+    {
+      "id": "protection",
+      "function": "protection",
+      "lead_role": "EVALUATOR",
+      "responsibilities": [
+        "Review if time allows."
+      ],
+      "outputs": [
+        "Review."
+      ],
+      "authority_boundary": [],
+      "ccir": [],
+      "source_of_truth_files": []
+    }
+  ],
+  "relationships": [
+    {
+      "phase": "release",
+      "supported_department": "operations",
+      "supporting_department": "research",
+      "support_type": "information",
+      "required_outputs": [],
+      "quality_gate": [],
+      "handoff_interface": "none",
+      "escalation_trigger": []
+    },
+    {
+      "phase": "release",
+      "supported_department": "operations",
+      "supporting_department": "protection",
+      "support_type": "protection",
+      "required_outputs": [
+        "Review."
+      ],
+      "quality_gate": [],
+      "handoff_interface": "none",
+      "escalation_trigger": []
+    },
+    {
+      "phase": "release",
+      "supported_department": "operations",
+      "supporting_department": "legal",
+      "support_type": "decision_support",
+      "required_outputs": [
+        "Approval."
+      ],
+      "quality_gate": [
+        "Approved."
+      ],
+      "handoff_interface": "email",
+      "escalation_trigger": [
+        "Blocked."
+      ]
+    }
+  ],
+  "liaison_rules": [
+    {
+      "between": ["research"],
+      "liaison_role": "S2",
+      "information_to_exchange": [],
+      "update_cadence": "none",
+      "conflict_route": []
+    }
+  ],
+  "synchronization": {
+    "battle_rhythm_events": [],
+    "decision_points": [],
+    "dependency_matrix": [
+      {
+        "from_department": "research",
+        "to_department": "operations",
+        "dependency": "Sources.",
+        "required_before": "release"
+      }
+    ]
+  },
+  "conflict_resolution": {
+    "authority": "S3",
+    "method": [],
+    "decision_packet_required": false,
+    "commander_escalation": []
+  },
+  "collaboration_controls": {
+    "no_silent_scope_change": false,
+    "source_map_required": false,
+    "shared_glossary_required": false,
+    "handoff_required": false,
+    "aar_required": false
+  },
+  "information_policy": {
+    "need_to_know": [],
+    "context_sharing": [],
+    "eefi_controls": []
+  },
+  "exit_criteria": {
+    "success": [
+      "Merged."
+    ],
+    "abort": [],
+    "handoff": []
+  },
+  "classification": "internal",
+  "status": "draft",
+  "created_at": "2026-06-19T10:00:00+09:00"
+}

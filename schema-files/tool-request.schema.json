@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/tool-request.schema.json",
+  "title": "Tool Request",
+  "type": "object",
+  "required": ["id", "mission_id", "actor", "tool", "action", "target", "roe_class", "approval_required", "reason"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "task_id": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "tool": { "type": "string", "minLength": 1 },
+    "action": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "risk_level": { "$ref": "common.schema.json#/$defs/risk_level" },
+    "roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+    "approval_required": { "type": "boolean" },
+    "reason": { "type": "string", "minLength": 1 },
+    "result": { "type": "string" }
+  }
+}

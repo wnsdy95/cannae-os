@@ -1,0 +1,14 @@
+{
+  "id": "TR-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "task_id": "T-DEMO-001",
+  "actor": "S3",
+  "tool": "filesystem",
+  "action": "create_markdown_file",
+  "target": "docs/runtime-demo-scenario.md",
+  "risk_level": "low",
+  "roe_class": "Green",
+  "approval_required": false,
+  "reason": "Local documentation update within requested mission scope.",
+  "result": "success"
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/approval-renewal-event.schema.json",
+  "title": "Approval Renewal Event",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "approval_scope_id", "approval_request_id", "tool_request_id", "actor", "renewal_authority", "classification", "action", "tool", "target", "renewed_at", "reason", "approval_status_before", "approval_status_after", "previous_valid_from", "previous_expires_at", "new_expires_at", "execution_count_before", "max_executions_before", "max_executions_after", "scope_snapshot", "notification_required", "notified_roles", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "APPROVAL_RENEWAL_EVENT" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "approval_scope_id": { "$ref": "common.schema.json#/$defs/id" },
+    "approval_request_id": { "$ref": "common.schema.json#/$defs/id" },
+    "tool_request_id": { "$ref": "common.schema.json#/$defs/id" },
+    "renewal_order_id": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "renewal_authority": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "action": { "type": "string", "minLength": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "renewed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "reason": { "type": "string", "minLength": 1 },
+    "approval_status_before": {
+      "type": "string",
+      "enum": ["active", "consumed", "expired", "revoked"]
+    },
+    "approval_status_after": {
+      "type": "string",
+      "enum": ["active"]
+    },
+    "previous_valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "previous_expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "new_expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_count_before": { "type": "integer" },
+    "max_executions_before": { "type": "integer" },
+    "max_executions_after": { "type": "integer" },
+    "scope_snapshot": {
+      "type": "object",
+      "required": ["decision", "status_before", "granted_by", "granted_to", "action", "tool", "target", "max_executions", "valid_from", "expires_at"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": { "type": "string", "enum": ["approve_once", "approve_with_constraints"] },
+        "status_before": { "type": "string", "enum": ["active", "consumed", "expired", "revoked"] },
+        "granted_by": { "$ref": "common.schema.json#/$defs/role_id" },
+        "granted_to": { "$ref": "common.schema.json#/$defs/role_id" },
+        "action": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "max_executions": { "type": "integer" },
+        "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "notification_required": { "type": "boolean" },
+    "notified_roles": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "notes": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

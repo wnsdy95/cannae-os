@@ -1,0 +1,10 @@
+{
+  "id": "M-20260618-002",
+  "title": "Bad Mission",
+  "status": "draft",
+  "created_at": "2026-06-18T09:00:00+09:00",
+  "mission_statement": "Make the AI framework better.",
+  "constraints": [
+    "Use public sources."
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1",
+  "type": "ContinuityPlan",
+  "id": "CP-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "owner": "COS",
+  "classification": "internal",
+  "essential_functions": [
+    {
+      "function_id": "EF-COMMAND-001",
+      "name": "Commander decision and intent preservation",
+      "owner_role": "COMMANDER",
+      "criticality": "critical",
+      "minimum_readiness": "P",
+      "backup_roles": ["COMMANDER"],
+      "authority_scope": [
+        "Continue all decisions."
+      ],
+      "source_of_truth_files": [],
+      "handoff_required": false
+    }
+  ],
+  "succession_rules": [
+    {
+      "from_role": "COMMANDER",
+      "successors": ["COMMANDER"],
+      "activation_triggers": ["loss"],
+      "authority_limits": [],
+      "notification_roles": []
+    }
+  ],
+  "rotation_windows": [
+    {
+      "role": "S6",
+      "outgoing": "S6",
+      "incoming": "RECORDER",
+      "overlap_required": false,
+      "backbrief_required": false,
+      "handoff_packet_required": false,
+      "rehearsal_required": false
+    }
+  ],
+  "vital_records": [
+    "README.md"
+  ],
+  "continuity_triggers": [
+    "loss"
+  ],
+  "degradation_policy": {
+    "minimum_staffing": [],
+    "functions_to_pause": [],
+    "commander_retained_decisions": [],
+    "recovery_actions": []
+  },
+  "validation": {
+    "last_drill_at": "2026-06-19T12:00:00+09:00",
+    "next_drill_due": "2026-06-26T12:00:00+09:00",
+    "tested_scenarios": [],
+    "open_gaps": []
+  },
+  "created_at": "2026-06-19T12:00:00+09:00"
+}

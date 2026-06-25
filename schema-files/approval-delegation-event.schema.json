@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/approval-delegation-event.schema.json",
+  "title": "Approval Delegation Event",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "authority_matrix_id", "actor", "delegator", "delegatee", "classification", "delegation_type", "approving_for_roles", "delegated_decisions", "delegation_scope", "delegation_status_after", "subdelegation_allowed", "release_review_required_for_sensitive", "requires_backbrief", "requires_post_action_evidence", "notification_required", "notified_roles", "reason", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "APPROVAL_DELEGATION_EVENT" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "authority_matrix_id": { "$ref": "common.schema.json#/$defs/id" },
+    "source_order_id": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "delegator": { "$ref": "common.schema.json#/$defs/role_id" },
+    "delegatee": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "delegation_type": {
+      "type": "string",
+      "enum": ["temporary", "standing", "emergency"]
+    },
+    "approving_for_roles": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "delegated_decisions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["approve_once", "approve_with_constraints", "reject", "revise"]
+      }
+    },
+    "delegation_scope": {
+      "type": "object",
+      "required": ["task_scope", "action", "tool", "target", "max_roe_class", "max_residual_risk", "max_approval_duration_minutes", "max_approvals", "valid_from", "expires_at", "retained_authorities", "prohibited_context_classes"],
+      "additionalProperties": false,
+      "properties": {
+        "task_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+        "action": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "max_roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+        "max_residual_risk": { "$ref": "common.schema.json#/$defs/risk_level" },
+        "max_approval_duration_minutes": { "type": "integer" },
+        "max_approvals": { "type": "integer" },
+        "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "retained_authorities": { "$ref": "common.schema.json#/$defs/string_list" },
+        "prohibited_context_classes": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/classification" }
+        }
+      }
+    },
+    "delegation_status_after": {
+      "type": "string",
+      "enum": ["active"]
+    },
+    "subdelegation_allowed": { "type": "boolean" },
+    "release_review_required_for_sensitive": { "type": "boolean" },
+    "requires_backbrief": { "type": "boolean" },
+    "requires_post_action_evidence": { "type": "boolean" },
+    "notification_required": { "type": "boolean" },
+    "notified_roles": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "reason": { "type": "string", "minLength": 1 },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "notes": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

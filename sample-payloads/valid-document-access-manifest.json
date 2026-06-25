@@ -1,0 +1,240 @@
+{
+  "schema_version": "0.1",
+  "type": "DocumentAccessManifest",
+  "id": "DAM-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "default_decision": "deny",
+  "role_profiles": [
+    {
+      "role": "S2",
+      "duty": "source_verification",
+      "authority_level": "L0",
+      "required_documents": [
+        "docs/source-map.md",
+        "docs/source-reliability-rubric.md",
+        "docs/information-to-operations-cycle.md"
+      ],
+      "optional_documents": [
+        "docs/research-compendium.md"
+      ],
+      "denied_documents": [
+        "docs/risk-acceptance-authority.md"
+      ],
+      "escalation_role": "COS"
+    },
+    {
+      "role": "EXECUTOR",
+      "duty": "assigned_execution",
+      "authority_level": "L1",
+      "required_documents": [
+        "docs/implementation-guide.md",
+        "docs/tool-use-roe.md",
+        "schema-files/README.md"
+      ],
+      "optional_documents": [
+        "docs/prompt-dsl.md"
+      ],
+      "denied_documents": [
+        "docs/commander-handbook.md",
+        "docs/risk-acceptance-authority.md"
+      ],
+      "escalation_role": "COS"
+    },
+    {
+      "role": "S6",
+      "duty": "knowledge_management",
+      "authority_level": "L1",
+      "required_documents": [
+        "README.md",
+        "docs/knowledge-management-sop.md",
+        "docs/context-releasability-policy.md",
+        "docs/opsec-classification-model.md"
+      ],
+      "optional_documents": [
+        "docs/source-map.md",
+        "docs/event-sourcing-model.md"
+      ],
+      "denied_documents": [
+        "sample-payloads/invalid-context-item-eefi-final.json"
+      ],
+      "escalation_role": "COMMANDER"
+    }
+  ],
+  "documents": [
+    {
+      "path": "docs/source-map.md",
+      "title": "Source Map",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": ["S2", "S6", "RECORDER"],
+      "duties": ["source_verification", "knowledge_management", "audit_and_aar", "mission_common"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "Source verification needs mapped evidence and source anchors."
+    },
+    {
+      "path": "docs/source-reliability-rubric.md",
+      "title": "Source Reliability Rubric",
+      "classification": "internal",
+      "owner_role": "S2",
+      "allowed_roles": ["S2", "RED_TEAM", "EVALUATOR"],
+      "duties": ["source_verification", "independent_review", "evaluation"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "S2 uses this to separate facts, assumptions, and source quality."
+    },
+    {
+      "path": "docs/information-to-operations-cycle.md",
+      "title": "Information to Operations Cycle",
+      "classification": "internal",
+      "owner_role": "S2",
+      "allowed_roles": ["S2", "S3", "COS"],
+      "duties": ["source_verification", "operations_planning", "orchestration"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "S2 needs routing rules from information report to decision support."
+    },
+    {
+      "path": "docs/research-compendium.md",
+      "title": "Research Compendium",
+      "classification": "internal",
+      "owner_role": "RECORDER",
+      "allowed_roles": ["S2", "S6", "RECORDER"],
+      "duties": ["source_verification", "knowledge_management", "audit_and_aar"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "summary",
+      "rationale": "The compendium is broad; roles should receive only mission-relevant sections unless tasked."
+    },
+    {
+      "path": "docs/implementation-guide.md",
+      "title": "Implementation Guide",
+      "classification": "internal",
+      "owner_role": "COS",
+      "allowed_roles": ["EXECUTOR", "COS", "S3"],
+      "duties": ["assigned_execution", "orchestration", "operations_planning"],
+      "minimum_authority_level": "L1",
+      "delivery_mode": "raw",
+      "rationale": "Executors need implementation rules for assigned local work."
+    },
+    {
+      "path": "docs/tool-use-roe.md",
+      "title": "Tool Use ROE",
+      "classification": "internal",
+      "owner_role": "COS",
+      "allowed_roles": ["EXECUTOR", "S3", "S4", "RED_TEAM", "COS"],
+      "duties": ["assigned_execution", "operations_planning", "sustainment", "independent_review", "orchestration"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "Tool authority boundaries must be visible before execution."
+    },
+    {
+      "path": "schema-files/README.md",
+      "title": "Schema Files Index",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": ["EXECUTOR", "S6", "EVALUATOR"],
+      "duties": ["assigned_execution", "knowledge_management", "evaluation"],
+      "minimum_authority_level": "L1",
+      "delivery_mode": "raw",
+      "rationale": "Executor needs schema index for assigned contract work."
+    },
+    {
+      "path": "docs/prompt-dsl.md",
+      "title": "Prompt DSL",
+      "classification": "internal",
+      "owner_role": "S3",
+      "allowed_roles": ["EXECUTOR", "S3", "EVALUATOR"],
+      "duties": ["assigned_execution", "operations_planning", "evaluation"],
+      "minimum_authority_level": "L1",
+      "delivery_mode": "raw",
+      "rationale": "Prompt DSL is optional for executor unless assigned schema work."
+    },
+    {
+      "path": "README.md",
+      "title": "Repository Index",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": ["S6", "COS", "RECORDER"],
+      "duties": ["knowledge_management", "orchestration", "audit_and_aar"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "S6 maintains the index and should read it directly."
+    },
+    {
+      "path": "docs/knowledge-management-sop.md",
+      "title": "Knowledge Management SOP",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": ["S6", "RECORDER", "COS"],
+      "duties": ["knowledge_management", "audit_and_aar", "orchestration"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "S6 and Recorder need the source-of-truth procedure."
+    },
+    {
+      "path": "docs/context-releasability-policy.md",
+      "title": "Context Releasability Policy",
+      "classification": "sensitive",
+      "owner_role": "S6",
+      "allowed_roles": ["S6", "RED_TEAM", "COS"],
+      "duties": ["knowledge_management", "independent_review", "orchestration"],
+      "minimum_authority_level": "L1",
+      "delivery_mode": "summary",
+      "rationale": "Context distribution policy is sensitive and should be summarized outside S6/COS."
+    },
+    {
+      "path": "docs/opsec-classification-model.md",
+      "title": "OPSEC Classification Model",
+      "classification": "sensitive",
+      "owner_role": "S6",
+      "allowed_roles": ["S6", "RED_TEAM", "COS"],
+      "duties": ["knowledge_management", "independent_review", "orchestration"],
+      "minimum_authority_level": "L1",
+      "delivery_mode": "summary",
+      "rationale": "OPSEC labels are needed by S6 but raw access is not a default for every role."
+    },
+    {
+      "path": "docs/event-sourcing-model.md",
+      "title": "Event Sourcing Model",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": ["S6", "COS", "RECORDER"],
+      "duties": ["knowledge_management", "orchestration", "audit_and_aar"],
+      "minimum_authority_level": "L1",
+      "delivery_mode": "raw",
+      "rationale": "Event logs and projections are part of S6 state management."
+    },
+    {
+      "path": "docs/commander-handbook.md",
+      "title": "Commander Handbook",
+      "classification": "sensitive",
+      "owner_role": "COMMANDER",
+      "allowed_roles": ["COMMANDER", "COS"],
+      "duties": ["command_decision", "orchestration"],
+      "minimum_authority_level": "L3",
+      "delivery_mode": "summary",
+      "rationale": "Commander intent and retained decisions should not be default executor context."
+    },
+    {
+      "path": "docs/risk-acceptance-authority.md",
+      "title": "Risk Acceptance Authority",
+      "classification": "sensitive",
+      "owner_role": "COMMANDER",
+      "allowed_roles": ["COMMANDER", "COS", "RED_TEAM"],
+      "duties": ["command_decision", "orchestration", "independent_review"],
+      "minimum_authority_level": "L3",
+      "delivery_mode": "summary",
+      "rationale": "Risk acceptance is commander-retained and not default executor or S2 reading."
+    }
+  ],
+  "controls": {
+    "need_to_know": true,
+    "no_bulk_read": true,
+    "audit_required": true,
+    "exception_requires_approval": true,
+    "source_of_truth": "docs/role-document-access-policy.md"
+  },
+  "classification": "internal",
+  "status": "pending",
+  "created_at": "2026-06-19T00:00:00Z"
+}

@@ -1,0 +1,90 @@
+{
+  "schema_version": "0.1",
+  "type": "ForceStructureChangeOrder",
+  "id": "FSCO-Unjustified",
+  "mission_id": "M-ReleaseHardening",
+  "change_type": "expand",
+  "target": {
+    "kind": "unit",
+    "id": "UNIT-MoreExecutors",
+    "name": "More execution agents",
+    "current_state": "Release work is slow.",
+    "proposed_state": "Add more execution agents permanently.",
+    "essential_functions": [
+      "Execute faster."
+    ]
+  },
+  "capability_gap": {
+    "problem": "Need more speed.",
+    "evidence": [],
+    "operational_impact": [],
+    "why_now": "Now."
+  },
+  "alternatives_considered": [
+    {
+      "option": "none",
+      "type": "no_change",
+      "reason_not_sufficient": "none"
+    }
+  ],
+  "dotmlpf_p": {
+    "doctrine": [],
+    "organization": [
+      "More agents."
+    ],
+    "training": [],
+    "materiel_tooling": [],
+    "leadership": [],
+    "personnel_agent": [
+      "Executors."
+    ],
+    "facilities_context": [],
+    "policy": []
+  },
+  "authority": {
+    "approving_authority": "S3",
+    "commander_retained_decisions": [],
+    "prohibited_changes": [],
+    "approval_evidence": []
+  },
+  "resources": {
+    "maintainer_roles": [],
+    "tooling": [],
+    "context_budget": "unbounded",
+    "time_budget": "unbounded",
+    "dashboard_or_runner_cost": [],
+    "fallback": []
+  },
+  "readiness": {
+    "required_rating": "X",
+    "metl_tasks": [],
+    "evidence": [],
+    "backup_or_successor": [],
+    "validation_fixture": []
+  },
+  "transition_plan": {
+    "activation_steps": [],
+    "handoff_required": false,
+    "data_migration": [],
+    "deactivation_or_sunset": [],
+    "rollback": []
+  },
+  "documentation_updates": {
+    "schema_updates": [],
+    "sample_updates": [],
+    "runner_updates": [],
+    "readme_updates": [],
+    "source_map_updates": [],
+    "compendium_updates": []
+  },
+  "assessment": {
+    "mop": [],
+    "moe": [],
+    "aar_trigger": [],
+    "review_at": "2026-06-19T10:30:00+09:00",
+    "sunset_condition": []
+  },
+  "classification": "internal",
+  "status": "draft",
+  "created_at": "2026-06-19T10:30:00+09:00"
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/authority-matrix.schema.json",
+  "title": "Authority Matrix",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "owner", "classification", "default_decision", "rules", "review"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "AuthorityMatrix" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "default_decision": {
+      "type": "string",
+      "enum": ["allow", "report_required", "approval_required", "prohibit"]
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "role", "task_scope", "tool_scope", "target_scope", "roe_class", "decision", "readiness_min", "evidence_required", "ccir_triggers"],
+        "additionalProperties": false,
+        "properties": {
+          "rule_id": { "$ref": "common.schema.json#/$defs/id" },
+          "role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "task_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "tool_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "target_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+          "decision": {
+            "type": "string",
+            "enum": ["allow", "report_required", "approval_required", "prohibit"]
+          },
+          "approval_authority": { "$ref": "common.schema.json#/$defs/role_id" },
+          "readiness_min": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+          "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+          "conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+          "evidence_required": { "$ref": "common.schema.json#/$defs/string_list" },
+          "ccir_triggers": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": ["cadence", "last_reviewed_by", "last_reviewed_at"],
+      "additionalProperties": false,
+      "properties": {
+        "cadence": { "type": "string", "enum": ["per_mission", "daily", "weekly", "on_aar", "on_policy_change"] },
+        "last_reviewed_by": { "$ref": "common.schema.json#/$defs/role_id" },
+        "last_reviewed_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    }
+  }
+}

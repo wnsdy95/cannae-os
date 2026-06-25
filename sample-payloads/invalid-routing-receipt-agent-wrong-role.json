@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "type": "RoutingReceipt",
+  "id": "RR-W2-research-agent",
+  "mission_id": "MIS-routing",
+  "wave_id": "W2",
+  "agent_id": "research-agent",
+  "wave_scope": "agent",
+  "actor": "ai",
+  "agent_role": "S2",
+  "department": "research",
+  "authority_scope": "source-verification",
+  "routing_mode": "delegated_ai_role_department_authority",
+  "router_query": "research-agent W2 문서 라우팅",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=research-agent --actor=ai --role=S2 --department=research --authority=source-verification \"research-agent W2 문서 라우팅\" .",
+  "matched_routes": [
+    {
+      "id": "sources-research",
+      "score": 2
+    }
+  ],
+  "recommended_documents": [
+    {
+      "path": "docs/source-reliability-rubric.md",
+      "exists": true
+    },
+    {
+      "path": "README.md",
+      "exists": true
+    },
+    {
+      "path": "docs/source-map.md",
+      "exists": true
+    }
+  ],
+  "route_inventory": {
+    "routable_artifact_count": 331,
+    "routed_artifact_count": 331,
+    "unrouted_artifact_count": 0
+  },
+  "validation_commands": [
+    "node source-map-linter.js"
+  ],
+  "created_at": "2026-06-24T09:04:00+09:00"
+}

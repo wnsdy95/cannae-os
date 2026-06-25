@@ -1,0 +1,17 @@
+{
+  "id": "AAR-20260618-SUSTAIN",
+  "mission_id": "M-20260618-001",
+  "expected": [
+    "Dashboard projections are generated from event logs."
+  ],
+  "actual": [
+    "Dashboard projections matched checked-in state."
+  ],
+  "delta": [],
+  "causes": [],
+  "sustain": [
+    "Keep dashboard projection fixture checks in the regression gate."
+  ],
+  "improve": [],
+  "sop_updates": []
+}

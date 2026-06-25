@@ -1,0 +1,114 @@
+{
+  "now": "2026-06-18T16:45:00+09:00",
+  "tool_request": {
+    "id": "TR-DEMO-002",
+    "mission_id": "M-DEMO-001",
+    "task_id": "T-DEMO-001",
+    "actor": "S3",
+    "tool": "deploy",
+    "action": "deploy_production",
+    "target": "prod.command-post-dashboard",
+    "risk_level": "high",
+    "roe_class": "Red",
+    "approval_required": true,
+    "reason": "Publish the command post dashboard to production for users."
+  },
+  "authority_request": {
+    "role": "S3",
+    "task": "deployment",
+    "tool": "deploy",
+    "target": "production",
+    "roe_class": "Red",
+    "readiness": "T"
+  },
+  "authority_matrix": {
+    "schema_version": "0.1",
+    "type": "AuthorityMatrix",
+    "id": "AM-DEMO-001",
+    "mission_id": "M-DEMO-001",
+    "owner": "COMMANDER",
+    "classification": "internal",
+    "default_decision": "report_required",
+    "rules": [
+      {
+        "rule_id": "RUL-DEMO-002",
+        "role": "S3",
+        "task_scope": ["deployment"],
+        "tool_scope": ["deploy"],
+        "target_scope": ["production"],
+        "roe_class": "Red",
+        "decision": "approval_required",
+        "approval_authority": "COMMANDER",
+        "readiness_min": "T",
+        "conditions": ["Rollback plan must be attached."],
+        "evidence_required": ["Approval request.", "Rollback plan.", "Post-action verification."],
+        "ccir_triggers": ["Production deployment requested."]
+      }
+    ],
+    "review": {
+      "cadence": "on_aar",
+      "last_reviewed_by": "COMMANDER",
+      "last_reviewed_at": "2026-06-18T12:00:00+09:00"
+    }
+  },
+  "approval_scope": {
+    "schema_version": "0.1",
+    "type": "APPROVAL_SCOPE",
+    "id": "AS-DEMO-001",
+    "mission_id": "M-DEMO-001",
+    "approval_request_id": "AR-DEMO-001",
+    "tool_request_id": "TR-DEMO-002",
+    "decision_packet_id": "DP-DEMO-001",
+    "granted_by": "COMMANDER",
+    "granted_to": "S3",
+    "classification": "internal",
+    "decision": "approve_once",
+    "scope": {
+      "action": "deploy_production",
+      "tool": "deploy",
+      "target": "prod.command-post-dashboard",
+      "task_order": "T-DEMO-001",
+      "max_executions": 1,
+      "valid_from": "2026-06-18T16:30:00+09:00",
+      "expires_at": "2026-06-18T17:00:00+09:00"
+    },
+    "conditions": ["Use the exact deployment target only."],
+    "rollback": ["Restore previous deployment artifact."],
+    "evidence_required": ["Approval event.", "Execution log.", "Post-action verification."],
+    "release_review_required": false,
+    "status": "consumed",
+    "consumed_by": "EXEC-DEMO-001",
+    "consumed_at": "2026-06-18T16:40:00+09:00",
+    "created_at": "2026-06-18T16:30:00+09:00"
+  },
+  "risk_acceptance": {
+    "schema_version": "0.1",
+    "type": "RISK_ACCEPTANCE",
+    "id": "RA-DEMO-001",
+    "mission_id": "M-DEMO-001",
+    "decision_packet_id": "DP-DEMO-001",
+    "classification": "internal",
+    "decision": "accept",
+    "accepted_by": "COMMANDER",
+    "risk_owner": "S3",
+    "action": "deploy_production",
+    "tool": "deploy",
+    "target": "prod.command-post-dashboard",
+    "hazard": "Production deployment may break the dashboard state used for commander review.",
+    "consequence": "Operators may lose current approval queue visibility until rollback completes.",
+    "likelihood": "possible",
+    "initial_risk": "high",
+    "controls": ["Run dry-run before deployment."],
+    "residual_risk": "medium",
+    "reversibility": "recoverable",
+    "duration": {
+      "valid_from": "2026-06-18T16:30:00+09:00",
+      "expires_at": "2026-06-18T17:00:00+09:00"
+    },
+    "supervision_plan": ["S3 reports execution result to CoS."],
+    "evidence_required": ["Dry-run output.", "Deployment log.", "Verification result."],
+    "aar_trigger": ["Deployment completed."],
+    "status": "active",
+    "created_at": "2026-06-18T16:30:00+09:00"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1",
+  "type": "APPROVAL_CONSUMPTION_EVENT",
+  "id": "ACE-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "approval_scope_id": "AS-DEMO-001",
+  "approval_request_id": "AR-DEMO-001",
+  "tool_request_id": "TR-DEMO-002",
+  "execution_id": "EXEC-DEMO-002",
+  "actor": "S3",
+  "classification": "internal",
+  "action": "deploy_production",
+  "tool": "deploy",
+  "target": "prod.other-dashboard",
+  "consumed_at": "2026-06-18T17:15:00+09:00",
+  "execution_count_after": 2,
+  "result": "executed",
+  "approval_status_after": "active",
+  "scope_snapshot": {
+    "decision": "approve_once",
+    "status_before": "consumed",
+    "granted_to": "S3",
+    "action": "deploy_production",
+    "tool": "deploy",
+    "target": "prod.command-post-dashboard",
+    "max_executions": 1,
+    "valid_from": "2026-06-18T16:30:00+09:00",
+    "expires_at": "2026-06-18T17:00:00+09:00"
+  },
+  "evidence": []
+}

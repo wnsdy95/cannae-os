@@ -1,0 +1,33 @@
+{
+  "mission_id": "M-DEMO-001",
+  "working_groups": [
+    {
+      "id": "WG-DEMO-001",
+      "name": "Deployment Approval Working Group",
+      "chair": "COS",
+      "status": "closed",
+      "deliverables": [
+        "DP-DEMO-001"
+      ],
+      "closure_reason": "Commander decision recorded and packet archived."
+    }
+  ],
+  "decision_packets": [
+    {
+      "id": "DP-DEMO-001",
+      "working_group_id": "WG-DEMO-001",
+      "decision_type": "approval",
+      "recommended_option": "OPT-DEMO-001",
+      "status": "decided",
+      "decision": "reject"
+    }
+  ],
+  "board_decisions": [
+    {
+      "decision_packet_id": "DP-DEMO-001",
+      "decision": "reject",
+      "rationale": "Production deployment exceeds local-only mission authority.",
+      "actor": "COMMANDER"
+    }
+  ]
+}

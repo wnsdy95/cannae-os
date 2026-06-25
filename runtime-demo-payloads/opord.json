@@ -1,0 +1,172 @@
+{
+  "schema_version": "0.1",
+  "type": "OPORD",
+  "id": "OPORD-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "created_by": "COMMANDER",
+  "classification": "internal",
+  "situation": {
+    "background": [
+      "The project is converting a military-style LLM operating framework into executable local artifacts.",
+      "Schemas, sample payloads, validator, policy engine, dashboard, and event replay prototype already exist."
+    ],
+    "known_facts": [
+      "Mission payload M-DEMO-001 exists.",
+      "Task order T-DEMO-001 is assigned to S3.",
+      "Green filesystem actions may proceed within the local workspace.",
+      "Red production deployment is blocked without explicit commander approval."
+    ],
+    "assumptions": [
+      "The demo remains local and does not deploy or call production services.",
+      "The validator and policy engine are prototype controls, not a hardened runtime."
+    ],
+    "constraints": [
+      "Use local files only.",
+      "Keep all high-risk actions behind approval.",
+      "Preserve evidence and AAR links to the mission."
+    ]
+  },
+  "mission": {
+    "statement": "Build and validate an end-to-end runtime demo for the military-style LLM control framework.",
+    "target_end_state": [
+      "Mission, OPORD, task order, tool request, approval, SITREP, evidence, and AAR payloads validate.",
+      "Green tool request is allowed by policy.",
+      "Red tool request is blocked and represented in the approval queue.",
+      "Event replay can rebuild a commander-facing dashboard state."
+    ]
+  },
+  "intent": {
+    "purpose": "Prove that the framework is not only a writing style, but a machine-checkable control loop.",
+    "key_tasks": [
+      "Validate OPORD and related payloads.",
+      "Run policy checks for Green and Red tool requests.",
+      "Replay mission events into current state.",
+      "Render dashboard state from projection."
+    ],
+    "expanded_purpose": [
+      "Reduce hallucination by separating mission intent, authority, evidence, policy decision, and AAR.",
+      "Reduce unauthorized action risk by forcing Red actions through an approval object."
+    ],
+    "failure_to_avoid": [
+      "Executing a Red tool action without approval.",
+      "Treating conversational memory as the source of truth.",
+      "Recording an AAR without updating readiness or doctrine."
+    ]
+  },
+  "execution": {
+    "concept": [
+      "Use mission payload as command intent.",
+      "Use OPORD and task order as the executable planning contract.",
+      "Use policy engine as ROE gate before tool action.",
+      "Use event sourcing to rebuild current mission state."
+    ],
+    "tasks": [
+      {
+        "id": "T-DEMO-001",
+        "mission_id": "M-DEMO-001",
+        "assigned_to": "S3",
+        "task": "Create and validate runtime demo payloads.",
+        "purpose": "Prove the framework can represent an end-to-end mission flow.",
+        "deliverables": [
+          "runtime-demo-payloads/mission.json",
+          "runtime-demo-payloads/opord.json",
+          "runtime-demo-payloads/task-order.json",
+          "runtime-demo-payloads/sitrep.json",
+          "runtime-demo-payloads/evidence.json",
+          "runtime-demo-payloads/aar.json"
+        ],
+        "ccir": [
+          "Validator cannot parse payload.",
+          "Policy engine allows Red action without approval.",
+          "Event replay projection diverges from dashboard state."
+        ],
+        "verification": [
+          "Run validator CLI on mission, OPORD, task order, SITREP, evidence, AAR.",
+          "Run policy engine on Green and Red tool requests.",
+          "Run event replay fixture runner."
+        ],
+        "status": "complete"
+      }
+    ],
+    "coordinating_instructions": [
+      "All generated artifacts remain local.",
+      "Any deployment, credential, or external mutation is Red unless separately approved.",
+      "Every generated runtime state must be reproducible from saved payloads or events."
+    ]
+  },
+  "sustainment": {
+    "tools": [
+      "Node.js runtime",
+      "validator-cli-prototype/validate.js",
+      "policy-engine-prototype/policy-engine.js",
+      "event-replay-prototype/replay.js",
+      "dashboard-ui-prototype/render-state.js"
+    ],
+    "context_budget": "Keep mission state in files and event logs so continuation does not depend on chat memory.",
+    "fallback": [
+      "If schema validation fails, stop execution and patch the payload or schema.",
+      "If policy decision is Red, create approval request and do not execute the tool.",
+      "If dashboard projection fails, use event replay output as the diagnostic source."
+    ]
+  },
+  "command_and_signal": {
+    "authority": {
+      "allowed": [
+        "Create and edit local framework documents.",
+        "Run local validators and fixture runners.",
+        "Render local dashboard state from fixture events."
+      ],
+      "approval_required": [
+        "Production deployment.",
+        "Credential use.",
+        "External API mutation.",
+        "Deleting or overwriting unrelated user work."
+      ],
+      "prohibited": [
+        "Bypassing Red action approval.",
+        "Reporting unverified claims as sourced fact.",
+        "Treating generated output as final without verification."
+      ]
+    },
+    "ccir": {
+      "pir": [
+        "Which control prevents hallucinated or unsourced claims from entering final output?",
+        "Which approval is required for high-risk tool action?"
+      ],
+      "ffir": [
+        "Validator failure.",
+        "Policy engine disagreement.",
+        "Event replay projection loss.",
+        "Dashboard state mismatch."
+      ],
+      "eefi": [
+        "Secrets, API keys, credentials, and private user data must not be exposed.",
+        "Unapproved production targets must not be modified."
+      ]
+    },
+    "reports": {
+      "sitrep_trigger": [
+        "After creating or changing runtime control artifacts.",
+        "After any failed validator, policy, or replay run.",
+        "Before any action classified Red."
+      ]
+    }
+  },
+  "assessment": {
+    "mop": [
+      "All demo JSON payloads pass schema validation.",
+      "Policy fixture runner passes expected Green and Red decisions.",
+      "Event replay fixture runner passes expected projection checks."
+    ],
+    "moe": [
+      "A new operator can infer current mission state from files without chat history.",
+      "Commander approval queue accurately reflects blocked Red actions.",
+      "AAR produces an explicit readiness or doctrine update."
+    ],
+    "verification": [
+      "node validator-cli-prototype/validate.js runtime-demo-payloads/opord.json opord",
+      "node runtime-demo-runner.js",
+      "node event-replay-prototype/run-event-fixtures.js"
+    ]
+  }
+}

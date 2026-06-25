@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/approval-consumption-event.schema.json",
+  "title": "Approval Consumption Event",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "approval_scope_id", "approval_request_id", "tool_request_id", "execution_id", "actor", "classification", "action", "tool", "target", "consumed_at", "execution_count_after", "result", "approval_status_after", "scope_snapshot", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "APPROVAL_CONSUMPTION_EVENT" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "approval_scope_id": { "$ref": "common.schema.json#/$defs/id" },
+    "approval_request_id": { "$ref": "common.schema.json#/$defs/id" },
+    "tool_request_id": { "$ref": "common.schema.json#/$defs/id" },
+    "risk_acceptance_id": { "$ref": "common.schema.json#/$defs/id" },
+    "execution_id": { "$ref": "common.schema.json#/$defs/id" },
+    "actor": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "action": { "type": "string", "minLength": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "consumed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_count_after": { "type": "integer" },
+    "result": {
+      "type": "string",
+      "enum": ["executed", "failed_before_execution", "aborted", "rolled_back"]
+    },
+    "approval_status_after": {
+      "type": "string",
+      "enum": ["active", "consumed", "expired", "revoked"]
+    },
+    "scope_snapshot": {
+      "type": "object",
+      "required": ["decision", "status_before", "granted_to", "action", "tool", "target", "max_executions", "valid_from", "expires_at"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": { "type": "string", "enum": ["approve_once", "approve_with_constraints"] },
+        "status_before": { "type": "string", "enum": ["active", "consumed", "expired", "revoked"] },
+        "granted_to": { "$ref": "common.schema.json#/$defs/role_id" },
+        "action": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "target": { "type": "string", "minLength": 1 },
+        "max_executions": { "type": "integer" },
+        "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "notes": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

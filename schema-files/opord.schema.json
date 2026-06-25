@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/opord.schema.json",
+  "title": "OPORD",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "created_by", "classification", "situation", "mission", "intent", "execution", "sustainment", "command_and_signal", "assessment"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "OPORD" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "created_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "situation": {
+      "type": "object",
+      "required": ["known_facts", "assumptions", "constraints"],
+      "additionalProperties": false,
+      "properties": {
+        "background": { "$ref": "common.schema.json#/$defs/string_list" },
+        "known_facts": { "$ref": "common.schema.json#/$defs/string_list" },
+        "assumptions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "constraints": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "mission": {
+      "type": "object",
+      "required": ["statement", "target_end_state"],
+      "additionalProperties": false,
+      "properties": {
+        "statement": { "type": "string", "minLength": 1 },
+        "target_end_state": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "required": ["purpose", "key_tasks", "failure_to_avoid"],
+      "additionalProperties": false,
+      "properties": {
+        "purpose": { "type": "string", "minLength": 1 },
+        "key_tasks": { "$ref": "common.schema.json#/$defs/string_list" },
+        "expanded_purpose": { "$ref": "common.schema.json#/$defs/string_list" },
+        "failure_to_avoid": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["concept", "tasks", "coordinating_instructions"],
+      "additionalProperties": false,
+      "properties": {
+        "concept": { "$ref": "common.schema.json#/$defs/string_list" },
+        "tasks": {
+          "type": "array",
+          "items": { "$ref": "task-order.schema.json" }
+        },
+        "coordinating_instructions": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "sustainment": {
+      "type": "object",
+      "required": ["tools", "fallback"],
+      "additionalProperties": false,
+      "properties": {
+        "tools": { "$ref": "common.schema.json#/$defs/string_list" },
+        "context_budget": { "type": "string" },
+        "fallback": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "command_and_signal": {
+      "type": "object",
+      "required": ["authority", "ccir", "reports"],
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "type": "object",
+          "required": ["allowed", "approval_required", "prohibited"],
+          "additionalProperties": false,
+          "properties": {
+            "allowed": { "$ref": "common.schema.json#/$defs/string_list" },
+            "approval_required": { "$ref": "common.schema.json#/$defs/string_list" },
+            "prohibited": { "$ref": "common.schema.json#/$defs/string_list" }
+          }
+        },
+        "ccir": {
+          "type": "object",
+          "required": ["pir", "ffir", "eefi"],
+          "additionalProperties": false,
+          "properties": {
+            "pir": { "$ref": "common.schema.json#/$defs/string_list" },
+            "ffir": { "$ref": "common.schema.json#/$defs/string_list" },
+            "eefi": { "$ref": "common.schema.json#/$defs/string_list" }
+          }
+        },
+        "reports": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sitrep_trigger": { "$ref": "common.schema.json#/$defs/string_list" }
+          }
+        }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["mop", "moe", "verification"],
+      "additionalProperties": false,
+      "properties": {
+        "mop": { "$ref": "common.schema.json#/$defs/string_list" },
+        "moe": { "$ref": "common.schema.json#/$defs/string_list" },
+        "verification": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    }
+  }
+}

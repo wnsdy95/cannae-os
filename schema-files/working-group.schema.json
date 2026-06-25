@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/working-group.schema.json",
+  "title": "Working Group Charter",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "name", "problem", "chair", "participants", "inputs", "deliverables", "decision_board", "trigger", "disband_condition", "classification", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "WorkingGroup" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "name": { "type": "string", "minLength": 1 },
+    "problem": { "type": "string", "minLength": 1 },
+    "chair": { "$ref": "common.schema.json#/$defs/role_id" },
+    "participants": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "inputs": { "$ref": "common.schema.json#/$defs/string_list" },
+    "deliverables": { "$ref": "common.schema.json#/$defs/string_list" },
+    "decision_board": { "$ref": "common.schema.json#/$defs/role_id" },
+    "trigger": { "$ref": "common.schema.json#/$defs/string_list" },
+    "disband_condition": { "$ref": "common.schema.json#/$defs/string_list" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

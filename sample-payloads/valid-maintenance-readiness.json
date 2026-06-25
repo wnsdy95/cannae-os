@@ -1,0 +1,54 @@
+{
+  "schema_version": "0.1",
+  "type": "MaintenanceReadinessReport",
+  "id": "MR-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "owner": "S6",
+  "classification": "internal",
+  "generated_at": "2026-06-18T12:45:00+09:00",
+  "overall_readiness": "Fully",
+  "assets": [
+    {
+      "asset_id": "TOOL-VALIDATOR-001",
+      "asset_type": "tool",
+      "owner": "S6",
+      "readiness": "Fully",
+      "check_command": "node validator-cli-prototype/run-fixtures.js",
+      "last_result": "pass",
+      "dependencies": [
+        "node",
+        "schema-files",
+        "sample-payloads"
+      ],
+      "fallback": "Manual schema review and targeted validator patch.",
+      "ccir_trigger": "Validator runner fails or cannot execute."
+    },
+    {
+      "asset_id": "TOOL-ALERTS-001",
+      "asset_type": "verification",
+      "owner": "COS",
+      "readiness": "Fully",
+      "check_command": "node alert-router-prototype/run-alert-fixtures.js",
+      "last_result": "pass",
+      "dependencies": [
+        "event-fixtures/demo-events.json",
+        "alert-router-prototype/route-alerts.js"
+      ],
+      "fallback": "Manual CCIR review from event log.",
+      "ccir_trigger": "Alert router misses Red blocked action."
+    }
+  ],
+  "summary": {
+    "unavailable_assets": [
+      "None"
+    ],
+    "degraded_assets": [
+      "None"
+    ],
+    "commander_decision_required": false,
+    "next_actions": [
+      "Continue scheduled runner checks.",
+      "Add maintenance readiness runner to full verification."
+    ]
+  }
+}

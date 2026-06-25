@@ -1,0 +1,136 @@
+---
+name: controls-doctrine-operator
+description: Efficiently navigate, apply, validate, and improve the Controls military-style LLM doctrine corpus. Use when Codex is working in or from the controls repository, answering questions about the framework, choosing which doctrine documents to read, creating or editing framework docs, schemas, runners, fixtures, source maps, policy gates, multi-agent operating procedures, or maintaining the corpus after new research or implementation work.
+---
+
+# Controls Doctrine Operator
+
+## Core Rule
+
+Do not read the whole corpus by default. Route the task by operator mode, read the minimum authoritative documents, make the smallest coherent update, then improve the corpus if the work exposed a reusable gap.
+
+## Operator Modes
+
+There are two modes:
+
+- **Human final decision authority**: When the chat user is using this skill directly, treat the user as the final decision-maker. The AI may brief, recommend, draft, validate, and warn, but should not restrict the user's document visibility by the AI's own role.
+- **Delegated AI operator**: When an AI agent is acting as a role, department, or staff function, route documents by declared role, department, authority, task, and need-to-know. Escalate to the human user for anything outside delegated authority.
+
+If the request is ambiguous, default to human final decision authority for the user-facing answer. Use delegated AI operator only when the user asks to run an AI role, department, agent, staff section, TF, or authority-bounded workflow.
+
+## Fast Start
+
+1. Confirm the repo root contains `README.md`, `docs/source-map.md`, and `schema-files/README.md`.
+2. Run the router when the task is not obvious:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --actor=user "<user request>" .
+```
+
+For delegated AI work, pass the role, department, and authority when known:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --actor=ai --role=S3 --department=operations --authority=scoped-execution "<mission request>" .
+```
+
+For delegated AI waves, routing is mandatory evidence. The CoS opens every wave with a wave receipt, and each expected agent produces its own S3 execution receipt before work:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking "<wave mission>" .
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution "<agent task>" .
+node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
+```
+
+If the skill is loaded from `~/.codex/skills`, run the bundled script from that skill folder or pass the repo root as the last argument.
+
+3. Read only the recommended documents plus any directly referenced schema/runner/sample.
+4. If a claim depends on external military doctrine, use `docs/source-map.md` first. Browse only when the source is missing, stale, or explicitly current-date-sensitive.
+5. For edits, update the document, the index, and the executable validation surface together.
+6. After adding, renaming, or deleting a document, schema, sample, runner, fixture, or skill file, verify inventory coverage:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
+```
+
+## Routing References
+
+Read these only when needed:
+
+- `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
+- `references/self-improvement-loop.md`: how to update source-map, compendium, fixtures, and this skill after learning.
+
+## Workflows
+
+### Answering Framework Questions
+
+1. Route the question in human final decision authority mode unless the user explicitly asks for AI delegation.
+2. Read the primary docs from the router output.
+3. Prefer local source-of-truth files over memory.
+4. Answer with document paths and line references when useful.
+5. If the question reveals a missing index entry or repeated confusion, apply the self-improvement loop.
+
+### Routing Delegated AI Agents
+
+1. Identify the agent's role, department, authority scope, task, release target, and risk level.
+2. For every new wave, require exactly one CoS wave routing receipt using `--receipt --scope=wave --role=COS --department=coordination --authority=tasking`.
+3. For every expected worker agent, require one agent routing receipt using `--receipt --scope=agent --role=S3 --department=operations --authority=scoped-execution`.
+4. Run `node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>` before delegated execution. If projection status is `blocked`, do not start the wave.
+5. If role, department, or authority is missing, use least-privilege routing and ask or infer only from explicit mission context.
+6. Start from `docs/role-document-access-policy.md`, `docs/agent-roles-and-authority.md`, `docs/approval-scope-policy.md`, and task docs from the router.
+7. Do not broaden document access just because the corpus is available locally; broaden only when the role, mission, or approval permits it.
+8. Escalate to the human user before release, irreversible action, high-risk tool use, or cross-boundary authority claims.
+
+### Editing Doctrine Or Policy
+
+1. Read `docs/source-map.md`, the target policy, and any referenced schemas/runners.
+2. If changing a runtime contract, update all four: schema, valid sample, invalid sample, runner/fixture.
+3. If adding official sources, update `docs/source-map.md`, `docs/research-compendium.md`, and `source-map-url-coverage-report.json`.
+4. Run targeted validation first, then the relevant `run-*.js` fixture.
+5. Commit coherent changes when the repo is clean except ignored files.
+
+### Adding New Capability
+
+Use the existing force-structure rule:
+
+1. Identify the capability gap.
+2. Check whether SOP, schema, tooling, training, or authority changes solve it before adding a new unit/role/runner.
+3. If a new artifact is justified, add source-map, README, schema/sample/runner references.
+4. Add a fixture that fails for the unsafe or under-specified case.
+
+### Self-Improving This Skill
+
+After significant work, ask:
+
+- Did `--coverage` report any unrouted artifact?
+- Did routing require reading many unrelated docs?
+- Did the user ask a repeated question not covered by `references/document-routing.md`?
+- Did a new artifact type, runner, or validation pattern appear?
+- Did a validation failure reveal a missing skill instruction?
+
+If yes, patch this skill's `SKILL.md`, `references/`, or `scripts/`, run skill validation, and commit the skill update.
+
+## Required Validation
+
+Use the smallest relevant set, then broaden:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
+node run-agent-routing-preflight-fixtures.js
+node validator-cli-prototype/run-fixtures.js
+for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
+node source-map-linter.js
+git diff --check
+```
+
+For doc-only changes, also check Markdown links and JSON parsing when indexes or samples changed.
+
+## Guardrails
+
+- Treat `COMMANDER`, `COS`, `S2`, `S3`, `S4`, `S6` as internal function IDs, not universal ranks or staff labels.
+- The human user remains final decision authority unless they explicitly delegate a bounded AI role.
+- AI agents must route by role, department, authority, task, and need-to-know.
+- Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
+- Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
+- Do not add external-source claims without source-map coverage.
+- Do not leave a new policy without a validation or review path.
+- Do not update this skill from one-off taste preferences; update it only for repeated routing, validation, or corpus-maintenance value.

@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1",
+  "type": "AuthorityMatrix",
+  "id": "AM-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "owner": "COMMANDER",
+  "classification": "internal",
+  "default_decision": "allow",
+  "rules": [
+    {
+      "rule_id": "RUL-DEMO-004",
+      "role": "S3",
+      "task_scope": [
+        "deployment"
+      ],
+      "tool_scope": [
+        "deploy"
+      ],
+      "target_scope": [
+        "production"
+      ],
+      "roe_class": "Red",
+      "decision": "allow",
+      "readiness_min": "T",
+      "evidence_required": [
+        "Post-action verification."
+      ],
+      "ccir_triggers": [
+        "Deployment failed."
+      ]
+    }
+  ],
+  "review": {
+    "cadence": "on_aar",
+    "last_reviewed_by": "COMMANDER",
+    "last_reviewed_at": "2026-06-18T12:00:00+09:00"
+  }
+}

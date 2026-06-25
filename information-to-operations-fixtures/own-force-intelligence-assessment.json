@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1",
+  "type": "IntelligenceAssessment",
+  "id": "INTEL-20260619-FFIR",
+  "mission_id": "M-DEMO-001",
+  "information_report_id": "INFO-20260619-FFIR",
+  "assessed_by": "S6",
+  "classification": "internal",
+  "confidence": "high",
+  "key_facts": [
+    "Source-map linter is unavailable.",
+    "Source coverage cannot be verified until the tool is restored."
+  ],
+  "assessment": [
+    "Mission can continue in degraded mode, but final source-discipline release should wait for linter repair."
+  ],
+  "information_gaps": [
+    "Root cause of local tool failure."
+  ],
+  "ccir_classification": ["FFIR"],
+  "operational_impact": "sitrep",
+  "recommended_outputs": ["CCIR_ALERT", "SITREP", "RUNNING_ESTIMATE"],
+  "commander_decision_required": false,
+  "created_at": "2026-06-19T09:10:00+09:00"
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1",
+  "type": "WorkingGroup",
+  "id": "WG-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "name": "Unbounded Working Group",
+  "problem": "Discuss deployment risk without a closure condition.",
+  "chair": "COS",
+  "participants": [
+    "S3",
+    "S6"
+  ],
+  "inputs": [
+    "TR-DEMO-002"
+  ],
+  "deliverables": [],
+  "decision_board": "COMMANDER",
+  "trigger": [
+    "Deployment requested."
+  ],
+  "disband_condition": [],
+  "classification": "internal",
+  "status": "in_progress"
+}

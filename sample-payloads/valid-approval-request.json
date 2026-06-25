@@ -1,0 +1,21 @@
+{
+  "id": "AR-20260618-001",
+  "mission_id": "M-20260618-001",
+  "actor": "S3",
+  "requested_action": "deploy_preview",
+  "tool": "deploy",
+  "target": "preview",
+  "roe_class": "Amber",
+  "why_needed": "Validate the generated runtime dashboard before production release.",
+  "risk": [
+    "Preview may expose incomplete UI to internal reviewers."
+  ],
+  "rollback": [
+    "Delete preview deployment."
+  ],
+  "alternatives": [
+    "Run local build only.",
+    "Share static screenshots."
+  ],
+  "status": "pending"
+}

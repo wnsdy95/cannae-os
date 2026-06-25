@@ -1,0 +1,9 @@
+{
+  "id": "CDE-DEMO-001",
+  "event_type": "role_unavailable",
+  "mission_id": "M-DEMO-001",
+  "role": "COMMANDER",
+  "unavailable_roles": ["COMMANDER"],
+  "reason": "Commander unavailable during continuity drill.",
+  "occurred_at": "2026-06-19T12:20:00+09:00"
+}

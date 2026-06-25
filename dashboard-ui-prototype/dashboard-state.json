@@ -1,0 +1,90 @@
+{
+  "mission": {
+    "id": "M-DEMO-001",
+    "title": "Runtime Demo Scenario",
+    "status": "Complete",
+    "risk": "High",
+    "decision_count": 3,
+    "intent": "Show how mission intake, tasking, policy, approval, evidence, SITREP, and AAR connect."
+  },
+  "ccir_alerts": [
+    {
+      "class": "red",
+      "label": "RED",
+      "title": "deploy_production blocked",
+      "body": "deploy request TR-DEMO-002 targets prod.command-post-dashboard; explicit approval is required before execution."
+    },
+    {
+      "class": "amber",
+      "label": "PIR",
+      "title": "Evidence interpretation review",
+      "body": "1 evidence item(s) recorded; separate sourced claim from local interpretation before release."
+    }
+  ],
+  "approvals": [
+    {
+      "class": "red",
+      "label": "RED",
+      "action": "deploy_production",
+      "tool": "deploy",
+      "target": "prod.command-post-dashboard",
+      "actor": "S3",
+      "risk": "Approval AR-DEMO-001 is pending; blocked action must not execute without commander release.",
+      "rollback": "Keep prior state and require a new approved FRAGO before execution."
+    }
+  ],
+  "risks": [
+    {
+      "id": "R-003",
+      "title": "Unauthorized action",
+      "body": "Control: policy gate has blocked 1 high-risk request(s)."
+    },
+    {
+      "id": "R-012",
+      "title": "Context loss",
+      "body": "Control: current state is rebuilt from event log instead of conversational memory."
+    },
+    {
+      "id": "R-021",
+      "title": "Pending decision latency",
+      "body": "Control: 1 pending approval(s) require commander disposition or scoped FRAGO."
+    }
+  ],
+  "tasks": [
+    {
+      "agent": "S3",
+      "task": "Create and validate runtime demo payloads.",
+      "status": "Issued",
+      "verification": "Task order T-DEMO-001; verify against OPORD and SITREP."
+    }
+  ],
+  "evidence": {
+    "claim": "Dashboard state is derived from replayed event log.",
+    "interpretation": "Projection-based UI reduces reliance on unstated conversational memory."
+  },
+  "readiness": [
+    {
+      "agent": "S3",
+      "task": "runtime prototype",
+      "rating": "P"
+    }
+  ],
+  "sitrep": [
+    {
+      "label": "In Progress",
+      "text": "Green request executed; Red deploy request blocked pending approval."
+    },
+    {
+      "label": "Order",
+      "text": "Current order: OPORD-DEMO-001."
+    },
+    {
+      "label": "Evidence",
+      "text": "1 evidence item(s), 1 AAR item(s)."
+    },
+    {
+      "label": "Next",
+      "text": "Resolve pending approvals, update readiness, and issue FRAGO if scope changes."
+    }
+  ]
+}
