@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
+  <title id="title">Cannae OS repository map</title>
+  <desc id="desc">A map from doctrine documents through schemas, samples, fixtures, runners, skills, and CI checks.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1d2e"/>
+      <stop offset="1" stop-color="#1f3340"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#83d0c4"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#000" flood-opacity="0.24"/>
+    </filter>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 46px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 700; fill: #cdd9dd; letter-spacing: 0; }
+      .head { font-family: Arial, Helvetica, sans-serif; font-size: 25px; font-weight: 900; fill: #17222c; letter-spacing: 0; }
+      .body { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; fill: #34424a; letter-spacing: 0; }
+      .tiny { font-family: Arial, Helvetica, sans-serif; font-size: 17px; font-weight: 800; fill: #f7f1dd; letter-spacing: 0; }
+      .box { stroke: #0b141f; stroke-width: 5; rx: 22; }
+      .line { fill: none; stroke: #83d0c4; stroke-width: 6; stroke-linecap: round; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="560" fill="url(#bg)"/>
+  <text class="title" x="74" y="78">Repository map</text>
+  <text class="subtitle" x="76" y="112">documents are the doctrine; runners are the “prove it” squad</text>
+
+  <path class="line" d="M278 250 H418"/>
+  <path class="line" d="M616 250 H756"/>
+  <path class="line" d="M954 250 H1094"/>
+  <path class="line" d="M488 328 C474 406 550 442 676 442"/>
+  <path class="line" d="M876 328 C890 406 815 442 716 442"/>
+
+  <g filter="url(#shadow)" transform="translate(72 178)">
+    <rect class="box" width="250" height="148" fill="#f7f1dd"/>
+    <text class="head" x="28" y="46">docs/</text>
+    <text class="body" x="28" y="80">doctrine, policy,</text>
+    <text class="body" x="28" y="106">source map, SOPs</text>
+    <text class="body" x="28" y="132">and operating model</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(418 178)">
+    <rect class="box" width="250" height="148" fill="#d9f2ff"/>
+    <text class="head" x="28" y="46">schemas</text>
+    <text class="body" x="28" y="80">contracts for orders,</text>
+    <text class="body" x="28" y="106">authority, release,</text>
+    <text class="body" x="28" y="132">handoffs, readiness</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(756 178)">
+    <rect class="box" width="250" height="148" fill="#e2f4dc"/>
+    <text class="head" x="28" y="46">fixtures</text>
+    <text class="body" x="28" y="80">valid examples and</text>
+    <text class="body" x="28" y="106">unsafe cases that</text>
+    <text class="body" x="28" y="132">must stay blocked</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(1094 178)">
+    <rect class="box" width="250" height="148" fill="#fff2d2"/>
+    <text class="head" x="28" y="46">runners</text>
+    <text class="body" x="28" y="80">small gates that</text>
+    <text class="body" x="28" y="106">turn doctrine into</text>
+    <text class="body" x="28" y="132">checkable behavior</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(510 392)">
+    <rect class="box" width="380" height="96" fill="#ffcfc6"/>
+    <text class="head" x="34" y="43">skills + CI</text>
+    <text class="body" x="34" y="73">route docs, run checks, stop drift</text>
+  </g>
+
+  <g transform="translate(1008 406)">
+    <rect width="250" height="60" rx="15" fill="#ff644d" stroke="#0b141f" stroke-width="5"/>
+    <text class="tiny" x="24" y="38">vibes-based PR: blocked</text>
+  </g>
+</svg>

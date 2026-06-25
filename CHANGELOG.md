@@ -6,6 +6,7 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added explanatory README SVG diagrams for the operating loop, repository map, delegated routing preflight, authority gates, and validation stack.
 - Added open-source governance, contribution, support, security, issue, PR, and CI scaffolding.
 
 ## 0.1.0 - Initial Public Prototype

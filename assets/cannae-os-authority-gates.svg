@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="600" viewBox="0 0 1400 600" role="img" aria-labelledby="title desc">
+  <title id="title">Authority and release gates</title>
+  <desc id="desc">A gate diagram showing how requests pass through policy, approval, risk acceptance, release review, and final commander-retained decisions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101d2a"/>
+      <stop offset="1" stop-color="#2f3127"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#ffcf5c"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#000" flood-opacity="0.24"/>
+    </filter>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 46px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 700; fill: #cdd9dd; letter-spacing: 0; }
+      .head { font-family: Arial, Helvetica, sans-serif; font-size: 24px; font-weight: 900; fill: #17222c; letter-spacing: 0; }
+      .body { font-family: Arial, Helvetica, sans-serif; font-size: 17px; font-weight: 700; fill: #34424a; letter-spacing: 0; }
+      .white { font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 900; fill: #f7f1dd; letter-spacing: 0; }
+      .box { stroke: #0b141f; stroke-width: 5; rx: 22; }
+      .line { fill: none; stroke: #ffcf5c; stroke-width: 6; stroke-linecap: round; marker-end: url(#arrow); }
+      .blocked { fill: none; stroke: #ff644d; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 10 11; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="600" fill="url(#bg)"/>
+  <text class="title" x="74" y="76">Authority and release gates</text>
+  <text class="subtitle" x="76" y="112">the agent can ask; the gate decides; the commander owns the scary parts</text>
+
+  <path class="line" d="M252 292 H372"/>
+  <path class="line" d="M536 292 H656"/>
+  <path class="line" d="M820 292 H940"/>
+  <path class="line" d="M1104 292 H1224"/>
+  <path class="blocked" d="M735 380 C733 462 861 490 1004 480"/>
+  <path class="blocked" d="M1015 380 C1017 462 1170 488 1290 468"/>
+
+  <g filter="url(#shadow)" transform="translate(64 220)">
+    <rect class="box" width="220" height="144" fill="#f7f1dd"/>
+    <text class="head" x="28" y="46">Request</text>
+    <text class="body" x="28" y="78">tool call,</text>
+    <text class="body" x="28" y="104">release, or</text>
+    <text class="body" x="28" y="130">scope change</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(372 220)">
+    <rect class="box" width="220" height="144" fill="#d9f2ff"/>
+    <text class="head" x="28" y="46">Policy</text>
+    <text class="body" x="28" y="78">Green, Amber,</text>
+    <text class="body" x="28" y="104">Red, Black</text>
+    <text class="body" x="28" y="130">tool ROE</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(656 220)">
+    <rect class="box" width="220" height="144" fill="#fff2d2"/>
+    <text class="head" x="28" y="46">Approval</text>
+    <text class="body" x="28" y="78">single-use,</text>
+    <text class="body" x="28" y="104">scoped, expires,</text>
+    <text class="body" x="28" y="130">auditable</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(940 220)">
+    <rect class="box" width="220" height="144" fill="#e2f4dc"/>
+    <text class="head" x="28" y="46">Release</text>
+    <text class="body" x="28" y="78">target match,</text>
+    <text class="body" x="28" y="104">EEFI check,</text>
+    <text class="body" x="28" y="130">final review</text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(1224 220)">
+    <rect class="box" width="132" height="144" fill="#ffcf5c"/>
+    <text class="head" x="26" y="54">Allow</text>
+    <text class="body" x="26" y="88">with</text>
+    <text class="body" x="26" y="116">receipt</text>
+  </g>
+
+  <g transform="translate(900 442)" filter="url(#shadow)">
+    <rect width="350" height="70" rx="18" fill="#ff644d" stroke="#0b141f" stroke-width="5"/>
+    <text class="white" x="28" y="43">commander-retained: escalate</text>
+  </g>
+
+  <g transform="translate(178 132)" filter="url(#shadow)">
+    <rect width="290" height="70" rx="18" fill="#17222c" stroke="#0b141f" stroke-width="5"/>
+    <text class="white" x="25" y="43">“trust me bro” is not a scope</text>
+  </g>
+</svg>
