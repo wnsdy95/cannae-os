@@ -66,7 +66,8 @@ Start targeted, then broaden:
 4. Run `node validator-cli-prototype/run-fixtures.js` if validator/schema/sample changed.
 5. Run all `run-*.js` if shared runner logic or policy integration changed.
 6. Run Markdown link and JSON parse checks when docs or samples changed.
-7. Run `git diff --check` before commit.
+7. Run the English-only check when user-facing text, examples, or executable messages changed.
+8. Run `git diff --check` before commit.
 
 ## Commit Discipline
 

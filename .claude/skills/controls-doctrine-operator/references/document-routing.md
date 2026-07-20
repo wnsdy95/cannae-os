@@ -101,6 +101,7 @@ Preflight requires one CoS wave receipt and one S3 operations receipt for each e
 | --- | --- |
 | Schema or sample | `node validator-cli-prototype/run-fixtures.js`, targeted `node validator-cli-prototype/validate.js ...` |
 | Any runner | targeted `node run-...-fixtures.js`, then all `run-*.js` if shared logic changed |
+| English-only corpus | `node .github/scripts/check-english-only.js` |
 | Source-map or official URL | `node source-map-linter.js`, regenerate `source-map-url-coverage-report.json` |
 | Release/authority/risk | `node run-authority-integration-fixtures.js`, `node run-release-integration-fixtures.js`, relevant lifecycle runner |
 | Orders/backbrief/rehearsal | `node runtime-demo-runner.js`, `node orders-dissemination-runner.js ...`, relevant routing fixture |

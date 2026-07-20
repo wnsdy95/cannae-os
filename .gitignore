@@ -39,6 +39,7 @@ coverage/
 .nyc_output/
 
 # Local caches and temporary output
+.cxt/
 .cache/
 .tmp/
 tmp/

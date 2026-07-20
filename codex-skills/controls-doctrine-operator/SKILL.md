@@ -115,6 +115,7 @@ Use the smallest relevant set, then broaden:
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
+node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
