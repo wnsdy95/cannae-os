@@ -59,6 +59,7 @@ Read these only when needed (bundled with this skill):
 4. Do not broaden delegated AI access just because the repo is locally available.
 5. Use `docs/source-map.md` before relying on an external military doctrine claim.
 6. If a claim is current-date-sensitive or source coverage is missing, browse official primary sources before adding the claim.
+7. When a mission uses multiple model tiers or families, validate `ModelForceAssignmentPlan` before execution; model capability never expands role authority.
 
 ## Editing Rules
 
@@ -82,6 +83,7 @@ Use the smallest relevant validation, then broaden:
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
+node run-model-force-assignment-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -99,6 +101,7 @@ Escalate to the user before:
 - Reading or sharing documents outside delegated need-to-know.
 - Accepting risk above the delegated role's authority.
 - Treating US doctrine as universal without multinational consistency review.
+- Allowing model capability, router choice, or evaluator confidence to expand delegated role authority.
 
 ## Self-Improvement
 

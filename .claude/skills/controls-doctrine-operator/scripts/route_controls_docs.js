@@ -74,6 +74,20 @@ const RULES = [
     ]
   },
   {
+    id: "model-force-assignment",
+    keywords: ["model", "models", "allocate", "model allocation", "model assignment", "model routing", "model selection", "cascade", "small model", "smaller", "strong model", "frontier model", "submodel", "model profile", "capability band", "model force"],
+    docs: [
+      "docs/model-force-assignment-policy.md",
+      "docs/agent-metl.md",
+      "docs/agent-readiness-ledger.md",
+      "docs/evaluation-metrics.md",
+      "docs/ai-special-operations-tf.md"
+    ],
+    commands: [
+      "node run-model-force-assignment-fixtures.js"
+    ]
+  },
+  {
     id: "sof-tf",
     keywords: ["sof", "special", "task force", "tf", "incident", "high-risk", "special forces", "specialized", "critical-risk"],
     docs: [
@@ -277,6 +291,10 @@ const ROUTE_HINTS = [
   {
     id: "force-structure",
     keywords: ["force-structure", "force", "structure-change", "unit", "dotmlpf"]
+  },
+  {
+    id: "model-force-assignment",
+    keywords: ["model-force-assignment", "model-profile", "model-allocation", "model-routing", "capability-band", "model-force"]
   },
   {
     id: "sof-tf",
