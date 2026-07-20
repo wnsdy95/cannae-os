@@ -96,6 +96,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [B2C2WG Operating Model](docs/b2c2wg-operating-model.md): boards, bureaus, centers, cells, and working groups for multi-agent work.
 - [AI Special Operations TF](docs/ai-special-operations-tf.md): high-risk or high-uncertainty task force activation with independent review, enablers, and abort criteria.
 - [Force Structure Change Policy](docs/force-structure-change-policy.md): when to create, expand, reduce, merge, deactivate, or disband roles, units, and task forces.
+- [Model Force Assignment Policy](docs/model-force-assignment-policy.md): mission-based allocation of deterministic, line, specialist, command, SOF, assurance, and reserve model capacity.
 
 ### Authority, Risk, Release, And Security
 
@@ -257,6 +258,7 @@ Important examples:
 - `run-doctrine-consistency-fixtures.js`: non-US source-family coverage and US-only assumption blocking.
 - `run-sof-tf-fixtures.js`: high-risk task force activation gates.
 - `run-force-structure-change-fixtures.js`: organization change evidence, alternatives, readiness, handoff, and sunset gates.
+- `run-model-force-assignment-fixtures.js`: task readiness, model routing, force composition, independent assurance, PACE, and authority-separation gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
 
 <p align="center">

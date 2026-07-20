@@ -30,6 +30,7 @@ node validator-cli-prototype/validate.js sample-payloads/valid-approval-delegati
 node validator-cli-prototype/validate.js sample-payloads/valid-approval-delegation-revocation-event.json approval-delegation-revocation-event
 node validator-cli-prototype/validate.js sample-payloads/valid-risk-acceptance.json risk-acceptance
 node validator-cli-prototype/validate.js sample-payloads/valid-force-structure-change-order.json force-structure-change-order
+node validator-cli-prototype/validate.js sample-payloads/valid-model-force-assignment-plan.json model-force-assignment-plan
 node validator-cli-prototype/validate.js sample-payloads/valid-document-access-manifest.json document-access-manifest
 node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt
 ```
@@ -59,6 +60,7 @@ node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-a
 - `sof-tf-charter`
 - `department-collaboration-charter`
 - `force-structure-change-order`
+- `model-force-assignment-plan`
 - `document-access-manifest`
 - `ccir-alert`
 - `handoff-packet`

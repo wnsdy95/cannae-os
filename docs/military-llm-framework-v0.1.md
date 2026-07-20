@@ -457,6 +457,10 @@ Current document set:
 152. `doctrine-consistency-runner.js`: Projects the doctrine consistency review into coverage, unresolved conflict, and policy update queue.
 153. `run-doctrine-consistency-fixtures.js`: Verification of valid multinational review and US-only invalid review fixtures.
 154. `research-compendium.md`: Integrated repository of research materials and interpretations.
+155. `model-force-assignment-policy.md`: Mission-based allocation policy for deterministic, line, specialist, command, SOF, assurance, and reserve model profiles.
+156. `schema-files/model-force-assignment-plan.schema.json`: Contract separating model readiness and capability from billet role and authority.
+157. `model-force-assignment-runner.js`: Projects active model billets, escalation paths, assurance, PACE, resource summary, and preflight blocks.
+158. `run-model-force-assignment-fixtures.js`: Fixtures for a validated mixed force and an unsafe model monoculture.
 
 Next documentation tasks:
 

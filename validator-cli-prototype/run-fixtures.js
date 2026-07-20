@@ -226,6 +226,42 @@ const fixtures = [
     ]
   },
   {
+    name: "valid model force assignment plan",
+    file: "sample-payloads/valid-model-force-assignment-plan.json",
+    type: "model-force-assignment-plan",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unready model force monoculture",
+    file: "sample-payloads/invalid-model-force-assignment-plan-monoculture.json",
+    type: "model-force-assignment-plan",
+    exitCode: 1,
+    requiredCodes: [
+      "MODEL_ASSIGNMENT_FLOATING_VERSION",
+      "MODEL_ASSIGNMENT_WITHOUT_EVIDENCE",
+      "MODEL_ASSIGNMENT_TASK_NOT_EVALUATED",
+      "MODEL_ASSIGNMENT_INSUFFICIENT_READINESS",
+      "MODEL_ASSIGNMENT_CONTEXT_INELIGIBLE",
+      "MODEL_ASSIGNMENT_SELF_FALLBACK",
+      "MODEL_ASSIGNMENT_FALLBACK_NOT_QUALIFIED",
+      "MODEL_ASSIGNMENT_FALLBACK_UNREADY",
+      "MODEL_ASSIGNMENT_FALLBACK_CONTEXT_INELIGIBLE",
+      "MODEL_ASSIGNMENT_CRITICAL_BILLET_WITHOUT_DEPTH",
+      "MODEL_ASSIGNMENT_ROUTER_UNREADY",
+      "MODEL_ASSIGNMENT_ROUTER_WITHOUT_HELD_OUT_EVAL",
+      "MODEL_ASSIGNMENT_CONFIDENCE_ONLY",
+      "MODEL_ASSIGNMENT_ASSURANCE_PROFILE_NOT_BILLETED",
+      "MODEL_ASSIGNMENT_CORRELATED_ASSURANCE",
+      "MODEL_ASSIGNMENT_WITHOUT_DETERMINISTIC_CHECKS",
+      "MODEL_ASSIGNMENT_PACE_NOT_DISTINCT",
+      "MODEL_ASSIGNMENT_PACE_NOT_TASK_READY",
+      "MODEL_ASSIGNMENT_AUTHORITY_FROM_MODEL",
+      "MODEL_ASSIGNMENT_HUMAN_AUTHORITY_MISSING",
+      "MODEL_ASSIGNMENT_FORCE_MONOCULTURE"
+    ]
+  },
+  {
     name: "valid document access manifest",
     file: "sample-payloads/valid-document-access-manifest.json",
     type: "document-access-manifest",

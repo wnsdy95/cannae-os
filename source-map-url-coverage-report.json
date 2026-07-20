@@ -1,0 +1,266 @@
+{
+  "report_type": "source-map-url-coverage",
+  "as_of": "2026-07-20",
+  "source_map": "docs/source-map.md",
+  "valid": true,
+  "checked_hosts": 24,
+  "finding_count": 0,
+  "covered_hosts": [
+    {
+      "host": "api.army.mil",
+      "files": [
+        "docs/backbrief-and-rehearsal-sop.md",
+        "docs/commander-handbook.md",
+        "docs/decision-risk-assessment.md",
+        "docs/force-structure-change-policy.md",
+        "docs/knowledge-management-sop.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/military-operating-system.md",
+        "docs/orders-production-pipeline.md",
+        "docs/personnel-continuity-model.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "armypubs.army.mil",
+      "files": [
+        "docs/agent-metl.md",
+        "docs/ai-special-operations-tf.md",
+        "docs/approval-scope-policy.md",
+        "docs/b2c2wg-operating-model.md",
+        "docs/backbrief-and-rehearsal-sop.md",
+        "docs/ccir-alerting-model.md",
+        "docs/commander-handbook.md",
+        "docs/context-releasability-policy.md",
+        "docs/implementation-guide.md",
+        "docs/information-to-operations-cycle.md",
+        "docs/interdepartment-collaboration-policy.md",
+        "docs/maintenance-readiness-model.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/military-operating-system.md",
+        "docs/model-force-assignment-policy.md",
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/opord-annex-model.md",
+        "docs/opsec-classification-model.md",
+        "docs/orders-production-pipeline.md",
+        "docs/personnel-continuity-model.md",
+        "docs/research-compendium.md",
+        "docs/risk-acceptance-authority.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "assets.publishing.service.gov.uk",
+      "files": [
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "history.army.mil",
+      "files": [
+        "docs/force-structure-change-policy.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/model-force-assignment-policy.md"
+      ]
+    },
+    {
+      "host": "home.army.mil",
+      "files": [
+        "docs/maintenance-readiness-model.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "safety.army.mil",
+      "files": [
+        "docs/research-compendium.md"
+      ]
+    },
+    {
+      "host": "warroom.armywarcollege.edu",
+      "files": [
+        "docs/force-structure-change-policy.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md"
+      ]
+    },
+    {
+      "host": "www.afms.edu",
+      "files": [
+        "docs/force-structure-change-policy.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md"
+      ]
+    },
+    {
+      "host": "www.alssa.mil",
+      "files": [
+        "docs/decision-risk-assessment.md",
+        "docs/military-operating-system.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.army.mil",
+      "files": [
+        "docs/research-compendium.md"
+      ]
+    },
+    {
+      "host": "www.armyupress.army.mil",
+      "files": [
+        "docs/research-compendium.md"
+      ]
+    },
+    {
+      "host": "www.canada.ca",
+      "files": [
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.esd.whs.mil",
+      "files": [
+        "docs/decision-risk-assessment.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.fema.gov",
+      "files": [
+        "docs/military-llm-framework-v0.1.md",
+        "docs/personnel-continuity-model.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.first.army.mil",
+      "files": [
+        "docs/agent-metl.md",
+        "docs/approval-scope-policy.md",
+        "docs/decision-risk-assessment.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/military-operating-system.md",
+        "docs/opsec-classification-model.md",
+        "docs/research-compendium.md",
+        "docs/risk-acceptance-authority.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.gov.uk",
+      "files": [
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.jcs.mil",
+      "files": [
+        "docs/ai-special-operations-tf.md",
+        "docs/approval-scope-policy.md",
+        "docs/b2c2wg-operating-model.md",
+        "docs/ccir-alerting-model.md",
+        "docs/commander-handbook.md",
+        "docs/context-releasability-policy.md",
+        "docs/decision-risk-assessment.md",
+        "docs/information-to-operations-cycle.md",
+        "docs/interdepartment-collaboration-policy.md",
+        "docs/knowledge-management-sop.md",
+        "docs/maintenance-readiness-model.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/military-operating-system.md",
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/opord-annex-model.md",
+        "docs/opsec-classification-model.md",
+        "docs/research-compendium.md",
+        "docs/risk-acceptance-authority.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.kida.re.kr",
+      "files": [
+        "docs/korean-military-sources.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.law.go.kr",
+      "files": [
+        "docs/korean-military-sources.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/research-compendium.md",
+        "docs/sample-runtime-state.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.marines.mil",
+      "files": [
+        "docs/research-compendium.md"
+      ]
+    },
+    {
+      "host": "www.mnd.go.kr",
+      "files": [
+        "docs/korean-military-sources.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/multinational-doctrine-consistency-review.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.socom.mil",
+      "files": [
+        "docs/ai-special-operations-tf.md",
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/model-force-assignment-policy.md"
+      ]
+    },
+    {
+      "host": "www.trngcmd.marines.mil",
+      "files": [
+        "docs/military-llm-framework-v0.1.md",
+        "docs/military-operating-deep-research-queue.md",
+        "docs/opord-annex-model.md",
+        "docs/orders-production-pipeline.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.usfk.mil",
+      "files": [
+        "docs/knowledge-management-sop.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    }
+  ],
+  "findings": []
+}

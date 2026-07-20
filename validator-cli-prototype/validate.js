@@ -47,7 +47,8 @@ const TYPE_TO_SCHEMA = {
   "approval-delegation-event": "approval-delegation-event.schema.json",
   "approval-delegation-revocation-event": "approval-delegation-revocation-event.schema.json",
   "release-gate-decision-event": "release-gate-decision-event.schema.json",
-  "routing-receipt": "routing-receipt.schema.json"
+  "routing-receipt": "routing-receipt.schema.json",
+  "model-force-assignment-plan": "model-force-assignment-plan.schema.json"
 };
 
 function readJson(filePath) {
@@ -136,6 +137,15 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set())
     }
   }
 
+  if ((schema.type === "number" || schema.type === "integer") && typeof value === "number") {
+    if (schema.minimum !== undefined && value < schema.minimum) {
+      issues.push(issue("error", "MINIMUM", pointer, `Number must be >= ${schema.minimum}.`));
+    }
+    if (schema.maximum !== undefined && value > schema.maximum) {
+      issues.push(issue("error", "MAXIMUM", pointer, `Number must be <= ${schema.maximum}.`));
+    }
+  }
+
   if (schema.type === "object" && value && typeof value === "object" && !Array.isArray(value)) {
     for (const required of schema.required || []) {
       if (!(required in value)) {
@@ -155,6 +165,18 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set())
   }
 
   if (schema.type === "array" && Array.isArray(value)) {
+    if (schema.minItems !== undefined && value.length < schema.minItems) {
+      issues.push(issue("error", "MIN_ITEMS", pointer, `Array must contain at least ${schema.minItems} item(s).`));
+    }
+    if (schema.maxItems !== undefined && value.length > schema.maxItems) {
+      issues.push(issue("error", "MAX_ITEMS", pointer, `Array must contain at most ${schema.maxItems} item(s).`));
+    }
+    if (schema.uniqueItems === true) {
+      const serialized = value.map(item => JSON.stringify(item));
+      if (new Set(serialized).size !== serialized.length) {
+        issues.push(issue("error", "UNIQUE_ITEMS", pointer, "Array items must be unique."));
+      }
+    }
     for (let index = 0; index < value.length; index += 1) {
       if (schema.items) {
         issues.push(...validateSchema(value[index], schema.items, schemas, `${pointer}[${index}]`, new Set(seen)));
@@ -184,6 +206,7 @@ function isBefore(left, right) {
 const ROE_RANK = { Green: 0, Amber: 1, Red: 2, Black: 3 };
 const RISK_RANK = { low: 0, medium: 1, high: 2, critical: 3 };
 const AUTHORITY_RANK = { L0: 0, L1: 1, L2: 2, L3: 3, L4: 4, L5: 5 };
+const READINESS_RANK = { X: 0, U: 1, P: 2, T: 3 };
 
 function authorityAtLeast(actual, minimum) {
   return AUTHORITY_RANK[actual] >= AUTHORITY_RANK[minimum];
@@ -1503,6 +1526,153 @@ function semanticRules(payload, type) {
     }
     if (payload.issued_by !== "COMMANDER" && (payload.changed_elements || []).includes("authority_boundary")) {
       issues.push(issue("critical", "AUTHORITY_FRAGO_REQUIRES_COMMANDER", "$.issued_by", "Authority boundary change requires Commander issue or approval."));
+    }
+  }
+
+  if (type === "model-force-assignment-plan") {
+    const mission = payload.mission_profile || {};
+    const profiles = payload.model_profiles || [];
+    const billets = payload.billets || [];
+    const routing = payload.routing_policy || {};
+    const assurance = payload.assurance || {};
+    const pace = payload.pace || {};
+    const authority = payload.authority || {};
+    const profileById = new Map();
+
+    for (const [index, profile] of profiles.entries()) {
+      const pointer = `$.model_profiles[${index}]`;
+      if (profileById.has(profile.id)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_DUPLICATE_PROFILE", `${pointer}.id`, "Model profile IDs must be unique."));
+      }
+      profileById.set(profile.id, profile);
+      if (/^(latest|current|default)$/i.test(String(profile.model_version || "").trim())) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_FLOATING_VERSION", `${pointer}.model_version`, "Mission assignment requires an immutable model version."));
+      }
+      if (!hasSubstantiveItems(profile.evidence)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_WITHOUT_EVIDENCE", `${pointer}.evidence`, "Every model profile requires task-relevant readiness evidence."));
+      }
+    }
+
+    for (const [index, billet] of billets.entries()) {
+      const pointer = `$.billets[${index}]`;
+      const profile = profileById.get(billet.model_profile_id);
+      if (!profile) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_UNKNOWN_PROFILE", `${pointer}.model_profile_id`, "Billet references an unknown model profile."));
+        continue;
+      }
+      if (profile.availability === "unavailable") {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_UNAVAILABLE_PROFILE", `${pointer}.model_profile_id`, "Unavailable model profile cannot fill an active billet."));
+      }
+      if (!(profile.evaluated_tasks || []).includes(billet.task)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_TASK_NOT_EVALUATED", `${pointer}.task`, "Billet task is outside the model profile's evaluated METL."));
+      }
+      if (!(profile.force_classes || []).includes(billet.force_class)) {
+        issues.push(issue("error", "MODEL_ASSIGNMENT_FORCE_CLASS_MISMATCH", `${pointer}.force_class`, "Model profile is not qualified for the billet force class."));
+      }
+      if ((READINESS_RANK[profile.readiness_rating] ?? -1) < (READINESS_RANK[billet.required_readiness] ?? 99)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_INSUFFICIENT_READINESS", `${pointer}.required_readiness`, "Model profile does not meet billet readiness requirement."));
+      }
+      if (!(profile.allowed_context_classes || []).includes(billet.context_scope)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_CONTEXT_INELIGIBLE", `${pointer}.context_scope`, "Model profile is not approved for the billet context class."));
+      }
+      for (const [fallbackIndex, fallbackId] of (billet.fallback_profile_ids || []).entries()) {
+        const fallbackPointer = `${pointer}.fallback_profile_ids[${fallbackIndex}]`;
+        const fallback = profileById.get(fallbackId);
+        if (!fallback) {
+          issues.push(issue("error", "MODEL_ASSIGNMENT_UNKNOWN_FALLBACK", `${pointer}.fallback_profile_ids[${fallbackIndex}]`, "Fallback references an unknown model profile."));
+          continue;
+        }
+        if (fallbackId === billet.model_profile_id) {
+          issues.push(issue("critical", "MODEL_ASSIGNMENT_SELF_FALLBACK", fallbackPointer, "A billet fallback must differ from its primary profile."));
+        }
+        if (fallback.availability === "unavailable") {
+          issues.push(issue("critical", "MODEL_ASSIGNMENT_FALLBACK_UNAVAILABLE", fallbackPointer, "Unavailable profile cannot serve as a fallback."));
+        }
+        if (!(fallback.evaluated_tasks || []).includes(billet.task) || !(fallback.force_classes || []).includes(billet.force_class)) {
+          issues.push(issue("critical", "MODEL_ASSIGNMENT_FALLBACK_NOT_QUALIFIED", fallbackPointer, "Fallback must be evaluated for the billet task and force class."));
+        }
+        if ((READINESS_RANK[fallback.readiness_rating] ?? -1) < READINESS_RANK.P) {
+          issues.push(issue("critical", "MODEL_ASSIGNMENT_FALLBACK_UNREADY", fallbackPointer, "Fallback must have at least P readiness."));
+        }
+        if (!(fallback.allowed_context_classes || []).includes(billet.context_scope)) {
+          issues.push(issue("critical", "MODEL_ASSIGNMENT_FALLBACK_CONTEXT_INELIGIBLE", fallbackPointer, "Fallback is not approved for the billet context class."));
+        }
+      }
+      if (["command", "sof", "assurance"].includes(billet.force_class) && (billet.fallback_profile_ids || []).length < 2) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_CRITICAL_BILLET_WITHOUT_DEPTH", `${pointer}.fallback_profile_ids`, "Command, SOF, and assurance billets require alternate and contingency profiles."));
+      }
+    }
+
+    const routerProfile = profileById.get(routing.router_profile_id);
+    if (!routerProfile) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_UNKNOWN_ROUTER", "$.routing_policy.router_profile_id", "Routing policy references an unknown model profile."));
+    }
+    if (!["T", "P"].includes(routing.router_readiness) || (routerProfile && !["T", "P"].includes(routerProfile.readiness_rating))) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_ROUTER_UNREADY", "$.routing_policy.router_readiness", "Router must be T or P before it assigns mission work."));
+    }
+    if (!hasSubstantiveItems(routing.held_out_evaluation)) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_ROUTER_WITHOUT_HELD_OUT_EVAL", "$.routing_policy.held_out_evaluation", "Router requires held-out, task-relevant evaluation evidence."));
+    }
+    const acceptanceEvidence = (routing.acceptance_evidence || []).map(item => String(item).trim());
+    if (!hasSubstantiveItems(acceptanceEvidence) || acceptanceEvidence.every(item => /confidence|self[- ]?report/i.test(item))) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_CONFIDENCE_ONLY", "$.routing_policy.acceptance_evidence", "Model verbal confidence cannot be the only acceptance evidence."));
+    }
+
+    const assuranceRequired = ["high", "critical"].includes(mission.risk_level)
+      || mission.roe_class === "Red"
+      || ["final_output", "external_release"].includes(mission.release_target)
+      || mission.tool_impact === "irreversible_mutation";
+    if (assuranceRequired && assurance.required !== true) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_REQUIRES_ASSURANCE", "$.assurance.required", "Mission risk, release, or tool impact requires independent assurance."));
+    }
+    if (assurance.required === true) {
+      const assuranceProfile = profileById.get(assurance.independent_profile_id);
+      if (!assuranceProfile || !(assuranceProfile.force_classes || []).includes("assurance")) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_INVALID_ASSURANCE_PROFILE", "$.assurance.independent_profile_id", "Independent assurance requires an assurance-qualified model profile."));
+      }
+      if (!billets.some(billet => billet.force_class === "assurance" && billet.model_profile_id === assurance.independent_profile_id)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_ASSURANCE_PROFILE_NOT_BILLETED", "$.assurance.independent_profile_id", "Independent assurance profile must fill the assurance billet."));
+      }
+      const primaryProfile = profileById.get(pace.primary_profile_id);
+      if (assurance.different_model_family_required === true && assuranceProfile && primaryProfile && assuranceProfile.model_family === primaryProfile.model_family) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_CORRELATED_ASSURANCE", "$.assurance.independent_profile_id", "Independent assurance must use a different model family from the primary profile."));
+      }
+      if (!hasSubstantiveItems(assurance.deterministic_checks)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_WITHOUT_DETERMINISTIC_CHECKS", "$.assurance.deterministic_checks", "Independent assurance requires deterministic checks."));
+      }
+    }
+
+    const paceIds = [pace.primary_profile_id, pace.alternate_profile_id, pace.contingency_profile_id];
+    for (const [index, profileId] of paceIds.entries()) {
+      if (!profileById.has(profileId)) {
+        issues.push(issue("critical", "MODEL_ASSIGNMENT_UNKNOWN_PACE_PROFILE", `$.pace.${["primary_profile_id", "alternate_profile_id", "contingency_profile_id"][index]}`, "PACE references an unknown model profile."));
+      }
+    }
+    if (new Set(paceIds).size !== paceIds.length) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_PACE_NOT_DISTINCT", "$.pace", "Primary, alternate, and contingency profiles must be distinct."));
+    }
+    const paceProfiles = paceIds.map(profileId => profileById.get(profileId)).filter(Boolean);
+    const pacePrimaryTasks = new Set((paceProfiles[0] && paceProfiles[0].evaluated_tasks) || []);
+    if (paceProfiles.some(profile => (READINESS_RANK[profile.readiness_rating] ?? -1) < READINESS_RANK.P
+      || !(profile.allowed_context_classes || []).includes(mission.classification))
+      || paceProfiles.slice(1).some(profile => !(profile.evaluated_tasks || []).some(task => pacePrimaryTasks.has(task)))) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_PACE_NOT_TASK_READY", "$.pace", "Every PACE profile must be P/T ready, context eligible, and share evaluated mission coverage."));
+    }
+
+    if (authority.inherited_from_model !== false) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_AUTHORITY_FROM_MODEL", "$.authority.inherited_from_model", "Model capability must never create or expand authority."));
+    }
+    if (authority.human_final_decision_authority !== true || !hasSubstantiveItems(authority.commander_retained_decisions)) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_HUMAN_AUTHORITY_MISSING", "$.authority", "The human Commander must retain final decisions and explicit retained authorities."));
+    }
+    if (mission.roe_class === "Black") {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_BLACK_PROHIBITED", "$.mission_profile.roe_class", "Black actions cannot receive an executable model assignment."));
+    }
+    if (assuranceRequired && !billets.some(billet => billet.force_class === "command" || billet.force_class === "sof")) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_MISSING_COMMAND", "$.billets", "High-impact missions require command or SOF integration capacity."));
+    }
+    if (routing.default_strategy === "sof_composition" && new Set(billets.map(billet => billet.model_profile_id)).size < 3) {
+      issues.push(issue("critical", "MODEL_ASSIGNMENT_FORCE_MONOCULTURE", "$.billets", "SOF composition requires distinct command, execution, and assurance capacity."));
     }
   }
 

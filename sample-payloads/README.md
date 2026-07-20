@@ -13,6 +13,7 @@ Use these examples to test:
 - AI special operations TF charter validation
 - department collaboration charter validation
 - force structure change order validation
+- model force assignment validation
 - CCIR alert validation
 - handoff packet validation
 - continuity plan validation

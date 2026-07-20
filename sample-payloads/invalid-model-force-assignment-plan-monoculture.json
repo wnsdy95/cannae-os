@@ -1,0 +1,139 @@
+{
+  "schema_version": "0.1",
+  "type": "ModelForceAssignmentPlan",
+  "id": "MFAP-UnsafeMonoculture",
+  "mission_id": "M-UnsafeRelease",
+  "mission_profile": {
+    "complexity": "high",
+    "domain_specialization": "expert",
+    "uncertainty": "high",
+    "risk_level": "critical",
+    "roe_class": "Red",
+    "classification": "sensitive",
+    "release_target": "external_release",
+    "tool_impact": "irreversible_mutation",
+    "latency_priority": "high",
+    "volume": "high"
+  },
+  "model_profiles": [
+    {
+      "id": "MP-OMNI-01",
+      "model_family": "single-family",
+      "model_version": "latest",
+      "harness_version": "unversioned-runtime",
+      "capability_band": "C3",
+      "force_classes": ["line", "specialist", "command", "sof", "assurance", "reserve"],
+      "deployment_boundary": "default-provider",
+      "allowed_context_classes": ["public", "internal"],
+      "evaluated_tasks": ["general-chat"],
+      "readiness_rating": "U",
+      "evidence": ["none"],
+      "limitations": ["none"],
+      "cost_class": "scarce",
+      "availability": "ready"
+    },
+    {
+      "id": "MP-REVIEW-01",
+      "model_family": "single-family",
+      "model_version": "latest",
+      "harness_version": "unversioned-runtime",
+      "capability_band": "C3",
+      "force_classes": ["assurance"],
+      "deployment_boundary": "default-provider",
+      "allowed_context_classes": ["public", "internal"],
+      "evaluated_tasks": ["general-chat"],
+      "readiness_rating": "U",
+      "evidence": ["none"],
+      "limitations": ["none"],
+      "cost_class": "scarce",
+      "availability": "ready"
+    }
+  ],
+  "billets": [
+    {
+      "id": "BILLET-COS-UNSAFE",
+      "force_class": "command",
+      "role": "COS",
+      "task": "mission-analysis",
+      "model_profile_id": "MP-OMNI-01",
+      "required_readiness": "T",
+      "authority_scope": ["All decisions"],
+      "tool_scope": ["All tools"],
+      "context_scope": "sensitive",
+      "fallback_profile_ids": ["MP-OMNI-01"],
+      "allocation_justification": "Use the strongest model for everything."
+    },
+    {
+      "id": "BILLET-EXECUTOR-UNSAFE",
+      "force_class": "sof",
+      "role": "EXECUTOR",
+      "task": "production-mutation",
+      "model_profile_id": "MP-OMNI-01",
+      "required_readiness": "T",
+      "authority_scope": ["Execute and approve its own work"],
+      "tool_scope": ["Production write"],
+      "context_scope": "sensitive",
+      "fallback_profile_ids": ["MP-OMNI-01"],
+      "allocation_justification": "One model is simpler."
+    },
+    {
+      "id": "BILLET-REDTEAM-UNSAFE",
+      "force_class": "assurance",
+      "role": "RED_TEAM",
+      "task": "independent-output-review",
+      "model_profile_id": "MP-OMNI-01",
+      "required_readiness": "T",
+      "authority_scope": ["Approve own release"],
+      "tool_scope": ["Production write"],
+      "context_scope": "sensitive",
+      "fallback_profile_ids": ["MP-OMNI-01"],
+      "allocation_justification": "Self-review is fast."
+    }
+  ],
+  "routing_policy": {
+    "router_profile_id": "MP-OMNI-01",
+    "router_readiness": "U",
+    "default_strategy": "sof_composition",
+    "held_out_evaluation": ["none"],
+    "escalation_triggers": ["none"],
+    "acceptance_evidence": ["model verbal confidence"],
+    "verbal_confidence_only_prohibited": true,
+    "max_retries": 5
+  },
+  "assurance": {
+    "required": true,
+    "independent_profile_id": "MP-REVIEW-01",
+    "different_model_family_required": true,
+    "deterministic_checks": ["none"],
+    "human_review_triggers": ["none"]
+  },
+  "pace": {
+    "primary_profile_id": "MP-OMNI-01",
+    "alternate_profile_id": "MP-OMNI-01",
+    "contingency_profile_id": "MP-OMNI-01",
+    "emergency_action": "Send all context to any available endpoint and continue.",
+    "preserve_data_boundary": true
+  },
+  "authority": {
+    "source_contracts": ["none"],
+    "inherited_from_model": true,
+    "human_final_decision_authority": false,
+    "commander_retained_decisions": ["none"]
+  },
+  "budget": {
+    "token_budget": 1000000,
+    "cost_budget": "unbounded",
+    "max_command_calls": 1000,
+    "max_specialist_calls": 1000,
+    "saturation_action": "Continue without review."
+  },
+  "assessment": {
+    "metrics": ["Model-reported confidence"],
+    "review_at": "2027-07-20T10:00:00+09:00",
+    "model_change_requires_reevaluation": true,
+    "aar_triggers": ["none"]
+  },
+  "classification": "sensitive",
+  "status": "pending",
+  "created_at": "2026-07-20T10:00:00+09:00"
+}

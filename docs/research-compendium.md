@@ -2229,6 +2229,76 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
    - `runtime-demo-runner.js` includes backbrief and rehearsal validation.
    - `orders-dissemination-runner.js` verifies the intent/task/actor/approval boundary connections.
 
+### 8.48 Mission-Based Model Force Assignment
+
+1. Routing, cascades, and economy of force
+
+   Sources:
+   - RouteLLM: https://arxiv.org/abs/2406.18665
+   - FrugalGPT: https://arxiv.org/abs/2305.05176
+   - Language Model Cascades: https://proceedings.iclr.cc/paper_files/paper/2024/file/11f5520daf9132775e8604e89f53925a-Paper-Conference.pdf
+   - RouterBench: https://arxiv.org/abs/2403.12031
+
+   Key Content:
+   - Strong/weak model routing and cascades can reduce inference cost while preserving task quality, but gains depend on task distribution, routing data, and evaluator accuracy.
+   - Models occupy different quality, cost, latency, and task-specialization positions; a single model is not uniformly optimal.
+   - RouterBench reports that cascade performance degrades quickly when the judge or router error becomes material. The router therefore cannot be treated as an invisible utility.
+
+   LLM Application:
+   - Use C1 line profiles for eligible routine, reversible, validated work; escalate to C2 specialists or C3 command integration only on explicit mission or verification triggers.
+   - Do not apply start-low routing to Red, sensitive, novel, irreversible, or final-release work. Those missions receive the required mixed force at assignment time.
+   - Give the router an immutable profile, T/P readiness, held-out evaluation evidence, retry ceiling, and acceptance evidence independent of verbal confidence.
+
+2. Task-specific readiness and operational evaluation
+
+   Sources:
+   - HELM: https://crfm.stanford.edu/2022/11/17/helm.html
+   - Berkeley Function-Calling Leaderboard: https://gorilla.cs.berkeley.edu/leaderboard
+   - tau-bench: https://arxiv.org/abs/2406.12045
+   - NIST AI RMF Core: https://airc.nist.gov/airmf-resources/airmf/5-sec-core/
+   - NIST AI RMF Generative AI Profile: https://doi.org/10.6028/NIST.AI.600-1
+
+   Key Content:
+   - Broad language benchmarks do not establish readiness for a local mission, tool schema, policy environment, or context boundary.
+   - HELM emphasizes broad scenario and metric coverage; BFCL isolates function-calling behavior; tau-bench evaluates tool-agent-policy interaction and repeated-run consistency.
+   - NIST AI RMF calls for documented knowledge limits, predeployment and ongoing TEVV, representative conditions, risk-proportionate review, and independent assessment.
+
+   LLM Application:
+   - Record readiness as `model profile x task x tool set x context class x harness x environment`.
+   - A model version, system prompt, tool schema, harness, or material environment change creates a new evaluation subject.
+   - Specialist branches are selected by local METL evidence, not model size. A narrow C1 profile may outrank a C3 general profile for its evaluated task.
+   - Evaluate task success, policy compliance, tool-call correctness, source fidelity, calibration, robustness, consistency, latency, throughput, cost, and data-boundary eligibility.
+
+3. Assurance independence and uncertainty
+
+   Sources:
+   - Judging LLM-as-a-Judge: https://arxiv.org/abs/2306.05685
+   - Confident or Seek Stronger: https://arxiv.org/abs/2502.04428
+
+   Key Content:
+   - LLM judges can exhibit position, verbosity, and self-enhancement biases; reference-guided evaluation can reduce but not remove these risks.
+   - Verbal confidence does not reliably equal correctness. Confidence-based routing requires task-level calibration and still needs external evidence.
+
+   LLM Application:
+   - Independent assurance is a distinct force class. Use a different model family from the primary executor where feasible and label same-family review as correlated.
+   - Assurance receives intent, output, evidence, tests, and policy constraints, but it cannot execute remediation or approve its own finding.
+   - Deterministic schema, policy, test, source, and release checks remain primary evidence. A model's statement that it is confident is neither acceptance evidence nor an authority grant.
+
+4. Military organizational synthesis and implemented contract
+
+   Military anchors:
+   - ADP 6-0 and FM 6-0 for mission command, staff integration, and retained authority.
+   - ADP 7-0 for METL-based training and readiness.
+   - AR 71-32 for capability-based force management and documentation.
+   - USSOCOM SOF Truths for selected personnel, readiness, enablers, and sustainable special operations capacity.
+
+   Implemented conclusion:
+   - Separate model capability bands C0-C3 from force classes: utility, line, specialist, command, SOF, assurance, and reserve.
+   - Capability never creates authority. Role authority remains in the mission and authority contracts, and the human user retains final decisions.
+   - High-impact missions require command/SOF integration, independent assurance, and distinct primary/alternate/contingency profiles. Emergency action stops execution and hands preserved state to the human Commander.
+   - Added `model-force-assignment-policy.md`, `schema-files/model-force-assignment-plan.schema.json`, `model-force-assignment-runner.js`, `run-model-force-assignment-fixtures.js`, and valid/invalid sample plans.
+   - The invalid fixture blocks floating model aliases, missing evidence, unready routing, out-of-METL tasks, context-ineligible profiles, confidence-only acceptance, correlated assurance, model monoculture, collapsed PACE, and authority inherited from model capability.
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?
@@ -2300,6 +2370,7 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 67. When different branches/departments collaborate, how should the supported/supporting relationship, liaison, handoff interface, and conflict decision route be enforced as a runtime contract?
 68. When creating, expanding, reducing, or disestablishing a branch/duty position/unit/TF, how should capability gap, DOTMLPF-P, readiness, transition, and documentation gates be enforced as a runtime contract?
 69. How should a document access manifest be enforced as a runtime gate so that each agent reads only the documents fixed for its role, duty, and authority?
+70. How should local calibration thresholds and cost-quality budgets be updated from mission AAR evidence without allowing a router to self-certify readiness?
 
 ## 10. Relationship to the Current Document Set
 
@@ -2311,6 +2382,7 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `personnel-continuity-model.md`: a continuity model in which duty positions and authority continue even through personnel loss/replacement/rotation.
 - `interdepartment-collaboration-policy.md`: converts branch/function integration principles into inter-department supported/supporting, liaison, handoff, and conflict route policy.
 - `force-structure-change-policy.md`: a policy that controls the creation, disestablishment, expansion, and reduction of branches/duty positions/units/TFs via capability gap, DOTMLPF-P, readiness, and transition order.
+- `model-force-assignment-policy.md`: a mission-based policy for allocating deterministic, line, specialist, command, SOF, assurance, and reserve model profiles without inheriting authority from capability.
 - `prompt-templates.md`: OPORD, WARNO, FRAGO, SITREP, and AAR prompt templates.
 - `orders-production-pipeline.md`: the order production pipeline running from request to AAR.
 - `opord-annex-model.md`: the model separating responsibility between the OPORD body and annexes.
@@ -2459,6 +2531,9 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `run-department-collaboration-fixtures.js`: fixtures for valid cross-functional collaboration and blocking siloed collaboration.
 - `force-structure-change-runner.js`: projects an organizational change order into a preflight block, commander queue, transition task, documentation queue, and readiness requirement.
 - `run-force-structure-change-fixtures.js`: fixtures for a justified organizational creation and blocking an unjustified expansion.
+- `schema-files/model-force-assignment-plan.schema.json`: contract for mission profile, immutable model profiles, billets, routing, assurance, PACE, authority, budget, and reassessment.
+- `model-force-assignment-runner.js`: projects model billets, escalation paths, assurance status, PACE, resource demand, blocks, and commander decisions.
+- `run-model-force-assignment-fixtures.js`: fixtures for a validated mixed model force and blocking an unready model monoculture.
 - `role-document-access-policy.md`: the policy that lets each agent read only the documents fixed for its role, duty, and authority.
 - `schema-files/document-access-manifest.schema.json`: the per-mission document access manifest contract.
 - `document-access-runner.js`: a manifest-based runner producing an allowed/denied document projection.
