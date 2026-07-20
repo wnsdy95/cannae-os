@@ -1,14 +1,14 @@
 # Case Studies
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 운용 프레임워크를 실제 작업에 적용하는 사례집이다.
+This document is a casebook applying the military-style LLM operating framework to actual work.
 
-개념 문서는 "무엇을 해야 하는가"를 설명한다. 사례 문서는 "어떻게 굴러가는가"를 보여준다. 각 사례는 OPORD, WARNO, execution, SITREP, FRAGO, assessment, AAR 순서로 정리한다.
+Conceptual documents explain "what should be done." Case documents show "how it actually runs." Each case is organized in the order OPORD, WARNO, execution, SITREP, FRAGO, assessment, AAR.
 
-## 1. 사례 작성 표준
+## 1. Case-Writing Standard
 
-모든 사례는 아래 구조를 따른다.
+Every case follows the structure below.
 
 ```text
 Case:
@@ -24,370 +24,370 @@ AAR:
 SOP update:
 ```
 
-핵심은 결과물만 기록하지 않는 것이다. 왜 그런 결정을 했는지, 어떤 위험을 보고했는지, 무엇을 다음 SOP로 되돌렸는지까지 남긴다.
+The key is not to record only the outcome. It also captures why a given decision was made, what risk was reported, and what was fed back into the next SOP.
 
-## 2. Case 01: 군대식 LLM 프레임워크 문서화
+## 2. Case 01: Documenting a Military-Style LLM Framework
 
 ### Mission
 
-군대의 지휘통제, 문서 하달, 승인 범위, 보고 체계, 사후관리 방식을 조사해 AI LLM 운용 프레임워크로 문서화한다.
+Research the military's command and control, order dissemination, approval scope, reporting system, and post-action management methods, and document them as an AI LLM operating framework.
 
 ### Commander's intent
 
-사용자는 단순 아이디어 메모가 아니라 장기적으로 확장 가능한 개념 프레임워크를 원한다. 군대식 체계가 왜 왜곡 없이 하달되고 실행되는지 이해하고, 이를 LLM 단일/멀티에이전트 운용법으로 전환해야 한다.
+The user wants not a simple idea memo but a conceptual framework that is scalable in the long term. It is necessary to understand why the military-style system is disseminated and executed without distortion, and to convert this into a single/multi-agent LLM operating method.
 
-성공 조건:
+Success conditions:
 
-- 리서치 자료와 해석이 한곳에 축적된다.
-- 지위별 승인, 보고, 자율 범위가 문서화된다.
-- OPORD, WARNO, FRAGO, SITREP, AAR 템플릿이 생긴다.
-- SOP, battle rhythm, source map이 생긴다.
-- 다음 작업자가 이어서 확장할 수 있다.
+- Research material and interpretation accumulate in one place.
+- Approval, reporting, and autonomy scope by rank/role are documented.
+- OPORD, WARNO, FRAGO, SITREP, and AAR templates are produced.
+- SOP, battle rhythm, and source map are produced.
+- The next worker can continue and extend the work.
 
-실패 방지 조건:
+Failure-to-avoid conditions:
 
-- 군대식 표현만 빌리고 실제 작동원리를 놓치지 않는다.
-- 출처 없는 일반론을 핵심 근거처럼 쓰지 않는다.
-- 모든 것을 하나의 프롬프트 요령으로 축소하지 않는다.
+- Do not borrow military-style expressions alone while missing the actual operating principles.
+- Do not use unsourced generalities as core evidence.
+- Do not reduce everything to a single prompt trick.
 
 ### Situation
 
-초기 상태:
+Initial state:
 
-- 로컬 프로젝트에 문서 없음.
-- 사용자는 한국어로 개념 방향을 제시.
-- 리서치 대상은 군 문서 체계, 권한, 보고, 작전, 실행, 사후관리.
-- 최신성과 공식 출처 확인이 필요.
+- No documents exist in the local project.
+- The user presents the conceptual direction in Korean.
+- Research targets are military document systems, authority, reporting, operations, execution, and post-action management.
+- Currency and official-source verification are required.
 
-제약:
+Constraints:
 
-- 공개 자료 중심.
-- 실제 군사 작전 조언이 아니라 AI LLM 운용 프레임워크로 번역.
-- 문서화가 우선.
+- Focus on publicly available material.
+- Translate into an AI LLM operating framework rather than giving actual military-operations advice.
+- Documentation takes priority.
 
 ### Execution
 
-1. 전체 프레임워크 문서 작성.
-2. 군대식 운영체계 문서 작성.
-3. agent roles and authority 문서 작성.
-4. decision, risk, assessment 문서 작성.
-5. prompt templates 문서 작성.
-6. research compendium에 모든 리서치와 해석 축적.
-7. SOP library, battle rhythm, source map, functional domains 추가.
-8. README와 상위 문서에 색인 연결.
+1. Write the overall framework document.
+2. Write the document on the military-style operating system.
+3. Write the agent-roles-and-authority document.
+4. Write the decision, risk, and assessment document.
+5. Write the prompt-templates document.
+6. Accumulate all research and interpretation in the research compendium.
+7. Add the SOP library, battle rhythm, source map, and functional domains.
+8. Connect the index to the README and higher-level documents.
 
 ### Authority
 
-에이전트 자율 수행 가능:
+Agent may act autonomously:
 
-- 공개 자료 검색.
-- 문서 생성.
-- 로컬 markdown 파일 수정.
-- 출처 요약.
-- 프레임워크 해석.
+- Public-material search.
+- Document generation.
+- Local markdown file edits.
+- Source summarization.
+- Framework interpretation.
 
-승인 필요:
+Approval required:
 
-- 실제 군사/법률 조언으로 전환.
-- 외부 배포.
-- 사용자의 기존 변경사항 되돌림.
+- Converting into actual military/legal advice.
+- External distribution.
+- Reverting the user's existing changes.
 
-금지:
+Prohibited:
 
-- 확인하지 않은 출처를 공식 출처처럼 단정.
-- 기밀 또는 비공개 자료 사용.
+- Asserting unverified sources as official sources.
+- Using classified or non-public material.
 
 ### CCIR
 
 PIR:
 
-- 군 문서가 왜 하달 중 왜곡을 줄이는가?
-- 권한 위임과 보고 기준은 어떻게 설계되는가?
-- 훈련과 readiness를 LLM에 어떻게 적용할 수 있는가?
+- Why does the military document dissemination system reduce distortion during transmission?
+- How are authority delegation and reporting criteria designed?
+- How can training and readiness be applied to LLMs?
 
 FFIR:
 
-- 문서 세트가 README에 연결됐는가?
-- 파일 수와 라인 수가 검증됐는가?
-- 로컬 작업공간이 git 저장소인가?
+- Is the document set linked from the README?
+- Have file counts and line counts been verified?
+- Is the local workspace a git repository?
 
 EEFI:
 
-- 민감한 군 정보 또는 비공개 문서 사용 여부.
-- 외부에 공개하면 안 되는 사용자 정보.
+- Whether sensitive military information or non-public documents are used.
+- User information that must not be disclosed externally.
 
 ### Sustainment
 
-사용 자원:
+Resources used:
 
-- 웹 리서치.
-- 로컬 markdown 문서.
-- `rg`, `wc`, `sed` 기반 검증.
-- 공식 ArmyPubs, JCS, DoD 계열 출처.
+- Web research.
+- Local markdown documents.
+- Verification based on `rg`, `wc`, `sed`.
+- Official sources from ArmyPubs, JCS, DoD, and similar bodies.
 
-병목:
+Bottlenecks:
 
-- 일부 공식 PDF는 직접 링크보다 상세 페이지가 안정적.
-- ROE 원문은 최신 공식 배포본 확인이 까다로움.
-- 한국군 공개 자료는 추가 탐색 필요.
+- For some official PDFs, a detail page is more stable than a direct link.
+- Confirming the latest official release of the original ROE text is tricky.
+- Publicly available Korean military material requires additional searching.
 
 ### Assessment
 
 MOP:
 
-- 문서 세트 생성.
-- README 링크 업데이트.
-- source map 추가.
-- research compendium 확장.
-- SOP와 battle rhythm 작성.
+- Document set created.
+- README links updated.
+- Source map added.
+- Research compendium expanded.
+- SOP and battle rhythm written.
 
 MOE:
 
-- 다음 작업자가 문서 세트만 보고 프레임워크를 이어갈 수 있는가?
-- 군 개념과 LLM 적용점이 연결되어 있는가?
-- 승인/보고/자율성 기준이 실제 프롬프트 운용에 쓸 수 있는가?
+- Can the next worker continue the framework by looking only at the document set?
+- Are military concepts connected to LLM application points?
+- Can the approval/reporting/autonomy criteria actually be used in prompt operations?
 
 ### AAR
 
-잘 된 점:
+What went well:
 
-- 프레임워크를 개념, 역할, 절차, 근거로 분리했다.
-- research compendium와 source map으로 자료 추적성을 확보했다.
-- SOP와 battle rhythm을 추가해 실행 체계가 생겼다.
+- The framework was separated into concepts, roles, procedures, and evidence.
+- Traceability of material was secured via the research compendium and source map.
+- SOP and battle rhythm were added, creating an execution system.
 
-개선할 점:
+What to improve:
 
-- 실제 작업 실험이 아직 부족하다.
-- 한국군 문서 체계 리서치가 더 필요하다.
-- 프레임워크 성능을 측정할 평가 지표가 더 필요하다.
+- Actual work experiments are still lacking.
+- More research into the Korean military's document system is needed.
+- More evaluation metrics are needed to measure framework performance.
 
 SOP update:
 
-- 새 리서치 축이 생기면 `research-compendium.md`와 `source-map.md`를 동시에 갱신한다.
-- 새 운영 문서가 생기면 README와 `military-llm-framework-v0.1.md`에 연결한다.
+- When a new research axis is created, update `research-compendium.md` and `source-map.md` together.
+- When a new operating document is created, link it in the README and `military-llm-framework-v0.1.md`.
 
-## 3. Case 02: 환각 방지 리서치 에이전트 운용
+## 3. Case 02: Operating a Hallucination-Prevention Research Agent
 
 ### Mission
 
-LLM 에이전트가 특정 주제에 대해 환각 없이 출처 기반 리서치를 수행하게 한다.
+Have an LLM agent conduct source-based research on a given topic without hallucination.
 
 ### Commander's intent
 
-핵심은 답을 빨리 내는 것이 아니라, 어떤 주장이 어떤 출처에서 왔는지 추적 가능하게 만드는 것이다. 불확실한 내용은 결론이 아니라 PIR로 남긴다.
+The key is not producing an answer quickly, but making it traceable which claim came from which source. Uncertain content is left as a PIR rather than as a conclusion.
 
 ### Situation
 
-예시 주제:
+Example topic:
 
-- "군대의 문서 하달 체계가 왜 왜곡을 줄이는가?"
+- "Why does the military's document dissemination system reduce distortion?"
 
-위험:
+Risks:
 
-- 모델이 군사용어를 그럴듯하게 지어냄.
-- 2차 자료를 공식 교리처럼 오인.
-- 출처 요약과 해석이 섞임.
+- The model plausibly fabricates military terminology.
+- Secondary material is mistaken for official doctrine.
+- Source summary and interpretation become mixed together.
 
-### OPORD형 프롬프트
+### OPORD-style prompt
 
 ```text
 Mission:
-군대의 문서 하달 체계가 왜 왜곡을 줄이는지 공개 공식 자료 중심으로 조사하라.
+Investigate, based mainly on public official material, why the military's document dissemination system reduces distortion.
 
 Intent:
-목표는 군 문서 체계를 LLM 프롬프트/에이전트 체계로 전환할 근거를 확보하는 것이다.
-출처 없는 주장은 결론으로 쓰지 않는다.
+The goal is to secure the evidence needed to convert the military document system into an LLM prompt/agent system.
+Unsourced claims are not written as conclusions.
 
 Execution:
-1. 공식 교리 문서와 표준 양식을 먼저 찾는다.
-2. 각 출처에서 핵심 개념, 원문 맥락, LLM 적용점을 분리한다.
-3. 충돌하거나 불확실한 내용은 unresolved PIR로 기록한다.
-4. source map 형식으로 정리한다.
+1. Find official doctrine documents and standard formats first.
+2. Separate the key concept, original context, and LLM application point from each source.
+3. Record conflicting or uncertain content as an unresolved PIR.
+4. Organize the result in source-map format.
 
 CCIR:
-- 공식 출처를 찾지 못함.
-- 출처 간 충돌.
-- 최신성 확인 필요.
+- Unable to find an official source.
+- Conflict between sources.
+- Currency verification needed.
 
 Deliverable:
-출처별 요약, LLM 적용, 남은 질문.
+Summary per source, LLM application, remaining questions.
 
 Backbrief:
-실행 전 네가 이해한 mission과 검증 기준을 5줄로 보고하라.
+Before execution, report in 5 lines the mission and verification criteria as you understand them.
 ```
 
 ### Assessment
 
 MOP:
 
-- 최소 3개 이상의 공식 출처 확인.
-- 각 주장에 링크 연결.
-- 불확실성 표시.
+- At least 3 official sources confirmed.
+- Each claim linked to a source.
+- Uncertainty marked.
 
 MOE:
 
-- 다른 에이전트가 같은 출처를 재검증할 수 있음.
-- 리서치가 프롬프트 템플릿이나 SOP로 전환 가능.
+- Another agent can re-verify the same sources.
+- The research can be converted into a prompt template or SOP.
 
 ### AAR
 
-교훈:
+Lessons:
 
-- 리서치 에이전트는 "답변 작성자"가 아니라 "근거 생산자"로 운용해야 한다.
-- 출처 없는 주장은 삭제보다 "가설"로 격리하는 편이 이후 연구에 유리하다.
+- A research agent should be operated as an "evidence producer," not an "answer writer."
+- For unsourced claims, isolating them as a "hypothesis" is more useful for later research than deleting them.
 
-## 4. Case 03: 멀티에이전트 코드 수정
+## 4. Case 03: Multi-Agent Code Fix
 
 ### Mission
 
-기존 코드베이스에서 버그를 수정하고 테스트로 회귀를 방지한다.
+Fix a bug in an existing codebase and prevent regression with tests.
 
 ### Commander's intent
 
-최소 변경으로 사용자 문제를 해결한다. 기존 사용자 변경사항을 되돌리지 않는다. 테스트 또는 재현 절차를 남긴다.
+Resolve the user's problem with minimal changes. Do not revert the user's existing changes. Leave a test or reproduction procedure.
 
-### 역할 배치
+### Role Assignment
 
-| 역할 | 임무 |
+| Role | Assignment |
 | --- | --- |
-| Commander | 사용자 요청과 성공 조건 확정 |
-| S2 | 버그 원인과 관련 파일 조사 |
-| S3 | 수정 계획과 sequencing |
-| S4 | 테스트 도구, 의존성, 실행 환경 확인 |
-| Red Team | 변경 부작용 검토 |
-| S6 | 변경사항과 검증 결과 문서화 |
+| Commander | Confirms user request and success conditions |
+| S2 | Investigates the bug's cause and related files |
+| S3 | Plans the fix and its sequencing |
+| S4 | Checks test tools, dependencies, and execution environment |
+| Red Team | Reviews side effects of the change |
+| S6 | Documents the change and verification results |
 
 ### Execution
 
-1. 파일 구조 확인.
-2. 관련 코드 검색.
-3. 재현 조건 파악.
-4. 최소 수정안 작성.
-5. 테스트 추가 또는 기존 테스트 실행.
-6. 실패하면 SITREP와 FRAGO.
-7. 성공하면 최종 보고와 AAR.
+1. Check the file structure.
+2. Search related code.
+3. Identify the reproduction conditions.
+4. Draft a minimal fix.
+5. Add tests or run existing tests.
+6. If it fails, issue a SITREP and FRAGO.
+7. If it succeeds, issue the final report and AAR.
 
 ### Authority
 
-자율 가능:
+Autonomous:
 
-- 파일 읽기.
-- 관련 코드 수정.
-- 테스트 실행.
-- 포맷 실행.
+- Reading files.
+- Modifying related code.
+- Running tests.
+- Running the formatter.
 
-승인 필요:
+Approval required:
 
-- 대규모 리팩터링.
-- 데이터 삭제.
-- 외부 서비스 호출.
-- 의존성 대규모 변경.
+- Large-scale refactoring.
+- Data deletion.
+- Calling external services.
+- Large-scale dependency changes.
 
-### SITREP 예시
+### SITREP Example
 
 ```text
 SITREP
 
-Mission: 로그인 오류 수정.
-Completed: 관련 auth 모듈과 테스트를 확인함.
-In progress: 토큰 만료 처리 경로 수정 중.
-Blocked: 없음.
-CCIR: 기존 테스트가 실패 중인데 이번 변경과 무관해 보임.
-Risk: 회귀 테스트 추가 필요.
-Next action: 최소 수정 후 auth 테스트 실행.
+Mission: Fix login error.
+Completed: Checked the related auth module and tests.
+In progress: Fixing the token expiration handling path.
+Blocked: None.
+CCIR: An existing test is failing but appears unrelated to this change.
+Risk: Regression test needs to be added.
+Next action: Run auth tests after the minimal fix.
 ```
 
 ### AAR
 
-교훈:
+Lessons:
 
-- 코드 작업에서도 S2 조사와 S3 실행을 분리하면 불필요한 수정이 줄어든다.
-- 테스트 실패는 FFIR로 보고해야 하며 최종 보고에서 숨기지 않는다.
+- In code work too, separating S2 investigation from S3 execution reduces unnecessary changes.
+- Test failures must be reported as FFIR and not hidden in the final report.
 
-## 5. Case 04: 고위험 자동화 작업
+## 5. Case 04: High-Risk Automation Task
 
 ### Mission
 
-외부 시스템에 영향을 줄 수 있는 자동화를 설계한다.
+Design automation that can affect an external system.
 
 ### Commander's intent
 
-에이전트는 자동화 설계를 도울 수 있지만, 실제 실행 권한은 제한한다. 비용, 데이터 변경, 보안 영향은 사람 승인 전까지 실행하지 않는다.
+An agent can assist in designing automation, but actual execution authority is restricted. Cost, data changes, and security impact are not executed until human approval.
 
 ### Situation
 
-예시:
+Examples:
 
-- 고객 데이터베이스 정리 스크립트.
-- 결제 API 자동 호출.
-- 배포 파이프라인 변경.
-- 공개 웹사이트 업데이트.
+- A customer database cleanup script.
+- Automated calls to a payment API.
+- Changes to a deployment pipeline.
+- Updates to a public website.
 
 ### ROE Card
 
 ```text
 Allowed:
-- 코드 초안 작성.
-- dry-run 설계.
-- 테스트 데이터 기반 검증.
-- 위험 목록 작성.
+- Drafting code.
+- Designing a dry run.
+- Verification based on test data.
+- Producing a risk list.
 
 Requires approval:
-- 실제 데이터 변경.
-- 외부 API 호출.
-- 배포.
-- 비용 발생.
+- Actual data changes.
+- External API calls.
+- Deployment.
+- Incurring cost.
 
 Prohibited:
-- 비밀키 출력.
-- 승인 없는 삭제.
-- 사용자 변경사항 되돌림.
+- Printing secret keys.
+- Deletion without approval.
+- Reverting the user's changes.
 ```
 
 ### Decision Board
 
 ```text
 Decision required:
-실제 데이터에 스크립트를 실행할지 여부.
+Whether to run the script against actual data.
 
 Options:
-1. dry-run만 실행.
-2. 샘플 데이터에 실행.
-3. 백업 후 제한 범위 실행.
-4. 전체 실행.
+1. Run dry-run only.
+2. Run on sample data.
+3. Run on a limited scope after backup.
+4. Run in full.
 
 Recommendation:
-2번 후 결과 확인, 이후 3번 승인 요청.
+Option 2, then confirm results, then request approval for option 3.
 
 Risk:
-데이터 손상, 비용 발생, 복구 실패.
+Data damage, incurred cost, recovery failure.
 ```
 
 ### Assessment
 
 MOP:
 
-- dry-run 구현.
-- 로그와 rollback 계획 작성.
-- 승인 gate 설정.
+- Dry-run implemented.
+- Logging and rollback plan written.
+- Approval gate set.
 
 MOE:
 
-- 실제 실행 전 위험이 사용자에게 보이는가?
-- 실패 시 복구 경로가 있는가?
-- 에이전트가 권한 밖 작업을 멈추는가?
+- Is the risk visible to the user before actual execution?
+- Is there a recovery path in case of failure?
+- Does the agent stop actions that are out of scope of its authority?
 
-## 6. Case 05: 문서 하달형 멀티에이전트 작업
+## 6. Case 05: Multi-Agent Task via Order Dissemination
 
 ### Mission
 
-상위 사용자의 큰 목표를 하위 에이전트별 작업으로 분해하되, 최종 산출물이 하나의 의도로 통합되게 한다.
+Decompose a large, higher-level user goal into per-agent tasks while ensuring the final deliverable integrates into a single intent.
 
 ### Commander's intent
 
-각 에이전트는 자기 전문 영역에서 자유롭게 판단하되 mission과 intent를 바꾸지 않는다. Chief of Staff가 산출물을 통합한다.
+Each agent judges freely within its own area of expertise but does not change the mission or intent. The Chief of Staff integrates the deliverables.
 
-### 하달 구조
+### Dissemination Structure
 
 ```text
 User intent
@@ -400,41 +400,41 @@ User intent
 -> Integrated final output
 ```
 
-### 하위 에이전트 Tasking 예시
+### Subordinate Agent Tasking Examples
 
 S2:
 
 ```text
-상위 intent를 보존하라.
-너의 임무는 결론 작성이 아니라 출처와 불확실성 생산이다.
-각 출처마다 핵심 내용과 적용 가능성을 분리하라.
+Preserve the higher-level intent.
+Your job is not to write conclusions but to produce sources and uncertainty.
+For each source, separate the key content from its applicability.
 ```
 
 S3:
 
 ```text
-상위 intent를 보존하라.
-너의 임무는 실행 가능한 단계와 산출물 구조를 만드는 것이다.
-S2의 불확실성을 무시하지 말고 계획에 반영하라.
+Preserve the higher-level intent.
+Your job is to create executable steps and a deliverable structure.
+Do not ignore S2's uncertainty; reflect it in the plan.
 ```
 
 Red Team:
 
 ```text
-상위 intent를 보존하라.
-너의 임무는 직접 수정이 아니라 실패 가능성, 과장, 출처 부족을 찾는 것이다.
-각 finding에는 severity와 권고 조치를 붙여라.
+Preserve the higher-level intent.
+Your job is not direct editing but finding failure possibilities, exaggeration, and lack of sources.
+Attach a severity and a recommended action to each finding.
 ```
 
 ### AAR
 
-교훈:
+Lessons:
 
-- 멀티에이전트 구조에서는 병렬화보다 통합권이 중요하다.
-- 각 에이전트에게 같은 commander's intent를 주지 않으면 산출물이 서로 다른 방향으로 간다.
-- Red Team은 독립성을 가져야 하지만 최종 통합권을 가져서는 안 된다.
+- In a multi-agent structure, integration authority matters more than parallelization.
+- If each agent is not given the same commander's intent, the deliverables drift in different directions.
+- Red Team should have independence but should not hold final integration authority.
 
-## 7. 관련 문서
+## 7. Related Documents
 
 - `military-llm-framework-v0.1.md`
 - `agent-roles-and-authority.md`

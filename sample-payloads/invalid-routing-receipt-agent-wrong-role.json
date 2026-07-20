@@ -11,8 +11,8 @@
   "department": "research",
   "authority_scope": "source-verification",
   "routing_mode": "delegated_ai_role_department_authority",
-  "router_query": "research-agent W2 문서 라우팅",
-  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=research-agent --actor=ai --role=S2 --department=research --authority=source-verification \"research-agent W2 문서 라우팅\" .",
+  "router_query": "research-agent W2 document routing",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=research-agent --actor=ai --role=S2 --department=research --authority=source-verification \"research-agent W2 document routing\" .",
   "matched_routes": [
     {
       "id": "sources-research",

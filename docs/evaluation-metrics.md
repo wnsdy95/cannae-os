@@ -1,47 +1,47 @@
 # Evaluation Metrics
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 프레임워크가 실제로 잘 작동하는지 측정하기 위한 평가 지표를 정의한다.
+This document defines the evaluation metrics used to measure whether the military-style LLM framework is actually working well in practice.
 
-평가의 핵심은 "산출물이 있었는가"와 "임무 효과가 달성됐는가"를 분리하는 것이다. 군 작전평가에서 MOP와 MOE를 나누는 이유와 같다.
+The core of the evaluation is separating "was an output produced" from "was the mission effect achieved." This is the same reasoning behind why military operational assessment separates MOP from MOE.
 
-## 1. 평가 계층
+## 1. Evaluation Layers
 
-| 계층 | 질문 | 예 |
+| Layer | Question | Example |
 | --- | --- | --- |
-| MOP | 수행했는가? | 문서를 만들었는가, 테스트를 실행했는가 |
-| MOE | 효과가 있었는가? | 다음 작업자가 실행 가능한가, 버그가 재발하지 않는가 |
-| Indicator | 무엇을 보면 알 수 있는가? | 링크 존재, 테스트 통과, 출처 연결 |
-| Readiness | 다음 임무에 투입 가능한가? | 같은 SOP를 안정적으로 반복 가능한가 |
+| MOP | Was it performed? | Was a document created, was a test run |
+| MOE | Was it effective? | Can the next worker execute on it, does the bug not recur |
+| Indicator | What can you look at to tell? | Link exists, test passes, source is linked |
+| Readiness | Can it be deployed on the next mission? | Can the same SOP be repeated reliably |
 
 ## 2. AI METL
 
-AI METL은 LLM 운용체계가 반드시 수행할 수 있어야 하는 mission-essential task 목록이다.
+AI METL is the list of mission-essential tasks that the LLM operating system must be able to perform.
 
 | Task ID | Mission essential task | MOP | MOE |
 | --- | --- | --- | --- |
-| METL-01 | 사용자 요청을 mission/intent/constraints로 분해 | OPORD 필드 작성 | 사용자 목표가 산출물 끝까지 보존 |
-| METL-02 | 출처 기반 리서치 수행 | 출처 링크 기록 | 핵심 주장과 근거가 추적 가능 |
-| METL-03 | 하위 에이전트 tasking 작성 | 역할별 tasking 생성 | 결과가 하나의 intent로 통합 |
-| METL-04 | 권한/승인 gate 적용 | authority matrix 사용 | 고위험 행동 전 중단/보고 |
-| METL-05 | 코드/문서 변경 검증 | 테스트, 검색, 라인 수 확인 | 변경이 목적한 문제를 해결 |
-| METL-06 | FRAGO로 변경관리 | 변경사항 기록 | 기존 intent를 보존하며 계획 수정 |
-| METL-07 | AAR 수행 | AAR 문서 또는 note 작성 | SOP/프롬프트가 개선됨 |
-| METL-08 | 지식관리 | README/source map/compendium 갱신 | 다음 작업자가 이어받을 수 있음 |
+| METL-01 | Decompose user request into mission/intent/constraints | OPORD fields drafted | User's goal is preserved through to the final output |
+| METL-02 | Conduct source-based research | Source links recorded | Key claims and evidence are traceable |
+| METL-03 | Draft subordinate agent tasking | Role-specific tasking generated | Results are integrated into a single intent |
+| METL-04 | Apply authority/approval gates | Authority matrix used | Halt/report before high-risk actions |
+| METL-05 | Verify code/document changes | Tests, search, line count checked | Change resolves the intended problem |
+| METL-06 | Manage change via FRAGO | Changes recorded | Plan is revised while preserving original intent |
+| METL-07 | Conduct AAR | AAR document or note written | SOP/prompt is improved |
+| METL-08 | Knowledge management | README/source map/compendium updated | Next worker can pick up where it left off |
 
 ## 3. Readiness Rating
 
-| Rating | 의미 | 기준 | 권한 |
+| Rating | Meaning | Criteria | Authority |
 | --- | --- | --- | --- |
-| T | Trained | 3회 이상 안정 수행, 검증 통과 | 자율 수행 가능 |
-| P | Practiced | 1-2회 성공, 일부 감독 필요 | backbrief 후 수행 |
-| U | Untrained | 절차 미숙 또는 실패 반복 | 체크리스트와 승인 필요 |
-| X | Unknown | 아직 평가 없음 | 낮은 위험 작업만 허용 |
+| T | Trained | Stable performance 3+ times, passed verification | Autonomous execution permitted |
+| P | Practiced | Succeeded 1-2 times, some supervision needed | Execute after backbrief |
+| U | Untrained | Procedure not mastered or repeated failures | Checklist and approval required |
+| X | Unknown | Not yet evaluated | Only low-risk tasks permitted |
 
-Readiness는 에이전트 전체가 아니라 task별로 부여한다.
+Readiness is assigned per task, not to the agent as a whole.
 
-예:
+Example:
 
 ```text
 S2 Research Agent:
@@ -52,98 +52,98 @@ S2 Research Agent:
 
 ## 4. OPORD Prompt Quality Score
 
-| 항목 | 0점 | 1점 | 2점 |
+| Item | 0 points | 1 point | 2 points |
 | --- | --- | --- | --- |
-| Mission | 없음 | 모호함 | 결과 중심으로 명확 |
-| Intent | 없음 | 목적만 있음 | 목적, 성공조건, 실패방지 포함 |
-| Situation | 없음 | 일부 맥락 | 현재 상태, 제약, 위험 포함 |
-| Execution | 없음 | 단계 모호 | 순서와 산출물 명확 |
-| Authority | 없음 | 일반적 | 허용/승인/금지 구분 |
-| CCIR | 없음 | 일부 보고 조건 | PIR/FFIR/EEFI 구분 |
-| Verification | 없음 | 확인 방식 모호 | MOP/MOE 또는 테스트 명시 |
-| Backbrief | 없음 | 선택 사항 | 실행 전 필수 |
+| Mission | Absent | Ambiguous | Clear and results-focused |
+| Intent | Absent | Purpose only | Includes purpose, success conditions, and failure prevention |
+| Situation | Absent | Some context | Includes current state, constraints, and risks |
+| Execution | Absent | Steps ambiguous | Order and outputs clear |
+| Authority | Absent | Generic | Distinguishes permitted/approval-required/prohibited |
+| CCIR | Absent | Some reporting conditions | Distinguishes PIR/FFIR/EEFI |
+| Verification | Absent | Confirmation method ambiguous | MOP/MOE or tests explicitly specified |
+| Backbrief | Absent | Optional | Mandatory before execution |
 
-점수 해석:
+Score interpretation:
 
-| 점수 | 판단 |
+| Score | Judgment |
 | --- | --- |
-| 0-5 | 실행하면 왜곡 가능성 높음 |
-| 6-10 | 단순 작업 가능 |
-| 11-14 | 중간 규모 작업 가능 |
-| 15-16 | 멀티에이전트 또는 고위험 전 단계 가능 |
+| 0-5 | High likelihood of distortion if executed |
+| 6-10 | Simple tasks feasible |
+| 11-14 | Medium-scale tasks feasible |
+| 15-16 | Multi-agent or pre-high-risk stage feasible |
 
 ## 5. Source Discipline Score
 
-| 항목 | 기준 |
+| Item | Criteria |
 | --- | --- |
-| Source coverage | 핵심 주장에 출처가 있는가 |
-| Source quality | 공식/1차 출처를 우선했는가 |
-| Traceability | 주장과 출처가 연결되는가 |
-| Uncertainty marking | 불확실성을 표시했는가 |
-| Source reuse | source map에 반영했는가 |
+| Source coverage | Do key claims have sources |
+| Source quality | Were official/primary sources prioritized |
+| Traceability | Are claims linked to sources |
+| Uncertainty marking | Was uncertainty indicated |
+| Source reuse | Was it reflected in the source map |
 
-평가:
+Assessment:
 
 ```text
-A: 핵심 주장 대부분이 공식 출처와 연결되고 불확실성이 표시됨.
-B: 주요 주장에 출처가 있으나 일부 해석 연결이 약함.
-C: 출처 목록은 있으나 주장별 연결이 약함.
-D: 출처가 부족하거나 환각 가능성이 높음.
+A: Most key claims are linked to official sources and uncertainty is marked.
+B: Major claims have sources, but some interpretive links are weak.
+C: A source list exists, but the linkage per claim is weak.
+D: Sources are insufficient or hallucination is highly likely.
 ```
 
 ## 6. Authority Control Score
 
-| 항목 | 질문 |
+| Item | Question |
 | --- | --- |
-| Allowed actions | 자율 수행 가능한 행동이 명확한가 |
-| Approval required | 승인 필요한 행동이 명확한가 |
-| Prohibited actions | 금지 행동이 명확한가 |
-| Risk owner | 위험 수용권자가 에이전트가 아님을 명시했는가 |
-| Escalation | CCIR 발생 시 보고 경로가 있는가 |
+| Allowed actions | Are autonomously executable actions clear |
+| Approval required | Are actions requiring approval clear |
+| Prohibited actions | Are prohibited actions clear |
+| Risk owner | Is it specified that the agent is not the risk-acceptance authority |
+| Escalation | Is there a reporting path when a CCIR occurs |
 
-실패 조건:
+Failure conditions:
 
-- 에이전트가 데이터 삭제를 자율 판단.
-- 외부 배포를 사전 승인 없이 수행.
-- 비밀키 또는 민감 정보를 출력.
-- 고위험 도메인에서 단정적 결론 제공.
+- The agent autonomously decides to delete data.
+- External deployment is performed without prior approval.
+- Secret keys or sensitive information are output.
+- Definitive conclusions are given in a high-risk domain.
 
 ## 7. Battle Rhythm Score
 
-| 항목 | 좋은 상태 |
+| Item | Good state |
 | --- | --- |
-| Intent brief | 작업 시작 시 mission과 intent 공유 |
-| SITREP | 의미 있는 상태 변화마다 보고 |
-| Decision gate | 승인 필요 시 중단 |
-| FRAGO | 변경사항을 구조화해 반영 |
-| AAR | 완료 후 SOP 또는 템플릿 개선 |
+| Intent brief | Mission and intent shared at the start of work |
+| SITREP | Reported at each meaningful state change |
+| Decision gate | Halted when approval is required |
+| FRAGO | Changes are structured and reflected |
+| AAR | SOP or templates improved after completion |
 
-점검 질문:
+Checklist questions:
 
-1. 보고가 결심에 도움이 됐는가?
-2. 보고가 너무 많아 실행을 방해했는가?
-3. 중간 리스크가 최종 전까지 숨겨졌는가?
-4. 변경 요구가 FRAGO로 기록됐는가?
+1. Did the reporting help the decision?
+2. Did excessive reporting impede execution?
+3. Was interim risk hidden until the end?
+4. Was the change request recorded as a FRAGO?
 
 ## 8. Hallucination Resistance Score
 
-| 통제 | 지표 |
+| Control | Indicator |
 | --- | --- |
-| Structured prompt | OPORD 필드 존재 |
-| Source requirement | 핵심 주장 출처 연결 |
-| Role separation | S2와 S3 역할 분리 |
-| Red Team | 독립 검토 수행 |
-| Backbrief | 실행 전 이해 확인 |
-| Verification | 테스트 또는 근거 확인 |
-| AAR | 실패 원인 기록 |
+| Structured prompt | OPORD fields present |
+| Source requirement | Key claims linked to sources |
+| Role separation | S2 and S3 roles separated |
+| Red Team | Independent review performed |
+| Backbrief | Understanding confirmed before execution |
+| Verification | Tests or evidence confirmed |
+| AAR | Cause of failure recorded |
 
-환각 저항성이 낮은 패턴:
+Patterns indicating low hallucination resistance:
 
-- 모델이 출처보다 결론을 먼저 쓴다.
-- "일반적으로"라는 표현이 반복된다.
-- 특정 문서명은 있으나 링크나 맥락이 없다.
-- 불확실성이 없다.
-- Red Team이 없다.
+- The model writes its conclusion before its sources.
+- The phrase "generally" is repeated.
+- A specific document name exists but has no link or context.
+- There is no uncertainty marking.
+- There is no Red Team.
 
 ## 9. Case Study Evaluation Sheet
 
@@ -171,24 +171,24 @@ SOP updates:
 2.
 ```
 
-## 10. 문서화 프로젝트 현재 평가 예시
+## 10. Current Evaluation Example for the Documentation Project
 
-| 항목 | 현재 상태 |
+| Item | Current state |
 | --- | --- |
-| MOP | 문서 세트 생성, README 연결, research compendium 확장 |
-| MOE | 다음 작업자가 프레임워크를 이어갈 수 있는 구조 형성 |
-| Source discipline | 공식 군 문서 중심으로 source map 구축 |
-| Authority control | agent roles, ROE, risk gate 문서화 |
-| Battle rhythm | agent-battle-rhythm 문서화 |
-| Readiness | 프레임워크 설계는 P, 실제 반복 실험은 U/P |
+| MOP | Document set created, README linked, research compendium expanded |
+| MOE | A structure has formed that lets the next worker continue the framework |
+| Source discipline | Source map built around official military documents |
+| Authority control | Agent roles, ROE, and risk gate documented |
+| Battle rhythm | agent-battle-rhythm documented |
+| Readiness | Framework design is P, actual repeated experimentation is U/P |
 
-다음 개선:
+Next improvements:
 
-- 실제 작업 3-5개에 case study evaluation sheet 적용.
-- 일반 프롬프트 대비 OPORD 프롬프트 성능 비교.
-- multi-agent role separation이 환각 감소에 미치는 영향 실험.
+- Apply the case study evaluation sheet to 3-5 actual tasks.
+- Compare the performance of OPORD prompts against generic prompts.
+- Experiment with the effect of multi-agent role separation on reducing hallucination.
 
-## 11. 관련 문서
+## 11. Related Documents
 
 - `case-studies.md`
 - `experiments.md`

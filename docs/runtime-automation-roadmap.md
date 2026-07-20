@@ -1,10 +1,10 @@
 # Runtime Automation Roadmap
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 현재 문서 기반 프레임워크를 실제 tool-gated LLM runtime으로 발전시키는 로드맵이다.
+This document is a roadmap for evolving the current document-based framework into an actual tool-gated LLM runtime.
 
-목표 상태:
+Target state:
 
 ```text
 Manual doctrine docs
@@ -17,9 +17,9 @@ Manual doctrine docs
 
 ## 1. Phase 0: Documentation Base
 
-현재 상태.
+Current state.
 
-완료 조건:
+Completion criteria:
 
 - doctrine documents.
 - SOP library.
@@ -29,39 +29,39 @@ Manual doctrine docs
 - risk register.
 - runtime schemas.
 
-남은 위험:
+Remaining risks:
 
-- 실제 runtime enforcement 없음.
-- validator 코드 없음.
-- dashboard 없음.
+- No actual runtime enforcement.
+- No validator code.
+- No dashboard.
 
 ## 2. Phase 1: Local Validator CLI
 
-목표:
+Goal:
 
-- OPORD, tool request, SITREP, AAR JSON을 로컬에서 검증.
+- Validate OPORD, tool request, SITREP, and AAR JSON locally.
 
-기능:
+Features:
 
 - JSON Schema validation.
 - semantic rule validation.
 - valid/invalid fixture tests.
 - report output.
 
-완료 조건:
+Completion criteria:
 
-- `validate opord.json` 명령.
-- critical/error/warning 출력.
-- fixtures 통과.
+- `validate opord.json` command.
+- critical/error/warning output.
+- fixtures pass.
 
 ## 3. Phase 2: Prompt Compiler
 
-목표:
+Goal:
 
-- user request를 OPORD draft로 변환.
-- OPORD를 에이전트별 task order로 분해.
+- Convert a user request into an OPORD draft.
+- Decompose an OPORD into per-agent task orders.
 
-기능:
+Features:
 
 - mission extraction.
 - intent extraction.
@@ -69,55 +69,55 @@ Manual doctrine docs
 - CCIR suggestion.
 - assessment suggestion.
 
-완료 조건:
+Completion criteria:
 
-- 사용자가 OPORD 초안을 승인/수정 가능.
-- missing fields validator가 잡음.
+- The user can approve/edit the OPORD draft.
+- The validator catches missing fields.
 
 ## 4. Phase 3: Tool Gateway
 
-목표:
+Goal:
 
-- 모든 도구 요청이 policy engine을 통과.
+- Every tool request passes through the policy engine.
 
-기능:
+Features:
 
 - tool request object.
 - ROE decision.
 - approval request generation.
 - tool-use log.
 
-완료 조건:
+Completion criteria:
 
-- Red without approval 차단.
-- Black action 차단.
+- Red without approval is blocked.
+- Black action is blocked.
 - Green action audit log.
 
 ## 5. Phase 4: Approval UI
 
-목표:
+Goal:
 
-- 사용자가 위험을 이해하고 action-level approval을 부여.
+- The user understands the risk and grants action-level approval.
 
-기능:
+Features:
 
 - approval queue.
 - dry-run button.
 - risk/rollback/alternatives display.
 - approval log.
 
-완료 조건:
+Completion criteria:
 
-- production-like action은 승인 전 실행 불가.
-- 승인 범위와 만료가 기록됨.
+- Production-like actions cannot execute before approval.
+- The approval scope and expiration are recorded.
 
 ## 6. Phase 5: Evidence Store
 
-목표:
+Goal:
 
-- 출처와 주장을 구조화해 저장.
+- Store sources and claims in structured form.
 
-기능:
+Features:
 
 - source metadata.
 - claim/interpretation split.
@@ -125,18 +125,18 @@ Manual doctrine docs
 - linked documents.
 - source map export.
 
-완료 조건:
+Completion criteria:
 
-- unsupported claim 탐지 가능.
-- evidence viewer로 주장 추적 가능.
+- Unsupported claims can be detected.
+- Claims can be traced via the evidence viewer.
 
 ## 7. Phase 6: Command Post Dashboard
 
-목표:
+Goal:
 
-- mission, approval, CCIR, risk, readiness를 한 화면에서 지휘.
+- Command mission, approval, CCIR, risk, and readiness from a single screen.
 
-기능:
+Features:
 
 - mission board.
 - CCIR alerts.
@@ -145,30 +145,30 @@ Manual doctrine docs
 - readiness board.
 - AAR library.
 
-완료 조건:
+Completion criteria:
 
-- blocked mission과 decision required가 즉시 보임.
+- Blocked missions and decision-required items are immediately visible.
 
 ## 8. Phase 7: Learning Runtime
 
-목표:
+Goal:
 
-- AAR가 SOP, policy, readiness를 갱신.
+- AAR updates SOP, policy, and readiness.
 
-기능:
+Features:
 
 - AAR parser.
 - SOP update suggestion.
 - readiness ledger update.
 - recurring risk detection.
 
-완료 조건:
+Completion criteria:
 
-- 같은 failure가 반복되면 risk/register/policy update 제안.
+- When the same failure recurs, a risk/register/policy update is proposed.
 
 ## 9. Release Gates
 
-| Gate | 조건 |
+| Gate | Condition |
 | --- | --- |
 | G1 | Schema fixtures pass |
 | G2 | Critical validator rules pass |
@@ -178,7 +178,7 @@ Manual doctrine docs
 | G6 | Dashboard shows decision required |
 | G7 | AAR updates readiness ledger |
 
-## 10. 관련 문서
+## 10. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`

@@ -1,45 +1,46 @@
 # Functional Domains
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대의 warfighting functions, 훈련관리, 지속지원, 타게팅, ROE를 LLM 운영 기능으로 번역한다.
+This document translates the military's warfighting functions, training management, sustainment, targeting, and ROE into LLM operational functions.
 
-군대는 단순히 명령을 내리는 조직이 아니다. 지휘통제, 정보, 기동, 화력, 지속지원, 방호, 정보활동 같은 기능이 함께 작동해야 실제 작전이 된다. LLM 프레임워크도 동일하다. 좋은 프롬프트 하나만으로는 장기 작업, 멀티에이전트, 검증, 권한 통제를 안정적으로 수행하기 어렵다.
+An army is not simply an organization that issues orders. Functions such as command and control, intelligence, maneuver, fires, sustainment, protection, and information activities must all operate together for an actual operation to take place. The same is true of an LLM framework. A single good prompt is not enough to reliably sustain long-running tasks, multi-agent coordination, verification, and authority control.
 
-핵심 문장:
+Core statement:
 
 ```text
-LLM 운영체계는 프롬프트 기술이 아니라,
-지휘통제, 정보, 실행, 지속지원, 방호, 평가가 결합된 작전 시스템이다.
+An LLM operating system is not a prompting technique,
+but an operational system that combines command and control, intelligence,
+execution, sustainment, protection, and assessment.
 ```
 
-## 1. 군 전투기능을 LLM 기능으로 번역
+## 1. Translating Military Warfighting Functions into LLM Functions
 
-| 군 기능 | 군대식 의미 | LLM 운영 기능 | 핵심 산출물 |
+| Military function | Military meaning | LLM operational function | Key output |
 | --- | --- | --- | --- |
-| Command and Control | 지휘관 의도, 권한, 통제, 보고 | 사용자 의도 보존, 에이전트 권한, 승인체계 | OPORD prompt, authority matrix |
-| Intelligence | 적/환경/위험 파악 | 출처 조사, 불확실성, 환각 탐지 | research note, source map |
-| Movement and Maneuver | 위치와 행동으로 우위 확보 | 작업 순서, 파일/도구 이동, 실행 경로 설계 | execution plan |
-| Fires | 표적에 효과를 가함 | 특정 대상에 대한 변경, 생성, 삭제, 호출 | target-effect list |
-| Sustainment | 보급, 정비, 의료, 인사 | 토큰, 시간, 도구, API, 문맥, 파일 관리 | sustainment estimate |
-| Protection | 병력과 자산 보호 | 보안, 민감정보, 승인선, rollback | risk register, guardrails |
-| Information | 정보환경 영향과 메시지 | 문서화, 지식관리, 사용자 커뮤니케이션 | README, compendium, SITREP |
+| Command and Control | Commander's intent, authority, control, reporting | Preserving user intent, agent authority, approval hierarchy | OPORD prompt, authority matrix |
+| Intelligence | Understanding the enemy/environment/risk | Source research, uncertainty, hallucination detection | research note, source map |
+| Movement and Maneuver | Gaining advantage through position and action | Task sequencing, file/tool movement, execution path design | execution plan |
+| Fires | Applying effects to a target | Modifying, creating, deleting, or invoking a specific target | target-effect list |
+| Sustainment | Supply, maintenance, medical, personnel | Managing tokens, time, tools, APIs, context, files | sustainment estimate |
+| Protection | Protecting personnel and assets | Security, sensitive information, approval thresholds, rollback | risk register, guardrails |
+| Information | Influencing the information environment and messaging | Documentation, knowledge management, user communication | README, compendium, SITREP |
 
 ## 2. Command and Control Domain
 
-### 목적
+### Purpose
 
-사용자 의도를 작업 끝까지 보존하고, 어느 에이전트가 무엇을 결정할 수 있는지 명확히 한다.
+Preserve user intent through to the end of the task, and clarify which agent may decide what.
 
-### LLM 운영 질문
+### LLM Operational Questions
 
-- 최종 의사결정자는 누구인가?
-- 에이전트가 자율적으로 바꿔도 되는 것은 무엇인가?
-- 반드시 보고해야 하는 정보는 무엇인가?
-- 어느 순간 사용자 승인이 필요한가?
-- mission과 intent는 어디에 기록되는가?
+- Who is the final decision-maker?
+- What may an agent change autonomously?
+- What information must always be reported?
+- At what point is user approval required?
+- Where are the mission and intent recorded?
 
-### 필수 장치
+### Required Instruments
 
 - OPORD prompt.
 - Commander intent.
@@ -49,28 +50,28 @@ LLM 운영체계는 프롬프트 기술이 아니라,
 - FRAGO.
 - AAR.
 
-### 실패 양상
+### Failure Modes
 
-- 에이전트가 사용자의 목적을 자기 방식으로 재정의.
-- 하위 작업은 완료됐지만 전체 목적과 불일치.
-- 승인 없이 고위험 작업 수행.
-- 중간 변경사항이 문서에 반영되지 않음.
+- An agent redefines the user's objective in its own way.
+- Subtasks are completed but are inconsistent with the overall objective.
+- High-risk work is performed without approval.
+- Interim changes are not reflected in the documentation.
 
 ## 3. Intelligence Domain
 
-### 목적
+### Purpose
 
-결정과 산출물의 근거를 확보하고, 불확실성을 명시한다.
+Secure the grounds for decisions and outputs, and make uncertainty explicit.
 
-### LLM 운영 질문
+### LLM Operational Questions
 
-- 어떤 사실이 최신 확인을 필요로 하는가?
-- 어떤 출처가 1차 출처인가?
-- 어떤 주장이 출처가 아니라 추론인가?
-- 출처 간 충돌은 무엇인가?
-- 환각 가능성이 높은 영역은 어디인가?
+- Which facts require up-to-date confirmation?
+- Which sources are primary sources?
+- Which claims are inference rather than sourced fact?
+- Where do sources conflict?
+- Where is the hallucination risk highest?
 
-### 필수 장치
+### Required Instruments
 
 - PIR.
 - Source reliability.
@@ -79,7 +80,7 @@ LLM 운영체계는 프롬프트 기술이 아니라,
 - Confidence rating.
 - Red Team review.
 
-### Intelligence Estimate 양식
+### Intelligence Estimate Format
 
 ```text
 Question:
@@ -93,19 +94,19 @@ Recommended action:
 
 ## 4. Movement and Maneuver Domain
 
-### 목적
+### Purpose
 
-작업이 어떤 순서와 경로로 진행되어야 가장 적은 비용으로 목적을 달성하는지 설계한다.
+Design the sequence and path a task should follow so the objective is achieved at the lowest cost.
 
-LLM에서는 물리적 기동 대신 다음을 다룬다.
+For LLMs, this addresses the following in place of physical maneuver.
 
-- 어떤 파일을 먼저 읽을지.
-- 어떤 에이전트를 먼저 투입할지.
-- 리서치와 구현을 병렬화할지 순차화할지.
-- 변경을 어느 모듈부터 적용할지.
-- 검증을 언제 실행할지.
+- Which file to read first.
+- Which agent to commit first.
+- Whether to parallelize or sequence research and implementation.
+- Which module to start applying changes to.
+- When to run verification.
 
-### Maneuver Plan 양식
+### Maneuver Plan Format
 
 ```text
 Objective:
@@ -118,22 +119,22 @@ Fallback path:
 Verification:
 ```
 
-### 실패 양상
+### Failure Modes
 
-- 먼저 읽어야 할 문서를 건너뜀.
-- 병렬화하면 안 되는 일을 병렬화.
-- 검증 전에 너무 많은 파일 변경.
-- 전체 구조 없이 산출물을 계속 추가.
+- Skipping a document that should have been read first.
+- Parallelizing work that should not be parallelized.
+- Changing too many files before verification.
+- Continuously adding outputs without an overall structure.
 
 ## 5. Fires / Effects Domain
 
-### 목적
+### Purpose
 
-무엇을 바꿔서 어떤 효과를 낼 것인지 명확히 한다.
+Clarify what will be changed and what effect it is intended to produce.
 
-군 타게팅의 핵심은 "무엇을 공격할까"가 아니라 "어떤 효과가 필요한가"다. LLM 작업에서도 "문서를 만든다", "코드를 수정한다"보다 "어떤 상태 변화를 만들 것인가"가 먼저다.
+The core of military targeting is not "what to attack" but "what effect is required." In LLM work as well, "what state change will this produce" comes before "create a document" or "modify the code."
 
-### Target-Effect 양식
+### Target-Effect Format
 
 ```text
 Target:
@@ -144,33 +145,33 @@ Collateral risk:
 Assessment method:
 ```
 
-### 예시
+### Example
 
 | Target | Desired effect | Means | Assessment |
 | --- | --- | --- | --- |
-| README | 새 문서 탐색 가능 | 링크와 읽기 순서 추가 | 사용자가 문서 세트를 찾을 수 있음 |
-| prompt template | 환각 감소 | OPORD 구조와 source requirement 추가 | 출처 없는 주장 감소 |
-| agent authority | 무단 변경 방지 | approval matrix 추가 | high-risk action 전 보고 |
-| research compendium | 지식 축적 | 출처별 요약 추가 | 다음 에이전트가 근거 재사용 |
+| README | New documents become discoverable | Add links and a reading order | User can locate the document set |
+| prompt template | Reduced hallucination | Add OPORD structure and source requirement | Reduction in unsourced claims |
+| agent authority | Prevent unauthorized changes | Add approval matrix | High-risk actions are reported before execution |
+| research compendium | Knowledge accumulation | Add per-source summaries | Next agent can reuse the grounding |
 
 ## 6. Sustainment Domain
 
-### 목적
+### Purpose
 
-작업을 끝까지 지속할 수 있도록 자원, 도구, 시간, 문맥을 관리한다.
+Manage resources, tools, time, and context so the task can be sustained to completion.
 
-LLM 지속지원은 다음을 포함한다.
+LLM sustainment includes the following.
 
-- 컨텍스트 예산.
-- 토큰 예산.
-- 파일 접근.
-- 브라우징 가능 여부.
-- API 키와 권한.
-- 테스트 도구.
-- 장기 작업의 체크포인트.
-- 출처와 문서 저장 위치.
+- Context budget.
+- Token budget.
+- File access.
+- Whether browsing is available.
+- API keys and permissions.
+- Test tooling.
+- Checkpoints for long-running tasks.
+- Where sources and documents are stored.
 
-### Sustainment Estimate 양식
+### Sustainment Estimate Format
 
 ```text
 Task:
@@ -183,64 +184,64 @@ Fallback:
 Checkpoint:
 ```
 
-### 지속지원 원칙의 적용
+### Applying Sustainment Principles
 
-| 원칙 | LLM 적용 |
+| Principle | LLM application |
 | --- | --- |
-| Anticipation | 긴 작업 전 필요한 파일, 도구, 출처를 예상 |
-| Responsiveness | 사용자 변경 요청과 실패에 빠르게 대응 |
-| Simplicity | 도구 체인과 문서 구조를 단순하게 유지 |
-| Economy | 고비용 모델/도구를 필요한 곳에만 사용 |
-| Survivability | 컨텍스트 손실에 대비해 문서와 summary 유지 |
-| Continuity | 중간 결과를 계속 저장 |
-| Improvisation | 도구 실패 시 대체 경로 준비 |
+| Anticipation | Anticipate the files, tools, and sources needed before a long task |
+| Responsiveness | Respond quickly to user change requests and failures |
+| Simplicity | Keep the tool chain and document structure simple |
+| Economy | Use costly models/tools only where needed |
+| Survivability | Maintain documentation and summaries in case of context loss |
+| Continuity | Keep saving intermediate results |
+| Improvisation | Prepare fallback paths for tool failures |
 
 ## 7. Protection Domain
 
-### 목적
+### Purpose
 
-사용자 자산, 데이터, 보안, 작업 안정성을 보호한다.
+Protect the user's assets, data, security, and work stability.
 
-LLM 보호는 단순한 "안전 필터"가 아니다. 권한, 승인, 위험관리, 비밀 보호, 롤백 가능성까지 포함한다.
+LLM protection is not merely a "safety filter." It also includes authority, approval, risk management, secrets protection, and rollback capability.
 
-### 보호 대상
+### Protected Assets
 
-- 사용자 파일.
-- 비밀키와 토큰.
-- 개인 정보.
-- 회사 기밀.
-- 사용자 의도.
-- 기존 작업물.
-- 외부 시스템 상태.
+- User files.
+- Secret keys and tokens.
+- Personal information.
+- Company confidential information.
+- User intent.
+- Existing work products.
+- External system state.
 
-### Protection Control 예시
+### Protection Control Examples
 
-| 위험 | 통제 |
+| Risk | Control |
 | --- | --- |
-| 사용자 변경사항 되돌림 | 변경 전 diff 확인, explicit approval |
-| 비밀키 노출 | EEFI로 즉시 보고, 출력 금지 |
-| 출처 없는 주장 | source requirement |
-| 고위험 작업 자동 실행 | authority gate |
-| 컨텍스트 손실 | 문서화와 checkpoint |
-| 모델 환각 | Red Team, source map, verification |
+| Reverting a user's changes | Check the diff before changing, explicit approval |
+| Secret key exposure | Report immediately via EEFI, prohibit output |
+| Unsourced claims | source requirement |
+| Automatic execution of high-risk work | authority gate |
+| Context loss | Documentation and checkpoint |
+| Model hallucination | Red Team, source map, verification |
 
 ## 8. Information Domain
 
-### 목적
+### Purpose
 
-사용자와 에이전트가 같은 상황 인식을 유지하게 하고, 지식이 사라지지 않게 한다.
+Keep the user and the agent sharing the same situational awareness, and prevent knowledge from being lost.
 
-Information domain은 커뮤니케이션과 지식관리의 결합이다.
+The Information domain is the union of communication and knowledge management.
 
-### LLM 운영 질문
+### LLM Operational Questions
 
-- 현재 상태를 사용자가 이해하고 있는가?
-- 다음 에이전트가 이어받을 수 있는가?
-- 어떤 판단이 어디에 기록됐는가?
-- 문서 이름과 위치가 직관적인가?
-- 보고가 결심을 돕는가, 방해하는가?
+- Does the user understand the current state?
+- Can the next agent pick up where this one left off?
+- Where was each judgment recorded?
+- Are document names and locations intuitive?
+- Does the reporting help decision-making, or hinder it?
 
-### 필수 장치
+### Required Instruments
 
 - README.
 - Research compendium.
@@ -252,71 +253,71 @@ Information domain은 커뮤니케이션과 지식관리의 결합이다.
 
 ## 9. Training and Readiness Domain
 
-### 목적
+### Purpose
 
-에이전트가 맡은 임무를 반복적으로 안정 수행할 수 있는지 평가한다.
+Assess whether an agent can repeatedly and stably perform an assigned mission.
 
-군대는 전투를 잘하기 위해 평시에 훈련 과제를 관리한다. LLM 프레임워크도 자주 수행하는 임무를 METL처럼 정의해야 한다.
+Armies manage training tasks in peacetime in order to fight well. An LLM framework must likewise define frequently performed missions, in the manner of a METL.
 
-### AI METL 예시
+### AI METL Example
 
-| Mission essential task | 평가 기준 |
+| Mission essential task | Evaluation criteria |
 | --- | --- |
-| 사용자 의도 OPORD 변환 | mission, intent, constraints 누락 없음 |
-| 출처 기반 리서치 | 핵심 주장마다 출처 연결 |
-| 문서 세트 갱신 | README, source map, compendium 동시 반영 |
-| 고위험 변경 통제 | authority gate와 CCIR 작동 |
-| 멀티에이전트 통합 | 역할별 산출물이 하나의 결론으로 통합 |
-| AAR 반영 | SOP 또는 템플릿에 교훈 반영 |
+| Converting user intent into an OPORD | No omission of mission, intent, constraints |
+| Source-based research | Every key claim is linked to a source |
+| Updating the document set | README, source map, and compendium are updated together |
+| Controlling high-risk changes | authority gate and CCIR are functioning |
+| Multi-agent integration | Role-specific outputs are integrated into a single conclusion |
+| Incorporating AAR | Lessons learned are reflected in an SOP or template |
 
 ### Readiness Rating
 
-| 등급 | 의미 | 운용 방식 |
+| Rating | Meaning | Mode of operation |
 | --- | --- | --- |
-| T | Trained | 자율 수행 가능 |
-| P | Practiced | 감독 아래 수행 |
-| U | Untrained | 체크리스트와 승인 필요 |
-| X | Unknown | 평가 전까지 제한 운용 |
+| T | Trained | Can operate autonomously |
+| P | Practiced | Operates under supervision |
+| U | Untrained | Requires checklists and approval |
+| X | Unknown | Restricted operation until evaluated |
 
 ## 10. Targeting Domain
 
-### 목적
+### Purpose
 
-LLM 작업을 "활동 목록"이 아니라 "목표와 효과의 연쇄"로 설계한다.
+Design LLM work as a "chain of objectives and effects" rather than an "activity list."
 
-### D3A 번역
+### D3A Translation
 
-| 단계 | 군 타게팅 | LLM 작업 |
+| Stage | Military targeting | LLM task |
 | --- | --- | --- |
-| Decide | 어떤 표적과 효과가 중요한지 결정 | 어떤 문서/코드/판단을 바꿀지 결정 |
-| Detect | 표적 위치와 상태 확인 | 현재 파일, 출처, 결함 확인 |
-| Deliver | 수단 적용 | 수정, 생성, 도구 호출 |
-| Assess | 효과 평가 | 테스트, 리뷰, 사용자 목표 달성 확인 |
+| Decide | Decide which target and effect matter | Decide which document/code/judgment to change |
+| Detect | Confirm target location and status | Confirm current files, sources, defects |
+| Deliver | Apply the means | Modify, create, invoke tools |
+| Assess | Evaluate the effect | Test, review, confirm the user's goal is achieved |
 
-### 적용 예
+### Applied Example
 
 ```text
-Decide: source map이 없어 근거 추적이 어렵다.
-Detect: 현재 문서 세트에 source-map.md가 없다.
-Deliver: source-map.md 작성, README 연결.
-Assess: rg와 wc로 존재 및 링크 확인.
+Decide: Without a source map, it is difficult to trace the grounding of claims.
+Detect: The current document set has no source-map.md.
+Deliver: Write source-map.md and link it from the README.
+Assess: Confirm existence and links using rg and wc.
 ```
 
 ## 11. ROE Domain
 
-### 목적
+### Purpose
 
-에이전트가 할 수 있는 행동, 하면 안 되는 행동, 승인이 필요한 행동을 명확히 한다.
+Clarify what actions an agent may take, what actions it must not take, and what actions require approval.
 
-LLM용 ROE는 다음 세 층이다.
+The ROE for LLMs has three layers.
 
-| 층 | 의미 | 예 |
+| Layer | Meaning | Example |
 | --- | --- | --- |
-| Always allowed | 자율 수행 가능 | 읽기, 요약, 초안 작성, 로컬 검증 |
-| Approval required | 승인 후 가능 | 외부 배포, 비용 발생, 데이터 변경 |
-| Prohibited | 수행 금지 | 비밀 유출, 사용자 변경 무단 되돌림, 허위 출처 생성 |
+| Always allowed | Can be performed autonomously | Reading, summarizing, drafting, local verification |
+| Approval required | Permitted after approval | External deployment, incurring cost, data changes |
+| Prohibited | Must not be performed | Leaking secrets, unauthorized reversal of user changes, fabricating sources |
 
-### ROE Card 양식
+### ROE Card Format
 
 ```text
 Mission:
@@ -327,9 +328,9 @@ Immediate report:
 Fallback:
 ```
 
-## 12. 통합 운영 모델
+## 12. Integrated Operating Model
 
-각 기능영역은 독립 문서가 아니라 하나의 작전 루프로 연결된다.
+Each functional domain is not an independent document; they are connected into a single operational loop.
 
 ```text
 Command and Control
@@ -344,7 +345,7 @@ Command and Control
 -> Training/AAR Update
 ```
 
-## 13. 관련 문서
+## 13. Related Documents
 
 - `military-llm-framework-v0.1.md`
 - `military-operating-system.md`

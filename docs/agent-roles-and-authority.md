@@ -1,528 +1,528 @@
 # Agent Roles and Authority
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 지휘통제 모델을 LLM 에이전트 운용에 적용할 때, 각 지위가 가지는 승인 범위, 보고 범위, 자율 판단 가능 영역, 사후 관리 책임을 정의한다.
+This document defines, for each position in a military-style command-and-control model applied to LLM agent operations, the scope of approval authority, reporting scope, area of autonomous judgment, and post-action management responsibility.
 
-핵심 원칙:
+Core principle:
 
 ```text
-권한은 계급이 아니라 임무, 위험, 가역성, 정보 확실성, 상위 의도와의 정렬로 정한다.
+Authority is determined not by rank, but by mission, risk, reversibility, certainty of information, and alignment with higher intent.
 ```
 
-다국적 적용 주의:
+Multinational application notes:
 
-- `COMMANDER`, `COS`, `S2`, `S3`, `S4`, `S6`는 이 프레임워크의 내부 기능 ID다.
-- 실제 군의 계급, 참모부 명칭, 부대 편제와 1:1 대응한다고 가정하지 않는다.
-- 미군이 아닌 조직에 적용할 때는 `docs/multinational-doctrine-consistency-review.md`의 role alias map을 먼저 만든다.
-- alias는 명칭만 바꾸며, release/risk/scope/legal 같은 commander-retained authority를 낮추지 않는다.
+- `COMMANDER`, `COS`, `S2`, `S3`, `S4`, `S6` are internal functional IDs of this framework.
+- They are not assumed to map 1:1 onto the actual ranks, staff titles, or unit organization of any real military.
+- When applying this framework to a non-U.S.-military organization, first build the role alias map in `docs/multinational-doctrine-consistency-review.md`.
+- Aliases change names only; they must not lower commander-retained authority such as release, risk, scope, or legal authority.
 
-## 1. 권한 판단 기준
+## 1. Authority Determination Criteria
 
-에이전트가 어떤 행동을 할 수 있는지는 다음 기준으로 판단한다.
+Whether an agent may take a given action is judged against the following criteria.
 
-| 기준 | 질문 | 의미 |
+| Criterion | Question | Meaning |
 |---|---|---|
-| Mission Fit | 상위 의도와 맞는가? | 의도 불일치 시 중단 |
-| Scope | 원래 임무 범위 안인가? | 범위 확대 시 승인 필요 |
-| Reversibility | 되돌릴 수 있는가? | 비가역 작업은 승인 필요 |
-| Risk | 비용, 보안, 법적 위험이 있는가? | 위험 상승 시 보고 |
-| Evidence | 근거가 충분한가? | 근거 부족 시 확정 금지 |
-| Timing | 즉시 판단해야 하는가? | 지연 위험이 크면 CCIR 보고 |
-| Blast Radius | 실패 영향 범위가 작은가? | 영향이 크면 상급 승인 |
+| Mission Fit | Does it align with higher intent? | Halt if misaligned with intent |
+| Scope | Is it within the original mission scope? | Approval required if scope expands |
+| Reversibility | Can it be undone? | Approval required for irreversible actions |
+| Risk | Is there cost, security, or legal risk? | Report if risk increases |
+| Evidence | Is the evidence sufficient? | Do not finalize if evidence is insufficient |
+| Timing | Must the decision be made immediately? | Report as CCIR if delay risk is high |
+| Blast Radius | Is the scope of failure impact small? | Escalate for approval if impact is large |
 
-## 2. 승인 등급
+## 2. Approval Tiers
 
-| 등급 | 이름 | 설명 | 기본 승인자 |
+| Tier | Name | Description | Default Approver |
 |---|---|---|---|
-| L0 | 관찰 | 읽기, 요약, 분석, 초안 | 에이전트 자율 |
-| L1 | 가역 작업 | 로컬 변경, 임시 산출물, 테스트 | 에이전트 자율 |
-| L2 | 제한 실행 | 범위 내 파일 수정, 문서 작성, 코드 패치 | Chief of Staff 또는 오케스트레이터 |
-| L3 | 외부 영향 | 네트워크 호출, 비용 발생, 외부 시스템 변경 | Commander |
-| L4 | 비가역 작업 | 삭제, 배포, 결제, 공개 발행 | Commander 명시 승인 |
-| L5 | 고위험 판단 | 법률, 의료, 재무, 보안, 인사상 중대 결정 | Commander 및 전문가 |
+| L0 | Observation | Reading, summarizing, analysis, drafting | Agent autonomous |
+| L1 | Reversible Action | Local changes, temporary artifacts, tests | Agent autonomous |
+| L2 | Restricted Execution | In-scope file edits, document authoring, code patches | Chief of Staff or orchestrator |
+| L3 | External Impact | Network calls, cost incurrence, external system changes | Commander |
+| L4 | Irreversible Action | Deletion, deployment, payment, public publication | Explicit Commander approval |
+| L5 | High-Risk Decision | Major decisions involving legal, medical, financial, security, or personnel matters | Commander and subject-matter experts |
 
-## 3. 지위별 역할
+## 3. Roles by Position
 
 ### 3.1 Commander
 
-군대 대응: 지휘관.
+Military counterpart: commanding officer.
 
-LLM 대응: 사용자 또는 최종 의사결정자.
+LLM counterpart: the user or final decision-maker.
 
-책임:
+Responsibilities:
 
-- 최종 목적 설정.
-- 성공 조건 정의.
-- 금지선 설정.
-- 위험 허용선 설정.
-- 최종 승인.
+- Set the final objective.
+- Define success conditions.
+- Set red lines (prohibited actions).
+- Set the risk tolerance threshold.
+- Grant final approval.
 
-승인 범위:
+Approval scope:
 
-- 모든 L3 이상 작업.
-- 목표 변경.
-- 공개 발행.
-- 비용 발생.
-- 비가역 변경.
-- 법적, 보안상 중대한 판단.
+- All L3-and-above actions.
+- Changes to objectives.
+- Public publication.
+- Cost incurrence.
+- Irreversible changes.
+- Major legal or security-related decisions.
 
-보고 받아야 할 것:
+Must be reported:
 
-- CCIR 전체.
-- 목표 달성 불가능성.
-- 핵심 가정 붕괴.
-- 중대한 정보 충돌.
-- 에이전트가 권한 밖 작업을 해야 하는 경우.
+- All CCIR.
+- Impossibility of achieving the objective.
+- Collapse of a key assumption.
+- Major conflicts in information.
+- Cases where an agent must act outside its authority.
 
-자율 판단 후 수행:
+Actions to take after autonomous judgment:
 
-- 해당 없음. Commander는 최종 의도와 승인권을 가진다.
+- Not applicable. The Commander holds final intent and approval authority.
 
-사후 관리:
+Post-action management:
 
-- AAR 승인.
-- SOP 변경 승인.
-- 다음 작전의 목적과 기준 수정.
+- Approve the AAR.
+- Approve SOP changes.
+- Revise the purpose and criteria for the next operation.
 
 ### 3.2 Chief of Staff
 
-군대 대응: 참모장.
+Military counterpart: chief of staff.
 
-LLM 대응: 오케스트레이터, 프로젝트 관리자, 메인 에이전트.
+LLM counterpart: orchestrator, project manager, main agent.
 
-책임:
+Responsibilities:
 
-- Commander 의도를 실행 가능한 작업으로 분해.
-- 에이전트 배치.
-- 작업 간 충돌 조정.
-- 보고 흐름 관리.
-- 최종 산출물 통합.
+- Decompose Commander intent into executable tasks.
+- Assign agents.
+- Resolve conflicts between tasks.
+- Manage reporting flow.
+- Integrate final deliverables.
 
-승인 범위:
+Approval scope:
 
-- L0-L2 작업 승인.
-- 하위 에이전트 배치 변경.
-- 문서 구조 변경.
-- 범위 안의 실행 순서 조정.
+- Approval of L0-L2 actions.
+- Changes to subordinate agent assignments.
+- Changes to document structure.
+- Adjustments to execution order within scope.
 
-보고 범위:
+Reporting scope:
 
-- 전체 진행 상황.
-- 에이전트 간 충돌.
-- 일정 지연.
-- CCIR 발생 여부.
-- 승인 필요한 작업 목록.
+- Overall progress status.
+- Conflicts between agents.
+- Schedule delays.
+- Whether a CCIR has occurred.
+- List of actions requiring approval.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 작업 순서 변경.
-- 하위 역할 재배치.
-- 중간 산출물 형식 변경.
-- 추가 검증 요청.
+- Change task order.
+- Reassign subordinate roles.
+- Change the format of intermediate deliverables.
+- Request additional verification.
 
-승인 필요:
+Approval required:
 
-- 목표 변경.
-- 사용자 요구사항 축소 또는 확대.
-- 외부 시스템 변경.
-- 비용 발생.
-- 삭제 또는 배포.
+- Changes to objectives.
+- Reduction or expansion of user requirements.
+- External system changes.
+- Cost incurrence.
+- Deletion or deployment.
 
-사후 관리:
+Post-action management:
 
-- 전체 AAR 작성.
-- 결정 로그 정리.
-- 실패 원인 분류.
-- SOP 업데이트 초안 작성.
+- Write the overall AAR.
+- Organize the decision log.
+- Classify failure causes.
+- Draft SOP updates.
 
 ### 3.3 S2 Intelligence Agent
 
-군대 대응: 정보참모.
+Military counterpart: intelligence staff officer.
 
-LLM 대응: 조사, 출처 검증, 사실 확인 에이전트.
+LLM counterpart: research, source-verification, and fact-checking agent.
 
-책임:
+Responsibilities:
 
-- 자료 수집.
-- 출처 신뢰도 평가.
-- 정보 공백 식별.
-- 상충 정보 정리.
-- 환각 가능성 경고.
+- Gather materials.
+- Assess source reliability.
+- Identify information gaps.
+- Reconcile conflicting information.
+- Warn of potential hallucination.
 
-승인 범위:
+Approval scope:
 
-- L0 조사와 요약.
-- 범위 내 공개자료 검색.
-- 근거 지도 작성.
+- L0 research and summarization.
+- In-scope searches of public materials.
+- Building an evidence map.
 
-보고 범위:
+Reporting scope:
 
-- 출처 충돌.
-- 근거 부족.
-- 최신성 문제.
-- 높은 불확실성.
-- 핵심 가정 변경.
+- Source conflicts.
+- Insufficient evidence.
+- Recency/currency issues.
+- High uncertainty.
+- Changes to key assumptions.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 검색어 변경.
-- 추가 출처 탐색.
-- 정보 신뢰도 등급화.
-- 사실과 추론 분리.
+- Change search queries.
+- Explore additional sources.
+- Grade information reliability.
+- Separate fact from inference.
 
-승인 필요:
+Approval required:
 
-- 유료 자료 접근.
-- 민감 정보 처리.
-- 출처 불명 정보를 사실로 확정하는 일.
-- 법률, 의료, 재무 등 고위험 지식 확정.
+- Access to paid materials.
+- Handling sensitive information.
+- Treating information of unknown provenance as established fact.
+- Finalizing high-risk knowledge such as legal, medical, or financial matters.
 
-사후 관리:
+Post-action management:
 
-- Evidence Map 작성.
-- 출처별 신뢰도 기록.
-- 잘못된 정보가 발견되면 정정 로그 작성.
+- Produce the Evidence Map.
+- Record reliability per source.
+- Write a correction log if incorrect information is found.
 
 ### 3.4 S3 Operations Agent
 
-군대 대응: 작전참모.
+Military counterpart: operations staff officer.
 
-LLM 대응: 실행계획, 절차, 일정, 우선순위 설계 에이전트.
+LLM counterpart: agent for designing execution plans, procedures, schedules, and priorities.
 
-책임:
+Responsibilities:
 
-- 실행계획 작성.
-- 작업 단계 설계.
-- 의사결정 지점 정의.
-- 리허설 절차 구성.
-- FRAGO 반영.
+- Draft the execution plan.
+- Design task steps.
+- Define decision points.
+- Structure rehearsal procedures.
+- Incorporate FRAGO updates.
 
-승인 범위:
+Approval scope:
 
-- L0-L2 계획과 로컬 실행.
-- 범위 내 우선순위 변경.
-- 작업 단위 재배열.
+- L0-L2 planning and local execution.
+- In-scope priority changes.
+- Reordering of task units.
 
-보고 범위:
+Reporting scope:
 
-- 계획과 실제 실행의 차이.
-- 병목.
-- 실패 가능성이 높은 단계.
-- 승인 필요한 의사결정 지점.
+- Divergence between the plan and actual execution.
+- Bottlenecks.
+- Steps with a high probability of failure.
+- Decision points requiring approval.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 실행 순서 변경.
-- 테스트 또는 검증 단계 추가.
-- 위험 완화 절차 삽입.
-- 작은 범위의 계획 수정.
+- Change execution order.
+- Add test or verification steps.
+- Insert risk-mitigation procedures.
+- Make small-scope plan revisions.
 
-승인 필요:
+Approval required:
 
-- 임무 범위 변경.
-- 최종 산출물 형식의 본질적 변경.
-- 사용자에게 약속한 일정 변경.
-- 외부 배포.
+- Changes to mission scope.
+- Fundamental changes to the format of the final deliverable.
+- Changes to a schedule already promised to the user.
+- External deployment.
 
-사후 관리:
+Post-action management:
 
-- 실행 로그 작성.
-- 계획 대비 실제 결과 비교.
-- 다음 작업을 위한 개선안 제시.
+- Write the execution log.
+- Compare planned versus actual results.
+- Propose improvements for the next task.
 
 ### 3.5 S4 Sustainment Agent
 
-군대 대응: 군수/지원참모.
+Military counterpart: logistics/sustainment staff officer.
 
-LLM 대응: 자원, 비용, 도구, 실행 가능성 관리 에이전트.
+LLM counterpart: agent managing resources, cost, tools, and feasibility.
 
-책임:
+Responsibilities:
 
-- 사용 가능한 도구 확인.
-- 토큰, 시간, 비용 관리.
-- API, 파일, 의존성 확인.
-- 대체 경로 제안.
+- Confirm available tools.
+- Manage tokens, time, and cost.
+- Verify APIs, files, and dependencies.
+- Propose alternative paths.
 
-승인 범위:
+Approval scope:
 
-- 로컬 자원 확인.
-- 비용 없는 도구 실행.
-- 대체 실행안 제안.
+- Local resource checks.
+- Execution of cost-free tools.
+- Proposing alternative execution options.
 
-보고 범위:
+Reporting scope:
 
-- 자원 부족.
-- 도구 실패.
-- 비용 발생 가능성.
-- 의존성 누락.
-- 지속 불가능한 계획.
+- Resource shortages.
+- Tool failures.
+- Potential cost incurrence.
+- Missing dependencies.
+- Unsustainable plans.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 비용 없는 대체 도구 사용.
-- 로컬 검증 절차 추가.
-- 작업을 더 작은 단위로 분할.
+- Use cost-free alternative tools.
+- Add local verification procedures.
+- Split a task into smaller units.
 
-승인 필요:
+Approval required:
 
-- 유료 API 사용.
-- 외부 서비스 가입 또는 인증.
-- 장시간 실행.
-- 큰 파일 생성 또는 대량 처리.
+- Use of paid APIs.
+- Subscription to or authentication with external services.
+- Long-running execution.
+- Large file generation or bulk processing.
 
-사후 관리:
+Post-action management:
 
-- 자원 사용량 기록.
-- 실패한 도구와 대체 도구 기록.
-- 다음 작업의 자원 기준 업데이트.
+- Record resource usage.
+- Log failed tools and their alternatives.
+- Update resource baselines for the next task.
 
 ### 3.6 S6 Signal Agent
 
-군대 대응: 통신참모.
+Military counterpart: signal/communications staff officer.
 
-LLM 대응: 보고 채널, 상태 공유, 로그, 문서 링크 관리 에이전트.
+LLM counterpart: agent managing reporting channels, status sharing, logs, and document links.
 
-책임:
+Responsibilities:
 
-- 보고 형식 관리.
-- 상태판 유지.
-- 결정 로그 보존.
-- 문서 버전과 링크 관리.
-- 변경명령 전파.
+- Manage reporting formats.
+- Maintain the status board.
+- Preserve the decision log.
+- Manage document versions and links.
+- Propagate change orders.
 
-승인 범위:
+Approval scope:
 
-- 문서 링크 정리.
-- 상태 보고 양식 업데이트.
-- 로그 구조 개선.
+- Organizing document links.
+- Updating status-report templates.
+- Improving log structure.
 
-보고 범위:
+Reporting scope:
 
-- 보고 누락.
-- 문서 버전 충돌.
-- 변경사항 미반영.
-- 통신 채널 실패.
+- Missing reports.
+- Document version conflicts.
+- Unreflected changes.
+- Communication channel failures.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 상태 보고 형식 개선.
-- 변경 이력 정리.
-- 참조 링크 정리.
+- Improve the status-report format.
+- Organize the change history.
+- Clean up reference links.
 
-승인 필요:
+Approval required:
 
-- 공개 채널 게시.
-- 외부 공유 링크 생성.
-- 민감 정보 포함 문서 공유.
+- Posting to public channels.
+- Creating external sharing links.
+- Sharing documents containing sensitive information.
 
-사후 관리:
+Post-action management:
 
-- 변경 로그 보존.
-- 보고 누락 분석.
-- 다음 작전의 보고 주기 개선.
+- Preserve the change log.
+- Analyze missing reports.
+- Improve the reporting cadence for the next operation.
 
 ### 3.7 Red Team Agent
 
-군대 대응: 레드팀, 독립 검토조.
+Military counterpart: red team, independent review body.
 
-LLM 대응: 반례, 오류, 환각, 보안 취약점 검토 에이전트.
+LLM counterpart: agent reviewing counterexamples, errors, hallucinations, and security vulnerabilities.
 
-책임:
+Responsibilities:
 
-- 계획의 가정 공격.
-- 논리 오류 탐지.
-- 근거 없는 주장 탐지.
-- 실패 시나리오 제시.
-- 과잉 확신 경고.
+- Attack the plan's assumptions.
+- Detect logical errors.
+- Detect unsubstantiated claims.
+- Present failure scenarios.
+- Warn against overconfidence.
 
-승인 범위:
+Approval scope:
 
-- 실행 중단 권고.
-- 추가 검증 요청.
-- 위험 등급 제안.
+- Recommending execution halts.
+- Requesting additional verification.
+- Proposing risk ratings.
 
-보고 범위:
+Reporting scope:
 
-- 치명적 오류.
-- 출처 없는 핵심 주장.
-- 목표와 실행의 불일치.
-- 승인 없이 진행하면 안 되는 위험.
+- Critical errors.
+- Key claims lacking sources.
+- Misalignment between objective and execution.
+- Risks that must not proceed without approval.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 반례 작성.
-- 검증 질문 생성.
-- 위험 목록 작성.
-- 대안 제시.
+- Draft counterexamples.
+- Generate verification questions.
+- Compile a risk list.
+- Propose alternatives.
 
-승인 필요:
+Approval required:
 
-- 최종 결정 변경.
-- 산출물 폐기.
-- 사용자 요구사항 변경.
+- Changing final decisions.
+- Discarding deliverables.
+- Changing user requirements.
 
-사후 관리:
+Post-action management:
 
-- 발견된 오류 기록.
-- 재발 방지 체크리스트 작성.
-- 검증 프롬프트 개선.
+- Record discovered errors.
+- Write a recurrence-prevention checklist.
+- Improve verification prompts.
 
 ### 3.8 Executor Agent
 
-군대 대응: 실행 부대.
+Military counterpart: executing unit.
 
-LLM 대응: 코드 작성, 문서 작성, 분석 수행 에이전트.
+LLM counterpart: agent performing code writing, document authoring, and analysis.
 
-책임:
+Responsibilities:
 
-- 할당된 작업 수행.
-- 중간 산출물 생성.
-- 테스트 또는 검증 수행.
-- 장애 보고.
+- Perform assigned tasks.
+- Produce intermediate deliverables.
+- Perform tests or verification.
+- Report obstacles.
 
-승인 범위:
+Approval scope:
 
-- L0-L2 중 할당받은 작업.
-- 로컬 파일 생성 또는 수정.
-- 테스트 실행.
+- Assigned tasks within L0-L2.
+- Local file creation or modification.
+- Running tests.
 
-보고 범위:
+Reporting scope:
 
-- 완료.
-- 실패.
-- 예상과 다른 결과.
-- 권한 밖 작업 필요.
+- Completion.
+- Failure.
+- Results that diverge from expectations.
+- Need to act outside authority.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 구현 세부 방식 선택.
-- 작은 오류 수정.
-- 테스트 추가.
-- 문서 표현 개선.
+- Choose implementation details.
+- Fix minor errors.
+- Add tests.
+- Improve document wording.
 
-승인 필요:
+Approval required:
 
-- 대규모 구조 변경.
-- 삭제.
-- 외부 반영.
-- 사용자 의도 변경.
+- Large-scale structural changes.
+- Deletion.
+- External application of changes.
+- Changes to user intent.
 
-사후 관리:
+Post-action management:
 
-- 변경 내역 설명.
-- 테스트 결과 기록.
-- 남은 위험 보고.
+- Explain the change history.
+- Record test results.
+- Report remaining risks.
 
 ### 3.9 Recorder Agent
 
-군대 대응: 기록관, 교훈 담당.
+Military counterpart: recorder, lessons-learned officer.
 
-LLM 대응: 로그, 결정 이력, AAR 관리 에이전트.
+LLM counterpart: agent managing logs, decision history, and the AAR.
 
-책임:
+Responsibilities:
 
-- 명령 원문 보존.
-- FRAGO 기록.
-- 승인 이력 기록.
-- 결정 근거 기록.
-- AAR 작성.
+- Preserve the original text of orders.
+- Record FRAGOs.
+- Record the approval history.
+- Record the rationale behind decisions.
+- Write the AAR.
 
-승인 범위:
+Approval scope:
 
-- 로그 작성.
-- 문서 정리.
-- 회고 초안 작성.
+- Writing logs.
+- Organizing documents.
+- Drafting the retrospective.
 
-보고 범위:
+Reporting scope:
 
-- 승인 없는 변경 발견.
-- 결정 근거 누락.
-- 출처 누락.
-- 사후 추적 불가능한 작업.
+- Discovery of unapproved changes.
+- Missing decision rationale.
+- Missing sources.
+- Tasks that cannot be traced after the fact.
 
-자율 판단 후 수행 가능:
+Actions permitted after autonomous judgment:
 
-- 기록 형식 개선.
-- 누락 항목 질문.
-- AAR 항목 정리.
+- Improve the record format.
+- Ask about missing items.
+- Organize AAR entries.
 
-승인 필요:
+Approval required:
 
-- 기록 삭제.
-- 민감 기록 외부 공유.
-- 공식 SOP 변경.
+- Deleting records.
+- Sharing sensitive records externally.
+- Changing official SOPs.
 
-사후 관리:
+Post-action management:
 
-- AAR 보관.
-- SOP 개선안 연결.
-- 반복 오류 패턴 추적.
+- Archive the AAR.
+- Link improvement proposals to the SOP.
+- Track recurring error patterns.
 
-## 4. 보고 트리거
+## 4. Reporting Triggers
 
-### 4.1 즉시 보고
+### 4.1 Immediate Reporting
 
-다음은 즉시 Commander 또는 Chief of Staff에게 보고한다.
+The following must be reported immediately to the Commander or Chief of Staff.
 
-- 목표 달성 불가능.
-- 핵심 근거 충돌.
-- 보안, 법률, 비용 위험 발생.
-- 되돌릴 수 없는 작업 필요.
-- 외부 시스템 변경 필요.
-- 사용자의 의도와 실행계획 불일치.
-- 권한 밖 판단 필요.
+- Objective is unachievable.
+- Conflict in core evidence.
+- Occurrence of security, legal, or cost risk.
+- An irreversible action is required.
+- An external system change is required.
+- Misalignment between user intent and the execution plan.
+- A decision outside authority is required.
 
-### 4.2 정기 보고
+### 4.2 Periodic Reporting
 
-정기 보고는 작업 단위가 길어질 때만 필요하다.
+Periodic reporting is only needed when a task unit runs long.
 
 ```text
 SITREP
 
-1. 현재 상태:
-2. 완료한 일:
-3. 진행 중인 일:
-4. 장애:
-5. 다음 행동:
-6. 승인 필요 여부:
+1. Current status:
+2. Work completed:
+3. Work in progress:
+4. Obstacles:
+5. Next actions:
+6. Approval required (yes/no):
 ```
 
-### 4.3 완료 보고
+### 4.3 Completion Reporting
 
 ```text
 COMPLETION REPORT
 
-1. 완료 산출물:
-2. 변경한 파일 또는 결과:
-3. 검증 방법:
-4. 검증 결과:
-5. 남은 위험:
-6. 후속 조치:
+1. Completed deliverables:
+2. Files or results changed:
+3. Verification method:
+4. Verification results:
+5. Remaining risks:
+6. Follow-up actions:
 ```
 
-## 5. 권한 위반 처리
+## 5. Handling Authority Violations
 
-에이전트가 권한 밖 행동을 했거나, 권한 밖 행동이 필요해진 경우 다음 절차를 따른다.
+If an agent has acted, or must act, outside its authority, follow this procedure:
 
-1. 즉시 중단한다.
-2. 현재 상태를 보존한다.
-3. 어떤 권한 기준을 넘었는지 식별한다.
-4. Commander 또는 Chief of Staff에게 보고한다.
-5. 승인, 수정, 취소 중 하나를 받는다.
-6. AAR에 재발 방지책을 기록한다.
+1. Halt immediately.
+2. Preserve the current state.
+3. Identify which authority criterion was exceeded.
+4. Report to the Commander or Chief of Staff.
+5. Receive one of: approval, correction, or cancellation.
+6. Record recurrence-prevention measures in the AAR.
 
-## 6. 최소 운용 규칙
+## 6. Minimum Operating Rules
 
-실제 시스템에 바로 넣을 최소 규칙은 다음과 같다.
+The minimum rule set to put directly into a real system is as follows.
 
 ```text
-1. 목적과 성공 조건을 먼저 확인한다.
-2. 변형 금지 항목을 분리한다.
-3. 에이전트별 권한 등급을 지정한다.
-4. CCIR을 먼저 정의한다.
-5. `DocumentAccessManifest`로 role, duty, authority에 맞는 문서만 읽게 한다.
-6. 실행 전 Backbrief를 수행한다.
-7. 위험한 작업은 승인 전 실행하지 않는다.
-8. 완료 후 AAR을 남긴다.
+1. Confirm the purpose and success conditions first.
+2. Separate out items that must not be altered.
+3. Assign an authority tier to each agent.
+4. Define CCIR first.
+5. Use `DocumentAccessManifest` to ensure agents read only the documents appropriate to their role, duty, and authority.
+6. Perform a Backbrief before execution.
+7. Do not execute risky actions before approval.
+8. Leave an AAR after completion.
 ```

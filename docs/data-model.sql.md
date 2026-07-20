@@ -1,19 +1,19 @@
 # Data Model SQL
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 런타임의 mission, orders, evidence, audit, readiness 저장소를 SQL 모델로 설계한다.
+This document designs the mission, orders, evidence, audit, and readiness storage of the military-style LLM runtime as a SQL model.
 
-목표는 완전한 production schema가 아니라, reference architecture를 실제 DB로 구현할 때 필요한 기본 테이블과 관계를 제시하는 것이다.
+The goal is not a complete production schema, but to present the basic tables and relationships needed when implementing the reference architecture in an actual DB.
 
-## 1. 설계 원칙
+## 1. Design Principles
 
-- mission은 모든 상태의 기준 id다.
-- orders와 task orders는 mission에 속한다.
-- tool request와 approval은 audit 대상이다.
-- evidence는 claim과 interpretation을 분리한다.
-- AAR는 readiness와 SOP 업데이트로 연결된다.
-- 원문 payload는 JSON으로 보존하되 주요 query 필드는 별도 컬럼으로 둔다.
+- mission is the reference id for all state.
+- orders and task orders belong to a mission.
+- tool requests and approvals are subject to audit.
+- evidence separates claim from interpretation.
+- AAR is linked to readiness and SOP updates.
+- The original payload is preserved as JSON, but key query fields are kept as separate columns.
 
 ## 2. Core Tables
 
@@ -200,7 +200,7 @@ CREATE INDEX idx_audit_mission_created ON audit_events(mission_id, created_at);
 CREATE INDEX idx_readiness_agent_task ON readiness_ledger(agent_id, task);
 ```
 
-## 8. 관련 문서
+## 8. Related Documents
 
 - `reference-architecture.md`
 - `sample-runtime-state.md`

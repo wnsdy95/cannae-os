@@ -1,27 +1,27 @@
 # Command Post Dashboard
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 런타임의 command post dashboard 화면 설계를 정의한다.
+This document defines the screen design of the command post dashboard for the military-style LLM runtime.
 
-Dashboard는 멋진 모니터링 화면이 아니라 지휘관이 결심할 수 있게 만드는 화면이다. 보여줄 정보와 숨길 정보를 구분해야 한다.
+The Dashboard is not a fancy monitoring screen — it is a screen built to let the commander make decisions. What information to show and what information to hide must be clearly distinguished.
 
-## 1. 핵심 화면
+## 1. Core Screens
 
-| 화면 | 목적 |
+| Screen | Purpose |
 | --- | --- |
-| Mission Board | 현재 임무 상태와 intent 확인 |
-| Approval Queue | 승인 필요한 도구 행동 처리 |
-| CCIR Alerts | 즉시 보고 정보 |
-| Evidence Viewer | 주장과 출처 추적 |
-| Tool Use Log | 도구 실행 감사 |
-| Risk Board | active risk와 controls |
-| Readiness Board | 에이전트별 준비태세 |
-| AAR Library | 학습과 SOP 업데이트 |
+| Mission Board | Check current mission status and intent |
+| Approval Queue | Process tool actions requiring approval |
+| CCIR Alerts | Information requiring immediate reporting |
+| Evidence Viewer | Track claims and sources |
+| Tool Use Log | Audit tool execution |
+| Risk Board | Active risks and controls |
+| Readiness Board | Readiness by agent |
+| AAR Library | Learning and SOP updates |
 
 ## 2. Mission Board
 
-필드:
+Fields:
 
 - mission id.
 - mission statement.
@@ -32,15 +32,15 @@ Dashboard는 멋진 모니터링 화면이 아니라 지휘관이 결심할 수 
 - current risk level.
 - latest SITREP.
 
-표시 원칙:
+Display principles:
 
-- mission과 intent는 항상 상단에 고정.
-- task count보다 blocked/decision required를 우선 표시.
-- 완료율보다 risk와 decision point를 강조.
+- Mission and intent are always pinned at the top.
+- Blocked/decision required is shown with priority over task count.
+- Risk and decision points are emphasized over completion rate.
 
 ## 3. Approval Queue
 
-카드 필드:
+Card fields:
 
 ```text
 Action:
@@ -55,22 +55,22 @@ Alternatives:
 Approval scope:
 ```
 
-버튼:
+Buttons:
 
 - Approve once.
 - Dry-run only.
 - Revise request.
 - Reject.
 
-금지:
+Prohibited:
 
-- "Approve all" 기본 버튼.
-- risk 없는 승인.
-- target 없는 승인.
+- An "Approve all" default button.
+- Approval without a risk.
+- Approval without a target.
 
 ## 4. CCIR Alerts
 
-우선순위:
+Priority:
 
 1. EEFI / secret exposure.
 2. Red/Black tool issue.
@@ -78,7 +78,7 @@ Approval scope:
 4. evidence conflict.
 5. blocked task requiring decision.
 
-Alert 예:
+Alert example:
 
 ```text
 EEFI detected
@@ -90,22 +90,22 @@ Action: Output suppressed. Awaiting user decision.
 
 ## 5. Evidence Viewer
 
-기능:
+Functions:
 
-- claim과 source 연결.
-- reliability rating 표시.
-- interpretation 분리.
-- linked document 표시.
-- checked_at 표시.
+- Link claims to sources.
+- Display reliability rating.
+- Separate out interpretation.
+- Display linked documents.
+- Display checked_at.
 
-목적:
+Purpose:
 
-- 지휘관이 "이 주장이 어디서 왔는가"를 즉시 확인.
-- Red Team이 unsupported claim을 빠르게 찾음.
+- Let the commander immediately confirm "where did this claim come from."
+- Let the Red Team quickly find unsupported claims.
 
 ## 6. Tool Use Log
 
-필드:
+Fields:
 
 - timestamp.
 - actor.
@@ -117,7 +117,7 @@ Action: Output suppressed. Awaiting user decision.
 - result.
 - rollback.
 
-필터:
+Filters:
 
 - Red/Black.
 - failed.
@@ -127,7 +127,7 @@ Action: Output suppressed. Awaiting user decision.
 
 ## 7. Risk Board
 
-표시:
+Displays:
 
 - active high/critical risks.
 - owner.
@@ -136,7 +136,7 @@ Action: Output suppressed. Awaiting user decision.
 - linked CCIR.
 - residual risk.
 
-좋은 risk card:
+A good risk card:
 
 ```text
 R-003 Unauthorized high-risk action
@@ -148,7 +148,7 @@ Last event: none
 
 ## 8. Readiness Board
 
-표시:
+Displays:
 
 - agent.
 - task.
@@ -157,14 +157,14 @@ Last event: none
 - limitations.
 - next training.
 
-사용:
+Usage:
 
-- task assignment 전 readiness 확인.
-- P/U/X agent는 backbrief 또는 supervision 요구.
+- Check readiness before task assignment.
+- P/U/X agents require backbrief or supervision.
 
 ## 9. AAR Library
 
-표시:
+Displays:
 
 - mission.
 - expected vs actual.
@@ -173,22 +173,22 @@ Last event: none
 - SOP updates.
 - readiness changes.
 
-목적:
+Purpose:
 
-- 같은 실패 반복 방지.
-- SOP와 policy engine rule 개선.
+- Prevent the same failure from recurring.
+- Improve SOPs and policy engine rules.
 
 ## 10. Dashboard Anti-Patterns
 
-| Anti-pattern | 문제 | 교정 |
+| Anti-pattern | Problem | Correction |
 | --- | --- | --- |
-| 완료율 중심 | 위험과 결심 지점을 숨김 | decision required 우선 |
-| 로그 과다 노출 | 지휘 판단 방해 | high signal filter |
-| approval fatigue | 모든 행동 승인 | ROE 등급별 큐 |
-| source hidden | 주장 검증 어려움 | evidence viewer |
-| AAR buried | 학습 누락 | AAR update panel |
+| Completion-rate focus | Hides risk and decision points | Prioritize decision required |
+| Excessive log exposure | Impedes command judgment | High signal filter |
+| approval fatigue | Approving every action | Queue by ROE class |
+| source hidden | Difficult to verify claims | evidence viewer |
+| AAR buried | Learning is lost | AAR update panel |
 
-## 11. 관련 문서
+## 11. Related Documents
 
 - `approval-ui-patterns.md`
 - `reference-architecture.md`

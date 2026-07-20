@@ -1,21 +1,21 @@
 # Dashboard Wireframes
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 command post dashboard를 실제 화면으로 설계하기 위한 wireframe 문서다.
+This document is a wireframe document for designing the command post dashboard as an actual screen.
 
-Dashboard의 목적은 모든 정보를 보여주는 것이 아니라, 지휘관이 다음 결심을 내리는 데 필요한 정보를 먼저 보여주는 것이다.
+The purpose of the dashboard is not to show all information, but to show first the information the commander needs to make the next decision.
 
-## 1. Layout 원칙
+## 1. Layout Principles
 
-| 원칙 | 설명 |
+| Principle | Description |
 | --- | --- |
-| Intent pinned | mission과 commander's intent는 항상 상단 고정 |
-| Decision first | 승인 필요, CCIR, blocked task를 우선 |
-| Logs second | 상세 로그는 drill-down |
-| Evidence nearby | 주장의 근거를 바로 확인 가능 |
-| Risk visible | high/critical risk는 숨기지 않음 |
-| AAR connected | 완료 후 학습 반영 상태 표시 |
+| Intent pinned | The mission and commander's intent are always pinned at the top |
+| Decision first | Approvals needed, CCIR, and blocked tasks take priority |
+| Logs second | Detailed logs are available via drill-down |
+| Evidence nearby | The basis for a claim can be checked immediately |
+| Risk visible | High/critical risks are never hidden |
+| AAR connected | Shows the status of learning reflected after completion |
 
 ## 2. Main Command Post
 
@@ -60,11 +60,11 @@ Dashboard의 목적은 모든 정보를 보여주는 것이 아니라, 지휘관
 +--------------------------------------------------------------+
 ```
 
-표시 규칙:
+Display rules:
 
-- Black action은 approve 버튼을 표시하지 않는다.
-- Red action은 dry-run을 가장 왼쪽 기본 선택으로 둔다.
-- Approval scope와 만료 시간을 반드시 표시한다.
+- Black actions do not display an approve button.
+- Red actions place dry-run as the default leftmost option.
+- Approval scope and expiration time must always be displayed.
 
 ## 4. Evidence Viewer
 
@@ -125,7 +125,7 @@ Dashboard의 목적은 모든 정보를 보여주는 것이 아니라, 지휘관
 
 ## 8. Mobile / Narrow View
 
-우선순위:
+Priority order:
 
 1. Mission and intent.
 2. Decision required.
@@ -133,9 +133,9 @@ Dashboard의 목적은 모든 정보를 보여주는 것이 아니라, 지휘관
 4. Active task status.
 5. Evidence/risk drill-down.
 
-좁은 화면에서는 로그 테이블을 숨기고 alert card 중심으로 전환한다.
+On narrow screens, hide the log table and switch to an alert-card-centered layout.
 
-## 9. 관련 문서
+## 9. Related Documents
 
 - `command-post-dashboard.md`
 - `approval-ui-patterns.md`

@@ -1,12 +1,12 @@
 # Policy Engine Rules
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 tool-use ROE를 실제 policy engine 규칙으로 바꾸는 방법을 정의한다.
+This document defines how to translate the tool-use ROE into concrete policy engine rules.
 
-Policy engine은 에이전트의 도구 요청을 받아 Green, Amber, Red, Black 중 하나로 판정한다. 핵심은 빠른 실행이 아니라 실행 전 권한과 위험을 일관되게 판단하는 것이다.
+The policy engine takes an agent's tool request and classifies it as one of Green, Amber, Red, or Black. The core objective is not fast execution but consistent pre-execution judgment of authority and risk.
 
-## 1. 입력
+## 1. Input
 
 ```yaml
 policy_input:
@@ -23,7 +23,7 @@ policy_input:
   existing_approval: null
 ```
 
-## 2. 출력
+## 2. Output
 
 ```yaml
 policy_decision:
@@ -45,80 +45,80 @@ policy_decision:
 
 ## 3. Priority Order
 
-정책 충돌이 있으면 더 높은 위험 등급이 이긴다.
+When policies conflict, the higher risk class wins.
 
 ```text
 Black > Red > Amber > Green
 ```
 
-예:
+Examples:
 
-- action은 문서 작성이라 Green이지만 target에 비밀키 출력이 포함되면 Black.
-- user가 요청했더라도 production DB write는 Red.
-- agent readiness가 낮으면 Green 작업도 Amber로 상승 가능.
+- The action is Green because it is document creation, but if the target includes secret key output, it becomes Black.
+- Even if the user requested it, a production DB write is Red.
+- If agent readiness is low, even a Green task can be escalated to Amber.
 
 ## 4. Rule Groups
 
-| Group | 설명 |
+| Group | Description |
 | --- | --- |
-| Actor rules | 역할과 readiness 기반 |
-| Tool rules | 도구 종류 기반 |
-| Action rules | read/write/delete/deploy/send 기반 |
-| Target rules | local/prod/external/sensitive 기반 |
-| Data rules | public/internal/sensitive/secret 기반 |
-| Mission rules | mission constraints 기반 |
-| Approval rules | 기존 승인 범위 기반 |
-| Incident rules | 과거 AAR/risk register 기반 |
+| Actor rules | Based on role and readiness |
+| Tool rules | Based on tool type |
+| Action rules | Based on read/write/delete/deploy/send |
+| Target rules | Based on local/prod/external/sensitive |
+| Data rules | Based on public/internal/sensitive/secret |
+| Mission rules | Based on mission constraints |
+| Approval rules | Based on existing approval scope |
+| Incident rules | Based on past AAR/risk register |
 
 ## 5. Core Rules
 
 ### 5.1 Black Rules
 
-| Rule | 조건 |
+| Rule | Condition |
 | --- | --- |
-| NO_SECRET_OUTPUT | 비밀키, 토큰, 개인키 출력 |
-| NO_FABRICATED_SOURCE | 허위 출처 생성 |
-| NO_UNAUTHORIZED_BYPASS | tool gateway 우회 |
-| NO_PRIVATE_ACCESS_BYPASS | 비공개 자료 우회 접근 |
-| NO_USER_CHANGE_DISCARD | 승인 없는 사용자 변경 discard |
+| NO_SECRET_OUTPUT | Output of secret keys, tokens, or private keys |
+| NO_FABRICATED_SOURCE | Generation of a fabricated source |
+| NO_UNAUTHORIZED_BYPASS | Bypassing the tool gateway |
+| NO_PRIVATE_ACCESS_BYPASS | Bypass access to private materials |
+| NO_USER_CHANGE_DISCARD | Discarding user changes without approval |
 
 ### 5.2 Red Rules
 
-| Rule | 조건 |
+| Rule | Condition |
 | --- | --- |
-| PRODUCTION_WRITE | production 시스템 write |
+| PRODUCTION_WRITE | Write to a production system |
 | DATABASE_MUTATION | DB insert/update/delete/migration |
-| EXTERNAL_PUBLISH | 외부 공개/발송 |
-| DEPLOY_PRODUCTION | production 배포 |
-| BULK_PAID_API | 비용 발생 대량 호출 |
-| SECURITY_CONFIG_CHANGE | 권한/보안 설정 변경 |
+| EXTERNAL_PUBLISH | External publication/sending |
+| DEPLOY_PRODUCTION | Production deployment |
+| BULK_PAID_API | Large-volume calls that incur cost |
+| SECURITY_CONFIG_CHANGE | Change to authority/security configuration |
 
 ### 5.3 Amber Rules
 
-| Rule | 조건 |
+| Rule | Condition |
 | --- | --- |
-| PACKAGE_INSTALL | dependency 설치/변경 |
-| AUTHENTICATED_READ | 로그인 필요한 페이지 읽기 |
+| PACKAGE_INSTALL | Dependency install/change |
+| AUTHENTICATED_READ | Reading a page that requires login |
 | API_WRITE_NON_PROD | non-prod API write |
-| PREVIEW_DEPLOY | preview 배포 |
-| LARGE_FILE_REWRITE | 대규모 파일 재작성 |
+| PREVIEW_DEPLOY | Preview deployment |
+| LARGE_FILE_REWRITE | Large-scale file rewrite |
 | LOW_READINESS_AGENT | readiness U/X agent action |
 
 ### 5.4 Green Rules
 
-| Rule | 조건 |
+| Rule | Condition |
 | --- | --- |
-| LOCAL_READ | 로컬 파일 읽기 |
-| PUBLIC_WEB_READ | 공개 웹 검색 |
-| MARKDOWN_CREATE | 요청 범위 내 문서 생성 |
-| LOCAL_TEST | 로컬 테스트 실행 |
-| SOURCE_SUMMARY | 공개 출처 요약 |
+| LOCAL_READ | Reading a local file |
+| PUBLIC_WEB_READ | Public web search |
+| MARKDOWN_CREATE | Document creation within the requested scope |
+| LOCAL_TEST | Running a local test |
+| SOURCE_SUMMARY | Summarizing a public source |
 
 ## 6. Escalation Rules
 
-등급 상향:
+Escalation (upward):
 
-| 조건 | 상향 |
+| Condition | Escalation |
 | --- | --- |
 | sensitive data involved | +1 level |
 | irreversible action | +1 level |
@@ -127,19 +127,19 @@ Black > Red > Amber > Green
 | agent readiness U/X | Amber minimum |
 | prior incident same category | +1 level |
 
-등급 하향은 제한적으로만 허용한다.
+De-escalation (downward) is allowed only in limited cases.
 
-| 조건 | 하향 가능 |
+| Condition | Downward allowed |
 | --- | --- |
 | dry-run only | Red -> Amber |
 | staging target | Red -> Amber |
 | read-only with masked output | Amber -> Green |
 
-Black은 하향하지 않는다.
+Black is never de-escalated.
 
 ## 7. Approval Matching
 
-기존 approval이 있어도 다음이 모두 일치해야 한다.
+Even if an existing approval exists, all of the following must match.
 
 - mission_id.
 - actor or role scope.
@@ -149,7 +149,7 @@ Black은 하향하지 않는다.
 - time window.
 - risk class.
 
-불일치하면 새 approval request를 만든다.
+If there is a mismatch, a new approval request must be created.
 
 ## 8. Policy Pseudocode
 
@@ -191,7 +191,7 @@ decide(input):
 | output API key | Black block |
 | fabricate citation | Black block |
 
-## 10. 관련 문서
+## 10. Related Documents
 
 - `tool-use-roe.md`
 - `approval-ui-patterns.md`

@@ -1,22 +1,22 @@
 # Backbrief and Rehearsal SOP
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 명령이 하달된 뒤 실행 전에 왜곡을 잡는 절차를 LLM runtime SOP로 정의한다.
+This document defines, as an LLM runtime SOP, the procedure for catching distortion after an order has been issued but before execution.
 
-군대식 하달은 "상급자가 자세히 말했기 때문에" 왜곡이 줄어드는 것이 아니다. 하급자가 이해한 임무를 다시 말하고, 실행 순서를 rehearsal로 검증하고, 문제가 있으면 명령을 수정하거나 commander decision을 받기 때문에 왜곡이 줄어든다.
+Military-style dissemination does not reduce distortion "because the superior spoke in detail." Distortion is reduced because the subordinate restates the mission as understood, verifies the execution sequence through rehearsal, and, if there is a problem, revises the order or obtains a commander decision.
 
-## 1. 용어
+## 1. Terminology
 
-| 용어 | 의미 | LLM 적용 |
+| Term | Meaning | LLM Application |
 | --- | --- | --- |
-| Confirmation brief | 명령 수령 직후 이해 확인 | 에이전트가 받은 임무와 제약을 짧게 재진술 |
-| Backbrief | 하급자가 실행계획을 상급자에게 보고 | agent가 planned actions, risks, stop conditions를 제출 |
-| Rehearsal | 실행 전 순서와 전환점 예행 | tool call/dry run/sequence simulation |
-| Decision point | 지휘관 결심이 필요한 지점 | approve, revise, reject, FRAGO 중 하나 |
-| Stop condition | 즉시 멈추고 보고할 조건 | validator fail, Red action, source conflict 등 |
+| Confirmation brief | Confirming understanding immediately upon receiving an order | The agent briefly restates the assigned mission and constraints |
+| Backbrief | A subordinate reporting the execution plan to the superior | The agent submits planned actions, risks, and stop conditions |
+| Rehearsal | Rehearsing the sequence and transition points before execution | Tool call / dry run / sequence simulation |
+| Decision point | A point requiring the commander's decision | One of approve, revise, reject, FRAGO |
+| Stop condition | A condition requiring an immediate stop and report | Validator failure, Red action, source conflict, etc. |
 
-## 2. SOP 요약
+## 2. SOP Summary
 
 ```text
 Receive OPORD / Task Order
@@ -28,59 +28,59 @@ Receive OPORD / Task Order
 -> Execute / Revise / Request Approval / Abort
 ```
 
-## 3. Backbrief 필수 필드
+## 3. Required Backbrief Fields
 
-Backbrief는 다음을 반드시 포함한다.
+A backbrief must include the following:
 
-| 필드 | 질문 |
+| Field | Question |
 | --- | --- |
-| commander_intent | 상위 의도를 어떻게 이해했는가? |
-| assigned_task | 내가 맡은 과업은 무엇인가? |
-| purpose | 이 과업이 전체 임무에 왜 필요한가? |
-| end_state | 완료 상태는 무엇인가? |
-| constraints | 무엇을 하면 안 되는가? |
-| planned_actions | 어떤 순서로 실행할 것인가? |
-| risk_controls | 어떤 위험 통제를 적용할 것인가? |
-| stop_conditions | 어떤 경우 즉시 멈출 것인가? |
-| approval_required_actions | 어떤 행동은 승인 없이는 못 하는가? |
-| prohibited_actions | 절대 하지 않을 행동은 무엇인가? |
-| assumptions | 어떤 가정을 두고 있는가? |
-| requested_clarifications | 무엇을 물어봐야 하는가? |
-| confidence | 이해 수준은 low/medium/high 중 무엇인가? |
+| commander_intent | How did I understand the higher-level intent? |
+| assigned_task | What task have I been assigned? |
+| purpose | Why is this task needed for the overall mission? |
+| end_state | What is the completion state? |
+| constraints | What must not be done? |
+| planned_actions | In what order will I execute? |
+| risk_controls | What risk controls will I apply? |
+| stop_conditions | Under what conditions will I stop immediately? |
+| approval_required_actions | Which actions cannot be taken without approval? |
+| prohibited_actions | Which actions will never be taken? |
+| assumptions | What assumptions am I making? |
+| requested_clarifications | What should I ask about? |
+| confidence | Is my understanding low/medium/high? |
 
-저장소 구현:
+Repository implementation:
 
 - `schema-files/backbrief.schema.json`
 - `sample-payloads/valid-backbrief.json`
 - `runtime-demo-payloads/backbrief.json`
 
-## 4. Backbrief 판정 규칙
+## 4. Backbrief Judgment Rules
 
-| 상태 | 판정 |
+| State | Judgment |
 | --- | --- |
-| planned_actions 없음 | 실행 금지 |
-| stop_conditions 없음 | 실행 금지 |
-| low confidence인데 질문 없음 | 보완 요구 |
-| commander decision 필요하지만 질문 없음 | 보완 요구 |
-| approval boundary 없음 | 경고, 고위험 작업이면 보완 요구 |
-| prohibited action 재진술 없음 | 경고, OPSEC/Red action이면 보완 요구 |
+| No planned_actions | Execution prohibited |
+| No stop_conditions | Execution prohibited |
+| Low confidence but no clarifying questions | Requires supplementation |
+| Commander decision needed but no clarifying question | Requires supplementation |
+| No approval boundary | Warning; requires supplementation if high-risk task |
+| No restatement of a prohibited action | Warning; requires supplementation if it involves OPSEC/Red action |
 
-## 5. Rehearsal 필수 필드
+## 5. Required Rehearsal Fields
 
-Rehearsal은 실행 순서를 검증한다.
+Rehearsal verifies the execution sequence.
 
-| 필드 | 질문 |
+| Field | Question |
 | --- | --- |
-| backbriefs | 어떤 backbrief를 근거로 하는가? |
-| facilitator | 누가 통합 확인을 하는가? |
-| rehearsal_type | confirmation/backbrief/dry_run/full_dress 중 무엇인가? |
-| sequence | 실행 순서와 expected result는 무엇인가? |
-| friction_points | 어디서 실패할 수 있는가? |
-| decision_points | 어떤 지점에서 결심이 필요한가? |
-| required_changes | 실행 전 고쳐야 할 것은 무엇인가? |
-| disposition | execute/revise_order/request_approval/abort 중 무엇인가? |
+| backbriefs | Which backbrief is this based on? |
+| facilitator | Who performs the integration check? |
+| rehearsal_type | Is it confirmation/backbrief/dry_run/full_dress? |
+| sequence | What is the execution order and expected result? |
+| friction_points | Where might it fail? |
+| decision_points | At which points is a decision needed? |
+| required_changes | What must be fixed before execution? |
+| disposition | Is it execute/revise_order/request_approval/abort? |
 
-저장소 구현:
+Repository implementation:
 
 - `schema-files/rehearsal.schema.json`
 - `sample-payloads/valid-rehearsal.json`
@@ -88,30 +88,30 @@ Rehearsal은 실행 순서를 검증한다.
 - `rehearsal-to-ccir-router.js`
 - `run-rehearsal-to-ccir-fixtures.js`
 
-## 6. Rehearsal 판정 규칙
+## 6. Rehearsal Judgment Rules
 
-| 상태 | 판정 |
+| State | Judgment |
 | --- | --- |
-| referenced backbrief 없음 | 실행 금지 |
-| sequence 없음 | 실행 금지 |
-| required_changes가 남았는데 execute | 실행 금지 |
-| high/critical friction인데 decision point 없음 | 실행 금지 |
-| approval disposition인데 decision point 없음 | 보완 요구 |
+| No referenced backbrief | Execution prohibited |
+| No sequence | Execution prohibited |
+| required_changes remain but disposition is execute | Execution prohibited |
+| High/critical friction but no decision point | Execution prohibited |
+| Approval disposition but no decision point | Requires supplementation |
 
 ## 7. Commander Disposition
 
-Rehearsal 이후 commander 또는 policy engine은 네 가지 중 하나를 선택한다.
+After the rehearsal, the commander or policy engine chooses one of four options.
 
-| Disposition | 의미 | 다음 조치 |
+| Disposition | Meaning | Next Action |
 | --- | --- | --- |
-| Execute | 실행 가능 | tool/readiness gate 통과 후 실행 |
-| Revise Order | 명령 수정 필요 | OPORD 또는 task order 수정 |
-| Request Approval | 승인 필요 | approval request 또는 decision packet 생성 |
-| Abort | 실행 중지 | SITREP/AAR에 사유 기록 |
+| Execute | Executable | Execute after passing the tool/readiness gate |
+| Revise Order | Order needs revision | Revise the OPORD or task order |
+| Request Approval | Approval needed | Create an approval request or decision packet |
+| Abort | Stop execution | Record the reason in the SITREP/AAR |
 
-중요: `execute`는 "모든 것이 완벽하다"가 아니라 "남은 위험이 권한 범위 안에서 통제 가능하다"는 뜻이다.
+Important: `execute` does not mean "everything is perfect"; it means "the remaining risk is controllable within the authority scope."
 
-## 8. 단일 에이전트용 짧은 Backbrief Prompt
+## 8. Short Backbrief Prompt for a Single Agent
 
 ```text
 BACKBRIEF:
@@ -130,7 +130,7 @@ BACKBRIEF:
 - Confidence:
 ```
 
-## 9. 멀티에이전트용 Rehearsal Prompt
+## 9. Rehearsal Prompt for Multi-Agent
 
 ```text
 REHEARSAL:
@@ -148,7 +148,7 @@ REHEARSAL:
 
 ## 10. Runtime Gate
 
-실행 전 다음 명령을 통과해야 한다.
+The following commands must pass before execution.
 
 ```bash
 node validator-cli-prototype/validate.js runtime-demo-payloads/backbrief.json backbrief
@@ -157,37 +157,37 @@ node orders-dissemination-runner.js
 node rehearsal-to-ccir-router.js runtime-demo-payloads/rehearsal.json
 ```
 
-이 gate는 다음 연결을 확인한다.
+This gate confirms the following links:
 
-- backbrief가 현재 OPORD를 참조하는가?
-- backbrief가 같은 mission 안에 있는가?
-- backbrief task가 OPORD에 실제 존재하는가?
-- actor가 task assignee와 일치하는가?
-- commander intent와 assigned task를 재진술하는가?
-- stop condition과 approval boundary를 보존하는가?
-- rehearsal이 backbrief를 참조하는가?
-- execute disposition에 unresolved change가 남아 있지 않은가?
-- friction point와 decision point가 CCIR alert 또는 decision packet으로 routed 되는가?
+- Does the backbrief reference the current OPORD?
+- Is the backbrief within the same mission?
+- Does the backbrief task actually exist in the OPORD?
+- Does the actor match the task assignee?
+- Does it restate the commander's intent and the assigned task?
+- Is the stop condition and approval boundary preserved?
+- Does the rehearsal reference the backbrief?
+- Are there no unresolved changes remaining under an execute disposition?
+- Are friction points and decision points routed to a CCIR alert or a decision packet?
 
 ## 11. Anti-Patterns
 
-피해야 할 패턴:
+Patterns to avoid:
 
-- "이해했습니다"만 말하고 planned actions를 내지 않음.
-- stop condition 없이 바로 tool call.
-- rehearsal이 실제 실행 순서가 아니라 요약문으로 끝남.
-- high-risk friction을 적고도 decision point를 만들지 않음.
-- required_changes가 남았는데 "실행 가능"으로 판정.
-- approval needed를 "나중에 사용자에게 말하겠다"로 처리.
+- Saying only "understood" without producing planned actions.
+- Making a tool call immediately without a stop condition.
+- Ending the rehearsal as a summary statement instead of the actual execution sequence.
+- Writing down high-risk friction but not creating a decision point.
+- Judging something "executable" while required_changes remain.
+- Handling an approval-needed item by "I'll tell the user later."
 
-## 12. 출처 앵커
+## 12. Source Anchors
 
 - Commander and Staff Guide to Rehearsals: https://api.army.mil/e2/c/downloads/2023/01/19/48e6a637/19-18-commander-and-staff-guide-to-rehearsals-a-no-fail-approach-handbook-jul-19-public.pdf
 - FM 5-0, Planning and Orders Production: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN44590-FM_5-0-001-WEB-3.pdf
 - ADP 6-0, Mission Command: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN34403-ADP_6-0-000-WEB-3.pdf
 - FM 6-0, Commander and Staff Organization and Operations: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN35404-FM_6-0-000-WEB-1.pdf
 
-## 13. 관련 문서
+## 13. Related Documents
 
 - `orders-production-pipeline.md`
 - `opord-annex-model.md`

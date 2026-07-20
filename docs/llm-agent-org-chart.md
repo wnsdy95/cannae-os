@@ -1,19 +1,19 @@
 # LLM Agent Org Chart
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 운용에서 에이전트 조직도, 지휘관계, 보고선, 승인선을 정의한다.
+This document defines the agent org chart, command relationships, reporting lines, and approval lines for military-style LLM operations.
 
-멀티에이전트의 문제는 에이전트 수가 부족한 것이 아니다. 누가 목적을 보존하고, 누가 결정을 내리고, 누가 근거를 만들고, 누가 검토하며, 누가 최종 통합하는지가 불명확한 것이 문제다.
+The problem with multi-agent systems is not a shortage of agents. The problem is that it is unclear who preserves the purpose, who makes decisions, who produces evidence, who reviews, and who performs the final integration.
 
-핵심 원칙:
+Core principle:
 
 ```text
-에이전트 조직도는 사람 흉내가 아니라
-권한, 책임, 보고, 통합을 명확히 하기 위한 구조다.
+The agent org chart is not an imitation of a human organization,
+but a structure for clarifying authority, responsibility, reporting, and integration.
 ```
 
-## 1. 기본 조직도
+## 1. Basic Org Chart
 
 ```text
 User / Human Commander
@@ -32,181 +32,181 @@ Chief of Staff / Integrator
         +-- Evaluator / Assessment Agent
 ```
 
-## 2. 지휘관계
+## 2. Command Relationships
 
-| 관계 | 의미 | LLM 적용 |
+| Relationship | Meaning | LLM Application |
 | --- | --- | --- |
-| Command | 최종 의도와 승인권 | User 또는 AI Commander |
-| Control | 실행 범위와 우선순위 조정 | Chief of Staff |
-| Support | 특정 기능으로 임무 지원 | S2, S4, S6, Red Team |
-| Coordinating | 동등 기능 간 조정 | S2-S3, S3-S6 |
-| Review | 독립 검토 | Red Team, Evaluator |
+| Command | Final intent and approval authority | User or AI Commander |
+| Control | Adjusting execution scope and priorities | Chief of Staff |
+| Support | Supporting the mission through a specific function | S2, S4, S6, Red Team |
+| Coordinating | Coordination between peer functions | S2-S3, S3-S6 |
+| Review | Independent review | Red Team, Evaluator |
 
-## 3. 역할별 책임
+## 3. Responsibilities by Role
 
 ### User / Human Commander
 
-책임:
+Responsibilities:
 
-- 최종 목적 제시.
-- 고위험 행동 승인.
-- 위험 수용.
-- 최종 산출물 승인.
+- Present the final purpose.
+- Approve high-risk actions.
+- Accept risk.
+- Approve the final output.
 
-하지 않는 일:
+Does not do:
 
-- 모든 세부 실행 직접 지시.
-- 출처 검증 직접 수행.
-- 하위 에이전트 간 조정 전부 수행.
+- Directly direct every detail of execution.
+- Directly perform source verification.
+- Perform all coordination among subordinate agents.
 
 ### AI Commander / Orchestrator
 
-책임:
+Responsibilities:
 
-- 사용자 요청을 mission과 intent로 변환.
-- 권한과 ROE를 적용.
-- task order 발행.
-- decision gate에서 사용자 승인을 요청.
+- Translate the user's request into mission and intent.
+- Apply authority and ROE.
+- Issue task orders.
+- Request user approval at decision gates.
 
-권한:
+Authority:
 
-- 낮은 위험 작업 지시.
-- 하위 에이전트 tasking.
-- SITREP 통합.
+- Direct low-risk tasks.
+- Task subordinate agents.
+- Integrate SITREPs.
 
-제한:
+Limitations:
 
-- 위험 수용권 없음.
-- 외부 배포, 비용 발생, 데이터 삭제 승인 불가.
+- No risk-acceptance authority.
+- Cannot approve external release, cost-incurring actions, or data deletion.
 
 ### Chief of Staff / Integrator
 
-책임:
+Responsibilities:
 
-- 하위 에이전트 작업 동기화.
-- battle rhythm 운영.
-- 중복 작업 제거.
-- 최종 산출물 통합.
+- Synchronize subordinate agents' work.
+- Operate the battle rhythm.
+- Eliminate duplicate work.
+- Integrate the final output.
 
-핵심 산출물:
+Key deliverables:
 
-- task board.
+- Task board.
 - SITREP summary.
-- integration memo.
-- final synthesis.
+- Integration memo.
+- Final synthesis.
 
 ### S2 Intelligence Agent
 
-책임:
+Responsibilities:
 
-- 리서치.
-- 출처 신뢰도 평가.
-- 불확실성 표시.
-- PIR 관리.
-- source map 갱신.
+- Research.
+- Assess source reliability.
+- Flag uncertainty.
+- Manage PIR.
+- Update the source map.
 
-금지:
+Prohibited:
 
-- 근거 없는 결론 단정.
-- 정책/법률/군사 실무 판단을 최종 결정처럼 작성.
+- Asserting conclusions without evidence.
+- Writing policy/legal/military practice judgments as if they were final decisions.
 
 ### S3 Operations Agent
 
-책임:
+Responsibilities:
 
-- 실행계획 작성.
-- 작업 sequencing.
-- 프롬프트/문서/코드 실행.
-- FRAGO 반영.
+- Draft the execution plan.
+- Sequence tasks.
+- Execute prompts/documents/code.
+- Incorporate FRAGOs.
 
-핵심 산출물:
+Key deliverables:
 
-- execution plan.
-- maneuver plan.
-- task order.
-- implementation output.
+- Execution plan.
+- Maneuver plan.
+- Task order.
+- Implementation output.
 
 ### S4 Sustainment Agent
 
-책임:
+Responsibilities:
 
-- 토큰, 시간, 도구, 의존성, API, 테스트 환경 점검.
-- 장기 작업 checkpoint 설계.
-- 병목과 대체 경로 제시.
+- Check tokens, time, tools, dependencies, APIs, and test environments.
+- Design checkpoints for long-running tasks.
+- Identify bottlenecks and alternative paths.
 
-핵심 산출물:
+Key deliverables:
 
-- sustainment estimate.
-- dependency report.
-- fallback plan.
+- Sustainment estimate.
+- Dependency report.
+- Fallback plan.
 
 ### S6 Knowledge / Signal Agent
 
-책임:
+Responsibilities:
 
-- 문서 위치와 링크 관리.
-- decision log, AAR, source map 유지.
-- context packet 작성.
-- 에이전트 간 정보 형식 통일.
+- Manage document locations and links.
+- Maintain the decision log, AAR, and source map.
+- Produce context packets.
+- Standardize the information format across agents.
 
-핵심 산출물:
+Key deliverables:
 
 - README update.
-- knowledge base.
-- context brief.
-- glossary update.
+- Knowledge base.
+- Context brief.
+- Glossary update.
 
 ### Red Team Agent
 
-책임:
+Responsibilities:
 
-- 환각, 과장, 출처 부족, 보안 위험, 권한 위반 탐지.
-- 독립 findings 작성.
+- Detect hallucination, exaggeration, insufficient sourcing, security risk, and authority violations.
+- Produce independent findings.
 
-금지:
+Prohibited:
 
-- 최종 산출물 직접 통합.
-- 지휘관 의도 재정의.
-- 검토 없이 자기 수정안을 정답으로 확정.
+- Directly integrating the final output.
+- Redefining the commander's intent.
+- Finalizing its own proposed corrections as the answer without review.
 
 ### Evaluator / Assessment Agent
 
-책임:
+Responsibilities:
 
-- MOP/MOE 평가.
-- readiness rating.
-- experiment result 기록.
-- AAR 입력 제공.
+- Assess MOP/MOE.
+- Produce readiness ratings.
+- Record experiment results.
+- Provide input to the AAR.
 
-핵심 산출물:
+Key deliverables:
 
-- evaluation sheet.
-- metrics report.
-- readiness update.
+- Evaluation sheet.
+- Metrics report.
+- Readiness update.
 
 ## 4. RACI Matrix
 
-| 활동 | User | Commander | CoS | S2 | S3 | S4 | S6 | Red Team | Evaluator |
+| Activity | User | Commander | CoS | S2 | S3 | S4 | S6 | Red Team | Evaluator |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Mission 정의 | A | R | C | I | I | I | I | I | I |
-| OPORD 작성 | C | A/R | C | C | C | C | C | I | I |
-| 출처 조사 | I | C | C | A/R | I | I | C | C | I |
-| 실행계획 | I | A | C | C | R | C | C | C | I |
-| 도구 사용 | I | A | C | I | R | C | C | I | I |
-| 승인 필요 판단 | A | R | C | C | C | C | C | C | I |
-| 문서 통합 | I | A | R | C | C | C | C | C | I |
-| Red Team 검토 | I | C | C | C | C | I | C | R | C |
-| 평가 | I | A | C | C | C | C | C | C | R |
+| Define mission | A | R | C | I | I | I | I | I | I |
+| Draft OPORD | C | A/R | C | C | C | C | C | I | I |
+| Investigate sources | I | C | C | A/R | I | I | C | C | I |
+| Execution plan | I | A | C | C | R | C | C | C | I |
+| Tool use | I | A | C | I | R | C | C | I | I |
+| Determine approval need | A | R | C | C | C | C | C | C | I |
+| Document integration | I | A | R | C | C | C | C | C | I |
+| Red Team review | I | C | C | C | C | I | C | R | C |
+| Evaluation | I | A | C | C | C | C | C | C | R |
 | AAR | A | R | R | C | C | C | C | C | C |
 
-범례:
+Legend:
 
 - R: Responsible.
 - A: Accountable.
 - C: Consulted.
 - I: Informed.
 
-## 5. 보고선
+## 5. Reporting Lines
 
 ```text
 S2/S3/S4/S6/Red Team/Evaluator
@@ -215,7 +215,7 @@ S2/S3/S4/S6/Red Team/Evaluator
 -> User / Human Commander
 ```
 
-CCIR 발생 시:
+When a CCIR occurs:
 
 ```text
 Any Agent
@@ -233,24 +233,24 @@ Red Team
 
 ## 6. Commander's Critical Information Requirements
 
-모든 에이전트가 즉시 보고해야 하는 정보:
+Information every agent must report immediately:
 
-- mission 또는 intent 불일치.
-- 공식 출처 확인 실패.
-- 출처 간 핵심 충돌.
-- 테스트 실패.
-- 도구 권한 부족.
-- 민감정보 발견.
-- 비용 발생 가능성.
-- 데이터 삭제/변경 가능성.
-- 기존 사용자 변경사항과 충돌.
-- 사용자의 추가 결심 필요.
+- Mismatch between mission and intent.
+- Failure to confirm an official source.
+- A critical conflict between sources.
+- Test failure.
+- Insufficient tool authority.
+- Discovery of sensitive information.
+- Possibility of incurring cost.
+- Possibility of data deletion/modification.
+- Conflict with an existing user change.
+- Need for an additional decision from the user.
 
-## 7. 조직 규모별 변형
+## 7. Variants by Organization Size
 
 ### 7.1 Single-Agent Mode
 
-한 에이전트가 모든 역할을 순서대로 수행한다.
+A single agent performs all roles in sequence.
 
 ```text
 Commander view
@@ -262,11 +262,11 @@ Commander view
 -> Evaluator view
 ```
 
-적용:
+Application:
 
-- 짧은 문서 작업.
-- 단일 파일 수정.
-- 작은 리서치.
+- Short document work.
+- Editing a single file.
+- Small-scale research.
 
 ### 7.2 Small Staff Mode
 
@@ -277,51 +277,51 @@ Commander
 -> Reviewer
 ```
 
-적용:
+Application:
 
-- 중간 규모 문서화.
-- 간단한 코드 구현.
-- 출처 기반 답변.
+- Medium-scale documentation.
+- Simple code implementation.
+- Source-based answers.
 
 ### 7.3 Full Staff Mode
 
-기본 조직도를 모두 사용한다.
+Uses the entire basic org chart.
 
-적용:
+Application:
 
-- 장기 리서치.
-- 멀티에이전트 구현.
-- 고위험 자동화.
-- 외부 공개 산출물.
+- Long-term research.
+- Multi-agent implementation.
+- High-risk automation.
+- Externally published output.
 
-## 8. 조직도 설계 Anti-Patterns
+## 8. Org Chart Design Anti-Patterns
 
-| Anti-pattern | 문제 | 교정 |
+| Anti-pattern | Problem | Correction |
 | --- | --- | --- |
-| 모든 에이전트가 Commander | 의도 충돌 | 하나의 통합권자 |
-| Red Team이 최종 작성자 | 독립성 손상 | finding만 작성 |
-| S2가 결론 결정 | 정보와 지휘 혼선 | S2는 근거와 불확실성 담당 |
-| S3가 출처 무시 | 실행은 되나 환각 증가 | evidence gate |
-| S6 부재 | 문서와 기억 손실 | knowledge owner 지정 |
-| User에게 모든 판단 요청 | 승인 병목 | risk-based delegation |
+| Every agent is a Commander | Conflicting intent | A single integrating authority |
+| Red Team is the final author | Independence is compromised | Produce findings only |
+| S2 decides conclusions | Confusion between intelligence and command | S2 owns evidence and uncertainty |
+| S3 ignores sources | Execution proceeds but hallucination increases | Evidence gate |
+| No S6 | Loss of documentation and memory | Designate a knowledge owner |
+| Every judgment is referred to the User | Approval bottleneck | Risk-based delegation |
 
-## 9. 에이전트 신설/해체 기준
+## 9. Criteria for Standing Up/Standing Down Agents
 
-에이전트를 새로 만든다:
+Create a new agent when:
 
-- 같은 유형 작업이 3회 이상 반복됨.
-- 특정 전문 기능이 계속 병목.
-- 독립 검토가 필요.
-- 권한/보안상 분리가 필요.
+- The same type of task has recurred 3 or more times.
+- A specific specialized function is a persistent bottleneck.
+- Independent review is needed.
+- Separation is needed for authority/security reasons.
 
-에이전트를 해체하거나 병합한다:
+Disband or merge an agent when:
 
-- 역할 산출물이 중복됨.
-- 조정 비용이 산출물 품질보다 큼.
-- task volume이 적음.
-- 책임과 권한이 불명확함.
+- The role's deliverables are duplicated.
+- The coordination cost exceeds the quality of the output.
+- Task volume is low.
+- Responsibility and authority are unclear.
 
-## 10. 관련 문서
+## 10. Related Documents
 
 - `agent-roles-and-authority.md`
 - `agent-battle-rhythm.md`

@@ -1,21 +1,21 @@
 # Approval UI Patterns
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 LLM 에이전트가 Amber/Red 등급 도구 행동을 수행하기 전 사용자 승인을 받는 UI 패턴을 정의한다.
+This document defines the UI patterns for obtaining user approval before an LLM agent performs an Amber/Red-rated tool action.
 
-승인 UI의 목적은 사용자를 귀찮게 하는 것이 아니라, 위험 수용권자가 실제로 무엇을 승인하는지 이해하게 하는 것이다.
+The purpose of the approval UI is not to annoy the user, but to ensure that the risk acceptor actually understands what they are approving.
 
-## 1. 기본 원칙
+## 1. Basic Principles
 
-| 원칙 | 설명 |
+| Principle | Description |
 | --- | --- |
-| Specific | 승인 대상 action, tool, target을 구체적으로 표시 |
-| Risk-visible | 위험과 실패 결과를 숨기지 않음 |
-| Reversible-first | 가능하면 dry-run과 rollback 제시 |
-| Least privilege | 필요한 최소 범위만 승인 |
-| Time-bound | 승인은 특정 action과 시간에 한정 |
-| Auditable | 승인자, 시간, 범위, 결과를 기록 |
+| Specific | Clearly display the action, tool, and target subject to approval |
+| Risk-visible | Do not hide risks and failure consequences |
+| Reversible-first | Present dry-run and rollback whenever possible |
+| Least privilege | Approve only the minimum scope necessary |
+| Time-bound | Approval is limited to a specific action and time |
+| Auditable | Record the approver, time, scope, and result |
 
 ## 2. Approval Card
 
@@ -37,63 +37,63 @@ Alternatives:
 
 ## 3. Decision Levels
 
-| Level | UI 동작 | 예 |
+| Level | UI Behavior | Example |
 | --- | --- | --- |
-| Amber | 간단 승인 카드 | 패키지 설치, API write 초안 |
-| Red | 상세 decision memo | DB migration, 배포 |
-| Black | 승인 버튼 없음 | 비밀키 출력, 허위 출처 |
+| Amber | Simple approval card | Package installation, API write draft |
+| Red | Detailed decision memo | DB migration, deployment |
+| Black | No approval button | Secret key output, false source |
 
-## 4. 좋은 승인 요청
+## 4. A Good Approval Request
 
 ```text
-Action: docs/source-map.md 파일을 수정합니다.
-Why: 새 한국 공개자료 출처를 source map에 연결하기 위해 필요합니다.
-Risk: 낮음. 로컬 markdown 파일만 변경합니다.
-Rollback: 이전 내용을 다시 적용할 수 있습니다.
-Alternatives: 변경 없이 최종 답변에만 요약할 수 있습니다.
+Action: Modify the docs/source-map.md file.
+Why: Necessary to link a new Korean open-source source to the source map.
+Risk: Low. Only a local markdown file is changed.
+Rollback: The previous content can be reapplied.
+Alternatives: Can be summarized only in the final answer without any change.
 ```
 
-## 5. 나쁜 승인 요청
+## 5. A Bad Approval Request
 
 ```text
-작업을 계속하려면 승인해주세요.
+Please approve to continue the task.
 ```
 
-문제:
+Problems:
 
-- 무엇을 실행하는지 모름.
-- 대상이 없음.
-- 위험이 없음.
-- 대안이 없음.
+- It is unclear what is being executed.
+- There is no target.
+- There is no risk.
+- There is no alternative.
 
-## 6. 승인 범위
+## 6. Approval Scope
 
-승인은 넓게 받지 않는다.
+Approval should not be obtained broadly.
 
-나쁜 승인:
+Bad approval:
 
 ```text
-앞으로 모든 파일 수정 승인.
+Approval for all file modifications going forward.
 ```
 
-좋은 승인:
+Good approval:
 
 ```text
-이번 mission에서 docs/*.md 문서 파일 생성과 수정만 승인.
-삭제, 외부 배포, API write는 별도 승인.
+For this mission, approve only the creation and modification of docs/*.md documentation files.
+Deletion, external deployment, and API write require separate approval.
 ```
 
 ## 7. Dry-run UI
 
-Red 작업은 기본 버튼을 "Approve"가 아니라 "Dry-run"으로 둔다.
+For Red-rated actions, the default button should be "Dry-run" rather than "Approve."
 
-예:
+Example:
 
 ```text
 [Run dry-run] [Show affected rows] [Reject]
 ```
 
-Dry-run 결과 후:
+After the dry-run result:
 
 ```text
 Dry-run result:
@@ -120,15 +120,15 @@ approval_log:
 
 ## 9. UX Anti-Patterns
 
-| Anti-pattern | 문제 | 교정 |
+| Anti-pattern | Problem | Correction |
 | --- | --- | --- |
-| 승인 피로 | 너무 많은 사소한 승인 | Green/Amber 기준 조정 |
-| 포괄 승인 | 위험 범위가 넓어짐 | action-level approval |
-| 위험 숨김 | 사용자가 실제 위험을 모름 | risk and rollback 필드 |
-| 거부 대안 없음 | 사용자가 approve/reject만 선택 | dry-run, revise, skip |
-| 승인 후 로그 없음 | 감사 불가 | approval log |
+| Approval fatigue | Too many trivial approvals | Adjust Green/Amber criteria |
+| Blanket approval | Risk scope widens | action-level approval |
+| Hidden risk | The user does not know the actual risk | risk and rollback fields |
+| No rejection alternative | The user can only choose approve/reject | dry-run, revise, skip |
+| No log after approval | Cannot be audited | approval log |
 
-## 10. 관련 문서
+## 10. Related Documents
 
 - `tool-use-roe.md`
 - `reference-architecture.md`

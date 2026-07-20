@@ -1,52 +1,52 @@
 # Commander Handbook
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 사람이 AI LLM 시스템을 지휘할 때 사용하는 실전 handbook이다.
+This document is a practical handbook for use when a human is commanding an AI LLM system.
 
-핵심 원칙은 단순하다.
+The core principles are simple.
 
-- 사람은 목적, 우선순위, 위험수용, 승인권을 맡는다.
-- AI 에이전트는 분석, 초안, 실행, 검증, 보고를 맡는다.
-- AI 에이전트가 자율적으로 움직일 수 있는 범위는 문서화된 authority 안에서만 허용된다.
-- 위험한 행동은 능력이 아니라 승인권의 문제다.
+- The human owns purpose, priority, risk acceptance, and approval authority.
+- The AI agent owns analysis, drafting, execution, verification, and reporting.
+- The scope within which an AI agent may act autonomously is limited strictly to the authority documented for it.
+- Dangerous action is a matter of approval authority, not capability.
 
-다국적 적용에서는 `Commander`를 특정 국가의 지휘관 계급으로 읽지 않는다. 여기서는 최종 목적, 승인, 위험수용, 공개 여부를 책임지는 사람 또는 권한자를 뜻한다. 현지 군/조직의 실제 승인 체계와 충돌하면 `docs/multinational-doctrine-consistency-review.md`의 jurisdiction gate가 우선한다.
+In multinational application, `Commander` should not be read as a rank specific to any one nation's military. Here it refers to the person or authority responsible for the ultimate purpose, approval, risk acceptance, and disclosure decisions. Where this conflicts with the actual approval structure of a local military/organization, the jurisdiction gate in `docs/multinational-doctrine-consistency-review.md` takes precedence.
 
-## 1. 지휘관의 5대 책임
+## 1. The Commander's 5 Core Responsibilities
 
-| 책임 | 군대식 의미 | AI 운용 의미 |
+| Responsibility | Military meaning | AI operations meaning |
 | --- | --- | --- |
-| Intent owner | 작전 목적과 desired end state를 정함 | 모델이 헷갈려도 유지해야 하는 목적을 고정 |
-| Priority owner | main effort와 economy of force를 정함 | 어떤 작업을 먼저 하고 무엇을 포기할지 결정 |
-| Risk owner | 어떤 위험을 수용할지 결정 | Red/Amber action 승인 또는 거부 |
-| Boundary owner | 금지선과 승인선을 정함 | 도구, 데이터, 배포, 결제, 외부 발송 통제 |
-| Assessment owner | 성공 여부를 판정함 | 산출물 존재가 아니라 효과 달성을 확인 |
+| Intent owner | Sets the operational purpose and desired end state | Fixes the purpose that must be maintained even if the model gets confused |
+| Priority owner | Sets the main effort and economy of force | Decides which tasks to do first and what to give up |
+| Risk owner | Decides which risks to accept | Approves or denies Red/Amber actions |
+| Boundary owner | Sets prohibition lines and approval lines | Controls tools, data, deployment, payment, external transmission |
+| Assessment owner | Judges whether success has been achieved | Confirms effect achievement, not merely the existence of an output |
 
-지휘관은 모든 세부 절차를 직접 지시하지 않는다. 대신 의도, 경계, 정보요구, 승인기준을 명확히 한다.
+The commander does not personally direct every detailed procedure. Instead, they clarify intent, boundaries, information requirements, and approval criteria.
 
-## 2. 지휘관이 처음 줘야 하는 입력
+## 2. Inputs the Commander Must Provide First
 
-작업을 시작할 때 지휘관은 아래 9개를 준다.
+When starting a task, the commander provides the following 9 items.
 
-| 필드 | 질문 | 예시 |
+| Field | Question | Example |
 | --- | --- | --- |
-| Mission | 무엇을 달성해야 하는가? | 군대식 LLM 운용 프레임워크를 문서화하고 prototype화 |
-| Purpose | 왜 하는가? | 환각, 무단 실행, 보고 누락을 줄이기 위해 |
-| End state | 끝났다는 증거는 무엇인가? | 문서, schema, runner, dashboard가 검증됨 |
-| Main effort | 가장 중요한 축은 무엇인가? | 문서화와 authority model |
-| Constraints | 절대 지켜야 할 조건은? | 로컬 파일만 수정, 외부 배포 금지 |
-| Authority | 무엇을 자율 실행할 수 있는가? | 문서 생성, local test run |
-| Approval required | 무엇은 승인 전 대기해야 하는가? | prod deploy, credential use, 결제 |
-| CCIR | 무엇이 생기면 즉시 보고해야 하는가? | 검증 실패, 범위 변경, Red action 필요 |
-| Assessment | 어떻게 평가할 것인가? | validator/test 통과, source map 갱신, AAR 반영 |
+| Mission | What must be accomplished? | Document a military-style LLM operations framework and build a prototype |
+| Purpose | Why is it being done? | To reduce hallucination, unauthorized execution, and missed reporting |
+| End state | What is the evidence that it is finished? | Documents, schema, runner, and dashboard are verified |
+| Main effort | What is the most important axis? | Documentation and the authority model |
+| Constraints | What conditions must be absolutely observed? | Modify local files only, no external deployment |
+| Authority | What can be executed autonomously? | Document generation, local test run |
+| Approval required | What must wait for approval? | prod deploy, credential use, payment |
+| CCIR | What must be reported immediately if it occurs? | Verification failure, scope change, need for a Red action |
+| Assessment | How will it be evaluated? | Validator/test passes, source map updated, reflected in the AAR |
 
-## 3. 지휘관 prompt skeleton
+## 3. Commander Prompt Skeleton
 
 ```text
 MISSION:
-- 달성할 목표:
-- 사용자가 원하는 최종 효과:
+- Objective to achieve:
+- Final effect the user wants:
 
 INTENT:
 - Purpose:
@@ -60,62 +60,62 @@ AUTHORITY:
 - Prohibited:
 
 CCIR:
-- PIR: 내가 결심하려면 필요한 정보
-- FFIR: 실행능력/자원/도구 문제
-- EEFI: 노출되면 안 되는 정보
+- PIR: Information I need in order to decide
+- FFIR: Execution capability/resource/tool issues
+- EEFI: Information that must not be exposed
 
 REPORTING:
-- 언제 SITREP을 보낼지:
-- 어떤 형식으로 보고할지:
+- When to send a SITREP:
+- In what format to report:
 
 ASSESSMENT:
-- MOP: 수행 여부 지표
-- MOE: 효과 달성 지표
+- MOP: Performance indicators
+- MOE: Effect achievement indicators
 - Verification commands or checks:
 ```
 
-## 4. Backbrief를 강제하는 법
+## 4. How to Enforce a Backbrief
 
-명령을 내린 뒤 바로 실행시키지 말고, 에이전트에게 먼저 재진술하게 한다.
+After issuing an order, do not have it executed immediately — first have the agent restate it back.
 
 ```text
-실행 전에 backbrief 하라.
-1. 네가 이해한 mission
-2. commander's intent
-3. 네가 자율 실행할 수 있는 행동
-4. 승인 없이는 멈춰야 하는 행동
-5. 예상 산출물
-6. 실패 가능성과 stop condition
-7. 첫 번째 실행 단계
+Backbrief before executing.
+1. The mission as you understand it
+2. The commander's intent
+3. Actions you can execute autonomously
+4. Actions that must stop pending approval
+5. Expected deliverables
+6. Failure possibilities and stop conditions
+7. The first execution step
 ```
 
-승인 기준:
+Approval criteria:
 
-- mission과 purpose를 혼동하지 않아야 한다.
-- output과 effect를 구분해야 한다.
-- Red/Amber action을 스스로 식별해야 한다.
-- 모르는 것을 아는 척하지 않아야 한다.
+- Mission and purpose must not be confused with each other.
+- Output and effect must be distinguished.
+- Red/Amber actions must be self-identified.
+- The agent must not pretend to know what it does not know.
 
-## 5. 권한 등급
+## 5. Authority Levels
 
-| 등급 | 의미 | 예시 | 지휘관 행동 |
+| Level | Meaning | Example | Commander action |
 | --- | --- | --- | --- |
-| Green | 안전하고 되돌릴 수 있으며 범위 안에 있음 | 로컬 문서 초안, 읽기 전용 검색, local test | 자율 허용 |
-| Amber | 영향이 있지만 제한적으로 되돌릴 수 있음 | 같은 파일의 구조 변경, 외부 자료 인용, 큰 리팩터 | 사전 보고 또는 묵시 승인 범위 필요 |
-| Red | 외부 영향, 비용, 배포, 데이터 변경, 보안 위험 | prod deploy, credential use, DB mutation, 이메일 발송 | 명시 승인 필요 |
-| Black | 금지 | secret 노출, 법 위반, 사용자 의도 위반 | 거부 및 대안 제시 |
+| Green | Safe, reversible, and within scope | Local document drafting, read-only search, local test | Autonomous execution allowed |
+| Amber | Has impact but is reversible to a limited degree | Structural change to the same file, citing external material, large refactor | Requires prior reporting or an implicit approval scope |
+| Red | External impact, cost, deployment, data change, security risk | prod deploy, credential use, DB mutation, sending email | Explicit approval required |
+| Black | Prohibited | Secret exposure, legal violation, violation of user intent | Refuse and propose an alternative |
 
-권한은 role만으로 정하지 않는다.
+Authority is not determined by role alone.
 
 ```text
-권한 = role + mission + task + target + tool + risk + readiness + time limit
+Authority = role + mission + task + target + tool + risk + readiness + time limit
 ```
 
-따라서 S3 에이전트가 local validator를 실행하는 것은 Green일 수 있지만, 같은 S3가 production deployment를 요청하면 Red다.
+Accordingly, an S3 agent running a local validator may be Green, but the same S3 requesting a production deployment is Red.
 
-## 6. 승인 request 형식
+## 6. Approval Request Format
 
-Red 또는 중요한 Amber action은 아래 형식으로 올라와야 한다.
+Red actions, or significant Amber actions, must be submitted in the following format.
 
 ```text
 APPROVAL REQUEST:
@@ -133,147 +133,147 @@ APPROVAL REQUEST:
 - Recommended decision: approve / approve with constraints / revise / reject
 ```
 
-지휘관은 다음 중 하나로만 답한다.
+The commander responds with only one of the following:
 
-- `Approve once`: 지정 scope 안에서 1회만 허용.
-- `Approve with constraints`: 조건부 허용.
-- `Revise`: 계획 수정 후 재상신.
-- `Reject`: 실행 금지.
-- `Issue FRAGO`: mission 자체의 범위나 우선순위 변경.
+- `Approve once`: Allowed only once, within the specified scope.
+- `Approve with constraints`: Conditional approval.
+- `Revise`: Revise the plan and resubmit.
+- `Reject`: Execution prohibited.
+- `Issue FRAGO`: Change to the scope or priority of the mission itself.
 
-## 7. 보고 범위
+## 7. Reporting Scope
 
-보고는 많을수록 좋은 것이 아니다. 지휘관의 결심을 바꾸는 정보만 우선 보고한다.
+More reporting is not necessarily better. Priority is given to reporting only information that changes the commander's decision.
 
-즉시 보고:
+Report immediately:
 
-- Red action 필요.
-- validator/test/replay 실패.
-- source가 불확실한데 결론에 영향을 줌.
-- 기존 intent와 충돌하는 요구가 생김.
-- 예상보다 큰 파일/범위/위험 변경.
-- 사용자의 최신 지시와 기존 계획이 충돌.
+- A Red action is needed.
+- A validator/test/replay has failed.
+- A source is uncertain but affects the conclusion.
+- A requirement arises that conflicts with existing intent.
+- A change larger than expected in file/scope/risk.
+- The user's latest instruction conflicts with the existing plan.
 
-정기 보고:
+Report periodically:
 
-- 30분 이상 긴 작업의 진행상황.
-- 큰 단계 완료 후 산출물/검증 요약.
-- AAR와 readiness 변경 필요.
+- Progress on tasks running longer than 30 minutes.
+- A summary of deliverables/verification after completing a major stage.
+- Need for changes to the AAR and readiness.
 
-보고하지 않아도 되는 것:
+Not required to report:
 
-- 이미 승인된 Green 작업의 세부 진행.
-- 단순 파일 읽기.
-- 기존 패턴 안에서 작은 문구 조정.
+- Detailed progress on already-approved Green work.
+- Simple file reads.
+- Minor wording adjustments within an existing pattern.
 
-## 8. 단일 에이전트 운용법
+## 8. How to Operate a Single Agent
 
-단일 에이전트는 한 사람이 commander, staff, executor를 모두 겸하는 구조가 되기 쉽다. 그래서 반드시 역할을 시간 순서로 분리한다.
+A single agent easily becomes a structure where one entity concurrently plays commander, staff, and executor. For this reason, the roles must always be separated in temporal sequence.
 
-절차:
+Procedure:
 
-1. Mission intake: 사용자 요청을 mission statement로 변환.
-2. Mission analysis: 모르는 것, risk, constraints, CCIR 확인.
-3. Draft OPORD: 실행 계획과 authority boundary 작성.
-4. Backbrief: 이해한 내용과 stop condition 재진술.
-5. Execute Green: 승인된 범위 안에서 실행.
-6. Escalate Amber/Red: 승인 필요 시 멈춤.
-7. SITREP: 진행상황과 장애 보고.
-8. AAR: 결과, 차이, 학습, 다음 SOP 수정.
+1. Mission intake: Convert the user's request into a mission statement.
+2. Mission analysis: Identify unknowns, risk, constraints, and CCIR.
+3. Draft OPORD: Write the execution plan and authority boundaries.
+4. Backbrief: Restate what was understood and the stop conditions.
+5. Execute Green: Execute within the approved scope.
+6. Escalate Amber/Red: Stop when approval is needed.
+7. SITREP: Report progress and obstacles.
+8. AAR: Results, differences, lessons, and next SOP revisions.
 
-단일 에이전트 prompt:
+Single-agent prompt:
 
 ```text
-너는 단일 agent지만 내부적으로 Commander / S2 / S3 / S6 / Evaluator 역할을 분리해 사고하라.
-출력에서는 역할별 추론 전체를 장황하게 쓰지 말고, 결심에 필요한 요약만 보고하라.
-실행 전 backbrief를 하고, Green action만 수행하라.
-Amber/Red action은 approval request로 멈춰라.
+You are a single agent, but internally you must separate your thinking into Commander / S2 / S3 / S6 / Evaluator roles.
+Do not verbosely output the full reasoning for each role — report only the summary needed for the decision.
+Backbrief before executing, and perform only Green actions.
+Halt Amber/Red actions with an approval request.
 ```
 
-## 9. 멀티 에이전트 운용법
+## 9. How to Operate a Multi-Agent System
 
-멀티 에이전트는 성능보다 조정 비용이 먼저 문제다. 지휘관은 "누가 누구에게 보고하는가"를 먼저 정해야 한다.
+With multiple agents, coordination cost becomes a problem before performance does. The commander must first decide "who reports to whom."
 
-기본 구조:
+Basic structure:
 
-| 역할 | 기능 | 자율 실행 | 보고 대상 |
+| Role | Function | Autonomous execution | Reports to |
 | --- | --- | --- | --- |
-| Commander | intent, priority, risk acceptance | 결심만 | 사용자 |
-| CoS | 통합, battle rhythm, tasking | Green coordination | Commander |
-| S2 | research, evidence, uncertainty | 읽기/요약 | CoS |
+| Commander | intent, priority, risk acceptance | Decisions only | User |
+| CoS | integration, battle rhythm, tasking | Green coordination | Commander |
+| S2 | research, evidence, uncertainty | Read/summarize | CoS |
 | S3 | execution plan, current ops | local Green execution | CoS |
 | S4 | resource, token, tool availability | resource estimate | CoS |
 | S6 | knowledge, docs, state, automation | docs/state updates | CoS |
 | Red Team | contradiction, risk, adversarial review | review only | Commander/CoS |
 | Evaluator | MOP/MOE/AAR/readiness | assessment draft | Commander |
 
-멀티 에이전트 원칙:
+Multi-agent principles:
 
-- 모든 에이전트가 사용자에게 직접 길게 보고하지 않는다.
-- CoS가 중복, 충돌, 누락을 정리한다.
-- Red Team은 실행권을 갖지 않는다.
-- Evaluator는 산출물 완료와 효과 달성을 분리한다.
-- S6는 문서와 event log를 source of truth로 유지한다.
+- No agent reports directly and at length to the user.
+- The CoS resolves duplication, conflict, and omission.
+- The Red Team holds no execution authority.
+- The Evaluator separates deliverable completion from effect achievement.
+- S6 maintains documents and the event log as the source of truth.
 
-## 10. 왜곡 없는 하달 체크리스트
+## 10. Distortion-Free Tasking Checklist
 
-명령을 내리기 전:
+Before issuing the order:
 
-- mission과 purpose가 분리되어 있는가?
-- end state가 관찰 가능한가?
-- forbidden action이 명시되어 있는가?
-- CCIR가 3개 이하의 중요한 결심정보로 정리되어 있는가?
-- 하급 에이전트가 방법을 선택할 여지가 있는가?
+- Are mission and purpose kept separate?
+- Is the end state observable?
+- Are forbidden actions explicitly stated?
+- Is the CCIR distilled to 3 or fewer critical decision points?
+- Is the subordinate agent left room to choose its own method?
 
-하달 직후:
+Immediately after tasking:
 
-- backbrief를 받았는가?
-- 에이전트가 승인 필요 행동을 식별했는가?
-- 산출물과 검증 방법이 연결되어 있는가?
-- 보고 시점이 정해져 있는가?
+- Was a backbrief received?
+- Did the agent identify the actions requiring approval?
+- Are deliverables and the verification method linked?
+- Is the reporting timing set?
 
-실행 중:
+During execution:
 
-- SITREP이 CCIR 중심인가?
-- 위험이 증가하면 멈추는가?
-- source와 interpretation이 분리되는가?
-- event log 또는 문서에 남는가?
+- Is the SITREP centered on the CCIR?
+- Does execution stop when risk increases?
+- Are source and interpretation kept separate?
+- Is it recorded in the event log or documentation?
 
-종료 후:
+After completion:
 
-- MOP/MOE를 둘 다 평가했는가?
-- AAR가 교훈으로 끝나지 않고 SOP/readiness 수정으로 이어졌는가?
-- 다음 작전자가 chat history 없이 이어받을 수 있는가?
+- Were both MOP and MOE evaluated?
+- Did the AAR lead to SOP/readiness revisions rather than ending as mere lessons learned?
+- Can the next operator pick this up without the chat history?
 
-## 11. 지휘관 결심 매트릭스
+## 11. Commander Decision Matrix
 
-| 상황 | 결심 | 이유 |
+| Situation | Decision | Rationale |
 | --- | --- | --- |
-| 목표는 명확하지만 방법이 여러 개 | intent와 constraints만 주고 위임 | disciplined initiative 확보 |
-| 정보가 부족하지만 위험이 낮음 | Green reconnaissance 허용 | 결심 전 정보수집 |
-| 정보가 부족하고 위험이 높음 | PIR 발령, 실행 보류 | 잘못된 조기 실행 방지 |
-| 산출물은 완성됐지만 효과 불확실 | Evaluator에게 MOE 평가 지시 | output/effect 분리 |
-| 에이전트가 승인선을 인식 못함 | 즉시 중단, authority 재교육 | 무단행동 위험 |
-| scope가 바뀜 | FRAGO 발령 | 기존 OPORD 왜곡 방지 |
-| 같은 문제가 반복됨 | SOP와 schema 수정 | AAR 환류 |
+| Goal is clear but there are multiple methods | Delegate, providing only intent and constraints | Secures disciplined initiative |
+| Information is insufficient but risk is low | Allow Green reconnaissance | Gather information before deciding |
+| Information is insufficient and risk is high | Issue a PIR, hold execution | Prevent premature incorrect execution |
+| Deliverable is complete but the effect is uncertain | Direct the Evaluator to assess MOE | Separate output from effect |
+| Agent fails to recognize the approval line | Halt immediately, retrain on authority | Risk of unauthorized action |
+| Scope changes | Issue a FRAGO | Prevent distortion of the existing OPORD |
+| The same problem recurs | Revise the SOP and schema | AAR feedback loop |
 
-## 12. Hallucination 통제
+## 12. Hallucination Control
 
-지휘관은 "정답을 말해라"보다 "출처와 판단을 분리하라"고 명령해야 한다.
+The commander should order "separate the source from the judgment" rather than "tell me the right answer."
 
-프롬프트:
+Prompt:
 
 ```text
-모든 주장을 세 종류로 분리하라.
-1. Source-backed claim: 출처가 있는 사실
-2. Inference: 출처에서 내가 추론한 해석
-3. Open question: 아직 검증되지 않은 부분
+Separate every claim into three kinds.
+1. Source-backed claim: a fact with a source
+2. Inference: an interpretation I derived from the source
+3. Open question: a part not yet verified
 
-Source-backed claim 없이 정책/법/최신 사실을 단정하지 마라.
-불확실하면 CCIR 또는 PIR로 올려라.
+Do not assert policy/law/current facts without a source-backed claim.
+If uncertain, escalate it as a CCIR or PIR.
 ```
 
-환각 방지 장치:
+Hallucination-prevention mechanisms:
 
 - source map.
 - evidence record.
@@ -282,61 +282,61 @@ Source-backed claim 없이 정책/법/최신 사실을 단정하지 마라.
 - validator/schema.
 - AAR correction.
 
-## 13. 지휘관이 하지 말아야 할 것
+## 13. What the Commander Must Not Do
 
-- "알아서 잘해"라고만 지시하지 않는다.
-- output 형식만 정하고 authority를 빼먹지 않는다.
-- Red action을 편의상 한 번 승인한 뒤 계속 허용하지 않는다.
-- 모든 에이전트에게 동시에 같은 일을 시키지 않는다.
-- 불확실한 최신 정보를 브라우징 없이 단정하게 하지 않는다.
-- AAR를 작성하고도 SOP나 readiness를 갱신하지 않는 상태로 끝내지 않는다.
+- Do not simply instruct "use your judgment."
+- Do not set only the output format while omitting authority.
+- Do not approve a Red action once for convenience and then keep allowing it thereafter.
+- Do not assign the same task to every agent simultaneously.
+- Do not let uncertain, current information be asserted as fact without browsing.
+- Do not end with an AAR written but the SOP or readiness left unupdated.
 
-## 14. 빠른 명령 템플릿
+## 14. Quick Order Templates
 
-문서화 임무:
-
-```text
-MISSION: 주어진 주제를 군대식 LLM 운용 프레임워크 문서로 정리하라.
-INTENT: 다음 작업자가 실행 가능한 수준으로 authority, reporting, SOP, verification을 남겨라.
-AUTHORITY: 로컬 문서 생성/수정은 Green. 외부 배포, credential, 비용 발생은 Red.
-CCIR: 출처 불확실, 사용자 지시 충돌, schema/test 실패, 범위 확대.
-ASSESSMENT: README/source-map/compendium 갱신, link check, AAR note.
-```
-
-코드 구현 임무:
+Documentation mission:
 
 ```text
-MISSION: 지정 기능을 기존 코드베이스 패턴에 맞게 구현하고 검증하라.
-INTENT: 작은 범위의 동작 가능한 변경을 만들고, 회귀검증을 남겨라.
-AUTHORITY: 파일 읽기, scoped edit, local test는 Green. destructive command, prod deploy, secret use는 Red.
-CCIR: 테스트 실패, 설계 불일치, user 변경과 충돌, 권한 밖 행동 필요.
-ASSESSMENT: 관련 test 통과, 변경 파일 요약, 남은 risk 보고.
+MISSION: Organize the given topic into a document on the military-style LLM operations framework.
+INTENT: Leave authority, reporting, SOP, and verification at a level the next operator can execute from.
+AUTHORITY: Creating/editing local documents is Green. External deployment, credentials, and incurring cost are Red.
+CCIR: Source uncertainty, conflicting user instructions, schema/test failure, scope expansion.
+ASSESSMENT: README/source-map/compendium updated, link check, AAR note.
 ```
 
-리서치 임무:
+Code implementation mission:
 
 ```text
-MISSION: 지정 군사 개념의 공식/학술 출처를 조사해 LLM 적용 원리로 변환하라.
-INTENT: claim과 interpretation을 분리하고, source-map에 연결하라.
-AUTHORITY: 공개 웹 검색과 로컬 문서 작성은 Green. 유료/비공개 자료 접근은 Red.
-CCIR: 공식 출처 부재, 최신성 불확실, 상충되는 자료, 법/정책 단정 필요.
-ASSESSMENT: 출처 등급, 핵심 원리, 적용 규칙, research gap.
+MISSION: Implement and verify the specified feature in line with existing codebase patterns.
+INTENT: Produce a small-scope, working change and leave behind regression verification.
+AUTHORITY: File reads, scoped edits, and local tests are Green. Destructive commands, prod deploy, and secret use are Red.
+CCIR: Test failure, design mismatch, conflict with a user change, need for action outside authority.
+ASSESSMENT: Relevant tests pass, summary of changed files, report of remaining risk.
 ```
 
-## 15. 출처 앵커
+Research mission:
 
-이 handbook은 다음 군사 운영 원리를 LLM 운용으로 옮긴 것이다.
+```text
+MISSION: Investigate official/academic sources on the specified military concept and translate them into principles applicable to LLMs.
+INTENT: Separate claim from interpretation and link it to the source map.
+AUTHORITY: Public web search and local document writing are Green. Access to paid/non-public material is Red.
+CCIR: Absence of an official source, uncertain currency, conflicting materials, need to assert law/policy.
+ASSESSMENT: Source rating, core principles, application rules, research gap.
+```
 
-- Mission command: 명확한 의도, mission orders, disciplined initiative, prudent risk.
+## 15. Source Anchors
+
+This handbook transposes the following military operating principles into LLM operations.
+
+- Mission command: clear intent, mission orders, disciplined initiative, prudent risk.
 - Operations process: plan, prepare, execute, assess loop.
-- OPORD/WARNO/FRAGO/SITREP/AAR: 표준 문서로 하달과 환류를 구조화.
-- CCIR: 지휘관 결심에 필요한 정보만 우선 보고.
-- Authorities: 권한은 명시적으로 위임되고 제한된다.
-- Rehearsal/backbrief: 실행 전 이해와 계획을 검증한다.
-- Knowledge management: source of truth를 대화 기억이 아니라 공유 저장소에 둔다.
-- AAR/readiness: 실행 후 교훈을 훈련과 권한 조정에 반영한다.
+- OPORD/WARNO/FRAGO/SITREP/AAR: standard documents that structure tasking and feedback.
+- CCIR: prioritized reporting of only the information the commander needs to decide.
+- Authorities: authority is explicitly delegated and bounded.
+- Rehearsal/backbrief: verify understanding and the plan before execution.
+- Knowledge management: keep the source of truth in a shared repository rather than in conversational memory.
+- AAR/readiness: reflect post-execution lessons into training and authority adjustments.
 
-주요 참고:
+Key references:
 
 - ADP 5-0, The Operations Process: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN18126-ADP_5-0-000-WEB-3.pdf
 - ADP 6-0, Mission Command: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN34403-ADP_6-0-000-WEB-3.pdf

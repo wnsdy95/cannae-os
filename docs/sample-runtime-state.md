@@ -1,34 +1,34 @@
 # Sample Runtime State
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 런타임에서 저장해야 할 상태 객체의 예시를 제공한다.
+This document provides examples of the state objects that a military-style LLM runtime should store.
 
-구현자는 이 문서를 기준으로 JSON/YAML 스키마, DB 테이블, 이벤트 로그를 설계할 수 있다.
+Implementers can use this document as a reference for designing JSON/YAML schemas, DB tables, and event logs.
 
 ## 1. Mission State
 
 ```yaml
 mission:
   id: M-20260618-001
-  title: "군대식 LLM 프레임워크 확장"
+  title: "Expansion of the military-style LLM framework"
   status: in_progress
   requester: user
   created_at: "2026-06-18T09:00:00+09:00"
-  mission_statement: "군대식 지휘통제와 문서 체계를 LLM 운용 프레임워크로 문서화한다."
+  mission_statement: "Document military-style command and control and document systems as an LLM operating framework."
   intent:
-    purpose: "왜곡 없는 AI 에이전트 운용체계를 만든다."
+    purpose: "Build an AI agent operating system free of distortion."
     success_conditions:
-      - "문서 세트가 README에 연결된다."
-      - "출처와 해석이 분리된다."
-      - "실제 구현 가능한 DSL과 ROE가 정의된다."
+      - "The document set is linked from the README."
+      - "Sources and interpretation are kept separate."
+      - "A practically implementable DSL and ROE are defined."
     failure_conditions:
-      - "출처 없는 주장"
-      - "권한 없는 도구 실행"
-      - "문서만 있고 실행 절차 없음"
+      - "Claims without sources"
+      - "Unauthorized tool execution"
+      - "Documentation only, with no execution procedure"
   constraints:
-    - "공개자료 사용"
-    - "실제 군사작전 조언 금지"
+    - "Use only publicly available material"
+    - "No advice on actual military operations"
   current_order: OPORD-20260618-001
 ```
 
@@ -40,33 +40,33 @@ opord:
   mission_id: M-20260618-001
   situation:
     known_facts:
-      - "기본 프레임워크 문서가 존재"
-      - "한국 자료와 구현 문서가 필요"
+      - "The base framework documentation exists"
+      - "Korean-language source material and implementation documents are needed"
     assumptions:
-      - "한국군 세부 교리 공개자료는 제한적"
+      - "Publicly available material on detailed Korean military doctrine is limited"
     constraints:
-      - "공개자료 기반"
+      - "Based on publicly available material"
   mission:
-    statement: "한국 자료, 구현 가이드, DSL, ROE, 조직도를 추가한다."
+    statement: "Add Korean-language source material, an implementation guide, DSL, ROE, and an org chart."
   execution:
     tasks:
       - id: T-001
         assigned_to: S2
-        task: "한국 공개자료 조사"
+        task: "Research Korean public source material"
       - id: T-002
         assigned_to: S3
-        task: "구현 가이드 작성"
+        task: "Write the implementation guide"
       - id: T-003
         assigned_to: S6
-        task: "README와 source map 갱신"
+        task: "Update README and source map"
   command_and_signal:
     ccir:
       pir:
-        - "공식 한국 자료 확인 불가"
+        - "Unable to verify official Korean-language material"
       ffir:
-        - "README 링크 누락"
+        - "Missing README link"
       eefi:
-        - "민감정보 발견"
+        - "Discovery of sensitive information"
 ```
 
 ## 3. Agent Registry
@@ -110,8 +110,8 @@ task_orders:
   - id: T-001
     mission_id: M-20260618-001
     assigned_to: S2
-    task: "한국 공개 군사자료를 조사해 문서화한다."
-    purpose: "한국형 보정 근거 확보"
+    task: "Research and document publicly available Korean military material."
+    purpose: "Secure grounding for Korea-specific calibration"
     deliverables:
       - "docs/korean-military-sources.md"
     status: complete
@@ -119,8 +119,8 @@ task_orders:
   - id: T-002
     mission_id: M-20260618-001
     assigned_to: S3
-    task: "실제 시스템 구현 가이드를 작성한다."
-    purpose: "개념을 런타임 구조로 전환"
+    task: "Write a guide for actual system implementation."
+    purpose: "Translate concepts into a runtime structure"
     deliverables:
       - "docs/implementation-guide.md"
       - "docs/reference-architecture.md"
@@ -139,7 +139,7 @@ tool_request:
   target: "docs/prompt-dsl.md"
   roe_class: Green
   approval_required: false
-  reason: "문서화 범위 내 새 markdown 생성"
+  reason: "Creating a new markdown file within documentation scope"
   result: success
 ```
 
@@ -154,10 +154,10 @@ approval_request:
   tool: deploy
   target: "prod"
   roe_class: Red
-  why_needed: "사용자에게 새 기능 공개"
+  why_needed: "Release a new feature to users"
   risk:
-    - "서비스 장애"
-    - "데이터 마이그레이션 실패"
+    - "Service outage"
+    - "Data migration failure"
   rollback:
     - "previous release restore"
   alternatives:
@@ -178,13 +178,13 @@ sitrep:
     - "korean-military-sources.md"
     - "implementation-guide.md"
   in_progress:
-    - "색인 갱신"
+    - "Index update"
   blocked: []
   ccir: []
   risk:
-    - "한국군 세부 교리 공개자료 제한"
+    - "Limited public availability of detailed Korean military doctrine material"
   next_action:
-    - "README 링크 검증"
+    - "Verify README links"
 ```
 
 ## 8. FRAGO Event
@@ -194,12 +194,12 @@ frago:
   id: FRAGO-001
   mission_id: M-20260618-001
   parent_order: OPORD-20260618-001
-  reason: "사용자가 계속 진행 지시"
+  reason: "The user directed continued progress"
   unchanged_intent:
-    - "군대식 LLM 프레임워크 문서화"
+    - "Documentation of the military-style LLM framework"
   modified_tasks:
-    - "reference architecture 추가"
-    - "sample runtime state 추가"
+    - "Add reference architecture"
+    - "Add sample runtime state"
   new_constraints: []
 ```
 
@@ -209,12 +209,12 @@ frago:
 evidence:
   id: E-001
   mission_id: M-20260618-001
-  source_title: "국가법령정보센터"
+  source_title: "Korea Law Information Center"
   url: "https://www.law.go.kr/"
   source_type: official_law_database
   reliability: A
-  claim: "군 관련 법령과 훈령의 공식 확인 경로"
-  interpretation: "LLM authority와 ROE의 한국 제도 맥락 근거"
+  claim: "Official channel for verifying military-related statutes and directives"
+  interpretation: "Grounding for the Korean institutional context of LLM authority and ROE"
   linked_docs:
     - "korean-military-sources.md"
     - "tool-use-roe.md"
@@ -227,25 +227,25 @@ aar:
   id: AAR-001
   mission_id: M-20260618-001
   expected:
-    - "새 문서 작성"
-    - "색인 연결"
+    - "Write new documents"
+    - "Link the index"
   actual:
-    - "문서 세트 확장"
-    - "README 링크 검증"
+    - "Expanded the document set"
+    - "Verified README links"
   delta:
-    - "git 저장소가 아니라 diff 검증 불가"
+    - "Not a git repository, so diff verification was not possible"
   causes:
-    - "현재 작업 폴더에 .git 없음"
+    - "No .git present in the current working folder"
   sustain:
-    - "README 링크 존재 검증"
-    - "source map과 compendium 동시 갱신"
+    - "Verify that README links exist"
+    - "Update source map and compendium together"
   improve:
-    - "다음부터 runtime state 예시를 먼저 만들면 구현 문서가 더 안정적"
+    - "Creating the runtime state example first from now on makes the implementation documentation more stable"
   sop_updates:
-    - "새 문서 추가 시 README 링크 파일 존재 검증 수행"
+    - "When adding a new document, verify that the file referenced by the README link exists"
 ```
 
-## 11. 관련 문서
+## 11. Related Documents
 
 - `reference-architecture.md`
 - `implementation-guide.md`
