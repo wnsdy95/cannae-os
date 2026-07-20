@@ -15,6 +15,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - AI special operations TF charters
 - department collaboration charters
 - force structure change orders
+- model force assignment plans
 - CCIR alerts
 - handoff packets
 - continuity plans
@@ -57,34 +58,35 @@ Recommended validation order:
 10. `sof-tf-charter.schema.json`
 11. `department-collaboration-charter.schema.json`
 12. `force-structure-change-order.schema.json`
-13. `ccir-alert.schema.json`
-14. `handoff-packet.schema.json`
-15. `continuity-plan.schema.json`
-16. `context-item.schema.json`
-17. `document-access-manifest.schema.json`
-18. `doctrine-consistency-review.schema.json`
-19. `release-review.schema.json`
-20. `release-gate-decision-event.schema.json`
-21. `maintenance-readiness.schema.json`
-22. `backbrief.schema.json`
-23. `rehearsal.schema.json`
-24. `annex.schema.json`
-25. `frago-scope-change.schema.json`
-26. `information-report.schema.json`
-27. `intelligence-assessment.schema.json`
-28. `approval-scope.schema.json`
-29. `approval-consumption-event.schema.json`
-30. `approval-revocation-event.schema.json`
-31. `approval-renewal-event.schema.json`
-32. `approval-delegation-event.schema.json`
-33. `approval-delegation-revocation-event.schema.json`
-34. `risk-acceptance.schema.json`
-35. `aar-readiness-update.schema.json`
-36. `sitrep.schema.json`
-37. `frago.schema.json`
-38. `evidence.schema.json`
-39. `aar.schema.json`
-40. `readiness-ledger.schema.json`
-41. `routing-receipt.schema.json`
+13. `model-force-assignment-plan.schema.json`
+14. `ccir-alert.schema.json`
+15. `handoff-packet.schema.json`
+16. `continuity-plan.schema.json`
+17. `context-item.schema.json`
+18. `document-access-manifest.schema.json`
+19. `doctrine-consistency-review.schema.json`
+20. `release-review.schema.json`
+21. `release-gate-decision-event.schema.json`
+22. `maintenance-readiness.schema.json`
+23. `backbrief.schema.json`
+24. `rehearsal.schema.json`
+25. `annex.schema.json`
+26. `frago-scope-change.schema.json`
+27. `information-report.schema.json`
+28. `intelligence-assessment.schema.json`
+29. `approval-scope.schema.json`
+30. `approval-consumption-event.schema.json`
+31. `approval-revocation-event.schema.json`
+32. `approval-renewal-event.schema.json`
+33. `approval-delegation-event.schema.json`
+34. `approval-delegation-revocation-event.schema.json`
+35. `risk-acceptance.schema.json`
+36. `aar-readiness-update.schema.json`
+37. `sitrep.schema.json`
+38. `frago.schema.json`
+39. `evidence.schema.json`
+40. `aar.schema.json`
+41. `readiness-ledger.schema.json`
+42. `routing-receipt.schema.json`
 
 All schemas target JSON Schema draft 2020-12.

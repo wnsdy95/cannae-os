@@ -129,6 +129,12 @@ Usage:
 | LLM hallucination research | Verification and uncertainty | Model output must distinguish fact from inference | Mark unsourced claims as hypotheses and establish a verification procedure | `research-compendium.md` |
 | Multi-agent LLM research | Role specialization | Specialized role differentiation can raise performance but incurs coordination cost | Use an S-staff structure but keep a CoS integration point | `agent-roles-and-authority.md` |
 | Prompt engineering research | Structured prompting | Clear roles, constraints, and output format raise quality | Use OPORD, SITREP, and AAR templates | `prompt-templates.md` |
+| RouteLLM: https://arxiv.org/abs/2406.18665 and FrugalGPT: https://arxiv.org/abs/2305.05176 | Economy of force and task organization | Strong/weak routing and cascades can preserve task quality while reducing model cost, but the routing policy is itself an evaluated component | Start eligible routine work on task-ready line capacity and escalate on measured failure or uncertainty | `model-force-assignment-policy.md`, `schema-files/model-force-assignment-plan.schema.json` |
+| Language Model Cascades: https://proceedings.iclr.cc/paper_files/paper/2024/file/11f5520daf9132775e8604e89f53925a-Paper-Conference.pdf and RouterBench: https://arxiv.org/abs/2403.12031 | PACE and control measures | Routing quality depends on calibrated scoring; no model is uniformly optimal across quality, cost, and workload | Give the router its own readiness rating, held-out evaluation, retry ceiling, and fallback plan | `model-force-assignment-policy.md`, `model-force-assignment-runner.js` |
+| HELM: https://crfm.stanford.edu/2022/11/17/helm.html and NIST AI RMF Core: https://airc.nist.gov/airmf-resources/airmf/5-sec-core/ | METL, readiness, and operational assessment | Evaluation must cover the actual task and multiple operational metrics, disclose limitations, and continue after deployment | Rate readiness per immutable model profile, task, tool set, context class, harness, and environment | `model-force-assignment-policy.md`, `agent-metl.md`, `agent-readiness-ledger.md` |
+| NIST AI RMF Generative AI Profile: https://doi.org/10.6028/NIST.AI.600-1 | Independent TEVV and risk management | Generative AI risk controls require documented testing, monitoring, and independent review proportionate to impact | High-impact assignments require deterministic checks, human review triggers, and independent assurance | `model-force-assignment-policy.md`, `run-model-force-assignment-fixtures.js` |
+| Berkeley Function-Calling Leaderboard: https://gorilla.cs.berkeley.edu/leaderboard and tau-bench: https://arxiv.org/abs/2406.12045 | Specialist qualification | General language quality does not establish tool-use or long-horizon policy readiness | Qualify specialist billets with tool- and policy-specific local fixtures before assignment | `model-force-assignment-policy.md`, `evaluation-metrics.md` |
+| Judging LLM-as-a-Judge: https://arxiv.org/abs/2306.05685 and Confident or Seek Stronger: https://arxiv.org/abs/2502.04428 | Independent review and reporting reliability | Model judges exhibit systematic bias, and verbal confidence is not a sufficient routing or acceptance signal | Prefer different-family assurance, reference-guided rubrics, calibrated thresholds, and deterministic evidence | `model-force-assignment-policy.md`, `validator-cli-prototype/validate.js` |
 
 ## 13. Korean Public Sources
 
@@ -204,6 +210,7 @@ Usage:
 | AI special operations task force model | special operations task organization | High-risk/high-uncertainty missions need a small team, vetted personnel, enablers, clear authority, and a fast decision loop | Operates the AI agent TF as a selected/trained/enabled/mission-commanded team | `ai-special-operations-tf.md`, `schema-files/sof-tf-charter.schema.json`, `sof-tf-activation-runner.js`, `sof-tf-fixtures/README.md` |
 | Interdepartment collaboration artifact | combined arms and joint function integration | Different functional departments must be integrated via supported/supporting relationships, liaison, output contracts, and conflict routes | Projects interdepartmental collaboration as relationship edges, missing liaison, commander queue, and preflight blocks | `interdepartment-collaboration-policy.md`, `schema-files/department-collaboration-charter.schema.json`, `department-collaboration-runner.js`, `department-collaboration-fixtures/README.md` |
 | Force structure change artifact | force management and documentation | An organization is created or reduced only when capability gap, DOTMLPF-P, authority, readiness, transition, and documentation update all align | Controls the creation, disestablishment, expansion, and reduction of AI branches/positions/units/TFs via a validator and runner gate | `force-structure-change-policy.md`, `schema-files/force-structure-change-order.schema.json`, `force-structure-change-runner.js`, `force-structure-change-fixtures/README.md` |
+| Model force assignment artifact | mission task organization, METL, PACE, and independent assurance | Model size, role, authority, and readiness are separate dimensions; scarce capacity is assigned by mission evidence rather than prestige | Validates line/specialist/command/SOF/assurance/reserve profiles, router readiness, context eligibility, task evidence, PACE, and human retained authority | `model-force-assignment-policy.md`, `schema-files/model-force-assignment-plan.schema.json`, `model-force-assignment-runner.js`, `model-force-assignment-fixtures/README.md` |
 | Deep research queue artifact | Research operations management | Manages missing military operating domains via a backlog and source plan | Framework expansion prioritization and source management | `military-operating-deep-research-queue.md` |
 | Commander handbook artifact | Commander's operating guidance | Organizes intent, authority, CCIR, approval, and AAR into a human command procedure | AI commander prompt and approval judgment guide | `commander-handbook.md` |
 | B2C2WG operating artifact | Staff integration and battle rhythm | Separates boards/WGs/cells/centers into a decision packet flow | Multi-agent scheduling and decision packet workflow | `b2c2wg-operating-model.md` |
@@ -278,6 +285,7 @@ The items below need additional research.
 - `functional-domains.md`
 - `interdepartment-collaboration-policy.md`
 - `force-structure-change-policy.md`
+- `model-force-assignment-policy.md`
 - `case-studies.md`
 - `glossary.md`
 - `evaluation-metrics.md`
@@ -371,3 +379,9 @@ The items below need additional research.
 - `schema-files/continuity-plan.schema.json`
 - `continuity-drill-runner.js`
 - `continuity-drill-fixtures/README.md`
+- `schema-files/model-force-assignment-plan.schema.json`
+- `sample-payloads/valid-model-force-assignment-plan.json`
+- `sample-payloads/invalid-model-force-assignment-plan-monoculture.json`
+- `model-force-assignment-runner.js`
+- `run-model-force-assignment-fixtures.js`
+- `model-force-assignment-fixtures/README.md`

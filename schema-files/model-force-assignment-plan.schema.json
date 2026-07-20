@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/model-force-assignment-plan.schema.json",
+  "title": "Model Force Assignment Plan",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "mission_profile", "model_profiles", "billets", "routing_policy", "assurance", "pace", "authority", "budget", "assessment", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ModelForceAssignmentPlan" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_profile": {
+      "type": "object",
+      "required": ["complexity", "domain_specialization", "uncertainty", "risk_level", "roe_class", "classification", "release_target", "tool_impact", "latency_priority", "volume"],
+      "additionalProperties": false,
+      "properties": {
+        "complexity": { "type": "string", "enum": ["low", "medium", "high"] },
+        "domain_specialization": { "type": "string", "enum": ["general", "specialized", "expert"] },
+        "uncertainty": { "type": "string", "enum": ["low", "medium", "high"] },
+        "risk_level": { "$ref": "common.schema.json#/$defs/risk_level" },
+        "roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+        "classification": { "$ref": "common.schema.json#/$defs/classification" },
+        "release_target": { "type": "string", "enum": ["no_release", "internal_handoff", "final_output", "external_release"] },
+        "tool_impact": { "type": "string", "enum": ["none", "read_only", "reversible_mutation", "irreversible_mutation"] },
+        "latency_priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "volume": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    },
+    "model_profiles": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["id", "model_family", "model_version", "harness_version", "capability_band", "force_classes", "deployment_boundary", "allowed_context_classes", "evaluated_tasks", "readiness_rating", "evidence", "limitations", "cost_class", "availability"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "model_family": { "type": "string", "minLength": 1 },
+          "model_version": { "type": "string", "minLength": 1 },
+          "harness_version": { "type": "string", "minLength": 1 },
+          "capability_band": { "type": "string", "enum": ["C0", "C1", "C2", "C3"] },
+          "force_classes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "enum": ["utility", "line", "specialist", "command", "sof", "assurance", "reserve"] }
+          },
+          "deployment_boundary": { "type": "string", "minLength": 1 },
+          "allowed_context_classes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "common.schema.json#/$defs/classification" }
+          },
+          "evaluated_tasks": { "$ref": "common.schema.json#/$defs/string_list" },
+          "readiness_rating": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+          "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+          "limitations": { "$ref": "common.schema.json#/$defs/string_list" },
+          "cost_class": { "type": "string", "enum": ["low", "medium", "high", "scarce"] },
+          "availability": { "type": "string", "enum": ["ready", "degraded", "unavailable"] }
+        }
+      }
+    },
+    "billets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "force_class", "role", "task", "model_profile_id", "required_readiness", "authority_scope", "tool_scope", "context_scope", "fallback_profile_ids", "allocation_justification"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "force_class": { "type": "string", "enum": ["utility", "line", "specialist", "command", "sof", "assurance", "reserve"] },
+          "role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "task": { "type": "string", "minLength": 1 },
+          "model_profile_id": { "$ref": "common.schema.json#/$defs/id" },
+          "required_readiness": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+          "authority_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "tool_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "context_scope": { "$ref": "common.schema.json#/$defs/classification" },
+          "fallback_profile_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "common.schema.json#/$defs/id" }
+          },
+          "allocation_justification": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "routing_policy": {
+      "type": "object",
+      "required": ["router_profile_id", "router_readiness", "default_strategy", "held_out_evaluation", "escalation_triggers", "acceptance_evidence", "verbal_confidence_only_prohibited", "max_retries"],
+      "additionalProperties": false,
+      "properties": {
+        "router_profile_id": { "$ref": "common.schema.json#/$defs/id" },
+        "router_readiness": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+        "default_strategy": { "type": "string", "enum": ["deterministic_first", "line_first", "specialist_first", "command_first", "sof_composition"] },
+        "held_out_evaluation": { "$ref": "common.schema.json#/$defs/string_list" },
+        "escalation_triggers": { "$ref": "common.schema.json#/$defs/string_list" },
+        "acceptance_evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+        "verbal_confidence_only_prohibited": { "type": "boolean", "const": true },
+        "max_retries": { "type": "integer", "minimum": 0, "maximum": 5 }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "required": ["required", "independent_profile_id", "different_model_family_required", "deterministic_checks", "human_review_triggers"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "independent_profile_id": { "$ref": "common.schema.json#/$defs/id" },
+        "different_model_family_required": { "type": "boolean" },
+        "deterministic_checks": { "$ref": "common.schema.json#/$defs/string_list" },
+        "human_review_triggers": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "pace": {
+      "type": "object",
+      "required": ["primary_profile_id", "alternate_profile_id", "contingency_profile_id", "emergency_action", "preserve_data_boundary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary_profile_id": { "$ref": "common.schema.json#/$defs/id" },
+        "alternate_profile_id": { "$ref": "common.schema.json#/$defs/id" },
+        "contingency_profile_id": { "$ref": "common.schema.json#/$defs/id" },
+        "emergency_action": { "type": "string", "minLength": 1 },
+        "preserve_data_boundary": { "type": "boolean", "const": true }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["source_contracts", "inherited_from_model", "human_final_decision_authority", "commander_retained_decisions"],
+      "additionalProperties": false,
+      "properties": {
+        "source_contracts": { "$ref": "common.schema.json#/$defs/string_list" },
+        "inherited_from_model": { "type": "boolean", "const": false },
+        "human_final_decision_authority": { "type": "boolean", "const": true },
+        "commander_retained_decisions": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "required": ["token_budget", "cost_budget", "max_command_calls", "max_specialist_calls", "saturation_action"],
+      "additionalProperties": false,
+      "properties": {
+        "token_budget": { "type": "integer", "minimum": 1 },
+        "cost_budget": { "type": "string", "minLength": 1 },
+        "max_command_calls": { "type": "integer", "minimum": 0 },
+        "max_specialist_calls": { "type": "integer", "minimum": 0 },
+        "saturation_action": { "type": "string", "minLength": 1 }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["metrics", "review_at", "model_change_requires_reevaluation", "aar_triggers"],
+      "additionalProperties": false,
+      "properties": {
+        "metrics": { "$ref": "common.schema.json#/$defs/string_list" },
+        "review_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "model_change_requires_reevaluation": { "type": "boolean", "const": true },
+        "aar_triggers": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

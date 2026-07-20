@@ -111,7 +111,7 @@ function coverageReport() {
 
   return {
     report_type: "source-map-url-coverage",
-    as_of: "2026-06-19",
+    as_of: "2026-07-20",
     source_map: "docs/source-map.md",
     valid: findings.length === 0,
     checked_hosts: official.size,
@@ -127,7 +127,11 @@ function coverageReport() {
 }
 
 function main() {
-  const result = process.argv.includes("--report") ? coverageReport() : lint();
+  const writeReport = process.argv.includes("--write-report");
+  const result = process.argv.includes("--report") || writeReport ? coverageReport() : lint();
+  if (writeReport) {
+    fs.writeFileSync("source-map-url-coverage-report.json", `${JSON.stringify(result, null, 2)}\n`);
+  }
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.exit(result.valid ? 0 : 1);
 }
