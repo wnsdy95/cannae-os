@@ -28,6 +28,9 @@ jobs:
       - name: JSON parse check
         run: node .github/scripts/check-json.js
 
+      - name: English-only corpus
+        run: node .github/scripts/check-english-only.js
+
       - name: Markdown local links
         run: node .github/scripts/check-markdown-links.js
 

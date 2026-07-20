@@ -5,6 +5,7 @@ Thank you for considering a contribution. Cannae OS is a doctrine and prototype 
 ## Contribution Principles
 
 - Keep the human user as final decision authority.
+- Write repository content, examples, and executable messages in English.
 - Prefer small, reviewable changes.
 - Preserve source discipline for doctrine claims.
 - Update documents, schemas, samples, fixtures, and runners together when a runtime contract changes.
@@ -20,6 +21,7 @@ Recommended full local check:
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
+node .github/scripts/check-english-only.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
