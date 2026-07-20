@@ -1,23 +1,23 @@
 # Prompt DSL
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 OPORD, WARNO, FRAGO, SITREP, AAR를 기계가 읽고 검증할 수 있는 프롬프트 DSL로 정의한다.
+This document defines OPORD, WARNO, FRAGO, SITREP, and AAR as a prompt DSL that can be machine-read and validated.
 
-목표는 멋있는 형식이 아니라, 사용자 의도와 권한 경계를 구조화해 에이전트가 일관되게 처리하게 하는 것이다.
+The goal is not an impressive format, but to structure user intent and authority boundaries so that agents handle them consistently.
 
-## 1. DSL 설계 원칙
+## 1. DSL Design Principles
 
-| 원칙 | 설명 |
+| Principle | Description |
 | --- | --- |
-| Explicit intent | mission과 intent를 분리한다 |
-| Machine-checkable | 필수 필드를 검증할 수 있어야 한다 |
-| Human-readable | 사용자가 그대로 읽고 수정할 수 있어야 한다 |
-| Role-aware | 하위 에이전트 tasking이 가능해야 한다 |
-| ROE-linked | 도구 사용 권한과 연결되어야 한다 |
-| Assessment-ready | MOP/MOE와 검증 기준을 포함해야 한다 |
+| Explicit intent | Separates mission from intent |
+| Machine-checkable | Required fields must be verifiable |
+| Human-readable | Users must be able to read and edit it as-is |
+| Role-aware | Must enable tasking of subordinate agents |
+| ROE-linked | Must be linked to tool-use authority |
+| Assessment-ready | Must include MOP/MOE and verification criteria |
 
-## 2. 공통 스키마
+## 2. Common Schema
 
 ```yaml
 schema_version: "0.1"
@@ -29,15 +29,15 @@ mission_id: "M-0001"
 classification: "public"
 ```
 
-공통 필드:
+Common fields:
 
-| 필드 | 필수 | 설명 |
+| Field | Required | Description |
 | --- | --- | --- |
-| schema_version | yes | DSL 버전 |
+| schema_version | yes | DSL version |
 | type | yes | OPORD, WARNO, FRAGO, SITREP, AAR |
-| id | yes | 문서 ID |
-| mission_id | yes | 연결된 mission |
-| created_by | yes | 작성 주체 |
+| id | yes | Document ID |
+| mission_id | yes | Linked mission |
+| created_by | yes | Author |
 | classification | yes | public, internal, sensitive |
 
 ## 3. OPORD DSL
@@ -52,45 +52,45 @@ classification: "public"
 
 situation:
   background:
-    - "군대식 LLM 프레임워크 문서화 진행 중"
+    - "Military-style LLM framework documentation in progress"
   known_facts:
-    - "현재 docs/에 프레임워크 문서 세트가 존재"
+    - "A framework document set currently exists in docs/"
   assumptions:
-    - "공개자료 중심으로 리서치"
+    - "Research is focused on publicly available materials"
   constraints:
-    - "비공개 군 자료 사용 금지"
+    - "Use of non-public military materials is prohibited"
 
 mission:
-  statement: "군대식 작동방식을 LLM 운용 프레임워크로 문서화한다."
+  statement: "Document military-style operating methods as an LLM operating framework."
   target_end_state:
-    - "문서 세트가 README에 연결됨"
-    - "출처와 적용 해석이 분리됨"
+    - "Document set is linked from the README"
+    - "Sources and applied interpretation are separated"
 
 intent:
-  purpose: "왜곡 없는 AI 작업 지휘체계를 만든다."
+  purpose: "Build an undistorted command structure for AI task execution."
   key_tasks:
-    - "자료 조사"
-    - "문서화"
-    - "SOP와 평가 체계 작성"
+    - "Research materials"
+    - "Documentation"
+    - "Draft SOP and evaluation framework"
   expanded_purpose:
-    - "다음 작업자가 이어서 확장할 수 있어야 한다."
+    - "The next worker must be able to pick up and extend the work."
   failure_to_avoid:
-    - "출처 없는 일반론"
-    - "실제 군사작전 조언"
+    - "Unsourced generalities"
+    - "Actual military operational advice"
 
 execution:
   concept:
-    - "리서치, 구조화, 템플릿화, 평가 설계 순서로 진행"
+    - "Proceed in the order: research, structuring, templating, evaluation design"
   tasks:
     - assigned_to: "S2"
-      task: "출처 조사와 source map 갱신"
-      purpose: "근거 추적성 확보"
+      task: "Investigate sources and update the source map"
+      purpose: "Ensure traceability of evidence"
     - assigned_to: "S3"
-      task: "문서 구조와 실행 절차 작성"
-      purpose: "운용 가능성 확보"
+      task: "Draft document structure and execution procedures"
+      purpose: "Ensure operational feasibility"
   coordinating_instructions:
-    - "새 문서는 README에 연결"
-    - "출처 없는 주장은 가설로 표시"
+    - "Link new documents from the README"
+    - "Mark unsourced claims as hypotheses"
 
 sustainment:
   tools:
@@ -98,7 +98,7 @@ sustainment:
     - "web research"
   context_budget: "medium"
   fallback:
-    - "공식 출처가 부족하면 한계를 명시"
+    - "If official sources are insufficient, state the limitation"
 
 command_and_signal:
   authority:
@@ -112,22 +112,22 @@ command_and_signal:
       - "fabricated citation"
   ccir:
     pir:
-      - "한국군 공개자료 확인 불가"
+      - "Unable to verify South Korean military public materials"
     ffir:
-      - "문서 링크 누락"
+      - "Missing document links"
     eefi:
-      - "민감 정보 발견"
+      - "Discovery of sensitive information"
   reports:
     sitrep_trigger:
-      - "새 문서 세트 추가"
-      - "CCIR 발생"
+      - "New document set added"
+      - "CCIR occurrence"
 
 assessment:
   mop:
-    - "문서 생성"
-    - "링크 검증"
+    - "Document creation"
+    - "Link verification"
   moe:
-    - "다음 작업자가 실행 가능"
+    - "Next worker can execute"
   verification:
     - "rg --files"
     - "wc -l"
@@ -135,7 +135,7 @@ assessment:
 
 ## 4. WARNO DSL
 
-WARNO는 세부 계획 전 조기 경고와 착수 준비를 위한 문서다.
+WARNO is a document used for early warning and preparation to begin before detailed planning is complete.
 
 ```yaml
 schema_version: "0.1"
@@ -144,23 +144,23 @@ id: "WARNO-0001"
 mission_id: "M-0001"
 
 warning:
-  pending_mission: "한국군 공개자료와 구현 문서 추가"
+  pending_mission: "Add South Korean military public materials and implementation documents"
   likely_tasks:
-    - "korean-military-sources.md 작성"
-    - "implementation-guide.md 작성"
-    - "prompt-dsl.md 작성"
-    - "tool-use-roe.md 작성"
+    - "Draft korean-military-sources.md"
+    - "Draft implementation-guide.md"
+    - "Draft prompt-dsl.md"
+    - "Draft tool-use-roe.md"
   initial_constraints:
-    - "공개자료만 사용"
+    - "Use only public materials"
   required_preparation:
-    - "현재 문서 세트 확인"
-    - "공식 한국 자료 검색"
+    - "Review the current document set"
+    - "Search official Korean sources"
   earliest_execution: "immediate"
 ```
 
 ## 5. FRAGO DSL
 
-FRAGO는 전체 OPORD를 다시 쓰지 않고 변경된 부분만 전달한다.
+FRAGO conveys only the changed portions without rewriting the entire OPORD.
 
 ```yaml
 schema_version: "0.1"
@@ -170,19 +170,19 @@ mission_id: "M-0001"
 parent_order: "OPORD-0001"
 
 change:
-  reason: "사용자가 계속 진행 요청"
+  reason: "User requested to continue"
   unchanged_intent:
-    - "군대식 LLM 프레임워크 문서화"
-    - "출처와 적용 해석 분리"
+    - "Military-style LLM framework documentation"
+    - "Separation of sources and applied interpretation"
   modified_tasks:
-    - task: "한국군 공개자료 문서 추가"
+    - task: "Add South Korean military public-materials document"
       assigned_to: "S2"
-    - task: "프롬프트 DSL 작성"
+    - task: "Draft the prompt DSL"
       assigned_to: "S3"
   new_constraints:
-    - "한국군 자료는 공개 한계 명시"
+    - "State the public-disclosure limitations for South Korean military materials"
   required_confirmation:
-    - "README와 source map 갱신"
+    - "Update README and source map"
 ```
 
 ## 6. SITREP DSL
@@ -196,19 +196,19 @@ mission_id: "M-0001"
 status:
   overall: "in_progress"
   completed:
-    - "현재 문서 세트 확인"
-    - "한국 공개자료 리서치"
+    - "Reviewed the current document set"
+    - "Researched Korean public materials"
   in_progress:
-    - "implementation guide 작성"
+    - "Drafting implementation guide"
   blocked: []
   ccir:
     - type: "PIR"
-      item: "한국 세부 작전교리 공개성 제한"
-      action: "한계 명시"
+      item: "Limited disclosure of detailed South Korean operational doctrine"
+      action: "State the limitation"
   risk:
-    - "공개 정책자료를 세부 작전교리로 과잉 해석할 위험"
+    - "Risk of over-interpreting public policy materials as detailed operational doctrine"
   next_action:
-    - "tool-use ROE 작성"
+    - "Draft tool-use ROE"
 ```
 
 ## 7. AAR DSL
@@ -221,63 +221,63 @@ mission_id: "M-0001"
 
 review:
   expected:
-    - "문서 세트 확장"
+    - "Expansion of the document set"
   actual:
-    - "새 문서 4개 생성"
+    - "Created 4 new documents"
   delta:
-    - "한국 자료는 법령/정책 중심으로 제한됨"
+    - "Korean materials ended up limited mainly to laws and policy"
   causes:
-    - "세부 군사 교리 공개 제한"
+    - "Restrictions on disclosure of detailed military doctrine"
   sustain:
-    - "README와 source map 동시 갱신"
+    - "Update README and source map simultaneously"
   improve:
-    - "한국어 용어와 영어 교리 용어 차이 추가 연구"
+    - "Further research on differences between Korean terminology and English doctrinal terms"
   sop_updates:
-    - "한국 자료 사용 한계를 명시하는 SOP 추가"
+    - "Add an SOP specifying limitations on the use of Korean materials"
 ```
 
 ## 8. Validation Rules
 
-### OPORD 필수 규칙
+### OPORD Required Rules
 
-- `mission.statement`은 반드시 있어야 한다.
-- `intent.purpose`는 반드시 있어야 한다.
-- `authority.allowed`, `authority.approval_required`, `authority.prohibited` 중 최소 하나 이상 있어야 한다.
-- `assessment.mop`와 `assessment.moe`는 모두 있어야 한다.
-- `ccir`는 PIR, FFIR, EEFI 중 최소 하나를 포함해야 한다.
+- `mission.statement` must be present.
+- `intent.purpose` must be present.
+- At least one of `authority.allowed`, `authority.approval_required`, or `authority.prohibited` must be present.
+- Both `assessment.mop` and `assessment.moe` must be present.
+- `ccir` must include at least one of PIR, FFIR, or EEFI.
 
-### FRAGO 필수 규칙
+### FRAGO Required Rules
 
-- `parent_order`가 있어야 한다.
-- `unchanged_intent`가 있어야 한다.
-- 변경된 task와 변경되지 않은 intent를 구분해야 한다.
+- `parent_order` must be present.
+- `unchanged_intent` must be present.
+- Changed tasks must be distinguished from unchanged intent.
 
-### SITREP 필수 규칙
+### SITREP Required Rules
 
-- completed, in_progress, blocked를 분리해야 한다.
-- risk 또는 ccir가 없으면 빈 배열로 명시한다.
-- next_action이 있어야 한다.
+- completed, in_progress, and blocked must be kept separate.
+- If risk or ccir is absent, state it explicitly as an empty array.
+- next_action must be present.
 
-### AAR 필수 규칙
+### AAR Required Rules
 
-- expected와 actual을 분리해야 한다.
-- delta와 causes를 적어야 한다.
-- sustain 또는 improve 중 하나 이상 있어야 한다.
-- SOP 업데이트 여부를 명시해야 한다.
+- expected and actual must be kept separate.
+- delta and causes must be recorded.
+- At least one of sustain or improve must be present.
+- Whether an SOP update is needed must be specified.
 
 ## 9. Prompt Compiler
 
-DSL은 모델에게 그대로 줄 수도 있지만, runtime에서는 다음 구조로 컴파일하는 것이 좋다.
+The DSL can be given to the model as-is, but at runtime it is better to compile it into the following structure.
 
 ```text
 System:
-너는 지정된 role과 ROE 안에서만 행동한다.
+You act only within the assigned role and ROE.
 
 Developer:
-DSL validation rules와 output contract.
+DSL validation rules and output contract.
 
 User:
-OPORD/WARNO/FRAGO 본문.
+OPORD/WARNO/FRAGO body text.
 
 Assistant first response:
 Backbrief + assumptions + CCIR check.
@@ -285,16 +285,16 @@ Backbrief + assumptions + CCIR check.
 
 ## 10. Anti-Patterns
 
-| Anti-pattern | 문제 |
+| Anti-pattern | Problem |
 | --- | --- |
-| mission과 intent를 합침 | 해야 할 일과 이유가 섞임 |
-| authority 생략 | 도구 실행 경계가 사라짐 |
-| MOP만 있음 | 효과 없는 산출물을 성공으로 판단 |
-| FRAGO가 전체 재작성 | 변경 이력 추적 불가 |
-| SITREP에 risk 없음 | 지휘판단에 필요한 정보 누락 |
-| AAR가 감상문 | SOP 개선으로 연결 안 됨 |
+| Merging mission and intent | What must be done and why get mixed together |
+| Omitting authority | Tool-execution boundaries disappear |
+| Having only MOP | Ineffective output gets judged as success |
+| FRAGO rewrites the whole order | Change history cannot be tracked |
+| SITREP has no risk | Information needed for command judgment is missing |
+| AAR reads like a reflection essay | Does not lead to SOP improvement |
 
-## 11. 관련 문서
+## 11. Related Documents
 
 - `prompt-templates.md`
 - `implementation-guide.md`

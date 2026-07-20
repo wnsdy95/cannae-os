@@ -1,35 +1,35 @@
 # CCIR Alerting Model
 
-## 0. 목적
+## 0. Purpose
 
-CCIR는 commander critical information requirements다. 모든 정보가 보고 대상이 아니다. 지휘관의 결심을 바꾸는 정보만 우선 보고 대상이다.
+CCIR stands for commander critical information requirements. Not all information warrants reporting. Only information that changes the commander's decision is a priority for reporting.
 
-LLM 운용에서 CCIR가 없으면 다음 문제가 생긴다.
+Without CCIR in LLM operations, the following problems occur.
 
-- 에이전트가 사소한 진행상황을 과보고한다.
-- 정작 승인, 위험, 불확실성은 늦게 올라온다.
-- dashboard가 로그 뷰어가 되고 결심 도구가 되지 못한다.
+- Agents over-report trivial progress updates.
+- Approvals, risks, and uncertainties end up surfacing late.
+- The dashboard becomes a log viewer instead of a decision-making tool.
 
-이 문서는 PIR, FFIR, EEFI, decision point를 alert routing 규칙으로 바꾼다.
+This document converts PIR, FFIR, EEFI, and decision points into alert routing rules.
 
-## 1. CCIR 분류
+## 1. CCIR classification
 
-| 유형 | 군대식 의미 | LLM runtime 의미 | 예시 |
+| Type | Military meaning | LLM runtime meaning | Example |
 | --- | --- | --- | --- |
-| PIR | 우선 정보요구. 적/환경/상황에 관한 결심정보 | 리서치나 외부 사실 검증에 필요한 정보 | 출처가 공식인지, 최신 정책이 바뀌었는지 |
-| FFIR | 아군 정보요구. 임무 수행능력과 자원 상태 | tool, token, file, test, agent readiness 문제 | validator 실패, API quota 부족 |
-| EEFI | 보호해야 할 아군 핵심정보 | 노출 금지 데이터와 context sharing 제한 | secret, credential, private user data |
-| Decision Point | 지휘관 결심이 필요한 시점 | approval, priority, scope, risk acceptance | Red tool action, FRAGO 필요 |
+| PIR | Priority intelligence requirement. Decision-relevant information about the enemy/environment/situation | Information needed for research or external fact verification | Whether a source is official, whether the latest policy has changed |
+| FFIR | Friendly force information requirement. Mission capability and resource status | tool, token, file, test, agent readiness issues | validator failure, API quota shortage |
+| EEFI | Essential elements of friendly information requiring protection | Data that must never be exposed and context-sharing restrictions | secret, credential, private user data |
+| Decision Point | The moment a commander's decision is required | approval, priority, scope, risk acceptance | Red tool action, FRAGO required |
 
 ## 2. Alert severity
 
-| Severity | 조건 | action |
+| Severity | Condition | action |
 | --- | --- | --- |
-| Info | 기록은 필요하나 결심 영향 낮음 | event log 기록 |
-| Watch | 추적 필요, 아직 결심 불필요 | dashboard watch list |
-| Amber | 결심 가능성 있음, 제한된 위험 | SITREP 또는 decision packet draft |
-| Red | 승인 전 실행 금지 | approval request and block |
-| Black | 금지 또는 보호 위반 | reject, suppress output, incident AAR |
+| Info | Logging is needed but decision impact is low | event log entry |
+| Watch | Requires tracking, no decision needed yet | dashboard watch list |
+| Amber | A decision may be needed, limited risk | SITREP or decision packet draft |
+| Red | Execution prohibited before approval | approval request and block |
+| Black | Prohibited or a protection violation | reject, suppress output, incident AAR |
 
 ## 3. Routing matrix
 
@@ -40,12 +40,12 @@ LLM 운용에서 CCIR가 없으면 다음 문제가 생긴다.
 | EEFI | S6/Protection -> Commander | Red Team | suppression, incident record |
 | Decision Point | CoS -> Commander | Red Team/Evaluator | approval, FRAGO, reject |
 
-규칙:
+Rules:
 
-- EEFI는 정보요구이면서 보호대상이다. 보고 시에도 민감정보 원문을 반복 노출하지 않는다.
-- Red alert는 자동 실행을 막아야 한다.
-- Amber alert는 commander에게 바로 올릴지 CoS가 packet으로 묶을지 판단한다.
-- Info/Watch는 과보고하지 않고 dashboard projection에만 남긴다.
+- EEFI is both an information requirement and something to be protected. Even when reporting on it, the raw sensitive content must not be repeatedly exposed.
+- Red alerts must block automatic execution.
+- For Amber alerts, a judgment call is made on whether to escalate directly to the commander or have the CoS bundle it into a packet.
+- Info/Watch items are not over-reported; they are left only in the dashboard projection.
 
 ## 4. Alert object
 
@@ -81,58 +81,58 @@ LLM 운용에서 CCIR가 없으면 다음 문제가 생긴다.
 | Context handoff needed | long-running task or compaction risk | FFIR, Watch |
 | Readiness low | agent readiness U/X for requested autonomy | FFIR/Decision Point, Amber |
 
-## 6. SITREP, approval request, FRAGO 분기
+## 6. SITREP, approval request, FRAGO branching
 
-| 상황 | 산출물 |
+| Situation | Output |
 | --- | --- |
-| 상태 공유만 필요 | SITREP |
-| 도구 실행 승인이 필요 | Approval Request |
-| mission scope, priority, authority 변경 | FRAGO |
-| source claim 검증 필요 | Evidence Review Packet |
-| 위험 통제 실패 | Incident SITREP + AAR |
-| 반복 문제 | SOP update request |
+| Only a status update is needed | SITREP |
+| Approval is needed for tool execution | Approval Request |
+| A change to mission scope, priority, or authority | FRAGO |
+| Verification of a source claim is needed | Evidence Review Packet |
+| Risk control failure | Incident SITREP + AAR |
+| A recurring problem | SOP update request |
 
-판정:
+Determination:
 
-- "실행해도 되는가?"가 질문이면 approval request.
-- "임무가 바뀌었는가?"가 질문이면 FRAGO.
-- "무엇이 현재 상태인가?"가 질문이면 SITREP.
-- "이 주장을 믿어도 되는가?"가 질문이면 evidence review.
+- If the question is "Is it okay to execute this?" -> approval request.
+- If the question is "Has the mission changed?" -> FRAGO.
+- If the question is "What is the current status?" -> SITREP.
+- If the question is "Can this claim be trusted?" -> evidence review.
 
 ## 7. Dashboard projection
 
-Dashboard는 alert를 다음 panel로 나눈다.
+The dashboard divides alerts into the following panels.
 
-| Panel | 표시 조건 |
+| Panel | Display condition |
 | --- | --- |
 | Approval Queue | Red decision point, pending approval |
-| CCIR Alerts | PIR/FFIR/EEFI/Decision Point 중 Amber 이상 |
+| CCIR Alerts | Amber or higher among PIR/FFIR/EEFI/Decision Point |
 | Watch List | Watch severity, long-running risk |
 | Evidence Review | source reliability issue, interpretation risk |
 | Current Ops | blocked task, failed check, degraded resource |
 | Protection | EEFI, sensitive data, context releasability issue |
 
-표시 금지:
+Prohibited from display:
 
-- EEFI 원문.
-- credential, token, private key.
-- 필요 이상으로 긴 chain of thought.
-- 출처 없는 단정.
+- Raw EEFI content.
+- Credentials, tokens, private keys.
+- Chain of thought longer than necessary.
+- Unsourced assertions.
 
 ## 8. Prompt rule
 
 ```text
-보고 전에 각 항목을 CCIR로 분류하라.
-- PIR: 결심에 필요한 외부/상황 정보
-- FFIR: 수행능력, 도구, 테스트, 자원 문제
-- EEFI: 보호해야 할 정보
-- DECISION_POINT: commander approval 또는 FRAGO 필요
+Before reporting, classify each item as CCIR.
+- PIR: external/situational information needed for a decision
+- FFIR: mission capability, tool, test, resource issues
+- EEFI: information that must be protected
+- DECISION_POINT: commander approval or FRAGO required
 
-CCIR에 해당하지 않는 세부 진행상황은 요약하거나 생략하라.
-Red 또는 Black alert는 실행하지 말고 approval/request 또는 reject로 멈춰라.
+Summarize or omit detailed progress that does not fall under CCIR.
+Do not execute Red or Black alerts; stop with an approval/request or reject.
 ```
 
-## 9. 구현 후보
+## 9. Implementation candidates
 
 schema:
 
@@ -141,21 +141,21 @@ schema:
 
 prototype:
 
-- `alert-router.js`: event log와 policy decision을 읽어 alert projection 생성.
-- `ccir-linter.js`: SITREP에 CCIR 분류가 없는 blocked item을 실패 처리.
-- dashboard `ccir_alerts` panel을 event-derived alert로 교체.
+- `alert-router.js`: reads the event log and policy decisions to generate the alert projection.
+- `ccir-linter.js`: fails any blocked item in a SITREP that lacks a CCIR classification.
+- Replace the dashboard `ccir_alerts` panel with event-derived alerts.
 
-## 10. 출처 앵커
+## 10. Source anchors
 
 - Joint Staff CCIR Focus Paper: https://www.jcs.mil/Portals/36/Documents/Doctrine/fp/ccir_fp4th_ed.pdf
 - ADP 5-0, The Operations Process: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN18126-ADP_5-0-000-WEB-3.pdf
 - ADP 6-0, Mission Command: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN34403-ADP_6-0-000-WEB-3.pdf
 - Knowledge and Information Management Focus Paper: https://www.jcs.mil/Portals/36/Documents/Doctrine/fp/knowledge_and_info_fp.pdf?ver=2018-05-17-102808-507
 
-## 11. 현 단계 결론
+## 11. Current-stage conclusion
 
-CCIR alerting의 목표는 보고량 증가가 아니라 결심 품질 향상이다.
+The goal of CCIR alerting is not an increase in reporting volume but an improvement in decision quality.
 
-LLM runtime에서 보고 규칙은 다음 한 문장으로 압축된다.
+In LLM runtime, the reporting rule is condensed into the following single sentence.
 
-> 지휘관의 결심, 임무 수행능력, 보호해야 할 정보, 승인 필요 행동에 영향을 주지 않는 정보는 alert가 아니다.
+> Information that does not affect the commander's decision, mission capability, information requiring protection, or actions requiring approval is not an alert.

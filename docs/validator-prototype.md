@@ -1,21 +1,21 @@
 # Validator Prototype
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 `schema-files/`와 `prompt-dsl-validator.md`를 실제 코드로 구현하기 위한 prototype 설계다.
+This document is the prototype design for implementing `schema-files/` and `prompt-dsl-validator.md` as actual code.
 
-Validator는 두 층으로 나뉜다.
+The validator is split into two layers.
 
 ```text
 JSON Schema validation
 -> Semantic military-control validation
 ```
 
-JSON Schema는 필수 필드와 타입을 잡는다. Semantic validation은 군대식 LLM 운용에서 더 중요한 누락, 즉 intent 부재, authority 부재, CCIR 부재, MOP/MOE 불균형, 승인 없는 고위험 행동을 잡는다.
+JSON Schema catches missing required fields and type errors. Semantic validation catches the omissions that matter more in military-style LLM operation: absence of intent, absence of authority, absence of CCIR, MOP/MOE imbalance, and high-risk actions taken without approval.
 
-## 1. 입력과 출력
+## 1. Input and Output
 
-### 입력
+### Input
 
 ```yaml
 document:
@@ -28,7 +28,7 @@ context:
   risk_register: []
 ```
 
-### 출력
+### Output
 
 ```yaml
 validation_result:
@@ -59,7 +59,7 @@ load schema
 -> return result
 ```
 
-## 3. 의사코드
+## 3. Pseudocode
 
 ```text
 function validateDocument(document, context):
@@ -97,73 +97,73 @@ function validateDocument(document, context):
   return result
 ```
 
-## 4. 핵심 규칙
+## 4. Core Rules
 
 ### 4.1 Mission / Intent
 
-| Code | Severity | 조건 | Fix |
+| Code | Severity | Condition | Fix |
 | --- | --- | --- | --- |
-| MISSING_MISSION | error | mission statement 없음 | mission.statement 추가 |
-| MISSING_INTENT | critical | intent purpose 없음 | intent.purpose 추가 |
-| MISSION_INTENT_MERGED | warning | mission과 intent가 같은 문장 | 해야 할 일과 이유 분리 |
-| VAGUE_MISSION | warning | "잘", "적절히", "최대한" 중심 | observable end state 추가 |
+| MISSING_MISSION | error | No mission statement | Add mission.statement |
+| MISSING_INTENT | critical | No intent purpose | Add intent.purpose |
+| MISSION_INTENT_MERGED | warning | Mission and intent are the same sentence | Separate what to do from why |
+| VAGUE_MISSION | warning | Centered on words like "well," "appropriately," "to the fullest extent" | Add an observable end state |
 
 ### 4.2 Authority
 
-| Code | Severity | 조건 | Fix |
+| Code | Severity | Condition | Fix |
 | --- | --- | --- | --- |
-| MISSING_AUTHORITY | critical | authority 필드 없음 | allowed/approval/prohibited 추가 |
-| EMPTY_PROHIBITED_ACTIONS | error | 금지 행동 없음 | prohibited 목록 추가 |
-| VAGUE_AUTHORITY | error | "알아서 판단" | risk-based authority로 재작성 |
-| AGENT_RISK_ACCEPTANCE | critical | agent가 high risk 수용자로 지정 | human commander 승인으로 변경 |
+| MISSING_AUTHORITY | critical | No authority field | Add allowed/approval/prohibited |
+| EMPTY_PROHIBITED_ACTIONS | error | No prohibited actions | Add a prohibited list |
+| VAGUE_AUTHORITY | error | "Use your own judgment" | Rewrite as risk-based authority |
+| AGENT_RISK_ACCEPTANCE | critical | Agent designated as the acceptor of high risk | Change to human commander approval |
 
 ### 4.3 CCIR
 
-| Code | Severity | 조건 | Fix |
+| Code | Severity | Condition | Fix |
 | --- | --- | --- | --- |
-| MISSING_CCIR | error | CCIR 없음 | PIR/FFIR/EEFI 추가 |
-| NO_EEFI | warning | 민감정보 처리 가능 작업인데 EEFI 없음 | EEFI 추가 |
-| BLOCKED_WITHOUT_ESCALATION | error | blocked인데 decision point 없음 | escalation 추가 |
+| MISSING_CCIR | error | No CCIR | Add PIR/FFIR/EEFI |
+| NO_EEFI | warning | Task can involve sensitive information but has no EEFI | Add EEFI |
+| BLOCKED_WITHOUT_ESCALATION | error | Blocked with no decision point | Add escalation |
 
 ### 4.4 Tool Use
 
-| Code | Severity | 조건 | Fix |
+| Code | Severity | Condition | Fix |
 | --- | --- | --- | --- |
-| RED_WITHOUT_APPROVAL | critical | Red tool action에 승인 없음 | approval request 생성 |
-| BLACK_ACTION_REQUESTED | critical | 금지 행동 요청 | 거부와 대안 제시 |
-| WRITE_WITHOUT_TARGET | error | write action 대상 없음 | target 명시 |
-| EXTERNAL_SEND_WITHOUT_DATA_SUMMARY | error | 외부 전송 데이터 요약 없음 | data affected 추가 |
+| RED_WITHOUT_APPROVAL | critical | Red tool action has no approval | Generate an approval request |
+| BLACK_ACTION_REQUESTED | critical | Prohibited action requested | Present a refusal and an alternative |
+| WRITE_WITHOUT_TARGET | error | Write action has no target | Specify the target |
+| EXTERNAL_SEND_WITHOUT_DATA_SUMMARY | error | No data summary for an external send | Add data affected |
 
 ### 4.5 Evidence
 
-| Code | Severity | 조건 | Fix |
+| Code | Severity | Condition | Fix |
 | --- | --- | --- | --- |
-| SOURCE_REQUIRED | error | 리서치 task인데 source requirement 없음 | evidence requirement 추가 |
-| CLAIM_WITHOUT_SOURCE | warning | 핵심 주장에 출처 없음 | evidence 연결 |
-| SOURCE_INTERPRETATION_MERGED | warning | 원문 claim과 해석이 섞임 | claim/interpretation 분리 |
+| SOURCE_REQUIRED | error | Research task has no source requirement | Add an evidence requirement |
+| CLAIM_WITHOUT_SOURCE | warning | Key claim has no source | Link evidence |
+| SOURCE_INTERPRETATION_MERGED | warning | Original claim and interpretation are mixed together | Separate claim from interpretation |
 
 ### 4.6 Assessment
 
-| Code | Severity | 조건 | Fix |
+| Code | Severity | Condition | Fix |
 | --- | --- | --- | --- |
-| MISSING_MOP | warning | 수행지표 없음 | MOP 추가 |
-| MISSING_MOE | error | 효과지표 없음 | MOE 추가 |
-| MOP_ONLY | warning | MOE 없이 산출물 존재만 평가 | 효과 기준 추가 |
-| NO_VERIFICATION | error | 검증 방법 없음 | test/review/source check 추가 |
+| MISSING_MOP | warning | No performance measure | Add MOP |
+| MISSING_MOE | error | No effectiveness measure | Add MOE |
+| MOP_ONLY | warning | Only output existence is assessed, with no MOE | Add effectiveness criteria |
+| NO_VERIFICATION | error | No verification method | Add test/review/source check |
 
 ## 5. Test Cases
 
 ### 5.1 OPORD without intent
 
-입력:
+Input:
 
 ```yaml
 type: OPORD
 mission:
-  statement: "문서를 작성한다."
+  statement: "Write the document."
 ```
 
-예상:
+Expected:
 
 ```yaml
 errors:
@@ -174,7 +174,7 @@ can_execute: false
 
 ### 5.2 High-risk tool request without approval
 
-입력:
+Input:
 
 ```yaml
 tool_request:
@@ -184,7 +184,7 @@ tool_request:
   approval_required: false
 ```
 
-예상:
+Expected:
 
 ```yaml
 errors:
@@ -195,15 +195,15 @@ can_execute: false
 
 ### 5.3 Research order without evidence rule
 
-입력:
+Input:
 
 ```yaml
-task: "군대 지휘통제 자료를 조사하라."
+task: "Research materials on military command and control."
 verification:
-  - "요약 작성"
+  - "Write a summary"
 ```
 
-예상:
+Expected:
 
 ```yaml
 errors:
@@ -213,16 +213,16 @@ errors:
 
 ### 5.4 MOP only
 
-입력:
+Input:
 
 ```yaml
 assessment:
   mop:
-    - "문서 작성"
+    - "Document written"
   moe: []
 ```
 
-예상:
+Expected:
 
 ```yaml
 warnings:
@@ -231,13 +231,13 @@ warnings:
 
 ## 6. Implementation Notes
 
-권장 구현:
+Recommended implementation:
 
-- JSON Schema validator: Ajv 또는 동등 라이브러리.
-- Semantic rules: 순수 함수 배열.
+- JSON Schema validator: Ajv or an equivalent library.
+- Semantic rules: an array of pure functions.
 - Rule output: code, severity, path, message, fix.
-- Test runner: 각 rule별 fixture.
-- CI gate: critical이면 실행 불가, error이면 OPORD tasking 불가.
+- Test runner: a fixture per rule.
+- CI gate: cannot execute if critical, cannot task OPORD if error.
 
 ## 7. Minimal Rule Interface
 
@@ -257,7 +257,7 @@ type Rule = {
 };
 ```
 
-## 8. 관련 문서
+## 8. Related Documents
 
 - `prompt-dsl-validator.md`
 - `prompt-dsl.md`

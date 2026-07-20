@@ -1,249 +1,250 @@
 # Korean Military Sources
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 한국군 관련 공개 자료를 군대식 LLM 운용 프레임워크에 연결하기 위한 리서치 노트다.
+This document is a research note connecting publicly available materials on the Republic of Korea (ROK) military to the military-style LLM operations framework.
 
-미군 교리 문서와 달리 한국군의 상세 작전교리, 지휘통제 절차, 실제 명령서 양식은 공개 접근성이 제한적이다. 따라서 이 문서는 공개 가능한 범위에서 다음 자료를 중심으로 삼는다.
+Unlike U.S. military doctrine publications, the ROK military's detailed operational doctrine, command-and-control procedures, and actual order formats have limited public accessibility. Therefore, within the range of what is publicly available, this document focuses on the following materials.
 
-- 국방부 정책자료와 국방백서.
-- 국가법령정보센터의 법령, 시행령, 훈령.
-- 한국국방연구원(KIDA)의 공개 연구자료.
-- 공개 군사용어 사전과 국방 관련 데이터/AI 정책자료.
+- Ministry of National Defense (MND) policy materials and the Defense White Paper.
+- Statutes, enforcement decrees, and directives from the Korea Law Information Center.
+- Publicly available research materials from the Korea Institute for Defense Analyses (KIDA).
+- Public military terminology dictionaries and defense-related data/AI policy materials.
 
-핵심 원칙:
+Core principle:
 
 ```text
-한국군 공개자료는 세부 작전술보다
-법적 권한, 조직문화, 국방정책, 정보화, AI 전환 방향을 파악하는 데 유용하다.
+Publicly available ROK military materials are more useful for understanding
+legal authority, organizational culture, defense policy, informatization, and AI transformation direction
+than for detailed operational art.
 ```
 
-## 1. 공개자료 사용 한계
+## 1. Limitations on Use of Public Materials
 
-한국군 자료를 사용할 때 다음 한계를 문서에 명시한다.
+The following limitations are documented when using ROK military materials.
 
-| 한계 | 의미 | LLM 적용 |
+| Limitation | Meaning | LLM Application |
 | --- | --- | --- |
-| 교리 비공개성 | 세부 작전교리와 실제 명령 절차는 제한됨 | 미군 공개교리로 구조를 보완 |
-| 법령 중심성 | 공개자료는 복무, 권한, 관리 규정이 많음 | authority, reporting, compliance 근거로 활용 |
-| 정책자료 중심성 | 국방혁신, AI, 정보화 방향은 공개됨 | AI LLM 프레임워크의 전략 방향과 연결 |
-| 번역 위험 | 한국군 용어와 미군 용어가 완전히 1:1 대응하지 않음 | glossary에서 별도 관리 |
-| 최신성 위험 | 훈령과 정책은 개정될 수 있음 | 출처 확인 날짜와 URL 유지 |
+| Non-disclosure of doctrine | Detailed operational doctrine and actual order procedures are restricted | Supplement structure with publicly available U.S. military doctrine |
+| Statute-centeredness | Public materials mostly consist of service, authority, and administrative regulations | Use as a basis for authority, reporting, and compliance |
+| Policy-material-centeredness | Defense innovation, AI, and informatization direction are public | Connect to the strategic direction of the AI LLM framework |
+| Translation risk | Korean military terminology and U.S. military terminology do not map 1:1 completely | Manage separately in the glossary |
+| Currency risk | Directives and policies can be revised | Maintain source verification dates and URLs |
 
-## 2. 핵심 출처 목록
+## 2. List of Core Sources
 
-### 2.1 국방백서
+### 2.1 Defense White Paper
 
-출처:
+Source:
 
-- 국방부 국방백서 자료실: https://www.mnd.go.kr/
+- MND Defense White Paper archive: https://www.mnd.go.kr/
 
-핵심 내용:
+Key content:
 
-- 한국 국방정책, 군 구조, 안보환경, 국방개혁 방향을 정리한다.
-- 지휘구조, 전력건설, 국방혁신, 과학기술군 전환 흐름을 파악하는 데 유용하다.
+- Summarizes ROK defense policy, force structure, the security environment, and the direction of defense reform.
+- Useful for grasping the flow of command structure, force build-up, defense innovation, and the transition to a technology-driven military.
 
-LLM 적용:
+LLM application:
 
-- 한국형 LLM 군대 프레임워크의 배경 자료로 사용한다.
-- 조직, 지휘구조, 국방AI 방향을 큰 맥락으로 잡는다.
-- 세부 작전절차 근거로 쓰기보다는 전략/조직 맥락 근거로 쓴다.
+- Used as background material for the Korean-style LLM military framework.
+- Establishes the broad context of organization, command structure, and defense AI direction.
+- Used as a basis for strategic/organizational context rather than for detailed operational procedures.
 
-### 2.2 국방혁신 4.0 / AI 과학기술강군
+### 2.2 Defense Innovation 4.0 / AI-Powered Science-and-Technology Military
 
-출처:
+Source:
 
-- 국방부 국방혁신 4.0 관련 공개자료: https://www.mnd.go.kr/
+- MND public materials on Defense Innovation 4.0: https://www.mnd.go.kr/
 
-핵심 내용:
+Key content:
 
-- AI, 무인, 첨단과학기술 기반 군 구조 전환을 강조한다.
-- 지휘통제, 정보, 무기체계, 교육훈련, 군수 분야의 디지털 전환과 연결된다.
+- Emphasizes the transformation of force structure based on AI, unmanned systems, and advanced science and technology.
+- Connected to the digital transformation of command and control, intelligence, weapons systems, education and training, and logistics.
 
-LLM 적용:
+LLM application:
 
-- LLM 프레임워크는 단순 productivity tool이 아니라 지휘통제와 지식관리의 AI화로 위치시킨다.
-- AI 에이전트 운용에는 기술 도입뿐 아니라 권한, 검증, 데이터, 교육훈련 체계가 필요하다.
+- Positions the LLM framework not as a simple productivity tool but as the AI-ification of command and control and knowledge management.
+- Operating AI agents requires not just technology adoption but also authority, verification, data, and education/training systems.
 
-### 2.3 군인의 지위 및 복무에 관한 기본법
+### 2.3 Framework Act on the Status and Service of Military Personnel
 
-출처:
+Source:
 
-- 국가법령정보센터: https://www.law.go.kr/
+- Korea Law Information Center: https://www.law.go.kr/
 
-핵심 내용:
+Key content:
 
-- 군인의 의무, 복무 원칙, 지휘관 책임, 명령 체계와 관련된 법적 기반을 제공한다.
-- 군 조직에서 명령, 복종, 책임, 품위, 보안 같은 원칙을 이해하는 데 유용하다.
+- Provides the legal foundation for a service member's duties, principles of service, commander responsibility, and the chain of command.
+- Useful for understanding principles such as command, obedience, responsibility, dignity, and security within a military organization.
 
-LLM 적용:
+LLM application:
 
-- 에이전트는 권한 밖 명령을 수행하지 않아야 한다.
-- 보고는 정직해야 하며, 불확실성을 숨기면 안 된다.
-- "복종"은 무조건 실행이 아니라 정당한 권한과 규칙 안에서의 실행으로 번역해야 한다.
+- Agents must not execute commands that are outside their authority.
+- Reporting must be honest, and uncertainty must not be concealed.
+- "Obedience" must be translated not as unconditional execution but as execution within legitimate authority and rules.
 
-### 2.4 부대관리훈령
+### 2.4 Directive on Unit Management
 
-출처:
+Source:
 
-- 국가법령정보센터 국방부훈령: https://www.law.go.kr/
+- Korea Law Information Center, MND Directive: https://www.law.go.kr/
 
-핵심 내용:
+Key content:
 
-- 부대 운영, 지휘관리, 교육훈련, 사고 예방, 보고와 관리 절차를 다루는 공개 훈령이다.
-- 실제 작전교리보다는 평시 부대관리와 지휘책임 구조를 이해하는 데 유용하다.
+- A publicly available directive covering unit operation, command management, education and training, accident prevention, and reporting and management procedures.
+- Useful for understanding peacetime unit management and command-responsibility structure rather than actual operational doctrine.
 
-LLM 적용:
+LLM application:
 
-- 에이전트 조직에도 "운영관리" 문서가 필요하다.
-- 작업 단위마다 책임자, 보고선, 사고/오류 처리, 교육훈련, 기록관리 절차가 있어야 한다.
-- 프레임워크의 SOP, battle rhythm, AAR가 평시 관리체계에 해당한다.
+- Agent organizations also need an "operations management" document.
+- Every task unit should have a responsible party, a reporting line, incident/error handling, education and training, and recordkeeping procedures.
+- The framework's SOP, battle rhythm, and AAR correspond to the peacetime management system.
 
-### 2.5 국방정보화 관련 법령/훈령
+### 2.5 Statutes/Directives Related to Defense Informatization
 
-출처:
+Source:
 
-- 국가법령정보센터: https://www.law.go.kr/
-- 국방부 공개자료: https://www.mnd.go.kr/
+- Korea Law Information Center: https://www.law.go.kr/
+- MND public materials: https://www.mnd.go.kr/
 
-핵심 내용:
+Key content:
 
-- 국방 정보화, 데이터, 보안, 체계 운용은 별도 규정과 절차를 가진다.
-- 군 조직에서 정보체계는 지휘통제와 분리되지 않는다.
+- Defense informatization, data, security, and system operation have separate regulations and procedures.
+- In a military organization, information systems are not separated from command and control.
 
-LLM 적용:
+LLM application:
 
-- LLM 운용체계도 모델만이 아니라 데이터, 권한, 로그, 보안, 감사 체계가 필요하다.
-- source map, decision log, AAR archive, tool-use log는 LLM 정보화 체계의 핵심이다.
+- The LLM operating system also needs data, authority, logging, security, and audit systems, not just the model.
+- The source map, decision log, AAR archive, and tool-use log are the core of the LLM informatization system.
 
-### 2.6 한국국방연구원(KIDA) 공개 연구자료
+### 2.6 Korea Institute for Defense Analyses (KIDA) Public Research Materials
 
-출처:
+Source:
 
-- 한국국방연구원: https://www.kida.re.kr/
+- Korea Institute for Defense Analyses: https://www.kida.re.kr/
 
-핵심 내용:
+Key content:
 
-- 국방정책, 군 구조, 국방AI, 지휘통제, 군수, 정보화, 인사, 교육훈련 관련 연구자료를 제공한다.
-- 교리 원문은 아니지만 한국적 제도와 정책 맥락을 이해하는 데 중요하다.
+- Provides research materials on defense policy, force structure, defense AI, command and control, logistics, informatization, personnel, and education and training.
+- Not doctrine in the original sense, but important for understanding Korean institutional and policy context.
 
-LLM 적용:
+LLM application:
 
-- 한국 조직문화와 국방정책 맥락에 맞춘 프레임워크 보정 자료로 쓴다.
-- 국방AI, 데이터, 지휘통제 연구는 implementation guide의 근거로 연결한다.
-- 공개 연구자료는 출처 등급 B로 사용하되, 법령/공식 정책과 구분한다.
+- Used as material for calibrating the framework to Korean organizational culture and defense policy context.
+- Defense AI, data, and command-and-control research is connected as a basis for the implementation guide.
+- Public research materials are used at source reliability grade B, kept distinct from statutes/official policy.
 
-### 2.7 군사용어 사전
+### 2.7 Military Terminology Dictionary
 
-출처 후보:
+Candidate sources:
 
-- 국방부, 합동참모본부, 방위사업청, 국립중앙도서관 공개자료.
+- Public materials from the Ministry of National Defense (MND), Joint Chiefs of Staff (JCS), Defense Acquisition Program Administration (DAPA), and National Library of Korea.
 
-핵심 내용:
+Key content:
 
-- 군사용어를 통일해 오해를 줄인다.
-- 합동작전, 지휘통제, 군수, 정보, 교육훈련 용어 해석에 유용하다.
+- Standardizes military terminology to reduce misunderstanding.
+- Useful for interpreting terminology related to joint operations, command and control, logistics, intelligence, and education and training.
 
-LLM 적용:
+LLM application:
 
-- `glossary.md`의 한국어 용어 표준화 근거로 사용한다.
-- 모델이 군사용어를 임의 번역하지 않게 한다.
-- 한국어 프롬프트 DSL의 필드명을 안정화한다.
+- Used as a basis for standardizing Korean-language terminology in `glossary.md`.
+- Prevents the model from translating military terminology arbitrarily.
+- Stabilizes field names in the Korean-language prompt DSL.
 
-## 3. 한국군 자료에서 얻는 LLM 설계 원칙
+## 3. LLM Design Principles Derived from ROK Military Materials
 
-### 3.1 명령복종은 무조건 실행이 아니다
+### 3.1 Command Obedience Is Not Unconditional Execution
 
-군 조직에서는 명령과 복종이 중요하지만, 그 명령은 정당한 권한과 법규 안에서 작동한다.
+In a military organization, command and obedience are important, but that command operates within legitimate authority and law.
 
-LLM 적용:
+LLM application:
 
-- 에이전트는 "사용자가 시켰다"만으로 모든 도구를 실행하면 안 된다.
-- tool-use ROE, approval gate, prohibited action이 필요하다.
-- 특히 삭제, 배포, 비용 발생, 민감정보 처리에는 명시적 승인이 필요하다.
+- Agents must not execute every tool merely because "the user told me to."
+- A tool-use ROE, approval gate, and prohibited-action list are required.
+- Explicit approval is required in particular for deletion, deployment, cost-incurring actions, and handling of sensitive information.
 
-### 3.2 정직한 보고가 환각 방지의 핵심이다
+### 3.2 Honest Reporting Is the Core of Preventing Hallucination
 
-군 조직에서 허위 보고나 은폐는 지휘 판단을 망친다. LLM에서도 환각은 지휘판단을 망치는 허위 보고와 같다.
+In a military organization, false reporting or concealment ruins command judgment. In an LLM, hallucination is likewise a false report that ruins command judgment.
 
-LLM 적용:
+LLM application:
 
-- 모르는 것은 모른다고 보고한다.
-- 출처 없는 주장은 가설로 표시한다.
-- 테스트 실패와 도구 오류를 숨기지 않는다.
-- 확신도와 근거를 분리한다.
+- Report what is unknown as unknown.
+- Mark claims without a source as hypotheses.
+- Do not hide test failures and tool errors.
+- Separate confidence level from the underlying evidence.
 
-### 3.3 지휘관 책임은 에이전트 책임과 다르다
+### 3.3 Commander Responsibility Differs from Agent Responsibility
 
-군에서 지휘관은 부대 행위에 대한 책임을 가진다. LLM 프레임워크에서는 최종 책임은 인간 사용자 또는 시스템 운영자에게 있다.
+In the military, a commander bears responsibility for the actions of the unit. In the LLM framework, final responsibility rests with the human user or system operator.
 
-LLM 적용:
+LLM application:
 
-- 에이전트는 위험 수용권자가 아니다.
-- 에이전트는 위험을 식별하고 보고하며, 승인된 범위 안에서 실행한다.
-- 고위험 판단은 "결론"이 아니라 "승인 요청"으로 처리한다.
+- The agent is not the risk-acceptance authority.
+- The agent identifies and reports risk, and executes within the approved scope.
+- High-risk judgments are handled as an "approval request," not a "conclusion."
 
-### 3.4 한국 조직문화에는 backbrief가 특히 중요하다
+### 3.4 Backbrief Is Especially Important in Korean Organizational Culture
 
-상명하복 문화에서는 하급자가 이해하지 못해도 "알겠습니다"라고 답하기 쉽다. LLM도 비슷하게 모호한 지시를 그대로 실행할 수 있다.
+In a top-down obedience culture, it is easy for a subordinate to answer "understood" even without understanding. An LLM can similarly execute an ambiguous instruction as-is.
 
-LLM 적용:
+LLM application:
 
-- 실행 전 backbrief를 강제한다.
-- "제가 이해한 임무는..."으로 시작하는 확인 절차를 둔다.
-- 모호한 지시에는 질문 또는 assumption list를 남긴다.
+- Require a backbrief before execution.
+- Maintain a confirmation procedure that begins with "The mission I understood is...".
+- Leave a question or assumption list for ambiguous instructions.
 
-### 3.5 정보화와 AI 도입은 운영체계 문제다
+### 3.5 Informatization and AI Adoption Are Operating-System Problems
 
-국방AI와 정보화 자료는 기술 도입만으로 군이 바뀌지 않는다는 점을 보여준다.
+Defense AI and informatization materials show that the military does not change through technology adoption alone.
 
-LLM 적용:
+LLM application:
 
-- 모델 성능보다 데이터, 권한, 로그, 보안, 교육훈련, SOP가 더 중요할 수 있다.
-- 프레임워크는 prompt set이 아니라 operating system이어야 한다.
+- Data, authority, logging, security, education/training, and SOPs can matter more than model performance.
+- The framework must be an operating system, not a prompt set.
 
-## 4. 한국형 LLM 군대 프레임워크 보정
+## 4. Calibration of the Korean-Style LLM Military Framework
 
-미군식 mission command를 그대로 가져오면 한국 조직에서는 다음 문제가 생길 수 있다.
+Bringing over U.S.-style mission command as-is can cause the following problems in a Korean organization.
 
-| 위험 | 설명 | 보정 |
+| Risk | Description | Calibration |
 | --- | --- | --- |
-| 과도한 상명하복 | 에이전트가 사용자 말을 무조건 실행 | ROE와 권한 gate |
-| 질문 회피 | 모호한 지시에도 질문 없이 진행 | backbrief와 assumption report |
-| 결과 중심 보고 | 실패와 위험을 숨김 | SITREP에 risk/blocked 필드 의무화 |
-| 직급 중심 의사결정 | 전문 에이전트 의견이 묻힘 | S2/S3/Red Team 독립 의견 보존 |
-| 문서 형식주의 | 양식은 있으나 의사결정과 연결 안 됨 | 각 문서를 decision point와 연결 |
+| Excessive top-down obedience | Agent executes the user's word unconditionally | ROE and authority gate |
+| Avoidance of questions | Proceeds without questions even on ambiguous instructions | Backbrief and assumption report |
+| Outcome-centered reporting | Failures and risks are hidden | Mandate risk/blocked fields in SITREP |
+| Rank-centered decision-making | Specialist agent opinions get buried | Preserve independent S2/S3/Red Team opinions |
+| Document formalism | Formats exist but are not connected to decisions | Connect each document to a decision point |
 
-## 5. 한국 공개자료 리서치 SOP
+## 5. SOP for Researching Public Korean Materials
 
-한국군 자료를 조사할 때는 다음 순서를 따른다.
+When researching ROK military materials, follow this order.
 
-1. 법령/훈령을 먼저 확인한다.
-2. 국방부 정책자료와 국방백서를 확인한다.
-3. KIDA 공개 연구자료를 확인한다.
-4. 군사용어 사전으로 용어를 맞춘다.
-5. 공개 범위를 넘는 세부 작전절차는 추정하지 않는다.
-6. 미군 공개교리와 비교할 때 차이를 명시한다.
-7. LLM 적용 해석은 "출처의 직접 주장"과 분리한다.
+1. Check statutes/directives first.
+2. Check MND policy materials and the Defense White Paper.
+3. Check KIDA's publicly available research materials.
+4. Align terminology using the military terminology dictionary.
+5. Do not speculate on detailed operational procedures beyond what is public.
+6. State the differences explicitly when comparing with publicly available U.S. military doctrine.
+7. Keep the LLM-application interpretation separate from the "source's direct claim."
 
 ## 6. Source Reliability
 
-| 등급 | 한국 자료 유형 | 사용 방식 |
+| Grade | Type of Korean Material | Mode of Use |
 | --- | --- | --- |
-| A | 법령, 시행령, 국방부 공식 정책자료 | 권한, 의무, 공식 방향 근거 |
-| B | KIDA 연구자료, 국책연구기관 보고서 | 정책 해석, 제도 분석 |
-| C | 공개 교육자료, 기사, 발표자료 | 사례와 보조 맥락 |
-| D | 블로그, 커뮤니티, 2차 요약 | 참고만 가능 |
+| A | Statutes, enforcement decrees, official MND policy materials | Basis for authority, obligation, official direction |
+| B | KIDA research materials, national research institute reports | Policy interpretation, institutional analysis |
+| C | Public education materials, articles, presentation materials | Cases and supplementary context |
+| D | Blogs, community posts, secondary summaries | Reference only |
 
-## 7. 다음 리서치 질문
+## 7. Next Research Questions
 
-1. 한국군에서 임무형 지휘가 실제로 어떻게 해석되고 있는가?
-2. 한국군 문서 하달 체계의 공개 가능한 양식은 어디까지 확인 가능한가?
-3. 국방AI 정책에서 지휘통제 AI의 권한과 검증은 어떻게 다뤄지는가?
-4. 한국 조직문화에서 backbrief와 Red Team 독립성을 어떻게 제도화할 수 있는가?
-5. 한국어 군사용어와 영어 군사용어의 불일치는 프롬프트 DSL에 어떻게 반영해야 하는가?
+1. How is mission-type command actually being interpreted in the ROK military?
+2. How far can the publicly disclosable formats of the ROK military's order-issuance system be confirmed?
+3. In defense AI policy, how are the authority and verification of command-and-control AI addressed?
+4. In Korean organizational culture, how can backbrief and Red Team independence be institutionalized?
+5. How should the mismatch between Korean and English military terminology be reflected in the prompt DSL?
 
-## 8. 관련 문서
+## 8. Related Documents
 
 - `glossary.md`
 - `source-map.md`

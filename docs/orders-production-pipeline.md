@@ -1,34 +1,34 @@
 # Orders Production Pipeline
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대의 명령 생산 절차를 LLM 단일 에이전트와 멀티에이전트 runtime의 prompt/order pipeline으로 변환한다.
+This document converts the military's order-production procedure into a prompt/order pipeline for LLM single-agent and multi-agent runtimes.
 
-핵심 관점은 단순하다.
+The core perspective is simple.
 
-- 사용자 요청은 곧바로 실행 프롬프트가 아니다.
-- 요청은 mission analysis를 거쳐 명령으로 바뀐다.
-- 명령은 task order, backbrief, rehearsal, execution, SITREP, FRAGO, AAR로 이어진다.
-- 각 단계는 왜곡을 줄이는 통제점을 가진다.
+- A user request is not immediately an execution prompt.
+- The request becomes an order after passing through mission analysis.
+- The order continues through the task order, backbrief, rehearsal, execution, SITREP, FRAGO, and AAR.
+- Each stage has a control point that reduces distortion.
 
-## 1. 군 개념
+## 1. Military Concept
 
-군은 큰 임무를 한 문장 지시로 처리하지 않는다. 계획, 준비, 실행, 평가를 순환시키고, 명령은 표준 양식으로 만든다. OPORD/WARNO/FRAGO는 시간이 지나며 명령을 보강하고 수정하는 문서 체계다.
+The military does not handle a large mission with a single-sentence directive. It cycles through planning, preparation, execution, and assessment, and produces orders in a standard format. OPORD/WARNO/FRAGO is a document system that reinforces and revises the order over time.
 
-이 체계의 강점은 "위에서 말한 것을 그대로 복사"하는 데 있지 않다. 상위 의도와 제약은 보존하되, 하위 단위가 자기 상황에 맞게 실행 가능한 명령으로 재작성하게 만드는 데 있다.
+The strength of this system does not lie in "copying exactly what was said from above." It lies in preserving the higher-level intent and constraints while allowing the subordinate unit to rewrite it into an executable order suited to its own situation.
 
-## 2. LLM 변환 원칙
+## 2. LLM Conversion Principles
 
-| 군 명령 생산 원리 | LLM 적용 |
+| Military Order-Production Principle | LLM Application |
 | --- | --- |
-| Mission analysis before order | 사용자 요청을 mission, constraints, risks, CCIR로 먼저 분석 |
-| WARNO before full order | 긴 작업은 준비 가능한 정보부터 사전 하달 |
-| OPORD as execution contract | 실행 프롬프트는 OPORD형 계약으로 고정 |
-| Annex for specialist detail | 출처, 도구, 보안, 검증, rollback은 annex로 분리 |
-| Confirmation/backbrief | 에이전트가 이해한 임무를 실행 전 재진술 |
-| Rehearsal | tool 실행 전 dry run으로 충돌과 누락 확인 |
-| FRAGO | 변경은 새 대화가 아니라 변경명령으로 기록 |
-| AAR | 실행 후 SOP/readiness/authority를 갱신 |
+| Mission analysis before order | First analyze the user request into mission, constraints, risks, and CCIR |
+| WARNO before full order | For long tasks, disseminate preparable information in advance |
+| OPORD as execution contract | The execution prompt is fixed as an OPORD-style contract |
+| Annex for specialist detail | Sources, tools, security, verification, and rollback are separated into annexes |
+| Confirmation/backbrief | The agent restates the understood mission before execution |
+| Rehearsal | A dry run before tool execution checks for conflicts and omissions |
+| FRAGO | Changes are recorded as a fragmentary order rather than a new conversation |
+| AAR | After execution, the SOP/readiness/authority are updated |
 
 ## 3. End-to-End Pipeline
 
@@ -52,34 +52,34 @@ User Request
 -> SOP, readiness, source-map, and policy update
 ```
 
-## 4. 단계별 산출물
+## 4. Deliverables per Stage
 
-| 단계 | 산출물 | 목적 | 실행 전 gate |
+| Stage | Deliverable | Purpose | Pre-Execution Gate |
 | --- | --- | --- | --- |
-| Mission Intake | mission object | 사용자의 목적과 종료조건 고정 | intent 누락 금지 |
-| Mission Analysis | assumptions, constraints, CCIR | 모호성 제거 | 질문/가정 분리 |
-| WARNO | preparation order | 긴 작업의 준비 시작 | 준비만 허용, 실행 금지선 명시 |
-| OPORD | execution order | 실행 계약 | authority, assessment, reports 필수 |
-| Annex | specialist plans | 세부 위험/도구/검증 분리 | 각 annex owner 지정 |
-| Task Order | role-level task | 하위 에이전트 과업화 | assigned_to, purpose, verification 필수 |
-| Backbrief | restated understanding | 하달 왜곡 탐지 | stop condition, approval boundary 필수 |
-| Rehearsal | dry-run sequence | 실행 전 충돌 탐지 | unresolved change가 있으면 execute 금지 |
-| SITREP | current state report | 결심에 필요한 변화 보고 | blocked item은 CCIR 연결 |
-| FRAGO | changed order | 변경 범위 통제 | parent order와 unchanged intent 필수 |
-| AAR | learning record | 사후관리 | SOP/readiness update 판단 |
+| Mission Intake | mission object | Fix the user's purpose and end conditions | Intent must not be missing |
+| Mission Analysis | assumptions, constraints, CCIR | Remove ambiguity | Separate questions from assumptions |
+| WARNO | preparation order | Start preparation on a long task | Preparation only allowed; execution boundary stated |
+| OPORD | execution order | Execution contract | Authority, assessment, and reports required |
+| Annex | specialist plans | Separate detailed risk/tools/verification | Each annex has an assigned owner |
+| Task Order | role-level task | Turns work into a subordinate-agent task | assigned_to, purpose, verification required |
+| Backbrief | restated understanding | Detect distortion from dissemination | Stop condition and approval boundary required |
+| Rehearsal | dry-run sequence | Detect conflicts before execution | Execution prohibited if unresolved changes remain |
+| SITREP | current state report | Report changes needed for decisions | Blocked items linked to CCIR |
+| FRAGO | changed order | Control scope of change | Parent order and unchanged intent required |
+| AAR | learning record | Post-action management | Judgment on SOP/readiness update |
 
-## 5. 왜곡 방지 장치
+## 5. Distortion-Prevention Mechanisms
 
-| 왜곡 유형 | 군대식 방지 장치 | LLM control |
+| Distortion Type | Military-Style Prevention | LLM Control |
 | --- | --- | --- |
-| 목적 오해 | commander intent | `intent.purpose`, `key_tasks`, `failure_to_avoid` |
-| 범위 확대 | OPORD/FRAGO 구분 | scope change는 FRAGO event로만 허용 |
-| 하위 과업 누락 | task order | OPORD task를 role별 payload로 분해 |
-| 암묵적 승인 | command and signal | allowed/approval/prohibited를 명시 |
-| 실행 전 오류 | confirmation brief/backbrief | `BACKBRIEF` schema 검증 |
-| 실행 순서 충돌 | rehearsal | `REHEARSAL` sequence 검증 |
-| 보고 과다 | CCIR | decision-changing information만 alert |
-| 기억 손실 | event log/handoff | source-of-truth files와 projection 유지 |
+| Misunderstanding purpose | Commander intent | `intent.purpose`, `key_tasks`, `failure_to_avoid` |
+| Scope creep | Distinguishing OPORD/FRAGO | Scope change allowed only via a FRAGO event |
+| Missing subordinate task | Task order | Decompose OPORD tasks into role-based payloads |
+| Implicit approval | Command and signal | Explicitly state allowed/approval/prohibited |
+| Pre-execution error | Confirmation brief/backbrief | Validate against the `BACKBRIEF` schema |
+| Execution sequence conflict | Rehearsal | Validate the `REHEARSAL` sequence |
+| Excessive reporting | CCIR | Alert only on decision-changing information |
+| Memory loss | Event log/handoff | Maintain source-of-truth files and projections |
 
 ## 6. Order State Machine
 
@@ -96,35 +96,35 @@ draft
 -> reviewed
 ```
 
-권장 상태 전환:
+Recommended state transitions:
 
-| From | To | 조건 |
+| From | To | Condition |
 | --- | --- | --- |
-| draft | analyzed | mission intent, constraints, CCIR가 채워짐 |
-| analyzed | warned | 일부 준비를 먼저 시작할 가치가 있음 |
-| analyzed/warned | ordered | OPORD가 validator를 통과 |
-| ordered | acknowledged | 각 task owner가 backbrief 제출 |
-| acknowledged | rehearsed | rehearsal disposition이 `execute` |
-| rehearsed | executing | policy/readiness gate 통과 |
-| executing | changed | scope/priority/authority 변화 발생 |
-| changed | executing | FRAGO가 parent order와 연결 |
-| executing | complete | MOP/MOE/evidence 충족 |
-| complete | reviewed | AAR와 readiness update 검토 |
+| draft | analyzed | Mission intent, constraints, and CCIR are filled in |
+| analyzed | warned | Some preparation is worth starting early |
+| analyzed/warned | ordered | The OPORD passes the validator |
+| ordered | acknowledged | Each task owner has submitted a backbrief |
+| acknowledged | rehearsed | The rehearsal disposition is `execute` |
+| rehearsed | executing | The policy/readiness gate passes |
+| executing | changed | A scope/priority/authority change occurs |
+| changed | executing | The FRAGO is linked to the parent order |
+| executing | complete | MOP/MOE/evidence are satisfied |
+| complete | reviewed | The AAR and readiness update are reviewed |
 
-## 7. 자동화 규칙
+## 7. Automation Rules
 
-실행 전 runtime은 최소한 다음을 확인한다.
+Before execution, the runtime confirms at least the following:
 
-1. OPORD가 mission_id와 commander intent를 갖는가?
-2. OPORD task가 task order와 연결되는가?
-3. 각 task owner가 backbrief를 냈는가?
-4. backbrief가 stop condition과 approval boundary를 재진술하는가?
-5. rehearsal이 execution sequence와 decision point를 포함하는가?
-6. rehearsal required_changes가 남았는데 execute하려 하지 않는가?
-7. tool request가 authority/readiness/release policy를 통과하는가?
-8. blocked item은 SITREP 또는 CCIR alert로 올라가는가?
+1. Does the OPORD have a mission_id and commander intent?
+2. Is the OPORD task linked to a task order?
+3. Has each task owner submitted a backbrief?
+4. Does the backbrief restate the stop condition and approval boundary?
+5. Does the rehearsal include an execution sequence and decision points?
+6. Is execution not being attempted while rehearsal required_changes remain?
+7. Does the tool request pass the authority/readiness/release policy?
+8. Is a blocked item escalated to a SITREP or CCIR alert?
 
-이 저장소의 구현 연결:
+Implementation links in this repository:
 
 - `schema-files/opord.schema.json`
 - `schema-files/task-order.schema.json`
@@ -134,44 +134,44 @@ draft
 - `runtime-demo-payloads/rehearsal.json`
 - `orders-dissemination-runner.js`
 
-## 8. 단일 에이전트에서의 적용
+## 8. Application in a Single Agent
 
-단일 에이전트는 내부적으로 여러 참모를 흉내내되, 사용자에게는 commander-facing packet만 보여준다.
+A single agent internally mimics multiple staff functions but shows the user only a commander-facing packet.
 
 ```text
-S2: 출처와 불확실성 정리
-S3: 실행 단계와 task order 작성
-S4/S6: 도구, 토큰, context, fallback 확인
-Red Team: 실패 모드와 권한 초과 탐지
-CoS: OPORD와 decision packet 통합
+S2: organize sources and uncertainty
+S3: write execution steps and task order
+S4/S6: check tools, tokens, context, fallback
+Red Team: detect failure modes and authority overreach
+CoS: integrate the OPORD and decision packet
 Commander: approve, revise, reject, FRAGO
 ```
 
-단일 에이전트라도 실행 전에는 반드시 짧은 backbrief를 만든다. 이것은 내부 사고 노출이 아니라, 이해한 임무와 stop condition을 검증하기 위한 외부 계약이다.
+Even a single agent must produce a short backbrief before execution. This is not exposing internal reasoning, but an external contract that verifies the understood mission and stop condition.
 
-## 9. 멀티에이전트에서의 적용
+## 9. Application in Multi-Agent
 
-멀티에이전트는 더 엄격해야 한다.
+Multi-agent systems must be stricter.
 
-- Orchestrator는 OPORD owner다.
-- 각 role agent는 task order owner다.
-- 각 role agent는 자기 task에 대한 backbrief를 낸다.
-- CoS/Orchestrator는 backbrief 간 충돌을 rehearsal에서 찾는다.
-- Red Team은 execute 권한을 갖지 않는다. risk finding과 mitigation option만 낸다.
-- Recorder/S6는 OPORD, FRAGO, SITREP, AAR, evidence, event log를 source of truth로 저장한다.
+- The Orchestrator is the OPORD owner.
+- Each role agent is a task order owner.
+- Each role agent submits a backbrief for its own task.
+- The CoS/Orchestrator finds conflicts between backbriefs during rehearsal.
+- Red Team does not hold execute authority; it only produces risk findings and mitigation options.
+- The Recorder/S6 stores the OPORD, FRAGO, SITREP, AAR, evidence, and event log as the source of truth.
 
 ## 10. Anti-Patterns
 
-피해야 할 패턴:
+Patterns to avoid:
 
-- 사용자 요청을 그대로 system prompt로 넣고 장기 실행.
-- OPORD 없이 여러 에이전트를 동시에 호출.
-- task owner가 자기 임무를 재진술하지 않은 채 실행.
-- "승인 받음"을 모든 tool action에 적용하는 blanket approval.
-- 변경 요청을 기존 OPORD에 조용히 섞음.
-- 실패 후 AAR 없이 다음 작업으로 넘어감.
+- Putting a user request directly into the system prompt and running it long-term.
+- Calling multiple agents simultaneously without an OPORD.
+- A task owner executing without restating its own assignment.
+- Applying blanket approval — "approval received" — to all tool actions.
+- Quietly folding a change request into the existing OPORD.
+- Moving on to the next task after a failure without an AAR.
 
-## 11. 출처 앵커
+## 11. Source Anchors
 
 - FM 5-0, Planning and Orders Production: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN44590-FM_5-0-001-WEB-3.pdf
 - ADP 5-0, The Operations Process: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN18126-ADP_5-0-000-WEB-3.pdf
@@ -179,7 +179,7 @@ Commander: approve, revise, reject, FRAGO
 - STANAG 2014, Formats for Orders: https://www.trngcmd.marines.mil/Portals/207/Docs/TBS/STANAG%202014%20Edition%2009-%20FORMATS%20FOR%20ORDERS%20%28OPORD%29.pdf
 - Commander and Staff Guide to Rehearsals: https://api.army.mil/e2/c/downloads/2023/01/19/48e6a637/19-18-commander-and-staff-guide-to-rehearsals-a-no-fail-approach-handbook-jul-19-public.pdf
 
-## 12. 관련 문서
+## 12. Related Documents
 
 - `opord-annex-model.md`
 - `backbrief-and-rehearsal-sop.md`

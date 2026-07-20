@@ -11,8 +11,8 @@
   "department": "coordination",
   "authority_scope": "tasking",
   "routing_mode": "delegated_ai_role_department_authority",
-  "router_query": "W2 시작 전 모든 에이전트 문서 라우팅 강제",
-  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-routing --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking \"W2 시작 전 모든 에이전트 문서 라우팅 강제\" .",
+  "router_query": "W2 mandatory document routing for all agents before start",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-routing --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking \"W2 mandatory document routing for all agents before start\" .",
   "matched_routes": [
     {
       "id": "skill-operations",

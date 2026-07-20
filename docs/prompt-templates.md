@@ -1,81 +1,81 @@
 # Prompt Templates
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군 문서 체계를 LLM 프롬프트로 바꾸기 위한 실전 템플릿 모음이다.
+This document is a collection of practical templates for converting military document systems into LLM prompts.
 
-사용 원칙:
+Usage principles:
 
-- 복잡한 작업은 OPORD로 시작한다.
-- 아직 정보가 부족하면 WARNO로 준비시킨다.
-- 중간 변경은 FRAGO로 기록한다.
-- 실행 전 Backbrief를 받는다.
-- 진행 중 SITREP과 CCIR로 보고한다.
-- 끝나면 AAR로 학습한다.
+- Start complex tasks with an OPORD.
+- If information is still insufficient, prepare with a WARNO.
+- Record mid-course changes with a FRAGO.
+- Obtain a Backbrief before execution.
+- Report progress with SITREP and CCIR.
+- Learn with an AAR at the end.
 
-## 1. WARNO: 사전 준비 지시
+## 1. WARNO: Advance Preparation Order
 
 ```text
-WARNO: [작업명]
+WARNO: [Task Name]
 
 1. Situation
-- 배경:
-- 현재 알려진 것:
-- 아직 모르는 것:
+- Background:
+- What is currently known:
+- What is not yet known:
 
 2. Mission
-- 준비할 일:
-- 준비 목적:
-- 예상 본작업:
+- What to prepare:
+- Purpose of preparation:
+- Expected main task:
 
 3. Execution
-- 우선 수집할 자료:
-- 확인할 제약:
-- 생성할 준비 산출물:
-- 하지 말아야 할 일:
+- Material to collect first:
+- Constraints to confirm:
+- Preparatory deliverables to create:
+- Things not to do:
 
 4. Sustainment
-- 사용할 도구:
-- 사용할 자료:
-- 시간/비용 제한:
+- Tools to use:
+- Materials to use:
+- Time/cost limits:
 
 5. Command and Signal
-- 준비 결과 보고 형식:
-- 즉시 보고 조건:
-- 본 OPORD 발행 전 대기 여부:
+- Preparation result reporting format:
+- Immediate-report conditions:
+- Whether to wait before the main OPORD is issued:
 ```
 
-## 2. OPORD: 본 실행 지시
+## 2. OPORD: Main Execution Order
 
 ```text
-OPORD: [작업명]
+OPORD: [Task Name]
 
 1. Situation
-- 배경:
-- 작전 환경:
-- 관련 자료:
-- 제약:
-- 정보 공백:
-- 주요 위험:
+- Background:
+- Operating environment:
+- Related materials:
+- Constraints:
+- Information gaps:
+- Key risks:
 
 2. Mission
-- 누가:
-- 무엇을:
-- 언제까지:
-- 어디에:
-- 왜:
-- 성공 조건:
+- Who:
+- What:
+- By when:
+- Where:
+- Why:
+- Success conditions:
 
 3. Execution
 - Commander's Intent:
-  - 목적:
-  - 최종 상태:
-  - 핵심 우선순위:
-  - 금지선:
+  - Purpose:
+  - End state:
+  - Key priorities:
+  - Restrictions:
 - Concept of Operations:
-  - 전체 접근:
-  - 단계:
-  - 주요 산출물:
+  - Overall approach:
+  - Phases:
+  - Key deliverables:
 - Tasks:
   - S2:
   - S3:
@@ -84,100 +84,100 @@ OPORD: [작업명]
   - Executor:
   - Recorder:
 - Coordinating Instructions:
-  - 검증 기준:
-  - 품질 기준:
-  - 중단 조건:
-  - 승인 필요 조건:
+  - Verification criteria:
+  - Quality criteria:
+  - Stop conditions:
+  - Conditions requiring approval:
 
 4. Sustainment
-- 도구:
-- 자료:
-- 토큰/시간/비용 제한:
-- 대체 수단:
+- Tools:
+- Materials:
+- Token/time/cost limits:
+- Alternatives:
 
 5. Command and Signal
-- 승인자:
-- 정기 보고:
-- 즉시 보고(CCIR):
-- 변경명령(FRAGO) 처리 방식:
-- 완료 보고 형식:
+- Approver:
+- Regular reporting:
+- Immediate reporting (CCIR):
+- FRAGO handling method:
+- Completion reporting format:
 ```
 
-## 3. Backbrief: 실행 전 이해 확인
+## 3. Backbrief: Pre-Execution Understanding Confirmation
 
 ```text
 BACKBRIEF
 
-1. 내가 이해한 최종 목적:
-2. 성공 조건:
-3. 변형하면 안 되는 항목:
-4. 내가 자율적으로 정할 수 있는 항목:
-5. 승인받아야 하는 항목:
-6. 실행 계획:
-7. 검증 계획:
-8. 예상 위험:
-9. 즉시 보고할 조건:
-10. 확인 질문:
+1. The final purpose as I understand it:
+2. Success conditions:
+3. Items that must not be altered:
+4. Items I can decide autonomously:
+5. Items that require approval:
+6. Execution plan:
+7. Verification plan:
+8. Expected risks:
+9. Conditions for immediate reporting:
+10. Clarifying questions:
 ```
 
-## 4. FRAGO: 변경명령
+## 4. FRAGO: Fragmentary Order
 
 ```text
-FRAGO [번호]: [작업명]
+FRAGO [Number]: [Task Name]
 
-기준 문서:
-변경 사유:
-우선순위:
+Reference document:
+Reason for change:
+Priority:
 
 1. Situation
-- 변경 없음 / 변경 내용:
+- No change / Change details:
 
 2. Mission
-- 변경 없음 / 변경 내용:
+- No change / Change details:
 
 3. Execution
-- 변경 없음 / 변경 내용:
+- No change / Change details:
 
 4. Sustainment
-- 변경 없음 / 변경 내용:
+- No change / Change details:
 
 5. Command and Signal
-- 변경 없음 / 변경 내용:
+- No change / Change details:
 
-적용 시점:
-기존 명령과 충돌 시 우선하는 항목:
-승인 필요 여부:
+Effective time:
+Item that takes precedence in case of conflict with the existing order:
+Whether approval is required:
 ```
 
-## 5. SITREP: 상황보고
+## 5. SITREP: Situation Report
 
 ```text
-SITREP: [시간/단계]
+SITREP: [Time/Phase]
 
-1. 현재 상태:
-2. 완료한 일:
-3. 진행 중인 일:
-4. 장애:
-5. 위험:
-6. 다음 행동:
-7. 필요한 결정:
-8. CCIR 발생 여부:
+1. Current status:
+2. Completed:
+3. In progress:
+4. Blockers:
+5. Risk:
+6. Next action:
+7. Decisions needed:
+8. Whether a CCIR has occurred:
 ```
 
-## 6. CCIR Report: 즉시 결심 보고
+## 6. CCIR Report: Immediate Decision Report
 
 ```text
 CCIR REPORT
 
-1. 발생한 조건:
-2. 왜 중요한가:
-3. 관련 결정 지점:
-4. 현재 알려진 사실:
-5. 불확실한 점:
-6. 선택 가능한 방책:
-7. 각 방책의 위험:
-8. 필요한 승인:
-9. 추천:
+1. Condition that occurred:
+2. Why it matters:
+3. Related decision point:
+4. Currently known facts:
+5. Uncertainties:
+6. Available courses of action:
+7. Risk of each course of action:
+8. Approval required:
+9. Recommendation:
 ```
 
 ## 7. Red Team Review
@@ -185,15 +185,15 @@ CCIR REPORT
 ```text
 RED TEAM REVIEW
 
-1. 핵심 주장:
-2. 근거가 약한 주장:
-3. 숨은 가정:
-4. 반례:
-5. 실패 시나리오:
-6. 권한 초과 위험:
-7. 환각 가능성:
-8. 추가 검증 질문:
-9. 수정 권고:
+1. Key claims:
+2. Weakly-supported claims:
+3. Hidden assumptions:
+4. Counterexamples:
+5. Failure scenarios:
+6. Risk of exceeding authority:
+7. Possibility of hallucination:
+8. Additional verification questions:
+9. Recommended corrections:
 ```
 
 ## 8. Completion Report
@@ -201,82 +201,81 @@ RED TEAM REVIEW
 ```text
 COMPLETION REPORT
 
-1. 완료 산출물:
-2. 수행한 작업:
-3. 변경한 파일/결과:
-4. 검증 방법:
-5. 검증 결과:
-6. 충족한 성공 조건:
-7. 남은 위험:
-8. 후속 조치:
+1. Completed deliverables:
+2. Work performed:
+3. Files/results changed:
+4. Verification method:
+5. Verification results:
+6. Success conditions met:
+7. Remaining risk:
+8. Follow-up actions:
 ```
 
 ## 9. AAR
 
 ```text
-AAR: [작업명]
+AAR: [Task Name]
 
 1. Expected
-- 원래 의도:
-- 성공 조건:
-- 계획:
+- Original intent:
+- Success conditions:
+- Plan:
 
 2. Actual
-- 실제 결과:
-- 검증 결과:
-- 발생한 문제:
+- Actual outcome:
+- Verification results:
+- Problems encountered:
 
 3. Delta
-- 차이:
-- 원인:
+- Difference:
+- Cause:
 
 4. Sustain
-- 유지할 절차:
+- Procedures to keep:
 
 5. Improve
-- 개선할 절차:
-- SOP 반영 사항:
-- 다음 프롬프트 반영 사항:
+- Procedures to change:
+- Items to reflect in the SOP:
+- Items to reflect in the next prompt:
 ```
 
-## 10. Quick Prompt: 단일 에이전트용 축약형
+## 10. Quick Prompt: Abbreviated Form for a Single Agent
 
 ```text
-목적:
-성공 조건:
-자료:
-제약:
-자율 판단 가능:
-승인 필요:
-즉시 보고 조건:
-출력 형식:
-검증 방식:
+Purpose:
+Success conditions:
+Materials:
+Constraints:
+Autonomous judgment allowed:
+Approval required:
+Immediate-report conditions:
+Output format:
+Verification method:
 ```
 
-## 11. Quick Prompt: 리서치용
+## 11. Quick Prompt: For Research
 
 ```text
-리서치 임무:
-범위:
-우선 출처:
-제외할 출처:
-확인해야 할 질문:
-사실/추론/의견 분리:
-출처 표기 방식:
-불확실성 표시:
-최종 산출물:
+Research mission:
+Scope:
+Priority sources:
+Sources to exclude:
+Questions to confirm:
+Separation of fact/inference/opinion:
+Source citation method:
+Uncertainty marking:
+Final deliverable:
 ```
 
-## 12. Quick Prompt: 코드 작업용
+## 12. Quick Prompt: For Code Work
 
 ```text
-코드 임무:
-관련 파일:
-변경 범위:
-금지 작업:
-테스트 명령:
-완료 기준:
-보고할 위험:
-최종 보고 형식:
+Code mission:
+Related files:
+Scope of change:
+Prohibited actions:
+Test command:
+Completion criteria:
+Risk to report:
+Final reporting format:
 ```
-

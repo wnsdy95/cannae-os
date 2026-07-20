@@ -1,43 +1,43 @@
 # Evaluation Fixtures
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 런타임을 평가하기 위한 fixture 목록과 expected result를 정의한다.
+This document defines the list of fixtures and expected results for evaluating the military-style LLM runtime.
 
-평가 fixture는 문서 품질 평가가 아니라 runtime gate가 실제로 작동하는지 확인하는 데 쓴다.
+Evaluation fixtures are used to verify that runtime gates actually function, not to assess document quality.
 
 ## 1. Fixture Categories
 
-| Category | 목적 |
+| Category | Purpose |
 | --- | --- |
-| Schema fixtures | JSON Schema 필드/타입 검증 |
-| Semantic fixtures | intent, authority, CCIR, MOP/MOE 검증 |
-| Policy fixtures | ROE 등급 판정 |
-| Evidence fixtures | source discipline 검증 |
-| Runtime fixtures | SITREP/FRAGO/AAR 흐름 검증 |
-| Backbrief fixtures | execution 전 intent/task/stop condition 재진술 검증 |
-| Rehearsal fixtures | dry-run sequence, friction point, decision point 검증 |
-| Approval scope fixtures | single-use approval, expiry, rollback, evidence 검증 |
-| Approval consumption fixtures | approval event가 scope를 정확히 1회 소비하는지 검증 |
-| Risk acceptance fixtures | commander retained authority, residual risk, supervision 검증 |
-| Authority integration fixtures | policy, readiness, scoped approval, risk acceptance 합성 검증 |
-| Release integration fixtures | execution approval과 release review 분리 검증 |
-| Release gate decision fixtures | release integration 결과와 event log audit decision 일치 검증 |
-| Release gate dashboard fixtures | released/release-review-blocked/authority-blocked dashboard queue 검증 |
-| Authority delegation projection fixtures | active/revoked/expired delegated authority dashboard state 검증 |
-| Maintenance dashboard fixtures | ready/degraded/down sustainment readiness dashboard state 검증 |
-| AAR readiness update fixtures | AAR finding이 readiness/SOP/maintenance update로 전환되는지 검증 |
-| Annex fixtures | annex가 OPORD intent/authority를 조용히 바꾸지 못하는지 검증 |
-| FRAGO scope-change fixtures | mission scope/authority 변경이 backbrief/rehearsal과 함께 하달되는지 검증 |
-| Rehearsal routing fixtures | friction/decision point가 CCIR alert와 decision packet으로 전환되는지 검증 |
-| Information operations routing fixtures | 정보보고/평가가 CCIR, SITREP, decision packet, FRAGO draft로 올바르게 분기되는지 검증 |
-| Continuity drill fixtures | 보직 손실/교체/로테이션이 successor, handoff, degraded mode로 전환되는지 검증 |
-| Document access fixtures | role, duty, authority에 맞는 정해진 문서만 allowed projection으로 전달되는지 검증 |
-| Doctrine consistency fixtures | 미군 외 공식 출처군 coverage, role alias, jurisdiction gate, US-only disposition 차단을 검증 |
-| SOF TF activation fixtures | 고위험 task force charter가 독립 cell, enabler, rehearsal, commander-retained gate를 갖는지 검증 |
-| Department collaboration fixtures | 부서 간 supported/supporting 관계가 output contract, liaison, handoff, conflict route를 갖는지 검증 |
-| Force structure change fixtures | 병과/보직/부대/TF 신설, 폐지, 증축, 감축이 capability gap, DOTMLPF-P, readiness, transition, documentation gate를 갖는지 검증 |
-| Agent routing preflight fixtures | 웨이브 시작 전 CoS routing receipt와 각 agent S3 routing receipt가 없으면 execution을 차단하는지 검증 |
+| Schema fixtures | Validates JSON Schema fields/types |
+| Semantic fixtures | Validates intent, authority, CCIR, MOP/MOE |
+| Policy fixtures | Determines ROE classification |
+| Evidence fixtures | Validates source discipline |
+| Runtime fixtures | Validates SITREP/FRAGO/AAR flow |
+| Backbrief fixtures | Validates restatement of intent/task/stop conditions before execution |
+| Rehearsal fixtures | Validates dry-run sequence, friction points, and decision points |
+| Approval scope fixtures | Validates single-use approval, expiry, rollback, and evidence |
+| Approval consumption fixtures | Validates that an approval event consumes scope exactly once |
+| Risk acceptance fixtures | Validates commander-retained authority, residual risk, and supervision |
+| Authority integration fixtures | Validates the composite of policy, readiness, scoped approval, and risk acceptance |
+| Release integration fixtures | Validates the separation of execution approval and release review |
+| Release gate decision fixtures | Validates agreement between release integration results and event log audit decisions |
+| Release gate dashboard fixtures | Validates the released/release-review-blocked/authority-blocked dashboard queue |
+| Authority delegation projection fixtures | Validates active/revoked/expired delegated authority dashboard state |
+| Maintenance dashboard fixtures | Validates ready/degraded/down sustainment readiness dashboard state |
+| AAR readiness update fixtures | Validates that AAR findings convert into readiness/SOP/maintenance updates |
+| Annex fixtures | Validates that an annex cannot silently change OPORD intent/authority |
+| FRAGO scope-change fixtures | Validates that mission scope/authority changes are issued together with backbrief/rehearsal |
+| Rehearsal routing fixtures | Validates that friction/decision points convert into CCIR alerts and decision packets |
+| Information operations routing fixtures | Validates that information reports/assessments are correctly routed into CCIR, SITREP, decision packet, and FRAGO drafts |
+| Continuity drill fixtures | Validates that position loss/replacement/rotation converts into successor, handoff, and degraded mode |
+| Document access fixtures | Validates that only documents defined for a given role, duty, and authority are delivered as the allowed projection |
+| Doctrine consistency fixtures | Validates non-US official source family coverage, role alias handling, jurisdiction gate, and blocking of US-only disposition |
+| SOF TF activation fixtures | Validates that a high-risk task force charter has an independent cell, enablers, rehearsal, and a commander-retained gate |
+| Department collaboration fixtures | Validates that supported/supporting relationships between departments have an output contract, liaison, handoff, and conflict route |
+| Force structure change fixtures | Validates that the creation, disestablishment, expansion, or reduction of a branch/position/unit/TF has a capability gap, DOTMLPF-P review, readiness, transition, and documentation gate |
+| Agent routing preflight fixtures | Validates that execution is blocked if the CoS routing receipt and each agent's S3 routing receipt are missing before a wave starts |
 
 ## 2. Required Fixtures
 
@@ -125,7 +125,7 @@ Validator changes must not:
 - accept routing receipt claims that were not produced by `route_controls_docs.js --actor=ai`.
 - accept research task with no source discipline.
 
-## 6. 관련 문서
+## 6. Related Documents
 
 - `sample-payloads/README.md`
 - `validator-prototype.md`

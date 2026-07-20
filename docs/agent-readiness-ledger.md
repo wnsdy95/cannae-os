@@ -1,19 +1,19 @@
 # Agent Readiness Ledger
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 에이전트별 임무 수행 준비태세(readiness)를 기록하고 갱신하는 방법을 정의한다.
+This document defines how mission readiness is recorded and updated for each agent.
 
-군대에서 readiness는 "잘할 것 같다"가 아니라 특정 mission-essential task를 수행할 수 있다는 증거 기반 판단이다. LLM 에이전트도 역할별로 무엇을 안정 수행할 수 있는지 기록해야 한다.
+In the military, readiness is not "seems likely to do well" but an evidence-based determination that a specific mission-essential task can be performed. LLM agents must likewise record, by role, what they can reliably perform.
 
-## 1. Readiness 등급
+## 1. Readiness Ratings
 
-| Rating | 의미 | 운용 권한 |
+| Rating | Meaning | Operating Authority |
 | --- | --- | --- |
-| T | Trained | 자율 수행 가능 |
-| P | Practiced | backbrief 후 수행 |
-| U | Untrained | 체크리스트와 감독 필요 |
-| X | Unknown | 낮은 위험 작업만 허용 |
+| T | Trained | Autonomous execution permitted |
+| P | Practiced | Execute after backbrief |
+| U | Untrained | Checklist and supervision required |
+| X | Unknown | Only low-risk tasks permitted |
 
 ## 2. Ledger Entry
 
@@ -24,68 +24,68 @@ readiness:
   task: "public source research"
   rating: T
   evidence:
-    - "3회 이상 공식 출처 기반 리서치 완료"
-    - "source map 누락 없음"
+    - "Completed research based on official sources 3 or more times"
+    - "No missing entries in the source map"
   limitations:
-    - "한국군 세부 교리 공개자료는 제한"
+    - "Limited access to public materials on detailed ROK military doctrine"
   updated_at: "2026-06-18T00:00:00+09:00"
-  next_training: "KIDA 자료 검색과 분류"
+  next_training: "KIDA material search and classification"
 ```
 
-## 3. AI METL 연결
+## 3. AI METL Linkage
 
-| METL | 담당 | Readiness evidence |
+| METL | Owner | Readiness evidence |
 | --- | --- | --- |
-| 사용자 요청 OPORD 변환 | Commander/S3 | valid OPORD, no missing intent |
-| 출처 기반 리서치 | S2 | evidence records, source map |
-| 작업 sequencing | S3 | task order, verification |
-| 도구 권한 통제 | S3/Tool Gateway | tool request log |
-| 문서 지식관리 | S6 | README, compendium update |
-| 독립 검토 | Red Team | findings with severity |
-| 평가 | Evaluator | MOP/MOE sheet |
-| 사후학습 | CoS/S6 | AAR and SOP update |
+| Convert user request to OPORD | Commander/S3 | valid OPORD, no missing intent |
+| Source-based research | S2 | evidence records, source map |
+| Task sequencing | S3 | task order, verification |
+| Tool authority control | S3/Tool Gateway | tool request log |
+| Document knowledge management | S6 | README, compendium update |
+| Independent review | Red Team | findings with severity |
+| Evaluation | Evaluator | MOP/MOE sheet |
+| Post-action learning | CoS/S6 | AAR and SOP update |
 
 ## 4. Readiness Update Rules
 
-등급 상승:
+Rating increase:
 
-- 같은 task를 3회 성공.
-- 검증 실패 없음.
-- AAR에서 sustain으로 분류.
-- Red Team critical finding 없음.
+- Same task succeeded 3 times.
+- No verification failures.
+- Classified as "sustain" in the AAR.
+- No Red Team critical findings.
 
-등급 하락:
+Rating decrease:
 
-- 같은 오류 2회 반복.
-- 출처 없는 주장.
-- 승인 없는 tool action 시도.
-- 테스트 실패 은폐.
-- 사용자 의도 재정의.
+- Same error repeated twice.
+- Unsourced claims.
+- Attempted tool action without approval.
+- Concealment of a test failure.
+- Redefinition of user intent.
 
-등급 보류:
+Rating held pending:
 
-- task 범위가 바뀜.
-- 새로운 도구 사용.
-- 새로운 도메인.
-- 외부 시스템 영향 증가.
+- Task scope has changed.
+- New tool usage.
+- New domain.
+- Increased impact on external systems.
 
-## 5. 에이전트별 초기 Ledger
+## 5. Initial Ledger by Agent
 
-| Agent | Task | Initial rating | 근거 |
+| Agent | Task | Initial rating | Rationale |
 | --- | --- | --- | --- |
-| Commander | mission/intent 분해 | P | 문서 체계는 있으나 실제 반복 실험 필요 |
-| CoS | task integration | P | 문서화 사례 있음, 런타임 실험 필요 |
-| S2 | public source research | P | 공식 출처 기반 문서화 수행 |
-| S2 | Korean source research | P/U | 자료 한계 명시, 더 깊은 국내 논문 필요 |
-| S3 | markdown implementation | T | 다수 문서 작성과 색인 연결 |
-| S4 | sustainment estimate | P | 개념 문서 있음, 자동 측정 없음 |
-| S6 | knowledge management | T | README, compendium, source map 유지 |
-| Red Team | independent review | U | 별도 독립 실행 사례 부족 |
-| Evaluator | MOP/MOE evaluation | P | evaluation metrics 있음, 실험 데이터 부족 |
+| Commander | mission/intent decomposition | P | Documentation framework exists but real repeated trials are needed |
+| CoS | task integration | P | Documented cases exist; runtime trials needed |
+| S2 | public source research | P | Performs documentation based on official sources |
+| S2 | Korean source research | P/U | Material limitations stated; deeper domestic literature review needed |
+| S3 | markdown implementation | T | Authored numerous documents and connected indexing |
+| S4 | sustainment estimate | P | Conceptual documentation exists; no automated measurement |
+| S6 | knowledge management | T | Maintains README, compendium, source map |
+| Red Team | independent review | U | Lacks a track record of separate, independent execution |
+| Evaluator | MOP/MOE evaluation | P | Evaluation metrics exist; experimental data is lacking |
 
 ## 6. Readiness Gate
 
-task를 배정하기 전 확인한다.
+Check the following before assigning a task.
 
 ```text
 if readiness == T:
@@ -102,15 +102,15 @@ if readiness == X:
 
 | Agent | Training task | Method | Success |
 | --- | --- | --- | --- |
-| S2 | 국내 국방자료 deep research | source map exercise | A/B급 출처 10개 분류 |
-| S3 | prompt DSL compiler | implementation prototype | valid OPORD 생성 |
-| S4 | token/tool sustainment | long-running simulation | context loss 없이 완료 |
-| Red Team | hallucination detection | blind review | unsupported claims 탐지 |
-| Evaluator | experiment scoring | case study scoring | scorer consistency 확보 |
+| S2 | deep research on domestic defense materials | source map exercise | classify 10 grade A/B sources |
+| S3 | prompt DSL compiler | implementation prototype | generate a valid OPORD |
+| S4 | token/tool sustainment | long-running simulation | complete without context loss |
+| Red Team | hallucination detection | blind review | detect unsupported claims |
+| Evaluator | experiment scoring | case study scoring | achieve scorer consistency |
 
-## 8. AAR 연결
+## 8. AAR Linkage
 
-AAR가 끝나면 readiness ledger를 갱신한다.
+Update the readiness ledger once the AAR is complete.
 
 ```text
 What task was performed?
@@ -121,13 +121,13 @@ Was user intent preserved?
 Should readiness rise, stay, or fall?
 ```
 
-구현 산출물:
+Implementation deliverables:
 
-- `aar-to-readiness-update.js`: AAR payload를 readiness recommendation, maintenance action, SOP update, CCIR trigger로 변환.
+- `aar-to-readiness-update.js`: converts an AAR payload into a readiness recommendation, maintenance action, SOP update, and CCIR trigger.
 - `schema-files/aar-readiness-update.schema.json`: AAR readiness update contract.
-- `run-aar-readiness-update-fixtures.js`: normal improvement, critical source failure, sustain-only AAR 분기 검증.
+- `run-aar-readiness-update-fixtures.js`: verifies the normal improvement, critical source failure, and sustain-only AAR branches.
 
-## 9. 관련 문서
+## 9. Related Documents
 
 - `evaluation-metrics.md`
 - `experiments.md`

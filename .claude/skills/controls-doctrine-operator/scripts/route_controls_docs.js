@@ -6,7 +6,7 @@ const path = require("path");
 const RULES = [
   {
     id: "orientation",
-    keywords: ["overview", "framework", "start", "read", "use", "설명", "전체", "개념", "시작", "사용"],
+    keywords: ["overview", "framework", "start", "read", "use", "description", "overall", "concept", "begin", "usage"],
     docs: [
       "README.md",
       "docs/military-llm-framework-v0.1.md",
@@ -18,7 +18,7 @@ const RULES = [
   },
   {
     id: "orders",
-    keywords: ["opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "prompt", "orders", "명령", "하달", "프롬프트", "리허설"],
+    keywords: ["opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "prompt", "orders", "command", "issuance", "prompting", "dry-run"],
     docs: [
       "docs/prompt-templates.md",
       "docs/orders-production-pipeline.md",
@@ -33,7 +33,7 @@ const RULES = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "approval", "risk", "roe", "release", "scope", "delegation", "승인", "권한", "위험", "공개", "릴리즈", "위임"],
+    keywords: ["authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment"],
     docs: [
       "docs/agent-roles-and-authority.md",
       "docs/tool-use-roe.md",
@@ -49,7 +49,7 @@ const RULES = [
   },
   {
     id: "multi-agent-organization",
-    keywords: ["agent", "multi-agent", "role", "staff", "department", "collaboration", "b2c2wg", "liaison", "에이전트", "보직", "참모", "부서", "협업", "병과"],
+    keywords: ["agent", "multi-agent", "role", "staff", "department", "collaboration", "b2c2wg", "liaison", "assistant", "billet", "staff officer", "division", "teamwork", "branch"],
     docs: [
       "docs/llm-agent-org-chart.md",
       "docs/agent-roles-and-authority.md",
@@ -63,7 +63,7 @@ const RULES = [
   },
   {
     id: "force-structure",
-    keywords: ["force", "structure", "unit", "role creation", "disband", "expand", "reduce", "dotmlpf", "부대", "증축", "감축", "신설", "폐지"],
+    keywords: ["force", "structure", "unit", "role creation", "disband", "expand", "reduce", "dotmlpf", "formation", "buildup", "drawdown", "stand-up", "deactivation"],
     docs: [
       "docs/force-structure-change-policy.md",
       "docs/military-operating-deep-research-queue.md",
@@ -75,7 +75,7 @@ const RULES = [
   },
   {
     id: "sof-tf",
-    keywords: ["sof", "special", "task force", "tf", "incident", "high-risk", "특수부대", "특수", "고위험"],
+    keywords: ["sof", "special", "task force", "tf", "incident", "high-risk", "special forces", "specialized", "critical-risk"],
     docs: [
       "docs/ai-special-operations-tf.md",
       "docs/multinational-doctrine-consistency-review.md"
@@ -86,7 +86,7 @@ const RULES = [
   },
   {
     id: "sources-research",
-    keywords: ["source", "research", "citation", "doctrine", "nato", "uk", "canada", "korea", "multinational", "출처", "리서치", "논문", "교리", "미군", "한국군", "다국적"],
+    keywords: ["source", "research", "citation", "doctrine", "nato", "uk", "canada", "korea", "multinational", "sourcing", "investigation", "paper", "doctrinal", "u.s. military", "korean military", "coalition"],
     docs: [
       "docs/source-map.md",
       "docs/research-compendium.md",
@@ -102,7 +102,7 @@ const RULES = [
   },
   {
     id: "document-access-context",
-    keywords: ["document access", "need-to-know", "context", "classification", "opsec", "eefi", "문서", "접근", "컨텍스트", "기밀", "보안"],
+    keywords: ["document access", "need-to-know", "context", "classification", "opsec", "eefi", "records", "entry", "situational context", "confidential", "security"],
     docs: [
       "docs/role-document-access-policy.md",
       "docs/context-releasability-policy.md",
@@ -116,7 +116,7 @@ const RULES = [
   },
   {
     id: "runtime-validation",
-    keywords: ["schema", "validator", "runner", "fixture", "test", "json", "runtime", "검증", "스키마", "러너", "테스트"],
+    keywords: ["schema", "validator", "runner", "fixture", "test", "json", "runtime", "verification", "schematic", "test runner", "testing"],
     docs: [
       "schema-files/README.md",
       "sample-payloads/README.md",
@@ -131,7 +131,7 @@ const RULES = [
   },
   {
     id: "runtime-architecture-dashboard",
-    keywords: ["architecture", "dashboard", "event", "projection", "ui", "database", "maintenance", "readiness", "아키텍처", "대시보드", "이벤트", "프로젝션", "정비", "준비태세"],
+    keywords: ["architecture", "dashboard", "event", "projection", "ui", "database", "maintenance", "readiness", "architectural", "control panel", "eventing", "projected view", "upkeep", "preparedness"],
     docs: [
       "docs/reference-architecture.md",
       "docs/event-sourcing-model.md",
@@ -147,7 +147,7 @@ const RULES = [
   },
   {
     id: "continuity-handoff",
-    keywords: ["continuity", "handoff", "rotation", "succession", "knowledge", "km", "인수인계", "승계", "교체", "로테이션", "지식관리"],
+    keywords: ["continuity", "handoff", "rotation", "succession", "knowledge", "km", "handover", "succession planning", "replacement", "cycling", "knowledge transfer"],
     docs: [
       "docs/personnel-continuity-model.md",
       "docs/knowledge-management-sop.md",
@@ -159,7 +159,7 @@ const RULES = [
   },
   {
     id: "skill-operations",
-    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "스킬", "라우팅", "문서체계", "문서 체계", "커버리지", "설치", "자동설치"],
+    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup"],
     docs: [
       ".claude/skills/controls-doctrine-operator/SKILL.md",
       "install-ai-cli-skills.sh",
@@ -169,7 +169,7 @@ const RULES = [
       "docs/controls-doctrine-operator-skill.html"
     ],
     commands: [
-      "node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
+      "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
       "python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator"
     ]
   }
@@ -210,47 +210,47 @@ const ROLE_DOCS = {
 
 const DEPARTMENT_DOCS = [
   {
-    keywords: ["operations", "ops", "s3", "작전"],
+    keywords: ["operations", "ops", "s3", "operational"],
     docs: ["docs/orders-production-pipeline.md", "docs/information-to-operations-cycle.md"]
   },
   {
-    keywords: ["intelligence", "intel", "s2", "정보"],
+    keywords: ["intelligence", "intel", "s2", "information"],
     docs: ["docs/source-reliability-rubric.md", "docs/opsec-classification-model.md"]
   },
   {
-    keywords: ["logistics", "readiness", "maintenance", "s4", "군수", "정비", "준비태세"],
+    keywords: ["logistics", "readiness", "maintenance", "s4", "sustainment", "upkeep", "preparedness"],
     docs: ["docs/maintenance-readiness-model.md", "docs/agent-readiness-ledger.md"]
   },
   {
-    keywords: ["systems", "platform", "architecture", "s6", "시스템", "플랫폼"],
+    keywords: ["systems", "platform", "architecture", "s6", "system", "platforms"],
     docs: ["docs/reference-architecture.md", "docs/event-sourcing-model.md"]
   },
   {
-    keywords: ["collaboration", "cross-functional", "liaison", "협업", "연락"],
+    keywords: ["collaboration", "cross-functional", "liaison", "cooperation", "contact"],
     docs: ["docs/interdepartment-collaboration-policy.md", "docs/b2c2wg-operating-model.md"]
   }
 ];
 
 const AUTHORITY_DOCS = [
   {
-    keywords: ["approval", "approve", "승인"],
+    keywords: ["approval", "approve", "sign-off"],
     docs: ["docs/approval-scope-policy.md"]
   },
   {
-    keywords: ["release", "external", "final", "공개", "릴리즈", "최종"],
+    keywords: ["release", "external", "final", "disclosure", "publish", "finalized"],
     docs: ["docs/context-releasability-policy.md", "docs/opsec-classification-model.md"]
   },
   {
-    keywords: ["risk", "acceptance", "high-risk", "위험"],
+    keywords: ["risk", "acceptance", "high-risk", "hazard"],
     docs: ["docs/risk-acceptance-authority.md", "docs/tool-use-roe.md"]
   },
   {
-    keywords: ["execution", "tool", "scoped-execution", "실행", "도구"],
+    keywords: ["execution", "tool", "scoped-execution", "carry-out", "instrument"],
     docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md"]
   }
 ];
 
-const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".sh", ".yaml", ".yml"]);
+const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".sh", ".svg", ".yaml", ".yml"]);
 const EXCLUDED_DIRS = new Set([".git", "node_modules"]);
 
 const ROUTE_HINTS = [
@@ -260,7 +260,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "orientation",
-    keywords: ["readme", "military-llm-framework", "military-operating-system", "glossary", "commander-handbook", "sop-library", "case-studies", "functional-domains", "experiments", "implementation-guide"]
+    keywords: ["assets", "banner", "diagram", "image", "operating-loop", "repository-map", "readme", "contributing", "code-of-conduct", "governance", "support", "changelog", "military-llm-framework", "military-operating-system", "glossary", "commander-handbook", "sop-library", "case-studies", "functional-domains", "experiments", "implementation-guide"]
   },
   {
     id: "orders",
@@ -268,11 +268,11 @@ const ROUTE_HINTS = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "approval", "risk", "roe", "release", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "decision-packet"]
+    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "decision-packet"]
   },
   {
     id: "multi-agent-organization",
-    keywords: ["agent", "department", "collaboration", "b2c2wg", "working-group", "liaison", "metl", "battle-rhythm", "llm-agent-org-chart", "functional-domains"]
+    keywords: ["agent", "routing-preflight", "department", "collaboration", "b2c2wg", "working-group", "liaison", "metl", "battle-rhythm", "llm-agent-org-chart", "functional-domains"]
   },
   {
     id: "force-structure",
@@ -292,7 +292,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "runtime-validation",
-    keywords: ["schema-files", "sample-payloads", "fixture", "fixtures", "validator", "validate", "linter", "runner", "run-", "prototype", "payloads", "evaluation-metrics"]
+    keywords: ["validation-stack", ".github", "github", "workflow", "workflows", "pull-request-template", "issue-template", "bug-report", "docs-change", "dependabot", "check-json", "check-markdown", "schema-files", "sample-payloads", "fixture", "fixtures", "validator", "validate", "linter", "runner", "run-", "prototype", "payloads", "evaluation-metrics"]
   },
   {
     id: "runtime-architecture-dashboard",
@@ -381,6 +381,7 @@ function walkRoutableFiles(repoRoot) {
 }
 
 function artifactType(file) {
+  if (file.endsWith(".svg")) return "image-asset";
   if (file.endsWith(".html")) return "html-document";
   if (file.endsWith(".md")) return "document";
   if (file.endsWith(".yaml") || file.endsWith(".yml")) return "skill-metadata";

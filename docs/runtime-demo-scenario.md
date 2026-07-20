@@ -1,29 +1,29 @@
 # Runtime Demo Scenario
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 하나의 mission이 intake부터 AAR까지 흐르는 end-to-end 데모 시나리오다.
+This document is an end-to-end demo scenario showing a single mission flowing from intake through AAR.
 
-목적은 프레임워크가 문서 묶음이 아니라 실제 런타임으로 어떻게 작동해야 하는지 보여주는 것이다.
+The purpose is to show how the framework must operate as an actual runtime, not just a bundle of documents.
 
 ## 1. Demo Mission
 
-사용자 요청:
+User request:
 
 ```text
-군대식 LLM 프레임워크를 실제 앱으로 만들 수 있게 validator와 dashboard 구조까지 정리해줘.
+Organize the validator and dashboard structure so the military-style LLM framework can be built into an actual app.
 ```
 
 Mission:
 
 ```text
-군대식 LLM 프레임워크를 tool-gated runtime으로 구현하기 위한 validator, policy, dashboard, data model 산출물을 만든다.
+Produce validator, policy, dashboard, and data model artifacts to implement the military-style LLM framework as a tool-gated runtime.
 ```
 
 Intent:
 
 ```text
-문서화된 군대식 운용 원칙이 실제 시스템 계약, 검증 규칙, 승인 흐름, 대시보드 설계로 전환되어야 한다.
+Documented military-style operating principles must be converted into actual system contracts, validation rules, approval flows, and dashboard design.
 ```
 
 ## 2. Timeline
@@ -176,7 +176,7 @@ Improve:
 - Add automated fixture runner.
 - Build dashboard wireframe UI.
 
-## 9. 관련 문서
+## 9. Related Documents
 
 - `validator-cli-prototype/README.md`
 - `dashboard-wireframes.md`

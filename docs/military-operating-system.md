@@ -1,304 +1,304 @@
 # Military Operating System
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대의 작동 방식을 하나의 운영체계로 보고, 그 구성요소를 LLM 운용 체계로 변환한다.
+This document treats the way a military operates as a single operating system and translates its components into an LLM operating system.
 
-핵심 관점:
+Core perspective:
 
 ```text
-군대는 사람을 많이 모은 조직이 아니라,
-불확실한 환경에서 반복적으로 의도, 정보, 권한, 자원, 실행, 학습을 동기화하는 운영체계다.
+A military is not simply an organization that gathers many people together;
+it is an operating system that repeatedly synchronizes intent, information, authority, resources, execution, and learning under uncertain conditions.
 ```
 
-## 1. 군대 운영체계의 계층
+## 1. Layers of the Military Operating System
 
-| 계층 | 군대 개념 | 역할 | LLM 적용 |
+| Layer | Military Concept | Role | LLM Application |
 |---|---|---|---|
-| 1 | Doctrine | 공통 사고방식 | 프레임워크 원칙 |
-| 2 | SOP | 반복 업무 표준화 | 기본 프롬프트/워크플로우 |
-| 3 | Commander's Intent | 목적과 성공 상태 | 사용자 의도와 금지선 |
-| 4 | Planning Process | 문제 분석과 방책 개발 | 계획-검증-실행 루프 |
-| 5 | Orders | 실행 지시 | OPORD/WARNO/FRAGO 프롬프트 |
-| 6 | Task Organization | 임무별 조직 재구성 | 임무별 에이전트 팀 구성 |
-| 7 | Battle Rhythm | 회의/보고/결정 주기 | 상태 업데이트와 승인 주기 |
-| 8 | Decision Support | 결심 지점과 정보 요구 | CCIR/DSM/DST |
-| 9 | Risk Management | 위험 식별과 통제 | 승인 등급, 중단 조건 |
-| 10 | Liaison | 조직 간 연결 | 에이전트 간 인터페이스 |
-| 11 | Knowledge Management | 정보 흐름 관리 | 근거 지도, 문서 저장소 |
-| 12 | Assessment | 성과 측정 | MOP/MOE, 테스트, 검증 |
-| 13 | AAR | 사후 학습 | 프롬프트/SOP 개선 |
+| 1 | Doctrine | Common way of thinking | Framework principles |
+| 2 | SOP | Standardization of repetitive tasks | Base prompts/workflows |
+| 3 | Commander's Intent | Purpose and end state | User intent and hard limits |
+| 4 | Planning Process | Problem analysis and course-of-action development | Plan-verify-execute loop |
+| 5 | Orders | Execution directives | OPORD/WARNO/FRAGO prompts |
+| 6 | Task Organization | Reorganizing structure by mission | Configuring agent teams by mission |
+| 7 | Battle Rhythm | Cycle of meetings/reports/decisions | Status update and approval cycle |
+| 8 | Decision Support | Decision points and information requirements | CCIR/DSM/DST |
+| 9 | Risk Management | Risk identification and control | Approval tiers, stop conditions |
+| 10 | Liaison | Connection between organizations | Interfaces between agents |
+| 11 | Knowledge Management | Managing information flow | Evidence maps, document repositories |
+| 12 | Assessment | Measuring performance | MOP/MOE, tests, validation |
+| 13 | AAR | Post-action learning | Prompt/SOP improvement |
 
-## 2. Doctrine: 공통 사고방식
+## 2. Doctrine: Common Way of Thinking
 
-Doctrine은 세부 매뉴얼이 아니라 조직이 문제를 보는 공통 언어와 원칙이다.
+Doctrine is not a detailed manual; it is the common language and set of principles through which an organization views problems.
 
-LLM 적용:
+LLM Application:
 
-- 모든 에이전트가 같은 용어와 판단 기준을 사용한다.
-- "정확성", "근거", "승인", "보고", "자율성"의 의미를 표준화한다.
-- 프레임워크 문서는 system prompt의 상위 원칙 역할을 한다.
+- All agents use the same terminology and judgment criteria.
+- Standardize the meaning of "accuracy," "evidence," "approval," "reporting," and "autonomy."
+- Framework documents serve as the top-level principles of the system prompt.
 
-산출물:
+Deliverables:
 
-- 용어집.
-- 원칙 문서.
-- 역할별 책임표.
-- 금지선과 승인 기준.
+- A glossary.
+- A principles document.
+- A responsibility matrix by role.
+- Hard limits and approval criteria.
 
-## 3. SOP: 반복 업무 표준화
+## 3. SOP: Standardizing Repetitive Tasks
 
-SOP는 반복 업무를 매번 새로 판단하지 않게 만든다. 군은 SOP로 일상적 실행을 자동화하고, 지휘관은 예외와 변화에 집중한다.
+An SOP prevents repetitive tasks from requiring a fresh judgment call every time. The military uses SOPs to automate routine execution, freeing the commander to focus on exceptions and change.
 
-LLM 적용:
+LLM Application:
 
-- 반복 작업은 매번 새 프롬프트를 만들지 않는다.
-- 조사, 요약, 코드 변경, 검증, 보고, AAR은 표준 템플릿으로 처리한다.
-- SOP는 자유를 없애는 것이 아니라, 중요한 판단에 집중하기 위한 기본값이다.
+- Do not create a new prompt from scratch for every repetitive task.
+- Handle research, summarization, code changes, verification, reporting, and AAR with standard templates.
+- An SOP does not eliminate freedom; it is a default that lets attention concentrate on the judgment calls that matter.
 
-AI SOP의 최소 구성:
-
-```text
-1. 목적
-2. 적용 범위
-3. 역할과 책임
-4. 입력
-5. 절차
-6. 출력
-7. 승인 조건
-8. 보고 조건
-9. 실패 시 대체 절차
-10. 기록과 AAR
-```
-
-## 4. Commander's Intent: 목적 보존 장치
-
-Commander's intent는 하위 단위가 상황 변화 속에서도 같은 방향으로 판단하게 하는 장치다.
-
-LLM 적용:
-
-- 에이전트에게 "무엇을 만들라"만 주지 않는다.
-- 왜 만드는지, 성공 상태가 무엇인지, 절대 깨면 안 되는 기준을 준다.
-- 하위 에이전트가 방법을 바꾸더라도 의도는 바꾸지 못하게 한다.
-
-좋은 AI intent:
+Minimum structure of an AI SOP:
 
 ```text
-목적:
-성공 상태:
-핵심 제약:
-우선순위:
-실패로 간주할 조건:
-자율 판단 가능한 영역:
-승인 필요한 영역:
+1. Purpose
+2. Scope of application
+3. Roles and responsibilities
+4. Inputs
+5. Procedure
+6. Outputs
+7. Approval conditions
+8. Reporting conditions
+9. Fallback procedure on failure
+10. Records and AAR
 ```
 
-## 5. Planning Process: 생각을 실행 전에 구조화
+## 4. Commander's Intent: A Mechanism for Preserving Purpose
 
-군은 큰 문제를 바로 실행하지 않는다. MDMP, JPP, MCPP, TLP 같은 절차로 문제를 분석하고 방책을 만든다.
+Commander's intent is the mechanism that keeps subordinate units judging in the same direction even as the situation changes.
 
-LLM 적용:
+LLM Application:
 
-- 단순 작업: TLP처럼 빠르게 처리.
-- 복잡 작업: MDMP처럼 단계화.
-- 불확실한 작업: design methodology처럼 문제 자체를 먼저 프레이밍.
+- Do not give an agent only "what to build."
+- Give it why it's being built, what the end state of success looks like, and the criteria that must never be violated.
+- Ensure that even if a subordinate agent changes its method, it cannot change the intent.
+
+A good AI intent statement:
+
+```text
+Purpose:
+End state of success:
+Key constraints:
+Priorities:
+Conditions considered failure:
+Areas of autonomous judgment:
+Areas requiring approval:
+```
+
+## 5. Planning Process: Structuring Thought Before Execution
+
+The military does not execute large problems immediately. It analyzes problems and develops courses of action through processes such as MDMP, JPP, MCPP, and TLP.
+
+LLM Application:
+
+- Simple tasks: process quickly, as with TLP.
+- Complex tasks: break into stages, as with MDMP.
+- Uncertain tasks: frame the problem itself first, as with design methodology.
 
 AI planning loop:
 
 ```text
-1. 임무 수령
-2. 의도와 제약 확인
-3. 정보 공백 식별
-4. 방책 생성
-5. 방책별 위험 평가
-6. 선택 또는 승인 요청
-7. 실행명령 생성
-8. 실행 중 평가
+1. Receive the mission
+2. Confirm intent and constraints
+3. Identify information gaps
+4. Generate courses of action
+5. Assess risk for each course of action
+6. Select or request approval
+7. Generate the execution order
+8. Assess during execution
 ```
 
-## 6. Orders: 실행을 위한 문서
+## 6. Orders: Documents for Execution
 
-명령 문서는 생각의 결과를 실행 가능한 형태로 바꾼다.
+Order documents turn the results of thinking into an executable form.
 
-| 명령 | 목적 | AI 적용 |
+| Order | Purpose | AI Application |
 |---|---|---|
-| WARNO | 준비 시작 | 자료 수집, 환경 확인 |
-| OPORD | 본 실행 | 작업 실행 프롬프트 |
-| FRAGO | 변경 반영 | 중간 수정 프롬프트 |
+| WARNO | Begin preparation | Data collection, environment check |
+| OPORD | Main execution | Task execution prompt |
+| FRAGO | Reflect changes | Mid-course modification prompt |
 
-핵심 원칙:
+Core principles:
 
-- OPORD는 길 수 있지만 mission과 intent는 짧아야 한다.
-- 세부 근거와 데이터는 annex로 분리한다.
-- 변경은 FRAGO로 누적 관리한다.
+- An OPORD may be long, but the mission and intent must be short.
+- Separate detailed evidence and data into an annex.
+- Manage changes cumulatively via FRAGO.
 
-## 7. Task Organization: 임무에 맞춰 조직을 바꾼다
+## 7. Task Organization: Reshaping the Organization to Fit the Mission
 
-군은 고정 조직만으로 싸우지 않는다. 임무에 따라 부대와 지원 관계를 재구성한다.
+The military does not fight with a fixed organization alone. It reconfigures units and support relationships according to the mission.
 
-LLM 적용:
+LLM Application:
 
-- 모든 작업에 같은 에이전트 구성을 쓰지 않는다.
-- 리서치 작업은 S2와 Red Team을 강화.
-- 구현 작업은 Executor와 S4를 강화.
-- 전략 작업은 Chief of Staff, S3, Red Team을 강화.
+- Do not use the same agent configuration for every task.
+- For research tasks, reinforce S2 and Red Team.
+- For implementation tasks, reinforce Executor and S4.
+- For strategic tasks, reinforce Chief of Staff, S3, and Red Team.
 
-예시:
+Example:
 
-| 작업 유형 | 권장 에이전트 구성 |
+| Task Type | Recommended Agent Configuration |
 |---|---|
-| 리서치 | Commander, S2, Red Team, Recorder |
-| 코드 구현 | Commander, Chief of Staff, S3, S4, Executor, Red Team |
-| 문서화 | Chief of Staff, S2, S3, Recorder |
-| 고위험 판단 | Commander, S2, Red Team, 외부 전문가 |
+| Research | Commander, S2, Red Team, Recorder |
+| Code implementation | Commander, Chief of Staff, S3, S4, Executor, Red Team |
+| Documentation | Chief of Staff, S2, S3, Recorder |
+| High-risk decisions | Commander, S2, Red Team, external experts |
 
-## 8. Battle Rhythm: 조직의 심장박동
+## 8. Battle Rhythm: The Organization's Heartbeat
 
-Battle rhythm은 회의, 보고, 분석, 결심, 명령 생산이 맞물리는 주기다. 단순 회의 일정이 아니라 지휘관 결심을 지원하는 정보 흐름이다.
+Battle rhythm is the cycle in which meetings, reporting, analysis, decisions, and order production interlock. It is not a mere meeting schedule but an information flow that supports the commander's decision-making.
 
-LLM 적용:
+LLM Application:
 
-- 긴 작업은 상태 보고 주기를 둔다.
-- 보고는 "무엇을 했다"보다 "어떤 결정이 필요한가" 중심으로 한다.
-- 하위 에이전트 산출물이 상위 판단의 입력이 되도록 순서를 맞춘다.
+- Long-running tasks should have a status-reporting cycle.
+- Reports should center on "what decision is needed" rather than "what was done."
+- Sequence things so that subordinate agents' outputs become inputs to higher-level judgment.
 
-AI battle rhythm 예시:
+Example AI battle rhythm:
 
 ```text
-T0: Commander intent 확정
-T1: S2 자료 수집 및 정보 공백 보고
-T2: S3 실행계획 작성
-T3: Red Team 검토
-T4: Chief of Staff 통합
-T5: Commander 승인 또는 FRAGO
-T6: Executor 실행
+T0: Commander finalizes intent
+T1: S2 collects data and reports information gaps
+T2: S3 drafts the execution plan
+T3: Red Team review
+T4: Chief of Staff integration
+T5: Commander approval or FRAGO
+T6: Executor executes
 T7: Assessment
 T8: AAR
 ```
 
-Battle rhythm 설계 기준:
+Battle rhythm design criteria:
 
-- 각 이벤트의 output이 다음 이벤트의 input이어야 한다.
-- 보고 주기는 작업 속도보다 느리면 안 된다.
-- 회의와 보고가 결정을 만들지 못하면 제거한다.
-- 상황이 바뀌면 battle rhythm도 바뀐다.
+- The output of each event must be the input to the next event.
+- The reporting cycle must not be slower than the pace of the work.
+- Eliminate any meeting or report that fails to produce a decision.
+- When the situation changes, the battle rhythm changes too.
 
-## 9. Decision Support: 결심 지점을 미리 정한다
+## 9. Decision Support: Defining Decision Points in Advance
 
-Decision support는 "언제 어떤 정보가 들어오면 누가 어떤 결정을 해야 하는가"를 미리 정하는 체계다.
+Decision support is a system that predetermines who must make what decision, when specific information arrives.
 
-LLM 적용:
+LLM Application:
 
-- 작업 시작 전에 decision point를 정의한다.
-- 각 decision point에 필요한 CCIR를 연결한다.
-- 정보가 들어오면 자동으로 보고 또는 실행 분기.
+- Define decision points before the task begins.
+- Link each decision point to the CCIR it requires.
+- When information arrives, automatically branch into reporting or execution.
 
 AI decision support matrix:
 
 | Decision Point | Trigger | Needed Info | Options | Approver | Action |
 |---|---|---|---|---|---|
-| 계속 진행 여부 | 핵심 근거 부족 | 출처 신뢰도 | 진행/보류/추가조사 | Commander | FRAGO |
-| 외부 검색 여부 | 최신 정보 필요 | 기존 지식 최신성 | 검색/보류 | Chief of Staff | S2 task |
-| 배포 여부 | 산출물 완료 | 테스트 결과 | 배포/수정 | Commander | Release |
+| Whether to continue | Lack of key evidence | Source reliability | Proceed/hold/further investigation | Commander | FRAGO |
+| Whether to search externally | Need for up-to-date information | Currency of existing knowledge | Search/hold | Chief of Staff | S2 task |
+| Whether to deploy | Deliverable complete | Test results | Deploy/revise | Commander | Release |
 
-## 10. Risk Management: 위험은 승인권을 바꾼다
+## 10. Risk Management: Risk Changes Who Holds Approval Authority
 
-군의 risk management는 위험을 없애는 절차가 아니라, 위험을 식별하고 적절한 수준에서 수용하게 하는 절차다.
+Risk management in the military is not a procedure for eliminating risk; it is a procedure for identifying risk and accepting it at the appropriate level.
 
-LLM 적용:
+LLM Application:
 
-- 위험이 낮고 가역적이면 에이전트 자율.
-- 위험이 높거나 비가역이면 Commander 승인.
-- 위험 통제책이 없으면 실행하지 않는다.
+- If risk is low and reversible, the agent acts autonomously.
+- If risk is high or irreversible, Commander approval is required.
+- If no risk-control measure exists, do not execute.
 
 AI risk steps:
 
 ```text
-1. 위험 식별
-2. 위험 평가
-3. 통제책 수립
-4. 승인권자 결정
-5. 통제책 적용
-6. 실행 중 감시
-7. 사후 평가
+1. Identify the risk
+2. Assess the risk
+3. Establish control measures
+4. Determine the approval authority
+5. Apply the control measures
+6. Monitor during execution
+7. Post-execution assessment
 ```
 
-## 11. Liaison: 수평 연결
+## 11. Liaison: Lateral Connection
 
-Liaison은 조직 간 통신을 유지하고 오해를 줄이는 역할이다.
+Liaison is the role that maintains communication between organizations and reduces misunderstanding.
 
-LLM 적용:
+LLM Application:
 
-- 에이전트 간 인터페이스를 명확히 한다.
-- S2가 찾은 근거가 S3 계획에 반영되는지 추적한다.
-- Red Team 지적이 Executor 수정으로 이어지는지 확인한다.
+- Make the interfaces between agents explicit.
+- Track whether evidence found by S2 is reflected in S3's plan.
+- Confirm whether Red Team findings lead to Executor revisions.
 
 AI liaison artifact:
 
 ```text
-보낸 에이전트:
-받는 에이전트:
-전달 내용:
-필요 행동:
-마감:
-확인 여부:
+Sending agent:
+Receiving agent:
+Content transmitted:
+Action required:
+Deadline:
+Confirmed:
 ```
 
-## 12. Knowledge Management: 정보 흐름을 설계한다
+## 12. Knowledge Management: Designing the Flow of Information
 
-Knowledge management의 목적은 필요한 사람이 필요한 시간에 필요한 형식으로 정보를 받게 하는 것이다.
+The purpose of knowledge management is to ensure that the right person receives information in the right format at the right time.
 
-LLM 적용:
+LLM Application:
 
-- 모든 자료를 하나의 긴 프롬프트에 넣지 않는다.
-- 근거, 결정, 변경, 산출물을 분리 저장한다.
-- 검색 가능한 source map과 decision log를 유지한다.
+- Do not cram all material into a single long prompt.
+- Store evidence, decisions, changes, and deliverables separately.
+- Maintain a searchable source map and decision log.
 
-AI knowledge base 구성:
+Structure of the AI knowledge base:
 
-| 저장소 | 내용 |
+| Repository | Contents |
 |---|---|
-| Source Map | 자료, 링크, 신뢰도, 요약 |
-| Decision Log | 결정, 이유, 승인자 |
-| Change Log | FRAGO, 변경 전후 |
-| Evidence Map | 주장과 근거 연결 |
-| SOP Library | 반복 절차 |
-| AAR Library | 교훈과 개선안 |
+| Source Map | Materials, links, reliability, summary |
+| Decision Log | Decision, rationale, approver |
+| Change Log | FRAGO, before/after of the change |
+| Evidence Map | Linking claims to evidence |
+| SOP Library | Repeatable procedures |
+| AAR Library | Lessons learned and improvement proposals |
 
-## 13. Assessment: 잘했는지 측정한다
+## 13. Assessment: Measuring Whether the Job Was Done Well
 
-군의 assessment는 실행이 목표 달성으로 이어지는지 계속 보는 과정이다.
+Assessment in the military is the ongoing process of watching whether execution is actually leading to the accomplishment of objectives.
 
-LLM 적용:
+LLM Application:
 
-- 산출물이 존재하는 것과 임무 성공은 다르다.
-- "작업 수행 여부"와 "효과 달성 여부"를 나눈다.
+- The existence of a deliverable is not the same as mission success.
+- Distinguish "whether the task was performed" from "whether the effect was achieved."
 
-| 구분 | 군 개념 | AI 적용 |
+| Category | Military Concept | AI Application |
 |---|---|---|
-| MOP | 수행 측정 | 작업을 했는가, 테스트를 돌렸는가 |
-| MOE | 효과 측정 | 사용자 목적을 달성했는가 |
-| Indicator | 징후 | 성공/실패를 보여주는 관찰 가능 신호 |
+| MOP | Measure of performance | Was the task done, were tests run |
+| MOE | Measure of effectiveness | Was the user's objective achieved |
+| Indicator | A sign | An observable signal indicating success or failure |
 
-예시:
+Example:
 
-| 목표 | MOP | MOE |
+| Objective | MOP | MOE |
 |---|---|---|
-| 문서화 | 문서 생성, 링크 추가 | 사용자가 바로 실행 가능한가 |
-| 리서치 | 출처 수집, 요약 | 프레임워크 설계에 반영됐는가 |
-| 코드 구현 | 테스트 통과 | 실제 사용 흐름이 개선됐는가 |
+| Documentation | Document created, links added | Can the user act on it immediately |
+| Research | Sources collected, summarized | Was it reflected in the framework design |
+| Code implementation | Tests pass | Did the actual usage flow improve |
 
-## 14. AAR: 학습을 제도화한다
+## 14. AAR: Institutionalizing Learning
 
-AAR은 결과 보고가 아니라 조직 학습 장치다.
+AAR is not a results report; it is an organizational learning mechanism.
 
-LLM 적용:
+LLM Application:
 
-- 각 작업 후 prompt, SOP, authority rule 중 무엇을 개선할지 기록한다.
-- 실패만 기록하지 말고 유지할 절차도 기록한다.
-- 반복 오류는 SOP로 승격한다.
+- After each task, record which of prompt, SOP, or authority rule needs improvement.
+- Do not record only failures; also record procedures worth keeping.
+- Promote recurring errors into an SOP.
 
-## 15. 전체 루프
+## 15. The Overall Loop
 
 ```text
 Doctrine
@@ -316,7 +316,7 @@ Doctrine
 -> SOP Update
 ```
 
-## 16. 참고 자료
+## 16. References
 
 - FM 6-0, Commander and Staff Organization and Operations: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN35404-FM_6-0-000-WEB-1.pdf
 - ATP 3-90.90, Army Tactical Standard Operating Procedures: https://www.scribd.com/document/78673750/ATP-3-90-90
@@ -325,4 +325,3 @@ Doctrine
 - ATP 5-19, Risk Management: https://www.first.army.mil/Portals/102/Users/231/99/999/Risk%20Management%20ATP%205-19.pdf
 - Operation Assessment MTTP: https://www.alssa.mil/mttps/assessment/
 - JCS CCIR Focus Paper: https://www.jcs.mil/Portals/36/Documents/Doctrine/fp/ccir_fp4th_ed.pdf
-

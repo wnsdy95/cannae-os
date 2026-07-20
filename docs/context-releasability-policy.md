@@ -1,21 +1,21 @@
 # Context Releasability Policy
 
-## 0. 목적
+## 0. Purpose
 
-멀티에이전트 LLM 운용에서 context 공유는 기본값이 아니다. 군대식 OPSEC와 need-to-know 원리를 적용하면, 각 role은 임무 수행에 필요한 정보만 받아야 한다.
+In multi-agent LLM operations, context sharing is not the default. Applying military-style OPSEC and need-to-know principles, each role should receive only the information required to perform its mission.
 
-이 문서는 classification, EEFI, role, mission need를 결합해 context packet을 어떻게 필터링할지 정한다.
+This document defines how classification, EEFI, role, and mission need are combined to filter context packets.
 
-핵심 원칙:
+Core principles:
 
-- 모든 에이전트에게 전체 context를 주지 않는다.
-- 민감정보는 원문 대신 reference id, redacted summary, decision state로 전달한다.
-- final output은 release review를 통과한 정보만 포함한다.
-- Red Team에도 secret 원문은 주지 않는다. 공격경로 검토에는 redacted abstraction을 우선한다.
+- Do not give the full context to every agent.
+- Sensitive information is delivered as a reference id, redacted summary, or decision state instead of the raw text.
+- Final output includes only information that has passed release review.
+- Do not give the Red Team the raw text of secrets either. Prefer redacted abstraction for attack-path review.
 
 ## 1. Context item model
 
-context item은 최소 아래 필드를 가진다.
+A context item has at minimum the fields below.
 
 ```json
 {
@@ -32,72 +32,72 @@ context item은 최소 아래 필드를 가진다.
 }
 ```
 
-권장 구현에서는 `raw_value`를 기본 context packet에 넣지 않는다. 필요할 때만 source-of-truth 파일에서 권한 검사를 거쳐 읽는다.
+In the recommended implementation, `raw_value` is not placed in the default context packet. It is read from the source-of-truth file, subject to an authorization check, only when needed.
 
-## 2. Role별 releasability
+## 2. Releasability by role
 
-| Role | 기본 접근 | 제한 |
+| Role | Default access | Restriction |
 | --- | --- | --- |
-| Commander | 결심에 필요한 모든 summary와 decision packet | secret raw value는 원칙적으로 redacted |
-| CoS | tasking, risk, pending decision, current projection | restricted raw value 금지 |
-| S2 | source, evidence, PIR 관련 자료 | credential, private user data 원문 금지 |
-| S3 | task order, tool request, current ops state | sensitive source detail은 필요 시 요약 |
-| S4 | resource, token budget, tool availability | secret value 없이 availability만 |
-| S6 | docs, event log, evidence metadata, releasability labels | restricted raw value는 별도 approval |
-| Red Team | assumptions, failure modes, policy boundary | exploitable secret/path 원문 금지 |
-| Evaluator | outputs, tests, AAR, readiness evidence | 민감값은 redacted evidence로 |
-| Final Output | 사용자에게 공개 가능한 결과 | sensitive/restricted 원문 금지 |
+| Commander | All summaries and decision packets needed for a decision | Secret raw values are redacted in principle |
+| CoS | Tasking, risk, pending decisions, current projection | Restricted raw values are prohibited |
+| S2 | Source, evidence, PIR-related material | Raw credentials and private user data are prohibited |
+| S3 | Task order, tool request, current ops state | Sensitive source detail is summarized when necessary |
+| S4 | Resource, token budget, tool availability | Availability only, without secret values |
+| S6 | Docs, event log, evidence metadata, releasability labels | Restricted raw values require separate approval |
+| Red Team | Assumptions, failure modes, policy boundary | Raw exploitable secrets/paths are prohibited |
+| Evaluator | Outputs, tests, AAR, readiness evidence | Sensitive values are provided as redacted evidence |
+| Final Output | Results releasable to the user | Raw sensitive/restricted content is prohibited |
 
 ## 3. Classification action table
 
 | Classification | Internal context | Cross-agent context | Final output | External tool |
 | --- | --- | --- | --- | --- |
-| public | 허용 | 허용 | 허용 | 허용 |
-| internal | 허용 | role 필요 시 허용 | 요약 허용 | 주의 |
-| sensitive | need-to-know | redacted summary | 원칙적 redaction | Red |
-| restricted | 제한 | 금지 또는 reference id | 금지 | Black/Red |
+| public | Allowed | Allowed | Allowed | Allowed |
+| internal | Allowed | Allowed when the role needs it | Summary allowed | Caution |
+| sensitive | Need-to-know | Redacted summary | Redaction in principle | Red |
+| restricted | Restricted | Prohibited or reference id only | Prohibited | Black/Red |
 
-## 4. EEFI 처리
+## 4. EEFI handling
 
-EEFI는 다음 중 하나로 전달한다.
+EEFI is delivered using one of the following methods.
 
-| 원본 | 전달 방식 |
+| Source | Delivery method |
 | --- | --- |
-| API key/token/password/private key | 전달 금지. `EEFI_DETECTED` alert만 |
-| private user data | 목적에 필요한 최소 summary |
-| production target detail | approval packet에는 target class, exact target은 commander-only |
-| vulnerability detail | Red Team에는 abstract failure mode, exploit detail 제거 |
-| legal/policy uncertainty | source id와 open question으로 전달 |
+| API key/token/password/private key | Delivery prohibited. `EEFI_DETECTED` alert only |
+| private user data | Minimum summary necessary for the purpose |
+| production target detail | Approval packet contains only the target class; the exact target is commander-only |
+| vulnerability detail | Red Team receives an abstract failure mode with exploit detail removed |
+| legal/policy uncertainty | Delivered as a source id and an open question |
 
-EEFI가 감지되면:
+When EEFI is detected:
 
-1. raw output을 중단한다.
-2. CCIR alert를 생성한다.
-3. source-of-truth에는 redacted record만 저장한다.
-4. 필요한 경우 commander release review를 요청한다.
+1. Halt the raw output.
+2. Generate a CCIR alert.
+3. Store only the redacted record in the source-of-truth.
+4. Request commander release review if necessary.
 
-## 5. Context packet 생성 절차
+## 5. Context packet generation procedure
 
-1. Mission/task에 필요한 role을 확인한다.
-2. 각 context item에 classification과 EEFI 여부를 붙인다.
-3. role별 allowed_roles와 purpose를 비교한다.
-4. raw, summary, redacted, reference-only 중 전달 방식을 선택한다.
-5. 전달된 packet id를 event log에 남긴다.
-6. final output 전에 release review를 수행한다.
+1. Identify the roles required for the mission/task.
+2. Attach classification and EEFI status to each context item.
+3. Compare allowed_roles and purpose for each role.
+4. Choose a delivery method among raw, summary, redacted, or reference-only.
+5. Record the delivered packet id in the event log.
+6. Perform release review before final output.
 
 ## 6. Delivery modes
 
-| Mode | 의미 | 사용 |
+| Mode | Meaning | Usage |
 | --- | --- | --- |
-| raw | 원문 전달 | public/internal, need-to-know |
-| summary | 요약 전달 | internal/sensitive |
-| redacted | 민감 필드 제거 | sensitive/restricted metadata |
-| reference_only | 파일/id만 전달 | restricted, commander-only |
-| denied | 전달 금지 | EEFI, Black |
+| raw | Deliver the original content | public/internal, need-to-know |
+| summary | Deliver a summary | internal/sensitive |
+| redacted | Remove sensitive fields | sensitive/restricted metadata |
+| reference_only | Deliver only the file/id | restricted, commander-only |
+| denied | Delivery prohibited | EEFI, Black |
 
 ## 7. Policy examples
 
-S3에게 전달:
+Delivered to S3:
 
 ```json
 {
@@ -116,7 +116,7 @@ S3에게 전달:
 }
 ```
 
-Red Team에게 전달:
+Delivered to the Red Team:
 
 ```json
 {
@@ -208,7 +208,7 @@ Before sending context to an agent:
 - Does final output need release review?
 - Is the transfer logged?
 
-## 12. 구현 후보
+## 12. Implementation candidates
 
 schema:
 
@@ -224,15 +224,15 @@ prototype:
 - `release-review-runner.js`: final output packet safety check.
 - `eefi-detector.js`: secret/private pattern and classification guard.
 
-## 13. 출처 앵커
+## 13. Source anchors
 
 - Joint OPSEC Support Element, Operations Security: https://www.jcs.mil/Doctrine/Joint-Doctrine-Pubs/Joint-OPSEC/
 - Joint Staff CCIR Focus Paper: https://www.jcs.mil/Portals/36/Documents/Doctrine/fp/ccir_fp4th_ed.pdf
 - Knowledge and Information Management Focus Paper: https://www.jcs.mil/Portals/36/Documents/Doctrine/fp/knowledge_and_info_fp.pdf?ver=2018-05-17-102808-507
 - ADP 6-0, Mission Command: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN34403-ADP_6-0-000-WEB-3.pdf
 
-## 14. 현 단계 결론
+## 14. Current-stage conclusion
 
-LLM context는 보급품이 아니라 정보자산이다. 필요한 사람에게 필요한 양만, 필요한 시간 동안, 필요한 형식으로 전달해야 한다.
+LLM context is an information asset, not a supply item. It must be delivered to the person who needs it, in the amount needed, for the time needed, and in the format needed.
 
-이 정책은 멀티에이전트 시스템의 hallucination 통제와 보안 통제를 같은 구조로 묶는다. 출처 없는 정보는 evidence gate에서 막고, 민감한 정보는 releasability gate에서 막는다.
+This policy binds hallucination control and security control in multi-agent systems into the same structure. Information without a source is blocked at the evidence gate, and sensitive information is blocked at the releasability gate.

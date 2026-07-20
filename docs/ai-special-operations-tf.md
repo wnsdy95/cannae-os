@@ -1,30 +1,30 @@
 # AI Special Operations Task Force
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 미군 SOF 자료를 참조해 "AI 특수부대 TF" 운영 모델을 정의한다.
+This document references U.S. military SOF material to define an "AI Special Operations TF" operating model.
 
-여기서 SOF는 실제 군사작전 전술을 모사하는 뜻이 아니다. LLM/agent 운용에서 다음과 같은 작업을 수행할 때 쓰는 소규모, 고숙련, 고검증, 고지원 task force 모델이다.
+Here, SOF does not mean mimicking actual military tactics. It is a small, highly-skilled, highly-verified, highly-enabled task force model used in LLM/agent operations for tasks such as:
 
-- 시간 민감도가 높고 실패 비용이 큰 작업
-- 민감한 context, release review, approval boundary가 얽힌 작업
-- 일반 agent workflow로는 coordination cost가 커지는 작업
-- 강한 source discipline, tool discipline, AAR가 필요한 작업
+- Tasks with high time-sensitivity and high failure cost
+- Tasks entangled with sensitive context, release review, and approval boundaries
+- Tasks where a normal agent workflow would incur large coordination cost
+- Tasks requiring strong source discipline, tool discipline, and AAR
 
-핵심 전환:
+Core conversion:
 
 ```text
 SOF = small, selected, trained, enabled, mission-commanded force
 AI SOF TF = small, selected, tested, tool-enabled, commander-bounded agent team
 ```
 
-다국적 적용 주의:
+Multinational-application caution:
 
-- 이 문서의 SOF Truths와 core activities는 USSOCOM 공식 자료에서 온 US-derived heuristic이다.
-- 다른 군의 특수작전 교리를 대표한다고 쓰지 않는다.
-- 다국적/민간 적용에서는 `AI SOF TF`를 `high-risk task force` 또는 `protected incident cell`로 alias할 수 있으며, 실제 명칭은 local doctrine review 후 정한다.
+- The SOF Truths and core activities in this document are US-derived heuristics taken from official USSOCOM material.
+- Do not present them as representative of another nation's special-operations doctrine.
+- For multinational/civilian application, `AI SOF TF` may be aliased as `high-risk task force` or `protected incident cell`; the actual name should be set after a local doctrine review.
 
-## 1. 공식 출처 앵커
+## 1. Official Source Anchors
 
 - JP 3-05, Special Operations: https://www.jcs.mil/Doctrine/DOCNET/JP-3-05-Special-Operations/
 - FM 3-05, Army Special Operations, June 2025: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN44116-FM_3-05-000-WEB-1.pdf
@@ -32,98 +32,98 @@ AI SOF TF = small, selected, tested, tool-enabled, commander-bounded agent team
 - USSOCOM Core Activities: https://www.socom.mil/about/core-activities
 - USSOCOM Army Special Operations Command page: https://www.socom.mil/ussocom-enterprise/components/army-special-operations-command
 
-## 2. SOF Truths를 AI 운용 원리로 변환
+## 2. Converting SOF Truths into AI Operating Principles
 
-| SOF Truth | AI SOF TF 원리 | Runtime 적용 |
+| SOF Truth | AI SOF TF Principle | Runtime Application |
 | --- | --- | --- |
-| Humans are more important than hardware | 모델보다 사람의 intent, 승인, review가 중요하다 | Commander/user retained authority를 둔다 |
-| Quality is better than quantity | 많은 agent보다 검증된 소수 agent가 낫다 | task별 readiness T/P 이상 agent만 투입 |
-| SOF cannot be mass produced | 고숙련 agent workflow는 즉석 생성할 수 없다 | SOP, fixture, rehearsal, AAR로 축적 |
-| Competent SOF cannot be created after emergencies occur | 긴급상황 전에 roster와 gate가 있어야 한다 | standing TF template와 preflight checks 유지 |
-| Most special operations require non-SOF support | elite executor도 enabler 없이는 실패한다 | S2/S4/S6/Red Team/release reviewer를 붙인다 |
+| Humans are more important than hardware | Human intent, approval, and review matter more than the model | Retain Commander/user authority |
+| Quality is better than quantity | A few verified agents are better than many | Deploy only agents at or above task readiness T/P |
+| SOF cannot be mass produced | A highly-skilled agent workflow cannot be created on the spot | Accumulate via SOP, fixture, rehearsal, AAR |
+| Competent SOF cannot be created after emergencies occur | Roster and gates must exist before an emergency | Maintain a standing TF template and preflight checks |
+| Most special operations require non-SOF support | Even an elite executor fails without enablers | Attach S2/S4/S6/Red Team/release reviewer |
 
-## 3. AI SOF TF가 필요한 조건
+## 3. Conditions Requiring an AI SOF TF
 
-일반 agent workflow가 아니라 AI SOF TF를 쓴다:
+Use an AI SOF TF rather than a normal agent workflow when:
 
-- Red/Black에 가까운 tool risk가 있다.
-- 외부 release, credential, production, legal/compliance risk가 있다.
-- source conflict, hallucination risk, adversarial prompt risk가 높다.
-- 임무가 짧지만 여러 기능을 동시에 통합해야 한다.
-- 실패 시 rollback, incident SITREP, commander decision이 필요하다.
+- There is tool risk close to Red/Black.
+- There is external release, credential, production, or legal/compliance risk.
+- Source conflict, hallucination risk, or adversarial prompt risk is high.
+- The mission is short but requires integrating multiple functions simultaneously.
+- Failure would require rollback, an incident SITREP, or a commander decision.
 
-쓰지 않는다:
+Do not use it for:
 
-- 단순 Green file edit.
-- 단일 문서 요약.
-- 검증 없이 빠르게 많이 생성하는 작업.
-- authority boundary가 불명확한 상태의 자율 실행.
+- A simple Green file edit.
+- Summarizing a single document.
+- Rapidly producing a large volume of output without verification.
+- Autonomous execution while the authority boundary is unclear.
 
-## 4. AI SOF TF 조직
+## 4. AI SOF TF Organization
 
-| 보직 | 역할 | 권한 | 산출물 |
+| Position | Role | Authority | Deliverable |
 | --- | --- | --- | --- |
-| Commander/User | intent, end state, retained authority | approve/reject/FRAGO/risk acceptance | Commander intent, decision packet |
-| TF Lead / CoS | 임무 통합, battle rhythm, CCIR | tasking, pause, escalate | TF charter, SITREP |
-| S2 Recon Cell | source discovery, claim verification, threat/context analysis | source confidence 판단, unsupported claim 차단 | source annex, evidence packet |
-| S3 Execution Cell | tool sequence, implementation, dry run | Green execution, Amber report | task order, execution log |
-| S4/S6 Enabler Cell | tool/resource/context readiness, fallback, environment | degraded mode, repair task | maintenance report, PACE |
-| OPSEC/Release Reviewer | EEFI, releasability, final output review | release block/review pass | release review |
-| Red Team | failure mode, hallucination, abuse-case review | critical finding, no-go recommendation | red-team findings |
-| Recorder/KM | source of truth, event log, handoff | audit integrity | event log, handoff packet, AAR |
+| Commander/User | Intent, end state, retained authority | Approve/reject/FRAGO/risk acceptance | Commander intent, decision packet |
+| TF Lead / CoS | Mission integration, battle rhythm, CCIR | Tasking, pause, escalate | TF charter, SITREP |
+| S2 Recon Cell | Source discovery, claim verification, threat/context analysis | Judge source confidence, block unsupported claims | Source annex, evidence packet |
+| S3 Execution Cell | Tool sequence, implementation, dry run | Green execution, Amber report | Task order, execution log |
+| S4/S6 Enabler Cell | Tool/resource/context readiness, fallback, environment | Degraded mode, repair task | Maintenance report, PACE |
+| OPSEC/Release Reviewer | EEFI, releasability, final output review | Release block/review pass | Release review |
+| Red Team | Failure mode, hallucination, abuse-case review | Critical finding, no-go recommendation | Red-team findings |
+| Recorder/KM | Source of truth, event log, handoff | Audit integrity | Event log, handoff packet, AAR |
 
-원칙: AI SOF TF는 "강한 실행자"가 아니라 "강한 통합과 통제 아래 놓인 작은 팀"이다.
+Principle: an AI SOF TF is not a "strong executor" but "a small team placed under strong integration and control."
 
-## 5. Core Activities의 안전한 AI 매핑
+## 5. Safe AI Mapping of Core Activities
 
-| USSOCOM core activity | AI SOF TF 매핑 | 금지선 |
+| USSOCOM Core Activity | AI SOF TF Mapping | Line Not to Cross |
 | --- | --- | --- |
-| Direct Action | 좁은 범위의 고위험 code/tool action | 승인 없는 production/credential action 금지 |
-| Special Reconnaissance | 민감하거나 불확실한 source/context 검증 | 출처 없는 확정 표현 금지 |
-| Foreign Internal Defense / Security Force Assistance | 사용자의 팀/agent workflow 훈련과 SOP 구축 | 사용자를 우회한 자율 의사결정 금지 |
-| Civil Affairs | stakeholder, dependency, human impact 분석 | 사람/조직 영향 숨기기 금지 |
-| Military Information Support Operations | 정직한 user-facing communication, change adoption support | 기만, 조작, 은폐 목적의 persuasion 금지 |
-| Counterterrorism / Counter-proliferation analogy | abuse-case, exploit, secret leakage, harmful-output 차단 | 실제 위해 전술/대상화로 전환 금지 |
-| Foreign Humanitarian Assistance analogy | incident recovery, user support, service restoration | 권한 없는 데이터 접근 금지 |
+| Direct Action | Narrow-scope, high-risk code/tool action | No production/credential action without approval |
+| Special Reconnaissance | Verification of sensitive or uncertain source/context | No asserting a claim as certain without a source |
+| Foreign Internal Defense / Security Force Assistance | Training the user's team/agent workflow and building SOPs | No autonomous decision-making that bypasses the user |
+| Civil Affairs | Analysis of stakeholders, dependencies, and human impact | Do not hide impact on people/organizations |
+| Military Information Support Operations | Honest user-facing communication, change-adoption support | No persuasion aimed at deception, manipulation, or concealment |
+| Counterterrorism / Counter-proliferation analogy | Blocking abuse cases, exploits, secret leakage, harmful output | No conversion into actual harmful tactics or targeting |
+| Foreign Humanitarian Assistance analogy | Incident recovery, user support, service restoration | No unauthorized data access |
 
-## 6. TF lifecycle
+## 6. TF Lifecycle
 
 ```text
 1. Activate
-   - commander intent, trigger, urgency, retained authority 확인
+   - Confirm commander intent, trigger, urgency, retained authority
 
 2. Select
-   - agent readiness, tool readiness, source access, release risk 확인
+   - Confirm agent readiness, tool readiness, source access, release risk
 
 3. Isolate
-   - need-to-know context packet, EEFI, allowed roles 설정
+   - Set up need-to-know context packet, EEFI, allowed roles
 
 4. Plan
    - OPORD + annex + approval scope + PACE + CCIR
 
 5. Backbrief / rehearse
-   - task owner가 intent, stop condition, approval boundary 재진술
-   - friction point를 CCIR/decision packet으로 route
+   - Task owner restates intent, stop condition, approval boundary
+   - Route friction points to CCIR/decision packet
 
 6. Execute
-   - Green은 실행, Amber는 보고, Red는 승인, Black은 금지
+   - Green executes, Amber reports, Red requires approval, Black is prohibited
 
 7. Extract / handoff
-   - result, evidence, unresolved risk, rollback state 기록
+   - Record result, evidence, unresolved risk, rollback state
 
 8. AAR / reset
-   - readiness update, SOP update, TF disband or standing watch
+   - Readiness update, SOP update, TF disband or standing watch
 ```
 
-## 7. Activation charter
+## 7. Activation Charter
 
-AI SOF TF는 다음 charter 없이 시작하지 않는다.
+An AI SOF TF does not begin without the following charter.
 
 ```yaml
 ai_sof_tf:
   id: SOF-TF-001
   mission_id: M-...
-  trigger: "왜 일반 workflow가 아닌 TF가 필요한가"
+  trigger: "Why a TF is needed instead of a normal workflow"
   commander_intent:
     purpose:
     end_state:
@@ -152,81 +152,81 @@ ai_sof_tf:
     handoff:
 ```
 
-현재 저장소에는 이 charter를 기계 검증하는 `schema-files/sof-tf-charter.schema.json`이 있다. 유효한 charter는 다음 속성을 반드시 분리한다.
+This repository has `schema-files/sof-tf-charter.schema.json`, which machine-validates this charter. A valid charter must separate out the following properties.
 
-- `trigger`: 일반 workflow가 부족한 이유와 risk/urgency.
-- `activity_mapping`: SOF core activity를 안전한 AI 운영 비유로 매핑.
-- `authority`: allowed, approval required, prohibited, commander-retained authority.
+- `trigger`: the reason the normal workflow is insufficient, and the risk/urgency.
+- `activity_mapping`: mapping the SOF core activity to a safe AI operating analogy.
+- `authority`: allowed, approval required, prohibited, and commander-retained authority.
 - `cells`: lead, S2, S3, S4/S6, OPSEC/release, Red Team, Recorder.
 - `ccir`: PIR, FFIR, EEFI, decision point.
-- `isolation`: need-to-know context packet과 EEFI control.
+- `isolation`: need-to-know context packet and EEFI control.
 - `enablers`: source-map, release review, maintenance readiness, fallback.
 - `rehearsal`: backbrief, rehearsal, dry run, go/no-go authority.
 - `exit_criteria`: success, abort, handoff.
 
-사용 순서:
+Order of use:
 
 ```text
-1. SofTfCharter 작성
-2. validator로 activation contract 검증
-3. activation runner로 go/no-go projection 생성
-4. go면 OPORD/task/backbrief/rehearsal로 전환
-5. no-go면 preflight block을 decision packet 또는 S3/S6/Recorder task로 보냄
+1. Write the SofTfCharter
+2. Validate the activation contract with the validator
+3. Generate a go/no-go projection with the activation runner
+4. If go, transition into OPORD/task/backbrief/rehearsal
+5. If no-go, send the preflight block to a decision packet or an S3/S6/Recorder task
 ```
 
-## 8. 권한 범위
+## 8. Scope of Authority
 
-| 행동 | 기본 권한 |
+| Action | Default Authority |
 | --- | --- |
-| local draft, source search, schema validation | Green |
-| large context reshaping, broad file edits, degraded fallback | Amber |
-| production mutation, credential use, external release, irreversible change | Red |
-| secret exfiltration, unauthorized access, deception/manipulation, harmful instruction | Black |
+| Local draft, source search, schema validation | Green |
+| Large context reshaping, broad file edits, degraded fallback | Amber |
+| Production mutation, credential use, external release, irreversible change | Red |
+| Secret exfiltration, unauthorized access, deception/manipulation, harmful instruction | Black |
 
-Commander retained authority:
+Commander-retained authority:
 
-- Red action 승인
-- 외부 공개/release 승인
-- high/critical residual risk 수용
-- mission scope 변경 FRAGO
-- TF disband 또는 standing watch 전환
+- Approving a Red action
+- Approving external disclosure/release
+- Accepting high/critical residual risk
+- Issuing a FRAGO to change mission scope
+- Disbanding the TF or converting it to a standing watch
 
-## 9. AI SOF TF와 기존 runtime artifact 연결
+## 9. Connecting AI SOF TF to Existing Runtime Artifacts
 
-| TF 기능 | 기존 artifact |
+| TF Function | Existing Artifact |
 | --- | --- |
-| mission command | `docs/commander-handbook.md` |
-| source discipline | `docs/source-map.md`, `source-map-linter.js` |
-| authority gate | `policy-engine-authority-integration.js` |
-| release gate | `policy-engine-release-integration.js`, `release-review-runner.js` |
-| sustainment | `maintenance-readiness-runner.js`, `maintenance-dashboard-runner.js` |
-| backbrief/rehearsal | `orders-dissemination-runner.js`, `rehearsal-to-ccir-router.js` |
-| event/handoff | `event-replay-prototype/`, `handoff-generator.js` |
+| Mission command | `docs/commander-handbook.md` |
+| Source discipline | `docs/source-map.md`, `source-map-linter.js` |
+| Authority gate | `policy-engine-authority-integration.js` |
+| Release gate | `policy-engine-release-integration.js`, `release-review-runner.js` |
+| Sustainment | `maintenance-readiness-runner.js`, `maintenance-dashboard-runner.js` |
+| Backbrief/rehearsal | `orders-dissemination-runner.js`, `rehearsal-to-ccir-router.js` |
+| Event/handoff | `event-replay-prototype/`, `handoff-generator.js` |
 | AAR/readiness | `aar-to-readiness-update.js` |
 | SOF TF activation | `schema-files/sof-tf-charter.schema.json`, `sof-tf-activation-runner.js`, `run-sof-tf-fixtures.js` |
 
-## 10. Activation runner
+## 10. Activation Runner
 
-`sof-tf-activation-runner.js`는 `SofTfCharter`를 실행 직전 projection으로 바꾼다.
+`sof-tf-activation-runner.js` converts a `SofTfCharter` into a pre-execution projection.
 
 ```bash
 node sof-tf-activation-runner.js sample-payloads/valid-sof-tf-charter.json
 ```
 
-출력은 다음 항목을 만든다.
+The output produces the following items.
 
-- `activation_decision`: `go` 또는 `no_go`.
-- `active_cells`: 실제 투입 cell과 role.
-- `context_distribution`: need-to-know packet 또는 redacted/denied.
-- `approval_gates`: approval_required와 commander-retained decision.
+- `activation_decision`: `go` or `no_go`.
+- `active_cells`: the cells and roles actually deployed.
+- `context_distribution`: the need-to-know packet, or redacted/denied.
+- `approval_gates`: approval_required and commander-retained decisions.
 - `required_support`: source-map, release review, maintenance readiness, fallback.
-- `preflight_blocks`: 실행 전 해결해야 할 blocker.
-- `commander_queue`: decision point.
+- `preflight_blocks`: blockers that must be resolved before execution.
+- `commander_queue`: decision points.
 - `recorder_actions`: event log, source-map delta, handoff, AAR/readiness update.
 
-SOF TF는 `preflight_blocks`가 남아 있으면 실행하지 않는다. 이 모델에서 "특수"는 빠른 우회권이 아니라, 고위험 임무에 더 강한 사전검증을 붙이는 의미다.
+An SOF TF does not execute while `preflight_blocks` remain. In this model, "special" does not mean a fast bypass of controls; it means attaching stronger pre-execution verification to a high-risk mission.
 
-## 11. Prompt template
+## 11. Prompt Template
 
 ```text
 You are operating as an AI Special Operations Task Force, not as a single general assistant.
@@ -260,17 +260,17 @@ Rules:
 
 ## 12. Anti-patterns
 
-- "특수부대"라는 이름으로 통제를 줄임.
-- 많은 agent를 띄우고 조율을 운에 맡김.
-- source/release/authority reviewer 없이 executor만 강화함.
-- 긴급상황이 생긴 뒤 즉석으로 elite workflow를 만들려 함.
-- 고위험 작업을 "작은 팀이니까 빠르게" 처리함.
-- AAR 없이 disband해서 같은 실패를 반복함.
+- Loosening control under the name of "special operations."
+- Launching many agents and leaving coordination to chance.
+- Reinforcing only the executor without a source/release/authority reviewer.
+- Trying to improvise an elite workflow only after an emergency has occurred.
+- Handling a high-risk task "quickly because it's a small team."
+- Disbanding without an AAR, repeating the same failure.
 
-## 13. 결론
+## 13. Conclusion
 
-AI SOF TF의 핵심은 비밀스럽거나 공격적인 행동이 아니다. 핵심은 작은 팀, 엄격한 선발, 충분한 훈련, 강한 enabler, 명확한 권한, 빠른 보고, 그리고 사후 readiness 갱신이다.
+The core of an AI SOF TF is not secretive or aggressive action. The core is a small team, strict selection, sufficient training, strong enablers, clear authority, rapid reporting, and post-action readiness updates.
 
-LLM 운용에서 이 모델은 다음 한 문장으로 요약된다.
+In LLM operations, this model is summarized in one sentence:
 
-> 고위험/고불확실성 임무는 더 많은 자율성이 아니라, 더 작은 팀과 더 강한 통제, 더 좋은 지원, 더 빠른 결심 루프가 필요하다.
+> High-risk, high-uncertainty missions need not more autonomy, but a smaller team, stronger control, better support, and a faster decision loop.

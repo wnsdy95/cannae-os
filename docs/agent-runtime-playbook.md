@@ -1,37 +1,37 @@
 # Agent Runtime Playbook
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 런타임을 실제로 운영할 때 따를 절차를 정의한다.
+This document defines the procedures to follow when actually operating a military-style LLM runtime.
 
-대상:
+Audience:
 
-- Orchestrator 운영자.
-- 에이전트 런타임 개발자.
-- 내부 AI 도구 관리자.
-- 문서화/코딩/리서치 자동화 시스템 운영자.
+- Orchestrator operators.
+- Agent runtime developers.
+- Internal AI tool administrators.
+- Operators of documentation/coding/research automation systems.
 
-핵심 원칙:
+Core principle:
 
 ```text
-런타임은 모델 호출기가 아니라 지휘통제 시스템이다.
+The runtime is not a model invoker — it is a command-and-control system.
 ```
 
 ## 1. Daily Startup
 
-운영 시작 시 확인한다.
+Confirm the following at the start of operations.
 
 ```text
-1. active missions 확인.
-2. blocked tasks 확인.
-3. pending approval 확인.
-4. failed tool requests 확인.
-5. evidence store sync 확인.
-6. agent readiness 변화 확인.
-7. unresolved AAR update 확인.
+1. Check active missions.
+2. Check blocked tasks.
+3. Check pending approvals.
+4. Check failed tool requests.
+5. Check evidence store sync.
+6. Check changes in agent readiness.
+7. Check for unresolved AAR updates.
 ```
 
-출력:
+Output:
 
 ```yaml
 startup_brief:
@@ -44,50 +44,50 @@ startup_brief:
 
 ## 2. Mission Intake Procedure
 
-1. 사용자 요청을 원문 그대로 저장한다.
-2. mission statement를 한 문장으로 작성한다.
-3. intent를 purpose, success, failure로 나눈다.
-4. constraints와 assumptions를 분리한다.
-5. initial risk level을 부여한다.
-6. OPORD draft를 만든다.
-7. validator를 실행한다.
-8. critical/error가 있으면 backbrief 또는 추가 질문으로 전환한다.
+1. Store the user request verbatim, exactly as given.
+2. Write the mission statement in a single sentence.
+3. Break the intent down into purpose, success, and failure.
+4. Separate constraints from assumptions.
+5. Assign an initial risk level.
+6. Produce an OPORD draft.
+7. Run the validator.
+8. If there are critical issues or errors, switch to a backbrief or additional clarifying questions.
 
 ## 3. OPORD Approval Procedure
 
-OPORD는 다음 조건을 만족해야 tasking 가능하다.
+An OPORD must satisfy the following conditions before it can be tasked out.
 
-- mission statement 존재.
-- intent purpose 존재.
-- authority allowed/approval/prohibited 존재.
-- CCIR 존재.
-- MOP/MOE 존재.
-- tool-use ROE와 충돌 없음.
+- A mission statement exists.
+- The intent's purpose exists.
+- Authority allowed/approval/prohibited exists.
+- CCIR exists.
+- MOP/MOE exist.
+- No conflict with the tool-use ROE.
 
-승인 없이 진행 가능한 경우:
+Cases that may proceed without approval:
 
 - Low risk.
 - Green tool actions only.
-- public/internal data only.
-- reversible outputs.
+- Public/internal data only.
+- Reversible outputs.
 
-승인 필요한 경우:
+Cases that require approval:
 
 - Red tool action.
-- external state change.
-- cost risk.
-- sensitive data.
-- irreversible action.
+- External state change.
+- Cost risk.
+- Sensitive data.
+- Irreversible action.
 
 ## 4. Tasking Procedure
 
-1. OPORD에서 task order를 생성한다.
-2. 각 task에 assigned_to, task, purpose, deliverables를 둔다.
-3. S2 task는 evidence requirement를 포함한다.
-4. S3 task는 verification requirement를 포함한다.
-5. S4 task는 sustainment estimate를 포함한다.
-6. S6 task는 documentation/update target을 포함한다.
-7. Red Team task는 independence boundary를 포함한다.
+1. Generate the task order from the OPORD.
+2. Give each task an assigned_to, task, purpose, and deliverables.
+3. S2 tasks include an evidence requirement.
+4. S3 tasks include a verification requirement.
+5. S4 tasks include a sustainment estimate.
+6. S6 tasks include a documentation/update target.
+7. Red Team tasks include an independence boundary.
 
 ## 5. Execution Loop
 
@@ -102,30 +102,30 @@ Task received
 -> SITREP
 ```
 
-실행 중단 조건:
+Conditions for halting execution:
 
-- CCIR 발생.
-- validator critical issue.
-- tool gateway Red/Black decision.
-- evidence conflict.
-- user changes mission.
-- test failure with unknown blast radius.
+- A CCIR occurs.
+- A validator critical issue.
+- A tool gateway Red/Black decision.
+- An evidence conflict.
+- The user changes the mission.
+- A test failure with unknown blast radius.
 
 ## 6. SITREP Procedure
 
-SITREP는 시간표보다 상태 변화 중심으로 발행한다.
+SITREPs are issued centered on state changes rather than on a fixed schedule.
 
-발행 트리거:
+Issuance triggers:
 
-- task 시작.
-- task 완료.
-- blocked 발생.
-- CCIR 발생.
-- approval 필요.
-- risk level 상승.
-- final verification 전.
+- Task start.
+- Task completion.
+- A blocked state occurs.
+- A CCIR occurs.
+- Approval is needed.
+- Risk level rises.
+- Before final verification.
 
-필수 필드:
+Required fields:
 
 - completed.
 - in_progress.
@@ -136,115 +136,115 @@ SITREP는 시간표보다 상태 변화 중심으로 발행한다.
 
 ## 7. FRAGO Procedure
 
-사용자 요구 변경, 출처 충돌, 도구 실패, 범위 변경이 생기면 FRAGO를 발행한다.
+A FRAGO is issued when there is a change in user requirements, a source conflict, a tool failure, or a scope change.
 
-FRAGO는 반드시 아래를 구분한다.
+A FRAGO must distinguish the following:
 
-- unchanged intent.
-- modified tasks.
-- new constraints.
-- affected artifacts.
-- required confirmation.
+- Unchanged intent.
+- Modified tasks.
+- New constraints.
+- Affected artifacts.
+- Required confirmation.
 
-금지:
+Prohibited:
 
-- FRAGO에서 상위 intent를 조용히 바꾸는 것.
-- 기존 OPORD 전체를 덮어써 변경 이력을 잃는 것.
+- Quietly changing the higher intent within a FRAGO.
+- Overwriting the entire existing OPORD and losing the change history.
 
 ## 8. Approval Handling
 
-Amber/Red tool request가 발생하면:
+When an Amber/Red tool request occurs:
 
-1. tool request를 중단 상태로 둔다.
-2. approval request를 만든다.
-3. action, tool, target, risk, rollback, alternatives를 표시한다.
-4. 사용자 승인 범위를 기록한다.
-5. 승인되면 해당 action만 실행한다.
-6. 거부되면 대체 경로를 제시한다.
+1. Place the tool request in a suspended state.
+2. Create an approval request.
+3. Display the action, tool, target, risk, rollback, and alternatives.
+4. Record the scope of user approval.
+5. If approved, execute only that action.
+6. If rejected, present an alternative path.
 
-승인 만료:
+Approval expiration:
 
-- mission 변경.
-- target 변경.
-- risk level 상승.
-- 정해진 시간 만료.
+- Mission changes.
+- Target changes.
+- Risk level rises.
+- A set time period expires.
 
 ## 9. Evidence Handling
 
-리서치 task는 evidence-first로 진행한다.
+Research tasks proceed evidence-first.
 
-절차:
+Procedure:
 
-1. source metadata 저장.
-2. claim 추출.
-3. interpretation 분리.
-4. reliability rating.
-5. linked document 지정.
-6. source map 반영.
+1. Store source metadata.
+2. Extract claims.
+3. Separate out interpretation.
+4. Apply a reliability rating.
+5. Designate the linked document.
+6. Reflect it in the source map.
 
-금지:
+Prohibited:
 
-- 결론 먼저 작성 후 출처 끼워넣기.
-- 출처와 해석 섞기.
-- 불확실성 삭제.
+- Writing the conclusion first and fitting sources in afterward.
+- Mixing sources with interpretation.
+- Deleting uncertainty.
 
 ## 10. Verification Procedure
 
-검증은 작업 유형별로 다르다.
+Verification differs by task type.
 
-| 작업 | 검증 |
+| Task | Verification |
 | --- | --- |
-| 문서 작성 | 링크, 헤더, 색인, line count |
-| 리서치 | source map, reliability, uncertainty |
-| 코드 | 테스트, lint, diff scope |
-| 도구 실행 | tool-use log, approval, rollback |
-| 배포 | preview, health check, rollback plan |
+| Document writing | Links, headers, index, line count |
+| Research | Source map, reliability, uncertainty |
+| Code | Tests, lint, diff scope |
+| Tool execution | Tool-use log, approval, rollback |
+| Deployment | Preview, health check, rollback plan |
 
 ## 11. Incident Procedure
 
-incident 예:
+Examples of incidents:
 
-- 민감정보 출력.
-- 승인 없는 Red action.
-- 허위 출처 발견.
-- 데이터 손상.
-- 외부 배포 실수.
+- Output of sensitive information.
+- A Red action taken without approval.
+- Discovery of a false source.
+- Data corruption.
+- A mistaken external deployment.
 
-절차:
+Procedure:
 
-1. affected task 중단.
-2. incident SITREP 작성.
-3. Commander와 사용자에게 보고.
-4. containment action.
-5. evidence/log 보존.
-6. recovery 또는 rollback.
+1. Halt the affected task.
+2. Write an incident SITREP.
+3. Report to the Commander and the user.
+4. Containment action.
+5. Preserve evidence/logs.
+6. Recovery or rollback.
 7. AAR.
-8. SOP/ROE 업데이트.
+8. Update the SOP/ROE.
 
 ## 12. AAR Procedure
 
-mission 완료 후:
+After mission completion:
 
-1. expected와 actual 비교.
-2. delta 기록.
-3. cause 분석.
-4. sustain/improve 분리.
-5. SOP update 필요 여부 결정.
-6. readiness ledger update.
-7. risk register update.
+1. Compare expected against actual.
+2. Record the delta.
+3. Analyze the cause.
+4. Separate sustain from improve.
+5. Decide whether an SOP update is needed.
+6. Update the readiness ledger.
+7. Update the risk register.
 
 ## 13. Shutdown Procedure
 
-작업 종료 전:
+Before ending work:
 
-- active task 상태 저장.
-- pending approvals 저장.
-- unresolved CCIR 저장.
-- source map과 compendium 갱신.
-- README 링크 검증.
-- next action queue 갱신.
+- Save the state of active tasks.
+- Save pending approvals.
+- Save unresolved CCIRs.
+- Update the source map and compendium.
+- Verify README links.
+- Update the next action queue.
 
-## 14. 관련 문서
+## 14. Related Documents
 
 - `reference-architecture.md`
 - `sample-runtime-state.md`

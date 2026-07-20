@@ -1,100 +1,100 @@
 # Glossary
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 프레임워크에서 사용하는 핵심 용어를 통일한다.
+This document standardizes the core terminology used in the military-style LLM framework.
 
-용어가 흔들리면 문서 하달이 흔들린다. 군대가 표준 용어를 중시하는 이유도 여기에 있다. 이 프레임워크에서는 군사용어를 그대로 숭배하지 않고, LLM 운용에서 같은 기능을 하는 개념으로 번역해 사용한다.
+When terminology drifts, order dissemination drifts with it. This is exactly why the military places such weight on standardized terms. This framework does not treat military terminology as sacred in itself; instead, it translates each term into the concept that performs the equivalent function in LLM operations.
 
-다국적 적용에서는 이 용어표를 원문 계급/직책표로 쓰지 않는다. `COMMANDER`, `S2`, `S3`, `S4`, `S6` 같은 이름은 내부 기능 ID이며, 실제 조직에 적용할 때는 `docs/multinational-doctrine-consistency-review.md`의 role alias map으로 현지 용어를 연결한다.
+In multinational application, this glossary is not used as a literal rank/position table. Names such as `COMMANDER`, `S2`, `S3`, `S4`, and `S6` are internal functional IDs; when applying the framework to an actual organization, use the role alias map in `docs/multinational-doctrine-consistency-review.md` to connect them to local terminology.
 
-## 1. 용어 표
+## 1. Term Table
 
-| 용어 | 군대식 의미 | LLM 프레임워크 의미 |
+| Term | Military Meaning | LLM Framework Meaning |
 | --- | --- | --- |
-| Mission | 부대가 수행해야 할 명확한 임무 | 에이전트가 달성해야 할 결과 |
-| Commander's Intent | 임무의 목적, 핵심 효과, 최종 상태 | 사용자가 진짜 원하는 결과와 실패 방지 조건 |
-| OPORD | 작전명령 | 복잡한 LLM 작업을 위한 구조화 프롬프트 |
-| WARNO | 경고명령 | 세부 계획 전 사전 착수 지시 |
-| FRAGO | 단편명령/변경명령 | 작업 중 요구사항 변경 또는 계획 수정 |
-| SITREP | 상황보고 | 진행 상태, 장애, 리스크 보고 |
-| AAR | 사후검토 | 결과와 의도 차이를 분석해 SOP에 반영 |
-| Backbrief | 하급자가 이해한 임무를 상급자에게 설명 | 에이전트가 실행 전 이해 내용을 재진술 |
-| Confirmation Brief | 명령 수령 확인 브리핑 | 에이전트가 지시사항과 제약을 확인 |
-| Rehearsal | 실행 전 예행연습 | 계획, 도구, 검증 경로를 사전 점검 |
-| Mission Command | 임무형 지휘 | intent와 권한 경계만 주고 방법은 위임 |
-| Command and Control | 지휘통제 | 사용자 의도, 권한, 보고, 승인 체계 |
-| Unity of Command | 지휘 일원화 | 최종 결정권자와 통합자가 하나로 명확함 |
-| Unity of Effort | 노력 통일 | 여러 에이전트가 같은 목적을 향해 움직임 |
-| Staff | 참모 | 기능별 전문 에이전트 |
-| S2 | 정보 참모 | 리서치, 출처, 불확실성 담당 |
-| S3 | 작전 참모 | 실행 계획, sequencing, 작업 통합 |
-| S4 | 군수/지속지원 참모 | 토큰, 도구, 시간, API, 의존성 담당 |
-| S6 | 통신/지식관리 참모 | 문서, 컨텍스트, 저장소, 정보 흐름 담당 |
-| Red Team | 독립 검토 조직 | 오류, 환각, 리스크, 반례 검토 에이전트 |
-| CCIR | 지휘관 중요정보요구 | 즉시 보고해야 하는 정보 기준 |
-| PIR | 우선정보요구 | 결정을 위해 필요한 외부/상황 정보 |
-| FFIR | 우군정보요구 | 내부 상태, 자원, 장애, 테스트 결과 정보 |
-| EEFI | 필수우호정보 | 노출되면 안 되는 민감 정보 |
-| MDMP | 군 의사결정 절차 | 복잡한 작업의 mission analysis와 COA 선택 |
-| COA | 방책 | 가능한 접근법 또는 실행 대안 |
-| Running Estimate | 지속 갱신되는 참모 판단 | 리스크, 출처, 상태, 의존성의 live note |
-| Battle Rhythm | 회의/보고/결심 주기 | 에이전트 동기화와 decision gate 주기 |
-| SOP | 표준작전절차 | 반복 작업의 표준 프롬프트/절차 |
-| METL | 임무필수과업목록 | 에이전트가 반드시 수행할 수 있어야 하는 핵심 과업 |
-| Readiness | 임무 수행 준비태세 | 에이전트/SOP가 실제 작업에 투입 가능한 수준 |
-| Crawl-Walk-Run | 단계적 훈련 | 체크리스트 -> 감독 자율 -> 임무형 자율 |
-| Sustainment | 지속지원 | 토큰, 시간, 도구, 문맥, 파일, API 지원 |
-| Protection | 방호 | 보안, 민감정보, 승인, rollback, guardrail |
-| Targeting | 표적화 | 어떤 대상에 어떤 효과를 낼지 정하는 과정 |
-| D3A | Decide, Detect, Deliver, Assess | 결정, 확인, 실행, 평가 루프 |
-| ROE | 교전규칙 | 허용/승인필요/금지 행동의 경계 |
-| Risk Acceptance | 위험 수용 | 위험을 알고도 승인할 수 있는 권한 |
-| MOP | 수행지표 | 작업이 수행됐는지 측정 |
-| MOE | 효과지표 | 목적한 효과가 났는지 측정 |
-| Indicator | 지표 | MOP/MOE를 판단하는 관찰 가능 신호 |
-| Decision Point | 결심 지점 | 승인, 중단, 변경이 필요한 시점 |
-| Decision Support Matrix | 결심지원표 | 조건별 결심과 조치를 연결한 표 |
-| Liaison | 연락/협조 기능 | 에이전트 간 인터페이스와 정보 연결 |
-| Annex | 부록 | OPORD의 세부 전문 영역 문서 |
-| Overlay | 작전도식 | 작업 구조, 관계, 흐름을 시각화한 보조 자료 |
+| Mission | A clearly defined task the unit must carry out | The outcome the agent must achieve |
+| Commander's Intent | The purpose of the mission, its key effects, and the desired end state | What the user actually wants, plus the conditions that must be avoided to prevent failure |
+| OPORD | Operations order | A structured prompt for complex LLM tasks |
+| WARNO | Warning order | An instruction to begin preparatory work before the detailed plan is ready |
+| FRAGO | Fragmentary order / change order | A change to requirements or a revision to the plan mid-task |
+| SITREP | Situation report | A report on progress, blockers, and risk |
+| AAR | After-action review | Analyzing the gap between outcome and intent and feeding it back into the SOP |
+| Backbrief | A subordinate explaining their understanding of the mission back to a superior | The agent restating its understanding before execution |
+| Confirmation Brief | A briefing confirming receipt of an order | The agent confirming instructions and constraints |
+| Rehearsal | A dry run before execution | Pre-checking the plan, tools, and verification path |
+| Mission Command | Mission-type command | Providing only intent and authority boundaries while delegating the method |
+| Command and Control | Command and control | The system of user intent, authority, reporting, and approval |
+| Unity of Command | Unified command | The final decision-maker and integrator are one and the same, clearly |
+| Unity of Effort | Unified effort | Multiple agents moving toward the same objective |
+| Staff | Staff officer | A function-specific specialist agent |
+| S2 | Intelligence staff officer | Responsible for research, sourcing, and uncertainty |
+| S3 | Operations staff officer | Responsible for execution planning, sequencing, and task integration |
+| S4 | Logistics/sustainment staff officer | Responsible for tokens, tools, time, APIs, and dependencies |
+| S6 | Signal/knowledge-management staff officer | Responsible for documents, context, storage, and information flow |
+| Red Team | Independent review body | An agent that reviews for errors, hallucination, risk, and counterexamples |
+| CCIR | Commander's Critical Information Requirement | The criteria for information that must be reported immediately |
+| PIR | Priority Intelligence Requirement | External/situational information needed for a decision |
+| FFIR | Friendly Force Information Requirement | Information on internal state, resources, blockers, and test results |
+| EEFI | Essential Elements of Friendly Information | Sensitive information that must not be exposed |
+| MDMP | Military Decision-Making Process | Mission analysis and COA selection for complex tasks |
+| COA | Course of Action | A possible approach or execution alternative |
+| Running Estimate | A continuously updated staff assessment | A live note on risk, sourcing, status, and dependencies |
+| Battle Rhythm | The meeting/report/decision cycle | The cadence of agent synchronization and decision gates |
+| SOP | Standard Operating Procedure | A standard prompt/procedure for repeated tasks |
+| METL | Mission-Essential Task List | The core tasks an agent must be able to perform |
+| Readiness | Fitness to carry out the mission | The level at which an agent/SOP is deployable to actual work |
+| Crawl-Walk-Run | Phased training | Checklist -> supervised autonomy -> mission-type autonomy |
+| Sustainment | Sustainment | Support for tokens, time, tools, context, files, and APIs |
+| Protection | Protection | Security, sensitive information, approval, rollback, guardrails |
+| Targeting | Targeting | The process of deciding which effect to produce against which target |
+| D3A | Decide, Detect, Deliver, Assess | The decide-confirm-execute-assess loop |
+| ROE | Rules of Engagement | The boundary between permitted, approval-required, and prohibited actions |
+| Risk Acceptance | Risk acceptance | The authority to approve action despite a known risk |
+| MOP | Measure of Performance | Measures whether the task was performed |
+| MOE | Measure of Effectiveness | Measures whether the intended effect was achieved |
+| Indicator | Indicator | An observable signal used to judge MOP/MOE |
+| Decision Point | Decision point | The moment approval, halt, or change is required |
+| Decision Support Matrix | Decision support matrix | A table linking conditions to decisions and actions |
+| Liaison | Liaison/coordination function | The interface and information link between agents |
+| Annex | Annex | A detailed, domain-specific document attached to an OPORD |
+| Overlay | Operational graphic | A supporting visualization of task structure, relationships, and flow |
 
-## 2. 혼동하면 안 되는 쌍
+## 2. Pairs Not to Confuse
 
 ### Mission vs Intent
 
-Mission은 해야 할 일이다. Intent는 왜 해야 하는지와 어떤 상태가 성공인지다.
+Mission is what must be done. Intent is why it must be done and what state counts as success.
 
-LLM 프롬프트에서 mission만 주면 모델은 활동을 수행하지만, intent가 없으면 사용자의 진짜 목적과 어긋날 수 있다.
+If an LLM prompt provides only the mission, the model will carry out the activity, but without intent it may diverge from what the user actually wants.
 
 ### MOP vs MOE
 
-MOP는 수행 여부다. MOE는 효과 여부다.
+MOP is whether it was performed. MOE is whether it was effective.
 
-예:
+Example:
 
-- MOP: `source-map.md` 파일을 만들었다.
-- MOE: 다음 에이전트가 주장별 근거를 추적할 수 있다.
+- MOP: The `source-map.md` file was created.
+- MOE: The next agent can trace evidence for each claim.
 
 ### Authority vs Responsibility
 
-Responsibility는 맡은 일이다. Authority는 결정하거나 실행할 수 있는 권한이다.
+Responsibility is the work assigned to you. Authority is the power to decide or execute.
 
-에이전트는 어떤 작업을 맡을 수 있지만, 그 작업의 위험을 수용할 권한은 없을 수 있다.
+An agent may be responsible for a task without holding the authority to accept the risk that task carries.
 
 ### Autonomy vs Independence
 
-Autonomy는 정해진 intent와 ROE 안에서 자유롭게 수행하는 능력이다. Independence는 상위 의도와 무관하게 행동하는 것이 아니다.
+Autonomy is the freedom to act within a defined intent and ROE. It is not the same as independence, which would mean acting without regard for higher-level intent.
 
-멀티에이전트에서 하위 에이전트는 자율성을 가질 수 있지만, mission을 재정의할 독립성은 없다.
+In a multi-agent system, a subordinate agent may have autonomy, but it does not have the independence to redefine the mission.
 
 ### Red Team vs Editor
 
-Red Team은 고치는 사람이 아니라 문제를 드러내는 사람이다. Red Team이 직접 수정까지 맡으면 독립성이 약해진다.
+Red Team is not the one who fixes things — it is the one who exposes problems. If Red Team also takes on the fix itself, its independence is weakened.
 
-## 3. LLM 프롬프트에서 고정해야 할 용어
+## 3. Terms to Fix in LLM Prompts
 
-프롬프트에는 아래 용어를 일관되게 쓴다.
+Use the following terms consistently in prompts.
 
 ```text
 Mission:
@@ -110,29 +110,31 @@ Deliverable:
 Backbrief:
 ```
 
-다른 표현으로 바꾸지 않는 것이 좋다. 용어가 고정되면 에이전트가 출력 구조를 안정적으로 학습한다.
+Avoid substituting different wording. When terminology is fixed, the agent learns a stable output structure.
 
-## 4. 권장 한국어 번역
+## 4. Recommended Korean-Language Terms (Romanized)
 
-| English | Korean |
+For deployments that operate in Korean, the table below gives the recommended Korean-language rendering of each term. Because this corpus must contain no Hangul, the Korean-language column is given in Revised Romanization rather than in Hangul script.
+
+| English | Korean (romanized) |
 | --- | --- |
-| Mission | 임무 |
-| Commander's Intent | 지휘관 의도 |
-| Operations Process | 작전수행과정 |
-| Mission Command | 임무형 지휘 |
-| Command and Control | 지휘통제 |
-| Staff | 참모 |
-| Sustainment | 지속지원 |
-| Protection | 방호 |
-| Targeting | 표적화 |
-| Rules of Engagement | 교전규칙 |
-| Battle Rhythm | 작전/보고 주기 |
-| Running Estimate | 지속 판단자료 |
-| After Action Review | 사후검토 |
-| Measure of Performance | 수행지표 |
-| Measure of Effectiveness | 효과지표 |
+| Mission | immu |
+| Commander's Intent | jihwigwan uido |
+| Operations Process | jakjeon suhaeng gwajeong |
+| Mission Command | immuhyeong jihwi |
+| Command and Control | jihwi tongje |
+| Staff | chammo |
+| Sustainment | jisok jiwon |
+| Protection | bangho |
+| Targeting | pyojeokhwa |
+| Rules of Engagement | gyojeon gyuchik |
+| Battle Rhythm | jakjeon/bogo jugi |
+| Running Estimate | jisok pandan jaryo |
+| After Action Review | sahu geomto |
+| Measure of Performance | suhaeng jipyo |
+| Measure of Effectiveness | hyogwa jipyo |
 
-## 5. 관련 문서
+## 5. Related Documents
 
 - `military-llm-framework-v0.1.md`
 - `prompt-templates.md`

@@ -1,149 +1,149 @@
 # Korean Org Culture
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 프레임워크를 한국 조직문화에 적용할 때 필요한 보정 원칙을 정리한다.
+This document sets out the calibration principles needed when applying the military-style LLM framework to Korean organizational culture.
 
-미군식 mission command는 지휘관 의도와 하급자의 주도적 판단을 강조한다. 한국 조직에서는 위계, 결재, 책임 회피, 보고 문화, 암묵적 기대가 더 강하게 작동할 수 있다. LLM 에이전트도 이런 조직문화의 장단점을 그대로 증폭할 수 있다.
+U.S.-military-style mission command emphasizes commander's intent and the proactive judgment of subordinates. In Korean organizations, hierarchy, approval chains, responsibility avoidance, reporting culture, and implicit expectations can operate more strongly. LLM agents can just as easily amplify the strengths and weaknesses of this organizational culture.
 
-핵심 문장:
+Core statement:
 
 ```text
-한국형 LLM 지휘체계는 상명하복을 자동화하는 체계가 아니라,
-명령의 정당성, 이해 확인, 위험 보고, 승인 범위를 더 명확히 하는 체계여야 한다.
+The Korean-style LLM command system is not a system that automates blind obedience,
+but a system that makes the legitimacy of orders, confirmation of understanding, risk reporting, and scope of approval clearer.
 ```
 
-## 1. 한국 조직문화 리스크
+## 1. Risks in Korean Organizational Culture
 
-| 리스크 | 조직에서의 모습 | LLM에서의 모습 | 통제 |
+| Risk | How it appears in the organization | How it appears in the LLM | Control |
 | --- | --- | --- | --- |
-| 무조건 수명 | 상급자 말이면 질문 없이 실행 | 모호한 요청도 바로 실행 | backbrief 필수 |
-| 보고 낙관화 | 나쁜 소식을 늦게 보고 | 테스트 실패/출처 부족 숨김 | SITREP risk 필드 |
-| 결재 병목 | 모든 판단이 위로 올라감 | 사소한 작업도 사용자 승인 요구 | risk-based authority |
-| 책임 회피 | 결정권자 불명확 | 에이전트가 "시킨 대로"만 수행 | RACI와 decision log |
-| 형식주의 | 문서 양식은 있으나 판단과 무관 | OPORD 필드만 채우고 실행성 없음 | MOP/MOE 연결 |
-| 이견 억제 | 반대 의견이 묻힘 | Red Team finding 약화 | 독립 Red Team 경로 |
+| Unconditional compliance | Executes without question if it's a superior's word | Executes ambiguous requests immediately | Backbrief mandatory |
+| Optimistic reporting | Bad news is reported late | Hides test failures / lack of sources | SITREP risk field |
+| Approval bottleneck | All judgment escalates upward | Requires user approval even for trivial tasks | risk-based authority |
+| Responsibility avoidance | Decision-maker is unclear | Agent only performs "what it was told" | RACI and decision log |
+| Formalism | Document formats exist but are disconnected from judgment | Only fills in OPORD fields with no actionability | MOP/MOE linkage |
+| Suppression of dissent | Dissenting opinions get buried | Red Team findings get weakened | Independent Red Team channel |
 
-## 2. Backbrief 강화
+## 2. Strengthening the Backbrief
 
-한국 조직에서는 "알겠습니다"가 실제 이해를 보장하지 않는다. LLM도 마찬가지다.
+In Korean organizations, "Understood" does not guarantee actual understanding. The same is true for LLMs.
 
-### 필수 Backbrief 양식
+### Mandatory Backbrief Format
 
 ```text
-제가 이해한 임무:
+The mission as I understand it:
 
 1. Mission:
 2. Intent:
-3. 제가 자율적으로 해도 되는 일:
-4. 승인이 필요한 일:
-5. 제가 모르는 것 / 가정:
-6. 먼저 보고해야 할 CCIR:
+3. What I am allowed to do autonomously:
+4. What requires approval:
+5. What I don't know / assumptions:
+6. CCIR that must be reported first:
 ```
 
-### 적용 규칙
+### Application Rules
 
-- 모호한 요청은 실행 전 backbrief.
-- 고위험 작업은 backbrief 후 approval request.
-- 멀티에이전트 tasking은 각 에이전트가 자기 task를 backbrief.
-- 사용자의 "그냥 해"도 ROE를 우회하지 않는다.
+- For ambiguous requests, backbrief before execution.
+- For high-risk tasks, submit an approval request after the backbrief.
+- For multi-agent tasking, each agent backbriefs its own task.
+- Even a user's "just do it" does not bypass the ROE.
 
-## 3. 보고 문화 보정
+## 3. Calibrating Reporting Culture
 
-나쁜 보고:
+Bad report:
 
 ```text
-문제 없이 진행 중입니다.
+Proceeding without issues.
 ```
 
-좋은 보고:
+Good report:
 
 ```text
-공식 출처 3개는 확인했고, 한국군 세부 교리 원문은 공개 접근이 제한됩니다.
-이 부분은 한계로 표시하고 미군 공개교리로 구조를 보완하겠습니다.
+I have verified 3 official sources; access to the original text of detailed Korean-military doctrine is restricted to the public.
+I will mark this as a limitation and supplement the structure using publicly available U.S.-military doctrine.
 ```
 
-### 한국형 SITREP 필수 필드
+### Mandatory Fields for the Korean-style SITREP
 
 ```text
-완료:
-진행 중:
-문제:
-숨기면 안 되는 리스크:
-상급 판단 필요:
-다음 조치:
+Completed:
+In progress:
+Problems:
+Risk that must not be hidden:
+Requires higher-level judgment:
+Next actions:
 ```
 
-## 4. Red Team 독립성
+## 4. Red Team Independence
 
-한국 조직에서는 반대 의견이 "비협조"로 해석될 수 있다. LLM 프레임워크에서는 Red Team을 비판자가 아니라 지휘관 판단을 돕는 안전장치로 정의해야 한다.
+In Korean organizations, a dissenting opinion can be interpreted as "uncooperative." In the LLM framework, the Red Team must be defined not as a critic but as a safeguard that helps the commander's judgment.
 
-### Red Team 권한
+### Red Team Authority
 
-- 최종 산출물 공개 전 critical finding 제출.
-- Commander와 Chief of Staff에게 동시 보고.
-- high risk finding은 사용자에게 직접 escalation.
+- Submit critical findings before final output is released.
+- Report simultaneously to the Commander and the Chief of Staff.
+- Escalate high-risk findings directly to the user.
 
-### Red Team 제한
+### Red Team Restrictions
 
-- 최종 결정권 없음.
-- 산출물 직접 통합권 없음.
-- mission 재정의 금지.
+- No final decision-making authority.
+- No authority to integrate output directly.
+- Prohibited from redefining the mission.
 
-## 5. 결재와 권한 위임
+## 5. Approval Chains and Delegation of Authority
 
-한국 조직의 결재 문화는 안정성을 주지만 속도를 떨어뜨릴 수 있다. LLM에서는 모든 일을 사용자에게 묻는 방식이 아니라 risk-based delegation으로 바꿔야 한다.
+The approval culture of Korean organizations provides stability but can reduce speed. In LLMs, the approach of asking the user about everything should be replaced with risk-based delegation.
 
-| 위험도 | 예 | 승인 |
+| Risk level | Example | Approval |
 | --- | --- | --- |
-| Low | 문서 초안, 파일 읽기, 출처 요약 | 에이전트 자율 |
-| Medium | 기존 문서 수정, 패키지 변경 제안 | backbrief 후 수행 |
-| High | API write, DB 변경, 배포 | 사용자 승인 |
-| Critical | 비밀 노출, 허위 출처, 무단 삭제 | 금지 |
+| Low | Document drafts, file reads, source summaries | Agent autonomy |
+| Medium | Editing existing documents, proposing package changes | Perform after backbrief |
+| High | API writes, DB changes, deployment | User approval |
+| Critical | Exposing secrets, false sources, unauthorized deletion | Prohibited |
 
-## 6. 책임 소재
+## 6. Locus of Responsibility
 
-에이전트가 자율적으로 실행하더라도 위험 수용 책임은 인간에게 남는다.
+Even if the agent executes autonomously, responsibility for accepting risk remains with the human.
 
-원칙:
+Principles:
 
-- 에이전트는 risk identifier.
-- AI Commander는 risk router.
-- Human Commander는 risk acceptor.
-- Tool gateway는 risk enforcer.
-- AAR는 risk memory.
+- The agent is the risk identifier.
+- The AI Commander is the risk router.
+- The Human Commander is the risk acceptor.
+- The tool gateway is the risk enforcer.
+- The AAR is the risk memory.
 
-## 7. 한국어 프롬프트 표현
+## 7. Korean Prompt Phrasing
 
-권장 표현:
-
-```text
-실행 전 네가 이해한 임무와 승인 필요 항목을 먼저 보고하라.
-모르는 것은 추정하지 말고 "확인 필요"로 표시하라.
-출처 없는 주장은 결론으로 쓰지 말고 가설로 분리하라.
-사용자 승인 없이 외부 상태를 변경하지 말라.
-```
-
-피해야 할 표현:
+Recommended phrasing:
 
 ```text
-알아서 잘 처리해.
-문제 없게 해.
-최대한 완성도 있게 해.
-그냥 네가 판단해서 해.
+Before executing, first report the mission as you understand it and the items that require approval.
+For things you don't know, don't estimate — mark them as "confirmation needed."
+Don't write claims without sources as conclusions; separate them out as hypotheses.
+Don't change external state without user approval.
 ```
 
-## 8. 한국형 운용 원칙
+Phrasing to avoid:
 
-1. 명령은 구체적으로, 의도는 분리해서 쓴다.
-2. 하급 에이전트의 질문을 실패가 아니라 안전장치로 본다.
-3. 나쁜 소식은 빠르게 보고하게 한다.
-4. 결재는 위험도 기반으로 줄인다.
-5. Red Team finding은 체면 문제가 아니라 품질 자료다.
-6. 문서는 형식보다 decision support에 연결한다.
-7. AAR는 책임 추궁이 아니라 SOP 개선 자료다.
+```text
+Just handle it well on your own.
+Make sure there are no problems.
+Make it as complete as possible.
+Just use your own judgment and do it.
+```
 
-## 9. 관련 문서
+## 8. Korean-style Operating Principles
+
+1. Write orders concretely, and separate out intent.
+2. View a subordinate agent's questions as a safeguard, not a failure.
+3. Have bad news reported quickly.
+4. Reduce approval requirements based on risk level.
+5. Red Team findings are quality material, not a matter of face.
+6. Connect documents to decision support rather than to form.
+7. The AAR is material for improving SOPs, not for assigning blame.
+
+## 9. Related Documents
 
 - `korean-military-sources.md`
 - `tool-use-roe.md`

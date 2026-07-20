@@ -6,7 +6,7 @@ const ROLE_RULES = [
   {
     agent_id: "RED_TEAM",
     task: "hallucination and unsupported-claim detection",
-    pattern: /hallucination|unsupported|unverified|source-less|출처\s*없|환각/i
+    pattern: /hallucination|unsupported|unverified|source-less|no\s*source/i
   },
   {
     agent_id: "S4",
@@ -16,17 +16,17 @@ const ROLE_RULES = [
   {
     agent_id: "S6",
     task: "knowledge management and validation coverage",
-    pattern: /schema|validator|fixture|source map|compendium|README|dashboard|event|coverage|artifact|문서|색인/i
+    pattern: /schema|validator|fixture|source map|compendium|README|dashboard|event|coverage|artifact|document|index/i
   },
   {
     agent_id: "S3",
     task: "orders execution and rehearsal control",
-    pattern: /opord|frago|task order|rehearsal|execution|sequence|scope|approval boundary|명령|실행/i
+    pattern: /opord|frago|task order|rehearsal|execution|sequence|scope|approval boundary|order/i
   },
   {
     agent_id: "S2",
     task: "public source research",
-    pattern: /research|source|evidence|논문|자료|리서치/i
+    pattern: /research|source|evidence|paper|material/i
   }
 ];
 
@@ -70,7 +70,7 @@ function classifyRole(aar) {
 }
 
 function hasCriticalSignal(text) {
-  return /critical|blocked|failed|without approval|unsupported|hallucination|secret|restricted|unavailable|missing fallback|누락|차단|실패|환각/i.test(text);
+  return /critical|blocked|failed|without approval|unsupported|hallucination|secret|restricted|unavailable|missing fallback|missing/i.test(text);
 }
 
 function hasTrainingSignal(aar) {
@@ -114,7 +114,7 @@ function maintenanceActions(aar) {
         description: item,
         readiness_effect: "Adds regression coverage before future autonomous execution."
       });
-    } else if (/source map|compendium|readme|artifact|문서|색인/.test(lower)) {
+    } else if (/source map|compendium|readme|artifact|document|index/.test(lower)) {
       actions.push({
         owner: "S6",
         action_type: "knowledge_management_update",

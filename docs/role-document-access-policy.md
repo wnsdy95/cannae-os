@@ -1,30 +1,30 @@
 # Role Document Access Policy
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 각 에이전트가 어떤 문서를 읽어야 하는지, 역할, 직무, 권한에 따라 제한하는 방침이다.
+This document defines the policy that restricts which documents each agent may read, based on role, duty, and authority.
 
-기존 `context-releasability-policy.md`가 context item의 전달 방식을 다룬다면, 이 문서는 그보다 앞단에서 "어떤 파일을 열 수 있는가"를 정한다.
+Whereas the existing `context-releasability-policy.md` addresses how context items are delivered, this document governs the earlier-stage question of "which files may be opened" in the first place.
 
-핵심 원칙:
+Core principle:
 
 ```text
-문서는 모두에게 열려 있는 지식창고가 아니다.
-각 agent는 자기 임무에 필요한 문서만 읽고,
-나머지는 summary, reference, 또는 Commander/CoS 승인 요청으로 처리한다.
+Documents are not a knowledge repository open to everyone.
+Each agent reads only the documents required for its own mission;
+everything else is handled through a summary, a reference, or a Commander/CoS approval request.
 ```
 
-## 1. 기본 규칙
+## 1. Basic Rules
 
-1. 기본값은 deny다.
-2. 문서 접근은 role, duty, authority level이 모두 맞아야 한다.
-3. 역할이 맞아도 현재 duty에 필요 없으면 읽지 않는다.
-4. 낮은 권한의 role은 높은 권한의 문서를 원문으로 읽지 않는다.
-5. `restricted` 또는 EEFI 관련 문서는 reference only 또는 redacted summary가 기본이다.
-6. 문서 접근 예외는 Commander 또는 CoS approval event로 남긴다.
-7. 읽은 문서 목록은 handoff와 AAR에서 재현 가능해야 한다.
+1. The default is deny.
+2. Document access requires that role, duty, and authority level all match.
+3. Even if the role matches, the document is not read if it is not required for the current duty.
+4. A role with lower authority does not read documents belonging to a higher authority level in raw form.
+5. For `restricted` or EEFI-related documents, the default is reference only or a redacted summary.
+6. Exceptions to document access are recorded as a Commander or CoS approval event.
+7. The list of documents read must be reproducible in the handoff and the AAR.
 
-## 2. 접근 판단 모델
+## 2. Access Decision Model
 
 ```text
 CAN_READ(role, duty, authority, document):
@@ -38,18 +38,18 @@ CAN_READ(role, duty, authority, document):
 
 ## 3. Authority level
 
-| Level | 읽기 권한 의미 |
+| Level | Meaning of Read Authority |
 | --- | --- |
-| L0 | 공개/내부 문서 관찰, 요약, 근거 확인 |
-| L1 | 할당 임무 수행에 필요한 절차 문서와 schema 확인 |
-| L2 | 범위 내 문서 수정과 runner/schema 영향 확인 |
-| L3 | 외부 영향, release, 비용, 권한 변경 관련 문서 확인 |
-| L4 | 비가역 변경, 배포, 삭제, 공개 발행 관련 문서 확인 |
-| L5 | 고위험 판단, 정책 변경, retained authority 문서 확인 |
+| L0 | Observation of public/internal documents, summarization, and evidence verification |
+| L1 | Verification of procedural documents and schemas required to perform an assigned mission |
+| L2 | In-scope document modification and verification of runner/schema impact |
+| L3 | Verification of documents related to external impact, release, cost, and authority changes |
+| L4 | Verification of documents related to irreversible changes, deployment, deletion, and public publication |
+| L5 | Verification of documents related to high-risk decisions, policy changes, and retained authority |
 
-## 4. Role별 기본 문서 묶음
+## 4. Default Document Bundle by Role
 
-아래 표는 standing role의 기본 읽기 묶음이다. 실제 실행 시에는 `schema-files/document-access-manifest.schema.json`으로 mission별 access manifest를 만든다.
+The table below shows the default reading bundle for each standing role. In actual execution, a mission-specific access manifest is created using `schema-files/document-access-manifest.schema.json`.
 
 | Role | Duty | Required documents | Optional documents | Default denied |
 | --- | --- | --- | --- | --- |
@@ -66,59 +66,59 @@ CAN_READ(role, duty, authority, document):
 
 ## 5. Delivery modes
 
-| Mode | 의미 |
+| Mode | Meaning |
 | --- | --- |
-| raw | 원문 읽기 가능 |
-| summary | 요약 또는 redacted excerpt만 전달 |
-| reference_only | 파일 경로/id만 전달하고 원문 읽기는 별도 승인 |
-| denied | 읽기 금지 |
+| raw | Raw text may be read |
+| summary | Only a summary or redacted excerpt is delivered |
+| reference_only | Only the file path/id is delivered; reading the raw text requires separate approval |
+| denied | Reading is prohibited |
 
-## 6. Mission별 manifest
+## 6. Mission-Specific Manifest
 
-실제 실행에서는 role별 정적 표만 사용하지 않는다. mission마다 `DocumentAccessManifest`를 만든다.
+Actual execution does not rely solely on the static per-role table; a `DocumentAccessManifest` is created for each mission.
 
-필수 요소:
+Required elements:
 
-- `default_decision`: 반드시 `deny`.
+- `default_decision`: must always be `deny`.
 - `role_profiles`: role, duty, authority level, required/optional/denied docs.
 - `documents`: path, classification, owner, allowed roles, duties, minimum authority, delivery mode.
 - `controls`: need-to-know, no bulk read, audit, exception approval, source of truth.
 
-## 7. Runner 사용 방식
+## 7. Runner Usage
 
-`document-access-runner.js`는 manifest를 받아 특정 role이 읽을 수 있는 문서만 projection한다.
+`document-access-runner.js` takes a manifest and projects only the documents that a specific role is permitted to read.
 
 ```bash
 node document-access-runner.js sample-payloads/valid-document-access-manifest.json S2 source_verification L0
 ```
 
-출력:
+Output:
 
-- `allowed_documents`: 읽을 수 있는 문서와 delivery mode.
-- `required_documents`: 해당 duty 수행 전 반드시 읽어야 하는 문서.
-- `denied_documents`: 왜 거부됐는지.
-- `preflight_blocks`: manifest 자체가 안전하지 않은 경우.
-- `audit_requirements`: 읽기 event에 남겨야 할 항목.
+- `allowed_documents`: the documents that may be read and their delivery mode.
+- `required_documents`: documents that must be read before performing the given duty.
+- `denied_documents`: the reason access was denied.
+- `preflight_blocks`: cases where the manifest itself is unsafe.
+- `audit_requirements`: the items that must be logged for a read event.
 
 ## 8. Anti-patterns
 
-- 모든 agent에게 `README.md`와 전체 `docs/`를 읽게 한다.
-- Executor에게 Commander decision, risk acceptance 원문, source archive 전체를 준다.
-- Red Team에게 restricted raw exploit detail을 준다.
-- S2가 확인한 출처 원문을 release review 없이 final output으로 넘긴다.
-- S6가 문서 관리 권한을 이유로 모든 restricted raw value를 읽는다.
-- manifest 없이 "필요하면 알아서 찾아 읽어"라고 지시한다.
+- Having every agent read `README.md` and the entirety of `docs/`.
+- Giving the Executor the Commander decision, the raw risk acceptance text, and the entire source archive.
+- Giving the Red Team restricted raw exploit detail.
+- Passing the raw source text verified by S2 directly into the final output without a release review.
+- S6 reading every restricted raw value on the grounds of its document-management authority.
+- Instructing agents to "find and read whatever you need on your own" without a manifest.
 
-## 9. 기존 정책과의 관계
+## 9. Relationship to Existing Policies
 
-- `agent-roles-and-authority.md`: role이 무엇을 할 수 있는가.
-- `context-releasability-policy.md`: context item을 어떤 방식으로 전달하는가.
-- `opsec-classification-model.md`: 문서와 context의 민감도 분류.
-- `knowledge-management-sop.md`: access manifest와 audit log를 어디에 남길 것인가.
-- `source-map.md`: 어떤 문서가 어떤 근거와 연결되는가.
+- `agent-roles-and-authority.md`: what a role is authorized to do.
+- `context-releasability-policy.md`: how context items are delivered.
+- `opsec-classification-model.md`: the sensitivity classification of documents and context.
+- `knowledge-management-sop.md`: where the access manifest and audit log are recorded.
+- `source-map.md`: which documents connect to which evidence.
 
-## 10. 결론
+## 10. Conclusion
 
-멀티에이전트의 정확도는 더 많은 context가 아니라 정확한 context distribution에서 나온다.
+Multi-agent accuracy comes not from more context but from accurate context distribution.
 
-각 agent가 읽는 문서가 정해지면 hallucination도 줄고, 권한 초과도 줄고, handoff와 AAR도 재현 가능해진다.
+Once the documents each agent reads are fixed, hallucination decreases, authority overreach decreases, and handoffs and AARs become reproducible.

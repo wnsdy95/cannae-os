@@ -196,7 +196,7 @@ function semanticRules(payload, type) {
     if (!payload.intent || !payload.intent.purpose) {
       issues.push(issue("critical", "MISSING_INTENT", "$.intent.purpose", "Mission requires explicit intent purpose.", "Add intent.purpose."));
     }
-    if (payload.mission_statement && /잘|적절히|최대한|better/i.test(payload.mission_statement)) {
+    if (payload.mission_statement && /well|properly|optimally|better/i.test(payload.mission_statement)) {
       issues.push(issue("warning", "VAGUE_MISSION", "$.mission_statement", "Mission statement appears vague.", "Use an observable end state."));
     }
   }

@@ -1,17 +1,17 @@
 # Reference Architecture
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 운용 프레임워크를 실제 시스템으로 구현하기 위한 참조 아키텍처다.
+This document is a reference architecture for implementing the military-style LLM operating framework as an actual system.
 
-대상은 다음과 같다.
+It is intended for the following:
 
-- LLM 기반 업무 자동화 도구.
-- 멀티에이전트 리서치/코딩/문서화 시스템.
-- 승인 기반 도구 실행 플랫폼.
-- 조직 내부 AI 운영체계.
+- LLM-based task automation tools.
+- Multi-agent research/coding/documentation systems.
+- Approval-based tool execution platforms.
+- Internal organizational AI operating systems.
 
-## 1. 전체 구조
+## 1. Overall Structure
 
 ```text
 Client UI
@@ -52,19 +52,19 @@ Tool Gateway
 State / Evidence / Audit Stores
 ```
 
-## 2. 주요 컴포넌트
+## 2. Major Components
 
 ### 2.1 Client UI
 
-역할:
+Role:
 
-- 사용자 요청 입력.
-- OPORD 초안 확인.
-- 승인 필요 action 검토.
-- SITREP와 decision memo 확인.
-- 최종 산출물과 AAR 확인.
+- Input of user requests.
+- Review of OPORD drafts.
+- Review of actions requiring approval.
+- Review of SITREPs and decision memos.
+- Review of final deliverables and AARs.
 
-필수 화면:
+Required screens:
 
 - Mission dashboard.
 - Approval queue.
@@ -74,13 +74,13 @@ State / Evidence / Audit Stores
 
 ### 2.2 Mission Intake API
 
-역할:
+Role:
 
-- 사용자 요청을 mission candidate로 변환.
-- 요청 위험도 초기 분류.
-- 필요한 추가 질문 생성.
+- Convert user requests into mission candidates.
+- Perform initial classification of request risk level.
+- Generate necessary follow-up questions.
 
-출력:
+Output:
 
 ```yaml
 mission_candidate:
@@ -93,35 +93,35 @@ mission_candidate:
 
 ### 2.3 Orchestrator / AI Commander
 
-역할:
+Role:
 
-- mission과 intent 확정.
-- OPORD 생성.
-- task order 발행.
-- authority gate 호출.
+- Finalize the mission and intent.
+- Generate the OPORD.
+- Issue task orders.
+- Invoke the authority gate.
 - CCIR escalation.
 
-주의:
+Caution:
 
-- Orchestrator는 위험 수용권자가 아니다.
-- 사용자 승인 없이 Red/Amber 행동을 실행하지 않는다.
+- The Orchestrator is not a risk acceptance authority.
+- It does not execute Red/Amber actions without user approval.
 
 ### 2.4 OPORD Compiler
 
-역할:
+Role:
 
-- 자연어 요청을 prompt DSL로 변환.
+- Convert natural-language requests into prompt DSL.
 - OPORD validation.
-- 하위 에이전트 tasking 생성.
+- Generate tasking for subordinate agents.
 
-입력:
+Input:
 
 - user request.
 - mission state.
 - selected SOP.
 - agent readiness.
 
-출력:
+Output:
 
 - OPORD.
 - task orders.
@@ -129,7 +129,7 @@ mission_candidate:
 
 ### 2.5 Agent Registry
 
-관리 항목:
+Managed items:
 
 - role.
 - responsibilities.
@@ -141,13 +141,13 @@ mission_candidate:
 
 ### 2.6 Policy / ROE Engine
 
-역할:
+Role:
 
-- tool request를 Green/Amber/Red/Black으로 분류.
-- approval requirement 생성.
-- prohibited action 차단.
+- Classify tool requests as Green/Amber/Red/Black.
+- Generate approval requirements.
+- Block prohibited actions.
 
-입력:
+Input:
 
 ```yaml
 actor:
@@ -158,7 +158,7 @@ mission_context:
 data_sensitivity:
 ```
 
-출력:
+Output:
 
 ```yaml
 roe_decision:
@@ -170,20 +170,20 @@ roe_decision:
 
 ### 2.7 Tool Gateway
 
-역할:
+Role:
 
-- 모든 외부 행동의 단일 관문.
-- tool-use log 작성.
-- dry-run 우선 실행.
-- 결과를 state store에 기록.
+- Single gateway for all external actions.
+- Write tool-use logs.
+- Execute dry-run first.
+- Record results to the state store.
 
-금지:
+Prohibited:
 
-- 에이전트가 gateway를 우회해 직접 tool 호출.
+- An agent calling a tool directly, bypassing the gateway.
 
 ### 2.8 Evidence Store
 
-저장:
+Stores:
 
 - source metadata.
 - claim.
@@ -194,7 +194,7 @@ roe_decision:
 
 ### 2.9 State Store
 
-저장:
+Stores:
 
 - mission.
 - OPORD.
@@ -207,7 +207,7 @@ roe_decision:
 
 ### 2.10 Audit Store
 
-저장:
+Stores:
 
 - tool request.
 - approval.
@@ -215,9 +215,9 @@ roe_decision:
 - blocked action.
 - policy decision.
 
-## 3. 데이터 흐름
+## 3. Data Flow
 
-### 3.1 일반 작업
+### 3.1 Standard Task
 
 ```text
 User request
@@ -232,7 +232,7 @@ User request
 -> AAR
 ```
 
-### 3.2 승인 필요 작업
+### 3.2 Task Requiring Approval
 
 ```text
 Agent requests tool
@@ -244,7 +244,7 @@ Agent requests tool
 -> Audit Store
 ```
 
-### 3.3 CCIR 발생
+### 3.3 CCIR Occurrence
 
 ```text
 Agent detects CCIR
@@ -254,9 +254,9 @@ Agent detects CCIR
 -> FRAGO or stop
 ```
 
-## 4. 저장소 스키마 개요
+## 4. Storage Schema Overview
 
-| Store | 주요 테이블/컬렉션 |
+| Store | Key Tables/Collections |
 | --- | --- |
 | mission_state | missions, opords, task_orders |
 | operations_state | sitreps, fragos, decisions |
@@ -264,31 +264,31 @@ Agent detects CCIR
 | audit | tool_requests, approvals, policy_decisions |
 | learning | aars, sop_updates, readiness |
 
-## 5. 배포 패턴
+## 5. Deployment Patterns
 
 ### Local-first
 
-적합:
+Suitable for:
 
-- 개인 연구.
-- 로컬 코딩 에이전트.
-- 민감한 파일 작업.
+- Individual research.
+- Local coding agents.
+- Sensitive file work.
 
-특징:
+Characteristics:
 
-- filesystem 중심.
+- Filesystem-centric.
 - local state store.
-- 사용자 직접 승인.
+- Direct user approval.
 
 ### Team Workspace
 
-적합:
+Suitable for:
 
-- 조직 문서화.
-- 팀 코딩 자동화.
-- 내부 지식관리.
+- Organizational documentation.
+- Team coding automation.
+- Internal knowledge management.
 
-특징:
+Characteristics:
 
 - shared evidence store.
 - approval queue.
@@ -296,13 +296,13 @@ Agent detects CCIR
 
 ### Enterprise Controlled Runtime
 
-적합:
+Suitable for:
 
-- 대규모 조직.
-- 보안/감사 필수.
-- 외부 API와 배포 포함.
+- Large-scale organizations.
+- Environments where security/audit is mandatory.
+- Deployments that include external APIs.
 
-특징:
+Characteristics:
 
 - central policy engine.
 - audit logging.
@@ -310,9 +310,9 @@ Agent detects CCIR
 - model gateway.
 - data loss prevention.
 
-## 6. 보안 경계
+## 6. Security Boundaries
 
-| 경계 | 통제 |
+| Boundary | Control |
 | --- | --- |
 | User data -> model | redaction, policy check |
 | Agent -> tool | tool gateway |
@@ -320,10 +320,10 @@ Agent detects CCIR
 | Evidence -> output | citation check |
 | Secret -> logs | masking and EEFI handling |
 
-## 7. 최소 구현 순서
+## 7. Minimum Implementation Order
 
 1. prompt DSL schema.
-2. mission state JSON 저장.
+2. Store mission state as JSON.
 3. tool-use ROE checker.
 4. approval request UI.
 5. evidence store.
@@ -331,7 +331,7 @@ Agent detects CCIR
 7. AAR and readiness update.
 8. multi-agent routing.
 
-## 8. 관련 문서
+## 8. Related Documents
 
 - `implementation-guide.md`
 - `prompt-dsl.md`

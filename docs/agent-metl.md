@@ -1,201 +1,201 @@
 # Agent METL
 
-## 0. 목적
+## 0. Purpose
 
-METL은 mission essential task list다. 군은 모든 일을 같은 수준으로 훈련하지 않는다. 임무 수행에 필수적인 과업을 정하고, 그 과업을 기준으로 훈련과 readiness를 평가한다.
+METL is the mission essential task list. The military does not train every task to the same standard. It designates the tasks essential to mission accomplishment, and evaluates training and readiness against those tasks.
 
-LLM 에이전트도 마찬가지다. "똑똑한 모델"이라는 일반 능력만으로 자율권을 줄 수 없다. 역할별 필수과업, 평가 기준, readiness rating, 권한 범위를 연결해야 한다.
+The same applies to LLM agents. General capability alone — "the model is smart" — cannot be the basis for granting autonomy. Essential tasks by role, evaluation criteria, readiness rating, and scope of authority must all be linked together.
 
 ## 1. Readiness rating
 
-현재 프레임워크는 네 등급을 사용한다.
+The current framework uses four ratings.
 
-| Rating | 의미 | 권한 |
+| Rating | Meaning | Authority |
 | --- | --- | --- |
-| T | Trained. 독립 수행 가능 | Green 자율, 일부 Amber 보고 후 수행 |
-| P | Practiced. 감독하 수행 가능 | Green 수행, Amber 사전보고, Red 불가 |
-| U | Untrained. 초안/보조 가능 | draft/report만 허용 |
-| X | Not assessed or unsafe | 실행 금지, 훈련 필요 |
+| T | Trained. Capable of independent execution | Green autonomy; some Amber actions may be performed after reporting |
+| P | Practiced. Capable of execution under supervision | Green execution, Amber requires prior reporting, Red not permitted |
+| U | Untrained. Draft/assistance only | Only draft/report permitted |
+| X | Not assessed or unsafe | Execution prohibited, training required |
 
-readiness는 agent 전체가 아니라 task별로 부여한다.
+Readiness is assigned per task, not to the agent as a whole.
 
-예:
+Examples:
 
 - `S2:public source research = T`
 - `S2:legal interpretation = U`
 - `S3:local validation = T`
 - `S3:production deployment = X`
 
-## 2. Role별 METL
+## 2. METL by Role
 
 ### 2.1 Commander
 
 Essential tasks:
 
-- mission intent 작성.
-- priority와 main effort 결정.
-- Red risk acceptance.
-- FRAGO 발령.
-- AAR에서 doctrine/readiness 변경 승인.
+- Drafting mission intent.
+- Determining priorities and main effort.
+- Accepting Red risk.
+- Issuing FRAGOs.
+- Approving doctrine/readiness changes in the AAR.
 
 Evaluation:
 
-- intent가 observable end state를 포함하는가?
-- authority boundary가 명확한가?
-- CCIR가 결심정보 중심인가?
-- 위험수용이 scope와 expiry를 갖는가?
+- Does the intent include an observable end state?
+- Are authority boundaries clear?
+- Is the CCIR centered on decision-relevant information?
+- Does risk acceptance carry a scope and an expiry?
 
 ### 2.2 CoS
 
 Essential tasks:
 
-- agent tasking.
-- B2C2WG/battle rhythm 운영.
-- decision packet 통합.
-- SITREP 압축.
-- conflicting guidance deconfliction.
+- Agent tasking.
+- Operating the B2C2WG/battle rhythm.
+- Consolidating decision packets.
+- Compressing SITREPs.
+- Deconflicting conflicting guidance.
 
 Evaluation:
 
-- commander에게 올린 packet이 결심 가능한가?
-- 중복 작업과 충돌이 제거됐는가?
-- pending decision과 blocked task가 누락되지 않았는가?
+- Is the packet submitted to the commander actually decidable?
+- Have duplicate work and conflicts been eliminated?
+- Are pending decisions and blocked tasks free of omissions?
 
 ### 2.3 S2 Research
 
 Essential tasks:
 
-- source discovery.
-- source reliability rating.
-- claim/inference/open question 분리.
-- PIR 답변.
-- evidence record 작성.
+- Source discovery.
+- Source reliability rating.
+- Separating claim/inference/open question.
+- Answering PIRs.
+- Producing evidence records.
 
 Evaluation:
 
-- 공식/학술/비공식 출처를 구분했는가?
-- 최신성 불확실성을 표시했는가?
-- 직접 근거와 LLM 해석을 분리했는가?
+- Were official, academic, and unofficial sources distinguished?
+- Was recency uncertainty flagged?
+- Were direct evidence and LLM interpretation kept separate?
 
 ### 2.4 S3 Operations
 
 Essential tasks:
 
-- task order 작성.
-- local execution plan 수립.
-- tool request 생성.
-- blocked action escalation.
-- current ops SITREP 작성.
+- Drafting task orders.
+- Establishing the local execution plan.
+- Generating tool requests.
+- Escalating blocked actions.
+- Producing the current-ops SITREP.
 
 Evaluation:
 
-- task와 commander's intent가 연결됐는가?
-- Red/Amber/Green 분류가 정확한가?
-- 실행 전 stop condition을 표시했는가?
+- Is the task linked to commander's intent?
+- Is the Red/Amber/Green classification accurate?
+- Was the stop condition flagged before execution?
 
 ### 2.5 S4 Sustainment
 
 Essential tasks:
 
-- token/time/quota/tool availability estimate.
-- fallback and degraded mode plan.
-- resource priority recommendation.
-- long-running task checkpoint plan.
+- Estimating token/time/quota/tool availability.
+- Fallback and degraded-mode planning.
+- Recommending resource priorities.
+- Planning checkpoints for long-running tasks.
 
 Evaluation:
 
-- resource bottleneck을 commander decision으로 올렸는가?
-- fallback이 실제 실행 가능한가?
-- context loss 대비가 되어 있는가?
+- Was the resource bottleneck escalated to a commander decision?
+- Is the fallback actually executable?
+- Is context-loss preparedness in place?
 
 ### 2.6 S6 Knowledge
 
 Essential tasks:
 
-- README/source-map/compendium 유지.
-- event log and projection 관리.
-- handoff packet 작성.
-- classification/releasability metadata 관리.
-- SOP update 반영.
+- Maintaining the README/source-map/compendium.
+- Managing the event log and projections.
+- Producing handoff packets.
+- Managing classification/releasability metadata.
+- Reflecting SOP updates.
 
 Evaluation:
 
-- 다음 작업자가 chat history 없이 이어갈 수 있는가?
-- source of truth가 명확한가?
-- 민감정보가 불필요하게 확산되지 않았는가?
+- Can the next operator continue without chat history?
+- Is the source of truth clear?
+- Was sensitive information kept from spreading unnecessarily?
 
 ### 2.7 Red Team
 
 Essential tasks:
 
-- assumption challenge.
-- failure mode discovery.
-- policy bypass attempt.
-- source interpretation critique.
-- approval risk review.
+- Challenging assumptions.
+- Discovering failure modes.
+- Attempting policy bypass.
+- Critiquing source interpretation.
+- Reviewing approval risk.
 
 Evaluation:
 
-- 실제 실행 가능한 risk를 찾았는가?
-- finding이 commander decision에 연결되는가?
-- Red Team이 실행권을 남용하지 않는가?
+- Was an actually executable risk identified?
+- Is the finding linked to a commander decision?
+- Did the Red Team avoid abusing its execution authority?
 
 ### 2.8 Evaluator
 
 Essential tasks:
 
-- MOP/MOE 분리.
-- test and verification result 평가.
-- AAR 작성.
-- readiness update recommendation.
-- SOP update recommendation.
+- Separating MOP/MOE.
+- Evaluating test and verification results.
+- Producing the AAR.
+- Recommending readiness updates.
+- Recommending SOP updates.
 
 Evaluation:
 
-- 산출물 완료와 효과 달성을 구분했는가?
-- AAR가 다음 행동으로 이어졌는가?
-- readiness 변경 근거가 명시됐는가?
+- Was output completion distinguished from effect achievement?
+- Did the AAR lead to a subsequent action?
+- Was the basis for the readiness change stated explicitly?
 
 ## 3. Readiness-to-authority policy
 
 | Readiness | Green | Amber | Red | Black |
 | --- | --- | --- | --- | --- |
-| T | 자율 가능 | 보고 후 제한 수행 가능 | approval request만 | 금지 |
-| P | 자율 가능 | 승인 또는 supervision 필요 | approval request만 | 금지 |
-| U | 초안만 | 초안만 | 불가 | 금지 |
-| X | 불가 | 불가 | 불가 | 금지 |
+| T | Autonomous | Limited execution after reporting | Approval request only | Prohibited |
+| P | Autonomous | Approval or supervision required | Approval request only | Prohibited |
+| U | Draft only | Draft only | Not permitted | Prohibited |
+| X | Not permitted | Not permitted | Not permitted | Prohibited |
 
-추가 제한:
+Additional restrictions:
 
-- production, credential, external mutation은 readiness와 무관하게 Red 이상이다.
-- Black은 어떤 readiness에서도 승인할 수 없다.
-- readiness가 T여도 mission scope 밖이면 authority가 없다.
+- Production, credential, and external-mutation actions are Red or higher regardless of readiness.
+- Black can never be approved at any readiness level.
+- Even at readiness T, there is no authority outside mission scope.
 
-## 4. Crawl-Walk-Run 훈련 모델
+## 4. Crawl-Walk-Run training model
 
-| 단계 | 설명 | 예시 |
+| Stage | Description | Example |
 | --- | --- | --- |
-| Crawl | 템플릿에 따라 초안 작성 | S2가 source table draft 작성 |
-| Walk | 제한된 범위에서 검증 포함 수행 | S3가 local validator 실행 |
-| Run | 실제 mission flow 안에서 자율 수행 | S6가 source-map/README/compendium 일괄 갱신 |
+| Crawl | Draft produced according to a template | S2 drafts the source table |
+| Walk | Execution within a limited scope, including verification | S3 runs the local validator |
+| Run | Autonomous execution within the actual mission flow | S6 performs a bulk update of the source-map/README/compendium |
 
-승급 조건:
+Promotion conditions:
 
-- 같은 task를 3회 이상 성공.
-- AAR에서 critical finding 없음.
-- validator/test 또는 reviewer evidence 존재.
-- authority boundary를 스스로 식별.
+- Success on the same task 3 or more times.
+- No critical finding in the AAR.
+- Validator/test or reviewer evidence exists.
+- The agent identifies authority boundaries on its own.
 
-강등 조건:
+Demotion conditions:
 
-- Red action 미보고.
-- source를 과장하거나 hallucination.
-- 민감정보 노출.
-- 반복적인 handoff failure.
+- A Red action was not reported.
+- Sources were exaggerated or a hallucination occurred.
+- Sensitive information was exposed.
+- Repeated handoff failure.
 
 ## 5. Evaluation event
 
-readiness update는 event로 남긴다.
+Readiness updates are recorded as events.
 
 ```json
 {
@@ -220,25 +220,25 @@ readiness update는 event로 남긴다.
 
 ## 6. METL review rhythm
 
-| 시점 | 수행 |
+| Point in time | Action |
 | --- | --- |
-| mission 시작 | 필요한 role/task readiness 확인 |
-| Red/Amber approval 전 | 해당 task readiness 확인 |
-| phase 종료 | AAR 기반 readiness update |
-| repeated failure | 훈련 task 생성 |
-| new tool 도입 | task readiness X로 시작 |
+| Mission start | Confirm readiness of the required role/task |
+| Before Red/Amber approval | Confirm readiness of the relevant task |
+| End of phase | Update readiness based on the AAR |
+| Repeated failure | Generate a training task |
+| New tool introduced | Task readiness starts at X |
 
 ## 7. Prompt guard
 
 ```text
-작업 전 role/task readiness를 확인하라.
-- 내가 이 task에서 T/P/U/X 중 어디인가?
-- 이 action의 ROE class는 무엇인가?
-- readiness와 ROE 조합상 자율 실행 가능한가?
-- 아니라면 draft, report, approval request 중 무엇을 해야 하는가?
+Before acting, confirm role/task readiness.
+- Where do I stand on this task: T/P/U/X?
+- What is the ROE class of this action?
+- Given the combination of readiness and ROE, is autonomous execution permitted?
+- If not, which of draft, report, or approval request should I do instead?
 ```
 
-## 8. 구현 후보
+## 8. Implementation candidates
 
 schema:
 
@@ -247,18 +247,18 @@ schema:
 
 prototype:
 
-- `readiness-gate-prototype/readiness-gate.js`: role/task/readiness/roe_class를 받아 allowed/report_required/approval_required/prohibit 판정.
-- `aar-to-readiness.js`: AAR finding을 readiness update recommendation으로 변환.
+- `readiness-gate-prototype/readiness-gate.js`: takes role/task/readiness/roe_class and determines allowed/report_required/approval_required/prohibit.
+- `aar-to-readiness.js`: converts AAR findings into readiness update recommendations.
 
-## 9. 출처 앵커
+## 9. Source anchors
 
 - ADP 7-0, Training: https://armypubs.army.mil/ProductMaps/PubForm/Details.aspx?PUB_ID=1032716
 - FM 7-0, Training: https://armypubs.army.mil/ProductMaps/PubForm/Details.aspx?PUB_ID=1022335
 - FM 6-0, Commander and Staff Organization and Operations: https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN35404-FM_6-0-000-WEB-1.pdf
 - ATP 5-19, Risk Management: https://www.first.army.mil/Portals/102/Users/231/99/999/Risk%20Management%20ATP%205-19.pdf
 
-## 10. 현 단계 결론
+## 10. Conclusion at the current stage
 
-에이전트 권한은 "모델이 좋다"로 주면 안 된다. 권한은 mission, task, tool, target, risk, readiness의 조합으로 계산해야 한다.
+Agent authority must not be granted on the basis of "the model is good." Authority must be computed from the combination of mission, task, tool, target, risk, and readiness.
 
-따라서 agent METL은 훈련 문서이면서 runtime policy 입력이다.
+Accordingly, the agent METL is both a training document and a runtime policy input.

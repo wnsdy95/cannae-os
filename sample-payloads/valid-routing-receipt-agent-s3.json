@@ -11,8 +11,8 @@
   "department": "operations",
   "authority_scope": "scoped-execution",
   "routing_mode": "delegated_ai_role_department_authority",
-  "router_query": "plans-agent W2 문서 라우팅",
-  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution \"plans-agent W2 문서 라우팅\" .",
+  "router_query": "plans-agent W2 document routing",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution \"plans-agent W2 document routing\" .",
   "matched_routes": [
     {
       "id": "orders",

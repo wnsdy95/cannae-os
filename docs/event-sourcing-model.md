@@ -1,20 +1,20 @@
 # Event Sourcing Model
 
-## 0. 목적
+## 0. Purpose
 
-이 문서는 군대식 LLM 런타임을 event-sourcing 방식으로 구현할 때의 이벤트 모델을 정의한다.
+This document defines the event model for implementing a military-style LLM runtime using the event-sourcing approach.
 
-기본 SQL 모델은 현재 상태를 조회하기 좋다. Event sourcing은 "어떤 명령이 언제 내려졌고, 어떤 보고와 승인으로 상태가 바뀌었는지"를 추적하기 좋다. 군대식 지휘통제에서는 이력과 결심 맥락이 중요하므로 event log가 핵심 감사 자료가 된다.
+A basic SQL model is good for querying current state. Event sourcing is good for tracking "what order was given when, and what report or approval changed the state." In military-style command and control, history and decision context matter, so the event log becomes the core audit material.
 
-## 1. 핵심 원칙
+## 1. Core Principles
 
-| 원칙 | 설명 |
+| Principle | Description |
 | --- | --- |
-| Append-only | 이벤트는 수정하지 않고 추가한다 |
-| Mission-scoped | 모든 이벤트는 mission_id를 가진다 |
-| Decision-linked | 승인/거부/FRAGO는 decision point와 연결한다 |
-| Replayable | 이벤트를 재생하면 현재 상태를 복원할 수 있다 |
-| Auditable | 누가, 언제, 왜 실행했는지 추적 가능해야 한다 |
+| Append-only | Events are appended, never modified |
+| Mission-scoped | Every event has a mission_id |
+| Decision-linked | Approvals/rejections/FRAGOs are linked to a decision point |
+| Replayable | Replaying events can restore the current state |
+| Auditable | Who, when, and why an action was executed must be traceable |
 
 ## 2. Event Envelope
 
@@ -33,35 +33,35 @@
 
 ## 3. Event Types
 
-| Event | 의미 |
+| Event | Meaning |
 | --- | --- |
-| MissionCreated | mission intake 완료 |
-| OPORDCreated | 작전명령 생성 |
-| OPORDValidated | validator 결과 생성 |
-| TaskOrderIssued | 하위 task 발행 |
-| ToolRequestCreated | 도구 요청 생성 |
-| PolicyDecisionMade | ROE 판정 |
-| ApprovalRequested | 승인 요청 |
-| ApprovalGranted | 승인 |
-| ApprovalRejected | 거부 |
-| ApprovalConsumed | scoped approval이 실제 실행으로 소비됨 |
-| ApprovalRevoked | 승인 철회 |
-| ApprovalRenewed | 승인 유효기간 연장 |
-| ApprovalDelegated | 제한적 승인권 위임 |
-| ApprovalDelegationTerminated | 승인권 위임 철회 또는 만료 |
-| ReleaseGateDecided | 실행권한과 정보공개권한을 합성한 최종 release gate 판단 |
-| ToolExecuted | 도구 실행 |
-| ToolBlocked | 도구 차단 |
-| SITREPIssued | 상황보고 |
-| FRAGOIssued | 변경명령 |
-| EvidenceRecorded | 출처/주장 기록 |
-| RiskRaised | 위험 상승 |
-| AARIssued | 사후검토 |
-| ReadinessUpdated | readiness 갱신 |
+| MissionCreated | Mission intake completed |
+| OPORDCreated | Operations order created |
+| OPORDValidated | Validator result generated |
+| TaskOrderIssued | Subordinate task issued |
+| ToolRequestCreated | Tool request created |
+| PolicyDecisionMade | ROE determination made |
+| ApprovalRequested | Approval requested |
+| ApprovalGranted | Approval granted |
+| ApprovalRejected | Approval rejected |
+| ApprovalConsumed | A scoped approval was consumed by an actual execution |
+| ApprovalRevoked | Approval revoked |
+| ApprovalRenewed | Approval validity period extended |
+| ApprovalDelegated | Limited approval authority delegated |
+| ApprovalDelegationTerminated | Approval authority delegation revoked or expired |
+| ReleaseGateDecided | Final release gate decision combining execution authority and information disclosure authority |
+| ToolExecuted | Tool executed |
+| ToolBlocked | Tool blocked |
+| SITREPIssued | Situation report issued |
+| FRAGOIssued | Fragmentary order (change order) issued |
+| EvidenceRecorded | Source/claim recorded |
+| RiskRaised | Risk escalated |
+| AARIssued | After-action review issued |
+| ReadinessUpdated | Readiness updated |
 
 ## 4. Projection Tables
 
-Event log에서 조회 성능을 위해 projection을 만든다.
+Projections are built from the event log for query performance.
 
 | Projection | Source events |
 | --- | --- |
@@ -92,7 +92,7 @@ PolicyDecisionMade
 ToolBlocked
 ```
 
-명령은 거부될 수 있다. 이벤트는 이미 발생한 사실이다.
+A command can be rejected. An event is a fact that has already occurred.
 
 ## 6. Red Action Flow
 
@@ -104,7 +104,7 @@ RequestToolExecution
 -> ToolBlocked(pending approval)
 ```
 
-승인 후:
+After approval:
 
 ```text
 ApprovalGranted
@@ -113,7 +113,7 @@ ApprovalGranted
 -> SITREPIssued
 ```
 
-거부 후:
+After rejection:
 
 ```text
 ApprovalRejected
@@ -129,124 +129,124 @@ AARIssued
 -> SOPUpdateRecommended
 ```
 
-## 8. Replay 규칙
+## 8. Replay Rules
 
-상태 복원:
+State restoration:
 
-1. mission_id로 이벤트를 시간순 정렬.
-2. MissionCreated로 초기 상태 생성.
-3. OPORDCreated로 current_order 설정.
-4. TaskOrderIssued로 task 목록 갱신.
-5. PolicyDecisionMade와 Approval 이벤트로 tool 상태 갱신.
-6. ApprovalConsumed로 approval reuse를 차단.
-7. ApprovalRenewed로 approval expiry를 갱신하되 scope 확장은 차단.
-8. ApprovalDelegated로 제한적 approval authority projection을 갱신.
-9. ApprovalDelegationTerminated로 delegated authority를 revoked 또는 expired 처리.
-10. ReleaseGateDecided로 final/external output allow/block 판단을 기록.
-11. SITREP/FRAGO/AAR로 mission timeline 갱신.
+1. Sort events by mission_id in chronological order.
+2. Create the initial state with MissionCreated.
+3. Set current_order with OPORDCreated.
+4. Update the task list with TaskOrderIssued.
+5. Update tool state with PolicyDecisionMade and Approval events.
+6. Block approval reuse with ApprovalConsumed.
+7. Extend approval expiry with ApprovalRenewed, but block scope expansion.
+8. Update the limited approval authority projection with ApprovalDelegated.
+9. Mark delegated authority as revoked or expired with ApprovalDelegationTerminated.
+10. Record the final allow/block decision for final/external output with ReleaseGateDecided.
+11. Update the mission timeline with SITREP/FRAGO/AAR.
 
-## 9. Approval Consumption 규칙
+## 9. Approval Consumption Rules
 
-`ApprovalGranted`는 아직 실행이 아니다. 실제 tool action이 승인 범위 안에서 실행될 때 `ApprovalConsumed` 이벤트가 남는다.
+`ApprovalGranted` is not yet an execution. An `ApprovalConsumed` event is recorded when an actual tool action is executed within the scope of the approval.
 
-규칙:
+Rules:
 
-- `approval_scope_id`와 `approval_request_id`를 연결한다.
-- mission, actor, action, tool, target이 approval scope와 일치해야 한다.
-- `consumed_at`은 approval window 안에 있어야 한다.
-- `approve_once`는 `execution_count_after`가 정확히 1이어야 한다.
-- 실행이 발생했다면 `approval_status_after`는 `consumed`여야 한다.
-- evidence가 없으면 AAR와 audit가 불가능하므로 실행 event로 인정하지 않는다.
+- Link `approval_scope_id` and `approval_request_id`.
+- Mission, actor, action, tool, and target must match the approval scope.
+- `consumed_at` must fall within the approval window.
+- For `approve_once`, `execution_count_after` must be exactly 1.
+- If execution has occurred, `approval_status_after` must be `consumed`.
+- Without evidence, AAR and audit are impossible, so the action is not recognized as an execution event.
 
-구현 연결:
+Implementation links:
 
 - `schema-files/approval-consumption-event.schema.json`
 - `approval-consumption-runner.js`
 - `approval-consumption-fixtures/`
 
-## 10. Approval Revocation 규칙
+## 10. Approval Revocation Rules
 
-`ApprovalRevoked`는 아직 실행되지 않은 active approval을 취소하는 이벤트다. 이미 `ApprovalConsumed`가 발생한 뒤의 취소 시도는 철회가 아니라 AAR, rollback, 또는 FRAGO로 처리해야 한다.
+`ApprovalRevoked` is an event that cancels an active approval that has not yet been executed. An attempt to cancel after `ApprovalConsumed` has already occurred is not a revocation and must be handled as an AAR, rollback, or FRAGO.
 
-규칙:
+Rules:
 
-- `approval_scope_id`와 `approval_request_id`를 연결한다.
-- `approval_status_before`와 `scope_snapshot.status_before`는 `active`여야 한다.
-- `revocation_authority`는 approval을 부여한 권한자와 일치해야 한다.
-- action, tool, target이 approval scope와 일치해야 한다.
-- `revoked_at`은 approval window 안에 있어야 한다.
-- `approval_status_after`는 `revoked`여야 한다.
-- 통지가 필요한 철회는 `notified_roles`를 남긴다.
-- reason과 evidence가 없으면 audit event로 인정하지 않는다.
+- Link `approval_scope_id` and `approval_request_id`.
+- `approval_status_before` and `scope_snapshot.status_before` must be `active`.
+- `revocation_authority` must match the authority that granted the approval.
+- Action, tool, and target must match the approval scope.
+- `revoked_at` must fall within the approval window.
+- `approval_status_after` must be `revoked`.
+- A revocation requiring notification leaves `notified_roles`.
+- Without reason and evidence, it is not recognized as an audit event.
 
-구현 연결:
+Implementation links:
 
 - `schema-files/approval-revocation-event.schema.json`
 - `approval-revocation-runner.js`
 - `approval-revocation-fixtures/`
 
-## 11. Approval Renewal 규칙
+## 11. Approval Renewal Rules
 
-`ApprovalRenewed`는 active approval의 유효기간만 연장하는 이벤트다. action, tool, target, granted_to, max execution을 바꾸면 renewal이 아니라 새 approval 또는 FRAGO가 필요하다.
+`ApprovalRenewed` is an event that only extends the validity period of an active approval. Changing action, tool, target, granted_to, or max execution requires a new approval or FRAGO rather than a renewal.
 
-규칙:
+Rules:
 
-- `approval_scope_id`와 `approval_request_id`를 연결한다.
-- `approval_status_before`와 `scope_snapshot.status_before`는 `active`여야 한다.
-- `renewal_authority`는 approval을 부여한 권한자와 일치해야 한다.
-- action, tool, target이 approval scope와 일치해야 한다.
-- `renewed_at`은 기존 approval window 안에 있어야 한다.
-- `new_expires_at`은 기존 `previous_expires_at`보다 뒤여야 한다.
-- `max_executions_after`는 기존 max execution을 늘릴 수 없다.
-- `approve_once` renewal은 아직 실행되지 않은 approval에만 가능하다.
-- 통지가 필요한 renewal은 `notified_roles`를 남긴다.
-- reason과 evidence가 없으면 audit event로 인정하지 않는다.
+- Link `approval_scope_id` and `approval_request_id`.
+- `approval_status_before` and `scope_snapshot.status_before` must be `active`.
+- `renewal_authority` must match the authority that granted the approval.
+- Action, tool, and target must match the approval scope.
+- `renewed_at` must fall within the existing approval window.
+- `new_expires_at` must come after the existing `previous_expires_at`.
+- `max_executions_after` cannot increase the existing max execution.
+- `approve_once` renewal is only possible for an approval that has not yet been executed.
+- A renewal requiring notification leaves `notified_roles`.
+- Without reason and evidence, it is not recognized as an audit event.
 
-구현 연결:
+Implementation links:
 
 - `schema-files/approval-renewal-event.schema.json`
 - `approval-renewal-runner.js`
 - `approval-renewal-fixtures/`
 
-## 12. Approval Delegation 규칙
+## 12. Approval Delegation Rules
 
-`ApprovalDelegated`는 Commander의 approval authority 일부를 제한적으로 위임하는 이벤트다. 위임은 authority matrix의 기존 approval-required rule 안에서만 유효하며, Red/Black, high/critical residual risk, restricted release, subdelegation은 Commander-retained로 남긴다.
+`ApprovalDelegated` is an event that limitedly delegates part of the Commander's approval authority. Delegation is only valid within existing approval-required rules of the authority matrix, and Red/Black, high/critical residual risk, restricted release, and subdelegation remain Commander-retained.
 
-규칙:
+Rules:
 
-- `authority_matrix_id`와 mission이 일치해야 한다.
-- `delegator`와 `actor`는 Commander여야 한다.
-- delegatee는 자기 role을 승인할 수 없다.
-- 위임 scope는 기존 approval-required authority rule과 task/tool/target/role이 맞아야 한다.
-- `max_roe_class`는 Amber 이하만 허용한다.
-- `max_residual_risk`는 medium 이하만 허용한다.
-- duration과 approval count limit가 있어야 한다.
-- retained authorities와 restricted context guard를 명시해야 한다.
-- sensitive context는 release review를 유지해야 한다.
-- backbrief, post-action evidence, notification, reason, evidence가 있어야 한다.
+- `authority_matrix_id` must match the mission.
+- `delegator` and `actor` must be the Commander.
+- A delegatee cannot approve their own role.
+- The delegation scope must match the task/tool/target/role of the existing approval-required authority rule.
+- `max_roe_class` allows only Amber or lower.
+- `max_residual_risk` allows only medium or lower.
+- Duration and an approval count limit must be present.
+- Retained authorities and restricted context guards must be specified.
+- Sensitive context must retain a release review.
+- Backbrief, post-action evidence, notification, reason, and evidence must be present.
 
-구현 연결:
+Implementation links:
 
 - `schema-files/approval-delegation-event.schema.json`
 - `approval-delegation-runner.js`
 - `approval-delegation-fixtures/`
 
-## 13. Approval Delegation Termination 규칙
+## 13. Approval Delegation Termination Rules
 
-`ApprovalDelegationTerminated`는 위임된 approval authority를 종료하는 이벤트다. 군대식 권한 위임은 생성보다 종료가 더 중요하다. 종료 event가 없으면 하급 참모나 하위 에이전트가 만료된 권한을 계속 가진 것으로 오해할 수 있다.
+`ApprovalDelegationTerminated` is an event that terminates delegated approval authority. In military-style authority delegation, termination is more important than creation. Without a termination event, a subordinate staff officer or subordinate agent could mistakenly believe they still hold an expired authority.
 
-규칙:
+Rules:
 
-- `delegation_event_id`는 원본 `ApprovalDelegated` event를 가리켜야 한다.
-- 원본 delegation과 termination event의 mission, authority matrix, delegator, delegatee가 일치해야 한다.
-- termination 전 delegation 상태는 `active`여야 한다.
-- `termination_kind=revoked`는 Commander가 active window 안에서 수행해야 한다.
-- `termination_kind=expired`는 expiry 이후에 `RECORDER` 또는 termination authority가 projection으로 기록할 수 있다.
-- `delegation_status_after`는 `termination_kind`와 일치해야 한다.
-- delegation snapshot은 task/action/tool/target/risk/time limit/retained authority/context guardrail/control flag를 원본과 동일하게 보존해야 한다.
-- reason, evidence, notification이 없으면 audit event로 인정하지 않는다.
+- `delegation_event_id` must point to the original `ApprovalDelegated` event.
+- The mission, authority matrix, delegator, and delegatee of the original delegation and the termination event must match.
+- The delegation status before termination must be `active`.
+- `termination_kind=revoked` must be performed by the Commander within the active window.
+- `termination_kind=expired` may be recorded as a projection by `RECORDER` or the termination authority after expiry.
+- `delegation_status_after` must match `termination_kind`.
+- The delegation snapshot must preserve the task/action/tool/target/risk/time limit/retained authority/context guardrail/control flag identically to the original.
+- Without reason, evidence, and notification, it is not recognized as an audit event.
 
-구현 연결:
+Implementation links:
 
 - `schema-files/approval-delegation-revocation-event.schema.json`
 - `approval-delegation-revocation-runner.js`
@@ -254,21 +254,21 @@ AARIssued
 - `authority-delegation-projection-runner.js`
 - `dashboard-ui-prototype/authority-delegation-projection-state.json`
 
-## 14. Release Gate Decision 규칙
+## 14. Release Gate Decision Rules
 
-`ReleaseGateDecided`는 실행 승인과 정보 공개 승인을 합성한 최종 판단 이벤트다. production deploy 같은 Red action은 scoped approval과 risk acceptance로 실행될 수 있어도, final output이나 external tool payload에 민감정보가 포함되면 별도 release review 없이는 나갈 수 없다.
+`ReleaseGateDecided` is the final decision event that combines execution approval and information disclosure approval. Even if a Red action such as a production deploy can be executed with scoped approval and risk acceptance, if the final output or external tool payload contains sensitive information, it cannot go out without a separate release review.
 
-규칙:
+Rules:
 
-- event는 tool request와 mission을 명시해야 한다.
-- authority snapshot은 approval/risk acceptance required/valid 상태를 보존해야 한다.
-- release snapshot은 review required/valid, target, review id, finding count를 보존해야 한다.
-- authority gate가 blocked이면 release review가 valid여도 final decision은 `blocked_pending_authority` 또는 `prohibit`이어야 한다.
-- authority gate가 allowed이고 release review가 required인데 invalid/missing이면 final decision은 `blocked_pending_release_review`여야 한다.
-- authority gate와 release review가 모두 valid일 때만 `allow_scoped_execution_and_release`가 가능하다.
-- blocked decision은 reasons를 남기고, 모든 release gate decision은 evidence를 남겨야 한다.
+- The event must specify the tool request and mission.
+- The authority snapshot must preserve the approval/risk acceptance required/valid state.
+- The release snapshot must preserve review required/valid, target, review id, and finding count.
+- If the authority gate is blocked, the final decision must be `blocked_pending_authority` or `prohibit` even if the release review is valid.
+- If the authority gate is allowed and the release review is required but invalid/missing, the final decision must be `blocked_pending_release_review`.
+- `allow_scoped_execution_and_release` is only possible when both the authority gate and the release review are valid.
+- A blocked decision must leave reasons, and every release gate decision must leave evidence.
 
-구현 연결:
+Implementation links:
 
 - `schema-files/release-gate-decision-event.schema.json`
 - `release-gate-decision-runner.js`
@@ -276,7 +276,7 @@ AARIssued
 - `release-gate-dashboard-runner.js`
 - `dashboard-ui-prototype/release-gate-dashboard-state.json`
 
-## 15. 관련 문서
+## 15. Related Documents
 
 - `data-model.sql.md`
 - `reference-architecture.md`
