@@ -52,7 +52,7 @@ Only convert the answers into file edits when they identify a reusable routing, 
 
 - Use official military/government/NATO sources for doctrine claims when possible.
 - If the information can change, browse and cite sources.
-- If adding new official-source links, run `node source-map-linter.js`.
+- If adding new official-source links, run `node source-map-linter.js --write-report`.
 - If using non-US doctrine, check `docs/multinational-doctrine-consistency-review.md`.
 - If the source is not strong enough for policy, record it as a research gap rather than a rule.
 

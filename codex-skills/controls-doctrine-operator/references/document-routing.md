@@ -75,6 +75,7 @@ Preflight requires one CoS wave receipt and one S3 operations receipt for each e
 | Agent routing preflight | `docs/role-document-access-policy.md`, `docs/agent-roles-and-authority.md`, this routing reference | `schema-files/routing-receipt.schema.json`, `agent-routing-preflight-runner.js`, `run-agent-routing-preflight-fixtures.js` |
 | SOF / high-risk TF | `docs/ai-special-operations-tf.md` | `schema-files/sof-tf-charter.schema.json`, `sof-tf-activation-runner.js` |
 | Force structure changes | `docs/force-structure-change-policy.md` | `schema-files/force-structure-change-order.schema.json`, `force-structure-change-runner.js` |
+| Mission-based model allocation | `docs/model-force-assignment-policy.md`, `docs/agent-metl.md`, `docs/agent-readiness-ledger.md` | `schema-files/model-force-assignment-plan.schema.json`, `model-force-assignment-runner.js`, `run-model-force-assignment-fixtures.js` |
 | Continuity and handoff | `docs/personnel-continuity-model.md`, `docs/knowledge-management-sop.md` | `schema-files/continuity-plan.schema.json`, `handoff-generator.js`, `continuity-drill-runner.js` |
 
 ## Source, Culture, Multinational Use
@@ -103,9 +104,10 @@ Preflight requires one CoS wave receipt and one S3 operations receipt for each e
 | Schema or sample | `node validator-cli-prototype/run-fixtures.js`, targeted `node validator-cli-prototype/validate.js ...` |
 | Any runner | targeted `node run-...-fixtures.js`, then all `run-*.js` if shared logic changed |
 | English-only corpus | `node .github/scripts/check-english-only.js` |
-| Source-map or official URL | `node source-map-linter.js`, regenerate `source-map-url-coverage-report.json` |
+| Source-map or official URL | `node source-map-linter.js --write-report` |
 | Release/authority/risk | `node run-authority-integration-fixtures.js`, `node run-release-integration-fixtures.js`, relevant lifecycle runner |
 | Orders/backbrief/rehearsal | `node runtime-demo-runner.js`, `node orders-dissemination-runner.js ...`, relevant routing fixture |
 | Skill update | `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator` |
 | Delegated agent routing | `node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt`, `node run-agent-routing-preflight-fixtures.js` |
+| Model allocation or routing | `node validator-cli-prototype/validate.js sample-payloads/valid-model-force-assignment-plan.json model-force-assignment-plan`, `node run-model-force-assignment-fixtures.js` |
 | GitHub/community infrastructure | `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `node .github/scripts/check-json.js`, `node .github/scripts/check-english-only.js`, `node .github/scripts/check-markdown-links.js`, `git diff --check` |
