@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "type": "ComparativeEvaluationSet",
+  "id": "CES-Cannae-001",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "version": "2026.07.22.1",
+  "fixture_visibility": "held_out",
+  "contamination_controls": {
+    "sealed_before_candidate_execution": true,
+    "candidate_context_excludes_expected_outputs": true,
+    "same_fixture_order_required": true
+  },
+  "fixtures": [
+    {
+      "id": "CEF-Cannae-001",
+      "input": { "case": "valid-control-path" },
+      "expected": { "status": "passed" },
+      "tags": ["correctness"]
+    },
+    {
+      "id": "CEF-Cannae-002",
+      "input": { "case": "invalid-control-path" },
+      "expected": { "status": "blocked" },
+      "tags": ["completeness"]
+    }
+  ],
+  "created_at": "2026-07-21T18:00:00+09:00"
+}

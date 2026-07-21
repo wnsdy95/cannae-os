@@ -17,7 +17,7 @@ Manual doctrine docs
 -> Comparative canary promotion gates
 ```
 
-Current repository state: Phases 0-3 have executable prototypes, repository-scoped proof persistence and bounded campaign supervision are implemented as local runtimes, and UI/external-system integration remains prototype-grade.
+Current repository state: Phases 0-3 have executable prototypes, repository-scoped proof persistence, bounded campaign supervision, and comparative control-plane promotion are implemented as local runtimes, and UI/external-system integration remains prototype-grade.
 
 ## 1. Phase 0: Documentation Base
 
@@ -194,7 +194,7 @@ Implemented bounded-learning controls:
 
 ## 9. Phase 8: Comparative Candidate Promotion
 
-Status: next implementation priority.
+Status: implemented as a local proof-carrying runtime.
 
 Goal:
 
@@ -216,6 +216,15 @@ Completion criteria:
 - The same evaluation contract runs against baseline and candidate.
 - Any hard-gate regression or invalid comparison blocks promotion.
 - A passing comparison remains only a working-state promotion; merge and release stay human-gated.
+
+Implemented controls:
+
+- `ComparativeEvaluationSet` seals ordered fixtures and contamination-control declarations before candidate execution;
+- `ComparativeEvaluationPlan` binds distinct baseline/candidate repository states, one evaluation-set hash, one harness hash, exact argv, and an independent evaluator invocation;
+- `comparative-evaluation-runner.js` executes both worktrees with `shell: false`, checks repository and fixture immutability, parses structured observations, and emits `promotable`, `rollback`, or `inconclusive`;
+- campaign-owned thresholds cover every quality dimension exactly once and combine an absolute target with a maximum tolerated regression;
+- `autonomous-improvement-controller.js` reloads the report, plan, and set from the verified manifest, recomputes the result, and matches report values to checkpoint metrics;
+- `campaign-supervisor.js` carries the comparative requirement forward without granting merge, push, execution, or release authority.
 
 ## 10. Release Gates
 

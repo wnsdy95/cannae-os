@@ -2503,6 +2503,43 @@ Implemented artifacts:
 - `sample-payloads/invalid-self-improvement-cycle-order-blocked-execution.json`
 - `run-campaign-supervisor-fixtures.js`
 
+### 8.55 Comparative Control-Plane Promotion v0.5
+
+Research question:
+
+> How can a self-improving campaign show that a skill or runtime-control candidate is better than its accepted baseline without trusting a model-authored before/after score?
+
+Primary references:
+
+- NIST AI RMF Generative AI Profile: https://doi.org/10.6028/NIST.AI.600-1
+- Google SRE Workbook, Canarying Releases: https://sre.google/workbook/canarying-releases/
+- OpenAI Working with evals: https://developers.openai.com/api/docs/guides/evals
+- OpenAI Model guidance: https://developers.openai.com/api/docs/guides/latest-model
+
+Engineering conclusions:
+
+1. A single candidate receipt proves that a command ran against one state, but it does not establish comparative improvement. Baseline and candidate therefore need separate immutable repository-state bindings under one predeclared comparison plan.
+2. A time-separated before/after claim is vulnerable to changed inputs, harnesses, and environments. The local gate fixes one ordered evaluation set, one artifact hash, one exact argv, and one harness hash for both worktrees. Any mismatch is `inconclusive`, not a soft warning.
+3. Relative improvement alone can reward two bad states. Every quality dimension therefore combines a campaign-owned absolute target with a direction-aware maximum regression from the accepted baseline.
+4. Test selection after seeing candidate output enables hindsight bias. The evaluation set and plan must be persisted before the paired execution. The set records whether fixtures are held out or open and requires expected outputs to be excluded from candidate context.
+5. The harness emits structured observations rather than prose. The runner verifies subject, evaluator invocation, evaluation-set identity, exact fixture order, sample count, normalized metric dimensions, process result, and repository/fixture immutability.
+6. A valid measured failure is `rollback`; invalid or uncomparable evidence is `inconclusive`; only a full pass is `promotable`. The comparison report never authorizes execution, merge, push, or release.
+7. The controller reloads the report, plan, and set from the integrity-checked manifest and recomputes every threshold. Checkpoint before/after values must equal the report values, preventing a second model-authored metric layer from replacing runtime evidence.
+8. The campaign supervisor binds any comparative report named by a decision back to its checkpoint and publishes the required target types in every cycle order.
+9. Local hashes and process controls do not prove a trusted evaluator, isolated host, prior non-exposure, or statistical confidence. Signed report attestations, authenticated workload identity, host sandboxing, repeated stochastic trials, and post-deployment monitoring remain future controls.
+
+Implemented artifacts:
+
+- `comparative-evaluation-runner.js`
+- `schema-files/comparative-evaluation-set.schema.json`
+- `schema-files/comparative-evaluation-plan.schema.json`
+- `schema-files/comparative-evaluation-report.schema.json`
+- `sample-payloads/valid-comparative-evaluation-set.json`
+- `sample-payloads/valid-comparative-evaluation-plan.json`
+- `sample-payloads/valid-comparative-evaluation-report.json`
+- `run-comparative-evaluation-fixtures.js`
+- controller, supervisor, validator, roadmap, and skill integrations
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

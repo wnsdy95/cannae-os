@@ -60,6 +60,9 @@ const TYPE_TO_SCHEMA = {
   "self-improvement-checkpoint": "self-improvement-checkpoint.schema.json",
   "self-improvement-decision": "self-improvement-decision.schema.json",
   "self-improvement-cycle-order": "self-improvement-cycle-order.schema.json",
+  "comparative-evaluation-set": "comparative-evaluation-set.schema.json",
+  "comparative-evaluation-plan": "comparative-evaluation-plan.schema.json",
+  "comparative-evaluation-report": "comparative-evaluation-report.schema.json",
   "verification-plan": "verification-plan.schema.json",
   "verification-receipt": "verification-receipt.schema.json",
   "verifier-trust-policy": "verifier-trust-policy.schema.json",
@@ -1564,6 +1567,20 @@ function semanticRules(payload, type) {
     if ((verification.allowed_executables || []).some(item => ["sh", "bash", "zsh", "fish", "cmd", "powershell", "pwsh", "sudo", "env"].includes(String(item).toLowerCase()))) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_SHELL_VERIFIER_ALLOWED", "$.verification_policy.allowed_executables", "Campaign verification cannot authorize shells or privilege wrappers."));
     }
+    const comparative = payload.comparative_evaluation_policy;
+    if (comparative) {
+      const requiredTargets = comparative.required_target_types || [];
+      if (requiredTargets.length !== 2 || !requiredTargets.includes("runtime_control") || !requiredTargets.includes("skill")) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_TARGETS_WEAK", "$.comparative_evaluation_policy.required_target_types", "Comparative evaluation must cover both runtime-control and skill candidates."));
+      }
+      if (comparative.same_evaluation_set_required !== true || comparative.identical_harness_required !== true || comparative.independent_evaluator_required !== true) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_POLICY_WEAK", "$.comparative_evaluation_policy", "Comparative evaluation requires one immutable evaluation set, one identical harness, and an independent evaluator."));
+      }
+      const thresholdIds = (comparative.dimension_thresholds || []).map(item => item.dimension_id);
+      if (new Set(thresholdIds).size !== thresholdIds.length || thresholdIds.length !== dimensionIds.length || dimensionIds.some(id => !thresholdIds.includes(id))) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_THRESHOLDS_INCOMPLETE", "$.comparative_evaluation_policy.dimension_thresholds", "Every quality dimension requires exactly one maximum-regression threshold."));
+      }
+    }
     if (payload.schema_version === "0.3") {
       const attestation = payload.attestation_policy || {};
       const trustRef = attestation.trust_policy_ref || {};
@@ -1627,9 +1644,17 @@ function semanticRules(payload, type) {
       }
     }
     const controlPlaneTarget = ["runtime_control", "skill", "policy"].includes(target.target_type);
+    const comparativeTarget = ["runtime_control", "skill"].includes(target.target_type);
     const independent = payload.independent_evaluation || {};
     if (controlPlaneTarget && (independent.required !== true || independent.evaluator === "S3" || independent.status === "not_required" || !hasSubstantiveItems(independent.evidence_receipt_ids))) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_CONTROL_PLANE_SELF_REVIEW", "$.independent_evaluation", "Runtime, skill, and policy candidates require independent evaluation."));
+    }
+    const comparisonRef = payload.comparative_evaluation_ref || {};
+    if (comparativeTarget && (comparisonRef.required !== true || comparisonRef.report_id === "none" || comparisonRef.relative_path === "none" || comparisonRef.sha256 === "none")) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_EVALUATION_MISSING", "$.comparative_evaluation_ref", "Runtime-control and skill candidates require a manifest-backed baseline-versus-candidate report."));
+    }
+    if (comparisonRef.required === true && (path.isAbsolute(comparisonRef.relative_path || "") || String(comparisonRef.relative_path || "").split(/[\\/]+/).includes(".."))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_REPORT_PATH_INVALID", "$.comparative_evaluation_ref.relative_path", "Comparative report references must remain repository-artifact-relative."));
     }
     const humanRetained = externalities.scope_changed || externalities.authority_changed || externalities.policy_changed || externalities.release_requested ||
       ["authority_affecting", "external_release", "destructive"].includes(candidate.change_class) || target.target_type === "policy";
@@ -1664,6 +1689,75 @@ function semanticRules(payload, type) {
       }
     } else if (payload.verification_attestations !== undefined) {
       issues.push(issue("error", "SELF_IMPROVEMENT_V02_ATTESTATIONS", "$.verification_attestations", "Signed attestations require checkpoint schema version 0.3."));
+    }
+  }
+
+  if (type === "comparative-evaluation-set") {
+    const fixtureIds = (payload.fixtures || []).map(item => item.id);
+    if (new Set(fixtureIds).size !== fixtureIds.length) {
+      issues.push(issue("critical", "COMPARATIVE_EVALUATION_DUPLICATE_FIXTURE", "$.fixtures", "Comparative fixture IDs must be unique and order-stable."));
+    }
+    const controls = payload.contamination_controls || {};
+    if (controls.sealed_before_candidate_execution !== true || controls.candidate_context_excludes_expected_outputs !== true || controls.same_fixture_order_required !== true) {
+      issues.push(issue("critical", "COMPARATIVE_EVALUATION_CONTAMINATION_CONTROL_MISSING", "$.contamination_controls", "The fixture set must be sealed before execution and exclude expected outputs from candidate context."));
+    }
+  }
+
+  if (type === "comparative-evaluation-plan") {
+    const baseline = payload.subjects && payload.subjects.baseline;
+    const candidateSubject = payload.subjects && payload.subjects.candidate;
+    const check = payload.harness && payload.harness.check;
+    if (baseline && candidateSubject && (baseline.candidate_id === candidateSubject.candidate_id || baseline.revision === candidateSubject.revision)) {
+      issues.push(issue("critical", "COMPARATIVE_EVALUATION_SUBJECTS_NOT_DISTINCT", "$.subjects", "Baseline and candidate must have distinct immutable identities."));
+    }
+    if (check) {
+      const cwd = String(check.working_directory || "");
+      if (path.isAbsolute(cwd) || /^[A-Za-z]:[\\/]/.test(cwd) || cwd.split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "COMPARATIVE_EVALUATION_WORKDIR_INVALID", "$.harness.check.working_directory", "Comparative harness working directories must remain repository-relative."));
+      }
+      if (!check.args || !check.args[0] || check.args[0].startsWith("-") || !check.args[0].endsWith(".js") || check.args[0].split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "COMPARATIVE_EVALUATION_HARNESS_INVALID", "$.harness.check.args", "Comparative evaluation requires a repository-relative JavaScript harness."));
+      }
+    }
+    const ref = payload.evaluation_set_ref || {};
+    if (path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
+      issues.push(issue("critical", "COMPARATIVE_EVALUATION_SET_PATH_INVALID", "$.evaluation_set_ref.relative_path", "Evaluation-set references must remain repository-artifact-relative."));
+    }
+  }
+
+  if (type === "comparative-evaluation-report") {
+    const baseline = payload.executions && payload.executions.baseline;
+    const candidateExecution = payload.executions && payload.executions.candidate;
+    const comparisonIds = (payload.comparisons || []).map(item => item.dimension_id);
+    if (new Set(comparisonIds).size !== comparisonIds.length) {
+      issues.push(issue("critical", "COMPARATIVE_REPORT_DUPLICATE_DIMENSION", "$.comparisons", "Comparative report dimensions must be unique."));
+    }
+    for (const [subject, execution] of Object.entries(payload.executions || {})) {
+      if (execution.observation) {
+        const bytes = Buffer.from(`${JSON.stringify(execution.observation, null, 2)}\n`);
+        const digest = crypto.createHash("sha256").update(bytes).digest("hex");
+        if (!execution.stdout || execution.stdout.truncated !== false || execution.stdout.byte_size !== bytes.length || execution.stdout.sha256 !== digest) {
+          issues.push(issue("critical", "COMPARATIVE_REPORT_OBSERVATION_OUTPUT_MISMATCH", `$.executions.${subject}.stdout`, "Parsed observations must match the exact structured stdout bytes recorded by the execution."));
+        }
+      }
+    }
+    if (payload.outcome === "promotable" && (payload.working_state_promotion_recommended !== true || (payload.blocking_codes || []).length > 0 ||
+        !baseline || !candidateExecution || baseline.status !== "passed" || candidateExecution.status !== "passed" ||
+        baseline.repository_state_unchanged !== true || candidateExecution.repository_state_unchanged !== true ||
+        (payload.comparisons || []).length === 0 || payload.comparisons.some(item => item.passed !== true))) {
+      issues.push(issue("critical", "COMPARATIVE_REPORT_FALSE_PROMOTION", "$.outcome", "A promotable report requires two unchanged passing executions and every comparison threshold to pass."));
+    }
+    if (payload.outcome !== "promotable" && payload.working_state_promotion_recommended !== false) {
+      issues.push(issue("critical", "COMPARATIVE_REPORT_UNSAFE_RECOMMENDATION", "$.working_state_promotion_recommended", "Rollback and inconclusive reports cannot recommend promotion."));
+    }
+    if (payload.execution_authorized !== false || payload.release_authorized !== false) {
+      issues.push(issue("critical", "COMPARATIVE_REPORT_AUTHORITY_EXPANSION", "$", "Comparative evaluation never authorizes execution or release."));
+    }
+    if (!isValidDate(payload.started_at) || !isValidDate(payload.finished_at) || Date.parse(payload.finished_at) < Date.parse(payload.started_at)) {
+      issues.push(issue("error", "COMPARATIVE_REPORT_TIME_INVALID", "$.finished_at", "Comparative evaluation finish time cannot precede start time."));
+    }
+    if (payload.report_sha256 !== canonicalDigestWithout(payload, ["report_sha256"])) {
+      issues.push(issue("critical", "COMPARATIVE_REPORT_DIGEST_INVALID", "$.report_sha256", "Comparative report digest must match its canonical content."));
     }
   }
 

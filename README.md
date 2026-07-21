@@ -214,10 +214,10 @@ Use `repository-artifact-store.js`, or pass `--write-artifact --repository <targ
 Substantial AI missions can maintain a finite improvement campaign around work already in progress:
 
 ```text
-campaign -> finite cycle order -> candidate -> executed receipt -> signed quorum -> decision -> next finite cycle order
+campaign -> finite cycle order -> candidate -> executed receipt -> signed quorum -> paired canary -> decision -> next finite cycle order
 ```
 
-`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3 campaign additionally requires fresh Ed25519 DSSE attestations from distinct trusted keys and policy-defined independence groups. `autonomous-improvement-controller.js` reloads the receipt, signatures, exact trust policy, accepted parent decision, and any consumed approval event from the integrity-checked repository artifact store before promotion. `campaign-supervisor.js` then reconstructs the complete campaign chain from the verified manifest and emits only the next finite `start`, `retry`, `advance`, or `before_completion` order. Incomplete lineage, exhausted budgets, completion, termination, and escalation emit a non-executable `hold` order.
+`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3 campaign additionally requires fresh Ed25519 DSSE attestations from distinct trusted keys and policy-defined independence groups. For `skill` and `runtime_control` candidates, `comparative-evaluation-runner.js` executes one pre-persisted harness and one sealed evaluation set against immutable baseline and candidate worktrees, then applies campaign-owned absolute and non-regression thresholds. `autonomous-improvement-controller.js` reloads and recomputes that report with the receipt, signatures, trust policy, accepted parent, and any consumed approval event before promotion. `campaign-supervisor.js` reconstructs the complete campaign chain and emits only the next finite `start`, `retry`, `advance`, or `before_completion` order. Incomplete lineage, exhausted budgets, invalid comparison evidence, completion, termination, and escalation emit a non-executable `hold` order.
 
 Every decision and cycle order keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
@@ -232,6 +232,8 @@ node campaign-supervisor.js \
 ```
 
 Delegated agents may execute only a cycle order whose `status` is `ready` and `execution_authorized` is `true`. Re-running the supervisor against unchanged campaign state returns the existing order without advancing the manifest.
+
+The comparative runner returns exactly `promotable`, `rollback`, or `inconclusive`. Even `promotable` sets both `execution_authorized` and `release_authorized` to `false`; it is evidence for the controller's working-state decision, not permission to merge, push, or release.
 
 Artifact manifest v0.4 uses expiring namespace leases, monotonic fencing tokens, immutable no-overwrite history, a write-ahead journal, and hash-linked manifests. Run `repository-artifact-verify.js --repository <target> --artifact-root <root>` before accepting a wave or consuming its proof. The built-in shared-filesystem coordinator assumes coherent atomic filesystem operations and is not partition-tolerant.
 
@@ -323,6 +325,8 @@ Important examples:
 - `run-signed-self-improvement-fixtures.js`: backward compatibility plus two-key/two-group quorum, signature tamper, duplicate signer, and trust-policy expiry gates.
 - `run-verification-runner-fixtures.js`: shell/inline-code prohibition, stale-plan rejection, exact argv receipts, and repository-mutation detection.
 - `run-verification-attestation-fixtures.js`: Ed25519 DSSE signatures, persisted/self-digest binding, quorum diversity, replay expiry, and private-key file controls.
+- `run-comparative-evaluation-fixtures.js`: real baseline/candidate worktrees, campaign-bound sealed fixtures, absolute and non-regression thresholds, pre-persisted plans, cross-mission rejection, harness mismatch, report tamper, and manifest custody.
+- `run-document-routing-fixtures.js`: Codex/Claude natural-language route parity, human final-authority mode, and bounded delegated-AI routing.
 - `validation-suite-runner.js`: one shell-independent entry point for routing, corpus, validator, runner, source-map, syntax, and whitespace gates.
 
 <p align="center">
@@ -438,7 +442,7 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- add comparative canary evaluation before promoting skill or runtime-control candidates.
+- add authenticated external execution and signatures for comparative evaluation reports.
 
 Mid-term:
 

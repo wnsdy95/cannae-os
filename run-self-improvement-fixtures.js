@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 const assert = require("assert");
+const crypto = require("crypto");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const { analyzeImprovement } = require("./autonomous-improvement-controller");
+const { reportDigest } = require("./comparative-evaluation-runner");
 const { computeRepositoryState, receiptDigest } = require("./verification-runner");
 const { resolveRepository, writeRepositoryArtifact } = require("./repository-artifact-store");
 
@@ -13,6 +15,9 @@ const ROOT = __dirname;
 const CAMPAIGN_PATH = path.join(ROOT, "sample-payloads", "valid-self-improvement-campaign.json");
 const CHECKPOINT_PATH = path.join(ROOT, "sample-payloads", "valid-self-improvement-checkpoint.json");
 const RECEIPT_PATH = path.join(ROOT, "sample-payloads", "valid-verification-receipt.json");
+const COMPARISON_PLAN_PATH = path.join(ROOT, "sample-payloads", "valid-comparative-evaluation-plan.json");
+const COMPARISON_SET_PATH = path.join(ROOT, "sample-payloads", "valid-comparative-evaluation-set.json");
+const COMPARISON_REPORT_PATH = path.join(ROOT, "sample-payloads", "valid-comparative-evaluation-report.json");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -61,6 +66,27 @@ function proofFor(campaign, checkpoint) {
     manifestRevision: 3,
     manifestSha256: "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
   };
+}
+
+function attachComparison(checkpoint, proof) {
+  const report = clone(readJson(COMPARISON_REPORT_PATH));
+  checkpoint.comparative_evaluation_ref = {
+    required: true,
+    report_id: report.id,
+    relative_path: `repositories/cannae-os-aaaaaaaaaaaa/missions/${checkpoint.mission_id}/C1/comparative-evaluation-reports/${report.id}.json`,
+    sha256: "b".repeat(64)
+  };
+  proof.comparativeReport = report;
+  proof.comparativePlan = clone(readJson(COMPARISON_PLAN_PATH));
+  proof.comparativeEvaluationSet = clone(readJson(COMPARISON_SET_PATH));
+  return report;
+}
+
+function syncObservationOutput(execution) {
+  const bytes = Buffer.from(`${JSON.stringify(execution.observation, null, 2)}\n`);
+  execution.stdout.byte_size = bytes.length;
+  execution.stdout.sha256 = crypto.createHash("sha256").update(bytes).digest("hex");
+  execution.stdout.truncated = false;
 }
 
 function consumedApproval(checkpoint) {
@@ -280,6 +306,55 @@ try {
     checkpoint.target.artifact_paths = ["runtime/controller.js"];
     checkpoint.candidate.changed_files = ["runtime/controller.js"];
   }, { decision: "escalate", executionAuthorized: false, blockingCodes: ["INDEPENDENT_CONTROL_PLANE_EVALUATION_MISSING"] });
+
+  runCase("runtime-control candidate with paired canary evidence is accepted", (_campaign, checkpoint) => {
+    checkpoint.target.target_type = "runtime_control";
+    checkpoint.target.state = "candidate";
+    checkpoint.target.artifact_paths = ["runtime/controller.js"];
+    checkpoint.candidate.changed_files = ["runtime/controller.js"];
+    checkpoint.independent_evaluation = {required: true, evaluator: "EVALUATOR", status: "passed", evidence_receipt_ids: ["VR-Cannae-001"]};
+  }, { decision: "accept_working_state", executionAuthorized: true }, (proof, _campaign, checkpoint) => {
+    attachComparison(checkpoint, proof);
+  });
+
+  runCase("runtime-control regression rolls back candidate", (_campaign, checkpoint) => {
+    checkpoint.target.target_type = "runtime_control";
+    checkpoint.target.state = "candidate";
+    checkpoint.target.artifact_paths = ["runtime/controller.js"];
+    checkpoint.candidate.changed_files = ["runtime/controller.js"];
+    checkpoint.metric_results[0].after = 0.89;
+    checkpoint.metric_results[0].hard_gate_passed = false;
+    checkpoint.independent_evaluation = {required: true, evaluator: "EVALUATOR", status: "passed", evidence_receipt_ids: ["VR-Cannae-001"]};
+  }, { decision: "rollback", executionAuthorized: true, blockingCodes: ["COMPARATIVE_CANARY_ROLLBACK_REQUIRED"] }, (proof, _campaign, checkpoint) => {
+    const report = attachComparison(checkpoint, proof);
+    report.executions.candidate.observation.metric_results[0].value = 0.89;
+    syncObservationOutput(report.executions.candidate);
+    report.comparisons[0] = {
+      ...report.comparisons[0],
+      candidate_value: 0.89,
+      normalized_delta: 0.09,
+      absolute_threshold_passed: false,
+      passed: false
+    };
+    report.outcome = "rollback";
+    report.working_state_promotion_recommended = false;
+    report.blocking_codes = ["COMPARISON_ABSOLUTE_THRESHOLD_FAILED", "COMPARISON_HARD_GATE_FAILED"];
+    report.report_sha256 = reportDigest(report);
+  });
+
+  runCase("recomputed canary mismatch escalates", (_campaign, checkpoint) => {
+    checkpoint.target.target_type = "skill";
+    checkpoint.target.state = "candidate";
+    checkpoint.target.artifact_paths = ["codex-skills/controls-doctrine-operator/SKILL.md"];
+    checkpoint.candidate.changed_files = ["codex-skills/controls-doctrine-operator/SKILL.md"];
+    checkpoint.independent_evaluation = {required: true, evaluator: "EVALUATOR", status: "passed", evidence_receipt_ids: ["VR-Cannae-001"]};
+  }, { decision: "escalate", executionAuthorized: false, blockingCodes: ["COMPARATIVE_CANARY_RECOMPUTATION_MISMATCH"] }, (proof, _campaign, checkpoint) => {
+    const report = attachComparison(checkpoint, proof);
+    report.target_type = "skill";
+    proof.comparativePlan.target_type = "skill";
+    report.comparisons[0].candidate_value = 0.94;
+    report.report_sha256 = reportDigest(report);
+  });
 
   const repositoryPath = path.join(temporaryRoot, "target-repository");
   const artifactRoot = path.join(temporaryRoot, "artifacts");

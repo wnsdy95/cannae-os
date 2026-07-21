@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/comparative-evaluation-report.schema.json",
+  "title": "Comparative Evaluation Report",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "plan_ref", "campaign_id", "mission_id", "cycle_number", "target_type", "repository_binding", "evaluation_set_ref", "evaluator", "executions", "comparisons", "outcome", "working_state_promotion_recommended", "execution_authorized", "release_authorized", "blocking_codes", "started_at", "finished_at", "report_sha256"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ComparativeEvaluationReport" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "plan_ref": { "$ref": "#/$defs/artifact_ref" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "target_type": { "type": "string", "enum": ["runtime_control", "skill"] },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "evaluation_set_ref": { "$ref": "#/$defs/artifact_ref" },
+    "evaluator": {
+      "type": "object",
+      "required": ["role", "evaluator_id", "invocation_id"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "$ref": "common.schema.json#/$defs/role_id" },
+        "evaluator_id": { "$ref": "common.schema.json#/$defs/id" },
+        "invocation_id": { "$ref": "common.schema.json#/$defs/id" }
+      }
+    },
+    "executions": {
+      "type": "object",
+      "required": ["baseline", "candidate"],
+      "additionalProperties": false,
+      "properties": {
+        "baseline": { "$ref": "#/$defs/execution" },
+        "candidate": { "$ref": "#/$defs/execution" }
+      }
+    },
+    "comparisons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dimension_id", "direction", "hard_gate", "baseline_value", "candidate_value", "normalized_delta", "absolute_threshold", "maximum_regression", "absolute_threshold_passed", "non_regression_passed", "passed"],
+        "additionalProperties": false,
+        "properties": {
+          "dimension_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+          "direction": { "type": "string", "enum": ["maximize", "minimize"] },
+          "hard_gate": { "type": "boolean" },
+          "baseline_value": { "type": "number", "minimum": 0, "maximum": 1 },
+          "candidate_value": { "type": "number", "minimum": 0, "maximum": 1 },
+          "normalized_delta": { "type": "number", "minimum": -1, "maximum": 1 },
+          "absolute_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+          "maximum_regression": { "type": "number", "minimum": 0, "maximum": 1 },
+          "absolute_threshold_passed": { "type": "boolean" },
+          "non_regression_passed": { "type": "boolean" },
+          "passed": { "type": "boolean" }
+        }
+      }
+    },
+    "outcome": { "type": "string", "enum": ["promotable", "rollback", "inconclusive"] },
+    "working_state_promotion_recommended": { "type": "boolean" },
+    "execution_authorized": { "type": "boolean", "const": false },
+    "release_authorized": { "type": "boolean", "const": false },
+    "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "report_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": { "type": "string", "minLength": 1 },
+        "worktree_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "output_summary": {
+      "type": "object",
+      "required": ["byte_size", "sha256", "excerpt", "truncated"],
+      "additionalProperties": false,
+      "properties": {
+        "byte_size": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "excerpt": { "type": "string" },
+        "truncated": { "type": "boolean" }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "required": ["schema_version", "type", "plan_id", "evaluation_set", "subject", "evaluator", "fixture_results", "metric_results"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "type": "string", "const": "0.1" },
+        "type": { "type": "string", "const": "ComparativeEvaluationObservation" },
+        "plan_id": { "$ref": "common.schema.json#/$defs/id" },
+        "evaluation_set": {
+          "type": "object",
+          "required": ["id", "version", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/id" },
+            "version": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "subject": {
+          "type": "object",
+          "required": ["kind", "candidate_id", "revision"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "type": "string", "enum": ["baseline", "candidate"] },
+            "candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+            "revision": { "type": "string", "minLength": 1 }
+          }
+        },
+        "evaluator": {
+          "type": "object",
+          "required": ["role", "evaluator_id", "invocation_id"],
+          "additionalProperties": false,
+          "properties": {
+            "role": { "$ref": "common.schema.json#/$defs/role_id" },
+            "evaluator_id": { "$ref": "common.schema.json#/$defs/id" },
+            "invocation_id": { "$ref": "common.schema.json#/$defs/id" }
+          }
+        },
+        "fixture_results": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["fixture_id", "status"],
+            "additionalProperties": false,
+            "properties": {
+              "fixture_id": { "$ref": "common.schema.json#/$defs/id" },
+              "status": { "type": "string", "enum": ["passed", "failed", "error"] }
+            }
+          }
+        },
+        "metric_results": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["dimension_id", "value", "sample_count"],
+            "additionalProperties": false,
+            "properties": {
+              "dimension_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+              "value": { "type": "number", "minimum": 0, "maximum": 1 },
+              "sample_count": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["subject", "repository_binding", "repository_state_before", "repository_state_after", "repository_state_unchanged", "argv", "resolved_executable", "executable_sha256", "harness_sha256", "exit_code", "signal", "status", "duration_ms", "stdout", "stderr"],
+      "additionalProperties": false,
+      "properties": {
+        "subject": { "type": "string", "enum": ["baseline", "candidate"] },
+        "repository_binding": { "$ref": "#/$defs/repository_binding" },
+        "repository_state_before": { "$ref": "#/$defs/repository_state" },
+        "repository_state_after": { "$ref": "#/$defs/repository_state" },
+        "repository_state_unchanged": { "type": "boolean" },
+        "argv": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "resolved_executable": { "type": "string", "minLength": 1 },
+        "executable_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "harness_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "exit_code": { "type": "integer" },
+        "signal": { "type": "string" },
+        "status": { "type": "string", "enum": ["passed", "failed", "blocked", "timed_out"] },
+        "duration_ms": { "type": "integer", "minimum": 0 },
+        "stdout": { "$ref": "#/$defs/output_summary" },
+        "stderr": { "$ref": "#/$defs/output_summary" },
+        "observation": { "$ref": "#/$defs/observation" }
+      }
+    }
+  }
+}

@@ -49,6 +49,7 @@
     }
   ],
   "independent_evaluation": {"required": false, "evaluator": "EVALUATOR", "status": "not_required", "evidence_receipt_ids": []},
+  "comparative_evaluation_ref": {"required": false, "report_id": "none", "relative_path": "none", "sha256": "none"},
   "externalities": {"scope_changed": false, "authority_changed": false, "policy_changed": false, "release_requested": false, "destructive_action": false, "cross_repository_write": false},
   "approval_binding": {
     "required": false,

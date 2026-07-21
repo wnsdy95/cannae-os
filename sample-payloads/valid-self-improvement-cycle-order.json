@@ -48,6 +48,7 @@
   },
   "proof_requirements": {
     "verification_receipt_required": true,
+    "comparative_evaluation_required_for": ["runtime_control", "skill"],
     "signed_attestation_required": false,
     "minimum_valid_attestations": 0,
     "minimum_independence_groups": 0,

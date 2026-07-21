@@ -56,6 +56,26 @@
     "repository_state_must_remain_unchanged": true,
     "receipt_persistence_required": true
   },
+  "comparative_evaluation_policy": {
+    "required_target_types": [
+      "runtime_control",
+      "skill"
+    ],
+    "same_evaluation_set_required": true,
+    "identical_harness_required": true,
+    "independent_evaluator_required": true,
+    "max_report_age_seconds": 3600,
+    "dimension_thresholds": [
+      {
+        "dimension_id": "accuracy",
+        "maximum_regression": 0
+      },
+      {
+        "dimension_id": "completeness",
+        "maximum_regression": 0.02
+      }
+    ]
+  },
   "budgets": {
     "max_cycles": 8,
     "max_retries_per_cycle": 2,

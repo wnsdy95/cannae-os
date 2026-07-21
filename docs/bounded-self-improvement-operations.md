@@ -15,6 +15,7 @@ human intent
   -> persist a verification receipt
   -> obtain signed attestations from independent verifiers
   -> validate receipt, signatures, trust policy, and quorum
+  -> run one sealed evaluation contract against baseline and control-plane candidate
   -> accept / revise / rollback / escalate
   -> reconstruct campaign chain and issue the next finite cycle order
   -> next checkpoint
@@ -43,8 +44,8 @@ An accepted candidate becomes the next **working state**. It does not become an 
 
 Procedures, runtime controls, skills, and policies may be examined and changed as isolated candidates. They require stricter treatment because they can alter future behavior.
 
-- A procedure or runtime candidate needs independent evaluation before promotion.
-- A skill candidate needs independent evaluation and its own validation/forward test.
+- A procedure candidate needs independent evaluation before promotion.
+- A runtime-control or skill candidate needs independent evaluation plus a manifest-backed baseline-versus-candidate report from the same sealed evaluation set and harness.
 - A policy candidate also needs explicit USER approval scoped to that candidate.
 - That approval must be represented by a valid `ApprovalScope` and one matching `ApprovalConsumptionEvent`; prose approval in a checkpoint has no authority.
 - Authority changes, merge, push, and external release remain human-retained.
@@ -66,6 +67,7 @@ The campaign is the standing order. It binds:
 - mandatory checkpoint triggers;
 - experiment, rollback, and promotion rules;
 - allowed verification executables, command/time/output budgets, and proof persistence rules;
+- control-plane target types, maximum report age, and per-dimension maximum regression thresholds;
 - for v0.3, the exact verifier trust-policy artifact, signature threshold, independence-group threshold, and maximum attestation age;
 - stop conditions.
 
@@ -96,7 +98,22 @@ Promotion requires all of the following:
 
 Repeating one attestation, creating several names for one key, using two verifiers from one required-independent group, replaying expired proof, or changing the exposed fields outside the signed payload blocks promotion.
 
-### 2.4 `SelfImprovementCheckpoint`
+### 2.4 Comparative evaluation contracts
+
+`ComparativeEvaluationSet` is persisted before candidate execution and bound to one campaign and mission. It assigns a version and stable order to held-out or open fixtures and records three contamination controls: sealing before execution, exclusion of expected outputs from candidate context, and identical fixture order. The manifest SHA-256 is the runtime identity of the set; a cross-mission artifact reference is rejected before harness execution.
+
+`ComparativeEvaluationPlan` binds that set to two distinct subjects. Each subject carries a candidate ID, revision, repository identity, Git head, and worktree fingerprint. The plan also fixes one repository-relative Node harness, exact argv, timeout, expected exit codes, harness SHA-256, and independent evaluator invocation. The plan itself must already exist in the repository manifest when execution starts.
+
+`comparative-evaluation-runner.js` copies the sealed set into separate read-only temporary files, executes the exact harness in baseline and candidate worktrees with `shell: false`, and checks the fixture bytes and each repository state again afterward. The harness emits one structured observation per subject. The runner requires matching evaluation-set identity, evaluator binding, fixture order, quality dimensions, argv, and harness hash.
+
+For each campaign quality dimension, the runner applies both:
+
+- the campaign's absolute target; and
+- the campaign's `maximum_regression` relative to the accepted baseline, after accounting for maximize/minimize direction.
+
+The report outcome is `promotable` only when both executions are valid, every candidate fixture passes, and every dimension passes both thresholds. A measured failure is `rollback`. Invalid identity, stale state, changed harness, malformed output, or contract mismatch is `inconclusive`. All three outcomes keep `execution_authorized: false` and `release_authorized: false`; the controller, not the comparison runner, owns the bounded working-state decision.
+
+### 2.5 `SelfImprovementCheckpoint`
 
 Each checkpoint records one candidate against one baseline:
 
@@ -109,13 +126,14 @@ Each checkpoint records one candidate against one baseline:
 - manifest-backed verification receipt references and required check IDs;
 - for v0.3, manifest-backed signed attestation references identifying their receipt and verifier;
 - independent evaluation where required;
+- for runtime-control and skill targets, the exact comparative report manifest reference;
 - scope, authority, policy, release, destructive, and cross-repository externalities;
 - exact approval-scope and consumption-event references where required;
 - completed/open acceptance criteria and budget counters.
 
 Checkpoint paths may not be absolute or contain `..`. Different repositories require separate campaigns and artifact namespaces.
 
-### 2.5 `SelfImprovementDecision`
+### 2.6 `SelfImprovementDecision`
 
 `autonomous-improvement-controller.js` emits one of:
 
@@ -133,7 +151,7 @@ Every decision sets `release_authorized: false`. Release is handled by the exist
 
 The decision also records the accepted candidate revision and a proof summary: verified receipt IDs, verified parent decision ID, consumed approval event ID, and the artifact-manifest revision/hash used during evaluation. A v0.3 decision additionally records verified attestation IDs, verifier key IDs, independence groups, and whether the required quorum was satisfied.
 
-### 2.6 `SelfImprovementCycleOrder`
+### 2.7 `SelfImprovementCycleOrder`
 
 `campaign-supervisor.js` is the deterministic campaign-level state machine. It verifies the repository artifact store, locates exactly one campaign artifact, reloads every checkpoint and decision for that campaign, and reconstructs the chain without relying on conversation memory.
 
@@ -301,6 +319,20 @@ node verification-attestation-runner.js \
 
 The verifier may return stdout as a portable artifact. Capture it outside the target repository until the command succeeds. The repository operator then persists the returned JSON under `verification-attestations`, or the verifier may add `--write-artifact --repository <repo> --artifact-root <root>` when it has authorized artifact-store access. Repeat with a distinct trusted key and independence group until the campaign quorum is met.
 
+Before promoting a runtime-control or skill candidate, persist a sealed `ComparativeEvaluationSet` under `comparative-evaluation-sets` and its plan under `comparative-evaluation-plans`. The candidate repository and baseline worktree must share the same normalized Git origin while retaining distinct repository-state bindings.
+
+```bash
+node comparative-evaluation-runner.js \
+  campaign.json \
+  comparative-evaluation-plan.json \
+  --repository ../candidate-repository \
+  --baseline-repository ../baseline-worktree \
+  --artifact-root .cannae/artifacts \
+  --write-artifact
+```
+
+Exit code `0` means `promotable`, `1` means `rollback` or `inconclusive`, and `2` means malformed input, missing pre-persisted evidence, or proof-store failure. The caller must reference the persisted report from `checkpoint.comparative_evaluation_ref`; the report is not itself an execution or release approval.
+
 Evaluate a checkpoint against its repository proof store:
 
 ```bash
@@ -322,7 +354,7 @@ node autonomous-improvement-controller.js \
   --artifact-root .cannae/artifacts
 ```
 
-The controller always requires the runtime repository. It verifies the artifact manifest and history, reloads every receipt, attestation, trust policy, parent decision, approval scope, and consumption event referenced by the checkpoint, and compares their hashes and semantic bindings before deciding. `--write-artifact` additionally records the checkpoint and decision under the same mission/cycle namespace.
+The controller always requires the runtime repository. It verifies the artifact manifest and history, reloads every receipt, attestation, trust policy, comparative report/plan/set, parent decision, approval scope, and consumption event referenced by the checkpoint, and compares their hashes and semantic bindings before deciding. For skill and runtime-control candidates it recomputes the comparison and requires the checkpoint's metric values to match it. `--write-artifact` additionally records the checkpoint and decision under the same mission/cycle namespace.
 
 Open or resume only the next finite campaign step after the campaign artifact, or after each persisted controller decision:
 
@@ -353,6 +385,8 @@ CLI exit codes are `0` for a decision the harness may consume without human unbl
 - A missing decision, duplicate decision, skipped cycle, mismatched baseline, forged parent path/hash, or record after a terminal decision blocks the supervisor before another order is issued.
 - Agents must not infer the next cycle number, retry count, baseline, or parent from chat history. They consume the current persisted cycle order.
 - A protected-invariant impact blocks promotion even when the measured score improves.
+- A skill or runtime-control candidate without a fresh `promotable` paired report cannot become a working state. A rollback report triggers rollback; an inconclusive or recomputation-mismatched report escalates.
+- Baseline and candidate must run the same pre-persisted plan, sealed evaluation-set bytes, fixture order, argv, and harness hash. A simple before/after claim is not comparative proof.
 - Destructive or cross-repository behavior terminates autonomous execution.
 - A controller may generate a policy candidate but may not approve it; an exact USER-granted scope must be consumed once by that checkpoint execution.
 - Follow-on work must reload the immediately prior accepted decision; naming an ID without its manifest-backed bytes is insufficient.
@@ -365,19 +399,23 @@ node run-self-improvement-fixtures.js
 node run-signed-self-improvement-fixtures.js
 node run-verification-runner-fixtures.js
 node run-verification-attestation-fixtures.js
+node run-comparative-evaluation-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 node run-repository-artifact-isolation-fixtures.js
 node run-repository-artifact-concurrency-fixtures.js
 node run-repository-artifact-recovery-fixtures.js
 ```
 
-The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE verification, duplicate and expired attestations, two-key/two-group quorum, receipt-content binding, validation rollback, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, concurrent fencing, crash recovery, and byte-level tamper detection.
+The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE verification, duplicate and expired attestations, two-key/two-group quorum, receipt-content binding, real baseline/candidate worktree execution, sealed evaluation sets, absolute and non-regression thresholds, harness mismatch, comparison rollback/inconclusive outcomes, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, concurrent fencing, crash recovery, and byte-level tamper detection.
 
 ## 9. Current Limitations
 
 - The controller produces the next task order; the active AI harness must execute it and return a new checkpoint.
 - Bootstrap quality dimensions are safe engineering defaults; mission-specific campaigns should replace them when another measurable quality model is more appropriate.
 - Ed25519 signatures authenticate possession of a trusted private key and integrity of the signed statement. They do not prove that the verifier ran on an isolated host, used a different provider, executed the declared checks honestly, or was free from compromise. Independence groups and execution origins remain policy assertions unless backed by external infrastructure.
+- Comparative reports are locally digest-bound and manifest-verified but are not yet independently signed. The evaluator identity and invocation remain local claims until an external workload identity or report-attestation contract is added.
+- Read-only temporary fixture permissions and before/after hashes detect mutation but are not a host security sandbox. A malicious harness running as the same OS user may read other accessible files, use the network, or attempt transient fixture access; production execution needs filesystem, network, process, and credential isolation.
+- A sealed local fixture set limits accidental prompt leakage but cannot prove that a model or developer never saw equivalent examples before the campaign. Statistical confidence, repeated stochastic trials, and distribution-shift monitoring remain mission-specific evaluation responsibilities.
 - The local trust policy, campaign, checkpoint, and repository manifest are not anchored in an online transparency log, hardware root, KMS, Sigstore identity, or external timestamp authority. Key revocation is enforced only after an updated human-approved policy is distributed and consumed.
 - An actor that can replace the artifact root, trust policy, campaign input, and all retained history outside the controller can reconstruct a locally consistent false history. Protect the root with normal filesystem, account, backup, and review controls.
 - The shared-filesystem lease backend assumes coherent atomic `mkdir`, hard-link creation, rename, and visibility semantics plus clocks accurate enough for expiry. It prevents cooperating stale writers with monotonic fencing tokens, but it is not safe under network partition or a filesystem that violates those assumptions. Distributed writers requiring partition tolerance need an external linearizable lease/transaction service and must reject stale fencing tokens at the storage commit point.

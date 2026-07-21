@@ -134,6 +134,10 @@ Validator changes must not:
 - treat a signed `remote` execution-origin claim as proof of trusted execution or provider independence.
 - continue from a parent decision that is missing, rejected, from another cycle, or bound to another baseline revision.
 - accept a policy or authority candidate from a prose approval claim or a reused consumption event.
+- promote a skill or runtime-control candidate without one pre-persisted evaluation set and plan executed against distinct baseline and candidate states.
+- accept a comparative report with a changed fixture order, stale repository state, different harness hash/argv, malformed observation, mismatched stdout hash, incomplete dimension coverage, or non-independent evaluator.
+- treat a relative improvement as sufficient when the candidate misses an absolute target, exceeds a maximum-regression threshold, or fails a held-out fixture.
+- treat an `inconclusive` comparison as a pass, or let any comparison report authorize execution, merge, push, or release.
 - accept a repository artifact store with a pending journal, broken history chain, sidecar mismatch, or changed artifact bytes.
 - let an expired writer commit after a replacement lease has received a higher fencing token, steal an unexpired foreign-host lease, reuse a fencing token across different lease IDs, regress a token, or lose a revision reserved in immutable history.
 - accept research task with no source discipline.

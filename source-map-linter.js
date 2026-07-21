@@ -23,7 +23,11 @@ const OFFICIAL_HOST_PATTERNS = [
   /canada\.ca$/,
   /fema\.gov$/,
   /rfc-editor\.org$/,
-  /etcd\.io$/
+  /etcd\.io$/,
+  /nist\.gov$/,
+  /sre\.google$/,
+  /developers\.openai\.com$/,
+  /platform\.openai\.com$/
 ];
 
 function markdownFiles(dir) {
@@ -113,7 +117,7 @@ function coverageReport() {
 
   return {
     report_type: "source-map-url-coverage",
-    as_of: "2026-07-20",
+    as_of: "2026-07-22",
     source_map: "docs/source-map.md",
     valid: findings.length === 0,
     checked_hosts: official.size,

@@ -14,6 +14,7 @@ const { validatePayload } = require("./validator-cli-prototype/validate");
 const { evaluateConsumption } = require("./approval-consumption-runner");
 const { receiptDigest } = require("./verification-runner");
 const { evaluateAttestationQuorum } = require("./verification-attestation");
+const { evaluateComparison, reportDigest } = require("./comparative-evaluation-runner");
 
 const CHANGE_RANK = {
   local_reversible: 0,
@@ -24,6 +25,7 @@ const CHANGE_RANK = {
 };
 
 const CONTROL_PLANE_TARGETS = new Set(["runtime_control", "skill", "policy"]);
+const COMPARATIVE_TARGETS = new Set(["runtime_control", "skill"]);
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -219,6 +221,19 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
       }, "verification-attestations"));
     }
   }
+  let comparativeReport = null;
+  let comparativePlan = null;
+  let comparativeEvaluationSet = null;
+  if (checkpoint.comparative_evaluation_ref && checkpoint.comparative_evaluation_ref.required) {
+    const ref = checkpoint.comparative_evaluation_ref;
+    comparativeReport = readManifestArtifact(artifactRoot, manifest, {
+      artifact_id: ref.report_id,
+      relative_path: ref.relative_path,
+      sha256: ref.sha256
+    }, "comparative-evaluation-reports");
+    comparativePlan = readManifestArtifact(artifactRoot, manifest, comparativeReport.plan_ref, "comparative-evaluation-plans");
+    comparativeEvaluationSet = readManifestArtifact(artifactRoot, manifest, comparativeReport.evaluation_set_ref, "comparative-evaluation-sets");
+  }
   return {
     receipts,
     attestations,
@@ -226,9 +241,97 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     parentDecision,
     approvalScope,
     consumptionEvent,
+    comparativeReport,
+    comparativePlan,
+    comparativeEvaluationSet,
     manifestRevision: verification.manifest_revision,
     manifestSha256: verification.manifest_sha256
   };
+}
+
+function verifyComparativeEvaluation(campaign, checkpoint, proofContext, blocks) {
+  const target = checkpoint.target || {};
+  if (!COMPARATIVE_TARGETS.has(target.target_type)) return { valid: true, rollbackRequired: false, reportId: "none" };
+  const initialBlockCount = blocks.length;
+  const policy = campaign.comparative_evaluation_policy;
+  const ref = checkpoint.comparative_evaluation_ref || {};
+  const report = proofContext.comparativeReport;
+  const plan = proofContext.comparativePlan;
+  const evaluationSet = proofContext.comparativeEvaluationSet;
+  if (!policy) {
+    blocks.push("COMPARATIVE_EVALUATION_POLICY_MISSING");
+    return { valid: false, rollbackRequired: false, reportId: report && report.id ? report.id : "none" };
+  }
+  if (ref.required !== true || ref.report_id === "none" || !report || !plan || !evaluationSet) {
+    blocks.push("COMPARATIVE_CANARY_EVIDENCE_MISSING");
+    return { valid: false, rollbackRequired: false, reportId: "none" };
+  }
+  const schemaIssues = [
+    ...validatePayload(report, "comparative-evaluation-report").issues,
+    ...validatePayload(plan, "comparative-evaluation-plan").issues,
+    ...validatePayload(evaluationSet, "comparative-evaluation-set").issues
+  ].filter(item => item.severity === "error" || item.severity === "critical");
+  if (schemaIssues.length > 0 || report.report_sha256 !== reportDigest(report)) {
+    blocks.push("COMPARATIVE_CANARY_INTEGRITY_INVALID");
+    return { valid: false, rollbackRequired: false, reportId: report.id || "none" };
+  }
+  if (report.id !== ref.report_id || report.campaign_id !== campaign.id || report.mission_id !== campaign.mission_id ||
+      report.cycle_number !== checkpoint.cycle_number || report.target_type !== target.target_type ||
+      report.repository_binding.repository_key !== checkpoint.repository_binding.repository_key ||
+      report.repository_binding.identity_fingerprint !== checkpoint.repository_binding.identity_fingerprint ||
+      plan.id !== report.plan_ref.artifact_id || plan.campaign_id !== campaign.id || plan.mission_id !== campaign.mission_id ||
+      plan.cycle_number !== checkpoint.cycle_number || plan.target_type !== target.target_type ||
+      !sameJson(plan.evaluation_set_ref, report.evaluation_set_ref) ||
+      evaluationSet.id !== report.evaluation_set_ref.artifact_id ||
+      evaluationSet.campaign_id !== campaign.id || evaluationSet.mission_id !== campaign.mission_id ||
+      plan.subjects.baseline.revision !== target.baseline_revision ||
+      plan.subjects.candidate.candidate_id !== checkpoint.candidate.id ||
+      plan.subjects.candidate.revision !== target.candidate_revision) {
+    blocks.push("COMPARATIVE_CANARY_BINDING_INVALID");
+  }
+  if (Date.parse(evaluationSet.created_at) > Date.parse(plan.created_at) ||
+      Date.parse(plan.created_at) > Date.parse(report.started_at)) {
+    blocks.push("COMPARATIVE_CANARY_TIME_SEQUENCE_INVALID");
+  }
+  if (report.evaluator.role !== campaign.command_team.independent_evaluator ||
+      report.evaluator.role === campaign.command_team.improvement_controller ||
+      !sameJson(report.evaluator, plan.independent_evaluator)) {
+    blocks.push("COMPARATIVE_CANARY_EVALUATOR_INVALID");
+  }
+  const ageSeconds = (Date.parse(checkpoint.generated_at) - Date.parse(report.finished_at)) / 1000;
+  if (!Number.isFinite(ageSeconds) || ageSeconds < 0 || ageSeconds > policy.max_report_age_seconds) {
+    blocks.push("COMPARATIVE_CANARY_REPORT_STALE");
+  }
+  const recomputed = evaluateComparison(campaign, plan, evaluationSet, report.evaluation_set_ref.sha256, report.executions);
+  if (recomputed.outcome !== report.outcome || !sameJson(recomputed.comparisons, report.comparisons) ||
+      !sameJson(recomputed.blocking_codes, report.blocking_codes)) {
+    blocks.push("COMPARATIVE_CANARY_RECOMPUTATION_MISMATCH");
+  }
+  const metrics = new Map((checkpoint.metric_results || []).map(item => [item.dimension_id, item]));
+  for (const comparison of report.comparisons || []) {
+    const metric = metrics.get(comparison.dimension_id);
+    if (!metric || metric.before !== comparison.baseline_value || metric.after !== comparison.candidate_value ||
+        metric.hard_gate_passed !== comparison.passed) {
+      blocks.push("COMPARATIVE_CANARY_METRIC_MISMATCH");
+      break;
+    }
+  }
+  if ((report.comparisons || []).length !== metrics.size) blocks.push("COMPARATIVE_CANARY_METRIC_MISMATCH");
+  if (report.execution_authorized !== false || report.release_authorized !== false) blocks.push("COMPARATIVE_CANARY_AUTHORITY_INVALID");
+  if (report.outcome === "inconclusive") blocks.push("COMPARATIVE_CANARY_INCONCLUSIVE");
+  if (report.outcome === "rollback") blocks.push("COMPARATIVE_CANARY_ROLLBACK_REQUIRED");
+  if (report.outcome === "promotable" && report.working_state_promotion_recommended !== true) blocks.push("COMPARATIVE_CANARY_PROMOTION_INVALID");
+  const comparisonBlocks = blocks.slice(initialBlockCount);
+  const comparisonInvalid = comparisonBlocks.some(code => code !== "COMPARATIVE_CANARY_ROLLBACK_REQUIRED");
+  return {
+    valid: report.outcome === "promotable" && comparisonBlocks.length === 0,
+    rollbackRequired: report.outcome === "rollback" && !comparisonInvalid,
+    reportId: report.id
+  };
+}
+
+function sameJson(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 function verifyReceiptProof(campaign, checkpoint, proofContext, blocks) {
@@ -378,7 +481,8 @@ function baseTaskOrder(campaign, checkpoint, task, nextTrigger = "wave_end") {
     required_evidence: [
       "Repository-scoped checkpoint artifact.",
       "Runtime-issued verification receipts.",
-      "Receipt-bound metric evidence compared with the declared baseline."
+      "Receipt-bound metric evidence compared with the declared baseline.",
+      "For skill or runtime-control promotion, a manifest-backed baseline-versus-candidate report."
     ],
     next_checkpoint_trigger: nextTrigger
   };
@@ -437,6 +541,7 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
   };
   const proof = {
     verification_receipt_ids: [],
+    comparative_evaluation_report_id: "none",
     parent_decision_id: checkpoint.parent_decision_id || "none",
     approval_consumption_event_id: proofContext.consumptionEvent ? proofContext.consumptionEvent.id : "none",
     repository_manifest_revision: proofContext.manifestRevision || 0,
@@ -490,6 +595,8 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
   const receiptProof = verifyReceiptProof(campaign, checkpoint, proofContext, blocks);
   proof.verification_receipt_ids = [...receiptProof.verified].sort();
   const failedValidation = receiptProof.executedFailure;
+  const comparativeProof = verifyComparativeEvaluation(campaign, checkpoint, proofContext, blocks);
+  proof.comparative_evaluation_report_id = comparativeProof.reportId;
   const attestationProof = verifyAttestationProof(campaign, checkpoint, proofContext, receiptProof.verified, blocks);
   if (campaign.schema_version === "0.3") {
     proof.verification_attestation_ids = attestationProof.valid_attestation_ids || [];
@@ -544,7 +651,7 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
     });
   }
 
-  if (failedValidation || candidate.disposition === "rollback" || blocks.includes("HARD_QUALITY_GATE_FAILED")) {
+  if (failedValidation || comparativeProof.rollbackRequired || candidate.disposition === "rollback" || blocks.includes("HARD_QUALITY_GATE_FAILED")) {
     reasons.push("The candidate failed validation, a hard quality gate, or explicitly requested rollback.");
     return makeDecision(campaign, checkpoint, {
       decision: canAutoRollback ? "rollback" : "escalate",
