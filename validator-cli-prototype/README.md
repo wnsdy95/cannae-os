@@ -35,6 +35,7 @@ node validator-cli-prototype/validate.js sample-payloads/valid-model-registry.js
 node validator-cli-prototype/validate.js sample-payloads/valid-model-assignment-request.json model-assignment-request
 node validator-cli-prototype/validate.js sample-payloads/valid-integrated-mission-preflight.json integrated-mission-preflight
 node validator-cli-prototype/validate.js sample-payloads/valid-model-usage-event.json model-usage-event
+node validator-cli-prototype/validate.js sample-payloads/valid-repository-artifact-manifest.json repository-artifact-manifest
 node validator-cli-prototype/validate.js sample-payloads/valid-document-access-manifest.json document-access-manifest
 node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt
 ```
@@ -69,6 +70,7 @@ node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-a
 - `model-assignment-request`
 - `integrated-mission-preflight`
 - `model-usage-event`
+- `repository-artifact-manifest`
 - `document-access-manifest`
 - `ccir-alert`
 - `handoff-packet`

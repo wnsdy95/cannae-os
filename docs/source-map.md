@@ -212,6 +212,7 @@ Usage:
 | Force structure change artifact | force management and documentation | An organization is created or reduced only when capability gap, DOTMLPF-P, authority, readiness, transition, and documentation update all align | Controls the creation, disestablishment, expansion, and reduction of AI branches/positions/units/TFs via a validator and runner gate | `force-structure-change-policy.md`, `schema-files/force-structure-change-order.schema.json`, `force-structure-change-runner.js`, `force-structure-change-fixtures/README.md` |
 | Model force assignment artifact | mission task organization, METL, PACE, and independent assurance | Model size, role, authority, and readiness are separate dimensions; scarce capacity is assigned by mission evidence rather than prestige | Validates line/specialist/command/SOF/assurance/reserve profiles, router readiness, context eligibility, task evidence, PACE, and human retained authority | `model-force-assignment-policy.md`, `schema-files/model-force-assignment-plan.schema.json`, `model-force-assignment-runner.js`, `model-force-assignment-fixtures/README.md` |
 | Model force v0.2 operational artifact | force generation, task organization, precombat checks, dispatch accountability, and operational assessment | An authored plan alone is not sufficient evidence of model eligibility or agent authority; source registry, mission demand, routing proof, binding, and usage evidence must remain distinct | Compiles eligible profiles deterministically, combines routing and assignment readiness, emits dispatch only after one-to-one binding, and records immutable model usage without granting authority | `model-force-v0.2-operations.md`, `schema-files/model-registry.schema.json`, `schema-files/model-assignment-request.schema.json`, `model-assignment-compiler.js`, `schema-files/integrated-mission-preflight.schema.json`, `integrated-mission-preflight-runner.js`, `schema-files/model-usage-event.schema.json`, `run-model-force-v0.2-fixtures.js` |
+| Repository artifact isolation artifact | unit boundaries, records accountability, mission files, and handoff discipline | Outputs from separate supported repositories must retain distinct custody, identity, evidence, and lifecycle even when mission and artifact IDs overlap | Derives a stable Git repository key, stores JSON/files under repository/mission/wave/kind namespaces, maintains a relative-path hash manifest, and blocks cross-repository paths, traversal, and implicit overwrite | `repository-artifact-isolation-policy.md`, `repository-artifact-store.js`, `schema-files/repository-artifact-manifest.schema.json`, `run-repository-artifact-isolation-fixtures.js` |
 | Deep research queue artifact | Research operations management | Manages missing military operating domains via a backlog and source plan | Framework expansion prioritization and source management | `military-operating-deep-research-queue.md` |
 | Commander handbook artifact | Commander's operating guidance | Organizes intent, authority, CCIR, approval, and AAR into a human command procedure | AI commander prompt and approval judgment guide | `commander-handbook.md` |
 | B2C2WG operating artifact | Staff integration and battle rhythm | Separates boards/WGs/cells/centers into a decision packet flow | Multi-agent scheduling and decision packet workflow | `b2c2wg-operating-model.md` |
@@ -288,6 +289,7 @@ The items below need additional research.
 - `force-structure-change-policy.md`
 - `model-force-assignment-policy.md`
 - `model-force-v0.2-operations.md`
+- `repository-artifact-isolation-policy.md`
 - `case-studies.md`
 - `glossary.md`
 - `evaluation-metrics.md`
@@ -395,3 +397,8 @@ The items below need additional research.
 - `schema-files/model-usage-event.schema.json`
 - `run-model-force-v0.2-fixtures.js`
 - `model-force-v0.2-fixtures/README.md`
+- `repository-artifact-store.js`
+- `schema-files/repository-artifact-manifest.schema.json`
+- `sample-payloads/valid-repository-artifact-manifest.json`
+- `sample-payloads/invalid-repository-artifact-manifest-cross-repo.json`
+- `run-repository-artifact-isolation-fixtures.js`

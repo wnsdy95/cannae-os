@@ -122,17 +122,23 @@ Compile the plan:
 ```bash
 node model-assignment-compiler.js \
   sample-payloads/valid-model-registry.json \
-  sample-payloads/valid-model-assignment-request.json
+  sample-payloads/valid-model-assignment-request.json \
+  --write-artifact \
+  --repository ../target-repository
 ```
 
 Run the integrated gate:
 
 ```bash
 node integrated-mission-preflight-runner.js \
-  sample-payloads/valid-integrated-mission-preflight.json
+  sample-payloads/valid-integrated-mission-preflight.json \
+  --write-artifact \
+  --repository ../target-repository
 ```
 
 The runtime must consume only `dispatch_manifest` rows emitted by a `ready` integrated preflight. It must resolve `endpoint_ref` through an external secret manager and must not copy credentials into the registry, plan, manifest, or usage event.
+
+For multi-repository missions, use `repository-artifact-isolation-policy.md`. A dispatch projection is not ready for durable use if it cannot be persisted under the target repository identity.
 
 ## 7. Telemetry And Reassessment
 
