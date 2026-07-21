@@ -177,6 +177,7 @@ Implemented semantic checks:
 - consumed approval without consumption event -> fail.
 - consumed approval reuse in integration gate -> blocked.
 - consumption event must match mission, action, tool, target, actor, time window, and evidence.
+- adaptive policy/authority promotion must bind the scope and consumption artifacts by manifest path/hash, use action `promote_self_improvement_candidate`, tool `autonomous-improvement-controller`, target the exact candidate ID, and set the consumption `execution_id` to the checkpoint ID.
 - revocation event must target an active approval and match granting authority, scope, time window, notification, and evidence.
 - renewal event must target an active approval, preserve action/tool/target/max executions, extend only expiry, and include authority/evidence/notification.
 - delegation event must map to an existing approval-required authority rule and cannot delegate Red/Black, high/critical risk, restricted release, or subdelegation.
@@ -186,9 +187,7 @@ Implemented semantic checks:
 - Approval missing rollback for irreversible action -> fail.
 - Tool approval attempts to release restricted context -> fail unless release review exists.
 
-Next integration candidate:
-
-- user-defined next queue after current SOF TF model
+The self-improvement controller consumes this lifecycle directly for policy, authority, scope, and release-affecting candidates. A prose approval claim or an event already bound to another checkpoint is rejected.
 
 ## 10. Prompt guard
 

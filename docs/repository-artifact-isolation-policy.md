@@ -23,6 +23,9 @@ All Cannae-managed artifacts use this layout under the selected artifact root:
 └── repositories/
     └── <repository-key>/
         ├── manifest.json
+        ├── manifest.sha256
+        ├── .manifest-history/
+        ├── .transactions/
         └── missions/
             └── <mission-id>/
                 └── <wave-id>/
@@ -61,7 +64,7 @@ Every durable write must declare:
 
 Path segments must be single path-safe identifiers. POSIX/Windows absolute artifact paths, `..` traversal, symlink source files, and namespace symlinks that escape the artifact root are rejected.
 
-The store writes atomically while holding a repository-namespace manifest lock. If an artifact path already contains identical bytes, the write is idempotent. If it contains different bytes, the operation fails unless `--overwrite` or `--overwrite-artifact` is explicit. Normal agents must not overwrite prior evidence merely to make a run pass.
+The store writes atomically while holding a repository-namespace manifest lock. Every write first records a transaction journal, then writes the artifact, then commits an immutable manifest-history entry, current manifest, and digest sidecar. If an artifact path already contains identical bytes, the write is idempotent. If it contains different bytes, the operation fails unless `--overwrite` or `--overwrite-artifact` is explicit. Normal agents must not overwrite prior evidence merely to make a run pass.
 
 The lock is acquired through atomic directory creation and has a finite wait timeout. A stale lock is recovered only when it belongs to the same host and its PID is no longer alive. An active same-host lock and any foreign-host lock fail closed rather than being stolen. `--lock-timeout-ms` and `--lock-stale-ms` are available for the general artifact-store CLI; both must be positive integers.
 
@@ -77,12 +80,32 @@ Each repository namespace has one `RepositoryArtifactManifest` containing:
 - creation and update timestamps;
 - a monotonic manifest revision;
 - isolation control assertions.
+- the previous manifest digest, current canonical digest, retained history range, and zero-pending-transaction assertion.
 
-The manifest contains no absolute repository paths. `validator-cli-prototype/validate.js` blocks namespace mismatch, path traversal, cross-repository paths, count mismatch, invalid revisions, missing concurrency guards, duplicate paths, and filename/ID mismatch.
+Each history entry links to the prior canonical manifest SHA-256. `manifest.sha256` anchors the current bytes. `validator-cli-prototype/validate.js` blocks namespace mismatch, path traversal, cross-repository paths, count mismatch, invalid history ranges, digest mismatch, missing concurrency/journal guards, duplicate paths, and filename/ID mismatch.
 
-## 5. Runtime Use
+## 5. Crash Recovery and Verification
 
-### 5.1 Routing receipt
+Journal states are `prepared`, `artifact_written`, and `manifest_committed`. Recovery runs only while holding the namespace lock:
+
+- a prepared journal with no candidate bytes is archived as rolled back;
+- candidate bytes with the declared hash are reconciled into the candidate manifest;
+- a manifest already at the candidate hash is finalized idempotently;
+- an unexpected artifact or manifest hash fails closed for manual recovery.
+
+Verify before every wave completion and before consuming proof:
+
+```bash
+node repository-artifact-verify.js \
+  --repository ../target-repo \
+  --artifact-root .cannae/artifacts
+```
+
+Use `--recover` only to reconcile a valid pending journal. Recovery does not repair arbitrary tampering.
+
+## 6. Runtime Use
+
+### 6.1 Routing receipt
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
@@ -103,7 +126,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
 
 Local target and artifact-root paths are redacted from `router_command` before the receipt is stored.
 
-### 5.2 Model assignment compilation
+### 6.2 Model assignment compilation
 
 ```bash
 node model-assignment-compiler.js \
@@ -114,7 +137,7 @@ node model-assignment-compiler.js \
   --artifact-root .cannae/artifacts
 ```
 
-### 5.3 Integrated preflight
+### 6.3 Integrated preflight
 
 ```bash
 node integrated-mission-preflight-runner.js \
@@ -126,7 +149,7 @@ node integrated-mission-preflight-runner.js \
 
 If artifact persistence fails, the integrated preflight changes to `blocked` and clears dispatch and usage-event manifests.
 
-### 5.4 General JSON output
+### 6.4 General JSON output
 
 ```bash
 node some-json-runner.js input.json | \
@@ -141,7 +164,7 @@ node repository-artifact-store.js \
 
 Use `set -o pipefail` when a shell pipeline must propagate the producer's failure.
 
-### 5.5 General file deliverable
+### 6.5 General file deliverable
 
 ```bash
 node repository-artifact-store.js \
@@ -156,24 +179,25 @@ node repository-artifact-store.js \
 
 The stored filename is derived from `artifact-id` and the source extension. The original source path is not recorded in the manifest.
 
-## 6. Multi-Repository Campaign Procedure
+## 7. Multi-Repository Campaign Procedure
 
 1. Choose one shared artifact root for the campaign.
 2. Resolve every target repository separately.
 3. Create routing receipts with that target repository explicitly declared.
 4. Store every durable control projection and deliverable under the same target repository identity.
 5. Never copy an artifact into another repository namespace. Generate a new artifact or an explicit handoff package for the receiving repository.
-6. Validate each repository manifest before wave completion.
+6. Run `repository-artifact-verify.js` for each repository before wave completion; a pending journal or integrity issue blocks continuation.
 7. Include repository-scoped artifact paths in SITREP, handoff, and AAR evidence.
 
 Subdirectories that are not independent Git roots belong to the parent repository namespace. A nested Git repository receives its own namespace.
 
-## 7. Regression Gate
+## 8. Regression Gate
 
 ```bash
 node run-repository-artifact-isolation-fixtures.js
 node run-repository-artifact-concurrency-fixtures.js
+node run-repository-artifact-recovery-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 ```
 
-The isolation fixture creates separate Git repositories with the same origin, writes the same mission/wave/artifact ID to both, verifies separate paths and manifests, exercises JSON and file deliverables, blocks conflicting overwrite, traversal, and symlink escape, and verifies routing/compiler/preflight integration. The concurrency fixture launches 24 writers, proves no manifest entry is lost, verifies monotonic revisions, recovers a dead same-host lock, and refuses to steal active or foreign-host locks.
+The isolation fixture covers namespace and path controls. The concurrency fixture launches 24 writers and exercises lock ownership. The recovery fixture injects failures after artifact write and after manifest commit, reconciles both states, and detects artifact and manifest tampering.

@@ -38,6 +38,9 @@ Evaluation fixtures are used to verify that runtime gates actually function, not
 | Department collaboration fixtures | Validates that supported/supporting relationships between departments have an output contract, liaison, handoff, and conflict route |
 | Force structure change fixtures | Validates that the creation, disestablishment, expansion, or reduction of a branch/position/unit/TF has a capability gap, DOTMLPF-P review, readiness, transition, and documentation gate |
 | Agent routing preflight fixtures | Validates that execution is blocked if the CoS routing receipt and each agent's S3 routing receipt are missing before a wave starts |
+| Proof-carrying improvement fixtures | Validates executed receipts, exact parent lineage, approval consumption, rollback, and completion |
+| Verification runner fixtures | Validates exact argv execution, shell/inline-code prohibition, stale plans, and mutation detection |
+| Artifact recovery fixtures | Validates write-ahead journal recovery, hash-linked history, and tamper detection |
 
 ## 2. Required Fixtures
 
@@ -123,6 +126,11 @@ Validator changes must not:
 - allow force structure change without evidence, alternatives, full DOTMLPF-P review, Commander authority for organization creation/expansion, maintainer, validation fixture, handoff, sunset condition, documentation update, MOP/MOE, AAR trigger, and future review date.
 - allow delegated AI wave execution without one CoS wave routing receipt and one S3 operations routing receipt per expected agent.
 - accept routing receipt claims that were not produced by `route_controls_docs.js --actor=ai`.
+- promote an adaptive candidate from model-authored validation text instead of a runtime-issued receipt.
+- accept a receipt whose campaign, cycle, candidate, repository state, command result, or canonical digest does not match.
+- continue from a parent decision that is missing, rejected, from another cycle, or bound to another baseline revision.
+- accept a policy or authority candidate from a prose approval claim or a reused consumption event.
+- accept a repository artifact store with a pending journal, broken history chain, sidecar mismatch, or changed artifact bytes.
 - accept research task with no source discipline.
 
 ## 6. Related Documents

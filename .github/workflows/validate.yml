@@ -49,3 +49,6 @@ jobs:
 
       - name: Diff whitespace check
         run: git diff --check
+
+      - name: Unified proof gate
+        run: node validation-suite-runner.js

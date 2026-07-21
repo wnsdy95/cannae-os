@@ -16,6 +16,8 @@
     "promotion_scope",
     "release_authorized",
     "selected_candidate_id",
+    "accepted_revision",
+    "proof",
     "score",
     "reasons",
     "blocking_codes",
@@ -26,7 +28,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "SelfImprovementDecision" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -38,6 +40,19 @@
     "promotion_scope": { "type": "string", "enum": ["none", "in_progress_work", "working_state"] },
     "release_authorized": { "type": "boolean", "const": false },
     "selected_candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+    "accepted_revision": { "type": "string", "minLength": 1 },
+    "proof": {
+      "type": "object",
+      "required": ["verification_receipt_ids", "parent_decision_id", "approval_consumption_event_id", "repository_manifest_revision", "repository_manifest_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "verification_receipt_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } },
+        "parent_decision_id": { "type": "string", "minLength": 1 },
+        "approval_consumption_event_id": { "type": "string", "minLength": 1 },
+        "repository_manifest_revision": { "type": "integer", "minimum": 0 },
+        "repository_manifest_sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" }
+      }
+    },
     "score": {
       "type": "object",
       "required": ["weighted_before", "weighted_after", "weighted_delta", "minimum_delta", "all_hard_gates_passed"],

@@ -11,6 +11,7 @@ function parseArgs(argv) {
     maxChangedFiles: 12,
     maxElapsedMinutes: 240,
     minImprovement: 0.03,
+    allowedVerifiers: [],
     allowCommit: false,
     writeArtifact: false
   };
@@ -28,11 +29,12 @@ function parseArgs(argv) {
       options.writeArtifact = true;
       continue;
     }
-    if (arg === "--criterion" || arg === "--non-goal") {
+    if (arg === "--criterion" || arg === "--non-goal" || arg === "--allow-verifier") {
       index += 1;
       if (index >= argv.length) throw new Error(`${arg} requires a value.`);
       if (arg === "--criterion") options.criteria.push(argv[index]);
       if (arg === "--non-goal") options.nonGoals.push(argv[index]);
+      if (arg === "--allow-verifier") options.allowedVerifiers.push(argv[index]);
       continue;
     }
     if (arg.startsWith("--") && singleValue.has(arg.slice(2))) {
@@ -64,7 +66,7 @@ function buildCampaign(options) {
   const repository = resolveRepository(options.repository);
   const createdAt = options.createdAt || new Date().toISOString();
   const campaign = {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "SelfImprovementCampaign",
     id: options.campaign,
     mission_id: options.mission,
@@ -142,6 +144,17 @@ function buildCampaign(options) {
       ],
       minimum_weighted_score: 0.87,
       hard_gates_must_pass: true
+    },
+    verification_policy: {
+      proof_required: true,
+      allowed_executables: options.allowedVerifiers.length > 0
+        ? [...new Set(options.allowedVerifiers)]
+        : ["node", "git"],
+      max_checks_per_plan: 20,
+      max_timeout_ms_per_check: 300000,
+      max_output_bytes_per_stream: 4194304,
+      repository_state_must_remain_unchanged: true,
+      receipt_persistence_required: true
     },
     budgets: {
       max_cycles: options.maxCycles,

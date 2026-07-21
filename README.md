@@ -214,12 +214,14 @@ Use `repository-artifact-store.js`, or pass `--write-artifact --repository <targ
 Substantial AI missions can maintain a finite improvement campaign around work already in progress:
 
 ```text
-baseline -> candidate -> validation + metrics -> accept / revise / rollback / escalate
+baseline -> candidate -> executed verification receipt -> accept / revise / rollback / escalate
 ```
 
-`autonomous-improvement-controller.js` compares normalized quality evidence against the declared campaign envelope. It can promote a passing candidate to the next working state, but every emitted decision keeps `release_authorized: false`. Policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
+`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. `autonomous-improvement-controller.js` reloads those receipts, the accepted parent decision, and any consumed approval event from the integrity-checked repository artifact store before it can promote a candidate. Every decision keeps `release_authorized: false`; policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
 Use `self-improvement-campaign-init.js` to bind conservative campaign defaults to a target Git repository before the first adaptive wave.
+
+Artifact writes use a write-ahead journal and hash-linked manifest history. Run `repository-artifact-verify.js --repository <target> --artifact-root <root>` before accepting a wave or consuming its proof.
 
 ### Commander-Retained Decisions
 
@@ -303,6 +305,11 @@ Important examples:
 - `run-model-force-v0.2-fixtures.js`: registry eligibility, deterministic compilation, agent/billet/receipt binding, dispatch manifest, and usage telemetry gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
 - `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
+- `run-repository-artifact-concurrency-fixtures.js`: 24-writer manifest serialization and fail-closed stale-lock handling.
+- `run-repository-artifact-recovery-fixtures.js`: journal recovery, history reconciliation, and artifact/manifest tamper detection.
+- `run-self-improvement-fixtures.js`: executed receipts, parent lineage, approval consumption, rollback, completion, and proof-store integration.
+- `run-verification-runner-fixtures.js`: shell/inline-code prohibition, stale-plan rejection, exact argv receipts, and repository-mutation detection.
+- `validation-suite-runner.js`: one shell-independent entry point for routing, corpus, validator, runner, source-map, syntax, and whitespace gates.
 
 <p align="center">
   <img src="assets/cannae-os-validation-stack.svg" alt="Validation stack diagram from Markdown and JSON checks to schema fixtures, runner fixtures, source-map linting, routing coverage, and branch protection" width="100%">
@@ -412,15 +419,16 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- make validation evidence tamper-evident and consumable rather than trusting evidence references;
-- add write-ahead recovery and integrity chains to repository artifact manifests.
+- add a campaign supervisor that resumes from the latest accepted decision and opens the next finite checkpoint automatically;
+- add comparative canary evaluation before promoting skill or runtime-control candidates.
 
 Mid-term:
 
 - define a persistent event model for missions, approvals, releases, handoffs, and AARs;
 - implement a production-shaped policy gateway;
 - connect approval scope and release gates to real tool calls;
-- bind self-improvement approvals to consumed approval-ledger events;
+- bind approval and receipt evidence to external signatures or a trusted execution service;
+- isolate verification commands with host-level filesystem, network, and credential sandboxes;
 - build a useful command-post dashboard from event projections;
 - formalize an evidence store for claims, sources, reliability, and interpretation.
 

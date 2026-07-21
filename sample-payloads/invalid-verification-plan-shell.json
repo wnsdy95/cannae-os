@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "type": "VerificationPlan",
+  "id": "VP-Cannae-Unsafe",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "candidate_id": "CAN-Cannae-001",
+  "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_binding": {"repository_key": "cannae-os-aaaaaaaaaaaa", "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+  "expected_repository_state": {"head_commit": "1111111111111111111111111111111111111111", "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "checks": [
+    {"id": "VCK-Cannae-Unsafe", "purpose": "Run an unbounded shell string.", "executable": "sh", "args": ["-c", "node run-fixtures.js"], "working_directory": ".", "timeout_ms": 120000, "expected_exit_codes": [0]}
+  ],
+  "created_at": "2026-07-21T18:20:00+09:00"
+}

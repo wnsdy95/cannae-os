@@ -39,6 +39,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-repository-artifa
 node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-campaign.json self-improvement-campaign
 node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-checkpoint.json self-improvement-checkpoint
 node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-decision.json self-improvement-decision
+node validator-cli-prototype/validate.js sample-payloads/valid-verification-plan.json verification-plan
+node validator-cli-prototype/validate.js sample-payloads/valid-verification-receipt.json verification-receipt
 node validator-cli-prototype/validate.js sample-payloads/valid-document-access-manifest.json document-access-manifest
 node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt
 ```
@@ -77,6 +79,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-a
 - `self-improvement-campaign`
 - `self-improvement-checkpoint`
 - `self-improvement-decision`
+- `verification-plan`
+- `verification-receipt`
 - `document-access-manifest`
 - `ccir-alert`
 - `handoff-packet`

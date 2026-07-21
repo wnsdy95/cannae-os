@@ -101,5 +101,7 @@ Recommended validation order:
 48. `self-improvement-campaign.schema.json`
 49. `self-improvement-checkpoint.schema.json`
 50. `self-improvement-decision.schema.json`
+51. `verification-plan.schema.json`
+52. `verification-receipt.schema.json`
 
 All schemas target JSON Schema draft 2020-12.

@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "SelfImprovementDecision",
   "id": "SID-Cannae-001",
   "campaign_id": "SIC-Cannae-001",
@@ -11,30 +11,24 @@
   "promotion_scope": "in_progress_work",
   "release_authorized": false,
   "selected_candidate_id": "CAN-Cannae-001",
-  "score": {
-    "weighted_before": 0.76,
-    "weighted_after": 0.93,
-    "weighted_delta": 0.17,
-    "minimum_delta": 0.05,
-    "all_hard_gates_passed": true
+  "accepted_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "proof": {
+    "verification_receipt_ids": ["VR-Cannae-001"],
+    "parent_decision_id": "none",
+    "approval_consumption_event_id": "none",
+    "repository_manifest_revision": 3,
+    "repository_manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
   },
-  "reasons": ["The candidate stays inside authority, passes validation and hard gates, and improves the declared quality model."],
+  "score": {"weighted_before": 0.76, "weighted_after": 0.93, "weighted_delta": 0.17, "minimum_delta": 0.03, "all_hard_gates_passed": true},
+  "reasons": ["The candidate passes proof-bound validation and quality gates."],
   "blocking_codes": [],
   "next_task_order": {
     "owner": "S3",
-    "task": "Advance the next open acceptance criterion from the accepted working state.",
-    "purpose": "Continuously improve the active work product without losing authority, evidence, or repository boundaries.",
-    "constraints": [
-      "Stay inside the campaign authority envelope.",
-      "Preserve every protected invariant.",
-      "Do not release, merge, push, or expand authority without human approval."
-    ],
-    "required_evidence": [
-      "Repository-scoped checkpoint artifact.",
-      "Deterministic validation results.",
-      "Metric evidence compared with the declared baseline."
-    ],
-    "next_checkpoint_trigger": "wave_end"
+    "task": "Run the mandatory completion checkpoint.",
+    "purpose": "Close the bounded campaign without releasing it.",
+    "constraints": ["Preserve protected invariants."],
+    "required_evidence": ["Repository-scoped verification receipt."],
+    "next_checkpoint_trigger": "before_completion"
   },
   "human_decision_required": false,
   "required_human_decision": "none",

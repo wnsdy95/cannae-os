@@ -100,12 +100,13 @@ const RULES = [
     commands: [
       "node run-repository-artifact-isolation-fixtures.js",
       "node run-repository-artifact-concurrency-fixtures.js",
+      "node run-repository-artifact-recovery-fixtures.js",
       "node validator-cli-prototype/validate.js sample-payloads/valid-repository-artifact-manifest.json repository-artifact-manifest"
     ]
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
+    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "proof carrying", "verification receipt", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
     docs: [
       "docs/bounded-self-improvement-operations.md",
       "docs/agent-roles-and-authority.md",
@@ -115,8 +116,10 @@ const RULES = [
     ],
     commands: [
       "node run-self-improvement-fixtures.js",
+      "node run-verification-runner-fixtures.js",
       "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-campaign.json self-improvement-campaign",
-      "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-checkpoint.json self-improvement-checkpoint"
+      "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-checkpoint.json self-improvement-checkpoint",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-verification-receipt.json verification-receipt"
     ]
   },
   {
@@ -330,11 +333,11 @@ const ROUTE_HINTS = [
   },
   {
     id: "repository-artifact-isolation",
-    keywords: ["repository-artifact", "artifact-store", "artifact-isolation", "repository-output", "multi-repo", "cross-repository", "generated-artifact"]
+    keywords: ["repository-artifact", "artifact-store", "artifact-verify", "artifact-recovery", "write-ahead", "manifest-history", "artifact-isolation", "repository-output", "multi-repo", "cross-repository", "generated-artifact"]
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
+    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "verification-plan", "verification-receipt", "verification-runner", "proof-carrying", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
   },
   {
     id: "sof-tf",
@@ -486,6 +489,8 @@ function routeIdsForArtifact(file) {
   if (file === "decision-packet-linter.js") routeIds.push("authority-risk-release", "orders");
   if (file === "aar-to-readiness-update.js") routeIds.push("orders", "runtime-architecture-dashboard");
   if (file === "autonomous-improvement-controller.js" || file === "run-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
+  if (file === "verification-runner.js") routeIds.push("bounded-self-improvement", "runtime-validation");
+  if (file === "repository-artifact-verify.js" || file === "run-repository-artifact-recovery-fixtures.js") routeIds.push("repository-artifact-isolation", "runtime-validation");
 
   return unique(routeIds);
 }

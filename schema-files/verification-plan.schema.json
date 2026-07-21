@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/verification-plan.schema.json",
+  "title": "Verification Plan",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "campaign_id", "mission_id", "cycle_number", "candidate_id", "candidate_revision", "repository_binding", "expected_repository_state", "checks", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "VerificationPlan" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+    "candidate_revision": { "type": "string", "minLength": 1 },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "expected_repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": { "type": "string", "minLength": 1 },
+        "worktree_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "purpose", "executable", "args", "working_directory", "timeout_ms", "expected_exit_codes"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "purpose": { "type": "string", "minLength": 1 },
+          "executable": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" },
+          "args": { "type": "array", "items": { "type": "string" } },
+          "working_directory": { "type": "string", "minLength": 1 },
+          "timeout_ms": { "type": "integer", "minimum": 1 },
+          "expected_exit_codes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "integer" } }
+        }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

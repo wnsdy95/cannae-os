@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.2",
+  "schema_version": "0.3",
   "type": "RepositoryArtifactManifest",
   "id": "RAM-aaaaaaaaaaaaaaaa",
   "repository": {
@@ -10,6 +10,7 @@
   },
   "namespace_root": "repositories/example-repo-a-aaaaaaaaaaaa",
   "manifest_revision": 1,
+  "previous_manifest_sha256": "none",
   "artifacts": [
     {
       "id": "RA-cccccccccccccccc",
@@ -31,7 +32,16 @@
     "cross_repository_writes_prohibited": true,
     "absolute_paths_recorded": false,
     "cross_process_manifest_lock": true,
-    "stale_lock_recovery_fail_closed": true
+    "stale_lock_recovery_fail_closed": true,
+    "write_ahead_journal": true
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "canonical_manifest_sha256": "2a5e4a171365d8eb4ce3183080d7596c9b9752fe69f6978b97e1c8b8dbe146ce",
+    "history_start_revision": 1,
+    "history_length": 1,
+    "pending_transaction_count": 0,
+    "sidecar_required": true
   },
   "created_at": "2026-07-21T15:30:00+09:00",
   "updated_at": "2026-07-21T15:30:00+09:00"

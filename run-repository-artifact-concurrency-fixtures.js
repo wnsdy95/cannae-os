@@ -57,9 +57,11 @@ async function main() {
     for (const result of results) assert.strictEqual(result.status, 0, result.stdout || result.stderr);
 
     let manifest = readJson(manifestPath);
-    assert.strictEqual(manifest.schema_version, "0.2");
+    assert.strictEqual(manifest.schema_version, "0.3");
     assert.strictEqual(manifest.artifact_count, writerCount);
     assert.strictEqual(manifest.manifest_revision, writerCount);
+    assert.strictEqual(manifest.integrity.history_length, writerCount);
+    assert.strictEqual(manifest.isolation.write_ahead_journal, true);
     assert.strictEqual(new Set(manifest.artifacts.map(item => item.relative_path)).size, writerCount);
     assert.strictEqual(fs.existsSync(path.join(namespacePath, ".manifest.lock")), false);
 

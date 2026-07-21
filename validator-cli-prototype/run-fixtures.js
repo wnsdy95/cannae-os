@@ -780,6 +780,34 @@ const fixtures = [
     type: "self-improvement-decision",
     exitCode: 1,
     requiredCodes: ["CONST_MISMATCH", "SELF_IMPROVEMENT_SELF_RELEASE", "SELF_IMPROVEMENT_DECISION_EXECUTION_MISMATCH"]
+  },
+  {
+    name: "valid verification plan",
+    file: "sample-payloads/valid-verification-plan.json",
+    type: "verification-plan",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "verification plan invokes a shell",
+    file: "sample-payloads/invalid-verification-plan-shell.json",
+    type: "verification-plan",
+    exitCode: 1,
+    requiredCodes: ["VERIFICATION_PLAN_SHELL_PROHIBITED"]
+  },
+  {
+    name: "valid verification receipt",
+    file: "sample-payloads/valid-verification-receipt.json",
+    type: "verification-receipt",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "self-reported verification receipt",
+    file: "sample-payloads/invalid-verification-receipt-self-reported.json",
+    type: "verification-receipt",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH", "MIN_ITEMS", "VERIFICATION_RECEIPT_SHELL_USED"]
   }
 ];
 

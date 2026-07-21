@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const crypto = require("crypto");
 const path = require("path");
 const {
   parseArtifactWriteFlags,
   resolveRepository,
+  verifyRepositoryArtifacts,
   writeRepositoryArtifact
 } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const { evaluateConsumption } = require("./approval-consumption-runner");
+const { receiptDigest } = require("./verification-runner");
 
 const CHANGE_RANK = {
   local_reversible: 0,
@@ -18,7 +22,6 @@ const CHANGE_RANK = {
 };
 
 const CONTROL_PLANE_TARGETS = new Set(["runtime_control", "skill", "policy"]);
-const SELF_REPORTED_EVIDENCE = /(?:model|agent)[ -]?(?:confidence|self[- ]?(?:assessment|approval|report|score))/i;
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -42,7 +45,7 @@ function normalizedMetric(value, direction) {
   return direction === "minimize" ? 1 - normalized : normalized;
 }
 
-function scoreMetrics(campaign, checkpoint, blocks) {
+function scoreMetrics(campaign, checkpoint, blocks, verifiedReceiptIds = new Set()) {
   const dimensions = (campaign.quality_model && campaign.quality_model.dimensions) || [];
   const results = checkpoint.metric_results || [];
   const resultById = new Map(results.map(result => [result.dimension_id, result]));
@@ -73,8 +76,9 @@ function scoreMetrics(campaign, checkpoint, blocks) {
     if (result.before < 0 || result.before > 1 || result.after < 0 || result.after > 1) {
       blocks.push("METRIC_NOT_NORMALIZED");
     }
-    if (!hasItems(result.evidence) || result.evidence.every(item => SELF_REPORTED_EVIDENCE.test(String(item)))) {
-      blocks.push("METRIC_WITHOUT_EXTERNAL_EVIDENCE");
+    if (!hasItems(result.evidence_receipt_ids) ||
+        result.evidence_receipt_ids.some(id => !verifiedReceiptIds.has(id))) {
+      blocks.push("METRIC_WITHOUT_VERIFIED_RECEIPT");
     }
     const targetPassed = dimension.direction === "minimize"
       ? result.after <= dimension.target
@@ -117,14 +121,163 @@ function requiresHumanDecision(campaign, checkpoint) {
   };
 }
 
-function approvalCoversCheckpoint(checkpoint) {
-  const approval = checkpoint.approval || {};
+function approvalCoversCheckpoint(campaign, checkpoint, proofContext) {
+  const binding = checkpoint.approval_binding || {};
   const candidate = checkpoint.candidate || {};
-  return approval.required === true &&
-    approval.status === "approved" &&
-    approval.approved_by === "USER" &&
-    approval.approval_id !== "none" &&
-    (approval.scope || []).includes(candidate.id);
+  const approval = proofContext.approvalScope;
+  const event = proofContext.consumptionEvent;
+  const expectedAction = "promote_self_improvement_candidate";
+  const expectedTool = "autonomous-improvement-controller";
+  if (binding.required !== true || !approval || !event) return { valid: false, codes: ["APPROVAL_PROOF_MISSING"] };
+  const approvalValidation = validatePayload(approval, "approval-scope");
+  const eventValidation = validatePayload(event, "approval-consumption-event");
+  const schemaFailures = [...approvalValidation.issues, ...eventValidation.issues]
+    .filter(item => item.severity === "error" || item.severity === "critical");
+  const consumption = evaluateConsumption(approval, event);
+  const codes = consumption.issues.map(item => item.code);
+  if (schemaFailures.length > 0) codes.push("APPROVAL_LEDGER_SCHEMA_INVALID");
+  if (binding.action !== expectedAction || binding.tool !== expectedTool || binding.target !== candidate.id) codes.push("APPROVAL_BINDING_SCOPE_INVALID");
+  if (approval.granted_by !== "USER" || approval.granted_to !== campaign.command_team.improvement_controller) codes.push("APPROVAL_AUTHORITY_INVALID");
+  if (event.action !== binding.action || event.tool !== binding.tool || event.target !== binding.target) codes.push("APPROVAL_CONSUMPTION_BINDING_MISMATCH");
+  if (event.result !== "executed" || event.approval_status_after !== "consumed") codes.push("APPROVAL_NOT_CONSUMED_BY_EXECUTION");
+  if (event.execution_id !== checkpoint.id || event.execution_count_after > approval.scope.max_executions) codes.push("APPROVAL_CONSUMPTION_NOT_UNIQUE_TO_CHECKPOINT");
+  if (Date.parse(event.consumed_at) > Date.parse(checkpoint.generated_at)) codes.push("APPROVAL_CONSUMED_AFTER_CHECKPOINT");
+  if (binding.approval_scope_ref.artifact_id !== approval.id || binding.consumption_event_ref.artifact_id !== event.id) codes.push("APPROVAL_REFERENCE_ID_MISMATCH");
+  return { valid: codes.length === 0, codes: [...new Set(codes)] };
+}
+
+function sha256(value) {
+  return crypto.createHash("sha256").update(value).digest("hex");
+}
+
+function isNoneReference(ref) {
+  return ref && ref.artifact_id === "none" && ref.relative_path === "none" && ref.sha256 === "none";
+}
+
+function readManifestArtifact(artifactRoot, manifest, ref, expectedKind) {
+  if (!ref || !safeRelativePath(ref.relative_path) || ref.sha256 === "none") {
+    throw new Error(`Invalid ${expectedKind} artifact reference.`);
+  }
+  const entry = (manifest.artifacts || []).find(item => item.relative_path === ref.relative_path);
+  if (!entry || entry.kind !== expectedKind || entry.artifact_id !== ref.artifact_id || entry.sha256 !== ref.sha256) {
+    throw new Error(`${expectedKind} artifact reference does not match the repository manifest.`);
+  }
+  const root = path.resolve(artifactRoot);
+  const filePath = path.resolve(root, ref.relative_path);
+  if (filePath !== root && !filePath.startsWith(`${root}${path.sep}`)) throw new Error(`${expectedKind} artifact reference escapes the artifact root.`);
+  const stat = fs.lstatSync(filePath);
+  if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`${expectedKind} artifact reference is not a regular file.`);
+  const bytes = fs.readFileSync(filePath);
+  if (sha256(bytes) !== ref.sha256) throw new Error(`${expectedKind} artifact bytes do not match the manifest hash.`);
+  return JSON.parse(bytes.toString("utf8"));
+}
+
+function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOption) {
+  const verification = verifyRepositoryArtifacts({ repositoryPath, artifactRoot: artifactRootOption });
+  if (!verification.valid) {
+    throw new Error(`Repository proof store failed integrity verification: ${verification.issues.map(item => item.code).join(", ")}`);
+  }
+  const artifactRoot = path.resolve(artifactRootOption || path.join(process.cwd(), ".cannae", "artifacts"));
+  const manifestPath = path.join(artifactRoot, "repositories", verification.repository.key, "manifest.json");
+  const manifest = readJson(manifestPath);
+  const receipts = new Map();
+  for (const ref of checkpoint.verification_receipts || []) {
+    receipts.set(ref.receipt_id, readManifestArtifact(artifactRoot, manifest, {
+      artifact_id: ref.receipt_id,
+      relative_path: ref.relative_path,
+      sha256: ref.sha256
+    }, "verification-receipts"));
+  }
+  let parentDecision = null;
+  if (checkpoint.cycle_number > 1) {
+    parentDecision = readManifestArtifact(artifactRoot, manifest, {
+      artifact_id: checkpoint.parent_decision_ref.decision_id,
+      relative_path: checkpoint.parent_decision_ref.relative_path,
+      sha256: checkpoint.parent_decision_ref.sha256
+    }, "self-improvement-decisions");
+  }
+  let approvalScope = null;
+  let consumptionEvent = null;
+  if (checkpoint.approval_binding && checkpoint.approval_binding.required) {
+    approvalScope = readManifestArtifact(artifactRoot, manifest, checkpoint.approval_binding.approval_scope_ref, "approval-scopes");
+    consumptionEvent = readManifestArtifact(artifactRoot, manifest, checkpoint.approval_binding.consumption_event_ref, "approval-consumption-events");
+  }
+  return {
+    receipts,
+    parentDecision,
+    approvalScope,
+    consumptionEvent,
+    manifestRevision: verification.manifest_revision,
+    manifestSha256: verification.manifest_sha256
+  };
+}
+
+function verifyReceiptProof(campaign, checkpoint, proofContext, blocks) {
+  const verified = new Set();
+  let executedFailure = false;
+  for (const ref of checkpoint.verification_receipts || []) {
+    const receipt = proofContext.receipts && proofContext.receipts.get
+      ? proofContext.receipts.get(ref.receipt_id)
+      : (proofContext.receipts || []).find(item => item.id === ref.receipt_id);
+    if (!receipt) {
+      blocks.push("VERIFICATION_RECEIPT_MISSING");
+      continue;
+    }
+    const validation = validatePayload(receipt, "verification-receipt");
+    if (validation.issues.some(item => item.severity === "error" || item.severity === "critical") || receipt.receipt_sha256 !== receiptDigest(receipt)) {
+      blocks.push("VERIFICATION_RECEIPT_INTEGRITY_INVALID");
+      continue;
+    }
+    if (receipt.id !== ref.receipt_id || receipt.plan_id !== ref.plan_id ||
+        receipt.campaign_id !== campaign.id || receipt.mission_id !== campaign.mission_id ||
+        receipt.cycle_number !== checkpoint.cycle_number || receipt.candidate_id !== checkpoint.candidate.id ||
+        receipt.candidate_revision !== checkpoint.target.candidate_revision ||
+        receipt.repository_binding.repository_key !== checkpoint.repository_binding.repository_key ||
+        receipt.repository_binding.identity_fingerprint !== checkpoint.repository_binding.identity_fingerprint) {
+      blocks.push("VERIFICATION_RECEIPT_BINDING_INVALID");
+      continue;
+    }
+    const checks = new Map((receipt.checks || []).map(item => [item.id, item]));
+    if ((ref.required_check_ids || []).some(id => !checks.has(id))) {
+      blocks.push("VERIFICATION_REQUIRED_CHECK_MISSING");
+      continue;
+    }
+    const requiredFailed = ref.required_check_ids.some(id => checks.get(id).status !== "passed");
+    if (receipt.overall_status !== "passed" || receipt.repository_state_unchanged !== true || requiredFailed) {
+      blocks.push("VERIFICATION_EXECUTION_FAILED");
+      executedFailure = true;
+      continue;
+    }
+    if (Date.parse(receipt.finished_at) > Date.parse(checkpoint.generated_at)) {
+      blocks.push("VERIFICATION_RECEIPT_AFTER_CHECKPOINT");
+      continue;
+    }
+    verified.add(receipt.id);
+  }
+  if (verified.size === 0 && !executedFailure) blocks.push("VERIFICATION_PROOF_MISSING");
+  return { verified, executedFailure };
+}
+
+function verifyParentDecision(campaign, checkpoint, proofContext, blocks) {
+  if (checkpoint.cycle_number === 1) {
+    if (checkpoint.parent_decision_id !== "none" || checkpoint.parent_decision_ref.decision_id !== "none" ||
+        checkpoint.parent_decision_ref.relative_path !== "none" || checkpoint.parent_decision_ref.sha256 !== "none") {
+      blocks.push("FIRST_CYCLE_PARENT_INVALID");
+    }
+    return;
+  }
+  const parent = proofContext.parentDecision;
+  if (!parent) {
+    blocks.push("PARENT_DECISION_PROOF_MISSING");
+    return;
+  }
+  const validation = validatePayload(parent, "self-improvement-decision");
+  if (validation.issues.some(item => item.severity === "error" || item.severity === "critical")) blocks.push("PARENT_DECISION_SCHEMA_INVALID");
+  if (parent.id !== checkpoint.parent_decision_id || parent.id !== checkpoint.parent_decision_ref.decision_id ||
+      parent.campaign_id !== campaign.id || parent.mission_id !== campaign.mission_id ||
+      parent.cycle_number !== checkpoint.cycle_number - 1) blocks.push("PARENT_DECISION_BINDING_INVALID");
+  if (parent.decision !== "accept_working_state" || parent.promotion_scope === "none") blocks.push("PARENT_DECISION_NOT_ACCEPTED");
+  if (parent.accepted_revision !== checkpoint.target.baseline_revision) blocks.push("PARENT_BASELINE_REVISION_MISMATCH");
 }
 
 function baseTaskOrder(campaign, checkpoint, task, nextTrigger = "wave_end") {
@@ -139,8 +292,8 @@ function baseTaskOrder(campaign, checkpoint, task, nextTrigger = "wave_end") {
     ],
     required_evidence: [
       "Repository-scoped checkpoint artifact.",
-      "Deterministic validation results.",
-      "Metric evidence compared with the declared baseline."
+      "Runtime-issued verification receipts.",
+      "Receipt-bound metric evidence compared with the declared baseline."
     ],
     next_checkpoint_trigger: nextTrigger
   };
@@ -148,7 +301,7 @@ function baseTaskOrder(campaign, checkpoint, task, nextTrigger = "wave_end") {
 
 function makeDecision(campaign, checkpoint, values) {
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "SelfImprovementDecision",
     id: `SID-${String(checkpoint.id || "checkpoint").replace(/^[A-Z]+-/, "")}`,
     campaign_id: campaign.id,
@@ -160,6 +313,10 @@ function makeDecision(campaign, checkpoint, values) {
     promotion_scope: values.promotionScope,
     release_authorized: false,
     selected_candidate_id: checkpoint.candidate.id,
+    accepted_revision: ["accept_working_state", "complete"].includes(values.decision)
+      ? checkpoint.target.candidate_revision
+      : "none",
+    proof: values.proof,
     score: values.score,
     reasons: values.reasons,
     blocking_codes: [...new Set(values.blocks)].sort(),
@@ -170,7 +327,7 @@ function makeDecision(campaign, checkpoint, values) {
   };
 }
 
-function analyzeImprovement(campaign, checkpoint) {
+function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
   campaign = campaign && typeof campaign === "object" && !Array.isArray(campaign) ? campaign : {};
   checkpoint = checkpoint && typeof checkpoint === "object" && !Array.isArray(checkpoint) ? checkpoint : {};
   const blocks = [];
@@ -182,6 +339,22 @@ function analyzeImprovement(campaign, checkpoint) {
   const progress = checkpoint.progress || {};
   const independent = checkpoint.independent_evaluation || {};
   const externalities = checkpoint.externalities || {};
+  proofContext = {
+    receipts: new Map(),
+    parentDecision: null,
+    approvalScope: null,
+    consumptionEvent: null,
+    manifestRevision: 0,
+    manifestSha256: "none",
+    ...proofContext
+  };
+  const proof = {
+    verification_receipt_ids: [],
+    parent_decision_id: checkpoint.parent_decision_id || "none",
+    approval_consumption_event_id: proofContext.consumptionEvent ? proofContext.consumptionEvent.id : "none",
+    repository_manifest_revision: proofContext.manifestRevision || 0,
+    repository_manifest_sha256: proofContext.manifestSha256 || "none"
+  };
 
   if (campaign.status !== "active") blocks.push("CAMPAIGN_NOT_ACTIVE");
   if (checkpoint.campaign_id !== campaign.id) blocks.push("CAMPAIGN_ID_MISMATCH");
@@ -198,10 +371,10 @@ function analyzeImprovement(campaign, checkpoint) {
   if (checkpoint.cycle_number === 1 && target.baseline_revision !== (campaign.repository_binding || {}).baseline_revision) {
     blocks.push("CAMPAIGN_BASELINE_REVISION_MISMATCH");
   }
-  if (checkpoint.cycle_number === 1 && checkpoint.parent_decision_id !== "none") blocks.push("FIRST_CYCLE_PARENT_INVALID");
   if (checkpoint.cycle_number > 1 && (!checkpoint.parent_decision_id || /^none$/i.test(checkpoint.parent_decision_id))) {
     blocks.push("PARENT_DECISION_MISSING");
   }
+  verifyParentDecision(campaign, checkpoint, proofContext, blocks);
   if (progress.failed_experiments > budgets.max_failed_experiments) blocks.push("FAILED_EXPERIMENT_BUDGET_EXCEEDED");
   if (progress.consecutive_no_progress_cycles >= budgets.max_no_progress_cycles) blocks.push("NO_PROGRESS_LIMIT_REACHED");
   if (progress.elapsed_minutes > budgets.max_elapsed_minutes) blocks.push("ELAPSED_TIME_BUDGET_EXCEEDED");
@@ -221,24 +394,31 @@ function analyzeImprovement(campaign, checkpoint) {
   if (hasItems(candidate.protected_invariants_affected)) blocks.push("PROTECTED_INVARIANT_AFFECTED");
   if (!hasItems(candidate.rollback_steps) && candidate.disposition !== "no_change") blocks.push("ROLLBACK_PLAN_MISSING");
 
-  const failedValidation = (checkpoint.validation_results || []).some(result => result.status !== "passed" || result.exit_code !== 0);
-  if (failedValidation) blocks.push("VALIDATION_NOT_PASSED");
-  if (!hasItems((checkpoint.validation_results || []).flatMap(result => result.evidence || []))) blocks.push("VALIDATION_EVIDENCE_MISSING");
+  const receiptProof = verifyReceiptProof(campaign, checkpoint, proofContext, blocks);
+  proof.verification_receipt_ids = [...receiptProof.verified].sort();
+  const failedValidation = receiptProof.executedFailure;
 
   if (CONTROL_PLANE_TARGETS.has(target.target_type)) {
-    if (independent.required !== true || independent.status !== "passed" || independent.evaluator === campaign.command_team.improvement_controller || !hasItems(independent.evidence)) {
+    if (independent.required !== true || independent.status !== "passed" || independent.evaluator === campaign.command_team.improvement_controller ||
+        !hasItems(independent.evidence_receipt_ids) || independent.evidence_receipt_ids.some(id => !receiptProof.verified.has(id))) {
       blocks.push("INDEPENDENT_CONTROL_PLANE_EVALUATION_MISSING");
     }
-  } else if (independent.required === true && (independent.status !== "passed" || !hasItems(independent.evidence))) {
+  } else if (independent.required === true && (independent.status !== "passed" || !hasItems(independent.evidence_receipt_ids) ||
+      independent.evidence_receipt_ids.some(id => !receiptProof.verified.has(id)))) {
     blocks.push("REQUIRED_INDEPENDENT_EVALUATION_NOT_PASSED");
   }
 
-  const score = scoreMetrics(campaign, checkpoint, blocks);
+  const score = scoreMetrics(campaign, checkpoint, blocks, receiptProof.verified);
   const human = requiresHumanDecision(campaign, checkpoint);
-  const approvalCovered = approvalCoversCheckpoint(checkpoint);
+  const approvalResult = human.required ? approvalCoversCheckpoint(campaign, checkpoint, proofContext) : { valid: true, codes: [] };
+  const approvalCovered = approvalResult.valid;
   if (human.fatal) blocks.push("PROHIBITED_EXTERNALITY");
   if (human.required && !approvalCovered) blocks.push("HUMAN_APPROVAL_REQUIRED");
-  if (checkpoint.approval && checkpoint.approval.status === "approved" && !approvalCovered) blocks.push("APPROVAL_SCOPE_INVALID");
+  blocks.push(...approvalResult.codes);
+  if (!human.required && checkpoint.approval_binding && checkpoint.approval_binding.required) blocks.push("UNNECESSARY_APPROVAL_BINDING");
+  if (!human.required && checkpoint.approval_binding && (!isNoneReference(checkpoint.approval_binding.approval_scope_ref) || !isNoneReference(checkpoint.approval_binding.consumption_event_ref))) {
+    blocks.push("UNSCOPED_APPROVAL_REFERENCE");
+  }
   if (externalities.release_requested) blocks.push("RELEASE_REQUIRES_SEPARATE_GATE");
 
   const allCriteriaComplete = Array.isArray(progress.open_acceptance_criteria) && progress.open_acceptance_criteria.length === 0;
@@ -259,7 +439,8 @@ function analyzeImprovement(campaign, checkpoint) {
       blocks,
       nextTaskOrder: baseTaskOrder(campaign, checkpoint, "Stop execution, preserve evidence, and prepare a Commander/user incident decision packet.", "manual"),
       humanDecisionRequired: true,
-      requiredHumanDecision: "Decide whether to terminate or replace the campaign after reviewing the prohibited action."
+      requiredHumanDecision: "Decide whether to terminate or replace the campaign after reviewing the prohibited action.",
+      proof
     });
   }
 
@@ -276,7 +457,8 @@ function analyzeImprovement(campaign, checkpoint) {
         ? "Revert only this campaign's uncommitted candidate changes, preserve failure evidence, and prepare a smaller repair candidate."
         : "Preserve the failed candidate and request human rollback authority.", "validation_failure"),
       humanDecisionRequired: !canAutoRollback,
-      requiredHumanDecision: canAutoRollback ? "none" : "Approve or reject rollback of the current working state."
+      requiredHumanDecision: canAutoRollback ? "none" : "Approve or reject rollback of the current working state.",
+      proof
     });
   }
 
@@ -299,7 +481,8 @@ function analyzeImprovement(campaign, checkpoint) {
       blocks,
       nextTaskOrder: baseTaskOrder(campaign, checkpoint, "Preserve the candidate and produce a decision packet resolving every blocking code.", "manual"),
       humanDecisionRequired: true,
-      requiredHumanDecision: "Approve a bounded exception, issue a scope change, or stop the campaign."
+      requiredHumanDecision: "Approve a bounded exception, issue a scope change, or stop the campaign.",
+      proof
     });
   }
 
@@ -315,7 +498,8 @@ function analyzeImprovement(campaign, checkpoint) {
         blocks,
         nextTaskOrder: baseTaskOrder(campaign, checkpoint, "Freeze the working state and prepare the human release or merge decision packet.", "manual"),
         humanDecisionRequired: true,
-        requiredHumanDecision: "Approve or reject merge, push, or external release through the separate release gate."
+        requiredHumanDecision: "Approve or reject merge, push, or external release through the separate release gate.",
+        proof
       });
     }
     reasons.push("No bounded change is proposed; continue observation or close remaining acceptance gaps.");
@@ -328,7 +512,8 @@ function analyzeImprovement(campaign, checkpoint) {
       blocks,
       nextTaskOrder: baseTaskOrder(campaign, checkpoint, "Inspect the next open acceptance criterion and propose one evidence-backed, bounded candidate."),
       humanDecisionRequired: false,
-      requiredHumanDecision: "none"
+      requiredHumanDecision: "none",
+      proof
     });
   }
 
@@ -343,7 +528,8 @@ function analyzeImprovement(campaign, checkpoint) {
       blocks,
       nextTaskOrder: baseTaskOrder(campaign, checkpoint, "Revise the candidate against the weakest measured dimension without broadening scope."),
       humanDecisionRequired: false,
-      requiredHumanDecision: "none"
+      requiredHumanDecision: "none",
+      proof
     });
   }
 
@@ -359,7 +545,8 @@ function analyzeImprovement(campaign, checkpoint) {
       ? "Run the mandatory before-completion checkpoint; do not release or merge."
       : "Advance the next open acceptance criterion from the accepted working state.", allCriteriaComplete ? "before_completion" : "wave_end"),
     humanDecisionRequired: false,
-    requiredHumanDecision: "none"
+    requiredHumanDecision: "none",
+    proof
   });
 }
 
@@ -385,7 +572,7 @@ function main() {
   try {
     const { positional, artifactOptions } = parseArgs(process.argv.slice(2));
     if (positional.length !== 2) {
-      throw new Error("Usage: node autonomous-improvement-controller.js <campaign.json> <checkpoint.json> [--write-artifact --repository <repo> [--artifact-root <dir>] [--overwrite-artifact]]");
+      throw new Error("Usage: node autonomous-improvement-controller.js <campaign.json> <checkpoint.json> --repository <repo> [--artifact-root <dir>] [--write-artifact [--overwrite-artifact]]");
     }
     const campaign = readJson(path.resolve(positional[0]));
     const checkpoint = readJson(path.resolve(positional[1]));
@@ -400,7 +587,9 @@ function main() {
         .map(item => item.code);
       throw new Error(`Self-improvement input validation failed: ${[...new Set(codes)].join(", ")}`);
     }
-    let decision = analyzeImprovement(campaign, checkpoint);
+    if (!artifactOptions.repositoryPath) throw new Error("Proof-carrying self-improvement requires --repository <repo>.");
+    const proofContext = loadProofContext(campaign, checkpoint, artifactOptions.repositoryPath, artifactOptions.artifactRoot);
+    let decision = analyzeImprovement(campaign, checkpoint, proofContext);
 
     if (artifactOptions.writeArtifact) {
       const repository = resolveRepository(artifactOptions.repositoryPath);
@@ -456,6 +645,7 @@ if (require.main === module) main();
 
 module.exports = {
   analyzeImprovement,
+  loadProofContext,
   normalizedMetric,
   safeRelativePath,
   scoreMetrics
