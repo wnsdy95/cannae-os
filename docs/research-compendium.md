@@ -2299,6 +2299,40 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
    - Added `model-force-assignment-policy.md`, `schema-files/model-force-assignment-plan.schema.json`, `model-force-assignment-runner.js`, `run-model-force-assignment-fixtures.js`, and valid/invalid sample plans.
    - The invalid fixture blocks floating model aliases, missing evidence, unready routing, out-of-METL tasks, context-ineligible profiles, confidence-only acceptance, correlated assurance, model monoculture, collapsed PACE, and authority inherited from model capability.
 
+### 8.49 Model Force v0.2 Operationalization
+
+1. Registry and demand separation
+
+   Implemented conclusion:
+   - A static assignment plan is insufficient as the source of truth because it can embed model claims without proving where readiness, identity, and availability came from.
+   - `ModelRegistry` now owns immutable model/harness/prompt/tool identity, deployment and context eligibility, per-task readiness evidence, expiry, cost, latency, and availability.
+   - `ModelAssignmentRequest` owns the mission's billet demand, force class, task, tool impact, authority scope, fallback depth, assurance, and optimization weights.
+   - Registry governance retains human final decision authority and prohibits floating versions and secret-bearing endpoint references.
+
+2. Hard filtering before optimization
+
+   Implemented conclusion:
+   - Deployment, context, task, tool-impact, readiness, evidence, expiry, availability, load, and family-separation requirements are eligibility gates rather than score components.
+   - Cost and latency are optimized only among eligible profiles. They cannot compensate for a policy, evidence, or readiness failure.
+   - Deterministic tie-breaking makes identical registry/request inputs reproducible.
+   - The compiler materializes the existing v0.1 `ModelForceAssignmentPlan`, preserving its stable projection and safety checks.
+
+3. Integrated routing and dispatch gate
+
+   Implemented conclusion:
+   - Model selection alone does not authorize an agent to work. Every dispatched agent must be bound to one current-wave accepted routing receipt and one compiled dispatch-required billet.
+   - `integrated-mission-preflight-runner.js` combines routing receipt validation, model compilation, v0.1 plan projection, identity verification, and one-to-one binding checks.
+   - A blocked projection emits no dispatch rows. A ready projection contains endpoint references, immutable identity, role, authority/tool/context scope, fallbacks, and routed documents.
+   - Model capability remains separate from agent identity, role authority, release approval, and human risk acceptance.
+
+4. Operational evidence and reassessment
+
+   Implemented conclusion:
+   - `ModelUsageEvent` records the immutable model identity, authority snapshot, release target, outcome, cost, latency, evidence, fallback/escalation, failure code, and transition.
+   - Telemetry does not self-promote readiness. AAR and controlled readiness updates remain the path for changing T/P/U/X status.
+   - Material model, prompt, harness, tool schema, environment, or policy changes require reevaluation.
+   - Added `model-force-v0.2-operations.md`, four v0.2 schemas, `model-assignment-compiler.js`, `integrated-mission-preflight-runner.js`, `run-model-force-v0.2-fixtures.js`, and valid/invalid samples.
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?
@@ -2383,6 +2417,7 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `interdepartment-collaboration-policy.md`: converts branch/function integration principles into inter-department supported/supporting, liaison, handoff, and conflict route policy.
 - `force-structure-change-policy.md`: a policy that controls the creation, disestablishment, expansion, and reduction of branches/duty positions/units/TFs via capability gap, DOTMLPF-P, readiness, and transition order.
 - `model-force-assignment-policy.md`: a mission-based policy for allocating deterministic, line, specialist, command, SOF, assurance, and reserve model profiles without inheriting authority from capability.
+- `model-force-v0.2-operations.md`: the executable registry, compiler, receipt-binding, dispatch, telemetry, and reassessment procedure for heterogeneous model forces.
 - `prompt-templates.md`: OPORD, WARNO, FRAGO, SITREP, and AAR prompt templates.
 - `orders-production-pipeline.md`: the order production pipeline running from request to AAR.
 - `opord-annex-model.md`: the model separating responsibility between the OPORD body and annexes.
@@ -2534,6 +2569,13 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `schema-files/model-force-assignment-plan.schema.json`: contract for mission profile, immutable model profiles, billets, routing, assurance, PACE, authority, budget, and reassessment.
 - `model-force-assignment-runner.js`: projects model billets, escalation paths, assurance status, PACE, resource demand, blocks, and commander decisions.
 - `run-model-force-assignment-fixtures.js`: fixtures for a validated mixed model force and blocking an unready model monoculture.
+- `schema-files/model-registry.schema.json`: immutable model inventory and per-task readiness source contract.
+- `schema-files/model-assignment-request.schema.json`: mission billet demand and selection constraint contract.
+- `model-assignment-compiler.js`: hard-filter-then-score deterministic assignment compiler.
+- `schema-files/integrated-mission-preflight.schema.json`: current-wave agent, receipt, and billet binding contract.
+- `integrated-mission-preflight-runner.js`: combined routing and model assignment dispatch gate.
+- `schema-files/model-usage-event.schema.json`: operational model-use evidence contract.
+- `run-model-force-v0.2-fixtures.js`: integrated compiler, dispatch, and unsafe-case regression suite.
 - `role-document-access-policy.md`: the policy that lets each agent read only the documents fixed for its role, duty, and authority.
 - `schema-files/document-access-manifest.schema.json`: the per-mission document access manifest contract.
 - `document-access-runner.js`: a manifest-based runner producing an allowed/denied document projection.

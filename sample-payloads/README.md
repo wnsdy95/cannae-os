@@ -14,6 +14,9 @@ Use these examples to test:
 - department collaboration charter validation
 - force structure change order validation
 - model force assignment validation
+- model registry and assignment request validation
+- integrated mission preflight validation
+- model usage event validation
 - CCIR alert validation
 - handoff packet validation
 - continuity plan validation
@@ -41,6 +44,7 @@ Use these examples to test:
 - approval UI rendering
 - AAR/readiness update logic
 - agent routing preflight logic
+- model force compilation and dispatch preflight logic
 
 Fixture convention:
 

@@ -24,8 +24,11 @@ Orchestrator / AI Commander
   |
   +-- OPORD Compiler
   +-- Agent Registry
+  +-- Model Registry
+  +-- Model Assignment Compiler
   +-- Policy / ROE Engine
   +-- Task Router
+  +-- Integrated Mission Preflight
   +-- Battle Rhythm Scheduler
   |
   v
@@ -50,6 +53,7 @@ Tool Gateway
   |
   v
 State / Evidence / Audit Stores
+  +-- Model Usage Events
 ```
 
 ## 2. Major Components
@@ -168,7 +172,22 @@ roe_decision:
   safe_alternatives:
 ```
 
-### 2.7 Tool Gateway
+### 2.7 Model Registry And Assignment Compiler
+
+The Model Registry stores immutable model, harness, prompt, and tool-schema identities plus deployment eligibility and per-task readiness evidence. It stores endpoint references, not credentials.
+
+The Model Assignment Compiler:
+
+- consumes mission-defined billet requirements;
+- hard-filters deployment, context, task, tool impact, readiness, evidence, expiry, availability, load, and family separation;
+- scores only eligible profiles;
+- materializes a `ModelForceAssignmentPlan` with independent authority, assurance, and PACE controls.
+
+### 2.8 Integrated Mission Preflight
+
+The integrated preflight combines the current-wave routing receipt projection with the compiled model assignment. It verifies one-to-one agent, receipt, and billet bindings. Only a `ready` projection emits dispatch rows and model usage event templates.
+
+### 2.9 Tool Gateway
 
 Role:
 
@@ -181,7 +200,7 @@ Prohibited:
 
 - An agent calling a tool directly, bypassing the gateway.
 
-### 2.8 Evidence Store
+### 2.10 Evidence Store
 
 Stores:
 
@@ -192,7 +211,7 @@ Stores:
 - linked output.
 - checked_at.
 
-### 2.9 State Store
+### 2.11 State Store
 
 Stores:
 
@@ -204,8 +223,10 @@ Stores:
 - decision memo.
 - AAR.
 - readiness updates.
+- model registries and assignment requests.
+- integrated preflight projections.
 
-### 2.10 Audit Store
+### 2.12 Audit Store
 
 Stores:
 
@@ -214,6 +235,7 @@ Stores:
 - execution result.
 - blocked action.
 - policy decision.
+- immutable model usage events and authority snapshots.
 
 ## 3. Data Flow
 

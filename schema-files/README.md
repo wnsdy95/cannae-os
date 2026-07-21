@@ -16,6 +16,9 @@ The schemas are intentionally small and composable. They define the minimum stat
 - department collaboration charters
 - force structure change orders
 - model force assignment plans
+- model registries and assignment requests
+- integrated mission preflight manifests
+- model usage events
 - CCIR alerts
 - handoff packets
 - continuity plans
@@ -59,34 +62,38 @@ Recommended validation order:
 11. `department-collaboration-charter.schema.json`
 12. `force-structure-change-order.schema.json`
 13. `model-force-assignment-plan.schema.json`
-14. `ccir-alert.schema.json`
-15. `handoff-packet.schema.json`
-16. `continuity-plan.schema.json`
-17. `context-item.schema.json`
-18. `document-access-manifest.schema.json`
-19. `doctrine-consistency-review.schema.json`
-20. `release-review.schema.json`
-21. `release-gate-decision-event.schema.json`
-22. `maintenance-readiness.schema.json`
-23. `backbrief.schema.json`
-24. `rehearsal.schema.json`
-25. `annex.schema.json`
-26. `frago-scope-change.schema.json`
-27. `information-report.schema.json`
-28. `intelligence-assessment.schema.json`
-29. `approval-scope.schema.json`
-30. `approval-consumption-event.schema.json`
-31. `approval-revocation-event.schema.json`
-32. `approval-renewal-event.schema.json`
-33. `approval-delegation-event.schema.json`
-34. `approval-delegation-revocation-event.schema.json`
-35. `risk-acceptance.schema.json`
-36. `aar-readiness-update.schema.json`
-37. `sitrep.schema.json`
-38. `frago.schema.json`
-39. `evidence.schema.json`
-40. `aar.schema.json`
-41. `readiness-ledger.schema.json`
-42. `routing-receipt.schema.json`
+14. `model-registry.schema.json`
+15. `model-assignment-request.schema.json`
+16. `integrated-mission-preflight.schema.json`
+17. `model-usage-event.schema.json`
+18. `ccir-alert.schema.json`
+19. `handoff-packet.schema.json`
+20. `continuity-plan.schema.json`
+21. `context-item.schema.json`
+22. `document-access-manifest.schema.json`
+23. `doctrine-consistency-review.schema.json`
+24. `release-review.schema.json`
+25. `release-gate-decision-event.schema.json`
+26. `maintenance-readiness.schema.json`
+27. `backbrief.schema.json`
+28. `rehearsal.schema.json`
+29. `annex.schema.json`
+30. `frago-scope-change.schema.json`
+31. `information-report.schema.json`
+32. `intelligence-assessment.schema.json`
+33. `approval-scope.schema.json`
+34. `approval-consumption-event.schema.json`
+35. `approval-revocation-event.schema.json`
+36. `approval-renewal-event.schema.json`
+37. `approval-delegation-event.schema.json`
+38. `approval-delegation-revocation-event.schema.json`
+39. `risk-acceptance.schema.json`
+40. `aar-readiness-update.schema.json`
+41. `sitrep.schema.json`
+42. `frago.schema.json`
+43. `evidence.schema.json`
+44. `aar.schema.json`
+45. `readiness-ledger.schema.json`
+46. `routing-receipt.schema.json`
 
 All schemas target JSON Schema draft 2020-12.

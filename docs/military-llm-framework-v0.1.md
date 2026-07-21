@@ -461,6 +461,14 @@ Current document set:
 156. `schema-files/model-force-assignment-plan.schema.json`: Contract separating model readiness and capability from billet role and authority.
 157. `model-force-assignment-runner.js`: Projects active model billets, escalation paths, assurance, PACE, resource summary, and preflight blocks.
 158. `run-model-force-assignment-fixtures.js`: Fixtures for a validated mixed force and an unsafe model monoculture.
+159. `model-force-v0.2-operations.md`: Operational sequence from model registry and mission demand through compiled assignment, agent binding, dispatch, telemetry, and reassessment.
+160. `schema-files/model-registry.schema.json`: Contract for immutable model identities, deployment boundaries, task readiness, evidence, availability, and governance.
+161. `schema-files/model-assignment-request.schema.json`: Contract for mission billets, constraints, scoring policy, assurance, authority, budget, and assessment.
+162. `model-assignment-compiler.js`: Deterministic hard-filter-then-score compiler that materializes the v0.1 plan.
+163. `schema-files/integrated-mission-preflight.schema.json`: Contract binding current-wave routing receipts, named agents, and compiled billets.
+164. `integrated-mission-preflight-runner.js`: Combined routing and model-assignment gate that emits dispatch and telemetry manifests only when ready.
+165. `schema-files/model-usage-event.schema.json`: Contract for immutable model-use telemetry, authority snapshots, evidence, and transitions.
+166. `run-model-force-v0.2-fixtures.js`: End-to-end fixtures for compilation, integrated dispatch, and fail-closed unsafe cases.
 
 Next documentation tasks:
 

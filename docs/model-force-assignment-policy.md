@@ -382,7 +382,9 @@ Any rule equivalent to `if model is stronger, allow more tools` is prohibited.
 
 ## 11. Runtime Contract
 
-The machine-readable contract is `schema-files/model-force-assignment-plan.schema.json`.
+The operational procedure is `model-force-v0.2-operations.md`.
+
+The v0.1 projection contract is `schema-files/model-force-assignment-plan.schema.json`. It validates a materialized plan and remains the stable interface for active billet, assurance, PACE, and authority checks.
 
 It records:
 
@@ -403,6 +405,18 @@ It records:
 - assurance and PACE status;
 - resource summary;
 - preflight blocks and commander queue.
+
+The v0.2 source and dispatch contracts are:
+
+- `schema-files/model-registry.schema.json`: immutable model identities and per-task readiness evidence;
+- `schema-files/model-assignment-request.schema.json`: mission-defined billet demand and selection constraints;
+- `model-assignment-compiler.js`: hard-filter-then-score deterministic plan compiler;
+- `schema-files/integrated-mission-preflight.schema.json`: agent, receipt, and billet binding manifest;
+- `integrated-mission-preflight-runner.js`: combined routing and model assignment dispatch gate;
+- `schema-files/model-usage-event.schema.json`: post-dispatch operational telemetry;
+- `run-model-force-v0.2-fixtures.js`: valid and unsafe end-to-end regression cases.
+
+The v0.2 compiler materializes the v0.1 plan. The integrated preflight then requires both the routing projection and model-assignment projection to be ready before it emits dispatch rows.
 
 ## 12. Anti-Patterns
 
