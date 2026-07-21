@@ -2478,6 +2478,31 @@ Implemented artifacts:
 - `repository-lease.js`
 - `repository-artifact-store.js` manifest v0.4
 
+### 8.54 Deterministic Campaign Supervision v0.4
+
+Research question:
+
+> How does a bounded adaptive campaign resume without relying on conversational memory, skipping an approval boundary, or turning one controller decision into open-ended recursion?
+
+Engineering conclusions:
+
+1. A checkpoint controller answers whether one candidate can be accepted; it does not prove that a caller selected the correct next cycle, baseline, parent, or retry count. Campaign scheduling must therefore be a separate deterministic function over durable records.
+2. The repository manifest is the campaign's custody boundary. The supervisor reloads one exact campaign and every matching checkpoint and decision only after manifest, history, sidecar, path, size, and artifact hashes pass verification.
+3. Every checkpoint must pair with exactly one decision. Orphan checkpoints, orphan decisions, duplicate IDs, skipped cycle numbers, records after acceptance, and records after a terminal decision make the history non-executable.
+4. A cycle advances only from `accept_working_state`. The next baseline is that decision's `accepted_revision`, and every follow-on checkpoint cites the decision's exact manifest path and SHA-256. Revision, rollback, and continue decisions increment an attempt in the same cycle rather than creating a parent they did not earn.
+5. Finite budgets are dispatch gates, not advisory counters. The supervisor refuses to open a cycle beyond `max_cycles`, a retry beyond `max_retries_per_cycle`, or follow-on work after failure, no-progress, or elapsed limits are reached.
+6. Completion, termination, escalation, invalid lineage, and incomplete persistence all become `hold` orders with `execution_authorized: false`. The cycle order also fixes `release_authorized: false`; it cannot widen the controller's authority.
+7. Durable orders are idempotent. Re-running supervision against the same campaign state returns the existing order instead of appending another manifest revision. A conflicting order with the same deterministic identity is an integrity error.
+8. The supervisor issues tasking but does not perform the task, generate evidence, decide a candidate, resolve human escalation, or release work. An active agent harness remains responsible for executing one ready order and returning a new proof-backed checkpoint.
+
+Implemented artifacts:
+
+- `campaign-supervisor.js`
+- `schema-files/self-improvement-cycle-order.schema.json`
+- `sample-payloads/valid-self-improvement-cycle-order.json`
+- `sample-payloads/invalid-self-improvement-cycle-order-blocked-execution.json`
+- `run-campaign-supervisor-fixtures.js`
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

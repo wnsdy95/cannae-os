@@ -103,11 +103,12 @@ For a multi-wave mission, control-plane change, explicit autonomous-improvement 
 5. At every wave end, validation failure, scope change, and before completion, create a `SelfImprovementCheckpoint` whose metrics and independent evaluation cite persisted receipt IDs and, for v0.3, the signed quorum. Run `autonomous-improvement-controller.js --repository <repo>` against the proof store.
 6. For cycle 2+, cite the manifest path/hash of the immediately prior `accept_working_state` decision and use its `accepted_revision` as the baseline. Do not carry forward a rejected, rollback, or merely named parent.
 7. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window changes, persist an exact USER-granted `ApprovalScope` and matching `ApprovalConsumptionEvent`. Bind its execution ID to the checkpoint; prose approval and reused events are invalid.
-8. Execute only the next task order from the latest decision. Carry forward only an accepted working state; do not build on a rejected candidate.
-9. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require receipt-backed independent evaluation for runtime, skill, and policy candidates.
-10. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
-11. Never infer merge, push, release, policy, trust-root, or authority approval from `accept_working_state` or `complete`; the controller always leaves release unauthorized.
-12. Do not report completion without a passing `before_completion` checkpoint, a fresh receipt, a fresh signed quorum for v0.3, a verified parent when applicable, and repository-scoped decision evidence.
+8. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current `SelfImprovementCycleOrder` whose status is `ready`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never infer them from chat history.
+9. Carry forward only an accepted working state; revision, rollback, and continue orders remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
+10. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require receipt-backed independent evaluation for runtime, skill, and policy candidates.
+11. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
+12. Never infer merge, push, release, policy, trust-root, or authority approval from `accept_working_state`, `complete`, or a cycle order; both controller and supervisor leave release unauthorized.
+13. Do not report completion without a passing `before_completion` checkpoint, a fresh receipt, a fresh signed quorum for v0.3, a verified parent when applicable, repository-scoped decision evidence, and a supervisor projection whose status is `completed`.
 
 Read `docs/bounded-self-improvement-operations.md` for the full state machine and authority matrix.
 
@@ -157,6 +158,7 @@ node run-verification-runner-fixtures.js
 node run-verification-attestation-fixtures.js
 node run-self-improvement-fixtures.js
 node run-signed-self-improvement-fixtures.js
+node run-campaign-supervisor-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -173,7 +175,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
-- Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed quorum for v0.3, exact accepted-parent lineage, a verified artifact store, and a mandatory completion checkpoint; self-improvement never creates self-approval, self-release, trust-root authority, or unbounded recursion.
+- Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed quorum for v0.3, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint; self-improvement never creates self-approval, self-release, trust-root authority, or unbounded recursion.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.

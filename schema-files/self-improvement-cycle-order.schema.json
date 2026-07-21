@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/self-improvement-cycle-order.schema.json",
+  "title": "Self-Improvement Cycle Order",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "campaign_id",
+    "mission_id",
+    "repository_binding",
+    "campaign_ref",
+    "observed_manifest",
+    "status",
+    "transition",
+    "cycle_number",
+    "attempt_number",
+    "baseline_revision",
+    "parent_decision_ref",
+    "source_checkpoint_ref",
+    "source_decision_ref",
+    "checkpoint_trigger",
+    "task_order",
+    "proof_requirements",
+    "budget_snapshot",
+    "execution_authorized",
+    "release_authorized",
+    "human_decision_required",
+    "required_human_decision",
+    "blocking_codes",
+    "generated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "SelfImprovementCycleOrder" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "campaign_ref": { "$ref": "#/$defs/artifact_ref" },
+    "observed_manifest": {
+      "type": "object",
+      "required": ["revision", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "status": { "type": "string", "enum": ["ready", "awaiting_human", "completed", "terminated", "blocked"] },
+    "transition": { "type": "string", "enum": ["start", "retry", "advance", "before_completion", "hold"] },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "attempt_number": { "type": "integer", "minimum": 1 },
+    "baseline_revision": { "type": "string", "minLength": 1 },
+    "parent_decision_ref": { "$ref": "#/$defs/decision_ref_or_none" },
+    "source_checkpoint_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "source_decision_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "checkpoint_trigger": {
+      "type": "string",
+      "enum": ["wave_start", "wave_end", "validation_failure", "quality_regression", "scope_change", "before_completion", "manual"]
+    },
+    "task_order": {
+      "type": "object",
+      "required": ["owner", "task", "purpose", "constraints", "required_evidence", "next_checkpoint_trigger"],
+      "additionalProperties": false,
+      "properties": {
+        "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+        "task": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "constraints": { "$ref": "common.schema.json#/$defs/string_list" },
+        "required_evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+        "next_checkpoint_trigger": {
+          "type": "string",
+          "enum": ["wave_start", "wave_end", "validation_failure", "quality_regression", "scope_change", "before_completion", "manual"]
+        }
+      }
+    },
+    "proof_requirements": {
+      "type": "object",
+      "required": ["verification_receipt_required", "signed_attestation_required", "minimum_valid_attestations", "minimum_independence_groups", "require_distinct_key_ids", "trust_policy_ref"],
+      "additionalProperties": false,
+      "properties": {
+        "verification_receipt_required": { "type": "boolean", "const": true },
+        "signed_attestation_required": { "type": "boolean" },
+        "minimum_valid_attestations": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "minimum_independence_groups": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "require_distinct_key_ids": { "type": "boolean" },
+        "trust_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" }
+      }
+    },
+    "budget_snapshot": {
+      "type": "object",
+      "required": ["max_cycles", "cycles_observed", "max_retries_per_cycle", "retries_used_current_cycle", "max_failed_experiments", "failed_experiments", "max_no_progress_cycles", "consecutive_no_progress_cycles", "max_elapsed_minutes", "elapsed_minutes"],
+      "additionalProperties": false,
+      "properties": {
+        "max_cycles": { "type": "integer", "minimum": 1 },
+        "cycles_observed": { "type": "integer", "minimum": 0 },
+        "max_retries_per_cycle": { "type": "integer", "minimum": 0 },
+        "retries_used_current_cycle": { "type": "integer", "minimum": 0 },
+        "max_failed_experiments": { "type": "integer", "minimum": 0 },
+        "failed_experiments": { "type": "integer", "minimum": 0 },
+        "max_no_progress_cycles": { "type": "integer", "minimum": 1 },
+        "consecutive_no_progress_cycles": { "type": "integer", "minimum": 0 },
+        "max_elapsed_minutes": { "type": "integer", "minimum": 1 },
+        "elapsed_minutes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "execution_authorized": { "type": "boolean" },
+    "release_authorized": { "type": "boolean", "const": false },
+    "human_decision_required": { "type": "boolean" },
+    "required_human_decision": { "type": "string", "minLength": 1 },
+    "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "artifact_ref_or_none": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "type": "string", "minLength": 1 },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" }
+      }
+    },
+    "decision_ref_or_none": {
+      "type": "object",
+      "required": ["decision_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "decision_id": { "type": "string", "minLength": 1 },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" }
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ Use these examples to test:
 - integrated mission preflight validation
 - model usage event validation
 - repository artifact manifest validation
-- bounded self-improvement campaign, checkpoint, and decision validation
+- bounded self-improvement campaign, checkpoint, decision, and cycle-order validation
 - verification plan and runtime-issued receipt validation
 - verifier trust policy and signed verification attestation validation
 - CCIR alert validation
@@ -51,6 +51,7 @@ Use these examples to test:
 - model force compilation and dispatch preflight logic
 - repository-scoped JSON and file artifact isolation logic
 - bounded self-improvement decision and persistence logic
+- deterministic campaign reconstruction, finite retry/advance orders, terminal holds, and idempotent order persistence
 - proof receipt integrity, shell prohibition, parent lineage, and approval-consumption logic
 - Ed25519 key identity, DSSE statement binding, signature quorum, replay expiry, and receipt-content binding
 

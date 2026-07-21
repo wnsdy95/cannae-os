@@ -20,7 +20,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - integrated mission preflight manifests
 - model usage events
 - repository artifact manifests
-- bounded self-improvement campaigns, checkpoints, and decisions
+- bounded self-improvement campaigns, checkpoints, decisions, and finite cycle orders
 - verifier trust policies and signed verification attestations
 - CCIR alerts
 - handoff packets
@@ -102,9 +102,10 @@ Recommended validation order:
 48. `self-improvement-campaign.schema.json`
 49. `self-improvement-checkpoint.schema.json`
 50. `self-improvement-decision.schema.json`
-51. `verification-plan.schema.json`
-52. `verification-receipt.schema.json`
-53. `verifier-trust-policy.schema.json`
-54. `verification-attestation.schema.json`
+51. `self-improvement-cycle-order.schema.json`
+52. `verification-plan.schema.json`
+53. `verification-receipt.schema.json`
+54. `verifier-trust-policy.schema.json`
+55. `verification-attestation.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
