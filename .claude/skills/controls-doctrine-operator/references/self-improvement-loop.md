@@ -2,6 +2,8 @@
 
 Use this after answering, editing, researching, or validating the Controls corpus.
 
+This reference governs maintenance of the doctrine corpus and router. For autonomous improvement of an active mission or in-progress artifact, use `docs/bounded-self-improvement-operations.md` and the campaign/checkpoint/decision contracts instead of an informal AAR-only loop.
+
 ## Improvement Triggers
 
 Patch the corpus when one of these is true:
@@ -34,6 +36,7 @@ Do not patch this skill for one-off wording preferences.
 | New delegated-agent routing rule | routing receipt schema/sample, router receipt mode, preflight runner, preflight fixtures, Codex and Claude skill instructions |
 | New dashboard projection | dashboard state, projection runner, dashboard fixture, source-map entry |
 | New recurring workflow | this skill's `references/document-routing.md` and possibly `scripts/route_controls_docs.js` |
+| New adaptive workflow | bounded campaign, checkpoint, decision, controller fixture, and repository-scoped evidence |
 | New or moved corpus artifact | route coverage remains `valid: true` with `unrouted_artifact_count: 0` |
 
 ## AAR Questions
@@ -68,6 +71,7 @@ Start targeted, then broaden:
 6. Run Markdown link and JSON parse checks when docs or samples changed.
 7. Run the English-only check when user-facing text, examples, or executable messages changed.
 8. Run `git diff --check` before commit.
+9. For a multi-wave or control-plane change, run the mandatory `before_completion` checkpoint before reporting completion.
 
 ## Commit Discipline
 

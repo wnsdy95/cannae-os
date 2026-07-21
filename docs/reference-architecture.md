@@ -367,6 +367,7 @@ Characteristics:
 5. evidence store.
 6. SITREP/FRAGO event log.
 7. AAR and readiness update.
+8. Bounded self-improvement checkpoint and next task order.
 8. multi-agent routing.
 
 ## 8. Related Documents
@@ -376,3 +377,4 @@ Characteristics:
 - `tool-use-roe.md`
 - `sample-runtime-state.md`
 - `approval-ui-patterns.md`
+- `bounded-self-improvement-operations.md`

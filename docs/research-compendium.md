@@ -2354,15 +2354,56 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
    Implemented conclusion:
    - Path traversal, absolute artifact paths, symlink source files, cross-repository manifest paths, and identity mismatch are blocked.
    - Identical repeated writes are idempotent. Different content at an existing path fails unless overwrite is explicit.
+   - Per-repository cross-process locking serializes artifact and manifest mutation. Lock acquisition is finite; only a dead same-host stale lock is recovered, while active and foreign-host locks fail closed.
+   - Every committed manifest mutation advances a monotonic revision, preventing concurrent last-writer loss from remaining invisible.
    - Integrated mission preflight clears dispatch outputs and changes to blocked when requested artifact persistence fails.
    - Routing receipts redact local repository and artifact-root paths from recorded command evidence.
 
 4. Implemented surface
 
    Implemented conclusion:
-   - Added `repository-artifact-isolation-policy.md`, `repository-artifact-store.js`, `schema-files/repository-artifact-manifest.schema.json`, valid/invalid manifest samples, semantic validator rules, and `run-repository-artifact-isolation-fixtures.js`.
+   - Added `repository-artifact-isolation-policy.md`, `repository-artifact-store.js`, `schema-files/repository-artifact-manifest.schema.json`, valid/invalid manifest samples, semantic validator rules, `run-repository-artifact-isolation-fixtures.js`, and `run-repository-artifact-concurrency-fixtures.js`.
    - The store handles structured JSON projections and general file deliverables such as Markdown, PDF, and images.
    - The isolation fixture creates two Git repositories and proves same mission/wave/artifact IDs produce separate namespaces and manifests.
+   - The concurrency fixture launches 24 writers and verifies full retention, monotonic revisions, stale local recovery, and active/foreign lock refusal.
+
+### 8.51 Bounded Self-Improvement Control Plane
+
+1. Self-improvement as a finite campaign
+
+   Implemented conclusion:
+   - An agent must not interpret "improve yourself" as permission to choose new goals, expand authority, approve its own evidence, or continue indefinitely.
+   - Adaptation is represented as a finite campaign bound to one mission, repository identity, objective, acceptance set, authority envelope, quality model, budget, and stop conditions.
+   - The human user remains final decision authority. Every controller decision explicitly keeps release authorization false.
+
+2. Improvement of work already in progress
+
+   Implemented conclusion:
+   - Active drafts and implementations can be improved without restarting the mission when each candidate is compared with an accepted baseline.
+   - A candidate advances only when deterministic or independent evidence passes hard gates, the weighted normalized score meets the quality floor, and the score improves by the declared minimum.
+   - Cycle 1 is pinned to the campaign baseline revision, and every follow-on checkpoint names the accepted parent decision so a rejected candidate cannot become a hidden baseline.
+   - Insufficient gain routes to revision. Failed validation or hard gates route to rollback of the campaign's own uncommitted candidate. Repeated no-progress and exhausted budgets route to human review.
+
+3. Control-plane self-modification
+
+   Implemented conclusion:
+   - Procedures, runtime controls, and skills may be changed as isolated candidates, but require independent evaluation before becoming a working state.
+   - Policy and authority effects require USER approval scoped to the exact candidate.
+   - Destructive and cross-repository self-modification terminate autonomous execution rather than creating an approval path.
+
+4. Mandatory completion checkpoint
+
+   Implemented conclusion:
+   - A normal wave-end cannot declare the campaign complete.
+   - Completion requires a distinct `before_completion` checkpoint with no open acceptance criteria, all hard gates passing, the weighted quality floor met, and repository-scoped evidence.
+   - Completion freezes a working state for the human merge/release decision; it does not merge, push, or release.
+
+5. Implemented surface
+
+   Implemented conclusion:
+   - Added `bounded-self-improvement-operations.md`, three schemas, valid/invalid samples, semantic validator rules, `self-improvement-campaign-init.js`, `autonomous-improvement-controller.js`, and `run-self-improvement-fixtures.js`.
+   - The fixture suite covers accepted work improvement, insufficient gain, validation rollback, policy escalation, destructive termination, completion, repository drift, no-progress budgets, independent review, permission drift, and repository-scoped checkpoint/decision persistence.
+   - Current evidence references are auditable but not cryptographically attested; approval claims are structurally checked but are not yet consumed from a signed approval ledger.
 
 ## 9. Research Questions to Dig Into Further
 
@@ -2450,6 +2491,7 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `model-force-assignment-policy.md`: a mission-based policy for allocating deterministic, line, specialist, command, SOF, assurance, and reserve model profiles without inheriting authority from capability.
 - `model-force-v0.2-operations.md`: the executable registry, compiler, receipt-binding, dispatch, telemetry, and reassessment procedure for heterogeneous model forces.
 - `repository-artifact-isolation-policy.md`: target-repository custody, namespace, persistence, and manifest rules for multi-repository AI campaigns.
+- `bounded-self-improvement-operations.md`: finite evidence-driven adaptation for active work and control-plane candidates without AI self-release or authority expansion.
 - `prompt-templates.md`: OPORD, WARNO, FRAGO, SITREP, and AAR prompt templates.
 - `orders-production-pipeline.md`: the order production pipeline running from request to AAR.
 - `opord-annex-model.md`: the model separating responsibility between the OPORD body and annexes.

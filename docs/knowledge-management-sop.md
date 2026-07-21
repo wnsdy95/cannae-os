@@ -140,6 +140,7 @@ Rules:
 | Daily or phase close KM review | S6 | changed docs, stale links, missing source map entries |
 | Source review | S2/S6 | reliability rating and interpretation risk |
 | AAR update | Evaluator/S6 | SOP updates and readiness changes |
+| Improvement checkpoint | S3/Evaluator/S6 | baseline, candidate, metrics, validation evidence, decision |
 | Handoff review | CoS/S6 | handoff packet |
 | Release review | Commander/S6 | final output safe summary |
 
@@ -151,6 +152,7 @@ Rules:
 - Place executable schemas in `schema-files/`.
 - Place example payloads in `sample-payloads/` or a domain-specific payload directory.
 - Place prototypes in a separate `*-prototype/` directory.
+- Store long-running improvement campaign, checkpoint, and decision artifacts in the target repository namespace.
 - Update the README and source-map together.
 - In the compendium, record "why it was created" and "LLM application."
 
@@ -173,6 +175,8 @@ Knowledge management failure conditions:
 - A decision exists only in chat.
 - The scope of approval was not recorded.
 - AAR was not fed back into SOP/readiness.
+- An agent continued from a failed or unmeasured candidate instead of the last accepted working state.
+- Completion was claimed without a `before_completion` self-improvement checkpoint.
 
 ## 10. Prompt guard
 
@@ -183,6 +187,7 @@ When work is finished, perform a KM check.
 3. Are source-backed claims separated from interpretation?
 4. Do the README/source-map/compendium need updating?
 5. Can the next operator continue without chat history?
+6. Does the next operator know the accepted baseline, rejected candidates, open quality gap, and next checkpoint?
 ```
 
 ## 11. Implementation candidates
@@ -216,3 +221,4 @@ Therefore, every long-running task must leave behind the following four items.
 2. event/decision log
 3. current projection
 4. AAR/SOP update
+5. self-improvement campaign/checkpoint/decision chain for adaptive work

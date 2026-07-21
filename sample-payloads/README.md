@@ -18,6 +18,7 @@ Use these examples to test:
 - integrated mission preflight validation
 - model usage event validation
 - repository artifact manifest validation
+- bounded self-improvement campaign, checkpoint, and decision validation
 - CCIR alert validation
 - handoff packet validation
 - continuity plan validation
@@ -47,6 +48,7 @@ Use these examples to test:
 - agent routing preflight logic
 - model force compilation and dispatch preflight logic
 - repository-scoped JSON and file artifact isolation logic
+- bounded self-improvement decision and persistence logic
 
 Fixture convention:
 

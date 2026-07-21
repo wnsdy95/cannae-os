@@ -2,6 +2,7 @@
 
 const crypto = require("crypto");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
@@ -117,6 +118,113 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
+function sleepSync(milliseconds) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
+}
+
+function processIsAlive(pid) {
+  if (!Number.isInteger(pid) || pid <= 0) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error.code !== "ESRCH";
+  }
+}
+
+function readLockOwner(lockPath) {
+  try {
+    return readJson(path.join(lockPath, "owner.json"));
+  } catch (error) {
+    return null;
+  }
+}
+
+function lockAgeMilliseconds(lockPath, owner) {
+  const acquiredAt = owner && Date.parse(owner.acquired_at);
+  if (Number.isFinite(acquiredAt)) return Date.now() - acquiredAt;
+  try {
+    return Date.now() - fs.statSync(lockPath).mtimeMs;
+  } catch (error) {
+    return 0;
+  }
+}
+
+function reclaimStaleLocalLock(lockPath, staleMs) {
+  const recoveryPath = `${lockPath}.recovery`;
+  try {
+    fs.mkdirSync(recoveryPath, { mode: 0o700 });
+  } catch (error) {
+    if (error.code === "EEXIST") return false;
+    throw error;
+  }
+
+  try {
+    const owner = readLockOwner(lockPath);
+    if (!owner || !owner.token || !owner.hostname || !Number.isInteger(owner.pid)) return false;
+    if (lockAgeMilliseconds(lockPath, owner) <= staleMs) return false;
+    if (owner.hostname !== os.hostname()) return false;
+    if (processIsAlive(owner.pid)) return false;
+    const confirmedOwner = readLockOwner(lockPath);
+    if (!confirmedOwner || confirmedOwner.token !== owner.token) return false;
+    try {
+      fs.rmSync(lockPath, { recursive: true, force: false });
+      return true;
+    } catch (error) {
+      if (error.code === "ENOENT") return true;
+      return false;
+    }
+  } finally {
+    try {
+      fs.rmSync(recoveryPath, { recursive: true, force: false });
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
+  }
+}
+
+function acquireNamespaceLock(artifactRoot, namespacePath, options = {}) {
+  const timeoutMs = Number.isInteger(options.lockTimeoutMs) ? options.lockTimeoutMs : 5000;
+  const staleMs = Number.isInteger(options.lockStaleMs) ? options.lockStaleMs : 30000;
+  if (timeoutMs < 1 || staleMs < 1) throw new Error("Artifact lock timeout and stale threshold must be positive integers.");
+  fs.mkdirSync(namespacePath, { recursive: true });
+  ensureExistingPathInside(artifactRoot, namespacePath, "Repository namespace lock");
+  const lockPath = path.join(namespacePath, ".manifest.lock");
+  const token = crypto.randomUUID();
+  const deadline = Date.now() + timeoutMs;
+
+  while (true) {
+    try {
+      fs.mkdirSync(lockPath, { mode: 0o700 });
+      atomicWriteJson(path.join(lockPath, "owner.json"), {
+        pid: process.pid,
+        hostname: os.hostname(),
+        token,
+        acquired_at: new Date().toISOString()
+      });
+      return { lockPath, token };
+    } catch (error) {
+      if (error.code !== "EEXIST") throw error;
+      if (reclaimStaleLocalLock(lockPath, staleMs)) continue;
+      if (Date.now() >= deadline) {
+        const owner = readLockOwner(lockPath);
+        const ownerLabel = owner ? `${owner.hostname || "unknown-host"}:${owner.pid || "unknown-pid"}` : "unknown owner";
+        throw new Error(`Timed out waiting for repository artifact manifest lock (${ownerLabel}).`);
+      }
+      sleepSync(Math.min(25, Math.max(1, deadline - Date.now())));
+    }
+  }
+}
+
+function releaseNamespaceLock(lock) {
+  if (!lock) return;
+  const owner = readLockOwner(lock.lockPath);
+  if (!owner || owner.token !== lock.token) {
+    throw new Error("Repository artifact manifest lock ownership changed before release.");
+  }
+  fs.rmSync(lock.lockPath, { recursive: true, force: false });
+}
+
 function buildManifest(repository, namespaceRoot, existingManifest, artifactEntry, now) {
   const existingArtifacts = existingManifest && Array.isArray(existingManifest.artifacts)
     ? existingManifest.artifacts.filter(item => item.relative_path !== artifactEntry.relative_path)
@@ -125,7 +233,7 @@ function buildManifest(repository, namespaceRoot, existingManifest, artifactEntr
     .sort((left, right) => left.relative_path.localeCompare(right.relative_path));
 
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "RepositoryArtifactManifest",
     id: `RAM-${repository.identity_fingerprint.slice(0, 16)}`,
     repository: {
@@ -135,12 +243,20 @@ function buildManifest(repository, namespaceRoot, existingManifest, artifactEntr
       head_commit: repository.head_commit
     },
     namespace_root: namespaceRoot.split(path.sep).join("/"),
+    manifest_revision: Math.max(
+      existingManifest && Number.isInteger(existingManifest.manifest_revision)
+        ? existingManifest.manifest_revision + 1
+        : 1,
+      artifacts.length
+    ),
     artifacts,
     artifact_count: artifacts.length,
     isolation: {
       repository_scoped: true,
       cross_repository_writes_prohibited: true,
-      absolute_paths_recorded: false
+      absolute_paths_recorded: false,
+      cross_process_manifest_lock: true,
+      stale_lock_recovery_fail_closed: true
     },
     created_at: existingManifest && existingManifest.created_at ? existingManifest.created_at : now,
     updated_at: now
@@ -164,54 +280,61 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
   const manifestPath = ensureInside(artifactRoot, path.join(artifactRoot, namespaceRoot, "manifest.json"), "Manifest path");
   ensureExistingPathInside(artifactRoot, artifactPath, "Artifact path");
   ensureExistingPathInside(artifactRoot, manifestPath, "Manifest path");
-  const bytes = Buffer.isBuffer(content) ? content : Buffer.from(content);
-  const payloadHash = sha256(bytes);
-  const existingManifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
-  if (existingManifest && existingManifest.repository.identity_fingerprint !== repository.identity_fingerprint) {
-    throw new Error("Artifact namespace belongs to a different repository identity.");
-  }
-  let created = true;
-
-  if (fs.existsSync(artifactPath)) {
-    const existingHash = sha256(fs.readFileSync(artifactPath));
-    if (existingHash === payloadHash) {
-      created = false;
-    } else if (options.overwrite !== true) {
-      throw new Error(`Artifact already exists with different content: ${artifactPath}`);
+  const namespacePath = ensureInside(artifactRoot, path.join(artifactRoot, namespaceRoot), "Repository namespace");
+  const lock = acquireNamespaceLock(artifactRoot, namespacePath, options);
+  try {
+    const bytes = Buffer.isBuffer(content) ? content : Buffer.from(content);
+    const payloadHash = sha256(bytes);
+    const existingManifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
+    if (existingManifest && existingManifest.repository.identity_fingerprint !== repository.identity_fingerprint) {
+      throw new Error("Artifact namespace belongs to a different repository identity.");
     }
+    let created = true;
+
+    if (fs.existsSync(artifactPath)) {
+      const existingHash = sha256(fs.readFileSync(artifactPath));
+      if (existingHash === payloadHash) {
+        created = false;
+      } else if (options.overwrite !== true) {
+        throw new Error(`Artifact already exists with different content: ${artifactPath}`);
+      }
+    }
+
+    if (created || options.overwrite === true) atomicWrite(artifactPath, bytes);
+
+    const now = options.createdAt || new Date().toISOString();
+    const existingArtifact = existingManifest && (existingManifest.artifacts || [])
+      .find(item => item.relative_path === relativePath.split(path.sep).join("/"));
+    const artifactEntry = {
+      id: `RA-${sha256(relativePath).slice(0, 16)}`,
+      artifact_id: artifactId,
+      mission_id: missionId,
+      wave_id: waveId,
+      kind,
+      file_name: fileName,
+      content_type: contentType,
+      byte_size: bytes.length,
+      relative_path: relativePath.split(path.sep).join("/"),
+      sha256: payloadHash,
+      created_at: existingArtifact && !created ? existingArtifact.created_at : now
+    };
+    const manifest = buildManifest(repository, namespaceRoot, existingManifest, artifactEntry, now);
+    atomicWriteJson(manifestPath, manifest);
+
+    return {
+      repository,
+      artifact_root: artifactRoot,
+      namespace_root: namespacePath,
+      artifact_path: artifactPath,
+      manifest_path: manifestPath,
+      relative_path: artifactEntry.relative_path,
+      sha256: payloadHash,
+      manifest_revision: manifest.manifest_revision,
+      created
+    };
+  } finally {
+    releaseNamespaceLock(lock);
   }
-
-  if (created || options.overwrite === true) atomicWrite(artifactPath, bytes);
-
-  const now = options.createdAt || new Date().toISOString();
-  const existingArtifact = existingManifest && (existingManifest.artifacts || [])
-    .find(item => item.relative_path === relativePath.split(path.sep).join("/"));
-  const artifactEntry = {
-    id: `RA-${sha256(relativePath).slice(0, 16)}`,
-    artifact_id: artifactId,
-    mission_id: missionId,
-    wave_id: waveId,
-    kind,
-    file_name: fileName,
-    content_type: contentType,
-    byte_size: bytes.length,
-    relative_path: relativePath.split(path.sep).join("/"),
-    sha256: payloadHash,
-    created_at: existingArtifact && !created ? existingArtifact.created_at : now
-  };
-  const manifest = buildManifest(repository, namespaceRoot, existingManifest, artifactEntry, now);
-  atomicWriteJson(manifestPath, manifest);
-
-  return {
-    repository,
-    artifact_root: artifactRoot,
-    namespace_root: path.join(artifactRoot, namespaceRoot),
-    artifact_path: artifactPath,
-    manifest_path: manifestPath,
-    relative_path: artifactEntry.relative_path,
-    sha256: payloadHash,
-    created
-  };
 }
 
 function writeRepositoryArtifact(options) {
@@ -267,7 +390,7 @@ function writeRepositoryFileArtifact(options) {
 
 function parseArgs(argv) {
   const options = { overwrite: false };
-  const valueOptions = new Set(["repository", "artifact-root", "mission", "wave", "kind", "artifact-id", "input", "source", "content-type"]);
+  const valueOptions = new Set(["repository", "artifact-root", "mission", "wave", "kind", "artifact-id", "input", "source", "content-type", "lock-timeout-ms", "lock-stale-ms"]);
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--overwrite") {
@@ -279,6 +402,10 @@ function parseArgs(argv) {
       index += 1;
       if (index >= argv.length) throw new Error(`${arg} requires a value.`);
       options[key] = argv[index];
+      if (arg === "--lock-timeout-ms" || arg === "--lock-stale-ms") {
+        options[key] = Number(options[key]);
+        if (!Number.isInteger(options[key]) || options[key] < 1) throw new Error(`${arg} requires a positive integer.`);
+      }
       continue;
     }
     throw new Error(`Unknown argument: ${arg}`);
@@ -317,7 +444,7 @@ function main() {
   try {
     const options = parseArgs(process.argv.slice(2));
     if (!options.repository || !options.mission || !options.wave || !options.kind || !options.artifactId) {
-      throw new Error("Usage: node repository-artifact-store.js --repository <repo> --mission <id> --wave <id> --kind <kind> --artifact-id <id> [--input <json> | --source <file>] [--content-type <type>] [--artifact-root <dir>] [--overwrite]");
+      throw new Error("Usage: node repository-artifact-store.js --repository <repo> --mission <id> --wave <id> --kind <kind> --artifact-id <id> [--input <json> | --source <file>] [--content-type <type>] [--artifact-root <dir>] [--overwrite] [--lock-timeout-ms <ms>] [--lock-stale-ms <ms>]");
     }
     if (options.source && options.input) throw new Error("Use either --source or --input, not both.");
     const common = {
@@ -327,7 +454,9 @@ function main() {
       waveId: options.wave,
       kind: options.kind,
       artifactId: options.artifactId,
-      overwrite: options.overwrite
+      overwrite: options.overwrite,
+      lockTimeoutMs: options.lockTimeoutMs,
+      lockStaleMs: options.lockStaleMs
     };
     const result = options.source
       ? writeRepositoryFileArtifact({ ...common, sourcePath: options.source, contentType: options.contentType })
@@ -346,9 +475,11 @@ if (require.main === module) main();
 
 module.exports = {
   buildManifest,
+  acquireNamespaceLock,
   normalizeRemote,
   parseArtifactWriteFlags,
   resolveRepository,
+  releaseNamespaceLock,
   safeSegment,
   writeRepositoryArtifact,
   writeRepositoryFileArtifact

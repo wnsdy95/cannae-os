@@ -1,6 +1,6 @@
 ---
 name: controls-doctrine-operator
-description: Use this project skill in the Controls repository to route the military-style LLM doctrine corpus by human final decision authority or delegated AI role, department, authority, task, and need-to-know. Use it when answering framework questions, choosing docs to read, editing docs, schemas, runners, fixtures, source maps, policy gates, or validating that every corpus artifact is covered by the routing system.
+description: Route and operate the Controls military-style LLM doctrine corpus by human final authority or delegated AI role, and run bounded adaptive work campaigns. Use for framework questions, document routing, multi-agent missions, improving work already in progress, finite self-improvement checkpoints, or editing and validating docs, schemas, runners, fixtures, source maps, skills, and policy gates.
 ---
 
 # Controls Doctrine Operator
@@ -85,6 +85,20 @@ Before creating durable control evidence or deliverables, identify the target Gi
 - Validate each repository's manifest before wave completion.
 - Read `docs/repository-artifact-isolation-policy.md` for the complete command and file-handling contract.
 
+## Bounded Self-Improvement
+
+For a multi-wave mission, control-plane change, explicit autonomous-improvement request, or work that must improve beyond its first usable draft:
+
+1. Create a repository-bound `SelfImprovementCampaign` before the first improvement cycle, preferably with `self-improvement-campaign-init.js`. Keep `USER` final decision authority.
+2. Define acceptance criteria, normalized evidence-backed quality dimensions, protected invariants, finite budgets, and stop conditions. Never use model confidence as acceptance evidence.
+3. Create a `SelfImprovementCheckpoint` at every wave end, validation failure, scope change, and before completion. Run `autonomous-improvement-controller.js`.
+4. Execute only the latest decision's task order and continue only from an accepted working state.
+5. Require independent evaluation for runtime, skill, and policy candidates. Stop on `escalate` or `terminate`; rollback only this campaign's own uncommitted candidate.
+6. Never treat `accept_working_state` or `complete` as merge, push, policy, authority, or release approval.
+7. Do not report completion without a passing `before_completion` checkpoint and repository-scoped decision evidence.
+
+Read `docs/bounded-self-improvement-operations.md` for the state machine and authority matrix.
+
 ## Validation
 
 Use the smallest relevant validation, then broaden:
@@ -96,6 +110,8 @@ node run-agent-routing-preflight-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
 node run-repository-artifact-isolation-fixtures.js
+node run-repository-artifact-concurrency-fixtures.js
+node run-self-improvement-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -115,6 +131,7 @@ Escalate to the user before:
 - Treating US doctrine as universal without multinational consistency review.
 - Allowing model capability, router choice, or evaluator confidence to expand delegated role authority.
 - Mixing artifacts from separate target repositories in one flat output namespace.
+- Continuing adaptive work without a finite campaign, accepted baseline, mandatory checkpoint, or evidence-backed stop decision.
 
 ## Self-Improvement
 

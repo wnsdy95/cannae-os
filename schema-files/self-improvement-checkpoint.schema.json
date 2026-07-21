@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/self-improvement-checkpoint.schema.json",
+  "title": "Self-Improvement Checkpoint",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "campaign_id",
+    "mission_id",
+    "parent_decision_id",
+    "repository_binding",
+    "cycle_number",
+    "trigger",
+    "target",
+    "observations",
+    "candidate",
+    "metric_results",
+    "validation_results",
+    "independent_evaluation",
+    "externalities",
+    "approval",
+    "progress",
+    "generated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "SelfImprovementCheckpoint" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "parent_decision_id": { "type": "string", "minLength": 1 },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "trigger": {
+      "type": "string",
+      "enum": ["wave_start", "wave_end", "validation_failure", "quality_regression", "scope_change", "before_completion", "manual"]
+    },
+    "target": {
+      "type": "object",
+      "required": ["target_type", "state", "artifact_ids", "artifact_paths", "baseline_revision", "candidate_revision"],
+      "additionalProperties": false,
+      "properties": {
+        "target_type": {
+          "type": "string",
+          "enum": ["work_product", "test_fixture", "documentation", "procedure", "runtime_control", "skill", "policy"]
+        },
+        "state": { "type": "string", "enum": ["in_progress", "candidate", "working_state"] },
+        "artifact_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "artifact_paths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "baseline_revision": { "type": "string", "minLength": 1 },
+        "candidate_revision": { "type": "string", "minLength": 1 }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "severity", "statement", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "category": { "type": "string", "enum": ["quality_gap", "validation_failure", "drift", "new_opportunity", "resource_limit", "risk", "acceptance_gap", "sustain"] },
+          "severity": { "$ref": "common.schema.json#/$defs/risk_level" },
+          "statement": { "type": "string", "minLength": 1 },
+          "evidence": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "required": ["id", "disposition", "summary", "change_class", "proposed_actions", "changed_files", "required_permissions", "protected_invariants_affected", "rollback_steps", "expected_metric_delta"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/id" },
+        "disposition": { "type": "string", "enum": ["no_change", "improve", "repair", "rollback"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "change_class": { "type": "string", "enum": ["local_reversible", "bounded_structural", "authority_affecting", "external_release", "destructive"] },
+        "proposed_actions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "changed_files": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "required_permissions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "protected_invariants_affected": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "rollback_steps": { "$ref": "common.schema.json#/$defs/string_list" },
+        "expected_metric_delta": { "type": "number" }
+      }
+    },
+    "metric_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["dimension_id", "before", "after", "hard_gate_passed", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "dimension_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+          "before": { "type": "number" },
+          "after": { "type": "number" },
+          "hard_gate_passed": { "type": "boolean" },
+          "evidence": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "validation_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["check", "status", "exit_code", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "check": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["passed", "failed", "blocked", "not_run"] },
+          "exit_code": { "type": "integer" },
+          "evidence": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "independent_evaluation": {
+      "type": "object",
+      "required": ["required", "evaluator", "status", "evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "evaluator": { "$ref": "common.schema.json#/$defs/role_id" },
+        "status": { "type": "string", "enum": ["not_required", "pending", "passed", "failed"] },
+        "evidence": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "externalities": {
+      "type": "object",
+      "required": ["scope_changed", "authority_changed", "policy_changed", "release_requested", "destructive_action", "cross_repository_write"],
+      "additionalProperties": false,
+      "properties": {
+        "scope_changed": { "type": "boolean" },
+        "authority_changed": { "type": "boolean" },
+        "policy_changed": { "type": "boolean" },
+        "release_requested": { "type": "boolean" },
+        "destructive_action": { "type": "boolean" },
+        "cross_repository_write": { "type": "boolean" }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "required": ["required", "approval_id", "status", "approved_by", "scope"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "approval_id": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "enum": ["not_required", "missing", "approved", "rejected"] },
+        "approved_by": { "$ref": "common.schema.json#/$defs/role_id" },
+        "scope": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "progress": {
+      "type": "object",
+      "required": ["completed_acceptance_criteria", "open_acceptance_criteria", "consecutive_no_progress_cycles", "failed_experiments", "elapsed_minutes"],
+      "additionalProperties": false,
+      "properties": {
+        "completed_acceptance_criteria": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "open_acceptance_criteria": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "consecutive_no_progress_cycles": { "type": "integer", "minimum": 0 },
+        "failed_experiments": { "type": "integer", "minimum": 0 },
+        "elapsed_minutes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

@@ -20,6 +20,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - integrated mission preflight manifests
 - model usage events
 - repository artifact manifests
+- bounded self-improvement campaigns, checkpoints, and decisions
 - CCIR alerts
 - handoff packets
 - continuity plans
@@ -97,5 +98,8 @@ Recommended validation order:
 45. `readiness-ledger.schema.json`
 46. `routing-receipt.schema.json`
 47. `repository-artifact-manifest.schema.json`
+48. `self-improvement-campaign.schema.json`
+49. `self-improvement-checkpoint.schema.json`
+50. `self-improvement-decision.schema.json`
 
 All schemas target JSON Schema draft 2020-12.

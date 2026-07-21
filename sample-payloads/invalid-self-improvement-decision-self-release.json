@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1",
+  "type": "SelfImprovementDecision",
+  "id": "SID-Invalid-001",
+  "campaign_id": "SIC-Cannae-001",
+  "checkpoint_id": "SCP-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "decision": "complete",
+  "execution_authorized": true,
+  "promotion_scope": "working_state",
+  "release_authorized": true,
+  "selected_candidate_id": "CAN-Cannae-001",
+  "score": {
+    "weighted_before": 0.76,
+    "weighted_after": 0.93,
+    "weighted_delta": 0.17,
+    "minimum_delta": 0.05,
+    "all_hard_gates_passed": true
+  },
+  "reasons": ["The AI approved its own release."],
+  "blocking_codes": [],
+  "next_task_order": {
+    "owner": "S3",
+    "task": "Release externally.",
+    "purpose": "Skip the human gate.",
+    "constraints": ["none"],
+    "required_evidence": ["model self-approval"],
+    "next_checkpoint_trigger": "manual"
+  },
+  "human_decision_required": false,
+  "required_human_decision": "none",
+  "decided_at": "2026-07-21T18:24:00+09:00"
+}

@@ -62,7 +62,8 @@ Cannae OS is moving toward a practical runtime discipline for AI teams:
 3. Runtime schemas: JSON contracts that make orders, authority, release, evidence, and readiness machine-checkable.
 4. Policy gates: local runners that block known unsafe or under-specified states.
 5. Skill routing: Codex and Claude Code skills that route huge documentation sets by user mode, role, department, authority, and need-to-know.
-6. Future runtime: a tool-gated orchestrator with approval UI, evidence store, event replay, dashboards, and AAR-driven policy updates.
+6. Bounded adaptation: campaign/checkpoint/decision contracts that let agents improve active work without self-authorizing scope, policy, or release.
+7. Future runtime: a tool-gated orchestrator with approval UI, evidence store, event replay, dashboards, and cryptographically verifiable learning evidence.
 
 The current repository is strongest as a doctrine, schema, fixture, and prototype suite. It is not yet a complete production agent runtime.
 
@@ -98,6 +99,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Force Structure Change Policy](docs/force-structure-change-policy.md): when to create, expand, reduce, merge, deactivate, or disband roles, units, and task forces.
 - [Model Force Assignment Policy](docs/model-force-assignment-policy.md): mission-based allocation of deterministic, line, specialist, command, SOF, assurance, and reserve model capacity.
 - [Model Force v0.2 Operations](docs/model-force-v0.2-operations.md): registry-to-compiler-to-routing-preflight procedure for dispatching heterogeneous agent forces.
+- [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md): evidence-driven improvement of active work and control-plane candidates with finite budgets, rollback, escalation, and human release authority.
 
 ### Authority, Risk, Release, And Security
 
@@ -206,6 +208,18 @@ For multi-repository campaigns, durable AI outputs are stored under a stable rep
 ```
 
 Use `repository-artifact-store.js`, or pass `--write-artifact --repository <target>` to the model compiler and integrated preflight. Routing receipts use `--write-artifact --target-repository <target>`. See [Repository Artifact Isolation Policy](docs/repository-artifact-isolation-policy.md).
+
+### Bounded Self-Improvement
+
+Substantial AI missions can maintain a finite improvement campaign around work already in progress:
+
+```text
+baseline -> candidate -> validation + metrics -> accept / revise / rollback / escalate
+```
+
+`autonomous-improvement-controller.js` compares normalized quality evidence against the declared campaign envelope. It can promote a passing candidate to the next working state, but every emitted decision keeps `release_authorized: false`. Policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
+
+Use `self-improvement-campaign-init.js` to bind conservative campaign defaults to a target Git repository before the first adaptive wave.
 
 ### Commander-Retained Decisions
 
@@ -398,13 +412,15 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- make the skill router easier to consume from external agent runtimes.
+- make validation evidence tamper-evident and consumable rather than trusting evidence references;
+- add write-ahead recovery and integrity chains to repository artifact manifests.
 
 Mid-term:
 
 - define a persistent event model for missions, approvals, releases, handoffs, and AARs;
 - implement a production-shaped policy gateway;
 - connect approval scope and release gates to real tool calls;
+- bind self-improvement approvals to consumed approval-ledger events;
 - build a useful command-post dashboard from event projections;
 - formalize an evidence store for claims, sources, reliability, and interpretation.
 

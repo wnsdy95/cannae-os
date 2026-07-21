@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/self-improvement-decision.schema.json",
+  "title": "Self-Improvement Decision",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "campaign_id",
+    "checkpoint_id",
+    "mission_id",
+    "cycle_number",
+    "decision",
+    "execution_authorized",
+    "promotion_scope",
+    "release_authorized",
+    "selected_candidate_id",
+    "score",
+    "reasons",
+    "blocking_codes",
+    "next_task_order",
+    "human_decision_required",
+    "required_human_decision",
+    "decided_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "SelfImprovementDecision" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "checkpoint_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "decision": { "type": "string", "enum": ["accept_working_state", "revise_and_retry", "rollback", "escalate", "continue", "complete", "terminate"] },
+    "execution_authorized": { "type": "boolean" },
+    "promotion_scope": { "type": "string", "enum": ["none", "in_progress_work", "working_state"] },
+    "release_authorized": { "type": "boolean", "const": false },
+    "selected_candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+    "score": {
+      "type": "object",
+      "required": ["weighted_before", "weighted_after", "weighted_delta", "minimum_delta", "all_hard_gates_passed"],
+      "additionalProperties": false,
+      "properties": {
+        "weighted_before": { "type": "number", "minimum": 0, "maximum": 1 },
+        "weighted_after": { "type": "number", "minimum": 0, "maximum": 1 },
+        "weighted_delta": { "type": "number" },
+        "minimum_delta": { "type": "number", "minimum": 0, "maximum": 1 },
+        "all_hard_gates_passed": { "type": "boolean" }
+      }
+    },
+    "reasons": { "$ref": "common.schema.json#/$defs/string_list" },
+    "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "next_task_order": {
+      "type": "object",
+      "required": ["owner", "task", "purpose", "constraints", "required_evidence", "next_checkpoint_trigger"],
+      "additionalProperties": false,
+      "properties": {
+        "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+        "task": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "constraints": { "$ref": "common.schema.json#/$defs/string_list" },
+        "required_evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+        "next_checkpoint_trigger": { "type": "string", "enum": ["wave_start", "wave_end", "validation_failure", "quality_regression", "scope_change", "before_completion", "manual"] }
+      }
+    },
+    "human_decision_required": { "type": "boolean" },
+    "required_human_decision": { "type": "string", "minLength": 1 },
+    "decided_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}
