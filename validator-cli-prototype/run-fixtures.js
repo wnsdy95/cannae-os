@@ -782,6 +782,20 @@ const fixtures = [
     requiredCodes: ["CONST_MISMATCH", "SELF_IMPROVEMENT_SELF_RELEASE", "SELF_IMPROVEMENT_DECISION_EXECUTION_MISMATCH"]
   },
   {
+    name: "valid self-improvement cycle order",
+    file: "sample-payloads/valid-self-improvement-cycle-order.json",
+    type: "self-improvement-cycle-order",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "blocked self-improvement cycle order authorizes execution",
+    file: "sample-payloads/invalid-self-improvement-cycle-order-blocked-execution.json",
+    type: "self-improvement-cycle-order",
+    exitCode: 1,
+    requiredCodes: ["CYCLE_ORDER_EXECUTION_STATUS_MISMATCH", "CYCLE_ORDER_NONREADY_TRANSITION"]
+  },
+  {
     name: "valid verification plan",
     file: "sample-payloads/valid-verification-plan.json",
     type: "verification-plan",

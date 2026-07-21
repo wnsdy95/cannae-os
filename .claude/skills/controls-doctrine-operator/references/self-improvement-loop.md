@@ -36,7 +36,7 @@ Do not patch this skill for one-off wording preferences.
 | New delegated-agent routing rule | routing receipt schema/sample, router receipt mode, preflight runner, preflight fixtures, Codex and Claude skill instructions |
 | New dashboard projection | dashboard state, projection runner, dashboard fixture, source-map entry |
 | New recurring workflow | this skill's `references/document-routing.md` and possibly `scripts/route_controls_docs.js` |
-| New adaptive workflow | bounded campaign, executed verification receipt, signed verifier quorum for v0.3, checkpoint, accepted-parent lineage, decision, controller fixture, and integrity-checked repository evidence |
+| New adaptive workflow | bounded campaign, ready cycle order, executed verification receipt, signed verifier quorum for v0.3, checkpoint, accepted-parent lineage, decision, supervisor/controller fixtures, and integrity-checked repository evidence |
 | New or moved corpus artifact | route coverage remains `valid: true` with `unrouted_artifact_count: 0` |
 
 ## AAR Questions

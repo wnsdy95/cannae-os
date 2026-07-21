@@ -106,7 +106,7 @@ const RULES = [
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "proof carrying", "verification receipt", "verification attestation", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "remote verifier", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
+    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "remote verifier", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
     docs: [
       "docs/bounded-self-improvement-operations.md",
       "docs/agent-roles-and-authority.md",
@@ -117,10 +117,12 @@ const RULES = [
     commands: [
       "node run-self-improvement-fixtures.js",
       "node run-signed-self-improvement-fixtures.js",
+      "node run-campaign-supervisor-fixtures.js",
       "node run-verification-runner-fixtures.js",
       "node run-verification-attestation-fixtures.js",
       "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-campaign.json self-improvement-campaign",
       "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-checkpoint.json self-improvement-checkpoint",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-cycle-order.json self-improvement-cycle-order",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verification-receipt.json verification-receipt",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-trust-policy.json verifier-trust-policy",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verification-attestation.json verification-attestation"
@@ -341,7 +343,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "verification-plan", "verification-receipt", "verification-attestation", "verifier-trust-policy", "attestation", "ed25519", "dsse", "quorum", "verification-runner", "proof-carrying", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
+    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "self-improvement-cycle-order", "campaign-supervisor", "cycle-order", "verification-plan", "verification-receipt", "verification-attestation", "verifier-trust-policy", "attestation", "ed25519", "dsse", "quorum", "verification-runner", "proof-carrying", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
   },
   {
     id: "sof-tf",
@@ -492,7 +494,7 @@ function routeIdsForArtifact(file) {
   if (file === "maintenance-dashboard-runner.js") routeIds.push("runtime-architecture-dashboard");
   if (file === "decision-packet-linter.js") routeIds.push("authority-risk-release", "orders");
   if (file === "aar-to-readiness-update.js") routeIds.push("orders", "runtime-architecture-dashboard");
-  if (file === "autonomous-improvement-controller.js" || file === "run-self-improvement-fixtures.js" || file === "run-signed-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
+  if (file === "autonomous-improvement-controller.js" || file === "campaign-supervisor.js" || file === "run-campaign-supervisor-fixtures.js" || file === "run-self-improvement-fixtures.js" || file === "run-signed-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "verification-runner.js" || file === "verification-attestation.js" || file === "verification-attestation-runner.js" || file === "run-verification-attestation-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "repository-artifact-verify.js" || file === "repository-lease.js" || file === "run-repository-artifact-recovery-fixtures.js" || file === "run-repository-artifact-concurrency-fixtures.js") routeIds.push("repository-artifact-isolation", "runtime-validation");
 

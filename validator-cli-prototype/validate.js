@@ -59,6 +59,7 @@ const TYPE_TO_SCHEMA = {
   "self-improvement-campaign": "self-improvement-campaign.schema.json",
   "self-improvement-checkpoint": "self-improvement-checkpoint.schema.json",
   "self-improvement-decision": "self-improvement-decision.schema.json",
+  "self-improvement-cycle-order": "self-improvement-cycle-order.schema.json",
   "verification-plan": "verification-plan.schema.json",
   "verification-receipt": "verification-receipt.schema.json",
   "verifier-trust-policy": "verifier-trust-policy.schema.json",
@@ -1805,6 +1806,55 @@ function semanticRules(payload, type) {
          !hasSubstantiveItems(payload.proof && payload.proof.verifier_key_ids) ||
          !hasSubstantiveItems(payload.proof && payload.proof.verifier_independence_groups))) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_SIGNED_QUORUM", "$.proof", "v0.3 promotion and completion decisions require a satisfied signed verifier quorum."));
+    }
+  }
+
+  if (type === "self-improvement-cycle-order") {
+    const ready = payload.status === "ready";
+    const parent = payload.parent_decision_ref || {};
+    const sourceCheckpoint = payload.source_checkpoint_ref || {};
+    const sourceDecision = payload.source_decision_ref || {};
+    const proof = payload.proof_requirements || {};
+    if (payload.release_authorized !== false) {
+      issues.push(issue("critical", "CYCLE_ORDER_SELF_RELEASE", "$.release_authorized", "A campaign cycle order cannot authorize merge, push, or release."));
+    }
+    if (ready !== (payload.execution_authorized === true)) {
+      issues.push(issue("critical", "CYCLE_ORDER_EXECUTION_STATUS_MISMATCH", "$.execution_authorized", "Only a ready cycle order may authorize bounded execution."));
+    }
+    if (ready && hasSubstantiveItems(payload.blocking_codes)) {
+      issues.push(issue("critical", "CYCLE_ORDER_BLOCKED_EXECUTION", "$.blocking_codes", "A ready cycle order cannot carry blocking codes."));
+    }
+    if (!ready && payload.transition !== "hold") {
+      issues.push(issue("error", "CYCLE_ORDER_NONREADY_TRANSITION", "$.transition", "A non-ready cycle order must hold execution."));
+    }
+    if (payload.status === "blocked" && payload.human_decision_required !== true) {
+      issues.push(issue("error", "CYCLE_ORDER_BLOCK_WITHOUT_HUMAN_DECISION", "$.human_decision_required", "A blocked cycle order must identify a human or corrective decision."));
+    }
+    if (payload.human_decision_required === true && /^none$/i.test(String(payload.required_human_decision || ""))) {
+      issues.push(issue("error", "CYCLE_ORDER_HUMAN_DECISION_UNSPECIFIED", "$.required_human_decision", "A human-held order must state the required decision."));
+    }
+    if (payload.transition === "start" &&
+        (!(parent.decision_id === "none" && parent.relative_path === "none" && parent.sha256 === "none") ||
+         !(sourceCheckpoint.artifact_id === "none" && sourceCheckpoint.relative_path === "none" && sourceCheckpoint.sha256 === "none") ||
+         !(sourceDecision.artifact_id === "none" && sourceDecision.relative_path === "none" && sourceDecision.sha256 === "none"))) {
+      issues.push(issue("critical", "CYCLE_ORDER_START_WITH_HISTORY", "$", "A start order cannot claim a parent, checkpoint, or source decision."));
+    }
+    if (["advance", "before_completion"].includes(payload.transition) &&
+        (parent.decision_id === "none" || sourceCheckpoint.artifact_id === "none" || sourceDecision.artifact_id === "none")) {
+      issues.push(issue("critical", "CYCLE_ORDER_ADVANCE_WITHOUT_ACCEPTED_PARENT", "$", "An advancing order requires exact checkpoint, decision, and accepted-parent references."));
+    }
+    if (payload.transition === "before_completion" && payload.checkpoint_trigger !== "before_completion") {
+      issues.push(issue("error", "CYCLE_ORDER_COMPLETION_TRIGGER_MISMATCH", "$.checkpoint_trigger", "The completion transition must require a before-completion checkpoint."));
+    }
+    if (proof.signed_attestation_required === true &&
+        (!(proof.minimum_valid_attestations >= 2) || !(proof.minimum_independence_groups >= 2) ||
+         proof.require_distinct_key_ids !== true || !proof.trust_policy_ref || proof.trust_policy_ref.artifact_id === "none")) {
+      issues.push(issue("critical", "CYCLE_ORDER_SIGNED_QUORUM_UNDERSPECIFIED", "$.proof_requirements", "A signed cycle order requires a distinct-key, multi-group quorum and an exact trust-policy reference."));
+    }
+    if (proof.signed_attestation_required === false &&
+        (proof.minimum_valid_attestations !== 0 || proof.minimum_independence_groups !== 0 ||
+         proof.require_distinct_key_ids !== false || !proof.trust_policy_ref || proof.trust_policy_ref.artifact_id !== "none")) {
+      issues.push(issue("error", "CYCLE_ORDER_UNSIGNED_PROOF_MISMATCH", "$.proof_requirements", "An unsigned campaign order must not claim signed-quorum requirements."));
     }
   }
 

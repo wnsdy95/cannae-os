@@ -98,10 +98,11 @@ For a multi-wave mission, control-plane change, explicit autonomous-improvement 
 5. At every wave end, validation failure, scope change, and before completion, create a checkpoint whose metrics cite persisted receipt IDs and, for v0.3, the signed quorum, then run `autonomous-improvement-controller.js --repository <repo>`.
 6. For follow-on cycles, cite the manifest path/hash of the immediately prior accepted decision and carry its `accepted_revision` as baseline.
 7. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window effects, persist and cite a USER-granted approval scope and checkpoint-specific consumption event. Prose approval and reused events are invalid.
-8. Execute only the latest decision's task order and continue only from an accepted working state.
-9. Require receipt-backed independent evaluation for runtime, skill, and policy candidates. Stop on `escalate` or `terminate`; rollback only this campaign's own uncommitted candidate.
-10. Never treat `accept_working_state` or `complete` as merge, push, policy, trust-root, authority, or release approval.
-11. Do not report completion without a passing `before_completion` checkpoint, fresh receipt, fresh signed quorum for v0.3, verified parent when applicable, and repository-scoped decision evidence.
+8. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current cycle order whose status is `ready`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never infer them from chat history.
+9. Carry forward only an accepted working state. Revision, rollback, and continue remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
+10. Require receipt-backed independent evaluation for runtime, skill, and policy candidates. Stop on `escalate` or `terminate`; rollback only this campaign's own uncommitted candidate.
+11. Never treat `accept_working_state`, `complete`, or a cycle order as merge, push, policy, trust-root, authority, or release approval.
+12. Do not report completion without a passing `before_completion` checkpoint, fresh receipt, fresh signed quorum for v0.3, verified parent when applicable, repository-scoped decision evidence, and a supervisor projection whose status is `completed`.
 
 Read `docs/bounded-self-improvement-operations.md` for the state machine and authority matrix.
 
@@ -122,6 +123,7 @@ node run-verification-runner-fixtures.js
 node run-verification-attestation-fixtures.js
 node run-self-improvement-fixtures.js
 node run-signed-self-improvement-fixtures.js
+node run-campaign-supervisor-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js

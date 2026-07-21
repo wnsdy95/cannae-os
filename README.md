@@ -214,12 +214,24 @@ Use `repository-artifact-store.js`, or pass `--write-artifact --repository <targ
 Substantial AI missions can maintain a finite improvement campaign around work already in progress:
 
 ```text
-baseline -> candidate -> executed receipt -> independent signed quorum -> accept / revise / rollback / escalate
+campaign -> finite cycle order -> candidate -> executed receipt -> signed quorum -> decision -> next finite cycle order
 ```
 
-`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3 campaign additionally requires fresh Ed25519 DSSE attestations from distinct trusted keys and policy-defined independence groups. `autonomous-improvement-controller.js` reloads the receipt, signatures, exact trust policy, accepted parent decision, and any consumed approval event from the integrity-checked repository artifact store before promotion. Every decision keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
+`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3 campaign additionally requires fresh Ed25519 DSSE attestations from distinct trusted keys and policy-defined independence groups. `autonomous-improvement-controller.js` reloads the receipt, signatures, exact trust policy, accepted parent decision, and any consumed approval event from the integrity-checked repository artifact store before promotion. `campaign-supervisor.js` then reconstructs the complete campaign chain from the verified manifest and emits only the next finite `start`, `retry`, `advance`, or `before_completion` order. Incomplete lineage, exhausted budgets, completion, termination, and escalation emit a non-executable `hold` order.
+
+Every decision and cycle order keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
 Use `self-improvement-campaign-init.js` to bind conservative campaign defaults to a target Git repository before the first adaptive wave.
+
+```bash
+node campaign-supervisor.js \
+  --repository ../target-repository \
+  --campaign SIC-example \
+  --artifact-root .cannae/artifacts \
+  --write-artifact
+```
+
+Delegated agents may execute only a cycle order whose `status` is `ready` and `execution_authorized` is `true`. Re-running the supervisor against unchanged campaign state returns the existing order without advancing the manifest.
 
 Artifact manifest v0.4 uses expiring namespace leases, monotonic fencing tokens, immutable no-overwrite history, a write-ahead journal, and hash-linked manifests. Run `repository-artifact-verify.js --repository <target> --artifact-root <root>` before accepting a wave or consuming its proof. The built-in shared-filesystem coordinator assumes coherent atomic filesystem operations and is not partition-tolerant.
 
@@ -343,6 +355,7 @@ Working today:
 - focused policy and projection runners;
 - document routing skill for Codex and Claude Code;
 - routing receipt and preflight model for delegated agent waves;
+- deterministic manifest-backed campaign supervision with finite cycle and retry orders;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
 Not complete yet:
@@ -368,6 +381,8 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
 - Signed attestations authenticate trusted-key possession and statement integrity, not a trusted execution environment or honest verifier execution. The local trust root has no KMS, transparency-log, or online revocation integration.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
+- The campaign supervisor issues and persists bounded cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
+- Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
 - Source mappings are useful traceability aids, but they do not prove that an interpretation is universally valid.
 - US doctrine is not treated as universal; multinational and local adaptation remain required.
 
@@ -423,7 +438,6 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- add a campaign supervisor that resumes from the latest accepted decision and opens the next finite checkpoint automatically;
 - add comparative canary evaluation before promoting skill or runtime-control candidates.
 
 Mid-term:

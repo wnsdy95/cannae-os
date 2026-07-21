@@ -7,6 +7,7 @@ This operating model lets an AI campaign improve both its in-progress work and t
 ```text
 human intent
   -> bounded campaign
+  -> manifest-backed finite cycle order
   -> working baseline
   -> observe
   -> propose one candidate
@@ -15,6 +16,7 @@ human intent
   -> obtain signed attestations from independent verifiers
   -> validate receipt, signatures, trust policy, and quorum
   -> accept / revise / rollback / escalate
+  -> reconstruct campaign chain and issue the next finite cycle order
   -> next checkpoint
   -> human merge or release decision
 ```
@@ -131,6 +133,24 @@ Every decision sets `release_authorized: false`. Release is handled by the exist
 
 The decision also records the accepted candidate revision and a proof summary: verified receipt IDs, verified parent decision ID, consumed approval event ID, and the artifact-manifest revision/hash used during evaluation. A v0.3 decision additionally records verified attestation IDs, verifier key IDs, independence groups, and whether the required quorum was satisfied.
 
+### 2.6 `SelfImprovementCycleOrder`
+
+`campaign-supervisor.js` is the deterministic campaign-level state machine. It verifies the repository artifact store, locates exactly one campaign artifact, reloads every checkpoint and decision for that campaign, and reconstructs the chain without relying on conversation memory.
+
+The supervisor emits one manifest-backed order:
+
+| Transition | Required predecessor | Result |
+| --- | --- | --- |
+| `start` | No checkpoint or decision exists | Open cycle 1, attempt 1 from the campaign baseline |
+| `retry` | Latest decision is `revise_and_retry`, `rollback`, or `continue` | Stay in the same cycle and increment the attempt within the retry budget |
+| `advance` | Latest decision accepted a working state | Open the next cycle from the exact accepted revision and decision path/hash |
+| `before_completion` | Accepted decision explicitly requires the completion checkpoint | Open the next finite completion cycle with the accepted decision as parent |
+| `hold` | Completion, termination, escalation, invalid lineage, incomplete pair, or exhausted budget | Emit no execution authority |
+
+The supervisor rejects duplicate IDs, a checkpoint without exactly one decision, a decision without a checkpoint, skipped cycles, records after an accepted or terminal decision, a baseline that does not match the prior accepted revision, a forged parent reference, repository mismatch, and finite-budget exhaustion. It copies the controller's task order exactly for follow-on work and records the campaign, source checkpoint, source decision, accepted parent, proof requirements, budget snapshot, and observed manifest digest.
+
+`SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, or authority. Only `status: ready` with `execution_authorized: true` may be dispatched. Re-running the supervisor against the same reconstructed state returns the existing persisted order instead of creating another manifest revision.
+
 ## 3. Required Battle Rhythm
 
 ### 3.1 Campaign start
@@ -141,18 +161,20 @@ The decision also records the accepted candidate revision and a proof summary: v
 4. Define quality dimensions that can be evidenced independently of model confidence.
 5. Set finite budgets and stop conditions.
 6. Record the initial baseline.
+7. Run the campaign supervisor and execute only its persisted `start` order when status is `ready`.
 
 ### 3.2 Every implementation wave
 
-1. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
-2. Execute only the task order produced by the latest accepted decision.
-3. Generate a repository-state-bound `VerificationPlan`, run it through `verification-runner.js`, and persist its receipt.
-4. For a v0.3 campaign, send the persisted receipt and its manifest digest to the required independent verifiers. Persist every returned signed attestation without editing it.
-5. Run a `wave_end` checkpoint that cites the exact receipts and attestations.
-6. Accept only one bounded candidate at a time; carry its accepted state forward as the next baseline.
-7. Set every follow-on checkpoint's parent ID and artifact reference to the decision that accepted its baseline. The controller reloads the decision, requires the immediately prior cycle, requires `accept_working_state`, and matches `accepted_revision` to the new baseline.
-8. On validation failure, run the failure checkpoint before attempting repair.
-9. On scope change, stop and checkpoint before editing outside the existing task.
+1. Run the campaign supervisor against the verified artifact store. Stop unless it emits a current `ready` order.
+2. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
+3. Execute only the task order carried by that cycle order, using its cycle, attempt, baseline, parent, trigger, and proof requirements.
+4. Generate a repository-state-bound `VerificationPlan`, run it through `verification-runner.js`, and persist its receipt.
+5. For a v0.3 campaign, send the persisted receipt and its manifest digest to the required independent verifiers. Persist every returned signed attestation without editing it.
+6. Run the required checkpoint that cites the exact receipts and attestations.
+7. Accept only one bounded candidate at a time; carry its accepted state forward as the next baseline.
+8. Persist the checkpoint and controller decision, then run the supervisor again. Do not calculate the next cycle or retry from conversational memory.
+9. On validation failure, run the failure checkpoint before attempting repair.
+10. On scope change, stop and checkpoint before editing outside the existing task.
 
 ### 3.3 Completion
 
@@ -302,6 +324,18 @@ node autonomous-improvement-controller.js \
 
 The controller always requires the runtime repository. It verifies the artifact manifest and history, reloads every receipt, attestation, trust policy, parent decision, approval scope, and consumption event referenced by the checkpoint, and compares their hashes and semantic bindings before deciding. `--write-artifact` additionally records the checkpoint and decision under the same mission/cycle namespace.
 
+Open or resume only the next finite campaign step after the campaign artifact, or after each persisted controller decision:
+
+```bash
+node campaign-supervisor.js \
+  --repository ../target-repository \
+  --campaign SIC-example \
+  --artifact-root .cannae/artifacts \
+  --write-artifact
+```
+
+The supervisor reloads the campaign, checkpoints, decisions, and any existing cycle order from the verified repository manifest. Exit code `0` means the JSON order is `ready` or the campaign is already `completed`; the caller must still inspect `status` and may execute only `ready`. Exit code `1` means `awaiting_human`, `terminated`, or `blocked`. Exit code `2` means malformed input, artifact-store failure, or a conflicting persisted order.
+
 CLI exit codes are `0` for a decision the harness may consume without human unblock, `1` for `escalate` or `terminate`, and `2` for malformed input or CLI usage failure. A nonzero exit never removes the JSON decision from stdout when a decision could be formed.
 
 ## 7. Failure and Anti-Hallucination Rules
@@ -316,6 +350,8 @@ CLI exit codes are `0` for a decision the harness may consume without human unbl
 - Every changed candidate needs a rollback plan.
 - Failed validation or a failed hard gate routes to rollback, not rationalization.
 - Repeated no-progress, repeated failure, cycle exhaustion, or time exhaustion routes to human review.
+- A missing decision, duplicate decision, skipped cycle, mismatched baseline, forged parent path/hash, or record after a terminal decision blocks the supervisor before another order is issued.
+- Agents must not infer the next cycle number, retry count, baseline, or parent from chat history. They consume the current persisted cycle order.
 - A protected-invariant impact blocks promotion even when the measured score improves.
 - Destructive or cross-repository behavior terminates autonomous execution.
 - A controller may generate a policy candidate but may not approve it; an exact USER-granted scope must be consumed once by that checkpoint execution.
