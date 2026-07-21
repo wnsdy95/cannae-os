@@ -46,6 +46,12 @@
           "status": { "type": "string", "enum": ["active", "suspended", "revoked"] },
           "allowed_repository_keys": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
           "allowed_execution_origins": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "enum": ["local", "remote"] } },
+          "allowed_attestation_types": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "enum": ["verification_receipt", "comparative_evaluation_report"] }
+          },
           "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
           "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }
         }

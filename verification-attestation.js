@@ -47,6 +47,11 @@ function isValidTimestamp(value) {
   return typeof value === "string" && Number.isFinite(Date.parse(value));
 }
 
+function verifierAllowsReceiptAttestation(verifier) {
+  return verifier.allowed_attestation_types === undefined ||
+    (Array.isArray(verifier.allowed_attestation_types) && verifier.allowed_attestation_types.includes("verification_receipt"));
+}
+
 function createVerificationAttestation(options) {
   const { receipt, receiptReference, verifier, privateKeyPem } = options;
   if (!receipt || receipt.type !== "VerificationReceipt") throw new Error("A verification receipt is required.");
@@ -54,6 +59,9 @@ function createVerificationAttestation(options) {
     throw new Error("The receipt reference must bind the persisted receipt ID and SHA-256 digest.");
   }
   if (!verifier || verifier.status !== "active") throw new Error("The selected verifier is not active.");
+  if (!verifierAllowsReceiptAttestation(verifier)) {
+    throw new Error("The selected verifier is not authorized to attest verification receipts.");
+  }
   const privateKey = crypto.createPrivateKey(privateKeyPem);
   if (privateKey.asymmetricKeyType !== "ed25519") throw new Error("Verifier private key must be Ed25519.");
   const derivedPublicKey = crypto.createPublicKey(privateKey);
@@ -156,6 +164,7 @@ function verifyVerificationAttestation(attestation, trustPolicy, expectations = 
     if (verifier.key_id !== calculatedKeyId || attestation.key_id !== verifier.key_id) codes.push("ATTESTATION_KEY_ID_MISMATCH");
     if (attestation.independence_group !== verifier.independence_group) codes.push("ATTESTATION_GROUP_MISMATCH");
     if (!(verifier.allowed_execution_origins || []).includes(attestation.execution_origin)) codes.push("ATTESTATION_ORIGIN_UNTRUSTED");
+    if (!verifierAllowsReceiptAttestation(verifier)) codes.push("ATTESTATION_PURPOSE_UNAUTHORIZED");
     if (!(verifier.allowed_repository_keys || []).includes(attestation.repository_binding && attestation.repository_binding.repository_key)) {
       codes.push("ATTESTATION_REPOSITORY_UNTRUSTED");
     }
@@ -292,9 +301,12 @@ module.exports = {
   PREDICATE_TYPE,
   STATEMENT_TYPE,
   attestationDigest,
+  canonicalBytes,
   createVerificationAttestation,
   evaluateAttestationQuorum,
+  isValidTimestamp,
   preAuthEncoding,
   publicKeyId,
+  strictBase64,
   verifyVerificationAttestation
 };

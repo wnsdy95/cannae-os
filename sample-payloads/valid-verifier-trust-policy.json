@@ -26,6 +26,10 @@
       "allowed_execution_origins": [
         "remote"
       ],
+      "allowed_attestation_types": [
+        "verification_receipt",
+        "comparative_evaluation_report"
+      ],
       "valid_from": "2026-07-21T18:00:00+09:00",
       "valid_until": "2026-07-22T18:00:00+09:00"
     }

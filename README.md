@@ -214,10 +214,10 @@ Use `repository-artifact-store.js`, or pass `--write-artifact --repository <targ
 Substantial AI missions can maintain a finite improvement campaign around work already in progress:
 
 ```text
-campaign -> finite cycle order -> candidate -> executed receipt -> signed quorum -> paired canary -> decision -> next finite cycle order
+campaign -> finite cycle order -> candidate -> executed receipt -> signed receipt quorum -> paired canary -> signed report quorum -> decision -> next finite cycle order
 ```
 
-`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3 campaign additionally requires fresh Ed25519 DSSE attestations from distinct trusted keys and policy-defined independence groups. For `skill` and `runtime_control` candidates, `comparative-evaluation-runner.js` executes one pre-persisted harness and one sealed evaluation set against isolated baseline and candidate worktrees, then applies campaign-owned absolute and non-regression thresholds. Promotion requires distinct revisions; the final no-change checkpoint revalidates the same accepted revision in two isolated worktrees. `autonomous-improvement-controller.js` reloads and recomputes that report with the receipt, signatures, trust policy, accepted parent, and any consumed approval event before promotion. `campaign-supervisor.js` reconstructs the complete campaign chain and emits only the next finite `start`, `retry`, `advance`, or `before_completion` order. Incomplete lineage, exhausted budgets, invalid comparison evidence, completion, termination, and escalation emit a non-executable `hold` order.
+`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3+ campaign additionally requires fresh Ed25519 DSSE receipt attestations from distinct trusted keys and policy-defined independence groups. For `skill` and `runtime_control` candidates, `comparative-evaluation-runner.js` executes one pre-persisted harness and one sealed evaluation set against isolated baseline and candidate worktrees, then applies campaign-owned absolute and non-regression thresholds. Schema v0.4 also requires `comparative-evaluation-attestation-runner.js` to bind a fresh multi-key, multi-group quorum to the exact persisted report, plan, evaluation set, baseline, candidate, evaluator invocation, campaign, and repository. Verifier keys can be purpose-limited, so receipt trust does not implicitly grant comparative-report signing authority. `autonomous-improvement-controller.js` reloads and recomputes the report and both quorums with the trust policy, accepted parent, and any consumed approval event before promotion. `campaign-supervisor.js` reconstructs the complete campaign chain and emits only the next finite `start`, `retry`, `advance`, or `before_completion` order. Incomplete lineage, exhausted budgets, invalid comparison evidence, completion, termination, and escalation emit a non-executable `hold` order.
 
 Every decision and cycle order keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
@@ -324,8 +324,9 @@ Important examples:
 - `run-self-improvement-fixtures.js`: executed receipts, parent lineage, approval consumption, rollback, completion, and proof-store integration.
 - `run-signed-self-improvement-fixtures.js`: backward compatibility plus two-key/two-group quorum, signature tamper, duplicate signer, and trust-policy expiry gates.
 - `run-verification-runner-fixtures.js`: shell/inline-code prohibition, stale-plan rejection, exact argv receipts, and repository-mutation detection.
-- `run-verification-attestation-fixtures.js`: Ed25519 DSSE signatures, persisted/self-digest binding, quorum diversity, replay expiry, and private-key file controls.
+- `run-verification-attestation-fixtures.js`: Ed25519 DSSE signatures, persisted/self-digest binding, quorum diversity, replay expiry, signer-purpose policy, and private-key file controls.
 - `run-comparative-evaluation-fixtures.js`: real baseline/candidate worktrees, campaign-bound sealed fixtures, absolute and non-regression thresholds, pre-persisted plans, cross-mission rejection, harness mismatch, report tamper, and manifest custody.
+- `run-comparative-evaluation-attestation-fixtures.js`: signed report-artifact binding, two-key/two-group quorum, replay expiry, origin and signer-purpose policy, lineage/evaluator/repository rebinding, CLI portability, and private-key file controls.
 - `run-document-routing-fixtures.js`: Codex/Claude natural-language route parity, human final-authority mode, and bounded delegated-AI routing.
 - `validation-suite-runner.js`: one shell-independent entry point for routing, corpus, validator, runner, source-map, syntax, and whitespace gates.
 
@@ -383,7 +384,7 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - Military terminology is used as an organizational metaphor and control vocabulary, not as operational battlefield instruction.
 - Many documents are research drafts and should be treated as evolving doctrine, not final standards.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
-- Signed attestations authenticate trusted-key possession and statement integrity, not a trusted execution environment or honest verifier execution. The local trust root has no KMS, transparency-log, or online revocation integration.
+- Signed receipt and comparative-report attestations authenticate trusted-key possession and statement integrity, not a trusted execution environment or honest verifier execution. The local trust root has no KMS, workload identity, transparency-log, or online revocation integration.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
@@ -442,7 +443,7 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- add authenticated external execution and signatures for comparative evaluation reports.
+- bind remote evaluator claims to authenticated workload identities and protected execution services;
 
 Mid-term:
 

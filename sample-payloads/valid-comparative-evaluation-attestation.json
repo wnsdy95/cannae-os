@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1",
+  "type": "ComparativeEvaluationAttestation",
+  "id": "CEA-a8a056a0aea5acb45f41d88d",
+  "report_id": "CER-Cannae-001",
+  "report_relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/comparative-evaluation-reports/CER-Cannae-001.json",
+  "report_sha256": "92748cd52b4a2363974c5ca57c32176235d3dd31ced8c2b1e51c282d2aab7893",
+  "report_content_sha256": "18bf88f31cb2f9f1c081c36024d68a9c9888fa037b40eba4b96d009501bbb83d",
+  "plan_id": "CEP-Cannae-001",
+  "evaluation_set_id": "CES-Cannae-001",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "target_type": "runtime_control",
+  "baseline_candidate_id": "BASE-Cannae-001",
+  "baseline_revision": "1111111111111111111111111111111111111111",
+  "candidate_id": "CAN-Cannae-001",
+  "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "evaluator_id": "EVAL-Cannae-001",
+  "evaluator_invocation_id": "INV-Cannae-001",
+  "verifier_id": "VERIFIER-Comparative-Sample",
+  "key_id": "83230db53efa39df124753e1db0ae1e769ee95fbf4cb6e8896f73e409971804b",
+  "independence_group": "provider-sample",
+  "execution_origin": "remote",
+  "invocation_id": "INV-Comparative-Sample",
+  "envelope": {
+    "payloadType": "application/vnd.in-toto+json",
+    "payload": "ewogICJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YxIiwKICAic3ViamVjdCI6IFsKICAgIHsKICAgICAgIm5hbWUiOiAiQ0VSLUNhbm5hZS0wMDEiLAogICAgICAiZGlnZXN0IjogewogICAgICAgICJzaGEyNTYiOiAiOTI3NDhjZDUyYjRhMjM2Mzk3NGM1Y2E1N2MzMjE3NjIzNWQzZGQzMWNlZDhjMmIxZTUxYzI4MmQyYWFiNzg5MyIKICAgICAgfQogICAgfQogIF0sCiAgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9jYW5uYWUuZGV2L2F0dGVzdGF0aW9ucy9jb21wYXJhdGl2ZS1ldmFsdWF0aW9uLXJlcG9ydC92MC40IiwKICAicHJlZGljYXRlIjogewogICAgInNjaGVtYV92ZXJzaW9uIjogIjAuMSIsCiAgICAicmVwb3J0IjogewogICAgICAiaWQiOiAiQ0VSLUNhbm5hZS0wMDEiLAogICAgICAicmVsYXRpdmVfcGF0aCI6ICJyZXBvc2l0b3JpZXMvY2FubmFlLW9zLWFhYWFhYWFhYWFhYS9taXNzaW9ucy9NSVMtQ2FubmFlLTAwMS9DMS9jb21wYXJhdGl2ZS1ldmFsdWF0aW9uLXJlcG9ydHMvQ0VSLUNhbm5hZS0wMDEuanNvbiIsCiAgICAgICJyZXBvcnRfc2hhMjU2IjogIjE4YmY4OGYzMWNiMmY5ZjFjMDgxYzM2MDI0ZDY4YTljOTg4OGZhMDM3YjQwZWJhNGI5NmQwMDk1MDFiYmI4M2QiLAogICAgICAicGxhbl9pZCI6ICJDRVAtQ2FubmFlLTAwMSIsCiAgICAgICJldmFsdWF0aW9uX3NldF9pZCI6ICJDRVMtQ2FubmFlLTAwMSIsCiAgICAgICJvdXRjb21lIjogInByb21vdGFibGUiLAogICAgICAiY2FtcGFpZ25faWQiOiAiU0lDLUNhbm5hZS0wMDEiLAogICAgICAibWlzc2lvbl9pZCI6ICJNSVMtQ2FubmFlLTAwMSIsCiAgICAgICJjeWNsZV9udW1iZXIiOiAxLAogICAgICAidGFyZ2V0X3R5cGUiOiAicnVudGltZV9jb250cm9sIgogICAgfSwKICAgICJzdWJqZWN0cyI6IHsKICAgICAgImJhc2VsaW5lIjogewogICAgICAgICJjYW5kaWRhdGVfaWQiOiAiQkFTRS1DYW5uYWUtMDAxIiwKICAgICAgICAicmV2aXNpb24iOiAiMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMSIKICAgICAgfSwKICAgICAgImNhbmRpZGF0ZSI6IHsKICAgICAgICAiY2FuZGlkYXRlX2lkIjogIkNBTi1DYW5uYWUtMDAxIiwKICAgICAgICAicmV2aXNpb24iOiAiV1QtYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYiIKICAgICAgfQogICAgfSwKICAgICJyZXBvc2l0b3J5X2JpbmRpbmciOiB7CiAgICAgICJyZXBvc2l0b3J5X2tleSI6ICJjYW5uYWUtb3MtYWFhYWFhYWFhYWFhIiwKICAgICAgImlkZW50aXR5X2ZpbmdlcnByaW50IjogImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiCiAgICB9LAogICAgImV2YWx1YXRvciI6IHsKICAgICAgImlkIjogIkVWQUwtQ2FubmFlLTAwMSIsCiAgICAgICJpbnZvY2F0aW9uX2lkIjogIklOVi1DYW5uYWUtMDAxIgogICAgfSwKICAgICJ2ZXJpZmllciI6IHsKICAgICAgImlkIjogIlZFUklGSUVSLUNvbXBhcmF0aXZlLVNhbXBsZSIsCiAgICAgICJrZXlfaWQiOiAiODMyMzBkYjUzZWZhMzlkZjEyNDc1M2UxZGIwYWUxZTc2OWVlOTVmYmY0Y2I2ZTg4OTZmNzNlNDA5OTcxODA0YiIsCiAgICAgICJpbmRlcGVuZGVuY2VfZ3JvdXAiOiAicHJvdmlkZXItc2FtcGxlIiwKICAgICAgImV4ZWN1dGlvbl9vcmlnaW4iOiAicmVtb3RlIiwKICAgICAgImludm9jYXRpb25faWQiOiAiSU5WLUNvbXBhcmF0aXZlLVNhbXBsZSIKICAgIH0sCiAgICAiaXNzdWVkX2F0IjogIjIwMjYtMDctMjJUMDk6MjA6MDArMDk6MDAiLAogICAgImV4cGlyZXNfYXQiOiAiMjAyNi0wNy0yMlQwOTozMDowMCswOTowMCIsCiAgICAibm9uY2UiOiAic2FtcGxlLWNvbXBhcmF0aXZlLW5vbmNlLTAwMSIKICB9Cn0K",
+    "signatures": [
+      {
+        "keyid": "83230db53efa39df124753e1db0ae1e769ee95fbf4cb6e8896f73e409971804b",
+        "sig": "Qd6R+LP79UMB9LUtIpDhmx6/pEQ1NGOzP8ulbZAWsOldq3XPOcz4wTJtIkfTZTrnrqFhYQuhH6t+rn8mPJxICw=="
+      }
+    ]
+  },
+  "issued_at": "2026-07-22T09:20:00+09:00",
+  "expires_at": "2026-07-22T09:30:00+09:00",
+  "attestation_sha256": "218e34badd61c8200233566f187b961d3b3a75804ece0dd3eec8ff2e899b180a"
+}

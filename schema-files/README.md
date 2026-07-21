@@ -21,7 +21,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - model usage events
 - repository artifact manifests
 - bounded self-improvement campaigns, checkpoints, decisions, and finite cycle orders
-- verifier trust policies and signed verification attestations
+- verifier trust policies, signed verification attestations, and signed comparative evaluation reports
 - CCIR alerts
 - handoff packets
 - continuity plans
@@ -110,5 +110,8 @@ Recommended validation order:
 56. `comparative-evaluation-set.schema.json`
 57. `comparative-evaluation-plan.schema.json`
 58. `comparative-evaluation-report.schema.json`
+59. `comparative-evaluation-attestation.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
+
+`VerifierTrustPolicy.verifiers[].allowed_attestation_types` can purpose-limit a key to `verification_receipt`, `comparative_evaluation_report`, or both. Comparative signing requires the explicit report grant; existing receipt-only policies may omit the field for v0.3 compatibility.

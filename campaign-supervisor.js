@@ -154,7 +154,9 @@ function buildPairs(campaign, checkpoints, decisions, repository, manifestHistor
         checkpoint.repository_binding.identity_fingerprint !== repository.identity_fingerprint) {
       addBlock(blocks, "CAMPAIGN_CHECKPOINT_REPOSITORY_MISMATCH");
     }
-    if (campaign.schema_version === "0.3" && checkpoint.schema_version !== "0.3") addBlock(blocks, "CAMPAIGN_CHECKPOINT_VERSION_MISMATCH");
+    if (["0.3", "0.4"].includes(campaign.schema_version) && checkpoint.schema_version !== campaign.schema_version) {
+      addBlock(blocks, "CAMPAIGN_CHECKPOINT_VERSION_MISMATCH");
+    }
   }
 
   for (const item of decisions) {
@@ -162,7 +164,9 @@ function buildPairs(campaign, checkpoints, decisions, repository, manifestHistor
     if (decisionIds.has(decision.id)) addBlock(blocks, "CAMPAIGN_DECISION_ID_DUPLICATE");
     decisionIds.add(decision.id);
     if (decision.mission_id !== campaign.mission_id || decision.campaign_id !== campaign.id) addBlock(blocks, "CAMPAIGN_DECISION_BINDING_INVALID");
-    if (campaign.schema_version === "0.3" && decision.schema_version !== "0.3") addBlock(blocks, "CAMPAIGN_DECISION_VERSION_MISMATCH");
+    if (["0.3", "0.4"].includes(campaign.schema_version) && decision.schema_version !== campaign.schema_version) {
+      addBlock(blocks, "CAMPAIGN_DECISION_VERSION_MISMATCH");
+    }
     const list = decisionsByCheckpoint.get(decision.checkpoint_id) || [];
     list.push(item);
     decisionsByCheckpoint.set(decision.checkpoint_id, list);
@@ -198,12 +202,23 @@ function buildPairs(campaign, checkpoints, decisions, repository, manifestHistor
     if ((decisionItem.payload.proof.verification_attestation_ids || []).some(id => !checkpointAttestationIds.has(id))) {
       addBlock(blocks, "CAMPAIGN_DECISION_ATTESTATION_BINDING_INVALID");
     }
+    const checkpointComparativeAttestationIds = new Set((checkpointItem.payload.comparative_evaluation_attestations || [])
+      .map(item => item.attestation_id));
+    const decisionComparativeAttestationIds = decisionItem.payload.proof.comparative_evaluation_attestation_ids || [];
+    if (decisionComparativeAttestationIds.some(id => !checkpointComparativeAttestationIds.has(id))) {
+      addBlock(blocks, "CAMPAIGN_DECISION_COMPARATIVE_ATTESTATION_BINDING_INVALID");
+    }
     const comparisonRef = checkpointItem.payload.comparative_evaluation_ref || {};
     const comparisonRequired = ["runtime_control", "skill"].includes(checkpointItem.payload.target.target_type);
     const decisionComparisonId = decisionItem.payload.proof.comparative_evaluation_report_id || "none";
     if ((comparisonRequired && (comparisonRef.required !== true || comparisonRef.report_id === "none" || decisionComparisonId !== comparisonRef.report_id)) ||
         (!comparisonRequired && decisionComparisonId !== "none")) {
       addBlock(blocks, "CAMPAIGN_DECISION_COMPARATIVE_EVALUATION_BINDING_INVALID");
+    }
+    if (campaign.schema_version === "0.4" && comparisonRequired &&
+        ["accept_working_state", "complete"].includes(decisionItem.payload.decision) &&
+        (decisionComparativeAttestationIds.length === 0 || decisionItem.payload.proof.comparative_attestation_quorum_satisfied !== true)) {
+      addBlock(blocks, "CAMPAIGN_DECISION_COMPARATIVE_ATTESTATION_QUORUM_INVALID");
     }
     if (decisionItem.payload.decision === "complete" &&
         (checkpointItem.payload.trigger !== "before_completion" || checkpointItem.payload.candidate.disposition !== "no_change" ||
@@ -295,7 +310,8 @@ function proofRequirements(campaign) {
     comparative_evaluation_required_for: campaign.comparative_evaluation_policy
       ? [...campaign.comparative_evaluation_policy.required_target_types]
       : [],
-    signed_attestation_required: campaign.schema_version === "0.3",
+    signed_attestation_required: ["0.3", "0.4"].includes(campaign.schema_version),
+    signed_comparative_attestation_required: campaign.schema_version === "0.4",
     minimum_valid_attestations: policy ? policy.minimum_valid_attestations : 0,
     minimum_independence_groups: policy ? policy.minimum_independence_groups : 0,
     require_distinct_key_ids: policy ? policy.require_distinct_key_ids : false,
@@ -309,7 +325,8 @@ function initialTaskOrder(campaign) {
     "Repository-scoped checkpoint artifact.",
     "Runtime-issued verification receipt bound to the candidate revision."
   ];
-  if (campaign.schema_version === "0.3") evidence.push("Fresh signed attestations satisfying the campaign quorum.");
+  if (["0.3", "0.4"].includes(campaign.schema_version)) evidence.push("Fresh signed receipt attestations satisfying the campaign quorum.");
+  if (campaign.schema_version === "0.4") evidence.push("For comparative targets, fresh signed report attestations satisfying the same trust policy and quorum.");
   if (campaign.comparative_evaluation_policy) {
     evidence.push("A baseline-versus-candidate comparative report for skill or runtime-control promotion.");
   }

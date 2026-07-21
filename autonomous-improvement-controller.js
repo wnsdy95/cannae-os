@@ -14,6 +14,7 @@ const { validatePayload } = require("./validator-cli-prototype/validate");
 const { evaluateConsumption } = require("./approval-consumption-runner");
 const { receiptDigest } = require("./verification-runner");
 const { evaluateAttestationQuorum } = require("./verification-attestation");
+const { evaluateComparativeAttestationQuorum } = require("./comparative-evaluation-attestation");
 const { evaluateComparison, reportDigest } = require("./comparative-evaluation-runner");
 
 const CHANGE_RANK = {
@@ -211,7 +212,7 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
   }
   let trustPolicy = null;
   const attestations = new Map();
-  if (campaign.schema_version === "0.3" || (campaign.attestation_policy && campaign.attestation_policy.required)) {
+  if (["0.3", "0.4"].includes(campaign.schema_version) || (campaign.attestation_policy && campaign.attestation_policy.required)) {
     trustPolicy = readManifestArtifact(artifactRoot, manifest, campaign.attestation_policy.trust_policy_ref, "verifier-trust-policies");
     for (const ref of checkpoint.verification_attestations || []) {
       attestations.set(ref.attestation_id, readManifestArtifact(artifactRoot, manifest, {
@@ -224,6 +225,7 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
   let comparativeReport = null;
   let comparativePlan = null;
   let comparativeEvaluationSet = null;
+  const comparativeAttestations = new Map();
   if (checkpoint.comparative_evaluation_ref && checkpoint.comparative_evaluation_ref.required) {
     const ref = checkpoint.comparative_evaluation_ref;
     comparativeReport = readManifestArtifact(artifactRoot, manifest, {
@@ -233,6 +235,15 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     }, "comparative-evaluation-reports");
     comparativePlan = readManifestArtifact(artifactRoot, manifest, comparativeReport.plan_ref, "comparative-evaluation-plans");
     comparativeEvaluationSet = readManifestArtifact(artifactRoot, manifest, comparativeReport.evaluation_set_ref, "comparative-evaluation-sets");
+    if (campaign.schema_version === "0.4") {
+      for (const attestationRef of checkpoint.comparative_evaluation_attestations || []) {
+        comparativeAttestations.set(attestationRef.attestation_id, readManifestArtifact(artifactRoot, manifest, {
+          artifact_id: attestationRef.attestation_id,
+          relative_path: attestationRef.relative_path,
+          sha256: attestationRef.sha256
+        }, "comparative-evaluation-attestations"));
+      }
+    }
   }
   return {
     receipts,
@@ -244,6 +255,7 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     comparativeReport,
     comparativePlan,
     comparativeEvaluationSet,
+    comparativeAttestations,
     manifestRevision: verification.manifest_revision,
     manifestSha256: verification.manifest_sha256
   };
@@ -382,14 +394,14 @@ function verifyReceiptProof(campaign, checkpoint, proofContext, blocks) {
 }
 
 function verifyAttestationProof(campaign, checkpoint, proofContext, verifiedReceiptIds, blocks) {
-  if (campaign.schema_version !== "0.3") {
+  if (!["0.3", "0.4"].includes(campaign.schema_version)) {
     return { valid: true, valid_attestation_ids: [], verifier_ids: [], key_ids: [], independence_groups: [] };
   }
   const policy = campaign.attestation_policy || {};
   const trustPolicy = proofContext.trustPolicy;
   const refs = checkpoint.verification_attestations || [];
   const attestations = [];
-  if (checkpoint.schema_version !== "0.3") blocks.push("ATTESTATION_CHECKPOINT_VERSION_MISMATCH");
+  if (checkpoint.schema_version !== campaign.schema_version) blocks.push("ATTESTATION_CHECKPOINT_VERSION_MISMATCH");
   if (!trustPolicy) {
     blocks.push("ATTESTATION_TRUST_POLICY_MISSING");
     return { valid: false, valid_attestation_ids: [], verifier_ids: [], key_ids: [], independence_groups: [] };
@@ -447,6 +459,70 @@ function verifyAttestationProof(campaign, checkpoint, proofContext, verifiedRece
   return result;
 }
 
+function verifyComparativeAttestationProof(campaign, checkpoint, proofContext, blocks) {
+  const target = checkpoint.target || {};
+  if (campaign.schema_version !== "0.4" || !COMPARATIVE_TARGETS.has(target.target_type)) {
+    return { valid: true, valid_attestation_ids: [], verifier_ids: [], key_ids: [], independence_groups: [] };
+  }
+  const policy = campaign.attestation_policy || {};
+  const trustPolicy = proofContext.trustPolicy;
+  const report = proofContext.comparativeReport;
+  const plan = proofContext.comparativePlan;
+  const reportRef = checkpoint.comparative_evaluation_ref || {};
+  const refs = checkpoint.comparative_evaluation_attestations || [];
+  const attestations = [];
+  if (checkpoint.schema_version !== "0.4") blocks.push("COMPARATIVE_ATTESTATION_CHECKPOINT_VERSION_MISMATCH");
+  if (!trustPolicy) {
+    blocks.push("COMPARATIVE_ATTESTATION_TRUST_POLICY_MISSING");
+    return { valid: false, valid_attestation_ids: [], verifier_ids: [], key_ids: [], independence_groups: [] };
+  }
+  if (!report || !plan) {
+    blocks.push("COMPARATIVE_ATTESTATION_REPORT_MISSING");
+    return { valid: false, valid_attestation_ids: [], verifier_ids: [], key_ids: [], independence_groups: [] };
+  }
+  for (const ref of refs) {
+    const attestation = proofContext.comparativeAttestations && proofContext.comparativeAttestations.get
+      ? proofContext.comparativeAttestations.get(ref.attestation_id)
+      : (proofContext.comparativeAttestations || []).find(item => item.id === ref.attestation_id);
+    if (!attestation) {
+      blocks.push("COMPARATIVE_ATTESTATION_ARTIFACT_MISSING");
+      continue;
+    }
+    const validation = validatePayload(attestation, "comparative-evaluation-attestation");
+    if (validation.issues.some(item => item.severity === "error" || item.severity === "critical")) {
+      blocks.push("COMPARATIVE_ATTESTATION_ARTIFACT_INVALID");
+    }
+    if (attestation.id !== ref.attestation_id || attestation.report_id !== ref.report_id ||
+        attestation.verifier_id !== ref.verifier_id || ref.report_id !== report.id) {
+      blocks.push("COMPARATIVE_ATTESTATION_REFERENCE_BINDING_INVALID");
+    }
+    attestations.push(attestation);
+  }
+  const result = evaluateComparativeAttestationQuorum(attestations, trustPolicy, {
+    reportId: report.id,
+    reportRelativePath: reportRef.relative_path,
+    reportSha256: reportRef.sha256,
+    reportContentSha256: report.report_sha256,
+    planId: plan.id,
+    evaluationSetId: report.evaluation_set_ref.artifact_id,
+    campaignId: campaign.id,
+    missionId: campaign.mission_id,
+    cycleNumber: checkpoint.cycle_number,
+    targetType: target.target_type,
+    baselineCandidateId: plan.subjects.baseline.candidate_id,
+    baselineRevision: target.baseline_revision,
+    candidateId: checkpoint.candidate.id,
+    candidateRevision: target.candidate_revision,
+    evaluatorId: report.evaluator.evaluator_id,
+    evaluatorInvocationId: report.evaluator.invocation_id,
+    repositoryKey: checkpoint.repository_binding.repository_key,
+    repositoryFingerprint: checkpoint.repository_binding.identity_fingerprint,
+    maxAttestationAgeSeconds: policy.max_attestation_age_seconds
+  }, policy, checkpoint.generated_at);
+  blocks.push(...result.codes);
+  return result;
+}
+
 function verifyParentDecision(campaign, checkpoint, proofContext, blocks) {
   if (checkpoint.cycle_number === 1) {
     if (checkpoint.parent_decision_id !== "none" || checkpoint.parent_decision_ref.decision_id !== "none" ||
@@ -491,7 +567,7 @@ function baseTaskOrder(campaign, checkpoint, task, nextTrigger = "wave_end") {
 
 function makeDecision(campaign, checkpoint, values) {
   return {
-    schema_version: campaign.schema_version === "0.3" ? "0.3" : "0.2",
+    schema_version: ["0.3", "0.4"].includes(campaign.schema_version) ? campaign.schema_version : "0.2",
     type: "SelfImprovementDecision",
     id: `SID-${String(checkpoint.id || "checkpoint").replace(/^[A-Z]+-/, "")}`,
     campaign_id: campaign.id,
@@ -532,6 +608,7 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
   proofContext = {
     receipts: new Map(),
     attestations: new Map(),
+    comparativeAttestations: new Map(),
     trustPolicy: null,
     parentDecision: null,
     approvalScope: null,
@@ -548,11 +625,17 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
     repository_manifest_revision: proofContext.manifestRevision || 0,
     repository_manifest_sha256: proofContext.manifestSha256 || "none"
   };
-  if (campaign.schema_version === "0.3") {
+  if (["0.3", "0.4"].includes(campaign.schema_version)) {
     proof.verification_attestation_ids = [];
     proof.verifier_key_ids = [];
     proof.verifier_independence_groups = [];
     proof.attestation_quorum_satisfied = false;
+  }
+  if (campaign.schema_version === "0.4") {
+    proof.comparative_evaluation_attestation_ids = [];
+    proof.comparative_verifier_key_ids = [];
+    proof.comparative_verifier_independence_groups = [];
+    proof.comparative_attestation_quorum_satisfied = false;
   }
 
   if (campaign.status !== "active") blocks.push("CAMPAIGN_NOT_ACTIVE");
@@ -599,11 +682,18 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
   const comparativeProof = verifyComparativeEvaluation(campaign, checkpoint, proofContext, blocks);
   proof.comparative_evaluation_report_id = comparativeProof.reportId;
   const attestationProof = verifyAttestationProof(campaign, checkpoint, proofContext, receiptProof.verified, blocks);
-  if (campaign.schema_version === "0.3") {
+  if (["0.3", "0.4"].includes(campaign.schema_version)) {
     proof.verification_attestation_ids = attestationProof.valid_attestation_ids || [];
     proof.verifier_key_ids = attestationProof.key_ids || [];
     proof.verifier_independence_groups = attestationProof.independence_groups || [];
     proof.attestation_quorum_satisfied = attestationProof.valid === true;
+  }
+  const comparativeAttestationProof = verifyComparativeAttestationProof(campaign, checkpoint, proofContext, blocks);
+  if (campaign.schema_version === "0.4") {
+    proof.comparative_evaluation_attestation_ids = comparativeAttestationProof.valid_attestation_ids || [];
+    proof.comparative_verifier_key_ids = comparativeAttestationProof.key_ids || [];
+    proof.comparative_verifier_independence_groups = comparativeAttestationProof.independence_groups || [];
+    proof.comparative_attestation_quorum_satisfied = COMPARATIVE_TARGETS.has(target.target_type) && comparativeAttestationProof.valid === true;
   }
 
   if (CONTROL_PLANE_TARGETS.has(target.target_type)) {

@@ -6,6 +6,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added self-improvement schema v0.4 with Ed25519 DSSE attestations over exact persisted comparative reports, purpose-specific in-toto predicates, and distinct verifier/key/independence-group quorum.
+- Bound signed comparative evidence to report and artifact digests, plan, evaluation set, campaign, mission, cycle, baseline, candidate, repository, evaluator invocation, origin, and validity window; added controller manifest reload and supervisor proof requirements.
+- Added comparative report signing CLI, valid/invalid contracts, adversarial replay/rebinding/tamper fixtures, research traceability, and Codex/Claude skill routing.
+- Added baseline-versus-candidate comparative control-plane promotion with sealed evaluation sets, identical harness execution, absolute thresholds, non-regression limits, and promotion/rollback/inconclusive outcomes.
 - Added bounded self-improvement v0.3 with Ed25519 DSSE verification attestations, in-toto statement bindings, exact human-controlled trust-policy references, fresh multi-verifier quorum, key/group diversity, and remote attestation transport.
 - Upgraded repository artifact manifests to v0.4 with expiring shared-filesystem leases, monotonic fencing tokens, immutable revision reservation, stale-writer rejection, and exact crash recovery after history creation.
 - Added signed-attestation, signed self-improvement, multi-writer lease, stale-writer, replay, receipt-rebinding, and history-reservation regression fixtures.

@@ -25,7 +25,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.2", "0.3"] },
+    "schema_version": { "type": "string", "enum": ["0.2", "0.3", "0.4"] },
     "type": { "type": "string", "const": "SelfImprovementCampaign" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },

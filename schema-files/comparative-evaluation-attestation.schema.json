@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/comparative-evaluation-attestation.schema.json",
+  "title": "Signed Comparative Evaluation Attestation",
+  "type": "object",
+  "required": [
+    "schema_version", "type", "id", "report_id", "report_relative_path", "report_sha256",
+    "report_content_sha256", "plan_id", "evaluation_set_id", "campaign_id", "mission_id",
+    "cycle_number", "target_type", "baseline_candidate_id", "baseline_revision", "candidate_id",
+    "candidate_revision", "repository_binding", "evaluator_id", "evaluator_invocation_id",
+    "verifier_id", "key_id", "independence_group", "execution_origin", "invocation_id",
+    "envelope", "issued_at", "expires_at", "attestation_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ComparativeEvaluationAttestation" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "report_id": { "$ref": "common.schema.json#/$defs/id" },
+    "report_relative_path": { "type": "string", "minLength": 1 },
+    "report_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "report_content_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "plan_id": { "$ref": "common.schema.json#/$defs/id" },
+    "evaluation_set_id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "target_type": { "type": "string", "enum": ["runtime_control", "skill"] },
+    "baseline_candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+    "baseline_revision": { "type": "string", "minLength": 1 },
+    "candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+    "candidate_revision": { "type": "string", "minLength": 1 },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "evaluator_id": { "$ref": "common.schema.json#/$defs/id" },
+    "evaluator_invocation_id": { "$ref": "common.schema.json#/$defs/id" },
+    "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+    "key_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "independence_group": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "execution_origin": { "type": "string", "enum": ["local", "remote"] },
+    "invocation_id": { "$ref": "common.schema.json#/$defs/id" },
+    "envelope": {
+      "type": "object",
+      "required": ["payloadType", "payload", "signatures"],
+      "additionalProperties": false,
+      "properties": {
+        "payloadType": { "type": "string", "const": "application/vnd.in-toto+json" },
+        "payload": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
+        "signatures": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["keyid", "sig"],
+            "additionalProperties": false,
+            "properties": {
+              "keyid": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "sig": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" }
+            }
+          }
+        }
+      }
+    },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "attestation_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}
