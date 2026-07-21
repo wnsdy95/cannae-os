@@ -145,6 +145,20 @@ Patterns indicating low hallucination resistance:
 - There is no uncertainty marking.
 - There is no Red Team.
 
+### 8.1 Comparative control-plane gate
+
+Skill and runtime-control changes use paired measurements instead of accepting a model-authored improvement claim. For each campaign dimension:
+
+```text
+maximize normalized_delta = candidate - baseline
+minimize normalized_delta = baseline - candidate
+
+pass = candidate meets absolute target
+       AND normalized_delta >= -maximum_regression
+```
+
+Every declared dimension must appear exactly once. Candidate fixtures must all pass. The baseline and candidate observations must come from the same sealed evaluation-set hash, fixture order, harness hash, exact argv, and independent evaluator plan. Missing or uncomparable evidence is `inconclusive`; a valid threshold failure is `rollback`; only a complete pass is `promotable` for a controller working-state decision.
+
 ## 9. Case Study Evaluation Sheet
 
 ```text

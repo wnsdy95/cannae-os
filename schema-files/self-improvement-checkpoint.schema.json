@@ -164,6 +164,17 @@
         "evidence_receipt_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } }
       }
     },
+    "comparative_evaluation_ref": {
+      "type": "object",
+      "required": ["required", "report_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "report_id": { "type": "string", "minLength": 1 },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" }
+      }
+    },
     "externalities": {
       "type": "object",
       "required": ["scope_changed", "authority_changed", "policy_changed", "release_requested", "destructive_action", "cross_repository_write"],

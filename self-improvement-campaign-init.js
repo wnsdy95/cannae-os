@@ -169,6 +169,18 @@ function buildCampaign(options) {
       repository_state_must_remain_unchanged: true,
       receipt_persistence_required: true
     },
+    comparative_evaluation_policy: {
+      required_target_types: ["runtime_control", "skill"],
+      same_evaluation_set_required: true,
+      identical_harness_required: true,
+      independent_evaluator_required: true,
+      max_report_age_seconds: 3600,
+      dimension_thresholds: [
+        { dimension_id: "correctness", maximum_regression: 0 },
+        { dimension_id: "completeness", maximum_regression: 0.02 },
+        { dimension_id: "verification", maximum_regression: 0 }
+      ]
+    },
     ...(options.trustPolicyId ? {
       attestation_policy: {
         required: true,

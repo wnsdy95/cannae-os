@@ -768,6 +768,13 @@ const fixtures = [
     requiredCodes: ["SELF_IMPROVEMENT_PATH_TRAVERSAL", "SELF_IMPROVEMENT_PROHIBITED_EXTERNALITY"]
   },
   {
+    name: "runtime-control checkpoint lacks comparative evidence",
+    file: "sample-payloads/invalid-self-improvement-checkpoint-control-plane-no-comparison.json",
+    type: "self-improvement-checkpoint",
+    exitCode: 1,
+    requiredCodes: ["SELF_IMPROVEMENT_COMPARATIVE_EVALUATION_MISSING"]
+  },
+  {
     name: "valid self-improvement decision",
     file: "sample-payloads/valid-self-improvement-decision.json",
     type: "self-improvement-decision",
@@ -794,6 +801,34 @@ const fixtures = [
     type: "self-improvement-cycle-order",
     exitCode: 1,
     requiredCodes: ["CYCLE_ORDER_EXECUTION_STATUS_MISMATCH", "CYCLE_ORDER_NONREADY_TRANSITION"]
+  },
+  {
+    name: "valid comparative evaluation set",
+    file: "sample-payloads/valid-comparative-evaluation-set.json",
+    type: "comparative-evaluation-set",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "comparative evaluation set duplicates a fixture",
+    file: "sample-payloads/invalid-comparative-evaluation-set-duplicate-fixture.json",
+    type: "comparative-evaluation-set",
+    exitCode: 1,
+    requiredCodes: ["COMPARATIVE_EVALUATION_DUPLICATE_FIXTURE"]
+  },
+  {
+    name: "valid comparative evaluation plan",
+    file: "sample-payloads/valid-comparative-evaluation-plan.json",
+    type: "comparative-evaluation-plan",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid comparative evaluation report",
+    file: "sample-payloads/valid-comparative-evaluation-report.json",
+    type: "comparative-evaluation-report",
+    exitCode: 0,
+    requiredCodes: []
   },
   {
     name: "valid verification plan",

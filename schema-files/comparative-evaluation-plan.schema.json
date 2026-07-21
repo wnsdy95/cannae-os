@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/comparative-evaluation-plan.schema.json",
+  "title": "Comparative Evaluation Plan",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "campaign_id", "mission_id", "cycle_number", "target_type", "evaluation_purpose", "repository_binding", "subjects", "evaluation_set_ref", "harness", "independent_evaluator", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ComparativeEvaluationPlan" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "target_type": { "type": "string", "enum": ["runtime_control", "skill"] },
+    "evaluation_purpose": { "type": "string", "enum": ["candidate_promotion", "completion_revalidation"] },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "subjects": {
+      "type": "object",
+      "required": ["baseline", "candidate"],
+      "additionalProperties": false,
+      "properties": {
+        "baseline": { "$ref": "#/$defs/subject" },
+        "candidate": { "$ref": "#/$defs/subject" }
+      }
+    },
+    "evaluation_set_ref": { "$ref": "#/$defs/artifact_ref" },
+    "harness": {
+      "type": "object",
+      "required": ["check", "script_sha256", "identical_harness_required"],
+      "additionalProperties": false,
+      "properties": {
+        "check": {
+          "type": "object",
+          "required": ["id", "purpose", "executable", "args", "working_directory", "timeout_ms", "expected_exit_codes"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/id" },
+            "purpose": { "type": "string", "minLength": 1 },
+            "executable": { "type": "string", "const": "node" },
+            "args": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+            "working_directory": { "type": "string", "minLength": 1 },
+            "timeout_ms": { "type": "integer", "minimum": 1, "maximum": 3600000 },
+            "expected_exit_codes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "integer" } }
+          }
+        },
+        "script_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "identical_harness_required": { "type": "boolean", "const": true }
+      }
+    },
+    "independent_evaluator": {
+      "type": "object",
+      "required": ["role", "evaluator_id", "invocation_id"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "$ref": "common.schema.json#/$defs/role_id" },
+        "evaluator_id": { "$ref": "common.schema.json#/$defs/id" },
+        "invocation_id": { "$ref": "common.schema.json#/$defs/id" }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": { "type": "string", "minLength": 1 },
+        "worktree_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "required": ["candidate_id", "revision", "repository_binding", "expected_repository_state"],
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+        "revision": { "type": "string", "minLength": 1 },
+        "repository_binding": { "$ref": "#/$defs/repository_binding" },
+        "expected_repository_state": { "$ref": "#/$defs/repository_state" }
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

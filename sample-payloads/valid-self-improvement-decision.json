@@ -14,6 +14,7 @@
   "accepted_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
   "proof": {
     "verification_receipt_ids": ["VR-Cannae-001"],
+    "comparative_evaluation_report_id": "none",
     "parent_decision_id": "none",
     "approval_consumption_event_id": "none",
     "repository_manifest_revision": 3,

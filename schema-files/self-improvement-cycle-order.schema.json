@@ -91,6 +91,11 @@
       "additionalProperties": false,
       "properties": {
         "verification_receipt_required": { "type": "boolean", "const": true },
+        "comparative_evaluation_required_for": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["runtime_control", "skill"] }
+        },
         "signed_attestation_required": { "type": "boolean" },
         "minimum_valid_attestations": { "type": "integer", "minimum": 0, "maximum": 20 },
         "minimum_independence_groups": { "type": "integer", "minimum": 0, "maximum": 20 },

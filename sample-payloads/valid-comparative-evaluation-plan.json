@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1",
+  "type": "ComparativeEvaluationPlan",
+  "id": "CEP-Cannae-001",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "target_type": "runtime_control",
+  "evaluation_purpose": "candidate_promotion",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "subjects": {
+    "baseline": {
+      "candidate_id": "BASE-Cannae-001",
+      "revision": "1111111111111111111111111111111111111111",
+      "repository_binding": {
+        "repository_key": "cannae-os-baseline",
+        "identity_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "expected_repository_state": {
+        "head_commit": "1111111111111111111111111111111111111111",
+        "worktree_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      }
+    },
+    "candidate": {
+      "candidate_id": "CAN-Cannae-001",
+      "revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "repository_binding": {
+        "repository_key": "cannae-os-aaaaaaaaaaaa",
+        "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "expected_repository_state": {
+        "head_commit": "2222222222222222222222222222222222222222",
+        "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    }
+  },
+  "evaluation_set_ref": {
+    "artifact_id": "CES-Cannae-001",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/comparative-evaluation-sets/CES-Cannae-001.json",
+    "sha256": "d7763395394bad29147f4248f74749979044a4a6b2a31c31aa967d7997eb90fa"
+  },
+  "harness": {
+    "check": {
+      "id": "CEH-Cannae-001",
+      "purpose": "Evaluate the same held-out fixtures against both immutable subjects.",
+      "executable": "node",
+      "args": ["comparative-harness.js"],
+      "working_directory": ".",
+      "timeout_ms": 30000,
+      "expected_exit_codes": [0]
+    },
+    "script_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "identical_harness_required": true
+  },
+  "independent_evaluator": {
+    "role": "EVALUATOR",
+    "evaluator_id": "EVAL-Cannae-001",
+    "invocation_id": "INV-Cannae-001"
+  },
+  "created_at": "2026-07-21T18:10:00+09:00"
+}

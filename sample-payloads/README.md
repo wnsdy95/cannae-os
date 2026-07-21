@@ -21,6 +21,7 @@ Use these examples to test:
 - bounded self-improvement campaign, checkpoint, decision, and cycle-order validation
 - verification plan and runtime-issued receipt validation
 - verifier trust policy and signed verification attestation validation
+- sealed comparative evaluation set, paired execution plan, and promotion report validation
 - CCIR alert validation
 - handoff packet validation
 - continuity plan validation
@@ -54,6 +55,7 @@ Use these examples to test:
 - deterministic campaign reconstruction, finite retry/advance orders, terminal holds, and idempotent order persistence
 - proof receipt integrity, shell prohibition, parent lineage, and approval-consumption logic
 - Ed25519 key identity, DSSE statement binding, signature quorum, replay expiry, and receipt-content binding
+- baseline-versus-candidate non-regression, harness identity, contamination control, and no-release comparison logic
 
 Fixture convention:
 

@@ -170,6 +170,36 @@
         "receipt_persistence_required": { "type": "boolean", "const": true }
       }
     },
+    "comparative_evaluation_policy": {
+      "type": "object",
+      "required": ["required_target_types", "same_evaluation_set_required", "identical_harness_required", "independent_evaluator_required", "max_report_age_seconds", "dimension_thresholds"],
+      "additionalProperties": false,
+      "properties": {
+        "required_target_types": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["runtime_control", "skill"] }
+        },
+        "same_evaluation_set_required": { "type": "boolean", "const": true },
+        "identical_harness_required": { "type": "boolean", "const": true },
+        "independent_evaluator_required": { "type": "boolean", "const": true },
+        "max_report_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+        "dimension_thresholds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["dimension_id", "maximum_regression"],
+            "additionalProperties": false,
+            "properties": {
+              "dimension_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+              "maximum_regression": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        }
+      }
+    },
     "attestation_policy": {
       "type": "object",
       "required": ["required", "trust_policy_ref", "minimum_valid_attestations", "minimum_independence_groups", "require_distinct_key_ids", "max_attestation_age_seconds"],

@@ -107,5 +107,8 @@ Recommended validation order:
 53. `verification-receipt.schema.json`
 54. `verifier-trust-policy.schema.json`
 55. `verification-attestation.schema.json`
+56. `comparative-evaluation-set.schema.json`
+57. `comparative-evaluation-plan.schema.json`
+58. `comparative-evaluation-report.schema.json`
 
 All schemas target JSON Schema draft 2020-12.

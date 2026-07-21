@@ -364,8 +364,10 @@ if (require.main === module) main();
 
 module.exports = {
   computeRepositoryState,
+  enforceCommandPolicy,
   executeVerification,
   receiptDigest,
   resolveExecutable,
+  safeWorkingDirectory,
   summarizeOutput
 };

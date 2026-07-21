@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/comparative-evaluation-set.schema.json",
+  "title": "Comparative Evaluation Set",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "campaign_id", "mission_id", "version", "fixture_visibility", "contamination_controls", "fixtures", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ComparativeEvaluationSet" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "version": { "type": "string", "minLength": 1 },
+    "fixture_visibility": { "type": "string", "enum": ["held_out", "open"] },
+    "contamination_controls": {
+      "type": "object",
+      "required": ["sealed_before_candidate_execution", "candidate_context_excludes_expected_outputs", "same_fixture_order_required"],
+      "additionalProperties": false,
+      "properties": {
+        "sealed_before_candidate_execution": { "type": "boolean", "const": true },
+        "candidate_context_excludes_expected_outputs": { "type": "boolean", "const": true },
+        "same_fixture_order_required": { "type": "boolean", "const": true }
+      }
+    },
+    "fixtures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "input", "expected", "tags"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "input": { "type": "object" },
+          "expected": { "type": "object" },
+          "tags": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

@@ -95,14 +95,15 @@ For a multi-wave mission, control-plane change, explicit autonomous-improvement 
 3. For every candidate and completion state, run a repository-state-bound `VerificationPlan` with `verification-runner.js --repository <repo> --write-artifact`. Do not use model-authored validation status.
    Capture optional CLI stdout outside the target repository until verification succeeds; a shell creates redirected files before the check starts.
 4. For every v0.3 candidate and completion state, obtain fresh Ed25519 DSSE attestations over the exact persisted receipt from distinct trusted verifier IDs and keys in the required independence groups. Persist them unchanged. A signed `remote` origin is not trusted-execution proof.
-5. At every wave end, validation failure, scope change, and before completion, create a checkpoint whose metrics cite persisted receipt IDs and, for v0.3, the signed quorum, then run `autonomous-improvement-controller.js --repository <repo>`.
-6. For follow-on cycles, cite the manifest path/hash of the immediately prior accepted decision and carry its `accepted_revision` as baseline.
-7. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window effects, persist and cite a USER-granted approval scope and checkpoint-specific consumption event. Prose approval and reused events are invalid.
-8. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current cycle order whose status is `ready`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never infer them from chat history.
-9. Carry forward only an accepted working state. Revision, rollback, and continue remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
-10. Require receipt-backed independent evaluation for runtime, skill, and policy candidates. Stop on `escalate` or `terminate`; rollback only this campaign's own uncommitted candidate.
-11. Never treat `accept_working_state`, `complete`, or a cycle order as merge, push, policy, trust-root, authority, or release approval.
-12. Do not report completion without a passing `before_completion` checkpoint, fresh receipt, fresh signed quorum for v0.3, verified parent when applicable, repository-scoped decision evidence, and a supervisor projection whose status is `completed`.
+5. For `runtime_control` or `skill`, pre-persist one sealed comparative set and plan, then run the identical harness against isolated baseline and candidate worktrees. Promotion requires distinct revisions; completion revalidation runs the same accepted revision twice. Require a `promotable` manifest-backed report; rollback on measured regression and escalate on an inconclusive comparison.
+6. At every wave end, validation failure, scope change, and before completion, create a checkpoint whose metrics cite persisted receipt IDs and, for v0.3, the signed quorum. Skill/runtime checkpoints also cite the comparative report. Then run `autonomous-improvement-controller.js --repository <repo>`.
+7. For follow-on cycles, cite the manifest path/hash of the immediately prior accepted decision and carry its `accepted_revision` as baseline.
+8. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window effects, persist and cite a USER-granted approval scope and checkpoint-specific consumption event. Prose approval and reused events are invalid.
+9. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current cycle order whose status is `ready`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never infer them from chat history.
+10. Carry forward only an accepted working state. Revision, rollback, and continue remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
+11. Require receipt-backed independent evaluation for runtime, skill, and policy candidates. Stop on `escalate` or `terminate`; rollback only this campaign's own uncommitted candidate.
+12. Never treat `accept_working_state`, `complete`, a comparative report, or a cycle order as merge, push, policy, trust-root, authority, or release approval.
+13. Do not report completion without a passing `before_completion` checkpoint, fresh receipt, fresh signed quorum for v0.3, fresh comparison when the target is a skill/runtime control, verified parent when applicable, repository-scoped decision evidence, and a supervisor projection whose status is `completed`.
 
 Read `docs/bounded-self-improvement-operations.md` for the state machine and authority matrix.
 
@@ -114,6 +115,7 @@ Use the smallest relevant validation, then broaden:
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
+node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
 node run-repository-artifact-isolation-fixtures.js
@@ -121,6 +123,7 @@ node run-repository-artifact-concurrency-fixtures.js
 node run-repository-artifact-recovery-fixtures.js
 node run-verification-runner-fixtures.js
 node run-verification-attestation-fixtures.js
+node run-comparative-evaluation-fixtures.js
 node run-self-improvement-fixtures.js
 node run-signed-self-improvement-fixtures.js
 node run-campaign-supervisor-fixtures.js

@@ -47,6 +47,7 @@
       "additionalProperties": false,
       "properties": {
         "verification_receipt_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } },
+        "comparative_evaluation_report_id": { "type": "string", "minLength": 1 },
         "parent_decision_id": { "type": "string", "minLength": 1 },
         "approval_consumption_event_id": { "type": "string", "minLength": 1 },
         "repository_manifest_revision": { "type": "integer", "minimum": 0 },

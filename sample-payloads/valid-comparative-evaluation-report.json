@@ -1,0 +1,126 @@
+{
+  "schema_version": "0.1",
+  "type": "ComparativeEvaluationReport",
+  "id": "CER-Cannae-001",
+  "plan_ref": {
+    "artifact_id": "CEP-Cannae-001",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/comparative-evaluation-plans/CEP-Cannae-001.json",
+    "sha256": "348dbcef78ae631bb27cf7e8dae3144d5407047d747dd41a5497229680169da2"
+  },
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "target_type": "runtime_control",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "evaluation_set_ref": {
+    "artifact_id": "CES-Cannae-001",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/comparative-evaluation-sets/CES-Cannae-001.json",
+    "sha256": "d7763395394bad29147f4248f74749979044a4a6b2a31c31aa967d7997eb90fa"
+  },
+  "evaluator": {
+    "role": "EVALUATOR",
+    "evaluator_id": "EVAL-Cannae-001",
+    "invocation_id": "INV-Cannae-001"
+  },
+  "executions": {
+    "baseline": {
+      "subject": "baseline",
+      "repository_binding": {
+        "repository_key": "cannae-os-baseline",
+        "identity_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "repository_state_before": {
+        "head_commit": "1111111111111111111111111111111111111111",
+        "worktree_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "repository_state_after": {
+        "head_commit": "1111111111111111111111111111111111111111",
+        "worktree_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "repository_state_unchanged": true,
+      "argv": ["node", "comparative-harness.js"],
+      "resolved_executable": "/usr/bin/node",
+      "executable_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "harness_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "exit_code": 0,
+      "signal": "",
+      "status": "passed",
+      "duration_ms": 25,
+      "stdout": { "byte_size": 940, "sha256": "8bdb68f4e8d12318f333b12f1de4bfba025ab9c02efb07cdcc9453d96a08448c", "excerpt": "{...}", "truncated": false },
+      "stderr": { "byte_size": 0, "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "excerpt": "", "truncated": false },
+      "observation": {
+        "schema_version": "0.1",
+        "type": "ComparativeEvaluationObservation",
+        "plan_id": "CEP-Cannae-001",
+        "evaluation_set": { "id": "CES-Cannae-001", "version": "2026.07.22.1", "sha256": "d7763395394bad29147f4248f74749979044a4a6b2a31c31aa967d7997eb90fa" },
+        "subject": { "kind": "baseline", "candidate_id": "BASE-Cannae-001", "revision": "1111111111111111111111111111111111111111" },
+        "evaluator": { "role": "EVALUATOR", "evaluator_id": "EVAL-Cannae-001", "invocation_id": "INV-Cannae-001-baseline" },
+        "fixture_results": [
+          { "fixture_id": "CEF-Cannae-001", "status": "passed" },
+          { "fixture_id": "CEF-Cannae-002", "status": "failed" }
+        ],
+        "metric_results": [
+          { "dimension_id": "accuracy", "value": 0.8, "sample_count": 2 },
+          { "dimension_id": "completeness", "value": 0.7, "sample_count": 2 }
+        ]
+      }
+    },
+    "candidate": {
+      "subject": "candidate",
+      "repository_binding": {
+        "repository_key": "cannae-os-aaaaaaaaaaaa",
+        "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "repository_state_before": {
+        "head_commit": "2222222222222222222222222222222222222222",
+        "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "repository_state_after": {
+        "head_commit": "2222222222222222222222222222222222222222",
+        "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "repository_state_unchanged": true,
+      "argv": ["node", "comparative-harness.js"],
+      "resolved_executable": "/usr/bin/node",
+      "executable_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "harness_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "exit_code": 0,
+      "signal": "",
+      "status": "passed",
+      "duration_ms": 24,
+      "stdout": { "byte_size": 969, "sha256": "f31f298b998514b59e2f36c3caec1e6680862517d65bdb854019bb5cba371d25", "excerpt": "{...}", "truncated": false },
+      "stderr": { "byte_size": 0, "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "excerpt": "", "truncated": false },
+      "observation": {
+        "schema_version": "0.1",
+        "type": "ComparativeEvaluationObservation",
+        "plan_id": "CEP-Cannae-001",
+        "evaluation_set": { "id": "CES-Cannae-001", "version": "2026.07.22.1", "sha256": "d7763395394bad29147f4248f74749979044a4a6b2a31c31aa967d7997eb90fa" },
+        "subject": { "kind": "candidate", "candidate_id": "CAN-Cannae-001", "revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+        "evaluator": { "role": "EVALUATOR", "evaluator_id": "EVAL-Cannae-001", "invocation_id": "INV-Cannae-001-candidate" },
+        "fixture_results": [
+          { "fixture_id": "CEF-Cannae-001", "status": "passed" },
+          { "fixture_id": "CEF-Cannae-002", "status": "passed" }
+        ],
+        "metric_results": [
+          { "dimension_id": "accuracy", "value": 0.95, "sample_count": 2 },
+          { "dimension_id": "completeness", "value": 0.9, "sample_count": 2 }
+        ]
+      }
+    }
+  },
+  "comparisons": [
+    { "dimension_id": "accuracy", "direction": "maximize", "hard_gate": true, "baseline_value": 0.8, "candidate_value": 0.95, "normalized_delta": 0.15, "absolute_threshold": 0.9, "maximum_regression": 0, "absolute_threshold_passed": true, "non_regression_passed": true, "passed": true },
+    { "dimension_id": "completeness", "direction": "maximize", "hard_gate": true, "baseline_value": 0.7, "candidate_value": 0.9, "normalized_delta": 0.2, "absolute_threshold": 0.85, "maximum_regression": 0.02, "absolute_threshold_passed": true, "non_regression_passed": true, "passed": true }
+  ],
+  "outcome": "promotable",
+  "working_state_promotion_recommended": true,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "blocking_codes": [],
+  "started_at": "2026-07-21T18:19:00+09:00",
+  "finished_at": "2026-07-21T18:20:00+09:00",
+  "report_sha256": "18bf88f31cb2f9f1c081c36024d68a9c9888fa037b40eba4b96d009501bbb83d"
+}

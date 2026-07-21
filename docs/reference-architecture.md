@@ -263,12 +263,13 @@ candidate state
 -> shell-free verification runner
 -> repository-scoped VerificationReceipt
 -> Ed25519 DSSE attestations from trusted independent verifiers
+-> for skill/runtime control: sealed evaluation set + identical baseline/candidate harness executions
 -> manifest-backed checkpoint references
--> controller reloads trust policy / receipt / attestations / parent / approval consumption
+-> controller reloads and recomputes trust policy / receipt / attestations / comparison / parent / approval consumption
 -> bounded decision with release_authorized=false
 ```
 
-The controller cannot turn prose test claims, a named parent ID, or an unsigned remote-verifier claim into authority. A v0.3 promotion requires fresh signatures from distinct trusted keys and the policy-required independence groups over the exact persisted receipt and its self-digest. Policy, trust-root, and authority effects require a schema-valid USER approval scope consumed by the exact checkpoint execution.
+The controller cannot turn prose test claims, a named parent ID, an unsigned remote-verifier claim, or a candidate-only score into authority. A v0.3 promotion requires fresh signatures from distinct trusted keys and the policy-required independence groups over the exact persisted receipt and its self-digest. Skill and runtime-control promotion additionally requires a recomputable `promotable` report from distinct immutable baseline/candidate states under one pre-persisted evaluation set and harness. Policy, trust-root, and authority effects require a schema-valid USER approval scope consumed by the exact checkpoint execution.
 
 ## 3. Data Flow
 
@@ -373,7 +374,7 @@ Characteristics:
 | Agent -> tool | tool gateway |
 | Tool -> external service | approval and audit |
 | Evidence -> output | citation check |
-| Candidate -> adaptive promotion | executed receipt, trusted signed quorum, accepted-parent lineage, consumed approval binding |
+| Candidate -> adaptive promotion | executed receipt, trusted signed quorum, paired canary for skill/runtime control, accepted-parent lineage, consumed approval binding |
 | Secret -> logs | masking and EEFI handling |
 
 ## 7. Minimum Implementation Order

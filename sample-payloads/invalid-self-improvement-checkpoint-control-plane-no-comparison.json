@@ -1,0 +1,65 @@
+{
+  "schema_version": "0.2",
+  "type": "SelfImprovementCheckpoint",
+  "id": "SCP-Cannae-No-Comparison",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "parent_decision_id": "none",
+  "parent_decision_ref": { "decision_id": "none", "relative_path": "none", "sha256": "none" },
+  "repository_binding": { "repository_key": "cannae-os-aaaaaaaaaaaa", "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "cycle_number": 1,
+  "trigger": "wave_end",
+  "target": {
+    "target_type": "runtime_control",
+    "state": "candidate",
+    "artifact_ids": ["CTL-Cannae-001"],
+    "artifact_paths": ["runtime/controller.js"],
+    "baseline_revision": "1111111111111111111111111111111111111111",
+    "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "observations": [],
+  "candidate": {
+    "id": "CAN-Cannae-001",
+    "disposition": "improve",
+    "summary": "Change a runtime control without paired baseline evidence.",
+    "change_class": "local_reversible",
+    "proposed_actions": ["Edit the runtime control."],
+    "changed_files": ["runtime/controller.js"],
+    "required_permissions": ["edit", "test", "checkpoint", "persist_artifact"],
+    "protected_invariants_affected": [],
+    "rollback_steps": ["Revert the runtime-control candidate."],
+    "expected_metric_delta": 0.1
+  },
+  "metric_results": [
+    { "dimension_id": "accuracy", "before": 0.8, "after": 0.95, "hard_gate_passed": true, "evidence_receipt_ids": ["VR-Cannae-001"] },
+    { "dimension_id": "completeness", "before": 0.7, "after": 0.9, "hard_gate_passed": true, "evidence_receipt_ids": ["VR-Cannae-001"] }
+  ],
+  "verification_receipts": [
+    {
+      "receipt_id": "VR-Cannae-001",
+      "plan_id": "VP-Cannae-001",
+      "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/verification-receipts/VR-Cannae-001.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "required_check_ids": ["VCK-Cannae-001"]
+    }
+  ],
+  "independent_evaluation": { "required": true, "evaluator": "EVALUATOR", "status": "passed", "evidence_receipt_ids": ["VR-Cannae-001"] },
+  "comparative_evaluation_ref": { "required": false, "report_id": "none", "relative_path": "none", "sha256": "none" },
+  "externalities": { "scope_changed": false, "authority_changed": false, "policy_changed": false, "release_requested": false, "destructive_action": false, "cross_repository_write": false },
+  "approval_binding": {
+    "required": false,
+    "action": "none",
+    "tool": "none",
+    "target": "none",
+    "approval_scope_ref": { "artifact_id": "none", "relative_path": "none", "sha256": "none" },
+    "consumption_event_ref": { "artifact_id": "none", "relative_path": "none", "sha256": "none" }
+  },
+  "progress": {
+    "completed_acceptance_criteria": ["Deterministic checks pass."],
+    "open_acceptance_criteria": ["Comparative evidence is missing."],
+    "consecutive_no_progress_cycles": 0,
+    "failed_experiments": 0,
+    "elapsed_minutes": 20
+  },
+  "generated_at": "2026-07-21T18:24:00+09:00"
+}

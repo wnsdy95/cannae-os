@@ -198,6 +198,13 @@ function buildPairs(campaign, checkpoints, decisions, repository, manifestHistor
     if ((decisionItem.payload.proof.verification_attestation_ids || []).some(id => !checkpointAttestationIds.has(id))) {
       addBlock(blocks, "CAMPAIGN_DECISION_ATTESTATION_BINDING_INVALID");
     }
+    const comparisonRef = checkpointItem.payload.comparative_evaluation_ref || {};
+    const comparisonRequired = ["runtime_control", "skill"].includes(checkpointItem.payload.target.target_type);
+    const decisionComparisonId = decisionItem.payload.proof.comparative_evaluation_report_id || "none";
+    if ((comparisonRequired && (comparisonRef.required !== true || comparisonRef.report_id === "none" || decisionComparisonId !== comparisonRef.report_id)) ||
+        (!comparisonRequired && decisionComparisonId !== "none")) {
+      addBlock(blocks, "CAMPAIGN_DECISION_COMPARATIVE_EVALUATION_BINDING_INVALID");
+    }
     if (decisionItem.payload.decision === "complete" &&
         (checkpointItem.payload.trigger !== "before_completion" || checkpointItem.payload.candidate.disposition !== "no_change" ||
          checkpointItem.payload.progress.open_acceptance_criteria.length !== 0)) {
@@ -285,6 +292,9 @@ function proofRequirements(campaign) {
   const policy = campaign.attestation_policy;
   return {
     verification_receipt_required: true,
+    comparative_evaluation_required_for: campaign.comparative_evaluation_policy
+      ? [...campaign.comparative_evaluation_policy.required_target_types]
+      : [],
     signed_attestation_required: campaign.schema_version === "0.3",
     minimum_valid_attestations: policy ? policy.minimum_valid_attestations : 0,
     minimum_independence_groups: policy ? policy.minimum_independence_groups : 0,
@@ -300,6 +310,9 @@ function initialTaskOrder(campaign) {
     "Runtime-issued verification receipt bound to the candidate revision."
   ];
   if (campaign.schema_version === "0.3") evidence.push("Fresh signed attestations satisfying the campaign quorum.");
+  if (campaign.comparative_evaluation_policy) {
+    evidence.push("A baseline-versus-candidate comparative report for skill or runtime-control promotion.");
+  }
   return {
     owner: campaign.command_team.improvement_controller,
     task: `Produce one bounded candidate that advances this acceptance criterion: ${criterion}`,
@@ -487,6 +500,9 @@ function deriveOrder(store, history) {
 
 function comparableOrder(order) {
   const copy = clone(order);
+  if (copy.proof_requirements && copy.proof_requirements.comparative_evaluation_required_for === undefined) {
+    copy.proof_requirements.comparative_evaluation_required_for = [];
+  }
   delete copy.observed_manifest;
   delete copy.generated_at;
   return copy;

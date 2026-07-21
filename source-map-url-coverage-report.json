@@ -1,11 +1,19 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-07-20",
+  "as_of": "2026-07-22",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 26,
+  "checked_hosts": 29,
   "finding_count": 0,
   "covered_hosts": [
+    {
+      "host": "airc.nist.gov",
+      "files": [
+        "docs/model-force-assignment-policy.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
     {
       "host": "api.army.mil",
       "files": [
@@ -61,6 +69,13 @@
       ]
     },
     {
+      "host": "developers.openai.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
       "host": "etcd.io",
       "files": [
         "docs/source-map.md"
@@ -87,6 +102,13 @@
       "host": "safety.army.mil",
       "files": [
         "docs/research-compendium.md"
+      ]
+    },
+    {
+      "host": "sre.google",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
       ]
     },
     {
