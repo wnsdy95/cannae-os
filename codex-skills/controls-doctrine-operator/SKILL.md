@@ -81,6 +81,15 @@ Read these only when needed:
 8. Escalate to the human user before release, irreversible action, high-risk tool use, or cross-boundary authority claims.
 9. When a mission uses multiple model tiers or families, compile the assignment from `ModelRegistry` and `ModelAssignmentRequest`, bind each expected agent and current-wave receipt to a compiled billet, and require `integrated-mission-preflight-runner.js` status `ready` before dispatch. Model capability never expands role authority.
 
+### Persisting Multi-Repository Artifacts
+
+1. Identify the target Git repository before creating any durable control evidence or deliverable.
+2. Store every JSON or file artifact through `repository-artifact-store.js` under `repository -> mission -> wave -> kind`; never use a shared flat output directory.
+3. For routing receipts, use `--write-artifact --target-repository <repo>`. For model compilation and integrated preflight, use `--write-artifact --repository <repo>`.
+4. Use one shared `--artifact-root` for a campaign when useful; repository fingerprint namespaces still keep outputs separate.
+5. Treat persistence failure as a blocked wave. Do not dispatch from an integrated preflight whose artifact write failed.
+6. Validate each repository's `manifest.json` before wave completion. Read `docs/repository-artifact-isolation-policy.md` for commands and file-deliverable handling.
+
 ### Editing Doctrine Or Policy
 
 1. Read `docs/source-map.md`, the target policy, and any referenced schemas/runners.
@@ -120,6 +129,7 @@ node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
+node run-repository-artifact-isolation-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -135,6 +145,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - AI agents must route by role, department, authority, task, and need-to-know.
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
+- Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.

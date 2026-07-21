@@ -95,6 +95,7 @@ Preflight requires one CoS wave receipt and one S3 operations receipt for each e
 | Dashboard | `docs/command-post-dashboard.md`, `docs/dashboard-wireframes.md` | dashboard runners and `dashboard-ui-prototype/*.json` |
 | Data model | `docs/data-model.sql.md`, `docs/sample-runtime-state.md` | JSON samples and SQL notes |
 | Maintenance/readiness | `docs/maintenance-readiness-model.md`, `docs/agent-readiness-ledger.md` | `maintenance-readiness-runner.js`, `maintenance-dashboard-runner.js` |
+| Repository-isolated artifacts | `docs/repository-artifact-isolation-policy.md`, `docs/knowledge-management-sop.md` | `repository-artifact-store.js`, `schema-files/repository-artifact-manifest.schema.json`, `run-repository-artifact-isolation-fixtures.js` |
 
 ## Validation Sets
 
@@ -109,3 +110,4 @@ Preflight requires one CoS wave receipt and one S3 operations receipt for each e
 | Skill update | `node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator` |
 | Delegated agent routing | `node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt`, `node run-agent-routing-preflight-fixtures.js` |
 | Model allocation or routing | `node validator-cli-prototype/validate.js sample-payloads/valid-model-registry.json model-registry`, `node run-model-force-assignment-fixtures.js`, `node run-model-force-v0.2-fixtures.js` |
+| Multi-repository artifacts | `node run-repository-artifact-isolation-fixtures.js`, `node validator-cli-prototype/validate.js sample-payloads/valid-repository-artifact-manifest.json repository-artifact-manifest` |

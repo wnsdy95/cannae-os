@@ -13,6 +13,7 @@ In an LLM runtime, conversational memory is the most fragile repository. Therefo
 - decision log
 - event log
 - runtime payloads
+- repository-scoped artifact manifests
 - AAR/readiness ledger
 
 This SOP defines how the S6 Knowledge role and the CoS operate knowledge management.
@@ -37,9 +38,12 @@ This SOP defines how the S6 Knowledge role and the CoS operate knowledge managem
 | Current mission state | event log projection | dashboard state |
 | Authority and approval | authority matrix, approval request | tool-use ROE |
 | Execution results | validator/test output, AAR | SITREP |
+| Multi-repository deliverables | repository artifact manifest | repository-scoped artifact files |
 | Next task queue | framework doc, research queue | compendium |
 
 Conversation history is not a source of truth. Conversation is task instruction and transient context.
+
+Durable AI outputs for different Git repositories must not share a flat directory. Apply `repository-artifact-isolation-policy.md` so each receipt, projection, report, and deliverable remains under its target repository identity.
 
 ## 3. S6 Knowledge responsibilities
 

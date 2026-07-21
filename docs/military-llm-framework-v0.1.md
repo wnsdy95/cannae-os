@@ -469,6 +469,10 @@ Current document set:
 164. `integrated-mission-preflight-runner.js`: Combined routing and model-assignment gate that emits dispatch and telemetry manifests only when ready.
 165. `schema-files/model-usage-event.schema.json`: Contract for immutable model-use telemetry, authority snapshots, evidence, and transitions.
 166. `run-model-force-v0.2-fixtures.js`: End-to-end fixtures for compilation, integrated dispatch, and fail-closed unsafe cases.
+167. `repository-artifact-isolation-policy.md`: Policy requiring durable AI outputs to remain inside a stable target-repository namespace.
+168. `repository-artifact-store.js`: Atomic JSON/file artifact writer using Git-derived repository identity, mission/wave paths, manifests, and overwrite/traversal guards.
+169. `schema-files/repository-artifact-manifest.schema.json`: Contract for repository identity, relative artifact paths, hashes, content metadata, and isolation assertions.
+170. `run-repository-artifact-isolation-fixtures.js`: Two-repository regression proving same mission/artifact IDs remain separated.
 
 Next documentation tasks:
 

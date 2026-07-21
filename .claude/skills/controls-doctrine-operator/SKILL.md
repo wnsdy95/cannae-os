@@ -75,6 +75,16 @@ node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --
 
 The coverage report must be `valid: true` with `unrouted_artifact_count: 0`.
 
+## Multi-Repository Artifacts
+
+Before creating durable control evidence or deliverables, identify the target Git repository. Store JSON and files through `repository-artifact-store.js` under `repository -> mission -> wave -> kind`; never use a shared flat output directory.
+
+- Use `--write-artifact --target-repository <repo>` for routing receipts.
+- Use `--write-artifact --repository <repo>` for model compilation and integrated preflight.
+- Treat persistence failure as a blocked wave.
+- Validate each repository's manifest before wave completion.
+- Read `docs/repository-artifact-isolation-policy.md` for the complete command and file-handling contract.
+
 ## Validation
 
 Use the smallest relevant validation, then broaden:
@@ -85,6 +95,7 @@ node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
+node run-repository-artifact-isolation-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -103,6 +114,7 @@ Escalate to the user before:
 - Accepting risk above the delegated role's authority.
 - Treating US doctrine as universal without multinational consistency review.
 - Allowing model capability, router choice, or evaluator confidence to expand delegated role authority.
+- Mixing artifacts from separate target repositories in one flat output namespace.
 
 ## Self-Improvement
 

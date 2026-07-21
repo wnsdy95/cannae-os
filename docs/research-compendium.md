@@ -2333,6 +2333,37 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
    - Material model, prompt, harness, tool schema, environment, or policy changes require reevaluation.
    - Added `model-force-v0.2-operations.md`, four v0.2 schemas, `model-assignment-compiler.js`, `integrated-mission-preflight-runner.js`, `run-model-force-v0.2-fixtures.js`, and valid/invalid samples.
 
+### 8.50 Repository-Scoped Artifact Isolation
+
+1. Repository identity as the custody boundary
+
+   Implemented conclusion:
+   - A mission ID or agent ID is not sufficient to separate outputs when one campaign operates on several repositories.
+   - Durable artifacts require a target Git repository identity before they are written.
+   - The implementation derives an opaque fingerprint from normalized origin metadata plus the real Git root. Separate clones/worktrees of the same origin remain separate; remote URLs, credentials, and absolute roots are not stored in manifests.
+
+2. Repository, mission, wave, and kind hierarchy
+
+   Implemented conclusion:
+   - The storage hierarchy is `repository -> mission -> wave -> kind -> artifact`, so repeated mission/wave/artifact IDs in different repositories cannot collide.
+   - A per-repository manifest records relative path, content type, byte size, hash, Git head, and timestamps.
+   - Subdirectories remain in the parent Git repository namespace; nested Git roots receive independent identities.
+
+3. Fail-closed persistence
+
+   Implemented conclusion:
+   - Path traversal, absolute artifact paths, symlink source files, cross-repository manifest paths, and identity mismatch are blocked.
+   - Identical repeated writes are idempotent. Different content at an existing path fails unless overwrite is explicit.
+   - Integrated mission preflight clears dispatch outputs and changes to blocked when requested artifact persistence fails.
+   - Routing receipts redact local repository and artifact-root paths from recorded command evidence.
+
+4. Implemented surface
+
+   Implemented conclusion:
+   - Added `repository-artifact-isolation-policy.md`, `repository-artifact-store.js`, `schema-files/repository-artifact-manifest.schema.json`, valid/invalid manifest samples, semantic validator rules, and `run-repository-artifact-isolation-fixtures.js`.
+   - The store handles structured JSON projections and general file deliverables such as Markdown, PDF, and images.
+   - The isolation fixture creates two Git repositories and proves same mission/wave/artifact IDs produce separate namespaces and manifests.
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?
@@ -2418,6 +2449,7 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `force-structure-change-policy.md`: a policy that controls the creation, disestablishment, expansion, and reduction of branches/duty positions/units/TFs via capability gap, DOTMLPF-P, readiness, and transition order.
 - `model-force-assignment-policy.md`: a mission-based policy for allocating deterministic, line, specialist, command, SOF, assurance, and reserve model profiles without inheriting authority from capability.
 - `model-force-v0.2-operations.md`: the executable registry, compiler, receipt-binding, dispatch, telemetry, and reassessment procedure for heterogeneous model forces.
+- `repository-artifact-isolation-policy.md`: target-repository custody, namespace, persistence, and manifest rules for multi-repository AI campaigns.
 - `prompt-templates.md`: OPORD, WARNO, FRAGO, SITREP, and AAR prompt templates.
 - `orders-production-pipeline.md`: the order production pipeline running from request to AAR.
 - `opord-annex-model.md`: the model separating responsibility between the OPORD body and annexes.
@@ -2576,6 +2608,9 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `integrated-mission-preflight-runner.js`: combined routing and model assignment dispatch gate.
 - `schema-files/model-usage-event.schema.json`: operational model-use evidence contract.
 - `run-model-force-v0.2-fixtures.js`: integrated compiler, dispatch, and unsafe-case regression suite.
+- `repository-artifact-store.js`: Git-identified atomic JSON/file artifact persistence utility.
+- `schema-files/repository-artifact-manifest.schema.json`: repository namespace and artifact evidence manifest contract.
+- `run-repository-artifact-isolation-fixtures.js`: same-ID cross-repository isolation, overwrite, traversal, and CLI integration fixture.
 - `role-document-access-policy.md`: the policy that lets each agent read only the documents fixed for its role, duty, and authority.
 - `schema-files/document-access-manifest.schema.json`: the per-mission document access manifest contract.
 - `document-access-runner.js`: a manifest-based runner producing an allowed/denied document projection.

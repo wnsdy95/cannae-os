@@ -54,6 +54,7 @@ Tool Gateway
   v
 State / Evidence / Audit Stores
   +-- Model Usage Events
+  +-- Repository Artifact Namespaces
 ```
 
 ## 2. Major Components
@@ -236,6 +237,21 @@ Stores:
 - blocked action.
 - policy decision.
 - immutable model usage events and authority snapshots.
+
+### 2.13 Repository Artifact Store
+
+The artifact store persists durable control projections and deliverables under a Git-derived repository identity:
+
+```text
+artifact root
+-> repository identity
+-> mission
+-> wave
+-> artifact kind
+-> immutable artifact file
+```
+
+It writes JSON and file outputs atomically, records a relative-path manifest with hashes and content metadata, blocks traversal and conflicting overwrite, and keeps absolute repository paths and remote credentials out of the manifest. Multi-repository orchestration must declare the target repository for every durable artifact.
 
 ## 3. Data Flow
 

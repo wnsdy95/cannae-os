@@ -17,6 +17,7 @@ Use these examples to test:
 - model registry and assignment request validation
 - integrated mission preflight validation
 - model usage event validation
+- repository artifact manifest validation
 - CCIR alert validation
 - handoff packet validation
 - continuity plan validation
@@ -45,6 +46,7 @@ Use these examples to test:
 - AAR/readiness update logic
 - agent routing preflight logic
 - model force compilation and dispatch preflight logic
+- repository-scoped JSON and file artifact isolation logic
 
 Fixture convention:
 

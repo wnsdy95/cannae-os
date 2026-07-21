@@ -197,6 +197,16 @@ node integrated-mission-preflight-runner.js \
 
 Only a `ready` integrated projection emits dispatch rows. The model profile never inherits approval, risk acceptance, or release authority from its capability band.
 
+### Repository-Isolated Artifacts
+
+For multi-repository campaigns, durable AI outputs are stored under a stable repository identity instead of a shared flat output directory:
+
+```text
+.cannae/artifacts/repositories/<repository-key>/missions/<mission>/<wave>/<kind>/
+```
+
+Use `repository-artifact-store.js`, or pass `--write-artifact --repository <target>` to the model compiler and integrated preflight. Routing receipts use `--write-artifact --target-repository <target>`. See [Repository Artifact Isolation Policy](docs/repository-artifact-isolation-policy.md).
+
 ### Commander-Retained Decisions
 
 The framework keeps these decisions out of ordinary agent autonomy:
@@ -278,6 +288,7 @@ Important examples:
 - `run-model-force-assignment-fixtures.js`: task readiness, model routing, force composition, independent assurance, PACE, and authority-separation gates.
 - `run-model-force-v0.2-fixtures.js`: registry eligibility, deterministic compilation, agent/billet/receipt binding, dispatch manifest, and usage telemetry gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
+- `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
 
 <p align="center">
   <img src="assets/cannae-os-validation-stack.svg" alt="Validation stack diagram from Markdown and JSON checks to schema fixtures, runner fixtures, source-map linting, routing coverage, and branch protection" width="100%">

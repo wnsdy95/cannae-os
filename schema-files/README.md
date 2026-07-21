@@ -19,6 +19,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - model registries and assignment requests
 - integrated mission preflight manifests
 - model usage events
+- repository artifact manifests
 - CCIR alerts
 - handoff packets
 - continuity plans
@@ -95,5 +96,6 @@ Recommended validation order:
 44. `aar.schema.json`
 45. `readiness-ledger.schema.json`
 46. `routing-receipt.schema.json`
+47. `repository-artifact-manifest.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
