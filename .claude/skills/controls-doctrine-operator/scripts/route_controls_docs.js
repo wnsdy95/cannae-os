@@ -75,16 +75,18 @@ const RULES = [
   },
   {
     id: "model-force-assignment",
-    keywords: ["model", "models", "allocate", "model allocation", "model assignment", "model routing", "model selection", "cascade", "small model", "smaller", "strong model", "frontier model", "submodel", "model profile", "capability band", "model force"],
+    keywords: ["model", "models", "allocate", "model allocation", "model assignment", "model routing", "model selection", "cascade", "small model", "smaller", "strong model", "frontier model", "submodel", "model profile", "capability band", "model force", "model registry", "integrated preflight", "dispatch manifest", "model usage"],
     docs: [
       "docs/model-force-assignment-policy.md",
+      "docs/model-force-v0.2-operations.md",
       "docs/agent-metl.md",
       "docs/agent-readiness-ledger.md",
       "docs/evaluation-metrics.md",
       "docs/ai-special-operations-tf.md"
     ],
     commands: [
-      "node run-model-force-assignment-fixtures.js"
+      "node run-model-force-assignment-fixtures.js",
+      "node run-model-force-v0.2-fixtures.js"
     ]
   },
   {
@@ -294,7 +296,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "model-force-assignment",
-    keywords: ["model-force-assignment", "model-profile", "model-allocation", "model-routing", "capability-band", "model-force"]
+    keywords: ["model-force-assignment", "model-profile", "model-allocation", "model-routing", "capability-band", "model-force", "model-registry", "model-assignment-compiler", "integrated-mission-preflight", "model-usage-event", "model-force-v0.2"]
   },
   {
     id: "sof-tf",

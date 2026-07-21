@@ -59,7 +59,7 @@ Read these only when needed (bundled with this skill):
 4. Do not broaden delegated AI access just because the repo is locally available.
 5. Use `docs/source-map.md` before relying on an external military doctrine claim.
 6. If a claim is current-date-sensitive or source coverage is missing, browse official primary sources before adding the claim.
-7. When a mission uses multiple model tiers or families, validate `ModelForceAssignmentPlan` before execution; model capability never expands role authority.
+7. When a mission uses multiple model tiers or families, compile from `ModelRegistry` and `ModelAssignmentRequest`, bind each expected agent and current-wave receipt to a compiled billet, and require `integrated-mission-preflight-runner.js` status `ready` before dispatch. Model capability never expands role authority.
 
 ## Editing Rules
 
@@ -84,6 +84,7 @@ node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-model-force-assignment-fixtures.js
+node run-model-force-v0.2-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js

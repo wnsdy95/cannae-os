@@ -211,6 +211,7 @@ Usage:
 | Interdepartment collaboration artifact | combined arms and joint function integration | Different functional departments must be integrated via supported/supporting relationships, liaison, output contracts, and conflict routes | Projects interdepartmental collaboration as relationship edges, missing liaison, commander queue, and preflight blocks | `interdepartment-collaboration-policy.md`, `schema-files/department-collaboration-charter.schema.json`, `department-collaboration-runner.js`, `department-collaboration-fixtures/README.md` |
 | Force structure change artifact | force management and documentation | An organization is created or reduced only when capability gap, DOTMLPF-P, authority, readiness, transition, and documentation update all align | Controls the creation, disestablishment, expansion, and reduction of AI branches/positions/units/TFs via a validator and runner gate | `force-structure-change-policy.md`, `schema-files/force-structure-change-order.schema.json`, `force-structure-change-runner.js`, `force-structure-change-fixtures/README.md` |
 | Model force assignment artifact | mission task organization, METL, PACE, and independent assurance | Model size, role, authority, and readiness are separate dimensions; scarce capacity is assigned by mission evidence rather than prestige | Validates line/specialist/command/SOF/assurance/reserve profiles, router readiness, context eligibility, task evidence, PACE, and human retained authority | `model-force-assignment-policy.md`, `schema-files/model-force-assignment-plan.schema.json`, `model-force-assignment-runner.js`, `model-force-assignment-fixtures/README.md` |
+| Model force v0.2 operational artifact | force generation, task organization, precombat checks, dispatch accountability, and operational assessment | An authored plan alone is not sufficient evidence of model eligibility or agent authority; source registry, mission demand, routing proof, binding, and usage evidence must remain distinct | Compiles eligible profiles deterministically, combines routing and assignment readiness, emits dispatch only after one-to-one binding, and records immutable model usage without granting authority | `model-force-v0.2-operations.md`, `schema-files/model-registry.schema.json`, `schema-files/model-assignment-request.schema.json`, `model-assignment-compiler.js`, `schema-files/integrated-mission-preflight.schema.json`, `integrated-mission-preflight-runner.js`, `schema-files/model-usage-event.schema.json`, `run-model-force-v0.2-fixtures.js` |
 | Deep research queue artifact | Research operations management | Manages missing military operating domains via a backlog and source plan | Framework expansion prioritization and source management | `military-operating-deep-research-queue.md` |
 | Commander handbook artifact | Commander's operating guidance | Organizes intent, authority, CCIR, approval, and AAR into a human command procedure | AI commander prompt and approval judgment guide | `commander-handbook.md` |
 | B2C2WG operating artifact | Staff integration and battle rhythm | Separates boards/WGs/cells/centers into a decision packet flow | Multi-agent scheduling and decision packet workflow | `b2c2wg-operating-model.md` |
@@ -286,6 +287,7 @@ The items below need additional research.
 - `interdepartment-collaboration-policy.md`
 - `force-structure-change-policy.md`
 - `model-force-assignment-policy.md`
+- `model-force-v0.2-operations.md`
 - `case-studies.md`
 - `glossary.md`
 - `evaluation-metrics.md`
@@ -385,3 +387,11 @@ The items below need additional research.
 - `model-force-assignment-runner.js`
 - `run-model-force-assignment-fixtures.js`
 - `model-force-assignment-fixtures/README.md`
+- `schema-files/model-registry.schema.json`
+- `schema-files/model-assignment-request.schema.json`
+- `model-assignment-compiler.js`
+- `schema-files/integrated-mission-preflight.schema.json`
+- `integrated-mission-preflight-runner.js`
+- `schema-files/model-usage-event.schema.json`
+- `run-model-force-v0.2-fixtures.js`
+- `model-force-v0.2-fixtures/README.md`

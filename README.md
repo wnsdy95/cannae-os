@@ -97,6 +97,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [AI Special Operations TF](docs/ai-special-operations-tf.md): high-risk or high-uncertainty task force activation with independent review, enablers, and abort criteria.
 - [Force Structure Change Policy](docs/force-structure-change-policy.md): when to create, expand, reduce, merge, deactivate, or disband roles, units, and task forces.
 - [Model Force Assignment Policy](docs/model-force-assignment-policy.md): mission-based allocation of deterministic, line, specialist, command, SOF, assurance, and reserve model capacity.
+- [Model Force v0.2 Operations](docs/model-force-v0.2-operations.md): registry-to-compiler-to-routing-preflight procedure for dispatching heterogeneous agent forces.
 
 ### Authority, Risk, Release, And Security
 
@@ -123,6 +124,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
+- [Model Force v0.2 Fixtures](model-force-v0.2-fixtures/README.md): integrated registry, compilation, routing receipt, dispatch, and telemetry examples.
 
 ### Agent Skills
 
@@ -179,6 +181,21 @@ Preflight:
 ```bash
 node agent-routing-preflight-runner.js agent-routing-preflight-fixtures/valid-wave-routing-bundle.json
 ```
+
+### Heterogeneous Model Dispatch
+
+Model selection is a separate control from agent routing and authority. Define an immutable registry snapshot and mission billet request, compile only eligible profiles, then bind current-wave receipts and billets through the integrated preflight:
+
+```bash
+node model-assignment-compiler.js \
+  sample-payloads/valid-model-registry.json \
+  sample-payloads/valid-model-assignment-request.json
+
+node integrated-mission-preflight-runner.js \
+  sample-payloads/valid-integrated-mission-preflight.json
+```
+
+Only a `ready` integrated projection emits dispatch rows. The model profile never inherits approval, risk acceptance, or release authority from its capability band.
 
 ### Commander-Retained Decisions
 
@@ -259,6 +276,7 @@ Important examples:
 - `run-sof-tf-fixtures.js`: high-risk task force activation gates.
 - `run-force-structure-change-fixtures.js`: organization change evidence, alternatives, readiness, handoff, and sunset gates.
 - `run-model-force-assignment-fixtures.js`: task readiness, model routing, force composition, independent assurance, PACE, and authority-separation gates.
+- `run-model-force-v0.2-fixtures.js`: registry eligibility, deterministic compilation, agent/billet/receipt binding, dispatch manifest, and usage telemetry gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
 
 <p align="center">

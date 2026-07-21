@@ -79,7 +79,7 @@ Read these only when needed:
 6. Start from `docs/role-document-access-policy.md`, `docs/agent-roles-and-authority.md`, `docs/approval-scope-policy.md`, and task docs from the router.
 7. Do not broaden document access just because the corpus is available locally; broaden only when the role, mission, or approval permits it.
 8. Escalate to the human user before release, irreversible action, high-risk tool use, or cross-boundary authority claims.
-9. When a mission uses multiple model tiers or families, validate `ModelForceAssignmentPlan` before execution; model capability never expands role authority.
+9. When a mission uses multiple model tiers or families, compile the assignment from `ModelRegistry` and `ModelAssignmentRequest`, bind each expected agent and current-wave receipt to a compiled billet, and require `integrated-mission-preflight-runner.js` status `ready` before dispatch. Model capability never expands role authority.
 
 ### Editing Doctrine Or Policy
 
@@ -119,6 +119,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-model-force-assignment-fixtures.js
+node run-model-force-v0.2-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -133,7 +134,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - The human user remains final decision authority unless they explicitly delegate a bounded AI role.
 - AI agents must route by role, department, authority, task, and need-to-know.
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
-- Mixed-model missions require a model force assignment preflight; an unready router, model monoculture, correlated assurance, or authority inherited from model capability blocks execution.
+- Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.
