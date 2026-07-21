@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/model-assignment-request.schema.json",
+  "title": "Model Assignment Request",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "registry_id", "registry_version", "mission_profile", "billet_requirements", "constraints", "selection_policy", "assurance", "authority", "budget", "assessment", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.2" },
+    "type": { "type": "string", "const": "ModelAssignmentRequest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "minLength": 1 },
+    "registry_id": { "$ref": "common.schema.json#/$defs/id" },
+    "registry_version": { "type": "string", "minLength": 1 },
+    "mission_profile": {
+      "type": "object",
+      "required": ["complexity", "domain_specialization", "uncertainty", "risk_level", "roe_class", "classification", "release_target", "tool_impact", "latency_priority", "volume"],
+      "additionalProperties": false,
+      "properties": {
+        "complexity": { "type": "string", "enum": ["low", "medium", "high"] },
+        "domain_specialization": { "type": "string", "enum": ["general", "specialized", "expert"] },
+        "uncertainty": { "type": "string", "enum": ["low", "medium", "high"] },
+        "risk_level": { "$ref": "common.schema.json#/$defs/risk_level" },
+        "roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+        "classification": { "$ref": "common.schema.json#/$defs/classification" },
+        "release_target": { "type": "string", "enum": ["no_release", "internal_handoff", "final_output", "external_release"] },
+        "tool_impact": { "type": "string", "enum": ["none", "read_only", "reversible_mutation", "irreversible_mutation"] },
+        "latency_priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "volume": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    },
+    "billet_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "force_class", "role", "task", "required_readiness", "authority_scope", "tool_scope", "tool_impact", "context_scope", "fallback_depth", "dispatch_required"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "force_class": { "type": "string", "enum": ["utility", "line", "specialist", "command", "sof", "assurance", "reserve"] },
+          "role": { "$ref": "common.schema.json#/$defs/role_id" },
+          "task": { "type": "string", "minLength": 1 },
+          "required_readiness": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+          "authority_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "tool_scope": { "$ref": "common.schema.json#/$defs/string_list" },
+          "tool_impact": { "type": "string", "enum": ["none", "read_only", "reversible_mutation", "irreversible_mutation"] },
+          "context_scope": { "$ref": "common.schema.json#/$defs/classification" },
+          "fallback_depth": { "type": "integer", "minimum": 0, "maximum": 3 },
+          "dispatch_required": { "type": "boolean" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["allowed_deployment_boundaries", "excluded_profile_ids", "require_family_diversity", "max_primary_billets_per_profile", "router_task", "router_required_readiness"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed_deployment_boundaries": { "$ref": "common.schema.json#/$defs/string_list" },
+        "excluded_profile_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "common.schema.json#/$defs/id" }
+        },
+        "require_family_diversity": { "type": "boolean" },
+        "max_primary_billets_per_profile": { "type": "integer", "minimum": 1 },
+        "router_task": { "type": "string", "minLength": 1 },
+        "router_required_readiness": { "$ref": "common.schema.json#/$defs/readiness_rating" }
+      }
+    },
+    "selection_policy": {
+      "type": "object",
+      "required": ["strategy", "weights", "max_candidates_per_billet"],
+      "additionalProperties": false,
+      "properties": {
+        "strategy": { "type": "string", "enum": ["economy_of_force", "balanced", "quality_first"] },
+        "weights": {
+          "type": "object",
+          "required": ["quality", "policy", "cost", "latency"],
+          "additionalProperties": false,
+          "properties": {
+            "quality": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "policy": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "cost": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "latency": { "type": "integer", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "max_candidates_per_billet": { "type": "integer", "minimum": 1, "maximum": 20 }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "required": ["required", "different_model_family_required", "deterministic_checks", "human_review_triggers"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "different_model_family_required": { "type": "boolean" },
+        "deterministic_checks": { "$ref": "common.schema.json#/$defs/string_list" },
+        "human_review_triggers": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["source_contracts", "inherited_from_model", "human_final_decision_authority", "commander_retained_decisions"],
+      "additionalProperties": false,
+      "properties": {
+        "source_contracts": { "$ref": "common.schema.json#/$defs/string_list" },
+        "inherited_from_model": { "type": "boolean", "const": false },
+        "human_final_decision_authority": { "type": "boolean", "const": true },
+        "commander_retained_decisions": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "required": ["token_budget", "cost_budget", "max_command_calls", "max_specialist_calls", "saturation_action"],
+      "additionalProperties": false,
+      "properties": {
+        "token_budget": { "type": "integer", "minimum": 1 },
+        "cost_budget": { "type": "string", "minLength": 1 },
+        "max_command_calls": { "type": "integer", "minimum": 0 },
+        "max_specialist_calls": { "type": "integer", "minimum": 0 },
+        "saturation_action": { "type": "string", "minLength": 1 }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["metrics", "review_at", "aar_triggers"],
+      "additionalProperties": false,
+      "properties": {
+        "metrics": { "$ref": "common.schema.json#/$defs/string_list" },
+        "review_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "aar_triggers": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

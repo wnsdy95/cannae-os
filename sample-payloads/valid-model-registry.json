@@ -1,0 +1,153 @@
+{
+  "schema_version": "0.2",
+  "type": "ModelRegistry",
+  "id": "MR-Controls",
+  "registry_version": "2026-07-20.1",
+  "profiles": [
+    {
+      "id": "MP-ROUTER-01",
+      "model_family": "routing-family",
+      "model_version": "routing-family-2026-07-01",
+      "harness_version": "controls-router-1.0.0",
+      "system_prompt_version": "router-prompt-1.0.0",
+      "tool_schema_version": "routing-tools-1.0.0",
+      "endpoint_ref": "model-endpoints/router-primary",
+      "capability_band": "C1",
+      "force_classes": ["specialist"],
+      "deployment_boundary": "approved-managed-runtime",
+      "allowed_context_classes": ["public", "internal", "sensitive"],
+      "availability": "ready",
+      "cost_class": "low",
+      "max_context_tokens": 64000,
+      "task_readiness": [
+        { "task": "mission-routing", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-RouterHeldOut-202607"], "quality_score": 97, "policy_compliance_score": 99, "latency_score": 96, "p95_latency_ms": 420, "evaluated_at": "2026-07-10T09:00:00+09:00", "expires_at": "2026-10-10T09:00:00+09:00" }
+      ],
+      "limitations": ["No execution or release authority"],
+      "last_updated_at": "2026-07-10T09:00:00+09:00"
+    },
+    {
+      "id": "MP-LINE-01",
+      "model_family": "efficient-family",
+      "model_version": "efficient-family-2026-06-15",
+      "harness_version": "controls-agent-1.0.0",
+      "system_prompt_version": "line-prompt-1.1.0",
+      "tool_schema_version": "repository-tools-1.0.0",
+      "endpoint_ref": "model-endpoints/line-primary",
+      "capability_band": "C1",
+      "force_classes": ["line"],
+      "deployment_boundary": "approved-managed-runtime",
+      "allowed_context_classes": ["public", "internal", "sensitive"],
+      "availability": "ready",
+      "cost_class": "low",
+      "max_context_tokens": 64000,
+      "task_readiness": [
+        { "task": "structured-documentation", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only", "reversible_mutation"], "evidence": ["EVAL-LineDocs-202607"], "quality_score": 95, "policy_compliance_score": 99, "latency_score": 95, "p95_latency_ms": 480, "evaluated_at": "2026-07-11T09:00:00+09:00", "expires_at": "2026-10-11T09:00:00+09:00" }
+      ],
+      "limitations": ["No external release or irreversible mutation"],
+      "last_updated_at": "2026-07-11T09:00:00+09:00"
+    },
+    {
+      "id": "MP-SPECIALIST-01",
+      "model_family": "code-family",
+      "model_version": "code-family-2026-07-08",
+      "harness_version": "controls-agent-1.0.0",
+      "system_prompt_version": "specialist-prompt-1.0.0",
+      "tool_schema_version": "repository-tools-1.0.0",
+      "endpoint_ref": "model-endpoints/specialist-primary",
+      "capability_band": "C2",
+      "force_classes": ["specialist", "sof", "command"],
+      "deployment_boundary": "approved-managed-runtime",
+      "allowed_context_classes": ["public", "internal", "sensitive"],
+      "availability": "ready",
+      "cost_class": "medium",
+      "max_context_tokens": 128000,
+      "task_readiness": [
+        { "task": "code-implementation", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only", "reversible_mutation"], "evidence": ["EVAL-CodeMission-202607"], "quality_score": 96, "policy_compliance_score": 99, "latency_score": 82, "p95_latency_ms": 920, "evaluated_at": "2026-07-12T09:00:00+09:00", "expires_at": "2026-10-12T09:00:00+09:00" },
+        { "task": "mission-analysis", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-SpecialistPlanning-202607"], "quality_score": 85, "policy_compliance_score": 97, "latency_score": 78, "p95_latency_ms": 1100, "evaluated_at": "2026-07-12T09:00:00+09:00", "expires_at": "2026-10-12T09:00:00+09:00" }
+      ],
+      "limitations": ["Production mutation requires scoped approval"],
+      "last_updated_at": "2026-07-12T09:00:00+09:00"
+    },
+    {
+      "id": "MP-COMMAND-01",
+      "model_family": "reasoning-family",
+      "model_version": "reasoning-family-2026-07-10",
+      "harness_version": "controls-command-1.0.0",
+      "system_prompt_version": "command-prompt-1.0.0",
+      "tool_schema_version": "command-tools-1.0.0",
+      "endpoint_ref": "model-endpoints/command-primary",
+      "capability_band": "C3",
+      "force_classes": ["command", "sof", "specialist", "line", "assurance"],
+      "deployment_boundary": "approved-managed-runtime",
+      "allowed_context_classes": ["public", "internal", "sensitive"],
+      "availability": "ready",
+      "cost_class": "scarce",
+      "max_context_tokens": 256000,
+      "task_readiness": [
+        { "task": "mission-analysis", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-CommandIntegration-202607"], "quality_score": 100, "policy_compliance_score": 100, "latency_score": 80, "p95_latency_ms": 1500, "evaluated_at": "2026-07-13T09:00:00+09:00", "expires_at": "2026-10-13T09:00:00+09:00" },
+        { "task": "mission-routing", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-CommandRouting-202607"], "quality_score": 90, "policy_compliance_score": 99, "latency_score": 76, "p95_latency_ms": 1700, "evaluated_at": "2026-07-13T09:00:00+09:00", "expires_at": "2026-10-13T09:00:00+09:00" },
+        { "task": "code-implementation", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only", "reversible_mutation"], "evidence": ["EVAL-CommandCodeFallback-202607"], "quality_score": 88, "policy_compliance_score": 98, "latency_score": 70, "p95_latency_ms": 1850, "evaluated_at": "2026-07-13T09:00:00+09:00", "expires_at": "2026-10-13T09:00:00+09:00" },
+        { "task": "structured-documentation", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only", "reversible_mutation"], "evidence": ["EVAL-CommandDocsFallback-202607"], "quality_score": 87, "policy_compliance_score": 99, "latency_score": 72, "p95_latency_ms": 1800, "evaluated_at": "2026-07-13T09:00:00+09:00", "expires_at": "2026-10-13T09:00:00+09:00" },
+        { "task": "independent-output-review", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-CommandReviewFallback-202607"], "quality_score": 86, "policy_compliance_score": 98, "latency_score": 74, "p95_latency_ms": 1750, "evaluated_at": "2026-07-13T09:00:00+09:00", "expires_at": "2026-10-13T09:00:00+09:00" }
+      ],
+      "limitations": ["Decision support only; human Commander retains authority"],
+      "last_updated_at": "2026-07-13T09:00:00+09:00"
+    },
+    {
+      "id": "MP-ASSURANCE-01",
+      "model_family": "audit-family",
+      "model_version": "audit-family-2026-07-02",
+      "harness_version": "controls-assurance-1.0.0",
+      "system_prompt_version": "assurance-prompt-1.0.0",
+      "tool_schema_version": "assurance-tools-1.0.0",
+      "endpoint_ref": "model-endpoints/assurance-primary",
+      "capability_band": "C2",
+      "force_classes": ["assurance"],
+      "deployment_boundary": "approved-managed-runtime",
+      "allowed_context_classes": ["public", "internal", "sensitive"],
+      "availability": "ready",
+      "cost_class": "medium",
+      "max_context_tokens": 128000,
+      "task_readiness": [
+        { "task": "independent-output-review", "readiness_rating": "T", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-IndependentReview-202607"], "quality_score": 97, "policy_compliance_score": 100, "latency_score": 84, "p95_latency_ms": 840, "evaluated_at": "2026-07-14T09:00:00+09:00", "expires_at": "2026-10-14T09:00:00+09:00" }
+      ],
+      "limitations": ["Cannot execute remediation or approve release"],
+      "last_updated_at": "2026-07-14T09:00:00+09:00"
+    },
+    {
+      "id": "MP-RESERVE-01",
+      "model_family": "fallback-family",
+      "model_version": "fallback-family-2026-06-30",
+      "harness_version": "controls-reserve-1.0.0",
+      "system_prompt_version": "reserve-prompt-1.0.0",
+      "tool_schema_version": "reserve-tools-1.0.0",
+      "endpoint_ref": "model-endpoints/reserve-primary",
+      "capability_band": "C2",
+      "force_classes": ["command", "reserve", "specialist", "sof", "line", "assurance"],
+      "deployment_boundary": "approved-isolated-runtime",
+      "allowed_context_classes": ["public", "internal", "sensitive"],
+      "availability": "ready",
+      "cost_class": "high",
+      "max_context_tokens": 128000,
+      "task_readiness": [
+        { "task": "mission-analysis", "readiness_rating": "P", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-ReserveMission-202607"], "quality_score": 80, "policy_compliance_score": 98, "latency_score": 68, "p95_latency_ms": 1950, "evaluated_at": "2026-07-15T09:00:00+09:00", "expires_at": "2026-10-15T09:00:00+09:00" },
+        { "task": "mission-routing", "readiness_rating": "P", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-ReserveRouting-202607"], "quality_score": 79, "policy_compliance_score": 98, "latency_score": 70, "p95_latency_ms": 1900, "evaluated_at": "2026-07-15T09:00:00+09:00", "expires_at": "2026-10-15T09:00:00+09:00" },
+        { "task": "code-implementation", "readiness_rating": "P", "allowed_tool_impacts": ["none", "read_only", "reversible_mutation"], "evidence": ["EVAL-ReserveCode-202607"], "quality_score": 81, "policy_compliance_score": 97, "latency_score": 65, "p95_latency_ms": 2050, "evaluated_at": "2026-07-15T09:00:00+09:00", "expires_at": "2026-10-15T09:00:00+09:00" },
+        { "task": "structured-documentation", "readiness_rating": "P", "allowed_tool_impacts": ["none", "read_only", "reversible_mutation"], "evidence": ["EVAL-ReserveDocs-202607"], "quality_score": 82, "policy_compliance_score": 98, "latency_score": 72, "p95_latency_ms": 1880, "evaluated_at": "2026-07-15T09:00:00+09:00", "expires_at": "2026-10-15T09:00:00+09:00" },
+        { "task": "independent-output-review", "readiness_rating": "P", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-ReserveReview-202607"], "quality_score": 78, "policy_compliance_score": 98, "latency_score": 69, "p95_latency_ms": 1920, "evaluated_at": "2026-07-15T09:00:00+09:00", "expires_at": "2026-10-15T09:00:00+09:00" },
+        { "task": "degraded-mode-handoff", "readiness_rating": "P", "allowed_tool_impacts": ["none", "read_only"], "evidence": ["EVAL-ReserveHandoff-202607"], "quality_score": 88, "policy_compliance_score": 100, "latency_score": 82, "p95_latency_ms": 900, "evaluated_at": "2026-07-15T09:00:00+09:00", "expires_at": "2026-10-15T09:00:00+09:00" }
+      ],
+      "limitations": ["Reduced throughput and mandatory human supervision in degraded mode"],
+      "last_updated_at": "2026-07-15T09:00:00+09:00"
+    }
+  ],
+  "governance": {
+    "owner_role": "S4",
+    "model_change_requires_reevaluation": true,
+    "floating_versions_prohibited": true,
+    "human_final_decision_authority": true
+  },
+  "classification": "sensitive",
+  "status": "in_progress",
+  "created_at": "2026-07-20T08:00:00+09:00"
+}

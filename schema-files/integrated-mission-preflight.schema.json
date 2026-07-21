@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/integrated-mission-preflight.schema.json",
+  "title": "Integrated Mission Preflight Bundle",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "model_registry_path", "model_assignment_request_path", "routing_bundle_path", "agent_bindings", "dispatch_controls", "classification", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.2" },
+    "type": { "type": "string", "const": "IntegratedMissionPreflightBundle" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "minLength": 1 },
+    "model_registry_path": { "type": "string", "minLength": 1 },
+    "model_assignment_request_path": { "type": "string", "minLength": 1 },
+    "routing_bundle_path": { "type": "string", "minLength": 1 },
+    "agent_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["agent_id", "billet_id", "routing_receipt_id"],
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": { "type": "string", "minLength": 1 },
+          "billet_id": { "$ref": "common.schema.json#/$defs/id" },
+          "routing_receipt_id": { "$ref": "common.schema.json#/$defs/id" }
+        }
+      }
+    },
+    "dispatch_controls": {
+      "type": "object",
+      "required": ["require_ready_routing", "require_ready_model_assignment", "human_final_decision_authority", "emit_usage_events"],
+      "additionalProperties": false,
+      "properties": {
+        "require_ready_routing": { "type": "boolean", "const": true },
+        "require_ready_model_assignment": { "type": "boolean", "const": true },
+        "human_final_decision_authority": { "type": "boolean", "const": true },
+        "emit_usage_events": { "type": "boolean", "const": true }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

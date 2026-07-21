@@ -48,7 +48,11 @@ const TYPE_TO_SCHEMA = {
   "approval-delegation-revocation-event": "approval-delegation-revocation-event.schema.json",
   "release-gate-decision-event": "release-gate-decision-event.schema.json",
   "routing-receipt": "routing-receipt.schema.json",
-  "model-force-assignment-plan": "model-force-assignment-plan.schema.json"
+  "model-force-assignment-plan": "model-force-assignment-plan.schema.json",
+  "model-registry": "model-registry.schema.json",
+  "model-assignment-request": "model-assignment-request.schema.json",
+  "integrated-mission-preflight": "integrated-mission-preflight.schema.json",
+  "model-usage-event": "model-usage-event.schema.json"
 };
 
 function readJson(filePath) {
@@ -207,6 +211,7 @@ const ROE_RANK = { Green: 0, Amber: 1, Red: 2, Black: 3 };
 const RISK_RANK = { low: 0, medium: 1, high: 2, critical: 3 };
 const AUTHORITY_RANK = { L0: 0, L1: 1, L2: 2, L3: 3, L4: 4, L5: 5 };
 const READINESS_RANK = { X: 0, U: 1, P: 2, T: 3 };
+const CLASSIFICATION_RANK = { public: 0, internal: 1, sensitive: 2, restricted: 3 };
 
 function authorityAtLeast(actual, minimum) {
   return AUTHORITY_RANK[actual] >= AUTHORITY_RANK[minimum];
@@ -1526,6 +1531,171 @@ function semanticRules(payload, type) {
     }
     if (payload.issued_by !== "COMMANDER" && (payload.changed_elements || []).includes("authority_boundary")) {
       issues.push(issue("critical", "AUTHORITY_FRAGO_REQUIRES_COMMANDER", "$.issued_by", "Authority boundary change requires Commander issue or approval."));
+    }
+  }
+
+  if (type === "model-registry") {
+    const profiles = payload.profiles || [];
+    const profileIds = new Set();
+    const registryTime = Date.parse(payload.created_at);
+
+    if (/^(latest|current|default)$/i.test(String(payload.registry_version || "").trim())) {
+      issues.push(issue("critical", "MODEL_REGISTRY_FLOATING_VERSION", "$.registry_version", "Registry versions must identify an immutable snapshot."));
+    }
+
+    for (const [index, profile] of profiles.entries()) {
+      const pointer = `$.profiles[${index}]`;
+      if (profileIds.has(profile.id)) {
+        issues.push(issue("critical", "MODEL_REGISTRY_DUPLICATE_PROFILE", `${pointer}.id`, "Model registry profile IDs must be unique."));
+      }
+      profileIds.add(profile.id);
+      for (const field of ["model_version", "harness_version", "system_prompt_version", "tool_schema_version"]) {
+        if (/^(latest|current|default)$/i.test(String(profile[field] || "").trim())) {
+          issues.push(issue("critical", "MODEL_REGISTRY_FLOATING_IDENTITY", `${pointer}.${field}`, "Registry identity fields must use immutable versions."));
+        }
+      }
+      if (/api[_-]?key|token|password|private[_-]?key|plaintext[_-]?secret/i.test(String(profile.endpoint_ref || ""))) {
+        issues.push(issue("critical", "MODEL_REGISTRY_SECRET_IN_ENDPOINT_REF", `${pointer}.endpoint_ref`, "Endpoint references must not contain credentials or secret values."));
+      }
+      const tasks = new Set();
+      for (const [taskIndex, readiness] of (profile.task_readiness || []).entries()) {
+        const taskPointer = `${pointer}.task_readiness[${taskIndex}]`;
+        if (tasks.has(readiness.task)) {
+          issues.push(issue("error", "MODEL_REGISTRY_DUPLICATE_TASK_READINESS", `${taskPointer}.task`, "A profile may have only one readiness record per task."));
+        }
+        tasks.add(readiness.task);
+        if (["T", "P"].includes(readiness.readiness_rating) && !hasSubstantiveItems(readiness.evidence)) {
+          issues.push(issue("critical", "MODEL_REGISTRY_READY_WITHOUT_EVIDENCE", `${taskPointer}.evidence`, "T/P readiness requires substantive evaluation evidence."));
+        }
+        if (!isValidDate(readiness.evaluated_at) || !isValidDate(readiness.expires_at) || !isBefore(readiness.evaluated_at, readiness.expires_at)) {
+          issues.push(issue("critical", "MODEL_REGISTRY_INVALID_EVALUATION_WINDOW", taskPointer, "Readiness evaluation must expire after it was evaluated."));
+        }
+        if (["T", "P"].includes(readiness.readiness_rating) && !Number.isNaN(registryTime) && Date.parse(readiness.expires_at) <= registryTime) {
+          issues.push(issue("critical", "MODEL_REGISTRY_EXPIRED_READINESS", `${taskPointer}.expires_at`, "Expired readiness cannot remain T/P in the active registry."));
+        }
+      }
+    }
+    if (!payload.governance || !["S4", "COS", "COMMANDER"].includes(payload.governance.owner_role)) {
+      issues.push(issue("error", "MODEL_REGISTRY_INVALID_OWNER", "$.governance.owner_role", "Model registry governance must be owned by sustainment or command authority."));
+    }
+    if (!payload.governance || payload.governance.human_final_decision_authority !== true) {
+      issues.push(issue("critical", "MODEL_REGISTRY_HUMAN_AUTHORITY_MISSING", "$.governance.human_final_decision_authority", "Registry governance must preserve human final decision authority."));
+    }
+  }
+
+  if (type === "model-assignment-request") {
+    const mission = payload.mission_profile || {};
+    const billets = payload.billet_requirements || [];
+    const weights = payload.selection_policy && payload.selection_policy.weights;
+    const highImpact = ["high", "critical"].includes(mission.risk_level)
+      || mission.roe_class === "Red"
+      || ["final_output", "external_release"].includes(mission.release_target)
+      || mission.tool_impact === "irreversible_mutation";
+    const billetIds = new Set();
+
+    if (/^(latest|current|default)$/i.test(String(payload.registry_version || "").trim())) {
+      issues.push(issue("critical", "MODEL_REQUEST_REGISTRY_VERSION_FLOATING", "$.registry_version", "Assignment requests must target an immutable registry snapshot."));
+    }
+
+    if (weights && Object.values(weights).reduce((sum, value) => sum + value, 0) !== 100) {
+      issues.push(issue("critical", "MODEL_REQUEST_WEIGHTS_NOT_100", "$.selection_policy.weights", "Selection weights must total 100."));
+    }
+    if (payload.classification !== mission.classification) {
+      issues.push(issue("critical", "MODEL_REQUEST_CLASSIFICATION_MISMATCH", "$.classification", "Request and mission profile classifications must match."));
+    }
+    if (mission.roe_class === "Black") {
+      issues.push(issue("critical", "MODEL_REQUEST_BLACK_PROHIBITED", "$.mission_profile.roe_class", "Black missions cannot be compiled into executable model assignments."));
+    }
+    for (const [index, billet] of billets.entries()) {
+      const pointer = `$.billet_requirements[${index}]`;
+      if (billetIds.has(billet.id)) {
+        issues.push(issue("error", "MODEL_REQUEST_DUPLICATE_BILLET", `${pointer}.id`, "Billet requirement IDs must be unique."));
+      }
+      billetIds.add(billet.id);
+      if (!["T", "P"].includes(billet.required_readiness)) {
+        issues.push(issue("critical", "MODEL_REQUEST_UNREADY_TARGET", `${pointer}.required_readiness`, "Executable billet requirements must target T or P readiness."));
+      }
+      if ((CLASSIFICATION_RANK[billet.context_scope] ?? 99) > (CLASSIFICATION_RANK[mission.classification] ?? -1)) {
+        issues.push(issue("critical", "MODEL_REQUEST_CONTEXT_EXCEEDS_MISSION", `${pointer}.context_scope`, "Billet context cannot exceed the mission classification."));
+      }
+      if (["command", "sof", "assurance"].includes(billet.force_class) && billet.fallback_depth < 2) {
+        issues.push(issue("critical", "MODEL_REQUEST_CRITICAL_BILLET_WITHOUT_DEPTH", `${pointer}.fallback_depth`, "Command, SOF, and assurance billets require alternate and contingency depth."));
+      }
+    }
+    if (!hasSubstantiveItems(payload.constraints && payload.constraints.allowed_deployment_boundaries)) {
+      issues.push(issue("critical", "MODEL_REQUEST_WITHOUT_DEPLOYMENT_BOUNDARY", "$.constraints.allowed_deployment_boundaries", "Assignment request requires approved deployment boundaries."));
+    }
+    const routerBillet = billets.find(item => item.task === (payload.constraints && payload.constraints.router_task));
+    if (!routerBillet || !["T", "P"].includes(payload.constraints && payload.constraints.router_required_readiness)) {
+      issues.push(issue("critical", "MODEL_REQUEST_WITHOUT_READY_ROUTER", "$.constraints", "Assignment request requires a T/P router billet."));
+    }
+    if (highImpact && !billets.some(item => item.force_class === "command" || item.force_class === "sof")) {
+      issues.push(issue("critical", "MODEL_REQUEST_MISSING_COMMAND", "$.billet_requirements", "High-impact assignment requires command or SOF integration."));
+    }
+    if (highImpact && (!payload.assurance || payload.assurance.required !== true)) {
+      issues.push(issue("critical", "MODEL_REQUEST_REQUIRES_ASSURANCE", "$.assurance.required", "High-impact assignment requires independent assurance."));
+    }
+    if (payload.assurance && payload.assurance.required === true && !billets.some(item => item.force_class === "assurance")) {
+      issues.push(issue("critical", "MODEL_REQUEST_MISSING_ASSURANCE_BILLET", "$.billet_requirements", "Required assurance needs an assurance billet."));
+    }
+    if (payload.assurance && payload.assurance.required === true && !hasSubstantiveItems(payload.assurance.deterministic_checks)) {
+      issues.push(issue("critical", "MODEL_REQUEST_WITHOUT_DETERMINISTIC_CHECKS", "$.assurance.deterministic_checks", "Assurance requires deterministic checks."));
+    }
+    if (!payload.authority || payload.authority.inherited_from_model !== false) {
+      issues.push(issue("critical", "MODEL_REQUEST_AUTHORITY_FROM_MODEL", "$.authority.inherited_from_model", "Model capability cannot create authority."));
+    }
+    if (!payload.authority || payload.authority.human_final_decision_authority !== true || !hasSubstantiveItems(payload.authority.commander_retained_decisions)) {
+      issues.push(issue("critical", "MODEL_REQUEST_HUMAN_AUTHORITY_MISSING", "$.authority", "Human final decision authority and retained decisions are required."));
+    }
+  }
+
+  if (type === "integrated-mission-preflight") {
+    const pathFields = ["model_registry_path", "model_assignment_request_path", "routing_bundle_path"];
+    for (const field of pathFields) {
+      const value = payload[field];
+      if (typeof value !== "string" || path.isAbsolute(value) || value.split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "INTEGRATED_PREFLIGHT_PATH_TRAVERSAL", `$.${field}`, "Integrated preflight paths must stay inside the repository."));
+      }
+    }
+    const bindings = payload.agent_bindings || [];
+    for (const [field, code] of [
+      ["agent_id", "INTEGRATED_PREFLIGHT_DUPLICATE_AGENT"],
+      ["billet_id", "INTEGRATED_PREFLIGHT_DUPLICATE_BILLET"],
+      ["routing_receipt_id", "INTEGRATED_PREFLIGHT_DUPLICATE_RECEIPT"]
+    ]) {
+      const values = bindings.map(item => item[field]);
+      if (new Set(values).size !== values.length) {
+        issues.push(issue("critical", code, "$.agent_bindings", `Integrated preflight ${field} bindings must be one-to-one.`));
+      }
+    }
+    const controls = payload.dispatch_controls || {};
+    if (controls.require_ready_routing !== true || controls.require_ready_model_assignment !== true) {
+      issues.push(issue("critical", "INTEGRATED_PREFLIGHT_BYPASS", "$.dispatch_controls", "Routing and model assignment must both be ready before dispatch."));
+    }
+    if (controls.human_final_decision_authority !== true) {
+      issues.push(issue("critical", "INTEGRATED_PREFLIGHT_HUMAN_AUTHORITY_MISSING", "$.dispatch_controls.human_final_decision_authority", "Integrated preflight must preserve human final decision authority."));
+    }
+  }
+
+  if (type === "model-usage-event") {
+    for (const field of ["registry_version", "model_version", "harness_version", "system_prompt_version", "tool_schema_version"]) {
+      if (/^(latest|current|default)$/i.test(String(payload[field] || "").trim())) {
+        issues.push(issue("critical", "MODEL_USAGE_FLOATING_VERSION", `$.${field}`, "Usage telemetry requires immutable model, harness, prompt, and tool-schema versions."));
+      }
+    }
+    if (!hasSubstantiveItems(payload.authority_scope_snapshot)) {
+      issues.push(issue("critical", "MODEL_USAGE_WITHOUT_AUTHORITY_SNAPSHOT", "$.authority_scope_snapshot", "Usage telemetry must preserve the dispatched authority scope."));
+    }
+    if (!hasSubstantiveItems(payload.evidence) || (payload.evidence || []).every(item => /self[- ]?(approval|confidence)|model self/i.test(item))) {
+      issues.push(issue("critical", "MODEL_USAGE_WITHOUT_EXTERNAL_EVIDENCE", "$.evidence", "Usage telemetry requires routing, preflight, test, or other external evidence."));
+    }
+    if (["failed", "blocked"].includes(payload.event_type) && !hasSubstantiveItems(payload.failure_codes)) {
+      issues.push(issue("error", "MODEL_USAGE_FAILURE_WITHOUT_CODE", "$.failure_codes", "Failed or blocked usage events require failure codes."));
+    }
+    if (["escalated", "fallback_activated"].includes(payload.event_type)) {
+      if (!payload.previous_profile_id || !payload.next_profile_id || payload.previous_profile_id === payload.next_profile_id) {
+        issues.push(issue("critical", "MODEL_USAGE_INVALID_TRANSITION", "$", "Escalation and fallback events require distinct previous and next profiles."));
+      }
     }
   }
 
