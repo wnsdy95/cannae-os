@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "type": "VerificationAttestation",
+  "id": "VAT-Cannae-Invalid",
+  "receipt_id": "VR-Cannae-001",
+  "receipt_relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/verification-receipts/VR-Cannae-001.json",
+  "receipt_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "candidate_id": "CAN-Cannae-001",
+  "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "verifier_id": "VERIFIER-Cannae-Sample",
+  "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+  "independence_group": "provider-sample",
+  "execution_origin": "remote",
+  "invocation_id": "INV-Cannae-Invalid",
+  "envelope": {
+    "payloadType": "application/vnd.in-toto+json",
+    "payload": "e30K",
+    "signatures": [
+      {
+        "keyid": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+        "sig": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+      }
+    ]
+  },
+  "issued_at": "2026-07-21T18:23:00+09:00",
+  "expires_at": "2026-07-21T18:30:00+09:00",
+  "attestation_sha256": "7e63e3a8a9a44465f7f54f3917a626acc5649ef6408ffd10387f3e942a389175"
+}

@@ -15,6 +15,7 @@ In an LLM runtime, conversational memory is the most fragile repository. Therefo
 - runtime payloads
 - repository-scoped artifact manifests
 - verification plans and receipts
+- verifier trust policies and signed verification attestations
 - AAR/readiness ledger
 
 This SOP defines how the S6 Knowledge role and the CoS operate knowledge management.
@@ -39,7 +40,7 @@ This SOP defines how the S6 Knowledge role and the CoS operate knowledge managem
 | Current mission state | event log projection | dashboard state |
 | Authority and approval | authority matrix, approval request | tool-use ROE |
 | Execution results | validator/test output, AAR | SITREP |
-| Adaptive validation proof | verification receipt + manifest history | checkpoint metric projection |
+| Adaptive validation proof | verification receipt + signed verifier quorum + manifest history | checkpoint metric projection |
 | Privileged adaptive approval | approval scope + consumption event | checkpoint approval binding |
 | Multi-repository deliverables | repository artifact manifest | repository-scoped artifact files |
 | Next task queue | framework doc, research queue | compendium |
@@ -144,7 +145,7 @@ Rules:
 | Source review | S2/S6 | reliability rating and interpretation risk |
 | AAR update | Evaluator/S6 | SOP updates and readiness changes |
 | Improvement checkpoint | S3/Evaluator/S6 | baseline, candidate, metrics, validation evidence, decision |
-| Proof-store verification | S6/Recorder | zero pending journals, valid manifest chain, valid artifact hashes |
+| Proof-store verification | S6/Recorder | zero pending journals, valid lease/fencing history, valid manifest chain, valid artifact hashes |
 | Handoff review | CoS/S6 | handoff packet |
 | Release review | Commander/S6 | final output safe summary |
 
@@ -157,7 +158,8 @@ Rules:
 - Place example payloads in `sample-payloads/` or a domain-specific payload directory.
 - Place prototypes in a separate `*-prototype/` directory.
 - Store long-running improvement campaign, checkpoint, and decision artifacts in the target repository namespace.
-- Store verification plans, receipts, parent decisions, approval scopes, and consumption events through the same repository artifact store; cite their manifest paths and hashes rather than copying status text.
+- Store verification plans, receipts, verifier trust policies, signed attestations, parent decisions, approval scopes, and consumption events through the same repository artifact store; cite their manifest paths and hashes rather than copying status text.
+- Treat trust policies as human-controlled roots. Keep private keys outside the repository and artifact store, and retain the exact policy artifact used for each signed quorum.
 - Run `repository-artifact-verify.js` before a checkpoint consumes proof and before every wave completes.
 - Update the README and source-map together.
 - In the compendium, record "why it was created" and "LLM application."
@@ -184,8 +186,11 @@ Knowledge management failure conditions:
 - An agent continued from a failed or unmeasured candidate instead of the last accepted working state.
 - Completion was claimed without a `before_completion` self-improvement checkpoint.
 - A candidate was promoted without a runtime-issued verification receipt for its exact repository state.
+- A v0.3 candidate was promoted without fresh signatures from the configured number of distinct trusted keys and independence groups over that exact receipt.
+- A trust-policy change, key activation, quorum reduction, or validity extension was accepted without scoped USER approval.
 - A follow-on baseline names a parent ID but does not retain the parent decision artifact and hash.
 - A pending transaction journal or integrity failure was ignored.
+- A lease expiry, stale-writer fencing failure, fencing-token rollback, or shared-filesystem consistency warning was ignored.
 
 ## 10. Prompt guard
 

@@ -6,6 +6,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added bounded self-improvement v0.3 with Ed25519 DSSE verification attestations, in-toto statement bindings, exact human-controlled trust-policy references, fresh multi-verifier quorum, key/group diversity, and remote attestation transport.
+- Upgraded repository artifact manifests to v0.4 with expiring shared-filesystem leases, monotonic fencing tokens, immutable revision reservation, stale-writer rejection, and exact crash recovery after history creation.
+- Added signed-attestation, signed self-improvement, multi-writer lease, stale-writer, replay, receipt-rebinding, and history-reservation regression fixtures.
+- Aligned corpus validation with artifact isolation by excluding the Git-ignored `.cannae` runtime proof store from source JSON parsing.
 - Added proof-carrying self-improvement v0.2 with shell-free verification plans, runtime-issued receipts, receipt-bound quality evidence, exact accepted-parent lineage, and consumed approval-ledger bindings.
 - Upgraded repository artifact manifests to v0.3 with write-ahead journals, immutable hash-linked history, digest sidecars, crash recovery, integrity verification, and tamper fixtures.
 - Added bounded self-improvement campaign, checkpoint, and decision contracts for evidence-driven evolution of in-progress work.

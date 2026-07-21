@@ -25,6 +25,8 @@ All Cannae-managed artifacts use this layout under the selected artifact root:
         ├── manifest.json
         ├── manifest.sha256
         ├── .manifest-history/
+        ├── .manifest.lease/
+        ├── .fencing-token
         ├── .transactions/
         └── missions/
             └── <mission-id>/
@@ -64,9 +66,11 @@ Every durable write must declare:
 
 Path segments must be single path-safe identifiers. POSIX/Windows absolute artifact paths, `..` traversal, symlink source files, and namespace symlinks that escape the artifact root are rejected.
 
-The store writes atomically while holding a repository-namespace manifest lock. Every write first records a transaction journal, then writes the artifact, then commits an immutable manifest-history entry, current manifest, and digest sidecar. If an artifact path already contains identical bytes, the write is idempotent. If it contains different bytes, the operation fails unless `--overwrite` or `--overwrite-artifact` is explicit. Normal agents must not overwrite prior evidence merely to make a run pass.
+The store writes while holding an expiring repository-namespace lease. Every successful acquisition receives a monotonically increasing fencing token from `.fencing-token`. The writer records a transaction journal, writes the artifact, creates an immutable manifest-history entry with no-overwrite semantics, rechecks lease ownership and token, then replaces the current manifest and digest sidecar. If an artifact path already contains identical bytes, the write is idempotent. If it contains different bytes, the operation fails unless `--overwrite` or `--overwrite-artifact` is explicit. Normal agents must not overwrite prior evidence merely to make a run pass.
 
-The lock is acquired through atomic directory creation and has a finite wait timeout. A stale lock is recovered only when it belongs to the same host and its PID is no longer alive. An active same-host lock and any foreign-host lock fail closed rather than being stolen. `--lock-timeout-ms` and `--lock-stale-ms` are available for the general artifact-store CLI; both must be positive integers.
+The lease is acquired through atomic directory creation and has a finite TTL. An unexpired owner record cannot be stolen, including across hosts. An expired record may be replaced only after the contender obtains the atomic recovery marker, confirms the same expired owner, removes that lease directory, obtains a higher fencing token, and creates a new owner record. Every write phase revalidates lease ID, token, and expiry; a resumed old writer is fenced. `--lease-timeout-ms` controls acquisition wait and `--lease-ttl-ms` controls validity. The legacy `--lock-timeout-ms` and `--lock-stale-ms` flags remain compatibility aliases.
+
+`.manifest.lease/` is transient coordination state and may be absent while idle. `.fencing-token` is durable namespace state and must never be reset, copied backward, or edited by an agent.
 
 ## 4. Manifest
 
@@ -79,17 +83,19 @@ Each repository namespace has one `RepositoryArtifactManifest` containing:
 - filename, content type, byte size, and SHA-256;
 - creation and update timestamps;
 - a monotonic manifest revision;
-- isolation control assertions.
+- isolation control assertions;
+- coordination backend, lease ID, and fencing token;
 - the previous manifest digest, current canonical digest, retained history range, and zero-pending-transaction assertion.
 
-Each history entry links to the prior canonical manifest SHA-256. `manifest.sha256` anchors the current bytes. `validator-cli-prototype/validate.js` blocks namespace mismatch, path traversal, cross-repository paths, count mismatch, invalid history ranges, digest mismatch, missing concurrency/journal guards, duplicate paths, and filename/ID mismatch.
+Each history entry links to the prior canonical manifest SHA-256. Its fencing token may remain equal for revisions committed under one lease, must increase when a new lease epoch commits, and must never decrease or be reused by a different lease ID. `manifest.sha256` anchors the current bytes. `validator-cli-prototype/validate.js` blocks namespace mismatch, path traversal, cross-repository paths, count mismatch, invalid history ranges, digest mismatch, missing lease/fencing/journal guards, duplicate paths, and filename/ID mismatch.
 
 ## 5. Crash Recovery and Verification
 
-Journal states are `prepared`, `artifact_written`, and `manifest_committed`. Recovery runs only while holding the namespace lock:
+Journal states are `prepared`, `artifact_written`, and `manifest_committed`. Recovery runs only while holding a valid replacement or renewed namespace lease:
 
 - a prepared journal with no candidate bytes is archived as rolled back;
 - candidate bytes with the declared hash are reconciled into the candidate manifest;
+- a revision reserved by an immutable history entry is finalized exactly, even when the original writer failed before moving the manifest head;
 - a manifest already at the candidate hash is finalized idempotently;
 - an unexpected artifact or manifest hash fails closed for manual recovery.
 
@@ -200,4 +206,10 @@ node run-repository-artifact-recovery-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 ```
 
-The isolation fixture covers namespace and path controls. The concurrency fixture launches 24 writers and exercises lock ownership. The recovery fixture injects failures after artifact write and after manifest commit, reconciles both states, and detects artifact and manifest tampering.
+The isolation fixture covers namespace and path controls. The concurrency fixture launches 24 writers, checks monotonic fencing, recovers an expired foreign-host lease, blocks an unexpired lease, and fences a stale writer. The recovery fixture injects failures after artifact write, immutable history creation, and manifest commit, reconciles all states, verifies a same-lease migration plus write, and detects artifact and manifest tampering.
+
+## 9. Coordination Boundary
+
+The built-in backend is a shared-filesystem lease, not a consensus service. Its guarantees require coherent atomic `mkdir`, hard-link creation, rename, and read-after-write visibility for every writer, plus clocks accurate enough for the selected TTL. A local filesystem and a correctly configured strongly coherent shared filesystem are the intended deployments.
+
+Do not use this backend as a partition-tolerant distributed lock. Under network partition, split-brain storage, delayed visibility, fencing-token rollback, or a filesystem without the required atomic operations, stop durable writes. Multi-host deployments that must survive those failures require an external linearizable coordinator such as etcd and a storage commit path that rejects every stale fencing token. A lease record alone cannot make an unsafe storage backend safe.

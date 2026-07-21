@@ -88,7 +88,8 @@ Read these only when needed:
 3. For routing receipts, use `--write-artifact --target-repository <repo>`. For model compilation and integrated preflight, use `--write-artifact --repository <repo>`.
 4. Use one shared `--artifact-root` for a campaign when useful; repository fingerprint namespaces still keep outputs separate.
 5. Treat persistence failure as a blocked wave. Do not dispatch from an integrated preflight whose artifact write failed.
-6. Run `repository-artifact-verify.js` before consuming proof and before wave completion. A pending journal, broken history, sidecar mismatch, or artifact hash mismatch blocks the wave. Use `--recover` only for a valid pending transaction.
+6. Run `repository-artifact-verify.js` before consuming proof and before wave completion. A pending journal, broken history, non-monotonic fencing token, sidecar mismatch, or artifact hash mismatch blocks the wave. Use `--recover` only for a valid pending transaction under a current lease.
+7. Treat the built-in coordinator as a coherent shared-filesystem backend, not a partition-tolerant distributed lock. Stop writes on split-brain, delayed visibility, fencing-token rollback, or unsupported atomic operations; require an external linearizable coordinator and storage-side fencing for those deployments.
 
 ### Operating Bounded Self-Improvement
 
@@ -97,14 +98,16 @@ For a multi-wave mission, control-plane change, explicit autonomous-improvement 
 1. Create a `SelfImprovementCampaign` before the first improvement cycle, preferably with `self-improvement-campaign-init.js`. Bind it to one target repository and preserve `USER` final decision authority.
 2. Define observable acceptance criteria, normalized evidence-backed quality dimensions, protected invariants, finite budgets, and stop conditions. Do not use model confidence as a metric.
 3. For every candidate and completion state, create a repository-state-bound `VerificationPlan`; run `verification-runner.js --repository <repo> --write-artifact`. Never substitute model-authored test status, prose output, or an unpersisted receipt.
-4. At every wave end, validation failure, scope change, and before completion, create a `SelfImprovementCheckpoint` whose metrics and independent evaluation cite persisted receipt IDs. Run `autonomous-improvement-controller.js --repository <repo>` against the proof store.
-5. For cycle 2+, cite the manifest path/hash of the immediately prior `accept_working_state` decision and use its `accepted_revision` as the baseline. Do not carry forward a rejected, rollback, or merely named parent.
-6. For policy, authority, scope, or release-affecting candidates, persist an exact USER-granted `ApprovalScope` and matching `ApprovalConsumptionEvent`. Bind its execution ID to the checkpoint; prose approval and reused events are invalid.
-7. Execute only the next task order from the latest decision. Carry forward only an accepted working state; do not build on a rejected candidate.
-8. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require receipt-backed independent evaluation for runtime, skill, and policy candidates.
-9. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
-10. Never infer merge, push, release, policy, or authority approval from `accept_working_state` or `complete`; the controller always leaves release unauthorized.
-11. Do not report completion without a passing `before_completion` checkpoint, a fresh receipt, a verified parent when applicable, and repository-scoped decision evidence.
+   Capture optional CLI stdout outside the target repository until verification succeeds; a shell creates redirected files before the check starts.
+4. For every v0.3 candidate and completion state, obtain fresh Ed25519 DSSE attestations over the exact persisted receipt from distinct trusted verifier IDs and keys in the policy-required independence groups. Persist them unchanged and cite their manifest paths and hashes. A signed `remote` origin is a claim, not trusted-execution proof.
+5. At every wave end, validation failure, scope change, and before completion, create a `SelfImprovementCheckpoint` whose metrics and independent evaluation cite persisted receipt IDs and, for v0.3, the signed quorum. Run `autonomous-improvement-controller.js --repository <repo>` against the proof store.
+6. For cycle 2+, cite the manifest path/hash of the immediately prior `accept_working_state` decision and use its `accepted_revision` as the baseline. Do not carry forward a rejected, rollback, or merely named parent.
+7. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window changes, persist an exact USER-granted `ApprovalScope` and matching `ApprovalConsumptionEvent`. Bind its execution ID to the checkpoint; prose approval and reused events are invalid.
+8. Execute only the next task order from the latest decision. Carry forward only an accepted working state; do not build on a rejected candidate.
+9. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require receipt-backed independent evaluation for runtime, skill, and policy candidates.
+10. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
+11. Never infer merge, push, release, policy, trust-root, or authority approval from `accept_working_state` or `complete`; the controller always leaves release unauthorized.
+12. Do not report completion without a passing `before_completion` checkpoint, a fresh receipt, a fresh signed quorum for v0.3, a verified parent when applicable, and repository-scoped decision evidence.
 
 Read `docs/bounded-self-improvement-operations.md` for the full state machine and authority matrix.
 
@@ -151,7 +154,9 @@ node run-repository-artifact-isolation-fixtures.js
 node run-repository-artifact-concurrency-fixtures.js
 node run-repository-artifact-recovery-fixtures.js
 node run-verification-runner-fixtures.js
+node run-verification-attestation-fixtures.js
 node run-self-improvement-fixtures.js
+node run-signed-self-improvement-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -168,7 +173,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
-- Adaptive missions require a finite campaign, runtime-issued receipt proof, exact accepted-parent lineage, a verified artifact store, and a mandatory completion checkpoint; self-improvement never creates self-approval, self-release, or unbounded recursion.
+- Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed quorum for v0.3, exact accepted-parent lineage, a verified artifact store, and a mandatory completion checkpoint; self-improvement never creates self-approval, self-release, trust-root authority, or unbounded recursion.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.

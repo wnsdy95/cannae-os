@@ -808,6 +808,34 @@ const fixtures = [
     type: "verification-receipt",
     exitCode: 1,
     requiredCodes: ["CONST_MISMATCH", "MIN_ITEMS", "VERIFICATION_RECEIPT_SHELL_USED"]
+  },
+  {
+    name: "valid verifier trust policy",
+    file: "sample-payloads/valid-verifier-trust-policy.json",
+    type: "verifier-trust-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "verifier trust policy has a mismatched key id",
+    file: "sample-payloads/invalid-verifier-trust-policy-key-id.json",
+    type: "verifier-trust-policy",
+    exitCode: 1,
+    requiredCodes: ["VERIFIER_POLICY_KEY_ID_MISMATCH"]
+  },
+  {
+    name: "valid signed verification attestation",
+    file: "sample-payloads/valid-verification-attestation.json",
+    type: "verification-attestation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "verification attestation has an invalid signed statement",
+    file: "sample-payloads/invalid-verification-attestation-statement.json",
+    type: "verification-attestation",
+    exitCode: 1,
+    requiredCodes: ["ATTESTATION_STATEMENT_INVALID"]
   }
 ];
 

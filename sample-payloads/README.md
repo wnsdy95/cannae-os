@@ -20,6 +20,7 @@ Use these examples to test:
 - repository artifact manifest validation
 - bounded self-improvement campaign, checkpoint, and decision validation
 - verification plan and runtime-issued receipt validation
+- verifier trust policy and signed verification attestation validation
 - CCIR alert validation
 - handoff packet validation
 - continuity plan validation
@@ -51,6 +52,7 @@ Use these examples to test:
 - repository-scoped JSON and file artifact isolation logic
 - bounded self-improvement decision and persistence logic
 - proof receipt integrity, shell prohibition, parent lineage, and approval-consumption logic
+- Ed25519 key identity, DSSE statement binding, signature quorum, replay expiry, and receipt-content binding
 
 Fixture convention:
 

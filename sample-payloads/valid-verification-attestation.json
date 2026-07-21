@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "type": "VerificationAttestation",
+  "id": "VAT-a261c35c4c85be8ed8ce881c",
+  "receipt_id": "VR-Cannae-001",
+  "receipt_relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/verification-receipts/VR-Cannae-001.json",
+  "receipt_sha256": "573dc298cd2e69976ecd44ab8c733bd6ddead54ecdbd6fdc4d96c9e42f6b72fc",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "candidate_id": "CAN-Cannae-001",
+  "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "verifier_id": "VERIFIER-Cannae-Sample",
+  "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+  "independence_group": "provider-sample",
+  "execution_origin": "remote",
+  "invocation_id": "INV-Cannae-Sample",
+  "envelope": {
+    "payloadType": "application/vnd.in-toto+json",
+    "payload": "ewogICJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YxIiwKICAic3ViamVjdCI6IFsKICAgIHsKICAgICAgIm5hbWUiOiAiVlItQ2FubmFlLTAwMSIsCiAgICAgICJkaWdlc3QiOiB7CiAgICAgICAgInNoYTI1NiI6ICI1NzNkYzI5OGNkMmU2OTk3NmVjZDQ0YWI4YzczM2JkNmRkZWFkNTRlY2RiZDZmZGM0ZDk2YzllNDJmNmI3MmZjIgogICAgICB9CiAgICB9CiAgXSwKICAicHJlZGljYXRlVHlwZSI6ICJodHRwczovL2Nhbm5hZS5kZXYvYXR0ZXN0YXRpb25zL3ZlcmlmaWNhdGlvbi1yZWNlaXB0L3YwLjMiLAogICJwcmVkaWNhdGUiOiB7CiAgICAic2NoZW1hX3ZlcnNpb24iOiAiMC4xIiwKICAgICJyZWNlaXB0IjogewogICAgICAiaWQiOiAiVlItQ2FubmFlLTAwMSIsCiAgICAgICJyZWxhdGl2ZV9wYXRoIjogInJlcG9zaXRvcmllcy9jYW5uYWUtb3MtYWFhYWFhYWFhYWFhL21pc3Npb25zL01JUy1DYW5uYWUtMDAxL0MxL3ZlcmlmaWNhdGlvbi1yZWNlaXB0cy9WUi1DYW5uYWUtMDAxLmpzb24iLAogICAgICAicGxhbl9pZCI6ICJWUC1DYW5uYWUtMDAxIiwKICAgICAgInJlY2VpcHRfc2hhMjU2IjogImFkNDQ4ZDc2Y2UwMGU1MTMyZWE3ZDRmZmExNjc4Mzk4NjVlMjQzMDI0YzAzZTIxMTQzZGMyZTJjMmNlMmIyMTciLAogICAgICAiY2FuZGlkYXRlX2lkIjogIkNBTi1DYW5uYWUtMDAxIiwKICAgICAgImNhbmRpZGF0ZV9yZXZpc2lvbiI6ICJXVC1iYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiIiwKICAgICAgImNhbXBhaWduX2lkIjogIlNJQy1DYW5uYWUtMDAxIiwKICAgICAgIm1pc3Npb25faWQiOiAiTUlTLUNhbm5hZS0wMDEiLAogICAgICAiY3ljbGVfbnVtYmVyIjogMQogICAgfSwKICAgICJyZXBvc2l0b3J5X2JpbmRpbmciOiB7CiAgICAgICJyZXBvc2l0b3J5X2tleSI6ICJjYW5uYWUtb3MtYWFhYWFhYWFhYWFhIiwKICAgICAgImlkZW50aXR5X2ZpbmdlcnByaW50IjogImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiCiAgICB9LAogICAgInZlcmlmaWVyIjogewogICAgICAiaWQiOiAiVkVSSUZJRVItQ2FubmFlLVNhbXBsZSIsCiAgICAgICJrZXlfaWQiOiAiMjA2NzY3ODc1NmJmNjVjN2EwNTMzOWU4NDNlOTc0OGZlYjQxNGMyMjNlOTc2OTRiZTJkOGM3YzA5ZDNmMzU5ZiIsCiAgICAgICJpbmRlcGVuZGVuY2VfZ3JvdXAiOiAicHJvdmlkZXItc2FtcGxlIiwKICAgICAgImV4ZWN1dGlvbl9vcmlnaW4iOiAicmVtb3RlIiwKICAgICAgImludm9jYXRpb25faWQiOiAiSU5WLUNhbm5hZS1TYW1wbGUiCiAgICB9LAogICAgImlzc3VlZF9hdCI6ICIyMDI2LTA3LTIxVDE4OjIzOjAwKzA5OjAwIiwKICAgICJleHBpcmVzX2F0IjogIjIwMjYtMDctMjFUMTg6MzA6MDArMDk6MDAiLAogICAgIm5vbmNlIjogInNhbXBsZS1ub25jZS0wMDEiCiAgfQp9Cg==",
+    "signatures": [
+      {
+        "keyid": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+        "sig": "DvSOIAFAIGGWU0BfQAkL7X0fsmEufXyRT/2MhzIuwKJvHZQxKHQwBQ4ZmYo2U6jUcnd/0REKH6C0aFt58IE0Ag=="
+      }
+    ]
+  },
+  "issued_at": "2026-07-21T18:23:00+09:00",
+  "expires_at": "2026-07-21T18:30:00+09:00",
+  "attestation_sha256": "05b1c54f37f7bc24eceaf1900d61cb6f78beb0b15cdaeb8494d0d06d35e8a03e"
+}

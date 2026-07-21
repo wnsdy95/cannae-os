@@ -3,10 +3,10 @@
   "$id": "https://controls.local/schema-files/repository-artifact-manifest.schema.json",
   "title": "Repository Artifact Manifest",
   "type": "object",
-  "required": ["schema_version", "type", "id", "repository", "namespace_root", "manifest_revision", "previous_manifest_sha256", "artifacts", "artifact_count", "isolation", "integrity", "created_at", "updated_at"],
+  "required": ["schema_version", "type", "id", "repository", "namespace_root", "manifest_revision", "previous_manifest_sha256", "artifacts", "artifact_count", "isolation", "coordination", "integrity", "created_at", "updated_at"],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.3" },
+    "schema_version": { "type": "string", "const": "0.4" },
     "type": { "type": "string", "const": "RepositoryArtifactManifest" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "repository": {
@@ -47,7 +47,7 @@
     "artifact_count": { "type": "integer", "minimum": 0 },
     "isolation": {
       "type": "object",
-      "required": ["repository_scoped", "cross_repository_writes_prohibited", "absolute_paths_recorded", "cross_process_manifest_lock", "stale_lock_recovery_fail_closed", "write_ahead_journal"],
+      "required": ["repository_scoped", "cross_repository_writes_prohibited", "absolute_paths_recorded", "cross_process_manifest_lock", "stale_lock_recovery_fail_closed", "cross_process_manifest_lease", "fencing_tokens", "write_ahead_journal"],
       "additionalProperties": false,
       "properties": {
         "repository_scoped": { "type": "boolean", "const": true },
@@ -55,7 +55,19 @@
         "absolute_paths_recorded": { "type": "boolean", "const": false },
         "cross_process_manifest_lock": { "type": "boolean", "const": true },
         "stale_lock_recovery_fail_closed": { "type": "boolean", "const": true },
+        "cross_process_manifest_lease": { "type": "boolean", "const": true },
+        "fencing_tokens": { "type": "boolean", "const": true },
         "write_ahead_journal": { "type": "boolean", "const": true }
+      }
+    },
+    "coordination": {
+      "type": "object",
+      "required": ["backend", "lease_id", "fencing_token"],
+      "additionalProperties": false,
+      "properties": {
+        "backend": { "type": "string", "enum": ["shared_filesystem_lease", "external_linearizable_lease"] },
+        "lease_id": { "type": "string", "minLength": 1 },
+        "fencing_token": { "type": "integer", "minimum": 1 }
       }
     },
     "integrity": {

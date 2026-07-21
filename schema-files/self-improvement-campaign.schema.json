@@ -25,7 +25,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.2" },
+    "schema_version": { "type": "string", "enum": ["0.2", "0.3"] },
     "type": { "type": "string", "const": "SelfImprovementCampaign" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -168,6 +168,28 @@
         "max_output_bytes_per_stream": { "type": "integer", "minimum": 1024, "maximum": 16777216 },
         "repository_state_must_remain_unchanged": { "type": "boolean", "const": true },
         "receipt_persistence_required": { "type": "boolean", "const": true }
+      }
+    },
+    "attestation_policy": {
+      "type": "object",
+      "required": ["required", "trust_policy_ref", "minimum_valid_attestations", "minimum_independence_groups", "require_distinct_key_ids", "max_attestation_age_seconds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean", "const": true },
+        "trust_policy_ref": {
+          "type": "object",
+          "required": ["artifact_id", "relative_path", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+            "relative_path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+          }
+        },
+        "minimum_valid_attestations": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "minimum_independence_groups": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "require_distinct_key_ids": { "type": "boolean", "const": true },
+        "max_attestation_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 }
       }
     },
     "budgets": {

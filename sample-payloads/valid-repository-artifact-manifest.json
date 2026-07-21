@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.3",
+  "schema_version": "0.4",
   "type": "RepositoryArtifactManifest",
   "id": "RAM-aaaaaaaaaaaaaaaa",
   "repository": {
@@ -33,11 +33,18 @@
     "absolute_paths_recorded": false,
     "cross_process_manifest_lock": true,
     "stale_lock_recovery_fail_closed": true,
+    "cross_process_manifest_lease": true,
+    "fencing_tokens": true,
     "write_ahead_journal": true
+  },
+  "coordination": {
+    "backend": "shared_filesystem_lease",
+    "lease_id": "lease-example-valid",
+    "fencing_token": 1
   },
   "integrity": {
     "algorithm": "sha256",
-    "canonical_manifest_sha256": "2a5e4a171365d8eb4ce3183080d7596c9b9752fe69f6978b97e1c8b8dbe146ce",
+    "canonical_manifest_sha256": "e1041bf7e4b2d7d4a74c83644cdaf8e2ecca21316fc9772d47206541baa3078b",
     "history_start_revision": 1,
     "history_length": 1,
     "pending_transaction_count": 0,

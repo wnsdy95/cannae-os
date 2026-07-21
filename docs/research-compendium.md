@@ -2444,6 +2444,40 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
    - Added `repository-artifact-verify.js` and `run-repository-artifact-recovery-fixtures.js`; expanded self-improvement fixtures to execute real commands and reload proof artifacts.
    - Updated both AI CLI skills to make proof issuance, artifact verification, approval consumption, and parent lineage mandatory operating steps.
 
+### 8.53 Signed Quorum and Fenced Persistence v0.3
+
+Research question:
+
+> How can an adaptive AI runtime distinguish independently executed proof from locally rewritten evidence, and how can several writers coordinate without allowing an expired writer to overwrite a newer state?
+
+Primary references:
+
+- RFC 8032 defines Ed25519 signing and verification.
+- DSSE defines a pre-authentication encoding that signs both payload type and exact payload bytes.
+- The in-toto Attestation Framework separates subject digest, statement, predicate, and authentication envelope.
+- etcd's lease and transaction model demonstrates that ownership expiry and compare-and-swap revision control are separate requirements.
+
+Engineering conclusions:
+
+1. A receipt hash proves content consistency but not who vouched for it. v0.3 therefore keeps the executable receipt and adds an Ed25519 DSSE attestation from a verifier listed in a hash-bound trust policy.
+2. One signature is not independence. Promotion requires distinct verifier IDs, distinct public-key IDs, and a minimum number of declared independence groups. Repeating one attestation or assigning one key to several names does not count.
+3. The signed subject is the persisted receipt SHA-256, not an informal test label. The predicate repeats the campaign, mission, cycle, candidate revision, repository identity, verifier invocation, origin, nonce, and validity window so replay or cross-repository reuse fails.
+4. `remote` is a signed origin claim, not proof of a trusted execution environment. Stronger assurance needs externally authenticated workload identity, protected keys, trusted time, and optionally transparency logging or hardware-backed execution.
+5. Lock expiry alone creates a stale-writer hazard. Every lease acquisition therefore receives a monotonically increasing fencing token, and every manifest revision records that token. Several revisions may share a token only while one lease remains owner; a new lease ID must have a higher token. Immutable history creation and head compare-and-swap reject an older or concurrent revision.
+6. The built-in shared-filesystem lease assumes atomic directory creation, atomic hard-link publication, coherent reads, and tolerable clock skew. It is suitable for cooperating writers on one strongly consistent filesystem, not for surviving network partitions. Distributed deployments need a linearizable external lease/transaction service.
+7. Root-of-trust policy remains human-controlled. A campaign binds the exact policy artifact path and hash; key rotation, revocation, policy replacement, merge, push, and release do not become autonomous authority.
+
+Implemented artifacts:
+
+- `verification-attestation.js`
+- `verification-attestation-runner.js`
+- `schema-files/verifier-trust-policy.schema.json`
+- `schema-files/verification-attestation.schema.json`
+- `run-verification-attestation-fixtures.js`
+- `run-signed-self-improvement-fixtures.js`
+- `repository-lease.js`
+- `repository-artifact-store.js` manifest v0.4
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

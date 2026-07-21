@@ -12,7 +12,8 @@ human intent
   -> propose one candidate
   -> execute a verification plan
   -> persist a verification receipt
-  -> validate and measure from receipts
+  -> obtain signed attestations from independent verifiers
+  -> validate receipt, signatures, trust policy, and quorum
   -> accept / revise / rollback / escalate
   -> next checkpoint
   -> human merge or release decision
@@ -63,6 +64,7 @@ The campaign is the standing order. It binds:
 - mandatory checkpoint triggers;
 - experiment, rollback, and promotion rules;
 - allowed verification executables, command/time/output budgets, and proof persistence rules;
+- for v0.3, the exact verifier trust-policy artifact, signature threshold, independence-group threshold, and maximum attestation age;
 - stop conditions.
 
 The quality dimensions use a normalized `0..1` scale. Weights must sum to `1`. For a `maximize` dimension, higher is better. For a `minimize` dimension, lower is better and the controller reverses it when calculating the weighted score.
@@ -75,7 +77,24 @@ The runner checks repository state before and after execution. Mutation during v
 
 Both plan and receipt must be persisted in the repository artifact namespace. A checkpoint cites the receipt's manifest path and SHA-256; a model-authored status string is not accepted as validation evidence.
 
-### 2.3 `SelfImprovementCheckpoint`
+### 2.3 `VerifierTrustPolicy` and `VerificationAttestation`
+
+Schema v0.3 adds a public-key trust layer without replacing the executable receipt. The human-controlled campaign binds one exact `VerifierTrustPolicy` artifact by ID, repository-relative path, and SHA-256. The policy lists active Ed25519 public keys, verifier IDs, independence groups, allowed repository keys, allowed local/remote origins, validity windows, and quorum requirements. Private keys never belong in the repository, campaign, policy, checkpoint, or artifact store.
+
+`verification-attestation-runner.js` can run on another host after receiving the receipt bytes and their persisted manifest reference. It emits a DSSE envelope containing an in-toto statement whose subject is the persisted receipt SHA-256. The signed predicate binds the receipt self-digest, campaign, mission, cycle, candidate, candidate revision, repository identity, verifier/key/group, execution origin, invocation ID, nonce, issue time, and expiry.
+
+Promotion requires all of the following:
+
+- every cited attestation is schema-valid, digest-valid, signature-valid, unexpired, and issued inside the verifier and trust-policy validity windows;
+- each attestation binds a receipt already accepted by the executable receipt gate;
+- verifier IDs and public-key IDs are distinct;
+- the minimum number of independent verifier groups is present;
+- the checkpoint time is within the maximum attestation age;
+- every cited policy, receipt, and attestation is reloaded from the repository manifest by exact path and hash.
+
+Repeating one attestation, creating several names for one key, using two verifiers from one required-independent group, replaying expired proof, or changing the exposed fields outside the signed payload blocks promotion.
+
+### 2.4 `SelfImprovementCheckpoint`
 
 Each checkpoint records one candidate against one baseline:
 
@@ -86,6 +105,7 @@ Each checkpoint records one candidate against one baseline:
 - candidate disposition, changed files, permissions, rollback, and expected delta;
 - metric values before and after, each citing verified receipt IDs;
 - manifest-backed verification receipt references and required check IDs;
+- for v0.3, manifest-backed signed attestation references identifying their receipt and verifier;
 - independent evaluation where required;
 - scope, authority, policy, release, destructive, and cross-repository externalities;
 - exact approval-scope and consumption-event references where required;
@@ -93,7 +113,7 @@ Each checkpoint records one candidate against one baseline:
 
 Checkpoint paths may not be absolute or contain `..`. Different repositories require separate campaigns and artifact namespaces.
 
-### 2.4 `SelfImprovementDecision`
+### 2.5 `SelfImprovementDecision`
 
 `autonomous-improvement-controller.js` emits one of:
 
@@ -109,7 +129,7 @@ Checkpoint paths may not be absolute or contain `..`. Different repositories req
 
 Every decision sets `release_authorized: false`. Release is handled by the existing approval and release-review system, never by this controller.
 
-The decision also records the accepted candidate revision and a proof summary: verified receipt IDs, verified parent decision ID, consumed approval event ID, and the artifact-manifest revision/hash used during evaluation.
+The decision also records the accepted candidate revision and a proof summary: verified receipt IDs, verified parent decision ID, consumed approval event ID, and the artifact-manifest revision/hash used during evaluation. A v0.3 decision additionally records verified attestation IDs, verifier key IDs, independence groups, and whether the required quorum was satisfied.
 
 ## 3. Required Battle Rhythm
 
@@ -127,11 +147,12 @@ The decision also records the accepted candidate revision and a proof summary: v
 1. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
 2. Execute only the task order produced by the latest accepted decision.
 3. Generate a repository-state-bound `VerificationPlan`, run it through `verification-runner.js`, and persist its receipt.
-4. Run a `wave_end` checkpoint.
-5. Accept only one bounded candidate at a time; carry its accepted state forward as the next baseline.
-6. Set every follow-on checkpoint's parent ID and artifact reference to the decision that accepted its baseline. The controller reloads the decision, requires the immediately prior cycle, requires `accept_working_state`, and matches `accepted_revision` to the new baseline.
-7. On validation failure, run the failure checkpoint before attempting repair.
-8. On scope change, stop and checkpoint before editing outside the existing task.
+4. For a v0.3 campaign, send the persisted receipt and its manifest digest to the required independent verifiers. Persist every returned signed attestation without editing it.
+5. Run a `wave_end` checkpoint that cites the exact receipts and attestations.
+6. Accept only one bounded candidate at a time; carry its accepted state forward as the next baseline.
+7. Set every follow-on checkpoint's parent ID and artifact reference to the decision that accepted its baseline. The controller reloads the decision, requires the immediately prior cycle, requires `accept_working_state`, and matches `accepted_revision` to the new baseline.
+8. On validation failure, run the failure checkpoint before attempting repair.
+9. On scope change, stop and checkpoint before editing outside the existing task.
 
 ### 3.3 Completion
 
@@ -143,6 +164,7 @@ The agent may not report the mission complete from a normal wave-end result. It 
 - the minimum weighted quality score met;
 - repository-scoped decision evidence.
 - a new passing verification receipt for the exact completion candidate state.
+- for v0.3, a fresh signed quorum for that new receipt; prior-wave signatures cannot be carried into completion.
 
 `complete` freezes the working state and opens a human merge/release decision. It does not authorize either action.
 
@@ -190,6 +212,24 @@ node self-improvement-campaign-init.js \
 
 The bootstrap uses conservative default roles, protected invariants, quality dimensions, finite budgets, and human-retained merge/push/release authority. `--allow-commit` may remove the per-cycle human commit requirement, but it never grants push, merge, policy, authority, or release permission.
 
+To create a v0.3 campaign, first persist a human-approved `VerifierTrustPolicy`, then bind its exact artifact reference:
+
+```bash
+node self-improvement-campaign-init.js \
+  --repository . \
+  --mission MIS-example \
+  --campaign SIC-example-v3 \
+  --objective "Improve the implementation using signed independent proof." \
+  --end-state "Every promotion carries a fresh two-verifier quorum." \
+  --criterion "Two independent verifier groups attest every accepted receipt." \
+  --trust-policy-id VTP-example \
+  --trust-policy-path repositories/<repository-key>/missions/MIS-example/C0/verifier-trust-policies/VTP-example.json \
+  --trust-policy-sha256 <sha256> \
+  --minimum-attestations 2 \
+  --minimum-independence-groups 2 \
+  --write-artifact
+```
+
 Validate the proof and control contracts:
 
 ```bash
@@ -221,6 +261,24 @@ node verification-runner.js \
   --write-artifact
 ```
 
+When stdout must also be retained, write it outside the target repository and move it into local control storage only after the process succeeds. Shell redirection creates the destination before verification starts; a partial file inside the workspace can alter checks that scan local files even when the directory is Git-ignored. Prefer `--write-artifact` as the durable receipt path.
+
+An independent verifier signs the persisted receipt. The key file must be a regular Ed25519 PKCS#8 PEM file with no group/other permissions:
+
+```bash
+node verification-attestation-runner.js \
+  verifier-trust-policy.json \
+  verification-receipt.json \
+  --verifier VERIFIER-provider-a \
+  --private-key /secure/verifier-a-key.pem \
+  --receipt-relative-path repositories/<repository-key>/missions/MIS-example/C1/verification-receipts/VR-example.json \
+  --receipt-sha256 <persisted-receipt-sha256> \
+  --invocation-id INV-provider-a-001 \
+  --origin remote
+```
+
+The verifier may return stdout as a portable artifact. Capture it outside the target repository until the command succeeds. The repository operator then persists the returned JSON under `verification-attestations`, or the verifier may add `--write-artifact --repository <repo> --artifact-root <root>` when it has authorized artifact-store access. Repeat with a distinct trusted key and independence group until the campaign quorum is met.
+
 Evaluate a checkpoint against its repository proof store:
 
 ```bash
@@ -242,7 +300,7 @@ node autonomous-improvement-controller.js \
   --artifact-root .cannae/artifacts
 ```
 
-The controller always requires the runtime repository. It verifies the artifact manifest and history, reloads every receipt, parent decision, approval scope, and consumption event referenced by the checkpoint, and compares their hashes and semantic bindings before deciding. `--write-artifact` additionally records the checkpoint and decision under the same mission/cycle namespace.
+The controller always requires the runtime repository. It verifies the artifact manifest and history, reloads every receipt, attestation, trust policy, parent decision, approval scope, and consumption event referenced by the checkpoint, and compares their hashes and semantic bindings before deciding. `--write-artifact` additionally records the checkpoint and decision under the same mission/cycle namespace.
 
 CLI exit codes are `0` for a decision the harness may consume without human unblock, `1` for `escalate` or `terminate`, and `2` for malformed input or CLI usage failure. A nonzero exit never removes the JSON decision from stdout when a decision could be formed.
 
@@ -250,6 +308,10 @@ CLI exit codes are `0` for a decision the harness may consume without human unbl
 
 - Model confidence, self-approval, or a prose assertion of quality is not sufficient evidence.
 - Every quality result must cite a runtime-issued receipt that belongs to the exact campaign, cycle, candidate, revision, and repository.
+- A v0.3 promotion must carry a fresh quorum of signatures from distinct trusted verifier IDs, Ed25519 key IDs, and the policy-required independence groups.
+- The controller must compare each signed receipt self-digest with the exact receipt bytes it reloaded from the manifest. A valid signature over different receipt content is invalid proof.
+- `execution_origin: remote` is a signed verifier claim, not proof of a trusted execution environment. Do not infer host isolation, provider independence, or honest execution from that field alone.
+- The verifier trust policy is a human-controlled root. Agents may propose a replacement, but may not activate new keys, lower quorum, weaken group diversity, or extend validity without scoped USER approval.
 - Shell strings, inline Node evaluation, stale worktree plans, mutated repositories, forged receipt hashes, and missing required checks do not count as proof.
 - Every changed candidate needs a rollback plan.
 - Failed validation or a failed hard gate routes to rollback, not rationalization.
@@ -264,19 +326,25 @@ CLI exit codes are `0` for a decision the harness may consume without human unbl
 
 ```bash
 node run-self-improvement-fixtures.js
+node run-signed-self-improvement-fixtures.js
 node run-verification-runner-fixtures.js
+node run-verification-attestation-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 node run-repository-artifact-isolation-fixtures.js
+node run-repository-artifact-concurrency-fixtures.js
 node run-repository-artifact-recovery-fixtures.js
 ```
 
-The fixture suite covers executed proof, missing/tampered receipts, validation rollback, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, crash recovery, and byte-level tamper detection.
+The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE verification, duplicate and expired attestations, two-key/two-group quorum, receipt-content binding, validation rollback, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, concurrent fencing, crash recovery, and byte-level tamper detection.
 
 ## 9. Current Limitations
 
 - The controller produces the next task order; the active AI harness must execute it and return a new checkpoint.
 - Bootstrap quality dimensions are safe engineering defaults; mission-specific campaigns should replace them when another measurable quality model is more appropriate.
-- SHA-256 receipts and manifest history detect accidental or unsophisticated tampering but are not signatures from a remote trusted execution environment. An actor that can rewrite the entire local artifact root and every retained history entry remains outside this trust model.
+- Ed25519 signatures authenticate possession of a trusted private key and integrity of the signed statement. They do not prove that the verifier ran on an isolated host, used a different provider, executed the declared checks honestly, or was free from compromise. Independence groups and execution origins remain policy assertions unless backed by external infrastructure.
+- The local trust policy, campaign, checkpoint, and repository manifest are not anchored in an online transparency log, hardware root, KMS, Sigstore identity, or external timestamp authority. Key revocation is enforced only after an updated human-approved policy is distributed and consumed.
+- An actor that can replace the artifact root, trust policy, campaign input, and all retained history outside the controller can reconstruct a locally consistent false history. Protect the root with normal filesystem, account, backup, and review controls.
+- The shared-filesystem lease backend assumes coherent atomic `mkdir`, hard-link creation, rename, and visibility semantics plus clocks accurate enough for expiry. It prevents cooperating stale writers with monotonic fencing tokens, but it is not safe under network partition or a filesystem that violates those assumptions. Distributed writers requiring partition tolerance need an external linearizable lease/transaction service and must reject stale fencing tokens at the storage commit point.
 - Verification commands run without a shell and under bounded resources, but they are not OS-sandboxed. Network, external filesystem, and credential isolation still depend on the host harness and tool ROE.
 - Approval scopes are hash-bound and single-consumption checked, but they are not cryptographically signed by an external identity provider.
 

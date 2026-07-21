@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "type": "VerifierTrustPolicy",
+  "id": "VTP-Cannae-001",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "policy_version": 1,
+  "quorum": {
+    "minimum_valid_attestations": 1,
+    "minimum_independence_groups": 1,
+    "require_distinct_key_ids": true,
+    "max_attestation_age_seconds": 900
+  },
+  "verifiers": [
+    {
+      "id": "VERIFIER-Cannae-Sample",
+      "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA+pRpUDUqUmy3TcDSTO+t+Q/7OMQW1XbMyxniDk982dM=\n-----END PUBLIC KEY-----\n",
+      "independence_group": "provider-sample",
+      "status": "active",
+      "allowed_repository_keys": [
+        "cannae-os-aaaaaaaaaaaa"
+      ],
+      "allowed_execution_origins": [
+        "remote"
+      ],
+      "valid_from": "2026-07-21T18:00:00+09:00",
+      "valid_until": "2026-07-22T18:00:00+09:00"
+    }
+  ],
+  "created_at": "2026-07-21T18:00:00+09:00",
+  "expires_at": "2026-07-22T18:00:00+09:00"
+}

@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const excludedDirs = new Set([".git", "node_modules"]);
+const excludedDirs = new Set([".cannae", ".git", "node_modules"]);
 
 function walk(dir, files = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
