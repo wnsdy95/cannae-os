@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const path = require("path");
 const {
   parseArtifactWriteFlags,
+  manifestDigest,
   resolveRepository,
   verifyRepositoryArtifacts,
   writeRepositoryArtifact
@@ -12,6 +13,7 @@ const {
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const { evaluateConsumption } = require("./approval-consumption-runner");
 const { receiptDigest } = require("./verification-runner");
+const { evaluateAttestationQuorum } = require("./verification-attestation");
 
 const CHANGE_RANK = {
   local_reversible: 0,
@@ -180,6 +182,9 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
   const artifactRoot = path.resolve(artifactRootOption || path.join(process.cwd(), ".cannae", "artifacts"));
   const manifestPath = path.join(artifactRoot, "repositories", verification.repository.key, "manifest.json");
   const manifest = readJson(manifestPath);
+  if (manifestDigest(manifest) !== verification.manifest_sha256) {
+    throw new Error("Repository proof manifest changed after integrity verification.");
+  }
   const receipts = new Map();
   for (const ref of checkpoint.verification_receipts || []) {
     receipts.set(ref.receipt_id, readManifestArtifact(artifactRoot, manifest, {
@@ -202,8 +207,22 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     approvalScope = readManifestArtifact(artifactRoot, manifest, checkpoint.approval_binding.approval_scope_ref, "approval-scopes");
     consumptionEvent = readManifestArtifact(artifactRoot, manifest, checkpoint.approval_binding.consumption_event_ref, "approval-consumption-events");
   }
+  let trustPolicy = null;
+  const attestations = new Map();
+  if (campaign.schema_version === "0.3" || (campaign.attestation_policy && campaign.attestation_policy.required)) {
+    trustPolicy = readManifestArtifact(artifactRoot, manifest, campaign.attestation_policy.trust_policy_ref, "verifier-trust-policies");
+    for (const ref of checkpoint.verification_attestations || []) {
+      attestations.set(ref.attestation_id, readManifestArtifact(artifactRoot, manifest, {
+        artifact_id: ref.attestation_id,
+        relative_path: ref.relative_path,
+        sha256: ref.sha256
+      }, "verification-attestations"));
+    }
+  }
   return {
     receipts,
+    attestations,
+    trustPolicy,
     parentDecision,
     approvalScope,
     consumptionEvent,
@@ -258,6 +277,72 @@ function verifyReceiptProof(campaign, checkpoint, proofContext, blocks) {
   return { verified, executedFailure };
 }
 
+function verifyAttestationProof(campaign, checkpoint, proofContext, verifiedReceiptIds, blocks) {
+  if (campaign.schema_version !== "0.3") {
+    return { valid: true, valid_attestation_ids: [], verifier_ids: [], key_ids: [], independence_groups: [] };
+  }
+  const policy = campaign.attestation_policy || {};
+  const trustPolicy = proofContext.trustPolicy;
+  const refs = checkpoint.verification_attestations || [];
+  const attestations = [];
+  if (checkpoint.schema_version !== "0.3") blocks.push("ATTESTATION_CHECKPOINT_VERSION_MISMATCH");
+  if (!trustPolicy) {
+    blocks.push("ATTESTATION_TRUST_POLICY_MISSING");
+    return { valid: false, valid_attestation_ids: [], verifier_ids: [], key_ids: [], independence_groups: [] };
+  }
+  const trustValidation = validatePayload(trustPolicy, "verifier-trust-policy");
+  if (trustValidation.issues.some(item => item.severity === "error" || item.severity === "critical")) {
+    blocks.push("ATTESTATION_TRUST_POLICY_INVALID");
+  }
+  if (trustPolicy.id !== policy.trust_policy_ref.artifact_id ||
+      trustPolicy.repository_binding.repository_key !== checkpoint.repository_binding.repository_key ||
+      trustPolicy.repository_binding.identity_fingerprint !== checkpoint.repository_binding.identity_fingerprint ||
+      Date.parse(checkpoint.generated_at) < Date.parse(trustPolicy.created_at) ||
+      Date.parse(checkpoint.generated_at) >= Date.parse(trustPolicy.expires_at)) {
+    blocks.push("ATTESTATION_TRUST_POLICY_BINDING_INVALID");
+  }
+  const receiptReferences = Object.fromEntries((checkpoint.verification_receipts || []).map(ref => {
+    const receipt = proofContext.receipts && proofContext.receipts.get
+      ? proofContext.receipts.get(ref.receipt_id)
+      : (proofContext.receipts || []).find(item => item.id === ref.receipt_id);
+    return [ref.receipt_id, {
+      relative_path: ref.relative_path,
+      sha256: ref.sha256,
+      receipt_sha256: receipt && receipt.receipt_sha256
+    }];
+  }));
+  for (const ref of refs) {
+    const attestation = proofContext.attestations && proofContext.attestations.get
+      ? proofContext.attestations.get(ref.attestation_id)
+      : (proofContext.attestations || []).find(item => item.id === ref.attestation_id);
+    if (!attestation) {
+      blocks.push("ATTESTATION_ARTIFACT_MISSING");
+      continue;
+    }
+    const validation = validatePayload(attestation, "verification-attestation");
+    if (validation.issues.some(item => item.severity === "error" || item.severity === "critical")) {
+      blocks.push("ATTESTATION_ARTIFACT_INVALID");
+    }
+    if (attestation.id !== ref.attestation_id || attestation.receipt_id !== ref.receipt_id ||
+        attestation.verifier_id !== ref.verifier_id || !verifiedReceiptIds.has(ref.receipt_id)) {
+      blocks.push("ATTESTATION_REFERENCE_BINDING_INVALID");
+    }
+    attestations.push(attestation);
+  }
+  const result = evaluateAttestationQuorum(attestations, trustPolicy, {
+    receiptReferences,
+    campaignId: campaign.id,
+    missionId: campaign.mission_id,
+    cycleNumber: checkpoint.cycle_number,
+    candidateId: checkpoint.candidate.id,
+    candidateRevision: checkpoint.target.candidate_revision,
+    repositoryKey: checkpoint.repository_binding.repository_key,
+    maxAttestationAgeSeconds: policy.max_attestation_age_seconds
+  }, policy, checkpoint.generated_at);
+  blocks.push(...result.codes);
+  return result;
+}
+
 function verifyParentDecision(campaign, checkpoint, proofContext, blocks) {
   if (checkpoint.cycle_number === 1) {
     if (checkpoint.parent_decision_id !== "none" || checkpoint.parent_decision_ref.decision_id !== "none" ||
@@ -301,7 +386,7 @@ function baseTaskOrder(campaign, checkpoint, task, nextTrigger = "wave_end") {
 
 function makeDecision(campaign, checkpoint, values) {
   return {
-    schema_version: "0.2",
+    schema_version: campaign.schema_version === "0.3" ? "0.3" : "0.2",
     type: "SelfImprovementDecision",
     id: `SID-${String(checkpoint.id || "checkpoint").replace(/^[A-Z]+-/, "")}`,
     campaign_id: campaign.id,
@@ -341,6 +426,8 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
   const externalities = checkpoint.externalities || {};
   proofContext = {
     receipts: new Map(),
+    attestations: new Map(),
+    trustPolicy: null,
     parentDecision: null,
     approvalScope: null,
     consumptionEvent: null,
@@ -355,6 +442,12 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
     repository_manifest_revision: proofContext.manifestRevision || 0,
     repository_manifest_sha256: proofContext.manifestSha256 || "none"
   };
+  if (campaign.schema_version === "0.3") {
+    proof.verification_attestation_ids = [];
+    proof.verifier_key_ids = [];
+    proof.verifier_independence_groups = [];
+    proof.attestation_quorum_satisfied = false;
+  }
 
   if (campaign.status !== "active") blocks.push("CAMPAIGN_NOT_ACTIVE");
   if (checkpoint.campaign_id !== campaign.id) blocks.push("CAMPAIGN_ID_MISMATCH");
@@ -397,6 +490,13 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
   const receiptProof = verifyReceiptProof(campaign, checkpoint, proofContext, blocks);
   proof.verification_receipt_ids = [...receiptProof.verified].sort();
   const failedValidation = receiptProof.executedFailure;
+  const attestationProof = verifyAttestationProof(campaign, checkpoint, proofContext, receiptProof.verified, blocks);
+  if (campaign.schema_version === "0.3") {
+    proof.verification_attestation_ids = attestationProof.valid_attestation_ids || [];
+    proof.verifier_key_ids = attestationProof.key_ids || [];
+    proof.verifier_independence_groups = attestationProof.independence_groups || [];
+    proof.attestation_quorum_satisfied = attestationProof.valid === true;
+  }
 
   if (CONTROL_PLANE_TARGETS.has(target.target_type)) {
     if (independent.required !== true || independent.status !== "passed" || independent.evaluator === campaign.command_team.improvement_controller ||

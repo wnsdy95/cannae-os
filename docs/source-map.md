@@ -165,7 +165,16 @@ Usage:
 | UK official assets, assets.publishing.service.gov.uk | doctrine PDFs | PDF source documents carry the underlying doctrine text and supplements | source verification and source-map URL coverage | `multinational-doctrine-consistency-review.md`, `source-map-linter.js` |
 | Government of Canada, www.canada.ca | CAF/DND official public pages | non-US military organization, ethos, and governance context must be checked before adaptation | role authority, culture, and information governance localization | `multinational-doctrine-consistency-review.md` |
 
-## 15. Implementation Sources and Artifacts
+## 15. Cryptographic Attestation and Coordination Sources
+
+| Source | Concept | Extracted principle | Cannae application | Local documents |
+| --- | --- | --- | --- | --- |
+| RFC 8032, EdDSA: https://www.rfc-editor.org/rfc/rfc8032.html | Ed25519 signatures | Use a standardized public-key signature primitive and bind verification to the exact public key | Verifier identities use SHA-256 of Ed25519 SPKI bytes and sign DSSE pre-authenticated encodings | `bounded-self-improvement-operations.md`, `verification-attestation.js` |
+| DSSE protocol: https://github.com/secure-systems-lab/dsse/blob/master/protocol.md | Type-bound signing envelope | Authenticate both payload bytes and payload type without relying on JSON canonicalization | Verification attestations carry an exact in-toto statement payload and one Ed25519 DSSE signature | `bounded-self-improvement-operations.md`, `schema-files/verification-attestation.schema.json` |
+| in-toto Attestation Framework v1: https://github.com/in-toto/attestation/blob/main/spec/README.md | Authenticated software-production metadata | Separate subject digest, statement, predicate, and authentication envelope | A verifier attests to the persisted receipt digest, candidate, repository, invocation, and validity window | `bounded-self-improvement-operations.md`, `verification-attestation-runner.js` |
+| etcd v3.6 API: https://etcd.io/docs/v3.6/learning/api/ | Lease, keepalive, revision, transaction | Expiring ownership requires renewal; protected updates need atomic comparison and a monotonic ordering token | The shared-filesystem backend uses expiring leases, monotonic fencing tokens, and immutable revision compare-and-swap; stronger deployments must use a linearizable coordinator | `repository-artifact-isolation-policy.md`, `repository-lease.js`, `repository-artifact-store.js` |
+
+## 16. Implementation Sources and Artifacts
 
 | Source / artifact | Military concept | Extracted principle | LLM application | Local documents |
 | --- | --- | --- | --- | --- |
@@ -265,7 +274,7 @@ Usage:
 | Source-map URL coverage report | Knowledge management check | Linter results must not vanish as execution logs; they must remain as a coverage snapshot | Tracks missing source-map coverage by reviewing connected documents per official source host | `source-map-url-coverage-report.json`, `source-map-linter.js` |
 | AAR readiness update artifact | Post-action learning and readiness update | AAR learning must not end as a document note; it must convert into a training/maintenance/authority update queue | Converts AAR findings into readiness recommendations, maintenance actions, SOP updates, and CCIR triggers | `aar-to-readiness-update.js`, `schema-files/aar-readiness-update.schema.json`, `aar-readiness-update-fixtures/README.md` |
 
-## 16. Currently Weak Evidence
+## 17. Currently Weak Evidence
 
 The items below need additional research.
 
@@ -275,7 +284,7 @@ The items below need additional research.
 | Latest ROE source text | Confirming the public version of some documents is difficult | Recheck the official release page |
 | LLM multi-agent military-style organization experiments | Lack of direct comparative research | Design an experiment or write a case study |
 
-## 17. Related Documents
+## 18. Related Documents
 
 - `research-compendium.md`
 - `military-llm-framework-v0.1.md`
@@ -399,6 +408,7 @@ The items below need additional research.
 - `run-model-force-v0.2-fixtures.js`
 - `model-force-v0.2-fixtures/README.md`
 - `repository-artifact-store.js`
+- `repository-lease.js`
 - `schema-files/repository-artifact-manifest.schema.json`
 - `sample-payloads/valid-repository-artifact-manifest.json`
 - `sample-payloads/invalid-repository-artifact-manifest-cross-repo.json`
@@ -406,6 +416,10 @@ The items below need additional research.
 - `run-repository-artifact-concurrency-fixtures.js`
 - `repository-artifact-verify.js`
 - `run-repository-artifact-recovery-fixtures.js`
+- `verification-attestation.js`
+- `verification-attestation-runner.js`
+- `run-verification-attestation-fixtures.js`
+- `run-signed-self-improvement-fixtures.js`
 - `bounded-self-improvement-operations.md`
 - `schema-files/self-improvement-campaign.schema.json`
 - `schema-files/self-improvement-checkpoint.schema.json`
@@ -419,7 +433,13 @@ The items below need additional research.
 - `validation-suite-runner.js`
 - `schema-files/verification-plan.schema.json`
 - `schema-files/verification-receipt.schema.json`
+- `schema-files/verifier-trust-policy.schema.json`
+- `schema-files/verification-attestation.schema.json`
 - `sample-payloads/valid-verification-plan.json`
 - `sample-payloads/invalid-verification-plan-shell.json`
 - `sample-payloads/valid-verification-receipt.json`
 - `sample-payloads/invalid-verification-receipt-self-reported.json`
+- `sample-payloads/valid-verifier-trust-policy.json`
+- `sample-payloads/invalid-verifier-trust-policy-key-id.json`
+- `sample-payloads/valid-verification-attestation.json`
+- `sample-payloads/invalid-verification-attestation-statement.json`

@@ -214,14 +214,14 @@ Use `repository-artifact-store.js`, or pass `--write-artifact --repository <targ
 Substantial AI missions can maintain a finite improvement campaign around work already in progress:
 
 ```text
-baseline -> candidate -> executed verification receipt -> accept / revise / rollback / escalate
+baseline -> candidate -> executed receipt -> independent signed quorum -> accept / revise / rollback / escalate
 ```
 
-`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. `autonomous-improvement-controller.js` reloads those receipts, the accepted parent decision, and any consumed approval event from the integrity-checked repository artifact store before it can promote a candidate. Every decision keeps `release_authorized: false`; policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
+`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3 campaign additionally requires fresh Ed25519 DSSE attestations from distinct trusted keys and policy-defined independence groups. `autonomous-improvement-controller.js` reloads the receipt, signatures, exact trust policy, accepted parent decision, and any consumed approval event from the integrity-checked repository artifact store before promotion. Every decision keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
 Use `self-improvement-campaign-init.js` to bind conservative campaign defaults to a target Git repository before the first adaptive wave.
 
-Artifact writes use a write-ahead journal and hash-linked manifest history. Run `repository-artifact-verify.js --repository <target> --artifact-root <root>` before accepting a wave or consuming its proof.
+Artifact manifest v0.4 uses expiring namespace leases, monotonic fencing tokens, immutable no-overwrite history, a write-ahead journal, and hash-linked manifests. Run `repository-artifact-verify.js --repository <target> --artifact-root <root>` before accepting a wave or consuming its proof. The built-in shared-filesystem coordinator assumes coherent atomic filesystem operations and is not partition-tolerant.
 
 ### Commander-Retained Decisions
 
@@ -305,10 +305,12 @@ Important examples:
 - `run-model-force-v0.2-fixtures.js`: registry eligibility, deterministic compilation, agent/billet/receipt binding, dispatch manifest, and usage telemetry gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
 - `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
-- `run-repository-artifact-concurrency-fixtures.js`: 24-writer manifest serialization and fail-closed stale-lock handling.
-- `run-repository-artifact-recovery-fixtures.js`: journal recovery, history reconciliation, and artifact/manifest tamper detection.
+- `run-repository-artifact-concurrency-fixtures.js`: 24-writer serialization, monotonic fencing, foreign-host lease expiry, and stale-writer rejection.
+- `run-repository-artifact-recovery-fixtures.js`: journal recovery, reserved-history finalization, history reconciliation, and artifact/manifest tamper detection.
 - `run-self-improvement-fixtures.js`: executed receipts, parent lineage, approval consumption, rollback, completion, and proof-store integration.
+- `run-signed-self-improvement-fixtures.js`: backward compatibility plus two-key/two-group quorum, signature tamper, duplicate signer, and trust-policy expiry gates.
 - `run-verification-runner-fixtures.js`: shell/inline-code prohibition, stale-plan rejection, exact argv receipts, and repository-mutation detection.
+- `run-verification-attestation-fixtures.js`: Ed25519 DSSE signatures, persisted/self-digest binding, quorum diversity, replay expiry, and private-key file controls.
 - `validation-suite-runner.js`: one shell-independent entry point for routing, corpus, validator, runner, source-map, syntax, and whitespace gates.
 
 <p align="center">
@@ -364,6 +366,8 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - Military terminology is used as an organizational metaphor and control vocabulary, not as operational battlefield instruction.
 - Many documents are research drafts and should be treated as evolving doctrine, not final standards.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
+- Signed attestations authenticate trusted-key possession and statement integrity, not a trusted execution environment or honest verifier execution. The local trust root has no KMS, transparency-log, or online revocation integration.
+- The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - Source mappings are useful traceability aids, but they do not prove that an interpretation is universally valid.
 - US doctrine is not treated as universal; multinational and local adaptation remain required.
 

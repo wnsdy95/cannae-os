@@ -251,7 +251,7 @@ artifact root
 -> immutable artifact file
 ```
 
-It journals each JSON/file mutation, commits hash-linked manifest history plus a digest sidecar, blocks traversal and conflicting overwrite, and keeps absolute repository paths and remote credentials out of the manifest. `repository-artifact-verify.js` checks pending transactions, the history chain, and every retained artifact hash before proof is consumed. Multi-repository orchestration must declare the target repository for every durable artifact.
+It journals each JSON/file mutation and serializes manifest commits with an expiring namespace lease plus a monotonic fencing token. It reserves each revision through immutable no-overwrite history, commits a hash-linked manifest and digest sidecar, blocks traversal and conflicting overwrite, and keeps absolute repository paths and remote credentials out of the manifest. `repository-artifact-verify.js` checks pending transactions, fencing monotonicity, the history chain, and every retained artifact hash before proof is consumed. Multi-repository orchestration must declare the target repository for every durable artifact. The built-in coordinator assumes a coherent shared filesystem; partition-tolerant deployments require an external linearizable coordinator and storage-side fencing enforcement.
 
 ### 2.14 Proof-Carrying Improvement Controller
 
@@ -262,12 +262,13 @@ candidate state
 -> exact VerificationPlan
 -> shell-free verification runner
 -> repository-scoped VerificationReceipt
+-> Ed25519 DSSE attestations from trusted independent verifiers
 -> manifest-backed checkpoint references
--> controller reloads receipt / parent / approval consumption
+-> controller reloads trust policy / receipt / attestations / parent / approval consumption
 -> bounded decision with release_authorized=false
 ```
 
-The controller cannot turn prose test claims or a named parent ID into authority. Policy and authority effects require a schema-valid USER approval scope consumed by the exact checkpoint execution.
+The controller cannot turn prose test claims, a named parent ID, or an unsigned remote-verifier claim into authority. A v0.3 promotion requires fresh signatures from distinct trusted keys and the policy-required independence groups over the exact persisted receipt and its self-digest. Policy, trust-root, and authority effects require a schema-valid USER approval scope consumed by the exact checkpoint execution.
 
 ## 3. Data Flow
 
@@ -372,7 +373,7 @@ Characteristics:
 | Agent -> tool | tool gateway |
 | Tool -> external service | approval and audit |
 | Evidence -> output | citation check |
-| Candidate -> adaptive promotion | executed receipt, accepted-parent lineage, consumed approval binding |
+| Candidate -> adaptive promotion | executed receipt, trusted signed quorum, accepted-parent lineage, consumed approval binding |
 | Secret -> logs | masking and EEFI handling |
 
 ## 7. Minimum Implementation Order

@@ -73,6 +73,8 @@ What approval does not include:
 
 If scope changes, a new approval or FRAGO is required.
 
+For bounded self-improvement v0.3, the verifier trust policy is also an authority boundary. Adding or reactivating a verifier, changing a public key, reducing the signature or independence-group threshold, broadening allowed repositories/origins, or extending a policy/key validity window requires a new scoped USER approval. A valid verifier signature does not approve its own trust-root change.
+
 ## 5. Red action approval flow
 
 1. Tool request is created.

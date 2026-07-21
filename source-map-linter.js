@@ -21,7 +21,9 @@ const OFFICIAL_HOST_PATTERNS = [
   /socom\.mil$/,
   /gov\.uk$/,
   /canada\.ca$/,
-  /fema\.gov$/
+  /fema\.gov$/,
+  /rfc-editor\.org$/,
+  /etcd\.io$/
 ];
 
 function markdownFiles(dir) {

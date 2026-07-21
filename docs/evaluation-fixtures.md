@@ -39,8 +39,9 @@ Evaluation fixtures are used to verify that runtime gates actually function, not
 | Force structure change fixtures | Validates that the creation, disestablishment, expansion, or reduction of a branch/position/unit/TF has a capability gap, DOTMLPF-P review, readiness, transition, and documentation gate |
 | Agent routing preflight fixtures | Validates that execution is blocked if the CoS routing receipt and each agent's S3 routing receipt are missing before a wave starts |
 | Proof-carrying improvement fixtures | Validates executed receipts, exact parent lineage, approval consumption, rollback, and completion |
+| Signed improvement fixtures | Validates Ed25519 DSSE receipt binding, trusted multi-verifier quorum, group diversity, expiry, and v0.2 compatibility |
 | Verification runner fixtures | Validates exact argv execution, shell/inline-code prohibition, stale plans, and mutation detection |
-| Artifact recovery fixtures | Validates write-ahead journal recovery, hash-linked history, and tamper detection |
+| Artifact concurrency/recovery fixtures | Validates shared-filesystem leases, monotonic fencing, stale-writer rejection, write-ahead recovery, hash-linked history, and tamper detection |
 
 ## 2. Required Fixtures
 
@@ -128,9 +129,13 @@ Validator changes must not:
 - accept routing receipt claims that were not produced by `route_controls_docs.js --actor=ai`.
 - promote an adaptive candidate from model-authored validation text instead of a runtime-issued receipt.
 - accept a receipt whose campaign, cycle, candidate, repository state, command result, or canonical digest does not match.
+- promote a v0.3 candidate without the configured number of distinct trusted verifier IDs, Ed25519 keys, and independence groups.
+- accept a signature over a different receipt self-digest, changed DSSE payload, expired attestation, expired trust root, untrusted repository, or duplicate signer evidence.
+- treat a signed `remote` execution-origin claim as proof of trusted execution or provider independence.
 - continue from a parent decision that is missing, rejected, from another cycle, or bound to another baseline revision.
 - accept a policy or authority candidate from a prose approval claim or a reused consumption event.
 - accept a repository artifact store with a pending journal, broken history chain, sidecar mismatch, or changed artifact bytes.
+- let an expired writer commit after a replacement lease has received a higher fencing token, steal an unexpired foreign-host lease, reuse a fencing token across different lease IDs, regress a token, or lose a revision reserved in immutable history.
 - accept research task with no source discipline.
 
 ## 6. Related Documents

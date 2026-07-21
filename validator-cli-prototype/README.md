@@ -41,6 +41,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-
 node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-decision.json self-improvement-decision
 node validator-cli-prototype/validate.js sample-payloads/valid-verification-plan.json verification-plan
 node validator-cli-prototype/validate.js sample-payloads/valid-verification-receipt.json verification-receipt
+node validator-cli-prototype/validate.js sample-payloads/valid-verifier-trust-policy.json verifier-trust-policy
+node validator-cli-prototype/validate.js sample-payloads/valid-verification-attestation.json verification-attestation
 node validator-cli-prototype/validate.js sample-payloads/valid-document-access-manifest.json document-access-manifest
 node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt
 ```
@@ -81,6 +83,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-a
 - `self-improvement-decision`
 - `verification-plan`
 - `verification-receipt`
+- `verifier-trust-policy`
+- `verification-attestation`
 - `document-access-manifest`
 - `ccir-alert`
 - `handoff-packet`

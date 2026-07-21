@@ -3,6 +3,7 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");
+const { attestationDigest, publicKeyId } = require("../verification-attestation");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -59,7 +60,9 @@ const TYPE_TO_SCHEMA = {
   "self-improvement-checkpoint": "self-improvement-checkpoint.schema.json",
   "self-improvement-decision": "self-improvement-decision.schema.json",
   "verification-plan": "verification-plan.schema.json",
-  "verification-receipt": "verification-receipt.schema.json"
+  "verification-receipt": "verification-receipt.schema.json",
+  "verifier-trust-policy": "verifier-trust-policy.schema.json",
+  "verification-attestation": "verification-attestation.schema.json"
 };
 
 function readJson(filePath) {
@@ -1560,6 +1563,23 @@ function semanticRules(payload, type) {
     if ((verification.allowed_executables || []).some(item => ["sh", "bash", "zsh", "fish", "cmd", "powershell", "pwsh", "sudo", "env"].includes(String(item).toLowerCase()))) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_SHELL_VERIFIER_ALLOWED", "$.verification_policy.allowed_executables", "Campaign verification cannot authorize shells or privilege wrappers."));
     }
+    if (payload.schema_version === "0.3") {
+      const attestation = payload.attestation_policy || {};
+      const trustRef = attestation.trust_policy_ref || {};
+      if (attestation.required !== true || !trustRef.artifact_id || !/^[a-f0-9]{64}$/.test(trustRef.sha256 || "")) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_POLICY_MISSING", "$.attestation_policy", "v0.3 campaigns require a hash-bound verifier trust policy."));
+      }
+      if (path.isAbsolute(trustRef.relative_path || "") || String(trustRef.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_TRUST_POLICY_PATH_INVALID", "$.attestation_policy.trust_policy_ref.relative_path", "Trust policy references must remain repository-artifact-relative."));
+      }
+      if (!Number.isInteger(attestation.minimum_valid_attestations) || attestation.minimum_valid_attestations < 2 ||
+          !Number.isInteger(attestation.minimum_independence_groups) || attestation.minimum_independence_groups < 2 ||
+          attestation.minimum_independence_groups > attestation.minimum_valid_attestations || attestation.require_distinct_key_ids !== true) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_QUORUM_WEAK", "$.attestation_policy", "v0.3 requires at least two distinct verifier keys from at least two independence groups."));
+      }
+    } else if (payload.attestation_policy !== undefined) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_V02_ATTESTATION_POLICY", "$.attestation_policy", "Signed quorum policy requires campaign schema version 0.3."));
+    }
   }
 
   if (type === "self-improvement-checkpoint") {
@@ -1624,6 +1644,26 @@ function semanticRules(payload, type) {
     if (!humanRetained && approval.required === true) {
       issues.push(issue("error", "SELF_IMPROVEMENT_UNNECESSARY_APPROVAL_BINDING", "$.approval_binding", "A checkpoint cannot attach unrelated approval evidence."));
     }
+    if (payload.schema_version === "0.3") {
+      const attestations = payload.verification_attestations || [];
+      if (attestations.length < 2) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_SIGNED_QUORUM_MISSING", "$.verification_attestations", "v0.3 checkpoints require at least two signed verification attestations."));
+      }
+      const ids = attestations.map(item => item.attestation_id);
+      if (new Set(ids).size !== ids.length) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_DUPLICATE_ATTESTATION", "$.verification_attestations", "Checkpoint attestation IDs must be unique."));
+      }
+      for (const [index, attestation] of attestations.entries()) {
+        if (!receiptIds.includes(attestation.receipt_id)) {
+          issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_RECEIPT_UNKNOWN", `$.verification_attestations[${index}].receipt_id`, "Every attestation must bind a receipt cited by the checkpoint."));
+        }
+        if (path.isAbsolute(attestation.relative_path || "") || String(attestation.relative_path || "").split(/[\\/]+/).includes("..")) {
+          issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_PATH_INVALID", `$.verification_attestations[${index}].relative_path`, "Attestation references must remain repository-artifact-relative."));
+        }
+      }
+    } else if (payload.verification_attestations !== undefined) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_V02_ATTESTATIONS", "$.verification_attestations", "Signed attestations require checkpoint schema version 0.3."));
+    }
   }
 
   if (type === "verification-plan") {
@@ -1660,6 +1700,83 @@ function semanticRules(payload, type) {
     }
   }
 
+  if (type === "verifier-trust-policy") {
+    const verifiers = payload.verifiers || [];
+    const ids = new Set();
+    const keyIds = new Set();
+    const activeGroups = new Set();
+    for (const [index, verifier] of verifiers.entries()) {
+      const pointer = `$.verifiers[${index}]`;
+      if (ids.has(verifier.id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_ID", `${pointer}.id`, "Verifier IDs must be unique."));
+      if (keyIds.has(verifier.key_id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_KEY", `${pointer}.key_id`, "One public key cannot satisfy more than one verifier identity."));
+      ids.add(verifier.id);
+      keyIds.add(verifier.key_id);
+      if (verifier.status === "active") activeGroups.add(verifier.independence_group);
+      try {
+        if (publicKeyId(verifier.public_key_pem) !== verifier.key_id) {
+          issues.push(issue("critical", "VERIFIER_POLICY_KEY_ID_MISMATCH", `${pointer}.key_id`, "Verifier key_id must be the SHA-256 digest of the Ed25519 SPKI public key."));
+        }
+        if (crypto.createPublicKey(verifier.public_key_pem).asymmetricKeyType !== "ed25519") {
+          issues.push(issue("critical", "VERIFIER_POLICY_KEY_NOT_ED25519", `${pointer}.public_key_pem`, "Verifier keys must use Ed25519."));
+        }
+      } catch (error) {
+        issues.push(issue("critical", "VERIFIER_POLICY_PUBLIC_KEY_INVALID", `${pointer}.public_key_pem`, "Verifier public key must be valid SPKI PEM."));
+      }
+      if (!isValidDate(verifier.valid_from) || !isValidDate(verifier.valid_until) || Date.parse(verifier.valid_until) <= Date.parse(verifier.valid_from)) {
+        issues.push(issue("critical", "VERIFIER_POLICY_KEY_WINDOW_INVALID", pointer, "Verifier validity must end after it begins."));
+      }
+      if (!(verifier.allowed_repository_keys || []).includes(payload.repository_binding && payload.repository_binding.repository_key)) {
+        issues.push(issue("critical", "VERIFIER_POLICY_REPOSITORY_NOT_ALLOWED", `${pointer}.allowed_repository_keys`, "Every trusted verifier must explicitly allow the policy repository."));
+      }
+    }
+    const active = verifiers.filter(item => item.status === "active");
+    const quorum = payload.quorum || {};
+    if (quorum.minimum_valid_attestations > active.length) {
+      issues.push(issue("critical", "VERIFIER_POLICY_QUORUM_IMPOSSIBLE", "$.quorum.minimum_valid_attestations", "The active verifier population cannot satisfy the required attestation quorum."));
+    }
+    if (quorum.minimum_independence_groups > activeGroups.size || quorum.minimum_independence_groups > quorum.minimum_valid_attestations) {
+      issues.push(issue("critical", "VERIFIER_POLICY_GROUP_QUORUM_IMPOSSIBLE", "$.quorum.minimum_independence_groups", "The active independence groups cannot satisfy the group quorum."));
+    }
+    if (!isValidDate(payload.created_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.created_at)) {
+      issues.push(issue("critical", "VERIFIER_POLICY_WINDOW_INVALID", "$.expires_at", "Trust policy expiry must be later than creation."));
+    }
+  }
+
+  if (type === "verification-attestation") {
+    if (payload.attestation_sha256 !== attestationDigest(payload)) {
+      issues.push(issue("critical", "ATTESTATION_DIGEST_INVALID", "$.attestation_sha256", "Attestation digest must match the complete signed envelope and bindings."));
+    }
+    if (!isValidDate(payload.issued_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.issued_at)) {
+      issues.push(issue("critical", "ATTESTATION_TIME_INVALID", "$.expires_at", "Attestation expiry must be later than issue time."));
+    }
+    if (path.isAbsolute(payload.receipt_relative_path || "") || String(payload.receipt_relative_path || "").split(/[\\/]+/).includes("..")) {
+      issues.push(issue("critical", "ATTESTATION_RECEIPT_PATH_INVALID", "$.receipt_relative_path", "Attestation receipt paths must remain repository-artifact-relative."));
+    }
+    let statement = null;
+    try { statement = JSON.parse(Buffer.from(payload.envelope.payload, "base64").toString("utf8")); } catch (error) { /* reported below */ }
+    const subject = statement && Array.isArray(statement.subject) && statement.subject.length === 1 ? statement.subject[0] : {};
+    const predicate = (statement && statement.predicate) || {};
+    const receipt = predicate.receipt || {};
+    const verifier = predicate.verifier || {};
+    if (!statement || statement._type !== "https://in-toto.io/Statement/v1" ||
+        statement.predicateType !== "https://cannae.dev/attestations/verification-receipt/v0.3") {
+      issues.push(issue("critical", "ATTESTATION_STATEMENT_INVALID", "$.envelope.payload", "DSSE payload must contain the Cannae verification in-toto statement."));
+    } else if (subject.name !== payload.receipt_id || !subject.digest || subject.digest.sha256 !== payload.receipt_sha256 ||
+        receipt.id !== payload.receipt_id || receipt.relative_path !== payload.receipt_relative_path ||
+        receipt.campaign_id !== payload.campaign_id || receipt.mission_id !== payload.mission_id ||
+        receipt.cycle_number !== payload.cycle_number || receipt.candidate_id !== payload.candidate_id ||
+        receipt.candidate_revision !== payload.candidate_revision || verifier.id !== payload.verifier_id || verifier.key_id !== payload.key_id ||
+        verifier.independence_group !== payload.independence_group || verifier.execution_origin !== payload.execution_origin ||
+        verifier.invocation_id !== payload.invocation_id || predicate.issued_at !== payload.issued_at || predicate.expires_at !== payload.expires_at ||
+        JSON.stringify(predicate.repository_binding) !== JSON.stringify(payload.repository_binding)) {
+      issues.push(issue("critical", "ATTESTATION_STATEMENT_BINDING_MISMATCH", "$.envelope.payload", "Signed statement fields must exactly match the exposed attestation bindings."));
+    }
+    if (!payload.envelope || !Array.isArray(payload.envelope.signatures) || payload.envelope.signatures.length !== 1 ||
+        payload.envelope.signatures[0].keyid !== payload.key_id) {
+      issues.push(issue("critical", "ATTESTATION_SIGNATURE_BINDING_INVALID", "$.envelope.signatures", "Attestation must contain exactly one signature from its declared key."));
+    }
+  }
+
   if (type === "self-improvement-decision") {
     if (payload.release_authorized !== false) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_SELF_RELEASE", "$.release_authorized", "The improvement controller cannot authorize merge, push, or external release."));
@@ -1681,6 +1798,13 @@ function semanticRules(payload, type) {
     }
     if (payload.decision === "accept_working_state" && !hasSubstantiveItems(payload.proof && payload.proof.verification_receipt_ids)) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_PROOF", "$.proof.verification_receipt_ids", "Accepted working states require verified receipt IDs."));
+    }
+    if (payload.schema_version === "0.3" && ["accept_working_state", "complete"].includes(payload.decision) &&
+        (!(payload.proof && payload.proof.attestation_quorum_satisfied === true) ||
+         !hasSubstantiveItems(payload.proof && payload.proof.verification_attestation_ids) ||
+         !hasSubstantiveItems(payload.proof && payload.proof.verifier_key_ids) ||
+         !hasSubstantiveItems(payload.proof && payload.proof.verifier_independence_groups))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_SIGNED_QUORUM", "$.proof", "v0.3 promotion and completion decisions require a satisfied signed verifier quorum."));
     }
   }
 
@@ -1907,8 +2031,12 @@ function semanticRules(payload, type) {
     if (!Number.isInteger(payload.manifest_revision) || payload.manifest_revision < artifacts.length) {
       issues.push(issue("error", "REPOSITORY_ARTIFACT_REVISION_INVALID", "$.manifest_revision", "Manifest revision must be monotonic and cannot be lower than the retained artifact count."));
     }
-    if (!payload.isolation || payload.isolation.cross_process_manifest_lock !== true || payload.isolation.stale_lock_recovery_fail_closed !== true || payload.isolation.write_ahead_journal !== true) {
-      issues.push(issue("critical", "REPOSITORY_ARTIFACT_CONCURRENCY_GUARD_MISSING", "$.isolation", "Repository artifact manifests require a cross-process lock and fail-closed stale-lock recovery."));
+    if (!payload.isolation || payload.isolation.cross_process_manifest_lock !== true || payload.isolation.stale_lock_recovery_fail_closed !== true ||
+        payload.isolation.cross_process_manifest_lease !== true || payload.isolation.fencing_tokens !== true || payload.isolation.write_ahead_journal !== true) {
+      issues.push(issue("critical", "REPOSITORY_ARTIFACT_CONCURRENCY_GUARD_MISSING", "$.isolation", "Repository artifact manifests require a lease, fencing tokens, write-ahead journal, and fail-closed recovery."));
+    }
+    if (!payload.coordination || !Number.isInteger(payload.coordination.fencing_token) || payload.coordination.fencing_token < 1) {
+      issues.push(issue("critical", "REPOSITORY_ARTIFACT_FENCING_TOKEN_MISSING", "$.coordination", "Manifest commits require a positive fencing token from the committing lease."));
     }
     const integrity = payload.integrity || {};
     if (!Number.isInteger(integrity.history_start_revision) || !Number.isInteger(integrity.history_length) ||

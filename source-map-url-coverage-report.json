@@ -3,7 +3,7 @@
   "as_of": "2026-07-20",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 24,
+  "checked_hosts": 26,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -57,6 +57,12 @@
       "files": [
         "docs/multinational-doctrine-consistency-review.md",
         "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "etcd.io",
+      "files": [
         "docs/source-map.md"
       ]
     },
@@ -230,6 +236,12 @@
         "docs/military-operating-deep-research-queue.md",
         "docs/multinational-doctrine-consistency-review.md",
         "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.rfc-editor.org",
+      "files": [
         "docs/source-map.md"
       ]
     },

@@ -11,13 +11,18 @@ function parseArgs(argv) {
     maxChangedFiles: 12,
     maxElapsedMinutes: 240,
     minImprovement: 0.03,
+    minimumAttestations: 2,
+    minimumIndependenceGroups: 2,
+    maxAttestationAgeSeconds: 900,
     allowedVerifiers: [],
     allowCommit: false,
     writeArtifact: false
   };
   const singleValue = new Set([
     "repository", "artifact-root", "mission", "campaign", "objective", "end-state",
-    "max-cycles", "max-changed-files", "max-elapsed-minutes", "min-improvement", "created-at"
+    "max-cycles", "max-changed-files", "max-elapsed-minutes", "min-improvement", "created-at",
+    "trust-policy-id", "trust-policy-path", "trust-policy-sha256", "minimum-attestations",
+    "minimum-independence-groups", "max-attestation-age-seconds"
   ]);
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -46,13 +51,21 @@ function parseArgs(argv) {
     }
     throw new Error(`Unknown argument: ${arg}`);
   }
-  for (const field of ["maxCycles", "maxChangedFiles", "maxElapsedMinutes"]) {
+  for (const field of ["maxCycles", "maxChangedFiles", "maxElapsedMinutes", "minimumAttestations", "minimumIndependenceGroups", "maxAttestationAgeSeconds"]) {
     options[field] = Number(options[field]);
     if (!Number.isInteger(options[field]) || options[field] < 1) throw new Error(`${field} must be a positive integer.`);
   }
   options.minImprovement = Number(options.minImprovement);
   if (!Number.isFinite(options.minImprovement) || options.minImprovement < 0 || options.minImprovement > 1) {
     throw new Error("minImprovement must be between 0 and 1.");
+  }
+  const trustFields = [options.trustPolicyId, options.trustPolicyPath, options.trustPolicySha256];
+  if (trustFields.some(Boolean) && !trustFields.every(Boolean)) {
+    throw new Error("Signed quorum requires --trust-policy-id, --trust-policy-path, and --trust-policy-sha256 together.");
+  }
+  if (options.trustPolicyId && (options.minimumAttestations < 2 || options.minimumIndependenceGroups < 2 ||
+      options.minimumIndependenceGroups > options.minimumAttestations || !/^[a-f0-9]{64}$/.test(options.trustPolicySha256))) {
+    throw new Error("Signed quorum requires at least two attestations, two independence groups, and a valid trust-policy SHA-256 digest.");
   }
   return options;
 }
@@ -66,7 +79,7 @@ function buildCampaign(options) {
   const repository = resolveRepository(options.repository);
   const createdAt = options.createdAt || new Date().toISOString();
   const campaign = {
-    schema_version: "0.2",
+    schema_version: options.trustPolicyId ? "0.3" : "0.2",
     type: "SelfImprovementCampaign",
     id: options.campaign,
     mission_id: options.mission,
@@ -156,6 +169,20 @@ function buildCampaign(options) {
       repository_state_must_remain_unchanged: true,
       receipt_persistence_required: true
     },
+    ...(options.trustPolicyId ? {
+      attestation_policy: {
+        required: true,
+        trust_policy_ref: {
+          artifact_id: options.trustPolicyId,
+          relative_path: options.trustPolicyPath,
+          sha256: options.trustPolicySha256
+        },
+        minimum_valid_attestations: options.minimumAttestations,
+        minimum_independence_groups: options.minimumIndependenceGroups,
+        require_distinct_key_ids: true,
+        max_attestation_age_seconds: options.maxAttestationAgeSeconds
+      }
+    } : {}),
     budgets: {
       max_cycles: options.maxCycles,
       max_retries_per_cycle: 2,
