@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.2",
+  "type": "IntegratedMissionPreflightBundle",
+  "id": "IMPB-Unsafe",
+  "mission_id": "MIS-ModelV2",
+  "wave_id": "W1",
+  "model_registry_path": "../secrets/model-registry.json",
+  "model_assignment_request_path": "sample-payloads/invalid-model-assignment-request-unsafe.json",
+  "routing_bundle_path": "agent-routing-preflight-fixtures/missing-agent-routing-bundle.json",
+  "agent_bindings": [
+    { "agent_id": "command-agent", "billet_id": "BILLET-UNKNOWN-V2", "routing_receipt_id": "RR-MISSING" }
+  ],
+  "dispatch_controls": {
+    "require_ready_routing": true,
+    "require_ready_model_assignment": true,
+    "human_final_decision_authority": false,
+    "emit_usage_events": true
+  },
+  "classification": "internal",
+  "created_at": "2026-07-20T10:05:00+09:00"
+}

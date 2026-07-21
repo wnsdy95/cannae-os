@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/model-registry.schema.json",
+  "title": "Model Registry",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "registry_version", "profiles", "governance", "classification", "status", "created_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.2" },
+    "type": { "type": "string", "const": "ModelRegistry" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "registry_version": { "type": "string", "minLength": 1 },
+    "profiles": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["id", "model_family", "model_version", "harness_version", "system_prompt_version", "tool_schema_version", "endpoint_ref", "capability_band", "force_classes", "deployment_boundary", "allowed_context_classes", "availability", "cost_class", "max_context_tokens", "task_readiness", "limitations", "last_updated_at"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "model_family": { "type": "string", "minLength": 1 },
+          "model_version": { "type": "string", "minLength": 1 },
+          "harness_version": { "type": "string", "minLength": 1 },
+          "system_prompt_version": { "type": "string", "minLength": 1 },
+          "tool_schema_version": { "type": "string", "minLength": 1 },
+          "endpoint_ref": { "type": "string", "minLength": 1 },
+          "capability_band": { "type": "string", "enum": ["C0", "C1", "C2", "C3"] },
+          "force_classes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "enum": ["utility", "line", "specialist", "command", "sof", "assurance", "reserve"] }
+          },
+          "deployment_boundary": { "type": "string", "minLength": 1 },
+          "allowed_context_classes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "common.schema.json#/$defs/classification" }
+          },
+          "availability": { "type": "string", "enum": ["ready", "degraded", "unavailable"] },
+          "cost_class": { "type": "string", "enum": ["low", "medium", "high", "scarce"] },
+          "max_context_tokens": { "type": "integer", "minimum": 1 },
+          "task_readiness": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["task", "readiness_rating", "allowed_tool_impacts", "evidence", "quality_score", "policy_compliance_score", "latency_score", "p95_latency_ms", "evaluated_at", "expires_at"],
+              "additionalProperties": false,
+              "properties": {
+                "task": { "type": "string", "minLength": 1 },
+                "readiness_rating": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+                "allowed_tool_impacts": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": { "type": "string", "enum": ["none", "read_only", "reversible_mutation", "irreversible_mutation"] }
+                },
+                "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+                "quality_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+                "policy_compliance_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+                "latency_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+                "p95_latency_ms": { "type": "integer", "minimum": 0 },
+                "evaluated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+                "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+              }
+            }
+          },
+          "limitations": { "$ref": "common.schema.json#/$defs/string_list" },
+          "last_updated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": ["owner_role", "model_change_requires_reevaluation", "floating_versions_prohibited", "human_final_decision_authority"],
+      "additionalProperties": false,
+      "properties": {
+        "owner_role": { "$ref": "common.schema.json#/$defs/role_id" },
+        "model_change_requires_reevaluation": { "type": "boolean", "const": true },
+        "floating_versions_prohibited": { "type": "boolean", "const": true },
+        "human_final_decision_authority": { "type": "boolean", "const": true }
+      }
+    },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

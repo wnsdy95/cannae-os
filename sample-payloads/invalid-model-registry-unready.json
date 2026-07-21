@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.2",
+  "type": "ModelRegistry",
+  "id": "MR-Unsafe",
+  "registry_version": "latest",
+  "profiles": [
+    {
+      "id": "MP-UNSAFE-01",
+      "model_family": "single-family",
+      "model_version": "latest",
+      "harness_version": "current",
+      "system_prompt_version": "default",
+      "tool_schema_version": "default",
+      "endpoint_ref": "https://endpoint.invalid?api_key=plaintext-secret",
+      "capability_band": "C3",
+      "force_classes": ["line", "specialist", "command", "sof", "assurance", "reserve"],
+      "deployment_boundary": "unapproved-public-endpoint",
+      "allowed_context_classes": ["public"],
+      "availability": "ready",
+      "cost_class": "scarce",
+      "max_context_tokens": 1,
+      "task_readiness": [
+        { "task": "general-chat", "readiness_rating": "T", "allowed_tool_impacts": ["irreversible_mutation"], "evidence": ["none"], "quality_score": 100, "policy_compliance_score": 1, "latency_score": 1, "p95_latency_ms": 999999, "evaluated_at": "2026-07-10T09:00:00+09:00", "expires_at": "2026-07-11T09:00:00+09:00" },
+        { "task": "general-chat", "readiness_rating": "T", "allowed_tool_impacts": ["irreversible_mutation"], "evidence": ["self confidence"], "quality_score": 100, "policy_compliance_score": 1, "latency_score": 1, "p95_latency_ms": 999999, "evaluated_at": "2026-07-10T09:00:00+09:00", "expires_at": "2026-07-11T09:00:00+09:00" }
+      ],
+      "limitations": ["none"],
+      "last_updated_at": "2026-07-20T09:00:00+09:00"
+    },
+    {
+      "id": "MP-UNSAFE-02",
+      "model_family": "single-family",
+      "model_version": "latest",
+      "harness_version": "current",
+      "system_prompt_version": "default",
+      "tool_schema_version": "default",
+      "endpoint_ref": "model-endpoints/unknown",
+      "capability_band": "C3",
+      "force_classes": ["command"],
+      "deployment_boundary": "unapproved-public-endpoint",
+      "allowed_context_classes": ["public"],
+      "availability": "unavailable",
+      "cost_class": "scarce",
+      "max_context_tokens": 1,
+      "task_readiness": [
+        { "task": "mission-analysis", "readiness_rating": "X", "allowed_tool_impacts": ["none"], "evidence": ["none"], "quality_score": 0, "policy_compliance_score": 0, "latency_score": 0, "p95_latency_ms": 0, "evaluated_at": "2026-07-10T09:00:00+09:00", "expires_at": "2026-07-11T09:00:00+09:00" }
+      ],
+      "limitations": ["none"],
+      "last_updated_at": "2026-07-20T09:00:00+09:00"
+    },
+    {
+      "id": "MP-UNSAFE-03",
+      "model_family": "single-family",
+      "model_version": "latest",
+      "harness_version": "current",
+      "system_prompt_version": "default",
+      "tool_schema_version": "default",
+      "endpoint_ref": "model-endpoints/unknown",
+      "capability_band": "C3",
+      "force_classes": ["assurance"],
+      "deployment_boundary": "unapproved-public-endpoint",
+      "allowed_context_classes": ["public"],
+      "availability": "ready",
+      "cost_class": "scarce",
+      "max_context_tokens": 1,
+      "task_readiness": [
+        { "task": "independent-output-review", "readiness_rating": "U", "allowed_tool_impacts": ["none"], "evidence": ["none"], "quality_score": 0, "policy_compliance_score": 0, "latency_score": 0, "p95_latency_ms": 0, "evaluated_at": "2026-07-10T09:00:00+09:00", "expires_at": "2026-07-11T09:00:00+09:00" }
+      ],
+      "limitations": ["none"],
+      "last_updated_at": "2026-07-20T09:00:00+09:00"
+    }
+  ],
+  "governance": {
+    "owner_role": "EXECUTOR",
+    "model_change_requires_reevaluation": true,
+    "floating_versions_prohibited": true,
+    "human_final_decision_authority": false
+  },
+  "classification": "internal",
+  "status": "pending",
+  "created_at": "2026-07-20T10:00:00+09:00"
+}

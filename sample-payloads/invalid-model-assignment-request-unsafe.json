@@ -1,0 +1,76 @@
+{
+  "schema_version": "0.2",
+  "type": "ModelAssignmentRequest",
+  "id": "MAR-Unsafe",
+  "mission_id": "MIS-Unsafe",
+  "wave_id": "W1",
+  "registry_id": "MR-Unsafe",
+  "registry_version": "latest",
+  "mission_profile": {
+    "complexity": "high",
+    "domain_specialization": "expert",
+    "uncertainty": "high",
+    "risk_level": "critical",
+    "roe_class": "Black",
+    "classification": "restricted",
+    "release_target": "external_release",
+    "tool_impact": "irreversible_mutation",
+    "latency_priority": "high",
+    "volume": "high"
+  },
+  "billet_requirements": [
+    {
+      "id": "BILLET-UNSAFE-V2",
+      "force_class": "line",
+      "role": "EXECUTOR",
+      "task": "general-chat",
+      "required_readiness": "X",
+      "authority_scope": ["All decisions"],
+      "tool_scope": ["All tools"],
+      "tool_impact": "irreversible_mutation",
+      "context_scope": "restricted",
+      "fallback_depth": 0,
+      "dispatch_required": true
+    }
+  ],
+  "constraints": {
+    "allowed_deployment_boundaries": ["none"],
+    "excluded_profile_ids": [],
+    "require_family_diversity": false,
+    "max_primary_billets_per_profile": 99,
+    "router_task": "general-chat",
+    "router_required_readiness": "X"
+  },
+  "selection_policy": {
+    "strategy": "quality_first",
+    "weights": { "quality": 100, "policy": 100, "cost": 100, "latency": 100 },
+    "max_candidates_per_billet": 20
+  },
+  "assurance": {
+    "required": false,
+    "different_model_family_required": false,
+    "deterministic_checks": ["none"],
+    "human_review_triggers": ["none"]
+  },
+  "authority": {
+    "source_contracts": ["none"],
+    "inherited_from_model": true,
+    "human_final_decision_authority": false,
+    "commander_retained_decisions": ["none"]
+  },
+  "budget": {
+    "token_budget": 999999999,
+    "cost_budget": "unbounded",
+    "max_command_calls": 999999,
+    "max_specialist_calls": 999999,
+    "saturation_action": "Continue without review."
+  },
+  "assessment": {
+    "metrics": ["Self confidence"],
+    "review_at": "2027-07-20T10:00:00+09:00",
+    "aar_triggers": ["none"]
+  },
+  "classification": "internal",
+  "status": "pending",
+  "created_at": "2026-07-20T10:00:00+09:00"
+}

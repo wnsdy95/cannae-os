@@ -262,6 +262,89 @@ const fixtures = [
     ]
   },
   {
+    name: "valid model registry",
+    file: "sample-payloads/valid-model-registry.json",
+    type: "model-registry",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unready model registry",
+    file: "sample-payloads/invalid-model-registry-unready.json",
+    type: "model-registry",
+    exitCode: 1,
+    requiredCodes: [
+      "MODEL_REGISTRY_FLOATING_IDENTITY",
+      "MODEL_REGISTRY_FLOATING_VERSION",
+      "MODEL_REGISTRY_SECRET_IN_ENDPOINT_REF",
+      "MODEL_REGISTRY_DUPLICATE_TASK_READINESS",
+      "MODEL_REGISTRY_READY_WITHOUT_EVIDENCE",
+      "MODEL_REGISTRY_EXPIRED_READINESS",
+      "MODEL_REGISTRY_INVALID_OWNER",
+      "MODEL_REGISTRY_HUMAN_AUTHORITY_MISSING"
+    ]
+  },
+  {
+    name: "valid model assignment request",
+    file: "sample-payloads/valid-model-assignment-request.json",
+    type: "model-assignment-request",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unsafe model assignment request",
+    file: "sample-payloads/invalid-model-assignment-request-unsafe.json",
+    type: "model-assignment-request",
+    exitCode: 1,
+    requiredCodes: [
+      "MODEL_REQUEST_WEIGHTS_NOT_100",
+      "MODEL_REQUEST_REGISTRY_VERSION_FLOATING",
+      "MODEL_REQUEST_CLASSIFICATION_MISMATCH",
+      "MODEL_REQUEST_BLACK_PROHIBITED",
+      "MODEL_REQUEST_WITHOUT_DEPLOYMENT_BOUNDARY",
+      "MODEL_REQUEST_WITHOUT_READY_ROUTER",
+      "MODEL_REQUEST_MISSING_COMMAND",
+      "MODEL_REQUEST_REQUIRES_ASSURANCE",
+      "MODEL_REQUEST_AUTHORITY_FROM_MODEL",
+      "MODEL_REQUEST_HUMAN_AUTHORITY_MISSING"
+    ]
+  },
+  {
+    name: "valid integrated mission preflight",
+    file: "sample-payloads/valid-integrated-mission-preflight.json",
+    type: "integrated-mission-preflight",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound integrated mission preflight",
+    file: "sample-payloads/invalid-integrated-mission-preflight-unbound.json",
+    type: "integrated-mission-preflight",
+    exitCode: 1,
+    requiredCodes: [
+      "INTEGRATED_PREFLIGHT_PATH_TRAVERSAL",
+      "INTEGRATED_PREFLIGHT_HUMAN_AUTHORITY_MISSING"
+    ]
+  },
+  {
+    name: "valid model usage event",
+    file: "sample-payloads/valid-model-usage-event.json",
+    type: "model-usage-event",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "self-authorized model usage event",
+    file: "sample-payloads/invalid-model-usage-event-self-authorized.json",
+    type: "model-usage-event",
+    exitCode: 1,
+    requiredCodes: [
+      "MODEL_USAGE_FLOATING_VERSION",
+      "MODEL_USAGE_WITHOUT_AUTHORITY_SNAPSHOT",
+      "MODEL_USAGE_WITHOUT_EXTERNAL_EVIDENCE"
+    ]
+  },
+  {
     name: "valid document access manifest",
     file: "sample-payloads/valid-document-access-manifest.json",
     type: "document-access-manifest",
