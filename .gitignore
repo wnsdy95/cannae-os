@@ -40,6 +40,7 @@ coverage/
 
 # Local caches and temporary output
 .cxt/
+.cannae/
 .cache/
 .tmp/
 tmp/

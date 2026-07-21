@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "type": "RepositoryArtifactManifest",
+  "id": "RAM-aaaaaaaaaaaaaaaa",
+  "repository": {
+    "key": "example-repo-a-aaaaaaaaaaaa",
+    "label": "example-repo-a",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "head_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "namespace_root": "repositories/example-repo-a-aaaaaaaaaaaa",
+  "artifacts": [
+    {
+      "id": "RA-cccccccccccccccc",
+      "artifact_id": "IMPB-Example",
+      "mission_id": "MIS-Shared",
+      "wave_id": "W1",
+      "kind": "integrated-mission-preflights",
+      "file_name": "IMPB-Example.json",
+      "content_type": "application/json",
+      "byte_size": 2048,
+      "relative_path": "repositories/example-repo-a-aaaaaaaaaaaa/missions/MIS-Shared/W1/integrated-mission-preflights/IMPB-Example.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "created_at": "2026-07-21T15:30:00+09:00"
+    }
+  ],
+  "artifact_count": 1,
+  "isolation": {
+    "repository_scoped": true,
+    "cross_repository_writes_prohibited": true,
+    "absolute_paths_recorded": false
+  },
+  "created_at": "2026-07-21T15:30:00+09:00",
+  "updated_at": "2026-07-21T15:30:00+09:00"
+}

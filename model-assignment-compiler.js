@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { parseArtifactWriteFlags, writeRepositoryArtifact } = require("./repository-artifact-store");
 
 const READINESS_RANK = { X: 0, U: 1, P: 2, T: 3 };
 const COST_SCORE = { low: 100, medium: 70, high: 40, scarce: 10 };
@@ -359,12 +360,16 @@ function main() {
   const registryPath = process.argv[2];
   const requestPath = process.argv[3];
   if (!registryPath || !requestPath) {
-    console.error("Usage: node model-assignment-compiler.js <model-registry.json> <model-assignment-request.json>");
+    console.error("Usage: node model-assignment-compiler.js <model-registry.json> <model-assignment-request.json> [--write-artifact --repository <repo> [--artifact-root <dir>] [--overwrite-artifact]]");
     process.exit(2);
   }
+  let artifactOptions;
+  let request;
   let result;
   try {
-    result = compileModelAssignment(readJson(path.resolve(registryPath)), readJson(path.resolve(requestPath)));
+    artifactOptions = parseArtifactWriteFlags(process.argv.slice(4));
+    request = readJson(path.resolve(requestPath));
+    result = compileModelAssignment(readJson(path.resolve(registryPath)), request);
   } catch (error) {
     result = {
       schema_version: "0.2",
@@ -376,6 +381,24 @@ function main() {
       preflight_blocks: [`Compiler rejected malformed input: ${error.message}`],
       warnings: []
     };
+  }
+  if (artifactOptions && artifactOptions.writeArtifact) {
+    try {
+      const artifact = writeRepositoryArtifact({
+        repositoryPath: artifactOptions.repositoryPath,
+        artifactRoot: artifactOptions.artifactRoot,
+        missionId: result.mission_id || (request && request.mission_id) || "MIS-unknown",
+        waveId: (request && request.wave_id) || "W-unknown",
+        kind: "model-assignment-compilations",
+        artifactId: result.request_id || (request && request.id) || "MAR-unknown",
+        payload: result,
+        overwrite: artifactOptions.overwriteArtifact
+      });
+      console.error(`Artifact written: ${artifact.artifact_path}`);
+    } catch (error) {
+      result.status = "blocked";
+      result.preflight_blocks = [...(result.preflight_blocks || []), `Artifact persistence failed: ${error.message}`];
+    }
   }
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.exit(result.status === "compiled" ? 0 : 1);

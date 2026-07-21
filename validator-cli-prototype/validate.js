@@ -52,7 +52,8 @@ const TYPE_TO_SCHEMA = {
   "model-registry": "model-registry.schema.json",
   "model-assignment-request": "model-assignment-request.schema.json",
   "integrated-mission-preflight": "integrated-mission-preflight.schema.json",
-  "model-usage-event": "model-usage-event.schema.json"
+  "model-usage-event": "model-usage-event.schema.json",
+  "repository-artifact-manifest": "repository-artifact-manifest.schema.json"
 };
 
 function readJson(filePath) {
@@ -1696,6 +1697,37 @@ function semanticRules(payload, type) {
       if (!payload.previous_profile_id || !payload.next_profile_id || payload.previous_profile_id === payload.next_profile_id) {
         issues.push(issue("critical", "MODEL_USAGE_INVALID_TRANSITION", "$", "Escalation and fallback events require distinct previous and next profiles."));
       }
+    }
+  }
+
+  if (type === "repository-artifact-manifest") {
+    const repository = payload.repository || {};
+    const expectedNamespace = `repositories/${repository.key || "missing"}`;
+    const artifacts = payload.artifacts || [];
+    if (payload.namespace_root !== expectedNamespace) {
+      issues.push(issue("critical", "REPOSITORY_ARTIFACT_NAMESPACE_MISMATCH", "$.namespace_root", "Manifest namespace must match the repository identity key."));
+    }
+    if (payload.artifact_count !== artifacts.length) {
+      issues.push(issue("error", "REPOSITORY_ARTIFACT_COUNT_MISMATCH", "$.artifact_count", "Manifest artifact_count must match the artifact entry count."));
+    }
+    const paths = new Set();
+    for (const [index, artifact] of artifacts.entries()) {
+      const pointer = `$.artifacts[${index}].relative_path`;
+      const relativePath = String(artifact.relative_path || "").replace(/\\/g, "/");
+      if (path.isAbsolute(relativePath) || /^[A-Za-z]:\//.test(relativePath) || relativePath.split("/").includes("..")) {
+        issues.push(issue("critical", "REPOSITORY_ARTIFACT_PATH_TRAVERSAL", pointer, "Artifact paths must be relative and cannot traverse namespaces."));
+      }
+      const expectedPrefix = `${expectedNamespace}/missions/${artifact.mission_id}/${artifact.wave_id}/${artifact.kind}/`;
+      if (!relativePath.startsWith(expectedPrefix)) {
+        issues.push(issue("critical", "REPOSITORY_ARTIFACT_CROSS_REPOSITORY_PATH", pointer, "Every artifact path must remain inside its repository, mission, wave, and kind namespace."));
+      }
+      if (path.posix.basename(relativePath) !== artifact.file_name || !String(artifact.file_name || "").startsWith(`${artifact.artifact_id}.`)) {
+        issues.push(issue("error", "REPOSITORY_ARTIFACT_ID_PATH_MISMATCH", pointer, "Artifact filename must match file_name and begin with artifact_id."));
+      }
+      if (paths.has(relativePath)) {
+        issues.push(issue("error", "REPOSITORY_ARTIFACT_DUPLICATE_PATH", pointer, "Manifest artifact paths must be unique."));
+      }
+      paths.add(relativePath);
     }
   }
 
