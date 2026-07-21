@@ -258,6 +258,7 @@ function verifyComparativeEvaluation(campaign, checkpoint, proofContext, blocks)
   const report = proofContext.comparativeReport;
   const plan = proofContext.comparativePlan;
   const evaluationSet = proofContext.comparativeEvaluationSet;
+  const expectedPurpose = checkpoint.trigger === "before_completion" ? "completion_revalidation" : "candidate_promotion";
   if (!policy) {
     blocks.push("COMPARATIVE_EVALUATION_POLICY_MISSING");
     return { valid: false, rollbackRequired: false, reportId: report && report.id ? report.id : "none" };
@@ -280,7 +281,7 @@ function verifyComparativeEvaluation(campaign, checkpoint, proofContext, blocks)
       report.repository_binding.repository_key !== checkpoint.repository_binding.repository_key ||
       report.repository_binding.identity_fingerprint !== checkpoint.repository_binding.identity_fingerprint ||
       plan.id !== report.plan_ref.artifact_id || plan.campaign_id !== campaign.id || plan.mission_id !== campaign.mission_id ||
-      plan.cycle_number !== checkpoint.cycle_number || plan.target_type !== target.target_type ||
+      plan.cycle_number !== checkpoint.cycle_number || plan.target_type !== target.target_type || plan.evaluation_purpose !== expectedPurpose ||
       !sameJson(plan.evaluation_set_ref, report.evaluation_set_ref) ||
       evaluationSet.id !== report.evaluation_set_ref.artifact_id ||
       evaluationSet.campaign_id !== campaign.id || evaluationSet.mission_id !== campaign.mission_id ||

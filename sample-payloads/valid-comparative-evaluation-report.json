@@ -5,7 +5,7 @@
   "plan_ref": {
     "artifact_id": "CEP-Cannae-001",
     "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/comparative-evaluation-plans/CEP-Cannae-001.json",
-    "sha256": "cbcea142c518d6edf2b24bee2f3291d1c85d09b27a26725cf730de1e75e8c57f"
+    "sha256": "348dbcef78ae631bb27cf7e8dae3144d5407047d747dd41a5497229680169da2"
   },
   "campaign_id": "SIC-Cannae-001",
   "mission_id": "MIS-Cannae-001",
@@ -122,5 +122,5 @@
   "blocking_codes": [],
   "started_at": "2026-07-21T18:19:00+09:00",
   "finished_at": "2026-07-21T18:20:00+09:00",
-  "report_sha256": "97dbd77e3c0c27dfdccaf3c5dfd28634d21695c942993b3ffb37e976cb6ff42f"
+  "report_sha256": "18bf88f31cb2f9f1c081c36024d68a9c9888fa037b40eba4b96d009501bbb83d"
 }

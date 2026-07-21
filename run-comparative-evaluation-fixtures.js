@@ -32,6 +32,7 @@ function git(repositoryPath, args) {
 const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cannae-comparative-evaluation-"));
 const candidatePath = path.join(temporaryRoot, "candidate");
 const baselinePath = path.join(temporaryRoot, "baseline");
+const completionBaselinePath = path.join(temporaryRoot, "completion-baseline");
 const artifactRoot = path.join(temporaryRoot, "artifacts");
 const campaignPath = path.join(temporaryRoot, "campaign.json");
 
@@ -76,6 +77,7 @@ function makePlan(id, candidateId, campaign, baselineRepository, candidateReposi
     mission_id: campaign.mission_id,
     cycle_number: 1,
     target_type: "runtime_control",
+    evaluation_purpose: "candidate_promotion",
     repository_binding: {
       repository_key: candidateRepository.key,
       identity_fingerprint: candidateRepository.identity_fingerprint
@@ -246,6 +248,34 @@ try {
   }), /does not belong to the campaign mission/);
   console.log("PASS a cross-mission evaluation set is rejected before execution");
 
+  const candidateHead = git(candidatePath, ["rev-parse", "HEAD"]);
+  git(candidatePath, ["worktree", "add", "--quiet", "--detach", completionBaselinePath, candidateHead]);
+  const completionBaselineRepository = resolveRepository(completionBaselinePath);
+  const completionBaselineState = computeRepositoryState(completionBaselinePath);
+  const sameRevisionPromotionPlan = makePlan("CEP-Comparative-Same-Revision-Promotion", "CAN-Comparative-Same-Revision-Promotion", campaign, completionBaselineRepository, candidateRepository, completionBaselineState, candidateState, setWrite, harnessHash);
+  sameRevisionPromotionPlan.subjects.baseline.revision = candidateHead;
+  sameRevisionPromotionPlan.subjects.candidate.revision = candidateHead;
+  persistPlan(sameRevisionPromotionPlan);
+  assert.throws(() => runComparativeEvaluation(campaign, sameRevisionPromotionPlan, {
+    candidateRepositoryPath: candidatePath,
+    baselineRepositoryPath: completionBaselinePath,
+    artifactRoot
+  }), /COMPARATIVE_EVALUATION_PROMOTION_REVISIONS_NOT_DISTINCT/);
+  console.log("PASS candidate promotion rejects identical baseline and candidate revisions");
+
+  const completionPlan = makePlan("CEP-Comparative-Completion", "CAN-Comparative-Completion", campaign, completionBaselineRepository, candidateRepository, completionBaselineState, candidateState, setWrite, harnessHash);
+  completionPlan.evaluation_purpose = "completion_revalidation";
+  completionPlan.subjects.baseline.revision = candidateHead;
+  completionPlan.subjects.candidate.revision = candidateHead;
+  persistPlan(completionPlan);
+  const completionReport = runComparativeEvaluation(campaign, completionPlan, {
+    candidateRepositoryPath: candidatePath,
+    baselineRepositoryPath: completionBaselinePath,
+    artifactRoot
+  });
+  assert.strictEqual(completionReport.outcome, "promotable", JSON.stringify(completionReport, null, 2));
+  console.log("PASS completion revalidation permits the same accepted revision in isolated worktrees");
+
   writeScores(candidatePath, 0.85, 0.9);
   candidateState = computeRepositoryState(candidatePath);
   const regressionPlan = makePlan("CEP-Comparative-Regression", "CAN-Comparative-Regression", campaign, baselineRepository, candidateRepository, baselineState, candidateState, setWrite, harnessHash);
@@ -285,8 +315,9 @@ try {
   assert.strictEqual(verification.valid, true, JSON.stringify(verification.issues));
   console.log("PASS comparison plan, set, and report remain repository-manifest verified");
 
-  console.log("Comparative evaluation fixtures: 7/7 passed");
+  console.log("Comparative evaluation fixtures: 9/9 passed");
 } finally {
+  try { git(candidatePath, ["worktree", "remove", "--force", completionBaselinePath]); } catch (error) { /* best effort */ }
   try { git(candidatePath, ["worktree", "remove", "--force", baselinePath]); } catch (error) { /* best effort */ }
   fs.rmSync(temporaryRoot, { recursive: true, force: true });
 }

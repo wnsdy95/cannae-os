@@ -150,8 +150,21 @@ function verifyPlanBindings(campaign, plan, baselineRepository, candidateReposit
       !sameObject(plan.subjects.candidate.repository_binding, expectedCandidateBinding)) codes.push("COMPARISON_SUBJECT_REPOSITORY_INVALID");
   if (!sameObject(plan.subjects.baseline.expected_repository_state, baselineState) ||
       !sameObject(plan.subjects.candidate.expected_repository_state, candidateState)) codes.push("COMPARISON_REPOSITORY_STATE_STALE");
-  if (plan.subjects.baseline.revision === plan.subjects.candidate.revision ||
-      plan.subjects.baseline.candidate_id === plan.subjects.candidate.candidate_id) codes.push("COMPARISON_SUBJECTS_NOT_DISTINCT");
+  if (plan.subjects.baseline.candidate_id === plan.subjects.candidate.candidate_id) {
+    codes.push("COMPARISON_SUBJECTS_NOT_DISTINCT");
+  }
+  if (plan.evaluation_purpose === "candidate_promotion" && plan.subjects.baseline.revision === plan.subjects.candidate.revision) {
+    codes.push("COMPARISON_PROMOTION_REVISIONS_NOT_DISTINCT");
+  }
+  if (plan.evaluation_purpose === "completion_revalidation" && plan.subjects.baseline.revision !== plan.subjects.candidate.revision) {
+    codes.push("COMPARISON_COMPLETION_REVISIONS_MISMATCH");
+  }
+  for (const subject of Object.values(plan.subjects)) {
+    const state = subject.expected_repository_state;
+    if (subject.revision !== state.head_commit && subject.revision !== `WT-${state.worktree_fingerprint}`) {
+      codes.push("COMPARISON_SUBJECT_REVISION_STATE_MISMATCH");
+    }
+  }
   const baselineOrigin = normalizedOrigin(baselineRepository.root);
   const candidateOrigin = normalizedOrigin(candidateRepository.root);
   if (!baselineOrigin || baselineOrigin !== candidateOrigin) codes.push("COMPARISON_SOURCE_REPOSITORY_MISMATCH");

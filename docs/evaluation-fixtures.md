@@ -135,6 +135,8 @@ Validator changes must not:
 - continue from a parent decision that is missing, rejected, from another cycle, or bound to another baseline revision.
 - accept a policy or authority candidate from a prose approval claim or a reused consumption event.
 - promote a skill or runtime-control candidate without one pre-persisted evaluation set and plan executed against distinct baseline and candidate states.
+- reuse a comparative evaluation set across campaigns or missions.
+- use one revision as both baseline and candidate for promotion, or different revisions for completion revalidation.
 - accept a comparative report with a changed fixture order, stale repository state, different harness hash/argv, malformed observation, mismatched stdout hash, incomplete dimension coverage, or non-independent evaluator.
 - treat a relative improvement as sufficient when the candidate misses an absolute target, exceeds a maximum-regression threshold, or fails a held-out fixture.
 - treat an `inconclusive` comparison as a pass, or let any comparison report authorize execution, merge, push, or release.

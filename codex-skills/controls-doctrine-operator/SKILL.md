@@ -179,7 +179,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
 - Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed quorum for v0.3, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint; self-improvement never creates self-approval, self-release, trust-root authority, or unbounded recursion.
-- Skill and runtime-control promotion additionally require one pre-persisted sealed evaluation contract executed against distinct baseline/candidate repository states with an identical harness; comparison evidence never grants release authority.
+- Skill and runtime-control promotion additionally require one pre-persisted sealed evaluation contract executed against isolated baseline/candidate worktrees with an identical harness. Promotion revisions must differ; completion revalidation runs the same accepted revision twice. Comparison evidence never grants release authority.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.

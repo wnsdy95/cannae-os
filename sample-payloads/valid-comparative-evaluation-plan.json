@@ -6,6 +6,7 @@
   "mission_id": "MIS-Cannae-001",
   "cycle_number": 1,
   "target_type": "runtime_control",
+  "evaluation_purpose": "candidate_promotion",
   "repository_binding": {
     "repository_key": "cannae-os-aaaaaaaaaaaa",
     "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

@@ -3,7 +3,7 @@
   "$id": "https://controls.local/schema-files/comparative-evaluation-plan.schema.json",
   "title": "Comparative Evaluation Plan",
   "type": "object",
-  "required": ["schema_version", "type", "id", "campaign_id", "mission_id", "cycle_number", "target_type", "repository_binding", "subjects", "evaluation_set_ref", "harness", "independent_evaluator", "created_at"],
+  "required": ["schema_version", "type", "id", "campaign_id", "mission_id", "cycle_number", "target_type", "evaluation_purpose", "repository_binding", "subjects", "evaluation_set_ref", "harness", "independent_evaluator", "created_at"],
   "additionalProperties": false,
   "properties": {
     "schema_version": { "type": "string", "const": "0.1" },
@@ -13,6 +13,7 @@
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },
     "cycle_number": { "type": "integer", "minimum": 1 },
     "target_type": { "type": "string", "enum": ["runtime_control", "skill"] },
+    "evaluation_purpose": { "type": "string", "enum": ["candidate_promotion", "completion_revalidation"] },
     "repository_binding": { "$ref": "#/$defs/repository_binding" },
     "subjects": {
       "type": "object",

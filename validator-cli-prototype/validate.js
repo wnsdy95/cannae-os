@@ -1707,8 +1707,20 @@ function semanticRules(payload, type) {
     const baseline = payload.subjects && payload.subjects.baseline;
     const candidateSubject = payload.subjects && payload.subjects.candidate;
     const check = payload.harness && payload.harness.check;
-    if (baseline && candidateSubject && (baseline.candidate_id === candidateSubject.candidate_id || baseline.revision === candidateSubject.revision)) {
+    if (baseline && candidateSubject && baseline.candidate_id === candidateSubject.candidate_id) {
       issues.push(issue("critical", "COMPARATIVE_EVALUATION_SUBJECTS_NOT_DISTINCT", "$.subjects", "Baseline and candidate must have distinct immutable identities."));
+    }
+    if (baseline && candidateSubject && payload.evaluation_purpose === "candidate_promotion" && baseline.revision === candidateSubject.revision) {
+      issues.push(issue("critical", "COMPARATIVE_EVALUATION_PROMOTION_REVISIONS_NOT_DISTINCT", "$.subjects", "Candidate promotion requires distinct baseline and candidate revisions."));
+    }
+    if (baseline && candidateSubject && payload.evaluation_purpose === "completion_revalidation" && baseline.revision !== candidateSubject.revision) {
+      issues.push(issue("critical", "COMPARATIVE_EVALUATION_COMPLETION_REVISIONS_MISMATCH", "$.subjects", "Completion revalidation must execute the same accepted revision in both isolated worktrees."));
+    }
+    for (const [subjectName, subject] of Object.entries(payload.subjects || {})) {
+      const state = subject.expected_repository_state || {};
+      if (subject.revision !== state.head_commit && subject.revision !== `WT-${state.worktree_fingerprint}`) {
+        issues.push(issue("critical", "COMPARATIVE_EVALUATION_REVISION_STATE_MISMATCH", `$.subjects.${subjectName}.revision`, "A subject revision must be its Git head or exact worktree fingerprint identity."));
+      }
     }
     if (check) {
       const cwd = String(check.working_directory || "");
