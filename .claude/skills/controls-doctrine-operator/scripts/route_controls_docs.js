@@ -90,6 +90,19 @@ const RULES = [
     ]
   },
   {
+    id: "repository-artifact-isolation",
+    keywords: ["artifact", "artifacts", "output", "outputs", "deliverable", "repository output", "multi-repo", "multiple repositories", "cross-repository", "artifact store", "repository isolation", "generated file"],
+    docs: [
+      "docs/repository-artifact-isolation-policy.md",
+      "docs/knowledge-management-sop.md",
+      "docs/model-force-v0.2-operations.md"
+    ],
+    commands: [
+      "node run-repository-artifact-isolation-fixtures.js",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-repository-artifact-manifest.json repository-artifact-manifest"
+    ]
+  },
+  {
     id: "sof-tf",
     keywords: ["sof", "special", "task force", "tf", "incident", "high-risk", "special forces", "specialized", "critical-risk"],
     docs: [
@@ -299,6 +312,10 @@ const ROUTE_HINTS = [
     keywords: ["model-force-assignment", "model-profile", "model-allocation", "model-routing", "capability-band", "model-force", "model-registry", "model-assignment-compiler", "integrated-mission-preflight", "model-usage-event", "model-force-v0.2"]
   },
   {
+    id: "repository-artifact-isolation",
+    keywords: ["repository-artifact", "artifact-store", "artifact-isolation", "repository-output", "multi-repo", "cross-repository", "generated-artifact"]
+  },
+  {
     id: "sof-tf",
     keywords: ["sof", "special-operations", "special", "tf", "task-force"]
   },
@@ -326,7 +343,7 @@ const ROUTE_HINTS = [
 
 function usage() {
   console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--all] [--limit=N] <query> [repo-root]");
-  console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE <query> [repo-root]");
+  console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE [--write-artifact --target-repository=PATH] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
   process.exit(2);
 }
@@ -517,25 +534,30 @@ function parseArgs(argv) {
     mission: null,
     wave: null,
     agent: null,
+    targetRepository: null,
+    artifactRoot: null,
+    writeArtifact: false,
+    overwriteArtifact: false,
     coverage: false,
     all: false,
     limit: 40
   };
   const queryParts = [];
-  const valueOptionNames = new Set(["actor", "role", "department", "authority", "scope", "mission", "wave", "agent", "limit"]);
-  const booleanOptionNames = new Set(["coverage", "all", "receipt"]);
+  const valueOptionNames = new Set(["actor", "role", "department", "authority", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
+  const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact"]);
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     const equalsMatch = arg.match(/^--([^=]+)=(.*)$/);
 
     if (equalsMatch && valueOptionNames.has(equalsMatch[1])) {
-      options[equalsMatch[1]] = equalsMatch[2];
+      const key = equalsMatch[1].replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+      options[key] = equalsMatch[2];
       continue;
     }
 
     if (arg.startsWith("--") && valueOptionNames.has(arg.slice(2))) {
-      const key = arg.slice(2);
+      const key = arg.slice(2).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
       index += 1;
       if (index >= argv.length) usage();
       options[key] = argv[index];
@@ -543,7 +565,8 @@ function parseArgs(argv) {
     }
 
     if (arg.startsWith("--") && booleanOptionNames.has(arg.slice(2))) {
-      options[arg.slice(2)] = true;
+      const key = arg.slice(2).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+      options[key] = true;
       continue;
     }
 
@@ -718,7 +741,22 @@ function sanitizeIdPart(value) {
 }
 
 function commandString() {
-  const args = process.argv.slice(1).map(arg => {
+  const rawArgs = process.argv.slice(1);
+  const redactedArgs = [];
+  for (let index = 0; index < rawArgs.length; index += 1) {
+    const arg = rawArgs[index];
+    if (["--target-repository", "--artifact-root"].includes(arg)) {
+      redactedArgs.push(arg, "<local-path>");
+      index += 1;
+      continue;
+    }
+    if (/^--(?:target-repository|artifact-root)=/.test(arg)) {
+      redactedArgs.push(arg.replace(/=.*/, "=<local-path>"));
+      continue;
+    }
+    redactedArgs.push(arg);
+  }
+  const args = redactedArgs.map(arg => {
     if (/^[A-Za-z0-9_./:=@-]+$/.test(arg)) return arg;
     return `"${String(arg).replace(/(["\\$`])/g, "\\$1")}"`;
   });
@@ -787,4 +825,27 @@ if (parsed.options.coverage) {
 
 const routed = route(parsed.query, repoRoot, parsed.options);
 const output = parsed.options.receipt ? routingReceipt(routed, parsed.options) : routed;
+if (parsed.options.writeArtifact) {
+  if (!parsed.options.receipt || !parsed.options.targetRepository) {
+    console.error("--write-artifact requires --receipt and --target-repository <path>.");
+    process.exit(2);
+  }
+  try {
+    const { writeRepositoryArtifact } = require(path.join(repoRoot, "repository-artifact-store.js"));
+    const artifact = writeRepositoryArtifact({
+      repositoryPath: parsed.options.targetRepository,
+      artifactRoot: parsed.options.artifactRoot,
+      missionId: output.mission_id,
+      waveId: output.wave_id,
+      kind: "routing-receipts",
+      artifactId: output.id,
+      payload: output,
+      overwrite: parsed.options.overwriteArtifact
+    });
+    console.error(`Artifact written: ${artifact.artifact_path}`);
+  } catch (error) {
+    console.error(`Artifact persistence failed: ${error.message}`);
+    process.exit(1);
+  }
+}
 process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);

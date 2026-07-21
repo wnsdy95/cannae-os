@@ -5,6 +5,7 @@ const path = require("path");
 const { analyzeRoutingPreflight } = require("./agent-routing-preflight-runner");
 const { compileModelAssignment } = require("./model-assignment-compiler");
 const { analyzeModelForceAssignment } = require("./model-force-assignment-runner");
+const { parseArtifactWriteFlags, writeRepositoryArtifact } = require("./repository-artifact-store");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -225,10 +226,40 @@ function analyzeIntegratedMissionPreflight(bundle, repoRoot = __dirname) {
 function main() {
   const bundlePath = process.argv[2];
   if (!bundlePath) {
-    console.error("Usage: node integrated-mission-preflight-runner.js <integrated-mission-preflight.json>");
+    console.error("Usage: node integrated-mission-preflight-runner.js <integrated-mission-preflight.json> [--write-artifact --repository <repo> [--artifact-root <dir>] [--overwrite-artifact]]");
     process.exit(2);
   }
-  const result = analyzeIntegratedMissionPreflight(readJson(path.resolve(bundlePath)), __dirname);
+  let artifactOptions;
+  let bundle;
+  let result;
+  try {
+    artifactOptions = parseArtifactWriteFlags(process.argv.slice(3));
+    bundle = readJson(path.resolve(bundlePath));
+    result = analyzeIntegratedMissionPreflight(bundle, __dirname);
+  } catch (error) {
+    console.error(error.message);
+    process.exit(2);
+  }
+  if (artifactOptions.writeArtifact) {
+    try {
+      const artifact = writeRepositoryArtifact({
+        repositoryPath: artifactOptions.repositoryPath,
+        artifactRoot: artifactOptions.artifactRoot,
+        missionId: bundle.mission_id,
+        waveId: bundle.wave_id,
+        kind: "integrated-mission-preflights",
+        artifactId: bundle.id,
+        payload: result,
+        overwrite: artifactOptions.overwriteArtifact
+      });
+      console.error(`Artifact written: ${artifact.artifact_path}`);
+    } catch (error) {
+      result.status = "blocked";
+      result.dispatch_manifest = [];
+      result.usage_event_templates = [];
+      result.preflight_blocks = [...result.preflight_blocks, `Artifact persistence failed: ${error.message}`];
+    }
+  }
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.exit(result.status === "ready" ? 0 : 1);
 }

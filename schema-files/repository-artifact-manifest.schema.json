@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/repository-artifact-manifest.schema.json",
+  "title": "Repository Artifact Manifest",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "repository", "namespace_root", "artifacts", "artifact_count", "isolation", "created_at", "updated_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "RepositoryArtifactManifest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository": {
+      "type": "object",
+      "required": ["key", "label", "identity_fingerprint", "head_commit"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]+-[a-f0-9]{12}$" },
+        "label": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "head_commit": { "type": "string", "pattern": "^(unborn|[a-f0-9]{40,64})$" }
+      }
+    },
+    "namespace_root": { "type": "string", "pattern": "^repositories/[a-z0-9][a-z0-9-]+-[a-f0-9]{12}$" },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "artifact_id", "mission_id", "wave_id", "kind", "file_name", "content_type", "byte_size", "relative_path", "sha256", "created_at"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "artifact_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+          "mission_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+          "wave_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+          "kind": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+          "file_name": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+          "content_type": { "type": "string", "minLength": 1 },
+          "byte_size": { "type": "integer", "minimum": 0 },
+          "relative_path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+        }
+      }
+    },
+    "artifact_count": { "type": "integer", "minimum": 0 },
+    "isolation": {
+      "type": "object",
+      "required": ["repository_scoped", "cross_repository_writes_prohibited", "absolute_paths_recorded"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_scoped": { "type": "boolean", "const": true },
+        "cross_repository_writes_prohibited": { "type": "boolean", "const": true },
+        "absolute_paths_recorded": { "type": "boolean", "const": false }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "updated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

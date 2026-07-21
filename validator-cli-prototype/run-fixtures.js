@@ -345,6 +345,26 @@ const fixtures = [
     ]
   },
   {
+    name: "valid repository artifact manifest",
+    file: "sample-payloads/valid-repository-artifact-manifest.json",
+    type: "repository-artifact-manifest",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "cross-repository artifact manifest",
+    file: "sample-payloads/invalid-repository-artifact-manifest-cross-repo.json",
+    type: "repository-artifact-manifest",
+    exitCode: 1,
+    requiredCodes: [
+      "REPOSITORY_ARTIFACT_NAMESPACE_MISMATCH",
+      "REPOSITORY_ARTIFACT_COUNT_MISMATCH",
+      "REPOSITORY_ARTIFACT_PATH_TRAVERSAL",
+      "REPOSITORY_ARTIFACT_CROSS_REPOSITORY_PATH",
+      "REPOSITORY_ARTIFACT_ID_PATH_MISMATCH"
+    ]
+  },
+  {
     name: "valid document access manifest",
     file: "sample-payloads/valid-document-access-manifest.json",
     type: "document-access-manifest",
