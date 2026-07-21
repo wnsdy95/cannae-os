@@ -87,7 +87,7 @@
     },
     "proof_requirements": {
       "type": "object",
-      "required": ["verification_receipt_required", "signed_attestation_required", "minimum_valid_attestations", "minimum_independence_groups", "require_distinct_key_ids", "trust_policy_ref"],
+      "required": ["verification_receipt_required", "signed_attestation_required", "signed_comparative_attestation_required", "minimum_valid_attestations", "minimum_independence_groups", "require_distinct_key_ids", "trust_policy_ref"],
       "additionalProperties": false,
       "properties": {
         "verification_receipt_required": { "type": "boolean", "const": true },
@@ -97,6 +97,7 @@
           "items": { "type": "string", "enum": ["runtime_control", "skill"] }
         },
         "signed_attestation_required": { "type": "boolean" },
+        "signed_comparative_attestation_required": { "type": "boolean" },
         "minimum_valid_attestations": { "type": "integer", "minimum": 0, "maximum": 20 },
         "minimum_independence_groups": { "type": "integer", "minimum": 0, "maximum": 20 },
         "require_distinct_key_ids": { "type": "boolean" },

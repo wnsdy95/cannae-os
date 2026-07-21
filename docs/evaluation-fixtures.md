@@ -140,6 +140,9 @@ Validator changes must not:
 - accept a comparative report with a changed fixture order, stale repository state, different harness hash/argv, malformed observation, mismatched stdout hash, incomplete dimension coverage, or non-independent evaluator.
 - treat a relative improvement as sufficient when the candidate misses an absolute target, exceeds a maximum-regression threshold, or fails a held-out fixture.
 - treat an `inconclusive` comparison as a pass, or let any comparison report authorize execution, merge, push, or release.
+- promote a v0.4 control-plane candidate without a distinct-key, multi-group quorum over the exact persisted comparative report.
+- accept a report attestation bound to another artifact hash, report self-digest, plan, evaluation set, campaign, baseline, candidate, evaluator invocation, repository, origin policy, or validity window.
+- count duplicate, expired, untrusted, or same-group report attestations toward comparative quorum.
 - accept a repository artifact store with a pending journal, broken history chain, sidecar mismatch, or changed artifact bytes.
 - let an expired writer commit after a replacement lease has received a higher fencing token, steal an unexpired foreign-host lease, reuse a fencing token across different lease IDs, regress a token, or lose a revision reserved in immutable history.
 - accept research task with no source discipline.

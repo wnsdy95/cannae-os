@@ -264,12 +264,13 @@ candidate state
 -> repository-scoped VerificationReceipt
 -> Ed25519 DSSE attestations from trusted independent verifiers
 -> for skill/runtime control: sealed evaluation set + identical baseline/candidate harness executions
+-> for schema v0.4 skill/runtime control: Ed25519 DSSE attestations over the persisted comparative report
 -> manifest-backed checkpoint references
--> controller reloads and recomputes trust policy / receipt / attestations / comparison / parent / approval consumption
+-> controller reloads and recomputes trust policy / receipt / receipt attestations / comparison / report attestations / parent / approval consumption
 -> bounded decision with release_authorized=false
 ```
 
-The controller cannot turn prose test claims, a named parent ID, an unsigned remote-verifier claim, or a candidate-only score into authority. A v0.3 promotion requires fresh signatures from distinct trusted keys and the policy-required independence groups over the exact persisted receipt and its self-digest. Skill and runtime-control promotion additionally requires a recomputable `promotable` report from distinct immutable baseline/candidate states under one pre-persisted evaluation set and harness. Policy, trust-root, and authority effects require a schema-valid USER approval scope consumed by the exact checkpoint execution.
+The controller cannot turn prose test claims, a named parent ID, an unsigned remote-verifier claim, or a candidate-only score into authority. A v0.3+ promotion requires fresh signatures from distinct trusted keys and the policy-required independence groups over the exact persisted receipt and its self-digest. Skill and runtime-control promotion additionally requires a recomputable `promotable` report from distinct immutable baseline/candidate states under one pre-persisted evaluation set and harness. Schema v0.4 binds a second quorum to the exact report artifact, plan, set, lineage, evaluator invocation, campaign, and repository. Policy, trust-root, and authority effects require a schema-valid USER approval scope consumed by the exact checkpoint execution.
 
 ## 3. Data Flow
 

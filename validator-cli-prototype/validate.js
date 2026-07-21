@@ -4,6 +4,10 @@ const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");
 const { attestationDigest, publicKeyId } = require("../verification-attestation");
+const {
+  COMPARATIVE_PREDICATE_TYPE,
+  comparativeAttestationDigest
+} = require("../comparative-evaluation-attestation");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -66,7 +70,8 @@ const TYPE_TO_SCHEMA = {
   "verification-plan": "verification-plan.schema.json",
   "verification-receipt": "verification-receipt.schema.json",
   "verifier-trust-policy": "verifier-trust-policy.schema.json",
-  "verification-attestation": "verification-attestation.schema.json"
+  "verification-attestation": "verification-attestation.schema.json",
+  "comparative-evaluation-attestation": "comparative-evaluation-attestation.schema.json"
 };
 
 function readJson(filePath) {
@@ -1581,11 +1586,14 @@ function semanticRules(payload, type) {
         issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_THRESHOLDS_INCOMPLETE", "$.comparative_evaluation_policy.dimension_thresholds", "Every quality dimension requires exactly one maximum-regression threshold."));
       }
     }
-    if (payload.schema_version === "0.3") {
+    if (payload.schema_version === "0.4" && !comparative) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_V04_COMPARATIVE_POLICY_MISSING", "$.comparative_evaluation_policy", "v0.4 requires the comparative policy used by signed control-plane evaluation."));
+    }
+    if (["0.3", "0.4"].includes(payload.schema_version)) {
       const attestation = payload.attestation_policy || {};
       const trustRef = attestation.trust_policy_ref || {};
       if (attestation.required !== true || !trustRef.artifact_id || !/^[a-f0-9]{64}$/.test(trustRef.sha256 || "")) {
-        issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_POLICY_MISSING", "$.attestation_policy", "v0.3 campaigns require a hash-bound verifier trust policy."));
+        issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_POLICY_MISSING", "$.attestation_policy", "v0.3+ campaigns require a hash-bound verifier trust policy."));
       }
       if (path.isAbsolute(trustRef.relative_path || "") || String(trustRef.relative_path || "").split(/[\\/]+/).includes("..")) {
         issues.push(issue("critical", "SELF_IMPROVEMENT_TRUST_POLICY_PATH_INVALID", "$.attestation_policy.trust_policy_ref.relative_path", "Trust policy references must remain repository-artifact-relative."));
@@ -1593,10 +1601,10 @@ function semanticRules(payload, type) {
       if (!Number.isInteger(attestation.minimum_valid_attestations) || attestation.minimum_valid_attestations < 2 ||
           !Number.isInteger(attestation.minimum_independence_groups) || attestation.minimum_independence_groups < 2 ||
           attestation.minimum_independence_groups > attestation.minimum_valid_attestations || attestation.require_distinct_key_ids !== true) {
-        issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_QUORUM_WEAK", "$.attestation_policy", "v0.3 requires at least two distinct verifier keys from at least two independence groups."));
+        issues.push(issue("critical", "SELF_IMPROVEMENT_ATTESTATION_QUORUM_WEAK", "$.attestation_policy", "v0.3+ requires at least two distinct verifier keys from at least two independence groups."));
       }
     } else if (payload.attestation_policy !== undefined) {
-      issues.push(issue("error", "SELF_IMPROVEMENT_V02_ATTESTATION_POLICY", "$.attestation_policy", "Signed quorum policy requires campaign schema version 0.3."));
+      issues.push(issue("error", "SELF_IMPROVEMENT_V02_ATTESTATION_POLICY", "$.attestation_policy", "Signed quorum policy requires campaign schema version 0.3 or later."));
     }
   }
 
@@ -1670,10 +1678,10 @@ function semanticRules(payload, type) {
     if (!humanRetained && approval.required === true) {
       issues.push(issue("error", "SELF_IMPROVEMENT_UNNECESSARY_APPROVAL_BINDING", "$.approval_binding", "A checkpoint cannot attach unrelated approval evidence."));
     }
-    if (payload.schema_version === "0.3") {
+    if (["0.3", "0.4"].includes(payload.schema_version)) {
       const attestations = payload.verification_attestations || [];
       if (attestations.length < 2) {
-        issues.push(issue("critical", "SELF_IMPROVEMENT_SIGNED_QUORUM_MISSING", "$.verification_attestations", "v0.3 checkpoints require at least two signed verification attestations."));
+        issues.push(issue("critical", "SELF_IMPROVEMENT_SIGNED_QUORUM_MISSING", "$.verification_attestations", "v0.3+ checkpoints require at least two signed verification attestations."));
       }
       const ids = attestations.map(item => item.attestation_id);
       if (new Set(ids).size !== ids.length) {
@@ -1688,7 +1696,27 @@ function semanticRules(payload, type) {
         }
       }
     } else if (payload.verification_attestations !== undefined) {
-      issues.push(issue("error", "SELF_IMPROVEMENT_V02_ATTESTATIONS", "$.verification_attestations", "Signed attestations require checkpoint schema version 0.3."));
+      issues.push(issue("error", "SELF_IMPROVEMENT_V02_ATTESTATIONS", "$.verification_attestations", "Signed attestations require checkpoint schema version 0.3 or later."));
+    }
+    const comparativeAttestations = payload.comparative_evaluation_attestations || [];
+    if (payload.schema_version === "0.4" && comparativeTarget) {
+      if (comparativeAttestations.length < 2) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_SIGNED_QUORUM_MISSING", "$.comparative_evaluation_attestations", "v0.4 comparative checkpoints require at least two signed report attestations."));
+      }
+      const ids = comparativeAttestations.map(item => item.attestation_id);
+      if (new Set(ids).size !== ids.length) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_DUPLICATE_COMPARATIVE_ATTESTATION", "$.comparative_evaluation_attestations", "Comparative attestation IDs must be unique."));
+      }
+      for (const [index, attestation] of comparativeAttestations.entries()) {
+        if (attestation.report_id !== comparisonRef.report_id) {
+          issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_ATTESTATION_REPORT_UNKNOWN", `$.comparative_evaluation_attestations[${index}].report_id`, "Every comparative attestation must bind the checkpoint report."));
+        }
+        if (path.isAbsolute(attestation.relative_path || "") || String(attestation.relative_path || "").split(/[\\/]+/).includes("..")) {
+          issues.push(issue("critical", "SELF_IMPROVEMENT_COMPARATIVE_ATTESTATION_PATH_INVALID", `$.comparative_evaluation_attestations[${index}].relative_path`, "Comparative attestation references must remain repository-artifact-relative."));
+        }
+      }
+    } else if (payload.comparative_evaluation_attestations !== undefined) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_COMPARATIVE_ATTESTATION_VERSION_MISMATCH", "$.comparative_evaluation_attestations", "Comparative report attestations are allowed only for v0.4 comparative checkpoints."));
     }
   }
 
@@ -1884,6 +1912,48 @@ function semanticRules(payload, type) {
     }
   }
 
+  if (type === "comparative-evaluation-attestation") {
+    if (payload.attestation_sha256 !== comparativeAttestationDigest(payload)) {
+      issues.push(issue("critical", "COMPARATIVE_ATTESTATION_DIGEST_INVALID", "$.attestation_sha256", "Comparative attestation digest must match its envelope and exposed bindings."));
+    }
+    if (!isValidDate(payload.issued_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.issued_at)) {
+      issues.push(issue("critical", "COMPARATIVE_ATTESTATION_TIME_INVALID", "$.expires_at", "Comparative attestation expiry must be later than issue time."));
+    }
+    if (path.isAbsolute(payload.report_relative_path || "") || String(payload.report_relative_path || "").split(/[\\/]+/).includes("..")) {
+      issues.push(issue("critical", "COMPARATIVE_ATTESTATION_REPORT_PATH_INVALID", "$.report_relative_path", "Attested report paths must remain repository-artifact-relative."));
+    }
+    let statement = null;
+    try { statement = JSON.parse(Buffer.from(payload.envelope.payload, "base64").toString("utf8")); } catch (error) { /* reported below */ }
+    const subject = statement && Array.isArray(statement.subject) && statement.subject.length === 1 ? statement.subject[0] : {};
+    const predicate = (statement && statement.predicate) || {};
+    const report = predicate.report || {};
+    const subjects = predicate.subjects || {};
+    const baseline = subjects.baseline || {};
+    const candidate = subjects.candidate || {};
+    const evaluator = predicate.evaluator || {};
+    const verifier = predicate.verifier || {};
+    if (!statement || statement._type !== "https://in-toto.io/Statement/v1" || statement.predicateType !== COMPARATIVE_PREDICATE_TYPE) {
+      issues.push(issue("critical", "COMPARATIVE_ATTESTATION_STATEMENT_INVALID", "$.envelope.payload", "DSSE payload must contain the Cannae comparative-report in-toto statement."));
+    } else if (subject.name !== payload.report_id || !subject.digest || subject.digest.sha256 !== payload.report_sha256 ||
+        report.id !== payload.report_id || report.relative_path !== payload.report_relative_path ||
+        report.report_sha256 !== payload.report_content_sha256 || report.plan_id !== payload.plan_id ||
+        report.evaluation_set_id !== payload.evaluation_set_id || report.campaign_id !== payload.campaign_id ||
+        report.mission_id !== payload.mission_id || report.cycle_number !== payload.cycle_number || report.target_type !== payload.target_type ||
+        baseline.candidate_id !== payload.baseline_candidate_id || baseline.revision !== payload.baseline_revision ||
+        candidate.candidate_id !== payload.candidate_id || candidate.revision !== payload.candidate_revision ||
+        evaluator.id !== payload.evaluator_id || evaluator.invocation_id !== payload.evaluator_invocation_id ||
+        verifier.id !== payload.verifier_id || verifier.key_id !== payload.key_id || verifier.independence_group !== payload.independence_group ||
+        verifier.execution_origin !== payload.execution_origin || verifier.invocation_id !== payload.invocation_id ||
+        predicate.issued_at !== payload.issued_at || predicate.expires_at !== payload.expires_at ||
+        JSON.stringify(predicate.repository_binding) !== JSON.stringify(payload.repository_binding)) {
+      issues.push(issue("critical", "COMPARATIVE_ATTESTATION_STATEMENT_BINDING_MISMATCH", "$.envelope.payload", "Signed comparative statement fields must exactly match the exposed attestation bindings."));
+    }
+    if (!payload.envelope || !Array.isArray(payload.envelope.signatures) || payload.envelope.signatures.length !== 1 ||
+        payload.envelope.signatures[0].keyid !== payload.key_id) {
+      issues.push(issue("critical", "COMPARATIVE_ATTESTATION_SIGNATURE_BINDING_INVALID", "$.envelope.signatures", "Comparative attestation must contain exactly one signature from its declared key."));
+    }
+  }
+
   if (type === "self-improvement-decision") {
     if (payload.release_authorized !== false) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_SELF_RELEASE", "$.release_authorized", "The improvement controller cannot authorize merge, push, or external release."));
@@ -1906,12 +1976,20 @@ function semanticRules(payload, type) {
     if (payload.decision === "accept_working_state" && !hasSubstantiveItems(payload.proof && payload.proof.verification_receipt_ids)) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_PROOF", "$.proof.verification_receipt_ids", "Accepted working states require verified receipt IDs."));
     }
-    if (payload.schema_version === "0.3" && ["accept_working_state", "complete"].includes(payload.decision) &&
+    if (["0.3", "0.4"].includes(payload.schema_version) && ["accept_working_state", "complete"].includes(payload.decision) &&
         (!(payload.proof && payload.proof.attestation_quorum_satisfied === true) ||
          !hasSubstantiveItems(payload.proof && payload.proof.verification_attestation_ids) ||
          !hasSubstantiveItems(payload.proof && payload.proof.verifier_key_ids) ||
          !hasSubstantiveItems(payload.proof && payload.proof.verifier_independence_groups))) {
-      issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_SIGNED_QUORUM", "$.proof", "v0.3 promotion and completion decisions require a satisfied signed verifier quorum."));
+      issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_SIGNED_QUORUM", "$.proof", "v0.3+ promotion and completion decisions require a satisfied signed verifier quorum."));
+    }
+    if (payload.schema_version === "0.4" && ["accept_working_state", "complete"].includes(payload.decision) &&
+        payload.proof && payload.proof.comparative_evaluation_report_id !== "none" &&
+        (payload.proof.comparative_attestation_quorum_satisfied !== true ||
+         !hasSubstantiveItems(payload.proof.comparative_evaluation_attestation_ids) ||
+         !hasSubstantiveItems(payload.proof.comparative_verifier_key_ids) ||
+         !hasSubstantiveItems(payload.proof.comparative_verifier_independence_groups))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_COMPARATIVE_SIGNED_QUORUM", "$.proof", "v0.4 comparative promotion and completion decisions require a signed report quorum."));
     }
   }
 
@@ -1961,6 +2039,9 @@ function semanticRules(payload, type) {
         (proof.minimum_valid_attestations !== 0 || proof.minimum_independence_groups !== 0 ||
          proof.require_distinct_key_ids !== false || !proof.trust_policy_ref || proof.trust_policy_ref.artifact_id !== "none")) {
       issues.push(issue("error", "CYCLE_ORDER_UNSIGNED_PROOF_MISMATCH", "$.proof_requirements", "An unsigned campaign order must not claim signed-quorum requirements."));
+    }
+    if (proof.signed_comparative_attestation_required === true && proof.signed_attestation_required !== true) {
+      issues.push(issue("critical", "CYCLE_ORDER_COMPARATIVE_QUORUM_UNDERSPECIFIED", "$.proof_requirements", "Signed comparative evidence requires the campaign trust policy and signed receipt quorum."));
     }
   }
 

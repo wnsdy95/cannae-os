@@ -49,6 +49,21 @@ function makeEnvironment(name, overrides = {}) {
   campaign.created_at = "2026-07-21T09:00:00Z";
   Object.assign(campaign.budgets, overrides.budgets || {});
   if (overrides.status) campaign.status = overrides.status;
+  if (overrides.schemaVersion === "0.4") {
+    campaign.schema_version = "0.4";
+    campaign.attestation_policy = {
+      required: true,
+      trust_policy_ref: {
+        artifact_id: "VTP-Supervisor-Fixture",
+        relative_path: `repositories/${repository.key}/missions/${campaign.mission_id}/C0/verifier-trust-policies/VTP-Supervisor-Fixture.json`,
+        sha256: "a".repeat(64)
+      },
+      minimum_valid_attestations: 2,
+      minimum_independence_groups: 2,
+      require_distinct_key_ids: true,
+      max_attestation_age_seconds: 900
+    };
+  }
   const campaignWrite = writeRepositoryArtifact({
     repositoryPath,
     artifactRoot,
@@ -196,6 +211,16 @@ function run(name, test) {
 }
 
 try {
+  run("v0.4 start order carries receipt and comparative signature requirements", () => {
+    const environment = makeEnvironment("v04-start", { schemaVersion: "0.4" });
+    const order = supervise(environment);
+    assert.strictEqual(order.status, "ready");
+    assert.strictEqual(order.proof_requirements.signed_attestation_required, true);
+    assert.strictEqual(order.proof_requirements.signed_comparative_attestation_required, true);
+    assert.strictEqual(order.proof_requirements.minimum_valid_attestations, 2);
+    assert.strictEqual(order.proof_requirements.minimum_independence_groups, 2);
+  });
+
   run("new campaign opens cycle one", () => {
     const environment = makeEnvironment("start");
     const order = supervise(environment);

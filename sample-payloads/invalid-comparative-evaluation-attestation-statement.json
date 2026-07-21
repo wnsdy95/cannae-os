@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1",
+  "type": "ComparativeEvaluationAttestation",
+  "id": "CEA-a8a056a0aea5acb45f41d88d",
+  "report_id": "CER-Cannae-001",
+  "report_relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/comparative-evaluation-reports/CER-Cannae-001.json",
+  "report_sha256": "92748cd52b4a2363974c5ca57c32176235d3dd31ced8c2b1e51c282d2aab7893",
+  "report_content_sha256": "18bf88f31cb2f9f1c081c36024d68a9c9888fa037b40eba4b96d009501bbb83d",
+  "plan_id": "CEP-Cannae-001",
+  "evaluation_set_id": "CES-Cannae-001",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "target_type": "runtime_control",
+  "baseline_candidate_id": "BASE-Cannae-001",
+  "baseline_revision": "1111111111111111111111111111111111111111",
+  "candidate_id": "CAN-Cannae-001",
+  "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "evaluator_id": "EVAL-Cannae-001",
+  "evaluator_invocation_id": "INV-Cannae-001",
+  "verifier_id": "VERIFIER-Comparative-Sample",
+  "key_id": "83230db53efa39df124753e1db0ae1e769ee95fbf4cb6e8896f73e409971804b",
+  "independence_group": "provider-sample",
+  "execution_origin": "remote",
+  "invocation_id": "INV-Comparative-Sample",
+  "envelope": {
+    "payloadType": "application/vnd.in-toto+json",
+    "payload": "e30K",
+    "signatures": [
+      {
+        "keyid": "83230db53efa39df124753e1db0ae1e769ee95fbf4cb6e8896f73e409971804b",
+        "sig": "Qd6R+LP79UMB9LUtIpDhmx6/pEQ1NGOzP8ulbZAWsOldq3XPOcz4wTJtIkfTZTrnrqFhYQuhH6t+rn8mPJxICw=="
+      }
+    ]
+  },
+  "issued_at": "2026-07-22T09:20:00+09:00",
+  "expires_at": "2026-07-22T09:30:00+09:00",
+  "attestation_sha256": "7a9516a03609059a921d0e08122f4294d30aecc2a00c1fca023980b18155644d"
+}

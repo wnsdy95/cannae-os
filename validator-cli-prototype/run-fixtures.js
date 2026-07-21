@@ -885,6 +885,20 @@ const fixtures = [
     type: "verification-attestation",
     exitCode: 1,
     requiredCodes: ["ATTESTATION_STATEMENT_INVALID"]
+  },
+  {
+    name: "valid signed comparative evaluation attestation",
+    file: "sample-payloads/valid-comparative-evaluation-attestation.json",
+    type: "comparative-evaluation-attestation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "comparative evaluation attestation has an invalid signed statement",
+    file: "sample-payloads/invalid-comparative-evaluation-attestation-statement.json",
+    type: "comparative-evaluation-attestation",
+    exitCode: 1,
+    requiredCodes: ["COMPARATIVE_ATTESTATION_STATEMENT_INVALID"]
   }
 ];
 

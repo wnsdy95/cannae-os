@@ -27,7 +27,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.2", "0.3"] },
+    "schema_version": { "type": "string", "enum": ["0.2", "0.3", "0.4"] },
     "type": { "type": "string", "const": "SelfImprovementCheckpoint" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -173,6 +173,22 @@
         "report_id": { "type": "string", "minLength": 1 },
         "relative_path": { "type": "string", "minLength": 1 },
         "sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" }
+      }
+    },
+    "comparative_evaluation_attestations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["attestation_id", "report_id", "verifier_id", "relative_path", "sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "attestation_id": { "$ref": "common.schema.json#/$defs/id" },
+          "report_id": { "$ref": "common.schema.json#/$defs/id" },
+          "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+          "relative_path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
       }
     },
     "externalities": {

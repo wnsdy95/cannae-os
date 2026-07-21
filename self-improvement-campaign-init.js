@@ -79,7 +79,7 @@ function buildCampaign(options) {
   const repository = resolveRepository(options.repository);
   const createdAt = options.createdAt || new Date().toISOString();
   const campaign = {
-    schema_version: options.trustPolicyId ? "0.3" : "0.2",
+    schema_version: options.trustPolicyId ? "0.4" : "0.2",
     type: "SelfImprovementCampaign",
     id: options.campaign,
     mission_id: options.mission,

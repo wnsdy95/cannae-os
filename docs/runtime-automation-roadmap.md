@@ -15,9 +15,10 @@ Manual doctrine docs
 -> AAR-driven learning runtime
 -> Manifest-backed finite campaign supervision
 -> Comparative canary promotion gates
+-> Authenticated comparative evidence
 ```
 
-Current repository state: Phases 0-3 have executable prototypes, repository-scoped proof persistence, bounded campaign supervision, and comparative control-plane promotion are implemented as local runtimes, and UI/external-system integration remains prototype-grade.
+Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, and signed comparative evidence are implemented as local runtimes. UI and externally authenticated execution remain prototype-grade.
 
 ## 1. Phase 0: Documentation Base
 
@@ -226,7 +227,41 @@ Implemented controls:
 - `autonomous-improvement-controller.js` reloads the report, plan, and set from the verified manifest, recomputes the result, and matches report values to checkpoint metrics;
 - `campaign-supervisor.js` carries the comparative requirement forward without granting merge, push, execution, or release authority.
 
-## 10. Release Gates
+## 10. Phase 9: Authenticated Comparative Evidence
+
+Status: implemented as a local DSSE/in-toto proof layer.
+
+Goal:
+
+- Authenticate who vouched for the exact persisted comparative report before a control-plane candidate is promoted.
+
+Features:
+
+- report-artifact SHA-256 and report self-digest binding;
+- plan, evaluation-set, campaign, mission, cycle, baseline, candidate, repository, evaluator, and invocation binding;
+- Ed25519 DSSE signatures over an in-toto statement with a purpose-specific predicate;
+- distinct verifier ID, key, and independence-group quorum;
+- issue, expiry, trust-policy, key-validity, execution-origin, and maximum-age checks;
+- controller and supervisor integration under campaign/checkpoint/decision schema `0.4`;
+- no merge, push, execution, trust-root, or release authority.
+
+Completion criteria:
+
+- A `0.4` skill or runtime-control checkpoint cannot promote from an unsigned comparative report.
+- Rebinding a signed report to another artifact, campaign, plan, set, baseline, candidate, evaluator invocation, or repository fails closed.
+- Repeated, expired, untrusted, or non-independent signatures cannot satisfy quorum.
+- `0.2` receipt-only and `0.3` signed-receipt campaigns remain readable and executable under their original contracts.
+
+Implemented controls:
+
+- `comparative-evaluation-attestation-runner.js` signs the exact persisted report reference and emits portable evidence;
+- `autonomous-improvement-controller.js` reloads each report attestation from the verified artifact manifest and recomputes quorum against the campaign trust policy;
+- `campaign-supervisor.js` binds accepted comparative attestation IDs back to checkpoint references and carries the signed-report requirement in every `0.4` cycle order;
+- dedicated fixtures cover signature tamper, artifact/self-digest mismatch, plan/set/lineage/evaluator/repository rebinding, cross-campaign replay, expiry, origin restrictions, duplicate signers, and weak quorum.
+
+This phase authenticates trusted-key possession and statement integrity. It does not prove that the evaluator ran honestly, that `remote` is a protected execution service, or that declared independence groups are operationally independent.
+
+## 11. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -239,8 +274,9 @@ Implemented controls:
 | G7 | AAR updates readiness ledger |
 | G8 | Campaign supervisor emits only a finite ready order from a valid manifest chain |
 | G9 | Control-plane candidate passes baseline-versus-canary comparison |
+| G10 | Schema `0.4` control-plane comparison has a fresh trusted signed report quorum |
 
-## 11. Related Documents
+## 12. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`

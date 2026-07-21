@@ -28,7 +28,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.2", "0.3"] },
+    "schema_version": { "type": "string", "enum": ["0.2", "0.3", "0.4"] },
     "type": { "type": "string", "const": "SelfImprovementDecision" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -55,7 +55,11 @@
         "verification_attestation_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } },
         "verifier_key_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
         "verifier_independence_groups": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
-        "attestation_quorum_satisfied": { "type": "boolean" }
+        "attestation_quorum_satisfied": { "type": "boolean" },
+        "comparative_evaluation_attestation_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } },
+        "comparative_verifier_key_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
+        "comparative_verifier_independence_groups": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "comparative_attestation_quorum_satisfied": { "type": "boolean" }
       }
     },
     "score": {

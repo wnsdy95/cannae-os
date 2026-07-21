@@ -2540,6 +2540,42 @@ Implemented artifacts:
 - `run-comparative-evaluation-fixtures.js`
 - controller, supervisor, validator, roadmap, and skill integrations
 
+### 8.56 Authenticated Comparative Evidence v0.6
+
+Research question:
+
+> How can the controller authenticate the party vouching for a comparative result without confusing a valid signature with proof that the evaluation itself was honest or isolated?
+
+Primary references:
+
+- DSSE protocol: https://github.com/secure-systems-lab/dsse/blob/master/protocol.md
+- in-toto Statement v1: https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md
+- SLSA Verification Summary Attestation v1: https://slsa.dev/spec/v1.2/verification_summary
+- SLSA artifact verification: https://slsa.dev/spec/v1.2/verifying-artifacts
+- Sigstore keyless signing overview: https://docs.sigstore.dev/cosign/signing/overview/
+
+Engineering conclusions:
+
+1. A report hash in a local manifest proves local byte consistency, not who vouched for the report. Schema v0.4 therefore adds an Ed25519 DSSE attestation whose in-toto subject is the exact persisted report artifact SHA-256.
+2. Authentication must be purpose-bound. Receipt and comparative-report statements use different predicate types, preventing a valid signature from one evidence class from being interpreted as the other. Comparative signing additionally requires an explicit `comparative_evaluation_report` grant in the verifier's `allowed_attestation_types`; a receipt-only key is rejected before signing and during verification.
+3. Subject digest alone is insufficient for policy. The signed comparative predicate repeats the report self-digest, plan and evaluation-set IDs, outcome, campaign, mission, cycle, target type, baseline and candidate identities/revisions, repository identity, evaluator ID/invocation, verifier identity, execution origin, nonce, and validity window.
+4. Verification follows the SLSA pattern: validate the trusted key and envelope, match the subject digest, require the expected predicate, bind signer to verifier identity, then compare every relevant claim with preconfigured expectations. The controller derives those expectations from manifest-reloaded campaign, checkpoint, plan, set, and report artifacts.
+5. One signer is not independent assurance. The same human-controlled trust policy sets minimum valid attestations, distinct keys, distinct verifier IDs, independence groups, allowed repositories/origins and attestation purposes, key windows, policy window, and maximum evidence age for both receipt and report quorums.
+6. Outer fields are conveniences, not authority. They must equal the signed predicate and the controller's expectations. Changing an outer candidate revision and recomputing the local attestation digest still fails because the DSSE payload does not change.
+7. A report attestation authenticates a trusted-key statement; it does not establish host isolation, honest harness execution, workload identity, provider independence, or trusted time. Sigstore-style OIDC identity, short-lived credentials, transparency inclusion, protected keys, and a sandboxed evaluator are future infrastructure controls.
+8. `promotable` plus a valid report quorum remains only working-state evidence. The report, attestation, controller decision, and supervisor order all leave merge, push, policy, trust-root, authority, and release decisions outside autonomous scope.
+9. Backward compatibility is explicit: v0.2 remains receipt-only, v0.3 retains signed-receipt semantics, and newly bootstrapped trusted campaigns use v0.4 with a separate signed comparative quorum for skill and runtime-control targets.
+
+Implemented artifacts:
+
+- `comparative-evaluation-attestation.js`
+- `comparative-evaluation-attestation-runner.js`
+- `schema-files/comparative-evaluation-attestation.schema.json`
+- `sample-payloads/valid-comparative-evaluation-attestation.json`
+- `sample-payloads/invalid-comparative-evaluation-attestation-statement.json`
+- `run-comparative-evaluation-attestation-fixtures.js`
+- v0.4 controller, supervisor, validator, roadmap, and skill integrations
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

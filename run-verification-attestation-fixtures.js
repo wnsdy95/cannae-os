@@ -32,6 +32,7 @@ function keyFixture(id, group, repositoryKey) {
       status: "active",
       allowed_repository_keys: [repositoryKey],
       allowed_execution_origins: ["remote"],
+      allowed_attestation_types: ["verification_receipt", "comparative_evaluation_report"],
       valid_from: "2026-07-21T18:00:00+09:00",
       valid_until: "2026-07-22T18:00:00+09:00"
     }
@@ -108,6 +109,32 @@ assert.strictEqual(verifyVerificationAttestation(attestationA, trustPolicy, {
   receiptSha256: receiptReference.sha256
 }, now).valid, true);
 console.log("PASS Ed25519 DSSE attestation validates against the trusted public key");
+
+const legacyPolicy = JSON.parse(JSON.stringify(trustPolicy));
+for (const verifier of legacyPolicy.verifiers) delete verifier.allowed_attestation_types;
+assert.strictEqual(verifyVerificationAttestation(attestationA, legacyPolicy, {
+  ...expectations,
+  receiptId: receipt.id,
+  receiptSha256: receiptReference.sha256
+}, now).valid, true);
+console.log("PASS v0.3 receipt verification remains compatible with policies that predate purpose grants");
+
+const wrongPurposePolicy = JSON.parse(JSON.stringify(trustPolicy));
+wrongPurposePolicy.verifiers[0].allowed_attestation_types = ["comparative_evaluation_report"];
+const wrongPurpose = verifyVerificationAttestation(attestationA, wrongPurposePolicy, expectations, now);
+assert.strictEqual(wrongPurpose.valid, false);
+assert(wrongPurpose.codes.includes("ATTESTATION_PURPOSE_UNAUTHORIZED"));
+assert.throws(() => createVerificationAttestation({
+  receipt,
+  receiptReference,
+  verifier: wrongPurposePolicy.verifiers[0],
+  privateKeyPem: verifierA.privateKeyPem,
+  executionOrigin: "remote",
+  invocationId: "INV-Wrong-Purpose",
+  issuedAt: "2026-07-21T18:23:00+09:00",
+  expiresAt: "2026-07-21T18:30:00+09:00"
+}), /not authorized/);
+console.log("PASS a key trusted only for comparative evidence cannot sign receipt evidence");
 
 const quorum = evaluateAttestationQuorum([attestationA, attestationB], trustPolicy, expectations, trustPolicy.quorum, now);
 assert.strictEqual(quorum.valid, true, JSON.stringify(quorum, null, 2));
@@ -202,4 +229,4 @@ try {
   fs.rmSync(cliRoot, { recursive: true, force: true });
 }
 
-console.log("Verification attestation fixtures: 10/10 passed");
+console.log("Verification attestation fixtures: 12/12 passed");
