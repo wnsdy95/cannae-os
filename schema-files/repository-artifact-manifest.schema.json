@@ -3,10 +3,10 @@
   "$id": "https://controls.local/schema-files/repository-artifact-manifest.schema.json",
   "title": "Repository Artifact Manifest",
   "type": "object",
-  "required": ["schema_version", "type", "id", "repository", "namespace_root", "artifacts", "artifact_count", "isolation", "created_at", "updated_at"],
+  "required": ["schema_version", "type", "id", "repository", "namespace_root", "manifest_revision", "artifacts", "artifact_count", "isolation", "created_at", "updated_at"],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "RepositoryArtifactManifest" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "repository": {
@@ -21,6 +21,7 @@
       }
     },
     "namespace_root": { "type": "string", "pattern": "^repositories/[a-z0-9][a-z0-9-]+-[a-f0-9]{12}$" },
+    "manifest_revision": { "type": "integer", "minimum": 1 },
     "artifacts": {
       "type": "array",
       "items": {
@@ -45,12 +46,14 @@
     "artifact_count": { "type": "integer", "minimum": 0 },
     "isolation": {
       "type": "object",
-      "required": ["repository_scoped", "cross_repository_writes_prohibited", "absolute_paths_recorded"],
+      "required": ["repository_scoped", "cross_repository_writes_prohibited", "absolute_paths_recorded", "cross_process_manifest_lock", "stale_lock_recovery_fail_closed"],
       "additionalProperties": false,
       "properties": {
         "repository_scoped": { "type": "boolean", "const": true },
         "cross_repository_writes_prohibited": { "type": "boolean", "const": true },
-        "absolute_paths_recorded": { "type": "boolean", "const": false }
+        "absolute_paths_recorded": { "type": "boolean", "const": false },
+        "cross_process_manifest_lock": { "type": "boolean", "const": true },
+        "stale_lock_recovery_fail_closed": { "type": "boolean", "const": true }
       }
     },
     "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },

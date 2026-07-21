@@ -53,7 +53,10 @@ const TYPE_TO_SCHEMA = {
   "model-assignment-request": "model-assignment-request.schema.json",
   "integrated-mission-preflight": "integrated-mission-preflight.schema.json",
   "model-usage-event": "model-usage-event.schema.json",
-  "repository-artifact-manifest": "repository-artifact-manifest.schema.json"
+  "repository-artifact-manifest": "repository-artifact-manifest.schema.json",
+  "self-improvement-campaign": "self-improvement-campaign.schema.json",
+  "self-improvement-checkpoint": "self-improvement-checkpoint.schema.json",
+  "self-improvement-decision": "self-improvement-decision.schema.json"
 };
 
 function readJson(filePath) {
@@ -1490,6 +1493,130 @@ function semanticRules(payload, type) {
     }
   }
 
+  if (type === "self-improvement-campaign") {
+    const commandTeam = payload.command_team || {};
+    const authority = payload.authority_envelope || {};
+    const quality = payload.quality_model || {};
+    const dimensions = quality.dimensions || [];
+    const checkpoints = (payload.checkpoint_policy && payload.checkpoint_policy.required_triggers) || [];
+    if (payload.final_decision_authority !== "USER") {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_HUMAN_AUTHORITY_MISSING", "$.final_decision_authority", "Bounded self-improvement must preserve the human user as final decision authority."));
+    }
+    if (commandTeam.improvement_controller === commandTeam.independent_evaluator) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_EVALUATOR_NOT_INDEPENDENT", "$.command_team", "The improvement controller cannot independently approve its own control-plane changes."));
+    }
+    if (!hasSubstantiveItems(payload.protected_invariants)) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_WITHOUT_INVARIANTS", "$.protected_invariants", "A self-improvement campaign must state protected invariants."));
+    }
+    if (!hasSubstantiveItems(payload.stop_conditions)) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_WITHOUT_STOP_CONDITIONS", "$.stop_conditions", "A self-improvement campaign must state stop conditions."));
+    }
+    if (!hasSubstantiveItems(payload.objective && payload.objective.acceptance_criteria)) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_WITHOUT_ACCEPTANCE_CRITERIA", "$.objective.acceptance_criteria", "A self-improvement campaign requires observable acceptance criteria."));
+    }
+    if (!["local_reversible", "bounded_structural"].includes(authority.max_change_class)) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_ENVELOPE_TOO_BROAD", "$.authority_envelope.max_change_class", "Autonomous change authority cannot include authority changes, release, or destructive action."));
+    }
+    for (const field of ["push_requires_human", "merge_requires_human", "release_requires_human", "authority_change_requires_human", "policy_change_requires_human", "destructive_action_prohibited", "self_approval_prohibited"]) {
+      if (authority[field] !== true) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_RETAINED_AUTHORITY_MISSING", `$.authority_envelope.${field}`, `${field} must remain human-retained or prohibited.`));
+      }
+    }
+    const dimensionIds = dimensions.map(item => item.id);
+    if (new Set(dimensionIds).size !== dimensionIds.length) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_DUPLICATE_QUALITY_DIMENSION", "$.quality_model.dimensions", "Quality dimension IDs must be unique."));
+    }
+    const weightSum = dimensions.reduce((sum, item) => sum + Number(item.weight || 0), 0);
+    if (Math.abs(weightSum - 1) > 0.000001) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_QUALITY_WEIGHTS_INVALID", "$.quality_model.dimensions", "Quality dimension weights must sum to 1."));
+    }
+    for (const [index, dimension] of dimensions.entries()) {
+      if (dimension.target < 0 || dimension.target > 1) {
+        issues.push(issue("error", "SELF_IMPROVEMENT_TARGET_NOT_NORMALIZED", `$.quality_model.dimensions[${index}].target`, "Quality targets must use the normalized 0..1 scale."));
+      }
+      if (!hasSubstantiveItems(dimension.evidence_required)) {
+        issues.push(issue("error", "SELF_IMPROVEMENT_DIMENSION_WITHOUT_EVIDENCE", `$.quality_model.dimensions[${index}].evidence_required`, "Every quality dimension requires external evidence."));
+      }
+    }
+    for (const required of ["before_completion", "scope_change", "validation_failure"]) {
+      if (!checkpoints.includes(required)) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_CHECKPOINT_TRIGGER_MISSING", "$.checkpoint_policy.required_triggers", `Checkpoint trigger ${required} is mandatory.`));
+      }
+    }
+  }
+
+  if (type === "self-improvement-checkpoint") {
+    const target = payload.target || {};
+    const candidate = payload.candidate || {};
+    const externalities = payload.externalities || {};
+    const approval = payload.approval || {};
+    if (payload.cycle_number === 1 && payload.parent_decision_id !== "none") {
+      issues.push(issue("error", "SELF_IMPROVEMENT_FIRST_CYCLE_HAS_PARENT", "$.parent_decision_id", "The first cycle must start from the campaign baseline, not a prior decision."));
+    }
+    if (payload.cycle_number > 1 && /^none$/i.test(String(payload.parent_decision_id || ""))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_PARENT_DECISION_MISSING", "$.parent_decision_id", "Follow-on cycles must identify the accepted parent decision."));
+    }
+    const unsafePaths = [...(target.artifact_paths || []), ...(candidate.changed_files || [])]
+      .filter(value => typeof value !== "string" || path.isAbsolute(value) || /^[A-Za-z]:[\\/]/.test(value) || value.split(/[\\/]+/).includes(".."));
+    if (unsafePaths.length > 0) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_PATH_TRAVERSAL", "$.target.artifact_paths", "Self-improvement targets and changed files must stay inside the bound repository."));
+    }
+    if (new Set(candidate.changed_files || []).size !== (candidate.changed_files || []).length) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_DUPLICATE_CHANGED_FILE", "$.candidate.changed_files", "Changed file paths must be unique."));
+    }
+    if (hasSubstantiveItems(candidate.protected_invariants_affected)) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_PROTECTED_INVARIANT_CHANGE", "$.candidate.protected_invariants_affected", "A candidate that affects a protected invariant cannot be promoted by this campaign."));
+    }
+    if (candidate.disposition !== "no_change" && !hasSubstantiveItems(candidate.rollback_steps)) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_ROLLBACK_MISSING", "$.candidate.rollback_steps", "Every change candidate requires a rollback plan."));
+    }
+    for (const [index, metric] of (payload.metric_results || []).entries()) {
+      if (metric.before < 0 || metric.before > 1 || metric.after < 0 || metric.after > 1) {
+        issues.push(issue("error", "SELF_IMPROVEMENT_METRIC_NOT_NORMALIZED", `$.metric_results[${index}]`, "Checkpoint metrics must use the normalized 0..1 scale."));
+      }
+      if (!hasSubstantiveItems(metric.evidence) || metric.evidence.every(item => /(?:model|agent)[ -]?(?:confidence|self[- ]?(?:assessment|approval|report|score))/i.test(String(item)))) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_METRIC_WITHOUT_EXTERNAL_EVIDENCE", `$.metric_results[${index}].evidence`, "Checkpoint metrics require deterministic or independent evidence, not model confidence alone."));
+      }
+    }
+    if ((payload.validation_results || []).some(item => !hasSubstantiveItems(item.evidence))) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_VALIDATION_WITHOUT_EVIDENCE", "$.validation_results", "Every validation result must preserve evidence."));
+    }
+    const controlPlaneTarget = ["runtime_control", "skill", "policy"].includes(target.target_type);
+    const independent = payload.independent_evaluation || {};
+    if (controlPlaneTarget && (independent.required !== true || independent.evaluator === "S3" || independent.status === "not_required")) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_CONTROL_PLANE_SELF_REVIEW", "$.independent_evaluation", "Runtime, skill, and policy candidates require independent evaluation."));
+    }
+    const humanRetained = externalities.scope_changed || externalities.authority_changed || externalities.policy_changed || externalities.release_requested ||
+      ["authority_affecting", "external_release", "destructive"].includes(candidate.change_class) || target.target_type === "policy";
+    if (humanRetained && !(approval.required === true && approval.status === "approved" && approval.approved_by === "USER" && (approval.scope || []).includes(candidate.id))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_HUMAN_APPROVAL_MISSING", "$.approval", "Human-retained changes require an explicit USER approval scoped to the candidate."));
+    }
+    if (externalities.destructive_action || externalities.cross_repository_write || candidate.change_class === "destructive") {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_PROHIBITED_EXTERNALITY", "$.externalities", "Destructive and cross-repository self-improvement actions are prohibited."));
+    }
+    if (approval.status === "approved" && !(approval.required === true && approval.approved_by === "USER" && approval.approval_id !== "none" && (approval.scope || []).includes(candidate.id))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_APPROVAL_SCOPE_INVALID", "$.approval", "An approval claim must identify USER authority and cover the exact candidate."));
+    }
+  }
+
+  if (type === "self-improvement-decision") {
+    if (payload.release_authorized !== false) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_SELF_RELEASE", "$.release_authorized", "The improvement controller cannot authorize merge, push, or external release."));
+    }
+    if (["escalate", "terminate", "complete"].includes(payload.decision) && payload.execution_authorized === true) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_EXECUTION_MISMATCH", "$.execution_authorized", "Escalation, termination, and completion decisions cannot authorize candidate execution."));
+    }
+    if (payload.decision !== "rollback" && payload.blocking_codes && payload.blocking_codes.length > 0 && payload.execution_authorized === true) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_BLOCKED_EXECUTION", "$.blocking_codes", "A decision with blocking codes cannot authorize candidate execution."));
+    }
+    if (payload.human_decision_required === true && /^none$/i.test(String(payload.required_human_decision || ""))) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_HUMAN_DECISION_UNSPECIFIED", "$.required_human_decision", "Human escalation must state the required decision."));
+    }
+    if (payload.decision === "accept_working_state" && (payload.execution_authorized !== true || payload.promotion_scope === "none")) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_ACCEPT_WITHOUT_PROMOTION", "$", "An accepted working state must authorize a bounded promotion scope."));
+    }
+  }
+
   if (type === "annex") {
     if (payload.intent_impact === "changes") {
       issues.push(issue("critical", "ANNEX_CHANGES_INTENT", "$.intent_impact", "Annex cannot change OPORD intent; use FRAGO scope change."));
@@ -1709,6 +1836,12 @@ function semanticRules(payload, type) {
     }
     if (payload.artifact_count !== artifacts.length) {
       issues.push(issue("error", "REPOSITORY_ARTIFACT_COUNT_MISMATCH", "$.artifact_count", "Manifest artifact_count must match the artifact entry count."));
+    }
+    if (!Number.isInteger(payload.manifest_revision) || payload.manifest_revision < artifacts.length) {
+      issues.push(issue("error", "REPOSITORY_ARTIFACT_REVISION_INVALID", "$.manifest_revision", "Manifest revision must be monotonic and cannot be lower than the retained artifact count."));
+    }
+    if (!payload.isolation || payload.isolation.cross_process_manifest_lock !== true || payload.isolation.stale_lock_recovery_fail_closed !== true) {
+      issues.push(issue("critical", "REPOSITORY_ARTIFACT_CONCURRENCY_GUARD_MISSING", "$.isolation", "Repository artifact manifests require a cross-process lock and fail-closed stale-lock recovery."));
     }
     const paths = new Set();
     for (const [index, artifact] of artifacts.entries()) {
@@ -1933,6 +2066,24 @@ function maxSeverity(issues) {
   return issues.reduce((max, item) => order.indexOf(item.severity) > order.indexOf(max) ? item.severity : max, "info");
 }
 
+function validatePayload(payload, type) {
+  if (!TYPE_TO_SCHEMA[type]) throw new Error(`Unknown payload type: ${type}`);
+  const schemas = loadSchemas();
+  const schema = schemas[TYPE_TO_SCHEMA[type]];
+  const issues = [
+    ...validateSchema(payload, schema, schemas).map(item => ({ ...item, layer: "schema" })),
+    ...semanticRules(payload, type).map(item => ({ ...item, layer: "semantic" }))
+  ];
+  const severity = maxSeverity(issues);
+  return {
+    valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
+    can_execute: !issues.some(item => item.severity === "error" || item.severity === "critical"),
+    max_severity: severity,
+    issue_count: issues.length,
+    issues
+  };
+}
+
 function main() {
   const [, , payloadArg, typeArg] = process.argv;
   if (!payloadArg || !typeArg || !TYPE_TO_SCHEMA[typeArg]) {
@@ -1941,22 +2092,9 @@ function main() {
   }
 
   try {
-    const schemas = loadSchemas();
     const payloadPath = path.resolve(process.cwd(), payloadArg);
     const payload = readJson(payloadPath);
-    const schema = schemas[TYPE_TO_SCHEMA[typeArg]];
-    const issues = [
-      ...validateSchema(payload, schema, schemas),
-      ...semanticRules(payload, typeArg)
-    ];
-    const severity = maxSeverity(issues);
-    const result = {
-      valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-      can_execute: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-      max_severity: severity,
-      issue_count: issues.length,
-      issues
-    };
+    const result = validatePayload(payload, typeArg);
     console.log(JSON.stringify(result, null, 2));
     process.exit(result.valid ? 0 : 1);
   } catch (error) {
@@ -1965,4 +2103,6 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { validatePayload };

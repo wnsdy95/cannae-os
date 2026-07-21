@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/self-improvement-campaign.schema.json",
+  "title": "Bounded Self-Improvement Campaign",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "repository_binding",
+    "objective",
+    "final_decision_authority",
+    "command_team",
+    "authority_envelope",
+    "protected_invariants",
+    "quality_model",
+    "budgets",
+    "checkpoint_policy",
+    "experiment_policy",
+    "stop_conditions",
+    "status",
+    "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "SelfImprovementCampaign" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint", "baseline_revision"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "baseline_revision": { "type": "string", "minLength": 1 }
+      }
+    },
+    "objective": {
+      "type": "object",
+      "required": ["intent", "end_state", "acceptance_criteria", "non_goals"],
+      "additionalProperties": false,
+      "properties": {
+        "intent": { "type": "string", "minLength": 1 },
+        "end_state": { "type": "string", "minLength": 1 },
+        "acceptance_criteria": { "$ref": "common.schema.json#/$defs/string_list" },
+        "non_goals": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "final_decision_authority": { "type": "string", "const": "USER" },
+    "command_team": {
+      "type": "object",
+      "required": ["campaign_owner", "improvement_controller", "independent_evaluator", "recorder"],
+      "additionalProperties": false,
+      "properties": {
+        "campaign_owner": { "$ref": "common.schema.json#/$defs/role_id" },
+        "improvement_controller": { "$ref": "common.schema.json#/$defs/role_id" },
+        "independent_evaluator": { "$ref": "common.schema.json#/$defs/role_id" },
+        "recorder": { "$ref": "common.schema.json#/$defs/role_id" }
+      }
+    },
+    "authority_envelope": {
+      "type": "object",
+      "required": [
+        "autonomous_target_types",
+        "autonomous_actions",
+        "max_change_class",
+        "may_modify_in_progress_work",
+        "may_start_follow_on_cycles",
+        "may_promote_to_working_state",
+        "commit_requires_human",
+        "push_requires_human",
+        "merge_requires_human",
+        "release_requires_human",
+        "authority_change_requires_human",
+        "policy_change_requires_human",
+        "destructive_action_prohibited",
+        "self_approval_prohibited",
+        "standing_approval_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "autonomous_target_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["work_product", "test_fixture", "documentation", "procedure", "runtime_control", "skill", "policy"]
+          }
+        },
+        "autonomous_actions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["inspect", "route", "analyze", "draft", "edit", "test", "checkpoint", "propose", "revert_own_uncommitted_change", "persist_artifact"]
+          }
+        },
+        "max_change_class": {
+          "type": "string",
+          "enum": ["local_reversible", "bounded_structural", "authority_affecting", "external_release", "destructive"]
+        },
+        "may_modify_in_progress_work": { "type": "boolean", "const": true },
+        "may_start_follow_on_cycles": { "type": "boolean", "const": true },
+        "may_promote_to_working_state": { "type": "boolean", "const": true },
+        "commit_requires_human": { "type": "boolean" },
+        "push_requires_human": { "type": "boolean", "const": true },
+        "merge_requires_human": { "type": "boolean", "const": true },
+        "release_requires_human": { "type": "boolean", "const": true },
+        "authority_change_requires_human": { "type": "boolean", "const": true },
+        "policy_change_requires_human": { "type": "boolean", "const": true },
+        "destructive_action_prohibited": { "type": "boolean", "const": true },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "standing_approval_ids": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "protected_invariants": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "quality_model": {
+      "type": "object",
+      "required": ["dimensions", "minimum_weighted_score", "hard_gates_must_pass"],
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "weight", "direction", "target", "hard_gate", "evidence_required"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+              "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+              "direction": { "type": "string", "enum": ["maximize", "minimize"] },
+              "target": { "type": "number" },
+              "hard_gate": { "type": "boolean" },
+              "evidence_required": { "$ref": "common.schema.json#/$defs/string_list" }
+            }
+          }
+        },
+        "minimum_weighted_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "hard_gates_must_pass": { "type": "boolean", "const": true }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "required": ["max_cycles", "max_retries_per_cycle", "max_changed_files_per_cycle", "max_failed_experiments", "max_no_progress_cycles", "min_weighted_improvement", "max_elapsed_minutes"],
+      "additionalProperties": false,
+      "properties": {
+        "max_cycles": { "type": "integer", "minimum": 1 },
+        "max_retries_per_cycle": { "type": "integer", "minimum": 0 },
+        "max_changed_files_per_cycle": { "type": "integer", "minimum": 1 },
+        "max_failed_experiments": { "type": "integer", "minimum": 0 },
+        "max_no_progress_cycles": { "type": "integer", "minimum": 1 },
+        "min_weighted_improvement": { "type": "number", "minimum": 0, "maximum": 1 },
+        "max_elapsed_minutes": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "checkpoint_policy": {
+      "type": "object",
+      "required": ["required_triggers", "before_completion_required", "on_scope_change_required", "on_validation_failure_required"],
+      "additionalProperties": false,
+      "properties": {
+        "required_triggers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["wave_start", "wave_end", "validation_failure", "quality_regression", "scope_change", "before_completion", "manual"]
+          }
+        },
+        "before_completion_required": { "type": "boolean", "const": true },
+        "on_scope_change_required": { "type": "boolean", "const": true },
+        "on_validation_failure_required": { "type": "boolean", "const": true }
+      }
+    },
+    "experiment_policy": {
+      "type": "object",
+      "required": ["baseline_required", "isolated_candidate_required", "independent_evaluation_for_control_plane", "rollback_plan_required", "failed_candidate_must_not_be_promoted"],
+      "additionalProperties": false,
+      "properties": {
+        "baseline_required": { "type": "boolean", "const": true },
+        "isolated_candidate_required": { "type": "boolean", "const": true },
+        "independent_evaluation_for_control_plane": { "type": "boolean", "const": true },
+        "rollback_plan_required": { "type": "boolean", "const": true },
+        "failed_candidate_must_not_be_promoted": { "type": "boolean", "const": true }
+      }
+    },
+    "stop_conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "status": { "type": "string", "enum": ["draft", "active", "paused", "complete", "terminated"] },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

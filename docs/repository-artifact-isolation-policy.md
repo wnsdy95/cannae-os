@@ -61,7 +61,9 @@ Every durable write must declare:
 
 Path segments must be single path-safe identifiers. POSIX/Windows absolute artifact paths, `..` traversal, symlink source files, and namespace symlinks that escape the artifact root are rejected.
 
-The store writes atomically. If an artifact path already contains identical bytes, the write is idempotent. If it contains different bytes, the operation fails unless `--overwrite` or `--overwrite-artifact` is explicit. Normal agents must not overwrite prior evidence merely to make a run pass.
+The store writes atomically while holding a repository-namespace manifest lock. If an artifact path already contains identical bytes, the write is idempotent. If it contains different bytes, the operation fails unless `--overwrite` or `--overwrite-artifact` is explicit. Normal agents must not overwrite prior evidence merely to make a run pass.
+
+The lock is acquired through atomic directory creation and has a finite wait timeout. A stale lock is recovered only when it belongs to the same host and its PID is no longer alive. An active same-host lock and any foreign-host lock fail closed rather than being stolen. `--lock-timeout-ms` and `--lock-stale-ms` are available for the general artifact-store CLI; both must be positive integers.
 
 ## 4. Manifest
 
@@ -73,9 +75,10 @@ Each repository namespace has one `RepositoryArtifactManifest` containing:
 - relative repository-scoped path;
 - filename, content type, byte size, and SHA-256;
 - creation and update timestamps;
+- a monotonic manifest revision;
 - isolation control assertions.
 
-The manifest contains no absolute repository paths. `validator-cli-prototype/validate.js` blocks namespace mismatch, path traversal, cross-repository paths, count mismatch, duplicate paths, and filename/ID mismatch.
+The manifest contains no absolute repository paths. `validator-cli-prototype/validate.js` blocks namespace mismatch, path traversal, cross-repository paths, count mismatch, invalid revisions, missing concurrency guards, duplicate paths, and filename/ID mismatch.
 
 ## 5. Runtime Use
 
@@ -169,7 +172,8 @@ Subdirectories that are not independent Git roots belong to the parent repositor
 
 ```bash
 node run-repository-artifact-isolation-fixtures.js
+node run-repository-artifact-concurrency-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 ```
 
-The fixture creates separate Git repositories with the same origin, writes the same mission/wave/artifact ID to both, verifies separate paths and manifests, exercises JSON and file deliverables, blocks conflicting overwrite, traversal, and symlink escape, and verifies routing/compiler/preflight integration.
+The isolation fixture creates separate Git repositories with the same origin, writes the same mission/wave/artifact ID to both, verifies separate paths and manifests, exercises JSON and file deliverables, blocks conflicting overwrite, traversal, and symlink escape, and verifies routing/compiler/preflight integration. The concurrency fixture launches 24 writers, proves no manifest entry is lost, verifies monotonic revisions, recovers a dead same-host lock, and refuses to steal active or foreign-host locks.

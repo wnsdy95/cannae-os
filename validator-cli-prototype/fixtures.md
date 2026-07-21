@@ -59,6 +59,12 @@
 | `sample-payloads/invalid-approval-delegation-revocation-event-staff.json` | `approval-delegation-revocation-event` | fail with `DELEGATION_TERMINATION_NOT_ACTIVE`, `DELEGATION_TERMINATION_STATUS_MISMATCH`, `DELEGATION_TERMINATION_AUTHORITY_MISMATCH`, `DELEGATION_REVOCATION_REQUIRES_COMMANDER`, `DELEGATION_REVOKED_OUTSIDE_WINDOW`, `DELEGATION_TERMINATION_WITHOUT_REASON`, `DELEGATION_TERMINATION_WITHOUT_EVIDENCE`, and `DELEGATION_TERMINATION_WITHOUT_NOTIFICATION` |
 | `sample-payloads/valid-risk-acceptance.json` | `risk-acceptance` | pass |
 | `sample-payloads/invalid-risk-acceptance-high-by-s3.json` | `risk-acceptance` | fail with `RISK_ACCEPTANCE_REQUIRES_COMMANDER`, `RISK_ACCEPTANCE_WITHOUT_EXPIRY`, `RISK_ACCEPTANCE_WITHOUT_CONTROLS`, `RISK_ACCEPTANCE_WITHOUT_SUPERVISION`, and `RISK_ACCEPTANCE_WITHOUT_EVIDENCE` |
+| `sample-payloads/valid-self-improvement-campaign.json` | `self-improvement-campaign` | pass |
+| `sample-payloads/invalid-self-improvement-campaign-ai-final-authority.json` | `self-improvement-campaign` | fail when AI claims final authority, evaluates itself, omits invariants, broadens its envelope, or omits mandatory checkpoints |
+| `sample-payloads/valid-self-improvement-checkpoint.json` | `self-improvement-checkpoint` | pass |
+| `sample-payloads/invalid-self-improvement-checkpoint-path-traversal.json` | `self-improvement-checkpoint` | fail with repository traversal and prohibited cross-repository externality |
+| `sample-payloads/valid-self-improvement-decision.json` | `self-improvement-decision` | pass |
+| `sample-payloads/invalid-self-improvement-decision-self-release.json` | `self-improvement-decision` | fail when the controller authorizes its own release |
 
 ## Next Fixtures
 

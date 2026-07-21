@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1",
+  "type": "SelfImprovementDecision",
+  "id": "SID-Cannae-001",
+  "campaign_id": "SIC-Cannae-001",
+  "checkpoint_id": "SCP-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "decision": "accept_working_state",
+  "execution_authorized": true,
+  "promotion_scope": "in_progress_work",
+  "release_authorized": false,
+  "selected_candidate_id": "CAN-Cannae-001",
+  "score": {
+    "weighted_before": 0.76,
+    "weighted_after": 0.93,
+    "weighted_delta": 0.17,
+    "minimum_delta": 0.05,
+    "all_hard_gates_passed": true
+  },
+  "reasons": ["The candidate stays inside authority, passes validation and hard gates, and improves the declared quality model."],
+  "blocking_codes": [],
+  "next_task_order": {
+    "owner": "S3",
+    "task": "Advance the next open acceptance criterion from the accepted working state.",
+    "purpose": "Continuously improve the active work product without losing authority, evidence, or repository boundaries.",
+    "constraints": [
+      "Stay inside the campaign authority envelope.",
+      "Preserve every protected invariant.",
+      "Do not release, merge, push, or expand authority without human approval."
+    ],
+    "required_evidence": [
+      "Repository-scoped checkpoint artifact.",
+      "Deterministic validation results.",
+      "Metric evidence compared with the declared baseline."
+    ],
+    "next_checkpoint_trigger": "wave_end"
+  },
+  "human_decision_required": false,
+  "required_human_decision": "none",
+  "decided_at": "2026-07-21T18:24:00+09:00"
+}

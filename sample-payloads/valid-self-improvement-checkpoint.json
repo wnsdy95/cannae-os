@@ -1,0 +1,96 @@
+{
+  "schema_version": "0.1",
+  "type": "SelfImprovementCheckpoint",
+  "id": "SCP-Cannae-001",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "parent_decision_id": "none",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "cycle_number": 1,
+  "trigger": "wave_end",
+  "target": {
+    "target_type": "work_product",
+    "state": "in_progress",
+    "artifact_ids": ["DOC-Cannae-001"],
+    "artifact_paths": ["docs/active-work-product.md"],
+    "baseline_revision": "1111111111111111111111111111111111111111",
+    "candidate_revision": "working-tree-cycle-1"
+  },
+  "observations": [
+    {
+      "id": "OBS-Cannae-001",
+      "category": "quality_gap",
+      "severity": "medium",
+      "statement": "The first draft omitted a mandatory failure-state example.",
+      "evidence": ["Acceptance coverage report AC-001."]
+    }
+  ],
+  "candidate": {
+    "id": "CAN-Cannae-001",
+    "disposition": "improve",
+    "summary": "Add the failure-state example and its regression assertion.",
+    "change_class": "local_reversible",
+    "proposed_actions": ["Edit the in-progress document.", "Run the targeted fixture."],
+    "changed_files": ["docs/active-work-product.md", "fixtures/active-work-product.json"],
+    "required_permissions": ["edit", "test", "checkpoint", "persist_artifact"],
+    "protected_invariants_affected": [],
+    "rollback_steps": ["Remove only the cycle-1 edits from the two candidate files."],
+    "expected_metric_delta": 0.17
+  },
+  "metric_results": [
+    {
+      "dimension_id": "accuracy",
+      "before": 0.8,
+      "after": 0.95,
+      "hard_gate_passed": true,
+      "evidence": ["Targeted fixture PASS, run AC-001."]
+    },
+    {
+      "dimension_id": "completeness",
+      "before": 0.7,
+      "after": 0.9,
+      "hard_gate_passed": true,
+      "evidence": ["Acceptance criteria 2/3 covered, report AC-001."]
+    }
+  ],
+  "validation_results": [
+    {
+      "check": "node run-active-work-product-fixtures.js",
+      "status": "passed",
+      "exit_code": 0,
+      "evidence": ["Fixture output AC-001: 4/4 passed."]
+    }
+  ],
+  "independent_evaluation": {
+    "required": false,
+    "evaluator": "EVALUATOR",
+    "status": "not_required",
+    "evidence": []
+  },
+  "externalities": {
+    "scope_changed": false,
+    "authority_changed": false,
+    "policy_changed": false,
+    "release_requested": false,
+    "destructive_action": false,
+    "cross_repository_write": false
+  },
+  "approval": {
+    "required": false,
+    "approval_id": "none",
+    "status": "not_required",
+    "approved_by": "USER",
+    "scope": []
+  },
+  "progress": {
+    "completed_acceptance_criteria": ["All deterministic checks pass.", "Accuracy and completeness meet their declared targets."],
+    "open_acceptance_criteria": ["The final before-completion checkpoint is recorded."],
+    "consecutive_no_progress_cycles": 0,
+    "failed_experiments": 0,
+    "elapsed_minutes": 24
+  },
+  "generated_at": "2026-07-21T18:24:00+09:00"
+}

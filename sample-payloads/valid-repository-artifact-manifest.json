@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "RepositoryArtifactManifest",
   "id": "RAM-aaaaaaaaaaaaaaaa",
   "repository": {
@@ -9,6 +9,7 @@
     "head_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
   "namespace_root": "repositories/example-repo-a-aaaaaaaaaaaa",
+  "manifest_revision": 1,
   "artifacts": [
     {
       "id": "RA-cccccccccccccccc",
@@ -28,7 +29,9 @@
   "isolation": {
     "repository_scoped": true,
     "cross_repository_writes_prohibited": true,
-    "absolute_paths_recorded": false
+    "absolute_paths_recorded": false,
+    "cross_process_manifest_lock": true,
+    "stale_lock_recovery_fail_closed": true
   },
   "created_at": "2026-07-21T15:30:00+09:00",
   "updated_at": "2026-07-21T15:30:00+09:00"

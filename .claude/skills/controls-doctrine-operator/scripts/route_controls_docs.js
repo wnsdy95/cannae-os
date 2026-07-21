@@ -99,7 +99,24 @@ const RULES = [
     ],
     commands: [
       "node run-repository-artifact-isolation-fixtures.js",
+      "node run-repository-artifact-concurrency-fixtures.js",
       "node validator-cli-prototype/validate.js sample-payloads/valid-repository-artifact-manifest.json repository-artifact-manifest"
+    ]
+  },
+  {
+    id: "bounded-self-improvement",
+    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
+    docs: [
+      "docs/bounded-self-improvement-operations.md",
+      "docs/agent-roles-and-authority.md",
+      "docs/approval-scope-policy.md",
+      "docs/repository-artifact-isolation-policy.md",
+      "docs/knowledge-management-sop.md"
+    ],
+    commands: [
+      "node run-self-improvement-fixtures.js",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-campaign.json self-improvement-campaign",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-checkpoint.json self-improvement-checkpoint"
     ]
   },
   {
@@ -280,7 +297,7 @@ const AUTHORITY_DOCS = [
 ];
 
 const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".sh", ".svg", ".yaml", ".yml"]);
-const EXCLUDED_DIRS = new Set([".git", "node_modules"]);
+const EXCLUDED_DIRS = new Set([".cannae", ".git", "node_modules"]);
 
 const ROUTE_HINTS = [
   {
@@ -314,6 +331,10 @@ const ROUTE_HINTS = [
   {
     id: "repository-artifact-isolation",
     keywords: ["repository-artifact", "artifact-store", "artifact-isolation", "repository-output", "multi-repo", "cross-repository", "generated-artifact"]
+  },
+  {
+    id: "bounded-self-improvement",
+    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
   },
   {
     id: "sof-tf",
@@ -464,6 +485,7 @@ function routeIdsForArtifact(file) {
   if (file === "maintenance-dashboard-runner.js") routeIds.push("runtime-architecture-dashboard");
   if (file === "decision-packet-linter.js") routeIds.push("authority-risk-release", "orders");
   if (file === "aar-to-readiness-update.js") routeIds.push("orders", "runtime-architecture-dashboard");
+  if (file === "autonomous-improvement-controller.js" || file === "run-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
 
   return unique(routeIds);
 }

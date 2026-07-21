@@ -730,6 +730,56 @@ const fixtures = [
     type: "aar-readiness-update",
     exitCode: 1,
     requiredCodes: ["DOWNGRADE_WITHOUT_COMMANDER_REVIEW"]
+  },
+  {
+    name: "valid bounded self-improvement campaign",
+    file: "sample-payloads/valid-self-improvement-campaign.json",
+    type: "self-improvement-campaign",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "self-improvement campaign claims AI final authority",
+    file: "sample-payloads/invalid-self-improvement-campaign-ai-final-authority.json",
+    type: "self-improvement-campaign",
+    exitCode: 1,
+    requiredCodes: [
+      "CONST_MISMATCH",
+      "SELF_IMPROVEMENT_HUMAN_AUTHORITY_MISSING",
+      "SELF_IMPROVEMENT_EVALUATOR_NOT_INDEPENDENT",
+      "SELF_IMPROVEMENT_WITHOUT_INVARIANTS",
+      "SELF_IMPROVEMENT_ENVELOPE_TOO_BROAD",
+      "SELF_IMPROVEMENT_QUALITY_WEIGHTS_INVALID",
+      "SELF_IMPROVEMENT_CHECKPOINT_TRIGGER_MISSING"
+    ]
+  },
+  {
+    name: "valid self-improvement checkpoint",
+    file: "sample-payloads/valid-self-improvement-checkpoint.json",
+    type: "self-improvement-checkpoint",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "self-improvement checkpoint escapes repository",
+    file: "sample-payloads/invalid-self-improvement-checkpoint-path-traversal.json",
+    type: "self-improvement-checkpoint",
+    exitCode: 1,
+    requiredCodes: ["SELF_IMPROVEMENT_PATH_TRAVERSAL", "SELF_IMPROVEMENT_PROHIBITED_EXTERNALITY"]
+  },
+  {
+    name: "valid self-improvement decision",
+    file: "sample-payloads/valid-self-improvement-decision.json",
+    type: "self-improvement-decision",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "self-improvement decision claims self-release",
+    file: "sample-payloads/invalid-self-improvement-decision-self-release.json",
+    type: "self-improvement-decision",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH", "SELF_IMPROVEMENT_SELF_RELEASE", "SELF_IMPROVEMENT_DECISION_EXECUTION_MISMATCH"]
   }
 ];
 

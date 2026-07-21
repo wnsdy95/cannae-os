@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1",
+  "type": "SelfImprovementCampaign",
+  "id": "SIC-Invalid-001",
+  "mission_id": "MIS-Cannae-001",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "baseline_revision": "1111111111111111111111111111111111111111"
+  },
+  "objective": {
+    "intent": "Let the controller expand itself.",
+    "end_state": "The controller decides its own authority.",
+    "acceptance_criteria": [],
+    "non_goals": []
+  },
+  "final_decision_authority": "S3",
+  "command_team": {
+    "campaign_owner": "S3",
+    "improvement_controller": "S3",
+    "independent_evaluator": "S3",
+    "recorder": "S3"
+  },
+  "authority_envelope": {
+    "autonomous_target_types": ["policy"],
+    "autonomous_actions": ["edit"],
+    "max_change_class": "destructive",
+    "may_modify_in_progress_work": true,
+    "may_start_follow_on_cycles": true,
+    "may_promote_to_working_state": true,
+    "commit_requires_human": false,
+    "push_requires_human": true,
+    "merge_requires_human": true,
+    "release_requires_human": true,
+    "authority_change_requires_human": true,
+    "policy_change_requires_human": true,
+    "destructive_action_prohibited": true,
+    "self_approval_prohibited": true,
+    "standing_approval_ids": []
+  },
+  "protected_invariants": [],
+  "quality_model": {
+    "dimensions": [
+      {
+        "id": "confidence",
+        "weight": 0.2,
+        "direction": "maximize",
+        "target": 1,
+        "hard_gate": false,
+        "evidence_required": []
+      }
+    ],
+    "minimum_weighted_score": 0,
+    "hard_gates_must_pass": true
+  },
+  "budgets": {
+    "max_cycles": 1,
+    "max_retries_per_cycle": 0,
+    "max_changed_files_per_cycle": 1,
+    "max_failed_experiments": 0,
+    "max_no_progress_cycles": 1,
+    "min_weighted_improvement": 0,
+    "max_elapsed_minutes": 1
+  },
+  "checkpoint_policy": {
+    "required_triggers": ["manual"],
+    "before_completion_required": true,
+    "on_scope_change_required": true,
+    "on_validation_failure_required": true
+  },
+  "experiment_policy": {
+    "baseline_required": true,
+    "isolated_candidate_required": true,
+    "independent_evaluation_for_control_plane": true,
+    "rollback_plan_required": true,
+    "failed_candidate_must_not_be_promoted": true
+  },
+  "stop_conditions": [],
+  "status": "active",
+  "created_at": "2026-07-21T18:00:00+09:00"
+}

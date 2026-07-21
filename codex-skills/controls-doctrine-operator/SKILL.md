@@ -1,6 +1,6 @@
 ---
 name: controls-doctrine-operator
-description: Efficiently navigate, apply, validate, and improve the Controls military-style LLM doctrine corpus. Use when Codex is working in or from the controls repository, answering questions about the framework, choosing which doctrine documents to read, creating or editing framework docs, schemas, runners, fixtures, source maps, policy gates, multi-agent operating procedures, or maintaining the corpus after new research or implementation work.
+description: Efficiently navigate, apply, validate, and improve the Controls military-style LLM doctrine corpus and bounded adaptive work campaigns. Use when Codex is working in or from the controls repository, routing doctrine, editing framework artifacts, operating multi-agent missions, improving work already in progress, running finite self-improvement checkpoints, or maintaining schemas, runners, fixtures, source maps, skills, and policy gates.
 ---
 
 # Controls Doctrine Operator
@@ -90,6 +90,21 @@ Read these only when needed:
 5. Treat persistence failure as a blocked wave. Do not dispatch from an integrated preflight whose artifact write failed.
 6. Validate each repository's `manifest.json` before wave completion. Read `docs/repository-artifact-isolation-policy.md` for commands and file-deliverable handling.
 
+### Operating Bounded Self-Improvement
+
+For a multi-wave mission, control-plane change, explicit autonomous-improvement request, or work that must keep improving after its first usable draft:
+
+1. Create a `SelfImprovementCampaign` before the first improvement cycle, preferably with `self-improvement-campaign-init.js`. Bind it to one target repository and preserve `USER` final decision authority.
+2. Define observable acceptance criteria, normalized evidence-backed quality dimensions, protected invariants, finite budgets, and stop conditions. Do not use model confidence as a metric.
+3. At every wave end, validation failure, scope change, and before completion, create a `SelfImprovementCheckpoint` and run `autonomous-improvement-controller.js`.
+4. Execute only the next task order from the latest decision. Carry forward only an accepted working state; do not build on a rejected candidate.
+5. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require independent evaluation for runtime, skill, and policy candidates.
+6. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
+7. Never infer merge, push, release, policy, or authority approval from `accept_working_state` or `complete`; the controller always leaves release unauthorized.
+8. Do not report completion without a passing `before_completion` checkpoint and repository-scoped decision evidence.
+
+Read `docs/bounded-self-improvement-operations.md` for the full state machine and authority matrix.
+
 ### Editing Doctrine Or Policy
 
 1. Read `docs/source-map.md`, the target policy, and any referenced schemas/runners.
@@ -130,6 +145,8 @@ node run-agent-routing-preflight-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
 node run-repository-artifact-isolation-fixtures.js
+node run-repository-artifact-concurrency-fixtures.js
+node run-self-improvement-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
@@ -146,6 +163,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
+- Adaptive missions require a finite campaign envelope and mandatory completion checkpoint; self-improvement never creates self-approval, self-release, or unbounded recursion.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.
