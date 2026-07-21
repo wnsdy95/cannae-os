@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1",
+  "type": "VerificationReceipt",
+  "id": "VR-Cannae-Unsafe",
+  "plan_id": "VP-Cannae-Unsafe",
+  "plan_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "candidate_id": "CAN-Cannae-001",
+  "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_binding": {"repository_key": "cannae-os-aaaaaaaaaaaa", "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+  "repository_state_before": {"head_commit": "1111111111111111111111111111111111111111", "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "repository_state_after": {"head_commit": "1111111111111111111111111111111111111111", "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "repository_state_unchanged": true,
+  "runner": {"name": "agent-self-report", "version": "0.1", "node_version": "none", "platform": "none", "architecture": "none", "shell_used": true, "environment_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"},
+  "checks": [],
+  "overall_status": "passed",
+  "started_at": "2026-07-21T18:20:00+09:00",
+  "finished_at": "2026-07-21T18:20:01+09:00",
+  "receipt_sha256": "b25cf7b42e8cd0bab177a70fb604b99aec83ac69e7aa9ed7041f9db59fb0a17a"
+}

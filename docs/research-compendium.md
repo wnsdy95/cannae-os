@@ -2403,7 +2403,46 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
    Implemented conclusion:
    - Added `bounded-self-improvement-operations.md`, three schemas, valid/invalid samples, semantic validator rules, `self-improvement-campaign-init.js`, `autonomous-improvement-controller.js`, and `run-self-improvement-fixtures.js`.
    - The fixture suite covers accepted work improvement, insufficient gain, validation rollback, policy escalation, destructive termination, completion, repository drift, no-progress budgets, independent review, permission drift, and repository-scoped checkpoint/decision persistence.
-   - Current evidence references are auditable but not cryptographically attested; approval claims are structurally checked but are not yet consumed from a signed approval ledger.
+   - This v0.1 conclusion was superseded by the proof-carrying v0.2 controls in section 8.52.
+
+### 8.52 Proof-Carrying Self-Improvement v0.2
+
+1. Execute evidence instead of trusting evidence claims
+
+   Implemented conclusion:
+   - A checkpoint must not decide that its own test claim is true. A separate runner executes an exact executable/argument array with `shell: false`, finite timeout, bounded output, and repository-relative working directory.
+   - The verification plan is bound to campaign, mission, cycle, candidate, repository identity, Git head, and worktree fingerprint. A stale plan is rejected before execution.
+   - The receipt records resolved executable hash, exact argv, exit code, signal, duration, stdout/stderr size and SHA-256, bounded excerpts, runtime environment hash, and repository state before/after.
+   - Repository mutation during verification fails the receipt. Metrics and independent evaluations must cite verified receipt IDs rather than prose evidence.
+
+2. Prove accepted lineage
+
+   Implemented conclusion:
+   - A follow-on checkpoint supplies a manifest-backed parent decision reference, not only an ID string.
+   - The controller reloads and validates the parent, requires the immediately prior cycle and `accept_working_state`, and matches the parent's `accepted_revision` to the next baseline.
+   - Missing, forged, rejected, or baseline-mismatched parents block continuation.
+
+3. Consume retained approval exactly
+
+   Implemented conclusion:
+   - Policy, authority, scope, and release-affecting candidates cannot rely on `USER approved` text.
+   - The checkpoint references a repository-stored `ApprovalScope` and `ApprovalConsumptionEvent`. The controller validates both schemas and checks mission, actor, action, tool, candidate target, validity window, execution count, executed result, consumed status, and checkpoint-specific execution ID.
+   - A consumption event cannot be reused for another checkpoint. Working-state acceptance still does not authorize merge, push, or release.
+
+4. Recover and verify artifact custody
+
+   Implemented conclusion:
+   - Repository manifests advanced to v0.3. Each mutation writes a journal before artifact bytes, then commits an immutable manifest-history entry, current manifest, and SHA-256 sidecar.
+   - Recovery under the namespace lock reconciles `artifact_written` and `manifest_committed` interruptions idempotently. Unexpected bytes or divergent manifest heads fail closed.
+   - The verifier checks pending journals, repository identity, canonical manifest digest, sidecar, contiguous retained history, previous-digest links, artifact path/type/size/hash, and orphan files.
+   - SHA-256 history is tamper-evident local custody, not an external signature or trusted execution environment.
+
+5. Implemented surface
+
+   Implemented conclusion:
+   - Added `verification-runner.js`, two proof schemas, valid/invalid samples, semantic rules, manifest-backed proof loading, consumed approval binding, exact parent verification, and decision proof summaries.
+   - Added `repository-artifact-verify.js` and `run-repository-artifact-recovery-fixtures.js`; expanded self-improvement fixtures to execute real commands and reload proof artifacts.
+   - Updated both AI CLI skills to make proof issuance, artifact verification, approval consumption, and parent lineage mandatory operating steps.
 
 ## 9. Research Questions to Dig Into Further
 
@@ -2650,9 +2689,19 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 - `integrated-mission-preflight-runner.js`: combined routing and model assignment dispatch gate.
 - `schema-files/model-usage-event.schema.json`: operational model-use evidence contract.
 - `run-model-force-v0.2-fixtures.js`: integrated compiler, dispatch, and unsafe-case regression suite.
-- `repository-artifact-store.js`: Git-identified atomic JSON/file artifact persistence utility.
+- `repository-artifact-store.js`: Git-identified journaled JSON/file artifact persistence utility.
+- `repository-artifact-verify.js`: pending-transaction, manifest-history, sidecar, and artifact-integrity verifier/recovery CLI.
 - `schema-files/repository-artifact-manifest.schema.json`: repository namespace and artifact evidence manifest contract.
 - `run-repository-artifact-isolation-fixtures.js`: same-ID cross-repository isolation, overwrite, traversal, and CLI integration fixture.
+- `run-repository-artifact-concurrency-fixtures.js`: 24-writer locking and stale-lock recovery fixture.
+- `run-repository-artifact-recovery-fixtures.js`: interrupted-write recovery and tamper-detection fixture.
+- `verification-runner.js`: shell-free exact-argv candidate verification and receipt issuer.
+- `schema-files/verification-plan.schema.json`: repository-state-bound verification command plan.
+- `schema-files/verification-receipt.schema.json`: executable/output/repository-state proof receipt.
+- `autonomous-improvement-controller.js`: receipt, parent lineage, and approval-consumption decision gate.
+- `run-verification-runner-fixtures.js`: shell, inline code, stale state, mutation, and receipt integrity fixture.
+- `run-self-improvement-fixtures.js`: proof-carrying adaptive decision and persistence integration fixture.
+- `validation-suite-runner.js`: unified shell-independent whole-repository proof gate.
 - `role-document-access-policy.md`: the policy that lets each agent read only the documents fixed for its role, duty, and authority.
 - `schema-files/document-access-manifest.schema.json`: the per-mission document access manifest contract.
 - `document-access-runner.js`: a manifest-based runner producing an allowed/denied document projection.

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added proof-carrying self-improvement v0.2 with shell-free verification plans, runtime-issued receipts, receipt-bound quality evidence, exact accepted-parent lineage, and consumed approval-ledger bindings.
+- Upgraded repository artifact manifests to v0.3 with write-ahead journals, immutable hash-linked history, digest sidecars, crash recovery, integrity verification, and tamper fixtures.
 - Added bounded self-improvement campaign, checkpoint, and decision contracts for evidence-driven evolution of in-progress work.
 - Added a repository-bound campaign bootstrap, deterministic improvement controller, mandatory completion gate, baseline lineage, rollback/escalation logic, and adversarial fixtures.
 - Added cross-process repository artifact locking, fail-closed stale-lock recovery, monotonic manifest revisions, and 24-writer concurrency stress coverage.

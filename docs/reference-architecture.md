@@ -251,7 +251,23 @@ artifact root
 -> immutable artifact file
 ```
 
-It writes JSON and file outputs atomically, records a relative-path manifest with hashes and content metadata, blocks traversal and conflicting overwrite, and keeps absolute repository paths and remote credentials out of the manifest. Multi-repository orchestration must declare the target repository for every durable artifact.
+It journals each JSON/file mutation, commits hash-linked manifest history plus a digest sidecar, blocks traversal and conflicting overwrite, and keeps absolute repository paths and remote credentials out of the manifest. `repository-artifact-verify.js` checks pending transactions, the history chain, and every retained artifact hash before proof is consumed. Multi-repository orchestration must declare the target repository for every durable artifact.
+
+### 2.14 Proof-Carrying Improvement Controller
+
+The adaptive control path separates evidence generation from decision logic:
+
+```text
+candidate state
+-> exact VerificationPlan
+-> shell-free verification runner
+-> repository-scoped VerificationReceipt
+-> manifest-backed checkpoint references
+-> controller reloads receipt / parent / approval consumption
+-> bounded decision with release_authorized=false
+```
+
+The controller cannot turn prose test claims or a named parent ID into authority. Policy and authority effects require a schema-valid USER approval scope consumed by the exact checkpoint execution.
 
 ## 3. Data Flow
 
@@ -356,6 +372,7 @@ Characteristics:
 | Agent -> tool | tool gateway |
 | Tool -> external service | approval and audit |
 | Evidence -> output | citation check |
+| Candidate -> adaptive promotion | executed receipt, accepted-parent lineage, consumed approval binding |
 | Secret -> logs | masking and EEFI handling |
 
 ## 7. Minimum Implementation Order
@@ -368,7 +385,7 @@ Characteristics:
 6. SITREP/FRAGO event log.
 7. AAR and readiness update.
 8. Bounded self-improvement checkpoint and next task order.
-8. multi-agent routing.
+9. Multi-agent routing.
 
 ## 8. Related Documents
 

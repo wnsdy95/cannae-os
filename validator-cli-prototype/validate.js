@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const crypto = require("crypto");
 const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -56,7 +57,9 @@ const TYPE_TO_SCHEMA = {
   "repository-artifact-manifest": "repository-artifact-manifest.schema.json",
   "self-improvement-campaign": "self-improvement-campaign.schema.json",
   "self-improvement-checkpoint": "self-improvement-checkpoint.schema.json",
-  "self-improvement-decision": "self-improvement-decision.schema.json"
+  "self-improvement-decision": "self-improvement-decision.schema.json",
+  "verification-plan": "verification-plan.schema.json",
+  "verification-receipt": "verification-receipt.schema.json"
 };
 
 function readJson(filePath) {
@@ -77,10 +80,9 @@ function loadSchemas() {
   return schemas;
 }
 
-function resolveRef(ref, schemas) {
+function resolveRef(ref, schemas, rootSchema) {
   const [file, fragment] = ref.split("#");
-  const schemaFile = file || "common.schema.json";
-  const schema = schemas[schemaFile];
+  const schema = file ? schemas[file] : rootSchema;
   if (!schema) return null;
   if (!fragment) return schema;
   const parts = fragment.replace(/^\//, "").split("/").filter(Boolean);
@@ -101,7 +103,7 @@ function typeMatches(value, expected) {
   return true;
 }
 
-function validateSchema(value, schema, schemas, pointer = "$", seen = new Set()) {
+function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(), rootSchema = schema) {
   const issues = [];
   if (!schema || typeof schema !== "object") return issues;
 
@@ -109,12 +111,12 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set())
     const key = `${schema.$ref}@${pointer}`;
     if (seen.has(key)) return issues;
     seen.add(key);
-    const resolved = resolveRef(schema.$ref, schemas);
+    const resolved = resolveRef(schema.$ref, schemas, rootSchema);
     if (!resolved) {
       issues.push(issue("error", "UNRESOLVED_REF", pointer, `Cannot resolve schema ref ${schema.$ref}.`));
       return issues;
     }
-    return validateSchema(value, resolved, schemas, pointer, seen);
+    return validateSchema(value, resolved, schemas, pointer, seen, schema.$ref.startsWith("#") ? rootSchema : resolved);
   }
 
   if (schema.type && !typeMatches(value, schema.type)) {
@@ -163,11 +165,11 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set())
     const props = schema.properties || {};
     for (const [key, child] of Object.entries(value)) {
       if (props[key]) {
-        issues.push(...validateSchema(child, props[key], schemas, `${pointer}.${key}`, new Set(seen)));
+        issues.push(...validateSchema(child, props[key], schemas, `${pointer}.${key}`, new Set(seen), rootSchema));
       } else if (schema.additionalProperties === false) {
         issues.push(issue("error", "ADDITIONAL_PROPERTY", `${pointer}.${key}`, `Unexpected field ${key}.`));
       } else if (schema.additionalProperties && typeof schema.additionalProperties === "object") {
-        issues.push(...validateSchema(child, schema.additionalProperties, schemas, `${pointer}.${key}`, new Set(seen)));
+        issues.push(...validateSchema(child, schema.additionalProperties, schemas, `${pointer}.${key}`, new Set(seen), rootSchema));
       }
     }
   }
@@ -187,7 +189,7 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set())
     }
     for (let index = 0; index < value.length; index += 1) {
       if (schema.items) {
-        issues.push(...validateSchema(value[index], schema.items, schemas, `${pointer}[${index}]`, new Set(seen)));
+        issues.push(...validateSchema(value[index], schema.items, schemas, `${pointer}[${index}]`, new Set(seen), rootSchema));
       }
     }
   }
@@ -209,6 +211,14 @@ function isValidDate(value) {
 
 function isBefore(left, right) {
   return isValidDate(left) && isValidDate(right) && Date.parse(left) < Date.parse(right);
+}
+
+function canonicalDigestWithout(value, fieldPath) {
+  const clone = JSON.parse(JSON.stringify(value));
+  let cursor = clone;
+  for (let index = 0; index < fieldPath.length - 1; index += 1) cursor = cursor && cursor[fieldPath[index]];
+  if (cursor) delete cursor[fieldPath.at(-1)];
+  return crypto.createHash("sha256").update(`${JSON.stringify(clone, null, 2)}\n`).digest("hex");
 }
 
 const ROE_RANK = { Green: 0, Amber: 1, Red: 2, Black: 3 };
@@ -1499,6 +1509,7 @@ function semanticRules(payload, type) {
     const quality = payload.quality_model || {};
     const dimensions = quality.dimensions || [];
     const checkpoints = (payload.checkpoint_policy && payload.checkpoint_policy.required_triggers) || [];
+    const verification = payload.verification_policy || {};
     if (payload.final_decision_authority !== "USER") {
       issues.push(issue("critical", "SELF_IMPROVEMENT_HUMAN_AUTHORITY_MISSING", "$.final_decision_authority", "Bounded self-improvement must preserve the human user as final decision authority."));
     }
@@ -1543,14 +1554,21 @@ function semanticRules(payload, type) {
         issues.push(issue("critical", "SELF_IMPROVEMENT_CHECKPOINT_TRIGGER_MISSING", "$.checkpoint_policy.required_triggers", `Checkpoint trigger ${required} is mandatory.`));
       }
     }
+    if (verification.proof_required !== true || verification.repository_state_must_remain_unchanged !== true || verification.receipt_persistence_required !== true) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_PROOF_POLICY_MISSING", "$.verification_policy", "Adaptive work requires persisted verification receipts and an unchanged repository state during checks."));
+    }
+    if ((verification.allowed_executables || []).some(item => ["sh", "bash", "zsh", "fish", "cmd", "powershell", "pwsh", "sudo", "env"].includes(String(item).toLowerCase()))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_SHELL_VERIFIER_ALLOWED", "$.verification_policy.allowed_executables", "Campaign verification cannot authorize shells or privilege wrappers."));
+    }
   }
 
   if (type === "self-improvement-checkpoint") {
     const target = payload.target || {};
     const candidate = payload.candidate || {};
     const externalities = payload.externalities || {};
-    const approval = payload.approval || {};
-    if (payload.cycle_number === 1 && payload.parent_decision_id !== "none") {
+    const approval = payload.approval_binding || {};
+    const parentRef = payload.parent_decision_ref || {};
+    if (payload.cycle_number === 1 && (payload.parent_decision_id !== "none" || parentRef.decision_id !== "none" || parentRef.relative_path !== "none" || parentRef.sha256 !== "none")) {
       issues.push(issue("error", "SELF_IMPROVEMENT_FIRST_CYCLE_HAS_PARENT", "$.parent_decision_id", "The first cycle must start from the campaign baseline, not a prior decision."));
     }
     if (payload.cycle_number > 1 && /^none$/i.test(String(payload.parent_decision_id || ""))) {
@@ -1574,28 +1592,71 @@ function semanticRules(payload, type) {
       if (metric.before < 0 || metric.before > 1 || metric.after < 0 || metric.after > 1) {
         issues.push(issue("error", "SELF_IMPROVEMENT_METRIC_NOT_NORMALIZED", `$.metric_results[${index}]`, "Checkpoint metrics must use the normalized 0..1 scale."));
       }
-      if (!hasSubstantiveItems(metric.evidence) || metric.evidence.every(item => /(?:model|agent)[ -]?(?:confidence|self[- ]?(?:assessment|approval|report|score))/i.test(String(item)))) {
-        issues.push(issue("critical", "SELF_IMPROVEMENT_METRIC_WITHOUT_EXTERNAL_EVIDENCE", `$.metric_results[${index}].evidence`, "Checkpoint metrics require deterministic or independent evidence, not model confidence alone."));
+      if (!hasSubstantiveItems(metric.evidence_receipt_ids)) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_METRIC_WITHOUT_VERIFICATION_RECEIPT", `$.metric_results[${index}].evidence_receipt_ids`, "Checkpoint metrics must cite persisted verification receipt IDs."));
       }
     }
-    if ((payload.validation_results || []).some(item => !hasSubstantiveItems(item.evidence))) {
-      issues.push(issue("error", "SELF_IMPROVEMENT_VALIDATION_WITHOUT_EVIDENCE", "$.validation_results", "Every validation result must preserve evidence."));
+    const receiptIds = (payload.verification_receipts || []).map(item => item.receipt_id);
+    if (new Set(receiptIds).size !== receiptIds.length) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_DUPLICATE_RECEIPT", "$.verification_receipts", "Checkpoint verification receipt IDs must be unique."));
+    }
+    for (const [index, receipt] of (payload.verification_receipts || []).entries()) {
+      if (path.isAbsolute(receipt.relative_path || "") || String(receipt.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "SELF_IMPROVEMENT_RECEIPT_PATH_INVALID", `$.verification_receipts[${index}].relative_path`, "Verification receipt references must remain repository-artifact-relative."));
+      }
     }
     const controlPlaneTarget = ["runtime_control", "skill", "policy"].includes(target.target_type);
     const independent = payload.independent_evaluation || {};
-    if (controlPlaneTarget && (independent.required !== true || independent.evaluator === "S3" || independent.status === "not_required")) {
+    if (controlPlaneTarget && (independent.required !== true || independent.evaluator === "S3" || independent.status === "not_required" || !hasSubstantiveItems(independent.evidence_receipt_ids))) {
       issues.push(issue("critical", "SELF_IMPROVEMENT_CONTROL_PLANE_SELF_REVIEW", "$.independent_evaluation", "Runtime, skill, and policy candidates require independent evaluation."));
     }
     const humanRetained = externalities.scope_changed || externalities.authority_changed || externalities.policy_changed || externalities.release_requested ||
       ["authority_affecting", "external_release", "destructive"].includes(candidate.change_class) || target.target_type === "policy";
-    if (humanRetained && !(approval.required === true && approval.status === "approved" && approval.approved_by === "USER" && (approval.scope || []).includes(candidate.id))) {
-      issues.push(issue("critical", "SELF_IMPROVEMENT_HUMAN_APPROVAL_MISSING", "$.approval", "Human-retained changes require an explicit USER approval scoped to the candidate."));
+    if (humanRetained && !(approval.required === true && approval.action === "promote_self_improvement_candidate" &&
+        approval.tool === "autonomous-improvement-controller" && approval.target === candidate.id &&
+        approval.approval_scope_ref && approval.approval_scope_ref.sha256 !== "none" &&
+        approval.consumption_event_ref && approval.consumption_event_ref.sha256 !== "none")) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_CONSUMED_APPROVAL_MISSING", "$.approval_binding", "Human-retained candidates require references to an exact approval scope and its consumed execution event."));
     }
     if (externalities.destructive_action || externalities.cross_repository_write || candidate.change_class === "destructive") {
       issues.push(issue("critical", "SELF_IMPROVEMENT_PROHIBITED_EXTERNALITY", "$.externalities", "Destructive and cross-repository self-improvement actions are prohibited."));
     }
-    if (approval.status === "approved" && !(approval.required === true && approval.approved_by === "USER" && approval.approval_id !== "none" && (approval.scope || []).includes(candidate.id))) {
-      issues.push(issue("critical", "SELF_IMPROVEMENT_APPROVAL_SCOPE_INVALID", "$.approval", "An approval claim must identify USER authority and cover the exact candidate."));
+    if (!humanRetained && approval.required === true) {
+      issues.push(issue("error", "SELF_IMPROVEMENT_UNNECESSARY_APPROVAL_BINDING", "$.approval_binding", "A checkpoint cannot attach unrelated approval evidence."));
+    }
+  }
+
+  if (type === "verification-plan") {
+    const ids = (payload.checks || []).map(item => item.id);
+    if (new Set(ids).size !== ids.length) issues.push(issue("error", "VERIFICATION_PLAN_DUPLICATE_CHECK", "$.checks", "Verification check IDs must be unique."));
+    for (const [index, check] of (payload.checks || []).entries()) {
+      const executable = String(check.executable || "").toLowerCase();
+      if (["sh", "bash", "zsh", "fish", "cmd", "powershell", "pwsh", "sudo", "env"].includes(executable)) {
+        issues.push(issue("critical", "VERIFICATION_PLAN_SHELL_PROHIBITED", `$.checks[${index}].executable`, "Verification plans cannot use a shell or privilege wrapper."));
+      }
+      const cwd = String(check.working_directory || "");
+      if (path.isAbsolute(cwd) || /^[A-Za-z]:[\\/]/.test(cwd) || cwd.split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "VERIFICATION_PLAN_WORKDIR_INVALID", `$.checks[${index}].working_directory`, "Verification working directories must remain repository-relative."));
+      }
+      if (executable === "node" && (!check.args || !check.args[0] || check.args[0].startsWith("-") || !check.args[0].endsWith(".js") || check.args[0].split(/[\\/]+/).includes(".."))) {
+        issues.push(issue("critical", "VERIFICATION_PLAN_NODE_SCRIPT_INVALID", `$.checks[${index}].args`, "Node verification must name a repository-relative JavaScript file, not inline code or loader flags."));
+      }
+    }
+  }
+
+  if (type === "verification-receipt") {
+    if (payload.runner && payload.runner.shell_used !== false) issues.push(issue("critical", "VERIFICATION_RECEIPT_SHELL_USED", "$.runner.shell_used", "A proof receipt is invalid if a shell was used."));
+    if (payload.overall_status === "passed" && (payload.repository_state_unchanged !== true || (payload.checks || []).some(item => item.status !== "passed"))) {
+      issues.push(issue("critical", "VERIFICATION_RECEIPT_FALSE_PASS", "$.overall_status", "A passed receipt requires every check to pass without repository mutation."));
+    }
+    if (payload.repository_state_unchanged === true && JSON.stringify(payload.repository_state_before) !== JSON.stringify(payload.repository_state_after)) {
+      issues.push(issue("critical", "VERIFICATION_RECEIPT_STATE_MISMATCH", "$.repository_state_unchanged", "An unchanged claim must have identical before and after repository state."));
+    }
+    if (!isValidDate(payload.started_at) || !isValidDate(payload.finished_at) || Date.parse(payload.finished_at) < Date.parse(payload.started_at)) {
+      issues.push(issue("error", "VERIFICATION_RECEIPT_TIME_INVALID", "$.finished_at", "Verification finish time cannot precede start time."));
+    }
+    if (payload.receipt_sha256 !== canonicalDigestWithout(payload, ["receipt_sha256"])) {
+      issues.push(issue("critical", "VERIFICATION_RECEIPT_DIGEST_INVALID", "$.receipt_sha256", "Verification receipt digest must match its canonical content."));
     }
   }
 
@@ -1614,6 +1675,12 @@ function semanticRules(payload, type) {
     }
     if (payload.decision === "accept_working_state" && (payload.execution_authorized !== true || payload.promotion_scope === "none")) {
       issues.push(issue("error", "SELF_IMPROVEMENT_ACCEPT_WITHOUT_PROMOTION", "$", "An accepted working state must authorize a bounded promotion scope."));
+    }
+    if (["accept_working_state", "complete"].includes(payload.decision) && /^none$/i.test(String(payload.accepted_revision || ""))) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_ACCEPTED_REVISION_MISSING", "$.accepted_revision", "Promoted states must identify the exact accepted revision."));
+    }
+    if (payload.decision === "accept_working_state" && !hasSubstantiveItems(payload.proof && payload.proof.verification_receipt_ids)) {
+      issues.push(issue("critical", "SELF_IMPROVEMENT_DECISION_WITHOUT_PROOF", "$.proof.verification_receipt_ids", "Accepted working states require verified receipt IDs."));
     }
   }
 
@@ -1840,8 +1907,19 @@ function semanticRules(payload, type) {
     if (!Number.isInteger(payload.manifest_revision) || payload.manifest_revision < artifacts.length) {
       issues.push(issue("error", "REPOSITORY_ARTIFACT_REVISION_INVALID", "$.manifest_revision", "Manifest revision must be monotonic and cannot be lower than the retained artifact count."));
     }
-    if (!payload.isolation || payload.isolation.cross_process_manifest_lock !== true || payload.isolation.stale_lock_recovery_fail_closed !== true) {
+    if (!payload.isolation || payload.isolation.cross_process_manifest_lock !== true || payload.isolation.stale_lock_recovery_fail_closed !== true || payload.isolation.write_ahead_journal !== true) {
       issues.push(issue("critical", "REPOSITORY_ARTIFACT_CONCURRENCY_GUARD_MISSING", "$.isolation", "Repository artifact manifests require a cross-process lock and fail-closed stale-lock recovery."));
+    }
+    const integrity = payload.integrity || {};
+    if (!Number.isInteger(integrity.history_start_revision) || !Number.isInteger(integrity.history_length) ||
+        integrity.history_start_revision + integrity.history_length - 1 !== payload.manifest_revision) {
+      issues.push(issue("error", "REPOSITORY_ARTIFACT_HISTORY_RANGE_INVALID", "$.integrity", "Manifest history start and length must terminate at the current revision."));
+    }
+    if (integrity.pending_transaction_count !== 0) {
+      issues.push(issue("critical", "REPOSITORY_ARTIFACT_PENDING_TRANSACTION", "$.integrity.pending_transaction_count", "A committed manifest cannot claim pending transactions."));
+    }
+    if (integrity.canonical_manifest_sha256 !== canonicalDigestWithout(payload, ["integrity", "canonical_manifest_sha256"])) {
+      issues.push(issue("critical", "REPOSITORY_ARTIFACT_MANIFEST_DIGEST_INVALID", "$.integrity.canonical_manifest_sha256", "Manifest canonical digest does not match its content."));
     }
     const paths = new Set();
     for (const [index, artifact] of artifacts.entries()) {

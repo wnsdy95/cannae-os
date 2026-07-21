@@ -19,6 +19,7 @@ Use these examples to test:
 - model usage event validation
 - repository artifact manifest validation
 - bounded self-improvement campaign, checkpoint, and decision validation
+- verification plan and runtime-issued receipt validation
 - CCIR alert validation
 - handoff packet validation
 - continuity plan validation
@@ -49,6 +50,7 @@ Use these examples to test:
 - model force compilation and dispatch preflight logic
 - repository-scoped JSON and file artifact isolation logic
 - bounded self-improvement decision and persistence logic
+- proof receipt integrity, shell prohibition, parent lineage, and approval-consumption logic
 
 Fixture convention:
 

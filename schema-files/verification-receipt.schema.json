@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/verification-receipt.schema.json",
+  "title": "Verification Receipt",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "plan_id", "plan_sha256", "campaign_id", "mission_id", "cycle_number", "candidate_id", "candidate_revision", "repository_binding", "repository_state_before", "repository_state_after", "repository_state_unchanged", "runner", "checks", "overall_status", "started_at", "finished_at", "receipt_sha256"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "VerificationReceipt" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "plan_id": { "$ref": "common.schema.json#/$defs/id" },
+    "plan_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "cycle_number": { "type": "integer", "minimum": 1 },
+    "candidate_id": { "$ref": "common.schema.json#/$defs/id" },
+    "candidate_revision": { "type": "string", "minLength": 1 },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "repository_state_before": { "$ref": "#/$defs/repository_state" },
+    "repository_state_after": { "$ref": "#/$defs/repository_state" },
+    "repository_state_unchanged": { "type": "boolean" },
+    "runner": {
+      "type": "object",
+      "required": ["name", "version", "node_version", "platform", "architecture", "shell_used", "environment_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "const": "cannae-verification-runner" },
+        "version": { "type": "string", "const": "0.1" },
+        "node_version": { "type": "string", "minLength": 1 },
+        "platform": { "type": "string", "minLength": 1 },
+        "architecture": { "type": "string", "minLength": 1 },
+        "shell_used": { "type": "boolean", "const": false },
+        "environment_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "purpose", "argv", "working_directory", "resolved_executable", "executable_sha256", "expected_exit_codes", "exit_code", "signal", "status", "duration_ms", "stdout", "stderr"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "purpose": { "type": "string", "minLength": 1 },
+          "argv": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "working_directory": { "type": "string", "minLength": 1 },
+          "resolved_executable": { "type": "string", "minLength": 1 },
+          "executable_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "expected_exit_codes": { "type": "array", "minItems": 1, "items": { "type": "integer" } },
+          "exit_code": { "type": "integer" },
+          "signal": { "type": "string" },
+          "status": { "type": "string", "enum": ["passed", "failed", "blocked", "timed_out"] },
+          "duration_ms": { "type": "integer", "minimum": 0 },
+          "stdout": { "$ref": "#/$defs/output_summary" },
+          "stderr": { "$ref": "#/$defs/output_summary" }
+        }
+      }
+    },
+    "overall_status": { "type": "string", "enum": ["passed", "failed", "blocked"] },
+    "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "receipt_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": { "type": "string", "minLength": 1 },
+        "worktree_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "output_summary": {
+      "type": "object",
+      "required": ["byte_size", "sha256", "excerpt", "truncated"],
+      "additionalProperties": false,
+      "properties": {
+        "byte_size": { "type": "integer", "minimum": 0 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "excerpt": { "type": "string" },
+        "truncated": { "type": "boolean" }
+      }
+    }
+  }
+}

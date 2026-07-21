@@ -1,81 +1,36 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "SelfImprovementCheckpoint",
-  "id": "SCP-Invalid-001",
+  "id": "SCP-Cannae-Unsafe",
   "campaign_id": "SIC-Cannae-001",
   "mission_id": "MIS-Cannae-001",
   "parent_decision_id": "none",
-  "repository_binding": {
-    "repository_key": "cannae-os-aaaaaaaaaaaa",
-    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-  },
+  "parent_decision_ref": {"decision_id": "none", "relative_path": "none", "sha256": "none"},
+  "repository_binding": {"repository_key": "cannae-os-aaaaaaaaaaaa", "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
   "cycle_number": 1,
   "trigger": "wave_end",
-  "target": {
-    "target_type": "work_product",
-    "state": "in_progress",
-    "artifact_ids": ["DOC-Cannae-001"],
-    "artifact_paths": ["../other-repository/output.md"],
-    "baseline_revision": "1111111111111111111111111111111111111111",
-    "candidate_revision": "working-tree-cycle-1"
-  },
-  "observations": [],
+  "target": {"target_type": "work_product", "state": "candidate", "artifact_ids": ["DOC-Cannae-Unsafe"], "artifact_paths": ["../other-repository/policy.md"], "baseline_revision": "1111111111111111111111111111111111111111", "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "observations": [{"id": "OBS-Cannae-Unsafe", "category": "risk", "severity": "critical", "statement": "The candidate writes outside its repository.", "evidence": ["Path review."]}],
   "candidate": {
-    "id": "CAN-Invalid-001",
+    "id": "CAN-Cannae-Unsafe",
     "disposition": "improve",
-    "summary": "Write outside the repository.",
-    "change_class": "local_reversible",
-    "proposed_actions": ["Edit an external file."],
-    "changed_files": ["../other-repository/output.md"],
-    "required_permissions": ["edit"],
+    "summary": "Write into another repository.",
+    "change_class": "destructive",
+    "proposed_actions": ["Write outside the repository."],
+    "changed_files": ["../other-repository/policy.md"],
+    "required_permissions": ["edit", "test", "checkpoint", "persist_artifact"],
     "protected_invariants_affected": [],
-    "rollback_steps": ["Delete the external edit."],
-    "expected_metric_delta": 0.1
+    "rollback_steps": ["Remove the cross-repository write."],
+    "expected_metric_delta": 0.2
   },
   "metric_results": [
-    {
-      "dimension_id": "accuracy",
-      "before": 0.8,
-      "after": 0.9,
-      "hard_gate_passed": true,
-      "evidence": ["Fixture output."]
-    }
+    {"dimension_id": "accuracy", "before": 0.8, "after": 0.95, "hard_gate_passed": true, "evidence_receipt_ids": ["VR-Cannae-Unsafe"]},
+    {"dimension_id": "completeness", "before": 0.7, "after": 0.9, "hard_gate_passed": true, "evidence_receipt_ids": ["VR-Cannae-Unsafe"]}
   ],
-  "validation_results": [
-    {
-      "check": "external check",
-      "status": "passed",
-      "exit_code": 0,
-      "evidence": ["External output."]
-    }
-  ],
-  "independent_evaluation": {
-    "required": false,
-    "evaluator": "EVALUATOR",
-    "status": "not_required",
-    "evidence": []
-  },
-  "externalities": {
-    "scope_changed": false,
-    "authority_changed": false,
-    "policy_changed": false,
-    "release_requested": false,
-    "destructive_action": false,
-    "cross_repository_write": true
-  },
-  "approval": {
-    "required": false,
-    "approval_id": "none",
-    "status": "not_required",
-    "approved_by": "USER",
-    "scope": []
-  },
-  "progress": {
-    "completed_acceptance_criteria": [],
-    "open_acceptance_criteria": ["All checks."],
-    "consecutive_no_progress_cycles": 0,
-    "failed_experiments": 0,
-    "elapsed_minutes": 1
-  },
+  "verification_receipts": [{"receipt_id": "VR-Cannae-Unsafe", "plan_id": "VP-Cannae-Unsafe", "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C1/verification-receipts/VR-Cannae-Unsafe.json", "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "required_check_ids": ["VCK-Cannae-Unsafe"]}],
+  "independent_evaluation": {"required": false, "evaluator": "EVALUATOR", "status": "not_required", "evidence_receipt_ids": []},
+  "externalities": {"scope_changed": false, "authority_changed": false, "policy_changed": false, "release_requested": false, "destructive_action": true, "cross_repository_write": true},
+  "approval_binding": {"required": false, "action": "none", "tool": "none", "target": "none", "approval_scope_ref": {"artifact_id": "none", "relative_path": "none", "sha256": "none"}, "consumption_event_ref": {"artifact_id": "none", "relative_path": "none", "sha256": "none"}},
+  "progress": {"completed_acceptance_criteria": ["All deterministic checks pass."], "open_acceptance_criteria": ["A completion checkpoint is recorded."], "consecutive_no_progress_cycles": 0, "failed_experiments": 0, "elapsed_minutes": 24},
   "generated_at": "2026-07-21T18:24:00+09:00"
 }

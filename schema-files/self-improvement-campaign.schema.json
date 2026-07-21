@@ -15,6 +15,7 @@
     "authority_envelope",
     "protected_invariants",
     "quality_model",
+    "verification_policy",
     "budgets",
     "checkpoint_policy",
     "experiment_policy",
@@ -24,7 +25,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "SelfImprovementCampaign" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -148,6 +149,25 @@
         },
         "minimum_weighted_score": { "type": "number", "minimum": 0, "maximum": 1 },
         "hard_gates_must_pass": { "type": "boolean", "const": true }
+      }
+    },
+    "verification_policy": {
+      "type": "object",
+      "required": ["proof_required", "allowed_executables", "max_checks_per_plan", "max_timeout_ms_per_check", "max_output_bytes_per_stream", "repository_state_must_remain_unchanged", "receipt_persistence_required"],
+      "additionalProperties": false,
+      "properties": {
+        "proof_required": { "type": "boolean", "const": true },
+        "allowed_executables": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" }
+        },
+        "max_checks_per_plan": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "max_timeout_ms_per_check": { "type": "integer", "minimum": 1, "maximum": 3600000 },
+        "max_output_bytes_per_stream": { "type": "integer", "minimum": 1024, "maximum": 16777216 },
+        "repository_state_must_remain_unchanged": { "type": "boolean", "const": true },
+        "receipt_persistence_required": { "type": "boolean", "const": true }
       }
     },
     "budgets": {

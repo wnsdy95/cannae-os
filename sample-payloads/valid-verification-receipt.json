@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "type": "VerificationReceipt",
+  "id": "VR-Cannae-001",
+  "plan_id": "VP-Cannae-001",
+  "plan_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "campaign_id": "SIC-Cannae-001",
+  "mission_id": "MIS-Cannae-001",
+  "cycle_number": 1,
+  "candidate_id": "CAN-Cannae-001",
+  "candidate_revision": "WT-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_binding": {"repository_key": "cannae-os-aaaaaaaaaaaa", "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+  "repository_state_before": {"head_commit": "1111111111111111111111111111111111111111", "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "repository_state_after": {"head_commit": "1111111111111111111111111111111111111111", "worktree_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+  "repository_state_unchanged": true,
+  "runner": {
+    "name": "cannae-verification-runner",
+    "version": "0.1",
+    "node_version": "v24.0.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "shell_used": false,
+    "environment_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "checks": [
+    {
+      "id": "VCK-Cannae-001",
+      "purpose": "Run the deterministic candidate fixture.",
+      "argv": ["node", "run-active-work-product-fixtures.js"],
+      "working_directory": ".",
+      "resolved_executable": "/usr/local/bin/node",
+      "executable_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "expected_exit_codes": [0],
+      "exit_code": 0,
+      "signal": "",
+      "status": "passed",
+      "duration_ms": 42,
+      "stdout": {"byte_size": 25, "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "excerpt": "Fixtures: 4/4 passed\n", "truncated": false},
+      "stderr": {"byte_size": 0, "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "excerpt": "", "truncated": false}
+    }
+  ],
+  "overall_status": "passed",
+  "started_at": "2026-07-21T18:20:00+09:00",
+  "finished_at": "2026-07-21T18:20:01+09:00",
+  "receipt_sha256": "ad448d76ce00e5132ea7d4ffa167839865e243024c03e21143dc2e2c2ce2b217"
+}

@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "SelfImprovementCampaign",
   "id": "SIC-Cannae-001",
   "mission_id": "MIS-Cannae-001",
@@ -9,17 +9,10 @@
     "baseline_revision": "1111111111111111111111111111111111111111"
   },
   "objective": {
-    "intent": "Continuously improve the active work product without losing authority, evidence, or repository boundaries.",
-    "end_state": "Every accepted working state is measurably better than its baseline and remains eligible for human release review.",
-    "acceptance_criteria": [
-      "All deterministic checks pass.",
-      "Accuracy and completeness meet their declared targets.",
-      "The final before-completion checkpoint is recorded."
-    ],
-    "non_goals": [
-      "Autonomous external release.",
-      "Autonomous authority or policy expansion."
-    ]
+    "intent": "Improve active work without losing authority, evidence, or repository boundaries.",
+    "end_state": "Every accepted state is measurably better and independently verifiable.",
+    "acceptance_criteria": ["All deterministic checks pass.", "Quality targets pass.", "A completion checkpoint is recorded."],
+    "non_goals": ["Autonomous external release.", "Autonomous authority expansion."]
   },
   "final_decision_authority": "USER",
   "command_team": {
@@ -29,32 +22,13 @@
     "recorder": "RECORDER"
   },
   "authority_envelope": {
-    "autonomous_target_types": [
-      "work_product",
-      "test_fixture",
-      "documentation",
-      "procedure",
-      "runtime_control",
-      "skill",
-      "policy"
-    ],
-    "autonomous_actions": [
-      "inspect",
-      "route",
-      "analyze",
-      "draft",
-      "edit",
-      "test",
-      "checkpoint",
-      "propose",
-      "revert_own_uncommitted_change",
-      "persist_artifact"
-    ],
+    "autonomous_target_types": ["work_product", "test_fixture", "documentation", "procedure", "runtime_control", "skill", "policy"],
+    "autonomous_actions": ["inspect", "route", "analyze", "draft", "edit", "test", "checkpoint", "propose", "revert_own_uncommitted_change", "persist_artifact"],
     "max_change_class": "bounded_structural",
     "may_modify_in_progress_work": true,
     "may_start_follow_on_cycles": true,
     "may_promote_to_working_state": true,
-    "commit_requires_human": false,
+    "commit_requires_human": true,
     "push_requires_human": true,
     "merge_requires_human": true,
     "release_requires_human": true,
@@ -64,33 +38,23 @@
     "self_approval_prohibited": true,
     "standing_approval_ids": []
   },
-  "protected_invariants": [
-    "The human user remains final decision authority.",
-    "Model capability never creates authority.",
-    "Artifacts remain bound to one repository identity.",
-    "Failed candidates are not promoted."
-  ],
+  "protected_invariants": ["USER remains final decision authority.", "Failed candidates are not promoted.", "Release remains separately gated."],
   "quality_model": {
     "dimensions": [
-      {
-        "id": "accuracy",
-        "weight": 0.6,
-        "direction": "maximize",
-        "target": 0.9,
-        "hard_gate": true,
-        "evidence_required": ["Deterministic tests or independent evaluation."]
-      },
-      {
-        "id": "completeness",
-        "weight": 0.4,
-        "direction": "maximize",
-        "target": 0.85,
-        "hard_gate": true,
-        "evidence_required": ["Acceptance-criteria coverage report."]
-      }
+      {"id": "accuracy", "weight": 0.6, "direction": "maximize", "target": 0.9, "hard_gate": true, "evidence_required": ["Verification receipt."]},
+      {"id": "completeness", "weight": 0.4, "direction": "maximize", "target": 0.85, "hard_gate": true, "evidence_required": ["Verification receipt."]}
     ],
-    "minimum_weighted_score": 0.85,
+    "minimum_weighted_score": 0.88,
     "hard_gates_must_pass": true
+  },
+  "verification_policy": {
+    "proof_required": true,
+    "allowed_executables": ["node", "git"],
+    "max_checks_per_plan": 20,
+    "max_timeout_ms_per_check": 300000,
+    "max_output_bytes_per_stream": 4194304,
+    "repository_state_must_remain_unchanged": true,
+    "receipt_persistence_required": true
   },
   "budgets": {
     "max_cycles": 8,
@@ -98,18 +62,11 @@
     "max_changed_files_per_cycle": 12,
     "max_failed_experiments": 3,
     "max_no_progress_cycles": 2,
-    "min_weighted_improvement": 0.05,
+    "min_weighted_improvement": 0.03,
     "max_elapsed_minutes": 240
   },
   "checkpoint_policy": {
-    "required_triggers": [
-      "wave_start",
-      "wave_end",
-      "validation_failure",
-      "quality_regression",
-      "scope_change",
-      "before_completion"
-    ],
+    "required_triggers": ["wave_start", "wave_end", "validation_failure", "quality_regression", "scope_change", "before_completion"],
     "before_completion_required": true,
     "on_scope_change_required": true,
     "on_validation_failure_required": true
@@ -121,12 +78,7 @@
     "rollback_plan_required": true,
     "failed_candidate_must_not_be_promoted": true
   },
-  "stop_conditions": [
-    "A protected invariant would be changed.",
-    "The cycle, time, failure, or no-progress budget is reached.",
-    "A destructive or cross-repository action is proposed.",
-    "The human user pauses or terminates the campaign."
-  ],
+  "stop_conditions": ["A protected invariant would change.", "A finite budget is reached.", "Required proof cannot be obtained."],
   "status": "active",
   "created_at": "2026-07-21T18:00:00+09:00"
 }

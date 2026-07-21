@@ -105,9 +105,21 @@ function ensureExistingPathInside(root, candidate, label) {
 
 function atomicWrite(filePath, value) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const temporaryPath = path.join(path.dirname(filePath), `.${path.basename(filePath)}.${process.pid}.tmp`);
-  fs.writeFileSync(temporaryPath, value, { mode: 0o600 });
+  const temporaryPath = path.join(path.dirname(filePath), `.${path.basename(filePath)}.${process.pid}.${crypto.randomUUID()}.tmp`);
+  const descriptor = fs.openSync(temporaryPath, "wx", 0o600);
+  try {
+    fs.writeFileSync(descriptor, value);
+    fs.fsyncSync(descriptor);
+  } finally {
+    fs.closeSync(descriptor);
+  }
   fs.renameSync(temporaryPath, filePath);
+  const directoryDescriptor = fs.openSync(path.dirname(filePath), "r");
+  try {
+    fs.fsyncSync(directoryDescriptor);
+  } finally {
+    fs.closeSync(directoryDescriptor);
+  }
 }
 
 function atomicWriteJson(filePath, value) {
@@ -225,6 +237,89 @@ function releaseNamespaceLock(lock) {
   fs.rmSync(lock.lockPath, { recursive: true, force: false });
 }
 
+function manifestDigest(manifest) {
+  const value = JSON.parse(JSON.stringify(manifest));
+  if (value.integrity) delete value.integrity.canonical_manifest_sha256;
+  return sha256(`${JSON.stringify(value, null, 2)}\n`);
+}
+
+function finalizeManifest(manifest) {
+  manifest.integrity.canonical_manifest_sha256 = manifestDigest(manifest);
+  return manifest;
+}
+
+function manifestHistoryFile(namespacePath, revision) {
+  return path.join(namespacePath, ".manifest-history", `manifest-r${String(revision).padStart(8, "0")}.json`);
+}
+
+function manifestPaths(namespacePath) {
+  return {
+    manifest: path.join(namespacePath, "manifest.json"),
+    sidecar: path.join(namespacePath, "manifest.sha256"),
+    pending: path.join(namespacePath, ".transactions", "pending"),
+    committed: path.join(namespacePath, ".transactions", "committed")
+  };
+}
+
+function assertManifestDigest(manifest) {
+  if (!manifest || manifest.schema_version !== "0.3" || !manifest.integrity) {
+    throw new Error("Repository artifact manifest is not v0.3 integrity-aware.");
+  }
+  const actual = manifestDigest(manifest);
+  if (manifest.integrity.canonical_manifest_sha256 !== actual) {
+    throw new Error("Repository artifact manifest digest does not match its canonical content.");
+  }
+  return actual;
+}
+
+function commitManifest(namespacePath, manifest) {
+  const paths = manifestPaths(namespacePath);
+  const digest = assertManifestDigest(manifest);
+  const historyPath = manifestHistoryFile(namespacePath, manifest.manifest_revision);
+  if (fs.existsSync(historyPath)) {
+    const existing = readJson(historyPath);
+    if (assertManifestDigest(existing) !== digest) {
+      throw new Error(`Manifest history conflict at revision ${manifest.manifest_revision}.`);
+    }
+  } else {
+    atomicWriteJson(historyPath, manifest);
+  }
+  atomicWriteJson(paths.manifest, manifest);
+  atomicWrite(paths.sidecar, `${digest}\n`);
+  return digest;
+}
+
+function migrateLegacyManifest(repository, namespaceRoot, namespacePath, manifest, now) {
+  if (!manifest || manifest.schema_version === "0.3") return manifest;
+  if (manifest.schema_version !== "0.2") throw new Error(`Unsupported repository artifact manifest version: ${manifest.schema_version}`);
+  if (!manifest.repository || manifest.repository.identity_fingerprint !== repository.identity_fingerprint) {
+    throw new Error("Legacy artifact namespace belongs to a different repository identity.");
+  }
+  const revision = Math.max(1, Number(manifest.manifest_revision) || 1);
+  const migrated = finalizeManifest({
+    ...manifest,
+    schema_version: "0.3",
+    namespace_root: namespaceRoot.split(path.sep).join("/"),
+    manifest_revision: revision,
+    previous_manifest_sha256: "none",
+    isolation: {
+      ...manifest.isolation,
+      write_ahead_journal: true
+    },
+    integrity: {
+      algorithm: "sha256",
+      canonical_manifest_sha256: "",
+      history_start_revision: revision,
+      history_length: 1,
+      pending_transaction_count: 0,
+      sidecar_required: true
+    },
+    updated_at: now
+  });
+  commitManifest(namespacePath, migrated);
+  return migrated;
+}
+
 function buildManifest(repository, namespaceRoot, existingManifest, artifactEntry, now) {
   const existingArtifacts = existingManifest && Array.isArray(existingManifest.artifacts)
     ? existingManifest.artifacts.filter(item => item.relative_path !== artifactEntry.relative_path)
@@ -232,8 +327,15 @@ function buildManifest(repository, namespaceRoot, existingManifest, artifactEntr
   const artifacts = [...existingArtifacts, artifactEntry]
     .sort((left, right) => left.relative_path.localeCompare(right.relative_path));
 
-  return {
-    schema_version: "0.2",
+  const previousDigest = existingManifest ? assertManifestDigest(existingManifest) : "none";
+  const revision = Math.max(
+    existingManifest && Number.isInteger(existingManifest.manifest_revision)
+      ? existingManifest.manifest_revision + 1
+      : 1,
+    artifacts.length
+  );
+  return finalizeManifest({
+    schema_version: "0.3",
     type: "RepositoryArtifactManifest",
     id: `RAM-${repository.identity_fingerprint.slice(0, 16)}`,
     repository: {
@@ -243,12 +345,8 @@ function buildManifest(repository, namespaceRoot, existingManifest, artifactEntr
       head_commit: repository.head_commit
     },
     namespace_root: namespaceRoot.split(path.sep).join("/"),
-    manifest_revision: Math.max(
-      existingManifest && Number.isInteger(existingManifest.manifest_revision)
-        ? existingManifest.manifest_revision + 1
-        : 1,
-      artifacts.length
-    ),
+    manifest_revision: revision,
+    previous_manifest_sha256: previousDigest,
     artifacts,
     artifact_count: artifacts.length,
     isolation: {
@@ -256,10 +354,216 @@ function buildManifest(repository, namespaceRoot, existingManifest, artifactEntr
       cross_repository_writes_prohibited: true,
       absolute_paths_recorded: false,
       cross_process_manifest_lock: true,
-      stale_lock_recovery_fail_closed: true
+      stale_lock_recovery_fail_closed: true,
+      write_ahead_journal: true
+    },
+    integrity: {
+      algorithm: "sha256",
+      canonical_manifest_sha256: "",
+      history_start_revision: existingManifest && existingManifest.integrity
+        ? existingManifest.integrity.history_start_revision
+        : 1,
+      history_length: existingManifest && existingManifest.integrity
+        ? existingManifest.integrity.history_length + 1
+        : 1,
+      pending_transaction_count: 0,
+      sidecar_required: true
     },
     created_at: existingManifest && existingManifest.created_at ? existingManifest.created_at : now,
     updated_at: now
+  });
+}
+
+function listPendingJournals(namespacePath) {
+  const pendingPath = manifestPaths(namespacePath).pending;
+  if (!fs.existsSync(pendingPath)) return [];
+  return fs.readdirSync(pendingPath)
+    .filter(file => file.endsWith(".json"))
+    .sort()
+    .map(file => path.join(pendingPath, file));
+}
+
+function archiveJournal(namespacePath, journalPath, journal, state, note) {
+  const paths = manifestPaths(namespacePath);
+  fs.mkdirSync(paths.committed, { recursive: true });
+  const completed = {
+    ...journal,
+    state,
+    recovery_note: note || journal.recovery_note || "none",
+    updated_at: new Date().toISOString()
+  };
+  atomicWriteJson(journalPath, completed);
+  const destination = path.join(paths.committed, path.basename(journalPath));
+  if (fs.existsSync(destination)) throw new Error(`Committed transaction journal already exists: ${destination}`);
+  fs.renameSync(journalPath, destination);
+}
+
+function currentManifestForRecovery(namespacePath) {
+  const manifestPath = manifestPaths(namespacePath).manifest;
+  if (!fs.existsSync(manifestPath)) return { manifest: null, digest: "none" };
+  const manifest = readJson(manifestPath);
+  return { manifest, digest: assertManifestDigest(manifest) };
+}
+
+function recoverPendingTransactionsLocked(artifactRoot, namespacePath) {
+  const recovered = [];
+  for (const journalPath of listPendingJournals(namespacePath)) {
+    const journal = readJson(journalPath);
+    if (journal.type !== "RepositoryArtifactTransaction" || journal.schema_version !== "0.1" || !journal.candidate_manifest) {
+      throw new Error(`Malformed repository artifact transaction journal: ${journalPath}`);
+    }
+    const candidateDigest = assertManifestDigest(journal.candidate_manifest);
+    if (candidateDigest !== journal.candidate_manifest_sha256) {
+      throw new Error(`Transaction candidate manifest digest mismatch: ${journal.id}`);
+    }
+    const artifactPath = ensureInside(artifactRoot, path.join(artifactRoot, journal.artifact_relative_path), "Journal artifact path");
+    const artifactHash = fs.existsSync(artifactPath) ? sha256(fs.readFileSync(artifactPath)) : "missing";
+    const current = currentManifestForRecovery(namespacePath);
+
+    if (artifactHash === journal.artifact_sha256) {
+      if (current.digest !== journal.manifest_before_sha256 && current.digest !== candidateDigest) {
+        throw new Error(`Transaction manifest conflict requires manual recovery: ${journal.id}`);
+      }
+      commitManifest(namespacePath, journal.candidate_manifest);
+      archiveJournal(namespacePath, journalPath, journal, "manifest_committed", current.digest === candidateDigest
+        ? "Recovered journal after manifest commit."
+        : "Reconciled artifact-written transaction into the manifest.");
+      recovered.push(journal.id);
+      continue;
+    }
+
+    if (journal.state === "prepared" && current.digest === journal.manifest_before_sha256 &&
+        ((!journal.artifact_preexisted && artifactHash === "missing") ||
+         (journal.artifact_preexisted && artifactHash === journal.previous_artifact_sha256))) {
+      archiveJournal(namespacePath, journalPath, journal, "recovered_rolled_back", "No candidate artifact bytes were committed; removed prepared journal.");
+      recovered.push(journal.id);
+      continue;
+    }
+
+    throw new Error(`Transaction artifact conflict requires manual recovery: ${journal.id}`);
+  }
+  return recovered;
+}
+
+function collectIntegrityIssues(repository, artifactRoot, namespacePath) {
+  const issues = [];
+  const paths = manifestPaths(namespacePath);
+  const pending = listPendingJournals(namespacePath);
+  if (pending.length > 0) issues.push({ code: "PENDING_TRANSACTION", message: `${pending.length} transaction(s) require recovery.` });
+  if (!fs.existsSync(paths.manifest)) return [...issues, { code: "MANIFEST_MISSING", message: "Repository artifact manifest does not exist." }];
+
+  let manifest;
+  let digest;
+  try {
+    manifest = readJson(paths.manifest);
+    digest = assertManifestDigest(manifest);
+  } catch (error) {
+    return [...issues, { code: "MANIFEST_INTEGRITY_INVALID", message: error.message }];
+  }
+  if (manifest.repository.identity_fingerprint !== repository.identity_fingerprint || manifest.repository.key !== repository.key) {
+    issues.push({ code: "REPOSITORY_BINDING_MISMATCH", message: "Manifest repository identity does not match the requested repository." });
+  }
+  const sidecar = fs.existsSync(paths.sidecar) ? fs.readFileSync(paths.sidecar, "utf8").trim() : "missing";
+  if (sidecar !== digest) issues.push({ code: "MANIFEST_SIDECAR_MISMATCH", message: "Manifest sidecar does not match canonical manifest content." });
+
+  const start = manifest.integrity.history_start_revision;
+  let previous = "none";
+  let historyCount = 0;
+  for (let revision = start; revision <= manifest.manifest_revision; revision += 1) {
+    const historyPath = manifestHistoryFile(namespacePath, revision);
+    if (!fs.existsSync(historyPath)) {
+      issues.push({ code: "MANIFEST_HISTORY_GAP", message: `Missing manifest history revision ${revision}.` });
+      continue;
+    }
+    try {
+      const historic = readJson(historyPath);
+      const historicDigest = assertManifestDigest(historic);
+      if (historic.manifest_revision !== revision) issues.push({ code: "MANIFEST_HISTORY_REVISION_MISMATCH", message: `History file ${revision} contains another revision.` });
+      if (historic.previous_manifest_sha256 !== previous) issues.push({ code: "MANIFEST_HISTORY_CHAIN_BROKEN", message: `History chain is broken at revision ${revision}.` });
+      previous = historicDigest;
+      historyCount += 1;
+    } catch (error) {
+      issues.push({ code: "MANIFEST_HISTORY_INVALID", message: error.message });
+    }
+  }
+  if (historyCount !== manifest.integrity.history_length) issues.push({ code: "MANIFEST_HISTORY_LENGTH_MISMATCH", message: "Manifest history length does not match retained history." });
+  if (previous !== digest) issues.push({ code: "MANIFEST_HISTORY_HEAD_MISMATCH", message: "Current manifest does not match the history head." });
+
+  const retainedPaths = new Set();
+  for (const entry of manifest.artifacts || []) {
+    if (!entry.relative_path.startsWith(`${manifest.namespace_root}/missions/`) || entry.relative_path.split("/").includes("..")) {
+      issues.push({ code: "ARTIFACT_PATH_INVALID", message: `Manifest artifact path is outside the repository namespace: ${entry.relative_path}` });
+      continue;
+    }
+    retainedPaths.add(entry.relative_path);
+    const artifactPath = ensureInside(artifactRoot, path.join(artifactRoot, entry.relative_path), "Manifest artifact path");
+    if (!fs.existsSync(artifactPath)) {
+      issues.push({ code: "ARTIFACT_MISSING", message: `Artifact is missing: ${entry.relative_path}` });
+      continue;
+    }
+    const stat = fs.lstatSync(artifactPath);
+    if (!stat.isFile() || stat.isSymbolicLink()) {
+      issues.push({ code: "ARTIFACT_TYPE_INVALID", message: `Artifact is not a regular file: ${entry.relative_path}` });
+      continue;
+    }
+    const bytes = fs.readFileSync(artifactPath);
+    if (bytes.length !== entry.byte_size) issues.push({ code: "ARTIFACT_SIZE_MISMATCH", message: `Artifact byte size changed: ${entry.relative_path}` });
+    if (sha256(bytes) !== entry.sha256) issues.push({ code: "ARTIFACT_HASH_MISMATCH", message: `Artifact hash changed: ${entry.relative_path}` });
+  }
+
+  const missionsPath = path.join(namespacePath, "missions");
+  function walk(folder) {
+    if (!fs.existsSync(folder)) return;
+    for (const name of fs.readdirSync(folder)) {
+      const target = path.join(folder, name);
+      const stat = fs.lstatSync(target);
+      if (stat.isDirectory()) walk(target);
+      else {
+        const relative = path.relative(artifactRoot, target).split(path.sep).join("/");
+        if (!retainedPaths.has(relative)) issues.push({ code: "ORPHAN_ARTIFACT", message: `Artifact file is not retained by the manifest: ${relative}` });
+      }
+    }
+  }
+  walk(missionsPath);
+  return issues;
+}
+
+function verifyRepositoryArtifacts(options = {}) {
+  const repository = resolveRepository(options.repositoryPath);
+  const requestedArtifactRoot = path.resolve(options.artifactRoot || path.join(process.cwd(), ".cannae", "artifacts"));
+  if (!fs.existsSync(requestedArtifactRoot)) {
+    return { valid: false, repository, manifest_revision: 0, artifact_count: 0, recovered_transactions: [], issues: [{ code: "ARTIFACT_ROOT_MISSING", message: "Artifact root does not exist." }] };
+  }
+  const artifactRoot = fs.realpathSync(requestedArtifactRoot);
+  const namespacePath = ensureInside(artifactRoot, path.join(artifactRoot, "repositories", repository.key), "Repository namespace");
+  if (!fs.existsSync(namespacePath)) {
+    return { valid: false, repository, manifest_revision: 0, artifact_count: 0, recovered_transactions: [], issues: [{ code: "REPOSITORY_NAMESPACE_MISSING", message: "Repository artifact namespace does not exist." }] };
+  }
+  let recovered = [];
+  if (options.recover === true) {
+    const lock = acquireNamespaceLock(artifactRoot, namespacePath, options);
+    try {
+      const paths = manifestPaths(namespacePath);
+      if (fs.existsSync(paths.manifest)) {
+        const existing = readJson(paths.manifest);
+        migrateLegacyManifest(repository, path.join("repositories", repository.key), namespacePath, existing, new Date().toISOString());
+      }
+      recovered = recoverPendingTransactionsLocked(artifactRoot, namespacePath);
+    } finally {
+      releaseNamespaceLock(lock);
+    }
+  }
+  const issues = collectIntegrityIssues(repository, artifactRoot, namespacePath);
+  let manifest = null;
+  try { manifest = readJson(manifestPaths(namespacePath).manifest); } catch (error) { /* reported above */ }
+  return {
+    valid: issues.length === 0,
+    repository,
+    manifest_revision: manifest && Number.isInteger(manifest.manifest_revision) ? manifest.manifest_revision : 0,
+    manifest_sha256: manifest && manifest.integrity ? manifest.integrity.canonical_manifest_sha256 : "none",
+    artifact_count: manifest && Number.isInteger(manifest.artifact_count) ? manifest.artifact_count : 0,
+    recovered_transactions: recovered,
+    issues
   };
 }
 
@@ -285,9 +589,16 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
   try {
     const bytes = Buffer.isBuffer(content) ? content : Buffer.from(content);
     const payloadHash = sha256(bytes);
-    const existingManifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
+    let existingManifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
+    existingManifest = migrateLegacyManifest(repository, namespaceRoot, namespacePath, existingManifest, new Date().toISOString());
+    recoverPendingTransactionsLocked(artifactRoot, namespacePath);
+    existingManifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
     if (existingManifest && existingManifest.repository.identity_fingerprint !== repository.identity_fingerprint) {
       throw new Error("Artifact namespace belongs to a different repository identity.");
+    }
+    if (existingManifest) {
+      const integrityIssues = collectIntegrityIssues(repository, artifactRoot, namespacePath);
+      if (integrityIssues.length > 0) throw new Error(`Repository artifact integrity check failed: ${integrityIssues.map(item => item.code).join(", ")}`);
     }
     let created = true;
 
@@ -299,8 +610,6 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
         throw new Error(`Artifact already exists with different content: ${artifactPath}`);
       }
     }
-
-    if (created || options.overwrite === true) atomicWrite(artifactPath, bytes);
 
     const now = options.createdAt || new Date().toISOString();
     const existingArtifact = existingManifest && (existingManifest.artifacts || [])
@@ -319,7 +628,41 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
       created_at: existingArtifact && !created ? existingArtifact.created_at : now
     };
     const manifest = buildManifest(repository, namespaceRoot, existingManifest, artifactEntry, now);
-    atomicWriteJson(manifestPath, manifest);
+    const paths = manifestPaths(namespacePath);
+    fs.mkdirSync(paths.pending, { recursive: true });
+    const transactionId = `RAT-${crypto.randomUUID()}`;
+    const journalPath = path.join(paths.pending, `${transactionId}.json`);
+    let journal = {
+      schema_version: "0.1",
+      type: "RepositoryArtifactTransaction",
+      id: transactionId,
+      repository_key: repository.key,
+      state: "prepared",
+      artifact_relative_path: artifactEntry.relative_path,
+      artifact_sha256: payloadHash,
+      artifact_preexisted: fs.existsSync(artifactPath),
+      previous_artifact_sha256: fs.existsSync(artifactPath) ? sha256(fs.readFileSync(artifactPath)) : "none",
+      manifest_before_revision: existingManifest ? existingManifest.manifest_revision : 0,
+      manifest_before_sha256: existingManifest ? assertManifestDigest(existingManifest) : "none",
+      candidate_manifest_sha256: assertManifestDigest(manifest),
+      candidate_manifest: manifest,
+      recovery_note: "none",
+      created_at: now,
+      updated_at: now
+    };
+    atomicWriteJson(journalPath, journal);
+    if (options.faultInjectionStage === "prepared") throw new Error("Injected artifact transaction failure after prepare.");
+
+    if (created || options.overwrite === true) atomicWrite(artifactPath, bytes);
+    journal = { ...journal, state: "artifact_written", updated_at: new Date().toISOString() };
+    atomicWriteJson(journalPath, journal);
+    if (options.faultInjectionStage === "artifact_written") throw new Error("Injected artifact transaction failure after artifact write.");
+
+    commitManifest(namespacePath, manifest);
+    journal = { ...journal, state: "manifest_committed", updated_at: new Date().toISOString() };
+    atomicWriteJson(journalPath, journal);
+    if (options.faultInjectionStage === "manifest_committed") throw new Error("Injected artifact transaction failure after manifest commit.");
+    archiveJournal(namespacePath, journalPath, journal, "manifest_committed", "Transaction committed without recovery.");
 
     return {
       repository,
@@ -330,6 +673,8 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
       relative_path: artifactEntry.relative_path,
       sha256: payloadHash,
       manifest_revision: manifest.manifest_revision,
+      manifest_sha256: manifest.integrity.canonical_manifest_sha256,
+      transaction_id: transactionId,
       created
     };
   } finally {
@@ -477,10 +822,13 @@ module.exports = {
   buildManifest,
   acquireNamespaceLock,
   normalizeRemote,
+  manifestDigest,
   parseArtifactWriteFlags,
   resolveRepository,
+  recoverPendingTransactionsLocked,
   releaseNamespaceLock,
   safeSegment,
+  verifyRepositoryArtifacts,
   writeRepositoryArtifact,
   writeRepositoryFileArtifact
 };

@@ -10,7 +10,9 @@ human intent
   -> working baseline
   -> observe
   -> propose one candidate
-  -> validate and measure
+  -> execute a verification plan
+  -> persist a verification receipt
+  -> validate and measure from receipts
   -> accept / revise / rollback / escalate
   -> next checkpoint
   -> human merge or release decision
@@ -41,6 +43,7 @@ Procedures, runtime controls, skills, and policies may be examined and changed a
 - A procedure or runtime candidate needs independent evaluation before promotion.
 - A skill candidate needs independent evaluation and its own validation/forward test.
 - A policy candidate also needs explicit USER approval scoped to that candidate.
+- That approval must be represented by a valid `ApprovalScope` and one matching `ApprovalConsumptionEvent`; prose approval in a checkpoint has no authority.
 - Authority changes, merge, push, and external release remain human-retained.
 - A failed control-plane candidate is never promoted merely because the same model says it is safe.
 
@@ -59,29 +62,38 @@ The campaign is the standing order. It binds:
 - cycle, retry, file, failure, no-progress, and elapsed-time budgets;
 - mandatory checkpoint triggers;
 - experiment, rollback, and promotion rules;
+- allowed verification executables, command/time/output budgets, and proof persistence rules;
 - stop conditions.
 
 The quality dimensions use a normalized `0..1` scale. Weights must sum to `1`. For a `maximize` dimension, higher is better. For a `minimize` dimension, lower is better and the controller reverses it when calculating the weighted score.
 
-### 2.2 `SelfImprovementCheckpoint`
+### 2.2 `VerificationPlan` and `VerificationReceipt`
+
+A plan binds exact executable/argument arrays to one campaign, candidate, cycle, repository identity, Git head, and worktree fingerprint. `verification-runner.js` resolves each executable, uses `spawnSync` with `shell: false`, enforces the campaign timeout/output budget, hashes the executable and both output streams, and records the exit code and duration.
+
+The runner checks repository state before and after execution. Mutation during verification fails the receipt and blocks later checks. A passing receipt therefore proves what command ran, where it ran, which candidate state it checked, what it returned, and that the checked state did not move underneath it. The runner is not a general sandbox: allowed executables and the scripts they invoke still require normal tool ROE and least privilege.
+
+Both plan and receipt must be persisted in the repository artifact namespace. A checkpoint cites the receipt's manifest path and SHA-256; a model-authored status string is not accepted as validation evidence.
+
+### 2.3 `SelfImprovementCheckpoint`
 
 Each checkpoint records one candidate against one baseline:
 
 - trigger and cycle number;
-- parent accepted decision (`none` only for cycle 1);
+- parent accepted decision and manifest-backed artifact reference (`none` only for cycle 1);
 - target state and repository-relative paths;
 - observed gap and evidence;
 - candidate disposition, changed files, permissions, rollback, and expected delta;
-- metric values before and after;
-- validation results and evidence;
+- metric values before and after, each citing verified receipt IDs;
+- manifest-backed verification receipt references and required check IDs;
 - independent evaluation where required;
 - scope, authority, policy, release, destructive, and cross-repository externalities;
-- exact human approval claim where required;
+- exact approval-scope and consumption-event references where required;
 - completed/open acceptance criteria and budget counters.
 
 Checkpoint paths may not be absolute or contain `..`. Different repositories require separate campaigns and artifact namespaces.
 
-### 2.3 `SelfImprovementDecision`
+### 2.4 `SelfImprovementDecision`
 
 `autonomous-improvement-controller.js` emits one of:
 
@@ -96,6 +108,8 @@ Checkpoint paths may not be absolute or contain `..`. Different repositories req
 | `terminate` | Destructive or cross-repository behavior was proposed | No |
 
 Every decision sets `release_authorized: false`. Release is handled by the existing approval and release-review system, never by this controller.
+
+The decision also records the accepted candidate revision and a proof summary: verified receipt IDs, verified parent decision ID, consumed approval event ID, and the artifact-manifest revision/hash used during evaluation.
 
 ## 3. Required Battle Rhythm
 
@@ -112,10 +126,10 @@ Every decision sets `release_authorized: false`. Release is handled by the exist
 
 1. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
 2. Execute only the task order produced by the latest accepted decision.
-3. Preserve test, validator, review, and artifact evidence.
+3. Generate a repository-state-bound `VerificationPlan`, run it through `verification-runner.js`, and persist its receipt.
 4. Run a `wave_end` checkpoint.
 5. Accept only one bounded candidate at a time; carry its accepted state forward as the next baseline.
-6. Set every follow-on checkpoint's `parent_decision_id` to the decision that accepted its baseline. A rejected or rollback decision cannot become the hidden parent state.
+6. Set every follow-on checkpoint's parent ID and artifact reference to the decision that accepted its baseline. The controller reloads the decision, requires the immediately prior cycle, requires `accept_working_state`, and matches `accepted_revision` to the new baseline.
 7. On validation failure, run the failure checkpoint before attempting repair.
 8. On scope change, stop and checkpoint before editing outside the existing task.
 
@@ -128,6 +142,7 @@ The agent may not report the mission complete from a normal wave-end result. It 
 - every hard gate passing;
 - the minimum weighted quality score met;
 - repository-scoped decision evidence.
+- a new passing verification receipt for the exact completion candidate state.
 
 `complete` freezes the working state and opens a human merge/release decision. It does not authorize either action.
 
@@ -138,7 +153,7 @@ The agent may not report the mission complete from a normal wave-end result. It 
 | Inspect and measure | AI | AI | AI | AI | AI may prepare evidence |
 | Draft isolated candidate | AI | AI | AI | AI | No |
 | Run bounded tests | AI | AI | AI | AI | No |
-| Promote to in-progress working state | AI if gates pass | AI if independently evaluated | AI if independently evaluated | USER approval required | No |
+| Promote to in-progress working state | AI if proof gates pass | AI if independently evaluated with receipt evidence | AI if independently evaluated with receipt evidence | Consumed USER approval required | No |
 | Revert own uncommitted failed candidate | AI | AI | AI | Only within approved candidate | No |
 | Expand scope or authority | No | No | No | USER | No |
 | Merge, push, or release | No | No | No | No | USER through separate gate |
@@ -175,7 +190,7 @@ node self-improvement-campaign-init.js \
 
 The bootstrap uses conservative default roles, protected invariants, quality dimensions, finite budgets, and human-retained merge/push/release authority. `--allow-commit` may remove the per-cycle human commit requirement, but it never grants push, merge, policy, authority, or release permission.
 
-Validate the three contracts:
+Validate the proof and control contracts:
 
 ```bash
 node validator-cli-prototype/validate.js \
@@ -189,14 +204,31 @@ node validator-cli-prototype/validate.js \
 node validator-cli-prototype/validate.js \
   sample-payloads/valid-self-improvement-decision.json \
   self-improvement-decision
+
+node validator-cli-prototype/validate.js \
+  sample-payloads/valid-verification-plan.json \
+  verification-plan
 ```
 
-Evaluate a checkpoint:
+Execute and persist a verification plan before creating the checkpoint:
+
+```bash
+node verification-runner.js \
+  campaign.json \
+  verification-plan.json \
+  --repository ../target-repository \
+  --artifact-root .cannae/artifacts \
+  --write-artifact
+```
+
+Evaluate a checkpoint against its repository proof store:
 
 ```bash
 node autonomous-improvement-controller.js \
   campaign.json \
-  checkpoint.json
+  checkpoint.json \
+  --repository ../target-repository \
+  --artifact-root .cannae/artifacts
 ```
 
 Persist the checkpoint and decision into the bound repository namespace:
@@ -210,39 +242,42 @@ node autonomous-improvement-controller.js \
   --artifact-root .cannae/artifacts
 ```
 
-The CLI validates campaign and checkpoint contracts before making a decision. When persistence is requested, it also resolves the actual Git repository, blocks execution if its key or fingerprint does not match the campaign binding, and records both the checkpoint and resulting decision under the same mission/cycle namespace.
+The controller always requires the runtime repository. It verifies the artifact manifest and history, reloads every receipt, parent decision, approval scope, and consumption event referenced by the checkpoint, and compares their hashes and semantic bindings before deciding. `--write-artifact` additionally records the checkpoint and decision under the same mission/cycle namespace.
 
 CLI exit codes are `0` for a decision the harness may consume without human unblock, `1` for `escalate` or `terminate`, and `2` for malformed input or CLI usage failure. A nonzero exit never removes the JSON decision from stdout when a decision could be formed.
 
 ## 7. Failure and Anti-Hallucination Rules
 
 - Model confidence, self-approval, or a prose assertion of quality is not sufficient evidence.
-- Every quality result must cite deterministic or independent evidence.
+- Every quality result must cite a runtime-issued receipt that belongs to the exact campaign, cycle, candidate, revision, and repository.
+- Shell strings, inline Node evaluation, stale worktree plans, mutated repositories, forged receipt hashes, and missing required checks do not count as proof.
 - Every changed candidate needs a rollback plan.
 - Failed validation or a failed hard gate routes to rollback, not rationalization.
 - Repeated no-progress, repeated failure, cycle exhaustion, or time exhaustion routes to human review.
 - A protected-invariant impact blocks promotion even when the measured score improves.
 - Destructive or cross-repository behavior terminates autonomous execution.
-- A controller may generate a policy candidate but may not approve that candidate itself.
+- A controller may generate a policy candidate but may not approve it; an exact USER-granted scope must be consumed once by that checkpoint execution.
+- Follow-on work must reload the immediately prior accepted decision; naming an ID without its manifest-backed bytes is insufficient.
 - A completion decision may not authorize execution or release.
 
 ## 8. Regression Gate
 
 ```bash
 node run-self-improvement-fixtures.js
+node run-verification-runner-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 node run-repository-artifact-isolation-fixtures.js
+node run-repository-artifact-recovery-fixtures.js
 ```
 
-The fixture suite covers accepted improvement, insufficient gain, validation rollback, policy escalation, destructive termination, completion, repository drift, no-progress budgets, independent control-plane evaluation, permission drift, and repository-scoped persistence.
+The fixture suite covers executed proof, missing/tampered receipts, validation rollback, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, crash recovery, and byte-level tamper detection.
 
 ## 9. Current Limitations
 
-- The controller verifies contract structure and decision logic; it does not independently rerun arbitrary validation commands embedded in a checkpoint.
-- Evidence references are auditable strings, not cryptographic attestations.
-- A human approval claim in a checkpoint is structurally checked but is not yet consumed from a signed approval ledger.
 - The controller produces the next task order; the active AI harness must execute it and return a new checkpoint.
 - Bootstrap quality dimensions are safe engineering defaults; mission-specific campaigns should replace them when another measurable quality model is more appropriate.
-- Repository manifest locking protects concurrent writers, but artifact and manifest updates are not yet backed by a write-ahead journal for crash recovery between the two atomic renames.
+- SHA-256 receipts and manifest history detect accidental or unsophisticated tampering but are not signatures from a remote trusted execution environment. An actor that can rewrite the entire local artifact root and every retained history entry remains outside this trust model.
+- Verification commands run without a shell and under bounded resources, but they are not OS-sandboxed. Network, external filesystem, and credential isolation still depend on the host harness and tool ROE.
+- Approval scopes are hash-bound and single-consumption checked, but they are not cryptographically signed by an external identity provider.
 
 These are explicit engineering boundaries, not permissions for an agent to fill gaps with self-reported confidence.
