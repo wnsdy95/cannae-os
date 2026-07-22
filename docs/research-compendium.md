@@ -2701,6 +2701,58 @@ Implemented artifacts:
 - `run-sigstore-verifier-identity-fixtures.js`
 - supervisor, readiness, validator, roadmap and skill integrations
 
+### 8.60 Verifier Execution Integrity v0.10
+
+Research question:
+
+> After workload identity and attestation signatures are valid, what evidence is required to decide that the exact approved verifier code ran under the expected isolation controls against the exact repository state and target?
+
+Primary references:
+
+- SLSA Build Provenance v1.2: https://slsa.dev/spec/v1.2/build-provenance
+- SLSA artifact verification: https://slsa.dev/spec/v1.2/verifying-artifacts
+- in-toto Statement v1: https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md
+- OCI image descriptor: https://github.com/opencontainers/image-spec/blob/main/descriptor.md
+- OCI image manifest: https://github.com/opencontainers/image-spec/blob/main/manifest.md
+- OCI runtime configuration: https://github.com/opencontainers/runtime-spec/blob/main/config.md
+- OCI Linux runtime configuration: https://github.com/opencontainers/runtime-spec/blob/main/config-linux.md
+- GitHub Actions OIDC reference: https://docs.github.com/en/actions/reference/security/oidc
+- GitHub artifact attestations: https://docs.github.com/en/actions/concepts/security/artifact-attestations
+- GitLab ID token authentication: https://docs.gitlab.com/ci/secrets/id_token_authentication/
+- GitLab runner configuration and provenance: https://docs.gitlab.com/ci/runners/configure_runners/
+- IETF RFC 9334 RATS architecture: https://www.rfc-editor.org/rfc/rfc9334.html
+- gVisor security model: https://gvisor.dev/docs/architecture_guide/security/
+- gVisor platform guide: https://gvisor.dev/docs/architecture_guide/platforms/
+- Confidential Containers attestation policies: https://confidentialcontainers.org/docs/attestation/policies/
+
+Engineering conclusions:
+
+1. Identity, output signature and execution integrity are separate proofs. Phase 11 authenticates the current workload; an attestation authenticates a statement; Phase 12A must additionally bind the statement to approved code and a policy-described execution environment.
+2. Consumer expectations remain authoritative. Following SLSA verification, a valid signature is only the first check: verifier code, image, dependencies, harness, arguments, tools, network, sandbox, repository and subject must all equal values fixed outside the evidence being evaluated.
+3. The exact persisted receipt or report belongs in the in-toto `subject`; the underlying verification target and execution details belong in a typed predicate. Cannae therefore uses its own execution predicate instead of mislabeling verifier execution as standard artifact build provenance.
+4. Immutable OCI identity is the image-manifest digest, not a tag. Runtime policy records `name@sha256:<digest>`, expected media type and digest so registry tag movement cannot preserve equivalence.
+5. Isolation is a profile, not a boolean. Read-only root, no-new-privileges, privilege mode, host network, host PID, host mounts, network endpoints, tool allowlist and sandbox-profile digest are independently compared.
+6. One signer is insufficient. The registered verifier must bind itself to the record, while a distinct policy-pinned builder or provider attestor vouches for the environment and provider claims. Both sign identical DSSE payload bytes.
+7. Repository state and verification target are first-class inputs. Evidence records whether the worktree is dirty and binds its exact Git head, full worktree fingerprint, target artifact ID/path/digest and Phase 11 identity-evidence reference. A content-bound uncommitted candidate is valid; an unrecorded or mismatched state is not.
+8. Provider identity is adapter-specific. GitHub and GitLab expose different issuer, workflow/project, ref, commit, runner and configuration claims. A common schema can normalize them, but native JWT and provider-provenance verification must remain separate adapters.
+9. RATS distinguishes evidence appraisal from the attestation result consumed by a relying party. TEE evidence therefore needs vendor-aware appraisal under an exact policy before its measurement and result can enter the common contract.
+10. A builder assertion does not itself enforce isolation. The `generic_oci` adapter verifies a trusted builder's signed claim. Native GitHub Actions, GitLab CI, local sandbox and TEE adapters must independently verify provider tokens, host isolation or hardware evidence before projection.
+11. Fresh execution evidence is not a liveness challenge. Phase 12B must issue a one-time supervisor nonce with a strict deadline and replay ledger, then remove stale, replayed, offline and late responders from current quorum.
+12. Declared independence is not operational independence. Phase 12C must evaluate provider, operator, account, runner pool, cloud project, infrastructure and actual failure-domain identities before counting diversity.
+13. A valid execution record does not grant release authority. Merge, push, deployment, trust-policy, runtime-policy, builder-root and provider-adapter changes remain human-controlled.
+
+Implemented artifacts:
+
+- `docs/verifier-execution-integrity.md`
+- `schema-files/verifier-runtime-policy.schema.json`
+- `schema-files/verifier-execution-evidence.schema.json`
+- `schema-files/verifier-trust-policy.schema.json` v0.4
+- `schema-files/verification-attestation.schema.json` v0.2
+- `schema-files/comparative-evaluation-attestation.schema.json` v0.2
+- `verifier-execution-evidence.js` and `verifier-execution-runner.js`
+- `run-verifier-execution-evidence-fixtures.js`
+- runtime-policy readiness, controller manifest reload, validator, sample, roadmap and skill integrations
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

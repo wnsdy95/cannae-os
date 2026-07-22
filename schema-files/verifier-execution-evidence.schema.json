@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/verifier-execution-evidence.schema.json",
+  "title": "Verifier Execution Evidence",
+  "type": "object",
+  "required": [
+    "schema_version", "type", "id", "trust_policy_id", "runtime_policy_ref", "verifier_id",
+    "profile_id", "purpose", "subject_ref", "workload_identity_evidence_ref", "repository_binding",
+    "repository_state", "verification_target", "provider", "provider_identity", "execution",
+    "invocation", "builder_key_id", "verifier_key_id", "envelope", "issued_at", "expires_at",
+    "evidence_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "VerifierExecutionEvidence" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "trust_policy_id": { "$ref": "common.schema.json#/$defs/id" },
+    "runtime_policy_ref": { "$ref": "#/$defs/artifact_ref" },
+    "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+    "profile_id": { "$ref": "common.schema.json#/$defs/id" },
+    "purpose": { "type": "string", "enum": ["verification_receipt", "comparative_evaluation_report"] },
+    "subject_ref": { "$ref": "#/$defs/artifact_ref" },
+    "workload_identity_evidence_ref": { "$ref": "#/$defs/artifact_ref" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "repository_state": { "$ref": "#/$defs/repository_state" },
+    "verification_target": { "$ref": "#/$defs/target_descriptor" },
+    "provider": { "type": "string", "enum": ["generic_oci", "github_actions", "gitlab_ci", "local_sandbox", "tee"] },
+    "provider_identity": { "$ref": "#/$defs/provider_identity" },
+    "execution": { "$ref": "#/$defs/execution_contract" },
+    "invocation": {
+      "type": "object",
+      "required": ["id", "started_at", "finished_at", "exit_code"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/id" },
+        "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "exit_code": { "type": "integer", "const": 0 }
+      }
+    },
+    "builder_key_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "verifier_key_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "envelope": {
+      "type": "object",
+      "required": ["payloadType", "payload", "signatures"],
+      "additionalProperties": false,
+      "properties": {
+        "payloadType": { "type": "string", "const": "application/vnd.in-toto+json" },
+        "payload": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
+        "signatures": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["keyid", "sig"],
+            "additionalProperties": false,
+            "properties": {
+              "keyid": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "sig": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" }
+            }
+          }
+        }
+      }
+    },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "evidence_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": { "type": "string", "minLength": 1 },
+        "worktree_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "target_descriptor": {
+      "type": "object",
+      "required": ["name", "digest"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "digest": {
+          "type": "object",
+          "required": ["sha256"],
+          "additionalProperties": false,
+          "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+        }
+      }
+    },
+    "resource_descriptor": {
+      "type": "object",
+      "required": ["uri", "digest"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "digest": {
+          "type": "object",
+          "required": ["sha256"],
+          "additionalProperties": false,
+          "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+        }
+      }
+    },
+    "image_descriptor": {
+      "type": "object",
+      "required": ["uri", "digest", "media_type"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "digest": {
+          "type": "object",
+          "required": ["sha256"],
+          "additionalProperties": false,
+          "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+        },
+        "media_type": { "type": "string", "const": "application/vnd.oci.image.manifest.v1+json" }
+      }
+    },
+    "provider_identity": {
+      "type": "object",
+      "required": ["issuer", "subject", "audience", "claims"],
+      "additionalProperties": false,
+      "properties": {
+        "issuer": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "subject": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "audience": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "claims": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        }
+      }
+    },
+    "network_policy": {
+      "type": "object",
+      "required": ["mode", "allowed_endpoints"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "type": "string", "enum": ["denied", "allowlist"] },
+        "allowed_endpoints": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 512 }
+        }
+      }
+    },
+    "sandbox_profile": {
+      "type": "object",
+      "required": [
+        "kind", "profile_uri", "profile_sha256", "rootfs_read_only", "no_new_privileges",
+        "privileged", "host_network", "host_pid", "host_mounts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["oci_container", "gvisor", "microvm", "tee"] },
+        "profile_uri": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "profile_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "rootfs_read_only": { "type": "boolean", "const": true },
+        "no_new_privileges": { "type": "boolean", "const": true },
+        "privileged": { "type": "boolean", "const": false },
+        "host_network": { "type": "boolean", "const": false },
+        "host_pid": { "type": "boolean", "const": false },
+        "host_mounts": { "type": "boolean", "const": false }
+      }
+    },
+    "execution_contract": {
+      "type": "object",
+      "required": [
+        "verifier_code", "container_image", "dependency_lockfile", "harness", "argv",
+        "tool_allowlist", "network_policy", "sandbox_profile"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verifier_code": { "$ref": "#/$defs/resource_descriptor" },
+        "container_image": { "$ref": "#/$defs/image_descriptor" },
+        "dependency_lockfile": { "$ref": "#/$defs/resource_descriptor" },
+        "harness": { "$ref": "#/$defs/resource_descriptor" },
+        "argv": { "type": "array", "minItems": 1, "maxItems": 100, "items": { "type": "string", "maxLength": 4096 } },
+        "tool_allowlist": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" }
+        },
+        "network_policy": { "$ref": "#/$defs/network_policy" },
+        "sandbox_profile": { "$ref": "#/$defs/sandbox_profile" }
+      }
+    }
+  }
+}

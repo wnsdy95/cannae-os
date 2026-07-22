@@ -344,9 +344,50 @@ Implemented controls:
 - official Sigstore conformance material and a live Fulcio/Rekor bundle cover valid verification, wrong-artifact rejection and unrelated-Rekor-entry rejection;
 - supervisor fixtures prove exact manifest loading and fail-closed removal of missing Sigstore identity evidence.
 
-Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Rekor, CT log, TUF repository, monitor, witness, gossip network, hardware-protected key or trusted execution environment. The provider-neutral adapter is intentionally not a general RFC 5280 path builder. The native adapter verifies official bundle and TrustedRoot formats, but one valid bundle still does not prove honest verifier execution, infrastructure independence, global log consistency or current service availability.
+Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Rekor, CT log, TUF repository, monitor, witness, gossip network, hardware-protected key or trusted execution environment. The provider-neutral adapter is intentionally not a general RFC 5280 path builder. The native adapter verifies official bundle and TrustedRoot formats. Phase 12A adds exact execution evidence after identity admission, but identity evidence alone still does not prove honest verifier execution, infrastructure independence, global log consistency or current service availability.
 
-## 13. Release Gates
+## 13. Phase 12: Verifier Execution Integrity
+
+Status: Phase 12A implemented. Phase 12B pre-dispatch challenge and Phase 12C failure-domain independence remain planned.
+
+Goal:
+
+- Admit a verifier attestation to quorum only when the exact verifier code, immutable image, dependency lockfile, harness, invocation, tool and network controls, sandbox profile, repository state and verification target are bound to one fresh execution record under separate builder and verifier signatures.
+
+Phase 12A features:
+
+- `VerifierTrustPolicy` v0.4 binds one exact manifest-backed `VerifierRuntimePolicy`;
+- each runtime profile pins the builder authority, provider identity requirements, verifier code, OCI manifest digest, dependency lockfile, harness, argv, tool allowlist, network policy, sandbox profile and execution time bounds;
+- `VerifierExecutionEvidence` places the exact verification target in an in-toto Statement under the Cannae execution predicate;
+- the trusted builder and registered verifier sign the same DSSE payload with distinct Ed25519 keys;
+- repository identity, exact head/worktree fingerprint and dirty-state observation, target digest and Phase 11 workload-identity evidence are included in that payload;
+- `VerificationAttestation` and `ComparativeEvaluationAttestation` v0.2 cite one exact manifest-backed execution-evidence artifact;
+- invalid execution evidence removes the affected attestation before verifier, key and independence-group quorum calculations;
+- the controller reloads runtime policy and execution evidence from the verified repository manifest rather than accepting in-memory proof claims.
+
+Completion criteria for Phase 12A:
+
+- Trust-policy v0.4 cannot become ready without an active, repository-bound runtime policy and one complete purpose-authorized profile assignment per verifier.
+- Code, image, lockfile, harness, argv, tool, network, sandbox, provider, repository, target, identity-evidence or signature mutation fails closed.
+- Legacy attestation v0.1 is excluded from a v0.4 quorum while remaining readable under earlier policy versions.
+- Builder and verifier keys must be distinct, and both signatures must cover identical payload bytes.
+- Release authority remains false regardless of execution-evidence or quorum status.
+
+Phase 12B must add a supervisor-issued, single-use, deadline-bound challenge so registered but stale, replayed or offline verifiers cannot enter a current quorum. Phase 12C must evaluate provider, operator, account, runner pool, cloud project, infrastructure and actual failure-domain identities rather than trusting declared independence labels.
+
+See `verifier-execution-integrity.md` for the contract, verification order, adapter boundary and operational commands.
+
+## 14. Phase 13: Transparency Operations
+
+Status: planned.
+
+Goal:
+
+- Operate trust over time through Rekor checkpoint consistency, TUF/root rotation, witnesses, monitors, gossip and explicit equivocation and revocation incident procedures.
+
+Phase 13 must not be represented as complete by verifying one inclusion proof or one valid bundle. It requires durable monitor state, consistency checks across checkpoints, independent observations and response authority outside the verifier being monitored.
+
+## 15. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -363,8 +404,9 @@ Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Reko
 | G11 | Signed-campaign dispatch has a satisfied, unexpired, manifest-bound trust-policy admission |
 | G12 | Trust-policy v0.2 dispatch has a fresh dual-signed SPIFFE workload proof with verified transparency inclusion |
 | G13 | Trust-policy v0.3 Sigstore dispatch has a fresh dual-bound native bundle under the exact manifest-pinned TrustedRoot, signer identity, issuer and nonzero verification thresholds |
+| G14 | Trust-policy v0.4 attestation enters quorum only with valid dual-signed execution evidence matching the exact runtime policy, repository state and verification target |
 
-## 14. Related Documents
+## 16. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -372,3 +414,4 @@ Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Reko
 - `command-post-dashboard.md`
 - `agent-runtime-playbook.md`
 - `bounded-self-improvement-operations.md`
+- `verifier-execution-integrity.md`

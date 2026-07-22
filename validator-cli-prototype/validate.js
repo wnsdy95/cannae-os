@@ -22,6 +22,11 @@ const {
   normalizeBundle,
   sigstoreEvidenceDigest
 } = require("../sigstore-verifier-identity-evidence");
+const {
+  EXECUTION_PREDICATE_TYPE,
+  PROVIDER_REQUIRED_CLAIMS,
+  evidenceDigest: verifierExecutionEvidenceDigest
+} = require("../verifier-execution-evidence");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -87,6 +92,8 @@ const TYPE_TO_SCHEMA = {
   "verifier-identity-evidence": "verifier-identity-evidence.schema.json",
   "sigstore-trusted-root": "sigstore-trusted-root.schema.json",
   "sigstore-verifier-identity-evidence": "sigstore-verifier-identity-evidence.schema.json",
+  "verifier-runtime-policy": "verifier-runtime-policy.schema.json",
+  "verifier-execution-evidence": "verifier-execution-evidence.schema.json",
   "verification-attestation": "verification-attestation.schema.json",
   "comparative-evaluation-attestation": "comparative-evaluation-attestation.schema.json"
 };
@@ -232,6 +239,16 @@ function isEmptyArray(value) {
 
 function hasSubstantiveItems(value) {
   return Array.isArray(value) && value.some(item => !/^none$/i.test(String(item).trim()));
+}
+
+function sortedJsonValue(value) {
+  if (Array.isArray(value)) return value.map(sortedJsonValue);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.keys(value).sort().map(key => [key, sortedJsonValue(value[key])]));
+}
+
+function sameJson(left, right) {
+  return JSON.stringify(sortedJsonValue(left)) === JSON.stringify(sortedJsonValue(right));
 }
 
 function isValidDate(value) {
@@ -1862,7 +1879,7 @@ function semanticRules(payload, type) {
     const trustedRootIds = new Set();
     const trustedLogIds = new Set();
 
-    if (["0.2", "0.3"].includes(payload.schema_version) && !payload.identity_assurance) {
+    if (["0.2", "0.3", "0.4"].includes(payload.schema_version) && !payload.identity_assurance) {
       issues.push(issue("critical", "VERIFIER_POLICY_IDENTITY_ASSURANCE_REQUIRED", "$.identity_assurance", "Policy v0.2+ requires workload identity assurance."));
     }
     if (payload.schema_version === "0.1" && (payload.identity_assurance || verifiers.some(item => item.workload_identity))) {
@@ -1878,8 +1895,19 @@ function semanticRules(payload, type) {
         issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_PATH_INVALID", `${pointer}.relative_path`, "Sigstore TrustedRoot references must remain repository-artifact-relative."));
       }
     }
-    if (payload.schema_version === "0.3" && (sigstoreRootRefs.length === 0 || !Number.isInteger(identityAssurance.max_trusted_root_age_seconds))) {
-      issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_REQUIRED", "$.identity_assurance", "Policy v0.3 requires a manifest-bound Sigstore TrustedRoot and freshness limit."));
+    if (["0.3", "0.4"].includes(payload.schema_version) && (sigstoreRootRefs.length === 0 || !Number.isInteger(identityAssurance.max_trusted_root_age_seconds))) {
+      issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_REQUIRED", "$.identity_assurance", "Policy v0.3+ requires a manifest-bound Sigstore TrustedRoot and freshness limit."));
+    }
+    const executionAssurance = payload.execution_assurance;
+    if (payload.schema_version === "0.4") {
+      const runtimeRef = executionAssurance && executionAssurance.runtime_policy_ref;
+      if (!executionAssurance || executionAssurance.required !== true || !runtimeRef) {
+        issues.push(issue("critical", "VERIFIER_POLICY_EXECUTION_ASSURANCE_REQUIRED", "$.execution_assurance", "Policy v0.4 requires an exact verifier runtime policy reference."));
+      } else if (path.isAbsolute(runtimeRef.relative_path || "") || String(runtimeRef.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "VERIFIER_POLICY_RUNTIME_POLICY_PATH_INVALID", "$.execution_assurance.runtime_policy_ref.relative_path", "Runtime policy references must remain repository-artifact-relative."));
+      }
+    } else if (executionAssurance !== undefined) {
+      issues.push(issue("error", "VERIFIER_POLICY_EXECUTION_ASSURANCE_VERSION_INVALID", "$.execution_assurance", "Execution assurance requires trust-policy schema v0.4."));
     }
     for (const [index, root] of (identityAssurance.trusted_x509_roots || []).entries()) {
       const pointer = `$.identity_assurance.trusted_x509_roots[${index}]`;
@@ -1933,7 +1961,7 @@ function semanticRules(payload, type) {
       if (!(verifier.allowed_repository_keys || []).includes(payload.repository_binding && payload.repository_binding.repository_key)) {
         issues.push(issue("critical", "VERIFIER_POLICY_REPOSITORY_NOT_ALLOWED", `${pointer}.allowed_repository_keys`, "Every trusted verifier must explicitly allow the policy repository."));
       }
-      if (["0.2", "0.3"].includes(payload.schema_version)) {
+      if (["0.2", "0.3", "0.4"].includes(payload.schema_version)) {
         const workload = verifier.workload_identity;
         if (!workload) {
           issues.push(issue("critical", "VERIFIER_POLICY_WORKLOAD_IDENTITY_REQUIRED", `${pointer}.workload_identity`, "Every verifier in policy v0.2+ requires a workload identity."));
@@ -1952,7 +1980,7 @@ function semanticRules(payload, type) {
           } catch (error) {
             issues.push(issue("critical", "VERIFIER_POLICY_SPIFFE_ID_INVALID", `${pointer}.workload_identity.spiffe_id`, "Verifier workload identity must be a valid SPIFFE URI."));
           }
-        } else if (payload.schema_version === "0.3" && workload.type === "sigstore_bundle") {
+        } else if (["0.3", "0.4"].includes(payload.schema_version) && workload.type === "sigstore_bundle") {
           const requiredFields = ["certificate_identity_type", "certificate_identity", "certificate_issuer", "trust_root_id", "bundle_media_type", "ctlog_threshold", "tlog_threshold", "timestamp_threshold"];
           if (requiredFields.some(field => workload[field] === undefined)) {
             issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_IDENTITY_INCOMPLETE", `${pointer}.workload_identity`, "Sigstore identity requires exact SAN, issuer, root, bundle media type, and nonzero verification thresholds."));
@@ -1975,6 +2003,107 @@ function semanticRules(payload, type) {
     }
     if (!isValidDate(payload.created_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.created_at)) {
       issues.push(issue("critical", "VERIFIER_POLICY_WINDOW_INVALID", "$.expires_at", "Trust policy expiry must be later than creation."));
+    }
+  }
+
+  if (type === "verifier-runtime-policy") {
+    const profiles = payload.profiles || [];
+    const assignments = payload.assignments || [];
+    const profileIds = new Set();
+    const assignedVerifiers = new Set();
+    for (const [index, profile] of profiles.entries()) {
+      const pointer = `$.profiles[${index}]`;
+      if (profileIds.has(profile.id)) issues.push(issue("critical", "VERIFIER_RUNTIME_PROFILE_DUPLICATE", `${pointer}.id`, "Runtime profile IDs must be unique."));
+      profileIds.add(profile.id);
+      try {
+        const key = crypto.createPublicKey(profile.builder && profile.builder.public_key_pem);
+        if (key.asymmetricKeyType !== "ed25519" || publicKeyId(key) !== (profile.builder && profile.builder.key_id)) {
+          issues.push(issue("critical", "VERIFIER_RUNTIME_BUILDER_KEY_INVALID", `${pointer}.builder.key_id`, "Builder keys must be Ed25519 keys whose SPKI digest matches key_id."));
+        }
+      } catch (error) {
+        issues.push(issue("critical", "VERIFIER_RUNTIME_BUILDER_KEY_INVALID", `${pointer}.builder.public_key_pem`, "Builder public key must be valid SPKI PEM."));
+      }
+      const requiredClaims = PROVIDER_REQUIRED_CLAIMS[profile.provider] || [];
+      const pinnedClaims = profile.provider_identity && profile.provider_identity.required_claims || {};
+      if (requiredClaims.some(key => typeof pinnedClaims[key] !== "string" || pinnedClaims[key].length === 0)) {
+        issues.push(issue("critical", "VERIFIER_RUNTIME_PROVIDER_CLAIMS_INCOMPLETE", `${pointer}.provider_identity.required_claims`, "Provider-specific stable execution identity claims must be pinned exactly."));
+      }
+      const execution = profile.execution || {};
+      const image = execution.container_image || {};
+      const imageDigest = image.digest && image.digest.sha256;
+      if (!imageDigest || !String(image.uri || "").endsWith(`@sha256:${imageDigest}`)) {
+        issues.push(issue("critical", "VERIFIER_RUNTIME_IMAGE_NOT_DIGEST_PINNED", `${pointer}.execution.container_image`, "OCI images must use a manifest digest URI matching the descriptor digest."));
+      }
+      if (!(execution.tool_allowlist || []).includes((execution.argv || [])[0])) {
+        issues.push(issue("critical", "VERIFIER_RUNTIME_ENTRYPOINT_NOT_ALLOWED", `${pointer}.execution.tool_allowlist`, "The exact argv entrypoint must be present in the tool allowlist."));
+      }
+      const network = execution.network_policy || {};
+      if ((network.mode === "denied" && (network.allowed_endpoints || []).length !== 0) ||
+          (network.mode === "allowlist" && (network.allowed_endpoints || []).length === 0)) {
+        issues.push(issue("critical", "VERIFIER_RUNTIME_NETWORK_POLICY_INVALID", `${pointer}.execution.network_policy`, "Denied networking requires an empty list; allowlist mode requires explicit endpoints."));
+      }
+    }
+    for (const [index, assignment] of assignments.entries()) {
+      const pointer = `$.assignments[${index}]`;
+      if (assignedVerifiers.has(assignment.verifier_id)) issues.push(issue("critical", "VERIFIER_RUNTIME_ASSIGNMENT_DUPLICATE", `${pointer}.verifier_id`, "Each verifier must have exactly one runtime profile assignment."));
+      assignedVerifiers.add(assignment.verifier_id);
+      if (!profileIds.has(assignment.profile_id)) issues.push(issue("critical", "VERIFIER_RUNTIME_PROFILE_REFERENCE_INVALID", `${pointer}.profile_id`, "Runtime assignments must reference an existing profile."));
+    }
+    if (!isValidDate(payload.created_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.created_at)) {
+      issues.push(issue("critical", "VERIFIER_RUNTIME_POLICY_WINDOW_INVALID", "$.expires_at", "Runtime policy expiry must be later than creation."));
+    }
+  }
+
+  if (type === "verifier-execution-evidence") {
+    if (payload.evidence_sha256 !== verifierExecutionEvidenceDigest(payload)) {
+      issues.push(issue("critical", "EXECUTION_EVIDENCE_DIGEST_INVALID", "$.evidence_sha256", "Execution evidence digest must match its canonical content."));
+    }
+    if (payload.builder_key_id === payload.verifier_key_id) {
+      issues.push(issue("critical", "EXECUTION_EVIDENCE_SIGNER_CORRELATION", "$.builder_key_id", "Builder and verifier signatures require distinct keys."));
+    }
+    const invocation = payload.invocation || {};
+    if (!isValidDate(invocation.started_at) || !isValidDate(invocation.finished_at) ||
+        !isValidDate(payload.issued_at) || !isValidDate(payload.expires_at) ||
+        Date.parse(invocation.finished_at) < Date.parse(invocation.started_at) ||
+        Date.parse(payload.issued_at) < Date.parse(invocation.finished_at) ||
+        Date.parse(payload.expires_at) <= Date.parse(payload.issued_at)) {
+      issues.push(issue("critical", "EXECUTION_EVIDENCE_TIME_INVALID", "$.invocation", "Execution, issue, and expiry times must be ordered."));
+    }
+    const network = payload.execution && payload.execution.network_policy || {};
+    if ((network.mode === "denied" && (network.allowed_endpoints || []).length !== 0) ||
+        (network.mode === "allowlist" && (network.allowed_endpoints || []).length === 0)) {
+      issues.push(issue("critical", "EXECUTION_EVIDENCE_NETWORK_POLICY_INVALID", "$.execution.network_policy", "Observed network policy must be internally consistent."));
+    }
+    const envelope = payload.envelope || {};
+    const envelopePayload = strictBase64(envelope.payload);
+    const signatures = envelope.signatures || [];
+    if (signatures.length !== 2 || new Set(signatures.map(item => item.keyid)).size !== 2 ||
+        !signatures.some(item => item.keyid === payload.builder_key_id) ||
+        !signatures.some(item => item.keyid === payload.verifier_key_id)) {
+      issues.push(issue("critical", "EXECUTION_EVIDENCE_DSSE_SIGNERS_INVALID", "$.envelope.signatures", "Execution evidence requires exactly one trusted-builder and one verifier signature."));
+    }
+    if (!envelopePayload) {
+      issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_INVALID", "$.envelope.payload", "Execution evidence must contain a strict base64 in-toto statement."));
+    } else {
+      try {
+        const statement = JSON.parse(envelopePayload.toString("utf8"));
+        const subject = Array.isArray(statement.subject) && statement.subject.length === 1 ? statement.subject[0] : {};
+        const predicate = statement.predicate || {};
+        const verifier = predicate.verifier || {};
+        if (statement._type !== "https://in-toto.io/Statement/v1" || statement.predicateType !== EXECUTION_PREDICATE_TYPE ||
+            subject.name !== payload.subject_ref.artifact_id || !subject.digest || subject.digest.sha256 !== payload.subject_ref.sha256) {
+          issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_SUBJECT_INVALID", "$.envelope.payload", "The in-toto subject must bind the exact persisted receipt or report digest."));
+        }
+        if (predicate.trust_policy_id !== payload.trust_policy_id || verifier.id !== payload.verifier_id ||
+            verifier.key_id !== payload.verifier_key_id || verifier.profile_id !== payload.profile_id ||
+            verifier.purpose !== payload.purpose || !sameJson(predicate.repository_binding, payload.repository_binding) ||
+            !sameJson(predicate.repository_state, payload.repository_state) ||
+            !sameJson(predicate.verification_target, payload.verification_target)) {
+          issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_BINDING_INVALID", "$.envelope.payload", "The signed statement must bind policy, verifier, repository, purpose, and target fields exactly."));
+        }
+      } catch (error) {
+        issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_INVALID", "$.envelope.payload", "Execution evidence payload must be valid JSON."));
+      }
     }
   }
 
@@ -2078,6 +2207,14 @@ function semanticRules(payload, type) {
     if (path.isAbsolute(payload.receipt_relative_path || "") || String(payload.receipt_relative_path || "").split(/[\\/]+/).includes("..")) {
       issues.push(issue("critical", "ATTESTATION_RECEIPT_PATH_INVALID", "$.receipt_relative_path", "Attestation receipt paths must remain repository-artifact-relative."));
     }
+    if (payload.schema_version === "0.2") {
+      const ref = payload.execution_evidence_ref;
+      if (!ref || path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "ATTESTATION_EXECUTION_EVIDENCE_REFERENCE_INVALID", "$.execution_evidence_ref", "Attestation v0.2 requires an exact repository-artifact-relative execution evidence reference."));
+      }
+    } else if (payload.execution_evidence_ref !== undefined) {
+      issues.push(issue("error", "ATTESTATION_EXECUTION_EVIDENCE_VERSION_INVALID", "$.execution_evidence_ref", "Execution evidence references require attestation schema v0.2."));
+    }
     let statement = null;
     try { statement = JSON.parse(Buffer.from(payload.envelope.payload, "base64").toString("utf8")); } catch (error) { /* reported below */ }
     const subject = statement && Array.isArray(statement.subject) && statement.subject.length === 1 ? statement.subject[0] : {};
@@ -2087,7 +2224,9 @@ function semanticRules(payload, type) {
     if (!statement || statement._type !== "https://in-toto.io/Statement/v1" ||
         statement.predicateType !== "https://cannae.dev/attestations/verification-receipt/v0.3") {
       issues.push(issue("critical", "ATTESTATION_STATEMENT_INVALID", "$.envelope.payload", "DSSE payload must contain the Cannae verification in-toto statement."));
-    } else if (subject.name !== payload.receipt_id || !subject.digest || subject.digest.sha256 !== payload.receipt_sha256 ||
+    } else if (predicate.schema_version !== payload.schema_version ||
+        (payload.schema_version === "0.2" && !sameJson(predicate.execution_evidence_ref, payload.execution_evidence_ref)) ||
+        subject.name !== payload.receipt_id || !subject.digest || subject.digest.sha256 !== payload.receipt_sha256 ||
         receipt.id !== payload.receipt_id || receipt.relative_path !== payload.receipt_relative_path ||
         receipt.campaign_id !== payload.campaign_id || receipt.mission_id !== payload.mission_id ||
         receipt.cycle_number !== payload.cycle_number || receipt.candidate_id !== payload.candidate_id ||
@@ -2113,6 +2252,14 @@ function semanticRules(payload, type) {
     if (path.isAbsolute(payload.report_relative_path || "") || String(payload.report_relative_path || "").split(/[\\/]+/).includes("..")) {
       issues.push(issue("critical", "COMPARATIVE_ATTESTATION_REPORT_PATH_INVALID", "$.report_relative_path", "Attested report paths must remain repository-artifact-relative."));
     }
+    if (payload.schema_version === "0.2") {
+      const ref = payload.execution_evidence_ref;
+      if (!ref || path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "COMPARATIVE_ATTESTATION_EXECUTION_EVIDENCE_REFERENCE_INVALID", "$.execution_evidence_ref", "Comparative attestation v0.2 requires an exact execution evidence reference."));
+      }
+    } else if (payload.execution_evidence_ref !== undefined) {
+      issues.push(issue("error", "COMPARATIVE_ATTESTATION_EXECUTION_EVIDENCE_VERSION_INVALID", "$.execution_evidence_ref", "Execution evidence references require comparative attestation schema v0.2."));
+    }
     let statement = null;
     try { statement = JSON.parse(Buffer.from(payload.envelope.payload, "base64").toString("utf8")); } catch (error) { /* reported below */ }
     const subject = statement && Array.isArray(statement.subject) && statement.subject.length === 1 ? statement.subject[0] : {};
@@ -2125,7 +2272,9 @@ function semanticRules(payload, type) {
     const verifier = predicate.verifier || {};
     if (!statement || statement._type !== "https://in-toto.io/Statement/v1" || statement.predicateType !== COMPARATIVE_PREDICATE_TYPE) {
       issues.push(issue("critical", "COMPARATIVE_ATTESTATION_STATEMENT_INVALID", "$.envelope.payload", "DSSE payload must contain the Cannae comparative-report in-toto statement."));
-    } else if (subject.name !== payload.report_id || !subject.digest || subject.digest.sha256 !== payload.report_sha256 ||
+    } else if (predicate.schema_version !== payload.schema_version ||
+        (payload.schema_version === "0.2" && !sameJson(predicate.execution_evidence_ref, payload.execution_evidence_ref)) ||
+        subject.name !== payload.report_id || !subject.digest || subject.digest.sha256 !== payload.report_sha256 ||
         report.id !== payload.report_id || report.relative_path !== payload.report_relative_path ||
         report.report_sha256 !== payload.report_content_sha256 || report.plan_id !== payload.plan_id ||
         report.evaluation_set_id !== payload.evaluation_set_id || report.campaign_id !== payload.campaign_id ||

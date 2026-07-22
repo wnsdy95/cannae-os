@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/verifier-runtime-policy.schema.json",
+  "title": "Verifier Runtime Policy",
+  "type": "object",
+  "required": [
+    "schema_version", "type", "id", "trust_policy_id", "repository_binding",
+    "policy_version", "profiles", "assignments", "created_at", "expires_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "VerifierRuntimePolicy" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "trust_policy_id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "policy_version": { "type": "integer", "minimum": 1 },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/profile" }
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["verifier_id", "profile_id", "allowed_purposes"],
+        "additionalProperties": false,
+        "properties": {
+          "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+          "profile_id": { "$ref": "common.schema.json#/$defs/id" },
+          "allowed_purposes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "enum": ["verification_receipt", "comparative_evaluation_report"] }
+          }
+        }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "resource_descriptor": {
+      "type": "object",
+      "required": ["uri", "digest"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "digest": {
+          "type": "object",
+          "required": ["sha256"],
+          "additionalProperties": false,
+          "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+        }
+      }
+    },
+    "image_descriptor": {
+      "type": "object",
+      "required": ["uri", "digest", "media_type"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "digest": {
+          "type": "object",
+          "required": ["sha256"],
+          "additionalProperties": false,
+          "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+        },
+        "media_type": { "type": "string", "const": "application/vnd.oci.image.manifest.v1+json" }
+      }
+    },
+    "provider_identity": {
+      "type": "object",
+      "required": ["issuer", "subject", "audience", "required_claims"],
+      "additionalProperties": false,
+      "properties": {
+        "issuer": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "subject": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "audience": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "required_claims": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        }
+      }
+    },
+    "network_policy": {
+      "type": "object",
+      "required": ["mode", "allowed_endpoints"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "denied" } } },
+          "then": { "properties": { "allowed_endpoints": { "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "mode": { "const": "allowlist" } } },
+          "then": { "properties": { "allowed_endpoints": { "minItems": 1 } } }
+        }
+      ],
+      "properties": {
+        "mode": { "type": "string", "enum": ["denied", "allowlist"] },
+        "allowed_endpoints": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 512 }
+        }
+      }
+    },
+    "sandbox_profile": {
+      "type": "object",
+      "required": [
+        "kind", "profile_uri", "profile_sha256", "rootfs_read_only", "no_new_privileges",
+        "privileged", "host_network", "host_pid", "host_mounts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["oci_container", "gvisor", "microvm", "tee"] },
+        "profile_uri": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "profile_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "rootfs_read_only": { "type": "boolean", "const": true },
+        "no_new_privileges": { "type": "boolean", "const": true },
+        "privileged": { "type": "boolean", "const": false },
+        "host_network": { "type": "boolean", "const": false },
+        "host_pid": { "type": "boolean", "const": false },
+        "host_mounts": { "type": "boolean", "const": false }
+      }
+    },
+    "execution_contract": {
+      "type": "object",
+      "required": [
+        "verifier_code", "container_image", "dependency_lockfile", "harness", "argv",
+        "tool_allowlist", "network_policy", "sandbox_profile"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verifier_code": { "$ref": "#/$defs/resource_descriptor" },
+        "container_image": { "$ref": "#/$defs/image_descriptor" },
+        "dependency_lockfile": { "$ref": "#/$defs/resource_descriptor" },
+        "harness": { "$ref": "#/$defs/resource_descriptor" },
+        "argv": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": { "type": "string", "maxLength": 4096 }
+        },
+        "tool_allowlist": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]*$" }
+        },
+        "network_policy": { "$ref": "#/$defs/network_policy" },
+        "sandbox_profile": { "$ref": "#/$defs/sandbox_profile" }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "id", "adapter", "provider", "builder", "provider_identity", "execution",
+        "max_evidence_age_seconds", "max_execution_duration_seconds"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/id" },
+        "adapter": { "type": "string", "const": "in_toto_slsa_oci_dsse_v1" },
+        "provider": { "type": "string", "enum": ["generic_oci", "github_actions", "gitlab_ci", "local_sandbox", "tee"] },
+        "builder": {
+          "type": "object",
+          "required": ["id", "key_id", "public_key_pem"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "type": "string", "minLength": 1, "maxLength": 2048 },
+            "key_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "public_key_pem": { "type": "string", "pattern": "^-----BEGIN PUBLIC KEY-----" }
+          }
+        },
+        "provider_identity": { "$ref": "#/$defs/provider_identity" },
+        "execution": { "$ref": "#/$defs/execution_contract" },
+        "max_evidence_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+        "max_execution_duration_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 }
+      }
+    }
+  }
+}

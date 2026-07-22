@@ -52,6 +52,28 @@ function verifierAllowsReceiptAttestation(verifier) {
     (Array.isArray(verifier.allowed_attestation_types) && verifier.allowed_attestation_types.includes("verification_receipt"));
 }
 
+function validArtifactRef(ref) {
+  return Boolean(ref && /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(ref.artifact_id || "") &&
+    typeof ref.relative_path === "string" && ref.relative_path.length > 0 &&
+    !ref.relative_path.startsWith("/") && !ref.relative_path.split(/[\\/]+/).includes("..") &&
+    /^[a-f0-9]{64}$/.test(ref.sha256 || ""));
+}
+
+function sameArtifactRef(left, right) {
+  return Boolean(left && right && left.artifact_id === right.artifact_id &&
+    left.relative_path === right.relative_path && left.sha256 === right.sha256);
+}
+
+function executionEvidenceItem(ref, collection) {
+  const values = collection instanceof Map ? [...collection.values()] : (collection || []);
+  return values.find(item => {
+    const payload = item && item.payload ? item.payload : item;
+    const entry = item && item.entry;
+    return payload && payload.id === (ref && ref.artifact_id) && (!entry ||
+      (entry.artifact_id === ref.artifact_id && entry.relative_path === ref.relative_path && entry.sha256 === ref.sha256));
+  }) || null;
+}
+
 function createVerificationAttestation(options) {
   const { receipt, receiptReference, verifier, privateKeyPem } = options;
   if (!receipt || receipt.type !== "VerificationReceipt") throw new Error("A verification receipt is required.");
@@ -82,13 +104,18 @@ function createVerificationAttestation(options) {
   const invocationId = String(options.invocationId || "");
   if (!invocationId) throw new Error("A verifier invocation ID is required.");
   const nonce = String(options.nonce || crypto.randomUUID());
+  const executionEvidenceRef = options.executionEvidenceReference;
+  if (executionEvidenceRef && !validArtifactRef(executionEvidenceRef)) {
+    throw new Error("Execution evidence requires an exact artifact reference.");
+  }
+  const schemaVersion = executionEvidenceRef ? "0.2" : "0.1";
 
   const statement = {
     _type: STATEMENT_TYPE,
     subject: [{ name: receipt.id, digest: { sha256: receiptReference.sha256 } }],
     predicateType: PREDICATE_TYPE,
     predicate: {
-      schema_version: "0.1",
+      schema_version: schemaVersion,
       receipt: {
         id: receipt.id,
         relative_path: receiptReference.relative_path,
@@ -108,6 +135,7 @@ function createVerificationAttestation(options) {
         execution_origin: executionOrigin,
         invocation_id: invocationId
       },
+      ...(executionEvidenceRef ? { execution_evidence_ref: JSON.parse(JSON.stringify(executionEvidenceRef)) } : {}),
       issued_at: issuedAt,
       expires_at: expiresAt,
       nonce
@@ -121,7 +149,7 @@ function createVerificationAttestation(options) {
     signatures: [{ keyid: verifier.key_id, sig: signature.toString("base64") }]
   };
   const attestation = {
-    schema_version: "0.1",
+    schema_version: schemaVersion,
     type: "VerificationAttestation",
     id: `VAT-${sha256(`${receipt.id}\n${verifier.id}\n${invocationId}\n${nonce}`).slice(0, 24)}`,
     receipt_id: receipt.id,
@@ -138,6 +166,7 @@ function createVerificationAttestation(options) {
     independence_group: verifier.independence_group,
     execution_origin: executionOrigin,
     invocation_id: invocationId,
+    ...(executionEvidenceRef ? { execution_evidence_ref: JSON.parse(JSON.stringify(executionEvidenceRef)) } : {}),
     envelope,
     issued_at: issuedAt,
     expires_at: expiresAt,
@@ -156,6 +185,7 @@ function verifyVerificationAttestation(attestation, trustPolicy, expectations = 
   const verifier = verifierForAttestation(attestation || {}, trustPolicy || {});
   const nowMs = now instanceof Date ? now.getTime() : Date.parse(now);
   if (!attestation || attestation.type !== "VerificationAttestation") codes.push("ATTESTATION_TYPE_INVALID");
+  if (attestation && !["0.1", "0.2"].includes(attestation.schema_version)) codes.push("ATTESTATION_SCHEMA_VERSION_INVALID");
   if (attestation && attestation.attestation_sha256 !== attestationDigest(attestation)) codes.push("ATTESTATION_DIGEST_INVALID");
   if (!verifier || verifier.status !== "active") codes.push("ATTESTATION_VERIFIER_UNTRUSTED");
   if (verifier) {
@@ -227,6 +257,9 @@ function verifyVerificationAttestation(attestation, trustPolicy, expectations = 
       [signer.invocation_id, attestation.invocation_id], [predicate.issued_at, attestation.issued_at],
       [predicate.expires_at, attestation.expires_at]
     ];
+    if (attestation.schema_version === "0.2" && !sameArtifactRef(predicate.execution_evidence_ref, attestation.execution_evidence_ref)) {
+      codes.push("ATTESTATION_EXECUTION_EVIDENCE_BINDING_INVALID");
+    }
     if (bindings.some(([left, right]) => left !== right) || JSON.stringify(predicate.repository_binding) !== JSON.stringify(attestation.repository_binding)) {
       codes.push("ATTESTATION_PREDICATE_BINDING_MISMATCH");
     }
@@ -246,13 +279,52 @@ function verifyVerificationAttestation(attestation, trustPolicy, expectations = 
     const actual = attestationPath.split(".").reduce((value, key) => value && value[key], attestation);
     if (actual !== expectations[expectationKey]) codes.push("ATTESTATION_EXPECTATION_MISMATCH");
   }
+  let executionEvidenceId = "none";
+  if (trustPolicy && trustPolicy.schema_version === "0.4") {
+    if (attestation.schema_version !== "0.2" || !validArtifactRef(attestation.execution_evidence_ref)) {
+      codes.push("ATTESTATION_EXECUTION_EVIDENCE_REQUIRED");
+    } else {
+      const item = executionEvidenceItem(attestation.execution_evidence_ref, expectations.executionEvidence);
+      const evidence = item && item.payload ? item.payload : item;
+      const entry = item && item.entry;
+      if (!evidence || (entry && !sameArtifactRef(attestation.execution_evidence_ref, entry))) {
+        codes.push("ATTESTATION_EXECUTION_EVIDENCE_MISSING");
+      } else {
+        const receiptExpectation = expectations.receiptReferences && expectations.receiptReferences[attestation.receipt_id] || {};
+        const { verifyVerifierExecutionEvidence } = require("./verifier-execution-evidence");
+        const result = verifyVerifierExecutionEvidence({
+          evidence,
+          trustPolicy,
+          runtimePolicy: expectations.runtimePolicy,
+          runtimePolicyReference: expectations.runtimePolicyReference,
+          evaluatedAt: now instanceof Date ? now.toISOString() : now,
+          expectations: {
+            purpose: "verification_receipt",
+            verifierId: attestation.verifier_id,
+            subjectReference: {
+              artifact_id: attestation.receipt_id,
+              relative_path: attestation.receipt_relative_path,
+              sha256: attestation.receipt_sha256
+            },
+            repositoryState: receiptExpectation.repository_state,
+            verificationTarget: receiptExpectation.verification_target,
+            repositoryKey: attestation.repository_binding && attestation.repository_binding.repository_key,
+            repositoryFingerprint: attestation.repository_binding && attestation.repository_binding.identity_fingerprint
+          }
+        });
+        executionEvidenceId = evidence.id;
+        codes.push(...result.codes);
+      }
+    }
+  }
   return {
     valid: codes.length === 0,
     codes: [...new Set(codes)].sort(),
     verifier_id: attestation && attestation.verifier_id,
     key_id: attestation && attestation.key_id,
     independence_group: attestation && attestation.independence_group,
-    receipt_id: attestation && attestation.receipt_id
+    receipt_id: attestation && attestation.receipt_id,
+    execution_evidence_id: executionEvidenceId
   };
 }
 

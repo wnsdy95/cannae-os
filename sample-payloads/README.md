@@ -20,7 +20,7 @@ Use these examples to test:
 - repository artifact manifest validation
 - bounded self-improvement campaign, checkpoint, decision, and cycle-order validation
 - verification plan and runtime-issued receipt validation
-- verifier trust policy, SPIFFE/Sigstore workload identity, trusted-root, signed verification attestation, and signed comparative report validation
+- verifier trust policy, SPIFFE/Sigstore workload identity, trusted-root, verifier runtime policy, execution evidence, signed verification attestation, and signed comparative report validation
 - sealed comparative evaluation set, paired execution plan, and promotion report validation
 - CCIR alert validation
 - handoff packet validation
@@ -58,6 +58,7 @@ Use these examples to test:
 - baseline-versus-candidate non-regression, harness identity, contamination control, and no-release comparison logic
 - report-artifact digest, plan/set/lineage/evaluator binding, purpose-authorized keys, and independent comparative signature quorum
 - native Sigstore bundle/root normalization, exact Fulcio identity/issuer, static-key dual binding, freshness, and nonzero transparency thresholds
+- exact verifier code, OCI image, lockfile, harness, invocation, tool, network, sandbox, repository-state, target-digest, builder-signature, and verifier-signature validation
 
 Fixture convention:
 
@@ -65,3 +66,5 @@ Fixture convention:
 - `invalid-*.json`: should fail JSON Schema or semantic validation.
 
 The invalid examples are intentionally small so the expected failure is obvious.
+
+`valid-verifier-execution-evidence.json` is a schema and semantic-validation example with structurally valid placeholder signature bytes. Use `run-verifier-execution-evidence-fixtures.js`, which generates real ephemeral Ed25519 keys and signatures, for cryptographic verification behavior.

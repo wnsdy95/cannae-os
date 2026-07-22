@@ -1,0 +1,80 @@
+{
+  "schema_version": "0.1",
+  "type": "VerifierRuntimePolicy",
+  "id": "VRP-Cannae-Sample",
+  "trust_policy_id": "VTP-Cannae-Sample",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "policy_version": 1,
+  "profiles": [
+    {
+      "id": "PROFILE-GitHub-Hosted-GVisor",
+      "adapter": "in_toto_slsa_oci_dsse_v1",
+      "provider": "github_actions",
+      "builder": {
+        "id": "https://github.com/wnsdy95/cannae-os/.github/workflows/verify.yml@refs/heads/main",
+        "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+        "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA+pRpUDUqUmy3TcDSTO+t+Q/7OMQW1XbMyxniDk982dM=\n-----END PUBLIC KEY-----\n"
+      },
+      "provider_identity": {
+        "issuer": "https://token.actions.githubusercontent.com",
+        "subject": "repo:wnsdy95/cannae-os:ref:refs/heads/main",
+        "audience": "cannae-verifier-execution",
+        "required_claims": {
+          "repository": "wnsdy95/cannae-os",
+          "repository_id": "123456789",
+          "job_workflow_ref": "wnsdy95/cannae-os/.github/workflows/verify.yml@refs/heads/main",
+          "sha": "1111111111111111111111111111111111111111",
+          "ref": "refs/heads/main",
+          "runner_environment": "github-hosted"
+        }
+      },
+      "execution": {
+        "verifier_code": {
+          "uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#verification-runner.js",
+          "digest": { "sha256": "1111111111111111111111111111111111111111111111111111111111111111" }
+        },
+        "container_image": {
+          "uri": "ghcr.io/wnsdy95/cannae-verifier@sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "digest": { "sha256": "2222222222222222222222222222222222222222222222222222222222222222" },
+          "media_type": "application/vnd.oci.image.manifest.v1+json"
+        },
+        "dependency_lockfile": {
+          "uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#package-lock.json",
+          "digest": { "sha256": "3333333333333333333333333333333333333333333333333333333333333333" }
+        },
+        "harness": {
+          "uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#validation-suite-runner.js",
+          "digest": { "sha256": "4444444444444444444444444444444444444444444444444444444444444444" }
+        },
+        "argv": ["node", "validation-suite-runner.js"],
+        "tool_allowlist": ["git", "node"],
+        "network_policy": { "mode": "denied", "allowed_endpoints": [] },
+        "sandbox_profile": {
+          "kind": "gvisor",
+          "profile_uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#runtime/gvisor-verifier.json",
+          "profile_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "rootfs_read_only": true,
+          "no_new_privileges": true,
+          "privileged": false,
+          "host_network": false,
+          "host_pid": false,
+          "host_mounts": false
+        }
+      },
+      "max_evidence_age_seconds": 300,
+      "max_execution_duration_seconds": 900
+    }
+  ],
+  "assignments": [
+    {
+      "verifier_id": "VERIFIER-Cannae-Sample",
+      "profile_id": "PROFILE-GitHub-Hosted-GVisor",
+      "allowed_purposes": ["verification_receipt", "comparative_evaluation_report"]
+    }
+  ],
+  "created_at": "2026-07-22T00:00:00Z",
+  "expires_at": "2026-07-23T00:00:00Z"
+}

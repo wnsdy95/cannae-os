@@ -77,11 +77,12 @@ function makeCampaign(schemaVersion = "0.4") {
   return campaign;
 }
 
-function evaluate(policy, campaign = makeCampaign(), repository = REPOSITORY) {
+function evaluate(policy, campaign = makeCampaign(), repository = REPOSITORY, runtimePolicy = null) {
   return evaluateVerifierTrustReadiness({
     campaign,
     repository,
     trustPolicy: policy,
+    runtimePolicy,
     evaluatedAt: EVALUATED_AT
   });
 }
@@ -194,6 +195,49 @@ try {
     assert.strictEqual(result.identity_assurance.required, true);
     assert(result.blocking_codes.includes("TRUST_ADMISSION_POLICY_SCHEMA_INVALID"));
     assert(result.blocking_codes.includes("TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE"));
+  });
+
+  run("policy v0.4 cannot dispatch without its exact runtime policy", () => {
+    const policy = makePolicy();
+    policy.schema_version = "0.4";
+    policy.execution_assurance = {
+      required: true,
+      runtime_policy_ref: {
+        artifact_id: "VRP-Readiness-Fixture",
+        relative_path: "repositories/controls/missions/MIS-Readiness/C0/verifier-runtime-policies/VRP-Readiness-Fixture.json",
+        sha256: "c".repeat(64)
+      }
+    };
+    const result = evaluate(policy);
+    assert(result.blocking_codes.includes("TRUST_ADMISSION_RUNTIME_POLICY_REFERENCE_INVALID"));
+  });
+
+  run("policy v0.4 requires one complete runtime assignment per verifier", () => {
+    const policy = makePolicy();
+    policy.schema_version = "0.4";
+    policy.execution_assurance = {
+      required: true,
+      runtime_policy_ref: {
+        artifact_id: "VRP-Readiness-Fixture",
+        relative_path: "repositories/controls/missions/MIS-Readiness/C0/verifier-runtime-policies/VRP-Readiness-Fixture.json",
+        sha256: "c".repeat(64)
+      }
+    };
+    const runtimePolicy = {
+      id: "VRP-Readiness-Fixture",
+      trust_policy_id: policy.id,
+      repository_binding: policy.repository_binding,
+      profiles: [{ id: "PROFILE-A" }],
+      assignments: [{
+        verifier_id: policy.verifiers[0].id,
+        profile_id: "PROFILE-A",
+        allowed_purposes: ["verification_receipt", "comparative_evaluation_report"]
+      }],
+      created_at: "2026-07-22T08:00:00Z",
+      expires_at: "2026-07-23T08:00:00Z"
+    };
+    const result = evaluate(policy, makeCampaign(), REPOSITORY, runtimePolicy);
+    assert(result.blocking_codes.includes("TRUST_ADMISSION_RUNTIME_POLICY_ASSIGNMENT_INVALID"));
   });
 
   process.stdout.write(`${JSON.stringify({ valid: true, fixture_count: completed.length, fixtures: completed }, null, 2)}\n`);

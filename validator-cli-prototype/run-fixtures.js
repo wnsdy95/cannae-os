@@ -887,6 +887,13 @@ const fixtures = [
     requiredCodes: ["MINIMUM"]
   },
   {
+    name: "valid execution-assured verifier trust policy",
+    file: "sample-payloads/valid-verifier-trust-policy-v0.4.json",
+    type: "verifier-trust-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
     name: "valid pinned Sigstore trusted root",
     file: "sample-payloads/valid-sigstore-trusted-root.json",
     type: "sigstore-trusted-root",
@@ -927,6 +934,34 @@ const fixtures = [
     type: "sigstore-verifier-identity-evidence",
     exitCode: 1,
     requiredCodes: ["ENUM_MISMATCH", "SIGSTORE_IDENTITY_EVIDENCE_BUNDLE_BINDING_INVALID"]
+  },
+  {
+    name: "valid verifier runtime policy",
+    file: "sample-payloads/valid-verifier-runtime-policy.json",
+    type: "verifier-runtime-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "verifier runtime policy claims release authority",
+    file: "sample-payloads/invalid-verifier-runtime-policy-authority.json",
+    type: "verifier-runtime-policy",
+    exitCode: 1,
+    requiredCodes: ["ADDITIONAL_PROPERTY"]
+  },
+  {
+    name: "valid verifier execution evidence contract",
+    file: "sample-payloads/valid-verifier-execution-evidence.json",
+    type: "verifier-execution-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "verifier execution evidence claims release authority",
+    file: "sample-payloads/invalid-verifier-execution-evidence-authority.json",
+    type: "verifier-execution-evidence",
+    exitCode: 1,
+    requiredCodes: ["ADDITIONAL_PROPERTY", "EXECUTION_EVIDENCE_SIGNER_CORRELATION"]
   },
   {
     name: "valid signed verification attestation",
