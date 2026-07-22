@@ -168,8 +168,8 @@ function createVerifierExecutionEvidence(options) {
   const verifier = verifierFor(trustPolicy, options.verifierId);
   const assignment = assignmentFor(runtimePolicy, options.verifierId);
   const profile = assignment && profileFor(runtimePolicy, assignment.profile_id);
-  if (!trustPolicy || trustPolicy.schema_version !== "0.4" || !verifier || verifier.status !== "active") {
-    throw new Error("An active verifier from VerifierTrustPolicy v0.4 is required.");
+  if (!trustPolicy || !["0.4", "0.5"].includes(trustPolicy.schema_version) || !verifier || verifier.status !== "active") {
+    throw new Error("An active verifier from execution-assured VerifierTrustPolicy v0.4+ is required.");
   }
   if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || !assignment || !profile) {
     throw new Error("The verifier requires one assigned runtime profile.");
@@ -277,7 +277,7 @@ function verifyVerifierExecutionEvidence(options) {
   const codes = [];
   if (!evidence || evidence.type !== "VerifierExecutionEvidence") addCode(codes, "EXECUTION_EVIDENCE_TYPE_INVALID");
   if (evidence && evidence.evidence_sha256 !== evidenceDigest(evidence)) addCode(codes, "EXECUTION_EVIDENCE_DIGEST_INVALID");
-  if (!trustPolicy || trustPolicy.schema_version !== "0.4" || !trustPolicy.execution_assurance) {
+  if (!trustPolicy || !["0.4", "0.5"].includes(trustPolicy.schema_version) || !trustPolicy.execution_assurance) {
     addCode(codes, "EXECUTION_EVIDENCE_TRUST_POLICY_INVALID");
   }
   if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || runtimePolicy.schema_version !== "0.1") {

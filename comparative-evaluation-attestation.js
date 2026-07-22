@@ -285,7 +285,7 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
     if (actual !== expectations[expectationKey]) codes.push("COMPARATIVE_ATTESTATION_EXPECTATION_MISMATCH");
   }
   let executionEvidenceId = "none";
-  if (trustPolicy && trustPolicy.schema_version === "0.4") {
+  if (trustPolicy && ["0.4", "0.5"].includes(trustPolicy.schema_version)) {
     if (attestation.schema_version !== "0.2" || !validArtifactRef(attestation.execution_evidence_ref)) {
       codes.push("COMPARATIVE_ATTESTATION_EXECUTION_EVIDENCE_REQUIRED");
     } else {

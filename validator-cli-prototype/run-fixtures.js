@@ -796,6 +796,13 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "valid challenged self-improvement cycle order",
+    file: "sample-payloads/valid-self-improvement-cycle-order-v0.5.json",
+    type: "self-improvement-cycle-order",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
     name: "blocked self-improvement cycle order authorizes execution",
     file: "sample-payloads/invalid-self-improvement-cycle-order-blocked-execution.json",
     type: "self-improvement-cycle-order",
@@ -892,6 +899,27 @@ const fixtures = [
     type: "verifier-trust-policy",
     exitCode: 0,
     requiredCodes: []
+  },
+  {
+    name: "valid pre-dispatch-challenged verifier trust policy",
+    file: "sample-payloads/valid-verifier-trust-policy-v0.5.json",
+    type: "verifier-trust-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid verifier challenge set",
+    file: "sample-payloads/valid-verifier-challenge-set.json",
+    type: "verifier-challenge-set",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "verifier challenge set claims release authority",
+    file: "sample-payloads/invalid-verifier-challenge-set-authority.json",
+    type: "verifier-challenge-set",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH", "CHALLENGE_SET_AUTHORITY_INVALID"]
   },
   {
     name: "valid pinned Sigstore trusted root",

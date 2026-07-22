@@ -34,6 +34,7 @@ const OFFICIAL_HOST_PATTERNS = [
   /confidentialcontainers\.org$/,
   /etcd\.io$/,
   /nist\.gov$/,
+  /w3\.org$/,
   /sre\.google$/,
   /developers\.openai\.com$/,
   /platform\.openai\.com$/

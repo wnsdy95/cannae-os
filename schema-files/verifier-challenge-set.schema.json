@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/verifier-challenge-set.schema.json",
+  "title": "Verifier Challenge Set",
+  "type": "object",
+  "required": [
+    "schema_version", "type", "id", "campaign_id", "mission_id", "repository_binding",
+    "trust_policy_ref", "runtime_policy_ref", "observed_manifest", "dispatch_binding",
+    "issued_by", "challenges", "issued_at", "expires_at", "single_use",
+    "release_authorized", "issuer_signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "VerifierChallengeSet" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "trust_policy_ref": { "$ref": "#/$defs/artifact_ref" },
+    "runtime_policy_ref": { "$ref": "#/$defs/artifact_ref" },
+    "observed_manifest": {
+      "type": "object",
+      "required": ["revision", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "dispatch_binding": {
+      "type": "object",
+      "required": [
+        "cycle_number", "attempt_number", "transition", "baseline_revision",
+        "parent_decision_ref", "source_checkpoint_ref", "source_decision_ref",
+        "checkpoint_trigger", "task_sha256", "proof_requirements_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "cycle_number": { "type": "integer", "minimum": 1 },
+        "attempt_number": { "type": "integer", "minimum": 1 },
+        "transition": { "type": "string", "enum": ["start", "retry", "advance", "before_completion"] },
+        "baseline_revision": { "type": "string", "minLength": 1 },
+        "parent_decision_ref": { "$ref": "#/$defs/decision_ref_or_none" },
+        "source_checkpoint_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+        "source_decision_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+        "checkpoint_trigger": {
+          "type": "string",
+          "enum": ["wave_start", "wave_end", "validation_failure", "quality_regression", "scope_change", "before_completion", "manual"]
+        },
+        "task_sha256": { "$ref": "#/$defs/sha256" },
+        "proof_requirements_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "issued_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "challenges": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["verifier_id", "purposes", "nonce"],
+        "additionalProperties": false,
+        "properties": {
+          "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+          "purposes": { "$ref": "#/$defs/purposes" },
+          "nonce": { "type": "string", "pattern": "^[a-f0-9]{64,128}$" }
+        }
+      }
+    },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "single_use": { "type": "boolean", "const": true },
+    "release_authorized": { "type": "boolean", "const": false },
+    "issuer_signature": {
+      "type": "object",
+      "required": ["key_id", "algorithm", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "key_id": { "$ref": "#/$defs/sha256" },
+        "algorithm": { "type": "string", "const": "ed25519" },
+        "signature_base64": { "type": "string", "minLength": 4, "pattern": "^[A-Za-z0-9+/]+={0,2}$" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "artifact_ref_or_none": {
+      "oneOf": [
+        { "$ref": "#/$defs/artifact_ref" },
+        {
+          "type": "object",
+          "required": ["artifact_id", "relative_path", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": { "type": "string", "const": "none" },
+            "relative_path": { "type": "string", "const": "none" },
+            "sha256": { "type": "string", "const": "none" }
+          }
+        }
+      ]
+    },
+    "decision_ref_or_none": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["decision_id", "relative_path", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "decision_id": { "$ref": "common.schema.json#/$defs/id" },
+            "relative_path": { "type": "string", "minLength": 1 },
+            "sha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["decision_id", "relative_path", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "decision_id": { "type": "string", "const": "none" },
+            "relative_path": { "type": "string", "const": "none" },
+            "sha256": { "type": "string", "const": "none" }
+          }
+        }
+      ]
+    },
+    "purposes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["verification_receipt", "comparative_evaluation_report"] }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "0.1",
+  "type": "VerifierChallengeSet",
+  "id": "VCS-8567bad6fb671f24227d30e6",
+  "campaign_id": "SIC-Challenge-Fixture",
+  "mission_id": "MIS-Challenge-Fixture",
+  "repository_binding": {
+    "repository_key": "controls-challenge-fixture",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "trust_policy_ref": {
+    "artifact_id": "VTP-Challenge-Fixture",
+    "relative_path": "repositories/controls-challenge-fixture/missions/MIS-Challenge-Fixture/C0/verifier-trust-policies/VTP-Challenge-Fixture.json",
+    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "runtime_policy_ref": {
+    "artifact_id": "VRP-Challenge-Fixture",
+    "relative_path": "repositories/controls/missions/MIS-Challenge/C0/verifier-runtime-policies/VRP-Challenge-Fixture.json",
+    "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "observed_manifest": {
+    "revision": 1,
+    "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "dispatch_binding": {
+    "cycle_number": 1,
+    "attempt_number": 1,
+    "transition": "start",
+    "baseline_revision": "HEAD-fixture",
+    "parent_decision_ref": {
+      "decision_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "source_checkpoint_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "source_decision_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "checkpoint_trigger": "wave_end",
+    "task_sha256": "a37d1e265ae8076b0bb555f3c36f2ecf585aea6bb33242d1206dedff979e3df3",
+    "proof_requirements_sha256": "fd50901a45ff7d9889d8fb90d7c3f04ade3d46ef4160f329e0b4aa5bcf21d0c3"
+  },
+  "issued_by": "COS",
+  "challenges": [
+    {
+      "verifier_id": "VERIFIER-Challenge-A",
+      "purposes": [
+        "comparative_evaluation_report",
+        "verification_receipt"
+      ],
+      "nonce": "72c253d0860feec736c05373bd9144300cc343d31c63e3e0606c1c2c82bab180"
+    }
+  ],
+  "issued_at": "2026-07-22T08:36:05.582Z",
+  "expires_at": "2026-07-22T08:37:05.582Z",
+  "single_use": true,
+  "release_authorized": true,
+  "issuer_signature": {
+    "key_id": "2f7795968e96e0305788809bce204f01072c38359f8bb83bed8c5af71a9f842f",
+    "algorithm": "ed25519",
+    "signature_base64": "WB1mWLF36gO6iBtCXX1AWcTJT+WkTTZXUyfP0kV3XcSvrc5mRuKfgEMSVnybsNytHuXPD81m3E4zajmAm25XBQ=="
+  }
+}

@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const { publicKeyId } = require("./verification-attestation");
 const { verifyVerifierIdentityEvidence } = require("./verifier-identity-evidence");
 const { verifySigstoreVerifierIdentityEvidence } = require("./sigstore-verifier-identity-evidence");
+const { challengeSetMatchesOrder, verifyVerifierChallengeSet } = require("./verifier-challenge-set");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 
@@ -18,6 +19,11 @@ function addCode(codes, code) {
 function timestamp(value) {
   const parsed = Date.parse(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function sameReference(left, right) {
+  return Boolean(left && right && left.artifact_id === right.artifact_id &&
+    left.relative_path === right.relative_path && left.sha256 === right.sha256);
 }
 
 function emptyQuorum(required) {
@@ -86,6 +92,19 @@ function emptyIdentityAssurance(required) {
   };
 }
 
+function emptyChallengeAssurance(required) {
+  return {
+    required,
+    satisfied: !required,
+    challenge_ref: clone(NONE_ARTIFACT_REF),
+    issued_at: "none",
+    valid_until: "none",
+    responder_count: 0,
+    responses: [],
+    blocking_codes: []
+  };
+}
+
 function evaluateVerifierTrustReadiness(options) {
   const campaign = options.campaign;
   const repository = options.repository;
@@ -99,8 +118,9 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptRequired = ["0.3", "0.4"].includes(campaign.schema_version);
   const comparativeRequired = campaign.schema_version === "0.4";
   const required = receiptRequired || comparativeRequired;
-  const identityRequired = Boolean(required && policy && ["0.2", "0.3", "0.4"].includes(policy.schema_version));
-  const executionPolicyRequired = Boolean(required && policy && policy.schema_version === "0.4");
+  const identityRequired = Boolean(required && policy && ["0.2", "0.3", "0.4", "0.5"].includes(policy.schema_version));
+  const executionPolicyRequired = Boolean(required && policy && ["0.4", "0.5"].includes(policy.schema_version));
+  const challengeRequired = Boolean(required && policy && policy.schema_version === "0.5");
   const runtimePolicy = options.runtimePolicy || null;
   const campaignPolicy = campaign.attestation_policy || null;
   const trustPolicyRef = campaignPolicy ? clone(campaignPolicy.trust_policy_ref) : clone(NONE_ARTIFACT_REF);
@@ -140,6 +160,10 @@ function evaluateVerifierTrustReadiness(options) {
   }
   if (identityRequired && (!policy.identity_assurance || policy.identity_assurance.required !== true)) {
     addCode(blockingCodes, "TRUST_ADMISSION_POLICY_SCHEMA_INVALID");
+  }
+  if (challengeRequired && (!policy.challenge_assurance || policy.challenge_assurance.required !== true ||
+      policy.challenge_assurance.single_use !== true)) {
+    addCode(blockingCodes, "TRUST_ADMISSION_CHALLENGE_POLICY_INVALID");
   }
   if (policy && (policy.repository_binding.repository_key !== repository.key ||
       policy.repository_binding.identity_fingerprint !== repository.identity_fingerprint)) {
@@ -181,6 +205,49 @@ function evaluateVerifierTrustReadiness(options) {
     addCode(blockingCodes, "TRUST_ADMISSION_RUNTIME_POLICY_NOT_ACTIVE");
   }
 
+  const challengeBlockingCodes = [];
+  let selectedChallenge = null;
+  let selectedChallengeRef = null;
+  if (challengeRequired) {
+    const dispatchOrder = options.dispatchOrder;
+    const projectionMatches = dispatchOrder ? (options.challengeSets || []).filter(item => item && item.payload &&
+      challengeSetMatchesOrder(item.payload, dispatchOrder)) : [];
+    const matches = projectionMatches.filter(item => {
+      const issued = timestamp(item.payload.issued_at);
+      const expires = timestamp(item.payload.expires_at);
+      return issued !== null && expires !== null && evaluatedTime >= issued && evaluatedTime < expires;
+    });
+    if (matches.length === 0) {
+      addCode(challengeBlockingCodes, "TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE");
+    } else if (matches.length > 1) {
+      addCode(challengeBlockingCodes, "TRUST_ADMISSION_CHALLENGE_SET_AMBIGUOUS");
+    } else {
+      selectedChallenge = matches[0].payload;
+      selectedChallengeRef = identityArtifactRef(matches[0]);
+      const verification = selectedChallengeRef && verifyVerifierChallengeSet({
+        challengeSet: selectedChallenge,
+        campaign,
+        trustPolicy: policy,
+        order: dispatchOrder,
+        repository,
+        evaluatedAt,
+        manifestHistory: options.manifestHistory,
+        currentManifestRevision: options.currentManifestRevision
+      });
+      if (!selectedChallengeRef || !verification || !verification.valid) {
+        addCode(challengeBlockingCodes, "TRUST_ADMISSION_CHALLENGE_SET_INVALID");
+      }
+      const consumedBy = (options.existingOrders || []).filter(item => item && item.payload &&
+        item.payload.status === "ready" && item.payload.trust_policy_admission &&
+        item.payload.trust_policy_admission.challenge_assurance &&
+        sameReference(item.payload.trust_policy_admission.challenge_assurance.challenge_ref, selectedChallengeRef));
+      if (consumedBy.some(item => !challengeSetMatchesOrder(selectedChallenge, item.payload))) {
+        addCode(challengeBlockingCodes, "TRUST_ADMISSION_CHALLENGE_REPLAYED");
+      }
+    }
+  }
+  for (const code of challengeBlockingCodes) addCode(blockingCodes, code);
+
   const policyUsable = policy && blockingCodes.length === 0;
   const policyEligible = policyUsable ? policy.verifiers.filter(verifier => {
     const validFrom = timestamp(verifier.valid_from);
@@ -200,7 +267,14 @@ function evaluateVerifierTrustReadiness(options) {
       const candidates = (evidencePool || []).filter(item => item && item.payload &&
         item.payload.verifier_id === verifier.id && item.payload.trust_policy_id === policy.id &&
         item.payload.repository_binding && item.payload.repository_binding.repository_key === repository.key &&
-        item.payload.repository_binding.identity_fingerprint === repository.identity_fingerprint);
+        item.payload.repository_binding.identity_fingerprint === repository.identity_fingerprint &&
+        (!challengeRequired || (selectedChallenge && (() => {
+          const challenge = selectedChallenge.challenges.find(value => value.verifier_id === verifier.id);
+          const issued = timestamp(item.payload.issued_at);
+          return challenge && item.payload.binding_statement && item.payload.binding_statement.nonce === challenge.nonce &&
+            issued !== null && issued >= timestamp(selectedChallenge.issued_at) && issued < timestamp(selectedChallenge.expires_at) &&
+            item.payload.expires_at && timestamp(item.payload.expires_at) > evaluatedTime;
+        })())));
       const validCandidates = candidates.map(item => ({
         item,
         ref: identityArtifactRef(item),
@@ -238,7 +312,7 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptQuorum = summarizeQuorum(receiptEligible, receiptRequired, requirements);
   const comparativeQuorum = summarizeQuorum(comparativeEligible, comparativeRequired, requirements);
 
-  const genericIdentity = policy && ["0.3", "0.4"].includes(policy.schema_version);
+  const genericIdentity = policy && ["0.3", "0.4", "0.5"].includes(policy.schema_version);
   const identityEvidence = identityRequired ? authenticated.map(item => genericIdentity ? {
     verifier_id: item.verifier.id,
     identity_provider: item.result.identity_provider || "spiffe_x509",
@@ -278,16 +352,43 @@ function evaluateVerifierTrustReadiness(options) {
     blocking_codes: identityBlockingCodes
   };
 
+  const challengeResponses = challengeRequired && selectedChallenge ? authenticated.map(item => ({
+    verifier_id: item.verifier.id,
+    purposes: [...item.result.purposes].sort(),
+    identity_evidence_ref: clone(item.ref),
+    responded_at: item.result.issued_at
+  })).sort((left, right) => left.verifier_id.localeCompare(right.verifier_id)) : [];
+  const challengeSatisfied = !challengeRequired || (challengeBlockingCodes.length === 0 &&
+    receiptQuorum.satisfied && comparativeQuorum.satisfied);
+  const challengeResponseCodes = [...challengeBlockingCodes];
+  if (challengeRequired && !challengeSatisfied && selectedChallenge && challengeBlockingCodes.length === 0) {
+    addCode(challengeResponseCodes, "TRUST_ADMISSION_CHALLENGE_RESPONSE_UNAVAILABLE");
+  }
+  const challengeAssurance = challengeRequired ? {
+    required: true,
+    satisfied: challengeSatisfied,
+    challenge_ref: selectedChallengeRef ? clone(selectedChallengeRef) : clone(NONE_ARTIFACT_REF),
+    issued_at: selectedChallenge ? selectedChallenge.issued_at : "none",
+    valid_until: selectedChallenge ? selectedChallenge.expires_at : "none",
+    responder_count: challengeResponses.length,
+    responses: challengeResponses,
+    blocking_codes: challengeResponseCodes.sort()
+  } : emptyChallengeAssurance(false);
+
   if (receiptRequired && !receiptQuorum.satisfied) addCode(blockingCodes, "TRUST_ADMISSION_RECEIPT_QUORUM_UNAVAILABLE");
   if (comparativeRequired && !comparativeQuorum.satisfied) addCode(blockingCodes, "TRUST_ADMISSION_COMPARATIVE_QUORUM_UNAVAILABLE");
   if (!identitySatisfied) addCode(blockingCodes, "TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE");
+  if (challengeRequired && !challengeSatisfied) {
+    for (const code of challengeResponseCodes) addCode(blockingCodes, code);
+  }
 
   let validUntil = "none";
   const satisfied = blockingCodes.length === 0 && receiptQuorum.satisfied && comparativeQuorum.satisfied;
   if (satisfied) {
     const requiredVerifiers = [...receiptEligible, ...(comparativeRequired ? comparativeEligible : [])];
     const identityBoundaries = identityRequired ? authenticated.map(item => timestamp(item.result.valid_until)) : [];
-    const boundaries = [policyEnd, ...(executionPolicyRequired ? [runtimePolicyEnd] : []),
+    const challengeBoundary = challengeRequired && selectedChallenge ? timestamp(selectedChallenge.expires_at) : null;
+    const boundaries = [policyEnd, ...(executionPolicyRequired ? [runtimePolicyEnd] : []), challengeBoundary,
       ...requiredVerifiers.map(item => timestamp(item.valid_until)), ...identityBoundaries]
       .filter(value => value !== null && value > evaluatedTime);
     if (boundaries.length > 0) validUntil = new Date(Math.min(...boundaries)).toISOString();
@@ -299,7 +400,9 @@ function evaluateVerifierTrustReadiness(options) {
   return {
     required: true,
     satisfied: blockingCodes.length === 0 && receiptQuorum.satisfied && comparativeQuorum.satisfied,
-    assurance_scope: identityRequired ? "authenticated_workload_and_policy_eligibility" : "policy_eligibility_only",
+    assurance_scope: challengeRequired
+      ? "fresh_challenged_workload_and_policy_eligibility"
+      : identityRequired ? "authenticated_workload_and_policy_eligibility" : "policy_eligibility_only",
     evaluated_at: evaluatedAt,
     valid_until: blockingCodes.length === 0 ? validUntil : "none",
     trust_policy_ref: trustPolicyRef,
@@ -307,6 +410,7 @@ function evaluateVerifierTrustReadiness(options) {
     receipt_quorum: receiptQuorum,
     comparative_quorum: comparativeQuorum,
     identity_assurance: identityAssurance,
+    ...(challengeRequired ? { challenge_assurance: challengeAssurance } : {}),
     blocking_codes: blockingCodes.sort()
   };
 }

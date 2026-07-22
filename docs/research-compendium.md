@@ -2753,6 +2753,44 @@ Implemented artifacts:
 - `run-verifier-execution-evidence-fixtures.js`
 - runtime-policy readiness, controller manifest reload, validator, sample, roadmap and skill integrations
 
+### 8.61 Pre-Dispatch Verifier Challenge v0.11
+
+Research question: How can a supervisor distinguish a registered verifier from a verifier that is currently online, controls its accepted workload identity and static key, and is responding to this exact dispatch rather than replaying prior evidence?
+
+Primary sources:
+
+- IETF RFC 9334 RATS freshness, especially nonce-based implicit timekeeping: https://www.rfc-editor.org/rfc/rfc9334.html#section-10.2
+- IETF RFC 9449 DPoP nonce and proof-replay controls: https://www.rfc-editor.org/rfc/rfc9449.html#section-11.1
+- W3C Web Authentication Level 3 cryptographic challenge requirements: https://www.w3.org/TR/webauthn-3/#sctn-cryptographic-challenges
+- NIST SP 800-63B replay resistance: https://pages.nist.gov/800-63-4/sp800-63b.html#replay
+
+Engineering conclusions:
+
+1. Freshness needs an extra round trip. An appraising entity sends an unpredictable nonce and accepts only evidence that signs the exact returned value; a previously valid identity record is not proof of current response capability.
+2. Nonce state belongs to the supervisor side. A challenge must be persisted with issue time, deadline and consumption identity so stale or repeated proofs can be rejected after process restart. A dedicated policy-pinned Ed25519 issuer key authenticates supervisor origin instead of trusting an `issued_by` string.
+3. Entropy and equality are separate checks. WebAuthn recommends at least 16 bytes and exact comparison. Cannae uses a stricter local minimum of 32 cryptographically random bytes per verifier and checks exact hex equality.
+4. A challenge must identify the operation, not only the verifier. Campaign, mission, repository, exact trust/runtime policy references, cycle, attempt, transition, baseline, parent lineage, task and proof-requirements digests are part of one dispatch binding.
+5. One set contains unique per-verifier nonces. Reusing a nonce across verifier identities creates avoidable correlation and substitution risk, so duplicate nonce values fail validation.
+6. Existing Phase 11 evidence is already the correct response envelope. Both the workload credential and registered verifier key sign the nonce-bearing statement; an additional unsigned response wrapper would add complexity without assurance.
+7. Readiness is purpose-specific. Only challenged responders authorized for a receipt or comparative-report purpose may count in that purpose quorum. One responder cannot fill a missing verifier, key or independence-group position.
+8. Deadline enforcement is half-open: response evidence is issued at or after challenge issuance and before challenge expiry; supervisor reevaluation also occurs before expiry. Admission cannot outlive the challenge.
+9. Ambiguity fails closed. Two active challenge sets matching the same dispatch can result from an unsafe issuance race, so the supervisor does not choose one arbitrarily. Expired sets remain history but do not prevent a newly signed challenge from replacing their liveness window.
+10. Single use is bound to the dispatch projection. Idempotent reevaluation of the same ready order is allowed, but consumption by a different projection is replay and cannot re-enter quorum.
+11. Challenge success is bounded liveness, not continuous service health or honesty. A verifier may fail after responding, and compromised current credentials can answer. Phase 12A execution evidence and Phase 12C independence remain separate controls.
+12. Challenge evidence never grants release. Merge, push, deployment, policy, trust-root, runtime-policy and authority decisions remain human controlled.
+
+Implemented artifacts:
+
+- `docs/verifier-pre-dispatch-challenge.md`
+- `schema-files/verifier-challenge-set.schema.json`
+- `schema-files/verifier-trust-policy.schema.json` v0.5
+- `schema-files/self-improvement-cycle-order.schema.json` v0.5
+- `verifier-challenge-set.js`
+- challenge-aware `verifier-trust-readiness.js` and `campaign-supervisor.js`
+- `run-verifier-challenge-fixtures.js`
+- valid/invalid trust-policy, challenge-set and cycle-order samples
+- validator, roadmap, bounded-operations, source-map and skill routing integrations
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

@@ -126,6 +126,8 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
+- [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
+- [Verifier Pre-Dispatch Challenge](docs/verifier-pre-dispatch-challenge.md): supervisor-issued nonce, liveness, deadline, and replay-resistant admission.
 - [Model Force v0.2 Fixtures](model-force-v0.2-fixtures/README.md): integrated registry, compilation, routing receipt, dispatch, and telemetry examples.
 
 ### Agent Skills
@@ -222,6 +224,8 @@ campaign -> verifier workload proof -> runtime-policy admission -> finite cycle 
 Trust-policy v0.2 additionally requires a current manifest-backed `VerifierIdentityEvidence` for every verifier counted at dispatch; v0.3 can use native Sigstore bundles instead. `campaign-supervisor.js` independently verifies the selected workload adapter and emits `ready` only when authenticated verifier populations can form every purpose quorum.
 
 Phase 12A trust-policy v0.4 also binds an exact `VerifierRuntimePolicy`. Every counted receipt or report attestation must cite fresh, manifest-backed `VerifierExecutionEvidence` dual-signed by a separate trusted builder and the registered verifier. It fixes the verifier code, immutable OCI image, dependency lockfile, harness, argv, tool allowlist, network and sandbox controls, provider claims, exact repository state and verification target. The common adapter verifies these signed claims; native GitHub Actions, GitLab CI, local-host and TEE appraisal adapters remain future work. See [Verifier Execution Integrity](docs/verifier-execution-integrity.md).
+
+Phase 12B trust-policy v0.5 adds a supervisor-issued, single-use `VerifierChallengeSet` before every bounded dispatch. Each verifier must return fresh dual-signed workload identity evidence containing its exact nonce inside the deadline. Cycle-order v0.5 records exact challenge/response references and rejects missing, late, wrong-nonce, ambiguous, expired, replayed, or offline responders before quorum calculation. See [Verifier Pre-Dispatch Challenge](docs/verifier-pre-dispatch-challenge.md).
 
 Every decision and cycle order keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
@@ -371,6 +375,7 @@ Working today:
 - authenticated verifier workload admission with short-lived SPIFFE X.509 evidence and transparency inclusion;
 - native Sigstore workload admission with manifest-pinned TrustedRoot material, exact Fulcio identity/issuer policy, Rekor/CT verification, and dual binding to the static verifier key;
 - verifier execution-integrity contracts with exact runtime-policy admission, dual-signed in-toto execution evidence, immutable OCI/code/dependency/harness bindings, repository-state and target-digest checks, and fail-closed quorum integration;
+- supervisor-issued pre-dispatch verifier challenges with exact dispatch binding, dual-signed nonce responses, deadline enforcement, single-use replay checks, and cycle-order v0.5 admission;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
 Not complete yet:
@@ -395,7 +400,7 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - Military terminology is used as an organizational metaphor and control vocabulary, not as operational battlefield instruction.
 - Many documents are research drafts and should be treated as evolving doctrine, not final standards.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
-- Trust-policy v0.4 verifies a separate builder's signed claim that exact code and declared isolation controls produced the evidence. It does not make a compromised builder truthful, natively enforce the declared sandbox, establish protected key hardware, prove current verifier liveness, or prove operator and infrastructure independence.
+- Trust-policy v0.4+ verifies a separate builder's signed claim that exact code and declared isolation controls produced the evidence. It does not make a compromised builder truthful, natively enforce the declared sandbox, or establish protected key hardware. Trust-policy v0.5 proves bounded liveness at challenge response time, not continuous availability, verifier honesty, or operator and infrastructure independence.
 - The provider-neutral X.509 verifier is intentionally bounded and does not implement full RFC 5280 policy/revocation processing or the SPIFFE Workload API. The native Sigstore adapter verifies official bundle and TrustedRoot formats through pinned libraries, but it does not operate or globally monitor Fulcio, Rekor, CT logs, TUF, witnesses, or gossip.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded, time-limited cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
@@ -455,7 +460,6 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- add one-time pre-dispatch verifier challenges and reject stale, replayed, offline, or late responders;
 - calculate verifier independence from provider, operator, account, runner-pool, cloud-project and failure-domain identities;
 
 Mid-term:

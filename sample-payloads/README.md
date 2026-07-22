@@ -59,6 +59,7 @@ Use these examples to test:
 - report-artifact digest, plan/set/lineage/evaluator binding, purpose-authorized keys, and independent comparative signature quorum
 - native Sigstore bundle/root normalization, exact Fulcio identity/issuer, static-key dual binding, freshness, and nonzero transparency thresholds
 - exact verifier code, OCI image, lockfile, harness, invocation, tool, network, sandbox, repository-state, target-digest, builder-signature, and verifier-signature validation
+- exact pre-dispatch challenge task/lineage binding, unique nonce issuance, dual-signed response freshness, deadline, ambiguity, and replay rejection
 
 Fixture convention:
 
@@ -68,3 +69,5 @@ Fixture convention:
 The invalid examples are intentionally small so the expected failure is obvious.
 
 `valid-verifier-execution-evidence.json` is a schema and semantic-validation example with structurally valid placeholder signature bytes. Use `run-verifier-execution-evidence-fixtures.js`, which generates real ephemeral Ed25519 keys and signatures, for cryptographic verification behavior.
+
+`valid-verifier-trust-policy-v0.5.json`, `valid-verifier-challenge-set.json`, and `valid-self-improvement-cycle-order-v0.5.json` are independent schema examples of the Phase 12B policy, issued challenge, and satisfied admission contracts; they are not one mutually linked artifact-store history. `invalid-verifier-challenge-set-authority.json` proves that a challenge cannot grant release authority. Use `run-verifier-challenge-fixtures.js` for a coherent manifest-backed policy, issuer-signed challenge, real dual-signed nonce responses, and supervisor round-trip behavior.

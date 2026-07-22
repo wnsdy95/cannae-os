@@ -34,11 +34,11 @@
   "additionalProperties": false,
   "allOf": [
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3", "0.4"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3", "0.4", "0.5"] } } },
       "then": { "required": ["trust_policy_admission"] }
     },
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.3", "0.4"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.3", "0.4", "0.5"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": { "required": ["identity_assurance"] }
@@ -46,7 +46,7 @@
       }
     },
     {
-      "if": { "properties": { "schema_version": { "const": "0.4" } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.4", "0.5"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": {
@@ -61,10 +61,18 @@
           }
         }
       }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.5" } } },
+      "then": {
+        "properties": {
+          "trust_policy_admission": { "required": ["challenge_assurance"] }
+        }
+      }
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4", "0.5"] },
     "type": { "type": "string", "const": "SelfImprovementCycleOrder" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -144,7 +152,11 @@
         "satisfied": { "type": "boolean" },
         "assurance_scope": {
           "type": "string",
-          "enum": ["policy_eligibility_only", "authenticated_workload_and_policy_eligibility"]
+          "enum": [
+            "policy_eligibility_only",
+            "authenticated_workload_and_policy_eligibility",
+            "fresh_challenged_workload_and_policy_eligibility"
+          ]
         },
         "evaluated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
         "valid_until": {
@@ -185,6 +197,48 @@
                   { "$ref": "#/$defs/spiffe_identity_evidence" },
                   { "$ref": "#/$defs/generic_identity_evidence" }
                 ]
+              }
+            },
+            "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "challenge_assurance": {
+          "type": "object",
+          "required": [
+            "required", "satisfied", "challenge_ref", "issued_at", "valid_until",
+            "responder_count", "responses", "blocking_codes"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "required": { "type": "boolean", "const": true },
+            "satisfied": { "type": "boolean" },
+            "challenge_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+            "issued_at": {
+              "oneOf": [
+                { "type": "string", "const": "none" },
+                { "$ref": "common.schema.json#/$defs/timestamp" }
+              ]
+            },
+            "valid_until": {
+              "oneOf": [
+                { "type": "string", "const": "none" },
+                { "$ref": "common.schema.json#/$defs/timestamp" }
+              ]
+            },
+            "responder_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+            "responses": {
+              "type": "array",
+              "maxItems": 50,
+              "items": {
+                "type": "object",
+                "required": ["verifier_id", "purposes", "identity_evidence_ref", "responded_at"],
+                "additionalProperties": false,
+                "properties": {
+                  "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+                  "purposes": { "$ref": "#/$defs/identity_purposes" },
+                  "identity_evidence_ref": { "$ref": "#/$defs/artifact_ref" },
+                  "responded_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+                }
               }
             },
             "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }

@@ -4,7 +4,7 @@
 
 Phase 11 proves that an active workload controls an accepted identity credential and the verifier key registered by policy. It does not prove that the accepted verifier code, dependency set, harness, container image, or sandbox actually produced a signed verification result.
 
-Phase 12A adds that missing execution contract. A verification receipt or comparative evaluation report may enter a trust-policy v0.4 quorum only when its verifier attestation cites a manifest-backed `VerifierExecutionEvidence` that passes the exact `VerifierRuntimePolicy` selected by the trust policy.
+Phase 12A adds that missing execution contract. A verification receipt or comparative evaluation report may enter a trust-policy v0.4+ quorum only when its verifier attestation cites a manifest-backed `VerifierExecutionEvidence` that passes the exact `VerifierRuntimePolicy` selected by the trust policy.
 
 The final target remains:
 
@@ -17,7 +17,7 @@ Identity valid
 = Verifier may enter quorum
 ```
 
-Phase 12A implements the execution-code and environment terms. Phase 12B must add a supervisor-issued one-time challenge. Phase 12C must replace declared independence labels with evaluated provider, operator, infrastructure, and failure-domain identities.
+Phase 12A implements the execution-code and environment terms. Phase 12B implements the supervisor-issued one-time challenge in `verifier-pre-dispatch-challenge.md`. Phase 12C must replace declared independence labels with evaluated provider, operator, infrastructure, and failure-domain identities.
 
 ## 2. Threat Model
 
@@ -94,7 +94,7 @@ The evidence binds the runtime policy, trust policy, verifier, profile, purpose,
 
 ### 3.4 Attestation v0.2
 
-`VerificationAttestation` and `ComparativeEvaluationAttestation` v0.2 add one exact `execution_evidence_ref`. Under trust-policy v0.4:
+`VerificationAttestation` and `ComparativeEvaluationAttestation` v0.2 add one exact `execution_evidence_ref`. Under trust-policy v0.4+:
 
 - v0.1 attestation is ineligible;
 - missing or mismatched execution evidence is ineligible;
@@ -108,7 +108,7 @@ Legacy trust policies continue to read v0.1 attestations.
 
 `verifier-execution-evidence.js` applies this order:
 
-1. Validate trust-policy v0.4 and its exact runtime-policy reference.
+1. Validate trust-policy v0.4+ and its exact runtime-policy reference.
 2. Match trust policy, runtime policy, repository identity, validity windows, verifier assignment, purpose, and profile.
 3. Recompute builder and verifier key IDs and require distinct Ed25519 keys.
 4. Compare provider issuer, subject, audience, and every policy-required stable claim.
@@ -202,7 +202,7 @@ node run-verifier-execution-evidence-fixtures.js
 
 ## 7. Phase Boundaries
 
-Phase 12A does not establish current liveness. A previously active verifier can still be offline when dispatch occurs. Phase 12B must issue a supervisor nonce, bind it to policy, repository, purpose, target, cycle, and deadline, and exclude missing, stale, replayed, or late responses.
+Phase 12B now establishes bounded pre-dispatch liveness. Trust-policy v0.5 issues one nonce per verifier, binds the set to the exact projected task and lineage, and excludes missing, stale, replayed, ambiguous, wrong-nonce, offline, or late responders. The accepted identity evidence is the signed challenge response; cycle-order v0.5 records its exact manifest reference and caps admission at challenge expiry.
 
 Phase 12A also does not prove operational independence. Different verifier IDs can still share one CI account, runner pool, cloud project, operator, or control plane. Phase 12C must record and evaluate those identities against actual failure domains.
 
