@@ -129,6 +129,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [Verifier Pre-Dispatch Challenge](docs/verifier-pre-dispatch-challenge.md): supervisor-issued nonce, liveness, deadline, and replay-resistant admission.
 - [Verifier Independence Assurance](docs/verifier-independence-assurance.md): provider, operator, control-plane, tenant, runner, infrastructure, region, and zone correlation.
+- [Transparency Operations](docs/transparency-operations.md): checkpoint consistency, witnesses, monitors, TUF root rotation, incidents, revocation, and continuous admission.
 - [Model Force v0.2 Fixtures](model-force-v0.2-fixtures/README.md): integrated registry, compilation, routing receipt, dispatch, and telemetry examples.
 
 ### Agent Skills
@@ -229,6 +230,8 @@ Phase 12A trust-policy v0.4 also binds an exact `VerifierRuntimePolicy`. Every c
 Phase 12B trust-policy v0.5 adds a supervisor-issued, single-use `VerifierChallengeSet` before every bounded dispatch. Each verifier must return fresh dual-signed workload identity evidence containing its exact nonce inside the deadline. Cycle-order v0.5 records exact challenge/response references and rejects missing, late, wrong-nonce, ambiguous, expired, replayed, or offline responders before quorum calculation. See [Verifier Pre-Dispatch Challenge](docs/verifier-pre-dispatch-challenge.md).
 
 Phase 12C trust-policy v0.6 replaces declared independence labels with deterministic failure domains. Runtime-policy v0.2 records nine provider, operator, control-plane, account, project, runner, infrastructure, region, and zone identities; sharing any component correlates verifiers transitively. Execution-evidence v0.2 binds the observed identities under builder and verifier signatures, and receipt/report quorum uses computed `VID-*` domains. See [Verifier Independence Assurance](docs/verifier-independence-assurance.md).
+
+Phase 13 trust-policy v0.7 requires a current append-only `TransparencyState` before dispatch. Signed log checkpoints must connect through RFC 6962 consistency proofs and satisfy separate witness and monitor operator quorums; TUF root changes require old/new thresholds, USER activation, and retained expiry boundaries; incidents and revocations remain immutable history. The supervisor reconstructs the full state sequence and reloads every embedded evidence object from the repository manifest. See [Transparency Operations](docs/transparency-operations.md).
 
 Every decision and cycle order keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
@@ -407,6 +410,7 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
 - Trust-policy v0.4+ verifies a separate builder's signed claim that exact code and declared isolation controls produced the evidence. It does not make a compromised builder truthful, natively enforce the declared sandbox, or establish protected key hardware. Trust-policy v0.5 proves bounded liveness at challenge response time. Trust-policy v0.6 blocks known shared failure domains, but still depends on honest native adapters and cannot prove absence of every upstream common-mode dependency.
 - The provider-neutral X.509 verifier is intentionally bounded and does not implement full RFC 5280 policy/revocation processing or the SPIFFE Workload API. The native Sigstore adapter verifies official bundle and TrustedRoot formats through pinned libraries, but it does not operate or globally monitor Fulcio, Rekor, CT logs, TUF, witnesses, or gossip.
+- Phase 13 verifies supplied checkpoint, consistency, observer, root, incident, and revocation evidence but does not poll Rekor, discover shards, operate TUF metadata services, or provide a witness/monitor/gossip network. A withheld split view still requires external independent observers to expose it.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded, time-limited cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
@@ -466,6 +470,7 @@ Near-term:
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
 - implement native provider adapters that derive v0.6 failure-domain identities from authenticated GitHub, GitLab, cloud, local-host, or TEE evidence;
+- implement provider adapters that collect Rekor checkpoints, consistency proofs, shard metadata, witness signatures, and monitor reports for v0.7;
 
 Mid-term:
 
@@ -473,7 +478,7 @@ Mid-term:
 - implement a production-shaped policy gateway;
 - connect approval scope and release gates to real tool calls;
 - implement native GitHub Actions, GitLab CI, local sandbox and TEE execution-evidence adapters;
-- operate transparency checkpoint consistency, root rotation, witnesses, monitors, gossip, equivocation response and revocation response;
+- operate production transparency polling, witnesses, monitors, gossip, TUF distribution, and incident response around the implemented Phase 13 verifier;
 - build a useful command-post dashboard from event projections;
 - formalize an evidence store for claims, sources, reliability, and interpretation.
 

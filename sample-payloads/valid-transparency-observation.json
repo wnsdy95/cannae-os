@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1",
+  "type": "TransparencyObservation",
+  "id": "TO-Phase-13-2",
+  "policy_id": "TP-Phase-13",
+  "log_id": "LOG-Rekor-PGI",
+  "previous_checkpoint": {
+    "log_id": "LOG-Rekor-PGI",
+    "origin": "rekor.example.test/shard-1",
+    "tree_size": 4,
+    "root_hash": "256b9e8825e5d370a4ae005d0901ea291977e2927f5cf8e3e72660dd09519edb",
+    "issued_at": "2026-07-22T09:59:00Z",
+    "key_id": "b58b59c8edd3efc39710009f901bc4d0974488257ee3644d5bcdc1d0228bd7b3"
+  },
+  "checkpoint": {
+    "log_id": "LOG-Rekor-PGI",
+    "origin": "rekor.example.test/shard-1",
+    "tree_size": 8,
+    "root_hash": "dfcc13b9b0ca932c68de3d59eaaa8fe266a9c8091c0300e8405ebfeb0d0e5832",
+    "issued_at": "2026-07-22T10:01:00Z",
+    "key_id": "b58b59c8edd3efc39710009f901bc4d0974488257ee3644d5bcdc1d0228bd7b3",
+    "signature_base64": "G3PYdgyd4qiAlrH3ZNNJJWd9d2rTaTP7J/wIuiPXpJX0xCpQntXY369ukqkpNUZiFyhakcwgry59anXQEB4NBQ=="
+  },
+  "consistency_proof": {
+    "algorithm": "rfc6962_sha256",
+    "hashes": [
+      "5b6680e3035dba9b8a221ee819e805e1c17b333cd66664e76402ea43d7b64a83"
+    ],
+    "sha256": "318e0d72fef4eb1308b70b44a625b839a051da30a2f0833dec2d56b2df7a4a56"
+  },
+  "witness_signatures": [
+    {
+      "witness_id": "WITNESS-A",
+      "key_id": "54988fca4b9c29efdda68b54ef555797c1fda68fa3f0183e2d154ae77d8a408c",
+      "observed_at": "2026-07-22T10:02:00Z",
+      "signature_base64": "5Jf0WQNSNw31B0QLZRO0GkMmJ7O7Yj4wUisYlvlgTkurNtcsPc16ePHEY0uhi/8CmI+cTaQ7y/0/4Qx105VLAQ=="
+    },
+    {
+      "witness_id": "WITNESS-B",
+      "key_id": "af27c335a88ec7d3e1cd494bea54c0f62544a3c8721eaf021bcbe22a43b03236",
+      "observed_at": "2026-07-22T10:02:00Z",
+      "signature_base64": "1YbTPo8Vr1pry5PvtGqrsFxZxP42og9xqaLhlbkyC+ffOCdfKg2dN4XxOXyRVicMQmsdHsjU9r0c3nBrymX/AQ=="
+    }
+  ],
+  "monitor_signatures": [
+    {
+      "monitor_id": "MONITOR-A",
+      "key_id": "a19cec92e8a65e7a937139ccfbe358b817bcdbcb9e6f46df794bb3750165c48b",
+      "observed_at": "2026-07-22T10:02:00Z",
+      "signature_base64": "uyACB1DJl30kYaB5kykKmbCZl0lrqFP8FfK5e17xmVkLccrIvN8wFotjMk2n39XOoSzDVXSuzIJHoye5udYPAw=="
+    },
+    {
+      "monitor_id": "MONITOR-B",
+      "key_id": "75650c7dba6a758bdef7c0eb0faad8e6e9d65108c3e708d420c78456a14a7b47",
+      "observed_at": "2026-07-22T10:02:00Z",
+      "signature_base64": "0N/jGZbJCQ76hIHOeYhcq2wdV9MMFS+Wf2R/NAdOO+dvoVhhaTlbABYWxTp6dzI3MM/0y+a9/uGEeFYKlxpyBA=="
+    }
+  ],
+  "observed_at": "2026-07-22T10:02:00Z",
+  "expires_at": "2026-07-22T10:12:00Z",
+  "observation_sha256": "65f15652b672a246d1a700bf51b05d48a055aaf830e3b9eb9dc54a314f60adfa"
+}

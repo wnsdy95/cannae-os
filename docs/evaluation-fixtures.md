@@ -42,6 +42,8 @@ Evaluation fixtures are used to verify that runtime gates actually function, not
 | Signed improvement fixtures | Validates Ed25519 DSSE receipt binding, trusted multi-verifier quorum, group diversity, expiry, and v0.2 compatibility |
 | Verification runner fixtures | Validates exact argv execution, shell/inline-code prohibition, stale plans, and mutation detection |
 | Verifier independence fixtures | Validates provider-native failure-domain claims, transitive correlation, deterministic domain reconstruction, and post-execution quorum independence |
+| Transparency operations fixtures | Validates RFC 6962 consistency above 32 bits, rollback/equivocation detection, observer time/operator quorum, TUF root rotation/expiry, immutable incident recovery, monotonic evidence time, state reconstruction, freshness, and v0.7 admission |
+| Transparency supervisor fixtures | Validates that embedded transparency evidence or incident evidence references absent from the verified repository manifest cannot authorize dispatch |
 | Artifact concurrency/recovery fixtures | Validates shared-filesystem leases, monotonic fencing, stale-writer rejection, write-ahead recovery, hash-linked history, and tamper detection |
 
 ## 2. Required Fixtures
@@ -133,6 +135,9 @@ Validator changes must not:
 - promote a v0.3 candidate without the configured number of distinct trusted verifier IDs, Ed25519 keys, and independence groups.
 - let declared independence-group labels hide a shared provider, operator, control plane, account, project, runner pool, infrastructure, region, or zone.
 - count a verifier toward quorum when its signed execution evidence resolves to a correlated or substituted failure domain.
+- dispatch under trust-policy v0.7 without a complete, current, reconstructable and manifest-backed transparency state sequence.
+- accept checkpoint rollback, same-size root conflict, invalid consistency proof, stale observation, invalid observer signature, insufficient distinct observer operators, or witness/monitor operator overlap.
+- accept a skipped or incorrectly signed TUF root version, drop incident history, resolve an incident without exact immutable supersession, or reactivate a revoked component without authorized replacement.
 - accept a signature over a different receipt self-digest, changed DSSE payload, expired attestation, expired trust root, untrusted repository, or duplicate signer evidence.
 - treat a signed `remote` execution-origin claim as proof of trusted execution or provider independence.
 - continue from a parent decision that is missing, rejected, from another cycle, or bound to another baseline revision.

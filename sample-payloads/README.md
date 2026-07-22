@@ -61,6 +61,7 @@ Use these examples to test:
 - exact verifier code, OCI image, lockfile, harness, invocation, tool, network, sandbox, repository-state, target-digest, builder-signature, and verifier-signature validation
 - exact pre-dispatch challenge task/lineage binding, unique nonce issuance, dual-signed response freshness, deadline, ambiguity, and replay rejection
 - provider/operator/control-plane/account/project/runner/infrastructure/region/zone correlation, transitive failure domains, and execution-bound quorum diversity
+- signed checkpoint consistency, witness/monitor operator quorum, TUF root rotation, immutable transparency incident history, and continuous v0.7 admission
 
 Fixture convention:
 
@@ -74,3 +75,5 @@ The invalid examples are intentionally small so the expected failure is obvious.
 `valid-verifier-trust-policy-v0.5.json`, `valid-verifier-challenge-set.json`, and `valid-self-improvement-cycle-order-v0.5.json` are independent schema examples of the Phase 12B policy, issued challenge, and satisfied admission contracts; they are not one mutually linked artifact-store history. `invalid-verifier-challenge-set-authority.json` proves that a challenge cannot grant release authority. Use `run-verifier-challenge-fixtures.js` for a coherent manifest-backed policy, issuer-signed challenge, real dual-signed nonce responses, and supervisor round-trip behavior.
 
 The `*-v0.6.json` trust-policy/cycle-order samples and `*-v0.2.json` runtime/execution samples show Phase 12C contracts. The missing-domain and domain-substitution samples fail closed. Use `run-verifier-independence-fixtures.js` for real ephemeral keys, dual-signed execution evidence, transitive correlation, and post-execution quorum behavior.
+
+The `*-v0.7.json` trust-policy and cycle-order samples show Phase 13 continuous transparency admission. The transparency policy, observation, root rotation, incident, and state samples are one coherent generated evidence family. Use `run-transparency-operations-fixtures.js` for real ephemeral log/witness/monitor/TUF signatures and `run-transparency-supervisor-fixtures.js` for repository-manifest rejection behavior.

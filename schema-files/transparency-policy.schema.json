@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/transparency-policy.schema.json",
+  "title": "Transparency Policy",
+  "type": "object",
+  "required": [
+    "schema_version", "type", "id", "repository_binding", "trust_policy_id",
+    "state_stream_id", "max_state_age_seconds", "trusted_roots", "logs",
+    "witnesses", "monitors", "incident_response", "created_at", "expires_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "TransparencyPolicy" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "trust_policy_id": { "$ref": "common.schema.json#/$defs/id" },
+    "state_stream_id": { "$ref": "common.schema.json#/$defs/id" },
+    "max_state_age_seconds": { "type": "integer", "minimum": 60, "maximum": 86400 },
+    "trusted_roots": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["id", "trusted_root_ref", "trusted_root_sha256", "tuf_root_version", "tuf_root_expires_at"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "trusted_root_ref": { "$ref": "#/$defs/artifact_ref" },
+          "trusted_root_sha256": { "$ref": "#/$defs/sha256" },
+          "tuf_root_version": { "type": "integer", "minimum": 1 },
+          "tuf_root_expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+        }
+      }
+    },
+    "logs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "origin", "key_id", "public_key_pem", "max_checkpoint_age_seconds",
+          "witness_ids", "monitor_ids", "minimum_witnesses", "minimum_witness_operators",
+          "minimum_monitors", "minimum_monitor_operators"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "origin": { "type": "string", "minLength": 1, "maxLength": 256 },
+          "key_id": { "$ref": "#/$defs/sha256" },
+          "public_key_pem": { "type": "string", "pattern": "^-----BEGIN PUBLIC KEY-----" },
+          "max_checkpoint_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+          "witness_ids": { "$ref": "#/$defs/id_list" },
+          "monitor_ids": { "$ref": "#/$defs/id_list" },
+          "minimum_witnesses": { "type": "integer", "minimum": 1, "maximum": 20 },
+          "minimum_witness_operators": { "type": "integer", "minimum": 1, "maximum": 20 },
+          "minimum_monitors": { "type": "integer", "minimum": 1, "maximum": 20 },
+          "minimum_monitor_operators": { "type": "integer", "minimum": 1, "maximum": 20 }
+        }
+      }
+    },
+    "witnesses": { "$ref": "#/$defs/observer_registry" },
+    "monitors": { "$ref": "#/$defs/observer_registry" },
+    "incident_response": {
+      "type": "object",
+      "required": ["authority", "equivocation_action", "consistency_failure_action", "root_failure_action", "preserve_evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "authority": { "type": "string", "const": "USER" },
+        "equivocation_action": { "type": "string", "const": "block_all_dispatch" },
+        "consistency_failure_action": { "type": "string", "enum": ["block_log", "block_all_dispatch"] },
+        "root_failure_action": { "type": "string", "const": "block_all_dispatch" },
+        "preserve_evidence": { "type": "boolean", "const": true }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "id_list": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": { "$ref": "common.schema.json#/$defs/id" }
+    },
+    "observer_registry": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["id", "operator_id", "key_id", "public_key_pem", "status", "valid_from", "valid_until"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "operator_id": { "type": "string", "pattern": "^[a-z][a-z0-9+.-]*:\\S+$" },
+          "key_id": { "$ref": "#/$defs/sha256" },
+          "public_key_pem": { "type": "string", "pattern": "^-----BEGIN PUBLIC KEY-----" },
+          "status": { "type": "string", "enum": ["active", "suspended", "revoked"] },
+          "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+          "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }
+        }
+      }
+    }
+  }
+}

@@ -100,7 +100,7 @@ function create(options) {
   const trustPolicy = readJson(options.policy);
   const runtimePolicyReference = readJson(options.runtimePolicyRef);
   const runtimePolicy = readReferencedJson(options.runtimePolicy, runtimePolicyReference, "Runtime policy");
-  if (trustPolicy.schema_version === "0.6") required(options, ["independence"]);
+  if (["0.6", "0.7"].includes(trustPolicy.schema_version)) required(options, ["independence"]);
   assertValid(trustPolicy, "verifier-trust-policy");
   assertValid(runtimePolicy, "verifier-runtime-policy");
   const evidence = createVerifierExecutionEvidence({

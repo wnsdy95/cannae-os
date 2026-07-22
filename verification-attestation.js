@@ -282,7 +282,7 @@ function verifyVerificationAttestation(attestation, trustPolicy, expectations = 
   let executionEvidenceId = "none";
   let independenceDomainId = attestation && attestation.independence_group;
   let independenceClaims = null;
-  if (trustPolicy && ["0.4", "0.5", "0.6"].includes(trustPolicy.schema_version)) {
+  if (trustPolicy && ["0.4", "0.5", "0.6", "0.7"].includes(trustPolicy.schema_version)) {
     if (attestation.schema_version !== "0.2" || !validArtifactRef(attestation.execution_evidence_ref)) {
       codes.push("ATTESTATION_EXECUTION_EVIDENCE_REQUIRED");
     } else {
@@ -315,7 +315,7 @@ function verifyVerificationAttestation(attestation, trustPolicy, expectations = 
           }
         });
         executionEvidenceId = evidence.id;
-        if (trustPolicy.schema_version === "0.6") {
+        if (["0.6", "0.7"].includes(trustPolicy.schema_version)) {
           independenceDomainId = result.independence_domain_id;
           independenceClaims = result.independence_claims;
           if (!independenceDomainId || independenceDomainId === "none") {

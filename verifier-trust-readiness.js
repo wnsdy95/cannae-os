@@ -6,6 +6,7 @@ const { verifyVerifierIdentityEvidence } = require("./verifier-identity-evidence
 const { verifySigstoreVerifierIdentityEvidence } = require("./sigstore-verifier-identity-evidence");
 const { challengeSetMatchesOrder, verifyVerifierChallengeSet } = require("./verifier-challenge-set");
 const { computeVerifierIndependence } = require("./verifier-independence");
+const { verifyTransparencyState } = require("./transparency-operations");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 
@@ -108,6 +109,137 @@ function emptyChallengeAssurance(required) {
   };
 }
 
+function emptyTransparencyAssurance(required, policyRef = NONE_ARTIFACT_REF, streamId = "none") {
+  return {
+    required,
+    satisfied: !required,
+    policy_ref: clone(policyRef),
+    state_ref: clone(NONE_ARTIFACT_REF),
+    stream_id: streamId,
+    sequence_number: 0,
+    generated_at: "none",
+    max_state_age_seconds: 0,
+    log_count: 0,
+    witness_count: 0,
+    monitor_count: 0,
+    incident_count: 0,
+    valid_until: "none",
+    blocking_codes: []
+  };
+}
+
+function evaluateTransparencyAssurance(options) {
+  const required = options.required;
+  const policyRef = options.trustPolicy && options.trustPolicy.transparency_assurance
+    ? options.trustPolicy.transparency_assurance.transparency_policy_ref
+    : NONE_ARTIFACT_REF;
+  const streamId = options.trustPolicy && options.trustPolicy.transparency_assurance
+    ? options.trustPolicy.transparency_assurance.state_stream_id
+    : "none";
+  if (!required) return emptyTransparencyAssurance(false, policyRef, streamId);
+
+  const codes = [];
+  const policyWrapper = options.transparencyPolicy;
+  const policy = policyWrapper && policyWrapper.payload;
+  const exactPolicyRef = identityArtifactRef(policyWrapper);
+  const assurance = options.trustPolicy.transparency_assurance || {
+    state_stream_id: "none",
+    max_state_age_seconds: 0
+  };
+  if (!policy || !exactPolicyRef || !sameReference(exactPolicyRef, policyRef) ||
+      policy.id !== policyRef.artifact_id || policy.trust_policy_id !== options.trustPolicy.id) {
+    addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_POLICY_REFERENCE_INVALID");
+  }
+  if (policy && (policy.state_stream_id !== assurance.state_stream_id ||
+      policy.repository_binding.repository_key !== options.repository.key ||
+      policy.repository_binding.identity_fingerprint !== options.repository.identity_fingerprint)) {
+    addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_POLICY_BINDING_INVALID");
+  }
+
+  const candidates = (options.transparencyStates || []).filter(item => item && item.payload &&
+    item.payload.trust_policy_id === options.trustPolicy.id &&
+    item.payload.stream_id === assurance.state_stream_id &&
+    item.payload.repository_binding &&
+    item.payload.repository_binding.repository_key === options.repository.key &&
+    item.payload.repository_binding.identity_fingerprint === options.repository.identity_fingerprint)
+    .sort((left, right) => left.payload.sequence_number - right.payload.sequence_number ||
+      left.payload.id.localeCompare(right.payload.id));
+  if (candidates.length === 0) addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_STATE_UNAVAILABLE");
+
+  let previous = null;
+  let previousRef = null;
+  let latest = null;
+  let latestRef = null;
+  let latestResult = null;
+  for (let index = 0; index < candidates.length; index += 1) {
+    const item = candidates[index];
+    const state = item.payload;
+    const ref = identityArtifactRef(item);
+    if (!ref || state.sequence_number !== index + 1 ||
+        (index === 0 ? !sameReference(state.previous_state_ref, NONE_ARTIFACT_REF) :
+          !sameReference(state.previous_state_ref, previousRef))) {
+      addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_LINEAGE_INVALID");
+      continue;
+    }
+    try {
+      const result = verifyTransparencyState({
+        state,
+        policy,
+        previousState: previous,
+        evaluatedAt: index === candidates.length - 1 ? options.evaluatedAt : state.generated_at,
+        requireReady: index === candidates.length - 1
+      });
+      if (!result.valid) {
+        addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_STATE_INVALID");
+        for (const code of result.codes) addCode(codes, code);
+      }
+      latest = state;
+      latestRef = ref;
+      latestResult = result;
+    } catch (error) {
+      addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_STATE_INVALID");
+    }
+    previous = state;
+    previousRef = ref;
+  }
+
+  const evaluatedTime = timestamp(options.evaluatedAt);
+  const generatedTime = timestamp(latest && latest.generated_at);
+  const maximumAge = Math.min(assurance.max_state_age_seconds, policy ? policy.max_state_age_seconds : assurance.max_state_age_seconds);
+  const ageBoundary = generatedTime === null ? null : generatedTime + (maximumAge * 1000);
+  if (!latest || evaluatedTime === null || generatedTime === null || generatedTime > evaluatedTime ||
+      ageBoundary === null || evaluatedTime >= ageBoundary) {
+    addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_STATE_STALE");
+  }
+  const admittedRoots = options.trustPolicy.identity_assurance &&
+    options.trustPolicy.identity_assurance.sigstore_trusted_root_refs || [];
+  if (latest && (latest.trusted_roots || []).some(root =>
+      !admittedRoots.some(ref => sameReference(ref, root.trusted_root_ref)))) {
+    addCode(codes, "TRUST_ADMISSION_TRANSPARENCY_ROOT_NOT_ADMITTED");
+  }
+  const stateBoundary = timestamp(latestResult && latestResult.valid_until);
+  const validUntil = codes.length === 0 && stateBoundary !== null && ageBoundary !== null
+    ? new Date(Math.min(stateBoundary, ageBoundary)).toISOString()
+    : "none";
+
+  return {
+    required: true,
+    satisfied: codes.length === 0 && Boolean(latestResult && latestResult.valid),
+    policy_ref: exactPolicyRef ? clone(exactPolicyRef) : clone(policyRef),
+    state_ref: latestRef ? clone(latestRef) : clone(NONE_ARTIFACT_REF),
+    stream_id: assurance.state_stream_id,
+    sequence_number: latest ? latest.sequence_number : 0,
+    generated_at: latest ? latest.generated_at : "none",
+    max_state_age_seconds: maximumAge,
+    log_count: latestResult ? latestResult.log_count : 0,
+    witness_count: latestResult ? latestResult.witness_count : 0,
+    monitor_count: latestResult ? latestResult.monitor_count : 0,
+    incident_count: latestResult ? latestResult.incident_count : 0,
+    valid_until: validUntil,
+    blocking_codes: codes.sort()
+  };
+}
+
 function evaluateVerifierTrustReadiness(options) {
   const campaign = options.campaign;
   const repository = options.repository;
@@ -121,10 +253,11 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptRequired = ["0.3", "0.4"].includes(campaign.schema_version);
   const comparativeRequired = campaign.schema_version === "0.4";
   const required = receiptRequired || comparativeRequired;
-  const identityRequired = Boolean(required && policy && ["0.2", "0.3", "0.4", "0.5", "0.6"].includes(policy.schema_version));
-  const executionPolicyRequired = Boolean(required && policy && ["0.4", "0.5", "0.6"].includes(policy.schema_version));
-  const challengeRequired = Boolean(required && policy && ["0.5", "0.6"].includes(policy.schema_version));
-  const independenceRequired = Boolean(required && policy && policy.schema_version === "0.6");
+  const identityRequired = Boolean(required && policy && ["0.2", "0.3", "0.4", "0.5", "0.6", "0.7"].includes(policy.schema_version));
+  const executionPolicyRequired = Boolean(required && policy && ["0.4", "0.5", "0.6", "0.7"].includes(policy.schema_version));
+  const challengeRequired = Boolean(required && policy && ["0.5", "0.6", "0.7"].includes(policy.schema_version));
+  const independenceRequired = Boolean(required && policy && ["0.6", "0.7"].includes(policy.schema_version));
+  const transparencyRequired = Boolean(required && policy && policy.schema_version === "0.7");
   const runtimePolicy = options.runtimePolicy || null;
   const campaignPolicy = campaign.attestation_policy || null;
   const trustPolicyRef = campaignPolicy ? clone(campaignPolicy.trust_policy_ref) : clone(NONE_ARTIFACT_REF);
@@ -169,6 +302,9 @@ function evaluateVerifierTrustReadiness(options) {
       policy.challenge_assurance.single_use !== true)) {
     addCode(blockingCodes, "TRUST_ADMISSION_CHALLENGE_POLICY_INVALID");
   }
+  if (transparencyRequired && (!policy.transparency_assurance || policy.transparency_assurance.required !== true)) {
+    addCode(blockingCodes, "TRUST_ADMISSION_TRANSPARENCY_POLICY_INVALID");
+  }
   if (policy && (policy.repository_binding.repository_key !== repository.key ||
       policy.repository_binding.identity_fingerprint !== repository.identity_fingerprint)) {
     addCode(blockingCodes, "TRUST_ADMISSION_REPOSITORY_MISMATCH");
@@ -199,6 +335,17 @@ function evaluateVerifierTrustReadiness(options) {
   const independence = computeVerifierIndependence(policy, runtimePolicy);
   if (independenceRequired) {
     for (const code of independence.blocking_codes) addCode(blockingCodes, code);
+  }
+  const transparencyAssurance = evaluateTransparencyAssurance({
+    required: transparencyRequired,
+    trustPolicy: policy,
+    transparencyPolicy: options.transparencyPolicy,
+    transparencyStates: options.transparencyStates,
+    repository,
+    evaluatedAt
+  });
+  if (transparencyRequired) {
+    for (const code of transparencyAssurance.blocking_codes) addCode(blockingCodes, code);
   }
 
   const policyStart = policy ? timestamp(policy.created_at) : null;
@@ -321,7 +468,7 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptQuorum = summarizeQuorum(receiptEligible, receiptRequired, requirements, domainByVerifier);
   const comparativeQuorum = summarizeQuorum(comparativeEligible, comparativeRequired, requirements, domainByVerifier);
 
-  const genericIdentity = policy && ["0.3", "0.4", "0.5", "0.6"].includes(policy.schema_version);
+  const genericIdentity = policy && ["0.3", "0.4", "0.5", "0.6", "0.7"].includes(policy.schema_version);
   const identityEvidence = identityRequired ? authenticated.map(item => genericIdentity ? {
     verifier_id: item.verifier.id,
     identity_provider: item.result.identity_provider || "spiffe_x509",
@@ -397,7 +544,8 @@ function evaluateVerifierTrustReadiness(options) {
     const requiredVerifiers = [...receiptEligible, ...(comparativeRequired ? comparativeEligible : [])];
     const identityBoundaries = identityRequired ? authenticated.map(item => timestamp(item.result.valid_until)) : [];
     const challengeBoundary = challengeRequired && selectedChallenge ? timestamp(selectedChallenge.expires_at) : null;
-    const boundaries = [policyEnd, ...(executionPolicyRequired ? [runtimePolicyEnd] : []), challengeBoundary,
+    const transparencyBoundary = transparencyRequired ? timestamp(transparencyAssurance.valid_until) : null;
+    const boundaries = [policyEnd, ...(executionPolicyRequired ? [runtimePolicyEnd] : []), challengeBoundary, transparencyBoundary,
       ...requiredVerifiers.map(item => timestamp(item.valid_until)), ...identityBoundaries]
       .filter(value => value !== null && value > evaluatedTime);
     if (boundaries.length > 0) validUntil = new Date(Math.min(...boundaries)).toISOString();
@@ -409,7 +557,9 @@ function evaluateVerifierTrustReadiness(options) {
   return {
     required: true,
     satisfied: blockingCodes.length === 0 && receiptQuorum.satisfied && comparativeQuorum.satisfied,
-    assurance_scope: independenceRequired
+    assurance_scope: transparencyRequired
+      ? "continuously_transparent_failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
+      : independenceRequired
       ? "failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
       : challengeRequired ? "fresh_challenged_workload_and_policy_eligibility"
       : identityRequired ? "authenticated_workload_and_policy_eligibility" : "policy_eligibility_only",
@@ -431,6 +581,7 @@ function evaluateVerifierTrustReadiness(options) {
       bindings: independence.bindings,
       blocking_codes: independence.blocking_codes
     } } : {}),
+    ...(transparencyRequired ? { transparency_assurance: transparencyAssurance } : {}),
     blocking_codes: blockingCodes.sort()
   };
 }

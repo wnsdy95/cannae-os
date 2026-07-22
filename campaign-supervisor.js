@@ -72,6 +72,46 @@ function readManifestPayload(artifactRoot, entry) {
   return JSON.parse(bytes.toString("utf8"));
 }
 
+function exactEmbeddedArtifact(store, missionId, kind, ref, expectedPayload) {
+  const matches = ref ? store.manifest.artifacts.filter(entry => entry.kind === kind &&
+    entry.artifact_id === ref.artifact_id && entry.relative_path === ref.relative_path &&
+    entry.sha256 === ref.sha256 && entry.mission_id === missionId) : [];
+  if (matches.length !== 1) return false;
+  const payload = readManifestPayload(store.artifactRoot, matches[0]);
+  return JSON.stringify(payload) === JSON.stringify(expectedPayload);
+}
+
+function exactManifestReference(store, missionId, ref) {
+  return Boolean(ref && store.manifest.artifacts.filter(entry =>
+    entry.artifact_id === ref.artifact_id && entry.relative_path === ref.relative_path &&
+    entry.sha256 === ref.sha256 && entry.mission_id === missionId).length === 1);
+}
+
+function transparencyStateEvidenceIsManifestBound(store, missionId, state) {
+  const evidence = state.evidence || {};
+  for (const wrapper of evidence.trusted_roots || []) {
+    if (!exactEmbeddedArtifact(store, missionId, "sigstore-trusted-roots", wrapper.artifact_ref, wrapper.trusted_root)) return false;
+  }
+  for (const wrapper of evidence.observations || []) {
+    if (!exactEmbeddedArtifact(store, missionId, "transparency-observations", wrapper.artifact_ref, wrapper.observation)) return false;
+  }
+  for (const wrapper of evidence.root_rotations || []) {
+    if (!exactEmbeddedArtifact(store, missionId, "trust-root-rotations", wrapper.artifact_ref, wrapper.rotation) ||
+        !exactEmbeddedArtifact(store, missionId, "sigstore-trusted-roots", wrapper.rotation.previous_trusted_root_ref, wrapper.previous_trusted_root) ||
+        !exactEmbeddedArtifact(store, missionId, "sigstore-trusted-roots", wrapper.rotation.next_trusted_root_ref, wrapper.next_trusted_root)) return false;
+  }
+  for (const wrapper of evidence.incidents || []) {
+    if (!exactEmbeddedArtifact(store, missionId, "transparency-incidents", wrapper.artifact_ref, wrapper.incident) ||
+        !(wrapper.incident.evidence_refs || []).every(ref => exactManifestReference(store, missionId, ref)) ||
+        !((wrapper.incident.resolution && wrapper.incident.resolution.evidence_refs) || [])
+          .every(ref => exactManifestReference(store, missionId, ref))) return false;
+  }
+  return (state.trusted_roots || []).every(root => store.manifest.artifacts.filter(entry =>
+    entry.kind === "sigstore-trusted-roots" && entry.artifact_id === root.trusted_root_ref.artifact_id &&
+    entry.relative_path === root.trusted_root_ref.relative_path && entry.sha256 === root.trusted_root_ref.sha256 &&
+    entry.mission_id === missionId).length === 1);
+}
+
 function loadVerifiedStore(repositoryPath, artifactRootOption) {
   const verification = verifyRepositoryArtifacts({ repositoryPath, artifactRoot: artifactRootOption });
   if (!verification.valid) {
@@ -153,6 +193,8 @@ function loadCampaignHistory(store, campaignId) {
   const identityEvidence = [];
   const sigstoreIdentityEvidence = [];
   const sigstoreTrustedRoots = [];
+  let transparencyPolicy = null;
+  const transparencyStates = [];
   let runtimePolicy = null;
   if (trustPolicyLoad.payload) {
     for (const entry of store.manifest.artifacts.filter(item =>
@@ -163,7 +205,7 @@ function loadCampaignHistory(store, campaignId) {
       if (failures.length > 0 || payload.id !== entry.artifact_id) continue;
       identityEvidence.push({ entry, payload });
     }
-    if (["0.3", "0.4", "0.5", "0.6"].includes(trustPolicyLoad.payload.schema_version)) {
+    if (["0.3", "0.4", "0.5", "0.6", "0.7"].includes(trustPolicyLoad.payload.schema_version)) {
       const refs = trustPolicyLoad.payload.identity_assurance.sigstore_trusted_root_refs || [];
       for (const ref of refs) {
         const matching = store.manifest.artifacts.filter(entry =>
@@ -193,7 +235,7 @@ function loadCampaignHistory(store, campaignId) {
         sigstoreIdentityEvidence.push({ entry, payload });
       }
     }
-    if (["0.4", "0.5", "0.6"].includes(trustPolicyLoad.payload.schema_version)) {
+    if (["0.4", "0.5", "0.6", "0.7"].includes(trustPolicyLoad.payload.schema_version)) {
       const ref = trustPolicyLoad.payload.execution_assurance &&
         trustPolicyLoad.payload.execution_assurance.runtime_policy_ref;
       const matching = ref ? store.manifest.artifacts.filter(entry =>
@@ -214,6 +256,38 @@ function loadCampaignHistory(store, campaignId) {
         }
       }
     }
+    if (trustPolicyLoad.payload.schema_version === "0.7") {
+      const ref = trustPolicyLoad.payload.transparency_assurance &&
+        trustPolicyLoad.payload.transparency_assurance.transparency_policy_ref;
+      const matching = ref ? store.manifest.artifacts.filter(entry =>
+        entry.kind === "transparency-policies" && entry.artifact_id === ref.artifact_id &&
+        entry.relative_path === ref.relative_path && entry.sha256 === ref.sha256 &&
+        entry.mission_id === campaign.mission_id) : [];
+      if (matching.length !== 1) {
+        trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_TRANSPARENCY_POLICY_REFERENCE_INVALID");
+      } else {
+        const payload = readManifestPayload(store.artifactRoot, matching[0]);
+        const failures = validationFailures(payload, "transparency-policy");
+        if (failures.length > 0 || payload.id !== matching[0].artifact_id) {
+          trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_TRANSPARENCY_POLICY_SCHEMA_INVALID");
+        } else {
+          transparencyPolicy = { entry: matching[0], payload };
+        }
+      }
+      for (const entry of store.manifest.artifacts.filter(item =>
+        item.kind === "transparency-states" && item.mission_id === campaign.mission_id)) {
+        const payload = readManifestPayload(store.artifactRoot, entry);
+        if (payload.trust_policy_id !== trustPolicyLoad.payload.id ||
+            payload.stream_id !== trustPolicyLoad.payload.transparency_assurance.state_stream_id) continue;
+        const failures = validationFailures(payload, "transparency-state");
+        if (failures.length > 0 || payload.id !== entry.artifact_id ||
+            !transparencyStateEvidenceIsManifestBound(store, campaign.mission_id, payload)) {
+          trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_TRANSPARENCY_STATE_MANIFEST_INVALID");
+          continue;
+        }
+        transparencyStates.push({ entry, payload });
+      }
+    }
   }
 
   return {
@@ -229,7 +303,9 @@ function loadCampaignHistory(store, campaignId) {
     identityEvidence,
     sigstoreIdentityEvidence,
     sigstoreTrustedRoots,
-    runtimePolicy
+    runtimePolicy,
+    transparencyPolicy,
+    transparencyStates
   };
 }
 
@@ -491,6 +567,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     sigstoreIdentityEvidence,
     sigstoreTrustedRoots,
     runtimePolicy,
+    transparencyPolicy,
+    transparencyStates,
     challengeSets,
     existingOrders
   } = history;
@@ -611,6 +689,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     sigstoreIdentityEvidence,
     sigstoreTrustedRoots,
     runtimePolicy,
+    transparencyPolicy,
+    transparencyStates,
     challengeSets,
     existingOrders,
     dispatchOrder: dispatchProjection,
@@ -634,7 +714,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
 
   const generatedAt = evaluatedAt;
   const order = {
-    schema_version: trustPolicy && ["0.5", "0.6"].includes(trustPolicy.schema_version)
+    schema_version: trustPolicy && ["0.5", "0.6", "0.7"].includes(trustPolicy.schema_version)
       ? trustPolicy.schema_version
       : trustPolicy && ["0.3", "0.4"].includes(trustPolicy.schema_version) ? "0.4" : "0.3",
     type: "SelfImprovementCycleOrder",
@@ -711,7 +791,7 @@ function superviseCampaign(options) {
     "TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE"
   ]);
   const mayIssueChallenge = options.writeArtifact && history.trustPolicy &&
-    ["0.5", "0.6"].includes(history.trustPolicy.schema_version) && proposed._dispatchProjection.transition !== "hold" &&
+    ["0.5", "0.6", "0.7"].includes(history.trustPolicy.schema_version) && proposed._dispatchProjection.transition !== "hold" &&
     proposed.blocking_codes.length > 0 && proposed.blocking_codes.every(code => challengeBootstrapCodes.has(code)) &&
     proposed.blocking_codes.includes("TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE");
   if (mayIssueChallenge) {

@@ -34,11 +34,11 @@
   "additionalProperties": false,
   "allOf": [
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3", "0.4", "0.5", "0.6"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3", "0.4", "0.5", "0.6", "0.7"] } } },
       "then": { "required": ["trust_policy_admission"] }
     },
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.3", "0.4", "0.5", "0.6"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.3", "0.4", "0.5", "0.6", "0.7"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": { "required": ["identity_assurance"] }
@@ -46,7 +46,7 @@
       }
     },
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.4", "0.5", "0.6"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.4", "0.5", "0.6", "0.7"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": {
@@ -63,7 +63,7 @@
       }
     },
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.5", "0.6"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.5", "0.6", "0.7"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": { "required": ["challenge_assurance"] }
@@ -71,16 +71,24 @@
       }
     },
     {
-      "if": { "properties": { "schema_version": { "const": "0.6" } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.6", "0.7"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": { "required": ["independence_assurance"] }
         }
       }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.7" } } },
+      "then": {
+        "properties": {
+          "trust_policy_admission": { "required": ["transparency_assurance"] }
+        }
+      }
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7"] },
     "type": { "type": "string", "const": "SelfImprovementCycleOrder" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -164,7 +172,8 @@
             "policy_eligibility_only",
             "authenticated_workload_and_policy_eligibility",
             "fresh_challenged_workload_and_policy_eligibility",
-            "failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
+            "failure_domain_verified_fresh_challenged_workload_and_policy_eligibility",
+            "continuously_transparent_failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
           ]
         },
         "evaluated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
@@ -300,6 +309,41 @@
                   "domain_id": { "type": "string", "pattern": "^(none|VID-[a-f0-9]{24})$" }
                 }
               }
+            },
+            "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "transparency_assurance": {
+          "type": "object",
+          "required": [
+            "required", "satisfied", "policy_ref", "state_ref", "stream_id", "sequence_number",
+            "generated_at", "max_state_age_seconds", "log_count", "witness_count", "monitor_count",
+            "incident_count", "valid_until", "blocking_codes"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "required": { "type": "boolean", "const": true },
+            "satisfied": { "type": "boolean" },
+            "policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+            "state_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+            "stream_id": { "type": "string", "minLength": 1 },
+            "sequence_number": { "type": "integer", "minimum": 0 },
+            "generated_at": {
+              "oneOf": [
+                { "type": "string", "const": "none" },
+                { "$ref": "common.schema.json#/$defs/timestamp" }
+              ]
+            },
+            "max_state_age_seconds": { "type": "integer", "minimum": 0, "maximum": 86400 },
+            "log_count": { "type": "integer", "minimum": 0, "maximum": 20 },
+            "witness_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+            "monitor_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+            "incident_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+            "valid_until": {
+              "oneOf": [
+                { "type": "string", "const": "none" },
+                { "$ref": "common.schema.json#/$defs/timestamp" }
+              ]
             },
             "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
           }
