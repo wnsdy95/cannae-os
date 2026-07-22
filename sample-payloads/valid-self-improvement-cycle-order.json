@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "SelfImprovementCycleOrder",
   "id": "SCO-Cannae-001-C2-A1-BEFORE-COMPLETION-READY",
   "campaign_id": "SIC-Cannae-001",
@@ -59,6 +59,44 @@
       "relative_path": "none",
       "sha256": "none"
     }
+  },
+  "trust_policy_admission": {
+    "required": false,
+    "satisfied": true,
+    "assurance_scope": "policy_eligibility_only",
+    "evaluated_at": "2026-07-21T18:24:00+09:00",
+    "valid_until": "none",
+    "trust_policy_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "effective_requirements": {
+      "minimum_valid_attestations": 0,
+      "minimum_independence_groups": 0,
+      "require_distinct_key_ids": false
+    },
+    "receipt_quorum": {
+      "required": false,
+      "satisfied": true,
+      "eligible_verifier_count": 0,
+      "distinct_key_count": 0,
+      "independence_group_count": 0,
+      "verifier_ids": [],
+      "key_ids": [],
+      "independence_groups": []
+    },
+    "comparative_quorum": {
+      "required": false,
+      "satisfied": true,
+      "eligible_verifier_count": 0,
+      "distinct_key_count": 0,
+      "independence_group_count": 0,
+      "verifier_ids": [],
+      "key_ids": [],
+      "independence_groups": []
+    },
+    "blocking_codes": []
   },
   "budget_snapshot": {
     "max_cycles": 8,

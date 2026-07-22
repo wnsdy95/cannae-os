@@ -2576,6 +2576,41 @@ Implemented artifacts:
 - `run-comparative-evaluation-attestation-fixtures.js`
 - v0.4 controller, supervisor, validator, roadmap, and skill integrations
 
+### 8.57 Pre-Dispatch Verifier Readiness Admission v0.7
+
+Research question:
+
+> How can a campaign avoid starting work whose mandatory independent proof quorum is already impossible to obtain?
+
+Primary references:
+
+- SLSA artifact verification: https://slsa.dev/spec/v1.2/verifying-artifacts
+- SLSA Verification Summary Attestation v1: https://slsa.dev/spec/v1.2/verification_summary
+- RFC 8032: https://www.rfc-editor.org/rfc/rfc8032.html
+- DSSE protocol: https://github.com/secure-systems-lab/dsse/blob/master/protocol.md
+
+Engineering conclusions:
+
+1. Requiring a signed quorum only after candidate execution wastes work and invites pressure to weaken the gate. The supervisor must verify that the bound trust policy can form every required evidence quorum before issuing execution authority.
+2. Readiness cannot be an agent-authored status field. It is a deterministic projection from the exact policy artifact already identified by campaign ID, path, SHA-256, mission namespace, and repository identity in the verified manifest.
+3. Receipt and comparative statements are separate purposes. A legacy v0.3 key with no purpose field may support receipts, but comparative readiness requires an explicit `comparative_evaluation_report` grant. Receipt capacity cannot silently become report capacity.
+4. Eligible population is time- and repository-dependent. Only active entries with valid Ed25519 key identities, an allowed repository, and a validity interval containing the issuance instant count. Suspended, revoked, future, expired, wrong-repository, or malformed-key entries are excluded.
+5. Headcount is not quorum. Readiness independently records distinct verifier IDs, public-key IDs, and independence groups. Repeating one key under several names or placing all verifiers in one group cannot satisfy the campaign threshold.
+6. Campaign and trust policy may both state minimums. Admission uses the stricter value for each threshold and cannot turn off distinct-key enforcement required by either contract.
+7. Readiness changes over time even when campaign history does not. Cycle-order v0.2 therefore records evaluation time and a conservative `valid_until`; admission state is included in deterministic order identity while the evaluation timestamp is excluded from idempotency comparison.
+8. A validator recomputes satisfaction from the order's recorded lists and thresholds. A payload cannot claim `satisfied: true` with insufficient keys or groups, drift admission time from issuance, or attach v0.2 admission claims to a v0.1 order.
+9. This is capacity admission, not availability proof. Public policy entries do not establish that private keys are online, uncompromised, independently operated, or able to answer. External workload identity, protected execution, online health, trusted time, and transparency remain separate controls.
+
+Implemented artifacts:
+
+- `verifier-trust-readiness.js`
+- `campaign-supervisor.js` trust-policy loading and fail-closed admission
+- `schema-files/self-improvement-cycle-order.schema.json` v0.2
+- `sample-payloads/valid-self-improvement-cycle-order.json`
+- `run-verifier-trust-readiness-fixtures.js`
+- `run-cycle-order-admission-fixtures.js`
+- expanded `run-campaign-supervisor-fixtures.js`
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

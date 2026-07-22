@@ -32,8 +32,14 @@
     "generated_at"
   ],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "then": { "required": ["trust_policy_admission"] }
+    }
+  ],
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "type": { "type": "string", "const": "SelfImprovementCycleOrder" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -104,6 +110,37 @@
         "trust_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" }
       }
     },
+    "trust_policy_admission": {
+      "type": "object",
+      "required": ["required", "satisfied", "assurance_scope", "evaluated_at", "valid_until", "trust_policy_ref", "effective_requirements", "receipt_quorum", "comparative_quorum", "blocking_codes"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "satisfied": { "type": "boolean" },
+        "assurance_scope": { "type": "string", "const": "policy_eligibility_only" },
+        "evaluated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "valid_until": {
+          "oneOf": [
+            { "type": "string", "const": "none" },
+            { "$ref": "common.schema.json#/$defs/timestamp" }
+          ]
+        },
+        "trust_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+        "effective_requirements": {
+          "type": "object",
+          "required": ["minimum_valid_attestations", "minimum_independence_groups", "require_distinct_key_ids"],
+          "additionalProperties": false,
+          "properties": {
+            "minimum_valid_attestations": { "type": "integer", "minimum": 0, "maximum": 20 },
+            "minimum_independence_groups": { "type": "integer", "minimum": 0, "maximum": 20 },
+            "require_distinct_key_ids": { "type": "boolean" }
+          }
+        },
+        "receipt_quorum": { "$ref": "#/$defs/admission_quorum" },
+        "comparative_quorum": { "$ref": "#/$defs/admission_quorum" },
+        "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
     "budget_snapshot": {
       "type": "object",
       "required": ["max_cycles", "cycles_observed", "max_retries_per_cycle", "retries_used_current_cycle", "max_failed_experiments", "failed_experiments", "max_no_progress_cycles", "consecutive_no_progress_cycles", "max_elapsed_minutes", "elapsed_minutes"],
@@ -129,6 +166,21 @@
     "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
   },
   "$defs": {
+    "admission_quorum": {
+      "type": "object",
+      "required": ["required", "satisfied", "eligible_verifier_count", "distinct_key_count", "independence_group_count", "verifier_ids", "key_ids", "independence_groups"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "satisfied": { "type": "boolean" },
+        "eligible_verifier_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "distinct_key_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "independence_group_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "verifier_ids": { "type": "array", "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } },
+        "key_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
+        "independence_groups": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" } }
+      }
+    },
     "artifact_ref": {
       "type": "object",
       "required": ["artifact_id", "relative_path", "sha256"],

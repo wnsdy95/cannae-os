@@ -175,9 +175,9 @@ The supervisor emits one manifest-backed order:
 | `before_completion` | Accepted decision explicitly requires the completion checkpoint | Open the next finite completion cycle with the accepted decision as parent |
 | `hold` | Completion, termination, escalation, invalid lineage, incomplete pair, or exhausted budget | Emit no execution authority |
 
-The supervisor rejects duplicate IDs, a checkpoint without exactly one decision, a decision without a checkpoint, skipped cycles, records after an accepted or terminal decision, a baseline that does not match the prior accepted revision, a forged parent reference, repository mismatch, and finite-budget exhaustion. It copies the controller's task order exactly for follow-on work and records the campaign, source checkpoint, source decision, accepted parent, proof requirements, budget snapshot, and observed manifest digest.
+The supervisor rejects duplicate IDs, a checkpoint without exactly one decision, a decision without a checkpoint, skipped cycles, records after an accepted or terminal decision, a baseline that does not match the prior accepted revision, a forged parent reference, repository mismatch, and finite-budget exhaustion. For a v0.3+ campaign it also reloads the exact manifest-bound `VerifierTrustPolicy` and computes purpose-specific receipt and comparative readiness from active status, repository allowlists, Ed25519 key identity, validity windows, distinct verifier IDs, distinct key IDs, and independence groups. It copies the controller's task order exactly for follow-on work and records the campaign, source checkpoint, source decision, accepted parent, proof requirements, trust admission, budget snapshot, and observed manifest digest.
 
-`SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, or authority. Only `status: ready` with `execution_authorized: true` may be dispatched. Re-running the supervisor against the same reconstructed state returns the existing persisted order instead of creating another manifest revision.
+Cycle-order schema v0.2 records `trust_policy_admission`, including the exact policy reference, effective thresholds, eligible verifier/key/group lists for each evidence purpose, evaluation time, conservative validity boundary, and blocking codes. An agent cannot satisfy this gate by reporting readiness; the supervisor derives it from policy bytes already verified by the repository manifest. `SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, or authority. Only `status: ready` with `execution_authorized: true`, satisfied admission, and an unexpired signed-campaign `valid_until` may be dispatched. Re-running the supervisor against the same reconstructed state and admission population returns the existing persisted order instead of creating another manifest revision.
 
 ## 3. Required Battle Rhythm
 
@@ -193,7 +193,7 @@ The supervisor rejects duplicate IDs, a checkpoint without exactly one decision,
 
 ### 3.2 Every implementation wave
 
-1. Run the campaign supervisor against the verified artifact store. Stop unless it emits a current `ready` order.
+1. Run the campaign supervisor against the verified artifact store. Stop unless it emits a current `ready` order whose trust admission is satisfied and, when required, not expired.
 2. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
 3. Execute only the task order carried by that cycle order, using its cycle, attempt, baseline, parent, trigger, and proof requirements.
 4. Generate a repository-state-bound `VerificationPlan`, run it through `verification-runner.js`, and persist its receipt.
@@ -394,7 +394,7 @@ node campaign-supervisor.js \
   --write-artifact
 ```
 
-The supervisor reloads the campaign, checkpoints, decisions, and any existing cycle order from the verified repository manifest. Exit code `0` means the JSON order is `ready` or the campaign is already `completed`; the caller must still inspect `status` and may execute only `ready`. Exit code `1` means `awaiting_human`, `terminated`, or `blocked`. Exit code `2` means malformed input, artifact-store failure, or a conflicting persisted order.
+The supervisor reloads the campaign, exact trust policy, checkpoints, decisions, and any existing cycle order from the verified repository manifest. Exit code `0` means the JSON order is `ready` or the campaign is already `completed`; the caller must still inspect `status`, trust-admission satisfaction, and `valid_until`, and may execute only a current `ready` order. Exit code `1` means `awaiting_human`, `terminated`, or `blocked`. Exit code `2` means malformed input, artifact-store failure, or a conflicting persisted order.
 
 CLI exit codes are `0` for a decision the harness may consume without human unblock, `1` for `escalate` or `terminate`, and `2` for malformed input or CLI usage failure. A nonzero exit never removes the JSON decision from stdout when a decision could be formed.
 
@@ -413,6 +413,7 @@ CLI exit codes are `0` for a decision the harness may consume without human unbl
 - Repeated no-progress, repeated failure, cycle exhaustion, or time exhaustion routes to human review.
 - A missing decision, duplicate decision, skipped cycle, mismatched baseline, forged parent path/hash, or record after a terminal decision blocks the supervisor before another order is issued.
 - Agents must not infer the next cycle number, retry count, baseline, or parent from chat history. They consume the current persisted cycle order.
+- Agents must not self-declare verifier readiness. Missing, malformed, repository-mismatched, inactive, expired, under-populated, purpose-ineligible, key-reused, or single-group trust policy state blocks dispatch before candidate work begins.
 - A protected-invariant impact blocks promotion even when the measured score improves.
 - A skill or runtime-control candidate without a fresh `promotable` paired report cannot become a working state. A rollback report triggers rollback; an inconclusive or recomputation-mismatched report escalates.
 - A v0.4 skill or runtime-control candidate without a fresh signed report quorum cannot be promoted even when the paired report is `promotable`.
@@ -432,6 +433,9 @@ node run-verification-runner-fixtures.js
 node run-verification-attestation-fixtures.js
 node run-comparative-evaluation-fixtures.js
 node run-comparative-evaluation-attestation-fixtures.js
+node run-verifier-trust-readiness-fixtures.js
+node run-cycle-order-admission-fixtures.js
+node run-campaign-supervisor-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 node run-repository-artifact-isolation-fixtures.js
 node run-repository-artifact-concurrency-fixtures.js
@@ -446,6 +450,7 @@ The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE
 - Bootstrap quality dimensions are safe engineering defaults; mission-specific campaigns should replace them when another measurable quality model is more appropriate.
 - Ed25519 signatures authenticate possession of a trusted private key and integrity of the signed statement. They do not prove that the verifier ran on an isolated host, used a different provider, executed the declared checks honestly, or was free from compromise. Independence groups and execution origins remain policy assertions unless backed by external infrastructure.
 - Comparative reports can be signed by the v0.4 verifier quorum, but evaluator identity, invocation, execution origin, and independence group remain signed claims until they are bound to an external workload identity and protected execution service.
+- Trust admission proves that a quorum is constructible from policy-eligible public identities at one instant. It cannot prove private-key availability, operational independence, honest execution, or successful future response; agents must stop and re-run supervision after admission expiry.
 - Read-only temporary fixture permissions and before/after hashes detect mutation but are not a host security sandbox. A malicious harness running as the same OS user may read other accessible files, use the network, or attempt transient fixture access; production execution needs filesystem, network, process, and credential isolation.
 - A sealed local fixture set limits accidental prompt leakage but cannot prove that a model or developer never saw equivalent examples before the campaign. Statistical confidence, repeated stochastic trials, and distribution-shift monitoring remain mission-specific evaluation responsibilities.
 - The local trust policy, campaign, checkpoint, and repository manifest are not anchored in an online transparency log, hardware root, KMS, Sigstore identity, or external timestamp authority. Key revocation is enforced only after an updated human-approved policy is distributed and consumed.

@@ -105,7 +105,7 @@ For a multi-wave mission, control-plane change, explicit autonomous-improvement 
 7. At every wave end, validation failure, scope change, and before completion, create a `SelfImprovementCheckpoint` whose metrics and independent evaluation cite persisted receipt IDs and, for v0.3+, the receipt quorum. Skill/runtime-control checkpoints cite the comparative report and, for v0.4, its signed quorum. Run `autonomous-improvement-controller.js --repository <repo>` against the proof store.
 8. For cycle 2+, cite the manifest path/hash of the immediately prior `accept_working_state` decision and use its `accepted_revision` as the baseline. Do not carry forward a rejected, rollback, or merely named parent.
 9. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window changes, persist an exact USER-granted `ApprovalScope` and matching `ApprovalConsumptionEvent`. Bind its execution ID to the checkpoint; prose approval and reused events are invalid.
-10. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current `SelfImprovementCycleOrder` whose status is `ready`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never infer them from chat history.
+10. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current `SelfImprovementCycleOrder` whose status is `ready`, whose `trust_policy_admission.satisfied` is true, and whose required admission has not reached `valid_until`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never self-declare verifier readiness or infer order state from chat history.
 11. Carry forward only an accepted working state; revision, rollback, and continue orders remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
 12. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require receipt-backed independent evaluation for runtime, skill, and policy candidates.
 13. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
@@ -164,6 +164,8 @@ node run-comparative-evaluation-attestation-fixtures.js
 node run-self-improvement-fixtures.js
 node run-signed-self-improvement-fixtures.js
 node run-campaign-supervisor-fixtures.js
+node run-verifier-trust-readiness-fixtures.js
+node run-cycle-order-admission-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
 node source-map-linter.js
