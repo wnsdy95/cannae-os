@@ -284,6 +284,14 @@ try {
     });
     hasCode(result, "GITHUB_OIDC_EVIDENCE_STRUCTURE_INVALID");
   });
+  run("missing native trust material fails closed without an exception", () => {
+    const result = verifyGitHubActionsOIDCEvidence({
+      evidence: nativeEvidence, trustBundle: null, trustBundleReference, profile,
+      evaluatedAt: "2026-07-23T00:04:30Z"
+    });
+    hasCode(result, "GITHUB_OIDC_TRUST_BUNDLE_REFERENCE_INVALID");
+    hasCode(result, "GITHUB_OIDC_TRUST_BUNDLE_STRUCTURE_INVALID");
+  });
   run("runtime-policy v0.3 accepts only authenticated conservative domains", () => {
     assert.strictEqual(validatePayload(runtimePolicy, "verifier-runtime-policy").valid, true);
     assert.strictEqual(profile.independence.infrastructure_id, "cannae:github_actions:infrastructure:shared-unknown");

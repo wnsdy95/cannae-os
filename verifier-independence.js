@@ -74,8 +74,19 @@ function expectedProfileClaims(profile) {
       expected.zone_id = componentId(provider, "zone", "shared-unknown");
     }
   } else if (provider === "gitlab_ci") {
-    expected.project_id = componentId(provider, "project", pinned.job_project_id);
-    expected.runner_pool_id = componentId(provider, "runner", pinned.runner_id);
+    if (profile.native_identity && profile.native_identity.adapter === "gitlab_ci_oidc_v1") {
+      expected.operator_id = componentId(provider, "operator", "gitlab");
+      expected.control_plane_id = componentId(provider, "control-plane", "gitlab.com-hosted");
+      expected.account_id = componentId(provider, "job-namespace", pinned.job_namespace_id);
+      expected.project_id = componentId(provider, "job-project", pinned.job_project_id);
+      expected.runner_pool_id = componentId(provider, "runner-environment", pinned.runner_environment);
+      expected.infrastructure_id = componentId(provider, "infrastructure", "shared-unknown");
+      expected.region_id = componentId(provider, "region", "shared-unknown");
+      expected.zone_id = componentId(provider, "zone", "shared-unknown");
+    } else {
+      expected.project_id = componentId(provider, "project", pinned.job_project_id);
+      expected.runner_pool_id = componentId(provider, "runner", pinned.runner_id);
+    }
   } else if (provider === "local_sandbox") {
     expected.infrastructure_id = componentId(provider, "host-attestor", pinned.host_attestor_id);
     expected.runner_pool_id = componentId(provider, "sandbox-instance", pinned.sandbox_instance_id);

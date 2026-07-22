@@ -47,7 +47,7 @@ The builder and verifier must still sign the same Phase 12 in-toto statement. Th
 
 ## 3. Fail-Closed Profile
 
-Runtime-policy v0.3 currently accepts only:
+The GitHub runtime-policy v0.3 profile accepts only:
 
 - provider `github_actions`;
 - adapter `github_actions_oidc_v1`;

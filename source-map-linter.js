@@ -29,6 +29,7 @@ const OFFICIAL_HOST_PATTERNS = [
   /slsa\.dev$/,
   /github\.com$/,
   /docs\.github\.com$/,
+  /(^|\.)gitlab\.com$/,
   /docs\.gitlab\.com$/,
   /kubernetes\.io$/,
   /docs\.aws\.amazon\.com$/,

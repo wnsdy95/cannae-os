@@ -124,6 +124,8 @@ Recommended validation order:
 70. `transparency-state.schema.json`
 71. `github-actions-oidc-trust-bundle.schema.json`
 72. `github-actions-oidc-evidence.schema.json`
+73. `gitlab-ci-oidc-trust-bundle.schema.json`
+74. `gitlab-ci-oidc-evidence.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -141,6 +143,6 @@ All schemas target JSON Schema draft 2020-12.
 
 `VerifierTrustPolicy` v0.7 adds continuous transparency assurance. It binds one exact `TransparencyPolicy`, state stream, and maximum age. `TransparencyObservation` records signed checkpoint consistency plus independent witness/monitor approval, `TrustRootRotation` verifies sequential dual-threshold TUF roots, `TransparencyIncident` preserves USER-controlled incident and revocation history, and `TransparencyState` reconstructs their append-only repository-bound projection while retaining current TUF expiry.
 
-`VerifierRuntimePolicy` v0.3 adds the strict GitHub Actions OIDC profile. `GitHubActionsOIDCTrustBundle` pins normalized `RS256` JWKS material and freshness; `GitHubActionsOIDCEvidence` preserves the exact signed token and conservative provider/failure-domain projection. `VerifierExecutionEvidence` v0.3 signs the native-evidence reference, and nested artifacts must be reloaded from the repository manifest before quorum evaluation.
+`VerifierRuntimePolicy` v0.3 adds strict native OIDC profiles for GitHub Actions and GitLab CI. Their provider-specific trust bundles pin normalized `RS256` JWKS material and freshness; native evidence preserves the exact signed token and conservative provider/failure-domain projection. `VerifierExecutionEvidence` v0.3 signs the native-evidence reference, and nested artifacts must be reloaded from the repository manifest before quorum evaluation.
 
 `SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. v0.6 adds deterministic failure-domain bindings and graph reconstruction. v0.7 adds exact transparency policy/state references, sequence, freshness, observer/incident counts, and a transparency-bounded validity window. Earlier orders remain readable.

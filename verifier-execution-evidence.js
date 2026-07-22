@@ -30,6 +30,13 @@ const PROVIDER_REQUIRED_CLAIMS = Object.freeze({
   tee: ["appraisal_policy_sha256", "attestation_result", "measurement", "tee_type"]
 });
 
+const GITLAB_NATIVE_REQUIRED_CLAIMS = Object.freeze([
+  "project_id", "project_path", "namespace_id", "namespace_path",
+  "job_project_id", "job_project_path", "job_namespace_id", "job_namespace_path",
+  "pipeline_source", "ref", "ref_type", "ref_path", "ref_protected",
+  "runner_environment", "sha", "ci_config_ref_uri", "ci_config_sha"
+]);
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -71,6 +78,31 @@ function safeArtifactRef(ref) {
     typeof ref.relative_path === "string" && ref.relative_path.length > 0 &&
     !ref.relative_path.startsWith("/") && !ref.relative_path.split(/[\\/]+/).includes("..") &&
     /^[a-f0-9]{64}$/.test(ref.sha256 || ""));
+}
+
+function providerRequiredClaims(profile) {
+  if (profile && profile.provider === "gitlab_ci" && profile.native_identity &&
+      profile.native_identity.adapter === "gitlab_ci_oidc_v1") {
+    return GITLAB_NATIVE_REQUIRED_CLAIMS;
+  }
+  return PROVIDER_REQUIRED_CLAIMS[profile && profile.provider] || [];
+}
+
+function nativeProviderAdapter(profile) {
+  const adapter = profile && profile.native_identity && profile.native_identity.adapter;
+  if (profile && profile.provider === "github_actions" && adapter === "github_actions_oidc_v1") {
+    return {
+      label: "GitHub Actions",
+      verify: require("./github-actions-oidc").verifyGitHubActionsOIDCEvidence
+    };
+  }
+  if (profile && profile.provider === "gitlab_ci" && adapter === "gitlab_ci_oidc_v1") {
+    return {
+      label: "GitLab CI",
+      verify: require("./gitlab-ci-oidc").verifyGitLabCIOIDCEvidence
+    };
+  }
+  return null;
 }
 
 function resource(name, descriptor) {
@@ -185,23 +217,25 @@ function createVerifierExecutionEvidence(options) {
     throw new Error("The verifier requires one assigned runtime profile.");
   }
   const independenceRequired = ["0.6", "0.7"].includes(trustPolicy.schema_version);
-  const nativeRequired = runtimePolicy.schema_version === "0.3" && profile.provider === "github_actions";
+  const nativeRequired = runtimePolicy.schema_version === "0.3";
   let nativeResult = null;
   if (nativeRequired) {
-    const { verifyGitHubActionsOIDCEvidence } = require("./github-actions-oidc");
+    const nativeAdapter = nativeProviderAdapter(profile);
     if (!safeArtifactRef(options.nativeProviderEvidenceReference) ||
-        !safeArtifactRef(options.nativeTrustBundleReference)) {
-      throw new Error("GitHub Actions native execution requires exact evidence and trust-bundle references.");
+        !safeArtifactRef(options.nativeTrustBundleReference) || !options.nativeProviderEvidence ||
+        !options.nativeTrustBundle || !nativeAdapter) {
+      throw new Error("Native provider execution requires a supported adapter and exact evidence and trust-bundle references.");
     }
-    nativeResult = verifyGitHubActionsOIDCEvidence({
+    nativeResult = nativeAdapter.verify({
       evidence: options.nativeProviderEvidence,
       trustBundle: options.nativeTrustBundle,
       trustBundleReference: options.nativeTrustBundleReference,
       profile,
       evaluatedAt: options.issuedAt
     });
-    if (!nativeResult.valid || options.nativeProviderEvidenceReference.artifact_id !== options.nativeProviderEvidence.id) {
-      throw new Error(`GitHub Actions native provider evidence is invalid: ${nativeResult.codes.join(", ")}`);
+    if (!nativeResult.valid || !options.nativeProviderEvidence ||
+        options.nativeProviderEvidenceReference.artifact_id !== options.nativeProviderEvidence.id) {
+      throw new Error(`${nativeAdapter.label} native provider evidence is invalid: ${nativeResult.codes.join(", ")}`);
     }
   }
   const observedProviderIdentity = nativeRequired ? nativeResult.provider_identity : options.providerIdentity;
@@ -229,7 +263,7 @@ function createVerifierExecutionEvidence(options) {
     throw new Error("Execution evidence requires a clean, content-bound repository state.");
   }
   if (nativeRequired && (options.repositoryState.dirty || options.repositoryState.head_commit !== nativeResult.provider_identity.claims.sha)) {
-    throw new Error("GitHub Actions native evidence requires a clean repository at the token's exact commit.");
+    throw new Error("Native provider evidence requires a clean repository at the token's exact commit.");
   }
   const started = timestamp(options.invocation && options.invocation.started_at);
   const finished = timestamp(options.invocation && options.invocation.finished_at);
@@ -302,7 +336,7 @@ function providerIdentityValid(profile, evidence) {
   const expected = profile.provider_identity || {};
   const actual = evidence.provider_identity || {};
   if (actual.issuer !== expected.issuer || actual.subject !== expected.subject || actual.audience !== expected.audience) return false;
-  const required = PROVIDER_REQUIRED_CLAIMS[profile.provider] || [];
+  const required = providerRequiredClaims(profile);
   const pinned = expected.required_claims || {};
   const observed = actual.claims || {};
   if (required.some(key => typeof pinned[key] !== "string" || pinned[key].length === 0)) return false;
@@ -403,12 +437,12 @@ function verifyVerifierExecutionEvidence(options) {
     const nativeReference = evidence && evidence.native_provider_evidence_ref;
     const nativeTrustBundle = options.nativeTrustBundle;
     const nativeTrustBundleReference = options.nativeTrustBundleReference;
-    if (!profile || profile.provider !== "github_actions" || !profile.native_identity ||
+    const nativeAdapter = nativeProviderAdapter(profile);
+    if (!profile || !nativeAdapter ||
         !safeArtifactRef(nativeReference) || !nativeEvidence || nativeReference.artifact_id !== nativeEvidence.id) {
       addCode(codes, "EXECUTION_EVIDENCE_NATIVE_PROVIDER_REQUIRED");
     } else {
-      const { verifyGitHubActionsOIDCEvidence } = require("./github-actions-oidc");
-      const nativeResult = verifyGitHubActionsOIDCEvidence({
+      const nativeResult = nativeAdapter.verify({
         evidence: nativeEvidence,
         trustBundle: nativeTrustBundle,
         trustBundleReference: nativeTrustBundleReference,
@@ -537,8 +571,11 @@ module.exports = {
   EXECUTION_PREDICATE_TYPE_V2,
   EXECUTION_PREDICATE_TYPE_V3,
   PROVIDER_REQUIRED_CLAIMS,
+  GITLAB_NATIVE_REQUIRED_CLAIMS,
   createVerifierExecutionEvidence,
   evidenceDigest,
   expectedStatement,
+  nativeProviderAdapter,
+  providerRequiredClaims,
   verifyVerifierExecutionEvidence
 };

@@ -434,7 +434,7 @@ See `transparency-operations.md` for the contracts, algorithms, operating sequen
 
 ## 15. Phase 14: Native Provider Execution Adapters
 
-Status: Phase 14A GitHub Actions OIDC adapter implemented. GitLab CI, self-hosted runner, local sandbox, and TEE adapters remain open.
+Status: Phase 14A GitHub Actions and Phase 14B GitLab CI OIDC adapters implemented. Enterprise/self-managed providers, self-hosted runners, local sandbox, and TEE adapters remain open.
 
 Goal:
 
@@ -460,6 +460,25 @@ Completion criteria for Phase 14A:
 
 See `github-actions-native-verifier-adapter.md` for the exact contract, operations, source interpretation, and limitations.
 
+Phase 14B features:
+
+- `GitLabCIOIDCTrustBundle` normalizes the exact GitLab.com issuer, discovery/JWKS endpoints, `RS256` algorithms, signing keys, freshness, and artifact digest;
+- `GitLabCIOIDCEvidence` retains the exact compact JWT and projects normalized signed claims;
+- runtime-policy v0.3 now dispatches a provider-neutral native contract to either the GitHub or GitLab adapter;
+- GitLab profiles pin stable source and job project/namespace identities, pipeline source, protected branch, same-project config ref/SHA, exact commit, and GitLab-hosted runner class;
+- dynamic pipeline, job, and runner IDs remain trace fields and cannot create failure-domain diversity;
+- source/job project drift, unprotected refs, external top-level config, self-hosted runners, audience arrays, and config/commit drift fail closed;
+- the controller reloads GitLab native evidence and JWKS material from provider-specific manifest namespaces before receipt or comparative quorum evaluation.
+
+Completion criteria for Phase 14B:
+
+- Algorithm confusion, unknown keys, signature corruption, audience/project substitution, source/job divergence, unprotected refs, self-hosted runners, config drift, expiry, trust-bundle replacement, projection forgery, dirty state, and missing nested artifacts fail closed.
+- GitLab numeric IDs are normalized without accepting non-positive, unsafe, or non-decimal identities.
+- Multiple GitLab-hosted jobs remain one correlated domain even when their runner, pipeline, and job IDs differ.
+- OIDC success never grants release or policy authority and never replaces dual-signed execution evidence.
+
+See `gitlab-ci-native-verifier-adapter.md` for the exact contract, operations, source interpretation, and limitations.
+
 ## 16. Release Gates
 
 | Gate | Condition |
@@ -482,6 +501,7 @@ See `github-actions-native-verifier-adapter.md` for the exact contract, operatio
 | G16 | Trust-policy v0.6 dispatch and post-execution quorum use computed failure domains instead of declared group labels |
 | G17 | Trust-policy v0.7 dispatch has a current, contiguous, reconstructable and manifest-backed transparency state with valid consistency, observer, root, incident and revocation status |
 | G18 | Runtime-policy v0.3 GitHub evidence has a valid manifest-pinned JWKS, strict OIDC signature/claim appraisal, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
+| G19 | Runtime-policy v0.3 GitLab evidence has a valid manifest-pinned GitLab.com JWKS, strict OIDC signature/claim appraisal, stable source/job identity, protected same-project config, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 
 ## 17. Related Documents
 
@@ -495,3 +515,4 @@ See `github-actions-native-verifier-adapter.md` for the exact contract, operatio
 - `verifier-execution-integrity.md`
 - `transparency-operations.md`
 - `github-actions-native-verifier-adapter.md`
+- `gitlab-ci-native-verifier-adapter.md`

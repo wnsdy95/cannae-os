@@ -26,8 +26,8 @@ const {
   EXECUTION_PREDICATE_TYPE,
   EXECUTION_PREDICATE_TYPE_V2,
   EXECUTION_PREDICATE_TYPE_V3,
-  PROVIDER_REQUIRED_CLAIMS,
-  evidenceDigest: verifierExecutionEvidenceDigest
+  evidenceDigest: verifierExecutionEvidenceDigest,
+  providerRequiredClaims
 } = require("../verifier-execution-evidence");
 const {
   deriveGitHubActionsIndependence,
@@ -36,6 +36,14 @@ const {
   trustBundleDigest,
   verifyGitHubActionsOIDCTrustBundle
 } = require("../github-actions-oidc");
+const {
+  deriveGitLabCIIndependence,
+  nativeEvidenceDigest: gitlabNativeEvidenceDigest,
+  parseCompactJwt: parseGitLabCompactJwt,
+  projectedClaims: projectedGitLabClaims,
+  trustBundleDigest: gitlabTrustBundleDigest,
+  verifyGitLabCIOIDCTrustBundle
+} = require("../gitlab-ci-oidc");
 const {
   computeVerifierIndependence,
   exactDimensions,
@@ -117,6 +125,8 @@ const TYPE_TO_SCHEMA = {
   "verifier-execution-evidence": "verifier-execution-evidence.schema.json",
   "github-actions-oidc-trust-bundle": "github-actions-oidc-trust-bundle.schema.json",
   "github-actions-oidc-evidence": "github-actions-oidc-evidence.schema.json",
+  "gitlab-ci-oidc-trust-bundle": "gitlab-ci-oidc-trust-bundle.schema.json",
+  "gitlab-ci-oidc-evidence": "gitlab-ci-oidc-evidence.schema.json",
   "verifier-challenge-set": "verifier-challenge-set.schema.json",
   "transparency-policy": "transparency-policy.schema.json",
   "transparency-observation": "transparency-observation.schema.json",
@@ -2246,7 +2256,7 @@ function semanticRules(payload, type) {
       } catch (error) {
         issues.push(issue("critical", "VERIFIER_RUNTIME_BUILDER_KEY_INVALID", `${pointer}.builder.public_key_pem`, "Builder public key must be valid SPKI PEM."));
       }
-      const requiredClaims = PROVIDER_REQUIRED_CLAIMS[profile.provider] || [];
+      const requiredClaims = providerRequiredClaims(profile);
       const pinnedClaims = profile.provider_identity && profile.provider_identity.required_claims || {};
       if (requiredClaims.some(key => typeof pinnedClaims[key] !== "string" || pinnedClaims[key].length === 0)) {
         issues.push(issue("critical", "VERIFIER_RUNTIME_PROVIDER_CLAIMS_INCOMPLETE", `${pointer}.provider_identity.required_claims`, "Provider-specific stable execution identity claims must be pinned exactly."));
@@ -2259,23 +2269,46 @@ function semanticRules(payload, type) {
       }
       if (payload.schema_version === "0.3") {
         const native = profile.native_identity || {};
-        const reusableSha = pinnedClaims.job_workflow_sha;
-        const nativePinnedClaims = [
-          "job_workflow_ref", "job_workflow_sha", "ref", "repository", "repository_id",
-          "repository_owner", "repository_owner_id", "runner_environment", "sha", "workflow_ref", "workflow_sha"
-        ];
-        if (profile.provider !== "github_actions" || native.adapter !== "github_actions_oidc_v1" ||
-            native.algorithm !== "RS256" || native.required_runner_environment !== "github-hosted" ||
-            native.require_reusable_workflow !== true) {
-          issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_PROFILE_INVALID", `${pointer}.native_identity`, "Runtime-policy v0.3 supports only the strict GitHub Actions OIDC reusable-workflow adapter."));
-        }
-        if (nativePinnedClaims.some(name => typeof pinnedClaims[name] !== "string" || pinnedClaims[name].length === 0) ||
-            profile.provider_identity && profile.provider_identity.issuer !== "https://token.actions.githubusercontent.com" ||
-            pinnedClaims.runner_environment !== "github-hosted" || !/^[a-f0-9]{40}$/.test(pinnedClaims.sha || "") ||
-            pinnedClaims.workflow_sha !== pinnedClaims.sha ||
-            !/^[a-f0-9]{40}$/.test(reusableSha || "") ||
-            !String(pinnedClaims.job_workflow_ref || "").endsWith(`@${reusableSha || "missing"}`)) {
-          issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_CLAIMS_INVALID", `${pointer}.provider_identity`, "GitHub native profiles must pin the public issuer, immutable IDs, exact commit, GitHub-hosted runner, and reusable workflow by commit SHA."));
+        if (profile.provider === "github_actions") {
+          const reusableSha = pinnedClaims.job_workflow_sha;
+          const nativePinnedClaims = [
+            "job_workflow_ref", "job_workflow_sha", "ref", "repository", "repository_id",
+            "repository_owner", "repository_owner_id", "runner_environment", "sha", "workflow_ref", "workflow_sha"
+          ];
+          if (native.adapter !== "github_actions_oidc_v1" || native.algorithm !== "RS256" ||
+              native.required_runner_environment !== "github-hosted" || native.require_reusable_workflow !== true) {
+            issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_PROFILE_INVALID", `${pointer}.native_identity`, "GitHub native profiles require the strict GitHub Actions reusable-workflow OIDC adapter."));
+          }
+          if (nativePinnedClaims.some(name => typeof pinnedClaims[name] !== "string" || pinnedClaims[name].length === 0) ||
+              profile.provider_identity && profile.provider_identity.issuer !== "https://token.actions.githubusercontent.com" ||
+              pinnedClaims.runner_environment !== "github-hosted" || !/^[a-f0-9]{40}$/.test(pinnedClaims.sha || "") ||
+              pinnedClaims.workflow_sha !== pinnedClaims.sha || !/^[a-f0-9]{40}$/.test(reusableSha || "") ||
+              !String(pinnedClaims.job_workflow_ref || "").endsWith(`@${reusableSha || "missing"}`)) {
+            issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_CLAIMS_INVALID", `${pointer}.provider_identity`, "GitHub native profiles must pin the public issuer, immutable IDs, exact commit, GitHub-hosted runner, and reusable workflow by commit SHA."));
+          }
+        } else if (profile.provider === "gitlab_ci") {
+          const stableIds = ["project_id", "namespace_id", "job_project_id", "job_namespace_id"];
+          const sameProject = pinnedClaims.project_id === pinnedClaims.job_project_id &&
+            pinnedClaims.project_path === pinnedClaims.job_project_path &&
+            pinnedClaims.namespace_id === pinnedClaims.job_namespace_id &&
+            pinnedClaims.namespace_path === pinnedClaims.job_namespace_path;
+          const configPrefix = `gitlab.com/${pinnedClaims.job_project_path || "missing"}//`;
+          if (native.adapter !== "gitlab_ci_oidc_v1" || native.algorithm !== "RS256" ||
+              native.required_runner_environment !== "gitlab-hosted" || native.require_protected_ref !== true ||
+              native.require_same_project_config !== true) {
+            issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_PROFILE_INVALID", `${pointer}.native_identity`, "GitLab native profiles require the strict GitLab.com hosted-runner OIDC adapter."));
+          }
+          if (profile.provider_identity && profile.provider_identity.issuer !== "https://gitlab.com" ||
+              stableIds.some(name => !/^[1-9]\d*$/.test(pinnedClaims[name] || "")) || !sameProject ||
+              pinnedClaims.runner_environment !== "gitlab-hosted" || pinnedClaims.ref_protected !== "true" ||
+              pinnedClaims.ref_type !== "branch" || pinnedClaims.ref_path !== `refs/heads/${pinnedClaims.ref || "missing"}` ||
+              !/^[a-f0-9]{40}$/.test(pinnedClaims.sha || "") || pinnedClaims.ci_config_sha !== pinnedClaims.sha ||
+              !String(pinnedClaims.ci_config_ref_uri || "").startsWith(configPrefix) ||
+              !String(pinnedClaims.ci_config_ref_uri || "").endsWith(`@${pinnedClaims.ref_path || "missing"}`)) {
+            issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_CLAIMS_INVALID", `${pointer}.provider_identity`, "GitLab native profiles must pin GitLab.com, stable source and job IDs, one protected branch, same-project CI config and commit, and GitLab-hosted execution."));
+          }
+        } else {
+          issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_PROFILE_INVALID", `${pointer}.native_identity`, "Runtime-policy v0.3 requires a supported native GitHub Actions or GitLab CI adapter."));
         }
         const ref = native.trust_bundle_ref || {};
         if (path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
@@ -2428,6 +2461,34 @@ function semanticRules(payload, type) {
           projected.audience !== claims.aud || !sameJson(projected.claims, expectedClaims) ||
           !sameJson(payload.independence, deriveGitHubActionsIndependence(claims))) {
         issues.push(issue("critical", "GITHUB_OIDC_EVIDENCE_PROJECTION_INVALID", "$.provider_identity", "Native evidence projections must match the signed JWT claims exactly."));
+      }
+    }
+  }
+
+  if (type === "gitlab-ci-oidc-trust-bundle") {
+    if (payload.bundle_sha256 !== gitlabTrustBundleDigest(payload)) {
+      issues.push(issue("critical", "GITLAB_OIDC_TRUST_BUNDLE_DIGEST_INVALID", "$.bundle_sha256", "Trust-bundle digest must match the canonical artifact."));
+    }
+    const result = verifyGitLabCIOIDCTrustBundle(payload, payload.source && payload.source.retrieved_at);
+    for (const code of result.codes) {
+      issues.push(issue("critical", code, "$", "GitLab CI OIDC trust material failed semantic validation."));
+    }
+  }
+
+  if (type === "gitlab-ci-oidc-evidence") {
+    if (payload.evidence_sha256 !== gitlabNativeEvidenceDigest(payload)) {
+      issues.push(issue("critical", "GITLAB_OIDC_EVIDENCE_DIGEST_INVALID", "$.evidence_sha256", "Native OIDC evidence digest must match the canonical artifact."));
+    }
+    const parsed = parseGitLabCompactJwt(payload.compact_jwt);
+    if (!parsed || crypto.createHash("sha256").update(payload.compact_jwt || "").digest("hex") !== payload.token_sha256) {
+      issues.push(issue("critical", "GITLAB_OIDC_EVIDENCE_TOKEN_INVALID", "$.compact_jwt", "Native evidence must retain the exact compact JWT and its digest."));
+    } else {
+      const claims = parsed.claims;
+      const projected = payload.provider_identity || {};
+      if (!sameJson(payload.header, parsed.header) || projected.issuer !== claims.iss || projected.subject !== claims.sub ||
+          projected.audience !== claims.aud || !sameJson(projected.claims, projectedGitLabClaims(claims)) ||
+          !sameJson(payload.independence, deriveGitLabCIIndependence(claims))) {
+        issues.push(issue("critical", "GITLAB_OIDC_EVIDENCE_PROJECTION_INVALID", "$.provider_identity", "Native evidence projections must match the signed JWT claims exactly."));
       }
     }
   }

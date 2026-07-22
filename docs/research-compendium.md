@@ -3266,5 +3266,53 @@ Residual limits:
 - no self-hosted or larger-runner identity adapter;
 - no GitHub JWKS transparency monitor or historical key archive;
 - no proof of physical runner isolation or sandbox enforcement;
-- no native GitLab CI, local host, or TEE adapter;
+- no enterprise/self-managed provider, local host, or TEE adapter;
+- no authority expansion from successful OIDC or quorum verification.
+
+## Phase 14B: GitLab CI Native Execution Identity
+
+Purpose: replace policy-pinned but builder-restated GitLab metadata with a provider-signed GitLab.com ID token verified before execution evidence enters quorum.
+
+Primary sources:
+
+- GitLab ID token authentication and claims: https://docs.gitlab.com/ci/secrets/id_token_authentication/
+- GitLab `id_tokens` YAML contract: https://docs.gitlab.com/ci/yaml/#id_tokens
+- GitLab cloud trust and stable-ID guidance: https://docs.gitlab.com/ci/cloud_services/
+- GitLab Runner model: https://docs.gitlab.com/runner/
+- GitLab-hosted runner isolation: https://docs.gitlab.com/ci/runners/hosted_runners/
+- GitLab.com live discovery: https://gitlab.com/.well-known/openid-configuration
+- GitLab.com live JWKS: https://gitlab.com/oauth/discovery/keys
+
+Findings:
+
+1. GitLab.com currently publishes `https://gitlab.com` as issuer, `https://gitlab.com/oauth/discovery/keys` as JWKS URI, and `RS256` as its ID-token signing algorithm. The adapter fixes all three instead of trusting token-selected endpoints or algorithms.
+2. `id_tokens` allows a scalar or array audience. The first Cannae profile requires one exact scalar audience so the runtime contract and projected identity remain unambiguous.
+3. Exact subject remains required but is not sufficient because GitLab permits project-specific subject customization. Stable numeric project and namespace IDs are pinned with path claims, following GitLab's guidance to combine stable IDs with paths.
+4. Source `project_*` and `namespace_*` claims can describe a merge-request source project, while `job_project_*` and `job_namespace_*` identify the project running the job. Phase 14B requires both sets to match, intentionally excluding fork and cross-project pipeline identities from this first profile.
+5. `ref_protected`, `ref_type`, and `ref_path` are signed claims. The profile requires a protected branch and exact fully qualified ref; tags and unprotected refs are rejected.
+6. `ci_config_ref_uri` and `ci_config_sha` are null when the top-level pipeline definition is not in the same project. The profile requires non-null same-project config, an exact ref URI, and `ci_config_sha=sha`.
+7. A same-project top-level config claim does not transitively identify every remote include. Exact verifier code, dependency, harness, image, and policy digests remain necessary, and remote include closure remains a residual limitation.
+8. `runner_environment` distinguishes `gitlab-hosted` from `self-hosted`; `runner_id` identifies a runner but not necessarily the runner manager, ephemeral machine, cloud project, region, or zone.
+9. GitLab-hosted runner documentation describes fresh single-job VMs for standard GitLab.com hosted jobs, but the ID token does not carry a cryptographic machine or topology identity. Infrastructure, region, and zone must remain shared unknown values.
+10. Pipeline, job, and runner IDs are retained as signed trace fields. They are deliberately excluded from failure-domain derivation so repeated jobs cannot inflate quorum diversity.
+11. GitLab documents token expiry as the job timeout, or five minutes when no timeout is configured. Independent maximum-age and clock-skew policy still applies at admission.
+12. OIDC proves provider-issued job context, not exact verifier execution. The separate builder/verifier DSSE remains the result-bearing proof, and no OIDC success grants release or policy authority.
+
+Implemented contracts:
+
+- `GitLabCIOIDCTrustBundle` schema, canonical digest, normalized key rules, freshness window, runner, and sample.
+- `GitLabCIOIDCEvidence` schema, exact compact token retention, normalized numeric-ID projection, digest, runner, and sample.
+- provider-neutral runtime-policy v0.3 native adapter union and execution-evidence v0.3 dispatch.
+- strict signature, identity, time, stable source/job ID, protected-ref, same-project config, clean-commit, and conservative-domain checks.
+- provider-specific manifest loading in receipt and comparative-attestation quorum paths.
+- 25 adversarial fixtures including audience arrays, source/job divergence, false runner diversity, missing trust material, and missing nested evidence.
+
+Residual limits:
+
+- no GitLab Self-Managed or Dedicated issuer profile;
+- no self-hosted runner or authenticated runner-manager/machine adapter;
+- no immutable closure proof for remote CI includes;
+- no GitLab JWKS transparency monitor or historical key archive;
+- no proof of physical runner infrastructure, region, zone, or sandbox enforcement;
+- no local-host or TEE adapter;
 - no authority expansion from successful OIDC or quorum verification.
