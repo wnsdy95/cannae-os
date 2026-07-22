@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.1",
+  "type": "AgentContextPack",
+  "id": "ACP-W1-plans-agent",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "operational_role": "S3",
+  "department": "operations",
+  "task": "Implement the bounded skill change and its fixtures.",
+  "classification": "internal",
+  "plan_ref": {
+    "artifact_id": "MWP-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "routing_receipt_ref": {
+    "artifact_id": "RR-W1-plans-agent",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-receipts/RR-W1-plans-agent.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "routing_preflight_ref": {
+    "artifact_id": "ARP-W1",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
+    "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "doctrine_state": {
+    "revision": "0123456789abcdef0123456789abcdef01234567",
+    "router_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "controller_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "documents": [
+    {
+      "path": "README.md",
+      "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    },
+    {
+      "path": "docs/source-map.md",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "path": "docs/agent-roles-and-authority.md",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  ],
+  "validation_commands": ["node run-document-routing-fixtures.js"],
+  "model_assignment": {
+    "required": false,
+    "integrated_preflight_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "billet_id": "not_required",
+    "model_profile_id": "not_required",
+    "model_family": "not_required",
+    "model_version": "not_required",
+    "harness_version": "not_required"
+  },
+  "authority": {
+    "delegated_authority": "scoped-execution",
+    "allowed_actions": ["Edit the assigned skill and test surfaces."],
+    "approval_required": ["Any scope change."],
+    "prohibited_actions": ["External release."],
+    "human_final_decision_authority": "USER",
+    "release_authorized": false,
+    "self_approval_prohibited": true
+  },
+  "escalation_conditions": ["Requested action exceeds delegated authority."],
+  "status": "ready",
+  "created_at": "2026-07-23T04:00:00+09:00",
+  "valid_until": "2027-07-23T04:00:00+09:00"
+}

@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.1",
+  "type": "MissionWavePlan",
+  "id": "MWP-SKILL-DEMO-W1",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "title": "Operationalize a repository skill",
+  "objective": "Produce and verify a repository-scoped skill improvement without bypassing routing or human authority.",
+  "success_conditions": [
+    "Every expected agent receives a manifest-backed context pack.",
+    "The changed skill passes deterministic validation."
+  ],
+  "failure_conditions": [
+    "Any expected agent starts without a routing receipt.",
+    "An AI agent claims approval or release authority."
+  ],
+  "constraints": [
+    "Operate only inside the target repository.",
+    "Persist durable evidence through the repository artifact store."
+  ],
+  "mission_profile": {
+    "classification": "internal",
+    "risk_level": "medium",
+    "roe_class": "Amber",
+    "release_target": "internal_handoff"
+  },
+  "agents": [
+    {
+      "agent_id": "plans-agent",
+      "operational_role": "S3",
+      "department": "operations",
+      "task": "Implement the bounded skill change and its fixtures.",
+      "model_billet_id": "not_required",
+      "delegated_authority": "scoped-execution",
+      "allowed_actions": [
+        "Inspect scoped repository files.",
+        "Edit the assigned skill and test surfaces.",
+        "Run deterministic validation."
+      ],
+      "approval_required": [
+        "Any scope change.",
+        "Any repository publication action."
+      ],
+      "prohibited_actions": [
+        "Self-approval.",
+        "External release."
+      ],
+      "context_scope": "internal"
+    },
+    {
+      "agent_id": "verification-agent",
+      "operational_role": "EVALUATOR",
+      "department": "red_team",
+      "task": "Independently verify acceptance criteria and authority boundaries.",
+      "model_billet_id": "not_required",
+      "delegated_authority": "risk-review",
+      "allowed_actions": [
+        "Inspect the candidate and its evidence.",
+        "Run the assigned verification commands.",
+        "Report defects and residual risk."
+      ],
+      "approval_required": [
+        "Any modification to the candidate.",
+        "Any change to verification criteria."
+      ],
+      "prohibited_actions": [
+        "Self-approval.",
+        "Candidate implementation."
+      ],
+      "context_scope": "internal"
+    }
+  ],
+  "model_assignment": {
+    "required": false,
+    "integrated_preflight_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    }
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "routing_required_every_wave": true,
+    "repository_artifacts_required": true,
+    "approval_required_for_scope_change": true,
+    "approval_required_for_commit": true,
+    "approval_required_for_push": true,
+    "approval_required_for_merge": true,
+    "approval_required_for_release": true,
+    "self_approval_prohibited": true
+  },
+  "adaptive_work": {
+    "enabled": true,
+    "campaign_id": "SIC-SKILL-DEMO",
+    "target_type": "skill",
+    "acceptance_criteria": [
+      "Routing coverage remains complete.",
+      "Baseline behavior does not regress."
+    ],
+    "non_goals": [
+      "Changing approval authority.",
+      "Publishing or releasing without the user."
+    ],
+    "max_cycles": 4,
+    "max_changed_files": 20,
+    "max_elapsed_minutes": 240
+  },
+  "created_at": "2026-07-23T04:00:00+09:00",
+  "valid_until": "2027-07-23T04:00:00+09:00"
+}

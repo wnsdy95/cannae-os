@@ -3316,3 +3316,37 @@ Residual limits:
 - no proof of physical runner infrastructure, region, zone, or sandbox enforcement;
 - no local-host or TEE adapter;
 - no authority expansion from successful OIDC or quorum verification.
+
+## Phase 15: Operational Skill Mission Lifecycle
+
+Purpose: convert the doctrine skill from a document-routing guide into a fail-closed operational path that applies routing, context, evidence, reporting, and learning controls to real delegated work.
+
+Synthesis from the existing doctrine and runtime:
+
+1. A documented requirement to route every wave is not sufficient when each agent can still begin work before the requirement is checked.
+2. The lifecycle entry point must generate receipts itself, compare them with the expected agent roster, and refuse to issue execution context when preflight is blocked.
+3. The S3 routing role is a control-plane identity. It can coexist with an agent's actual operational role, department, task, and delegated authority inside the context pack.
+4. A document path alone cannot preserve shared understanding over time. Context packs bind each selected file to a digest and bind the router/controller code plus doctrine revision used to select it.
+5. A model assignment is usable only when a ready integrated preflight binds the same mission, wave, agent, and billet. Model family or capability labels do not create authority.
+6. A completion statement is not evidence. Complete agent results cite exact manifest-backed work artifacts, while control metadata such as plans, receipts, and context packs is excluded as proof of task performance.
+7. AAR learning should create a next-wave queue, not a claim that future improvement has already executed. Ordinary findings enter an existing finite campaign; approval, release, policy, authority, risk, push, and merge effects return to the human user.
+8. One controller used by both Codex and Claude reduces procedural drift. The wrappers resolve one repository runtime while retaining separate native skill installations.
+
+Implemented surfaces:
+
+- `skill-mission-controller.js`
+- `docs/skill-operational-mission-lifecycle.md`
+- `schema-files/mission-wave-plan.schema.json`
+- `schema-files/agent-context-pack.schema.json`
+- `schema-files/mission-wave-report.schema.json`
+- `schema-files/mission-wave-closeout.schema.json`
+- `run-skill-mission-controller-fixtures.js`
+- Codex and Claude `operate_controls_mission.js` wrappers
+
+Residual limits:
+
+- the controller is invoked by an operator or agent and is not a persistent background scheduler;
+- queued adaptive work still requires supervisor, verification, attestation, checkpoint, and promotion evidence from the bounded self-improvement runtime;
+- local process invocation cannot itself intercept every external tool call;
+- production authorization, identity provider, event service, approval UI, distributed coordinator, and sandbox enforcement remain external;
+- no lifecycle result grants commit, push, merge, risk acceptance, policy change, authority change, or release permission.

@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1",
+  "type": "MissionWaveReport",
+  "id": "MWR-UNSAFE-W1",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "plan_ref": {
+    "artifact_id": "MWP-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/plan.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "routing_preflight_ref": {
+    "artifact_id": "ARP-W1",
+    "relative_path": "repositories/demo/preflight.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "agent_results": [
+    {
+      "agent_id": "plans-agent",
+      "context_pack_ref": {
+        "artifact_id": "ACP-W1-plans-agent",
+        "relative_path": "repositories/demo/context.json",
+        "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "status": "complete",
+      "summary": "Self-approved release.",
+      "completed_actions": ["Released output."],
+      "blockers": [],
+      "evidence_refs": [
+        {
+          "artifact_id": "OUT-UNSAFE",
+          "relative_path": "repositories/demo/output.json",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        }
+      ],
+      "improvement_candidates": [],
+      "next_actions": []
+    }
+  ],
+  "wave_status": "complete",
+  "human_decisions_required": [],
+  "release_requested": true,
+  "recorded_at": "2026-07-23T05:00:00+09:00"
+}

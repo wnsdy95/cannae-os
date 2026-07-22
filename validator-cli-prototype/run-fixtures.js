@@ -204,6 +204,62 @@ const fixtures = [
     ]
   },
   {
+    name: "valid operational mission wave plan",
+    file: "sample-payloads/valid-mission-wave-plan.json",
+    type: "mission-wave-plan",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "mission wave plan assigns AI final authority",
+    file: "sample-payloads/invalid-mission-wave-plan-ai-final-authority.json",
+    type: "mission-wave-plan",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH", "MISSION_WAVE_AI_COMMAND_AUTHORITY", "MISSION_WAVE_RETAINED_ACTION_DELEGATED"]
+  },
+  {
+    name: "valid operational agent context pack",
+    file: "sample-payloads/valid-agent-context-pack.json",
+    type: "agent-context-pack",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "agent context pack claims release authority",
+    file: "sample-payloads/invalid-agent-context-pack-release-authorized.json",
+    type: "agent-context-pack",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "valid operational mission wave report",
+    file: "sample-payloads/valid-mission-wave-report.json",
+    type: "mission-wave-report",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "mission wave report requests self-release",
+    file: "sample-payloads/invalid-mission-wave-report-self-release.json",
+    type: "mission-wave-report",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "valid operational mission wave closeout",
+    file: "sample-payloads/valid-mission-wave-closeout.json",
+    type: "mission-wave-closeout",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "mission wave closeout claims self-release",
+    file: "sample-payloads/invalid-mission-wave-closeout-self-release.json",
+    type: "mission-wave-closeout",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
     name: "unjustified force structure expansion",
     file: "sample-payloads/invalid-force-structure-change-order-unjustified.json",
     type: "force-structure-change-order",

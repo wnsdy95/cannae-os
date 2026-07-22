@@ -32,7 +32,16 @@ For delegated AI work:
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --actor=ai --role=S3 --department=operations --authority=scoped-execution "<mission request>" .
 ```
 
-For delegated AI waves, routing is mandatory evidence. The CoS opens every wave with a wave receipt, and each expected agent produces its own S3 execution receipt before work:
+For delegated AI waves, use the operational lifecycle controller. It generates the CoS and every expected S3 receipt, runs preflight, binds optional model assignment, and issues context packs only when ready:
+
+```bash
+node .claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
+  open <mission-wave-plan.json> \
+  --repository <target-repo> \
+  --artifact-root .cannae/artifacts
+```
+
+The manual receipt commands below are for diagnosis or lower-level integration, not the default dispatch path:
 
 ```bash
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking "<wave mission>" .
@@ -42,7 +51,21 @@ node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
 
 If role, department, or authority is missing in delegated AI mode, start with least-privilege routing and ask or infer only from explicit mission context.
 
-This skill is self-contained: the router script and reference docs are bundled under this skill folder, so it works without reaching into `codex-skills/`.
+The router and references are bundled under this skill folder and do not depend on `codex-skills/`. The lifecycle wrapper resolves the shared Cannae OS runtime through the live symlink, the copy-install marker, or `CANNAE_OS_HOME`.
+
+## Operational Mission Lifecycle
+
+1. Create a schema-valid `MissionWavePlan` from `sample-payloads/valid-mission-wave-plan.json`. Preserve `USER` final authority, give each AI a non-command operational role, state allowed/approval-required/prohibited actions, and set finite validity and adaptive budgets.
+2. Run `scripts/operate_controls_mission.js open`. Require `status: ready`, `dispatch_authorized: true`, one context pack per expected agent, and a valid artifact store. Do not dispatch from manually assembled chat claims.
+3. Give each agent only its exact `AgentContextPack`. The S3 receipt is the mandatory control-plane route; the context pack's operational role, department, task, and delegated authority are the actual mission assignment.
+4. For required model allocation, persist a ready integrated preflight first and cite its exact manifest reference and per-agent billet. Missing or mismatched bindings block `open`.
+5. Store work products and verification results through `repository-artifact-store.js`; control metadata and completion prose are not work evidence.
+6. Run `scripts/operate_controls_mission.js report <report.json>` with exact plan, preflight, context, and work-evidence references. A blocked or failed report stops continuation.
+7. Run `scripts/operate_controls_mission.js close <aar.json> --mission <id> --wave <id>`. Follow the emitted next-wave trigger; bounded improvements do not claim future execution.
+8. Use `status` for handoff and `verify` before evidence consumption or completion. Conversation history is not mission state.
+9. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from any lifecycle result.
+
+Read `docs/skill-operational-mission-lifecycle.md` for the complete command and failure contract.
 
 ## References
 
@@ -116,6 +139,7 @@ Use the smallest relevant validation, then broaden:
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
+node run-skill-mission-controller-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
@@ -159,6 +183,7 @@ Escalate to the user before:
 - Accepting risk above the delegated role's authority.
 - Treating US doctrine as universal without multinational consistency review.
 - Allowing model capability, router choice, or evaluator confidence to expand delegated role authority.
+- Starting delegated work without the current controller-issued context pack, or reusing a prior wave's routing evidence.
 - Mixing artifacts from separate target repositories in one flat output namespace.
 - Continuing adaptive work without a finite campaign, runtime-issued receipt, fresh trusted signed receipt quorum for v0.3+, required signed report quorum for v0.4 control-plane work, required manifest-backed evidence for every counted verifier's selected SPIFFE or Sigstore adapter under trust-policy v0.2+, the selected Sigstore TrustedRoot when applicable, the exact runtime policy and per-attestation execution evidence under trust-policy v0.4+, the exact unexpired supervisor challenge and dual-signed nonce responses under v0.5+, runtime-policy v0.2+ and enough computed failure domains under v0.6+, the exact native OIDC/JWKS chain and clean token-bound commit for runtime-policy v0.3 GitHub Actions and GitLab CI evidence, a contiguous current manifest-backed transparency state under v0.7, verified accepted baseline, integrity-checked proof store, mandatory checkpoint, or evidence-backed stop decision.
 
@@ -177,5 +202,6 @@ This Claude skill is self-contained. Its bundled files are:
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`
 - `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`
 - `.claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.js`
 
 The Codex copy under `codex-skills/controls-doctrine-operator/` is the parallel skill for Codex (`~/.codex/skills`). When the router script or a reference changes, update both copies so they do not drift.

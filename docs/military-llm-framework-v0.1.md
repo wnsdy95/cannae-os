@@ -473,6 +473,14 @@ Current document set:
 168. `repository-artifact-store.js`: Atomic JSON/file artifact writer using Git-derived repository identity, mission/wave paths, manifests, and overwrite/traversal guards.
 169. `schema-files/repository-artifact-manifest.schema.json`: Contract for repository identity, relative artifact paths, hashes, content metadata, and isolation assertions.
 170. `run-repository-artifact-isolation-fixtures.js`: Two-repository regression proving same mission/artifact IDs remain separated.
+171. `skill-operational-mission-lifecycle.md`: Defines the fail-closed open, report, close, status, and verification sequence for delegated skill missions.
+172. `skill-mission-controller.js`: Generates mandatory per-wave routing evidence and repository-bound agent context packs, then records evidence and closeout state without granting release.
+173. `schema-files/mission-wave-plan.schema.json`: Contract for scoped agents, authority boundaries, model preflight, adaptive limits, and validity windows.
+174. `schema-files/agent-context-pack.schema.json`: Contract binding an agent to exact doctrine bytes, role, task, model identity, and prohibited authority.
+175. `schema-files/mission-wave-report.schema.json`: Contract for exact agent-set reporting and manifest-backed work evidence.
+176. `schema-files/mission-wave-closeout.schema.json`: Contract for AAR/readiness lineage, bounded improvement disposition, and next-wave triggers.
+177. `run-skill-mission-controller-fixtures.js`: End-to-end fixtures for routing, context, evidence, model binding, time boundaries, closeout, and repository isolation.
+178. `codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js` and `.claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.js`: CLI-specific wrappers over the same lifecycle runtime.
 
 Next documentation tasks:
 

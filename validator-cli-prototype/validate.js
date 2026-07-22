@@ -102,6 +102,10 @@ const TYPE_TO_SCHEMA = {
   "approval-delegation-revocation-event": "approval-delegation-revocation-event.schema.json",
   "release-gate-decision-event": "release-gate-decision-event.schema.json",
   "routing-receipt": "routing-receipt.schema.json",
+  "mission-wave-plan": "mission-wave-plan.schema.json",
+  "agent-context-pack": "agent-context-pack.schema.json",
+  "mission-wave-report": "mission-wave-report.schema.json",
+  "mission-wave-closeout": "mission-wave-closeout.schema.json",
   "model-force-assignment-plan": "model-force-assignment-plan.schema.json",
   "model-registry": "model-registry.schema.json",
   "model-assignment-request": "model-assignment-request.schema.json",
@@ -1131,6 +1135,150 @@ function semanticRules(payload, type) {
     }
     if (!hasSubstantiveItems(payload.evidence)) {
       issues.push(issue("error", "RELEASE_GATE_WITHOUT_EVIDENCE", "$.evidence", "Release gate decision event must include evidence."));
+    }
+  }
+
+  if (type === "mission-wave-plan") {
+    if (!isValidDate(payload.created_at) || !isValidDate(payload.valid_until) || !isBefore(payload.created_at, payload.valid_until)) {
+      issues.push(issue("critical", "MISSION_WAVE_INVALID_VALIDITY", "$.valid_until", "Mission wave validity must end after its valid creation time."));
+    }
+    const agents = payload.agents || [];
+    const agentIds = agents.map(agent => agent.agent_id);
+    if (new Set(agentIds).size !== agentIds.length) {
+      issues.push(issue("critical", "MISSION_WAVE_DUPLICATE_AGENT", "$.agents", "A mission wave cannot assign the same agent more than once."));
+    }
+    for (const [index, agent] of agents.entries()) {
+      const pointer = `$.agents[${index}]`;
+      if (["USER", "COMMANDER"].includes(agent.operational_role)) {
+        issues.push(issue("critical", "MISSION_WAVE_AI_COMMAND_AUTHORITY", `${pointer}.operational_role`, "A delegated AI agent cannot occupy USER or COMMANDER final-decision authority."));
+      }
+      for (const field of ["allowed_actions", "approval_required", "prohibited_actions"]) {
+        if (!hasSubstantiveItems(agent[field])) {
+          issues.push(issue("error", "MISSION_WAVE_EMPTY_AUTHORITY_BOUNDARY", `${pointer}.${field}`, `Agent ${agent.agent_id || index} must declare substantive ${field}.`));
+        }
+      }
+      const allowed = (agent.allowed_actions || []).join(" ");
+      if (/\b(?:approve|release|merge|push|commit|accept\s+risk|change\s+(?:policy|authority))\b/i.test(allowed)) {
+        issues.push(issue("critical", "MISSION_WAVE_RETAINED_ACTION_DELEGATED", `${pointer}.allowed_actions`, "Retained approval, release, repository publication, risk, policy, or authority actions cannot be delegated as ordinary execution."));
+      }
+      if ((CLASSIFICATION_RANK[agent.context_scope] ?? 99) >
+          (CLASSIFICATION_RANK[payload.mission_profile && payload.mission_profile.classification] ?? -1)) {
+        issues.push(issue("critical", "MISSION_WAVE_CONTEXT_EXCEEDS_MISSION", `${pointer}.context_scope`, "Agent context scope cannot exceed the mission classification."));
+      }
+    }
+    if (payload.mission_profile && payload.mission_profile.roe_class === "Black") {
+      issues.push(issue("critical", "MISSION_WAVE_BLACK_PROHIBITED", "$.mission_profile.roe_class", "Black actions cannot enter an operational mission wave."));
+    }
+    if (payload.adaptive_work && payload.adaptive_work.enabled === true && !hasSubstantiveItems(payload.adaptive_work.acceptance_criteria)) {
+      issues.push(issue("critical", "MISSION_WAVE_ADAPTIVE_WITHOUT_CRITERIA", "$.adaptive_work.acceptance_criteria", "Adaptive work requires observable acceptance criteria."));
+    }
+    const modelAssignment = payload.model_assignment || {};
+    const modelRef = modelAssignment.integrated_preflight_ref || {};
+    const modelRefMissing = modelRef.artifact_id === "none" || modelRef.relative_path === "none" || modelRef.sha256 === "none";
+    if (modelRefMissing && !(modelRef.artifact_id === "none" && modelRef.relative_path === "none" && modelRef.sha256 === "none")) {
+      issues.push(issue("critical", "MISSION_WAVE_PARTIAL_MODEL_PREFLIGHT_REF", "$.model_assignment.integrated_preflight_ref", "A missing model preflight reference must use none in every field."));
+    }
+    if (modelAssignment.required === true && modelRefMissing) {
+      issues.push(issue("critical", "MISSION_WAVE_MODEL_PREFLIGHT_REQUIRED", "$.model_assignment.integrated_preflight_ref", "Required model assignment needs an exact integrated preflight reference."));
+    }
+    if (modelAssignment.required !== true && !modelRefMissing) {
+      issues.push(issue("error", "MISSION_WAVE_UNUSED_MODEL_PREFLIGHT", "$.model_assignment.integrated_preflight_ref", "A model preflight reference must not be attached when model assignment is not required."));
+    }
+    for (const [index, agent] of agents.entries()) {
+      if (modelAssignment.required === true && agent.model_billet_id === "not_required") {
+        issues.push(issue("critical", "MISSION_WAVE_MODEL_BILLET_REQUIRED", `$.agents[${index}].model_billet_id`, "Every agent requires a billet when model assignment is required."));
+      }
+      if (modelAssignment.required !== true && agent.model_billet_id !== "not_required") {
+        issues.push(issue("error", "MISSION_WAVE_UNUSED_MODEL_BILLET", `$.agents[${index}].model_billet_id`, "Use not_required when the wave does not require model assignment."));
+      }
+    }
+  }
+
+  if (type === "agent-context-pack") {
+    if (!isValidDate(payload.created_at) || !isValidDate(payload.valid_until) || !isBefore(payload.created_at, payload.valid_until)) {
+      issues.push(issue("critical", "AGENT_CONTEXT_INVALID_VALIDITY", "$.valid_until", "Agent context must have a bounded validity window."));
+    }
+    if (["USER", "COMMANDER"].includes(payload.operational_role)) {
+      issues.push(issue("critical", "AGENT_CONTEXT_AI_COMMAND_AUTHORITY", "$.operational_role", "An AI context pack cannot assign USER or COMMANDER final-decision authority."));
+    }
+    const documentPaths = (payload.documents || []).map(document => document.path);
+    if (new Set(documentPaths).size !== documentPaths.length) {
+      issues.push(issue("error", "AGENT_CONTEXT_DUPLICATE_DOCUMENT", "$.documents", "Agent context documents must be unique."));
+    }
+    for (const baseline of ["README.md", "docs/source-map.md"]) {
+      if (!documentPaths.includes(baseline)) {
+        issues.push(issue("critical", "AGENT_CONTEXT_MISSING_BASELINE", "$.documents", `Agent context must retain ${baseline}.`));
+      }
+    }
+    const authority = payload.authority || {};
+    const allowed = new Set(authority.allowed_actions || []);
+    const prohibited = new Set(authority.prohibited_actions || []);
+    const overlaps = [...allowed].filter(action => prohibited.has(action));
+    if (overlaps.length > 0) {
+      issues.push(issue("critical", "AGENT_CONTEXT_AUTHORITY_CONFLICT", "$.authority", `Actions cannot be both allowed and prohibited: ${overlaps.join(", ")}.`));
+    }
+    const modelAssignment = payload.model_assignment || {};
+    const modelRef = modelAssignment.integrated_preflight_ref || {};
+    const modelMissing = modelRef.artifact_id === "none" || modelRef.relative_path === "none" || modelRef.sha256 === "none";
+    if (modelAssignment.required === true && (modelMissing || [modelAssignment.billet_id, modelAssignment.model_profile_id, modelAssignment.model_family, modelAssignment.model_version, modelAssignment.harness_version].includes("not_required"))) {
+      issues.push(issue("critical", "AGENT_CONTEXT_MODEL_BINDING_MISSING", "$.model_assignment", "Required model assignment must bind a ready integrated preflight and immutable dispatch identity."));
+    }
+    if (modelAssignment.required !== true && (!modelMissing || [modelAssignment.billet_id, modelAssignment.model_profile_id, modelAssignment.model_family, modelAssignment.model_version, modelAssignment.harness_version].some(value => value !== "not_required"))) {
+      issues.push(issue("error", "AGENT_CONTEXT_UNUSED_MODEL_BINDING", "$.model_assignment", "A wave without model assignment must use the not_required sentinel consistently."));
+    }
+  }
+
+  if (type === "mission-wave-report") {
+    if (!isValidDate(payload.recorded_at)) {
+      issues.push(issue("critical", "MISSION_WAVE_REPORT_INVALID_TIMESTAMP", "$.recorded_at", "Mission wave report requires a valid timestamp."));
+    }
+    const results = payload.agent_results || [];
+    const agentIds = results.map(result => result.agent_id);
+    if (new Set(agentIds).size !== agentIds.length) {
+      issues.push(issue("critical", "MISSION_WAVE_REPORT_DUPLICATE_AGENT", "$.agent_results", "A mission wave report cannot contain duplicate agent results."));
+    }
+    for (const [index, result] of results.entries()) {
+      const pointer = `$.agent_results[${index}]`;
+      if (result.status === "complete" && !hasSubstantiveItems(result.evidence_refs || [])) {
+        issues.push(issue("critical", "MISSION_WAVE_REPORT_COMPLETE_WITHOUT_EVIDENCE", `${pointer}.evidence_refs`, "A completed agent result requires manifest-backed evidence."));
+      }
+      if (result.status === "complete" && hasSubstantiveItems(result.blockers)) {
+        issues.push(issue("critical", "MISSION_WAVE_REPORT_COMPLETE_WITH_BLOCKER", `${pointer}.blockers`, "A completed agent result cannot retain blockers."));
+      }
+      if (["blocked", "failed"].includes(result.status) && !hasSubstantiveItems(result.blockers)) {
+        issues.push(issue("error", "MISSION_WAVE_REPORT_BLOCKED_WITHOUT_REASON", `${pointer}.blockers`, "Blocked or failed agent results must state their blockers."));
+      }
+    }
+    const expectedStatus = results.some(result => result.status === "failed")
+      ? "failed"
+      : results.some(result => result.status === "blocked")
+        ? "blocked"
+        : "complete";
+    if (payload.wave_status !== expectedStatus) {
+      issues.push(issue("critical", "MISSION_WAVE_REPORT_STATUS_MISMATCH", "$.wave_status", `Wave status must be ${expectedStatus} for the reported agent results.`));
+    }
+    if (payload.wave_status === "complete" && hasSubstantiveItems(payload.human_decisions_required)) {
+      issues.push(issue("critical", "MISSION_WAVE_REPORT_COMPLETE_PENDING_DECISION", "$.human_decisions_required", "A wave awaiting a human decision cannot be reported complete."));
+    }
+  }
+
+  if (type === "mission-wave-closeout") {
+    if (!isValidDate(payload.closed_at)) {
+      issues.push(issue("critical", "MISSION_WAVE_CLOSEOUT_INVALID_TIMESTAMP", "$.closed_at", "Mission wave closeout requires a valid timestamp."));
+    }
+    const campaignRef = payload.campaign_ref || {};
+    const campaignMissing = campaignRef.artifact_id === "none" || campaignRef.relative_path === "none" || campaignRef.sha256 === "none";
+    if (campaignMissing && !(campaignRef.artifact_id === "none" && campaignRef.relative_path === "none" && campaignRef.sha256 === "none")) {
+      issues.push(issue("critical", "MISSION_WAVE_CLOSEOUT_PARTIAL_CAMPAIGN_REF", "$.campaign_ref", "A missing campaign reference must use none in every field."));
+    }
+    if (campaignMissing && (payload.improvement_actions || []).some(action => action.disposition === "queued_in_bounded_campaign")) {
+      issues.push(issue("critical", "MISSION_WAVE_CLOSEOUT_UNBACKED_IMPROVEMENT", "$.improvement_actions", "An improvement cannot be queued in a bounded campaign without an exact campaign reference."));
+    }
+    if (payload.status !== "complete" && (!payload.next_wave || payload.next_wave.required !== true)) {
+      issues.push(issue("critical", "MISSION_WAVE_CLOSEOUT_BLOCKED_WITHOUT_NEXT_WAVE", "$.next_wave.required", "A blocked closeout must require a follow-on wave."));
+    }
+    if (payload.status === "blocked_pending_human_decision" && payload.next_wave && payload.next_wave.trigger !== "human_decision") {
+      issues.push(issue("critical", "MISSION_WAVE_CLOSEOUT_DECISION_TRIGGER_MISMATCH", "$.next_wave.trigger", "A human-decision block must use the human_decision trigger."));
     }
   }
 

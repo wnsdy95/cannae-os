@@ -1,0 +1,65 @@
+{
+  "schema_version": "0.1",
+  "type": "MissionWaveReport",
+  "id": "MWR-SKILL-DEMO-W1",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "plan_ref": {
+    "artifact_id": "MWP-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "routing_preflight_ref": {
+    "artifact_id": "ARP-W1",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "agent_results": [
+    {
+      "agent_id": "plans-agent",
+      "context_pack_ref": {
+        "artifact_id": "ACP-W1-plans-agent",
+        "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/agent-context-packs/ACP-W1-plans-agent.json",
+        "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "status": "complete",
+      "summary": "Implemented the scoped skill change.",
+      "completed_actions": ["Implemented the assigned change."],
+      "blockers": [],
+      "evidence_refs": [
+        {
+          "artifact_id": "OUT-SKILL-DEMO",
+          "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/deliverables/OUT-SKILL-DEMO.json",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        }
+      ],
+      "improvement_candidates": ["Reduce repeated setup commands."],
+      "next_actions": ["Run independent verification."]
+    },
+    {
+      "agent_id": "verification-agent",
+      "context_pack_ref": {
+        "artifact_id": "ACP-W1-verification-agent",
+        "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/agent-context-packs/ACP-W1-verification-agent.json",
+        "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "status": "complete",
+      "summary": "Verified the acceptance criteria and authority boundary.",
+      "completed_actions": ["Ran deterministic validation."],
+      "blockers": [],
+      "evidence_refs": [
+        {
+          "artifact_id": "VR-SKILL-DEMO",
+          "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/verification-receipts/VR-SKILL-DEMO.json",
+          "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "improvement_candidates": [],
+      "next_actions": ["Conduct the AAR."]
+    }
+  ],
+  "wave_status": "complete",
+  "human_decisions_required": [],
+  "release_requested": false,
+  "recorded_at": "2026-07-23T05:00:00+09:00"
+}

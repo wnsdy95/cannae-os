@@ -46,6 +46,7 @@ Use these examples to test:
 - risk acceptance validation
 - AAR readiness update validation
 - routing receipt validation
+- operational mission wave, context pack, report, and closeout validation
 - approval UI rendering
 - AAR/readiness update logic
 - agent routing preflight logic
@@ -80,3 +81,5 @@ The `*-v0.6.json` trust-policy/cycle-order samples and `*-v0.2.json` runtime/exe
 The `*-v0.7.json` trust-policy and cycle-order samples show Phase 13 continuous transparency admission. The transparency policy, observation, root rotation, incident, and state samples are one coherent generated evidence family. Use `run-transparency-operations-fixtures.js` for real ephemeral log/witness/monitor/TUF signatures and `run-transparency-supervisor-fixtures.js` for repository-manifest rejection behavior.
 
 The GitHub and GitLab native OIDC samples show Phase 14 trust-bundle, projected-evidence, and runtime-policy contracts. Use `run-github-actions-oidc-fixtures.js` and `run-gitlab-ci-oidc-fixtures.js` for real ephemeral RSA signatures, provider-specific adversarial claims, common execution-evidence admission, and missing-manifest-evidence rejection.
+
+The mission lifecycle samples show the plan an operator supplies and the context, report, and closeout contracts used by `skill-mission-controller.js`. The invalid examples prove that an AI cannot become final decision authority, request release in a wave report, or turn a closeout into release approval. Use `run-skill-mission-controller-fixtures.js` for real temporary Git repositories, generated routing receipts, manifest-backed evidence, model-preflight binding, AAR follow-on work, and repository isolation.

@@ -9,6 +9,20 @@
       "minLength": 1,
       "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
     },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
     "timestamp": {
       "type": "string",
       "format": "date-time"

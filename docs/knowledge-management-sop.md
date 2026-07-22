@@ -38,6 +38,7 @@ This SOP defines how the S6 Knowledge role and the CoS operate knowledge managem
 | Overall framework structure | `README.md`, `military-llm-framework-v0.1.md` | research compendium |
 | Sources and evidence | `source-map.md`, evidence records | source reliability rubric |
 | Current mission state | event log projection | dashboard state |
+| Current delegated task context | `MissionWavePlan` plus current `AgentContextPack` | routing receipt and preflight projection |
 | Authority and approval | authority matrix, approval request | tool-use ROE |
 | Execution results | validator/test output, AAR | SITREP |
 | Adaptive validation proof | verification receipt + signed verifier quorum + manifest history | checkpoint metric projection |
@@ -229,10 +230,11 @@ prototype:
 
 The core of LLM knowledge management is not "storing a lot." Decisions, evidence, current state, approval authority, and learning must be interconnected so that they can control the next execution.
 
-Therefore, every long-running task must leave behind the following four items.
+Therefore, every long-running task must leave behind the following lifecycle records.
 
 1. source map
 2. event/decision log
 3. current projection
 4. AAR/SOP update
 5. self-improvement campaign/checkpoint/decision chain for adaptive work
+6. current-wave plan, context packs, report, and closeout for delegated skill operations

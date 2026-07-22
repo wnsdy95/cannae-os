@@ -135,7 +135,9 @@ install_skill() {
     run cp -R "$source" "$dest"
     if [ "$DRY_RUN" -eq 1 ]; then
       log "$label would install by copy: $dest"
+      log "$label would record runtime root: $REPO_ROOT"
     else
+      printf '%s\n' "$REPO_ROOT" > "$dest/.cannae-os-root"
       log "$label installed by copy: $dest"
     fi
   else

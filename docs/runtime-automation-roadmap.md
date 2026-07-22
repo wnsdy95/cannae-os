@@ -18,9 +18,10 @@ Manual doctrine docs
 -> Authenticated comparative evidence
 -> Pre-dispatch verifier readiness admission
 -> Provider-native execution identity
+-> Operational skill mission lifecycle
 ```
 
-Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, and a GitHub Actions OIDC execution adapter are implemented as local runtimes. UI, non-GitHub providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
+Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, GitHub Actions and GitLab CI OIDC execution adapters, and the operational Codex/Claude skill lifecycle are implemented as local runtimes. UI, enterprise/self-managed providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
 
 ## 1. Phase 0: Documentation Base
 
@@ -479,7 +480,37 @@ Completion criteria for Phase 14B:
 
 See `gitlab-ci-native-verifier-adapter.md` for the exact contract, operations, source interpretation, and limitations.
 
-## 16. Release Gates
+## 16. Phase 15: Operational Skill Mission Lifecycle
+
+Status: implemented as a repository-bound local controller and identical Codex/Claude skill entry points.
+
+Goal:
+
+- Make the correct doctrine workflow the easiest and machine-enforced path for real delegated agent work, instead of requiring an operator to assemble routers, receipts, preflights, context, evidence, reports, AARs, and campaigns manually.
+
+Implemented controls:
+
+- `MissionWavePlan` fixes intent, success/failure conditions, role and department assignments, delegated authority, optional model-preflight requirements, retained USER authority, finite validity, and adaptive budgets;
+- `skill-mission-controller.js open` invokes the real router for one CoS receipt and every expected S3 receipt, recomputes preflight, checks optional integrated model dispatch, creates a target-limited bounded campaign, and emits digest-bound per-agent context packs only when ready;
+- each context pack binds the doctrine revision, router/controller hashes, exact document bytes, task, operational role, model identity, validation commands, approvals, prohibitions, escalation conditions, and a false release grant;
+- `report` requires the exact plan, preflight, context pack, complete expected-agent set, consistent status, valid time window, and manifest-backed work evidence while rejecting control metadata as work proof;
+- `close` persists AAR and readiness evidence, queues ordinary findings into the bounded campaign, escalates retained decisions, requires another wave when work remains, and keeps release unauthorized;
+- `status` and `verify` expose repository identity and manifest state without relying on chat history or local absolute paths;
+- Codex and Claude wrappers resolve the same controller from symlink, copy-install marker, or `CANNAE_OS_HOME`;
+- E2E fixtures operate independent temporary Git repositories and prove mandatory per-wave routing, idempotence, model binding, exact evidence, blocked closeout, and namespace isolation.
+
+Completion criteria:
+
+- No delegated context pack exists without one ready current-wave routing preflight containing every expected receipt.
+- A model-required wave cannot open without one exact ready integrated dispatch row per agent and billet.
+- A complete result cannot cite missing, cross-wave, cross-repository, or control-plane metadata as execution evidence.
+- AAR improvement creates bounded next-wave work without claiming that work already ran.
+- Scope, commit, push, merge, risk, policy, authority, and release remain human-controlled.
+- Codex and Claude execute the same lifecycle and validation semantics.
+
+See `skill-operational-mission-lifecycle.md` for operator commands, contracts, failure behavior, and limitations.
+
+## 17. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -502,8 +533,9 @@ See `gitlab-ci-native-verifier-adapter.md` for the exact contract, operations, s
 | G17 | Trust-policy v0.7 dispatch has a current, contiguous, reconstructable and manifest-backed transparency state with valid consistency, observer, root, incident and revocation status |
 | G18 | Runtime-policy v0.3 GitHub evidence has a valid manifest-pinned JWKS, strict OIDC signature/claim appraisal, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G19 | Runtime-policy v0.3 GitLab evidence has a valid manifest-pinned GitLab.com JWKS, strict OIDC signature/claim appraisal, stable source/job identity, protected same-project config, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
+| G20 | A delegated skill wave has one generated CoS receipt, every expected S3 receipt, ready routing/model admission, digest-bound context packs, repository-manifest evidence, report/AAR closeout, bounded next-wave disposition, and no AI release authority |
 
-## 17. Related Documents
+## 18. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -516,3 +548,4 @@ See `gitlab-ci-native-verifier-adapter.md` for the exact contract, operations, s
 - `transparency-operations.md`
 - `github-actions-native-verifier-adapter.md`
 - `gitlab-ci-native-verifier-adapter.md`
+- `skill-operational-mission-lifecycle.md`
