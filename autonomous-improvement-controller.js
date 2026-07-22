@@ -211,15 +211,34 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     consumptionEvent = readManifestArtifact(artifactRoot, manifest, checkpoint.approval_binding.consumption_event_ref, "approval-consumption-events");
   }
   let trustPolicy = null;
+  let runtimePolicy = null;
   const attestations = new Map();
+  const executionEvidence = new Map();
   if (["0.3", "0.4"].includes(campaign.schema_version) || (campaign.attestation_policy && campaign.attestation_policy.required)) {
     trustPolicy = readManifestArtifact(artifactRoot, manifest, campaign.attestation_policy.trust_policy_ref, "verifier-trust-policies");
+    if (trustPolicy.schema_version === "0.4") {
+      runtimePolicy = readManifestArtifact(
+        artifactRoot,
+        manifest,
+        trustPolicy.execution_assurance.runtime_policy_ref,
+        "verifier-runtime-policies"
+      );
+    }
     for (const ref of checkpoint.verification_attestations || []) {
-      attestations.set(ref.attestation_id, readManifestArtifact(artifactRoot, manifest, {
+      const attestation = readManifestArtifact(artifactRoot, manifest, {
         artifact_id: ref.attestation_id,
         relative_path: ref.relative_path,
         sha256: ref.sha256
-      }, "verification-attestations"));
+      }, "verification-attestations");
+      attestations.set(ref.attestation_id, attestation);
+      if (trustPolicy.schema_version === "0.4" && attestation.execution_evidence_ref) {
+        executionEvidence.set(attestation.execution_evidence_ref.artifact_id, readManifestArtifact(
+          artifactRoot,
+          manifest,
+          attestation.execution_evidence_ref,
+          "verifier-execution-evidence"
+        ));
+      }
     }
   }
   let comparativeReport = null;
@@ -237,11 +256,21 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     comparativeEvaluationSet = readManifestArtifact(artifactRoot, manifest, comparativeReport.evaluation_set_ref, "comparative-evaluation-sets");
     if (campaign.schema_version === "0.4") {
       for (const attestationRef of checkpoint.comparative_evaluation_attestations || []) {
-        comparativeAttestations.set(attestationRef.attestation_id, readManifestArtifact(artifactRoot, manifest, {
+        const attestation = readManifestArtifact(artifactRoot, manifest, {
           artifact_id: attestationRef.attestation_id,
           relative_path: attestationRef.relative_path,
           sha256: attestationRef.sha256
-        }, "comparative-evaluation-attestations"));
+        }, "comparative-evaluation-attestations");
+        comparativeAttestations.set(attestationRef.attestation_id, attestation);
+        if (trustPolicy && trustPolicy.schema_version === "0.4" && attestation.execution_evidence_ref &&
+            !executionEvidence.has(attestation.execution_evidence_ref.artifact_id)) {
+          executionEvidence.set(attestation.execution_evidence_ref.artifact_id, readManifestArtifact(
+            artifactRoot,
+            manifest,
+            attestation.execution_evidence_ref,
+            "verifier-execution-evidence"
+          ));
+        }
       }
     }
   }
@@ -249,6 +278,8 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     receipts,
     attestations,
     trustPolicy,
+    runtimePolicy,
+    executionEvidence,
     parentDecision,
     approvalScope,
     consumptionEvent,
@@ -424,7 +455,12 @@ function verifyAttestationProof(campaign, checkpoint, proofContext, verifiedRece
     return [ref.receipt_id, {
       relative_path: ref.relative_path,
       sha256: ref.sha256,
-      receipt_sha256: receipt && receipt.receipt_sha256
+      receipt_sha256: receipt && receipt.receipt_sha256,
+      repository_state: receipt && receipt.repository_state_before,
+      verification_target: receipt && receipt.repository_state_before ? {
+        name: receipt.candidate_id,
+        digest: { sha256: receipt.repository_state_before.worktree_fingerprint }
+      } : undefined
     }];
   }));
   for (const ref of refs) {
@@ -453,7 +489,10 @@ function verifyAttestationProof(campaign, checkpoint, proofContext, verifiedRece
     candidateId: checkpoint.candidate.id,
     candidateRevision: checkpoint.target.candidate_revision,
     repositoryKey: checkpoint.repository_binding.repository_key,
-    maxAttestationAgeSeconds: policy.max_attestation_age_seconds
+    maxAttestationAgeSeconds: policy.max_attestation_age_seconds,
+    runtimePolicy: proofContext.runtimePolicy,
+    runtimePolicyReference: trustPolicy.execution_assurance && trustPolicy.execution_assurance.runtime_policy_ref,
+    executionEvidence: proofContext.executionEvidence
   }, policy, checkpoint.generated_at);
   blocks.push(...result.codes);
   return result;
@@ -517,7 +556,17 @@ function verifyComparativeAttestationProof(campaign, checkpoint, proofContext, b
     evaluatorInvocationId: report.evaluator.invocation_id,
     repositoryKey: checkpoint.repository_binding.repository_key,
     repositoryFingerprint: checkpoint.repository_binding.identity_fingerprint,
-    maxAttestationAgeSeconds: policy.max_attestation_age_seconds
+    maxAttestationAgeSeconds: policy.max_attestation_age_seconds,
+    runtimePolicy: proofContext.runtimePolicy,
+    runtimePolicyReference: trustPolicy.execution_assurance && trustPolicy.execution_assurance.runtime_policy_ref,
+    executionEvidence: proofContext.executionEvidence,
+    repositoryState: report.executions && report.executions.candidate
+      ? report.executions.candidate.repository_state_before
+      : undefined,
+    verificationTarget: {
+      name: report.id,
+      digest: { sha256: reportRef.sha256 }
+    }
   }, policy, checkpoint.generated_at);
   blocks.push(...result.codes);
   return result;
@@ -609,7 +658,9 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
     receipts: new Map(),
     attestations: new Map(),
     comparativeAttestations: new Map(),
+    executionEvidence: new Map(),
     trustPolicy: null,
+    runtimePolicy: null,
     parentDecision: null,
     approvalScope: null,
     consumptionEvent: null,

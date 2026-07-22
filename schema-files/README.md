@@ -21,7 +21,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - model usage events
 - repository artifact manifests
 - bounded self-improvement campaigns, checkpoints, decisions, and finite cycle orders
-- verifier trust policies, workload identity evidence, signed verification attestations, and signed comparative evaluation reports
+- verifier trust policies, workload identity evidence, verifier runtime policies, execution evidence, signed verification attestations, and signed comparative evaluation reports
 - CCIR alerts
 - handoff packets
 - continuity plans
@@ -114,6 +114,8 @@ Recommended validation order:
 60. `comparative-evaluation-plan.schema.json`
 61. `comparative-evaluation-report.schema.json`
 62. `comparative-evaluation-attestation.schema.json`
+63. `verifier-runtime-policy.schema.json`
+64. `verifier-execution-evidence.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -122,5 +124,7 @@ All schemas target JSON Schema draft 2020-12.
 `VerifierTrustPolicy` v0.2 pins SPIFFE IDs, X.509 roots, transparency-log identities, and log keys. `VerifierIdentityEvidence` binds one short-lived SVID and the verifier's static key to the same repository/policy/purpose statement, then supplies a signed checkpoint and Merkle inclusion path.
 
 `VerifierTrustPolicy` v0.3 can instead select a native `sigstore_bundle` identity. `SigstoreTrustedRoot` records normalized official trust material and its source/freshness metadata. `SigstoreVerifierIdentityEvidence` binds the exact certificate identity, issuer, root digest, repository and purpose statement under both the native Fulcio/Rekor bundle and the verifier's static key.
+
+`VerifierTrustPolicy` v0.4 binds one exact `VerifierRuntimePolicy`. The runtime policy assigns each verifier to a provider profile that pins builder identity, code, OCI manifest, dependency lockfile, harness, argv, tool allowlist, network policy, sandbox profile and time bounds. `VerifierExecutionEvidence` binds those fields to the exact repository state and verification target in a dual-signed in-toto Statement. `VerificationAttestation` and `ComparativeEvaluationAttestation` v0.2 cite that evidence by exact manifest reference; v0.1 remains readable under earlier trust-policy versions.
 
 `SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. Signed campaigns record the exact trust-policy reference, effective quorum thresholds, currently eligible verifier/key/group sets for each attestation purpose, provider/root/evidence references, authority identities, and a conservative validity boundary. v0.1 through v0.3 orders remain readable.

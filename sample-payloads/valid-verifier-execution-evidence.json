@@ -1,0 +1,109 @@
+{
+  "schema_version": "0.1",
+  "type": "VerifierExecutionEvidence",
+  "id": "VEE-Cannae-Sample",
+  "trust_policy_id": "VTP-Cannae-Sample",
+  "runtime_policy_ref": {
+    "artifact_id": "VRP-Cannae-Sample",
+    "relative_path": "repositories/cannae-os/missions/MIS-Sample/C0/verifier-runtime-policies/VRP-Cannae-Sample.json",
+    "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "verifier_id": "VERIFIER-Cannae-Sample",
+  "profile_id": "PROFILE-GitHub-Hosted-GVisor",
+  "purpose": "verification_receipt",
+  "subject_ref": {
+    "artifact_id": "VRR-Cannae-Sample",
+    "relative_path": "repositories/cannae-os/missions/MIS-Sample/C1/verification-receipts/VRR-Cannae-Sample.json",
+    "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "workload_identity_evidence_ref": {
+    "artifact_id": "SVE-Cannae-Sample",
+    "relative_path": "repositories/cannae-os/missions/MIS-Sample/C1/sigstore-verifier-identity-evidence/SVE-Cannae-Sample.json",
+    "sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+  },
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "repository_state": {
+    "head_commit": "1111111111111111111111111111111111111111",
+    "worktree_fingerprint": "7777777777777777777777777777777777777777777777777777777777777777",
+    "dirty": false
+  },
+  "verification_target": {
+    "name": "CAN-Cannae-Sample",
+    "digest": { "sha256": "7777777777777777777777777777777777777777777777777777777777777777" }
+  },
+  "provider": "github_actions",
+  "provider_identity": {
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:wnsdy95/cannae-os:ref:refs/heads/main",
+    "audience": "cannae-verifier-execution",
+    "claims": {
+      "repository": "wnsdy95/cannae-os",
+      "repository_id": "123456789",
+      "job_workflow_ref": "wnsdy95/cannae-os/.github/workflows/verify.yml@refs/heads/main",
+      "sha": "1111111111111111111111111111111111111111",
+      "ref": "refs/heads/main",
+      "runner_environment": "github-hosted"
+    }
+  },
+  "execution": {
+    "verifier_code": {
+      "uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#verification-runner.js",
+      "digest": { "sha256": "1111111111111111111111111111111111111111111111111111111111111111" }
+    },
+    "container_image": {
+      "uri": "ghcr.io/wnsdy95/cannae-verifier@sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "digest": { "sha256": "2222222222222222222222222222222222222222222222222222222222222222" },
+      "media_type": "application/vnd.oci.image.manifest.v1+json"
+    },
+    "dependency_lockfile": {
+      "uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#package-lock.json",
+      "digest": { "sha256": "3333333333333333333333333333333333333333333333333333333333333333" }
+    },
+    "harness": {
+      "uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#validation-suite-runner.js",
+      "digest": { "sha256": "4444444444444444444444444444444444444444444444444444444444444444" }
+    },
+    "argv": ["node", "validation-suite-runner.js"],
+    "tool_allowlist": ["git", "node"],
+    "network_policy": { "mode": "denied", "allowed_endpoints": [] },
+    "sandbox_profile": {
+      "kind": "gvisor",
+      "profile_uri": "git+https://github.com/wnsdy95/cannae-os@1111111111111111111111111111111111111111#runtime/gvisor-verifier.json",
+      "profile_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+      "rootfs_read_only": true,
+      "no_new_privileges": true,
+      "privileged": false,
+      "host_network": false,
+      "host_pid": false,
+      "host_mounts": false
+    }
+  },
+  "invocation": {
+    "id": "INV-Cannae-Sample",
+    "started_at": "2026-07-22T09:00:00Z",
+    "finished_at": "2026-07-22T09:01:00Z",
+    "exit_code": 0
+  },
+  "builder_key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+  "verifier_key_id": "c17f41b709de820bef6da84084e4373b536978f226a3f8a42550ee6853d962a1",
+  "envelope": {
+    "payloadType": "application/vnd.in-toto+json",
+    "payload": "ewogICJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YxIiwKICAic3ViamVjdCI6IFsKICAgIHsKICAgICAgIm5hbWUiOiAiVlJSLUNhbm5hZS1TYW1wbGUiLAogICAgICAiZGlnZXN0IjogewogICAgICAgICJzaGEyNTYiOiAiNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NiIKICAgICAgfQogICAgfQogIF0sCiAgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9jYW5uYWUuZGV2L2F0dGVzdGF0aW9ucy92ZXJpZmllci1leGVjdXRpb24vdjAuMSIsCiAgInByZWRpY2F0ZSI6IHsKICAgICJzY2hlbWFfdmVyc2lvbiI6ICIwLjEiLAogICAgInRydXN0X3BvbGljeV9pZCI6ICJWVFAtQ2FubmFlLVNhbXBsZSIsCiAgICAidmVyaWZpZXIiOiB7CiAgICAgICJpZCI6ICJWRVJJRklFUi1DYW5uYWUtU2FtcGxlIiwKICAgICAgImtleV9pZCI6ICJjMTdmNDFiNzA5ZGU4MjBiZWY2ZGE4NDA4NGU0MzczYjUzNjk3OGYyMjZhM2Y4YTQyNTUwZWU2ODUzZDk2MmExIiwKICAgICAgInByb2ZpbGVfaWQiOiAiUFJPRklMRS1HaXRIdWItSG9zdGVkLUdWaXNvciIsCiAgICAgICJwdXJwb3NlIjogInZlcmlmaWNhdGlvbl9yZWNlaXB0IgogICAgfSwKICAgICJyZXBvc2l0b3J5X2JpbmRpbmciOiB7CiAgICAgICJyZXBvc2l0b3J5X2tleSI6ICJjYW5uYWUtb3MtYWFhYWFhYWFhYWFhIiwKICAgICAgImlkZW50aXR5X2ZpbmdlcnByaW50IjogImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiCiAgICB9LAogICAgInJlcG9zaXRvcnlfc3RhdGUiOiB7CiAgICAgICJoZWFkX2NvbW1pdCI6ICIxMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExIiwKICAgICAgIndvcmt0cmVlX2ZpbmdlcnByaW50IjogIjc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3NzciLAogICAgICAiZGlydHkiOiBmYWxzZQogICAgfSwKICAgICJ2ZXJpZmljYXRpb25fdGFyZ2V0IjogewogICAgICAibmFtZSI6ICJDQU4tQ2FubmFlLVNhbXBsZSIsCiAgICAgICJkaWdlc3QiOiB7CiAgICAgICAgInNoYTI1NiI6ICI3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3IgogICAgICB9CiAgICB9CiAgfQp9Cg==",
+    "signatures": [
+      {
+        "keyid": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+        "sig": "AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ=="
+      },
+      {
+        "keyid": "c17f41b709de820bef6da84084e4373b536978f226a3f8a42550ee6853d962a1",
+        "sig": "AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=="
+      }
+    ]
+  },
+  "issued_at": "2026-07-22T09:01:01Z",
+  "expires_at": "2026-07-22T09:06:01Z",
+  "evidence_sha256": "368d36caa9b7a9d51a4c9daaef6bceeb023c9f9c125124d1028f0e2db40706ef"
+}

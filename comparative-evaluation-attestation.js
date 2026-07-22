@@ -21,6 +21,28 @@ function comparativeAttestationDigest(attestation) {
   return sha256(canonicalBytes(attestation, "attestation_sha256"));
 }
 
+function validArtifactRef(ref) {
+  return Boolean(ref && /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(ref.artifact_id || "") &&
+    typeof ref.relative_path === "string" && ref.relative_path.length > 0 &&
+    !ref.relative_path.startsWith("/") && !ref.relative_path.split(/[\\/]+/).includes("..") &&
+    /^[a-f0-9]{64}$/.test(ref.sha256 || ""));
+}
+
+function sameArtifactRef(left, right) {
+  return Boolean(left && right && left.artifact_id === right.artifact_id &&
+    left.relative_path === right.relative_path && left.sha256 === right.sha256);
+}
+
+function executionEvidenceItem(ref, collection) {
+  const values = collection instanceof Map ? [...collection.values()] : (collection || []);
+  return values.find(item => {
+    const payload = item && item.payload ? item.payload : item;
+    const entry = item && item.entry;
+    return payload && payload.id === (ref && ref.artifact_id) && (!entry ||
+      (entry.artifact_id === ref.artifact_id && entry.relative_path === ref.relative_path && entry.sha256 === ref.sha256));
+  }) || null;
+}
+
 function createComparativeEvaluationAttestation(options) {
   const { report, reportReference, verifier, privateKeyPem } = options;
   if (!report || report.type !== "ComparativeEvaluationReport") throw new Error("A comparative evaluation report is required.");
@@ -52,6 +74,11 @@ function createComparativeEvaluationAttestation(options) {
   const invocationId = String(options.invocationId || "");
   if (!invocationId) throw new Error("A verifier invocation ID is required.");
   const nonce = String(options.nonce || crypto.randomUUID());
+  const executionEvidenceRef = options.executionEvidenceReference;
+  if (executionEvidenceRef && !validArtifactRef(executionEvidenceRef)) {
+    throw new Error("Execution evidence requires an exact artifact reference.");
+  }
+  const schemaVersion = executionEvidenceRef ? "0.2" : "0.1";
   const baseline = report.executions && report.executions.baseline && report.executions.baseline.observation
     ? report.executions.baseline.observation.subject
     : {};
@@ -64,7 +91,7 @@ function createComparativeEvaluationAttestation(options) {
     subject: [{ name: report.id, digest: { sha256: reportReference.sha256 } }],
     predicateType: COMPARATIVE_PREDICATE_TYPE,
     predicate: {
-      schema_version: "0.1",
+      schema_version: schemaVersion,
       report: {
         id: report.id,
         relative_path: reportReference.relative_path,
@@ -93,6 +120,7 @@ function createComparativeEvaluationAttestation(options) {
         execution_origin: executionOrigin,
         invocation_id: invocationId
       },
+      ...(executionEvidenceRef ? { execution_evidence_ref: JSON.parse(JSON.stringify(executionEvidenceRef)) } : {}),
       issued_at: issuedAt,
       expires_at: expiresAt,
       nonce
@@ -106,7 +134,7 @@ function createComparativeEvaluationAttestation(options) {
     signatures: [{ keyid: verifier.key_id, sig: signature.toString("base64") }]
   };
   const attestation = {
-    schema_version: "0.1",
+    schema_version: schemaVersion,
     type: "ComparativeEvaluationAttestation",
     id: `CEA-${sha256(`${report.id}\n${verifier.id}\n${invocationId}\n${nonce}`).slice(0, 24)}`,
     report_id: report.id,
@@ -131,6 +159,7 @@ function createComparativeEvaluationAttestation(options) {
     independence_group: verifier.independence_group,
     execution_origin: executionOrigin,
     invocation_id: invocationId,
+    ...(executionEvidenceRef ? { execution_evidence_ref: JSON.parse(JSON.stringify(executionEvidenceRef)) } : {}),
     envelope,
     issued_at: issuedAt,
     expires_at: expiresAt,
@@ -149,6 +178,7 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
   const verifier = verifierForAttestation(attestation || {}, trustPolicy || {});
   const nowMs = now instanceof Date ? now.getTime() : Date.parse(now);
   if (!attestation || attestation.type !== "ComparativeEvaluationAttestation") codes.push("COMPARATIVE_ATTESTATION_TYPE_INVALID");
+  if (attestation && !["0.1", "0.2"].includes(attestation.schema_version)) codes.push("COMPARATIVE_ATTESTATION_SCHEMA_VERSION_INVALID");
   if (attestation && attestation.attestation_sha256 !== comparativeAttestationDigest(attestation)) codes.push("COMPARATIVE_ATTESTATION_DIGEST_INVALID");
   if (!verifier || verifier.status !== "active") codes.push("COMPARATIVE_ATTESTATION_VERIFIER_UNTRUSTED");
   if (verifier) {
@@ -231,6 +261,9 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
       [signer.execution_origin, attestation.execution_origin], [signer.invocation_id, attestation.invocation_id],
       [predicate.issued_at, attestation.issued_at], [predicate.expires_at, attestation.expires_at]
     ];
+    if (attestation.schema_version === "0.2" && !sameArtifactRef(predicate.execution_evidence_ref, attestation.execution_evidence_ref)) {
+      codes.push("COMPARATIVE_ATTESTATION_EXECUTION_EVIDENCE_BINDING_INVALID");
+    }
     if (bindings.some(([left, right]) => left !== right) ||
         JSON.stringify(predicate.repository_binding) !== JSON.stringify(attestation.repository_binding)) {
       codes.push("COMPARATIVE_ATTESTATION_PREDICATE_BINDING_MISMATCH");
@@ -251,6 +284,43 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
     const actual = attestationPath.split(".").reduce((value, key) => value && value[key], attestation);
     if (actual !== expectations[expectationKey]) codes.push("COMPARATIVE_ATTESTATION_EXPECTATION_MISMATCH");
   }
+  let executionEvidenceId = "none";
+  if (trustPolicy && trustPolicy.schema_version === "0.4") {
+    if (attestation.schema_version !== "0.2" || !validArtifactRef(attestation.execution_evidence_ref)) {
+      codes.push("COMPARATIVE_ATTESTATION_EXECUTION_EVIDENCE_REQUIRED");
+    } else {
+      const item = executionEvidenceItem(attestation.execution_evidence_ref, expectations.executionEvidence);
+      const evidence = item && item.payload ? item.payload : item;
+      const entry = item && item.entry;
+      if (!evidence || (entry && !sameArtifactRef(attestation.execution_evidence_ref, entry))) {
+        codes.push("COMPARATIVE_ATTESTATION_EXECUTION_EVIDENCE_MISSING");
+      } else {
+        const { verifyVerifierExecutionEvidence } = require("./verifier-execution-evidence");
+        const result = verifyVerifierExecutionEvidence({
+          evidence,
+          trustPolicy,
+          runtimePolicy: expectations.runtimePolicy,
+          runtimePolicyReference: expectations.runtimePolicyReference,
+          evaluatedAt: now instanceof Date ? now.toISOString() : now,
+          expectations: {
+            purpose: "comparative_evaluation_report",
+            verifierId: attestation.verifier_id,
+            subjectReference: {
+              artifact_id: attestation.report_id,
+              relative_path: attestation.report_relative_path,
+              sha256: attestation.report_sha256
+            },
+            repositoryState: expectations.repositoryState,
+            verificationTarget: expectations.verificationTarget,
+            repositoryKey: attestation.repository_binding && attestation.repository_binding.repository_key,
+            repositoryFingerprint: attestation.repository_binding && attestation.repository_binding.identity_fingerprint
+          }
+        });
+        executionEvidenceId = evidence.id;
+        codes.push(...result.codes);
+      }
+    }
+  }
   return {
     valid: codes.length === 0,
     codes: [...new Set(codes)].sort(),
@@ -258,7 +328,8 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
     verifier_id: attestation && attestation.verifier_id,
     key_id: attestation && attestation.key_id,
     independence_group: attestation && attestation.independence_group,
-    report_id: attestation && attestation.report_id
+    report_id: attestation && attestation.report_id,
+    execution_evidence_id: executionEvidenceId
   };
 }
 

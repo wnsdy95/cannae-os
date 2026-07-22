@@ -12,8 +12,14 @@
     "envelope", "issued_at", "expires_at", "attestation_sha256"
   ],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "then": { "required": ["execution_evidence_ref"] }
+    }
+  ],
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "type": { "type": "string", "const": "ComparativeEvaluationAttestation" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "report_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -46,6 +52,7 @@
     "independence_group": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
     "execution_origin": { "type": "string", "enum": ["local", "remote"] },
     "invocation_id": { "$ref": "common.schema.json#/$defs/id" },
+    "execution_evidence_ref": { "$ref": "#/$defs/artifact_ref" },
     "envelope": {
       "type": "object",
       "required": ["payloadType", "payload", "signatures"],
@@ -72,5 +79,17 @@
     "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
     "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
     "attestation_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
   }
 }

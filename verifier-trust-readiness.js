@@ -99,7 +99,9 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptRequired = ["0.3", "0.4"].includes(campaign.schema_version);
   const comparativeRequired = campaign.schema_version === "0.4";
   const required = receiptRequired || comparativeRequired;
-  const identityRequired = Boolean(required && policy && ["0.2", "0.3"].includes(policy.schema_version));
+  const identityRequired = Boolean(required && policy && ["0.2", "0.3", "0.4"].includes(policy.schema_version));
+  const executionPolicyRequired = Boolean(required && policy && policy.schema_version === "0.4");
+  const runtimePolicy = options.runtimePolicy || null;
   const campaignPolicy = campaign.attestation_policy || null;
   const trustPolicyRef = campaignPolicy ? clone(campaignPolicy.trust_policy_ref) : clone(NONE_ARTIFACT_REF);
   const policyQuorum = policy && policy.quorum ? policy.quorum : {};
@@ -143,11 +145,40 @@ function evaluateVerifierTrustReadiness(options) {
       policy.repository_binding.identity_fingerprint !== repository.identity_fingerprint)) {
     addCode(blockingCodes, "TRUST_ADMISSION_REPOSITORY_MISMATCH");
   }
+  if (executionPolicyRequired) {
+    const runtimeRef = policy.execution_assurance && policy.execution_assurance.runtime_policy_ref;
+    if (!runtimePolicy || !runtimeRef || runtimePolicy.id !== runtimeRef.artifact_id ||
+        runtimePolicy.trust_policy_id !== policy.id) {
+      addCode(blockingCodes, "TRUST_ADMISSION_RUNTIME_POLICY_REFERENCE_INVALID");
+    } else if (runtimePolicy.repository_binding.repository_key !== repository.key ||
+        runtimePolicy.repository_binding.identity_fingerprint !== repository.identity_fingerprint) {
+      addCode(blockingCodes, "TRUST_ADMISSION_RUNTIME_POLICY_REPOSITORY_MISMATCH");
+    } else {
+      const profiles = new Set((runtimePolicy.profiles || []).map(item => item.id));
+      const assignments = runtimePolicy.assignments || [];
+      const assignmentIds = assignments.map(item => item.verifier_id);
+      const complete = (policy.verifiers || []).every(verifier => {
+        const matches = assignments.filter(item => item.verifier_id === verifier.id);
+        const requiredPurposes = verifier.allowed_attestation_types || ["verification_receipt"];
+        return matches.length === 1 && profiles.has(matches[0].profile_id) &&
+          requiredPurposes.every(purpose => matches[0].allowed_purposes.includes(purpose));
+      });
+      if (!complete || new Set(assignmentIds).size !== assignmentIds.length) {
+        addCode(blockingCodes, "TRUST_ADMISSION_RUNTIME_POLICY_ASSIGNMENT_INVALID");
+      }
+    }
+  }
 
   const policyStart = policy ? timestamp(policy.created_at) : null;
   const policyEnd = policy ? timestamp(policy.expires_at) : null;
   if (policy && (policyStart === null || policyEnd === null || evaluatedTime < policyStart || evaluatedTime >= policyEnd)) {
     addCode(blockingCodes, "TRUST_ADMISSION_POLICY_NOT_ACTIVE");
+  }
+  const runtimePolicyStart = runtimePolicy ? timestamp(runtimePolicy.created_at) : null;
+  const runtimePolicyEnd = runtimePolicy ? timestamp(runtimePolicy.expires_at) : null;
+  if (executionPolicyRequired && runtimePolicy && (runtimePolicyStart === null || runtimePolicyEnd === null ||
+      evaluatedTime < runtimePolicyStart || evaluatedTime >= runtimePolicyEnd)) {
+    addCode(blockingCodes, "TRUST_ADMISSION_RUNTIME_POLICY_NOT_ACTIVE");
   }
 
   const policyUsable = policy && blockingCodes.length === 0;
@@ -207,7 +238,7 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptQuorum = summarizeQuorum(receiptEligible, receiptRequired, requirements);
   const comparativeQuorum = summarizeQuorum(comparativeEligible, comparativeRequired, requirements);
 
-  const genericIdentity = policy && policy.schema_version === "0.3";
+  const genericIdentity = policy && ["0.3", "0.4"].includes(policy.schema_version);
   const identityEvidence = identityRequired ? authenticated.map(item => genericIdentity ? {
     verifier_id: item.verifier.id,
     identity_provider: item.result.identity_provider || "spiffe_x509",
@@ -256,7 +287,8 @@ function evaluateVerifierTrustReadiness(options) {
   if (satisfied) {
     const requiredVerifiers = [...receiptEligible, ...(comparativeRequired ? comparativeEligible : [])];
     const identityBoundaries = identityRequired ? authenticated.map(item => timestamp(item.result.valid_until)) : [];
-    const boundaries = [policyEnd, ...requiredVerifiers.map(item => timestamp(item.valid_until)), ...identityBoundaries]
+    const boundaries = [policyEnd, ...(executionPolicyRequired ? [runtimePolicyEnd] : []),
+      ...requiredVerifiers.map(item => timestamp(item.valid_until)), ...identityBoundaries]
       .filter(value => value !== null && value > evaluatedTime);
     if (boundaries.length > 0) validUntil = new Date(Math.min(...boundaries)).toISOString();
     if (validUntil === "none") {

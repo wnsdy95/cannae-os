@@ -152,6 +152,7 @@ function loadCampaignHistory(store, campaignId) {
   const identityEvidence = [];
   const sigstoreIdentityEvidence = [];
   const sigstoreTrustedRoots = [];
+  let runtimePolicy = null;
   if (trustPolicyLoad.payload) {
     for (const entry of store.manifest.artifacts.filter(item =>
       item.kind === "verifier-identity-evidence" && item.mission_id === campaign.mission_id)) {
@@ -161,7 +162,7 @@ function loadCampaignHistory(store, campaignId) {
       if (failures.length > 0 || payload.id !== entry.artifact_id) continue;
       identityEvidence.push({ entry, payload });
     }
-    if (trustPolicyLoad.payload.schema_version === "0.3") {
+    if (["0.3", "0.4"].includes(trustPolicyLoad.payload.schema_version)) {
       const refs = trustPolicyLoad.payload.identity_assurance.sigstore_trusted_root_refs || [];
       for (const ref of refs) {
         const matching = store.manifest.artifacts.filter(entry =>
@@ -191,6 +192,27 @@ function loadCampaignHistory(store, campaignId) {
         sigstoreIdentityEvidence.push({ entry, payload });
       }
     }
+    if (trustPolicyLoad.payload.schema_version === "0.4") {
+      const ref = trustPolicyLoad.payload.execution_assurance &&
+        trustPolicyLoad.payload.execution_assurance.runtime_policy_ref;
+      const matching = ref ? store.manifest.artifacts.filter(entry =>
+        entry.kind === "verifier-runtime-policies" &&
+        entry.artifact_id === ref.artifact_id &&
+        entry.relative_path === ref.relative_path &&
+        entry.sha256 === ref.sha256 &&
+        entry.mission_id === campaign.mission_id) : [];
+      if (matching.length !== 1) {
+        trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_RUNTIME_POLICY_REFERENCE_INVALID");
+      } else {
+        const payload = readManifestPayload(store.artifactRoot, matching[0]);
+        const failures = validationFailures(payload, "verifier-runtime-policy");
+        if (failures.length > 0 || payload.id !== matching[0].artifact_id) {
+          trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_RUNTIME_POLICY_SCHEMA_INVALID");
+        } else {
+          runtimePolicy = payload;
+        }
+      }
+    }
   }
 
   return {
@@ -204,7 +226,8 @@ function loadCampaignHistory(store, campaignId) {
     trustPolicyBlockingCodes: trustPolicyLoad.blockingCodes,
     identityEvidence,
     sigstoreIdentityEvidence,
-    sigstoreTrustedRoots
+    sigstoreTrustedRoots,
+    runtimePolicy
   };
 }
 
@@ -464,7 +487,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     trustPolicyBlockingCodes,
     identityEvidence,
     sigstoreIdentityEvidence,
-    sigstoreTrustedRoots
+    sigstoreTrustedRoots,
+    runtimePolicy
   } = history;
   const repository = store.verification.repository;
   const blocks = [];
@@ -563,6 +587,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     identityEvidence,
     sigstoreIdentityEvidence,
     sigstoreTrustedRoots,
+    runtimePolicy,
     evaluatedAt,
     blockingCodes: trustPolicyBlockingCodes
   });
@@ -581,7 +606,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
 
   const generatedAt = evaluatedAt;
   return {
-    schema_version: trustPolicy && trustPolicy.schema_version === "0.3" ? "0.4" : "0.3",
+    schema_version: trustPolicy && ["0.3", "0.4"].includes(trustPolicy.schema_version) ? "0.4" : "0.3",
     type: "SelfImprovementCycleOrder",
     id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission),
     campaign_id: campaign.id,

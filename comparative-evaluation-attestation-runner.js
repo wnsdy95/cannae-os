@@ -12,7 +12,7 @@ function parseArgs(argv) {
   const options = { executionOrigin: "remote", writeArtifact: false, overwrite: false };
   const valueOptions = new Set([
     "verifier", "private-key", "report-relative-path", "report-sha256", "origin", "invocation-id",
-    "nonce", "issued-at", "expires-at", "repository", "artifact-root"
+    "execution-evidence-ref", "nonce", "issued-at", "expires-at", "repository", "artifact-root"
   ]);
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -52,6 +52,9 @@ function main() {
     if (failures.length > 0) throw new Error(`Attestation input validation failed: ${[...new Set(failures.map(item => item.code))].join(", ")}`);
     const verifier = trustPolicy.verifiers.find(item => item.id === options.verifier);
     if (!verifier) throw new Error("Verifier is not present in the trust policy.");
+    if (trustPolicy.schema_version === "0.4" && !options.executionEvidenceRef) {
+      throw new Error("Trust-policy v0.4 requires --execution-evidence-ref <json>.");
+    }
     const privateKeyPath = path.resolve(options.privateKey);
     assertPrivateKeyPermissions(privateKeyPath);
     const issuedAt = options.issuedAt || new Date().toISOString();
@@ -67,6 +70,7 @@ function main() {
       privateKeyPem: fs.readFileSync(privateKeyPath),
       executionOrigin: options.executionOrigin,
       invocationId: options.invocationId,
+      executionEvidenceReference: options.executionEvidenceRef ? JSON.parse(fs.readFileSync(path.resolve(options.executionEvidenceRef), "utf8")) : undefined,
       nonce: options.nonce,
       issuedAt,
       expiresAt

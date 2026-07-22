@@ -3,7 +3,7 @@
   "as_of": "2026-07-22",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 33,
+  "checked_hosts": 38,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -69,6 +69,13 @@
       ]
     },
     {
+      "host": "confidentialcontainers.org",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
       "host": "datatracker.ietf.org",
       "files": [
         "docs/research-compendium.md",
@@ -77,6 +84,20 @@
     },
     {
       "host": "developers.openai.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "docs.github.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "docs.gitlab.com",
       "files": [
         "docs/research-compendium.md",
         "docs/source-map.md"
@@ -92,6 +113,21 @@
     {
       "host": "etcd.io",
       "files": [
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "github.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/sigstore-verifier-workload-admission.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "gvisor.dev",
+      "files": [
+        "docs/research-compendium.md",
         "docs/source-map.md"
       ]
     },
