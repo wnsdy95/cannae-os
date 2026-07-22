@@ -9,6 +9,7 @@ const {
   writeRepositoryArtifact
 } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const { evaluateVerifierTrustReadiness } = require("./verifier-trust-readiness");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const NONE_DECISION_REF = Object.freeze({ decision_id: "none", relative_path: "none", sha256: "none" });
@@ -125,12 +126,38 @@ function loadCampaignHistory(store, campaignId) {
       return item;
     });
 
+  const trustPolicyLoad = { payload: null, entry: null, blockingCodes: [] };
+  if (["0.3", "0.4"].includes(campaign.schema_version)) {
+    const ref = campaign.attestation_policy && campaign.attestation_policy.trust_policy_ref;
+    const matching = ref ? store.manifest.artifacts.filter(entry =>
+      entry.kind === "verifier-trust-policies" &&
+      entry.artifact_id === ref.artifact_id &&
+      entry.relative_path === ref.relative_path &&
+      entry.sha256 === ref.sha256 &&
+      entry.mission_id === campaign.mission_id) : [];
+    if (matching.length !== 1) {
+      trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_POLICY_REFERENCE_INVALID");
+    } else {
+      const payload = readManifestPayload(store.artifactRoot, matching[0]);
+      const failures = validationFailures(payload, "verifier-trust-policy");
+      if (failures.length > 0) {
+        trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_POLICY_SCHEMA_INVALID");
+      } else {
+        trustPolicyLoad.payload = payload;
+        trustPolicyLoad.entry = matching[0];
+      }
+    }
+  }
+
   return {
     campaign,
     campaignEntry,
     checkpoints: loadKind("self-improvement-checkpoints", "self-improvement-checkpoint"),
     decisions: loadKind("self-improvement-decisions", "self-improvement-decision"),
-    existingOrders: loadKind("self-improvement-cycle-orders", "self-improvement-cycle-order")
+    existingOrders: loadKind("self-improvement-cycle-orders", "self-improvement-cycle-order"),
+    trustPolicy: trustPolicyLoad.payload,
+    trustPolicyEntry: trustPolicyLoad.entry,
+    trustPolicyBlockingCodes: trustPolicyLoad.blockingCodes
   };
 }
 
@@ -372,13 +399,23 @@ function budgetSnapshot(campaign, pairs, retryCount) {
   };
 }
 
-function orderId(campaignId, cycleNumber, attemptNumber, transition, status) {
+function orderId(campaignId, cycleNumber, attemptNumber, transition, status, admission) {
   const transitionToken = transition.replace(/_/g, "-").toUpperCase();
-  return `SCO-${campaignId.replace(/^[A-Z]+-/, "")}-C${cycleNumber}-A${attemptNumber}-${transitionToken}-${status.toUpperCase()}`;
+  const admissionIdentity = clone(admission);
+  delete admissionIdentity.evaluated_at;
+  const admissionToken = sha256(JSON.stringify(admissionIdentity)).slice(0, 12).toUpperCase();
+  return `SCO-${campaignId.replace(/^[A-Z]+-/, "")}-C${cycleNumber}-A${attemptNumber}-${transitionToken}-${status.toUpperCase()}-AD${admissionToken}`;
 }
 
-function deriveOrder(store, history) {
-  const { campaign, campaignEntry, checkpoints, decisions } = history;
+function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
+  const {
+    campaign,
+    campaignEntry,
+    checkpoints,
+    decisions,
+    trustPolicy,
+    trustPolicyBlockingCodes
+  } = history;
   const repository = store.verification.repository;
   const blocks = [];
   if (campaign.repository_binding.repository_key !== repository.key ||
@@ -469,6 +506,17 @@ function deriveOrder(store, history) {
     }
   }
 
+  const trustPolicyAdmission = evaluateVerifierTrustReadiness({
+    campaign,
+    repository,
+    trustPolicy,
+    evaluatedAt,
+    blockingCodes: trustPolicyBlockingCodes
+  });
+  if (status === "ready") {
+    for (const code of trustPolicyAdmission.blocking_codes) addBlock(blocks, code);
+  }
+
   if (blocks.length > 0) {
     status = "blocked";
     transition = "hold";
@@ -478,11 +526,11 @@ function deriveOrder(store, history) {
     taskOrder = holdTaskOrder(campaign, requiredHumanDecision);
   }
 
-  const generatedAt = latest ? latest.decision.payload.decided_at : campaign.created_at;
+  const generatedAt = evaluatedAt;
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "SelfImprovementCycleOrder",
-    id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status),
+    id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission),
     campaign_id: campaign.id,
     mission_id: campaign.mission_id,
     repository_binding: {
@@ -505,6 +553,7 @@ function deriveOrder(store, history) {
     checkpoint_trigger: checkpointTrigger,
     task_order: taskOrder,
     proof_requirements: proofRequirements(campaign),
+    trust_policy_admission: trustPolicyAdmission,
     budget_snapshot: budget,
     execution_authorized: status === "ready",
     release_authorized: false,
@@ -522,6 +571,7 @@ function comparableOrder(order) {
   }
   delete copy.observed_manifest;
   delete copy.generated_at;
+  if (copy.trust_policy_admission) delete copy.trust_policy_admission.evaluated_at;
   return copy;
 }
 
@@ -541,7 +591,7 @@ function superviseCampaign(options) {
   }
   const store = loadVerifiedStore(options.repositoryPath, options.artifactRoot);
   const history = loadCampaignHistory(store, options.campaignId);
-  const proposed = deriveOrder(store, history);
+  const proposed = deriveOrder(store, history, options.evaluatedAt);
   const existing = selectIdempotentOrder(proposed, history.existingOrders);
   return { order: existing || proposed, existing: Boolean(existing), store, history };
 }

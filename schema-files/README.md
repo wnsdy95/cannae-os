@@ -115,3 +115,5 @@ Recommended validation order:
 All schemas target JSON Schema draft 2020-12.
 
 `VerifierTrustPolicy.verifiers[].allowed_attestation_types` can purpose-limit a key to `verification_receipt`, `comparative_evaluation_report`, or both. Comparative signing requires the explicit report grant; existing receipt-only policies may omit the field for v0.3 compatibility.
+
+`SelfImprovementCycleOrder` v0.2 adds a supervisor-derived `trust_policy_admission`. Signed campaigns record the exact trust-policy reference, effective quorum thresholds, currently eligible verifier/key/group sets for each attestation purpose, and a conservative validity boundary. v0.1 orders remain readable, but only v0.2 carries pre-dispatch trust readiness evidence.

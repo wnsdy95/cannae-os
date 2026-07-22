@@ -1999,6 +1999,7 @@ function semanticRules(payload, type) {
     const sourceCheckpoint = payload.source_checkpoint_ref || {};
     const sourceDecision = payload.source_decision_ref || {};
     const proof = payload.proof_requirements || {};
+    const admission = payload.trust_policy_admission || {};
     if (payload.release_authorized !== false) {
       issues.push(issue("critical", "CYCLE_ORDER_SELF_RELEASE", "$.release_authorized", "A campaign cycle order cannot authorize merge, push, or release."));
     }
@@ -2042,6 +2043,60 @@ function semanticRules(payload, type) {
     }
     if (proof.signed_comparative_attestation_required === true && proof.signed_attestation_required !== true) {
       issues.push(issue("critical", "CYCLE_ORDER_COMPARATIVE_QUORUM_UNDERSPECIFIED", "$.proof_requirements", "Signed comparative evidence requires the campaign trust policy and signed receipt quorum."));
+    }
+    if (payload.schema_version === "0.1" && payload.trust_policy_admission !== undefined) {
+      issues.push(issue("error", "CYCLE_ORDER_V01_ADMISSION_UNSUPPORTED", "$.trust_policy_admission", "Trust-policy admission evidence requires cycle-order schema version 0.2."));
+    }
+    if (payload.schema_version === "0.2") {
+      const receipt = admission.receipt_quorum || {};
+      const comparative = admission.comparative_quorum || {};
+      const requirements = admission.effective_requirements || {};
+      const sameTrustRef = JSON.stringify(admission.trust_policy_ref || {}) === JSON.stringify(proof.trust_policy_ref || {});
+      const quorumCountsMatch = quorum =>
+        quorum.eligible_verifier_count === (quorum.verifier_ids || []).length &&
+        quorum.distinct_key_count === (quorum.key_ids || []).length &&
+        quorum.independence_group_count === (quorum.independence_groups || []).length;
+      const quorumSatisfied = quorum => quorum.required !== true ||
+        (quorum.eligible_verifier_count >= requirements.minimum_valid_attestations &&
+         quorum.independence_group_count >= requirements.minimum_independence_groups &&
+         (requirements.require_distinct_key_ids !== true || quorum.distinct_key_count >= requirements.minimum_valid_attestations));
+      const expectedSatisfied = (admission.blocking_codes || []).length === 0 && quorumSatisfied(receipt) && quorumSatisfied(comparative);
+
+      if (admission.required !== proof.signed_attestation_required || receipt.required !== proof.signed_attestation_required ||
+          comparative.required !== proof.signed_comparative_attestation_required || !sameTrustRef) {
+        issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_REQUIREMENT_MISMATCH", "$.trust_policy_admission", "Admission purpose and trust-policy bindings must exactly match the cycle-order proof requirements."));
+      }
+      if (requirements.minimum_valid_attestations < proof.minimum_valid_attestations ||
+          requirements.minimum_independence_groups < proof.minimum_independence_groups ||
+          (proof.require_distinct_key_ids === true && requirements.require_distinct_key_ids !== true)) {
+        issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_THRESHOLD_WEAKENED", "$.trust_policy_admission.effective_requirements", "Admission may strengthen but cannot weaken the campaign quorum."));
+      }
+      if (!quorumCountsMatch(receipt) || !quorumCountsMatch(comparative)) {
+        issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_COUNT_MISMATCH", "$.trust_policy_admission", "Admission counts must equal their distinct evidence lists."));
+      }
+      if (admission.satisfied !== expectedSatisfied || receipt.satisfied !== quorumSatisfied(receipt) ||
+          comparative.satisfied !== quorumSatisfied(comparative)) {
+        issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_FALSE_SATISFACTION", "$.trust_policy_admission", "Admission satisfaction must be derived from its effective thresholds, distinct identities, keys, groups, and blocking codes."));
+      }
+      if (payload.generated_at !== admission.evaluated_at) {
+        issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_TIME_MISMATCH", "$.trust_policy_admission.evaluated_at", "Admission must be evaluated at the exact cycle-order issuance time."));
+      }
+      if (admission.required === true && admission.satisfied === true &&
+          (!isValidDate(admission.valid_until) || Date.parse(admission.valid_until) <= Date.parse(admission.evaluated_at))) {
+        issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_WINDOW_INVALID", "$.trust_policy_admission.valid_until", "A satisfied trust admission must expire after its evaluation time."));
+      }
+      if (admission.required === false &&
+          (admission.satisfied !== true || admission.valid_until !== "none" ||
+           requirements.minimum_valid_attestations !== 0 || requirements.minimum_independence_groups !== 0 ||
+           requirements.require_distinct_key_ids !== false || admission.trust_policy_ref.artifact_id !== "none")) {
+        issues.push(issue("error", "CYCLE_ORDER_UNSIGNED_ADMISSION_MISMATCH", "$.trust_policy_admission", "An unsigned campaign requires an explicit satisfied no-op admission with no trust policy or quorum."));
+      }
+      if (ready && (admission.satisfied !== true || (admission.required === true && admission.valid_until === "none"))) {
+        issues.push(issue("critical", "CYCLE_ORDER_WITHOUT_TRUST_ADMISSION", "$.trust_policy_admission", "A ready v0.2 cycle order requires a satisfied, time-bounded trust-policy admission."));
+      }
+      if (ready && (admission.blocking_codes || []).some(code => !(payload.blocking_codes || []).includes(code))) {
+        issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_BLOCK_NOT_PROPAGATED", "$.blocking_codes", "Ready execution cannot discard a trust-admission blocking code."));
+      }
     }
   }
 

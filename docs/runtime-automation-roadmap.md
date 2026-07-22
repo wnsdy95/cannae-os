@@ -16,9 +16,10 @@ Manual doctrine docs
 -> Manifest-backed finite campaign supervision
 -> Comparative canary promotion gates
 -> Authenticated comparative evidence
+-> Pre-dispatch verifier readiness admission
 ```
 
-Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, and signed comparative evidence are implemented as local runtimes. UI and externally authenticated execution remain prototype-grade.
+Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, and pre-dispatch verifier readiness admission are implemented as local runtimes. UI and externally authenticated execution remain prototype-grade.
 
 ## 1. Phase 0: Documentation Base
 
@@ -261,7 +262,43 @@ Implemented controls:
 
 This phase authenticates trusted-key possession and statement integrity. It does not prove that the evaluator ran honestly, that `remote` is a protected execution service, or that declared independence groups are operationally independent.
 
-## 11. Release Gates
+## 11. Phase 10: Verifier Readiness Admission
+
+Status: implemented as a manifest-backed dispatch prerequisite.
+
+Goal:
+
+- Refuse to start or resume signed campaign work when the bound trust policy cannot form every evidence quorum the campaign will require.
+
+Features:
+
+- exact campaign-to-policy artifact ID, path, SHA-256, mission, and repository binding;
+- active policy and verifier validity-window checks at order issuance;
+- Ed25519 public-key identity, verifier status, and repository allowlist checks;
+- separate receipt and comparative-purpose eligibility populations;
+- effective thresholds that cannot be weaker than either campaign or policy quorum;
+- distinct verifier, key, and independence-group counts and evidence lists;
+- conservative `valid_until` plus admission-state-derived idempotent order identity;
+- fail-closed `hold` when any required population is insufficient.
+
+Completion criteria:
+
+- A v0.3+ campaign cannot receive a `ready` order without a manifest-valid, active, repository-bound trust policy.
+- A v0.4 campaign cannot receive a `ready` order when receipt quorum is possible but comparative-purpose quorum is not.
+- Suspended, revoked, future, expired, wrong-repository, invalid-key, repeated-key, or insufficient-group entries cannot fill readiness positions.
+- A payload that merely claims admission satisfaction is rejected when its evidence counts do not meet the recorded thresholds.
+- v0.1 cycle orders remain readable, and unsigned campaigns receive an explicit v0.2 no-op admission.
+
+Implemented controls:
+
+- `verifier-trust-readiness.js` computes policy eligibility without accepting agent-authored readiness claims;
+- `campaign-supervisor.js` loads the exact policy and propagates admission failures into non-executable orders;
+- cycle-order schema v0.2 records policy reference, effective requirements, purpose-specific populations, issue/expiry times, and blocking codes;
+- `run-verifier-trust-readiness-fixtures.js`, `run-cycle-order-admission-fixtures.js`, and expanded supervisor fixtures cover readiness and forgery cases.
+
+This phase proves only that policy-declared public verifier capacity can form a quorum at issuance. It does not prove private-key availability, honest execution, operational independence, protected workload identity, or transparency-log inclusion.
+
+## 12. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -275,8 +312,9 @@ This phase authenticates trusted-key possession and statement integrity. It does
 | G8 | Campaign supervisor emits only a finite ready order from a valid manifest chain |
 | G9 | Control-plane candidate passes baseline-versus-canary comparison |
 | G10 | Schema `0.4` control-plane comparison has a fresh trusted signed report quorum |
+| G11 | Signed-campaign dispatch has a satisfied, unexpired, manifest-bound trust-policy admission |
 
-## 12. Related Documents
+## 13. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`

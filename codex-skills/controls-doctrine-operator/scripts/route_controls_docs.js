@@ -106,7 +106,7 @@ const RULES = [
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "remote verifier", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
+    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "pre-dispatch admission", "remote verifier", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
     docs: [
       "docs/bounded-self-improvement-operations.md",
       "docs/agent-roles-and-authority.md",
@@ -120,6 +120,8 @@ const RULES = [
       "node run-self-improvement-fixtures.js",
       "node run-signed-self-improvement-fixtures.js",
       "node run-campaign-supervisor-fixtures.js",
+      "node run-verifier-trust-readiness-fixtures.js",
+      "node run-cycle-order-admission-fixtures.js",
       "node run-verification-runner-fixtures.js",
       "node run-verification-attestation-fixtures.js",
       "node run-comparative-evaluation-fixtures.js",
@@ -499,7 +501,7 @@ function routeIdsForArtifact(file) {
   if (file === "maintenance-dashboard-runner.js") routeIds.push("runtime-architecture-dashboard");
   if (file === "decision-packet-linter.js") routeIds.push("authority-risk-release", "orders");
   if (file === "aar-to-readiness-update.js") routeIds.push("orders", "runtime-architecture-dashboard");
-  if (file === "autonomous-improvement-controller.js" || file === "campaign-supervisor.js" || file === "run-campaign-supervisor-fixtures.js" || file === "run-self-improvement-fixtures.js" || file === "run-signed-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
+  if (file === "autonomous-improvement-controller.js" || file === "campaign-supervisor.js" || file === "verifier-trust-readiness.js" || file === "run-campaign-supervisor-fixtures.js" || file === "run-verifier-trust-readiness-fixtures.js" || file === "run-cycle-order-admission-fixtures.js" || file === "run-self-improvement-fixtures.js" || file === "run-signed-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "verification-runner.js" || file === "verification-attestation.js" || file === "verification-attestation-runner.js" || file === "run-verification-attestation-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "comparative-evaluation-runner.js" || file === "run-comparative-evaluation-fixtures.js" ||
       file === "comparative-evaluation-attestation.js" || file === "comparative-evaluation-attestation-runner.js" ||

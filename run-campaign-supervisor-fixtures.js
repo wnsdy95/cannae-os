@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const assert = require("assert");
+const crypto = require("crypto");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
@@ -8,6 +9,7 @@ const { spawnSync } = require("child_process");
 const { superviseCampaign } = require("./campaign-supervisor");
 const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const { publicKeyId } = require("./verification-attestation");
 
 const ROOT = __dirname;
 const CAMPAIGN_SAMPLE = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-self-improvement-campaign.json"), "utf8"));
@@ -23,6 +25,23 @@ function git(repositoryPath, args) {
   const result = spawnSync("git", ["-C", repositoryPath, ...args], { encoding: "utf8" });
   assert.strictEqual(result.status, 0, result.stderr || result.stdout);
   return result.stdout.trim();
+}
+
+function verifier(repositoryKey, id, group, purposes) {
+  const { publicKey } = crypto.generateKeyPairSync("ed25519");
+  const publicKeyPem = publicKey.export({ type: "spki", format: "pem" });
+  return {
+    id,
+    key_id: publicKeyId(publicKey),
+    public_key_pem: publicKeyPem,
+    independence_group: group,
+    status: "active",
+    allowed_repository_keys: [repositoryKey],
+    allowed_execution_origins: ["remote"],
+    allowed_attestation_types: purposes,
+    valid_from: "2026-07-21T08:00:00Z",
+    valid_until: "2027-07-21T08:00:00Z"
+  };
 }
 
 function makeEnvironment(name, overrides = {}) {
@@ -49,14 +68,49 @@ function makeEnvironment(name, overrides = {}) {
   campaign.created_at = "2026-07-21T09:00:00Z";
   Object.assign(campaign.budgets, overrides.budgets || {});
   if (overrides.status) campaign.status = overrides.status;
+  let trustPolicy = null;
+  let trustPolicyWrite = null;
   if (overrides.schemaVersion === "0.4") {
     campaign.schema_version = "0.4";
+    const defaultPurposes = ["verification_receipt", "comparative_evaluation_report"];
+    trustPolicy = {
+      schema_version: "0.1",
+      type: "VerifierTrustPolicy",
+      id: "VTP-Supervisor-Fixture",
+      repository_binding: {
+        repository_key: repository.key,
+        identity_fingerprint: repository.identity_fingerprint
+      },
+      policy_version: 1,
+      quorum: {
+        minimum_valid_attestations: 2,
+        minimum_independence_groups: 2,
+        require_distinct_key_ids: true,
+        max_attestation_age_seconds: 900
+      },
+      verifiers: [
+        verifier(repository.key, "VERIFIER-Supervisor-A", "provider-a", overrides.firstVerifierPurposes || defaultPurposes),
+        verifier(repository.key, "VERIFIER-Supervisor-B", "provider-b", overrides.secondVerifierPurposes || defaultPurposes)
+      ],
+      created_at: "2026-07-21T08:00:00Z",
+      expires_at: overrides.policyExpiresAt || "2027-07-21T08:00:00Z"
+    };
+    trustPolicyWrite = writeRepositoryArtifact({
+      repositoryPath,
+      artifactRoot,
+      missionId: campaign.mission_id,
+      waveId: "C0",
+      kind: "verifier-trust-policies",
+      artifactId: trustPolicy.id,
+      payload: trustPolicy,
+      createdAt: trustPolicy.created_at
+    });
     campaign.attestation_policy = {
       required: true,
       trust_policy_ref: {
-        artifact_id: "VTP-Supervisor-Fixture",
-        relative_path: `repositories/${repository.key}/missions/${campaign.mission_id}/C0/verifier-trust-policies/VTP-Supervisor-Fixture.json`,
-        sha256: "a".repeat(64)
+        artifact_id: trustPolicy.id,
+        relative_path: trustPolicyWrite.relative_path,
+        sha256: trustPolicyWrite.sha256
       },
       minimum_valid_attestations: 2,
       minimum_independence_groups: 2,
@@ -74,7 +128,7 @@ function makeEnvironment(name, overrides = {}) {
     payload: campaign,
     createdAt: campaign.created_at
   });
-  return { root, repositoryPath, artifactRoot, repository, campaign, campaignWrite, decisions: [] };
+  return { root, repositoryPath, artifactRoot, repository, campaign, campaignWrite, trustPolicy, trustPolicyWrite, decisions: [] };
 }
 
 function checkpointFor(environment, cycle, attempt, options = {}) {
@@ -186,7 +240,8 @@ function supervise(environment) {
   const result = superviseCampaign({
     repositoryPath: environment.repositoryPath,
     artifactRoot: environment.artifactRoot,
-    campaignId: environment.campaign.id
+    campaignId: environment.campaign.id,
+    evaluatedAt: "2026-07-21T09:00:00Z"
   });
   const validation = validatePayload(result.order, "self-improvement-cycle-order");
   assert.strictEqual(validation.valid, true, JSON.stringify(validation, null, 2));
@@ -219,6 +274,32 @@ try {
     assert.strictEqual(order.proof_requirements.signed_comparative_attestation_required, true);
     assert.strictEqual(order.proof_requirements.minimum_valid_attestations, 2);
     assert.strictEqual(order.proof_requirements.minimum_independence_groups, 2);
+    assert.strictEqual(order.trust_policy_admission.satisfied, true);
+    assert.strictEqual(order.trust_policy_admission.receipt_quorum.eligible_verifier_count, 2);
+    assert.strictEqual(order.trust_policy_admission.comparative_quorum.eligible_verifier_count, 2);
+  });
+
+  run("v0.4 campaign without enough comparative-purpose verifiers is blocked", () => {
+    const environment = makeEnvironment("v04-report-purpose", {
+      schemaVersion: "0.4",
+      secondVerifierPurposes: ["verification_receipt"]
+    });
+    const order = supervise(environment);
+    assert.strictEqual(order.status, "blocked");
+    assert(order.blocking_codes.includes("TRUST_ADMISSION_COMPARATIVE_QUORUM_UNAVAILABLE"));
+    assert.strictEqual(order.trust_policy_admission.receipt_quorum.satisfied, true);
+    assert.strictEqual(order.trust_policy_admission.comparative_quorum.satisfied, false);
+  });
+
+  run("v0.4 campaign with an expired trust policy is blocked", () => {
+    const environment = makeEnvironment("v04-expired-policy", {
+      schemaVersion: "0.4",
+      policyExpiresAt: "2026-07-21T08:30:00Z"
+    });
+    const order = supervise(environment);
+    assert.strictEqual(order.status, "blocked");
+    assert(order.blocking_codes.includes("TRUST_ADMISSION_POLICY_NOT_ACTIVE"));
+    assert.strictEqual(order.trust_policy_admission.valid_until, "none");
   });
 
   run("new campaign opens cycle one", () => {

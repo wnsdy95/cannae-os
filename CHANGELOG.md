@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added cycle-order schema v0.2 and fail-closed campaign admission that computes receipt and comparative verifier readiness from the exact manifest-bound trust policy before dispatch.
+- Added purpose, repository, key identity, status, validity, distinct-key, and independence-group readiness fixtures; cycle orders now bind a conservative admission expiry and reject self-declared quorum satisfaction.
 - Added self-improvement schema v0.4 with Ed25519 DSSE attestations over exact persisted comparative reports, purpose-specific in-toto predicates, and distinct verifier/key/independence-group quorum.
 - Bound signed comparative evidence to report and artifact digests, plan, evaluation set, campaign, mission, cycle, baseline, candidate, repository, evaluator invocation, origin, and validity window; added controller manifest reload and supervisor proof requirements.
 - Added comparative report signing CLI, valid/invalid contracts, adversarial replay/rebinding/tamper fixtures, research traceability, and Codex/Claude skill routing.
