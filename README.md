@@ -367,6 +367,7 @@ Working today:
 - routing receipt and preflight model for delegated agent waves;
 - deterministic manifest-backed campaign supervision with finite cycle and retry orders;
 - authenticated verifier workload admission with short-lived SPIFFE X.509 evidence and transparency inclusion;
+- native Sigstore workload admission with manifest-pinned TrustedRoot material, exact Fulcio identity/issuer policy, Rekor/CT verification, and dual binding to the static verifier key;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
 Not complete yet:
@@ -376,7 +377,7 @@ Not complete yet:
 - production approval UI;
 - tool gateway integration with real external systems;
 - authenticated multi-user permissions;
-- production SPIFFE Workload API, Fulcio/Rekor, or native Sigstore bundle integration;
+- operation of a production SPIFFE Workload API, Fulcio, Rekor, CT log, TUF root service, monitor, witness, or gossip network;
 - formal compliance certification;
 - automatic hallucination elimination.
 
@@ -391,8 +392,8 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - Military terminology is used as an organizational metaphor and control vocabulary, not as operational battlefield instruction.
 - Many documents are research drafts and should be treated as evolving doctrine, not final standards.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
-- Signed receipt and comparative-report attestations authenticate trusted-key possession and statement integrity, not honest verifier execution. Trust-policy v0.2 can also authenticate a current SPIFFE workload and transparency inclusion, but it does not establish a trusted execution environment, protected key hardware, operator independence, or correct verifier logic.
-- The provider-neutral X.509 verifier is intentionally bounded: it does not implement full RFC 5280 policy/revocation processing, the SPIFFE Workload API, Rekor consistency monitoring, witness gossip, or native Cosign/Sigstore bundle verification.
+- Signed receipt and comparative-report attestations authenticate trusted-key possession and statement integrity, not honest verifier execution. Trust-policy v0.2+ can also authenticate a current SPIFFE or Sigstore workload and transparency inclusion, but it does not establish a trusted execution environment, protected key hardware, operator independence, or correct verifier logic.
+- The provider-neutral X.509 verifier is intentionally bounded and does not implement full RFC 5280 policy/revocation processing or the SPIFFE Workload API. The native Sigstore adapter verifies official bundle and TrustedRoot formats through pinned libraries, but it does not operate or globally monitor Fulcio, Rekor, CT logs, TUF, witnesses, or gossip.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded, time-limited cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.

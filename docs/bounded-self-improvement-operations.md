@@ -111,6 +111,20 @@ Only schema-valid evidence reloaded from the verified repository manifest is con
 
 This is a provider-neutral local proof contract. It is not a Cosign bundle, Fulcio certificate service, Rekor wire protocol or full RFC 5280 path builder. Production Sigstore interoperability belongs in a separate adapter using official libraries and trusted-root metadata.
 
+### 2.4.1 Native Sigstore workload identity
+
+`VerifierTrustPolicy` v0.3 adds `sigstore_bundle` as a separate provider adapter. It does not reinterpret the provider-neutral proof. Each Sigstore verifier pins an exact certificate SAN type/value, Fulcio OIDC issuer, `SigstoreTrustedRoot` artifact, bundle media type and nonzero CT-log, Rekor-log and timestamp thresholds.
+
+`SigstoreVerifierIdentityEvidence` places the same canonical Controls binding statement under two signatures: the keyless certificate key represented by the native Sigstore message bundle and the verifier's separately registered Ed25519 key. The statement fixes the verifier, static key, exact identity and issuer, trusted-root ID and digest, repository identity, purposes, nonce, issue time and expiry. The supervisor accepts only evidence and roots reloaded from exact manifest paths and hashes.
+
+Verification uses the package-locked official Sigstore protobuf and verifier libraries. It checks official bundle normalization, Fulcio chain and SCT, trusted signing time, Rekor inclusion and checkpoint material, Rekor body-to-artifact/signature binding, artifact signature, exact escaped-and-anchored identity, exact issuer and the static-key signature. Workload admission additionally requires the Fulcio certificate to remain active at dispatch and does not allow the evidence expiry to exceed that certificate. This is deliberately stricter than historical artifact verification after certificate expiry.
+
+The adapter accepts only the exact policy-selected v0.2 or v0.3 bundle media type. Current `sigstore` JavaScript message signing may emit v0.2 despite newer bundle specifications; policy records the observed format rather than silently upgrading it. Root ingestion through the official TUF client is available, but root selection, rotation and freshness remain human-controlled trust changes.
+
+Cycle-order v0.4 projects both provider adapters into a common identity-assurance shape while retaining provider, workload identity, authority, trusted root, certificate and transparency-log identifiers. A mixed policy may use SPIFFE and Sigstore verifiers together. A missing, stale, expired, wrong-artifact, wrong-Rekor-entry, wrong-identity, wrong-issuer, wrong-root or signature-invalid record removes only that verifier from every affected purpose quorum and can block dispatch.
+
+See `docs/sigstore-verifier-workload-admission.md` for commands, external Cosign assembly and operational limits.
+
 ### 2.5 Comparative evaluation contracts
 
 `ComparativeEvaluationSet` is persisted before candidate execution and bound to one campaign and mission. It assigns a version and stable order to held-out or open fixtures and records three contamination controls: sealing before execution, exclusion of expected outputs from candidate context, and identical fixture order. The manifest SHA-256 is the runtime identity of the set; a cross-mission artifact reference is rejected before harness execution.
@@ -187,9 +201,9 @@ The supervisor emits one manifest-backed order:
 | `before_completion` | Accepted decision explicitly requires the completion checkpoint | Open the next finite completion cycle with the accepted decision as parent |
 | `hold` | Completion, termination, escalation, invalid lineage, incomplete pair, or exhausted budget | Emit no execution authority |
 
-The supervisor rejects duplicate IDs, a checkpoint without exactly one decision, a decision without a checkpoint, skipped cycles, records after an accepted or terminal decision, a baseline that does not match the prior accepted revision, a forged parent reference, repository mismatch, and finite-budget exhaustion. For a v0.3+ campaign it also reloads the exact manifest-bound `VerifierTrustPolicy` and computes purpose-specific receipt and comparative readiness from active status, repository allowlists, Ed25519 key identity, validity windows, distinct verifier IDs, distinct key IDs, and independence groups. Under trust-policy v0.2, it additionally reloads `VerifierIdentityEvidence`, verifies the SVID chain, dual signatures, evidence age and transparency checkpoint, and excludes every unauthenticated verifier. It copies the controller's task order exactly for follow-on work and records the campaign, source checkpoint, source decision, accepted parent, proof requirements, trust admission, budget snapshot, and observed manifest digest.
+The supervisor rejects duplicate IDs, a checkpoint without exactly one decision, a decision without a checkpoint, skipped cycles, records after an accepted or terminal decision, a baseline that does not match the prior accepted revision, a forged parent reference, repository mismatch, and finite-budget exhaustion. For a v0.3+ campaign it also reloads the exact manifest-bound `VerifierTrustPolicy` and computes purpose-specific receipt and comparative readiness from active status, repository allowlists, Ed25519 key identity, validity windows, distinct verifier IDs, distinct key IDs, and independence groups. Under trust-policy v0.2+, it reloads the exact identity evidence required by each verifier's selected adapter. SPIFFE evidence verifies the SVID chain, dual signatures, age and local transparency checkpoint. Sigstore evidence additionally reloads the selected TrustedRoot and verifies the native bundle, exact identity/issuer, static signature, current certificate, freshness and Rekor binding. Every unauthenticated verifier is excluded. The supervisor copies the controller's task order exactly for follow-on work and records the campaign, source checkpoint, source decision, accepted parent, proof requirements, trust admission, budget snapshot, and observed manifest digest.
 
-Cycle-order schema v0.3 records `trust_policy_admission`, including the exact policy reference, effective thresholds, eligible verifier/key/group lists for each evidence purpose, workload identity evidence references, evaluation time, conservative validity boundary, and blocking codes. An agent cannot satisfy this gate by reporting readiness; the supervisor derives it from policy and evidence bytes already verified by the repository manifest. v0.1 and v0.2 orders remain readable. `SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, log keys, or authority. Only `status: ready` with `execution_authorized: true`, satisfied admission, and an unexpired signed-campaign `valid_until` may be dispatched. Re-running the supervisor against the same reconstructed state and admission population returns the existing persisted order instead of creating another manifest revision.
+Cycle-order schema v0.3 records SPIFFE-specific `trust_policy_admission`; v0.4 records a provider-neutral identity projection, including the exact policy/root/evidence references, effective thresholds, eligible verifier/key/group lists for each evidence purpose, provider and authority identities, evaluation time, conservative validity boundary, and blocking codes. An agent cannot satisfy this gate by reporting readiness; the supervisor derives it from policy, root and evidence bytes already verified by the repository manifest. v0.1 through v0.3 orders remain readable. `SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, log keys, or authority. Only `status: ready` with `execution_authorized: true`, satisfied admission, and an unexpired signed-campaign `valid_until` may be dispatched. Re-running the supervisor against the same reconstructed state and admission population returns the existing persisted order instead of creating another manifest revision.
 
 ## 3. Required Battle Rhythm
 
@@ -201,12 +215,12 @@ Cycle-order schema v0.3 records `trust_policy_admission`, including the exact po
 4. Define quality dimensions that can be evidenced independently of model confidence.
 5. Set finite budgets and stop conditions.
 6. Record the initial baseline.
-7. For trust-policy v0.2, persist fresh workload identity evidence from every verifier needed for quorum.
+7. For trust-policy v0.2+, persist fresh adapter-specific workload identity evidence from every verifier needed for quorum; Sigstore verifiers also require the exact selected TrustedRoot artifact.
 8. Run the campaign supervisor and execute only its persisted `start` order when status is `ready`.
 
 ### 3.2 Every implementation wave
 
-1. For trust-policy v0.2, refresh and persist verifier workload identity evidence before it expires.
+1. For trust-policy v0.2+, refresh and persist verifier workload identity evidence before it expires; refresh a Sigstore TrustedRoot only through a separately authorized trust change.
 2. Run the campaign supervisor against the verified artifact store. Stop unless it emits a current `ready` order whose trust admission is satisfied and, when required, not expired.
 3. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
 4. Execute only the task order carried by that cycle order, using its cycle, attempt, baseline, parent, trigger, and proof requirements.
@@ -459,7 +473,7 @@ node run-repository-artifact-concurrency-fixtures.js
 node run-repository-artifact-recovery-fixtures.js
 ```
 
-The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE verification, duplicate and expired attestations, two-key/two-group receipt and report quorum, SPIFFE X.509 workload identity, dual key possession, transparency inclusion/checkpoint verification, receipt/report-content binding, comparative plan/set/lineage/evaluator/repository rebinding, real baseline/candidate worktree execution, sealed evaluation sets, absolute and non-regression thresholds, harness mismatch, comparison rollback/inconclusive outcomes, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, concurrent fencing, crash recovery, and byte-level tamper detection.
+The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE verification, duplicate and expired attestations, two-key/two-group receipt and report quorum, SPIFFE X.509 workload identity, native Fulcio/Rekor Sigstore identity, dual key possession, trusted-root freshness, transparency inclusion/checkpoint verification, wrong-artifact and unrelated-Rekor-entry rejection, receipt/report-content binding, comparative plan/set/lineage/evaluator/repository rebinding, real baseline/candidate worktree execution, sealed evaluation sets, absolute and non-regression thresholds, harness mismatch, comparison rollback/inconclusive outcomes, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, concurrent fencing, crash recovery, and byte-level tamper detection.
 
 ## 9. Current Limitations
 

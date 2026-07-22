@@ -2656,6 +2656,51 @@ Implemented artifacts:
 - `run-workload-identity-admission-fixtures.js`
 - `verifier-trust-readiness.js` and `campaign-supervisor.js` identity admission integration
 
+### 8.59 Native Sigstore Bundle and TrustedRoot Admission v0.9
+
+Research question:
+
+> How can Controls consume the evolving Fulcio, Rekor, CT-log and bundle ecosystem without reimplementing Sigstore, while still binding keyless identity to the framework's static verifier authority and current-workload requirement?
+
+Primary references:
+
+- Sigstore bundle protobuf: https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_bundle.proto
+- Sigstore TrustedRoot protobuf: https://github.com/sigstore/protobuf-specs/blob/main/protos/sigstore_trustroot.proto
+- Sigstore root-signing repository: https://github.com/sigstore/root-signing
+- sigstore-js client: https://github.com/sigstore/sigstore-js/tree/main/packages/client
+- sigstore-js verifier: https://github.com/sigstore/sigstore-js/tree/main/packages/verify
+- Sigstore conformance suite: https://github.com/sigstore/sigstore-conformance
+- Cosign `verify-blob` contract: https://github.com/sigstore/cosign/blob/main/doc/cosign_verify-blob.md
+- Cosign Rekor-entry binding advisory GHSA-whqx-f9j3-ch6m: https://github.com/sigstore/cosign/security/advisories/GHSA-whqx-f9j3-ch6m
+- Rekor transparency overview: https://docs.sigstore.dev/logging/overview/
+
+Engineering conclusions:
+
+1. Native Sigstore is a separate provider adapter, not a new interpretation of the Phase 11A local envelope. The trust policy selects `spiffe_x509` or `sigstore_bundle` per verifier so protocol and assurance boundaries remain visible.
+2. A bundle is verification material, not policy. Policy independently fixes the exact certificate SAN, OIDC issuer, TrustedRoot artifact, bundle media type, CT/Rekor/timestamp thresholds, repository, verifier, purposes and validity limits.
+3. Trusted material is an executable dependency. `SigstoreTrustedRoot` normalizes official protobuf JSON, records source and retrieval time, requires CA/Rekor/CT-log material, hashes the normalized root and enters the repository manifest by exact ID/path/SHA-256. Root replacement is a human-controlled trust change.
+4. Keyless identity must not erase the long-lived Controls authority registry. The Fulcio certificate key and separately registered Ed25519 verifier key both sign one canonical binding statement containing identity, issuer, root digest, repository, purposes, nonce and validity. Neither proof can silently widen the other.
+5. The official verifier performs coupled checks that are unsafe to reproduce piecemeal: trusted signing time, Fulcio path and SCT, Rekor inclusion/checkpoint, Rekor entry body binding, artifact signature and certificate identity policy. Controls invokes the low-level verifier with explicit trust material and nonzero thresholds.
+6. Artifact binding is a first-class regression. The 2026 Cosign advisory demonstrates that an otherwise valid Rekor entry is not enough when it is unrelated to the supplied artifact/signature/key. Controls retains both wrong-artifact and unrelated-valid-entry tests and requires `TLOG_BODY_ERROR` on the latter class.
+7. Policy accepts only the exact selected bundle media type. Current `sigstore` JavaScript message signing can emit bundle v0.2 even when v0.3 is available in the ecosystem, so the runtime supports explicit v0.2 or v0.3 selection instead of inferring or rewriting a version.
+8. Artifact verification and current-workload admission use different time semantics. Sigstore can validate a historical signature after its short-lived Fulcio certificate expires when trusted signing time exists. Controls additionally requires the certificate to be active at dispatch and caps evidence expiry at certificate expiry.
+9. Exact identity means literal policy data. The adapter escapes and anchors the SAN only because the library API accepts a regular-expression policy; operators cannot supply a broad regex. Issuer comparison is exact.
+10. Conformance material is pinned, offline and adversarial. A live public-good Fulcio/Rekor sample proves end-to-end compatibility, while upstream conformance vectors test behavior without requiring network availability during every validation run.
+11. One verified inclusion proof does not establish global log consistency, non-equivocation or universal visibility. Production deployments still need TUF/root-update operations, Rekor monitoring, consistency proofs, witnesses or gossip and incident response.
+12. A valid bundle authenticates a signer and event, not honest verifier execution, protected key handling, operator independence or correct software. Those assurances require separate infrastructure and evidence. Merge, release, policy and trust-root authority remain with the human decision-maker.
+
+Implemented artifacts:
+
+- `sigstore-trusted-root.js` and `sigstore-trusted-root-runner.js`
+- `sigstore-verifier-identity-evidence.js` and `sigstore-verifier-identity-runner.js`
+- `schema-files/sigstore-trusted-root.schema.json`
+- `schema-files/sigstore-verifier-identity-evidence.schema.json`
+- `schema-files/verifier-trust-policy.schema.json` v0.3
+- `schema-files/self-improvement-cycle-order.schema.json` v0.4
+- `sigstore-fixtures/` pinned real and adversarial bundles
+- `run-sigstore-verifier-identity-fixtures.js`
+- supervisor, readiness, validator, roadmap and skill integrations
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

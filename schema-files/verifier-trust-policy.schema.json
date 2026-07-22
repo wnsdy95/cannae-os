@@ -11,6 +11,29 @@
       "then": {
         "required": ["identity_assurance"],
         "properties": {
+          "identity_assurance": {
+            "properties": {
+              "trusted_x509_roots": { "minItems": 1 },
+              "trusted_transparency_logs": { "minItems": 1 }
+            }
+          },
+          "verifiers": {
+            "items": { "required": ["workload_identity"] }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.3" } } },
+      "then": {
+        "required": ["identity_assurance"],
+        "properties": {
+          "identity_assurance": {
+            "required": ["max_trusted_root_age_seconds", "sigstore_trusted_root_refs"],
+            "properties": {
+              "sigstore_trusted_root_refs": { "minItems": 1 }
+            }
+          },
           "verifiers": {
             "items": { "required": ["workload_identity"] }
           }
@@ -19,7 +42,7 @@
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3"] },
     "type": { "type": "string", "const": "VerifierTrustPolicy" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "repository_binding": {
@@ -50,9 +73,10 @@
       "properties": {
         "required": { "type": "boolean", "const": true },
         "max_evidence_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+        "max_trusted_root_age_seconds": { "type": "integer", "minimum": 60, "maximum": 2592000 },
         "trusted_x509_roots": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 0,
           "maxItems": 20,
           "items": {
             "type": "object",
@@ -68,7 +92,7 @@
         },
         "trusted_transparency_logs": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 0,
           "maxItems": 20,
           "items": {
             "type": "object",
@@ -81,6 +105,13 @@
               "public_key_pem": { "type": "string", "pattern": "^-----BEGIN PUBLIC KEY-----" }
             }
           }
+        },
+        "sigstore_trusted_root_refs": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/artifact_ref" }
         }
       }
     },
@@ -108,13 +139,37 @@
           },
           "workload_identity": {
             "type": "object",
-            "required": ["type", "spiffe_id", "trust_root_id", "transparency_log_id"],
+            "required": ["type"],
             "additionalProperties": false,
+            "allOf": [
+              {
+                "if": { "properties": { "type": { "const": "spiffe_x509" } } },
+                "then": { "$ref": "#/$defs/spiffe_workload_identity" }
+              },
+              {
+                "if": { "properties": { "type": { "const": "sigstore_bundle" } } },
+                "then": { "$ref": "#/$defs/sigstore_workload_identity" }
+              }
+            ],
             "properties": {
-              "type": { "type": "string", "const": "spiffe_x509" },
+              "type": { "type": "string", "enum": ["spiffe_x509", "sigstore_bundle"] },
               "spiffe_id": { "type": "string", "pattern": "^spiffe://[a-z0-9.-]+/[^?#]+$" },
+              "transparency_log_id": { "$ref": "common.schema.json#/$defs/id" },
+              "certificate_identity_type": { "type": "string", "enum": ["email", "uri"] },
+              "certificate_identity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+              "certificate_issuer": { "type": "string", "minLength": 1, "maxLength": 2048 },
               "trust_root_id": { "$ref": "common.schema.json#/$defs/id" },
-              "transparency_log_id": { "$ref": "common.schema.json#/$defs/id" }
+              "bundle_media_type": {
+                "type": "string",
+                "enum": [
+                  "application/vnd.dev.sigstore.bundle+json;version=0.2",
+                  "application/vnd.dev.sigstore.bundle.v0.3+json",
+                  "application/vnd.dev.sigstore.bundle+json;version=0.3"
+                ]
+              },
+              "ctlog_threshold": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "tlog_threshold": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "timestamp_threshold": { "type": "integer", "minimum": 1, "maximum": 5 }
             }
           },
           "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
@@ -124,5 +179,54 @@
     },
     "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
     "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "spiffe_workload_identity": {
+      "type": "object",
+      "required": ["type", "spiffe_id", "trust_root_id", "transparency_log_id"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "spiffe_x509" },
+        "spiffe_id": { "type": "string", "pattern": "^spiffe://[a-z0-9.-]+/[^?#]+$" },
+        "trust_root_id": { "$ref": "common.schema.json#/$defs/id" },
+        "transparency_log_id": { "$ref": "common.schema.json#/$defs/id" }
+      }
+    },
+    "sigstore_workload_identity": {
+      "type": "object",
+      "required": [
+        "type", "certificate_identity_type", "certificate_identity", "certificate_issuer",
+        "trust_root_id", "bundle_media_type", "ctlog_threshold", "tlog_threshold", "timestamp_threshold"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "sigstore_bundle" },
+        "certificate_identity_type": { "type": "string", "enum": ["email", "uri"] },
+        "certificate_identity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "certificate_issuer": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "trust_root_id": { "$ref": "common.schema.json#/$defs/id" },
+        "bundle_media_type": {
+          "type": "string",
+          "enum": [
+            "application/vnd.dev.sigstore.bundle+json;version=0.2",
+            "application/vnd.dev.sigstore.bundle.v0.3+json",
+            "application/vnd.dev.sigstore.bundle+json;version=0.3"
+          ]
+        },
+        "ctlog_threshold": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "tlog_threshold": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "timestamp_threshold": { "type": "integer", "minimum": 1, "maximum": 5 }
+      }
+    }
   }
 }

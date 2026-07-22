@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.3",
+  "type": "VerifierTrustPolicy",
+  "id": "VTP-Sigstore-Fixture",
+  "repository_binding": {
+    "repository_key": "sigstore-fixture-repository",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "policy_version": 3,
+  "quorum": {
+    "minimum_valid_attestations": 1,
+    "minimum_independence_groups": 1,
+    "require_distinct_key_ids": true,
+    "max_attestation_age_seconds": 300
+  },
+  "identity_assurance": {
+    "required": true,
+    "max_evidence_age_seconds": 300,
+    "max_trusted_root_age_seconds": 3600,
+    "trusted_x509_roots": [],
+    "trusted_transparency_logs": [],
+    "sigstore_trusted_root_refs": [
+      {
+        "artifact_id": "STR-Sigstore-PGI-Fixture",
+        "relative_path": "sample-payloads/valid-sigstore-trusted-root.json",
+        "sha256": "8b9616b890fa33aea57e1920304c57b631e3f1b35934b39859bf9597c072e315"
+      }
+    ]
+  },
+  "verifiers": [
+    {
+      "id": "VERIFIER-Sigstore-Fixture",
+      "key_id": "c17f41b709de820bef6da84084e4373b536978f226a3f8a42550ee6853d962a1",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAWPwDy2awtIBiSzLGxyS5RgnT2Zdiho8aMByD7WsXQ+k=\n-----END PUBLIC KEY-----\n",
+      "independence_group": "sigstore-conformance",
+      "status": "active",
+      "allowed_repository_keys": [
+        "sigstore-fixture-repository"
+      ],
+      "allowed_execution_origins": [
+        "remote"
+      ],
+      "allowed_attestation_types": [
+        "verification_receipt",
+        "comparative_evaluation_report"
+      ],
+      "workload_identity": {
+        "type": "sigstore_bundle",
+        "certificate_identity_type": "email",
+        "certificate_identity": "untrusted-sa@sigstore-conformance.iam.gserviceaccount.com",
+        "certificate_issuer": "https://accounts.google.com",
+        "trust_root_id": "STR-Sigstore-PGI-Fixture",
+        "bundle_media_type": "application/vnd.dev.sigstore.bundle+json;version=0.2",
+        "ctlog_threshold": 1,
+        "tlog_threshold": 1,
+        "timestamp_threshold": 1
+      },
+      "valid_from": "2026-07-22T05:31:43.776Z",
+      "valid_until": "2026-07-22T06:31:43.776Z"
+    }
+  ],
+  "created_at": "2026-07-22T05:31:43.776Z",
+  "expires_at": "2026-07-22T06:31:43.776Z"
+}

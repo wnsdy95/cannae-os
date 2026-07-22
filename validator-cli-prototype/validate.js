@@ -16,6 +16,12 @@ const {
   parseSpiffeId,
   transparencyEntry
 } = require("../verifier-identity-evidence");
+const { verifySigstoreTrustedRoot } = require("../sigstore-trusted-root");
+const {
+  expectedStatement: expectedSigstoreIdentityStatement,
+  normalizeBundle,
+  sigstoreEvidenceDigest
+} = require("../sigstore-verifier-identity-evidence");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -79,6 +85,8 @@ const TYPE_TO_SCHEMA = {
   "verification-receipt": "verification-receipt.schema.json",
   "verifier-trust-policy": "verifier-trust-policy.schema.json",
   "verifier-identity-evidence": "verifier-identity-evidence.schema.json",
+  "sigstore-trusted-root": "sigstore-trusted-root.schema.json",
+  "sigstore-verifier-identity-evidence": "sigstore-verifier-identity-evidence.schema.json",
   "verification-attestation": "verification-attestation.schema.json",
   "comparative-evaluation-attestation": "comparative-evaluation-attestation.schema.json"
 };
@@ -1854,11 +1862,24 @@ function semanticRules(payload, type) {
     const trustedRootIds = new Set();
     const trustedLogIds = new Set();
 
-    if (payload.schema_version === "0.2" && !payload.identity_assurance) {
-      issues.push(issue("critical", "VERIFIER_POLICY_IDENTITY_ASSURANCE_REQUIRED", "$.identity_assurance", "Policy v0.2 requires workload identity assurance."));
+    if (["0.2", "0.3"].includes(payload.schema_version) && !payload.identity_assurance) {
+      issues.push(issue("critical", "VERIFIER_POLICY_IDENTITY_ASSURANCE_REQUIRED", "$.identity_assurance", "Policy v0.2+ requires workload identity assurance."));
     }
     if (payload.schema_version === "0.1" && (payload.identity_assurance || verifiers.some(item => item.workload_identity))) {
-      issues.push(issue("error", "VERIFIER_POLICY_VERSION_CONTRACT_INVALID", "$.schema_version", "Workload identity assurance requires policy schema v0.2."));
+      issues.push(issue("error", "VERIFIER_POLICY_VERSION_CONTRACT_INVALID", "$.schema_version", "Workload identity assurance requires policy schema v0.2 or later."));
+    }
+    const sigstoreRootRefs = identityAssurance.sigstore_trusted_root_refs || [];
+    const sigstoreRootIds = new Set();
+    for (const [index, ref] of sigstoreRootRefs.entries()) {
+      const pointer = `$.identity_assurance.sigstore_trusted_root_refs[${index}]`;
+      if (sigstoreRootIds.has(ref.artifact_id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_SIGSTORE_ROOT", `${pointer}.artifact_id`, "Sigstore TrustedRoot references must be unique."));
+      sigstoreRootIds.add(ref.artifact_id);
+      if (path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_PATH_INVALID", `${pointer}.relative_path`, "Sigstore TrustedRoot references must remain repository-artifact-relative."));
+      }
+    }
+    if (payload.schema_version === "0.3" && (sigstoreRootRefs.length === 0 || !Number.isInteger(identityAssurance.max_trusted_root_age_seconds))) {
+      issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_REQUIRED", "$.identity_assurance", "Policy v0.3 requires a manifest-bound Sigstore TrustedRoot and freshness limit."));
     }
     for (const [index, root] of (identityAssurance.trusted_x509_roots || []).entries()) {
       const pointer = `$.identity_assurance.trusted_x509_roots[${index}]`;
@@ -1912,11 +1933,11 @@ function semanticRules(payload, type) {
       if (!(verifier.allowed_repository_keys || []).includes(payload.repository_binding && payload.repository_binding.repository_key)) {
         issues.push(issue("critical", "VERIFIER_POLICY_REPOSITORY_NOT_ALLOWED", `${pointer}.allowed_repository_keys`, "Every trusted verifier must explicitly allow the policy repository."));
       }
-      if (payload.schema_version === "0.2") {
+      if (["0.2", "0.3"].includes(payload.schema_version)) {
         const workload = verifier.workload_identity;
         if (!workload) {
-          issues.push(issue("critical", "VERIFIER_POLICY_WORKLOAD_IDENTITY_REQUIRED", `${pointer}.workload_identity`, "Every verifier in policy v0.2 requires a workload identity."));
-        } else {
+          issues.push(issue("critical", "VERIFIER_POLICY_WORKLOAD_IDENTITY_REQUIRED", `${pointer}.workload_identity`, "Every verifier in policy v0.2+ requires a workload identity."));
+        } else if (workload.type === "spiffe_x509") {
           if (spiffeIds.has(workload.spiffe_id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_SPIFFE_ID", `${pointer}.workload_identity.spiffe_id`, "SPIFFE IDs must be unique across verifier identities."));
           spiffeIds.add(workload.spiffe_id);
           if (!trustedRootIds.has(workload.trust_root_id)) issues.push(issue("critical", "VERIFIER_POLICY_TRUST_ROOT_REFERENCE_INVALID", `${pointer}.workload_identity.trust_root_id`, "Verifier workload identity must reference a trusted X.509 root."));
@@ -1931,6 +1952,16 @@ function semanticRules(payload, type) {
           } catch (error) {
             issues.push(issue("critical", "VERIFIER_POLICY_SPIFFE_ID_INVALID", `${pointer}.workload_identity.spiffe_id`, "Verifier workload identity must be a valid SPIFFE URI."));
           }
+        } else if (payload.schema_version === "0.3" && workload.type === "sigstore_bundle") {
+          const requiredFields = ["certificate_identity_type", "certificate_identity", "certificate_issuer", "trust_root_id", "bundle_media_type", "ctlog_threshold", "tlog_threshold", "timestamp_threshold"];
+          if (requiredFields.some(field => workload[field] === undefined)) {
+            issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_IDENTITY_INCOMPLETE", `${pointer}.workload_identity`, "Sigstore identity requires exact SAN, issuer, root, bundle media type, and nonzero verification thresholds."));
+          }
+          if (!sigstoreRootIds.has(workload.trust_root_id)) {
+            issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_REFERENCE_INVALID", `${pointer}.workload_identity.trust_root_id`, "Sigstore workload identity must reference a manifest-bound TrustedRoot."));
+          }
+        } else {
+          issues.push(issue("critical", "VERIFIER_POLICY_WORKLOAD_IDENTITY_TYPE_INVALID", `${pointer}.workload_identity.type`, "Policy workload identity type is not supported by this schema version."));
         }
       }
     }
@@ -2002,6 +2033,38 @@ function semanticRules(payload, type) {
         !isValidDate(checkpoint.issued_at) || (isValidDate(payload.issued_at) && Date.parse(checkpoint.issued_at) < Date.parse(payload.issued_at)) ||
         (isValidDate(payload.expires_at) && Date.parse(checkpoint.issued_at) >= Date.parse(payload.expires_at))) {
       issues.push(issue("critical", "IDENTITY_EVIDENCE_CHECKPOINT_BINDING_INVALID", "$.transparency.checkpoint", "Checkpoint must bind the same log and tree and fall inside the evidence validity window."));
+    }
+  }
+
+  if (type === "sigstore-trusted-root") {
+    const result = verifySigstoreTrustedRoot(payload);
+    for (const code of result.codes) {
+      issues.push(issue("critical", code, "$", "Sigstore TrustedRoot must be normalized, complete, source-attributed, and digest-valid."));
+    }
+  }
+
+  if (type === "sigstore-verifier-identity-evidence") {
+    if (payload.evidence_sha256 !== sigstoreEvidenceDigest(payload)) {
+      issues.push(issue("critical", "SIGSTORE_IDENTITY_EVIDENCE_DIGEST_INVALID", "$.evidence_sha256", "Sigstore identity evidence digest must match its canonical content."));
+    }
+    if (!isValidDate(payload.issued_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.issued_at)) {
+      issues.push(issue("critical", "SIGSTORE_IDENTITY_EVIDENCE_TIME_INVALID", "$.expires_at", "Sigstore identity evidence expiry must be later than issue time."));
+    }
+    if (!canonicalJsonBytes(payload.binding_statement || {}).equals(canonicalJsonBytes(expectedSigstoreIdentityStatement(payload)))) {
+      issues.push(issue("critical", "SIGSTORE_IDENTITY_EVIDENCE_STATEMENT_MISMATCH", "$.binding_statement", "Sigstore and static signatures must bind the same policy, identity, repository, purpose, nonce, root, and validity statement."));
+    }
+    if (!strictBase64(payload.signatures && payload.signatures.verifier_signature_base64)) {
+      issues.push(issue("critical", "SIGSTORE_IDENTITY_EVIDENCE_SIGNATURE_ENCODING_INVALID", "$.signatures.verifier_signature_base64", "Static verifier signature must use strict canonical base64."));
+    }
+    try {
+      const normalized = normalizeBundle(payload.sigstore.bundle);
+      if (!canonicalJsonBytes(normalized).equals(canonicalJsonBytes(payload.sigstore.bundle)) ||
+          payload.sigstore.bundle_media_type !== normalized.mediaType ||
+          payload.sigstore.bundle_sha256 !== crypto.createHash("sha256").update(canonicalJsonBytes(normalized)).digest("hex")) {
+        issues.push(issue("critical", "SIGSTORE_IDENTITY_EVIDENCE_BUNDLE_BINDING_INVALID", "$.sigstore", "Bundle media type, normalized bytes, and digest must match."));
+      }
+    } catch (error) {
+      issues.push(issue("critical", "SIGSTORE_IDENTITY_EVIDENCE_BUNDLE_INVALID", "$.sigstore.bundle", "Sigstore bundle must parse under the pinned official library."));
     }
   }
 
@@ -2175,7 +2238,7 @@ function semanticRules(payload, type) {
     if (payload.schema_version === "0.1" && payload.trust_policy_admission !== undefined) {
       issues.push(issue("error", "CYCLE_ORDER_V01_ADMISSION_UNSUPPORTED", "$.trust_policy_admission", "Trust-policy admission evidence requires cycle-order schema version 0.2."));
     }
-    if (["0.2", "0.3"].includes(payload.schema_version)) {
+    if (["0.2", "0.3", "0.4"].includes(payload.schema_version)) {
       const receipt = admission.receipt_quorum || {};
       const comparative = admission.comparative_quorum || {};
       const requirements = admission.effective_requirements || {};
@@ -2229,12 +2292,14 @@ function semanticRules(payload, type) {
       if (ready && (admission.blocking_codes || []).some(code => !(payload.blocking_codes || []).includes(code))) {
         issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_BLOCK_NOT_PROPAGATED", "$.blocking_codes", "Ready execution cannot discard a trust-admission blocking code."));
       }
-      if (payload.schema_version === "0.3") {
+      if (["0.3", "0.4"].includes(payload.schema_version)) {
         const identity = admission.identity_assurance || {};
         const evidence = identity.evidence || [];
         const verifierIds = evidence.map(item => item.verifier_id);
-        const trustDomains = evidence.map(item => item.trust_domain);
-        const logIds = evidence.map(item => item.transparency_log_id);
+        const genericIdentity = payload.schema_version === "0.4";
+        const trustDomains = evidence.map(item => item.trust_domain).filter(Boolean);
+        const identityAuthorities = evidence.map(item => item.identity_authority).filter(Boolean);
+        const logIds = evidence.flatMap(item => item.transparency_log_ids || [item.transparency_log_id]).filter(Boolean);
         const uniqueVerifierIds = new Set(verifierIds);
         const expectedIdentitySatisfied = identity.required !== true ||
           ((identity.blocking_codes || []).length === 0 && receipt.satisfied === true && comparative.satisfied === true);
@@ -2243,6 +2308,7 @@ function semanticRules(payload, type) {
         } else {
           if (identity.authenticated_verifier_count !== evidence.length || uniqueVerifierIds.size !== evidence.length ||
               identity.distinct_trust_domain_count !== new Set(trustDomains).size ||
+              (genericIdentity && identity.distinct_identity_authority_count !== new Set(identityAuthorities).size) ||
               identity.transparency_log_count !== new Set(logIds).size) {
             issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_COUNT_MISMATCH", "$.trust_policy_admission.identity_assurance", "Identity admission counts must equal its distinct evidence bindings."));
           }
@@ -2269,6 +2335,7 @@ function semanticRules(payload, type) {
           }
           if (identity.required !== true && (identity.satisfied !== true || evidence.length !== 0 ||
               identity.authenticated_verifier_count !== 0 || identity.distinct_trust_domain_count !== 0 ||
+              (genericIdentity && identity.distinct_identity_authority_count !== 0) ||
               identity.transparency_log_count !== 0 || (identity.blocking_codes || []).length !== 0)) {
             issues.push(issue("error", "CYCLE_ORDER_IDENTITY_NOOP_MISMATCH", "$.trust_policy_admission.identity_assurance", "A policy-only admission requires an explicit empty, satisfied identity no-op."));
           }

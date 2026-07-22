@@ -20,7 +20,7 @@ Use these examples to test:
 - repository artifact manifest validation
 - bounded self-improvement campaign, checkpoint, decision, and cycle-order validation
 - verification plan and runtime-issued receipt validation
-- verifier trust policy, signed verification attestation, and signed comparative report validation
+- verifier trust policy, SPIFFE/Sigstore workload identity, trusted-root, signed verification attestation, and signed comparative report validation
 - sealed comparative evaluation set, paired execution plan, and promotion report validation
 - CCIR alert validation
 - handoff packet validation
@@ -57,6 +57,7 @@ Use these examples to test:
 - Ed25519 key identity, DSSE statement binding, signature quorum, replay expiry, and receipt-content binding
 - baseline-versus-candidate non-regression, harness identity, contamination control, and no-release comparison logic
 - report-artifact digest, plan/set/lineage/evaluator binding, purpose-authorized keys, and independent comparative signature quorum
+- native Sigstore bundle/root normalization, exact Fulcio identity/issuer, static-key dual binding, freshness, and nonzero transparency thresholds
 
 Fixture convention:
 

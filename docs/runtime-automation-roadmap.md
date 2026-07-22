@@ -300,15 +300,15 @@ This phase proves only that policy-declared public verifier capacity can form a 
 
 ## 12. Phase 11: Authenticated Verifier Workloads
 
-Status: Phase 11A implemented as a provider-neutral identity and transparency proof layer; native Sigstore bundle ingestion remains Phase 11B.
+Status: Phase 11A and Phase 11B implemented as separate provider adapters. Phase 11A supplies a provider-neutral SPIFFE/X.509 proof contract; Phase 11B consumes native Sigstore bundles and TrustedRoot metadata through pinned official libraries.
 
 Goal:
 
-- Count a verifier toward pre-dispatch quorum only when a currently active workload proves simultaneous possession of its short-lived SPIFFE SVID key and its policy-registered verifier key, and the proof is included in a trusted append-only log checkpoint.
+- Count a verifier toward pre-dispatch quorum only when a currently active workload proves simultaneous possession of a short-lived workload credential and its policy-registered verifier key, with transparency evidence verified under a manifest-pinned trust root.
 
 Features:
 
-- `VerifierTrustPolicy` v0.2 pins X.509 trust roots, SPIFFE IDs, transparency-log origins and Ed25519 log keys;
+- `VerifierTrustPolicy` v0.2 pins X.509 trust roots, SPIFFE IDs, transparency-log origins and Ed25519 log keys for the provider-neutral adapter;
 - `VerifierIdentityEvidence` binds verifier, policy, repository, evidence purposes, nonce and validity window under both the SVID key and static verifier key;
 - exact-one URI SAN enforcement and exact SPIFFE ID/trust-domain matching;
 - bounded X.509 chain, signature, CA-role and active-window validation;
@@ -316,6 +316,11 @@ Features:
 - trusted-log-key signature verification over a tree-size/root/time checkpoint;
 - exact manifest ID/path/SHA-256 references in cycle-order v0.3 identity admission;
 - purpose-specific exclusion of missing, stale, expired, malformed, untrusted or tampered workload evidence.
+- `VerifierTrustPolicy` v0.3 selects `spiffe_x509` or `sigstore_bundle` independently for each verifier and pins exact Sigstore SAN, OIDC issuer, TrustedRoot artifact, bundle media type and nonzero CT/Rekor/timestamp thresholds;
+- `SigstoreTrustedRoot` normalizes official protobuf JSON, records source and retrieval time, and is bound by exact manifest ID/path/SHA-256 plus a maximum age;
+- `SigstoreVerifierIdentityEvidence` binds the exact canonical Controls statement under both the keyless Fulcio certificate key and the static verifier key;
+- `@sigstore/verify` checks the artifact signature, Fulcio chain and SCT, trusted signing time, Rekor inclusion/checkpoint, and Rekor body-to-artifact/signature binding;
+- cycle-order v0.4 projects either adapter into one generic identity-assurance record without erasing provider, issuer, authority, root, certificate or log identity.
 
 Completion criteria:
 
@@ -323,6 +328,8 @@ Completion criteria:
 - A different SPIFFE ID, extra URI SAN, untrusted chain, stale evidence, altered workload/static signature, altered log signature or false Merkle path fails closed.
 - A cycle order cannot claim authenticated assurance unless every counted purpose verifier maps to active evidence and the order expires no later than that evidence.
 - Trust-root, verifier, log-key and release changes remain human-controlled.
+- A native bundle with the wrong artifact bytes, wrong signer identity or issuer, stale root, expired current certificate, zero verification threshold, or unrelated valid Rekor entry fails closed.
+- Mixed SPIFFE and Sigstore verifier populations can satisfy a policy only through distinct active evidence for every counted verifier and purpose.
 
 Implemented controls:
 
@@ -331,8 +338,13 @@ Implemented controls:
 - cycle-order schema v0.3 records authenticated verifier identities, certificate fingerprints, trust domains, log IDs, exact evidence references and validity boundaries;
 - real OpenSSL fixtures cover the valid path and adversarial certificate, signature, freshness, repository and transparency cases;
 - end-to-end fixtures prove two identities produce `ready`, while missing or invalid evidence produces `blocked`.
+- `sigstore-trusted-root.js` and `sigstore-trusted-root-runner.js` ingest, normalize, validate and optionally persist exact trusted-root material;
+- `sigstore-verifier-identity-evidence.js` and `sigstore-verifier-identity-runner.js` create or assemble dual-bound native evidence and verify it with the policy-selected root;
+- schema and validator support covers trust-policy v0.3, Sigstore root/evidence objects and generic cycle-order v0.4 identity projection;
+- official Sigstore conformance material and a live Fulcio/Rekor bundle cover valid verification, wrong-artifact rejection and unrelated-Rekor-entry rejection;
+- supervisor fixtures prove exact manifest loading and fail-closed removal of missing Sigstore identity evidence.
 
-Phase 11A does not implement a general RFC 5280 path builder, revocation service, SPIFFE Workload API client, Fulcio issuer, Rekor monitor/gossip system, Cosign/Sigstore bundle parser, hardware-protected key or trusted execution environment. Phase 11B should add a native Sigstore bundle adapter against official libraries and trusted-root metadata rather than reimplementing that wire format.
+Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Rekor, CT log, TUF repository, monitor, witness, gossip network, hardware-protected key or trusted execution environment. The provider-neutral adapter is intentionally not a general RFC 5280 path builder. The native adapter verifies official bundle and TrustedRoot formats, but one valid bundle still does not prove honest verifier execution, infrastructure independence, global log consistency or current service availability.
 
 ## 13. Release Gates
 
@@ -350,6 +362,7 @@ Phase 11A does not implement a general RFC 5280 path builder, revocation service
 | G10 | Schema `0.4` control-plane comparison has a fresh trusted signed report quorum |
 | G11 | Signed-campaign dispatch has a satisfied, unexpired, manifest-bound trust-policy admission |
 | G12 | Trust-policy v0.2 dispatch has a fresh dual-signed SPIFFE workload proof with verified transparency inclusion |
+| G13 | Trust-policy v0.3 Sigstore dispatch has a fresh dual-bound native bundle under the exact manifest-pinned TrustedRoot, signer identity, issuer and nonzero verification thresholds |
 
 ## 14. Related Documents
 
