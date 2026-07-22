@@ -42,6 +42,7 @@ function ref(id, digestCharacter) {
 
 const verifierKey = pair();
 const builderKey = pair();
+const challengeIssuerKey = pair();
 const repositoryBinding = {
   repository_key: "cannae-os-aaaaaaaaaaaa",
   identity_fingerprint: "a".repeat(64)
@@ -327,6 +328,34 @@ function run(name, action) {
 
 try {
   run("valid dual-signed execution evidence", () => assert.strictEqual(verify().valid, true));
+
+  run("trust-policy v0.5 retains Phase 12A execution evidence", () => {
+    const challengedPolicy = {
+      ...clone(trustPolicy),
+      schema_version: "0.5",
+      challenge_assurance: {
+        required: true,
+        nonce_bytes: 32,
+        response_timeout_seconds: 120,
+        single_use: true,
+        issuer_key_id: challengeIssuerKey.keyId,
+        issuer_public_key_pem: challengeIssuerKey.publicKeyPem
+      }
+    };
+    const challengedEvidence = createVerifierExecutionEvidence({
+      ...createOptions,
+      trustPolicy: challengedPolicy,
+      evidenceId: "VEE-12B-001",
+      invocation: { ...createOptions.invocation, id: "INV-12B-001" }
+    });
+    const result = verifyVerifierExecutionEvidence({
+      ...baseVerify,
+      evidence: challengedEvidence,
+      trustPolicy: challengedPolicy,
+      expectations: { ...baseVerify.expectations }
+    });
+    assert.strictEqual(result.valid, true, result.codes.join(", "));
+  });
 
   run("runtime, execution, and attestation contracts validate", () => {
     assert.strictEqual(validatePayload(runtimePolicy, "verifier-runtime-policy").valid, true);

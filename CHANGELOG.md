@@ -6,6 +6,7 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added Phase 12B pre-dispatch verifier challenge: trust-policy v0.5, supervisor-issued manifest-backed challenge sets, per-verifier 32-byte nonces, exact task/lineage/policy/runtime binding, dual-signed identity-evidence responses, deadline and single-use enforcement, cycle-order v0.5 admission, adversarial fixtures, and research traceability.
 - Added Phase 12A verifier execution integrity: trust-policy v0.4 runtime-policy admission, exact verifier code/OCI/dependency/harness/tool/network/sandbox bindings, dual-signed in-toto execution evidence, provider profile contracts, manifest-backed receipt/report integration, semantic validation, adversarial fixtures, and research traceability.
 - Added trust-policy v0.2 and `VerifierIdentityEvidence` with SPIFFE X.509-SVID identity, dual workload/static-key signatures, pinned log checkpoints, RFC 6962-style Merkle inclusion, repository binding, purpose binding, and bounded freshness.
 - Added cycle-order v0.3 authenticated workload admission, manifest-backed identity references, real OpenSSL adversarial fixtures, end-to-end supervisor blocking, official SPIFFE/Sigstore/RFC research traceability, and Codex/Claude routing.

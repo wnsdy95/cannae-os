@@ -1,0 +1,246 @@
+{
+  "schema_version": "0.5",
+  "type": "SelfImprovementCycleOrder",
+  "id": "SCO-Supervised-Challenge-C1-A1-START-READY-ADA5BD2BDBC263",
+  "campaign_id": "SIC-Supervised-Challenge",
+  "mission_id": "MIS-Supervised-Challenge",
+  "repository_binding": {
+    "repository_key": "supervised-repository-5d5bf4b75f14",
+    "identity_fingerprint": "5d5bf4b75f143366e0fa15d0faf01e78a5adea0bab4ab7e7e99a92597f78fe44"
+  },
+  "campaign_ref": {
+    "artifact_id": "SIC-Supervised-Challenge",
+    "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C0/self-improvement-campaigns/SIC-Supervised-Challenge.json",
+    "sha256": "195d9ef62b297d7e25b89e3f7e7fb48943cf72421ed8b883f476abc00c0ba988"
+  },
+  "observed_manifest": {
+    "revision": 7,
+    "sha256": "8e2584624577cc710d860df188b8fa64027907e3e9a5a4c4526ac69fda5e0b4f"
+  },
+  "status": "ready",
+  "transition": "start",
+  "cycle_number": 1,
+  "attempt_number": 1,
+  "baseline_revision": "96be8cdf6c092008841642cef9835d3f877600f7",
+  "parent_decision_ref": {
+    "decision_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "source_checkpoint_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "source_decision_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "checkpoint_trigger": "wave_end",
+  "task_order": {
+    "owner": "S3",
+    "task": "Produce one bounded candidate that advances this acceptance criterion: All deterministic checks pass.",
+    "purpose": "Improve active work without losing authority, evidence, or repository boundaries.",
+    "constraints": [
+      "Stay inside the campaign authority envelope.",
+      "Preserve every protected invariant.",
+      "Do not release, merge, push, or expand authority without human approval."
+    ],
+    "required_evidence": [
+      "Repository-scoped checkpoint artifact.",
+      "Runtime-issued verification receipt bound to the candidate revision.",
+      "Fresh signed receipt attestations satisfying the campaign quorum.",
+      "For comparative targets, fresh signed report attestations satisfying the same trust policy and quorum.",
+      "A baseline-versus-candidate comparative report for skill or runtime-control promotion."
+    ],
+    "next_checkpoint_trigger": "wave_end"
+  },
+  "proof_requirements": {
+    "verification_receipt_required": true,
+    "comparative_evaluation_required_for": [
+      "runtime_control",
+      "skill"
+    ],
+    "signed_attestation_required": true,
+    "signed_comparative_attestation_required": true,
+    "minimum_valid_attestations": 2,
+    "minimum_independence_groups": 2,
+    "require_distinct_key_ids": true,
+    "trust_policy_ref": {
+      "artifact_id": "VTP-Supervised-Challenge",
+      "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C0/verifier-trust-policies/VTP-Supervised-Challenge.json",
+      "sha256": "4b7ee491a4f94ea596ceda274ac9191022c03f4944ba7dd7f158c8b39f4769d5"
+    }
+  },
+  "trust_policy_admission": {
+    "required": true,
+    "satisfied": true,
+    "assurance_scope": "fresh_challenged_workload_and_policy_eligibility",
+    "evaluated_at": "2026-07-22T08:36:07.582Z",
+    "valid_until": "2026-07-22T08:37:05.582Z",
+    "trust_policy_ref": {
+      "artifact_id": "VTP-Supervised-Challenge",
+      "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C0/verifier-trust-policies/VTP-Supervised-Challenge.json",
+      "sha256": "4b7ee491a4f94ea596ceda274ac9191022c03f4944ba7dd7f158c8b39f4769d5"
+    },
+    "effective_requirements": {
+      "minimum_valid_attestations": 2,
+      "minimum_independence_groups": 2,
+      "require_distinct_key_ids": true
+    },
+    "receipt_quorum": {
+      "required": true,
+      "satisfied": true,
+      "eligible_verifier_count": 2,
+      "distinct_key_count": 2,
+      "independence_group_count": 2,
+      "verifier_ids": [
+        "VERIFIER-Challenge-A",
+        "VERIFIER-Challenge-B"
+      ],
+      "key_ids": [
+        "21aa3e3ec5a08457c292e1ac9d698d428d6a870bdd34fd7a92869eb6f89571be",
+        "bf8bb5350e0216e763dfb7acac64c2b875b7f51b41823a7066875c2f918be3b8"
+      ],
+      "independence_groups": [
+        "provider-a",
+        "provider-b"
+      ]
+    },
+    "comparative_quorum": {
+      "required": true,
+      "satisfied": true,
+      "eligible_verifier_count": 2,
+      "distinct_key_count": 2,
+      "independence_group_count": 2,
+      "verifier_ids": [
+        "VERIFIER-Challenge-A",
+        "VERIFIER-Challenge-B"
+      ],
+      "key_ids": [
+        "21aa3e3ec5a08457c292e1ac9d698d428d6a870bdd34fd7a92869eb6f89571be",
+        "bf8bb5350e0216e763dfb7acac64c2b875b7f51b41823a7066875c2f918be3b8"
+      ],
+      "independence_groups": [
+        "provider-a",
+        "provider-b"
+      ]
+    },
+    "identity_assurance": {
+      "required": true,
+      "satisfied": true,
+      "authenticated_verifier_count": 2,
+      "distinct_trust_domain_count": 0,
+      "distinct_identity_authority_count": 1,
+      "transparency_log_count": 1,
+      "evidence": [
+        {
+          "verifier_id": "VERIFIER-Challenge-A",
+          "identity_provider": "spiffe_x509",
+          "identity": "spiffe://verification.example.test/challenge/verifier-a",
+          "identity_authority": "verification.example.test",
+          "trust_root_id": "ROOT-Challenge",
+          "certificate_sha256": "88aeb90d11328dc23de595d66a6e37efb1d5e35514cd2ba79e0ce9825e276de6",
+          "transparency_log_ids": [
+            "LOG-Challenge"
+          ],
+          "purposes": [
+            "comparative_evaluation_report",
+            "verification_receipt"
+          ],
+          "evidence_ref": {
+            "artifact_id": "VIE-Supervised-Challenge-Response",
+            "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/verifier-identity-evidence/VIE-Supervised-Challenge-Response.json",
+            "sha256": "25b02b29cb519d211c50450f9e0961e8d8fc75d44fb08e8e746053e46639400c"
+          },
+          "issued_at": "2026-07-22T08:36:06.582Z",
+          "valid_until": "2026-07-22T08:37:33.582Z"
+        },
+        {
+          "verifier_id": "VERIFIER-Challenge-B",
+          "identity_provider": "spiffe_x509",
+          "identity": "spiffe://verification.example.test/challenge/verifier-b",
+          "identity_authority": "verification.example.test",
+          "trust_root_id": "ROOT-Challenge",
+          "certificate_sha256": "dc8271ad4fe4daced50300c465399fef77b3e8b092cee7b46258dacc77582c2e",
+          "transparency_log_ids": [
+            "LOG-Challenge"
+          ],
+          "purposes": [
+            "comparative_evaluation_report",
+            "verification_receipt"
+          ],
+          "evidence_ref": {
+            "artifact_id": "VIE-Supervised-Challenge-Response-B",
+            "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/verifier-identity-evidence/VIE-Supervised-Challenge-Response-B.json",
+            "sha256": "578c6907784acaece99bbe1749c910120599be444451c2f15acc8c15e9498b45"
+          },
+          "issued_at": "2026-07-22T08:36:06.582Z",
+          "valid_until": "2026-07-22T08:37:33.582Z"
+        }
+      ],
+      "blocking_codes": []
+    },
+    "challenge_assurance": {
+      "required": true,
+      "satisfied": true,
+      "challenge_ref": {
+        "artifact_id": "VCS-9030e42a0e1720c0b380926e",
+        "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/verifier-challenge-sets/VCS-9030e42a0e1720c0b380926e.json",
+        "sha256": "8c18be648563b3ea1391568827f5ff3f3e22513df85df000246bd049296a84ee"
+      },
+      "issued_at": "2026-07-22T08:36:05.582Z",
+      "valid_until": "2026-07-22T08:37:05.582Z",
+      "responder_count": 2,
+      "responses": [
+        {
+          "verifier_id": "VERIFIER-Challenge-A",
+          "purposes": [
+            "comparative_evaluation_report",
+            "verification_receipt"
+          ],
+          "identity_evidence_ref": {
+            "artifact_id": "VIE-Supervised-Challenge-Response",
+            "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/verifier-identity-evidence/VIE-Supervised-Challenge-Response.json",
+            "sha256": "25b02b29cb519d211c50450f9e0961e8d8fc75d44fb08e8e746053e46639400c"
+          },
+          "responded_at": "2026-07-22T08:36:06.582Z"
+        },
+        {
+          "verifier_id": "VERIFIER-Challenge-B",
+          "purposes": [
+            "comparative_evaluation_report",
+            "verification_receipt"
+          ],
+          "identity_evidence_ref": {
+            "artifact_id": "VIE-Supervised-Challenge-Response-B",
+            "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/verifier-identity-evidence/VIE-Supervised-Challenge-Response-B.json",
+            "sha256": "578c6907784acaece99bbe1749c910120599be444451c2f15acc8c15e9498b45"
+          },
+          "responded_at": "2026-07-22T08:36:06.582Z"
+        }
+      ],
+      "blocking_codes": []
+    },
+    "blocking_codes": []
+  },
+  "budget_snapshot": {
+    "max_cycles": 8,
+    "cycles_observed": 0,
+    "max_retries_per_cycle": 2,
+    "retries_used_current_cycle": 0,
+    "max_failed_experiments": 3,
+    "failed_experiments": 0,
+    "max_no_progress_cycles": 2,
+    "consecutive_no_progress_cycles": 0,
+    "max_elapsed_minutes": 240,
+    "elapsed_minutes": 0
+  },
+  "execution_authorized": true,
+  "release_authorized": false,
+  "human_decision_required": false,
+  "required_human_decision": "none",
+  "blocking_codes": [],
+  "generated_at": "2026-07-22T08:36:07.582Z"
+}

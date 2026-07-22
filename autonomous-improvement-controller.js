@@ -216,7 +216,7 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
   const executionEvidence = new Map();
   if (["0.3", "0.4"].includes(campaign.schema_version) || (campaign.attestation_policy && campaign.attestation_policy.required)) {
     trustPolicy = readManifestArtifact(artifactRoot, manifest, campaign.attestation_policy.trust_policy_ref, "verifier-trust-policies");
-    if (trustPolicy.schema_version === "0.4") {
+    if (["0.4", "0.5"].includes(trustPolicy.schema_version)) {
       runtimePolicy = readManifestArtifact(
         artifactRoot,
         manifest,
@@ -231,7 +231,7 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
         sha256: ref.sha256
       }, "verification-attestations");
       attestations.set(ref.attestation_id, attestation);
-      if (trustPolicy.schema_version === "0.4" && attestation.execution_evidence_ref) {
+      if (["0.4", "0.5"].includes(trustPolicy.schema_version) && attestation.execution_evidence_ref) {
         executionEvidence.set(attestation.execution_evidence_ref.artifact_id, readManifestArtifact(
           artifactRoot,
           manifest,
@@ -262,7 +262,7 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
           sha256: attestationRef.sha256
         }, "comparative-evaluation-attestations");
         comparativeAttestations.set(attestationRef.attestation_id, attestation);
-        if (trustPolicy && trustPolicy.schema_version === "0.4" && attestation.execution_evidence_ref &&
+        if (trustPolicy && ["0.4", "0.5"].includes(trustPolicy.schema_version) && attestation.execution_evidence_ref &&
             !executionEvidence.has(attestation.execution_evidence_ref.artifact_id)) {
           executionEvidence.set(attestation.execution_evidence_ref.artifact_id, readManifestArtifact(
             artifactRoot,

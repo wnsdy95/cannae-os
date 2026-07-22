@@ -116,6 +116,7 @@ Recommended validation order:
 62. `comparative-evaluation-attestation.schema.json`
 63. `verifier-runtime-policy.schema.json`
 64. `verifier-execution-evidence.schema.json`
+65. `verifier-challenge-set.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -127,4 +128,6 @@ All schemas target JSON Schema draft 2020-12.
 
 `VerifierTrustPolicy` v0.4 binds one exact `VerifierRuntimePolicy`. The runtime policy assigns each verifier to a provider profile that pins builder identity, code, OCI manifest, dependency lockfile, harness, argv, tool allowlist, network policy, sandbox profile and time bounds. `VerifierExecutionEvidence` binds those fields to the exact repository state and verification target in a dual-signed in-toto Statement. `VerificationAttestation` and `ComparativeEvaluationAttestation` v0.2 cite that evidence by exact manifest reference; v0.1 remains readable under earlier trust-policy versions.
 
-`SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. Signed campaigns record the exact trust-policy reference, effective quorum thresholds, currently eligible verifier/key/group sets for each attestation purpose, provider/root/evidence references, authority identities, and a conservative validity boundary. v0.1 through v0.3 orders remain readable.
+`VerifierTrustPolicy` v0.5 adds required pre-dispatch challenge assurance and pins a dedicated Ed25519 supervisor issuer key. A signed `VerifierChallengeSet` binds unique per-verifier nonces to the exact campaign, repository, policy/runtime references, projected cycle/attempt/task/lineage, observed manifest and deadline. Existing dual-signed workload identity evidence carries the exact nonce response.
+
+`SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. Earlier orders remain readable.

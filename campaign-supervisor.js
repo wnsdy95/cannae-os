@@ -10,6 +10,7 @@ const {
 } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const { evaluateVerifierTrustReadiness } = require("./verifier-trust-readiness");
+const { createVerifierChallengeSet } = require("./verifier-challenge-set");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const NONE_DECISION_REF = Object.freeze({ decision_id: "none", relative_path: "none", sha256: "none" });
@@ -162,7 +163,7 @@ function loadCampaignHistory(store, campaignId) {
       if (failures.length > 0 || payload.id !== entry.artifact_id) continue;
       identityEvidence.push({ entry, payload });
     }
-    if (["0.3", "0.4"].includes(trustPolicyLoad.payload.schema_version)) {
+    if (["0.3", "0.4", "0.5"].includes(trustPolicyLoad.payload.schema_version)) {
       const refs = trustPolicyLoad.payload.identity_assurance.sigstore_trusted_root_refs || [];
       for (const ref of refs) {
         const matching = store.manifest.artifacts.filter(entry =>
@@ -192,7 +193,7 @@ function loadCampaignHistory(store, campaignId) {
         sigstoreIdentityEvidence.push({ entry, payload });
       }
     }
-    if (trustPolicyLoad.payload.schema_version === "0.4") {
+    if (["0.4", "0.5"].includes(trustPolicyLoad.payload.schema_version)) {
       const ref = trustPolicyLoad.payload.execution_assurance &&
         trustPolicyLoad.payload.execution_assurance.runtime_policy_ref;
       const matching = ref ? store.manifest.artifacts.filter(entry =>
@@ -221,6 +222,7 @@ function loadCampaignHistory(store, campaignId) {
     checkpoints: loadKind("self-improvement-checkpoints", "self-improvement-checkpoint"),
     decisions: loadKind("self-improvement-decisions", "self-improvement-decision"),
     existingOrders: loadKind("self-improvement-cycle-orders", "self-improvement-cycle-order"),
+    challengeSets: loadKind("verifier-challenge-sets", "verifier-challenge-set"),
     trustPolicy: trustPolicyLoad.payload,
     trustPolicyEntry: trustPolicyLoad.entry,
     trustPolicyBlockingCodes: trustPolicyLoad.blockingCodes,
@@ -488,7 +490,9 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     identityEvidence,
     sigstoreIdentityEvidence,
     sigstoreTrustedRoots,
-    runtimePolicy
+    runtimePolicy,
+    challengeSets,
+    existingOrders
   } = history;
   const repository = store.verification.repository;
   const blocks = [];
@@ -580,6 +584,25 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     }
   }
 
+  const projectedProofRequirements = proofRequirements(campaign);
+  const dispatchProjection = {
+    campaign_id: campaign.id,
+    mission_id: campaign.mission_id,
+    repository_binding: {
+      repository_key: repository.key,
+      identity_fingerprint: repository.identity_fingerprint
+    },
+    cycle_number: cycleNumber,
+    attempt_number: attemptNumber,
+    baseline_revision: baselineRevision,
+    parent_decision_ref: clone(parentRef),
+    source_checkpoint_ref: clone(sourceCheckpointRef),
+    source_decision_ref: clone(sourceDecisionRef),
+    transition,
+    checkpoint_trigger: checkpointTrigger,
+    task_order: clone(taskOrder),
+    proof_requirements: projectedProofRequirements
+  };
   const trustPolicyAdmission = evaluateVerifierTrustReadiness({
     campaign,
     repository,
@@ -588,6 +611,11 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     sigstoreIdentityEvidence,
     sigstoreTrustedRoots,
     runtimePolicy,
+    challengeSets,
+    existingOrders,
+    dispatchOrder: dispatchProjection,
+    manifestHistory: store.manifestHistory,
+    currentManifestRevision: store.verification.manifest_revision,
     evaluatedAt,
     blockingCodes: trustPolicyBlockingCodes
   });
@@ -605,8 +633,10 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
   }
 
   const generatedAt = evaluatedAt;
-  return {
-    schema_version: trustPolicy && ["0.3", "0.4"].includes(trustPolicy.schema_version) ? "0.4" : "0.3",
+  const order = {
+    schema_version: trustPolicy && trustPolicy.schema_version === "0.5"
+      ? "0.5"
+      : trustPolicy && ["0.3", "0.4"].includes(trustPolicy.schema_version) ? "0.4" : "0.3",
     type: "SelfImprovementCycleOrder",
     id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission),
     campaign_id: campaign.id,
@@ -630,7 +660,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     source_decision_ref: sourceDecisionRef,
     checkpoint_trigger: checkpointTrigger,
     task_order: taskOrder,
-    proof_requirements: proofRequirements(campaign),
+    proof_requirements: projectedProofRequirements,
     trust_policy_admission: trustPolicyAdmission,
     budget_snapshot: budget,
     execution_authorized: status === "ready",
@@ -640,6 +670,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     blocking_codes: blocks.sort(),
     generated_at: generatedAt
   };
+  Object.defineProperty(order, "_dispatchProjection", { value: dispatchProjection, enumerable: false });
+  return order;
 }
 
 function comparableOrder(order) {
@@ -667,16 +699,58 @@ function superviseCampaign(options) {
   if (!options || !options.repositoryPath || !options.campaignId) {
     throw new Error("repositoryPath and campaignId are required.");
   }
-  const store = loadVerifiedStore(options.repositoryPath, options.artifactRoot);
-  const history = loadCampaignHistory(store, options.campaignId);
-  const proposed = deriveOrder(store, history, options.evaluatedAt);
+  let store = loadVerifiedStore(options.repositoryPath, options.artifactRoot);
+  let history = loadCampaignHistory(store, options.campaignId);
+  let proposed = deriveOrder(store, history, options.evaluatedAt);
+  let issuedChallenge = null;
+  const challengeBootstrapCodes = new Set([
+    "TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE",
+    "TRUST_ADMISSION_CHALLENGE_RESPONSE_UNAVAILABLE",
+    "TRUST_ADMISSION_RECEIPT_QUORUM_UNAVAILABLE",
+    "TRUST_ADMISSION_COMPARATIVE_QUORUM_UNAVAILABLE",
+    "TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE"
+  ]);
+  const mayIssueChallenge = options.writeArtifact && history.trustPolicy &&
+    history.trustPolicy.schema_version === "0.5" && proposed._dispatchProjection.transition !== "hold" &&
+    proposed.blocking_codes.length > 0 && proposed.blocking_codes.every(code => challengeBootstrapCodes.has(code)) &&
+    proposed.blocking_codes.includes("TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE");
+  if (mayIssueChallenge) {
+    if (!options.challengeIssuerPrivateKeyPem) {
+      throw new Error("Trust-policy v0.5 challenge issuance requires --challenge-private-key with the policy-pinned supervisor Ed25519 private key.");
+    }
+    const challenge = createVerifierChallengeSet({
+      campaign: history.campaign,
+      trustPolicy: history.trustPolicy,
+      order: proposed._dispatchProjection,
+      repository: store.verification.repository,
+      observedManifest: {
+        revision: store.verification.manifest_revision,
+        sha256: store.verification.manifest_sha256
+      },
+      issuedAt: options.evaluatedAt,
+      issuerPrivateKeyPem: options.challengeIssuerPrivateKeyPem
+    });
+    issuedChallenge = writeRepositoryArtifact({
+      repositoryPath: options.repositoryPath,
+      artifactRoot: options.artifactRoot,
+      missionId: challenge.mission_id,
+      waveId: `C${challenge.dispatch_binding.cycle_number}`,
+      kind: "verifier-challenge-sets",
+      artifactId: challenge.id,
+      payload: challenge,
+      createdAt: challenge.issued_at
+    });
+    store = loadVerifiedStore(options.repositoryPath, options.artifactRoot);
+    history = loadCampaignHistory(store, options.campaignId);
+    proposed = deriveOrder(store, history, options.evaluatedAt);
+  }
   const existing = selectIdempotentOrder(proposed, history.existingOrders);
-  return { order: existing || proposed, existing: Boolean(existing), store, history };
+  return { order: existing || proposed, existing: Boolean(existing), issuedChallenge, store, history };
 }
 
 function parseArgs(argv) {
   const options = { writeArtifact: false };
-  const values = new Set(["repository", "artifact-root", "campaign"]);
+  const values = new Set(["repository", "artifact-root", "campaign", "challenge-private-key"]);
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--write-artifact") {
@@ -689,12 +763,13 @@ function parseArgs(argv) {
       if (arg === "--repository") options.repositoryPath = argv[index];
       if (arg === "--artifact-root") options.artifactRoot = argv[index];
       if (arg === "--campaign") options.campaignId = argv[index];
+      if (arg === "--challenge-private-key") options.challengePrivateKeyPath = argv[index];
       continue;
     }
     throw new Error(`Unknown argument: ${arg}`);
   }
   if (!options.repositoryPath || !options.campaignId) {
-    throw new Error("Usage: node campaign-supervisor.js --repository <repo> --campaign <id> [--artifact-root <dir>] [--write-artifact]");
+    throw new Error("Usage: node campaign-supervisor.js --repository <repo> --campaign <id> [--artifact-root <dir>] [--challenge-private-key <pem>] [--write-artifact]");
   }
   return options;
 }
@@ -702,6 +777,14 @@ function parseArgs(argv) {
 function main() {
   try {
     const options = parseArgs(process.argv.slice(2));
+    if (options.challengePrivateKeyPath) {
+      const keyPath = path.resolve(options.challengePrivateKeyPath);
+      const stat = fs.lstatSync(keyPath);
+      if (!stat.isFile() || stat.isSymbolicLink() || (stat.mode & 0o077) !== 0) {
+        throw new Error("Challenge issuer private key must be a regular non-symlink file with no group or other permissions.");
+      }
+      options.challengeIssuerPrivateKeyPem = fs.readFileSync(keyPath);
+    }
     const result = superviseCampaign(options);
     let order = result.order;
     if (options.writeArtifact && !result.existing) {
@@ -719,6 +802,7 @@ function main() {
     } else if (options.writeArtifact) {
       console.error(`Artifact already current: ${order.id}`);
     }
+    if (result.issuedChallenge) console.error(`Challenge issued: ${result.issuedChallenge.relative_path}`);
     process.stdout.write(`${JSON.stringify(order, null, 2)}\n`);
     process.exit(["ready", "completed"].includes(order.status) ? 0 : 1);
   } catch (error) {

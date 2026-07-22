@@ -344,11 +344,11 @@ Implemented controls:
 - official Sigstore conformance material and a live Fulcio/Rekor bundle cover valid verification, wrong-artifact rejection and unrelated-Rekor-entry rejection;
 - supervisor fixtures prove exact manifest loading and fail-closed removal of missing Sigstore identity evidence.
 
-Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Rekor, CT log, TUF repository, monitor, witness, gossip network, hardware-protected key or trusted execution environment. The provider-neutral adapter is intentionally not a general RFC 5280 path builder. The native adapter verifies official bundle and TrustedRoot formats. Phase 12A adds exact execution evidence after identity admission, but identity evidence alone still does not prove honest verifier execution, infrastructure independence, global log consistency or current service availability.
+Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Rekor, CT log, TUF repository, monitor, witness, gossip network, hardware-protected key or trusted execution environment. The provider-neutral adapter is intentionally not a general RFC 5280 path builder. The native adapter verifies official bundle and TrustedRoot formats. Phase 12A adds exact execution evidence after identity admission, and Phase 12B adds bounded liveness at challenge-response time; neither proves honest verifier execution, infrastructure independence, global log consistency or continuous service availability.
 
 ## 13. Phase 12: Verifier Execution Integrity
 
-Status: Phase 12A implemented. Phase 12B pre-dispatch challenge and Phase 12C failure-domain independence remain planned.
+Status: Phase 12A execution evidence and Phase 12B pre-dispatch challenge implemented. Phase 12C failure-domain independence remains planned.
 
 Goal:
 
@@ -373,9 +373,18 @@ Completion criteria for Phase 12A:
 - Builder and verifier keys must be distinct, and both signatures must cover identical payload bytes.
 - Release authority remains false regardless of execution-evidence or quorum status.
 
-Phase 12B must add a supervisor-issued, single-use, deadline-bound challenge so registered but stale, replayed or offline verifiers cannot enter a current quorum. Phase 12C must evaluate provider, operator, account, runner pool, cloud project, infrastructure and actual failure-domain identities rather than trusting declared independence labels.
+Phase 12B features:
 
-See `verifier-execution-integrity.md` for the contract, verification order, adapter boundary and operational commands.
+- `VerifierTrustPolicy` v0.5 requires a single-use challenge, a dedicated policy-pinned Ed25519 issuer key, 32 to 64 random bytes per verifier and a bounded response timeout;
+- the issuer-signed `VerifierChallengeSet` binds campaign, repository, exact policy/runtime references, manifest history, cycle, attempt, transition, baseline, parent lineage, task/proof digests, purpose and deadline;
+- existing dual-signed SPIFFE or Sigstore identity evidence serves as the cryptographic response by containing the exact assigned nonce;
+- cycle-order v0.5 records the exact challenge and response references and cannot outlive challenge expiry;
+- missing, late, wrong-nonce, ambiguous, expired, replayed or offline responders are excluded before purpose quorum calculation;
+- the supervisor automatically issues a challenge only when other policy/runtime checks permit bootstrap, then remains blocked until responses pass.
+
+Phase 12C must evaluate provider, operator, account, runner pool, cloud project, infrastructure and actual failure-domain identities rather than trusting declared independence labels.
+
+See `verifier-execution-integrity.md` and `verifier-pre-dispatch-challenge.md` for contracts, verification order, state transitions, adapter boundaries and operational commands.
 
 ## 14. Phase 13: Transparency Operations
 
@@ -405,6 +414,7 @@ Phase 13 must not be represented as complete by verifying one inclusion proof or
 | G12 | Trust-policy v0.2 dispatch has a fresh dual-signed SPIFFE workload proof with verified transparency inclusion |
 | G13 | Trust-policy v0.3 Sigstore dispatch has a fresh dual-bound native bundle under the exact manifest-pinned TrustedRoot, signer identity, issuer and nonzero verification thresholds |
 | G14 | Trust-policy v0.4 attestation enters quorum only with valid dual-signed execution evidence matching the exact runtime policy, repository state and verification target |
+| G15 | Trust-policy v0.5 dispatch has one exact active supervisor challenge and enough fresh dual-signed nonce responses to satisfy every required purpose quorum without ambiguity or replay |
 
 ## 16. Related Documents
 
@@ -414,4 +424,5 @@ Phase 13 must not be represented as complete by verifying one inclusion proof or
 - `command-post-dashboard.md`
 - `agent-runtime-playbook.md`
 - `bounded-self-improvement-operations.md`
+- `verifier-pre-dispatch-challenge.md`
 - `verifier-execution-integrity.md`
