@@ -298,7 +298,43 @@ Implemented controls:
 
 This phase proves only that policy-declared public verifier capacity can form a quorum at issuance. It does not prove private-key availability, honest execution, operational independence, protected workload identity, or transparency-log inclusion.
 
-## 12. Release Gates
+## 12. Phase 11: Authenticated Verifier Workloads
+
+Status: Phase 11A implemented as a provider-neutral identity and transparency proof layer; native Sigstore bundle ingestion remains Phase 11B.
+
+Goal:
+
+- Count a verifier toward pre-dispatch quorum only when a currently active workload proves simultaneous possession of its short-lived SPIFFE SVID key and its policy-registered verifier key, and the proof is included in a trusted append-only log checkpoint.
+
+Features:
+
+- `VerifierTrustPolicy` v0.2 pins X.509 trust roots, SPIFFE IDs, transparency-log origins and Ed25519 log keys;
+- `VerifierIdentityEvidence` binds verifier, policy, repository, evidence purposes, nonce and validity window under both the SVID key and static verifier key;
+- exact-one URI SAN enforcement and exact SPIFFE ID/trust-domain matching;
+- bounded X.509 chain, signature, CA-role and active-window validation;
+- RFC 6962-style `0x00` leaf and `0x01` node SHA-256 Merkle inclusion verification;
+- trusted-log-key signature verification over a tree-size/root/time checkpoint;
+- exact manifest ID/path/SHA-256 references in cycle-order v0.3 identity admission;
+- purpose-specific exclusion of missing, stale, expired, malformed, untrusted or tampered workload evidence.
+
+Completion criteria:
+
+- A trust-policy v0.2 verifier without valid manifest-backed identity evidence cannot enter receipt or comparative quorum.
+- A different SPIFFE ID, extra URI SAN, untrusted chain, stale evidence, altered workload/static signature, altered log signature or false Merkle path fails closed.
+- A cycle order cannot claim authenticated assurance unless every counted purpose verifier maps to active evidence and the order expires no later than that evidence.
+- Trust-root, verifier, log-key and release changes remain human-controlled.
+
+Implemented controls:
+
+- `verifier-identity-evidence.js` creates and verifies the dual-signed identity binding, X.509 chain and Merkle checkpoint;
+- `campaign-supervisor.js` loads schema-valid evidence from the verified repository manifest and passes it to `verifier-trust-readiness.js`;
+- cycle-order schema v0.3 records authenticated verifier identities, certificate fingerprints, trust domains, log IDs, exact evidence references and validity boundaries;
+- real OpenSSL fixtures cover the valid path and adversarial certificate, signature, freshness, repository and transparency cases;
+- end-to-end fixtures prove two identities produce `ready`, while missing or invalid evidence produces `blocked`.
+
+Phase 11A does not implement a general RFC 5280 path builder, revocation service, SPIFFE Workload API client, Fulcio issuer, Rekor monitor/gossip system, Cosign/Sigstore bundle parser, hardware-protected key or trusted execution environment. Phase 11B should add a native Sigstore bundle adapter against official libraries and trusted-root metadata rather than reimplementing that wire format.
+
+## 13. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -313,8 +349,9 @@ This phase proves only that policy-declared public verifier capacity can form a 
 | G9 | Control-plane candidate passes baseline-versus-canary comparison |
 | G10 | Schema `0.4` control-plane comparison has a fresh trusted signed report quorum |
 | G11 | Signed-campaign dispatch has a satisfied, unexpired, manifest-bound trust-policy admission |
+| G12 | Trust-policy v0.2 dispatch has a fresh dual-signed SPIFFE workload proof with verified transparency inclusion |
 
-## 13. Related Documents
+## 14. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`

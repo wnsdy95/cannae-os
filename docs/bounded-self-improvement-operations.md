@@ -99,7 +99,19 @@ Promotion requires all of the following:
 
 Repeating one attestation, creating several names for one key, using two verifiers from one required-independent group, replaying expired proof, or changing the exposed fields outside the signed payload blocks promotion.
 
-### 2.4 Comparative evaluation contracts
+### 2.4 `VerifierIdentityEvidence`
+
+`VerifierTrustPolicy` v0.2 adds live workload authentication to the static verifier registry. Each verifier selects an exact SPIFFE ID, pinned X.509 root and trusted transparency log. Before supervision, the verifier produces a short-lived `VerifierIdentityEvidence` artifact in the campaign mission namespace.
+
+The evidence binds one repository, trust policy, verifier, purpose set, nonce and validity window. The SPIFFE X.509-SVID key and the verifier's separately registered Ed25519 key both sign the same canonical binding statement. This proves that the workload holding the short-lived SVID key and the actor holding the policy key participated in the same challenge; neither signature alone is sufficient.
+
+The transparency record hashes the binding statement, SVID leaf certificate and both signatures. Admission independently derives the RFC 6962-style Merkle leaf hash, verifies the inclusion path to the checkpoint root and verifies the checkpoint with the log key pinned in policy. The SVID leaf must be a non-CA Ed25519 certificate with exactly one URI SAN, and that URI must exactly match the verifier's configured SPIFFE ID and selected trust domain. The certificate chain, policy, verifier, evidence and checkpoint must all be active at order issuance.
+
+Only schema-valid evidence reloaded from the verified repository manifest is considered. `verifier-trust-readiness.js` cryptographically verifies every candidate and selects the newest valid artifact per verifier. A verifier enters a receipt or comparative quorum only when the evidence also grants that exact purpose. Missing, stale, expired, wrong-repository, wrong-SPIFFE, untrusted-chain, signature-invalid or transparency-invalid evidence removes that verifier from admission.
+
+This is a provider-neutral local proof contract. It is not a Cosign bundle, Fulcio certificate service, Rekor wire protocol or full RFC 5280 path builder. Production Sigstore interoperability belongs in a separate adapter using official libraries and trusted-root metadata.
+
+### 2.5 Comparative evaluation contracts
 
 `ComparativeEvaluationSet` is persisted before candidate execution and bound to one campaign and mission. It assigns a version and stable order to held-out or open fixtures and records three contamination controls: sealing before execution, exclusion of expected outputs from candidate context, and identical fixture order. The manifest SHA-256 is the runtime identity of the set; a cross-mission artifact reference is rejected before harness execution.
 
@@ -114,7 +126,7 @@ For each campaign quality dimension, the runner applies both:
 
 The report outcome is `promotable` only when both executions are valid, every candidate fixture passes, and every dimension passes both thresholds. A measured failure is `rollback`. Invalid identity, stale state, changed harness, malformed output, or contract mismatch is `inconclusive`. All three outcomes keep `execution_authorized: false` and `release_authorized: false`; the controller, not the comparison runner, owns the bounded working-state decision.
 
-### 2.5 `ComparativeEvaluationAttestation`
+### 2.6 `ComparativeEvaluationAttestation`
 
 Schema v0.4 authenticates the comparative report instead of treating evaluator identity as an unsigned local claim. `comparative-evaluation-attestation-runner.js` signs a purpose-specific in-toto statement in a DSSE envelope. Its subject is the SHA-256 of the exact persisted report artifact. The signed predicate also fixes the report self-digest, plan and evaluation-set IDs, outcome, campaign, mission, cycle, target type, baseline/candidate identities and revisions, repository identity, evaluator ID and invocation, verifier/key/group, execution origin, nonce, issue time, and expiry.
 
@@ -122,7 +134,7 @@ The controller does not accept the exposed fields or signature in isolation. It 
 
 The predicate type differs from the receipt predicate, so one signature cannot be reinterpreted as the other evidence class. Comparative signing also requires the verifier's `allowed_attestation_types` to include `comparative_evaluation_report`; trust in a key for receipt evidence alone does not authorize it for report evidence. A signed `remote` origin still means only that the signer asserted `remote`; authenticated workload identity and protected execution require external infrastructure.
 
-### 2.6 `SelfImprovementCheckpoint`
+### 2.7 `SelfImprovementCheckpoint`
 
 Each checkpoint records one candidate against one baseline:
 
@@ -175,9 +187,9 @@ The supervisor emits one manifest-backed order:
 | `before_completion` | Accepted decision explicitly requires the completion checkpoint | Open the next finite completion cycle with the accepted decision as parent |
 | `hold` | Completion, termination, escalation, invalid lineage, incomplete pair, or exhausted budget | Emit no execution authority |
 
-The supervisor rejects duplicate IDs, a checkpoint without exactly one decision, a decision without a checkpoint, skipped cycles, records after an accepted or terminal decision, a baseline that does not match the prior accepted revision, a forged parent reference, repository mismatch, and finite-budget exhaustion. For a v0.3+ campaign it also reloads the exact manifest-bound `VerifierTrustPolicy` and computes purpose-specific receipt and comparative readiness from active status, repository allowlists, Ed25519 key identity, validity windows, distinct verifier IDs, distinct key IDs, and independence groups. It copies the controller's task order exactly for follow-on work and records the campaign, source checkpoint, source decision, accepted parent, proof requirements, trust admission, budget snapshot, and observed manifest digest.
+The supervisor rejects duplicate IDs, a checkpoint without exactly one decision, a decision without a checkpoint, skipped cycles, records after an accepted or terminal decision, a baseline that does not match the prior accepted revision, a forged parent reference, repository mismatch, and finite-budget exhaustion. For a v0.3+ campaign it also reloads the exact manifest-bound `VerifierTrustPolicy` and computes purpose-specific receipt and comparative readiness from active status, repository allowlists, Ed25519 key identity, validity windows, distinct verifier IDs, distinct key IDs, and independence groups. Under trust-policy v0.2, it additionally reloads `VerifierIdentityEvidence`, verifies the SVID chain, dual signatures, evidence age and transparency checkpoint, and excludes every unauthenticated verifier. It copies the controller's task order exactly for follow-on work and records the campaign, source checkpoint, source decision, accepted parent, proof requirements, trust admission, budget snapshot, and observed manifest digest.
 
-Cycle-order schema v0.2 records `trust_policy_admission`, including the exact policy reference, effective thresholds, eligible verifier/key/group lists for each evidence purpose, evaluation time, conservative validity boundary, and blocking codes. An agent cannot satisfy this gate by reporting readiness; the supervisor derives it from policy bytes already verified by the repository manifest. `SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, or authority. Only `status: ready` with `execution_authorized: true`, satisfied admission, and an unexpired signed-campaign `valid_until` may be dispatched. Re-running the supervisor against the same reconstructed state and admission population returns the existing persisted order instead of creating another manifest revision.
+Cycle-order schema v0.3 records `trust_policy_admission`, including the exact policy reference, effective thresholds, eligible verifier/key/group lists for each evidence purpose, workload identity evidence references, evaluation time, conservative validity boundary, and blocking codes. An agent cannot satisfy this gate by reporting readiness; the supervisor derives it from policy and evidence bytes already verified by the repository manifest. v0.1 and v0.2 orders remain readable. `SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, log keys, or authority. Only `status: ready` with `execution_authorized: true`, satisfied admission, and an unexpired signed-campaign `valid_until` may be dispatched. Re-running the supervisor against the same reconstructed state and admission population returns the existing persisted order instead of creating another manifest revision.
 
 ## 3. Required Battle Rhythm
 
@@ -189,21 +201,23 @@ Cycle-order schema v0.2 records `trust_policy_admission`, including the exact po
 4. Define quality dimensions that can be evidenced independently of model confidence.
 5. Set finite budgets and stop conditions.
 6. Record the initial baseline.
-7. Run the campaign supervisor and execute only its persisted `start` order when status is `ready`.
+7. For trust-policy v0.2, persist fresh workload identity evidence from every verifier needed for quorum.
+8. Run the campaign supervisor and execute only its persisted `start` order when status is `ready`.
 
 ### 3.2 Every implementation wave
 
-1. Run the campaign supervisor against the verified artifact store. Stop unless it emits a current `ready` order whose trust admission is satisfied and, when required, not expired.
-2. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
-3. Execute only the task order carried by that cycle order, using its cycle, attempt, baseline, parent, trigger, and proof requirements.
-4. Generate a repository-state-bound `VerificationPlan`, run it through `verification-runner.js`, and persist its receipt.
-5. For a v0.3+ campaign, send the persisted receipt and its manifest digest to the required independent verifiers. Persist every returned signed attestation without editing it.
-6. For a v0.4 skill or runtime-control candidate, run the paired comparison, persist its report, and obtain a fresh signed report quorum from the required independent verifiers.
-7. Run the required checkpoint that cites the exact receipts, receipt attestations, comparative report, and report attestations required by its cycle order.
-8. Accept only one bounded candidate at a time; carry its accepted state forward as the next baseline.
-9. Persist the checkpoint and controller decision, then run the supervisor again. Do not calculate the next cycle or retry from conversational memory.
-10. On validation failure, run the failure checkpoint before attempting repair.
-11. On scope change, stop and checkpoint before editing outside the existing task.
+1. For trust-policy v0.2, refresh and persist verifier workload identity evidence before it expires.
+2. Run the campaign supervisor against the verified artifact store. Stop unless it emits a current `ready` order whose trust admission is satisfied and, when required, not expired.
+3. Run a `wave_start` checkpoint when the working state, scope, or agent roster changed.
+4. Execute only the task order carried by that cycle order, using its cycle, attempt, baseline, parent, trigger, and proof requirements.
+5. Generate a repository-state-bound `VerificationPlan`, run it through `verification-runner.js`, and persist its receipt.
+6. For a v0.3+ campaign, send the persisted receipt and its manifest digest to the required independent verifiers. Persist every returned signed attestation without editing it.
+7. For a v0.4 skill or runtime-control candidate, run the paired comparison, persist its report, and obtain a fresh signed report quorum from the required independent verifiers.
+8. Run the required checkpoint that cites the exact receipts, receipt attestations, comparative report, and report attestations required by its cycle order.
+9. Accept only one bounded candidate at a time; carry its accepted state forward as the next baseline.
+10. Persist the checkpoint and controller decision, then run the supervisor again. Do not calculate the next cycle or retry from conversational memory.
+11. On validation failure, run the failure checkpoint before attempting repair.
+12. On scope change, stop and checkpoint before editing outside the existing task.
 
 ### 3.3 Completion
 
@@ -414,6 +428,7 @@ CLI exit codes are `0` for a decision the harness may consume without human unbl
 - A missing decision, duplicate decision, skipped cycle, mismatched baseline, forged parent path/hash, or record after a terminal decision blocks the supervisor before another order is issued.
 - Agents must not infer the next cycle number, retry count, baseline, or parent from chat history. They consume the current persisted cycle order.
 - Agents must not self-declare verifier readiness. Missing, malformed, repository-mismatched, inactive, expired, under-populated, purpose-ineligible, key-reused, or single-group trust policy state blocks dispatch before candidate work begins.
+- Under trust-policy v0.2, a static verifier entry is not readiness evidence. Missing, stale, wrong-SPIFFE, multi-URI-SAN, untrusted-chain, signature-invalid, transparency-invalid or unpersisted identity evidence excludes that verifier from every affected purpose quorum.
 - A protected-invariant impact blocks promotion even when the measured score improves.
 - A skill or runtime-control candidate without a fresh `promotable` paired report cannot become a working state. A rollback report triggers rollback; an inconclusive or recomputation-mismatched report escalates.
 - A v0.4 skill or runtime-control candidate without a fresh signed report quorum cannot be promoted even when the paired report is `promotable`.
@@ -434,6 +449,8 @@ node run-verification-attestation-fixtures.js
 node run-comparative-evaluation-fixtures.js
 node run-comparative-evaluation-attestation-fixtures.js
 node run-verifier-trust-readiness-fixtures.js
+node run-verifier-identity-evidence-fixtures.js
+node run-workload-identity-admission-fixtures.js
 node run-cycle-order-admission-fixtures.js
 node run-campaign-supervisor-fixtures.js
 node validator-cli-prototype/run-fixtures.js
@@ -442,18 +459,19 @@ node run-repository-artifact-concurrency-fixtures.js
 node run-repository-artifact-recovery-fixtures.js
 ```
 
-The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE verification, duplicate and expired attestations, two-key/two-group receipt and report quorum, receipt/report-content binding, comparative plan/set/lineage/evaluator/repository rebinding, real baseline/candidate worktree execution, sealed evaluation sets, absolute and non-regression thresholds, harness mismatch, comparison rollback/inconclusive outcomes, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, concurrent fencing, crash recovery, and byte-level tamper detection.
+The fixture suite covers executed proof, missing/tampered receipts, Ed25519 DSSE verification, duplicate and expired attestations, two-key/two-group receipt and report quorum, SPIFFE X.509 workload identity, dual key possession, transparency inclusion/checkpoint verification, receipt/report-content binding, comparative plan/set/lineage/evaluator/repository rebinding, real baseline/candidate worktree execution, sealed evaluation sets, absolute and non-regression thresholds, harness mismatch, comparison rollback/inconclusive outcomes, consumed and reused approval events, forged parent lineage, policy escalation, destructive termination, completion, repository-scoped persistence, concurrent fencing, crash recovery, and byte-level tamper detection.
 
 ## 9. Current Limitations
 
 - The controller produces the next task order; the active AI harness must execute it and return a new checkpoint.
 - Bootstrap quality dimensions are safe engineering defaults; mission-specific campaigns should replace them when another measurable quality model is more appropriate.
 - Ed25519 signatures authenticate possession of a trusted private key and integrity of the signed statement. They do not prove that the verifier ran on an isolated host, used a different provider, executed the declared checks honestly, or was free from compromise. Independence groups and execution origins remain policy assertions unless backed by external infrastructure.
-- Comparative reports can be signed by the v0.4 verifier quorum, but evaluator identity, invocation, execution origin, and independence group remain signed claims until they are bound to an external workload identity and protected execution service.
-- Trust admission proves that a quorum is constructible from policy-eligible public identities at one instant. It cannot prove private-key availability, operational independence, honest execution, or successful future response; agents must stop and re-run supervision after admission expiry.
+- Trust-policy v0.2 binds a current SPIFFE workload to a static verifier key and transparency checkpoint. It still does not prove honest verifier logic, protected host execution, provider independence, successful future response, or that an independence-group label describes separate operators.
+- The local chain verifier checks pinned-root linkage, signatures, CA roles, validity and exact SPIFFE URI SAN. It is not a general RFC 5280 path builder and does not implement name constraints, policy constraints, revocation, AIA fetching or every critical extension.
+- The local transparency proof verifies one inclusion path and one pinned-key checkpoint. It does not provide a persistent append-only log service, consistency proofs, monitoring, witness cosigning or gossip, and it is not a Rekor/Cosign bundle parser.
 - Read-only temporary fixture permissions and before/after hashes detect mutation but are not a host security sandbox. A malicious harness running as the same OS user may read other accessible files, use the network, or attempt transient fixture access; production execution needs filesystem, network, process, and credential isolation.
 - A sealed local fixture set limits accidental prompt leakage but cannot prove that a model or developer never saw equivalent examples before the campaign. Statistical confidence, repeated stochastic trials, and distribution-shift monitoring remain mission-specific evaluation responsibilities.
-- The local trust policy, campaign, checkpoint, and repository manifest are not anchored in an online transparency log, hardware root, KMS, Sigstore identity, or external timestamp authority. Key revocation is enforced only after an updated human-approved policy is distributed and consumed.
+- Verifier identity evidence is anchored to its configured log checkpoint, but the campaign, policy and repository manifest as a whole are not anchored to an external witness, hardware root, KMS or trusted timestamp authority. Key and certificate revocation is enforced only after updated human-approved policy is distributed and consumed.
 - An actor that can replace the artifact root, trust policy, campaign input, and all retained history outside the controller can reconstruct a locally consistent false history. Protect the root with normal filesystem, account, backup, and review controls.
 - The shared-filesystem lease backend assumes coherent atomic `mkdir`, hard-link creation, rename, and visibility semantics plus clocks accurate enough for expiry. It prevents cooperating stale writers with monotonic fencing tokens, but it is not safe under network partition or a filesystem that violates those assumptions. Distributed writers requiring partition tolerance need an external linearizable lease/transaction service and must reject stale fencing tokens at the storage commit point.
 - Verification commands run without a shell and under bounded resources, but they are not OS-sandboxed. Network, external filesystem, and credential isolation still depend on the host harness and tool ROE.

@@ -149,6 +149,18 @@ function loadCampaignHistory(store, campaignId) {
     }
   }
 
+  const identityEvidence = [];
+  if (trustPolicyLoad.payload) {
+    for (const entry of store.manifest.artifacts.filter(item =>
+      item.kind === "verifier-identity-evidence" && item.mission_id === campaign.mission_id)) {
+      const payload = readManifestPayload(store.artifactRoot, entry);
+      if (payload.trust_policy_id !== trustPolicyLoad.payload.id) continue;
+      const failures = validationFailures(payload, "verifier-identity-evidence");
+      if (failures.length > 0 || payload.id !== entry.artifact_id) continue;
+      identityEvidence.push({ entry, payload });
+    }
+  }
+
   return {
     campaign,
     campaignEntry,
@@ -157,7 +169,8 @@ function loadCampaignHistory(store, campaignId) {
     existingOrders: loadKind("self-improvement-cycle-orders", "self-improvement-cycle-order"),
     trustPolicy: trustPolicyLoad.payload,
     trustPolicyEntry: trustPolicyLoad.entry,
-    trustPolicyBlockingCodes: trustPolicyLoad.blockingCodes
+    trustPolicyBlockingCodes: trustPolicyLoad.blockingCodes,
+    identityEvidence
   };
 }
 
@@ -414,7 +427,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     checkpoints,
     decisions,
     trustPolicy,
-    trustPolicyBlockingCodes
+    trustPolicyBlockingCodes,
+    identityEvidence
   } = history;
   const repository = store.verification.repository;
   const blocks = [];
@@ -510,6 +524,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     campaign,
     repository,
     trustPolicy,
+    identityEvidence,
     evaluatedAt,
     blockingCodes: trustPolicyBlockingCodes
   });
@@ -528,7 +543,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
 
   const generatedAt = evaluatedAt;
   return {
-    schema_version: "0.2",
+    schema_version: "0.3",
     type: "SelfImprovementCycleOrder",
     id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission),
     campaign_id: campaign.id,

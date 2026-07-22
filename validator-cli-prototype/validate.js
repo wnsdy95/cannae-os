@@ -3,11 +3,19 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");
-const { attestationDigest, publicKeyId } = require("../verification-attestation");
+const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
   comparativeAttestationDigest
 } = require("../comparative-evaluation-attestation");
+const {
+  canonicalJsonBytes,
+  certificateSha256,
+  identityEvidenceDigest,
+  merkleLeafHash,
+  parseSpiffeId,
+  transparencyEntry
+} = require("../verifier-identity-evidence");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -70,6 +78,7 @@ const TYPE_TO_SCHEMA = {
   "verification-plan": "verification-plan.schema.json",
   "verification-receipt": "verification-receipt.schema.json",
   "verifier-trust-policy": "verifier-trust-policy.schema.json",
+  "verifier-identity-evidence": "verifier-identity-evidence.schema.json",
   "verification-attestation": "verification-attestation.schema.json",
   "comparative-evaluation-attestation": "comparative-evaluation-attestation.schema.json"
 };
@@ -1840,6 +1849,46 @@ function semanticRules(payload, type) {
     const ids = new Set();
     const keyIds = new Set();
     const activeGroups = new Set();
+    const spiffeIds = new Set();
+    const identityAssurance = payload.identity_assurance || {};
+    const trustedRootIds = new Set();
+    const trustedLogIds = new Set();
+
+    if (payload.schema_version === "0.2" && !payload.identity_assurance) {
+      issues.push(issue("critical", "VERIFIER_POLICY_IDENTITY_ASSURANCE_REQUIRED", "$.identity_assurance", "Policy v0.2 requires workload identity assurance."));
+    }
+    if (payload.schema_version === "0.1" && (payload.identity_assurance || verifiers.some(item => item.workload_identity))) {
+      issues.push(issue("error", "VERIFIER_POLICY_VERSION_CONTRACT_INVALID", "$.schema_version", "Workload identity assurance requires policy schema v0.2."));
+    }
+    for (const [index, root] of (identityAssurance.trusted_x509_roots || []).entries()) {
+      const pointer = `$.identity_assurance.trusted_x509_roots[${index}]`;
+      if (trustedRootIds.has(root.id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_TRUST_ROOT", `${pointer}.id`, "Trusted X.509 root IDs must be unique."));
+      trustedRootIds.add(root.id);
+      try {
+        const certificate = new crypto.X509Certificate(root.certificate_pem);
+        if (certificate.ca !== true || !certificate.verify(certificate.publicKey)) {
+          issues.push(issue("critical", "VERIFIER_POLICY_TRUST_ROOT_INVALID", `${pointer}.certificate_pem`, "Trusted X.509 roots must be self-signed CA certificates."));
+        }
+        if (certificateSha256(certificate) !== root.certificate_sha256) {
+          issues.push(issue("critical", "VERIFIER_POLICY_TRUST_ROOT_DIGEST_MISMATCH", `${pointer}.certificate_sha256`, "Trusted X.509 root digest must match the certificate DER bytes."));
+        }
+      } catch (error) {
+        issues.push(issue("critical", "VERIFIER_POLICY_TRUST_ROOT_INVALID", `${pointer}.certificate_pem`, "Trusted X.509 root must be a valid PEM certificate."));
+      }
+    }
+    for (const [index, log] of (identityAssurance.trusted_transparency_logs || []).entries()) {
+      const pointer = `$.identity_assurance.trusted_transparency_logs[${index}]`;
+      if (trustedLogIds.has(log.id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_TRANSPARENCY_LOG", `${pointer}.id`, "Trusted transparency-log IDs must be unique."));
+      trustedLogIds.add(log.id);
+      try {
+        const key = crypto.createPublicKey(log.public_key_pem);
+        if (key.asymmetricKeyType !== "ed25519" || publicKeyId(key) !== log.key_id) {
+          issues.push(issue("critical", "VERIFIER_POLICY_TRANSPARENCY_KEY_INVALID", `${pointer}.key_id`, "Transparency-log keys must be Ed25519 keys whose SPKI digest matches key_id."));
+        }
+      } catch (error) {
+        issues.push(issue("critical", "VERIFIER_POLICY_TRANSPARENCY_KEY_INVALID", `${pointer}.public_key_pem`, "Transparency-log public key must be valid SPKI PEM."));
+      }
+    }
     for (const [index, verifier] of verifiers.entries()) {
       const pointer = `$.verifiers[${index}]`;
       if (ids.has(verifier.id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_ID", `${pointer}.id`, "Verifier IDs must be unique."));
@@ -1863,6 +1912,27 @@ function semanticRules(payload, type) {
       if (!(verifier.allowed_repository_keys || []).includes(payload.repository_binding && payload.repository_binding.repository_key)) {
         issues.push(issue("critical", "VERIFIER_POLICY_REPOSITORY_NOT_ALLOWED", `${pointer}.allowed_repository_keys`, "Every trusted verifier must explicitly allow the policy repository."));
       }
+      if (payload.schema_version === "0.2") {
+        const workload = verifier.workload_identity;
+        if (!workload) {
+          issues.push(issue("critical", "VERIFIER_POLICY_WORKLOAD_IDENTITY_REQUIRED", `${pointer}.workload_identity`, "Every verifier in policy v0.2 requires a workload identity."));
+        } else {
+          if (spiffeIds.has(workload.spiffe_id)) issues.push(issue("critical", "VERIFIER_POLICY_DUPLICATE_SPIFFE_ID", `${pointer}.workload_identity.spiffe_id`, "SPIFFE IDs must be unique across verifier identities."));
+          spiffeIds.add(workload.spiffe_id);
+          if (!trustedRootIds.has(workload.trust_root_id)) issues.push(issue("critical", "VERIFIER_POLICY_TRUST_ROOT_REFERENCE_INVALID", `${pointer}.workload_identity.trust_root_id`, "Verifier workload identity must reference a trusted X.509 root."));
+          if (!trustedLogIds.has(workload.transparency_log_id)) issues.push(issue("critical", "VERIFIER_POLICY_TRANSPARENCY_LOG_REFERENCE_INVALID", `${pointer}.workload_identity.transparency_log_id`, "Verifier workload identity must reference a trusted transparency log."));
+          try {
+            const spiffe = new URL(workload.spiffe_id);
+            const root = (identityAssurance.trusted_x509_roots || []).find(item => item.id === workload.trust_root_id);
+            if (spiffe.protocol !== "spiffe:" || !spiffe.hostname || spiffe.pathname === "/" || spiffe.search || spiffe.hash ||
+                spiffe.href !== workload.spiffe_id || (root && spiffe.hostname !== root.trust_domain)) {
+              issues.push(issue("critical", "VERIFIER_POLICY_SPIFFE_ID_INVALID", `${pointer}.workload_identity.spiffe_id`, "SPIFFE ID must use the selected root's trust domain and a non-root path."));
+            }
+          } catch (error) {
+            issues.push(issue("critical", "VERIFIER_POLICY_SPIFFE_ID_INVALID", `${pointer}.workload_identity.spiffe_id`, "Verifier workload identity must be a valid SPIFFE URI."));
+          }
+        }
+      }
     }
     const active = verifiers.filter(item => item.status === "active");
     const quorum = payload.quorum || {};
@@ -1874,6 +1944,64 @@ function semanticRules(payload, type) {
     }
     if (!isValidDate(payload.created_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.created_at)) {
       issues.push(issue("critical", "VERIFIER_POLICY_WINDOW_INVALID", "$.expires_at", "Trust policy expiry must be later than creation."));
+    }
+  }
+
+  if (type === "verifier-identity-evidence") {
+    if (payload.evidence_sha256 !== identityEvidenceDigest(payload)) {
+      issues.push(issue("critical", "IDENTITY_EVIDENCE_DIGEST_INVALID", "$.evidence_sha256", "Identity evidence digest must match its canonical content."));
+    }
+    if (!isValidDate(payload.issued_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.issued_at)) {
+      issues.push(issue("critical", "IDENTITY_EVIDENCE_TIME_INVALID", "$.expires_at", "Identity evidence expiry must be later than issue time."));
+    }
+    const statement = payload.binding_statement || {};
+    const expected = {
+      schema_version: "0.1",
+      type: "VerifierIdentityBinding",
+      evidence_id: payload.id,
+      verifier_id: payload.verifier_id,
+      verifier_key_id: payload.signatures && payload.signatures.verifier_key_id,
+      spiffe_id: payload.workload_identity && payload.workload_identity.spiffe_id,
+      trust_root_id: payload.workload_identity && payload.workload_identity.trust_root_id,
+      transparency_log_id: payload.transparency && payload.transparency.log_id,
+      repository_binding: payload.repository_binding,
+      purposes: payload.purposes,
+      nonce: statement.nonce,
+      issued_at: payload.issued_at,
+      expires_at: payload.expires_at
+    };
+    if (!canonicalJsonBytes(statement).equals(canonicalJsonBytes(expected))) {
+      issues.push(issue("critical", "IDENTITY_EVIDENCE_STATEMENT_MISMATCH", "$.binding_statement", "Signed identity statement must exactly bind all top-level policy, identity, repository, purpose, and time fields."));
+    }
+    try {
+      const leaf = new crypto.X509Certificate(payload.workload_identity.leaf_certificate_pem);
+      if (leaf.ca || parseSpiffeId(leaf) !== payload.workload_identity.spiffe_id || leaf.publicKey.asymmetricKeyType !== "ed25519" ||
+          publicKeyId(leaf.publicKey) !== payload.signatures.workload_key_id) {
+        issues.push(issue("critical", "IDENTITY_EVIDENCE_LEAF_CERTIFICATE_INVALID", "$.workload_identity.leaf_certificate_pem", "Leaf certificate must be a non-CA Ed25519 certificate with exactly the bound SPIFFE URI SAN."));
+      }
+    } catch (error) {
+      issues.push(issue("critical", "IDENTITY_EVIDENCE_LEAF_CERTIFICATE_INVALID", "$.workload_identity.leaf_certificate_pem", "Leaf certificate must be valid X.509 PEM."));
+    }
+    const workloadSignature = payload.signatures && strictBase64(payload.signatures.workload_signature_base64);
+    const verifierSignature = payload.signatures && strictBase64(payload.signatures.verifier_signature_base64);
+    if (!workloadSignature || !verifierSignature) {
+      issues.push(issue("critical", "IDENTITY_EVIDENCE_SIGNATURE_ENCODING_INVALID", "$.signatures", "Identity signatures must use strict canonical base64 encoding."));
+    }
+    try {
+      const expectedEntry = canonicalJsonBytes(transparencyEntry(payload));
+      const suppliedEntry = strictBase64(payload.transparency.canonicalized_entry_base64);
+      if (!suppliedEntry || !suppliedEntry.equals(expectedEntry) || payload.transparency.leaf_hash !== merkleLeafHash(expectedEntry)) {
+        issues.push(issue("critical", "IDENTITY_EVIDENCE_TRANSPARENCY_ENTRY_INVALID", "$.transparency", "Transparency entry and leaf hash must bind the certificate, statement, and both signatures."));
+      }
+    } catch (error) {
+      issues.push(issue("critical", "IDENTITY_EVIDENCE_TRANSPARENCY_ENTRY_INVALID", "$.transparency", "Transparency entry must be parseable and canonically bound."));
+    }
+    const transparency = payload.transparency || {};
+    const checkpoint = transparency.checkpoint || {};
+    if (checkpoint.log_id !== transparency.log_id || checkpoint.tree_size !== transparency.tree_size ||
+        !isValidDate(checkpoint.issued_at) || (isValidDate(payload.issued_at) && Date.parse(checkpoint.issued_at) < Date.parse(payload.issued_at)) ||
+        (isValidDate(payload.expires_at) && Date.parse(checkpoint.issued_at) >= Date.parse(payload.expires_at))) {
+      issues.push(issue("critical", "IDENTITY_EVIDENCE_CHECKPOINT_BINDING_INVALID", "$.transparency.checkpoint", "Checkpoint must bind the same log and tree and fall inside the evidence validity window."));
     }
   }
 
@@ -2047,7 +2175,7 @@ function semanticRules(payload, type) {
     if (payload.schema_version === "0.1" && payload.trust_policy_admission !== undefined) {
       issues.push(issue("error", "CYCLE_ORDER_V01_ADMISSION_UNSUPPORTED", "$.trust_policy_admission", "Trust-policy admission evidence requires cycle-order schema version 0.2."));
     }
-    if (payload.schema_version === "0.2") {
+    if (["0.2", "0.3"].includes(payload.schema_version)) {
       const receipt = admission.receipt_quorum || {};
       const comparative = admission.comparative_quorum || {};
       const requirements = admission.effective_requirements || {};
@@ -2096,10 +2224,58 @@ function semanticRules(payload, type) {
         issues.push(issue("error", "CYCLE_ORDER_UNSIGNED_ADMISSION_MISMATCH", "$.trust_policy_admission", "An unsigned campaign requires an explicit satisfied no-op admission with no trust policy or quorum."));
       }
       if (ready && (admission.satisfied !== true || (admission.required === true && admission.valid_until === "none"))) {
-        issues.push(issue("critical", "CYCLE_ORDER_WITHOUT_TRUST_ADMISSION", "$.trust_policy_admission", "A ready v0.2 cycle order requires a satisfied, time-bounded trust-policy admission."));
+        issues.push(issue("critical", "CYCLE_ORDER_WITHOUT_TRUST_ADMISSION", "$.trust_policy_admission", "A ready cycle order requires a satisfied, time-bounded trust-policy admission."));
       }
       if (ready && (admission.blocking_codes || []).some(code => !(payload.blocking_codes || []).includes(code))) {
         issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_BLOCK_NOT_PROPAGATED", "$.blocking_codes", "Ready execution cannot discard a trust-admission blocking code."));
+      }
+      if (payload.schema_version === "0.3") {
+        const identity = admission.identity_assurance || {};
+        const evidence = identity.evidence || [];
+        const verifierIds = evidence.map(item => item.verifier_id);
+        const trustDomains = evidence.map(item => item.trust_domain);
+        const logIds = evidence.map(item => item.transparency_log_id);
+        const uniqueVerifierIds = new Set(verifierIds);
+        const expectedIdentitySatisfied = identity.required !== true ||
+          ((identity.blocking_codes || []).length === 0 && receipt.satisfied === true && comparative.satisfied === true);
+        if (!admission.identity_assurance) {
+          issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_ADMISSION_REQUIRED", "$.trust_policy_admission.identity_assurance", "Cycle-order v0.3 requires an explicit workload identity admission projection."));
+        } else {
+          if (identity.authenticated_verifier_count !== evidence.length || uniqueVerifierIds.size !== evidence.length ||
+              identity.distinct_trust_domain_count !== new Set(trustDomains).size ||
+              identity.transparency_log_count !== new Set(logIds).size) {
+            issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_COUNT_MISMATCH", "$.trust_policy_admission.identity_assurance", "Identity admission counts must equal its distinct evidence bindings."));
+          }
+          if (identity.satisfied !== expectedIdentitySatisfied || (identity.required === true && admission.assurance_scope !== "authenticated_workload_and_policy_eligibility") ||
+              (identity.required !== true && admission.assurance_scope !== "policy_eligibility_only")) {
+            issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_FALSE_SATISFACTION", "$.trust_policy_admission.identity_assurance", "Identity satisfaction and assurance scope must be derived from authenticated workload evidence."));
+          }
+          const evidenceByVerifier = new Map(evidence.map(item => [item.verifier_id, item]));
+          const receiptBindingsValid = (receipt.verifier_ids || []).every(id => evidenceByVerifier.has(id) && evidenceByVerifier.get(id).purposes.includes("verification_receipt"));
+          const comparativeBindingsValid = (comparative.verifier_ids || []).every(id => evidenceByVerifier.has(id) && evidenceByVerifier.get(id).purposes.includes("comparative_evaluation_report"));
+          if (identity.required === true && (!receiptBindingsValid || !comparativeBindingsValid)) {
+            issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_PURPOSE_BINDING_INVALID", "$.trust_policy_admission.identity_assurance.evidence", "Every verifier counted for a purpose quorum requires matching authenticated identity evidence."));
+          }
+          for (const [index, item] of evidence.entries()) {
+            const ref = item.evidence_ref || {};
+            if (ref.artifact_id === "none" || path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
+              issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_REFERENCE_INVALID", `$.trust_policy_admission.identity_assurance.evidence[${index}].evidence_ref`, "Identity evidence must cite an exact repository-artifact-relative manifest reference."));
+            }
+            if (!isValidDate(item.issued_at) || !isValidDate(item.valid_until) ||
+                Date.parse(item.issued_at) > Date.parse(admission.evaluated_at) || Date.parse(item.valid_until) <= Date.parse(admission.evaluated_at) ||
+                (isValidDate(admission.valid_until) && Date.parse(admission.valid_until) > Date.parse(item.valid_until))) {
+              issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_WINDOW_INVALID", `$.trust_policy_admission.identity_assurance.evidence[${index}]`, "Identity evidence must be active at admission and bound the admission validity window."));
+            }
+          }
+          if (identity.required !== true && (identity.satisfied !== true || evidence.length !== 0 ||
+              identity.authenticated_verifier_count !== 0 || identity.distinct_trust_domain_count !== 0 ||
+              identity.transparency_log_count !== 0 || (identity.blocking_codes || []).length !== 0)) {
+            issues.push(issue("error", "CYCLE_ORDER_IDENTITY_NOOP_MISMATCH", "$.trust_policy_admission.identity_assurance", "A policy-only admission requires an explicit empty, satisfied identity no-op."));
+          }
+          if ((identity.blocking_codes || []).some(code => !(admission.blocking_codes || []).includes(code))) {
+            issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_BLOCK_NOT_PROPAGATED", "$.trust_policy_admission.blocking_codes", "Identity-admission blocking codes must propagate to the trust admission."));
+          }
+        }
       }
     }
   }

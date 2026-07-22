@@ -105,7 +105,7 @@ For a multi-wave mission, control-plane change, explicit autonomous-improvement 
 7. At every wave end, validation failure, scope change, and before completion, create a `SelfImprovementCheckpoint` whose metrics and independent evaluation cite persisted receipt IDs and, for v0.3+, the receipt quorum. Skill/runtime-control checkpoints cite the comparative report and, for v0.4, its signed quorum. Run `autonomous-improvement-controller.js --repository <repo>` against the proof store.
 8. For cycle 2+, cite the manifest path/hash of the immediately prior `accept_working_state` decision and use its `accepted_revision` as the baseline. Do not carry forward a rejected, rollback, or merely named parent.
 9. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window changes, persist an exact USER-granted `ApprovalScope` and matching `ApprovalConsumptionEvent`. Bind its execution ID to the checkpoint; prose approval and reused events are invalid.
-10. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current `SelfImprovementCycleOrder` whose status is `ready`, whose `trust_policy_admission.satisfied` is true, and whose required admission has not reached `valid_until`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never self-declare verifier readiness or infer order state from chat history.
+10. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. For trust-policy v0.2, first persist fresh `VerifierIdentityEvidence` from every verifier needed for quorum. Execute only a current `SelfImprovementCycleOrder` whose status is `ready`, whose `trust_policy_admission.satisfied` and required `identity_assurance.satisfied` are true, and whose required admission has not reached `valid_until`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never self-declare verifier readiness or infer order state from chat history.
 11. Carry forward only an accepted working state; revision, rollback, and continue orders remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
 12. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require receipt-backed independent evaluation for runtime, skill, and policy candidates.
 13. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
@@ -165,6 +165,8 @@ node run-self-improvement-fixtures.js
 node run-signed-self-improvement-fixtures.js
 node run-campaign-supervisor-fixtures.js
 node run-verifier-trust-readiness-fixtures.js
+node run-verifier-identity-evidence-fixtures.js
+node run-workload-identity-admission-fixtures.js
 node run-cycle-order-admission-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
@@ -182,7 +184,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
-- Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed receipt quorum for v0.3+, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint; self-improvement never creates self-approval, self-release, trust-root authority, or unbounded recursion.
+- Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed receipt quorum for v0.3+, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint. Trust-policy v0.2 additionally requires fresh manifest-backed SPIFFE workload identity and transparency evidence for every counted verifier; self-improvement never creates self-approval, self-release, trust-root/log-key authority, or unbounded recursion.
 - Skill and runtime-control promotion additionally require one pre-persisted sealed evaluation contract executed against isolated baseline/candidate worktrees with an identical harness. Schema v0.4 also requires a fresh trusted signed report quorum. Promotion revisions must differ; completion revalidation runs the same accepted revision twice. Comparison evidence never grants release authority.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.

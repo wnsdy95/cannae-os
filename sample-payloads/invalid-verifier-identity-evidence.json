@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.1",
+  "type": "VerifierIdentityEvidence",
+  "id": "IDENTITY-EVIDENCE-001",
+  "verifier_id": "VERIFIER-WORKLOAD-A",
+  "trust_policy_id": "TRUST-POLICY-WORKLOAD-001",
+  "repository_binding": {
+    "repository_key": "controls-test",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "purposes": [
+    "comparative_evaluation_report",
+    "verification_receipt"
+  ],
+  "workload_identity": {
+    "type": "spiffe_x509",
+    "spiffe_id": "spiffe://verification.example.test/campaign/verifier-a",
+    "trust_root_id": "ROOT-A",
+    "leaf_certificate_pem": "-----BEGIN CERTIFICATE-----\nMIIBnTCCAU+gAwIBAgIUIUqPo16G/hgE8BSNyBAkFxUCyKUwBQYDK2VwMBgxFjAU\nBgNVBAMMDWNvbnRyb2xzLXJvb3QwHhcNMjYwNzIyMDQwMzIyWhcNMjYwNzIzMDQw\nMzIyWjAeMRwwGgYDVQQDDBN2ZXJpZmllci1hLXdvcmtsb2FkMCowBQYDK2VwAyEA\n8jWX/eduXO9638kE7mPRENlWy11PPqWYSq3gfSlONJujgaQwgaEwDAYDVR0TAQH/\nBAIwADAOBgNVHQ8BAf8EBAMCB4AwQQYDVR0RBDowOIY2c3BpZmZlOi8vdmVyaWZp\nY2F0aW9uLmV4YW1wbGUudGVzdC9jYW1wYWlnbi92ZXJpZmllci1hMB0GA1UdDgQW\nBBTuN1qv0rLCcrV4HQpnsHtmep1CXzAfBgNVHSMEGDAWgBTBMlFZQS6H/LTjkkel\n8PX+AL+kPzAFBgMrZXADQQCq/JBREt1xlss/RyMoAp2A1k5H1Fj67J0z+tFRpcP6\n/Lb74784/haz+nUp02o4Yh1L+pegtaW6L+7CONx1wp0P\n-----END CERTIFICATE-----\n",
+    "certificate_chain_pem": []
+  },
+  "binding_statement": {
+    "schema_version": "0.1",
+    "type": "VerifierIdentityBinding",
+    "evidence_id": "IDENTITY-EVIDENCE-001",
+    "verifier_id": "VERIFIER-WORKLOAD-A",
+    "verifier_key_id": "7238338f4d2bffde1736aed9784b60775a50cbfda3507f0c5767eef3a0987e0c",
+    "spiffe_id": "spiffe://verification.example.test/campaign/verifier-a",
+    "trust_root_id": "ROOT-A",
+    "transparency_log_id": "LOG-A",
+    "repository_binding": {
+      "repository_key": "controls-test",
+      "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "purposes": [
+      "comparative_evaluation_report",
+      "verification_receipt"
+    ],
+    "nonce": "fixture-nonce-00000001",
+    "issued_at": "2026-07-22T04:03:23.135Z",
+    "expires_at": "2026-07-22T04:08:23.135Z"
+  },
+  "signatures": {
+    "workload_key_id": "4fc2d9e4917fc6c4d5f634397455a6b653ccfbe90786444ff0d8b0472751b800",
+    "workload_algorithm": "ed25519",
+    "workload_signature_base64": "NE6KXxqaJjWjgZG5k7W2me+LoIAiSMzBMialDOXOzSocmIcscrQnF/ctnCrg2XzBcXSxzXVNPbfiM3FQx/viAA==",
+    "verifier_key_id": "7238338f4d2bffde1736aed9784b60775a50cbfda3507f0c5767eef3a0987e0c",
+    "verifier_algorithm": "ed25519",
+    "verifier_signature_base64": "V3idiSLHwbFFAmUZt13+iqOnCgkD0T0ZfWX9lMjvy4BYm4sz+RSVavpp74HTJTGMq+QTfregx6SS3z5BnlbhDw=="
+  },
+  "transparency": {
+    "log_id": "LOG-A",
+    "canonicalized_entry_base64": "eyJldmlkZW5jZV9pZCI6IklERU5USVRZLUVWSURFTkNFLTAwMSIsImxlYWZfY2VydGlmaWNhdGVfc2hhMjU2IjoiMzQ5NzM5ZjUxZWNmMTVkYzJkM2Q0YTc1YmVlMDFlZDRkMjRmYjQ3OWQ2OGNiYzdkNWRhNDYxMjE3MWZkZWUwOSIsInNjaGVtYV92ZXJzaW9uIjoiMC4xIiwic3RhdGVtZW50X3NoYTI1NiI6ImE1Y2U5OGI3NGMxNzIzZDUzOGY0ZmUzMDBmNDM1MGNlNjI5MTFkOGZkZmY2Y2QzOTJjYjQ3ZWE2YWZhNWY1NTUiLCJ0eXBlIjoiVmVyaWZpZXJJZGVudGl0eVRyYW5zcGFyZW5jeUVudHJ5IiwidmVyaWZpZXJfc2lnbmF0dXJlX3NoYTI1NiI6ImU2OTcyZGQ0Yjk3MTFlYWQ0YTIyZTdlNGRiNzE4NTg5ZDFkZjY1MDczMDlkMTNkOGM2YmFjMmE1NjgxYTJkYTYiLCJ3b3JrbG9hZF9zaWduYXR1cmVfc2hhMjU2IjoiZjc5ZjdhNjk2MjBhNjc2YjA1MzQzNjU1ODc3NGNhZjA5Y2NkZjVjYzA4MGM3OTFlYzJkZWRhZjNkNDIwNzQyOSJ9",
+    "leaf_hash": "777071b492c671ecc1549920ff42faf15cd274eede6dc218cc80d93b9ca36cb5",
+    "log_index": 0,
+    "tree_size": 1,
+    "inclusion_path_sha256": [],
+    "checkpoint": {
+      "origin": "controls.example.test/log-a",
+      "log_id": "LOG-A",
+      "tree_size": 1,
+      "root_hash": "777071b492c671ecc1549920ff42faf15cd274eede6dc218cc80d93b9ca36cb5",
+      "issued_at": "2026-07-22T04:03:23.135Z",
+      "key_id": "821d975c493a059822c9530dac875bc2510cb194222829179b0dafb007827aa1",
+      "signature_algorithm": "ed25519",
+      "signature_base64": "b7Tt158F5lhAqDGWy1hq5PntLcdZABPds/zBBxhEBUTIMxyfyX1q/C/vaxCu5m4hrHboA5JrW561fP7iuEtOCQ=="
+    }
+  },
+  "evidence_sha256": "a80467bf9e62e91fcb7d4a718130526be3be5bd5a264c1b9407b8ff7bc8c20b5",
+  "issued_at": "2026-07-22T04:03:23.135Z",
+  "expires_at": "2026-07-22T04:08:23.135Z",
+  "authority_override": "self_authorized"
+}

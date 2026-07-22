@@ -3,7 +3,7 @@
   "as_of": "2026-07-22",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 29,
+  "checked_hosts": 33,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -69,7 +69,21 @@
       ]
     },
     {
+      "host": "datatracker.ietf.org",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
       "host": "developers.openai.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "docs.sigstore.dev",
       "files": [
         "docs/research-compendium.md",
         "docs/source-map.md"
@@ -102,6 +116,20 @@
       "host": "safety.army.mil",
       "files": [
         "docs/research-compendium.md"
+      ]
+    },
+    {
+      "host": "slsa.dev",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "spiffe.io",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md"
       ]
     },
     {
@@ -264,6 +292,7 @@
     {
       "host": "www.rfc-editor.org",
       "files": [
+        "docs/research-compendium.md",
         "docs/source-map.md"
       ]
     },

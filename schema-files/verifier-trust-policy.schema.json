@@ -5,8 +5,21 @@
   "type": "object",
   "required": ["schema_version", "type", "id", "repository_binding", "policy_version", "quorum", "verifiers", "created_at", "expires_at"],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "then": {
+        "required": ["identity_assurance"],
+        "properties": {
+          "verifiers": {
+            "items": { "required": ["workload_identity"] }
+          }
+        }
+      }
+    }
+  ],
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "type": { "type": "string", "const": "VerifierTrustPolicy" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "repository_binding": {
@@ -30,6 +43,47 @@
         "max_attestation_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 }
       }
     },
+    "identity_assurance": {
+      "type": "object",
+      "required": ["required", "max_evidence_age_seconds", "trusted_x509_roots", "trusted_transparency_logs"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean", "const": true },
+        "max_evidence_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+        "trusted_x509_roots": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": ["id", "trust_domain", "certificate_pem", "certificate_sha256"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/id" },
+              "trust_domain": { "type": "string", "pattern": "^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$" },
+              "certificate_pem": { "type": "string", "pattern": "^-----BEGIN CERTIFICATE-----" },
+              "certificate_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        },
+        "trusted_transparency_logs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "required": ["id", "origin", "key_id", "public_key_pem"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/id" },
+              "origin": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "key_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "public_key_pem": { "type": "string", "pattern": "^-----BEGIN PUBLIC KEY-----" }
+            }
+          }
+        }
+      }
+    },
     "verifiers": {
       "type": "array",
       "minItems": 1,
@@ -51,6 +105,17 @@
             "minItems": 1,
             "uniqueItems": true,
             "items": { "type": "string", "enum": ["verification_receipt", "comparative_evaluation_report"] }
+          },
+          "workload_identity": {
+            "type": "object",
+            "required": ["type", "spiffe_id", "trust_root_id", "transparency_log_id"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string", "const": "spiffe_x509" },
+              "spiffe_id": { "type": "string", "pattern": "^spiffe://[a-z0-9.-]+/[^?#]+$" },
+              "trust_root_id": { "$ref": "common.schema.json#/$defs/id" },
+              "transparency_log_id": { "$ref": "common.schema.json#/$defs/id" }
+            }
           },
           "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
           "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }

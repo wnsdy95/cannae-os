@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added trust-policy v0.2 and `VerifierIdentityEvidence` with SPIFFE X.509-SVID identity, dual workload/static-key signatures, pinned log checkpoints, RFC 6962-style Merkle inclusion, repository binding, purpose binding, and bounded freshness.
+- Added cycle-order v0.3 authenticated workload admission, manifest-backed identity references, real OpenSSL adversarial fixtures, end-to-end supervisor blocking, official SPIFFE/Sigstore/RFC research traceability, and Codex/Claude routing.
 - Added cycle-order schema v0.2 and fail-closed campaign admission that computes receipt and comparative verifier readiness from the exact manifest-bound trust policy before dispatch.
 - Added purpose, repository, key identity, status, validity, distinct-key, and independence-group readiness fixtures; cycle orders now bind a conservative admission expiry and reject self-declared quorum satisfaction.
 - Added self-improvement schema v0.4 with Ed25519 DSSE attestations over exact persisted comparative reports, purpose-specific in-toto predicates, and distinct verifier/key/independence-group quorum.
