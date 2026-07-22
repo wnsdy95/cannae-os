@@ -24,9 +24,16 @@ const {
 } = require("../sigstore-verifier-identity-evidence");
 const {
   EXECUTION_PREDICATE_TYPE,
+  EXECUTION_PREDICATE_TYPE_V2,
   PROVIDER_REQUIRED_CLAIMS,
   evidenceDigest: verifierExecutionEvidenceDigest
 } = require("../verifier-execution-evidence");
+const {
+  computeVerifierIndependence,
+  exactDimensions,
+  profileClaimsMatchProvider,
+  validClaims
+} = require("../verifier-independence");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -1880,7 +1887,7 @@ function semanticRules(payload, type) {
     const trustedRootIds = new Set();
     const trustedLogIds = new Set();
 
-    if (["0.2", "0.3", "0.4", "0.5"].includes(payload.schema_version) && !payload.identity_assurance) {
+    if (["0.2", "0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version) && !payload.identity_assurance) {
       issues.push(issue("critical", "VERIFIER_POLICY_IDENTITY_ASSURANCE_REQUIRED", "$.identity_assurance", "Policy v0.2+ requires workload identity assurance."));
     }
     if (payload.schema_version === "0.1" && (payload.identity_assurance || verifiers.some(item => item.workload_identity))) {
@@ -1896,11 +1903,11 @@ function semanticRules(payload, type) {
         issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_PATH_INVALID", `${pointer}.relative_path`, "Sigstore TrustedRoot references must remain repository-artifact-relative."));
       }
     }
-    if (["0.3", "0.4", "0.5"].includes(payload.schema_version) && (sigstoreRootRefs.length === 0 || !Number.isInteger(identityAssurance.max_trusted_root_age_seconds))) {
+    if (["0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version) && (sigstoreRootRefs.length === 0 || !Number.isInteger(identityAssurance.max_trusted_root_age_seconds))) {
       issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_REQUIRED", "$.identity_assurance", "Policy v0.3+ requires a manifest-bound Sigstore TrustedRoot and freshness limit."));
     }
     const executionAssurance = payload.execution_assurance;
-    if (["0.4", "0.5"].includes(payload.schema_version)) {
+    if (["0.4", "0.5", "0.6"].includes(payload.schema_version)) {
       const runtimeRef = executionAssurance && executionAssurance.runtime_policy_ref;
       if (!executionAssurance || executionAssurance.required !== true || !runtimeRef) {
         issues.push(issue("critical", "VERIFIER_POLICY_EXECUTION_ASSURANCE_REQUIRED", "$.execution_assurance", "Policy v0.4+ requires an exact verifier runtime policy reference."));
@@ -1911,7 +1918,7 @@ function semanticRules(payload, type) {
       issues.push(issue("error", "VERIFIER_POLICY_EXECUTION_ASSURANCE_VERSION_INVALID", "$.execution_assurance", "Execution assurance requires trust-policy schema v0.4 or later."));
     }
     const challengeAssurance = payload.challenge_assurance;
-    if (payload.schema_version === "0.5") {
+    if (["0.5", "0.6"].includes(payload.schema_version)) {
       if (!challengeAssurance || challengeAssurance.required !== true || challengeAssurance.single_use !== true ||
           !Number.isInteger(challengeAssurance.nonce_bytes) || challengeAssurance.nonce_bytes < 32 ||
           !Number.isInteger(challengeAssurance.response_timeout_seconds)) {
@@ -1929,7 +1936,19 @@ function semanticRules(payload, type) {
         issues.push(issue("critical", "VERIFIER_POLICY_CHALLENGE_ISSUER_KEY_INVALID", "$.challenge_assurance.issuer_public_key_pem", "Challenge issuer public key must be valid SPKI PEM."));
       }
     } else if (challengeAssurance !== undefined) {
-      issues.push(issue("error", "VERIFIER_POLICY_CHALLENGE_ASSURANCE_VERSION_INVALID", "$.challenge_assurance", "Pre-dispatch challenge assurance requires trust-policy schema v0.5."));
+      issues.push(issue("error", "VERIFIER_POLICY_CHALLENGE_ASSURANCE_VERSION_INVALID", "$.challenge_assurance", "Pre-dispatch challenge assurance requires trust-policy schema v0.5 or later."));
+    }
+    const independenceAssurance = payload.independence_assurance;
+    if (payload.schema_version === "0.6") {
+      if (!independenceAssurance || independenceAssurance.required !== true ||
+          independenceAssurance.correlation_rule !== "shared_required_component" ||
+          !exactDimensions(independenceAssurance.required_dimensions) ||
+          !Number.isInteger(independenceAssurance.minimum_independent_domains) ||
+          independenceAssurance.minimum_independent_domains < (payload.quorum && payload.quorum.minimum_independence_groups || 0)) {
+        issues.push(issue("critical", "VERIFIER_POLICY_INDEPENDENCE_ASSURANCE_INVALID", "$.independence_assurance", "Policy v0.6 requires the complete ordered failure-domain dimensions and a threshold at least as strong as the attestation quorum."));
+      }
+    } else if (independenceAssurance !== undefined) {
+      issues.push(issue("error", "VERIFIER_POLICY_INDEPENDENCE_ASSURANCE_VERSION_INVALID", "$.independence_assurance", "Failure-domain assurance requires trust-policy schema v0.6."));
     }
     for (const [index, root] of (identityAssurance.trusted_x509_roots || []).entries()) {
       const pointer = `$.identity_assurance.trusted_x509_roots[${index}]`;
@@ -1983,7 +2002,7 @@ function semanticRules(payload, type) {
       if (!(verifier.allowed_repository_keys || []).includes(payload.repository_binding && payload.repository_binding.repository_key)) {
         issues.push(issue("critical", "VERIFIER_POLICY_REPOSITORY_NOT_ALLOWED", `${pointer}.allowed_repository_keys`, "Every trusted verifier must explicitly allow the policy repository."));
       }
-      if (["0.2", "0.3", "0.4", "0.5"].includes(payload.schema_version)) {
+      if (["0.2", "0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version)) {
         const workload = verifier.workload_identity;
         if (!workload) {
           issues.push(issue("critical", "VERIFIER_POLICY_WORKLOAD_IDENTITY_REQUIRED", `${pointer}.workload_identity`, "Every verifier in policy v0.2+ requires a workload identity."));
@@ -2002,7 +2021,7 @@ function semanticRules(payload, type) {
           } catch (error) {
             issues.push(issue("critical", "VERIFIER_POLICY_SPIFFE_ID_INVALID", `${pointer}.workload_identity.spiffe_id`, "Verifier workload identity must be a valid SPIFFE URI."));
           }
-        } else if (["0.3", "0.4", "0.5"].includes(payload.schema_version) && workload.type === "sigstore_bundle") {
+        } else if (["0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version) && workload.type === "sigstore_bundle") {
           const requiredFields = ["certificate_identity_type", "certificate_identity", "certificate_issuer", "trust_root_id", "bundle_media_type", "ctlog_threshold", "tlog_threshold", "timestamp_threshold"];
           if (requiredFields.some(field => workload[field] === undefined)) {
             issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_IDENTITY_INCOMPLETE", `${pointer}.workload_identity`, "Sigstore identity requires exact SAN, issuer, root, bundle media type, and nonzero verification thresholds."));
@@ -2020,7 +2039,8 @@ function semanticRules(payload, type) {
     if (quorum.minimum_valid_attestations > active.length) {
       issues.push(issue("critical", "VERIFIER_POLICY_QUORUM_IMPOSSIBLE", "$.quorum.minimum_valid_attestations", "The active verifier population cannot satisfy the required attestation quorum."));
     }
-    if (quorum.minimum_independence_groups > activeGroups.size || quorum.minimum_independence_groups > quorum.minimum_valid_attestations) {
+    if ((payload.schema_version !== "0.6" && quorum.minimum_independence_groups > activeGroups.size) ||
+        quorum.minimum_independence_groups > quorum.minimum_valid_attestations) {
       issues.push(issue("critical", "VERIFIER_POLICY_GROUP_QUORUM_IMPOSSIBLE", "$.quorum.minimum_independence_groups", "The active independence groups cannot satisfy the group quorum."));
     }
     if (!isValidDate(payload.created_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.created_at)) {
@@ -2049,6 +2069,12 @@ function semanticRules(payload, type) {
       const pinnedClaims = profile.provider_identity && profile.provider_identity.required_claims || {};
       if (requiredClaims.some(key => typeof pinnedClaims[key] !== "string" || pinnedClaims[key].length === 0)) {
         issues.push(issue("critical", "VERIFIER_RUNTIME_PROVIDER_CLAIMS_INCOMPLETE", `${pointer}.provider_identity.required_claims`, "Provider-specific stable execution identity claims must be pinned exactly."));
+      }
+      if (payload.schema_version === "0.2" && (!validClaims(profile.independence) || !profileClaimsMatchProvider(profile))) {
+        issues.push(issue("critical", "VERIFIER_RUNTIME_INDEPENDENCE_CLAIMS_INVALID", `${pointer}.independence`, "Runtime-policy v0.2 requires complete identities and canonical provider/project/runner mappings from pinned provider claims."));
+      }
+      if (payload.schema_version === "0.1" && profile.independence !== undefined) {
+        issues.push(issue("error", "VERIFIER_RUNTIME_INDEPENDENCE_VERSION_INVALID", `${pointer}.independence`, "Failure-domain claims require runtime-policy schema v0.2."));
       }
       const execution = profile.execution || {};
       const image = execution.container_image || {};
@@ -2108,6 +2134,9 @@ function semanticRules(payload, type) {
     if (payload.builder_key_id === payload.verifier_key_id) {
       issues.push(issue("critical", "EXECUTION_EVIDENCE_SIGNER_CORRELATION", "$.builder_key_id", "Builder and verifier signatures require distinct keys."));
     }
+    if (payload.schema_version === "0.2" && !validClaims(payload.independence)) {
+      issues.push(issue("critical", "EXECUTION_EVIDENCE_INDEPENDENCE_CLAIMS_INVALID", "$.independence", "Execution evidence v0.2 requires the complete observed failure-domain identity."));
+    }
     const invocation = payload.invocation || {};
     if (!isValidDate(invocation.started_at) || !isValidDate(invocation.finished_at) ||
         !isValidDate(payload.issued_at) || !isValidDate(payload.expires_at) ||
@@ -2137,7 +2166,8 @@ function semanticRules(payload, type) {
         const subject = Array.isArray(statement.subject) && statement.subject.length === 1 ? statement.subject[0] : {};
         const predicate = statement.predicate || {};
         const verifier = predicate.verifier || {};
-        if (statement._type !== "https://in-toto.io/Statement/v1" || statement.predicateType !== EXECUTION_PREDICATE_TYPE ||
+        const expectedPredicateType = payload.schema_version === "0.2" ? EXECUTION_PREDICATE_TYPE_V2 : EXECUTION_PREDICATE_TYPE;
+        if (statement._type !== "https://in-toto.io/Statement/v1" || statement.predicateType !== expectedPredicateType ||
             subject.name !== payload.subject_ref.artifact_id || !subject.digest || subject.digest.sha256 !== payload.subject_ref.sha256) {
           issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_SUBJECT_INVALID", "$.envelope.payload", "The in-toto subject must bind the exact persisted receipt or report digest."));
         }
@@ -2145,7 +2175,8 @@ function semanticRules(payload, type) {
             verifier.key_id !== payload.verifier_key_id || verifier.profile_id !== payload.profile_id ||
             verifier.purpose !== payload.purpose || !sameJson(predicate.repository_binding, payload.repository_binding) ||
             !sameJson(predicate.repository_state, payload.repository_state) ||
-            !sameJson(predicate.verification_target, payload.verification_target)) {
+            !sameJson(predicate.verification_target, payload.verification_target) ||
+            (payload.schema_version === "0.2" && !sameJson(predicate.cannae_environment && predicate.cannae_environment.independence, payload.independence))) {
           issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_BINDING_INVALID", "$.envelope.payload", "The signed statement must bind policy, verifier, repository, purpose, and target fields exactly."));
         }
       } catch (error) {
@@ -2434,7 +2465,7 @@ function semanticRules(payload, type) {
     if (payload.schema_version === "0.1" && payload.trust_policy_admission !== undefined) {
       issues.push(issue("error", "CYCLE_ORDER_V01_ADMISSION_UNSUPPORTED", "$.trust_policy_admission", "Trust-policy admission evidence requires cycle-order schema version 0.2."));
     }
-    if (["0.2", "0.3", "0.4", "0.5"].includes(payload.schema_version)) {
+    if (["0.2", "0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version)) {
       const receipt = admission.receipt_quorum || {};
       const comparative = admission.comparative_quorum || {};
       const requirements = admission.effective_requirements || {};
@@ -2488,11 +2519,11 @@ function semanticRules(payload, type) {
       if (ready && (admission.blocking_codes || []).some(code => !(payload.blocking_codes || []).includes(code))) {
         issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_BLOCK_NOT_PROPAGATED", "$.blocking_codes", "Ready execution cannot discard a trust-admission blocking code."));
       }
-      if (["0.3", "0.4", "0.5"].includes(payload.schema_version)) {
+      if (["0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version)) {
         const identity = admission.identity_assurance || {};
         const evidence = identity.evidence || [];
         const verifierIds = evidence.map(item => item.verifier_id);
-        const genericIdentity = ["0.4", "0.5"].includes(payload.schema_version);
+        const genericIdentity = ["0.4", "0.5", "0.6"].includes(payload.schema_version);
         const trustDomains = evidence.map(item => item.trust_domain).filter(Boolean);
         const identityAuthorities = evidence.map(item => item.identity_authority).filter(Boolean);
         const logIds = evidence.flatMap(item => item.transparency_log_ids || [item.transparency_log_id]).filter(Boolean);
@@ -2508,8 +2539,9 @@ function semanticRules(payload, type) {
               identity.transparency_log_count !== new Set(logIds).size) {
             issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_COUNT_MISMATCH", "$.trust_policy_admission.identity_assurance", "Identity admission counts must equal its distinct evidence bindings."));
           }
-          const expectedIdentityScope = payload.schema_version === "0.5"
-            ? "fresh_challenged_workload_and_policy_eligibility"
+          const expectedIdentityScope = payload.schema_version === "0.6"
+            ? "failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
+            : payload.schema_version === "0.5" ? "fresh_challenged_workload_and_policy_eligibility"
             : "authenticated_workload_and_policy_eligibility";
           if (identity.satisfied !== expectedIdentitySatisfied || (identity.required === true && admission.assurance_scope !== expectedIdentityScope) ||
               (identity.required !== true && admission.assurance_scope !== "policy_eligibility_only")) {
@@ -2543,7 +2575,7 @@ function semanticRules(payload, type) {
           }
         }
       }
-      if (payload.schema_version === "0.5") {
+      if (["0.5", "0.6"].includes(payload.schema_version)) {
         const challenge = admission.challenge_assurance || {};
         const responses = challenge.responses || [];
         const responderIds = responses.map(item => item.verifier_id);
@@ -2577,6 +2609,58 @@ function semanticRules(payload, type) {
           if ((challenge.blocking_codes || []).some(code => !(admission.blocking_codes || []).includes(code))) {
             issues.push(issue("critical", "CYCLE_ORDER_CHALLENGE_BLOCK_NOT_PROPAGATED", "$.trust_policy_admission.blocking_codes", "Challenge-admission blocking codes must propagate to trust admission."));
           }
+        }
+      }
+      if (payload.schema_version === "0.6") {
+        const independence = admission.independence_assurance || {};
+        const bindings = independence.bindings || [];
+        const domains = independence.domains || [];
+        const trustPolicyId = admissionTrustRef.artifact_id;
+        const profiles = [...new Map(bindings.map(binding => [binding.profile_id, {
+          id: binding.profile_id,
+          independence: binding.claims
+        }])).values()];
+        const projected = computeVerifierIndependence({
+          schema_version: "0.6",
+          id: trustPolicyId,
+          independence_assurance: {
+            required: true,
+            correlation_rule: "shared_required_component",
+            required_dimensions: independence.required_dimensions,
+            minimum_independent_domains: independence.minimum_independent_domains
+          },
+          quorum: { minimum_independence_groups: requirements.minimum_independence_groups },
+          verifiers: bindings.map(binding => ({ id: binding.verifier_id, status: "active" }))
+        }, {
+          schema_version: "0.2",
+          type: "VerifierRuntimePolicy",
+          id: "VRP-projection",
+          trust_policy_id: trustPolicyId,
+          profiles,
+          assignments: bindings.map(binding => ({ verifier_id: binding.verifier_id, profile_id: binding.profile_id }))
+        });
+        const bindingIds = bindings.map(binding => binding.verifier_id);
+        const domainIds = new Set(domains.map(domain => domain.domain_id));
+        const allQuorumBindings = [...(receipt.verifier_ids || []), ...(comparative.verifier_ids || [])];
+        const bindingByVerifier = new Map(bindings.map(binding => [binding.verifier_id, binding]));
+        const quorumDomainsMatch = allQuorumBindings.every(verifierId => {
+          const binding = bindingByVerifier.get(verifierId);
+          const quorums = [receipt, comparative].filter(quorum => (quorum.verifier_ids || []).includes(verifierId));
+          return binding && quorums.every(quorum => (quorum.independence_groups || []).includes(binding.domain_id));
+        });
+        if (!admission.independence_assurance || !exactDimensions(independence.required_dimensions) ||
+            independence.required !== true || new Set(bindingIds).size !== bindings.length ||
+            independence.domain_count !== domains.length || !domains.every(domain => domainIds.has(domain.domain_id)) ||
+            !sameJson(domains, projected.domains) || !sameJson(bindings, projected.bindings)) {
+          issues.push(issue("critical", "CYCLE_ORDER_INDEPENDENCE_PROJECTION_INVALID", "$.trust_policy_admission.independence_assurance", "Cycle-order v0.6 must reproduce the runtime-policy correlation graph and its deterministic failure domains exactly."));
+        }
+        if (independence.minimum_independent_domains !== projected.minimum_independent_domains ||
+            independence.satisfied !== projected.satisfied ||
+            !sameJson(independence.blocking_codes || [], projected.blocking_codes) || !quorumDomainsMatch) {
+          issues.push(issue("critical", "CYCLE_ORDER_INDEPENDENCE_FALSE_SATISFACTION", "$.trust_policy_admission.independence_assurance", "Independence satisfaction and quorum groups must derive from verified failure-domain bindings."));
+        }
+        if ((independence.blocking_codes || []).some(code => !(admission.blocking_codes || []).includes(code))) {
+          issues.push(issue("critical", "CYCLE_ORDER_INDEPENDENCE_BLOCK_NOT_PROPAGATED", "$.trust_policy_admission.blocking_codes", "Independence blocking codes must propagate to trust admission."));
         }
       }
     }

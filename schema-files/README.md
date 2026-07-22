@@ -130,4 +130,6 @@ All schemas target JSON Schema draft 2020-12.
 
 `VerifierTrustPolicy` v0.5 adds required pre-dispatch challenge assurance and pins a dedicated Ed25519 supervisor issuer key. A signed `VerifierChallengeSet` binds unique per-verifier nonces to the exact campaign, repository, policy/runtime references, projected cycle/attempt/task/lineage, observed manifest and deadline. Existing dual-signed workload identity evidence carries the exact nonce response.
 
-`SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. Earlier orders remain readable.
+`VerifierTrustPolicy` v0.6 adds required failure-domain assurance. `VerifierRuntimePolicy` v0.2 records provider, operator, control-plane, account, project, runner-pool, infrastructure, region, and zone identities. Any shared required component places verifiers in one transitive computed domain. `VerifierExecutionEvidence` v0.2 binds the observed identity under builder and verifier signatures.
+
+`SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. v0.6 adds deterministic failure-domain bindings and graph reconstruction. Earlier orders remain readable.

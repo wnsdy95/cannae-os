@@ -285,7 +285,9 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
     if (actual !== expectations[expectationKey]) codes.push("COMPARATIVE_ATTESTATION_EXPECTATION_MISMATCH");
   }
   let executionEvidenceId = "none";
-  if (trustPolicy && ["0.4", "0.5"].includes(trustPolicy.schema_version)) {
+  let independenceDomainId = attestation && attestation.independence_group;
+  let independenceClaims = null;
+  if (trustPolicy && ["0.4", "0.5", "0.6"].includes(trustPolicy.schema_version)) {
     if (attestation.schema_version !== "0.2" || !validArtifactRef(attestation.execution_evidence_ref)) {
       codes.push("COMPARATIVE_ATTESTATION_EXECUTION_EVIDENCE_REQUIRED");
     } else {
@@ -317,6 +319,13 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
           }
         });
         executionEvidenceId = evidence.id;
+        if (trustPolicy.schema_version === "0.6") {
+          independenceDomainId = result.independence_domain_id;
+          independenceClaims = result.independence_claims;
+          if (!independenceDomainId || independenceDomainId === "none") {
+            codes.push("COMPARATIVE_ATTESTATION_INDEPENDENCE_DOMAIN_INVALID");
+          }
+        }
         codes.push(...result.codes);
       }
     }
@@ -327,7 +336,9 @@ function verifyComparativeEvaluationAttestation(attestation, trustPolicy, expect
     attestation_id: attestation && attestation.id,
     verifier_id: attestation && attestation.verifier_id,
     key_id: attestation && attestation.key_id,
-    independence_group: attestation && attestation.independence_group,
+    independence_group: independenceDomainId,
+    declared_independence_group: attestation && attestation.independence_group,
+    independence_claims: independenceClaims,
     report_id: attestation && attestation.report_id,
     execution_evidence_id: executionEvidenceId
   };

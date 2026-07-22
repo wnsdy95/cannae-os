@@ -4,6 +4,7 @@ const assert = require("assert");
 const crypto = require("crypto");
 const { evaluateVerifierTrustReadiness } = require("./verifier-trust-readiness");
 const { publicKeyId } = require("./verification-attestation");
+const { INDEPENDENCE_DIMENSIONS } = require("./verifier-independence");
 
 const REPOSITORY = {
   key: "controls-fixture-aaaaaaaaaaaa",
@@ -85,6 +86,52 @@ function evaluate(policy, campaign = makeCampaign(), repository = REPOSITORY, ru
     runtimePolicy,
     evaluatedAt: EVALUATED_AT
   });
+}
+
+function independenceClaims(label, overrides = {}) {
+  return Object.assign(Object.fromEntries(INDEPENDENCE_DIMENSIONS.map(dimension => [dimension, `urn:${dimension}:${label}`])), overrides);
+}
+
+function makeV06PolicyAndRuntime(correlated) {
+  const policy = makePolicy();
+  policy.schema_version = "0.6";
+  policy.identity_assurance = { required: true };
+  policy.execution_assurance = {
+    required: true,
+    runtime_policy_ref: {
+      artifact_id: "VRP-Readiness-Fixture",
+      relative_path: "repositories/controls/missions/MIS-Readiness/C0/verifier-runtime-policies/VRP-Readiness-Fixture.json",
+      sha256: "c".repeat(64)
+    }
+  };
+  policy.challenge_assurance = { required: true, single_use: true };
+  policy.independence_assurance = {
+    required: true,
+    correlation_rule: "shared_required_component",
+    required_dimensions: [...INDEPENDENCE_DIMENSIONS],
+    minimum_independent_domains: 2
+  };
+  const first = independenceClaims("a");
+  const second = independenceClaims("b", correlated ? { account_id: first.account_id } : {});
+  const runtimePolicy = {
+    schema_version: "0.2",
+    type: "VerifierRuntimePolicy",
+    id: "VRP-Readiness-Fixture",
+    trust_policy_id: policy.id,
+    repository_binding: policy.repository_binding,
+    profiles: [
+      { id: "PROFILE-A", independence: first },
+      { id: "PROFILE-B", independence: second }
+    ],
+    assignments: policy.verifiers.map((verifier, index) => ({
+      verifier_id: verifier.id,
+      profile_id: index === 0 ? "PROFILE-A" : "PROFILE-B",
+      allowed_purposes: ["verification_receipt", "comparative_evaluation_report"]
+    })),
+    created_at: "2026-07-22T08:00:00Z",
+    expires_at: "2026-07-23T08:00:00Z"
+  };
+  return { policy, runtimePolicy };
 }
 
 function run(name, test) {
@@ -238,6 +285,22 @@ try {
     };
     const result = evaluate(policy, makeCampaign(), REPOSITORY, runtimePolicy);
     assert(result.blocking_codes.includes("TRUST_ADMISSION_RUNTIME_POLICY_ASSIGNMENT_INVALID"));
+  });
+
+  run("policy v0.6 projects correlated runtime profiles as one domain", () => {
+    const { policy, runtimePolicy } = makeV06PolicyAndRuntime(true);
+    const result = evaluate(policy, makeCampaign(), REPOSITORY, runtimePolicy);
+    assert.strictEqual(result.independence_assurance.domain_count, 1);
+    assert.strictEqual(result.independence_assurance.satisfied, false);
+    assert(result.blocking_codes.includes("INDEPENDENCE_DOMAIN_QUORUM_UNAVAILABLE"));
+  });
+
+  run("policy v0.6 projects disjoint runtime profiles as two domains", () => {
+    const { policy, runtimePolicy } = makeV06PolicyAndRuntime(false);
+    const result = evaluate(policy, makeCampaign(), REPOSITORY, runtimePolicy);
+    assert.strictEqual(result.independence_assurance.domain_count, 2);
+    assert.strictEqual(result.independence_assurance.satisfied, true);
+    assert(!result.blocking_codes.includes("INDEPENDENCE_DOMAIN_QUORUM_UNAVAILABLE"));
   });
 
   process.stdout.write(`${JSON.stringify({ valid: true, fixture_count: completed.length, fixtures: completed }, null, 2)}\n`);

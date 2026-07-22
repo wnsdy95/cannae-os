@@ -348,7 +348,7 @@ Neither adapter operates an identity provider, SPIFFE Workload API, Fulcio, Reko
 
 ## 13. Phase 12: Verifier Execution Integrity
 
-Status: Phase 12A execution evidence and Phase 12B pre-dispatch challenge implemented. Phase 12C failure-domain independence remains planned.
+Status: Phase 12A execution evidence, Phase 12B pre-dispatch challenge, and Phase 12C failure-domain independence implemented.
 
 Goal:
 
@@ -382,9 +382,25 @@ Phase 12B features:
 - missing, late, wrong-nonce, ambiguous, expired, replayed or offline responders are excluded before purpose quorum calculation;
 - the supervisor automatically issues a challenge only when other policy/runtime checks permit bootstrap, then remains blocked until responses pass.
 
-Phase 12C must evaluate provider, operator, account, runner pool, cloud project, infrastructure and actual failure-domain identities rather than trusting declared independence labels.
+Phase 12C features:
 
-See `verifier-execution-integrity.md` and `verifier-pre-dispatch-challenge.md` for contracts, verification order, state transitions, adapter boundaries and operational commands.
+- `VerifierTrustPolicy` v0.6 fixes nine required correlation dimensions and a minimum computed-domain threshold;
+- `VerifierRuntimePolicy` v0.2 records stable provider, operator, control-plane, account, project, runner-pool, infrastructure, region and zone identities per profile;
+- any shared required component creates a correlation edge, and transitive connected components become deterministic `VID-*` domains;
+- declared `verifier.independence_group` labels remain readable but are ignored for v0.6 readiness and post-execution quorum calculation;
+- `VerifierExecutionEvidence` v0.2 places observed identities under the builder-and-verifier-signed execution predicate and rejects any profile mismatch;
+- cycle-order v0.6 projects the complete domain graph, while the semantic validator independently reconstructs it;
+- receipt and comparative quorums use verified execution domains, so individually valid correlated attestations cannot satisfy multi-domain diversity.
+
+Completion criteria for Phase 12C:
+
+- Different labels cannot hide a shared account, project, runner pool, infrastructure, region, zone, provider, operator or control plane.
+- Correlation is transitive and unknown identity fails closed.
+- Pre-dispatch readiness and post-execution attestation quorum use the same deterministic algorithm.
+- Runtime claims and execution observations are bound by exact policy references and dual DSSE signatures.
+- Native adapters remain responsible for deriving common fields from authenticated provider claims; a compromised trusted builder remains a documented root-of-trust failure.
+
+See `verifier-execution-integrity.md`, `verifier-pre-dispatch-challenge.md`, and `verifier-independence-assurance.md` for contracts, verification order, state transitions, adapter boundaries and operational commands.
 
 ## 14. Phase 13: Transparency Operations
 

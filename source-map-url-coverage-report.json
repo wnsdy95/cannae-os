@@ -3,7 +3,7 @@
   "as_of": "2026-07-22",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 40,
+  "checked_hosts": 45,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -76,6 +76,14 @@
       ]
     },
     {
+      "host": "csrc.nist.gov",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
       "host": "datatracker.ietf.org",
       "files": [
         "docs/research-compendium.md",
@@ -90,17 +98,35 @@
       ]
     },
     {
+      "host": "docs.aws.amazon.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
+      "host": "docs.cloud.google.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
       "host": "docs.github.com",
       "files": [
         "docs/research-compendium.md",
-        "docs/source-map.md"
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
       ]
     },
     {
       "host": "docs.gitlab.com",
       "files": [
         "docs/research-compendium.md",
-        "docs/source-map.md"
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
       ]
     },
     {
@@ -149,6 +175,22 @@
       ]
     },
     {
+      "host": "kubernetes.io",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
+      "host": "learn.microsoft.com",
+      "files": [
+        "docs/research-compendium.md",
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
       "host": "pages.nist.gov",
       "files": [
         "docs/research-compendium.md",
@@ -165,7 +207,8 @@
       "host": "slsa.dev",
       "files": [
         "docs/research-compendium.md",
-        "docs/source-map.md"
+        "docs/source-map.md",
+        "docs/verifier-independence-assurance.md"
       ]
     },
     {

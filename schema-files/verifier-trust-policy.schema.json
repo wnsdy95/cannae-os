@@ -89,10 +89,57 @@
           }
         }
       }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.6" } } },
+      "then": {
+        "required": ["identity_assurance", "execution_assurance", "challenge_assurance", "independence_assurance"],
+        "properties": {
+          "identity_assurance": {
+            "required": ["max_trusted_root_age_seconds", "sigstore_trusted_root_refs"],
+            "properties": {
+              "sigstore_trusted_root_refs": { "minItems": 1 }
+            }
+          },
+          "execution_assurance": {
+            "properties": {
+              "required": { "const": true }
+            }
+          },
+          "challenge_assurance": {
+            "properties": {
+              "required": { "const": true },
+              "single_use": { "const": true }
+            }
+          },
+          "independence_assurance": {
+            "properties": {
+              "required": { "const": true },
+              "correlation_rule": { "const": "shared_required_component" },
+              "required_dimensions": {
+                "prefixItems": [
+                  { "const": "provider_id" },
+                  { "const": "operator_id" },
+                  { "const": "control_plane_id" },
+                  { "const": "account_id" },
+                  { "const": "project_id" },
+                  { "const": "runner_pool_id" },
+                  { "const": "infrastructure_id" },
+                  { "const": "region_id" },
+                  { "const": "zone_id" }
+                ]
+              }
+            }
+          },
+          "verifiers": {
+            "items": { "required": ["workload_identity"] }
+          }
+        }
+      }
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4", "0.5"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6"] },
     "type": { "type": "string", "const": "VerifierTrustPolicy" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "repository_binding": {
@@ -185,6 +232,29 @@
         "single_use": { "type": "boolean", "const": true },
         "issuer_key_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
         "issuer_public_key_pem": { "type": "string", "pattern": "^-----BEGIN PUBLIC KEY-----" }
+      }
+    },
+    "independence_assurance": {
+      "type": "object",
+      "required": ["required", "correlation_rule", "required_dimensions", "minimum_independent_domains"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean", "const": true },
+        "correlation_rule": { "type": "string", "const": "shared_required_component" },
+        "required_dimensions": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "provider_id", "operator_id", "control_plane_id", "account_id", "project_id",
+              "runner_pool_id", "infrastructure_id", "region_id", "zone_id"
+            ]
+          }
+        },
+        "minimum_independent_domains": { "type": "integer", "minimum": 2, "maximum": 20 }
       }
     },
     "verifiers": {

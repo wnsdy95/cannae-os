@@ -5,6 +5,7 @@ const { publicKeyId } = require("./verification-attestation");
 const { verifyVerifierIdentityEvidence } = require("./verifier-identity-evidence");
 const { verifySigstoreVerifierIdentityEvidence } = require("./sigstore-verifier-identity-evidence");
 const { challengeSetMatchesOrder, verifyVerifierChallengeSet } = require("./verifier-challenge-set");
+const { computeVerifierIndependence } = require("./verifier-independence");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 
@@ -39,10 +40,12 @@ function emptyQuorum(required) {
   };
 }
 
-function summarizeQuorum(verifiers, required, requirements) {
+function summarizeQuorum(verifiers, required, requirements, domainByVerifier = null) {
   const verifierIds = [...new Set(verifiers.map(item => item.id))].sort();
   const keyIds = [...new Set(verifiers.map(item => item.key_id))].sort();
-  const groups = [...new Set(verifiers.map(item => item.independence_group))].sort();
+  const groups = [...new Set(verifiers.map(item => domainByVerifier
+    ? (domainByVerifier.get(item.id) || "none")
+    : item.independence_group))].sort();
   const enoughVerifiers = verifierIds.length >= requirements.minimum_valid_attestations;
   const enoughKeys = !requirements.require_distinct_key_ids ||
     keyIds.length >= requirements.minimum_valid_attestations;
@@ -118,9 +121,10 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptRequired = ["0.3", "0.4"].includes(campaign.schema_version);
   const comparativeRequired = campaign.schema_version === "0.4";
   const required = receiptRequired || comparativeRequired;
-  const identityRequired = Boolean(required && policy && ["0.2", "0.3", "0.4", "0.5"].includes(policy.schema_version));
-  const executionPolicyRequired = Boolean(required && policy && ["0.4", "0.5"].includes(policy.schema_version));
-  const challengeRequired = Boolean(required && policy && policy.schema_version === "0.5");
+  const identityRequired = Boolean(required && policy && ["0.2", "0.3", "0.4", "0.5", "0.6"].includes(policy.schema_version));
+  const executionPolicyRequired = Boolean(required && policy && ["0.4", "0.5", "0.6"].includes(policy.schema_version));
+  const challengeRequired = Boolean(required && policy && ["0.5", "0.6"].includes(policy.schema_version));
+  const independenceRequired = Boolean(required && policy && policy.schema_version === "0.6");
   const runtimePolicy = options.runtimePolicy || null;
   const campaignPolicy = campaign.attestation_policy || null;
   const trustPolicyRef = campaignPolicy ? clone(campaignPolicy.trust_policy_ref) : clone(NONE_ARTIFACT_REF);
@@ -191,6 +195,10 @@ function evaluateVerifierTrustReadiness(options) {
         addCode(blockingCodes, "TRUST_ADMISSION_RUNTIME_POLICY_ASSIGNMENT_INVALID");
       }
     }
+  }
+  const independence = computeVerifierIndependence(policy, runtimePolicy);
+  if (independenceRequired) {
+    for (const code of independence.blocking_codes) addCode(blockingCodes, code);
   }
 
   const policyStart = policy ? timestamp(policy.created_at) : null;
@@ -309,10 +317,11 @@ function evaluateVerifierTrustReadiness(options) {
   }).map(item => item.verifier);
   const receiptEligible = purposeAuthorized("verification_receipt");
   const comparativeEligible = purposeAuthorized("comparative_evaluation_report");
-  const receiptQuorum = summarizeQuorum(receiptEligible, receiptRequired, requirements);
-  const comparativeQuorum = summarizeQuorum(comparativeEligible, comparativeRequired, requirements);
+  const domainByVerifier = independenceRequired ? independence.domain_by_verifier : null;
+  const receiptQuorum = summarizeQuorum(receiptEligible, receiptRequired, requirements, domainByVerifier);
+  const comparativeQuorum = summarizeQuorum(comparativeEligible, comparativeRequired, requirements, domainByVerifier);
 
-  const genericIdentity = policy && ["0.3", "0.4", "0.5"].includes(policy.schema_version);
+  const genericIdentity = policy && ["0.3", "0.4", "0.5", "0.6"].includes(policy.schema_version);
   const identityEvidence = identityRequired ? authenticated.map(item => genericIdentity ? {
     verifier_id: item.verifier.id,
     identity_provider: item.result.identity_provider || "spiffe_x509",
@@ -400,8 +409,9 @@ function evaluateVerifierTrustReadiness(options) {
   return {
     required: true,
     satisfied: blockingCodes.length === 0 && receiptQuorum.satisfied && comparativeQuorum.satisfied,
-    assurance_scope: challengeRequired
-      ? "fresh_challenged_workload_and_policy_eligibility"
+    assurance_scope: independenceRequired
+      ? "failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
+      : challengeRequired ? "fresh_challenged_workload_and_policy_eligibility"
       : identityRequired ? "authenticated_workload_and_policy_eligibility" : "policy_eligibility_only",
     evaluated_at: evaluatedAt,
     valid_until: blockingCodes.length === 0 ? validUntil : "none",
@@ -411,6 +421,16 @@ function evaluateVerifierTrustReadiness(options) {
     comparative_quorum: comparativeQuorum,
     identity_assurance: identityAssurance,
     ...(challengeRequired ? { challenge_assurance: challengeAssurance } : {}),
+    ...(independenceRequired ? { independence_assurance: {
+      required: true,
+      satisfied: independence.satisfied,
+      required_dimensions: independence.required_dimensions,
+      minimum_independent_domains: independence.minimum_independent_domains,
+      domain_count: independence.domain_count,
+      domains: independence.domains,
+      bindings: independence.bindings,
+      blocking_codes: independence.blocking_codes
+    } } : {}),
     blocking_codes: blockingCodes.sort()
   };
 }

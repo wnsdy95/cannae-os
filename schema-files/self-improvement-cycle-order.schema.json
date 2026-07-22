@@ -34,11 +34,11 @@
   "additionalProperties": false,
   "allOf": [
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3", "0.4", "0.5"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3", "0.4", "0.5", "0.6"] } } },
       "then": { "required": ["trust_policy_admission"] }
     },
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.3", "0.4", "0.5"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.3", "0.4", "0.5", "0.6"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": { "required": ["identity_assurance"] }
@@ -46,7 +46,7 @@
       }
     },
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.4", "0.5"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.4", "0.5", "0.6"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": {
@@ -63,16 +63,24 @@
       }
     },
     {
-      "if": { "properties": { "schema_version": { "const": "0.5" } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.5", "0.6"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": { "required": ["challenge_assurance"] }
         }
       }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.6" } } },
+      "then": {
+        "properties": {
+          "trust_policy_admission": { "required": ["independence_assurance"] }
+        }
+      }
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4", "0.5"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4", "0.5", "0.6"] },
     "type": { "type": "string", "const": "SelfImprovementCycleOrder" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -155,7 +163,8 @@
           "enum": [
             "policy_eligibility_only",
             "authenticated_workload_and_policy_eligibility",
-            "fresh_challenged_workload_and_policy_eligibility"
+            "fresh_challenged_workload_and_policy_eligibility",
+            "failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
           ]
         },
         "evaluated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
@@ -244,6 +253,57 @@
             "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
           }
         },
+        "independence_assurance": {
+          "type": "object",
+          "required": [
+            "required", "satisfied", "required_dimensions", "minimum_independent_domains",
+            "domain_count", "domains", "bindings", "blocking_codes"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "required": { "type": "boolean", "const": true },
+            "satisfied": { "type": "boolean" },
+            "required_dimensions": {
+              "type": "array",
+              "minItems": 9,
+              "maxItems": 9,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/independence_dimension" }
+            },
+            "minimum_independent_domains": { "type": "integer", "minimum": 2, "maximum": 20 },
+            "domain_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+            "domains": {
+              "type": "array",
+              "maxItems": 50,
+              "items": {
+                "type": "object",
+                "required": ["domain_id", "verifier_ids", "shared_dimensions"],
+                "additionalProperties": false,
+                "properties": {
+                  "domain_id": { "type": "string", "pattern": "^VID-[a-f0-9]{24}$" },
+                  "verifier_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } },
+                  "shared_dimensions": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/independence_dimension" } }
+                }
+              }
+            },
+            "bindings": {
+              "type": "array",
+              "maxItems": 50,
+              "items": {
+                "type": "object",
+                "required": ["verifier_id", "profile_id", "claims", "domain_id"],
+                "additionalProperties": false,
+                "properties": {
+                  "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+                  "profile_id": { "$ref": "common.schema.json#/$defs/id" },
+                  "claims": { "$ref": "#/$defs/independence_claims" },
+                  "domain_id": { "type": "string", "pattern": "^(none|VID-[a-f0-9]{24})$" }
+                }
+              }
+            },
+            "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+          }
+        },
         "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
       }
     },
@@ -272,6 +332,38 @@
     "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
   },
   "$defs": {
+    "independence_dimension": {
+      "type": "string",
+      "enum": [
+        "provider_id", "operator_id", "control_plane_id", "account_id", "project_id",
+        "runner_pool_id", "infrastructure_id", "region_id", "zone_id"
+      ]
+    },
+    "component_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 2048,
+      "pattern": "^[a-z][a-z0-9+.-]*:\\S+$"
+    },
+    "independence_claims": {
+      "type": "object",
+      "required": [
+        "provider_id", "operator_id", "control_plane_id", "account_id", "project_id",
+        "runner_pool_id", "infrastructure_id", "region_id", "zone_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id": { "$ref": "#/$defs/component_id" },
+        "operator_id": { "$ref": "#/$defs/component_id" },
+        "control_plane_id": { "$ref": "#/$defs/component_id" },
+        "account_id": { "$ref": "#/$defs/component_id" },
+        "project_id": { "$ref": "#/$defs/component_id" },
+        "runner_pool_id": { "$ref": "#/$defs/component_id" },
+        "infrastructure_id": { "$ref": "#/$defs/component_id" },
+        "region_id": { "$ref": "#/$defs/component_id" },
+        "zone_id": { "$ref": "#/$defs/component_id" }
+      }
+    },
     "identity_purposes": {
       "type": "array",
       "minItems": 1,

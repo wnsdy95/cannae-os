@@ -163,7 +163,7 @@ function loadCampaignHistory(store, campaignId) {
       if (failures.length > 0 || payload.id !== entry.artifact_id) continue;
       identityEvidence.push({ entry, payload });
     }
-    if (["0.3", "0.4", "0.5"].includes(trustPolicyLoad.payload.schema_version)) {
+    if (["0.3", "0.4", "0.5", "0.6"].includes(trustPolicyLoad.payload.schema_version)) {
       const refs = trustPolicyLoad.payload.identity_assurance.sigstore_trusted_root_refs || [];
       for (const ref of refs) {
         const matching = store.manifest.artifacts.filter(entry =>
@@ -193,7 +193,7 @@ function loadCampaignHistory(store, campaignId) {
         sigstoreIdentityEvidence.push({ entry, payload });
       }
     }
-    if (["0.4", "0.5"].includes(trustPolicyLoad.payload.schema_version)) {
+    if (["0.4", "0.5", "0.6"].includes(trustPolicyLoad.payload.schema_version)) {
       const ref = trustPolicyLoad.payload.execution_assurance &&
         trustPolicyLoad.payload.execution_assurance.runtime_policy_ref;
       const matching = ref ? store.manifest.artifacts.filter(entry =>
@@ -634,8 +634,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
 
   const generatedAt = evaluatedAt;
   const order = {
-    schema_version: trustPolicy && trustPolicy.schema_version === "0.5"
-      ? "0.5"
+    schema_version: trustPolicy && ["0.5", "0.6"].includes(trustPolicy.schema_version)
+      ? trustPolicy.schema_version
       : trustPolicy && ["0.3", "0.4"].includes(trustPolicy.schema_version) ? "0.4" : "0.3",
     type: "SelfImprovementCycleOrder",
     id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission),
@@ -711,12 +711,12 @@ function superviseCampaign(options) {
     "TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE"
   ]);
   const mayIssueChallenge = options.writeArtifact && history.trustPolicy &&
-    history.trustPolicy.schema_version === "0.5" && proposed._dispatchProjection.transition !== "hold" &&
+    ["0.5", "0.6"].includes(history.trustPolicy.schema_version) && proposed._dispatchProjection.transition !== "hold" &&
     proposed.blocking_codes.length > 0 && proposed.blocking_codes.every(code => challengeBootstrapCodes.has(code)) &&
     proposed.blocking_codes.includes("TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE");
   if (mayIssueChallenge) {
     if (!options.challengeIssuerPrivateKeyPem) {
-      throw new Error("Trust-policy v0.5 challenge issuance requires --challenge-private-key with the policy-pinned supervisor Ed25519 private key.");
+      throw new Error("Trust-policy v0.5+ challenge issuance requires --challenge-private-key with the policy-pinned supervisor Ed25519 private key.");
     }
     const challenge = createVerifierChallengeSet({
       campaign: history.campaign,
