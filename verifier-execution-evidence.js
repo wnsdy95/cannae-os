@@ -16,6 +16,7 @@ const {
 
 const EXECUTION_PREDICATE_TYPE = "https://cannae.dev/attestations/verifier-execution/v0.1";
 const EXECUTION_PREDICATE_TYPE_V2 = "https://cannae.dev/attestations/verifier-execution/v0.2";
+const EXECUTION_PREDICATE_TYPE_V3 = "https://cannae.dev/attestations/verifier-execution/v0.3";
 const EXECUTION_BUILD_TYPE = "https://cannae.dev/build-types/verifier-execution/v1";
 
 const PROVIDER_REQUIRED_CLAIMS = Object.freeze({
@@ -81,7 +82,8 @@ function expectedStatement(evidence, profile) {
   return {
     _type: STATEMENT_TYPE,
     subject: [{ name: evidence.subject_ref.artifact_id, digest: { sha256: evidence.subject_ref.sha256 } }],
-    predicateType: version === "0.2" ? EXECUTION_PREDICATE_TYPE_V2 : EXECUTION_PREDICATE_TYPE,
+    predicateType: version === "0.3" ? EXECUTION_PREDICATE_TYPE_V3 :
+      version === "0.2" ? EXECUTION_PREDICATE_TYPE_V2 : EXECUTION_PREDICATE_TYPE,
     predicate: {
       schema_version: version,
       trust_policy_id: evidence.trust_policy_id,
@@ -98,6 +100,7 @@ function expectedStatement(evidence, profile) {
       },
       subject_ref: clone(evidence.subject_ref),
       workload_identity_evidence_ref: clone(evidence.workload_identity_evidence_ref),
+      ...(version === "0.3" ? { native_provider_evidence_ref: clone(evidence.native_provider_evidence_ref) } : {}),
       repository_binding: clone(evidence.repository_binding),
       repository_state: clone(evidence.repository_state),
       verification_target: clone(evidence.verification_target),
@@ -139,7 +142,7 @@ function expectedStatement(evidence, profile) {
       cannae_environment: {
         provider: evidence.provider,
         provider_identity: clone(evidence.provider_identity),
-        ...(version === "0.2" ? { independence: clone(evidence.independence) } : {}),
+        ...(["0.2", "0.3"].includes(version) ? { independence: clone(evidence.independence) } : {}),
         exit_code: evidence.invocation.exit_code
       },
       issued_at: evidence.issued_at,
@@ -182,9 +185,30 @@ function createVerifierExecutionEvidence(options) {
     throw new Error("The verifier requires one assigned runtime profile.");
   }
   const independenceRequired = ["0.6", "0.7"].includes(trustPolicy.schema_version);
-  if (independenceRequired && (runtimePolicy.schema_version !== "0.2" ||
-      !sameClaims(options.independence, profile.independence))) {
-    throw new Error("Trust-policy v0.6+ requires observed independence claims matching runtime-policy v0.2.");
+  const nativeRequired = runtimePolicy.schema_version === "0.3" && profile.provider === "github_actions";
+  let nativeResult = null;
+  if (nativeRequired) {
+    const { verifyGitHubActionsOIDCEvidence } = require("./github-actions-oidc");
+    if (!safeArtifactRef(options.nativeProviderEvidenceReference) ||
+        !safeArtifactRef(options.nativeTrustBundleReference)) {
+      throw new Error("GitHub Actions native execution requires exact evidence and trust-bundle references.");
+    }
+    nativeResult = verifyGitHubActionsOIDCEvidence({
+      evidence: options.nativeProviderEvidence,
+      trustBundle: options.nativeTrustBundle,
+      trustBundleReference: options.nativeTrustBundleReference,
+      profile,
+      evaluatedAt: options.issuedAt
+    });
+    if (!nativeResult.valid || options.nativeProviderEvidenceReference.artifact_id !== options.nativeProviderEvidence.id) {
+      throw new Error(`GitHub Actions native provider evidence is invalid: ${nativeResult.codes.join(", ")}`);
+    }
+  }
+  const observedProviderIdentity = nativeRequired ? nativeResult.provider_identity : options.providerIdentity;
+  const observedIndependence = nativeRequired ? nativeResult.independence : options.independence;
+  if (independenceRequired && (!["0.2", "0.3"].includes(runtimePolicy.schema_version) ||
+      !sameClaims(observedIndependence, profile.independence))) {
+    throw new Error("Trust-policy v0.6+ requires observed independence claims matching runtime-policy v0.2+.");
   }
   if (independenceRequired && !computeVerifierIndependence(trustPolicy, runtimePolicy).valid) {
     throw new Error("Trust-policy v0.6+ runtime independence identities are invalid.");
@@ -204,6 +228,9 @@ function createVerifierExecutionEvidence(options) {
       !/^[a-f0-9]{64}$/.test(options.repositoryState.worktree_fingerprint || "")) {
     throw new Error("Execution evidence requires a clean, content-bound repository state.");
   }
+  if (nativeRequired && (options.repositoryState.dirty || options.repositoryState.head_commit !== nativeResult.provider_identity.claims.sha)) {
+    throw new Error("GitHub Actions native evidence requires a clean repository at the token's exact commit.");
+  }
   const started = timestamp(options.invocation && options.invocation.started_at);
   const finished = timestamp(options.invocation && options.invocation.finished_at);
   const issued = timestamp(options.issuedAt);
@@ -221,7 +248,7 @@ function createVerifierExecutionEvidence(options) {
   const verifierPrivateKey = assertPrivateKey(options.verifierPrivateKeyPem, verifier.key_id, "Verifier");
 
   const evidence = {
-    schema_version: independenceRequired ? "0.2" : "0.1",
+    schema_version: nativeRequired ? "0.3" : independenceRequired ? "0.2" : "0.1",
     type: "VerifierExecutionEvidence",
     id: options.evidenceId || `VEE-${sha256(`${options.verifierId}\n${options.subjectReference.sha256}\n${options.invocation.id}`).slice(0, 24)}`,
     trust_policy_id: trustPolicy.id,
@@ -231,12 +258,13 @@ function createVerifierExecutionEvidence(options) {
     purpose: options.purpose,
     subject_ref: clone(options.subjectReference),
     workload_identity_evidence_ref: clone(options.workloadIdentityEvidenceReference),
+    ...(nativeRequired ? { native_provider_evidence_ref: clone(options.nativeProviderEvidenceReference) } : {}),
     repository_binding: clone(options.repositoryBinding),
     repository_state: clone(options.repositoryState),
     verification_target: clone(options.verificationTarget),
     provider: profile.provider,
-    provider_identity: clone(options.providerIdentity),
-    ...(independenceRequired ? { independence: clone(options.independence) } : {}),
+    provider_identity: clone(observedProviderIdentity),
+    ...(independenceRequired ? { independence: clone(observedIndependence) } : {}),
     execution: clone(profile.execution),
     invocation: clone(options.invocation),
     builder_key_id: builderKeyId,
@@ -297,9 +325,10 @@ function verifyVerifierExecutionEvidence(options) {
     addCode(codes, "EXECUTION_EVIDENCE_TRUST_POLICY_INVALID");
   }
   const independenceRequired = Boolean(trustPolicy && ["0.6", "0.7"].includes(trustPolicy.schema_version));
-  const expectedRuntimeVersion = independenceRequired ? "0.2" : "0.1";
-  const expectedEvidenceVersion = independenceRequired ? "0.2" : "0.1";
-  if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || runtimePolicy.schema_version !== expectedRuntimeVersion) {
+  const nativeRequired = Boolean(runtimePolicy && runtimePolicy.schema_version === "0.3");
+  const allowedRuntimeVersions = independenceRequired ? ["0.2", "0.3"] : ["0.1"];
+  const expectedEvidenceVersion = nativeRequired ? "0.3" : independenceRequired ? "0.2" : "0.1";
+  if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || !allowedRuntimeVersions.includes(runtimePolicy.schema_version)) {
     addCode(codes, "EXECUTION_EVIDENCE_RUNTIME_POLICY_INVALID");
   }
   if (!evidence || evidence.schema_version !== expectedEvidenceVersion) {
@@ -367,6 +396,38 @@ function verifyVerifierExecutionEvidence(options) {
     if (!profile || !sameClaims(evidence && evidence.independence, profile.independence)) {
       addCode(codes, "EXECUTION_EVIDENCE_INDEPENDENCE_MISMATCH");
     }
+  }
+  let nativeValidUntil = null;
+  if (nativeRequired) {
+    const nativeEvidence = options.nativeProviderEvidence;
+    const nativeReference = evidence && evidence.native_provider_evidence_ref;
+    const nativeTrustBundle = options.nativeTrustBundle;
+    const nativeTrustBundleReference = options.nativeTrustBundleReference;
+    if (!profile || profile.provider !== "github_actions" || !profile.native_identity ||
+        !safeArtifactRef(nativeReference) || !nativeEvidence || nativeReference.artifact_id !== nativeEvidence.id) {
+      addCode(codes, "EXECUTION_EVIDENCE_NATIVE_PROVIDER_REQUIRED");
+    } else {
+      const { verifyGitHubActionsOIDCEvidence } = require("./github-actions-oidc");
+      const nativeResult = verifyGitHubActionsOIDCEvidence({
+        evidence: nativeEvidence,
+        trustBundle: nativeTrustBundle,
+        trustBundleReference: nativeTrustBundleReference,
+        profile,
+        evaluatedAt
+      });
+      for (const code of nativeResult.codes) addCode(codes, `EXECUTION_EVIDENCE_NATIVE_${code}`);
+      if (nativeResult.valid && (!sameValue(evidence.provider_identity, nativeResult.provider_identity) ||
+          !sameClaims(evidence.independence, nativeResult.independence))) {
+        addCode(codes, "EXECUTION_EVIDENCE_NATIVE_PROJECTION_MISMATCH");
+      }
+      nativeValidUntil = timestamp(nativeResult.valid_until);
+    }
+    if (!evidence || !evidence.repository_state || evidence.repository_state.dirty ||
+        evidence.repository_state.head_commit !== (evidence.provider_identity && evidence.provider_identity.claims.sha)) {
+      addCode(codes, "EXECUTION_EVIDENCE_NATIVE_REPOSITORY_STATE_INVALID");
+    }
+  } else if (evidence && evidence.native_provider_evidence_ref !== undefined) {
+    addCode(codes, "EXECUTION_EVIDENCE_NATIVE_PROVIDER_VERSION_INVALID");
   }
 
   const issued = timestamp(evidence && evidence.issued_at);
@@ -453,7 +514,7 @@ function verifyVerifierExecutionEvidence(options) {
     addCode(codes, "EXECUTION_EVIDENCE_EXPECTATION_MISMATCH");
   }
 
-  const validUntilCandidates = [expires, policyEnd, verifierEnd].filter(value => value !== null);
+  const validUntilCandidates = [expires, policyEnd, verifierEnd, nativeValidUntil].filter(value => value !== null);
   return {
     valid: codes.length === 0,
     codes: codes.sort(),
@@ -474,6 +535,7 @@ module.exports = {
   EXECUTION_BUILD_TYPE,
   EXECUTION_PREDICATE_TYPE,
   EXECUTION_PREDICATE_TYPE_V2,
+  EXECUTION_PREDICATE_TYPE_V3,
   PROVIDER_REQUIRED_CLAIMS,
   createVerifierExecutionEvidence,
   evidenceDigest,

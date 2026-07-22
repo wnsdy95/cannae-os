@@ -225,7 +225,7 @@ campaign -> verifier workload proof -> runtime-policy admission -> finite cycle 
 
 Trust-policy v0.2 additionally requires a current manifest-backed `VerifierIdentityEvidence` for every verifier counted at dispatch; v0.3 can use native Sigstore bundles instead. `campaign-supervisor.js` independently verifies the selected workload adapter and emits `ready` only when authenticated verifier populations can form every purpose quorum.
 
-Phase 12A trust-policy v0.4 also binds an exact `VerifierRuntimePolicy`. Every counted receipt or report attestation must cite fresh, manifest-backed `VerifierExecutionEvidence` dual-signed by a separate trusted builder and the registered verifier. It fixes the verifier code, immutable OCI image, dependency lockfile, harness, argv, tool allowlist, network and sandbox controls, provider claims, exact repository state and verification target. The common adapter verifies these signed claims; native GitHub Actions, GitLab CI, local-host and TEE appraisal adapters remain future work. See [Verifier Execution Integrity](docs/verifier-execution-integrity.md).
+Phase 12A trust-policy v0.4 also binds an exact `VerifierRuntimePolicy`. Every counted receipt or report attestation must cite fresh, manifest-backed `VerifierExecutionEvidence` dual-signed by a separate trusted builder and the registered verifier. It fixes the verifier code, immutable OCI image, dependency lockfile, harness, argv, tool allowlist, network and sandbox controls, provider claims, exact repository state and verification target. Phase 14A adds runtime-policy and execution-evidence v0.3: GitHub-hosted reusable workflows can now be admitted through a strict manifest-pinned JWKS and OIDC signature/claim adapter. GitLab CI, self-hosted, local-host, and TEE appraisal remain future work. See [Verifier Execution Integrity](docs/verifier-execution-integrity.md) and [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md).
 
 Phase 12B trust-policy v0.5 adds a supervisor-issued, single-use `VerifierChallengeSet` before every bounded dispatch. Each verifier must return fresh dual-signed workload identity evidence containing its exact nonce inside the deadline. Cycle-order v0.5 records exact challenge/response references and rejects missing, late, wrong-nonce, ambiguous, expired, replayed, or offline responders before quorum calculation. See [Verifier Pre-Dispatch Challenge](docs/verifier-pre-dispatch-challenge.md).
 
@@ -469,7 +469,7 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- implement native provider adapters that derive v0.6 failure-domain identities from authenticated GitHub, GitLab, cloud, local-host, or TEE evidence;
+- extend native provider adapters beyond the implemented GitHub Actions OIDC path to GitLab, self-hosted runner, cloud, local-host, and TEE evidence;
 - implement provider adapters that collect Rekor checkpoints, consistency proofs, shard metadata, witness signatures, and monitor reports for v0.7;
 
 Mid-term:
@@ -477,7 +477,7 @@ Mid-term:
 - define a persistent event model for missions, approvals, releases, handoffs, and AARs;
 - implement a production-shaped policy gateway;
 - connect approval scope and release gates to real tool calls;
-- implement native GitHub Actions, GitLab CI, local sandbox and TEE execution-evidence adapters;
+- implement native GitLab CI, authenticated self-hosted runner, local sandbox, and TEE execution-evidence adapters;
 - operate production transparency polling, witnesses, monitors, gossip, TUF distribution, and incident response around the implemented Phase 13 verifier;
 - build a useful command-post dashboard from event projections;
 - formalize an evidence store for claims, sources, reliability, and interpretation.

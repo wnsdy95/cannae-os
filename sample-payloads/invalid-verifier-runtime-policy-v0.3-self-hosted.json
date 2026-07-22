@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.3",
+  "type": "VerifierRuntimePolicy",
+  "id": "VRP-14A-001",
+  "trust_policy_id": "VTP-14A-001",
+  "repository_binding": {
+    "repository_key": "controls-14a",
+    "identity_fingerprint": "8888888888888888888888888888888888888888888888888888888888888888"
+  },
+  "policy_version": 1,
+  "profiles": [
+    {
+      "id": "PROFILE-14A-GITHUB",
+      "adapter": "in_toto_slsa_oci_dsse_v1",
+      "provider": "github_actions",
+      "builder": {
+        "id": "https://github.com/actions",
+        "key_id": "293b7f72fe6886b3c33f77a3b1f927a8f673b5c69d085699bc078b4ad1561e7b",
+        "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAlclRyY+sK+kZAZn/HscI9U3FqYhhLtLkRRFIhwXjdKo=\n-----END PUBLIC KEY-----\n"
+      },
+      "provider_identity": {
+        "issuer": "https://token.actions.githubusercontent.com",
+        "subject": "repo:wnsdy95/controls:ref:refs/heads/main",
+        "audience": "cannae-verifier-execution",
+        "required_claims": {
+          "repository": "wnsdy95/controls",
+          "repository_id": "10001",
+          "repository_owner": "wnsdy95",
+          "repository_owner_id": "20002",
+          "sha": "1111111111111111111111111111111111111111",
+          "ref": "refs/heads/main",
+          "workflow_ref": "wnsdy95/controls/.github/workflows/verify.yml@1111111111111111111111111111111111111111",
+          "workflow_sha": "1111111111111111111111111111111111111111",
+          "job_workflow_ref": "wnsdy95/controls/.github/workflows/reusable-verifier.yml@2222222222222222222222222222222222222222",
+          "job_workflow_sha": "2222222222222222222222222222222222222222",
+          "runner_environment": "self-hosted"
+        }
+      },
+      "native_identity": {
+        "adapter": "github_actions_oidc_v1",
+        "trust_bundle_ref": {
+          "artifact_id": "GAOTB-14A-001",
+          "relative_path": "repositories/test/missions/MIS-14A/W1/GAOTB-14A-001.json",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "algorithm": "RS256",
+        "required_runner_environment": "github-hosted",
+        "require_reusable_workflow": true,
+        "max_token_age_seconds": 300,
+        "clock_skew_seconds": 30
+      },
+      "independence": {
+        "provider_id": "cannae:provider:github_actions",
+        "operator_id": "cannae:github_actions:operator:github",
+        "control_plane_id": "cannae:github_actions:control-plane:hosted",
+        "account_id": "cannae:github_actions:repository-owner:20002",
+        "project_id": "cannae:github_actions:repository:10001",
+        "runner_pool_id": "cannae:github_actions:runner-environment:github-hosted",
+        "infrastructure_id": "cannae:github_actions:infrastructure:shared-unknown",
+        "region_id": "cannae:github_actions:region:shared-unknown",
+        "zone_id": "cannae:github_actions:zone:shared-unknown"
+      },
+      "execution": {
+        "verifier_code": {
+          "uri": "git+https://github.com/wnsdy95/controls@1111111111111111111111111111111111111111#verification-runner.js",
+          "digest": {
+            "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        },
+        "container_image": {
+          "uri": "ghcr.io/wnsdy95/controls-verifier@sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "digest": {
+            "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "media_type": "application/vnd.oci.image.manifest.v1+json"
+        },
+        "dependency_lockfile": {
+          "uri": "git+https://github.com/wnsdy95/controls@1111111111111111111111111111111111111111#package-lock.json",
+          "digest": {
+            "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+          }
+        },
+        "harness": {
+          "uri": "git+https://github.com/wnsdy95/controls@1111111111111111111111111111111111111111#verification-runner.js",
+          "digest": {
+            "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          }
+        },
+        "argv": [
+          "node",
+          "verification-runner.js",
+          "--plan",
+          "plan.json"
+        ],
+        "tool_allowlist": [
+          "git",
+          "node"
+        ],
+        "network_policy": {
+          "mode": "denied",
+          "allowed_endpoints": []
+        },
+        "sandbox_profile": {
+          "kind": "gvisor",
+          "profile_uri": "oci://ghcr.io/wnsdy95/verifier-policy@sha256:test",
+          "profile_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+          "rootfs_read_only": true,
+          "no_new_privileges": true,
+          "privileged": false,
+          "host_network": false,
+          "host_pid": false,
+          "host_mounts": false
+        }
+      },
+      "max_evidence_age_seconds": 300,
+      "max_execution_duration_seconds": 120
+    }
+  ],
+  "assignments": [
+    {
+      "verifier_id": "VERIFIER-14A-001",
+      "profile_id": "PROFILE-14A-GITHUB",
+      "allowed_purposes": [
+        "verification_receipt"
+      ]
+    }
+  ],
+  "created_at": "2026-07-23T00:00:00Z",
+  "expires_at": "2026-07-24T00:00:00Z"
+}

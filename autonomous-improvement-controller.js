@@ -214,6 +214,35 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
   let runtimePolicy = null;
   const attestations = new Map();
   const executionEvidence = new Map();
+  const nativeProviderEvidence = new Map();
+  const nativeTrustBundles = new Map();
+  function loadNativeEvidence(execution) {
+    if (!execution || !execution.native_provider_evidence_ref) return;
+    const native = readManifestArtifact(
+      artifactRoot,
+      manifest,
+      execution.native_provider_evidence_ref,
+      "github-actions-oidc-evidence"
+    );
+    const nativeValidation = validatePayload(native, "github-actions-oidc-evidence");
+    if (nativeValidation.issues.some(item => item.severity === "error" || item.severity === "critical")) {
+      throw new Error("GitHub Actions OIDC evidence failed schema or semantic validation.");
+    }
+    nativeProviderEvidence.set(native.id, native);
+    if (native.trust_bundle_ref && !nativeTrustBundles.has(native.trust_bundle_ref.artifact_id)) {
+      const bundle = readManifestArtifact(
+        artifactRoot,
+        manifest,
+        native.trust_bundle_ref,
+        "github-actions-oidc-trust-bundles"
+      );
+      const bundleValidation = validatePayload(bundle, "github-actions-oidc-trust-bundle");
+      if (bundleValidation.issues.some(item => item.severity === "error" || item.severity === "critical")) {
+        throw new Error("GitHub Actions OIDC trust bundle failed schema or semantic validation.");
+      }
+      nativeTrustBundles.set(native.trust_bundle_ref.artifact_id, bundle);
+    }
+  }
   if (["0.3", "0.4"].includes(campaign.schema_version) || (campaign.attestation_policy && campaign.attestation_policy.required)) {
     trustPolicy = readManifestArtifact(artifactRoot, manifest, campaign.attestation_policy.trust_policy_ref, "verifier-trust-policies");
     if (["0.4", "0.5", "0.6", "0.7"].includes(trustPolicy.schema_version)) {
@@ -232,12 +261,14 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
       }, "verification-attestations");
       attestations.set(ref.attestation_id, attestation);
       if (["0.4", "0.5", "0.6", "0.7"].includes(trustPolicy.schema_version) && attestation.execution_evidence_ref) {
-        executionEvidence.set(attestation.execution_evidence_ref.artifact_id, readManifestArtifact(
+        const execution = readManifestArtifact(
           artifactRoot,
           manifest,
           attestation.execution_evidence_ref,
           "verifier-execution-evidence"
-        ));
+        );
+        executionEvidence.set(attestation.execution_evidence_ref.artifact_id, execution);
+        loadNativeEvidence(execution);
       }
     }
   }
@@ -264,12 +295,14 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
         comparativeAttestations.set(attestationRef.attestation_id, attestation);
         if (trustPolicy && ["0.4", "0.5", "0.6", "0.7"].includes(trustPolicy.schema_version) && attestation.execution_evidence_ref &&
             !executionEvidence.has(attestation.execution_evidence_ref.artifact_id)) {
-          executionEvidence.set(attestation.execution_evidence_ref.artifact_id, readManifestArtifact(
+          const execution = readManifestArtifact(
             artifactRoot,
             manifest,
             attestation.execution_evidence_ref,
             "verifier-execution-evidence"
-          ));
+          );
+          executionEvidence.set(attestation.execution_evidence_ref.artifact_id, execution);
+          loadNativeEvidence(execution);
         }
       }
     }
@@ -280,6 +313,8 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
     trustPolicy,
     runtimePolicy,
     executionEvidence,
+    nativeProviderEvidence,
+    nativeTrustBundles,
     parentDecision,
     approvalScope,
     consumptionEvent,
@@ -492,7 +527,9 @@ function verifyAttestationProof(campaign, checkpoint, proofContext, verifiedRece
     maxAttestationAgeSeconds: policy.max_attestation_age_seconds,
     runtimePolicy: proofContext.runtimePolicy,
     runtimePolicyReference: trustPolicy.execution_assurance && trustPolicy.execution_assurance.runtime_policy_ref,
-    executionEvidence: proofContext.executionEvidence
+    executionEvidence: proofContext.executionEvidence,
+    nativeProviderEvidence: proofContext.nativeProviderEvidence,
+    nativeTrustBundles: proofContext.nativeTrustBundles
   }, policy, checkpoint.generated_at);
   blocks.push(...result.codes);
   return result;
@@ -560,6 +597,8 @@ function verifyComparativeAttestationProof(campaign, checkpoint, proofContext, b
     runtimePolicy: proofContext.runtimePolicy,
     runtimePolicyReference: trustPolicy.execution_assurance && trustPolicy.execution_assurance.runtime_policy_ref,
     executionEvidence: proofContext.executionEvidence,
+    nativeProviderEvidence: proofContext.nativeProviderEvidence,
+    nativeTrustBundles: proofContext.nativeTrustBundles,
     repositoryState: report.executions && report.executions.candidate
       ? report.executions.candidate.repository_state_before
       : undefined,
@@ -659,6 +698,8 @@ function analyzeImprovement(campaign, checkpoint, proofContext = {}) {
     attestations: new Map(),
     comparativeAttestations: new Map(),
     executionEvidence: new Map(),
+    nativeProviderEvidence: new Map(),
+    nativeTrustBundles: new Map(),
     trustPolicy: null,
     runtimePolicy: null,
     parentDecision: null,

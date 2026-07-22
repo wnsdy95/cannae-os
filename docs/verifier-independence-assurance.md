@@ -155,7 +155,7 @@ node verifier-execution-runner.js create \
 | Code | Meaning |
 | --- | --- |
 | `INDEPENDENCE_POLICY_INVALID` | v0.6 assurance rule, dimensions, or threshold is malformed |
-| `INDEPENDENCE_RUNTIME_POLICY_INVALID` | runtime-policy v0.2 is missing or bound to another trust policy |
+| `INDEPENDENCE_RUNTIME_POLICY_INVALID` | runtime-policy v0.2+ is missing or bound to another trust policy |
 | `INDEPENDENCE_ASSIGNMENT_INVALID` | an active verifier lacks exactly one usable profile |
 | `INDEPENDENCE_CLAIMS_INVALID` | a profile omits or invents a required identity dimension |
 | `INDEPENDENCE_DOMAIN_QUORUM_UNAVAILABLE` | valid profiles collapse into fewer domains than required |

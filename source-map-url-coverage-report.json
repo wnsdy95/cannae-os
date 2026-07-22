@@ -1,6 +1,6 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-07-22",
+  "as_of": "2026-07-23",
   "source_map": "docs/source-map.md",
   "valid": true,
   "checked_hosts": 45,

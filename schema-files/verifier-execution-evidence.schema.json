@@ -13,12 +13,16 @@
   "additionalProperties": false,
   "allOf": [
     {
-      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3"] } } },
       "then": { "required": ["independence"] }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.3" } } },
+      "then": { "required": ["native_provider_evidence_ref"] }
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3"] },
     "type": { "type": "string", "const": "VerifierExecutionEvidence" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "trust_policy_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -33,6 +37,7 @@
     "verification_target": { "$ref": "#/$defs/target_descriptor" },
     "provider": { "type": "string", "enum": ["generic_oci", "github_actions", "gitlab_ci", "local_sandbox", "tee"] },
     "provider_identity": { "$ref": "#/$defs/provider_identity" },
+    "native_provider_evidence_ref": { "$ref": "#/$defs/artifact_ref" },
     "independence": { "$ref": "#/$defs/independence_claims" },
     "execution": { "$ref": "#/$defs/execution_contract" },
     "invocation": {

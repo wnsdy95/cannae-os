@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubActionsOIDCTrustBundle",
+  "id": "GAOTB-14A-001",
+  "issuer": "https://token.actions.githubusercontent.com",
+  "discovery_uri": "https://token.actions.githubusercontent.com/.well-known/openid-configuration",
+  "jwks_uri": "https://token.actions.githubusercontent.com/.well-known/jwks",
+  "algorithms": [
+    "RS256"
+  ],
+  "keys": [
+    {
+      "kty": "RSA",
+      "use": "sig",
+      "kid": "phase-14a-test-key",
+      "alg": "RS256",
+      "n": "vQSFusGXE8IPh40iQdejvFzQ_8ByUPuaDtRlkZE-ae4MemYPStHJ7L3geQ93-LJlVckuRUR3XXqJQ1TUse0LG_Od7F9_IHaKY4ziABlVLmUuHLZ0lV6OKYjS1cdvGMDfuQOUBdSzbCNU7M5j3fHQK5lqe2RsbI4Wacl7QtR6BaS2iaGu_QmyEhKWk_HATB1wpX7NxpEOVXd0w1Zpx5oe64xljGQcW6HGaDcaTV-NKLdt-l4r-hbGKIyQ6PpMERZbraSR1ApqfzsEw_Mf4mKlnC7GoyGI-bPg4Ip06wzkePZrEW8_aqO23DpoQIwS3B-iP_5x3VuPSaR8xhr2yCvmcQ",
+      "e": "AQAB"
+    }
+  ],
+  "source": {
+    "kind": "pinned_file",
+    "retrieved_at": "2026-07-23T00:00:00Z",
+    "expires_at": "2026-07-24T00:00:00Z"
+  },
+  "bundle_sha256": "cf1ffdde62cd01f9eadc194f10a0f646d4f88e8ff3ca511dba924861ed67a4d7"
+}

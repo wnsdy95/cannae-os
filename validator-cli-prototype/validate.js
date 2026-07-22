@@ -25,9 +25,17 @@ const {
 const {
   EXECUTION_PREDICATE_TYPE,
   EXECUTION_PREDICATE_TYPE_V2,
+  EXECUTION_PREDICATE_TYPE_V3,
   PROVIDER_REQUIRED_CLAIMS,
   evidenceDigest: verifierExecutionEvidenceDigest
 } = require("../verifier-execution-evidence");
+const {
+  deriveGitHubActionsIndependence,
+  nativeEvidenceDigest,
+  parseCompactJwt,
+  trustBundleDigest,
+  verifyGitHubActionsOIDCTrustBundle
+} = require("../github-actions-oidc");
 const {
   computeVerifierIndependence,
   exactDimensions,
@@ -107,6 +115,8 @@ const TYPE_TO_SCHEMA = {
   "sigstore-verifier-identity-evidence": "sigstore-verifier-identity-evidence.schema.json",
   "verifier-runtime-policy": "verifier-runtime-policy.schema.json",
   "verifier-execution-evidence": "verifier-execution-evidence.schema.json",
+  "github-actions-oidc-trust-bundle": "github-actions-oidc-trust-bundle.schema.json",
+  "github-actions-oidc-evidence": "github-actions-oidc-evidence.schema.json",
   "verifier-challenge-set": "verifier-challenge-set.schema.json",
   "transparency-policy": "transparency-policy.schema.json",
   "transparency-observation": "transparency-observation.schema.json",
@@ -2241,11 +2251,38 @@ function semanticRules(payload, type) {
       if (requiredClaims.some(key => typeof pinnedClaims[key] !== "string" || pinnedClaims[key].length === 0)) {
         issues.push(issue("critical", "VERIFIER_RUNTIME_PROVIDER_CLAIMS_INCOMPLETE", `${pointer}.provider_identity.required_claims`, "Provider-specific stable execution identity claims must be pinned exactly."));
       }
-      if (payload.schema_version === "0.2" && (!validClaims(profile.independence) || !profileClaimsMatchProvider(profile))) {
-        issues.push(issue("critical", "VERIFIER_RUNTIME_INDEPENDENCE_CLAIMS_INVALID", `${pointer}.independence`, "Runtime-policy v0.2 requires complete identities and canonical provider/project/runner mappings from pinned provider claims."));
+      if (["0.2", "0.3"].includes(payload.schema_version) && (!validClaims(profile.independence) || !profileClaimsMatchProvider(profile))) {
+        issues.push(issue("critical", "VERIFIER_RUNTIME_INDEPENDENCE_CLAIMS_INVALID", `${pointer}.independence`, "Runtime-policy v0.2+ requires complete identities and canonical provider/project/runner mappings from pinned provider claims."));
       }
       if (payload.schema_version === "0.1" && profile.independence !== undefined) {
         issues.push(issue("error", "VERIFIER_RUNTIME_INDEPENDENCE_VERSION_INVALID", `${pointer}.independence`, "Failure-domain claims require runtime-policy schema v0.2."));
+      }
+      if (payload.schema_version === "0.3") {
+        const native = profile.native_identity || {};
+        const reusableSha = pinnedClaims.job_workflow_sha;
+        const nativePinnedClaims = [
+          "job_workflow_ref", "job_workflow_sha", "ref", "repository", "repository_id",
+          "repository_owner", "repository_owner_id", "runner_environment", "sha", "workflow_ref", "workflow_sha"
+        ];
+        if (profile.provider !== "github_actions" || native.adapter !== "github_actions_oidc_v1" ||
+            native.algorithm !== "RS256" || native.required_runner_environment !== "github-hosted" ||
+            native.require_reusable_workflow !== true) {
+          issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_PROFILE_INVALID", `${pointer}.native_identity`, "Runtime-policy v0.3 supports only the strict GitHub Actions OIDC reusable-workflow adapter."));
+        }
+        if (nativePinnedClaims.some(name => typeof pinnedClaims[name] !== "string" || pinnedClaims[name].length === 0) ||
+            profile.provider_identity && profile.provider_identity.issuer !== "https://token.actions.githubusercontent.com" ||
+            pinnedClaims.runner_environment !== "github-hosted" || !/^[a-f0-9]{40}$/.test(pinnedClaims.sha || "") ||
+            pinnedClaims.workflow_sha !== pinnedClaims.sha ||
+            !/^[a-f0-9]{40}$/.test(reusableSha || "") ||
+            !String(pinnedClaims.job_workflow_ref || "").endsWith(`@${reusableSha || "missing"}`)) {
+          issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_CLAIMS_INVALID", `${pointer}.provider_identity`, "GitHub native profiles must pin the public issuer, immutable IDs, exact commit, GitHub-hosted runner, and reusable workflow by commit SHA."));
+        }
+        const ref = native.trust_bundle_ref || {};
+        if (path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
+          issues.push(issue("critical", "VERIFIER_RUNTIME_NATIVE_TRUST_REFERENCE_INVALID", `${pointer}.native_identity.trust_bundle_ref`, "Native trust-bundle references must remain repository-artifact-relative."));
+        }
+      } else if (profile.native_identity !== undefined) {
+        issues.push(issue("error", "VERIFIER_RUNTIME_NATIVE_PROFILE_VERSION_INVALID", `${pointer}.native_identity`, "Native provider identity requires runtime-policy schema v0.3."));
       }
       const execution = profile.execution || {};
       const image = execution.container_image || {};
@@ -2305,7 +2342,7 @@ function semanticRules(payload, type) {
     if (payload.builder_key_id === payload.verifier_key_id) {
       issues.push(issue("critical", "EXECUTION_EVIDENCE_SIGNER_CORRELATION", "$.builder_key_id", "Builder and verifier signatures require distinct keys."));
     }
-    if (payload.schema_version === "0.2" && !validClaims(payload.independence)) {
+    if (["0.2", "0.3"].includes(payload.schema_version) && !validClaims(payload.independence)) {
       issues.push(issue("critical", "EXECUTION_EVIDENCE_INDEPENDENCE_CLAIMS_INVALID", "$.independence", "Execution evidence v0.2 requires the complete observed failure-domain identity."));
     }
     const invocation = payload.invocation || {};
@@ -2337,7 +2374,8 @@ function semanticRules(payload, type) {
         const subject = Array.isArray(statement.subject) && statement.subject.length === 1 ? statement.subject[0] : {};
         const predicate = statement.predicate || {};
         const verifier = predicate.verifier || {};
-        const expectedPredicateType = payload.schema_version === "0.2" ? EXECUTION_PREDICATE_TYPE_V2 : EXECUTION_PREDICATE_TYPE;
+        const expectedPredicateType = payload.schema_version === "0.3" ? EXECUTION_PREDICATE_TYPE_V3 :
+          payload.schema_version === "0.2" ? EXECUTION_PREDICATE_TYPE_V2 : EXECUTION_PREDICATE_TYPE;
         if (statement._type !== "https://in-toto.io/Statement/v1" || statement.predicateType !== expectedPredicateType ||
             subject.name !== payload.subject_ref.artifact_id || !subject.digest || subject.digest.sha256 !== payload.subject_ref.sha256) {
           issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_SUBJECT_INVALID", "$.envelope.payload", "The in-toto subject must bind the exact persisted receipt or report digest."));
@@ -2347,11 +2385,49 @@ function semanticRules(payload, type) {
             verifier.purpose !== payload.purpose || !sameJson(predicate.repository_binding, payload.repository_binding) ||
             !sameJson(predicate.repository_state, payload.repository_state) ||
             !sameJson(predicate.verification_target, payload.verification_target) ||
-            (payload.schema_version === "0.2" && !sameJson(predicate.cannae_environment && predicate.cannae_environment.independence, payload.independence))) {
+            (["0.2", "0.3"].includes(payload.schema_version) && !sameJson(predicate.cannae_environment && predicate.cannae_environment.independence, payload.independence)) ||
+            (payload.schema_version === "0.3" && !sameJson(predicate.native_provider_evidence_ref, payload.native_provider_evidence_ref))) {
           issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_BINDING_INVALID", "$.envelope.payload", "The signed statement must bind policy, verifier, repository, purpose, and target fields exactly."));
         }
       } catch (error) {
         issues.push(issue("critical", "EXECUTION_EVIDENCE_STATEMENT_INVALID", "$.envelope.payload", "Execution evidence payload must be valid JSON."));
+      }
+    }
+    if (payload.schema_version === "0.3") {
+      const ref = payload.native_provider_evidence_ref || {};
+      if (path.isAbsolute(ref.relative_path || "") || String(ref.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "EXECUTION_EVIDENCE_NATIVE_REFERENCE_INVALID", "$.native_provider_evidence_ref", "Native provider evidence references must remain repository-artifact-relative."));
+      }
+    } else if (payload.native_provider_evidence_ref !== undefined) {
+      issues.push(issue("error", "EXECUTION_EVIDENCE_NATIVE_VERSION_INVALID", "$.native_provider_evidence_ref", "Native provider evidence requires execution-evidence schema v0.3."));
+    }
+  }
+
+  if (type === "github-actions-oidc-trust-bundle") {
+    if (payload.bundle_sha256 !== trustBundleDigest(payload)) {
+      issues.push(issue("critical", "GITHUB_OIDC_TRUST_BUNDLE_DIGEST_INVALID", "$.bundle_sha256", "Trust-bundle digest must match the canonical artifact."));
+    }
+    const result = verifyGitHubActionsOIDCTrustBundle(payload, payload.source && payload.source.retrieved_at);
+    for (const code of result.codes) {
+      issues.push(issue("critical", code, "$", "GitHub Actions OIDC trust material failed semantic validation."));
+    }
+  }
+
+  if (type === "github-actions-oidc-evidence") {
+    if (payload.evidence_sha256 !== nativeEvidenceDigest(payload)) {
+      issues.push(issue("critical", "GITHUB_OIDC_EVIDENCE_DIGEST_INVALID", "$.evidence_sha256", "Native OIDC evidence digest must match the canonical artifact."));
+    }
+    const parsed = parseCompactJwt(payload.compact_jwt);
+    if (!parsed || crypto.createHash("sha256").update(payload.compact_jwt || "").digest("hex") !== payload.token_sha256) {
+      issues.push(issue("critical", "GITHUB_OIDC_EVIDENCE_TOKEN_INVALID", "$.compact_jwt", "Native evidence must retain the exact compact JWT and its digest."));
+    } else {
+      const claims = parsed.claims;
+      const projected = payload.provider_identity || {};
+      const expectedClaims = Object.fromEntries(Object.keys(projected.claims || {}).map(key => [key, claims[key]]));
+      if (!sameJson(payload.header, parsed.header) || projected.issuer !== claims.iss || projected.subject !== claims.sub ||
+          projected.audience !== claims.aud || !sameJson(projected.claims, expectedClaims) ||
+          !sameJson(payload.independence, deriveGitHubActionsIndependence(claims))) {
+        issues.push(issue("critical", "GITHUB_OIDC_EVIDENCE_PROJECTION_INVALID", "$.provider_identity", "Native evidence projections must match the signed JWT claims exactly."));
       }
     }
   }
