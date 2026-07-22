@@ -1,4 +1,4 @@
 interface:
   display_name: "Controls Doctrine Operator"
-  short_description: "Route doctrine and govern bounded adaptive work"
-  default_prompt: "Use $controls-doctrine-operator to route this mission and run evidence-backed, authority-bounded improvement checkpoints."
+  short_description: "Run routed, evidence-backed agent missions"
+  default_prompt: "Use $controls-doctrine-operator to open this mission through the enforced lifecycle, issue role-bounded context, persist evidence, and close with an AAR and bounded follow-on work."

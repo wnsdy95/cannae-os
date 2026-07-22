@@ -49,6 +49,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - evidence records
 - readiness ledger entries
 - routing receipts
+- operational mission wave plans, per-agent context packs, wave reports, and closeouts
 
 Recommended validation order:
 
@@ -126,6 +127,10 @@ Recommended validation order:
 72. `github-actions-oidc-evidence.schema.json`
 73. `gitlab-ci-oidc-trust-bundle.schema.json`
 74. `gitlab-ci-oidc-evidence.schema.json`
+75. `mission-wave-plan.schema.json`
+76. `agent-context-pack.schema.json`
+77. `mission-wave-report.schema.json`
+78. `mission-wave-closeout.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -146,3 +151,5 @@ All schemas target JSON Schema draft 2020-12.
 `VerifierRuntimePolicy` v0.3 adds strict native OIDC profiles for GitHub Actions and GitLab CI. Their provider-specific trust bundles pin normalized `RS256` JWKS material and freshness; native evidence preserves the exact signed token and conservative provider/failure-domain projection. `VerifierExecutionEvidence` v0.3 signs the native-evidence reference, and nested artifacts must be reloaded from the repository manifest before quorum evaluation.
 
 `SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. v0.6 adds deterministic failure-domain bindings and graph reconstruction. v0.7 adds exact transparency policy/state references, sequence, freshness, observer/incident counts, and a transparency-bounded validity window. Earlier orders remain readable.
+
+`MissionWavePlan` is the operational skill entry contract. It preserves USER final authority, requires routing and repository evidence on every wave, optionally binds a ready integrated model preflight, and limits adaptive work to a finite campaign target. `AgentContextPack`, `MissionWaveReport`, and `MissionWaveCloseout` carry exact manifest references through dispatch, execution evidence, AAR learning, and the next-wave queue without granting release.

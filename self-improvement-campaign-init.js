@@ -15,6 +15,7 @@ function parseArgs(argv) {
     minimumIndependenceGroups: 2,
     maxAttestationAgeSeconds: 900,
     allowedVerifiers: [],
+    targetTypes: [],
     allowCommit: false,
     writeArtifact: false
   };
@@ -34,12 +35,13 @@ function parseArgs(argv) {
       options.writeArtifact = true;
       continue;
     }
-    if (arg === "--criterion" || arg === "--non-goal" || arg === "--allow-verifier") {
+    if (arg === "--criterion" || arg === "--non-goal" || arg === "--allow-verifier" || arg === "--target-type") {
       index += 1;
       if (index >= argv.length) throw new Error(`${arg} requires a value.`);
       if (arg === "--criterion") options.criteria.push(argv[index]);
       if (arg === "--non-goal") options.nonGoals.push(argv[index]);
       if (arg === "--allow-verifier") options.allowedVerifiers.push(argv[index]);
+      if (arg === "--target-type") options.targetTypes.push(argv[index]);
       continue;
     }
     if (arg.startsWith("--") && singleValue.has(arg.slice(2))) {
@@ -66,6 +68,10 @@ function parseArgs(argv) {
   if (options.trustPolicyId && (options.minimumAttestations < 2 || options.minimumIndependenceGroups < 2 ||
       options.minimumIndependenceGroups > options.minimumAttestations || !/^[a-f0-9]{64}$/.test(options.trustPolicySha256))) {
     throw new Error("Signed quorum requires at least two attestations, two independence groups, and a valid trust-policy SHA-256 digest.");
+  }
+  const allowedTargetTypes = new Set(["work_product", "test_fixture", "documentation", "procedure", "runtime_control", "skill", "policy"]);
+  if (options.targetTypes.some(targetType => !allowedTargetTypes.has(targetType))) {
+    throw new Error("--target-type must name a supported autonomous target type.");
   }
   return options;
 }
@@ -105,7 +111,9 @@ function buildCampaign(options) {
       recorder: "RECORDER"
     },
     authority_envelope: {
-      autonomous_target_types: ["work_product", "test_fixture", "documentation", "procedure", "runtime_control", "skill", "policy"],
+      autonomous_target_types: options.targetTypes && options.targetTypes.length > 0
+        ? [...new Set(options.targetTypes)]
+        : ["work_product", "test_fixture", "documentation", "procedure", "runtime_control", "skill", "policy"],
       autonomous_actions: ["inspect", "route", "analyze", "draft", "edit", "test", "checkpoint", "propose", "revert_own_uncommitted_change", "persist_artifact"],
       max_change_class: "bounded_structural",
       may_modify_in_progress_work: true,

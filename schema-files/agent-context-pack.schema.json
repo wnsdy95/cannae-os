@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/agent-context-pack.schema.json",
+  "title": "Operational Agent Context Pack",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "operational_role",
+    "department",
+    "task",
+    "classification",
+    "plan_ref",
+    "routing_receipt_ref",
+    "routing_preflight_ref",
+    "doctrine_state",
+    "documents",
+    "validation_commands",
+    "model_assignment",
+    "authority",
+    "escalation_conditions",
+    "status",
+    "created_at",
+    "valid_until"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "AgentContextPack" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "minLength": 1 },
+    "agent_id": { "type": "string", "minLength": 1 },
+    "operational_role": { "$ref": "common.schema.json#/$defs/role_id" },
+    "department": { "type": "string", "minLength": 1 },
+    "task": { "type": "string", "minLength": 1 },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "plan_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "routing_receipt_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "routing_preflight_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "doctrine_state": {
+      "type": "object",
+      "required": ["revision", "router_sha256", "controller_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "revision": { "type": "string", "minLength": 1 },
+        "router_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "controller_sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+        }
+      }
+    },
+    "validation_commands": { "$ref": "common.schema.json#/$defs/string_list" },
+    "model_assignment": {
+      "type": "object",
+      "required": ["required", "integrated_preflight_ref", "billet_id", "model_profile_id", "model_family", "model_version", "harness_version"],
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "integrated_preflight_ref": {
+          "type": "object",
+          "required": ["artifact_id", "relative_path", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": { "type": "string", "pattern": "^(none|[A-Z]+-[A-Za-z0-9_-]+)$" },
+            "relative_path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" }
+          }
+        },
+        "billet_id": { "type": "string", "minLength": 1 },
+        "model_profile_id": { "type": "string", "minLength": 1 },
+        "model_family": { "type": "string", "minLength": 1 },
+        "model_version": { "type": "string", "minLength": 1 },
+        "harness_version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["delegated_authority", "allowed_actions", "approval_required", "prohibited_actions", "human_final_decision_authority", "release_authorized", "self_approval_prohibited"],
+      "additionalProperties": false,
+      "properties": {
+        "delegated_authority": { "type": "string", "minLength": 1 },
+        "allowed_actions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "approval_required": { "$ref": "common.schema.json#/$defs/string_list" },
+        "prohibited_actions": { "$ref": "common.schema.json#/$defs/string_list" },
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "release_authorized": { "type": "boolean", "const": false },
+        "self_approval_prohibited": { "type": "boolean", "const": true }
+      }
+    },
+    "escalation_conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "status": { "type": "string", "const": "ready" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

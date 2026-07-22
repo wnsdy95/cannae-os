@@ -246,17 +246,19 @@ const RULES = [
   },
   {
     id: "skill-operations",
-    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup"],
+    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill"],
     docs: [
       ".claude/skills/controls-doctrine-operator/SKILL.md",
       "install-ai-cli-skills.sh",
       "codex-skills/controls-doctrine-operator/SKILL.md",
       "codex-skills/controls-doctrine-operator/references/document-routing.md",
       "codex-skills/controls-doctrine-operator/references/self-improvement-loop.md",
+      "docs/skill-operational-mission-lifecycle.md",
       "docs/controls-doctrine-operator-skill.html"
     ],
     commands: [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
+      "node run-skill-mission-controller-fixtures.js",
       "python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator"
     ]
   }
@@ -343,7 +345,7 @@ const EXCLUDED_DIRS = new Set([".cannae", ".git", "node_modules"]);
 const ROUTE_HINTS = [
   {
     id: "skill-operations",
-    keywords: ["codex-skills", ".claude", "claude", "controls-doctrine-operator", "skill", "skills", "install-ai-cli-skills", "route_controls_docs", "operator-skill", "openai.yaml"]
+    keywords: ["codex-skills", ".claude", "claude", "controls-doctrine-operator", "skill", "skills", "install-ai-cli-skills", "route_controls_docs", "operate_controls_mission", "skill-mission-controller", "mission-wave", "agent-context-pack", "wave-closeout", "operational-mission-lifecycle", "operator-skill", "openai.yaml"]
   },
   {
     id: "orientation",

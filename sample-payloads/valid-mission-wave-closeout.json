@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "type": "MissionWaveCloseout",
+  "id": "MWC-W1",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "status": "complete",
+  "plan_ref": {
+    "artifact_id": "MWP-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/plan.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "report_ref": {
+    "artifact_id": "MWR-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/report.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "aar_ref": {
+    "artifact_id": "AAR-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/aar.json",
+    "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "readiness_update_ref": {
+    "artifact_id": "ARU-AAR-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/readiness.json",
+    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "campaign_ref": {
+    "artifact_id": "SIC-SKILL-DEMO",
+    "relative_path": "repositories/demo/campaign.json",
+    "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "improvement_actions": [
+    {
+      "owner": "COS",
+      "action_type": "sop_update",
+      "description": "Reduce repeated setup commands.",
+      "disposition": "queued_in_bounded_campaign"
+    }
+  ],
+  "next_wave": {
+    "required": true,
+    "reason": "AAR findings produced bounded improvement work.",
+    "trigger": "improvement_candidate"
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "release_authorized": false,
+    "self_approval_prohibited": true
+  },
+  "artifact_store": {
+    "verified": true,
+    "manifest_revision": 12,
+    "manifest_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "closed_at": "2026-07-23T05:30:00+09:00"
+}

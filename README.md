@@ -62,8 +62,9 @@ Cannae OS is moving toward a practical runtime discipline for AI teams:
 3. Runtime schemas: JSON contracts that make orders, authority, release, evidence, and readiness machine-checkable.
 4. Policy gates: local runners that block known unsafe or under-specified states.
 5. Skill routing: Codex and Claude Code skills that route huge documentation sets by user mode, role, department, authority, and need-to-know.
-6. Bounded adaptation: campaign/checkpoint/decision contracts that let agents improve active work without self-authorizing scope, policy, or release.
-7. Future runtime: a tool-gated orchestrator with approval UI, evidence store, event replay, dashboards, and cryptographically verifiable learning evidence.
+6. Operational skill lifecycle: one fail-closed entry point that opens every wave, generates mandatory routing evidence, issues digest-bound context packs, records manifest-backed results, and converts AAR findings into bounded follow-on work.
+7. Bounded adaptation: campaign/checkpoint/decision contracts that let agents improve active work without self-authorizing scope, policy, or release.
+8. Future runtime: a tool-gated orchestrator with approval UI, evidence store, event replay, dashboards, and cryptographically verifiable learning evidence.
 
 The current repository is strongest as a doctrine, schema, fixture, and prototype suite. It is not yet a complete production agent runtime.
 
@@ -126,6 +127,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
+- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan and mandatory routing through report, AAR, and bounded improvement.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md): manifest-pinned GitHub OIDC/JWKS appraisal for hosted reusable workflows.
 - [GitLab CI Native Verifier Adapter](docs/gitlab-ci-native-verifier-adapter.md): manifest-pinned GitLab.com OIDC/JWKS appraisal for protected same-project pipelines.
@@ -189,6 +191,17 @@ Preflight:
 ```bash
 node agent-routing-preflight-runner.js agent-routing-preflight-fixtures/valid-wave-routing-bundle.json
 ```
+
+Manual receipt commands remain useful for inspection and debugging. Delegated operational work should use the lifecycle controller so every expected receipt and context pack is generated and checked together:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
+  open sample-payloads/valid-mission-wave-plan.json \
+  --repository . \
+  --artifact-root .cannae/artifacts
+```
+
+The controller returns `dispatch_authorized: true` only after routing, optional model assignment, bounded campaign, context digest, and repository artifact checks pass. It never grants release authority. See [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md).
 
 ### Heterogeneous Model Dispatch
 
@@ -318,6 +331,15 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   "Prepare an execution plan for a bounded documentation update." .
 ```
 
+Open a delegated mission wave through the enforced lifecycle:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
+  open sample-payloads/valid-mission-wave-plan.json \
+  --repository . \
+  --artifact-root .cannae/artifacts
+```
+
 ## Validation Surfaces
 
 The repository intentionally includes many small runners instead of one large runtime. Each runner verifies a narrow control boundary.
@@ -335,6 +357,7 @@ Important examples:
 - `run-model-force-assignment-fixtures.js`: task readiness, model routing, force composition, independent assurance, PACE, and authority-separation gates.
 - `run-model-force-v0.2-fixtures.js`: registry eligibility, deterministic compilation, agent/billet/receipt binding, dispatch manifest, and usage telemetry gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
+- `run-skill-mission-controller-fixtures.js`: full open/report/close lifecycle, mandatory per-wave routing, context integrity, model binding, bounded AAR improvement, and multi-repository isolation.
 - `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
 - `run-repository-artifact-concurrency-fixtures.js`: 24-writer serialization, monotonic fencing, foreign-host lease expiry, and stale-writer rejection.
 - `run-repository-artifact-recovery-fixtures.js`: journal recovery, reserved-history finalization, history reconciliation, and artifact/manifest tamper detection.
@@ -380,6 +403,7 @@ Working today:
 - focused policy and projection runners;
 - document routing skill for Codex and Claude Code;
 - routing receipt and preflight model for delegated agent waves;
+- operational Codex/Claude mission lifecycle with automatic receipts, digest-bound context packs, manifest-backed reporting, AAR closeout, and bounded follow-on work;
 - deterministic manifest-backed campaign supervision with finite cycle and retry orders;
 - authenticated verifier workload admission with short-lived SPIFFE X.509 evidence and transparency inclusion;
 - native Sigstore workload admission with manifest-pinned TrustedRoot material, exact Fulcio identity/issuer policy, Rekor/CT verification, and dual binding to the static verifier key;
@@ -467,6 +491,7 @@ git diff --check
 
 Near-term:
 
+- harden the operational skill lifecycle with additional real Codex/Claude campaign trials and resumable interruption drills;
 - tighten public documentation and contribution structure;
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;

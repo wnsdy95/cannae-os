@@ -33,7 +33,16 @@ For delegated AI work, pass the role, department, and authority when known:
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --actor=ai --role=S3 --department=operations --authority=scoped-execution "<mission request>" .
 ```
 
-For delegated AI waves, routing is mandatory evidence. The CoS opens every wave with a wave receipt, and each expected agent produces its own S3 execution receipt before work:
+For delegated AI waves, use the operational lifecycle controller. It generates the CoS and every expected S3 receipt, runs preflight, binds optional model assignment, and issues context packs only when ready:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
+  open <mission-wave-plan.json> \
+  --repository <target-repo> \
+  --artifact-root .cannae/artifacts
+```
+
+The manual receipt commands below are for diagnosis or lower-level integration, not the default dispatch path:
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking "<wave mission>" .
@@ -60,6 +69,20 @@ Read these only when needed:
 - `references/self-improvement-loop.md`: how to update source-map, compendium, fixtures, and this skill after learning.
 
 ## Workflows
+
+### Operating A Delegated Mission
+
+1. Create a schema-valid `MissionWavePlan` from `sample-payloads/valid-mission-wave-plan.json`. Preserve `USER` final authority, give each AI a non-command operational role, state allowed/approval-required/prohibited actions, and set finite validity and adaptive budgets.
+2. Run `scripts/operate_controls_mission.js open`. Do not dispatch from manually assembled chat claims. Require `status: ready`, `dispatch_authorized: true`, one context pack per expected agent, and a valid artifact store.
+3. Give each agent only its exact `AgentContextPack`. The S3 receipt is its mandatory control-plane route; `operational_role`, `department`, `task`, and `delegated_authority` remain its actual mission assignment.
+4. If `model_assignment.required` is true, first persist a ready integrated mission preflight and cite its exact manifest reference and per-agent billet. A missing or mismatched model binding blocks `open`.
+5. Store every work product and verification result through `repository-artifact-store.js`. A completion claim, plan, receipt, preflight, or context pack is not work evidence.
+6. Create a `MissionWaveReport` with the exact plan, preflight, context, and work-evidence references. Run `scripts/operate_controls_mission.js report`; a blocked or failed result returns nonzero and stops continuation.
+7. Create an AAR and run `scripts/operate_controls_mission.js close --mission <id> --wave <id>`. Follow its next-wave trigger. Ordinary findings enter the bounded campaign; retained decisions return to the user.
+8. Run `status` for handoff and `verify` before consuming evidence or declaring wave completion. Conversation history is not mission state.
+9. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from `open`, `report`, `close`, a context pack, or a queued improvement.
+
+Read `docs/skill-operational-mission-lifecycle.md` for commands, exact contracts, model binding, failure behavior, and operational limits.
 
 ### Answering Framework Questions
 
@@ -151,6 +174,7 @@ Use the smallest relevant set, then broaden:
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
+node run-skill-mission-controller-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
@@ -190,6 +214,7 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - The human user remains final decision authority unless they explicitly delegate a bounded AI role.
 - AI agents must route by role, department, authority, task, and need-to-know.
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
+- Operational delegated work requires a controller-issued context pack from the current wave; a manually claimed route or stale context pack does not authorize work.
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
 - Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed receipt quorum for v0.3+, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint. Trust-policy v0.2+ additionally requires fresh manifest-backed evidence for each verifier's selected SPIFFE or Sigstore workload-identity adapter; Sigstore also requires an exact fresh TrustedRoot. Trust-policy v0.4+ requires an exact runtime policy before dispatch and dual-signed execution evidence for each receipt/report attestation before it can count toward quorum. Trust-policy v0.5+ requires the supervisor's exact unexpired single-use challenge and dual-signed nonce responses before dispatch. Trust-policy v0.6+ requires runtime-policy v0.2+, complete failure-domain identities, and enough computed `VID-*` domains before dispatch and after execution. Runtime-policy v0.3 GitHub Actions and GitLab CI evidence additionally requires the exact native OIDC/JWKS artifact chain and a clean token-bound commit. Trust-policy v0.7 additionally requires a contiguous, current, manifest-backed transparency state with valid checkpoint consistency, observer quorum, root, incident and revocation status. Self-improvement never creates self-approval, self-release, trust-root/runtime-policy/builder-root/incident authority, or unbounded recursion.

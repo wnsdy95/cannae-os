@@ -131,6 +131,23 @@ Application examples:
 - Documents released externally.
 - High-risk judgment in law, medicine, finance, etc.
 
+### 2.5 Delegated Skill Mission Rhythm
+
+For Codex or Claude agents operating against a repository, apply the battle rhythm through `skill-mission-controller.js`:
+
+```text
+MissionWavePlan
+-> controller-generated CoS and agent routing receipts
+-> ready routing and optional model preflight
+-> digest-bound AgentContextPack per agent
+-> manifest-backed work evidence
+-> MissionWaveReport and SITREP
+-> AAR, readiness update, and closeout
+-> new routed wave when work remains
+```
+
+No context pack means no delegated execution. A blocked report or closeout stops continuation, and every follow-on wave repeats routing rather than inheriting the previous wave's receipt.
+
 ## 3. Battle Rhythm Events
 
 | Event | Owner | Trigger | Input | Output |

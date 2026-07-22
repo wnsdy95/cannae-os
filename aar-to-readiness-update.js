@@ -141,7 +141,7 @@ function maintenanceActions(aar) {
   return actions;
 }
 
-function buildUpdate(aar) {
+function buildUpdate(aar, options = {}) {
   const text = flattenAar(aar);
   const role = classifyRole(aar);
   const recommendation = recommendationFor(aar, text);
@@ -159,7 +159,7 @@ function buildUpdate(aar) {
     id: `ARU-${aar.id}`,
     mission_id: aar.mission_id,
     aar_id: aar.id,
-    generated_at: "2026-06-18T13:20:00+09:00",
+    generated_at: options.generatedAt || new Date().toISOString(),
     readiness_recommendations: [
       {
         agent_id: role.agent_id,
