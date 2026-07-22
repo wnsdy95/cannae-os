@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/transparency-state.schema.json",
+  "title": "Transparency State",
+  "type": "object",
+  "required": [
+    "schema_version", "type", "id", "stream_id", "sequence_number", "policy_id",
+    "trust_policy_id", "repository_binding", "previous_state_ref", "trusted_roots",
+    "logs", "incidents", "evidence", "status", "blocking_codes", "generated_at",
+    "valid_until", "state_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "TransparencyState" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "stream_id": { "$ref": "common.schema.json#/$defs/id" },
+    "sequence_number": { "type": "integer", "minimum": 1 },
+    "policy_id": { "$ref": "common.schema.json#/$defs/id" },
+    "trust_policy_id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "previous_state_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "trusted_roots": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["id", "trusted_root_ref", "trusted_root_sha256", "tuf_root_version", "tuf_root_expires_at"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "trusted_root_ref": { "$ref": "#/$defs/artifact_ref" },
+          "trusted_root_sha256": { "$ref": "#/$defs/sha256" },
+          "tuf_root_version": { "type": "integer", "minimum": 1 },
+          "tuf_root_expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+        }
+      }
+    },
+    "logs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "log_id", "observation_ref", "checkpoint", "witness_ids", "witness_operator_ids",
+          "monitor_ids", "monitor_operator_ids", "status", "blocking_codes"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "log_id": { "$ref": "common.schema.json#/$defs/id" },
+          "observation_ref": { "$ref": "#/$defs/artifact_ref" },
+          "checkpoint": { "$ref": "#/$defs/checkpoint_core" },
+          "witness_ids": { "$ref": "#/$defs/string_list" },
+          "witness_operator_ids": { "$ref": "#/$defs/string_list" },
+          "monitor_ids": { "$ref": "#/$defs/string_list" },
+          "monitor_operator_ids": { "$ref": "#/$defs/string_list" },
+          "status": { "type": "string", "enum": ["consistent", "blocked"] },
+          "blocking_codes": { "$ref": "#/$defs/string_list" }
+        }
+      }
+    },
+    "incidents": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["incident_id", "incident_ref", "kind", "status", "revocations"],
+        "additionalProperties": false,
+        "properties": {
+          "incident_id": { "$ref": "common.schema.json#/$defs/id" },
+          "incident_ref": { "$ref": "#/$defs/artifact_ref" },
+          "kind": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["open", "contained", "resolved"] },
+          "revocations": { "type": "array" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["trusted_roots", "observations", "root_rotations", "incidents"],
+      "additionalProperties": false,
+      "properties": {
+        "trusted_roots": { "type": "array", "maxItems": 20, "items": { "$ref": "#/$defs/trusted_root_wrapper" } },
+        "observations": { "type": "array", "minItems": 1, "maxItems": 20, "items": { "$ref": "#/$defs/observation_wrapper" } },
+        "root_rotations": { "type": "array", "maxItems": 20, "items": { "$ref": "#/$defs/rotation_wrapper" } },
+        "incidents": { "type": "array", "maxItems": 50, "items": { "$ref": "#/$defs/incident_wrapper" } }
+      }
+    },
+    "status": { "type": "string", "enum": ["ready", "blocked"] },
+    "blocking_codes": { "$ref": "#/$defs/string_list" },
+    "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "valid_until": {
+      "oneOf": [
+        { "type": "string", "const": "none" },
+        { "$ref": "common.schema.json#/$defs/timestamp" }
+      ]
+    },
+    "state_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "string_list": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1 },
+        "identity_fingerprint": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "artifact_ref_or_none": {
+      "oneOf": [
+        { "$ref": "#/$defs/artifact_ref" },
+        {
+          "type": "object",
+          "required": ["artifact_id", "relative_path", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": { "type": "string", "const": "none" },
+            "relative_path": { "type": "string", "const": "none" },
+            "sha256": { "type": "string", "const": "none" }
+          }
+        }
+      ]
+    },
+    "checkpoint_core": {
+      "type": "object",
+      "required": ["log_id", "origin", "tree_size", "root_hash", "issued_at", "key_id"],
+      "additionalProperties": false,
+      "properties": {
+        "log_id": { "$ref": "common.schema.json#/$defs/id" },
+        "origin": { "type": "string", "minLength": 1 },
+        "tree_size": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "root_hash": { "$ref": "#/$defs/sha256" },
+        "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "key_id": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "trusted_root_wrapper": {
+      "type": "object",
+      "required": ["artifact_ref", "trusted_root"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_ref": { "$ref": "#/$defs/artifact_ref" },
+        "trusted_root": { "type": "object" }
+      }
+    },
+    "observation_wrapper": {
+      "type": "object",
+      "required": ["artifact_ref", "observation"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_ref": { "$ref": "#/$defs/artifact_ref" },
+        "observation": { "type": "object" }
+      }
+    },
+    "rotation_wrapper": {
+      "type": "object",
+      "required": ["artifact_ref", "rotation", "previous_trusted_root", "next_trusted_root"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_ref": { "$ref": "#/$defs/artifact_ref" },
+        "rotation": { "type": "object" },
+        "previous_trusted_root": { "type": "object" },
+        "next_trusted_root": { "type": "object" }
+      }
+    },
+    "incident_wrapper": {
+      "type": "object",
+      "required": ["artifact_ref", "incident"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_ref": { "$ref": "#/$defs/artifact_ref" },
+        "incident": { "type": "object" }
+      }
+    }
+  }
+}

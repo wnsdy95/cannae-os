@@ -34,6 +34,12 @@ const {
   profileClaimsMatchProvider,
   validClaims
 } = require("../verifier-independence");
+const {
+  incidentDigest,
+  observationDigest,
+  rotationDigest,
+  stateDigest
+} = require("../transparency-operations");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -102,6 +108,11 @@ const TYPE_TO_SCHEMA = {
   "verifier-runtime-policy": "verifier-runtime-policy.schema.json",
   "verifier-execution-evidence": "verifier-execution-evidence.schema.json",
   "verifier-challenge-set": "verifier-challenge-set.schema.json",
+  "transparency-policy": "transparency-policy.schema.json",
+  "transparency-observation": "transparency-observation.schema.json",
+  "trust-root-rotation": "trust-root-rotation.schema.json",
+  "transparency-incident": "transparency-incident.schema.json",
+  "transparency-state": "transparency-state.schema.json",
   "verification-attestation": "verification-attestation.schema.json",
   "comparative-evaluation-attestation": "comparative-evaluation-attestation.schema.json"
 };
@@ -257,6 +268,10 @@ function sortedJsonValue(value) {
 
 function sameJson(left, right) {
   return JSON.stringify(sortedJsonValue(left)) === JSON.stringify(sortedJsonValue(right));
+}
+
+function isNoneArtifactRef(ref) {
+  return Boolean(ref && ref.artifact_id === "none" && ref.relative_path === "none" && ref.sha256 === "none");
 }
 
 function isValidDate(value) {
@@ -1877,6 +1892,149 @@ function semanticRules(payload, type) {
     }
   }
 
+  if (type === "transparency-policy") {
+    const witnessById = new Map((payload.witnesses || []).map(item => [item.id, item]));
+    const monitorById = new Map((payload.monitors || []).map(item => [item.id, item]));
+    for (const [kind, field, registry] of [["witness", "witnesses", payload.witnesses || []], ["monitor", "monitors", payload.monitors || []]]) {
+      const ids = new Set();
+      const keys = new Set();
+      for (const [index, item] of registry.entries()) {
+        const pointer = `$.${field}[${index}]`;
+        if (ids.has(item.id) || keys.has(item.key_id)) {
+          issues.push(issue("critical", "TRANSPARENCY_OBSERVER_DUPLICATE", pointer, "Observer IDs and keys must be unique within each registry."));
+        }
+        ids.add(item.id);
+        keys.add(item.key_id);
+        try {
+          const key = crypto.createPublicKey(item.public_key_pem);
+          if (key.asymmetricKeyType !== "ed25519" || publicKeyId(key) !== item.key_id) throw new Error("mismatch");
+        } catch (error) {
+          issues.push(issue("critical", "TRANSPARENCY_OBSERVER_KEY_INVALID", `${pointer}.key_id`, "Observer keys must be Ed25519 SPKI keys matching key_id."));
+        }
+        if (!isValidDate(item.valid_from) || !isValidDate(item.valid_until) || Date.parse(item.valid_until) <= Date.parse(item.valid_from)) {
+          issues.push(issue("critical", "TRANSPARENCY_OBSERVER_WINDOW_INVALID", pointer, "Observer validity must have an ordered start and end."));
+        }
+      }
+    }
+    const logIds = new Set();
+    for (const [index, log] of (payload.logs || []).entries()) {
+      const pointer = `$.logs[${index}]`;
+      if (logIds.has(log.id)) issues.push(issue("critical", "TRANSPARENCY_LOG_DUPLICATE", `${pointer}.id`, "Transparency log IDs must be unique."));
+      logIds.add(log.id);
+      try {
+        const key = crypto.createPublicKey(log.public_key_pem);
+        if (key.asymmetricKeyType !== "ed25519" || publicKeyId(key) !== log.key_id) throw new Error("mismatch");
+      } catch (error) {
+        issues.push(issue("critical", "TRANSPARENCY_LOG_KEY_INVALID", `${pointer}.key_id`, "Log keys must be Ed25519 SPKI keys matching key_id."));
+      }
+      const witnesses = (log.witness_ids || []).map(id => witnessById.get(id)).filter(Boolean);
+      const monitors = (log.monitor_ids || []).map(id => monitorById.get(id)).filter(Boolean);
+      const witnessOperators = new Set(witnesses.filter(item => item.status === "active").map(item => item.operator_id));
+      const monitorOperators = new Set(monitors.filter(item => item.status === "active").map(item => item.operator_id));
+      if (witnesses.length !== (log.witness_ids || []).length || log.minimum_witnesses > witnesses.filter(item => item.status === "active").length ||
+          log.minimum_witness_operators > witnessOperators.size) {
+        issues.push(issue("critical", "TRANSPARENCY_WITNESS_POLICY_IMPOSSIBLE", `${pointer}.witness_ids`, "Configured active witnesses and operators must be able to satisfy the log threshold."));
+      }
+      if (monitors.length !== (log.monitor_ids || []).length || log.minimum_monitors > monitors.filter(item => item.status === "active").length ||
+          log.minimum_monitor_operators > monitorOperators.size) {
+        issues.push(issue("critical", "TRANSPARENCY_MONITOR_POLICY_IMPOSSIBLE", `${pointer}.monitor_ids`, "Configured active monitors and operators must be able to satisfy the log threshold."));
+      }
+      if ([...witnessOperators].some(operator => monitorOperators.has(operator))) {
+        issues.push(issue("critical", "TRANSPARENCY_OBSERVER_OPERATOR_CORRELATION", pointer, "Witness and monitor operator sets must not overlap for the same log."));
+      }
+    }
+    const rootIds = (payload.trusted_roots || []).map(item => item.id);
+    const rootRefs = (payload.trusted_roots || []).map(item => item.trusted_root_ref && item.trusted_root_ref.artifact_id);
+    if (new Set(rootIds).size !== rootIds.length || new Set(rootRefs).size !== rootRefs.length) {
+      issues.push(issue("critical", "TRANSPARENCY_TRUST_ROOT_DUPLICATE", "$.trusted_roots", "Trusted-root IDs and artifact references must be unique."));
+    }
+    if ((payload.trusted_roots || []).some(item => !isValidDate(item.tuf_root_expires_at) ||
+        Date.parse(item.tuf_root_expires_at) <= Date.parse(payload.created_at))) {
+      issues.push(issue("critical", "TRANSPARENCY_TUF_ROOT_EXPIRY_INVALID", "$.trusted_roots", "Every initial TUF root must remain current after policy creation."));
+    }
+    if (!isValidDate(payload.created_at) || !isValidDate(payload.expires_at) || Date.parse(payload.expires_at) <= Date.parse(payload.created_at)) {
+      issues.push(issue("critical", "TRANSPARENCY_POLICY_WINDOW_INVALID", "$.expires_at", "Transparency policy expiry must be later than creation."));
+    }
+  }
+
+  if (type === "transparency-observation") {
+    if (payload.observation_sha256 !== observationDigest(payload)) {
+      issues.push(issue("critical", "TRANSPARENCY_OBSERVATION_DIGEST_INVALID", "$.observation_sha256", "Observation digest must match its canonical content."));
+    }
+    if (payload.log_id !== (payload.checkpoint && payload.checkpoint.log_id)) {
+      issues.push(issue("critical", "TRANSPARENCY_OBSERVATION_LOG_MISMATCH", "$.checkpoint.log_id", "Observation and checkpoint log IDs must match."));
+    }
+    if (!isValidDate(payload.observed_at) || !isValidDate(payload.expires_at) ||
+        !isValidDate(payload.checkpoint && payload.checkpoint.issued_at) ||
+        Date.parse(payload.expires_at) <= Date.parse(payload.observed_at) ||
+        Date.parse(payload.checkpoint.issued_at) > Date.parse(payload.observed_at)) {
+      issues.push(issue("critical", "TRANSPARENCY_OBSERVATION_TIME_INVALID", "$.observed_at", "Checkpoint, observation, and expiry times must be ordered."));
+    }
+    for (const [field, idField] of [["witness_signatures", "witness_id"], ["monitor_signatures", "monitor_id"]]) {
+      const ids = (payload[field] || []).map(item => item[idField]);
+      if (new Set(ids).size !== ids.length) {
+        issues.push(issue("critical", "TRANSPARENCY_OBSERVER_SIGNATURE_DUPLICATE", `$.${field}`, "One observer identity may sign an observation only once."));
+      }
+      if ((payload[field] || []).some(item => item.observed_at !== payload.observed_at)) {
+        issues.push(issue("critical", "TRANSPARENCY_OBSERVER_TIME_UNBOUND", `$.${field}`, "Observer timestamps must exactly match the signed observation timestamp."));
+      }
+    }
+  }
+
+  if (type === "trust-root-rotation") {
+    if (payload.rotation_sha256 !== rotationDigest(payload)) {
+      issues.push(issue("critical", "TRUST_ROOT_ROTATION_DIGEST_INVALID", "$.rotation_sha256", "Rotation digest must match its canonical content."));
+    }
+    const previousVersion = payload.previous_tuf_root && payload.previous_tuf_root.signed && payload.previous_tuf_root.signed.version;
+    const nextVersion = payload.next_tuf_root && payload.next_tuf_root.signed && payload.next_tuf_root.signed.version;
+    if (nextVersion !== previousVersion + 1) {
+      issues.push(issue("critical", "TRUST_ROOT_ROTATION_VERSION_INVALID", "$.next_tuf_root.signed.version", "TUF root rotation must advance exactly from N to N+1."));
+    }
+    if (payload.approved_by !== "USER" || !isValidDate(payload.approved_at) || !isValidDate(payload.effective_at) ||
+        Date.parse(payload.effective_at) < Date.parse(payload.approved_at)) {
+      issues.push(issue("critical", "TRUST_ROOT_ROTATION_AUTHORITY_INVALID", "$.approved_by", "Root rotation requires USER authority and ordered approval/effective times."));
+    }
+    if (payload.reason === "compromise" && (payload.revoked_tuf_root_key_ids || []).length === 0) {
+      issues.push(issue("critical", "TRUST_ROOT_ROTATION_COMPROMISE_REVOCATION_REQUIRED", "$.revoked_tuf_root_key_ids", "Compromise rotation must name revoked TUF root keys."));
+    }
+  }
+
+  if (type === "transparency-incident") {
+    if (payload.incident_sha256 !== incidentDigest(payload)) {
+      issues.push(issue("critical", "TRANSPARENCY_INCIDENT_DIGEST_INVALID", "$.incident_sha256", "Incident digest must match its canonical content."));
+    }
+    if (payload.authority !== "USER" || !isValidDate(payload.detected_at)) {
+      issues.push(issue("critical", "TRANSPARENCY_INCIDENT_AUTHORITY_INVALID", "$.authority", "Transparency incident disposition remains USER authority."));
+    }
+    if (payload.status === "resolved" && (!payload.supersedes_incident_ref || !payload.resolution ||
+        payload.resolution.authority !== "USER" || !isValidDate(payload.resolution.resolved_at) ||
+        Date.parse(payload.resolution.resolved_at) < Date.parse(payload.detected_at) ||
+        !Array.isArray(payload.resolution.evidence_refs) || payload.resolution.evidence_refs.length === 0)) {
+      issues.push(issue("critical", "TRANSPARENCY_INCIDENT_RESOLUTION_INVALID", "$.resolution", "Resolved incidents require a later USER-authorized immutable supersession record with remediation evidence."));
+    }
+    if (payload.status !== "resolved" && (payload.supersedes_incident_ref !== undefined || payload.resolution !== undefined)) {
+      issues.push(issue("critical", "TRANSPARENCY_INCIDENT_PREMATURE_RESOLUTION", "$", "Only a resolved incident record may supersede an earlier incident."));
+    }
+  }
+
+  if (type === "transparency-state") {
+    if (payload.state_sha256 !== stateDigest(payload)) {
+      issues.push(issue("critical", "TRANSPARENCY_STATE_DIGEST_INVALID", "$.state_sha256", "Transparency-state digest must match its canonical content."));
+    }
+    const ready = payload.status === "ready";
+    if ((ready && ((payload.blocking_codes || []).length > 0 || payload.valid_until === "none" ||
+        (payload.logs || []).some(item => item.status !== "consistent" || (item.blocking_codes || []).length > 0))) ||
+        (!ready && (payload.blocking_codes || []).length === 0)) {
+      issues.push(issue("critical", "TRANSPARENCY_STATE_FALSE_STATUS", "$.status", "Ready state requires consistent logs, a validity boundary, and no blocking codes; blocked state requires a reason."));
+    }
+    if (payload.sequence_number === 1 && !isNoneArtifactRef(payload.previous_state_ref)) {
+      issues.push(issue("critical", "TRANSPARENCY_STATE_GENESIS_INVALID", "$.previous_state_ref", "The first transparency state must use the none reference."));
+    }
+    if (payload.sequence_number > 1 && isNoneArtifactRef(payload.previous_state_ref)) {
+      issues.push(issue("critical", "TRANSPARENCY_STATE_LINEAGE_MISSING", "$.previous_state_ref", "Later transparency states must cite the immediately previous state."));
+    }
+  }
+
   if (type === "verifier-trust-policy") {
     const verifiers = payload.verifiers || [];
     const ids = new Set();
@@ -1887,7 +2045,7 @@ function semanticRules(payload, type) {
     const trustedRootIds = new Set();
     const trustedLogIds = new Set();
 
-    if (["0.2", "0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version) && !payload.identity_assurance) {
+    if (["0.2", "0.3", "0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version) && !payload.identity_assurance) {
       issues.push(issue("critical", "VERIFIER_POLICY_IDENTITY_ASSURANCE_REQUIRED", "$.identity_assurance", "Policy v0.2+ requires workload identity assurance."));
     }
     if (payload.schema_version === "0.1" && (payload.identity_assurance || verifiers.some(item => item.workload_identity))) {
@@ -1903,11 +2061,11 @@ function semanticRules(payload, type) {
         issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_PATH_INVALID", `${pointer}.relative_path`, "Sigstore TrustedRoot references must remain repository-artifact-relative."));
       }
     }
-    if (["0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version) && (sigstoreRootRefs.length === 0 || !Number.isInteger(identityAssurance.max_trusted_root_age_seconds))) {
+    if (["0.3", "0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version) && (sigstoreRootRefs.length === 0 || !Number.isInteger(identityAssurance.max_trusted_root_age_seconds))) {
       issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_ROOT_REQUIRED", "$.identity_assurance", "Policy v0.3+ requires a manifest-bound Sigstore TrustedRoot and freshness limit."));
     }
     const executionAssurance = payload.execution_assurance;
-    if (["0.4", "0.5", "0.6"].includes(payload.schema_version)) {
+    if (["0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version)) {
       const runtimeRef = executionAssurance && executionAssurance.runtime_policy_ref;
       if (!executionAssurance || executionAssurance.required !== true || !runtimeRef) {
         issues.push(issue("critical", "VERIFIER_POLICY_EXECUTION_ASSURANCE_REQUIRED", "$.execution_assurance", "Policy v0.4+ requires an exact verifier runtime policy reference."));
@@ -1918,7 +2076,7 @@ function semanticRules(payload, type) {
       issues.push(issue("error", "VERIFIER_POLICY_EXECUTION_ASSURANCE_VERSION_INVALID", "$.execution_assurance", "Execution assurance requires trust-policy schema v0.4 or later."));
     }
     const challengeAssurance = payload.challenge_assurance;
-    if (["0.5", "0.6"].includes(payload.schema_version)) {
+    if (["0.5", "0.6", "0.7"].includes(payload.schema_version)) {
       if (!challengeAssurance || challengeAssurance.required !== true || challengeAssurance.single_use !== true ||
           !Number.isInteger(challengeAssurance.nonce_bytes) || challengeAssurance.nonce_bytes < 32 ||
           !Number.isInteger(challengeAssurance.response_timeout_seconds)) {
@@ -1939,16 +2097,29 @@ function semanticRules(payload, type) {
       issues.push(issue("error", "VERIFIER_POLICY_CHALLENGE_ASSURANCE_VERSION_INVALID", "$.challenge_assurance", "Pre-dispatch challenge assurance requires trust-policy schema v0.5 or later."));
     }
     const independenceAssurance = payload.independence_assurance;
-    if (payload.schema_version === "0.6") {
+    if (["0.6", "0.7"].includes(payload.schema_version)) {
       if (!independenceAssurance || independenceAssurance.required !== true ||
           independenceAssurance.correlation_rule !== "shared_required_component" ||
           !exactDimensions(independenceAssurance.required_dimensions) ||
           !Number.isInteger(independenceAssurance.minimum_independent_domains) ||
           independenceAssurance.minimum_independent_domains < (payload.quorum && payload.quorum.minimum_independence_groups || 0)) {
-        issues.push(issue("critical", "VERIFIER_POLICY_INDEPENDENCE_ASSURANCE_INVALID", "$.independence_assurance", "Policy v0.6 requires the complete ordered failure-domain dimensions and a threshold at least as strong as the attestation quorum."));
+        issues.push(issue("critical", "VERIFIER_POLICY_INDEPENDENCE_ASSURANCE_INVALID", "$.independence_assurance", "Policy v0.6+ requires the complete ordered failure-domain dimensions and a threshold at least as strong as the attestation quorum."));
       }
     } else if (independenceAssurance !== undefined) {
-      issues.push(issue("error", "VERIFIER_POLICY_INDEPENDENCE_ASSURANCE_VERSION_INVALID", "$.independence_assurance", "Failure-domain assurance requires trust-policy schema v0.6."));
+      issues.push(issue("error", "VERIFIER_POLICY_INDEPENDENCE_ASSURANCE_VERSION_INVALID", "$.independence_assurance", "Failure-domain assurance requires trust-policy schema v0.6 or later."));
+    }
+    const transparencyAssurance = payload.transparency_assurance;
+    if (payload.schema_version === "0.7") {
+      const policyRef = transparencyAssurance && transparencyAssurance.transparency_policy_ref;
+      if (!transparencyAssurance || transparencyAssurance.required !== true || !policyRef ||
+          policyRef.artifact_id === "none" || !Number.isInteger(transparencyAssurance.max_state_age_seconds) ||
+          transparencyAssurance.max_state_age_seconds < 60 || !transparencyAssurance.state_stream_id) {
+        issues.push(issue("critical", "VERIFIER_POLICY_TRANSPARENCY_ASSURANCE_INVALID", "$.transparency_assurance", "Policy v0.7 requires an exact transparency policy, state stream, and finite state freshness bound."));
+      } else if (path.isAbsolute(policyRef.relative_path || "") || String(policyRef.relative_path || "").split(/[\\/]+/).includes("..")) {
+        issues.push(issue("critical", "VERIFIER_POLICY_TRANSPARENCY_POLICY_PATH_INVALID", "$.transparency_assurance.transparency_policy_ref.relative_path", "Transparency policy references must remain repository-artifact-relative."));
+      }
+    } else if (transparencyAssurance !== undefined) {
+      issues.push(issue("error", "VERIFIER_POLICY_TRANSPARENCY_ASSURANCE_VERSION_INVALID", "$.transparency_assurance", "Continuous transparency assurance requires trust-policy schema v0.7."));
     }
     for (const [index, root] of (identityAssurance.trusted_x509_roots || []).entries()) {
       const pointer = `$.identity_assurance.trusted_x509_roots[${index}]`;
@@ -2002,7 +2173,7 @@ function semanticRules(payload, type) {
       if (!(verifier.allowed_repository_keys || []).includes(payload.repository_binding && payload.repository_binding.repository_key)) {
         issues.push(issue("critical", "VERIFIER_POLICY_REPOSITORY_NOT_ALLOWED", `${pointer}.allowed_repository_keys`, "Every trusted verifier must explicitly allow the policy repository."));
       }
-      if (["0.2", "0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version)) {
+      if (["0.2", "0.3", "0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version)) {
         const workload = verifier.workload_identity;
         if (!workload) {
           issues.push(issue("critical", "VERIFIER_POLICY_WORKLOAD_IDENTITY_REQUIRED", `${pointer}.workload_identity`, "Every verifier in policy v0.2+ requires a workload identity."));
@@ -2021,7 +2192,7 @@ function semanticRules(payload, type) {
           } catch (error) {
             issues.push(issue("critical", "VERIFIER_POLICY_SPIFFE_ID_INVALID", `${pointer}.workload_identity.spiffe_id`, "Verifier workload identity must be a valid SPIFFE URI."));
           }
-        } else if (["0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version) && workload.type === "sigstore_bundle") {
+        } else if (["0.3", "0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version) && workload.type === "sigstore_bundle") {
           const requiredFields = ["certificate_identity_type", "certificate_identity", "certificate_issuer", "trust_root_id", "bundle_media_type", "ctlog_threshold", "tlog_threshold", "timestamp_threshold"];
           if (requiredFields.some(field => workload[field] === undefined)) {
             issues.push(issue("critical", "VERIFIER_POLICY_SIGSTORE_IDENTITY_INCOMPLETE", `${pointer}.workload_identity`, "Sigstore identity requires exact SAN, issuer, root, bundle media type, and nonzero verification thresholds."));
@@ -2039,7 +2210,7 @@ function semanticRules(payload, type) {
     if (quorum.minimum_valid_attestations > active.length) {
       issues.push(issue("critical", "VERIFIER_POLICY_QUORUM_IMPOSSIBLE", "$.quorum.minimum_valid_attestations", "The active verifier population cannot satisfy the required attestation quorum."));
     }
-    if ((payload.schema_version !== "0.6" && quorum.minimum_independence_groups > activeGroups.size) ||
+    if ((!["0.6", "0.7"].includes(payload.schema_version) && quorum.minimum_independence_groups > activeGroups.size) ||
         quorum.minimum_independence_groups > quorum.minimum_valid_attestations) {
       issues.push(issue("critical", "VERIFIER_POLICY_GROUP_QUORUM_IMPOSSIBLE", "$.quorum.minimum_independence_groups", "The active independence groups cannot satisfy the group quorum."));
     }
@@ -2465,7 +2636,7 @@ function semanticRules(payload, type) {
     if (payload.schema_version === "0.1" && payload.trust_policy_admission !== undefined) {
       issues.push(issue("error", "CYCLE_ORDER_V01_ADMISSION_UNSUPPORTED", "$.trust_policy_admission", "Trust-policy admission evidence requires cycle-order schema version 0.2."));
     }
-    if (["0.2", "0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version)) {
+    if (["0.2", "0.3", "0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version)) {
       const receipt = admission.receipt_quorum || {};
       const comparative = admission.comparative_quorum || {};
       const requirements = admission.effective_requirements || {};
@@ -2482,7 +2653,10 @@ function semanticRules(payload, type) {
         (quorum.eligible_verifier_count >= requirements.minimum_valid_attestations &&
          quorum.independence_group_count >= requirements.minimum_independence_groups &&
          (requirements.require_distinct_key_ids !== true || quorum.distinct_key_count >= requirements.minimum_valid_attestations));
-      const expectedSatisfied = (admission.blocking_codes || []).length === 0 && quorumSatisfied(receipt) && quorumSatisfied(comparative);
+      const requiredAssurancesSatisfied = payload.schema_version !== "0.7" ||
+        Boolean(admission.transparency_assurance && admission.transparency_assurance.satisfied === true);
+      const expectedSatisfied = (admission.blocking_codes || []).length === 0 && quorumSatisfied(receipt) &&
+        quorumSatisfied(comparative) && requiredAssurancesSatisfied;
 
       if (admission.required !== proof.signed_attestation_required || receipt.required !== proof.signed_attestation_required ||
           comparative.required !== proof.signed_comparative_attestation_required || !sameTrustRef) {
@@ -2519,11 +2693,11 @@ function semanticRules(payload, type) {
       if (ready && (admission.blocking_codes || []).some(code => !(payload.blocking_codes || []).includes(code))) {
         issues.push(issue("critical", "CYCLE_ORDER_ADMISSION_BLOCK_NOT_PROPAGATED", "$.blocking_codes", "Ready execution cannot discard a trust-admission blocking code."));
       }
-      if (["0.3", "0.4", "0.5", "0.6"].includes(payload.schema_version)) {
+      if (["0.3", "0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version)) {
         const identity = admission.identity_assurance || {};
         const evidence = identity.evidence || [];
         const verifierIds = evidence.map(item => item.verifier_id);
-        const genericIdentity = ["0.4", "0.5", "0.6"].includes(payload.schema_version);
+        const genericIdentity = ["0.4", "0.5", "0.6", "0.7"].includes(payload.schema_version);
         const trustDomains = evidence.map(item => item.trust_domain).filter(Boolean);
         const identityAuthorities = evidence.map(item => item.identity_authority).filter(Boolean);
         const logIds = evidence.flatMap(item => item.transparency_log_ids || [item.transparency_log_id]).filter(Boolean);
@@ -2539,7 +2713,9 @@ function semanticRules(payload, type) {
               identity.transparency_log_count !== new Set(logIds).size) {
             issues.push(issue("critical", "CYCLE_ORDER_IDENTITY_COUNT_MISMATCH", "$.trust_policy_admission.identity_assurance", "Identity admission counts must equal its distinct evidence bindings."));
           }
-          const expectedIdentityScope = payload.schema_version === "0.6"
+          const expectedIdentityScope = payload.schema_version === "0.7"
+            ? "continuously_transparent_failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
+            : payload.schema_version === "0.6"
             ? "failure_domain_verified_fresh_challenged_workload_and_policy_eligibility"
             : payload.schema_version === "0.5" ? "fresh_challenged_workload_and_policy_eligibility"
             : "authenticated_workload_and_policy_eligibility";
@@ -2575,7 +2751,7 @@ function semanticRules(payload, type) {
           }
         }
       }
-      if (["0.5", "0.6"].includes(payload.schema_version)) {
+      if (["0.5", "0.6", "0.7"].includes(payload.schema_version)) {
         const challenge = admission.challenge_assurance || {};
         const responses = challenge.responses || [];
         const responderIds = responses.map(item => item.verifier_id);
@@ -2611,7 +2787,7 @@ function semanticRules(payload, type) {
           }
         }
       }
-      if (payload.schema_version === "0.6") {
+      if (["0.6", "0.7"].includes(payload.schema_version)) {
         const independence = admission.independence_assurance || {};
         const bindings = independence.bindings || [];
         const domains = independence.domains || [];
@@ -2621,7 +2797,7 @@ function semanticRules(payload, type) {
           independence: binding.claims
         }])).values()];
         const projected = computeVerifierIndependence({
-          schema_version: "0.6",
+          schema_version: payload.schema_version,
           id: trustPolicyId,
           independence_assurance: {
             required: true,
@@ -2652,7 +2828,7 @@ function semanticRules(payload, type) {
             independence.required !== true || new Set(bindingIds).size !== bindings.length ||
             independence.domain_count !== domains.length || !domains.every(domain => domainIds.has(domain.domain_id)) ||
             !sameJson(domains, projected.domains) || !sameJson(bindings, projected.bindings)) {
-          issues.push(issue("critical", "CYCLE_ORDER_INDEPENDENCE_PROJECTION_INVALID", "$.trust_policy_admission.independence_assurance", "Cycle-order v0.6 must reproduce the runtime-policy correlation graph and its deterministic failure domains exactly."));
+          issues.push(issue("critical", "CYCLE_ORDER_INDEPENDENCE_PROJECTION_INVALID", "$.trust_policy_admission.independence_assurance", "Cycle-order v0.6+ must reproduce the runtime-policy correlation graph and its deterministic failure domains exactly."));
         }
         if (independence.minimum_independent_domains !== projected.minimum_independent_domains ||
             independence.satisfied !== projected.satisfied ||
@@ -2661,6 +2837,34 @@ function semanticRules(payload, type) {
         }
         if ((independence.blocking_codes || []).some(code => !(admission.blocking_codes || []).includes(code))) {
           issues.push(issue("critical", "CYCLE_ORDER_INDEPENDENCE_BLOCK_NOT_PROPAGATED", "$.trust_policy_admission.blocking_codes", "Independence blocking codes must propagate to trust admission."));
+        }
+      }
+      if (payload.schema_version === "0.7") {
+        const transparency = admission.transparency_assurance || {};
+        const policyRef = transparency.policy_ref || {};
+        const stateRef = transparency.state_ref || {};
+        const exactScope = "continuously_transparent_failure_domain_verified_fresh_challenged_workload_and_policy_eligibility";
+        const validRefs = policyRef.artifact_id && policyRef.artifact_id !== "none" &&
+          stateRef.artifact_id && stateRef.artifact_id !== "none" &&
+          !path.isAbsolute(policyRef.relative_path || "") && !String(policyRef.relative_path || "").split(/[\\/]+/).includes("..") &&
+          !path.isAbsolute(stateRef.relative_path || "") && !String(stateRef.relative_path || "").split(/[\\/]+/).includes("..");
+        const expectedTransparencySatisfied = transparency.required === true && validRefs &&
+          Number.isInteger(transparency.sequence_number) && transparency.sequence_number >= 1 &&
+          Number.isInteger(transparency.max_state_age_seconds) && transparency.max_state_age_seconds >= 60 &&
+          isValidDate(transparency.generated_at) && Date.parse(transparency.generated_at) <= Date.parse(admission.evaluated_at) &&
+          Date.parse(admission.evaluated_at) - Date.parse(transparency.generated_at) <= transparency.max_state_age_seconds * 1000 &&
+          (transparency.blocking_codes || []).length === 0 && isValidDate(transparency.valid_until) &&
+          Date.parse(transparency.valid_until) > Date.parse(admission.evaluated_at);
+        if (!admission.transparency_assurance || transparency.required !== true ||
+            transparency.satisfied !== expectedTransparencySatisfied || admission.assurance_scope !== exactScope) {
+          issues.push(issue("critical", "CYCLE_ORDER_TRANSPARENCY_FALSE_SATISFACTION", "$.trust_policy_admission.transparency_assurance", "Cycle-order v0.7 transparency satisfaction requires exact policy/state references, a current state window, and no transparency blockers."));
+        }
+        if (transparency.satisfied === true && isValidDate(admission.valid_until) &&
+            Date.parse(admission.valid_until) > Date.parse(transparency.valid_until)) {
+          issues.push(issue("critical", "CYCLE_ORDER_TRANSPARENCY_WINDOW_INVALID", "$.trust_policy_admission.valid_until", "Transparency state expiry must bound the overall trust-admission window."));
+        }
+        if ((transparency.blocking_codes || []).some(code => !(admission.blocking_codes || []).includes(code))) {
+          issues.push(issue("critical", "CYCLE_ORDER_TRANSPARENCY_BLOCK_NOT_PROPAGATED", "$.trust_policy_admission.blocking_codes", "Transparency blocking codes must propagate to the trust admission."));
         }
       }
     }

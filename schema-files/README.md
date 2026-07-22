@@ -117,6 +117,11 @@ Recommended validation order:
 63. `verifier-runtime-policy.schema.json`
 64. `verifier-execution-evidence.schema.json`
 65. `verifier-challenge-set.schema.json`
+66. `transparency-policy.schema.json`
+67. `transparency-observation.schema.json`
+68. `trust-root-rotation.schema.json`
+69. `transparency-incident.schema.json`
+70. `transparency-state.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -132,4 +137,6 @@ All schemas target JSON Schema draft 2020-12.
 
 `VerifierTrustPolicy` v0.6 adds required failure-domain assurance. `VerifierRuntimePolicy` v0.2 records provider, operator, control-plane, account, project, runner-pool, infrastructure, region, and zone identities. Any shared required component places verifiers in one transitive computed domain. `VerifierExecutionEvidence` v0.2 binds the observed identity under builder and verifier signatures.
 
-`SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. v0.6 adds deterministic failure-domain bindings and graph reconstruction. Earlier orders remain readable.
+`VerifierTrustPolicy` v0.7 adds continuous transparency assurance. It binds one exact `TransparencyPolicy`, state stream, and maximum age. `TransparencyObservation` records signed checkpoint consistency plus independent witness/monitor approval, `TrustRootRotation` verifies sequential dual-threshold TUF roots, `TransparencyIncident` preserves USER-controlled incident and revocation history, and `TransparencyState` reconstructs their append-only repository-bound projection while retaining current TUF expiry.
+
+`SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. v0.6 adds deterministic failure-domain bindings and graph reconstruction. v0.7 adds exact transparency policy/state references, sequence, freshness, observer/incident counts, and a transparency-bounded validity window. Earlier orders remain readable.

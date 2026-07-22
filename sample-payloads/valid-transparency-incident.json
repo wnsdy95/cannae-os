@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1",
+  "type": "TransparencyIncident",
+  "id": "TI-Phase-13-Sample",
+  "policy_id": "TP-Phase-13",
+  "kind": "checkpoint_stale",
+  "status": "open",
+  "severity": "critical",
+  "detected_at": "2026-07-22T10:02:30Z",
+  "affected_log_ids": [
+    "LOG-Rekor-PGI"
+  ],
+  "evidence_refs": [
+    {
+      "artifact_id": "TO-Phase-13-2",
+      "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/transparency-observations/TO-Phase-13-2.json",
+      "sha256": "f8b94e6ddc02e44e8bba82416a4ca024c07bb09609e1333ea354bc3a12c3f7dd"
+    }
+  ],
+  "revocations": [],
+  "containment_actions": [
+    "block_dispatch",
+    "preserve_evidence",
+    "notify_operator"
+  ],
+  "authority": "USER",
+  "incident_sha256": "0ecd5ea961a7ab5a8a696ccf8c3ac6d759091115eb8c1c298dd948e28052e592"
+}

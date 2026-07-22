@@ -1,0 +1,131 @@
+{
+  "schema_version": "0.7",
+  "type": "VerifierTrustPolicy",
+  "id": "VTP-Supervised-Challenge",
+  "repository_binding": {
+    "repository_key": "supervised-repository-5d5bf4b75f14",
+    "identity_fingerprint": "5d5bf4b75f143366e0fa15d0faf01e78a5adea0bab4ab7e7e99a92597f78fe44"
+  },
+  "policy_version": 7,
+  "quorum": {
+    "minimum_valid_attestations": 2,
+    "minimum_independence_groups": 2,
+    "require_distinct_key_ids": true,
+    "max_attestation_age_seconds": 300
+  },
+  "identity_assurance": {
+    "required": true,
+    "max_evidence_age_seconds": 300,
+    "max_trusted_root_age_seconds": 3600,
+    "trusted_x509_roots": [],
+    "trusted_transparency_logs": [],
+    "sigstore_trusted_root_refs": [
+      {
+        "artifact_id": "STR-Transparency-Root-1",
+        "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/sigstore-trusted-roots/STR-Transparency-Root-1.json",
+        "sha256": "2f905b58dd384396d3cbbd090585ec43ad1da0dce91447d99d4e8d6e67169890"
+      },
+      {
+        "artifact_id": "STR-Transparency-Root-2",
+        "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/sigstore-trusted-roots/STR-Transparency-Root-2.json",
+        "sha256": "ac561e56aec82f74220b56f9883996cacbb16f916b81d3f5d2a065f6ef52e58c"
+      }
+    ]
+  },
+  "execution_assurance": {
+    "required": true,
+    "runtime_policy_ref": {
+      "artifact_id": "VRP-Cannae-Sample",
+      "relative_path": "repositories/cannae-os/missions/MIS-Sample/C0/verifier-runtime-policies/VRP-Cannae-Sample.json",
+      "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+    }
+  },
+  "challenge_assurance": {
+    "required": true,
+    "nonce_bytes": 32,
+    "response_timeout_seconds": 120,
+    "single_use": true,
+    "issuer_key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+    "issuer_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA+pRpUDUqUmy3TcDSTO+t+Q/7OMQW1XbMyxniDk982dM=\n-----END PUBLIC KEY-----\n"
+  },
+  "verifiers": [
+    {
+      "id": "VERIFIER-Cannae-Sample",
+      "key_id": "c17f41b709de820bef6da84084e4373b536978f226a3f8a42550ee6853d962a1",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAWPwDy2awtIBiSzLGxyS5RgnT2Zdiho8aMByD7WsXQ+k=\n-----END PUBLIC KEY-----\n",
+      "independence_group": "declared-provider-a",
+      "status": "active",
+      "allowed_repository_keys": [
+        "supervised-repository-5d5bf4b75f14"
+      ],
+      "allowed_execution_origins": [
+        "remote"
+      ],
+      "allowed_attestation_types": [
+        "verification_receipt",
+        "comparative_evaluation_report"
+      ],
+      "workload_identity": {
+        "type": "sigstore_bundle",
+        "certificate_identity_type": "email",
+        "certificate_identity": "untrusted-sa@sigstore-conformance.iam.gserviceaccount.com",
+        "certificate_issuer": "https://accounts.google.com",
+        "trust_root_id": "STR-Transparency-Root-1",
+        "bundle_media_type": "application/vnd.dev.sigstore.bundle+json;version=0.2",
+        "ctlog_threshold": 1,
+        "tlog_threshold": 1,
+        "timestamp_threshold": 1
+      },
+      "valid_from": "2026-07-22T05:31:43.776Z",
+      "valid_until": "2026-07-22T06:31:43.776Z"
+    },
+    {
+      "id": "VERIFIER-Cannae-Independence-B",
+      "key_id": "c5b640593ad35528b5155ee94a43a55a604a149d926000a645fb17e8d7cba75b",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAMHnehbIClDoXj7nNMF7mP8DxL/6WKXe4864epzDm3u8=\n-----END PUBLIC KEY-----\n",
+      "independence_group": "declared-provider-b",
+      "status": "active",
+      "allowed_repository_keys": [
+        "supervised-repository-5d5bf4b75f14"
+      ],
+      "allowed_execution_origins": [
+        "remote"
+      ],
+      "allowed_attestation_types": [
+        "verification_receipt",
+        "comparative_evaluation_report"
+      ],
+      "workload_identity": {
+        "type": "sigstore_bundle",
+        "certificate_identity_type": "email",
+        "certificate_identity": "untrusted-sa@sigstore-conformance.iam.gserviceaccount.com",
+        "certificate_issuer": "https://accounts.google.com",
+        "trust_root_id": "STR-Transparency-Root-1",
+        "bundle_media_type": "application/vnd.dev.sigstore.bundle+json;version=0.2",
+        "ctlog_threshold": 1,
+        "tlog_threshold": 1,
+        "timestamp_threshold": 1
+      },
+      "valid_from": "2026-07-22T05:31:43.776Z",
+      "valid_until": "2026-07-22T06:31:43.776Z"
+    }
+  ],
+  "created_at": "2026-07-22T05:31:43.776Z",
+  "expires_at": "2026-07-22T06:31:43.776Z",
+  "independence_assurance": {
+    "required": true,
+    "correlation_rule": "shared_required_component",
+    "required_dimensions": [
+      "provider_id",
+      "operator_id",
+      "control_plane_id",
+      "account_id",
+      "project_id",
+      "runner_pool_id",
+      "infrastructure_id",
+      "region_id",
+      "zone_id"
+    ],
+    "minimum_independent_domains": 2
+  }
+}

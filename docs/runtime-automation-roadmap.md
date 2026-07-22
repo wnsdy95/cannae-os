@@ -400,17 +400,36 @@ Completion criteria for Phase 12C:
 - Runtime claims and execution observations are bound by exact policy references and dual DSSE signatures.
 - Native adapters remain responsible for deriving common fields from authenticated provider claims; a compromised trusted builder remains a documented root-of-trust failure.
 
-See `verifier-execution-integrity.md`, `verifier-pre-dispatch-challenge.md`, and `verifier-independence-assurance.md` for contracts, verification order, state transitions, adapter boundaries and operational commands.
+See `verifier-execution-integrity.md`, `verifier-pre-dispatch-challenge.md`, `verifier-independence-assurance.md`, and `transparency-operations.md` for contracts, verification order, state transitions, adapter boundaries and operational commands.
 
 ## 14. Phase 13: Transparency Operations
 
-Status: planned.
+Status: implemented as a manifest-backed control-plane verifier. Production Rekor/TUF services, polling adapters, witnesses, monitors, and gossip remain external.
 
 Goal:
 
 - Operate trust over time through Rekor checkpoint consistency, TUF/root rotation, witnesses, monitors, gossip and explicit equivocation and revocation incident procedures.
 
 Phase 13 must not be represented as complete by verifying one inclusion proof or one valid bundle. It requires durable monitor state, consistency checks across checkpoints, independent observations and response authority outside the verifier being monitored.
+
+Implemented controls:
+
+- `TransparencyPolicy` pins log keys, observer registries, distinct-operator thresholds, initial roots, state freshness, and fail-closed incident actions;
+- `TransparencyObservation` verifies signed checkpoints, rollback/equivocation rules, RFC 6962 consistency proofs, and separate witness/monitor quorums;
+- `TrustRootRotation` uses official TUF models to require previous-root and new-root thresholds plus exact N to N+1 progression;
+- `TransparencyIncident` preserves immutable incident and resolution-supersession history with USER authority and durable revocations;
+- `TransparencyState` forms a repository-bound sequence whose complete projection is reconstructed from exact embedded evidence;
+- `VerifierTrustPolicy` and `SelfImprovementCycleOrder` v0.7 make a current manifest-backed transparency state a dispatch prerequisite;
+- the supervisor rejects embedded observations, roots, rotations, incidents, or states that do not resolve to exact verified manifest entries;
+- observation, state-age, and TUF-root expiry bound overall admission and cycle-order lifetime, and current state roots cannot exceed the trust policy's admitted root set.
+
+Completion criteria:
+
+- Rollback, same-size root conflict, invalid consistency, stale evidence, correlated/insufficient observers, invalid root rotation, dropped incident history, active revocation, or missing manifest evidence blocks dispatch.
+- A blocked historical state can remain in the sequence for an immutable USER-authorized recovery record, but only the newest state can authorize readiness.
+- Passing Phase 13 never grants release, policy-change, root-change, revocation, or incident-resolution authority.
+
+See `transparency-operations.md` for the contracts, algorithms, operating sequence, incident model, commands, and explicit infrastructure limits.
 
 ## 15. Release Gates
 
@@ -431,6 +450,8 @@ Phase 13 must not be represented as complete by verifying one inclusion proof or
 | G13 | Trust-policy v0.3 Sigstore dispatch has a fresh dual-bound native bundle under the exact manifest-pinned TrustedRoot, signer identity, issuer and nonzero verification thresholds |
 | G14 | Trust-policy v0.4 attestation enters quorum only with valid dual-signed execution evidence matching the exact runtime policy, repository state and verification target |
 | G15 | Trust-policy v0.5 dispatch has one exact active supervisor challenge and enough fresh dual-signed nonce responses to satisfy every required purpose quorum without ambiguity or replay |
+| G16 | Trust-policy v0.6 dispatch and post-execution quorum use computed failure domains instead of declared group labels |
+| G17 | Trust-policy v0.7 dispatch has a current, contiguous, reconstructable and manifest-backed transparency state with valid consistency, observer, root, incident and revocation status |
 
 ## 16. Related Documents
 
@@ -442,3 +463,4 @@ Phase 13 must not be represented as complete by verifying one inclusion proof or
 - `bounded-self-improvement-operations.md`
 - `verifier-pre-dispatch-challenge.md`
 - `verifier-execution-integrity.md`
+- `transparency-operations.md`

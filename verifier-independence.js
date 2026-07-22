@@ -85,7 +85,7 @@ function profileClaimsMatchProvider(profile) {
 }
 
 function computeVerifierIndependence(trustPolicy, runtimePolicy) {
-  const required = Boolean(trustPolicy && trustPolicy.schema_version === "0.6");
+  const required = Boolean(trustPolicy && ["0.6", "0.7"].includes(trustPolicy.schema_version));
   if (!required) {
     return {
       required: false,

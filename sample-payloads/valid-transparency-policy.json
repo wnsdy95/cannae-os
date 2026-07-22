@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1",
+  "type": "TransparencyPolicy",
+  "id": "TP-Phase-13",
+  "repository_binding": {
+    "repository_key": "supervised-repository-5d5bf4b75f14",
+    "identity_fingerprint": "5d5bf4b75f143366e0fa15d0faf01e78a5adea0bab4ab7e7e99a92597f78fe44"
+  },
+  "trust_policy_id": "VTP-Supervised-Challenge",
+  "state_stream_id": "TSS-Phase-13",
+  "max_state_age_seconds": 600,
+  "trusted_roots": [
+    {
+      "id": "ROOT-Sigstore-PGI",
+      "trusted_root_ref": {
+        "artifact_id": "STR-Transparency-Root-1",
+        "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/sigstore-trusted-roots/STR-Transparency-Root-1.json",
+        "sha256": "2f905b58dd384396d3cbbd090585ec43ad1da0dce91447d99d4e8d6e67169890"
+      },
+      "trusted_root_sha256": "01e8619627bf5f532af443193135e470b632669e9784d585f944bc580f08889f",
+      "tuf_root_version": 1,
+      "tuf_root_expires_at": "2027-07-22T00:00:00Z"
+    }
+  ],
+  "logs": [
+    {
+      "id": "LOG-Rekor-PGI",
+      "origin": "rekor.example.test/shard-1",
+      "key_id": "b58b59c8edd3efc39710009f901bc4d0974488257ee3644d5bcdc1d0228bd7b3",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAPLdvRmTuGy73s/lHUQa3J5eAcmXxIVgH7IJBVhNzWpo=\n-----END PUBLIC KEY-----\n",
+      "max_checkpoint_age_seconds": 300,
+      "witness_ids": [
+        "WITNESS-A",
+        "WITNESS-B"
+      ],
+      "monitor_ids": [
+        "MONITOR-A",
+        "MONITOR-B"
+      ],
+      "minimum_witnesses": 2,
+      "minimum_witness_operators": 2,
+      "minimum_monitors": 2,
+      "minimum_monitor_operators": 2
+    }
+  ],
+  "witnesses": [
+    {
+      "id": "WITNESS-A",
+      "operator_id": "cannae:operator:witness-1",
+      "key_id": "54988fca4b9c29efdda68b54ef555797c1fda68fa3f0183e2d154ae77d8a408c",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA6aajf4FSoPlwTAxgyZNKJnSLC8ninOpQZ59TBCfic/U=\n-----END PUBLIC KEY-----\n",
+      "status": "active",
+      "valid_from": "2026-07-22T00:00:00Z",
+      "valid_until": "2026-07-23T00:00:00Z"
+    },
+    {
+      "id": "WITNESS-B",
+      "operator_id": "cannae:operator:witness-2",
+      "key_id": "af27c335a88ec7d3e1cd494bea54c0f62544a3c8721eaf021bcbe22a43b03236",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEATdtlUAe1wN76AMab0NosihJVqkFQRefNMPpgf0OOzOA=\n-----END PUBLIC KEY-----\n",
+      "status": "active",
+      "valid_from": "2026-07-22T00:00:00Z",
+      "valid_until": "2026-07-23T00:00:00Z"
+    }
+  ],
+  "monitors": [
+    {
+      "id": "MONITOR-A",
+      "operator_id": "cannae:operator:monitor-1",
+      "key_id": "a19cec92e8a65e7a937139ccfbe358b817bcdbcb9e6f46df794bb3750165c48b",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAUBAcrvPI/nOwK42vkBTDOBkVoR5vb04qWczZwY89ldM=\n-----END PUBLIC KEY-----\n",
+      "status": "active",
+      "valid_from": "2026-07-22T00:00:00Z",
+      "valid_until": "2026-07-23T00:00:00Z"
+    },
+    {
+      "id": "MONITOR-B",
+      "operator_id": "cannae:operator:monitor-2",
+      "key_id": "75650c7dba6a758bdef7c0eb0faad8e6e9d65108c3e708d420c78456a14a7b47",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAuLd5RgM9sRw16+aifqrO+PDoSjsBTRdgHGKfdB2q9l8=\n-----END PUBLIC KEY-----\n",
+      "status": "active",
+      "valid_from": "2026-07-22T00:00:00Z",
+      "valid_until": "2026-07-23T00:00:00Z"
+    }
+  ],
+  "incident_response": {
+    "authority": "USER",
+    "equivocation_action": "block_all_dispatch",
+    "consistency_failure_action": "block_all_dispatch",
+    "root_failure_action": "block_all_dispatch",
+    "preserve_evidence": true
+  },
+  "created_at": "2026-07-22T00:00:00Z",
+  "expires_at": "2026-07-23T00:00:00Z"
+}

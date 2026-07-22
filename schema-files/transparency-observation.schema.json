@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/transparency-observation.schema.json",
+  "title": "Transparency Observation",
+  "type": "object",
+  "required": [
+    "schema_version", "type", "id", "policy_id", "log_id", "previous_checkpoint",
+    "checkpoint", "consistency_proof", "witness_signatures", "monitor_signatures",
+    "observed_at", "expires_at", "observation_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "TransparencyObservation" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "policy_id": { "$ref": "common.schema.json#/$defs/id" },
+    "log_id": { "$ref": "common.schema.json#/$defs/id" },
+    "previous_checkpoint": {
+      "oneOf": [
+        { "$ref": "#/$defs/none_ref" },
+        { "$ref": "#/$defs/checkpoint_core" }
+      ]
+    },
+    "checkpoint": { "$ref": "#/$defs/signed_checkpoint" },
+    "consistency_proof": {
+      "type": "object",
+      "required": ["algorithm", "hashes", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": { "type": "string", "const": "rfc6962_sha256" },
+        "hashes": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/sha256" } },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "witness_signatures": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/witness_signature" }
+    },
+    "monitor_signatures": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/monitor_signature" }
+    },
+    "observed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "observation_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "base64": { "type": "string", "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$" },
+    "none_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "type": "string", "const": "none" },
+        "relative_path": { "type": "string", "const": "none" },
+        "sha256": { "type": "string", "const": "none" }
+      }
+    },
+    "checkpoint_core": {
+      "type": "object",
+      "required": ["log_id", "origin", "tree_size", "root_hash", "issued_at", "key_id"],
+      "additionalProperties": false,
+      "properties": {
+        "log_id": { "$ref": "common.schema.json#/$defs/id" },
+        "origin": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "tree_size": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "root_hash": { "$ref": "#/$defs/sha256" },
+        "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "key_id": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "signed_checkpoint": {
+      "type": "object",
+      "required": ["log_id", "origin", "tree_size", "root_hash", "issued_at", "key_id", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "log_id": { "$ref": "common.schema.json#/$defs/id" },
+        "origin": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "tree_size": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "root_hash": { "$ref": "#/$defs/sha256" },
+        "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "key_id": { "$ref": "#/$defs/sha256" },
+        "signature_base64": { "$ref": "#/$defs/base64" }
+      }
+    },
+    "witness_signature": {
+      "type": "object",
+      "required": ["witness_id", "key_id", "observed_at", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "witness_id": { "$ref": "common.schema.json#/$defs/id" },
+        "key_id": { "$ref": "#/$defs/sha256" },
+        "observed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "signature_base64": { "$ref": "#/$defs/base64" }
+      }
+    },
+    "monitor_signature": {
+      "type": "object",
+      "required": ["monitor_id", "key_id", "observed_at", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "monitor_id": { "$ref": "common.schema.json#/$defs/id" },
+        "key_id": { "$ref": "#/$defs/sha256" },
+        "observed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "signature_base64": { "$ref": "#/$defs/base64" }
+      }
+    }
+  }
+}

@@ -52,7 +52,7 @@ function main() {
     if (failures.length > 0) throw new Error(`Attestation input validation failed: ${[...new Set(failures.map(item => item.code))].join(", ")}`);
     const verifier = trustPolicy.verifiers.find(item => item.id === options.verifier);
     if (!verifier) throw new Error("Verifier is not present in the trust policy.");
-    if (["0.4", "0.5", "0.6"].includes(trustPolicy.schema_version) && !options.executionEvidenceRef) {
+    if (["0.4", "0.5", "0.6", "0.7"].includes(trustPolicy.schema_version) && !options.executionEvidenceRef) {
       throw new Error("Execution-assured trust-policy v0.4+ requires --execution-evidence-ref <json>.");
     }
     const privateKeyPath = path.resolve(options.privateKey);

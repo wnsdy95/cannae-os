@@ -810,6 +810,20 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "valid continuously transparent self-improvement cycle order",
+    file: "sample-payloads/valid-self-improvement-cycle-order-v0.7.json",
+    type: "self-improvement-cycle-order",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "self-improvement cycle order falsely claims transparency",
+    file: "sample-payloads/invalid-self-improvement-cycle-order-v0.7-false-transparency.json",
+    type: "self-improvement-cycle-order",
+    exitCode: 1,
+    requiredCodes: ["CYCLE_ORDER_TRANSPARENCY_FALSE_SATISFACTION"]
+  },
+  {
     name: "blocked self-improvement cycle order authorizes execution",
     file: "sample-payloads/invalid-self-improvement-cycle-order-blocked-execution.json",
     type: "self-improvement-cycle-order",
@@ -920,6 +934,69 @@ const fixtures = [
     type: "verifier-trust-policy",
     exitCode: 0,
     requiredCodes: []
+  },
+  {
+    name: "valid continuously transparent verifier trust policy",
+    file: "sample-payloads/valid-verifier-trust-policy-v0.7.json",
+    type: "verifier-trust-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "v0.7 verifier trust policy omits transparency assurance",
+    file: "sample-payloads/invalid-verifier-trust-policy-v0.7-missing-transparency.json",
+    type: "verifier-trust-policy",
+    exitCode: 1,
+    requiredCodes: ["VERIFIER_POLICY_TRANSPARENCY_ASSURANCE_INVALID"]
+  },
+  {
+    name: "valid transparency policy",
+    file: "sample-payloads/valid-transparency-policy.json",
+    type: "transparency-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid transparency observation",
+    file: "sample-payloads/valid-transparency-observation.json",
+    type: "transparency-observation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid trust-root rotation",
+    file: "sample-payloads/valid-trust-root-rotation.json",
+    type: "trust-root-rotation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "trust-root rotation skips a TUF root version",
+    file: "sample-payloads/invalid-trust-root-rotation-version-skip.json",
+    type: "trust-root-rotation",
+    exitCode: 1,
+    requiredCodes: ["TRUST_ROOT_ROTATION_VERSION_INVALID"]
+  },
+  {
+    name: "valid transparency incident",
+    file: "sample-payloads/valid-transparency-incident.json",
+    type: "transparency-incident",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid transparency state",
+    file: "sample-payloads/valid-transparency-state.json",
+    type: "transparency-state",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "transparency state falsely claims readiness",
+    file: "sample-payloads/invalid-transparency-state-false-ready.json",
+    type: "transparency-state",
+    exitCode: 1,
+    requiredCodes: ["TRANSPARENCY_STATE_FALSE_STATUS"]
   },
   {
     name: "valid verifier challenge set",

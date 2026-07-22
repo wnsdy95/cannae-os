@@ -175,19 +175,19 @@ function createVerifierExecutionEvidence(options) {
   const verifier = verifierFor(trustPolicy, options.verifierId);
   const assignment = assignmentFor(runtimePolicy, options.verifierId);
   const profile = assignment && profileFor(runtimePolicy, assignment.profile_id);
-  if (!trustPolicy || !["0.4", "0.5", "0.6"].includes(trustPolicy.schema_version) || !verifier || verifier.status !== "active") {
+  if (!trustPolicy || !["0.4", "0.5", "0.6", "0.7"].includes(trustPolicy.schema_version) || !verifier || verifier.status !== "active") {
     throw new Error("An active verifier from execution-assured VerifierTrustPolicy v0.4+ is required.");
   }
   if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || !assignment || !profile) {
     throw new Error("The verifier requires one assigned runtime profile.");
   }
-  const independenceRequired = trustPolicy.schema_version === "0.6";
+  const independenceRequired = ["0.6", "0.7"].includes(trustPolicy.schema_version);
   if (independenceRequired && (runtimePolicy.schema_version !== "0.2" ||
       !sameClaims(options.independence, profile.independence))) {
-    throw new Error("Trust-policy v0.6 requires observed independence claims matching runtime-policy v0.2.");
+    throw new Error("Trust-policy v0.6+ requires observed independence claims matching runtime-policy v0.2.");
   }
   if (independenceRequired && !computeVerifierIndependence(trustPolicy, runtimePolicy).valid) {
-    throw new Error("Trust-policy v0.6 runtime independence identities are invalid.");
+    throw new Error("Trust-policy v0.6+ runtime independence identities are invalid.");
   }
   if (!(assignment.allowed_purposes || []).includes(options.purpose)) {
     throw new Error("The runtime profile is not authorized for this evidence purpose.");
@@ -293,10 +293,10 @@ function verifyVerifierExecutionEvidence(options) {
   const codes = [];
   if (!evidence || evidence.type !== "VerifierExecutionEvidence") addCode(codes, "EXECUTION_EVIDENCE_TYPE_INVALID");
   if (evidence && evidence.evidence_sha256 !== evidenceDigest(evidence)) addCode(codes, "EXECUTION_EVIDENCE_DIGEST_INVALID");
-  if (!trustPolicy || !["0.4", "0.5", "0.6"].includes(trustPolicy.schema_version) || !trustPolicy.execution_assurance) {
+  if (!trustPolicy || !["0.4", "0.5", "0.6", "0.7"].includes(trustPolicy.schema_version) || !trustPolicy.execution_assurance) {
     addCode(codes, "EXECUTION_EVIDENCE_TRUST_POLICY_INVALID");
   }
-  const independenceRequired = Boolean(trustPolicy && trustPolicy.schema_version === "0.6");
+  const independenceRequired = Boolean(trustPolicy && ["0.6", "0.7"].includes(trustPolicy.schema_version));
   const expectedRuntimeVersion = independenceRequired ? "0.2" : "0.1";
   const expectedEvidenceVersion = independenceRequired ? "0.2" : "0.1";
   if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || runtimePolicy.schema_version !== expectedRuntimeVersion) {

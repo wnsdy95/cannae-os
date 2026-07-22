@@ -133,7 +133,8 @@
       "host": "docs.sigstore.dev",
       "files": [
         "docs/research-compendium.md",
-        "docs/source-map.md"
+        "docs/source-map.md",
+        "docs/transparency-operations.md"
       ]
     },
     {
@@ -147,7 +148,8 @@
       "files": [
         "docs/research-compendium.md",
         "docs/sigstore-verifier-workload-admission.md",
-        "docs/source-map.md"
+        "docs/source-map.md",
+        "docs/transparency-operations.md"
       ]
     },
     {
@@ -379,7 +381,8 @@
       "host": "www.rfc-editor.org",
       "files": [
         "docs/research-compendium.md",
-        "docs/source-map.md"
+        "docs/source-map.md",
+        "docs/transparency-operations.md"
       ]
     },
     {

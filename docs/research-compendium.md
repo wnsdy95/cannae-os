@@ -2837,6 +2837,51 @@ Implemented artifacts:
 - readiness, receipt-quorum, comparative-quorum, supervisor, controller, runner, schema, validator and sample integrations
 - `run-verifier-independence-fixtures.js` covering label substitution, shared components, transitive correlation, dual-signed evidence, mutation and quorum failure
 
+### 8.63 Transparency Operations v0.13
+
+Research question: How can verifier trust remain valid over time when transparency logs grow, signing roots rotate, observers fail or collude, and compromise evidence requires revocation and recovery?
+
+Primary sources:
+
+- Rekor transparency overview: https://docs.sigstore.dev/logging/overview/
+- Rekor monitor: https://github.com/sigstore/rekor-monitor
+- transparency-dev checkpoint formats: https://github.com/transparency-dev/formats/tree/main/log
+- transparency-dev witness: https://github.com/transparency-dev/witness
+- Rekor v2 tiled logs: https://github.com/sigstore/rekor-tiles
+- RFC 6962: https://www.rfc-editor.org/rfc/rfc6962.html
+- The Update Framework specification: https://theupdateframework.github.io/specification/draft/
+- Sigstore threat model: https://docs.sigstore.dev/about/threat-model/
+- Sigstore root-signing repository: https://github.com/sigstore/root-signing
+
+Engineering conclusions:
+
+1. Inclusion is not consistency. A valid artifact entry and checkpoint prove one view; durable append-only assurance requires the prior checkpoint and a valid consistency proof to the next view.
+2. Same-size checkpoints with different roots are direct equivocation evidence. A smaller tree is rollback. Both must block dispatch and enter incident handling.
+3. Monitor state is durable control state, not a disposable CI log. A stateless job cannot prove which checkpoint it previously trusted.
+4. Witness and monitor functions should not collapse into one operator set. Witnesses countersign a consistent transition; monitors independently audit and report. Distinct identity and operator thresholds reduce one-key and one-operator substitution.
+5. Gossip is still necessary. A local verifier can reject conflicting checkpoints it receives, but it cannot detect a conflicting view that every local source withholds.
+6. Witnesses countersign the exact checkpoint after consistency verification; monitors sign the complete transition, including the previous checkpoint. Observer timestamps must equal the monitor-signed observation time so unsigned metadata cannot alter registry eligibility.
+7. TUF root update is dual authorization. Root N's threshold authorizes N+1, then N+1's own threshold confirms the new trust set. Exact sequential versions prevent skipped-state ambiguity, and the accepted root expiry must remain a state validity boundary.
+8. A valid root rotation must not silently widen an already active verifier trust policy. The current transparency-state roots remain bounded by roots explicitly admitted in the trust policy.
+9. Time-sharded logs make log identity and active/inactive shard distribution operational trust data. A changed URL or shard is a policy/root event, not harmless configuration drift.
+10. Incident records are immutable. Resolution is a new USER-authorized record that exactly supersedes an earlier open/contained record; rewriting or dropping the original destroys auditability.
+11. Revocation survives incident resolution. Recovery after a compromised active component requires replacement through an authorized policy or root transition, not a status flip.
+12. Blocked states belong in history. A transparency sequence must preserve the failure and its recovery rather than restart from an apparently clean state, so the state runner must persist a valid blocked projection without treating it as dispatch authority.
+13. Embedded evidence is insufficient. The supervisor must find each observation, root, rotation, incident and state as exact bytes in the verified repository manifest before admission.
+14. Freshness has three bounds: the signed observation/checkpoint expiry, current TUF root expiry, and the maximum state age selected by both transparency and verifier trust policies. The earliest boundary must cap both admission and the issued cycle order.
+15. Provider operation remains outside the generic core. Rekor polling, shard discovery, witness networking, TUF repository refresh, and cloud/TEE observation require provider adapters.
+16. Transparency never grants authority. Policy changes, roots, revocation disposition, execution, merge, push and release remain separately controlled.
+
+Implemented artifacts:
+
+- `docs/transparency-operations.md`
+- `transparency-operations.js` and `transparency-operations-runner.js`
+- `TransparencyPolicy`, `TransparencyObservation`, `TrustRootRotation`, `TransparencyIncident`, and `TransparencyState` schemas
+- `VerifierTrustPolicy` and `SelfImprovementCycleOrder` v0.7
+- readiness, supervisor, attestation, controller, schema, validator and repository-manifest integrations
+- `run-transparency-operations-fixtures.js` and `run-transparency-supervisor-fixtures.js`
+- valid and adversarial policy, observation, rotation, incident, state, trust-policy and cycle-order samples
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.1",
+  "type": "TrustRootRotation",
+  "id": "TRR-Phase-13-2",
+  "policy_id": "TP-Phase-13",
+  "previous_trusted_root_ref": {
+    "artifact_id": "STR-Transparency-Root-1",
+    "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/sigstore-trusted-roots/STR-Transparency-Root-1.json",
+    "sha256": "2f905b58dd384396d3cbbd090585ec43ad1da0dce91447d99d4e8d6e67169890"
+  },
+  "next_trusted_root_ref": {
+    "artifact_id": "STR-Transparency-Root-2",
+    "relative_path": "repositories/supervised-repository-5d5bf4b75f14/missions/MIS-Supervised-Challenge/C1/sigstore-trusted-roots/STR-Transparency-Root-2.json",
+    "sha256": "ac561e56aec82f74220b56f9883996cacbb16f916b81d3f5d2a065f6ef52e58c"
+  },
+  "previous_trusted_root_sha256": "01e8619627bf5f532af443193135e470b632669e9784d585f944bc580f08889f",
+  "next_trusted_root_sha256": "49476654668df9bd04df4f7afe041ddb5189ce16ffdc0e4977957cc2f1ef6c3d",
+  "previous_tuf_root": {
+    "signatures": [
+      {
+        "keyid": "7569b794e4fbf0fb9d367c846c60115afd314c0e42bd733ab1ae5738f074b91d",
+        "sig": "b01863d705caa7f70e93400ff36230eedd86c555f886882a7d00661622c347f02c9ac0b96e6787650d5a1b19b40fb4ddc282b04a090961e0cc4f1368fbc89103"
+      }
+    ],
+    "signed": {
+      "_type": "root",
+      "spec_version": "1.0.31",
+      "version": 1,
+      "expires": "2027-07-22T00:00:00Z",
+      "keys": {
+        "7569b794e4fbf0fb9d367c846c60115afd314c0e42bd733ab1ae5738f074b91d": {
+          "keytype": "ed25519",
+          "scheme": "ed25519",
+          "keyval": {
+            "public": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAWI+mflaRs3S+uSuQw6lbrLKgofo2buoGxdQOmtaiv0o=\n-----END PUBLIC KEY-----\n"
+          }
+        }
+      },
+      "roles": {
+        "root": {
+          "keyids": [
+            "7569b794e4fbf0fb9d367c846c60115afd314c0e42bd733ab1ae5738f074b91d"
+          ],
+          "threshold": 1
+        },
+        "snapshot": {
+          "keyids": [
+            "7569b794e4fbf0fb9d367c846c60115afd314c0e42bd733ab1ae5738f074b91d"
+          ],
+          "threshold": 1
+        },
+        "targets": {
+          "keyids": [
+            "7569b794e4fbf0fb9d367c846c60115afd314c0e42bd733ab1ae5738f074b91d"
+          ],
+          "threshold": 1
+        },
+        "timestamp": {
+          "keyids": [
+            "7569b794e4fbf0fb9d367c846c60115afd314c0e42bd733ab1ae5738f074b91d"
+          ],
+          "threshold": 1
+        }
+      },
+      "consistent_snapshot": true
+    }
+  },
+  "next_tuf_root": {
+    "signatures": [
+      {
+        "keyid": "7569b794e4fbf0fb9d367c846c60115afd314c0e42bd733ab1ae5738f074b91d",
+        "sig": "d693072171efa39ad647afc873019f66f22829f46b118d1bfdd6a5f32414d567d5771e665a38e982126848bea5d7f94c4a59a63cea4067c333da07fe1860960a"
+      },
+      {
+        "keyid": "4fa9e7c9c355338d786aaad5d3daa82ba88f9ccf1c8d98533f89fe203b084be6",
+        "sig": "371a8f5c8539ba6938c6a94f22a4ee8d7981d67eeacf53236e4baf2837e689667f00ee5c11959b6c83ab6320afc180f8d94603f049bb21ee090db811c5fbd60a"
+      }
+    ],
+    "signed": {
+      "_type": "root",
+      "spec_version": "1.0.31",
+      "version": 3,
+      "expires": "2027-07-22T00:00:00Z",
+      "keys": {
+        "4fa9e7c9c355338d786aaad5d3daa82ba88f9ccf1c8d98533f89fe203b084be6": {
+          "keytype": "ed25519",
+          "scheme": "ed25519",
+          "keyval": {
+            "public": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAPMqb60VWV9Py4S3gOjpzT0XmW8EvaTzQj9YTkXvW6xE=\n-----END PUBLIC KEY-----\n"
+          }
+        }
+      },
+      "roles": {
+        "root": {
+          "keyids": [
+            "4fa9e7c9c355338d786aaad5d3daa82ba88f9ccf1c8d98533f89fe203b084be6"
+          ],
+          "threshold": 1
+        },
+        "snapshot": {
+          "keyids": [
+            "4fa9e7c9c355338d786aaad5d3daa82ba88f9ccf1c8d98533f89fe203b084be6"
+          ],
+          "threshold": 1
+        },
+        "targets": {
+          "keyids": [
+            "4fa9e7c9c355338d786aaad5d3daa82ba88f9ccf1c8d98533f89fe203b084be6"
+          ],
+          "threshold": 1
+        },
+        "timestamp": {
+          "keyids": [
+            "4fa9e7c9c355338d786aaad5d3daa82ba88f9ccf1c8d98533f89fe203b084be6"
+          ],
+          "threshold": 1
+        }
+      },
+      "consistent_snapshot": true
+    }
+  },
+  "previous_tuf_root_sha256": "4414ae68b84e7280bd978ff3f06d08c85316dee204a49df3e989738136d21e46",
+  "next_tuf_root_sha256": "95f3c41ba08dd1b68fc3211946aa1038ad005e196a5c9ce35d171f72365a3cfd",
+  "reason": "scheduled",
+  "revoked_tuf_root_key_ids": [],
+  "approved_by": "USER",
+  "approved_at": "2026-07-22T10:00:00Z",
+  "effective_at": "2026-07-22T10:01:00Z",
+  "rotation_sha256": "a9b2094c6147ff305a88d9a855a9d05079c4da67c277bb6c4ff0d82b0c71963d"
+}
