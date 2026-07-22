@@ -1027,6 +1027,20 @@ const fixtures = [
     requiredCodes: ["ADDITIONAL_PROPERTY", "SIGSTORE_TRUSTED_ROOT_DIGEST_MISMATCH"]
   },
   {
+    name: "valid GitHub Actions OIDC trust bundle",
+    file: "sample-payloads/valid-github-actions-oidc-trust-bundle.json",
+    type: "github-actions-oidc-trust-bundle",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid GitHub Actions OIDC evidence projection",
+    file: "sample-payloads/valid-github-actions-oidc-evidence.json",
+    type: "github-actions-oidc-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
     name: "valid verifier workload identity evidence",
     file: "sample-payloads/valid-verifier-identity-evidence.json",
     type: "verifier-identity-evidence",
@@ -1067,6 +1081,20 @@ const fixtures = [
     type: "verifier-runtime-policy",
     exitCode: 0,
     requiredCodes: []
+  },
+  {
+    name: "valid native GitHub Actions verifier runtime policy",
+    file: "sample-payloads/valid-verifier-runtime-policy-v0.3.json",
+    type: "verifier-runtime-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "native GitHub Actions runtime policy permits a self-hosted runner",
+    file: "sample-payloads/invalid-verifier-runtime-policy-v0.3-self-hosted.json",
+    type: "verifier-runtime-policy",
+    exitCode: 1,
+    requiredCodes: ["VERIFIER_RUNTIME_INDEPENDENCE_CLAIMS_INVALID", "VERIFIER_RUNTIME_NATIVE_CLAIMS_INVALID"]
   },
   {
     name: "failure-domain runtime policy omits a zone identity",

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-actions-oidc-evidence.schema.json",
+  "title": "GitHub Actions OIDC Evidence",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "trust_bundle_ref", "compact_jwt", "token_sha256", "header", "provider_identity", "independence", "issued_at", "not_before", "expires_at", "evidence_sha256"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "GitHubActionsOIDCEvidence" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "trust_bundle_ref": { "$ref": "#/$defs/artifact_ref" },
+    "compact_jwt": { "type": "string", "minLength": 16, "maxLength": 32768, "pattern": "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$" },
+    "token_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "header": {
+      "type": "object",
+      "required": ["alg", "kid", "typ"],
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "type": "string", "const": "RS256" },
+        "kid": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "typ": { "type": "string", "const": "JWT" }
+      }
+    },
+    "provider_identity": { "$ref": "#/$defs/provider_identity" },
+    "independence": { "$ref": "#/$defs/independence_claims" },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "not_before": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "evidence_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "provider_identity": {
+      "type": "object",
+      "required": ["issuer", "subject", "audience", "claims"],
+      "additionalProperties": false,
+      "properties": {
+        "issuer": { "type": "string", "const": "https://token.actions.githubusercontent.com" },
+        "subject": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "audience": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "claims": {
+          "type": "object",
+          "required": ["repository", "repository_id", "repository_owner", "repository_owner_id", "sha", "ref", "workflow_ref", "workflow_sha", "job_workflow_ref", "job_workflow_sha", "runner_environment", "run_id", "run_attempt"],
+          "additionalProperties": false,
+          "properties": {
+            "repository": { "type": "string", "minLength": 1 },
+            "repository_id": { "type": "string", "pattern": "^\\d+$" },
+            "repository_owner": { "type": "string", "minLength": 1 },
+            "repository_owner_id": { "type": "string", "pattern": "^\\d+$" },
+            "sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+            "ref": { "type": "string", "pattern": "^refs/" },
+            "workflow_ref": { "type": "string", "minLength": 1 },
+            "workflow_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+            "job_workflow_ref": { "type": "string", "minLength": 1 },
+            "job_workflow_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+            "runner_environment": { "type": "string", "const": "github-hosted" },
+            "run_id": { "type": "string", "pattern": "^\\d+$" },
+            "run_attempt": { "type": "string", "pattern": "^[1-9]\\d*$" }
+          }
+        }
+      }
+    },
+    "component_id": { "type": "string", "minLength": 3, "maxLength": 2048, "pattern": "^[a-z][a-z0-9+.-]*:\\S+$" },
+    "independence_claims": {
+      "type": "object",
+      "required": ["provider_id", "operator_id", "control_plane_id", "account_id", "project_id", "runner_pool_id", "infrastructure_id", "region_id", "zone_id"],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id": { "$ref": "#/$defs/component_id" },
+        "operator_id": { "$ref": "#/$defs/component_id" },
+        "control_plane_id": { "$ref": "#/$defs/component_id" },
+        "account_id": { "$ref": "#/$defs/component_id" },
+        "project_id": { "$ref": "#/$defs/component_id" },
+        "runner_pool_id": { "$ref": "#/$defs/component_id" },
+        "infrastructure_id": { "$ref": "#/$defs/component_id" },
+        "region_id": { "$ref": "#/$defs/component_id" },
+        "zone_id": { "$ref": "#/$defs/component_id" }
+      }
+    }
+  }
+}

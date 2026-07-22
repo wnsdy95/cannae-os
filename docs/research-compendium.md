@@ -3222,3 +3222,49 @@ Verification:
 - Ran `route_controls_docs.js` against 3 representative questions to confirm routing for authority/release, schema/fixture, and multinational source verification.
 - Confirmed, per `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, that of 329 routable artifacts, 329 were routed and 0 were unrouted.
 - The skill validator was run against a temporary PyYAML target and passed.
+
+## Phase 14A: GitHub Actions Native Execution Identity
+
+Purpose: replace policy-pinned but builder-restated GitHub metadata with a provider-signed OIDC token that is verified before execution evidence enters quorum.
+
+Primary sources:
+
+- GitHub Actions OIDC reference: https://docs.github.com/en/actions/reference/security/oidc
+- GitHub reusable-workflow OIDC: https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-with-reusable-workflows
+- GitHub live OIDC discovery: https://token.actions.githubusercontent.com/.well-known/openid-configuration
+- GitHub artifact attestations: https://docs.github.com/en/actions/concepts/security/artifact-attestations
+- IETF JWT RFC 7519: https://www.rfc-editor.org/rfc/rfc7519.html
+- IETF JWK RFC 7517: https://www.rfc-editor.org/rfc/rfc7517.html
+
+Findings:
+
+1. GitHub's public issuer is exact and its discovery document currently advertises `RS256`. Algorithm and issuer selection must be fixed by policy, not accepted from the token.
+2. The JOSE `kid` selects a key but does not authorize it. The selected JWK must come from the exact manifest-pinned trust bundle, use RSA signing material, and be accepted only within the bundle's review window.
+3. Subject alone is insufficient. GitHub introduced immutable owner/repository IDs in newer default subjects, while older repositories may retain a name-based subject. Exact `sub` is still required, but independent `repository_id` and `repository_owner_id` claim pins prevent namespace reuse.
+4. `workflow_ref` and `workflow_sha` identify the calling workflow context. The ref may name a branch, so the policy pins it exactly while requiring the signed `workflow_sha` to equal the repository commit. `job_workflow_ref` and `job_workflow_sha` identify a reusable workflow, whose ref is pinned directly by full commit SHA.
+5. `runner_environment` distinguishes only `github-hosted` from `self-hosted`. It does not authenticate a runner group, machine, cloud account, infrastructure, region, or zone.
+6. Unknown topology cannot become unique topology. GitHub-hosted infrastructure, region, and zone are projected as shared unknown components, so multiple GitHub jobs remain one correlated domain.
+7. Self-hosted runners require a separate authenticated host/runner adapter. Treating a label, run ID, or unverified environment variable as infrastructure identity would allow quorum inflation.
+8. JWT time claims are evaluated at evidence admission with bounded age and clock skew. The token's expiry also caps native execution evidence validity.
+9. OIDC authenticates job context; it does not prove exact code execution. The existing builder-and-verifier DSSE remains necessary to bind code, image, lockfile, harness, argv, tools, network, sandbox, invocation, repository state, and result.
+10. Artifact attestations are useful for release artifacts, but a per-verifier execution record needs a direct subject/result binding. Phase 14A therefore uses OIDC as an additional identity proof inside the existing execution-evidence architecture rather than treating artifact attestation as a complete verifier result.
+11. Offline re-verification requires the exact compact JWT and exact trust material. The token is therefore persisted in the access-controlled, ignored artifact store and never printed by the adapter CLI.
+12. HTTPS retrieval and human approval of the JWKS artifact remain roots of trust. Phase 13 transparency does not currently monitor GitHub OIDC signing-key equivocation or provide historical JWKS transparency.
+
+Implemented contracts:
+
+- `GitHubActionsOIDCTrustBundle` schema, digest, normalized JWK rules, retrieval window, runner, and sample.
+- `GitHubActionsOIDCEvidence` schema, exact compact token retention, projection digest, runner, and sample.
+- `VerifierRuntimePolicy` v0.3 native profile and `VerifierExecutionEvidence` v0.3 native reference.
+- strict JWT parsing, `RS256` signature verification, exact identity/claim/time checks, and conservative failure-domain derivation.
+- manifest loading in receipt and comparative-attestation quorum paths.
+- adversarial fixtures for algorithm, key, signature, identity, workflow, runner, time, trust-bundle, projection, repository-state, and missing-evidence failures.
+
+Residual limits:
+
+- no GitHub Enterprise Server issuer support;
+- no self-hosted or larger-runner identity adapter;
+- no GitHub JWKS transparency monitor or historical key archive;
+- no proof of physical runner isolation or sandbox enforcement;
+- no native GitLab CI, local host, or TEE adapter;
+- no authority expansion from successful OIDC or quorum verification.

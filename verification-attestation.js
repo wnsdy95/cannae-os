@@ -294,11 +294,22 @@ function verifyVerificationAttestation(attestation, trustPolicy, expectations = 
       } else {
         const receiptExpectation = expectations.receiptReferences && expectations.receiptReferences[attestation.receipt_id] || {};
         const { verifyVerifierExecutionEvidence } = require("./verifier-execution-evidence");
+        const nativeItem = evidence.native_provider_evidence_ref
+          ? executionEvidenceItem(evidence.native_provider_evidence_ref, expectations.nativeProviderEvidence)
+          : null;
+        const nativeEvidence = nativeItem && nativeItem.payload ? nativeItem.payload : nativeItem;
+        const nativeTrustRef = nativeEvidence && nativeEvidence.trust_bundle_ref;
+        const nativeTrustItem = nativeTrustRef
+          ? executionEvidenceItem(nativeTrustRef, expectations.nativeTrustBundles)
+          : null;
         const result = verifyVerifierExecutionEvidence({
           evidence,
           trustPolicy,
           runtimePolicy: expectations.runtimePolicy,
           runtimePolicyReference: expectations.runtimePolicyReference,
+          nativeProviderEvidence: nativeEvidence,
+          nativeTrustBundle: nativeTrustItem && nativeTrustItem.payload ? nativeTrustItem.payload : nativeTrustItem,
+          nativeTrustBundleReference: nativeTrustRef,
           evaluatedAt: now instanceof Date ? now.toISOString() : now,
           expectations: {
             purpose: "verification_receipt",

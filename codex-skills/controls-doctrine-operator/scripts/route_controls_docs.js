@@ -106,11 +106,12 @@ const RULES = [
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "verifier independence", "failure domain", "correlation domain", "shared runner", "shared account", "shared project", "pre-dispatch admission", "pre-dispatch challenge", "challenge", "nonce", "liveness", "replay", "stale responder", "offline verifier", "remote verifier", "verifier identity", "verifier execution", "execution integrity", "execution evidence", "runtime policy", "oci", "sandbox", "workload identity", "spiffe", "svid", "x509", "x.509", "transparency log", "transparency operations", "transparency state", "consistency proof", "witness", "monitor", "gossip", "root rotation", "equivocation", "revocation", "tuf", "merkle", "checkpoint", "sigstore", "sigstore bundle", "cosign bundle", "fulcio", "trustedroot", "trusted root", "rekor", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
+    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "verifier independence", "failure domain", "correlation domain", "shared runner", "shared account", "shared project", "pre-dispatch admission", "pre-dispatch challenge", "challenge", "nonce", "liveness", "replay", "stale responder", "offline verifier", "remote verifier", "verifier identity", "verifier execution", "execution integrity", "execution evidence", "runtime policy", "github actions oidc", "native provider adapter", "jwks", "jwt", "oci", "sandbox", "workload identity", "spiffe", "svid", "x509", "x.509", "transparency log", "transparency operations", "transparency state", "consistency proof", "witness", "monitor", "gossip", "root rotation", "equivocation", "revocation", "tuf", "merkle", "checkpoint", "sigstore", "sigstore bundle", "cosign bundle", "fulcio", "trustedroot", "trusted root", "rekor", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
     docs: [
       "docs/bounded-self-improvement-operations.md",
       "docs/sigstore-verifier-workload-admission.md",
       "docs/verifier-execution-integrity.md",
+      "docs/github-actions-native-verifier-adapter.md",
       "docs/verifier-pre-dispatch-challenge.md",
       "docs/verifier-independence-assurance.md",
       "docs/transparency-operations.md",
@@ -129,6 +130,7 @@ const RULES = [
       "node run-verifier-identity-evidence-fixtures.js",
       "node run-sigstore-verifier-identity-fixtures.js",
       "node run-verifier-execution-evidence-fixtures.js",
+      "node run-github-actions-oidc-fixtures.js",
       "node run-verifier-challenge-fixtures.js",
       "node run-verifier-independence-fixtures.js",
       "node run-transparency-operations-fixtures.js",
@@ -149,6 +151,7 @@ const RULES = [
       "node validator-cli-prototype/validate.js sample-payloads/valid-sigstore-verifier-identity-evidence.json sigstore-verifier-identity-evidence",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-runtime-policy.json verifier-runtime-policy",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-execution-evidence.json verifier-execution-evidence",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-github-actions-oidc-evidence.json github-actions-oidc-evidence",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-challenge-set.json verifier-challenge-set",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verification-attestation.json verification-attestation",
       "node validator-cli-prototype/validate.js sample-payloads/valid-comparative-evaluation-attestation.json comparative-evaluation-attestation"
@@ -523,6 +526,7 @@ function routeIdsForArtifact(file) {
   if (file === "aar-to-readiness-update.js") routeIds.push("orders", "runtime-architecture-dashboard");
   if (file === "autonomous-improvement-controller.js" || file === "campaign-supervisor.js" || file === "verifier-trust-readiness.js" || file === "verifier-identity-evidence.js" || file === "verifier-identity-fixture-support.js" || file === "verifier-execution-evidence.js" || file === "verifier-execution-runner.js" || file === "run-verifier-execution-evidence-fixtures.js" || file === "verifier-challenge-set.js" || file === "run-verifier-challenge-fixtures.js" || file === "verifier-independence.js" || file === "run-verifier-independence-fixtures.js" || file === "sigstore-trusted-root.js" || file === "sigstore-trusted-root-runner.js" || file === "sigstore-verifier-identity-evidence.js" || file === "sigstore-verifier-identity-runner.js" || file === "run-sigstore-verifier-identity-fixtures.js" || file === "run-campaign-supervisor-fixtures.js" || file === "run-verifier-trust-readiness-fixtures.js" || file === "run-verifier-identity-evidence-fixtures.js" || file === "run-workload-identity-admission-fixtures.js" || file === "run-cycle-order-admission-fixtures.js" || file === "run-self-improvement-fixtures.js" || file === "run-signed-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "transparency-operations.js" || file === "transparency-operations-runner.js" || file === "run-transparency-operations-fixtures.js" || file === "run-transparency-supervisor-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
+  if (file === "github-actions-oidc.js" || file === "github-actions-oidc-runner.js" || file === "run-github-actions-oidc-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "verification-runner.js" || file === "verification-attestation.js" || file === "verification-attestation-runner.js" || file === "run-verification-attestation-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "comparative-evaluation-runner.js" || file === "run-comparative-evaluation-fixtures.js" ||
       file === "comparative-evaluation-attestation.js" || file === "comparative-evaluation-attestation-runner.js" ||

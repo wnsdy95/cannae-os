@@ -17,9 +17,10 @@ Manual doctrine docs
 -> Comparative canary promotion gates
 -> Authenticated comparative evidence
 -> Pre-dispatch verifier readiness admission
+-> Provider-native execution identity
 ```
 
-Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, and pre-dispatch verifier readiness admission are implemented as local runtimes. UI and externally authenticated execution remain prototype-grade.
+Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, and a GitHub Actions OIDC execution adapter are implemented as local runtimes. UI, non-GitHub providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
 
 ## 1. Phase 0: Documentation Base
 
@@ -431,7 +432,35 @@ Completion criteria:
 
 See `transparency-operations.md` for the contracts, algorithms, operating sequence, incident model, commands, and explicit infrastructure limits.
 
-## 15. Release Gates
+## 15. Phase 14: Native Provider Execution Adapters
+
+Status: Phase 14A GitHub Actions OIDC adapter implemented. GitLab CI, self-hosted runner, local sandbox, and TEE adapters remain open.
+
+Goal:
+
+- Replace builder-restated provider metadata with evidence cryptographically verified under the provider's native identity mechanism before execution evidence can enter quorum.
+
+Phase 14A features:
+
+- `GitHubActionsOIDCTrustBundle` normalizes the exact public issuer, discovery/JWKS endpoints, `RS256` algorithms, signing keys, freshness, and artifact digest;
+- `GitHubActionsOIDCEvidence` retains the exact compact JWT for offline verification and projects only signed claims;
+- runtime-policy v0.3 requires a GitHub-hosted reusable workflow pinned by commit SHA and an exact manifest-backed trust bundle;
+- execution-evidence v0.3 signs the native-evidence reference under both builder and verifier keys;
+- issuer, subject, audience, `kid`, signature, token times, immutable repository/owner IDs, workflow refs/SHAs, commit, ref, run ID, attempt, and runner class fail closed;
+- GitHub-unattested runner pool, infrastructure, region, and zone are projected as shared unknown domains rather than invented diversity;
+- native GitHub evidence requires a clean repository at the exact token commit;
+- the controller reloads native evidence and JWKS material from the verified repository manifest before receipt or comparative quorum evaluation.
+
+Completion criteria for Phase 14A:
+
+- Algorithm confusion, unknown keys, signature corruption, audience/repository substitution, mutable workflow refs, self-hosted runners, expiry, trust-bundle replacement, projection forgery, dirty state, and missing nested artifacts fail closed.
+- CLI output does not expose the compact token; the manifest-backed artifact store retains it only for bounded offline verification.
+- Multiple GitHub-hosted jobs cannot satisfy independent-domain quorum by varying run metadata.
+- OIDC success never grants release or policy authority and never replaces dual-signed execution evidence.
+
+See `github-actions-native-verifier-adapter.md` for the exact contract, operations, source interpretation, and limitations.
+
+## 16. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -452,8 +481,9 @@ See `transparency-operations.md` for the contracts, algorithms, operating sequen
 | G15 | Trust-policy v0.5 dispatch has one exact active supervisor challenge and enough fresh dual-signed nonce responses to satisfy every required purpose quorum without ambiguity or replay |
 | G16 | Trust-policy v0.6 dispatch and post-execution quorum use computed failure domains instead of declared group labels |
 | G17 | Trust-policy v0.7 dispatch has a current, contiguous, reconstructable and manifest-backed transparency state with valid consistency, observer, root, incident and revocation status |
+| G18 | Runtime-policy v0.3 GitHub evidence has a valid manifest-pinned JWKS, strict OIDC signature/claim appraisal, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 
-## 16. Related Documents
+## 17. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -464,3 +494,4 @@ See `transparency-operations.md` for the contracts, algorithms, operating sequen
 - `verifier-pre-dispatch-challenge.md`
 - `verifier-execution-integrity.md`
 - `transparency-operations.md`
+- `github-actions-native-verifier-adapter.md`

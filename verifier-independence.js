@@ -65,6 +65,14 @@ function expectedProfileClaims(profile) {
   } else if (provider === "github_actions") {
     expected.project_id = componentId(provider, "repository", pinned.repository_id);
     expected.runner_pool_id = componentId(provider, "runner-environment", pinned.runner_environment);
+    if (profile.native_identity && profile.native_identity.adapter === "github_actions_oidc_v1") {
+      expected.operator_id = componentId(provider, "operator", "github");
+      expected.control_plane_id = componentId(provider, "control-plane", "hosted");
+      expected.account_id = componentId(provider, "repository-owner", pinned.repository_owner_id);
+      expected.infrastructure_id = componentId(provider, "infrastructure", "shared-unknown");
+      expected.region_id = componentId(provider, "region", "shared-unknown");
+      expected.zone_id = componentId(provider, "zone", "shared-unknown");
+    }
   } else if (provider === "gitlab_ci") {
     expected.project_id = componentId(provider, "project", pinned.job_project_id);
     expected.runner_pool_id = componentId(provider, "runner", pinned.runner_id);
@@ -108,7 +116,7 @@ function computeVerifierIndependence(trustPolicy, runtimePolicy) {
       !Number.isInteger(assurance.minimum_independent_domains) || assurance.minimum_independent_domains < 2) {
     addCode(codes, "INDEPENDENCE_POLICY_INVALID");
   }
-  if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || runtimePolicy.schema_version !== "0.2" ||
+  if (!runtimePolicy || runtimePolicy.type !== "VerifierRuntimePolicy" || !["0.2", "0.3"].includes(runtimePolicy.schema_version) ||
       runtimePolicy.trust_policy_id !== trustPolicy.id) {
     addCode(codes, "INDEPENDENCE_RUNTIME_POLICY_INVALID");
   }
@@ -216,6 +224,7 @@ function computeVerifierIndependence(trustPolicy, runtimePolicy) {
 
 module.exports = {
   INDEPENDENCE_DIMENSIONS,
+  componentId,
   computeVerifierIndependence,
   expectedProfileClaims,
   exactDimensions,

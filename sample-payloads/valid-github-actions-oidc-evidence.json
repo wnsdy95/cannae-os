@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubActionsOIDCEvidence",
+  "id": "GAOE-14A-001",
+  "trust_bundle_ref": {
+    "artifact_id": "GAOTB-14A-001",
+    "relative_path": "repositories/test/missions/MIS-14A/W1/GAOTB-14A-001.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "compact_jwt": "eyJhbGciOiJSUzI1NiIsImtpZCI6InBoYXNlLTE0YS10ZXN0LWtleSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Rva2VuLmFjdGlvbnMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwic3ViIjoicmVwbzp3bnNkeTk1L2NvbnRyb2xzOnJlZjpyZWZzL2hlYWRzL21haW4iLCJhdWQiOiJjYW5uYWUtdmVyaWZpZXItZXhlY3V0aW9uIiwiaWF0IjoxNzg0NzY1MDQwLCJuYmYiOjE3ODQ3NjUwNDAsImV4cCI6MTc4NDc2NTM0MCwianRpIjoib2lkYy10b2tlbi0xNGEtMDAxIiwicmVwb3NpdG9yeSI6Induc2R5OTUvY29udHJvbHMiLCJyZXBvc2l0b3J5X2lkIjoiMTAwMDEiLCJyZXBvc2l0b3J5X293bmVyIjoid25zZHk5NSIsInJlcG9zaXRvcnlfb3duZXJfaWQiOiIyMDAwMiIsInNoYSI6IjExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTEiLCJyZWYiOiJyZWZzL2hlYWRzL21haW4iLCJ3b3JrZmxvd19yZWYiOiJ3bnNkeTk1L2NvbnRyb2xzLy5naXRodWIvd29ya2Zsb3dzL3ZlcmlmeS55bWxAMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMSIsIndvcmtmbG93X3NoYSI6IjExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTEiLCJqb2Jfd29ya2Zsb3dfcmVmIjoid25zZHk5NS9jb250cm9scy8uZ2l0aHViL3dvcmtmbG93cy9yZXVzYWJsZS12ZXJpZmllci55bWxAMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMiIsImpvYl93b3JrZmxvd19zaGEiOiIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyIiwicnVubmVyX2Vudmlyb25tZW50IjoiZ2l0aHViLWhvc3RlZCIsInJ1bl9pZCI6IjMwMDAzIiwicnVuX2F0dGVtcHQiOiIxIn0.C8yb56y0IvlaQrdR54ZAdh20OtH0F_Toa_d2dlfBHb8OnX4XSLk9Bvsv__-PlfShhcFr7StttD-9lY0lTUBQ09XqE4rl1stcOzSL5XdiFGKyt4ssS-gkzkTJaHvJwfrlav-B0AdPjVjzaXZja1ATjRXoBc32OXGKsvz864tjY5SF0JgUQRZ96LIbeNixzxBoo_rlVseJSP-jmfcuI0MvykMu6gf-Ux___tcnixROpo2P8oykPbLFcVLpZtxAjbzTZbjZdbZ6B1bFdHGzkDtecSfVWKtvvxg5HyQ0pq-61XxgEsrYGkYa1PzSt14I-h3BISlRj3tITGMQq2zh2CxXOA",
+  "token_sha256": "45c5be680a31bf80cc087e3b6309f45f7ee2a95c6ffd3a8309fe2acf23f199c7",
+  "header": {
+    "alg": "RS256",
+    "kid": "phase-14a-test-key",
+    "typ": "JWT"
+  },
+  "provider_identity": {
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:wnsdy95/controls:ref:refs/heads/main",
+    "audience": "cannae-verifier-execution",
+    "claims": {
+      "repository": "wnsdy95/controls",
+      "repository_id": "10001",
+      "repository_owner": "wnsdy95",
+      "repository_owner_id": "20002",
+      "sha": "1111111111111111111111111111111111111111",
+      "ref": "refs/heads/main",
+      "workflow_ref": "wnsdy95/controls/.github/workflows/verify.yml@1111111111111111111111111111111111111111",
+      "workflow_sha": "1111111111111111111111111111111111111111",
+      "job_workflow_ref": "wnsdy95/controls/.github/workflows/reusable-verifier.yml@2222222222222222222222222222222222222222",
+      "job_workflow_sha": "2222222222222222222222222222222222222222",
+      "runner_environment": "github-hosted",
+      "run_id": "30003",
+      "run_attempt": "1"
+    }
+  },
+  "independence": {
+    "provider_id": "cannae:provider:github_actions",
+    "operator_id": "cannae:github_actions:operator:github",
+    "control_plane_id": "cannae:github_actions:control-plane:hosted",
+    "account_id": "cannae:github_actions:repository-owner:20002",
+    "project_id": "cannae:github_actions:repository:10001",
+    "runner_pool_id": "cannae:github_actions:runner-environment:github-hosted",
+    "infrastructure_id": "cannae:github_actions:infrastructure:shared-unknown",
+    "region_id": "cannae:github_actions:region:shared-unknown",
+    "zone_id": "cannae:github_actions:zone:shared-unknown"
+  },
+  "issued_at": "2026-07-23T00:04:00.000Z",
+  "not_before": "2026-07-23T00:04:00.000Z",
+  "expires_at": "2026-07-23T00:09:00.000Z",
+  "evidence_sha256": "cabf97690eecc9155f2a745d88fb9d8314718f42554b980b01590d3674cc601b"
+}

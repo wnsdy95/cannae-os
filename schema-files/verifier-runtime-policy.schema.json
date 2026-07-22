@@ -10,7 +10,7 @@
   "additionalProperties": false,
   "allOf": [
     {
-      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3"] } } },
       "then": {
         "properties": {
           "profiles": {
@@ -21,7 +21,7 @@
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3"] },
     "type": { "type": "string", "const": "VerifierRuntimePolicy" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "trust_policy_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -108,6 +108,30 @@
           "minProperties": 1,
           "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 2048 }
         }
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "native_identity": {
+      "type": "object",
+      "required": ["adapter", "trust_bundle_ref", "algorithm", "required_runner_environment", "require_reusable_workflow", "max_token_age_seconds", "clock_skew_seconds"],
+      "additionalProperties": false,
+      "properties": {
+        "adapter": { "type": "string", "const": "github_actions_oidc_v1" },
+        "trust_bundle_ref": { "$ref": "#/$defs/artifact_ref" },
+        "algorithm": { "type": "string", "const": "RS256" },
+        "required_runner_environment": { "type": "string", "const": "github-hosted" },
+        "require_reusable_workflow": { "type": "boolean", "const": true },
+        "max_token_age_seconds": { "type": "integer", "minimum": 1, "maximum": 600 },
+        "clock_skew_seconds": { "type": "integer", "minimum": 0, "maximum": 120 }
       }
     },
     "independence_claims": {
@@ -229,6 +253,7 @@
           }
         },
         "provider_identity": { "$ref": "#/$defs/provider_identity" },
+        "native_identity": { "$ref": "#/$defs/native_identity" },
         "independence": { "$ref": "#/$defs/independence_claims" },
         "execution": { "$ref": "#/$defs/execution_contract" },
         "max_evidence_age_seconds": { "type": "integer", "minimum": 1, "maximum": 86400 },

@@ -49,7 +49,8 @@ function parseArgs(argv) {
     "verifier", "purpose", "subject-ref", "identity-evidence-ref", "repository-binding",
     "repository-state", "verification-target", "provider-identity", "independence", "invocation", "builder-private-key",
     "verifier-private-key", "issued-at", "expires-at", "evidence-id", "repository", "artifact-root",
-    "mission", "wave"
+    "mission", "wave", "native-provider-evidence", "native-provider-evidence-ref", "native-trust-bundle",
+    "native-trust-bundle-ref"
   ]);
   for (let index = 1; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -95,14 +96,21 @@ function create(options) {
   required(options, [
     "policy", "runtimePolicy", "runtimePolicyRef", "verifier", "purpose", "subjectRef",
     "identityEvidenceRef", "repositoryBinding", "repositoryState", "verificationTarget",
-    "providerIdentity", "invocation", "builderPrivateKey", "verifierPrivateKey", "issuedAt", "expiresAt"
+    "invocation", "builderPrivateKey", "verifierPrivateKey", "issuedAt", "expiresAt"
   ]);
   const trustPolicy = readJson(options.policy);
   const runtimePolicyReference = readJson(options.runtimePolicyRef);
   const runtimePolicy = readReferencedJson(options.runtimePolicy, runtimePolicyReference, "Runtime policy");
-  if (["0.6", "0.7"].includes(trustPolicy.schema_version)) required(options, ["independence"]);
+  if (runtimePolicy.schema_version === "0.3") {
+    required(options, ["nativeProviderEvidence", "nativeProviderEvidenceRef", "nativeTrustBundle", "nativeTrustBundleRef"]);
+  } else {
+    required(options, ["providerIdentity"]);
+    if (["0.6", "0.7"].includes(trustPolicy.schema_version)) required(options, ["independence"]);
+  }
   assertValid(trustPolicy, "verifier-trust-policy");
   assertValid(runtimePolicy, "verifier-runtime-policy");
+  const nativeProviderEvidenceReference = options.nativeProviderEvidenceRef ? readJson(options.nativeProviderEvidenceRef) : null;
+  const nativeTrustBundleReference = options.nativeTrustBundleRef ? readJson(options.nativeTrustBundleRef) : null;
   const evidence = createVerifierExecutionEvidence({
     trustPolicy,
     runtimePolicy,
@@ -114,8 +122,14 @@ function create(options) {
     repositoryBinding: readJson(options.repositoryBinding),
     repositoryState: readJson(options.repositoryState),
     verificationTarget: readJson(options.verificationTarget),
-    providerIdentity: readJson(options.providerIdentity),
+    ...(options.providerIdentity ? { providerIdentity: readJson(options.providerIdentity) } : {}),
     ...(options.independence ? { independence: readJson(options.independence) } : {}),
+    ...(nativeProviderEvidenceReference ? {
+      nativeProviderEvidenceReference,
+      nativeProviderEvidence: readReferencedJson(options.nativeProviderEvidence, nativeProviderEvidenceReference, "Native provider evidence"),
+      nativeTrustBundleReference,
+      nativeTrustBundle: readReferencedJson(options.nativeTrustBundle, nativeTrustBundleReference, "Native trust bundle")
+    } : {}),
     invocation: readJson(options.invocation),
     builderPrivateKeyPem: readPrivateKey(options.builderPrivateKey),
     verifierPrivateKeyPem: readPrivateKey(options.verifierPrivateKey),
@@ -128,6 +142,11 @@ function create(options) {
     trustPolicy,
     runtimePolicy,
     runtimePolicyReference,
+    ...(nativeProviderEvidenceReference ? {
+      nativeProviderEvidence: evidence.native_provider_evidence_ref && readReferencedJson(options.nativeProviderEvidence, nativeProviderEvidenceReference, "Native provider evidence"),
+      nativeTrustBundleReference,
+      nativeTrustBundle: readReferencedJson(options.nativeTrustBundle, nativeTrustBundleReference, "Native trust bundle")
+    } : {}),
     evaluatedAt: options.issuedAt,
     expectations: repositoryExpectation(options.repository) || {}
   });
@@ -155,14 +174,24 @@ function verify(options) {
   const trustPolicy = readJson(options.policy);
   const runtimePolicyReference = readJson(options.runtimePolicyRef);
   const runtimePolicy = readReferencedJson(options.runtimePolicy, runtimePolicyReference, "Runtime policy");
+  if (runtimePolicy.schema_version === "0.3") {
+    required(options, ["nativeProviderEvidence", "nativeProviderEvidenceRef", "nativeTrustBundle", "nativeTrustBundleRef"]);
+  }
   assertValid(evidence, "verifier-execution-evidence");
   assertValid(trustPolicy, "verifier-trust-policy");
   assertValid(runtimePolicy, "verifier-runtime-policy");
+  const nativeProviderEvidenceReference = options.nativeProviderEvidenceRef ? readJson(options.nativeProviderEvidenceRef) : null;
+  const nativeTrustBundleReference = options.nativeTrustBundleRef ? readJson(options.nativeTrustBundleRef) : null;
   const result = verifyVerifierExecutionEvidence({
     evidence,
     trustPolicy,
     runtimePolicy,
     runtimePolicyReference,
+    ...(nativeProviderEvidenceReference ? {
+      nativeProviderEvidence: readReferencedJson(options.nativeProviderEvidence, nativeProviderEvidenceReference, "Native provider evidence"),
+      nativeTrustBundleReference,
+      nativeTrustBundle: readReferencedJson(options.nativeTrustBundle, nativeTrustBundleReference, "Native trust bundle")
+    } : {}),
     evaluatedAt: options.evaluatedAt,
     expectations: {
       ...(options.expectations ? readJson(options.expectations) : {}),

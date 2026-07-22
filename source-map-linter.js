@@ -131,7 +131,7 @@ function coverageReport() {
 
   return {
     report_type: "source-map-url-coverage",
-    as_of: "2026-07-22",
+    as_of: "2026-07-23",
     source_map: "docs/source-map.md",
     valid: findings.length === 0,
     checked_hosts: official.size,
