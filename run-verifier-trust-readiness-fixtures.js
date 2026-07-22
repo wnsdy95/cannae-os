@@ -186,6 +186,16 @@ try {
     assert(result.blocking_codes.includes("TRUST_ADMISSION_REPOSITORY_MISMATCH"));
   });
 
+  run("policy v0.2 cannot fall back to static-key admission when identity assurance is missing", () => {
+    const policy = makePolicy();
+    policy.schema_version = "0.2";
+    const result = evaluate(policy);
+    assert.strictEqual(result.satisfied, false);
+    assert.strictEqual(result.identity_assurance.required, true);
+    assert(result.blocking_codes.includes("TRUST_ADMISSION_POLICY_SCHEMA_INVALID"));
+    assert(result.blocking_codes.includes("TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE"));
+  });
+
   process.stdout.write(`${JSON.stringify({ valid: true, fixture_count: completed.length, fixtures: completed }, null, 2)}\n`);
 } catch (error) {
   console.error(error.stack || error.message);

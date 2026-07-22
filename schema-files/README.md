@@ -21,7 +21,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - model usage events
 - repository artifact manifests
 - bounded self-improvement campaigns, checkpoints, decisions, and finite cycle orders
-- verifier trust policies, signed verification attestations, and signed comparative evaluation reports
+- verifier trust policies, workload identity evidence, signed verification attestations, and signed comparative evaluation reports
 - CCIR alerts
 - handoff packets
 - continuity plans
@@ -106,14 +106,17 @@ Recommended validation order:
 52. `verification-plan.schema.json`
 53. `verification-receipt.schema.json`
 54. `verifier-trust-policy.schema.json`
-55. `verification-attestation.schema.json`
-56. `comparative-evaluation-set.schema.json`
-57. `comparative-evaluation-plan.schema.json`
-58. `comparative-evaluation-report.schema.json`
-59. `comparative-evaluation-attestation.schema.json`
+55. `verifier-identity-evidence.schema.json`
+56. `verification-attestation.schema.json`
+57. `comparative-evaluation-set.schema.json`
+58. `comparative-evaluation-plan.schema.json`
+59. `comparative-evaluation-report.schema.json`
+60. `comparative-evaluation-attestation.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
 `VerifierTrustPolicy.verifiers[].allowed_attestation_types` can purpose-limit a key to `verification_receipt`, `comparative_evaluation_report`, or both. Comparative signing requires the explicit report grant; existing receipt-only policies may omit the field for v0.3 compatibility.
 
-`SelfImprovementCycleOrder` v0.2 adds a supervisor-derived `trust_policy_admission`. Signed campaigns record the exact trust-policy reference, effective quorum thresholds, currently eligible verifier/key/group sets for each attestation purpose, and a conservative validity boundary. v0.1 orders remain readable, but only v0.2 carries pre-dispatch trust readiness evidence.
+`VerifierTrustPolicy` v0.2 pins SPIFFE IDs, X.509 roots, transparency-log identities, and log keys. `VerifierIdentityEvidence` binds one short-lived SVID and the verifier's static key to the same repository/policy/purpose statement, then supplies a signed checkpoint and Merkle inclusion path.
+
+`SelfImprovementCycleOrder` v0.3 extends supervisor-derived `trust_policy_admission` with authenticated verifier workload evidence. Signed campaigns record the exact trust-policy reference, effective quorum thresholds, currently eligible verifier/key/group sets for each attestation purpose, identity evidence manifest references, and a conservative validity boundary. v0.1 and v0.2 orders remain readable.

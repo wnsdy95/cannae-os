@@ -100,7 +100,7 @@ For a multi-wave mission, control-plane change, explicit autonomous-improvement 
 7. At every wave end, validation failure, scope change, and before completion, create a checkpoint whose metrics cite persisted receipt IDs and, for v0.3+, the signed receipt quorum. Skill/runtime checkpoints cite the comparative report and, for v0.4, its signed quorum. Then run `autonomous-improvement-controller.js --repository <repo>`.
 8. For follow-on cycles, cite the manifest path/hash of the immediately prior accepted decision and carry its `accepted_revision` as baseline.
 9. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window effects, persist and cite a USER-granted approval scope and checkpoint-specific consumption event. Prose approval and reused events are invalid.
-10. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. Execute only a current cycle order whose status is `ready`, whose `trust_policy_admission.satisfied` is true, and whose required admission has not reached `valid_until`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never self-declare verifier readiness or infer order state from chat history.
+10. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. For trust-policy v0.2, first persist fresh `VerifierIdentityEvidence` from every verifier needed for quorum. Execute only a current cycle order whose status is `ready`, whose `trust_policy_admission.satisfied` and required `identity_assurance.satisfied` are true, and whose required admission has not reached `valid_until`; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Never self-declare verifier readiness or infer order state from chat history.
 11. Carry forward only an accepted working state. Revision, rollback, and continue remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
 12. Require receipt-backed independent evaluation for runtime, skill, and policy candidates. Stop on `escalate` or `terminate`; rollback only this campaign's own uncommitted candidate.
 13. Never treat `accept_working_state`, `complete`, a comparative report, a report attestation, or a cycle order as merge, push, policy, trust-root, authority, or release approval.
@@ -130,6 +130,8 @@ node run-self-improvement-fixtures.js
 node run-signed-self-improvement-fixtures.js
 node run-campaign-supervisor-fixtures.js
 node run-verifier-trust-readiness-fixtures.js
+node run-verifier-identity-evidence-fixtures.js
+node run-workload-identity-admission-fixtures.js
 node run-cycle-order-admission-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
@@ -150,7 +152,7 @@ Escalate to the user before:
 - Treating US doctrine as universal without multinational consistency review.
 - Allowing model capability, router choice, or evaluator confidence to expand delegated role authority.
 - Mixing artifacts from separate target repositories in one flat output namespace.
-- Continuing adaptive work without a finite campaign, runtime-issued receipt, fresh trusted signed receipt quorum for v0.3+, required signed report quorum for v0.4 control-plane work, verified accepted baseline, integrity-checked proof store, mandatory checkpoint, or evidence-backed stop decision.
+- Continuing adaptive work without a finite campaign, runtime-issued receipt, fresh trusted signed receipt quorum for v0.3+, required signed report quorum for v0.4 control-plane work, required manifest-backed SPIFFE workload identity and transparency evidence under trust-policy v0.2, verified accepted baseline, integrity-checked proof store, mandatory checkpoint, or evidence-backed stop decision.
 
 ## Self-Improvement
 

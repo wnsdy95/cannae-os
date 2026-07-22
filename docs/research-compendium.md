@@ -2611,6 +2611,51 @@ Implemented artifacts:
 - `run-cycle-order-admission-fixtures.js`
 - expanded `run-campaign-supervisor-fixtures.js`
 
+### 8.58 Authenticated Verifier Workload and Transparency Admission v0.8
+
+Research question:
+
+> How can pre-dispatch admission prove that a currently active workload, rather than only a public-key entry in policy, controls the verifier identity and has made that proof transparent?
+
+Primary references:
+
+- SPIFFE X.509-SVID specification: https://spiffe.io/docs/latest/spiffe-specs/x509-svid/
+- SPIFFE Workload API specification: https://spiffe.io/docs/latest/spiffe-specs/spiffe_workload_api/
+- Sigstore security model: https://docs.sigstore.dev/about/security/
+- Sigstore bundle format: https://docs.sigstore.dev/about/bundle/
+- Sigstore verification guide: https://docs.sigstore.dev/cosign/verifying/verify/
+- Rekor transparency overview: https://docs.sigstore.dev/logging/overview/
+- RFC 5280, Internet X.509 PKI certificate and CRL profile: https://www.rfc-editor.org/rfc/rfc5280.html
+- RFC 9162, Certificate Transparency v2: https://datatracker.ietf.org/doc/html/rfc9162
+- RFC 6962, Certificate Transparency v1: https://www.rfc-editor.org/rfc/rfc6962.html
+
+Engineering conclusions:
+
+1. Static policy eligibility and live workload authentication answer different questions. A registered Ed25519 key can establish who is allowed to sign, but it does not show that a current verifier process is online or bound to an externally issued workload identity. Trust-policy v0.2 therefore requires both layers before a verifier enters admission.
+2. SPIFFE provides a provider-neutral workload identifier. The leaf certificate must expose exactly one URI SAN containing the expected SPIFFE ID, use a non-root path under the configured trust domain, be a non-CA certificate, and chain to the pinned root. Multiple URI SANs are rejected instead of selecting one favorable value.
+3. The workload's SVID key must not replace the verifier's policy key. Both keys sign one canonical statement containing evidence ID, verifier and key, SPIFFE ID, root and log IDs, repository identity, allowed evidence purposes, nonce, issue time, and expiry. This demonstrates simultaneous participation and prevents either credential from silently widening the other.
+4. Workload proof must be purpose-bound. Evidence can cover receipts, comparative reports, or both, but admission counts a verifier for a purpose only when policy and current identity evidence independently grant it.
+5. Short-lived credentials reduce exposure but create a verification-time problem. Transparency material records the proof while the SVID is active. The verifier derives a canonical transparency entry from the statement, certificate and both signatures, applies domain-separated SHA-256 leaf/node hashes, and verifies an inclusion path to a checkpoint signed by the policy-pinned log key.
+6. A signed checkpoint is not an append-only service by itself. Local inclusion verification proves membership in the stated tree root, not consistency with older roots or visibility to other observers. Production deployments still need log monitoring, consistency proofs, witness cosigning or gossip, and an incident path for equivocation.
+7. Manifest custody remains mandatory. The supervisor considers only schema-valid identity evidence loaded from the campaign mission namespace of the verified repository artifact store, and cycle-order v0.3 records its exact manifest ID, path, and SHA-256. An otherwise valid object passed only in memory cannot authorize dispatch.
+8. Admission validity must be conservative. The order expires at the earliest relevant policy, verifier, SVID, or evidence boundary. Stale evidence fails independently through `max_evidence_age_seconds`, even when its nominal expiry is later.
+9. Provider-neutral does not mean standards-complete. The local verifier performs a bounded direct-chain check for signatures, CA roles, time, pinned root, exact SPIFFE SAN and Ed25519 keys. It does not implement general RFC 5280 path building, name/policy constraints, revocation, AIA retrieval, every critical extension, or the SPIFFE Workload API.
+10. The local transparency envelope is not a Sigstore bundle and its checkpoint is not a Rekor wire object. Sigstore bundles, Fulcio OIDC claims, signed entry timestamps, trusted-root metadata and Rekor versions evolve as one ecosystem. Phase 11B should use official libraries and adapters instead of hand-rolling protocol compatibility.
+11. Authentication still does not prove honest execution. A valid workload can run a defective or malicious verifier, and an independence-group label can misstate operational separation. Protected execution, service health, operator controls, reproducible verification and cross-provider evidence remain distinct assurances.
+12. Human authority does not move. Agents cannot add roots, log keys, SPIFFE IDs, verifier keys, widen purposes, reduce quorum, extend validity, merge, push or release from identity evidence or a ready cycle order.
+
+Implemented artifacts:
+
+- `verifier-identity-evidence.js`
+- `schema-files/verifier-identity-evidence.schema.json`
+- `schema-files/verifier-trust-policy.schema.json` v0.2
+- `schema-files/self-improvement-cycle-order.schema.json` v0.3
+- `sample-payloads/valid-verifier-identity-evidence.json`
+- `sample-payloads/invalid-verifier-identity-evidence.json`
+- `run-verifier-identity-evidence-fixtures.js`
+- `run-workload-identity-admission-fixtures.js`
+- `verifier-trust-readiness.js` and `campaign-supervisor.js` identity admission integration
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

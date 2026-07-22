@@ -873,6 +873,20 @@ const fixtures = [
     requiredCodes: ["VERIFIER_POLICY_KEY_ID_MISMATCH"]
   },
   {
+    name: "valid verifier workload identity evidence",
+    file: "sample-payloads/valid-verifier-identity-evidence.json",
+    type: "verifier-identity-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "verifier identity evidence contains an authority override",
+    file: "sample-payloads/invalid-verifier-identity-evidence.json",
+    type: "verifier-identity-evidence",
+    exitCode: 1,
+    requiredCodes: ["ADDITIONAL_PROPERTY"]
+  },
+  {
     name: "valid signed verification attestation",
     file: "sample-payloads/valid-verification-attestation.json",
     type: "verification-attestation",

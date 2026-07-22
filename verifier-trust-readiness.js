@@ -2,6 +2,7 @@
 
 const crypto = require("crypto");
 const { publicKeyId } = require("./verification-attestation");
+const { verifyVerifierIdentityEvidence } = require("./verifier-identity-evidence");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 
@@ -60,6 +61,30 @@ function verifierKeyIsValid(verifier) {
   }
 }
 
+function identityArtifactRef(item) {
+  const entry = item && item.entry;
+  const payload = item && item.payload;
+  if (!entry || !payload || entry.artifact_id !== payload.id || !/^[a-f0-9]{64}$/.test(entry.sha256 || "") ||
+      typeof entry.relative_path !== "string" || entry.relative_path.length === 0) return null;
+  return {
+    artifact_id: entry.artifact_id,
+    relative_path: entry.relative_path,
+    sha256: entry.sha256
+  };
+}
+
+function emptyIdentityAssurance(required) {
+  return {
+    required,
+    satisfied: !required,
+    authenticated_verifier_count: 0,
+    distinct_trust_domain_count: 0,
+    transparency_log_count: 0,
+    evidence: [],
+    blocking_codes: []
+  };
+}
+
 function evaluateVerifierTrustReadiness(options) {
   const campaign = options.campaign;
   const repository = options.repository;
@@ -73,6 +98,7 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptRequired = ["0.3", "0.4"].includes(campaign.schema_version);
   const comparativeRequired = campaign.schema_version === "0.4";
   const required = receiptRequired || comparativeRequired;
+  const identityRequired = Boolean(required && policy && policy.schema_version === "0.2");
   const campaignPolicy = campaign.attestation_policy || null;
   const trustPolicyRef = campaignPolicy ? clone(campaignPolicy.trust_policy_ref) : clone(NONE_ARTIFACT_REF);
   const policyQuorum = policy && policy.quorum ? policy.quorum : {};
@@ -100,6 +126,7 @@ function evaluateVerifierTrustReadiness(options) {
       effective_requirements: requirements,
       receipt_quorum: emptyQuorum(false),
       comparative_quorum: emptyQuorum(false),
+      identity_assurance: emptyIdentityAssurance(false),
       blocking_codes: []
     };
   }
@@ -107,6 +134,9 @@ function evaluateVerifierTrustReadiness(options) {
   if (!campaignPolicy || !policy) addCode(blockingCodes, "TRUST_ADMISSION_POLICY_REFERENCE_INVALID");
   if (policy && campaignPolicy && policy.id !== campaignPolicy.trust_policy_ref.artifact_id) {
     addCode(blockingCodes, "TRUST_ADMISSION_POLICY_REFERENCE_INVALID");
+  }
+  if (identityRequired && (!policy.identity_assurance || policy.identity_assurance.required !== true)) {
+    addCode(blockingCodes, "TRUST_ADMISSION_POLICY_SCHEMA_INVALID");
   }
   if (policy && (policy.repository_binding.repository_key !== repository.key ||
       policy.repository_binding.identity_fingerprint !== repository.identity_fingerprint)) {
@@ -120,7 +150,7 @@ function evaluateVerifierTrustReadiness(options) {
   }
 
   const policyUsable = policy && blockingCodes.length === 0;
-  const eligible = policyUsable ? policy.verifiers.filter(verifier => {
+  const policyEligible = policyUsable ? policy.verifiers.filter(verifier => {
     const validFrom = timestamp(verifier.valid_from);
     const validUntil = timestamp(verifier.valid_until);
     return verifier.status === "active" &&
@@ -128,21 +158,77 @@ function evaluateVerifierTrustReadiness(options) {
       validFrom !== null && validUntil !== null && evaluatedTime >= validFrom && evaluatedTime < validUntil &&
       verifierKeyIsValid(verifier);
   }) : [];
-  const receiptEligible = eligible.filter(verifier => verifier.allowed_attestation_types === undefined ||
-    verifier.allowed_attestation_types.includes("verification_receipt"));
-  const comparativeEligible = eligible.filter(verifier =>
-    Array.isArray(verifier.allowed_attestation_types) && verifier.allowed_attestation_types.includes("comparative_evaluation_report"));
+  const authenticated = [];
+  if (identityRequired) {
+    for (const verifier of policyEligible) {
+      const candidates = (options.identityEvidence || []).filter(item => item && item.payload &&
+        item.payload.verifier_id === verifier.id && item.payload.trust_policy_id === policy.id &&
+        item.payload.repository_binding && item.payload.repository_binding.repository_key === repository.key &&
+        item.payload.repository_binding.identity_fingerprint === repository.identity_fingerprint);
+      const validCandidates = candidates.map(item => ({
+        item,
+        ref: identityArtifactRef(item),
+        result: verifyVerifierIdentityEvidence({
+          evidence: item.payload,
+          trustPolicy: policy,
+          verifier,
+          repository,
+          evaluatedAt
+        })
+      })).filter(item => item.ref && item.result.valid && item.result.valid_until !== "none")
+        .sort((left, right) => Date.parse(right.result.issued_at) - Date.parse(left.result.issued_at) ||
+          left.item.payload.id.localeCompare(right.item.payload.id));
+      if (validCandidates.length > 0) authenticated.push({ verifier, ...validCandidates[0] });
+    }
+  } else {
+    for (const verifier of policyEligible) authenticated.push({ verifier, result: null, ref: null });
+  }
+
+  const purposeAuthorized = purpose => authenticated.filter(item => {
+    const configured = item.verifier.allowed_attestation_types;
+    const policyAllows = configured === undefined ? purpose === "verification_receipt" : configured.includes(purpose);
+    const identityAllows = !identityRequired || item.result.purposes.includes(purpose);
+    return policyAllows && identityAllows;
+  }).map(item => item.verifier);
+  const receiptEligible = purposeAuthorized("verification_receipt");
+  const comparativeEligible = purposeAuthorized("comparative_evaluation_report");
   const receiptQuorum = summarizeQuorum(receiptEligible, receiptRequired, requirements);
   const comparativeQuorum = summarizeQuorum(comparativeEligible, comparativeRequired, requirements);
 
+  const identityEvidence = identityRequired ? authenticated.map(item => ({
+    verifier_id: item.verifier.id,
+    spiffe_id: item.result.spiffe_id,
+    trust_domain: item.result.trust_domain,
+    certificate_sha256: item.result.certificate_sha256,
+    transparency_log_id: item.result.transparency_log_id,
+    purposes: item.result.purposes,
+    evidence_ref: item.ref,
+    issued_at: item.result.issued_at,
+    valid_until: item.result.valid_until
+  })).sort((left, right) => left.verifier_id.localeCompare(right.verifier_id)) : [];
+  const identitySatisfied = !identityRequired || (receiptQuorum.satisfied && comparativeQuorum.satisfied);
+  const identityBlockingCodes = [];
+  if (!identitySatisfied) identityBlockingCodes.push("TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE");
+  const identityAssurance = {
+    required: Boolean(identityRequired),
+    satisfied: identitySatisfied,
+    authenticated_verifier_count: identityEvidence.length,
+    distinct_trust_domain_count: new Set(identityEvidence.map(item => item.trust_domain)).size,
+    transparency_log_count: new Set(identityEvidence.map(item => item.transparency_log_id)).size,
+    evidence: identityEvidence,
+    blocking_codes: identityBlockingCodes
+  };
+
   if (receiptRequired && !receiptQuorum.satisfied) addCode(blockingCodes, "TRUST_ADMISSION_RECEIPT_QUORUM_UNAVAILABLE");
   if (comparativeRequired && !comparativeQuorum.satisfied) addCode(blockingCodes, "TRUST_ADMISSION_COMPARATIVE_QUORUM_UNAVAILABLE");
+  if (!identitySatisfied) addCode(blockingCodes, "TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE");
 
   let validUntil = "none";
   const satisfied = blockingCodes.length === 0 && receiptQuorum.satisfied && comparativeQuorum.satisfied;
   if (satisfied) {
     const requiredVerifiers = [...receiptEligible, ...(comparativeRequired ? comparativeEligible : [])];
-    const boundaries = [policyEnd, ...requiredVerifiers.map(item => timestamp(item.valid_until))]
+    const identityBoundaries = identityRequired ? authenticated.map(item => timestamp(item.result.valid_until)) : [];
+    const boundaries = [policyEnd, ...requiredVerifiers.map(item => timestamp(item.valid_until)), ...identityBoundaries]
       .filter(value => value !== null && value > evaluatedTime);
     if (boundaries.length > 0) validUntil = new Date(Math.min(...boundaries)).toISOString();
     if (validUntil === "none") {
@@ -153,13 +239,14 @@ function evaluateVerifierTrustReadiness(options) {
   return {
     required: true,
     satisfied: blockingCodes.length === 0 && receiptQuorum.satisfied && comparativeQuorum.satisfied,
-    assurance_scope: "policy_eligibility_only",
+    assurance_scope: identityRequired ? "authenticated_workload_and_policy_eligibility" : "policy_eligibility_only",
     evaluated_at: evaluatedAt,
     valid_until: blockingCodes.length === 0 ? validUntil : "none",
     trust_policy_ref: trustPolicyRef,
     effective_requirements: requirements,
     receipt_quorum: receiptQuorum,
     comparative_quorum: comparativeQuorum,
+    identity_assurance: identityAssurance,
     blocking_codes: blockingCodes.sort()
   };
 }

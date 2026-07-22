@@ -214,10 +214,12 @@ Use `repository-artifact-store.js`, or pass `--write-artifact --repository <targ
 Substantial AI missions can maintain a finite improvement campaign around work already in progress:
 
 ```text
-campaign -> trust-readiness admission -> finite cycle order -> candidate -> executed receipt -> signed receipt quorum -> paired canary -> signed report quorum -> decision -> next admission
+campaign -> verifier workload proof -> trust-readiness admission -> finite cycle order -> candidate -> executed receipt -> signed receipt quorum -> paired canary -> signed report quorum -> decision -> next admission
 ```
 
-`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3+ campaign additionally requires fresh Ed25519 DSSE receipt attestations from distinct trusted keys and policy-defined independence groups. For `skill` and `runtime_control` candidates, `comparative-evaluation-runner.js` executes one pre-persisted harness and one sealed evaluation set against isolated baseline and candidate worktrees, then applies campaign-owned absolute and non-regression thresholds. Schema v0.4 also requires `comparative-evaluation-attestation-runner.js` to bind a fresh multi-key, multi-group quorum to the exact persisted report, plan, evaluation set, baseline, candidate, evaluator invocation, campaign, and repository. Verifier keys can be purpose-limited, so receipt trust does not implicitly grant comparative-report signing authority. `autonomous-improvement-controller.js` reloads and recomputes the report and both quorums with the trust policy, accepted parent, and any consumed approval event before promotion. Before dispatch, `campaign-supervisor.js` reloads the campaign's exact trust-policy artifact and computes eligible verifier, key, and independence-group populations separately for receipt and comparative purposes. It emits a `ready` order only when every required quorum can be formed at issuance time; the order records the policy hash, evidence lists, effective thresholds, and conservative `valid_until`. Incomplete lineage, impossible trust admission, exhausted budgets, invalid comparison evidence, completion, termination, and escalation emit a non-executable `hold` order.
+`verification-runner.js` executes exact argument arrays without a shell and persists repository-state-bound receipts. A v0.3+ campaign additionally requires fresh Ed25519 DSSE receipt attestations from distinct trusted keys and policy-defined independence groups. For `skill` and `runtime_control` candidates, `comparative-evaluation-runner.js` executes one pre-persisted harness and one sealed evaluation set against isolated baseline and candidate worktrees, then applies campaign-owned absolute and non-regression thresholds. Schema v0.4 also requires `comparative-evaluation-attestation-runner.js` to bind a fresh multi-key, multi-group quorum to the exact persisted report, plan, evaluation set, baseline, candidate, evaluator invocation, campaign, and repository. Verifier keys can be purpose-limited, so receipt trust does not implicitly grant comparative-report signing authority. `autonomous-improvement-controller.js` reloads and recomputes the report and both quorums with the trust policy, accepted parent, and any consumed approval event before promotion.
+
+Trust-policy v0.2 additionally requires a current manifest-backed `VerifierIdentityEvidence` for every verifier counted at dispatch. The workload's short-lived SPIFFE X.509 key and its separately registered verifier key sign one repository/policy/purpose challenge, while a pinned transparency-log key signs the Merkle checkpoint containing that proof. `campaign-supervisor.js` independently verifies the certificate chain, exact URI SAN, both signatures, freshness, log inclusion and manifest reference. It emits `ready` only when authenticated verifier populations can form every purpose quorum, and cycle-order v0.3 seals their identity evidence and conservative `valid_until`. Incomplete lineage, missing workload proof, impossible trust admission, exhausted budgets, invalid comparison evidence, completion, termination, and escalation emit a non-executable `hold` order.
 
 Every decision and cycle order keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
@@ -231,7 +233,7 @@ node campaign-supervisor.js \
   --write-artifact
 ```
 
-Delegated agents may execute only a cycle order whose `status` is `ready`, `execution_authorized` is `true`, `trust_policy_admission.satisfied` is `true`, and current time is earlier than its signed-campaign `valid_until`. Re-running the supervisor against unchanged campaign and admission state returns the existing order without advancing the manifest.
+Delegated agents may execute only a cycle order whose `status` is `ready`, `execution_authorized` is `true`, `trust_policy_admission.satisfied` is `true`, required `identity_assurance.satisfied` is `true`, and current time is earlier than its signed-campaign `valid_until`. Re-running the supervisor against unchanged campaign and admission state returns the existing order without advancing the manifest.
 
 The comparative runner returns exactly `promotable`, `rollback`, or `inconclusive`. Even `promotable` sets both `execution_authorized` and `release_authorized` to `false`; it is evidence for the controller's working-state decision, not permission to merge, push, or release.
 
@@ -257,6 +259,7 @@ The framework keeps these decisions out of ordinary agent autonomy:
 Requirements:
 
 - Node.js for local runners and validators.
+- OpenSSL 3.x for verifier workload-identity fixtures.
 - Bash-compatible shell for the installer and validation loops.
 - Python 3 only for optional Codex skill validation.
 
@@ -327,6 +330,8 @@ Important examples:
 - `run-verification-attestation-fixtures.js`: Ed25519 DSSE signatures, persisted/self-digest binding, quorum diversity, replay expiry, signer-purpose policy, and private-key file controls.
 - `run-comparative-evaluation-fixtures.js`: real baseline/candidate worktrees, campaign-bound sealed fixtures, absolute and non-regression thresholds, pre-persisted plans, cross-mission rejection, harness mismatch, report tamper, and manifest custody.
 - `run-comparative-evaluation-attestation-fixtures.js`: signed report-artifact binding, two-key/two-group quorum, replay expiry, origin and signer-purpose policy, lineage/evaluator/repository rebinding, CLI portability, and private-key file controls.
+- `run-verifier-identity-evidence-fixtures.js`: real SPIFFE X.509 chains, dual key-possession signatures, evidence freshness, exact URI SAN, transparency checkpoint, and Merkle inclusion adversarial cases.
+- `run-workload-identity-admission-fixtures.js`: manifest-backed supervisor admission with valid, missing, and invalid workload identities.
 - `run-document-routing-fixtures.js`: Codex/Claude natural-language route parity, human final-authority mode, and bounded delegated-AI routing.
 - `validation-suite-runner.js`: one shell-independent entry point for routing, corpus, validator, runner, source-map, syntax, and whitespace gates.
 
@@ -361,6 +366,7 @@ Working today:
 - document routing skill for Codex and Claude Code;
 - routing receipt and preflight model for delegated agent waves;
 - deterministic manifest-backed campaign supervision with finite cycle and retry orders;
+- authenticated verifier workload admission with short-lived SPIFFE X.509 evidence and transparency inclusion;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
 Not complete yet:
@@ -370,6 +376,7 @@ Not complete yet:
 - production approval UI;
 - tool gateway integration with real external systems;
 - authenticated multi-user permissions;
+- production SPIFFE Workload API, Fulcio/Rekor, or native Sigstore bundle integration;
 - formal compliance certification;
 - automatic hallucination elimination.
 
@@ -384,8 +391,8 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - Military terminology is used as an organizational metaphor and control vocabulary, not as operational battlefield instruction.
 - Many documents are research drafts and should be treated as evolving doctrine, not final standards.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
-- Signed receipt and comparative-report attestations authenticate trusted-key possession and statement integrity, not a trusted execution environment or honest verifier execution. The local trust root has no KMS, workload identity, transparency-log, or online revocation integration.
-- Trust-readiness admission proves only that the active policy lists enough currently eligible public verifier identities, keys, purpose grants, and independence groups. It does not prove that private keys are online, uncompromised, independently operated, or able to complete a run.
+- Signed receipt and comparative-report attestations authenticate trusted-key possession and statement integrity, not honest verifier execution. Trust-policy v0.2 can also authenticate a current SPIFFE workload and transparency inclusion, but it does not establish a trusted execution environment, protected key hardware, operator independence, or correct verifier logic.
+- The provider-neutral X.509 verifier is intentionally bounded: it does not implement full RFC 5280 policy/revocation processing, the SPIFFE Workload API, Rekor consistency monitoring, witness gossip, or native Cosign/Sigstore bundle verification.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded, time-limited cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
