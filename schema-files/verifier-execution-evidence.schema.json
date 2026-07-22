@@ -11,8 +11,14 @@
     "evidence_sha256"
   ],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "then": { "required": ["independence"] }
+    }
+  ],
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "type": { "type": "string", "const": "VerifierExecutionEvidence" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "trust_policy_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -27,6 +33,7 @@
     "verification_target": { "$ref": "#/$defs/target_descriptor" },
     "provider": { "type": "string", "enum": ["generic_oci", "github_actions", "gitlab_ci", "local_sandbox", "tee"] },
     "provider_identity": { "$ref": "#/$defs/provider_identity" },
+    "independence": { "$ref": "#/$defs/independence_claims" },
     "execution": { "$ref": "#/$defs/execution_contract" },
     "invocation": {
       "type": "object",
@@ -155,6 +162,31 @@
           "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 2048 }
         }
       }
+    },
+    "independence_claims": {
+      "type": "object",
+      "required": [
+        "provider_id", "operator_id", "control_plane_id", "account_id", "project_id",
+        "runner_pool_id", "infrastructure_id", "region_id", "zone_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id": { "$ref": "#/$defs/component_id" },
+        "operator_id": { "$ref": "#/$defs/component_id" },
+        "control_plane_id": { "$ref": "#/$defs/component_id" },
+        "account_id": { "$ref": "#/$defs/component_id" },
+        "project_id": { "$ref": "#/$defs/component_id" },
+        "runner_pool_id": { "$ref": "#/$defs/component_id" },
+        "infrastructure_id": { "$ref": "#/$defs/component_id" },
+        "region_id": { "$ref": "#/$defs/component_id" },
+        "zone_id": { "$ref": "#/$defs/component_id" }
+      }
+    },
+    "component_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 2048,
+      "pattern": "^[a-z][a-z0-9+.-]*:\\S+$"
     },
     "network_policy": {
       "type": "object",

@@ -41,6 +41,7 @@ Evaluation fixtures are used to verify that runtime gates actually function, not
 | Proof-carrying improvement fixtures | Validates executed receipts, exact parent lineage, approval consumption, rollback, and completion |
 | Signed improvement fixtures | Validates Ed25519 DSSE receipt binding, trusted multi-verifier quorum, group diversity, expiry, and v0.2 compatibility |
 | Verification runner fixtures | Validates exact argv execution, shell/inline-code prohibition, stale plans, and mutation detection |
+| Verifier independence fixtures | Validates provider-native failure-domain claims, transitive correlation, deterministic domain reconstruction, and post-execution quorum independence |
 | Artifact concurrency/recovery fixtures | Validates shared-filesystem leases, monotonic fencing, stale-writer rejection, write-ahead recovery, hash-linked history, and tamper detection |
 
 ## 2. Required Fixtures
@@ -130,6 +131,8 @@ Validator changes must not:
 - promote an adaptive candidate from model-authored validation text instead of a runtime-issued receipt.
 - accept a receipt whose campaign, cycle, candidate, repository state, command result, or canonical digest does not match.
 - promote a v0.3 candidate without the configured number of distinct trusted verifier IDs, Ed25519 keys, and independence groups.
+- let declared independence-group labels hide a shared provider, operator, control plane, account, project, runner pool, infrastructure, region, or zone.
+- count a verifier toward quorum when its signed execution evidence resolves to a correlated or substituted failure domain.
 - accept a signature over a different receipt self-digest, changed DSSE payload, expired attestation, expired trust root, untrusted repository, or duplicate signer evidence.
 - treat a signed `remote` execution-origin claim as proof of trusted execution or provider independence.
 - continue from a parent decision that is missing, rejected, from another cycle, or bound to another baseline revision.

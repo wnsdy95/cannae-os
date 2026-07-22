@@ -17,7 +17,7 @@ Identity valid
 = Verifier may enter quorum
 ```
 
-Phase 12A implements the execution-code and environment terms. Phase 12B implements the supervisor-issued one-time challenge in `verifier-pre-dispatch-challenge.md`. Phase 12C must replace declared independence labels with evaluated provider, operator, infrastructure, and failure-domain identities.
+Phase 12A implements the execution-code and environment terms. Phase 12B implements the supervisor-issued one-time challenge in `verifier-pre-dispatch-challenge.md`. Phase 12C replaces declared independence labels with evaluated provider, operator, control-plane, tenant, runner, infrastructure, region, and zone identities as specified in `verifier-independence-assurance.md`.
 
 ## 2. Threat Model
 
@@ -91,6 +91,8 @@ The same DSSE payload is signed by:
 2. the verifier key, which binds the registered verifier to that exact execution record.
 
 The evidence binds the runtime policy, trust policy, verifier, profile, purpose, subject artifact, Phase 11 identity-evidence reference, repository identity, exact repository state, verification-target digest, provider identity, execution controls, invocation ID, result, issue time, and expiry. A dirty worktree is allowed when its full fingerprint is the declared candidate revision; the evidence records that condition instead of pretending the worktree is clean.
+
+Under trust-policy v0.6, execution-evidence schema v0.2 additionally binds all nine observed independence fields under the v0.2 predicate. These observations must exactly match runtime-policy v0.2 and determine the post-execution `VID-*` quorum domain.
 
 ### 3.4 Attestation v0.2
 
@@ -169,6 +171,7 @@ node verifier-execution-runner.js create \
   --repository-state repository-state.json \
   --verification-target verification-target.json \
   --provider-identity provider-identity.json \
+  --independence independence-observation.json \
   --invocation invocation.json \
   --builder-private-key /secure/builder.pem \
   --verifier-private-key /secure/verifier.pem \
@@ -204,8 +207,8 @@ node run-verifier-execution-evidence-fixtures.js
 
 Phase 12B now establishes bounded pre-dispatch liveness. Trust-policy v0.5 issues one nonce per verifier, binds the set to the exact projected task and lineage, and excludes missing, stale, replayed, ambiguous, wrong-nonce, offline, or late responders. The accepted identity evidence is the signed challenge response; cycle-order v0.5 records its exact manifest reference and caps admission at challenge expiry.
 
-Phase 12A also does not prove operational independence. Different verifier IDs can still share one CI account, runner pool, cloud project, operator, or control plane. Phase 12C must record and evaluate those identities against actual failure domains.
+Phase 12C now records and evaluates operational independence. Different verifier IDs that share any required CI provider, operator, control plane, account, project, runner pool, infrastructure, region, or zone component are placed in one transitive correlation domain. This proves policy/evidence consistency for adapter-verified identities; it does not make a compromised builder or provider truthful.
 
 Phase 13 must operate transparency over time: checkpoint consistency, root rotation, TUF refresh, witnesses, monitors, gossip, equivocation response, and revocation response.
 
-Release remains separately unauthorized. Execution evidence, challenge success, and quorum satisfaction never grant merge, push, deployment, policy-change, trust-root-change, or release authority.
+Release remains separately unauthorized. Execution evidence, challenge success, independence satisfaction, and quorum satisfaction never grant merge, push, deployment, policy-change, trust-root-change, or release authority.

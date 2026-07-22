@@ -47,7 +47,7 @@ function parseArgs(argv) {
   const values = new Set([
     "policy", "runtime-policy", "runtime-policy-ref", "evidence", "expectations", "evaluated-at",
     "verifier", "purpose", "subject-ref", "identity-evidence-ref", "repository-binding",
-    "repository-state", "verification-target", "provider-identity", "invocation", "builder-private-key",
+    "repository-state", "verification-target", "provider-identity", "independence", "invocation", "builder-private-key",
     "verifier-private-key", "issued-at", "expires-at", "evidence-id", "repository", "artifact-root",
     "mission", "wave"
   ]);
@@ -100,6 +100,7 @@ function create(options) {
   const trustPolicy = readJson(options.policy);
   const runtimePolicyReference = readJson(options.runtimePolicyRef);
   const runtimePolicy = readReferencedJson(options.runtimePolicy, runtimePolicyReference, "Runtime policy");
+  if (trustPolicy.schema_version === "0.6") required(options, ["independence"]);
   assertValid(trustPolicy, "verifier-trust-policy");
   assertValid(runtimePolicy, "verifier-runtime-policy");
   const evidence = createVerifierExecutionEvidence({
@@ -114,6 +115,7 @@ function create(options) {
     repositoryState: readJson(options.repositoryState),
     verificationTarget: readJson(options.verificationTarget),
     providerIdentity: readJson(options.providerIdentity),
+    ...(options.independence ? { independence: readJson(options.independence) } : {}),
     invocation: readJson(options.invocation),
     builderPrivateKeyPem: readPrivateKey(options.builderPrivateKey),
     verifierPrivateKeyPem: readPrivateKey(options.verifierPrivateKey),

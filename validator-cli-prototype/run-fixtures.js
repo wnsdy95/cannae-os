@@ -803,6 +803,13 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "valid failure-domain-assured self-improvement cycle order",
+    file: "sample-payloads/valid-self-improvement-cycle-order-v0.6.json",
+    type: "self-improvement-cycle-order",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
     name: "blocked self-improvement cycle order authorizes execution",
     file: "sample-payloads/invalid-self-improvement-cycle-order-blocked-execution.json",
     type: "self-improvement-cycle-order",
@@ -908,6 +915,13 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "valid failure-domain-assured verifier trust policy",
+    file: "sample-payloads/valid-verifier-trust-policy-v0.6.json",
+    type: "verifier-trust-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
     name: "valid verifier challenge set",
     file: "sample-payloads/valid-verifier-challenge-set.json",
     type: "verifier-challenge-set",
@@ -971,6 +985,20 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "valid failure-domain verifier runtime policy",
+    file: "sample-payloads/valid-verifier-runtime-policy-v0.2.json",
+    type: "verifier-runtime-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "failure-domain runtime policy omits a zone identity",
+    file: "sample-payloads/invalid-verifier-runtime-policy-v0.2-missing-domain.json",
+    type: "verifier-runtime-policy",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED", "VERIFIER_RUNTIME_INDEPENDENCE_CLAIMS_INVALID"]
+  },
+  {
     name: "verifier runtime policy claims release authority",
     file: "sample-payloads/invalid-verifier-runtime-policy-authority.json",
     type: "verifier-runtime-policy",
@@ -983,6 +1011,20 @@ const fixtures = [
     type: "verifier-execution-evidence",
     exitCode: 0,
     requiredCodes: []
+  },
+  {
+    name: "valid failure-domain-bound verifier execution evidence",
+    file: "sample-payloads/valid-verifier-execution-evidence-v0.2.json",
+    type: "verifier-execution-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "execution evidence substitutes an unsigned failure-domain identity",
+    file: "sample-payloads/invalid-verifier-execution-evidence-v0.2-domain-substitution.json",
+    type: "verifier-execution-evidence",
+    exitCode: 1,
+    requiredCodes: ["EXECUTION_EVIDENCE_STATEMENT_BINDING_INVALID"]
   },
   {
     name: "verifier execution evidence claims release authority",

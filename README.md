@@ -128,6 +128,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [Verifier Pre-Dispatch Challenge](docs/verifier-pre-dispatch-challenge.md): supervisor-issued nonce, liveness, deadline, and replay-resistant admission.
+- [Verifier Independence Assurance](docs/verifier-independence-assurance.md): provider, operator, control-plane, tenant, runner, infrastructure, region, and zone correlation.
 - [Model Force v0.2 Fixtures](model-force-v0.2-fixtures/README.md): integrated registry, compilation, routing receipt, dispatch, and telemetry examples.
 
 ### Agent Skills
@@ -226,6 +227,8 @@ Trust-policy v0.2 additionally requires a current manifest-backed `VerifierIdent
 Phase 12A trust-policy v0.4 also binds an exact `VerifierRuntimePolicy`. Every counted receipt or report attestation must cite fresh, manifest-backed `VerifierExecutionEvidence` dual-signed by a separate trusted builder and the registered verifier. It fixes the verifier code, immutable OCI image, dependency lockfile, harness, argv, tool allowlist, network and sandbox controls, provider claims, exact repository state and verification target. The common adapter verifies these signed claims; native GitHub Actions, GitLab CI, local-host and TEE appraisal adapters remain future work. See [Verifier Execution Integrity](docs/verifier-execution-integrity.md).
 
 Phase 12B trust-policy v0.5 adds a supervisor-issued, single-use `VerifierChallengeSet` before every bounded dispatch. Each verifier must return fresh dual-signed workload identity evidence containing its exact nonce inside the deadline. Cycle-order v0.5 records exact challenge/response references and rejects missing, late, wrong-nonce, ambiguous, expired, replayed, or offline responders before quorum calculation. See [Verifier Pre-Dispatch Challenge](docs/verifier-pre-dispatch-challenge.md).
+
+Phase 12C trust-policy v0.6 replaces declared independence labels with deterministic failure domains. Runtime-policy v0.2 records nine provider, operator, control-plane, account, project, runner, infrastructure, region, and zone identities; sharing any component correlates verifiers transitively. Execution-evidence v0.2 binds the observed identities under builder and verifier signatures, and receipt/report quorum uses computed `VID-*` domains. See [Verifier Independence Assurance](docs/verifier-independence-assurance.md).
 
 Every decision and cycle order keeps `release_authorized: false`; trust-root changes, policy, authority, merge, push, and external release remain human decisions. See [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md).
 
@@ -338,6 +341,7 @@ Important examples:
 - `run-comparative-evaluation-attestation-fixtures.js`: signed report-artifact binding, two-key/two-group quorum, replay expiry, origin and signer-purpose policy, lineage/evaluator/repository rebinding, CLI portability, and private-key file controls.
 - `run-verifier-identity-evidence-fixtures.js`: real SPIFFE X.509 chains, dual key-possession signatures, evidence freshness, exact URI SAN, transparency checkpoint, and Merkle inclusion adversarial cases.
 - `run-workload-identity-admission-fixtures.js`: manifest-backed supervisor admission with valid, missing, and invalid workload identities.
+- `run-verifier-independence-fixtures.js`: declared-label bypass, shared-component and transitive correlation, dual-signed domain evidence, mutation, and quorum-diversity gates.
 - `run-document-routing-fixtures.js`: Codex/Claude natural-language route parity, human final-authority mode, and bounded delegated-AI routing.
 - `validation-suite-runner.js`: one shell-independent entry point for routing, corpus, validator, runner, source-map, syntax, and whitespace gates.
 
@@ -376,6 +380,7 @@ Working today:
 - native Sigstore workload admission with manifest-pinned TrustedRoot material, exact Fulcio identity/issuer policy, Rekor/CT verification, and dual binding to the static verifier key;
 - verifier execution-integrity contracts with exact runtime-policy admission, dual-signed in-toto execution evidence, immutable OCI/code/dependency/harness bindings, repository-state and target-digest checks, and fail-closed quorum integration;
 - supervisor-issued pre-dispatch verifier challenges with exact dispatch binding, dual-signed nonce responses, deadline enforcement, single-use replay checks, and cycle-order v0.5 admission;
+- computed verifier failure-domain assurance with strict component identities, transitive correlation, dual-signed execution observations, and cycle-order v0.6 admission;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
 Not complete yet:
@@ -400,7 +405,7 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - Military terminology is used as an organizational metaphor and control vocabulary, not as operational battlefield instruction.
 - Many documents are research drafts and should be treated as evolving doctrine, not final standards.
 - The runtime code is prototype-grade and optimized for transparent local validation, not production performance.
-- Trust-policy v0.4+ verifies a separate builder's signed claim that exact code and declared isolation controls produced the evidence. It does not make a compromised builder truthful, natively enforce the declared sandbox, or establish protected key hardware. Trust-policy v0.5 proves bounded liveness at challenge response time, not continuous availability, verifier honesty, or operator and infrastructure independence.
+- Trust-policy v0.4+ verifies a separate builder's signed claim that exact code and declared isolation controls produced the evidence. It does not make a compromised builder truthful, natively enforce the declared sandbox, or establish protected key hardware. Trust-policy v0.5 proves bounded liveness at challenge response time. Trust-policy v0.6 blocks known shared failure domains, but still depends on honest native adapters and cannot prove absence of every upstream common-mode dependency.
 - The provider-neutral X.509 verifier is intentionally bounded and does not implement full RFC 5280 policy/revocation processing or the SPIFFE Workload API. The native Sigstore adapter verifies official bundle and TrustedRoot formats through pinned libraries, but it does not operate or globally monitor Fulcio, Rekor, CT logs, TUF, witnesses, or gossip.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded, time-limited cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
@@ -460,7 +465,7 @@ Near-term:
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
 - expand fixture coverage around routing, release, and authority mismatches;
-- calculate verifier independence from provider, operator, account, runner-pool, cloud-project and failure-domain identities;
+- implement native provider adapters that derive v0.6 failure-domain identities from authenticated GitHub, GitLab, cloud, local-host, or TEE evidence;
 
 Mid-term:
 

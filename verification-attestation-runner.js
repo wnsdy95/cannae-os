@@ -59,7 +59,7 @@ function main() {
     }
     const verifier = trustPolicy.verifiers.find(item => item.id === options.verifier);
     if (!verifier) throw new Error("Verifier is not present in the trust policy.");
-    if (["0.4", "0.5"].includes(trustPolicy.schema_version) && !options.executionEvidenceRef) {
+    if (["0.4", "0.5", "0.6"].includes(trustPolicy.schema_version) && !options.executionEvidenceRef) {
       throw new Error("Execution-assured trust-policy v0.4+ requires --execution-evidence-ref <json>.");
     }
     const privateKeyPath = path.resolve(options.privateKey);

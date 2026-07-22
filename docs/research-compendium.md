@@ -2791,6 +2791,52 @@ Implemented artifacts:
 - valid/invalid trust-policy, challenge-set and cycle-order samples
 - validator, roadmap, bounded-operations, source-map and skill routing integrations
 
+### 8.62 Verifier Failure-Domain Independence v0.12
+
+Research question: How can a quorum distinguish genuinely independent verifier execution systems from several identities, jobs, or declared groups controlled by one provider account, operator, runner fleet, cloud project, infrastructure stack, region, or zone?
+
+Primary sources:
+
+- NIST SP 800-160 Vol. 2 Rev. 1 cyber-resiliency diversity: https://csrc.nist.gov/pubs/sp/800/160/v2/r1/final
+- SLSA build-platform trust closure: https://slsa.dev/spec/v1.1/terminology
+- SLSA provenance builder identity: https://slsa.dev/spec/v1.2/provenance
+- GitHub Actions OIDC claims: https://docs.github.com/en/actions/reference/security/oidc
+- GitLab ID-token claims: https://docs.gitlab.com/ci/secrets/id_token_authentication/
+- Kubernetes topology spread and failure domains: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/
+- AWS fault-isolation boundaries: https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/abstract-and-introduction.html
+- AWS multi-account organization: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_best-practices.html
+- Azure regions and availability zones: https://learn.microsoft.com/en-us/azure/well-architected/resiliency/regions-availability-zones
+- Google Cloud resource hierarchy: https://docs.cloud.google.com/docs/get-started/organize-resources
+- Google Cloud infrastructure reliability: https://docs.cloud.google.com/architecture/infra-reliability-guide
+
+Engineering conclusions:
+
+1. Independence is a property of failure correlation, not a label. NIST diversity aims to reduce common-mode failure through heterogeneity; two differently named verifier groups under one administrative or technical failure boundary remain correlated.
+2. The trust boundary is transitive. SLSA defines a build platform through the software, hardware, people, and organizations trusted to execute faithfully, so provider and operator identities belong beside machine-placement identities.
+3. One scalar group field cannot represent the relevant failure surfaces. The v0.6 contract requires provider, operator, control plane, account, project, runner pool, infrastructure, region, and zone separately.
+4. Correlation is conservative: sharing any required component creates an edge. Connected components, not pairwise labels, are counted, so A sharing an account with B and B sharing a runner pool with C correlates all three.
+5. Unknown cannot mean independent. Every field must be a stable URI-like identifier. Missing, extra, mutable-display-name, or invented values fail contract validation.
+6. Provider-native identity stays behind adapters. GitHub and GitLab expose different stable claims; cloud accounts, Kubernetes topology, local hosts, and TEEs require different evidence. A common projection does not justify parsing every provider with one generic rule.
+7. Geography and administration are different. Region/zone placement can reduce physical failure correlation while one account, control plane, operator, or project can still compromise every verifier.
+8. Azure zone numbering is tenant-specific, and similar provider scoping problems exist elsewhere. Component identifiers must carry provider/account context rather than compare bare zone names.
+9. Pre-dispatch and post-execution need the same algorithm. Runtime-policy v0.2 predicts available domains; execution-evidence v0.2 confirms the observed identities under builder and verifier signatures; attestation quorum then uses the computed `VID-*` domain.
+10. Declared `independence_group` remains readable for old contracts but has no v0.6 quorum authority. This prevents a policy author from manufacturing diversity by renaming correlated verifiers.
+11. Correlated attestations can be individually valid. The correct failure is group-diversity quorum failure, not necessarily signature invalidity.
+12. Builder and provider honesty remain roots of trust. The generic adapter proves that configured keys signed matching claims; native OIDC, provider-attestation, host-attestation, or TEE appraisal is still required to establish claim truth.
+13. Strict all-dimension separation can reduce availability and often implies cross-provider execution. A lower-assurance policy must be explicit in a future contract rather than silently reinterpret v0.6.
+14. Independence does not grant release. Trust-policy, runtime-policy, provider roots, merge, push, deployment, and public-release decisions remain human controlled.
+
+Implemented artifacts:
+
+- `docs/verifier-independence-assurance.md`
+- `verifier-independence.js`
+- `VerifierTrustPolicy` v0.6 independence assurance
+- `VerifierRuntimePolicy` v0.2 component identities
+- `VerifierExecutionEvidence` v0.2 signed observations
+- `SelfImprovementCycleOrder` v0.6 domain projection
+- readiness, receipt-quorum, comparative-quorum, supervisor, controller, runner, schema, validator and sample integrations
+- `run-verifier-independence-fixtures.js` covering label substitution, shared components, transitive correlation, dual-signed evidence, mutation and quorum failure
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

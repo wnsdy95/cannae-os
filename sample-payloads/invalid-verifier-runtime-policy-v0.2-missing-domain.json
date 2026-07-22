@@ -1,0 +1,200 @@
+{
+  "schema_version": "0.2",
+  "type": "VerifierRuntimePolicy",
+  "id": "VRP-12C-001",
+  "trust_policy_id": "VTP-12C-001",
+  "repository_binding": {
+    "repository_key": "cannae-os-cccccccccccc",
+    "identity_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "policy_version": 1,
+  "profiles": [
+    {
+      "id": "PROFILE-12C-A",
+      "adapter": "in_toto_slsa_oci_dsse_v1",
+      "provider": "generic_oci",
+      "builder": {
+        "id": "https://attestor.example.test/builders/1",
+        "key_id": "972bd2fd4616facaf8e256e8515cbb2a2af23cc330ccf5b955a8647127f7fc57",
+        "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA17l16cxyUJDwLM0Y3JkrHtxbx0CAHDA3A7RMARGV3y8=\n-----END PUBLIC KEY-----\n"
+      },
+      "provider_identity": {
+        "issuer": "https://attestor-a.example.test",
+        "subject": "spiffe://example.test/builder/verifier-a",
+        "audience": "cannae-verifier-execution",
+        "required_claims": {
+          "runner_pool": "pool-a",
+          "tenant": "controls-a"
+        }
+      },
+      "independence": {
+        "provider_id": "cannae:provider:generic_oci",
+        "operator_id": "urn:operator:a",
+        "control_plane_id": "cannae:builder:key:972bd2fd4616facaf8e256e8515cbb2a2af23cc330ccf5b955a8647127f7fc57",
+        "account_id": "cannae:generic_oci:tenant:controls-a",
+        "project_id": "urn:project:a",
+        "runner_pool_id": "cannae:generic_oci:runner-pool:pool-a",
+        "infrastructure_id": "urn:infrastructure:a",
+        "region_id": "urn:region:a"
+      },
+      "execution": {
+        "verifier_code": {
+          "uri": "git+https://example.test/controls@1111111#verifier.js",
+          "digest": {
+            "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        },
+        "container_image": {
+          "uri": "registry.example.test/cannae/verifier@sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "digest": {
+            "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "media_type": "application/vnd.oci.image.manifest.v1+json"
+        },
+        "dependency_lockfile": {
+          "uri": "git+https://example.test/controls@1111111#package-lock.json",
+          "digest": {
+            "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        },
+        "harness": {
+          "uri": "git+https://example.test/controls@1111111#verification-runner.js",
+          "digest": {
+            "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        },
+        "argv": [
+          "node",
+          "verification-runner.js",
+          "--plan",
+          "plan.json"
+        ],
+        "tool_allowlist": [
+          "git",
+          "node"
+        ],
+        "network_policy": {
+          "mode": "denied",
+          "allowed_endpoints": []
+        },
+        "sandbox_profile": {
+          "kind": "gvisor",
+          "profile_uri": "git+https://example.test/policies@1111111#gvisor-verifier.json",
+          "profile_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "rootfs_read_only": true,
+          "no_new_privileges": true,
+          "privileged": false,
+          "host_network": false,
+          "host_pid": false,
+          "host_mounts": false
+        }
+      },
+      "max_evidence_age_seconds": 300,
+      "max_execution_duration_seconds": 120
+    },
+    {
+      "id": "PROFILE-12C-B",
+      "adapter": "in_toto_slsa_oci_dsse_v1",
+      "provider": "local_sandbox",
+      "builder": {
+        "id": "https://attestor.example.test/builders/2",
+        "key_id": "f0083d190cf9c743ade699e0e3a56cbf524ec03c304217ded13222f1bb517bc9",
+        "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAkj2F8vU3cca4M0FqgTtZF+lvGNUTkTWuB39KLjgBhX0=\n-----END PUBLIC KEY-----\n"
+      },
+      "provider_identity": {
+        "issuer": "https://attestor-b.example.test",
+        "subject": "spiffe://example.test/builder/verifier-b",
+        "audience": "cannae-verifier-execution",
+        "required_claims": {
+          "host_attestor_id": "host-b",
+          "sandbox_instance_id": "sandbox-b"
+        }
+      },
+      "independence": {
+        "provider_id": "cannae:provider:local_sandbox",
+        "operator_id": "urn:operator:b",
+        "control_plane_id": "cannae:builder:key:f0083d190cf9c743ade699e0e3a56cbf524ec03c304217ded13222f1bb517bc9",
+        "account_id": "urn:account:b",
+        "project_id": "urn:project:b",
+        "runner_pool_id": "cannae:local_sandbox:sandbox-instance:sandbox-b",
+        "infrastructure_id": "cannae:local_sandbox:host-attestor:host-b",
+        "region_id": "urn:region:b",
+        "zone_id": "urn:zone:b"
+      },
+      "execution": {
+        "verifier_code": {
+          "uri": "git+https://example.test/controls@1111111#verifier.js",
+          "digest": {
+            "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        },
+        "container_image": {
+          "uri": "registry.example.test/cannae/verifier@sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "digest": {
+            "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "media_type": "application/vnd.oci.image.manifest.v1+json"
+        },
+        "dependency_lockfile": {
+          "uri": "git+https://example.test/controls@1111111#package-lock.json",
+          "digest": {
+            "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        },
+        "harness": {
+          "uri": "git+https://example.test/controls@1111111#verification-runner.js",
+          "digest": {
+            "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        },
+        "argv": [
+          "node",
+          "verification-runner.js",
+          "--plan",
+          "plan.json"
+        ],
+        "tool_allowlist": [
+          "git",
+          "node"
+        ],
+        "network_policy": {
+          "mode": "denied",
+          "allowed_endpoints": []
+        },
+        "sandbox_profile": {
+          "kind": "gvisor",
+          "profile_uri": "git+https://example.test/policies@1111111#gvisor-verifier.json",
+          "profile_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "rootfs_read_only": true,
+          "no_new_privileges": true,
+          "privileged": false,
+          "host_network": false,
+          "host_pid": false,
+          "host_mounts": false
+        }
+      },
+      "max_evidence_age_seconds": 300,
+      "max_execution_duration_seconds": 120
+    }
+  ],
+  "assignments": [
+    {
+      "verifier_id": "VERIFIER-12C-A",
+      "profile_id": "PROFILE-12C-A",
+      "allowed_purposes": [
+        "verification_receipt",
+        "comparative_evaluation_report"
+      ]
+    },
+    {
+      "verifier_id": "VERIFIER-12C-B",
+      "profile_id": "PROFILE-12C-B",
+      "allowed_purposes": [
+        "verification_receipt",
+        "comparative_evaluation_report"
+      ]
+    }
+  ],
+  "created_at": "2026-07-22T00:00:00Z",
+  "expires_at": "2026-07-23T00:00:00Z"
+}
