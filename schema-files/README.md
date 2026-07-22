@@ -107,11 +107,13 @@ Recommended validation order:
 53. `verification-receipt.schema.json`
 54. `verifier-trust-policy.schema.json`
 55. `verifier-identity-evidence.schema.json`
-56. `verification-attestation.schema.json`
-57. `comparative-evaluation-set.schema.json`
-58. `comparative-evaluation-plan.schema.json`
-59. `comparative-evaluation-report.schema.json`
-60. `comparative-evaluation-attestation.schema.json`
+56. `sigstore-trusted-root.schema.json`
+57. `sigstore-verifier-identity-evidence.schema.json`
+58. `verification-attestation.schema.json`
+59. `comparative-evaluation-set.schema.json`
+60. `comparative-evaluation-plan.schema.json`
+61. `comparative-evaluation-report.schema.json`
+62. `comparative-evaluation-attestation.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -119,4 +121,6 @@ All schemas target JSON Schema draft 2020-12.
 
 `VerifierTrustPolicy` v0.2 pins SPIFFE IDs, X.509 roots, transparency-log identities, and log keys. `VerifierIdentityEvidence` binds one short-lived SVID and the verifier's static key to the same repository/policy/purpose statement, then supplies a signed checkpoint and Merkle inclusion path.
 
-`SelfImprovementCycleOrder` v0.3 extends supervisor-derived `trust_policy_admission` with authenticated verifier workload evidence. Signed campaigns record the exact trust-policy reference, effective quorum thresholds, currently eligible verifier/key/group sets for each attestation purpose, identity evidence manifest references, and a conservative validity boundary. v0.1 and v0.2 orders remain readable.
+`VerifierTrustPolicy` v0.3 can instead select a native `sigstore_bundle` identity. `SigstoreTrustedRoot` records normalized official trust material and its source/freshness metadata. `SigstoreVerifierIdentityEvidence` binds the exact certificate identity, issuer, root digest, repository and purpose statement under both the native Fulcio/Rekor bundle and the verifier's static key.
+
+`SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. Signed campaigns record the exact trust-policy reference, effective quorum thresholds, currently eligible verifier/key/group sets for each attestation purpose, provider/root/evidence references, authority identities, and a conservative validity boundary. v0.1 through v0.3 orders remain readable.

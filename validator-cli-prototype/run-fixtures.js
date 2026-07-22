@@ -873,6 +873,34 @@ const fixtures = [
     requiredCodes: ["VERIFIER_POLICY_KEY_ID_MISMATCH"]
   },
   {
+    name: "valid Sigstore verifier trust policy",
+    file: "sample-payloads/valid-verifier-trust-policy-v0.3.json",
+    type: "verifier-trust-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "Sigstore verifier trust policy disables Rekor verification",
+    file: "sample-payloads/invalid-verifier-trust-policy-v0.3-threshold.json",
+    type: "verifier-trust-policy",
+    exitCode: 1,
+    requiredCodes: ["MINIMUM"]
+  },
+  {
+    name: "valid pinned Sigstore trusted root",
+    file: "sample-payloads/valid-sigstore-trusted-root.json",
+    type: "sigstore-trusted-root",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "Sigstore trusted root contains an override field",
+    file: "sample-payloads/invalid-sigstore-trusted-root-extra-field.json",
+    type: "sigstore-trusted-root",
+    exitCode: 1,
+    requiredCodes: ["ADDITIONAL_PROPERTY", "SIGSTORE_TRUSTED_ROOT_DIGEST_MISMATCH"]
+  },
+  {
     name: "valid verifier workload identity evidence",
     file: "sample-payloads/valid-verifier-identity-evidence.json",
     type: "verifier-identity-evidence",
@@ -885,6 +913,20 @@ const fixtures = [
     type: "verifier-identity-evidence",
     exitCode: 1,
     requiredCodes: ["ADDITIONAL_PROPERTY"]
+  },
+  {
+    name: "valid Sigstore verifier workload identity evidence",
+    file: "sample-payloads/valid-sigstore-verifier-identity-evidence.json",
+    type: "sigstore-verifier-identity-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "Sigstore identity evidence claims a different bundle media type",
+    file: "sample-payloads/invalid-sigstore-verifier-identity-evidence-media.json",
+    type: "sigstore-verifier-identity-evidence",
+    exitCode: 1,
+    requiredCodes: ["ENUM_MISMATCH", "SIGSTORE_IDENTITY_EVIDENCE_BUNDLE_BINDING_INVALID"]
   },
   {
     name: "valid signed verification attestation",

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/sigstore-trusted-root.schema.json",
+  "title": "Sigstore Trusted Root",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "media_type", "trusted_root", "trusted_root_sha256", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "SigstoreTrustedRoot" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "application/vnd.dev.sigstore.trustedroot+json;version=0.1",
+        "application/vnd.dev.sigstore.trustedroot.v0.2+json"
+      ]
+    },
+    "trusted_root": {
+      "type": "object",
+      "required": ["mediaType", "tlogs", "certificateAuthorities", "ctlogs", "timestampAuthorities"],
+      "properties": {
+        "mediaType": { "type": "string" },
+        "tlogs": { "type": "array", "minItems": 1 },
+        "certificateAuthorities": { "type": "array", "minItems": 1 },
+        "ctlogs": { "type": "array", "minItems": 1 },
+        "timestampAuthorities": { "type": "array" }
+      }
+    },
+    "trusted_root_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source": {
+      "type": "object",
+      "required": ["kind", "uri", "retrieved_at"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["sigstore_tuf", "custom_tuf", "pinned_file"] },
+        "uri": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "retrieved_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    }
+  }
+}

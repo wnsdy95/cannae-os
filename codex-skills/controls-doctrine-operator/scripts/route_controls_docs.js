@@ -106,9 +106,10 @@ const RULES = [
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "pre-dispatch admission", "remote verifier", "verifier identity", "workload identity", "spiffe", "svid", "x509", "x.509", "transparency log", "merkle", "checkpoint", "sigstore", "rekor", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
+    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "pre-dispatch admission", "remote verifier", "verifier identity", "workload identity", "spiffe", "svid", "x509", "x.509", "transparency log", "merkle", "checkpoint", "sigstore", "sigstore bundle", "cosign bundle", "fulcio", "trustedroot", "trusted root", "rekor", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
     docs: [
       "docs/bounded-self-improvement-operations.md",
+      "docs/sigstore-verifier-workload-admission.md",
       "docs/agent-roles-and-authority.md",
       "docs/approval-scope-policy.md",
       "docs/repository-artifact-isolation-policy.md",
@@ -122,6 +123,7 @@ const RULES = [
       "node run-campaign-supervisor-fixtures.js",
       "node run-verifier-trust-readiness-fixtures.js",
       "node run-verifier-identity-evidence-fixtures.js",
+      "node run-sigstore-verifier-identity-fixtures.js",
       "node run-workload-identity-admission-fixtures.js",
       "node run-cycle-order-admission-fixtures.js",
       "node run-verification-runner-fixtures.js",
@@ -134,6 +136,8 @@ const RULES = [
       "node validator-cli-prototype/validate.js sample-payloads/valid-verification-receipt.json verification-receipt",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-trust-policy.json verifier-trust-policy",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-identity-evidence.json verifier-identity-evidence",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-sigstore-trusted-root.json sigstore-trusted-root",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-sigstore-verifier-identity-evidence.json sigstore-verifier-identity-evidence",
       "node validator-cli-prototype/validate.js sample-payloads/valid-verification-attestation.json verification-attestation",
       "node validator-cli-prototype/validate.js sample-payloads/valid-comparative-evaluation-attestation.json comparative-evaluation-attestation"
     ]
@@ -353,7 +357,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "self-improvement-cycle-order", "campaign-supervisor", "cycle-order", "verification-plan", "verification-receipt", "verification-attestation", "comparative-evaluation-attestation", "signed-comparative-report", "verifier-trust-policy", "verifier-identity-evidence", "workload-identity", "spiffe", "svid", "x509", "transparency-log", "merkle", "sigstore", "rekor", "attestation", "ed25519", "dsse", "quorum", "verification-runner", "comparative-evaluation", "comparative-promotion", "canary", "non-regression", "baseline-candidate", "proof-carrying", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
+    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "self-improvement-cycle-order", "campaign-supervisor", "cycle-order", "verification-plan", "verification-receipt", "verification-attestation", "comparative-evaluation-attestation", "signed-comparative-report", "verifier-trust-policy", "verifier-identity-evidence", "sigstore-verifier-identity-evidence", "sigstore-trusted-root", "workload-identity", "spiffe", "svid", "x509", "transparency-log", "merkle", "sigstore", "fulcio", "trustedroot", "rekor", "attestation", "ed25519", "dsse", "quorum", "verification-runner", "comparative-evaluation", "comparative-promotion", "canary", "non-regression", "baseline-candidate", "proof-carrying", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
   },
   {
     id: "sof-tf",
@@ -497,6 +501,7 @@ function routeIdsForArtifact(file) {
   }
 
   if (file === "README.md") routeIds.push("orientation");
+  if (file === "package.json" || file === "package-lock.json") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "source-map-linter.js" || file === "source-map-url-coverage-report.json") routeIds.push("sources-research");
   if (file === "orders-dissemination-runner.js") routeIds.push("orders");
   if (file === "handoff-generator.js") routeIds.push("continuity-handoff");
@@ -504,7 +509,7 @@ function routeIdsForArtifact(file) {
   if (file === "maintenance-dashboard-runner.js") routeIds.push("runtime-architecture-dashboard");
   if (file === "decision-packet-linter.js") routeIds.push("authority-risk-release", "orders");
   if (file === "aar-to-readiness-update.js") routeIds.push("orders", "runtime-architecture-dashboard");
-  if (file === "autonomous-improvement-controller.js" || file === "campaign-supervisor.js" || file === "verifier-trust-readiness.js" || file === "verifier-identity-evidence.js" || file === "verifier-identity-fixture-support.js" || file === "run-campaign-supervisor-fixtures.js" || file === "run-verifier-trust-readiness-fixtures.js" || file === "run-verifier-identity-evidence-fixtures.js" || file === "run-workload-identity-admission-fixtures.js" || file === "run-cycle-order-admission-fixtures.js" || file === "run-self-improvement-fixtures.js" || file === "run-signed-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
+  if (file === "autonomous-improvement-controller.js" || file === "campaign-supervisor.js" || file === "verifier-trust-readiness.js" || file === "verifier-identity-evidence.js" || file === "verifier-identity-fixture-support.js" || file === "sigstore-trusted-root.js" || file === "sigstore-trusted-root-runner.js" || file === "sigstore-verifier-identity-evidence.js" || file === "sigstore-verifier-identity-runner.js" || file === "run-sigstore-verifier-identity-fixtures.js" || file === "run-campaign-supervisor-fixtures.js" || file === "run-verifier-trust-readiness-fixtures.js" || file === "run-verifier-identity-evidence-fixtures.js" || file === "run-workload-identity-admission-fixtures.js" || file === "run-cycle-order-admission-fixtures.js" || file === "run-self-improvement-fixtures.js" || file === "run-signed-self-improvement-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "verification-runner.js" || file === "verification-attestation.js" || file === "verification-attestation-runner.js" || file === "run-verification-attestation-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "comparative-evaluation-runner.js" || file === "run-comparative-evaluation-fixtures.js" ||
       file === "comparative-evaluation-attestation.js" || file === "comparative-evaluation-attestation-runner.js" ||

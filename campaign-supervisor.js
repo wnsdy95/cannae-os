@@ -150,6 +150,8 @@ function loadCampaignHistory(store, campaignId) {
   }
 
   const identityEvidence = [];
+  const sigstoreIdentityEvidence = [];
+  const sigstoreTrustedRoots = [];
   if (trustPolicyLoad.payload) {
     for (const entry of store.manifest.artifacts.filter(item =>
       item.kind === "verifier-identity-evidence" && item.mission_id === campaign.mission_id)) {
@@ -158,6 +160,36 @@ function loadCampaignHistory(store, campaignId) {
       const failures = validationFailures(payload, "verifier-identity-evidence");
       if (failures.length > 0 || payload.id !== entry.artifact_id) continue;
       identityEvidence.push({ entry, payload });
+    }
+    if (trustPolicyLoad.payload.schema_version === "0.3") {
+      const refs = trustPolicyLoad.payload.identity_assurance.sigstore_trusted_root_refs || [];
+      for (const ref of refs) {
+        const matching = store.manifest.artifacts.filter(entry =>
+          entry.kind === "sigstore-trusted-roots" &&
+          entry.artifact_id === ref.artifact_id &&
+          entry.relative_path === ref.relative_path &&
+          entry.sha256 === ref.sha256 &&
+          entry.mission_id === campaign.mission_id);
+        if (matching.length !== 1) {
+          trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_SIGSTORE_ROOT_REFERENCE_INVALID");
+          continue;
+        }
+        const payload = readManifestPayload(store.artifactRoot, matching[0]);
+        const failures = validationFailures(payload, "sigstore-trusted-root");
+        if (failures.length > 0 || payload.id !== matching[0].artifact_id) {
+          trustPolicyLoad.blockingCodes.push("TRUST_ADMISSION_SIGSTORE_ROOT_SCHEMA_INVALID");
+          continue;
+        }
+        sigstoreTrustedRoots.push({ entry: matching[0], payload });
+      }
+      for (const entry of store.manifest.artifacts.filter(item =>
+        item.kind === "sigstore-verifier-identity-evidence" && item.mission_id === campaign.mission_id)) {
+        const payload = readManifestPayload(store.artifactRoot, entry);
+        if (payload.trust_policy_id !== trustPolicyLoad.payload.id) continue;
+        const failures = validationFailures(payload, "sigstore-verifier-identity-evidence");
+        if (failures.length > 0 || payload.id !== entry.artifact_id) continue;
+        sigstoreIdentityEvidence.push({ entry, payload });
+      }
     }
   }
 
@@ -170,7 +202,9 @@ function loadCampaignHistory(store, campaignId) {
     trustPolicy: trustPolicyLoad.payload,
     trustPolicyEntry: trustPolicyLoad.entry,
     trustPolicyBlockingCodes: trustPolicyLoad.blockingCodes,
-    identityEvidence
+    identityEvidence,
+    sigstoreIdentityEvidence,
+    sigstoreTrustedRoots
   };
 }
 
@@ -428,7 +462,9 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     decisions,
     trustPolicy,
     trustPolicyBlockingCodes,
-    identityEvidence
+    identityEvidence,
+    sigstoreIdentityEvidence,
+    sigstoreTrustedRoots
   } = history;
   const repository = store.verification.repository;
   const blocks = [];
@@ -525,6 +561,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     repository,
     trustPolicy,
     identityEvidence,
+    sigstoreIdentityEvidence,
+    sigstoreTrustedRoots,
     evaluatedAt,
     blockingCodes: trustPolicyBlockingCodes
   });
@@ -543,7 +581,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
 
   const generatedAt = evaluatedAt;
   return {
-    schema_version: "0.3",
+    schema_version: trustPolicy && trustPolicy.schema_version === "0.3" ? "0.4" : "0.3",
     type: "SelfImprovementCycleOrder",
     id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission),
     campaign_id: campaign.id,

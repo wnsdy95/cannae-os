@@ -20,7 +20,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: "22"
+          node-version: "22.22.3"
+
+      - name: Install pinned runtime dependencies
+        run: npm ci --ignore-scripts
 
       - name: Routing coverage
         run: node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .

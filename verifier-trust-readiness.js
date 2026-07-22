@@ -3,6 +3,7 @@
 const crypto = require("crypto");
 const { publicKeyId } = require("./verification-attestation");
 const { verifyVerifierIdentityEvidence } = require("./verifier-identity-evidence");
+const { verifySigstoreVerifierIdentityEvidence } = require("./sigstore-verifier-identity-evidence");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 
@@ -98,7 +99,7 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptRequired = ["0.3", "0.4"].includes(campaign.schema_version);
   const comparativeRequired = campaign.schema_version === "0.4";
   const required = receiptRequired || comparativeRequired;
-  const identityRequired = Boolean(required && policy && policy.schema_version === "0.2");
+  const identityRequired = Boolean(required && policy && ["0.2", "0.3"].includes(policy.schema_version));
   const campaignPolicy = campaign.attestation_policy || null;
   const trustPolicyRef = campaignPolicy ? clone(campaignPolicy.trust_policy_ref) : clone(NONE_ARTIFACT_REF);
   const policyQuorum = policy && policy.quorum ? policy.quorum : {};
@@ -161,14 +162,25 @@ function evaluateVerifierTrustReadiness(options) {
   const authenticated = [];
   if (identityRequired) {
     for (const verifier of policyEligible) {
-      const candidates = (options.identityEvidence || []).filter(item => item && item.payload &&
+      const isSigstore = verifier.workload_identity && verifier.workload_identity.type === "sigstore_bundle";
+      const evidencePool = isSigstore ? options.sigstoreIdentityEvidence : options.identityEvidence;
+      const trustedRoot = isSigstore ? (options.sigstoreTrustedRoots || [])
+        .find(item => item && item.payload && item.payload.id === verifier.workload_identity.trust_root_id) : null;
+      const candidates = (evidencePool || []).filter(item => item && item.payload &&
         item.payload.verifier_id === verifier.id && item.payload.trust_policy_id === policy.id &&
         item.payload.repository_binding && item.payload.repository_binding.repository_key === repository.key &&
         item.payload.repository_binding.identity_fingerprint === repository.identity_fingerprint);
       const validCandidates = candidates.map(item => ({
         item,
         ref: identityArtifactRef(item),
-        result: verifyVerifierIdentityEvidence({
+        result: isSigstore ? verifySigstoreVerifierIdentityEvidence({
+          evidence: item.payload,
+          trustPolicy: policy,
+          verifier,
+          trustedRootArtifact: trustedRoot && trustedRoot.payload,
+          repository,
+          evaluatedAt
+        }) : verifyVerifierIdentityEvidence({
           evidence: item.payload,
           trustPolicy: policy,
           verifier,
@@ -195,7 +207,20 @@ function evaluateVerifierTrustReadiness(options) {
   const receiptQuorum = summarizeQuorum(receiptEligible, receiptRequired, requirements);
   const comparativeQuorum = summarizeQuorum(comparativeEligible, comparativeRequired, requirements);
 
-  const identityEvidence = identityRequired ? authenticated.map(item => ({
+  const genericIdentity = policy && policy.schema_version === "0.3";
+  const identityEvidence = identityRequired ? authenticated.map(item => genericIdentity ? {
+    verifier_id: item.verifier.id,
+    identity_provider: item.result.identity_provider || "spiffe_x509",
+    identity: item.result.identity || item.result.spiffe_id,
+    identity_authority: item.result.identity_authority || item.result.trust_domain,
+    trust_root_id: item.result.trust_root_id || item.verifier.workload_identity.trust_root_id,
+    certificate_sha256: item.result.certificate_sha256,
+    transparency_log_ids: item.result.transparency_log_ids || [item.result.transparency_log_id],
+    purposes: item.result.purposes,
+    evidence_ref: item.ref,
+    issued_at: item.result.issued_at,
+    valid_until: item.result.valid_until
+  } : {
     verifier_id: item.verifier.id,
     spiffe_id: item.result.spiffe_id,
     trust_domain: item.result.trust_domain,
@@ -205,7 +230,7 @@ function evaluateVerifierTrustReadiness(options) {
     evidence_ref: item.ref,
     issued_at: item.result.issued_at,
     valid_until: item.result.valid_until
-  })).sort((left, right) => left.verifier_id.localeCompare(right.verifier_id)) : [];
+  }).sort((left, right) => left.verifier_id.localeCompare(right.verifier_id)) : [];
   const identitySatisfied = !identityRequired || (receiptQuorum.satisfied && comparativeQuorum.satisfied);
   const identityBlockingCodes = [];
   if (!identitySatisfied) identityBlockingCodes.push("TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE");
@@ -213,8 +238,11 @@ function evaluateVerifierTrustReadiness(options) {
     required: Boolean(identityRequired),
     satisfied: identitySatisfied,
     authenticated_verifier_count: identityEvidence.length,
-    distinct_trust_domain_count: new Set(identityEvidence.map(item => item.trust_domain)).size,
-    transparency_log_count: new Set(identityEvidence.map(item => item.transparency_log_id)).size,
+    distinct_trust_domain_count: new Set(identityEvidence.map(item => item.trust_domain).filter(Boolean)).size,
+    ...(genericIdentity ? {
+      distinct_identity_authority_count: new Set(identityEvidence.map(item => item.identity_authority)).size
+    } : {}),
+    transparency_log_count: new Set(identityEvidence.flatMap(item => item.transparency_log_ids || [item.transparency_log_id])).size,
     evidence: identityEvidence,
     blocking_codes: identityBlockingCodes
   };

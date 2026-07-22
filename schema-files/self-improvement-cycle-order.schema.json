@@ -34,20 +34,37 @@
   "additionalProperties": false,
   "allOf": [
     {
-      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3"] } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.2", "0.3", "0.4"] } } },
       "then": { "required": ["trust_policy_admission"] }
     },
     {
-      "if": { "properties": { "schema_version": { "const": "0.3" } } },
+      "if": { "properties": { "schema_version": { "enum": ["0.3", "0.4"] } } },
       "then": {
         "properties": {
           "trust_policy_admission": { "required": ["identity_assurance"] }
         }
       }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.4" } } },
+      "then": {
+        "properties": {
+          "trust_policy_admission": {
+            "properties": {
+              "identity_assurance": {
+                "required": ["distinct_identity_authority_count"],
+                "properties": {
+                  "evidence": { "items": { "$ref": "#/$defs/generic_identity_evidence" } }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3"] },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2", "0.3", "0.4"] },
     "type": { "type": "string", "const": "SelfImprovementCycleOrder" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -158,30 +175,16 @@
             "satisfied": { "type": "boolean" },
             "authenticated_verifier_count": { "type": "integer", "minimum": 0, "maximum": 50 },
             "distinct_trust_domain_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+            "distinct_identity_authority_count": { "type": "integer", "minimum": 0, "maximum": 50 },
             "transparency_log_count": { "type": "integer", "minimum": 0, "maximum": 50 },
             "evidence": {
               "type": "array",
               "maxItems": 50,
               "items": {
-                "type": "object",
-                "required": ["verifier_id", "spiffe_id", "trust_domain", "certificate_sha256", "transparency_log_id", "purposes", "evidence_ref", "issued_at", "valid_until"],
-                "additionalProperties": false,
-                "properties": {
-                  "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
-                  "spiffe_id": { "type": "string", "pattern": "^spiffe://[a-z0-9.-]+/[^?#]+$" },
-                  "trust_domain": { "type": "string", "pattern": "^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$" },
-                  "certificate_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-                  "transparency_log_id": { "$ref": "common.schema.json#/$defs/id" },
-                  "purposes": {
-                    "type": "array",
-                    "minItems": 1,
-                    "uniqueItems": true,
-                    "items": { "type": "string", "enum": ["verification_receipt", "comparative_evaluation_report"] }
-                  },
-                  "evidence_ref": { "$ref": "#/$defs/artifact_ref" },
-                  "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
-                  "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }
-                }
+                "oneOf": [
+                  { "$ref": "#/$defs/spiffe_identity_evidence" },
+                  { "$ref": "#/$defs/generic_identity_evidence" }
+                ]
               }
             },
             "blocking_codes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
@@ -215,6 +218,54 @@
     "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
   },
   "$defs": {
+    "identity_purposes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["verification_receipt", "comparative_evaluation_report"] }
+    },
+    "spiffe_identity_evidence": {
+      "type": "object",
+      "required": ["verifier_id", "spiffe_id", "trust_domain", "certificate_sha256", "transparency_log_id", "purposes", "evidence_ref", "issued_at", "valid_until"],
+      "additionalProperties": false,
+      "properties": {
+        "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+        "spiffe_id": { "type": "string", "pattern": "^spiffe://[a-z0-9.-]+/[^?#]+$" },
+        "trust_domain": { "type": "string", "pattern": "^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$" },
+        "certificate_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "transparency_log_id": { "$ref": "common.schema.json#/$defs/id" },
+        "purposes": { "$ref": "#/$defs/identity_purposes" },
+        "evidence_ref": { "$ref": "#/$defs/artifact_ref" },
+        "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "generic_identity_evidence": {
+      "type": "object",
+      "required": [
+        "verifier_id", "identity_provider", "identity", "identity_authority", "trust_root_id",
+        "certificate_sha256", "transparency_log_ids", "purposes", "evidence_ref", "issued_at", "valid_until"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verifier_id": { "$ref": "common.schema.json#/$defs/id" },
+        "identity_provider": { "type": "string", "enum": ["spiffe_x509", "sigstore_bundle"] },
+        "identity": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "identity_authority": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "trust_root_id": { "$ref": "common.schema.json#/$defs/id" },
+        "certificate_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "transparency_log_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+        },
+        "purposes": { "$ref": "#/$defs/identity_purposes" },
+        "evidence_ref": { "$ref": "#/$defs/artifact_ref" },
+        "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
     "admission_quorum": {
       "type": "object",
       "required": ["required", "satisfied", "eligible_verifier_count", "distinct_key_count", "independence_group_count", "verifier_ids", "key_ids", "independence_groups"],
