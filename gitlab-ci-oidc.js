@@ -4,20 +4,34 @@ const crypto = require("crypto");
 const { canonicalBytes } = require("./verification-attestation");
 const { componentId, validClaims } = require("./verifier-independence");
 
-const GITHUB_ACTIONS_ISSUER = "https://token.actions.githubusercontent.com";
-const GITHUB_ACTIONS_DISCOVERY_URI = `${GITHUB_ACTIONS_ISSUER}/.well-known/openid-configuration`;
-const GITHUB_ACTIONS_JWKS_URI = `${GITHUB_ACTIONS_ISSUER}/.well-known/jwks`;
-const GITHUB_ACTIONS_ALGORITHM = "RS256";
+const GITLAB_CI_ISSUER = "https://gitlab.com";
+const GITLAB_CI_DISCOVERY_URI = `${GITLAB_CI_ISSUER}/.well-known/openid-configuration`;
+const GITLAB_CI_JWKS_URI = `${GITLAB_CI_ISSUER}/oauth/discovery/keys`;
+const GITLAB_CI_ALGORITHM = "RS256";
+const IDENTIFIER_CLAIMS = Object.freeze([
+  "project_id", "namespace_id", "job_project_id", "job_namespace_id",
+  "pipeline_id", "job_id", "runner_id"
+]);
 const REQUIRED_CLAIMS = Object.freeze([
   "iss", "sub", "aud", "exp", "iat", "nbf", "jti",
-  "repository", "repository_id", "repository_owner", "repository_owner_id",
-  "sha", "ref", "workflow_ref", "workflow_sha", "job_workflow_ref",
-  "job_workflow_sha", "runner_environment", "run_id", "run_attempt"
+  "project_id", "project_path", "namespace_id", "namespace_path",
+  "job_project_id", "job_project_path", "job_namespace_id", "job_namespace_path",
+  "pipeline_id", "pipeline_source", "job_id", "ref", "ref_type", "ref_path",
+  "ref_protected", "runner_id", "runner_environment", "sha", "ci_config_ref_uri",
+  "ci_config_sha"
+]);
+const PINNED_CLAIMS = Object.freeze([
+  "project_id", "project_path", "namespace_id", "namespace_path",
+  "job_project_id", "job_project_path", "job_namespace_id", "job_namespace_path",
+  "pipeline_source", "ref", "ref_type", "ref_path", "ref_protected",
+  "runner_environment", "sha", "ci_config_ref_uri", "ci_config_sha"
 ]);
 const PROJECTED_CLAIMS = Object.freeze([
-  "repository", "repository_id", "repository_owner", "repository_owner_id",
-  "sha", "ref", "workflow_ref", "workflow_sha", "job_workflow_ref",
-  "job_workflow_sha", "runner_environment", "run_id", "run_attempt"
+  "project_id", "project_path", "namespace_id", "namespace_path",
+  "job_project_id", "job_project_path", "job_namespace_id", "job_namespace_path",
+  "pipeline_id", "pipeline_source", "job_id", "ref", "ref_type", "ref_path",
+  "ref_protected", "runner_id", "runner_environment", "sha", "ci_config_ref_uri",
+  "ci_config_sha"
 ]);
 
 function clone(value) {
@@ -99,7 +113,7 @@ function normalizedJwk(jwk) {
 }
 
 function validRsaJwk(jwk) {
-  if (!jwk || jwk.kty !== "RSA" || jwk.use !== "sig" || jwk.alg !== GITHUB_ACTIONS_ALGORITHM ||
+  if (!jwk || jwk.kty !== "RSA" || jwk.use !== "sig" || jwk.alg !== GITLAB_CI_ALGORITHM ||
       typeof jwk.kid !== "string" || jwk.kid.length === 0 || !strictBase64Url(jwk.n) ||
       strictBase64Url(jwk.n).length < 256 || jwk.e !== "AQAB") return false;
   try {
@@ -107,6 +121,20 @@ function validRsaJwk(jwk) {
   } catch (error) {
     return false;
   }
+}
+
+function normalizedIdentifier(value) {
+  if (typeof value === "string" && /^[1-9]\d*$/.test(value)) return value;
+  if (Number.isSafeInteger(value) && value > 0) return String(value);
+  return null;
+}
+
+function projectedClaims(claims) {
+  const projected = {};
+  for (const name of PROJECTED_CLAIMS) {
+    projected[name] = IDENTIFIER_CLAIMS.includes(name) ? normalizedIdentifier(claims[name]) : claims[name];
+  }
+  return projected;
 }
 
 function trustBundleDigest(bundle) {
@@ -117,29 +145,29 @@ function nativeEvidenceDigest(evidence) {
   return digest(evidence, "evidence_sha256");
 }
 
-function createGitHubActionsOIDCTrustBundle(options) {
+function createGitLabCIOIDCTrustBundle(options) {
   const discovery = options.discovery || {};
   const jwks = options.jwks || {};
-  if (discovery.issuer !== GITHUB_ACTIONS_ISSUER || discovery.jwks_uri !== GITHUB_ACTIONS_JWKS_URI ||
+  if (discovery.issuer !== GITLAB_CI_ISSUER || discovery.jwks_uri !== GITLAB_CI_JWKS_URI ||
       !Array.isArray(discovery.id_token_signing_alg_values_supported) ||
-      !discovery.id_token_signing_alg_values_supported.includes(GITHUB_ACTIONS_ALGORITHM)) {
-    throw new Error("GitHub Actions OIDC discovery metadata is not the expected public issuer contract.");
+      !discovery.id_token_signing_alg_values_supported.includes(GITLAB_CI_ALGORITHM)) {
+    throw new Error("GitLab CI OIDC discovery metadata is not the expected GitLab.com issuer contract.");
   }
   const keys = (jwks.keys || []).map(normalizedJwk).sort((left, right) => left.kid.localeCompare(right.kid));
   if (keys.length === 0 || keys.some(key => !validRsaJwk(key)) || new Set(keys.map(key => key.kid)).size !== keys.length) {
-    throw new Error("GitHub Actions OIDC JWKS must contain unique RS256 signing keys.");
+    throw new Error("GitLab CI OIDC JWKS must contain unique RS256 signing keys.");
   }
   const retrieved = timestamp(options.retrievedAt);
   const expires = timestamp(options.expiresAt);
   if (retrieved === null || expires === null || expires <= retrieved) throw new Error("Trust-bundle expiry must follow retrieval.");
   const bundle = {
     schema_version: "0.1",
-    type: "GitHubActionsOIDCTrustBundle",
+    type: "GitLabCIOIDCTrustBundle",
     id: options.id,
-    issuer: GITHUB_ACTIONS_ISSUER,
-    discovery_uri: GITHUB_ACTIONS_DISCOVERY_URI,
-    jwks_uri: GITHUB_ACTIONS_JWKS_URI,
-    algorithms: [GITHUB_ACTIONS_ALGORITHM],
+    issuer: GITLAB_CI_ISSUER,
+    discovery_uri: GITLAB_CI_DISCOVERY_URI,
+    jwks_uri: GITLAB_CI_JWKS_URI,
+    algorithms: [GITLAB_CI_ALGORITHM],
     keys,
     source: {
       kind: options.sourceKind || "https_discovery",
@@ -152,106 +180,120 @@ function createGitHubActionsOIDCTrustBundle(options) {
   return bundle;
 }
 
-function verifyGitHubActionsOIDCTrustBundle(bundle, evaluatedAt) {
+function verifyGitLabCIOIDCTrustBundle(bundle, evaluatedAt) {
   const codes = [];
   if (!bundle || !exactKeys(bundle, [
     "schema_version", "type", "id", "issuer", "discovery_uri", "jwks_uri", "algorithms", "keys", "source", "bundle_sha256"
-  ]) || bundle.type !== "GitHubActionsOIDCTrustBundle" || bundle.schema_version !== "0.1" ||
+  ]) || bundle.type !== "GitLabCIOIDCTrustBundle" || bundle.schema_version !== "0.1" ||
       !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(bundle.id || "") ||
       !exactKeys(bundle.source, ["kind", "retrieved_at", "expires_at"]) ||
       !["https_discovery", "pinned_file"].includes(bundle.source.kind)) {
-    addCode(codes, "GITHUB_OIDC_TRUST_BUNDLE_STRUCTURE_INVALID");
+    addCode(codes, "GITLAB_OIDC_TRUST_BUNDLE_STRUCTURE_INVALID");
   }
-  if (!bundle || bundle.issuer !== GITHUB_ACTIONS_ISSUER || bundle.discovery_uri !== GITHUB_ACTIONS_DISCOVERY_URI ||
-      bundle.jwks_uri !== GITHUB_ACTIONS_JWKS_URI || JSON.stringify(bundle.algorithms) !== JSON.stringify([GITHUB_ACTIONS_ALGORITHM])) {
-    addCode(codes, "GITHUB_OIDC_TRUST_BUNDLE_ISSUER_INVALID");
+  if (!bundle || bundle.issuer !== GITLAB_CI_ISSUER || bundle.discovery_uri !== GITLAB_CI_DISCOVERY_URI ||
+      bundle.jwks_uri !== GITLAB_CI_JWKS_URI || JSON.stringify(bundle.algorithms) !== JSON.stringify([GITLAB_CI_ALGORITHM])) {
+    addCode(codes, "GITLAB_OIDC_TRUST_BUNDLE_ISSUER_INVALID");
   }
   const keys = bundle && bundle.keys;
   if (!Array.isArray(keys) || keys.length === 0 || keys.some(key => !validRsaJwk(key)) ||
       keys.some(key => !exactKeys(key, ["kty", "use", "kid", "alg", "n", "e"])) ||
       new Set((keys || []).map(key => key.kid)).size !== (keys || []).length ||
       JSON.stringify(keys) !== JSON.stringify([...(keys || [])].sort((left, right) => left.kid.localeCompare(right.kid)))) {
-    addCode(codes, "GITHUB_OIDC_TRUST_BUNDLE_KEYS_INVALID");
+    addCode(codes, "GITLAB_OIDC_TRUST_BUNDLE_KEYS_INVALID");
   }
-  if (bundle && bundle.bundle_sha256 !== trustBundleDigest(bundle)) addCode(codes, "GITHUB_OIDC_TRUST_BUNDLE_DIGEST_INVALID");
+  if (bundle && bundle.bundle_sha256 !== trustBundleDigest(bundle)) addCode(codes, "GITLAB_OIDC_TRUST_BUNDLE_DIGEST_INVALID");
   const evaluated = timestamp(evaluatedAt);
   const retrieved = timestamp(bundle && bundle.source && bundle.source.retrieved_at);
   const expires = timestamp(bundle && bundle.source && bundle.source.expires_at);
   if (evaluated === null || retrieved === null || expires === null || expires <= retrieved || evaluated < retrieved || evaluated >= expires) {
-    addCode(codes, "GITHUB_OIDC_TRUST_BUNDLE_TIME_INVALID");
+    addCode(codes, "GITLAB_OIDC_TRUST_BUNDLE_TIME_INVALID");
   }
   return { valid: codes.length === 0, codes: codes.sort() };
 }
 
-function deriveGitHubActionsIndependence(claims) {
+function deriveGitLabCIIndependence(claims) {
   return {
-    provider_id: "cannae:provider:github_actions",
-    operator_id: componentId("github_actions", "operator", "github"),
-    control_plane_id: componentId("github_actions", "control-plane", "hosted"),
-    account_id: componentId("github_actions", "repository-owner", claims.repository_owner_id),
-    project_id: componentId("github_actions", "repository", claims.repository_id),
-    runner_pool_id: componentId("github_actions", "runner-environment", claims.runner_environment),
-    infrastructure_id: componentId("github_actions", "infrastructure", "shared-unknown"),
-    region_id: componentId("github_actions", "region", "shared-unknown"),
-    zone_id: componentId("github_actions", "zone", "shared-unknown")
+    provider_id: "cannae:provider:gitlab_ci",
+    operator_id: componentId("gitlab_ci", "operator", "gitlab"),
+    control_plane_id: componentId("gitlab_ci", "control-plane", "gitlab.com-hosted"),
+    account_id: componentId("gitlab_ci", "job-namespace", normalizedIdentifier(claims.job_namespace_id)),
+    project_id: componentId("gitlab_ci", "job-project", normalizedIdentifier(claims.job_project_id)),
+    runner_pool_id: componentId("gitlab_ci", "runner-environment", claims.runner_environment),
+    infrastructure_id: componentId("gitlab_ci", "infrastructure", "shared-unknown"),
+    region_id: componentId("gitlab_ci", "region", "shared-unknown"),
+    zone_id: componentId("gitlab_ci", "zone", "shared-unknown")
   };
 }
 
 function expectedNativePolicy(profile) {
-  return profile && profile.native_identity && profile.native_identity.adapter === "github_actions_oidc_v1"
+  return profile && profile.native_identity && profile.native_identity.adapter === "gitlab_ci_oidc_v1"
     ? profile.native_identity
     : null;
 }
 
-function appraiseGitHubActionsOIDCToken(options) {
+function appraiseGitLabCIOIDCToken(options) {
   const token = parseCompactJwt(options.token);
   const profile = options.profile;
   const nativePolicy = expectedNativePolicy(profile);
   const bundle = options.trustBundle;
   const evaluated = timestamp(options.evaluatedAt);
   const codes = [];
-  if (!token) addCode(codes, "GITHUB_OIDC_TOKEN_MALFORMED");
-  const trustResult = verifyGitHubActionsOIDCTrustBundle(bundle, options.evaluatedAt);
+  if (!token) addCode(codes, "GITLAB_OIDC_TOKEN_MALFORMED");
+  const trustResult = verifyGitLabCIOIDCTrustBundle(bundle, options.evaluatedAt);
   for (const code of trustResult.codes) addCode(codes, code);
-  if (!nativePolicy || profile.provider !== "github_actions") addCode(codes, "GITHUB_OIDC_PROFILE_INVALID");
-  if (token && (token.header.alg !== GITHUB_ACTIONS_ALGORITHM || token.header.typ !== "JWT" ||
+  if (!nativePolicy || profile.provider !== "gitlab_ci") addCode(codes, "GITLAB_OIDC_PROFILE_INVALID");
+  if (token && (token.header.alg !== GITLAB_CI_ALGORITHM || token.header.typ !== "JWT" ||
       typeof token.header.kid !== "string" || Object.keys(token.header).some(key => !["alg", "kid", "typ"].includes(key)))) {
-    addCode(codes, "GITHUB_OIDC_HEADER_INVALID");
+    addCode(codes, "GITLAB_OIDC_HEADER_INVALID");
   }
   const key = token && bundle && (bundle.keys || []).find(item => item.kid === token.header.kid);
-  if (token && !key) addCode(codes, "GITHUB_OIDC_SIGNING_KEY_UNKNOWN");
+  if (token && !key) addCode(codes, "GITLAB_OIDC_SIGNING_KEY_UNKNOWN");
   if (token && key) {
     try {
       const publicKey = crypto.createPublicKey({ key: normalizedJwk(key), format: "jwk" });
-      if (!crypto.verify("RSA-SHA256", token.signingInput, publicKey, token.signature)) addCode(codes, "GITHUB_OIDC_SIGNATURE_INVALID");
+      if (!crypto.verify("RSA-SHA256", token.signingInput, publicKey, token.signature)) addCode(codes, "GITLAB_OIDC_SIGNATURE_INVALID");
     } catch (error) {
-      addCode(codes, "GITHUB_OIDC_SIGNATURE_INVALID");
+      addCode(codes, "GITLAB_OIDC_SIGNATURE_INVALID");
     }
   }
   const claims = token && token.claims || {};
-  if (REQUIRED_CLAIMS.some(name => claims[name] === undefined || claims[name] === "") ||
-      PROJECTED_CLAIMS.some(name => typeof claims[name] !== "string")) {
-    addCode(codes, "GITHUB_OIDC_CLAIMS_INCOMPLETE");
+  if (REQUIRED_CLAIMS.some(name => claims[name] === undefined || claims[name] === null || claims[name] === "") ||
+      PROJECTED_CLAIMS.some(name => !IDENTIFIER_CLAIMS.includes(name) && typeof claims[name] !== "string") ||
+      IDENTIFIER_CLAIMS.some(name => normalizedIdentifier(claims[name]) === null)) {
+    addCode(codes, "GITLAB_OIDC_CLAIMS_INCOMPLETE");
   }
-  if (claims.iss !== GITHUB_ACTIONS_ISSUER || !nativePolicy || claims.sub !== profile.provider_identity.subject ||
+  if (claims.iss !== GITLAB_CI_ISSUER || !nativePolicy || claims.sub !== profile.provider_identity.subject ||
       typeof claims.aud !== "string" || claims.aud !== profile.provider_identity.audience) {
-    addCode(codes, "GITHUB_OIDC_IDENTITY_MISMATCH");
+    addCode(codes, "GITLAB_OIDC_IDENTITY_MISMATCH");
   }
   const pinned = profile && profile.provider_identity && profile.provider_identity.required_claims || {};
-  if (Object.entries(pinned).some(([name, value]) => claims[name] !== value)) addCode(codes, "GITHUB_OIDC_PINNED_CLAIM_MISMATCH");
-  if (claims.runner_environment !== "github-hosted" || nativePolicy && nativePolicy.required_runner_environment !== "github-hosted") {
-    addCode(codes, "GITHUB_OIDC_RUNNER_UNSUPPORTED");
+  if (PINNED_CLAIMS.some(name => typeof pinned[name] !== "string" || pinned[name].length === 0) ||
+      Object.entries(pinned).some(([name, value]) => {
+        const observed = IDENTIFIER_CLAIMS.includes(name) ? normalizedIdentifier(claims[name]) : claims[name];
+        return observed !== value;
+      })) {
+    addCode(codes, "GITLAB_OIDC_PINNED_CLAIM_MISMATCH");
   }
-  if (!/^[a-f0-9]{40}$/.test(claims.sha || "") || claims.workflow_sha !== claims.sha ||
-      !/^[a-f0-9]{40}$/.test(claims.job_workflow_sha || "") ||
-      !String(claims.job_workflow_ref || "").endsWith(`@${claims.job_workflow_sha || "missing"}`)) {
-    addCode(codes, "GITHUB_OIDC_WORKFLOW_NOT_IMMUTABLE");
+  if (claims.runner_environment !== "gitlab-hosted" || nativePolicy && nativePolicy.required_runner_environment !== "gitlab-hosted") {
+    addCode(codes, "GITLAB_OIDC_RUNNER_UNSUPPORTED");
   }
-  if (!/^\d+$/.test(claims.repository_id || "") || !/^\d+$/.test(claims.repository_owner_id || "") ||
-      !/^\d+$/.test(claims.run_id || "") || !/^[1-9]\d*$/.test(claims.run_attempt || "") ||
-      typeof claims.jti !== "string" || claims.jti.length < 8) {
-    addCode(codes, "GITHUB_OIDC_STABLE_ID_INVALID");
+  if (claims.ref_protected !== "true" || claims.ref_type !== "branch" ||
+      claims.ref_path !== `refs/heads/${claims.ref || "missing"}` ||
+      nativePolicy && nativePolicy.require_protected_ref !== true) {
+    addCode(codes, "GITLAB_OIDC_REF_UNPROTECTED");
   }
+  const sameProject = normalizedIdentifier(claims.project_id) === normalizedIdentifier(claims.job_project_id) &&
+    claims.project_path === claims.job_project_path &&
+    normalizedIdentifier(claims.namespace_id) === normalizedIdentifier(claims.job_namespace_id) &&
+    claims.namespace_path === claims.job_namespace_path;
+  const configPrefix = `gitlab.com/${claims.job_project_path || "missing"}//`;
+  if (!sameProject || nativePolicy && nativePolicy.require_same_project_config !== true ||
+      !/^[a-f0-9]{40}$/.test(claims.sha || "") || claims.ci_config_sha !== claims.sha ||
+      !String(claims.ci_config_ref_uri || "").startsWith(configPrefix) ||
+      !String(claims.ci_config_ref_uri || "").endsWith(`@${claims.ref_path || "missing"}`)) {
+    addCode(codes, "GITLAB_OIDC_CONFIG_NOT_IMMUTABLE");
+  }
+  if (typeof claims.jti !== "string" || claims.jti.length < 8) addCode(codes, "GITLAB_OIDC_STABLE_ID_INVALID");
   const issued = epochTimestamp(claims.iat);
   const notBefore = epochTimestamp(claims.nbf);
   const expires = epochTimestamp(claims.exp);
@@ -260,15 +302,15 @@ function appraiseGitHubActionsOIDCToken(options) {
   if (evaluated === null || issued === null || notBefore === null || expires === null ||
       expires <= issued || notBefore > expires || evaluated + skew < notBefore || evaluated - skew >= expires ||
       issued > evaluated + skew || evaluated - issued > maxAge) {
-    addCode(codes, "GITHUB_OIDC_TOKEN_TIME_INVALID");
+    addCode(codes, "GITLAB_OIDC_TOKEN_TIME_INVALID");
   }
   const providerIdentity = token ? {
     issuer: claims.iss,
     subject: claims.sub,
     audience: claims.aud,
-    claims: Object.fromEntries(PROJECTED_CLAIMS.map(name => [name, claims[name]]))
+    claims: projectedClaims(claims)
   } : null;
-  const independence = token ? deriveGitHubActionsIndependence(claims) : null;
+  const independence = token ? deriveGitLabCIIndependence(claims) : null;
   return {
     valid: codes.length === 0,
     codes: codes.sort(),
@@ -288,17 +330,17 @@ function sameRef(left, right) {
     left.relative_path === right.relative_path && left.sha256 === right.sha256);
 }
 
-function createGitHubActionsOIDCEvidence(options) {
+function createGitLabCIOIDCEvidence(options) {
   if (!safeArtifactRef(options.trustBundleReference) ||
       options.trustBundleReference.artifact_id !== (options.trustBundle && options.trustBundle.id)) {
-    throw new Error("GitHub Actions OIDC evidence requires an exact trust-bundle reference.");
+    throw new Error("GitLab CI OIDC evidence requires an exact trust-bundle reference.");
   }
-  const result = appraiseGitHubActionsOIDCToken(options);
-  if (!result.valid) throw new Error(`GitHub Actions OIDC token appraisal failed: ${result.codes.join(", ")}`);
+  const result = appraiseGitLabCIOIDCToken(options);
+  if (!result.valid) throw new Error(`GitLab CI OIDC token appraisal failed: ${result.codes.join(", ")}`);
   const evidence = {
     schema_version: "0.1",
-    type: "GitHubActionsOIDCEvidence",
-    id: options.id || `GAOIDC-${result.token_sha256.slice(0, 24)}`,
+    type: "GitLabCIOIDCEvidence",
+    id: options.id || `GLOIDC-${result.token_sha256.slice(0, 24)}`,
     trust_bundle_ref: clone(options.trustBundleReference),
     compact_jwt: options.token,
     token_sha256: result.token_sha256,
@@ -314,30 +356,30 @@ function createGitHubActionsOIDCEvidence(options) {
   return evidence;
 }
 
-function verifyGitHubActionsOIDCEvidence(options) {
+function verifyGitLabCIOIDCEvidence(options) {
   const evidence = options.evidence;
   const codes = [];
   if (!evidence || !exactKeys(evidence, [
     "schema_version", "type", "id", "trust_bundle_ref", "compact_jwt", "token_sha256", "header",
     "provider_identity", "independence", "issued_at", "not_before", "expires_at", "evidence_sha256"
-  ]) || evidence.type !== "GitHubActionsOIDCEvidence" || evidence.schema_version !== "0.1" ||
+  ]) || evidence.type !== "GitLabCIOIDCEvidence" || evidence.schema_version !== "0.1" ||
       !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(evidence.id || "") || !safeArtifactRef(evidence.trust_bundle_ref) ||
       !exactKeys(evidence.header, ["alg", "kid", "typ"]) ||
       !exactKeys(evidence.provider_identity, ["issuer", "subject", "audience", "claims"]) ||
       !exactKeys(evidence.provider_identity.claims, PROJECTED_CLAIMS) || !validClaims(evidence.independence)) {
-    addCode(codes, "GITHUB_OIDC_EVIDENCE_STRUCTURE_INVALID");
+    addCode(codes, "GITLAB_OIDC_EVIDENCE_STRUCTURE_INVALID");
   }
-  if (evidence && evidence.evidence_sha256 !== nativeEvidenceDigest(evidence)) addCode(codes, "GITHUB_OIDC_EVIDENCE_DIGEST_INVALID");
+  if (evidence && evidence.evidence_sha256 !== nativeEvidenceDigest(evidence)) addCode(codes, "GITLAB_OIDC_EVIDENCE_DIGEST_INVALID");
   if (!sameRef(evidence && evidence.trust_bundle_ref, options.trustBundleReference)) {
-    addCode(codes, "GITHUB_OIDC_TRUST_BUNDLE_REFERENCE_INVALID");
+    addCode(codes, "GITLAB_OIDC_TRUST_BUNDLE_REFERENCE_INVALID");
   }
   const profileRef = options.profile && options.profile.native_identity && options.profile.native_identity.trust_bundle_ref;
-  if (!sameRef(profileRef, options.trustBundleReference)) addCode(codes, "GITHUB_OIDC_PROFILE_TRUST_BUNDLE_MISMATCH");
+  if (!sameRef(profileRef, options.trustBundleReference)) addCode(codes, "GITLAB_OIDC_PROFILE_TRUST_BUNDLE_MISMATCH");
   if (!options.trustBundle || !options.trustBundleReference ||
       options.trustBundle.id !== options.trustBundleReference.artifact_id) {
-    addCode(codes, "GITHUB_OIDC_TRUST_BUNDLE_REFERENCE_INVALID");
+    addCode(codes, "GITLAB_OIDC_TRUST_BUNDLE_REFERENCE_INVALID");
   }
-  const result = appraiseGitHubActionsOIDCToken({
+  const result = appraiseGitLabCIOIDCToken({
     token: evidence && evidence.compact_jwt,
     trustBundle: options.trustBundle,
     profile: options.profile,
@@ -349,7 +391,7 @@ function verifyGitHubActionsOIDCEvidence(options) {
       JSON.stringify(evidence.provider_identity) !== JSON.stringify(result.provider_identity) ||
       JSON.stringify(evidence.independence) !== JSON.stringify(result.independence) ||
       evidence.issued_at !== result.issued_at || evidence.not_before !== result.not_before || evidence.expires_at !== result.expires_at)) {
-    addCode(codes, "GITHUB_OIDC_EVIDENCE_PROJECTION_INVALID");
+    addCode(codes, "GITLAB_OIDC_EVIDENCE_PROJECTION_INVALID");
   }
   return {
     valid: codes.length === 0,
@@ -363,19 +405,21 @@ function verifyGitHubActionsOIDCEvidence(options) {
 }
 
 module.exports = {
-  GITHUB_ACTIONS_ALGORITHM,
-  GITHUB_ACTIONS_DISCOVERY_URI,
-  GITHUB_ACTIONS_ISSUER,
-  GITHUB_ACTIONS_JWKS_URI,
+  GITLAB_CI_ALGORITHM,
+  GITLAB_CI_DISCOVERY_URI,
+  GITLAB_CI_ISSUER,
+  GITLAB_CI_JWKS_URI,
+  PINNED_CLAIMS,
   PROJECTED_CLAIMS,
   REQUIRED_CLAIMS,
-  appraiseGitHubActionsOIDCToken,
-  createGitHubActionsOIDCEvidence,
-  createGitHubActionsOIDCTrustBundle,
-  deriveGitHubActionsIndependence,
+  appraiseGitLabCIOIDCToken,
+  createGitLabCIOIDCEvidence,
+  createGitLabCIOIDCTrustBundle,
+  deriveGitLabCIIndependence,
   nativeEvidenceDigest,
   parseCompactJwt,
+  projectedClaims,
   trustBundleDigest,
-  verifyGitHubActionsOIDCEvidence,
-  verifyGitHubActionsOIDCTrustBundle
+  verifyGitLabCIOIDCEvidence,
+  verifyGitLabCIOIDCTrustBundle
 };

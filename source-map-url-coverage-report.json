@@ -3,7 +3,7 @@
   "as_of": "2026-07-23",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 45,
+  "checked_hosts": 46,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -124,6 +124,7 @@
     {
       "host": "docs.gitlab.com",
       "files": [
+        "docs/gitlab-ci-native-verifier-adapter.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"
@@ -150,6 +151,14 @@
         "docs/sigstore-verifier-workload-admission.md",
         "docs/source-map.md",
         "docs/transparency-operations.md"
+      ]
+    },
+    {
+      "host": "gitlab.com",
+      "files": [
+        "docs/gitlab-ci-native-verifier-adapter.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
       ]
     },
     {

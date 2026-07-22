@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/gitlab-ci-oidc-trust-bundle.schema.json",
+  "title": "GitLab CI OIDC Trust Bundle",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "issuer", "discovery_uri", "jwks_uri", "algorithms", "keys", "source", "bundle_sha256"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "GitLabCIOIDCTrustBundle" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "issuer": { "type": "string", "const": "https://gitlab.com" },
+    "discovery_uri": { "type": "string", "const": "https://gitlab.com/.well-known/openid-configuration" },
+    "jwks_uri": { "type": "string", "const": "https://gitlab.com/oauth/discovery/keys" },
+    "algorithms": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": { "type": "string", "const": "RS256" }
+    },
+    "keys": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": { "$ref": "#/$defs/rsa_jwk" }
+    },
+    "source": {
+      "type": "object",
+      "required": ["kind", "retrieved_at", "expires_at"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["https_discovery", "pinned_file"] },
+        "retrieved_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "bundle_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "rsa_jwk": {
+      "type": "object",
+      "required": ["kty", "use", "kid", "alg", "n", "e"],
+      "additionalProperties": false,
+      "properties": {
+        "kty": { "type": "string", "const": "RSA" },
+        "use": { "type": "string", "const": "sig" },
+        "kid": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "alg": { "type": "string", "const": "RS256" },
+        "n": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+        "e": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" }
+      }
+    }
+  }
+}

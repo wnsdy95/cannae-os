@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "type": "GitLabCIOIDCTrustBundle",
+  "id": "GLOTB-14B-001",
+  "issuer": "https://gitlab.com",
+  "discovery_uri": "https://gitlab.com/.well-known/openid-configuration",
+  "jwks_uri": "https://gitlab.com/oauth/discovery/keys",
+  "algorithms": [
+    "RS256"
+  ],
+  "keys": [
+    {
+      "kty": "RSA",
+      "use": "sig",
+      "kid": "phase-14b-test-key",
+      "alg": "RS256",
+      "n": "4eyk8jK7eupSmKhMfUOxDBTAyREW9i8Ewi3u2SFUdU1ltrWHZXKGdkXWuYVHV6NY8n2FXjeM7Vj7G1XPNNE7K6vQVYHV3wRD7LqC_IqwRr3xkzXWyAUh04RRWCbyGg5KFt6vGTPLst8jlUh8SB7NVeJkdOlf1CQWvwmrBLgrKtASxImM7FaUCg87QhcEbxR0J9sbBuWWG_WA7O027HpeMmEwufmKrkmkI3f9it51_FaTQwqrf4BmV_K9Xt42gcE9YizP1F1rcCKYAM8fqO3fWuw0qfaOfGgC_5r7vKwm0oiLbaKEnIQTIrp17VAiB6JabmqRIxNTCeqjR-5GrFmtHQ",
+      "e": "AQAB"
+    }
+  ],
+  "source": {
+    "kind": "pinned_file",
+    "retrieved_at": "2026-07-23T01:00:00Z",
+    "expires_at": "2026-07-24T01:00:00Z"
+  },
+  "bundle_sha256": "d98be5a93c509a6575dabe664324655c1d4f9763c497021f01202d0298d02365"
+}

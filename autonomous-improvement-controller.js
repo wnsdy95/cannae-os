@@ -218,15 +218,33 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
   const nativeTrustBundles = new Map();
   function loadNativeEvidence(execution) {
     if (!execution || !execution.native_provider_evidence_ref) return;
+    const providerContracts = {
+      github_actions: {
+        evidenceKind: "github-actions-oidc-evidence",
+        evidenceType: "github-actions-oidc-evidence",
+        trustBundleKind: "github-actions-oidc-trust-bundles",
+        trustBundleType: "github-actions-oidc-trust-bundle",
+        label: "GitHub Actions"
+      },
+      gitlab_ci: {
+        evidenceKind: "gitlab-ci-oidc-evidence",
+        evidenceType: "gitlab-ci-oidc-evidence",
+        trustBundleKind: "gitlab-ci-oidc-trust-bundles",
+        trustBundleType: "gitlab-ci-oidc-trust-bundle",
+        label: "GitLab CI"
+      }
+    };
+    const contract = providerContracts[execution.provider];
+    if (!contract) throw new Error(`Unsupported native provider evidence: ${execution.provider || "missing"}`);
     const native = readManifestArtifact(
       artifactRoot,
       manifest,
       execution.native_provider_evidence_ref,
-      "github-actions-oidc-evidence"
+      contract.evidenceKind
     );
-    const nativeValidation = validatePayload(native, "github-actions-oidc-evidence");
+    const nativeValidation = validatePayload(native, contract.evidenceType);
     if (nativeValidation.issues.some(item => item.severity === "error" || item.severity === "critical")) {
-      throw new Error("GitHub Actions OIDC evidence failed schema or semantic validation.");
+      throw new Error(`${contract.label} OIDC evidence failed schema or semantic validation.`);
     }
     nativeProviderEvidence.set(native.id, native);
     if (native.trust_bundle_ref && !nativeTrustBundles.has(native.trust_bundle_ref.artifact_id)) {
@@ -234,11 +252,11 @@ function loadProofContext(campaign, checkpoint, repositoryPath, artifactRootOpti
         artifactRoot,
         manifest,
         native.trust_bundle_ref,
-        "github-actions-oidc-trust-bundles"
+        contract.trustBundleKind
       );
-      const bundleValidation = validatePayload(bundle, "github-actions-oidc-trust-bundle");
+      const bundleValidation = validatePayload(bundle, contract.trustBundleType);
       if (bundleValidation.issues.some(item => item.severity === "error" || item.severity === "critical")) {
-        throw new Error("GitHub Actions OIDC trust bundle failed schema or semantic validation.");
+        throw new Error(`${contract.label} OIDC trust bundle failed schema or semantic validation.`);
       }
       nativeTrustBundles.set(native.trust_bundle_ref.artifact_id, bundle);
     }

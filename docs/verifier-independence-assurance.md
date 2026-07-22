@@ -108,14 +108,14 @@ The current common contract already canonicalizes the provider ID as `cannae:pro
 | --- | --- |
 | Every profile | `builder.key_id -> control_plane_id` |
 | `generic_oci` | `tenant -> account_id`, `runner_pool -> runner_pool_id` |
-| `github_actions` | `repository_id -> project_id`, `runner_environment -> runner_pool_id` |
-| `gitlab_ci` | `job_project_id -> project_id`, `runner_id -> runner_pool_id` |
+| `github_actions` | Generic: `repository_id -> project_id`, `runner_environment -> runner_pool_id`; native: owner ID, provider/operator/control plane, and shared-unknown topology are also fixed |
+| `gitlab_ci` | Generic: `job_project_id -> project_id`, `runner_id -> runner_pool_id`; native: `job_namespace_id -> account_id`, `job_project_id -> project_id`, hosted class -> runner pool, and shared-unknown topology |
 | `local_sandbox` | `host_attestor_id -> infrastructure_id`, `sandbox_instance_id -> runner_pool_id` |
 | `tee` | `appraisal_policy_sha256 -> control_plane_id`, `measurement -> infrastructure_id` |
 
 The canonical value format is `cannae:<provider>:<kind>:<percent-encoded-native-id>`. A runtime policy that supplies a contradictory common field is invalid before dispatch.
 
-The current `generic_oci` adapter verifies a policy-pinned builder assertion. Native GitHub, GitLab, cloud, local-host, and TEE claim derivation remains adapter work. Consequently, Phase 12C prevents label-based quorum inflation within its verified inputs, but cannot make a compromised trusted builder or dishonest provider control plane truthful.
+The current `generic_oci` adapter verifies a policy-pinned builder assertion. Native GitHub Actions and GitLab.com adapters derive their fields from verified OIDC tokens; enterprise/self-managed, self-hosted, cloud, local-host, and TEE derivation remains adapter work. Consequently, Phase 12C prevents label-based quorum inflation within its verified inputs, but cannot make a compromised trusted builder or dishonest provider control plane truthful.
 
 ## 7. Operation
 

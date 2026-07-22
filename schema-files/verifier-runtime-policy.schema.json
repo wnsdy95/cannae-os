@@ -120,7 +120,7 @@
         "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
       }
     },
-    "native_identity": {
+    "github_actions_native_identity": {
       "type": "object",
       "required": ["adapter", "trust_bundle_ref", "algorithm", "required_runner_environment", "require_reusable_workflow", "max_token_age_seconds", "clock_skew_seconds"],
       "additionalProperties": false,
@@ -133,6 +133,27 @@
         "max_token_age_seconds": { "type": "integer", "minimum": 1, "maximum": 600 },
         "clock_skew_seconds": { "type": "integer", "minimum": 0, "maximum": 120 }
       }
+    },
+    "gitlab_ci_native_identity": {
+      "type": "object",
+      "required": ["adapter", "trust_bundle_ref", "algorithm", "required_runner_environment", "require_protected_ref", "require_same_project_config", "max_token_age_seconds", "clock_skew_seconds"],
+      "additionalProperties": false,
+      "properties": {
+        "adapter": { "type": "string", "const": "gitlab_ci_oidc_v1" },
+        "trust_bundle_ref": { "$ref": "#/$defs/artifact_ref" },
+        "algorithm": { "type": "string", "const": "RS256" },
+        "required_runner_environment": { "type": "string", "const": "gitlab-hosted" },
+        "require_protected_ref": { "type": "boolean", "const": true },
+        "require_same_project_config": { "type": "boolean", "const": true },
+        "max_token_age_seconds": { "type": "integer", "minimum": 1, "maximum": 600 },
+        "clock_skew_seconds": { "type": "integer", "minimum": 0, "maximum": 120 }
+      }
+    },
+    "native_identity": {
+      "oneOf": [
+        { "$ref": "#/$defs/github_actions_native_identity" },
+        { "$ref": "#/$defs/gitlab_ci_native_identity" }
+      ]
     },
     "independence_claims": {
       "type": "object",

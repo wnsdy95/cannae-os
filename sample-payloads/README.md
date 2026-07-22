@@ -59,6 +59,7 @@ Use these examples to test:
 - report-artifact digest, plan/set/lineage/evaluator binding, purpose-authorized keys, and independent comparative signature quorum
 - native Sigstore bundle/root normalization, exact Fulcio identity/issuer, static-key dual binding, freshness, and nonzero transparency thresholds
 - exact verifier code, OCI image, lockfile, harness, invocation, tool, network, sandbox, repository-state, target-digest, builder-signature, and verifier-signature validation
+- manifest-pinned GitHub Actions and GitLab CI OIDC/JWKS identity, stable claim, protected workflow/config, token-time, clean-commit, and conservative failure-domain validation
 - exact pre-dispatch challenge task/lineage binding, unique nonce issuance, dual-signed response freshness, deadline, ambiguity, and replay rejection
 - provider/operator/control-plane/account/project/runner/infrastructure/region/zone correlation, transitive failure domains, and execution-bound quorum diversity
 - signed checkpoint consistency, witness/monitor operator quorum, TUF root rotation, immutable transparency incident history, and continuous v0.7 admission
@@ -77,3 +78,5 @@ The invalid examples are intentionally small so the expected failure is obvious.
 The `*-v0.6.json` trust-policy/cycle-order samples and `*-v0.2.json` runtime/execution samples show Phase 12C contracts. The missing-domain and domain-substitution samples fail closed. Use `run-verifier-independence-fixtures.js` for real ephemeral keys, dual-signed execution evidence, transitive correlation, and post-execution quorum behavior.
 
 The `*-v0.7.json` trust-policy and cycle-order samples show Phase 13 continuous transparency admission. The transparency policy, observation, root rotation, incident, and state samples are one coherent generated evidence family. Use `run-transparency-operations-fixtures.js` for real ephemeral log/witness/monitor/TUF signatures and `run-transparency-supervisor-fixtures.js` for repository-manifest rejection behavior.
+
+The GitHub and GitLab native OIDC samples show Phase 14 trust-bundle, projected-evidence, and runtime-policy contracts. Use `run-github-actions-oidc-fixtures.js` and `run-gitlab-ci-oidc-fixtures.js` for real ephemeral RSA signatures, provider-specific adversarial claims, common execution-evidence admission, and missing-manifest-evidence rejection.

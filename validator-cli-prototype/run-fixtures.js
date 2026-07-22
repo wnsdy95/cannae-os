@@ -1041,6 +1041,20 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "valid GitLab CI OIDC trust bundle",
+    file: "sample-payloads/valid-gitlab-ci-oidc-trust-bundle.json",
+    type: "gitlab-ci-oidc-trust-bundle",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid GitLab CI OIDC evidence projection",
+    file: "sample-payloads/valid-gitlab-ci-oidc-evidence.json",
+    type: "gitlab-ci-oidc-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
     name: "valid verifier workload identity evidence",
     file: "sample-payloads/valid-verifier-identity-evidence.json",
     type: "verifier-identity-evidence",
@@ -1095,6 +1109,20 @@ const fixtures = [
     type: "verifier-runtime-policy",
     exitCode: 1,
     requiredCodes: ["VERIFIER_RUNTIME_INDEPENDENCE_CLAIMS_INVALID", "VERIFIER_RUNTIME_NATIVE_CLAIMS_INVALID"]
+  },
+  {
+    name: "valid native GitLab CI verifier runtime policy",
+    file: "sample-payloads/valid-verifier-runtime-policy-v0.3-gitlab.json",
+    type: "verifier-runtime-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "native GitLab CI runtime policy permits an unprotected ref",
+    file: "sample-payloads/invalid-verifier-runtime-policy-v0.3-gitlab-unprotected.json",
+    type: "verifier-runtime-policy",
+    exitCode: 1,
+    requiredCodes: ["VERIFIER_RUNTIME_NATIVE_CLAIMS_INVALID"]
   },
   {
     name: "failure-domain runtime policy omits a zone identity",
