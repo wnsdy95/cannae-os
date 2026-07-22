@@ -2051,7 +2051,11 @@ function semanticRules(payload, type) {
       const receipt = admission.receipt_quorum || {};
       const comparative = admission.comparative_quorum || {};
       const requirements = admission.effective_requirements || {};
-      const sameTrustRef = JSON.stringify(admission.trust_policy_ref || {}) === JSON.stringify(proof.trust_policy_ref || {});
+      const admissionTrustRef = admission.trust_policy_ref || {};
+      const proofTrustRef = proof.trust_policy_ref || {};
+      const sameTrustRef = admissionTrustRef.artifact_id === proofTrustRef.artifact_id &&
+        admissionTrustRef.relative_path === proofTrustRef.relative_path &&
+        admissionTrustRef.sha256 === proofTrustRef.sha256;
       const quorumCountsMatch = quorum =>
         quorum.eligible_verifier_count === (quorum.verifier_ids || []).length &&
         quorum.distinct_key_count === (quorum.key_ids || []).length &&

@@ -110,7 +110,7 @@ function makeEnvironment(name, overrides = {}) {
       trust_policy_ref: {
         artifact_id: trustPolicy.id,
         relative_path: trustPolicyWrite.relative_path,
-        sha256: trustPolicyWrite.sha256
+        sha256: overrides.trustReferenceSha || trustPolicyWrite.sha256
       },
       minimum_valid_attestations: 2,
       minimum_independence_groups: 2,
@@ -300,6 +300,17 @@ try {
     assert.strictEqual(order.status, "blocked");
     assert(order.blocking_codes.includes("TRUST_ADMISSION_POLICY_NOT_ACTIVE"));
     assert.strictEqual(order.trust_policy_admission.valid_until, "none");
+  });
+
+  run("v0.4 campaign cannot substitute a same-ID policy with a different digest", () => {
+    const environment = makeEnvironment("v04-policy-reference", {
+      schemaVersion: "0.4",
+      trustReferenceSha: "f".repeat(64)
+    });
+    const order = supervise(environment);
+    assert.strictEqual(order.status, "blocked");
+    assert(order.blocking_codes.includes("TRUST_ADMISSION_POLICY_REFERENCE_INVALID"));
+    assert.strictEqual(order.trust_policy_admission.satisfied, false);
   });
 
   run("new campaign opens cycle one", () => {
