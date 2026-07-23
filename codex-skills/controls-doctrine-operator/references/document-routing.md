@@ -122,7 +122,7 @@ restored conversational context never restores authority.
 | Source-map or official URL | `node source-map-linter.js --write-report` |
 | Release/authority/risk | `node run-authority-integration-fixtures.js`, `node run-release-integration-fixtures.js`, relevant lifecycle runner |
 | Orders/backbrief/rehearsal | `node runtime-demo-runner.js`, `node orders-dissemination-runner.js ...`, relevant routing fixture |
-| Skill update | `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator` |
+| Skill update | `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/controls-doctrine-operator`, review both diffs for equivalent operational semantics |
 | Delegated agent routing | `node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt`, `node run-agent-routing-preflight-fixtures.js` |
 | Operational skill lifecycle | `node run-skill-mission-controller-fixtures.js`, `node validator-cli-prototype/run-fixtures.js`, Codex and Claude route coverage |
 | Dispatch policy, lease, hooks, or resume | `node run-dispatch-runtime-fixtures.js`, targeted validation of dispatch policy/lease/checkpoint samples, Codex and Claude route coverage |

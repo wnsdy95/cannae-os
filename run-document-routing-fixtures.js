@@ -40,6 +40,18 @@ for (const router of ROUTERS) {
   assert.strictEqual(delegated.operating_mode.decision_authority, "bounded_ai_delegate");
   assert(delegated.operating_mode.escalation_required_when.some(item => item.includes("exceeds delegated")));
   assertRoutes(delegated, ["bounded-self-improvement", "skill-operations"]);
+
+  const adaptation = route(router, ["--actor=user"],
+    "Require a mandatory skill improvement after every framework improvement");
+  assertRoutes(adaptation, ["skill-operations"]);
+  assert(adaptation.recommended_documents.some(item =>
+    item.path === "codex-skills/controls-doctrine-operator/references/self-improvement-loop.md"));
+  assert(adaptation.recommended_documents.some(item =>
+    item.path === ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md"));
+  assert(adaptation.validation_commands.some(command =>
+    command.endsWith("quick_validate.py codex-skills/controls-doctrine-operator")));
+  assert(adaptation.validation_commands.some(command =>
+    command.endsWith("quick_validate.py .claude/skills/controls-doctrine-operator")));
 }
 
-console.log("Document routing fixtures: 4/4 passed");
+console.log("Document routing fixtures: 6/6 passed");

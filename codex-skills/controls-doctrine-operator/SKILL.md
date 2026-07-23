@@ -185,17 +185,33 @@ Use the existing force-structure rule:
 3. If a new artifact is justified, add source-map, README, schema/sample/runner references.
 4. Add a fixture that fails for the unsafe or under-specified case.
 
-### Self-Improving This Skill
+### Mandatory Skill Adaptation For Every Improvement
 
-After significant work, ask:
+Every accepted Controls improvement must include one concrete, reusable skill
+adaptation before the work is complete. Do not defer the skill update to a
+later phase or backlog item.
 
-- Did `--coverage` report any unrouted artifact?
-- Did routing require reading many unrelated docs?
-- Did the user ask a repeated question not covered by `references/document-routing.md`?
-- Did a new artifact type, runner, or validation pattern appear?
-- Did a validation failure reveal a missing skill instruction?
+1. State the operational lesson exposed by the improvement.
+2. Patch at least one real skill surface: `SKILL.md`, a routing/reference file,
+   or a bundled script. A date bump, typo-only edit, or restatement of the
+   finished work does not count.
+3. Apply the same operational rule to both the Codex and Claude skill trees.
+   Provider-specific wording and commands may differ, but authority, routing,
+   execution, validation, and stop semantics must remain equivalent.
+4. Keep the product change, skill adaptation, and their validation in the same
+   commit or pull request.
+5. In the completion report, identify the product delta, the corresponding
+   skill delta, and the validation that proves both.
 
-If yes, patch this skill's `SKILL.md`, `references/`, or `scripts/`, run skill validation, and commit the skill update.
+If no honest reusable skill adaptation can be identified, do not label or close
+the work as an improvement. Re-examine the operational lesson or classify the
+change as maintenance explicitly authorized by the human user.
+
+After each improvement, still check whether routing missed an artifact, too many
+unrelated documents were needed, a repeated workflow lacks a route, a new
+artifact or validation family appeared, or a failure exposed a missing
+instruction. Update the smallest skill surface that will make the next operator
+perform the improved procedure by default.
 
 ## Required Validation
 
