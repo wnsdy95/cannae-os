@@ -56,16 +56,47 @@ The router and references are bundled under this skill folder and do not depend 
 ## Operational Mission Lifecycle
 
 1. Create a schema-valid `MissionWavePlan` from `sample-payloads/valid-mission-wave-plan.json`. Preserve `USER` final authority, give each AI a non-command operational role, state allowed/approval-required/prohibited actions, and set finite validity and adaptive budgets.
-2. Run `scripts/operate_controls_mission.js open`. Require `status: ready`, `dispatch_authorized: true`, one context pack per expected agent, and a valid artifact store. Do not dispatch from manually assembled chat claims.
-3. Give each agent only its exact `AgentContextPack`. The S3 receipt is the mandatory control-plane route; the context pack's operational role, department, task, and delegated authority are the actual mission assignment.
-4. For required model allocation, persist a ready integrated preflight first and cite its exact manifest reference and per-agent billet. Missing or mismatched bindings block `open`.
-5. Store work products and verification results through `repository-artifact-store.js`; control metadata and completion prose are not work evidence.
-6. Run `scripts/operate_controls_mission.js report <report.json>` with exact plan, preflight, context, and work-evidence references. A blocked or failed report stops continuation.
-7. Run `scripts/operate_controls_mission.js close <aar.json> --mission <id> --wave <id>`. Follow the emitted next-wave trigger; bounded improvements do not claim future execution.
-8. Use `status` for handoff and `verify` before evidence consumption or completion. Conversation history is not mission state.
-9. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from any lifecycle result.
+2. For a dispatch-controlled wave, create one deny-by-default policy draft per agent, hash each exact draft with `scripts/operate_dispatch_runtime.js hash-input`, and put each digest plus its exact agent, provider, and policy ID in the USER-authorized `MissionWavePlan.dispatch_control.policy_authorizations`.
+3. Run `scripts/operate_controls_mission.js open`. Require `status: ready`, `context_dispatch_authorized: true`, `tool_execution_authorized: false`, `dispatch_authorized: false`, one context pack per expected agent, and a valid artifact store. Do not dispatch from manually assembled chat claims.
+4. Give each agent only its exact `AgentContextPack`. The S3 receipt is the mandatory control-plane route; the context pack's operational role, department, task, and delegated authority are the actual mission assignment.
+5. For required model allocation, persist a ready integrated preflight first and cite its exact manifest reference and per-agent billet. Missing or mismatched bindings block `open`.
+6. Before any covered tool call, run `authorize-policy` on the exact preauthorized draft, then issue one short-lived `AgentDispatchLease` from its persisted `--policy-id` for this exact provider session and mission agent. Enable the provider hook adapter. A ready context pack is necessary but is not tool authority.
+7. Store work products and verification results through `repository-artifact-store.js`; control metadata, policies, leases, and completion prose are not work evidence.
+8. Run `complete --lease <lease-id>` for each successful dispatch-controlled agent before reporting. Blocked or failed agents must have no active lease or unresolved tool request.
+9. Run `scripts/operate_controls_mission.js report <report.json>` with exact plan, preflight, context, and work-evidence references. A blocked or failed report stops continuation.
+10. Run `scripts/operate_controls_mission.js close <aar.json> --mission <id> --wave <id>`. Follow the emitted next-wave trigger; bounded improvements do not claim future execution.
+11. Use `status` for handoff and `verify` before evidence consumption or completion. Conversation history is not mission state.
+12. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from any lifecycle result or dispatch lease.
 
 Read `docs/skill-operational-mission-lifecycle.md` for the complete command and failure contract.
+
+## Enforced Delegated Tool Dispatch
+
+For every independently acting AI agent:
+
+1. Use a separate provider session and policy draft per agent. In one repository-bound wave, stage agents against the same target worktree and artifact namespace; complete or settle one lease before issuing the next. Do not infer a parallel exception from a caller-declared read-only class. Treat parallel worktrees as separate sub-missions that require a later integration wave.
+2. Hash each exact draft before `open`, place its digest in the matching `MissionWavePlan.dispatch_control.policy_authorizations` row, and require retained USER authorization over that protected plan.
+3. After mission `open` is context ready, compile the preauthorized draft and issue the one initial lease lineage:
+
+```bash
+node .claude/skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  authorize-policy --repository <repo> --artifact-root <artifact-root> \
+  --policy <dispatch-tool-policy-draft.json>
+
+node .claude/skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  issue --repository <repo> --artifact-root <artifact-root> \
+  --policy-id <policy-id> --session <provider-session-id> \
+  --provider-agent <provider-agent-id>
+```
+
+4. Install or externally manage hooks with `node .claude/skills/controls-doctrine-operator/scripts/install_dispatch_hooks.js --provider claude --repository <repo>`, then launch the agent with `CANNAE_REPOSITORY`, `CANNAE_ARTIFACT_ROOT`, `CANNAE_MISSION_ID`, `CANNAE_WAVE_ID`, `CANNAE_AGENT_ID`, and `CANNAE_PROVIDER_AGENT_ID`.
+5. Require a manifest-backed allow event before each covered call and an exact tool-name, input-digest, provider-result, and repository-state checkpoint before another call. Bind Claude's hook `agent_id` when present. Unknown tools, ambiguous rules, replay, drift, expired authority, and retained actions deny by default.
+6. On interrupt, `resume`, `clear`, or `fork`, assume the old authority is interrupted. Review the exact checkpoint and run explicit `resume` to issue a lineage-continuation lease. Session history never renews authority.
+7. Revoke on scope change, operator stop, unexpected drift, unresolved post-tool failure, or handoff. Run `complete --lease <lease-id>` before a successful agent result enters the wave report.
+
+Project hooks are a deterministic guardrail for covered calls, not a non-bypassable security boundary. Use managed settings or an independently protected tool gateway when an operator must not be able to disable or replace enforcement.
+
+Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup, provider limits, failure matrix, and production deployment levels.
 
 ## References
 
@@ -140,6 +171,7 @@ node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-skill-mission-controller-fixtures.js
+node run-dispatch-runtime-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
@@ -184,6 +216,8 @@ Escalate to the user before:
 - Treating US doctrine as universal without multinational consistency review.
 - Allowing model capability, router choice, or evaluator confidence to expand delegated role authority.
 - Starting delegated work without the current controller-issued context pack, or reusing a prior wave's routing evidence.
+- Starting covered delegated tool work without a current manifest-backed dispatch lease for the exact mission agent and provider session, or treating resumed conversational context as renewed authority.
+- Describing project-local hooks as a complete security boundary when the deployment requires managed policy, separate repository-scoped sub-missions/worktrees and sessions followed by an integration wave, an OS sandbox, or an independently protected gateway.
 - Mixing artifacts from separate target repositories in one flat output namespace.
 - Continuing adaptive work without a finite campaign, runtime-issued receipt, fresh trusted signed receipt quorum for v0.3+, required signed report quorum for v0.4 control-plane work, required manifest-backed evidence for every counted verifier's selected SPIFFE or Sigstore adapter under trust-policy v0.2+, the selected Sigstore TrustedRoot when applicable, the exact runtime policy and per-attestation execution evidence under trust-policy v0.4+, the exact unexpired supervisor challenge and dual-signed nonce responses under v0.5+, runtime-policy v0.2+ and enough computed failure domains under v0.6+, the exact native OIDC/JWKS chain and clean token-bound commit for runtime-policy v0.3 GitHub Actions and GitLab CI evidence, a contiguous current manifest-backed transparency state under v0.7, verified accepted baseline, integrity-checked proof store, mandatory checkpoint, or evidence-backed stop decision.
 
@@ -203,5 +237,8 @@ This Claude skill is self-contained. Its bundled files are:
 - `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`
 - `.claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js`
 - `.claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js`
+- `.claude/skills/controls-doctrine-operator/scripts/enforce_controls_dispatch.js`
+- `.claude/skills/controls-doctrine-operator/scripts/install_dispatch_hooks.js`
 
 The Codex copy under `codex-skills/controls-doctrine-operator/` is the parallel skill for Codex (`~/.codex/skills`). When the router script or a reference changes, update both copies so they do not drift.

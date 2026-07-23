@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.2",
+  "type": "DispatchToolPolicy",
+  "id": "DTP-W1-untrusted",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "default_decision": "deny",
+  "tool_rules": [
+    {
+      "rule_id": "self-minted-command",
+      "mission_action": "Run deterministic validation.",
+      "tool_name": "exec_command",
+      "operation_class": "process_execute",
+      "input_match": {
+        "mode": "exact_sha256",
+        "allowed_sha256": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      },
+      "max_uses": 1
+    }
+  ],
+  "max_total_admissions": 1,
+  "lease_ttl_seconds": 300,
+  "repository_state": {
+    "require_head_match": true,
+    "require_serial_state_chain": true,
+    "require_clean_start": true
+  },
+  "authorization": {
+    "source": "self_declared",
+    "authorized_by": "S3",
+    "compiled_by": "delegated_agent",
+    "plan_ref": {
+      "artifact_id": "MWP-ENFORCED-DISPATCH-W1",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/mission-wave-plans/MWP-ENFORCED-DISPATCH-W1.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "context_pack_ref": {
+      "artifact_id": "ACP-W1-runtime-agent",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/agent-context-packs/ACP-W1-runtime-agent.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "draft_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "enforcement_level": "guardrail",
+    "gateway_exclusive": false
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  },
+  "approved_at": "2026-07-23T04:30:00Z",
+  "valid_until": "2026-07-23T06:30:00Z"
+}

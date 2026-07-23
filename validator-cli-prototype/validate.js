@@ -66,6 +66,10 @@ const TYPE_TO_SCHEMA = {
   opord: "opord.schema.json",
   "task-order": "task-order.schema.json",
   "tool-request": "tool-request.schema.json",
+  "dispatch-tool-policy": "dispatch-tool-policy.schema.json",
+  "agent-dispatch-lease": "agent-dispatch-lease.schema.json",
+  "tool-admission-event": "tool-admission-event.schema.json",
+  "agent-execution-checkpoint": "agent-execution-checkpoint.schema.json",
   "approval-request": "approval-request.schema.json",
   sitrep: "sitrep.schema.json",
   frago: "frago.schema.json",
@@ -298,6 +302,83 @@ function isNoneArtifactRef(ref) {
   return Boolean(ref && ref.artifact_id === "none" && ref.relative_path === "none" && ref.sha256 === "none");
 }
 
+function artifactRefKind(ref) {
+  if (!ref || typeof ref !== "object" || Array.isArray(ref)) return "malformed";
+  const keys = Object.keys(ref).sort();
+  if (!sameJson(keys, ["artifact_id", "relative_path", "sha256"])) return "malformed";
+  const values = [ref.artifact_id, ref.relative_path, ref.sha256];
+  if (values.every(value => value === "none")) return "none";
+  if (values.some(value => value === "none")) return "malformed";
+  if (!/^[A-Z]+-[A-Za-z0-9_-]+$/.test(ref.artifact_id || "") ||
+      typeof ref.relative_path !== "string" || ref.relative_path.length === 0 ||
+      !/^[a-f0-9]{64}$/.test(ref.sha256 || "")) {
+    return "malformed";
+  }
+  return "concrete";
+}
+
+function retainedAuthorityDrift(authority) {
+  return !authority ||
+    authority.human_final_decision_authority !== "USER" ||
+    authority.self_approval_prohibited !== true ||
+    authority.release_authorized !== false;
+}
+
+const DISPATCH_PROTECTED_PATHS = [
+  ".git",
+  ".cannae",
+  ".codex",
+  ".claude/settings.json",
+  ".claude/settings.local.json"
+];
+
+function safeRepositoryPrefix(value) {
+  if (typeof value !== "string" || value.length === 0 || value !== value.trim() ||
+      value.includes("\0") || value.includes("\\") || path.isAbsolute(value) ||
+      /^[A-Za-z]:[\\/]/.test(value) || value.startsWith("./") || value.endsWith("/") ||
+      value.includes("//") || /[*?[\]{}]/.test(value)) {
+    return false;
+  }
+  if (value === ".") return true;
+  const segments = value.split("/");
+  if (segments.some(segment => segment.length === 0 || segment === "." || segment === "..")) {
+    return false;
+  }
+  return !DISPATCH_PROTECTED_PATHS.some(prefix =>
+    value === prefix || value.startsWith(`${prefix}/`));
+}
+
+function validJsonPointer(value) {
+  return typeof value === "string" &&
+    value.length > 0 &&
+    /^(?:\/(?:[^~/]|~[01])*)+$/.test(value);
+}
+
+function resolveLocalArtifactRef(ref) {
+  if (artifactRefKind(ref) !== "concrete") return { status: "unavailable" };
+  if (path.isAbsolute(ref.relative_path) ||
+      ref.relative_path.split(/[\\/]+/).includes("..")) {
+    return { status: "mismatch" };
+  }
+  const candidates = [
+    path.resolve(ROOT, ref.relative_path),
+    path.resolve(ROOT, ".cannae", "artifacts", ref.relative_path)
+  ];
+  const candidate = candidates.find(filePath => fs.existsSync(filePath) && fs.statSync(filePath).isFile());
+  if (!candidate) return { status: "unavailable" };
+  try {
+    const bytes = fs.readFileSync(candidate);
+    const digest = crypto.createHash("sha256").update(bytes).digest("hex");
+    const payload = JSON.parse(bytes.toString("utf8"));
+    if (digest !== ref.sha256 || payload.id !== ref.artifact_id) {
+      return { status: "mismatch" };
+    }
+    return { status: "resolved", payload };
+  } catch (error) {
+    return { status: "mismatch" };
+  }
+}
+
 function isValidDate(value) {
   return typeof value === "string" && value.length > 0 && !Number.isNaN(Date.parse(value));
 }
@@ -360,6 +441,199 @@ function semanticRules(payload, type) {
     }
     if (/secret|token|private_key|password/i.test(`${payload.action} ${payload.target}`)) {
       issues.push(issue("critical", "POSSIBLE_EEFI", "$.target", "Possible sensitive data exposure; suppress output and escalate."));
+    }
+  }
+
+  if (type === "dispatch-tool-policy") {
+    if (!isValidDate(payload.approved_at) || !isValidDate(payload.valid_until) ||
+        !isBefore(payload.approved_at, payload.valid_until)) {
+      issues.push(issue("critical", "DISPATCH_POLICY_INVALID_VALIDITY", "$.valid_until", "Dispatch policy validity must end after approval."));
+    }
+    if (retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "DISPATCH_POLICY_AUTHORITY_DRIFT", "$.authority", "Dispatch policy must retain USER authority, prohibit self-approval, and deny release."));
+    }
+    const authorization = payload.authorization || {};
+    if (authorization.source !== "mission_plan_policy_digest" ||
+        authorization.authorized_by !== "USER" ||
+        authorization.compiled_by !== "controls_dispatch_controller" ||
+        authorization.enforcement_level !== "guardrail" ||
+        authorization.gateway_exclusive !== false) {
+      issues.push(issue("critical", "DISPATCH_POLICY_UNTRUSTED_ISSUER", "$.authorization", "Local dispatch policy must be controller-compiled from exact mission-plan authority and describe project-hook enforcement only as a guardrail."));
+    }
+
+    const rules = Array.isArray(payload.tool_rules) ? payload.tool_rules : [];
+    const ruleIds = rules.map(rule => rule && rule.rule_id);
+    if (new Set(ruleIds).size !== ruleIds.length) {
+      issues.push(issue("critical", "DISPATCH_POLICY_DUPLICATE_RULE_ID", "$.tool_rules", "Dispatch policy rule_id values must be unique."));
+    }
+
+    const modeFields = {
+      exact_sha256: ["allowed_sha256"],
+      path_prefix: ["path_fields", "allowed_path_prefixes"],
+      patch_paths: ["allowed_path_prefixes"]
+    };
+    for (const [index, rule] of rules.entries()) {
+      const pointer = `$.tool_rules[${index}]`;
+      if (typeof rule.mission_action !== "string" || rule.mission_action.trim().length === 0) {
+        issues.push(issue("critical", "DISPATCH_POLICY_MISSION_ACTION_MISSING", `${pointer}.mission_action`, "Each tool rule must bind one exact allowed action from the mission plan."));
+      }
+      if (typeof rule.tool_name !== "string" ||
+          !/^[A-Za-z0-9][A-Za-z0-9._:+/-]*$/.test(rule.tool_name) ||
+          /[*?[\]{}]/.test(rule.tool_name)) {
+        issues.push(issue("critical", "DISPATCH_POLICY_NONEXACT_TOOL", `${pointer}.tool_name`, "Tool rules must bind one exact, non-glob tool name."));
+      }
+
+      const inputMatch = rule.input_match || {};
+      const expected = modeFields[inputMatch.mode];
+      const controlledFields = ["allowed_sha256", "path_fields", "allowed_path_prefixes"];
+      const present = controlledFields.filter(field =>
+        Object.prototype.hasOwnProperty.call(inputMatch, field));
+      if (expected && (expected.some(field => !present.includes(field)) ||
+          present.some(field => !expected.includes(field)))) {
+        issues.push(issue("critical", "DISPATCH_POLICY_INPUT_MATCH_FIELDS", `${pointer}.input_match`, `Input match mode ${inputMatch.mode} has missing or mixed mode fields.`));
+      }
+
+      for (const [pathIndex, jsonPointerValue] of
+        (Array.isArray(inputMatch.path_fields) ? inputMatch.path_fields : []).entries()) {
+        if (!validJsonPointer(jsonPointerValue)) {
+          issues.push(issue("critical", "DISPATCH_POLICY_INVALID_PATH_FIELD", `${pointer}.input_match.path_fields[${pathIndex}]`, "Path fields must be non-root RFC 6901 JSON pointers."));
+        }
+      }
+      for (const [prefixIndex, prefix] of
+        (Array.isArray(inputMatch.allowed_path_prefixes) ? inputMatch.allowed_path_prefixes : []).entries()) {
+        if (!safeRepositoryPrefix(prefix)) {
+          issues.push(issue("critical", "DISPATCH_POLICY_UNSAFE_PATH_PREFIX", `${pointer}.input_match.allowed_path_prefixes[${prefixIndex}]`, "Allowed path prefixes must be canonical repository-relative paths outside protected control state."));
+        }
+      }
+
+      if (inputMatch.mode === "path_prefix" &&
+          !["repository_read", "repository_write"].includes(rule.operation_class)) {
+        issues.push(issue("critical", "DISPATCH_POLICY_MODE_OPERATION_MISMATCH", `${pointer}.operation_class`, "path_prefix matching is limited to repository read or write operations."));
+      }
+      if (inputMatch.mode === "patch_paths" && rule.operation_class !== "repository_write") {
+        issues.push(issue("critical", "DISPATCH_POLICY_MODE_OPERATION_MISMATCH", `${pointer}.operation_class`, "patch_paths matching is limited to repository write operations."));
+      }
+      if (["network_access", "delegation"].includes(rule.operation_class) &&
+          authorization.enforcement_level === "guardrail") {
+        issues.push(issue("critical", "DISPATCH_POLICY_EXTERNAL_GATEWAY_REQUIRED", `${pointer}.operation_class`, "Project-hook guardrails cannot authorize network or delegation operation classes."));
+      }
+    }
+  }
+
+  if (type === "agent-dispatch-lease") {
+    const issuedAt = Date.parse(payload.issued_at);
+    const notBefore = Date.parse(payload.not_before);
+    const expiresAt = Date.parse(payload.expires_at);
+    if (!isValidDate(payload.issued_at) || !isValidDate(payload.not_before) ||
+        !isValidDate(payload.expires_at) || issuedAt > notBefore || notBefore >= expiresAt) {
+      issues.push(issue("critical", "DISPATCH_LEASE_INVALID_VALIDITY", "$.expires_at", "Lease time order must satisfy issued_at <= not_before < expires_at."));
+    }
+    if (retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "DISPATCH_LEASE_AUTHORITY_DRIFT", "$.authority", "Dispatch lease must retain USER authority, prohibit self-approval, and deny release."));
+    }
+
+    const previousKind = artifactRefKind(payload.previous_lease_ref);
+    if (previousKind === "malformed") {
+      issues.push(issue("critical", "DISPATCH_LEASE_MALFORMED_NONE_REF", "$.previous_lease_ref", "Previous lease reference must be concrete or the exact all-none sentinel."));
+    }
+    if ((payload.issuance_reason === "initial" && previousKind !== "none") ||
+        (payload.issuance_reason === "resume" && previousKind !== "concrete")) {
+      issues.push(issue("critical", "DISPATCH_LEASE_REASON_REF_MISMATCH", "$.previous_lease_ref", "Initial leases require the none sentinel; resumed leases require one concrete previous lease reference."));
+    }
+    if (!Number.isInteger(payload.request_budget) || payload.request_budget < 1) {
+      issues.push(issue("critical", "DISPATCH_LEASE_BUDGET_MISMATCH", "$.request_budget", "Lease request budget must be a positive policy-derived integer."));
+    }
+
+    const resolvedPolicy = resolveLocalArtifactRef(payload.tool_policy_ref);
+    if (resolvedPolicy.status === "mismatch") {
+      issues.push(issue("critical", "DISPATCH_LEASE_POLICY_REF_MISMATCH", "$.tool_policy_ref", "Locally available tool policy bytes must match the exact artifact reference."));
+    }
+    if (resolvedPolicy.status === "resolved") {
+      const policy = resolvedPolicy.payload;
+      if (policy.type !== "DispatchToolPolicy" ||
+          policy.mission_id !== payload.mission_id ||
+          policy.wave_id !== payload.wave_id ||
+          policy.agent_id !== payload.agent_id ||
+          policy.provider !== payload.provider) {
+        issues.push(issue("critical", "DISPATCH_LEASE_POLICY_BINDING_MISMATCH", "$.tool_policy_ref", "Resolved tool policy identity must match the lease."));
+      }
+      if (payload.request_budget !== policy.max_total_admissions) {
+        issues.push(issue("critical", "DISPATCH_LEASE_BUDGET_MISMATCH", "$.request_budget", "Lease request budget must equal the resolved policy admission budget."));
+      }
+      if (payload.issuance_reason === "initial" &&
+          policy.repository_state && policy.repository_state.require_clean_start === true &&
+          payload.initial_repository_state && payload.initial_repository_state.dirty === true) {
+        issues.push(issue("critical", "DISPATCH_LEASE_DIRTY_CLEAN_START", "$.initial_repository_state.dirty", "A policy requiring clean start cannot issue an initial lease from dirty repository state."));
+      }
+    }
+  }
+
+  if (type === "tool-admission-event") {
+    if (!Number.isInteger(payload.sequence) || payload.sequence < 1) {
+      issues.push(issue("critical", "TOOL_ADMISSION_SEQUENCE_INVALID", "$.sequence", "Tool admission sequence must be a positive integer."));
+    }
+    if (payload.decision === "allow" && payload.rule_id === "none") {
+      issues.push(issue("critical", "TOOL_ADMISSION_ALLOW_WITHOUT_RULE", "$.rule_id", "An allowed request must bind the exact admitting rule."));
+    }
+    if (payload.decision === "deny" && !hasSubstantiveItems(payload.reason_codes)) {
+      issues.push(issue("critical", "TOOL_ADMISSION_DENY_WITHOUT_REASON", "$.reason_codes", "A denied request must record at least one substantive reason code."));
+    }
+    if (retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "TOOL_ADMISSION_AUTHORITY_DRIFT", "$.authority", "Tool admission cannot expand authority or authorize release."));
+    }
+    if (!isValidDate(payload.decided_at)) {
+      issues.push(issue("critical", "TOOL_ADMISSION_INVALID_TIMESTAMP", "$.decided_at", "Tool admission requires a valid decision timestamp."));
+    }
+  }
+
+  if (type === "agent-execution-checkpoint") {
+    const previousKind = artifactRefKind(payload.previous_checkpoint_ref);
+    const admissionKind = artifactRefKind(payload.tool_admission_ref);
+    if (previousKind === "malformed" || admissionKind === "malformed") {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_MALFORMED_NONE_REF", "$", "Checkpoint references must be concrete or use the exact all-none sentinel."));
+    }
+
+    if (payload.checkpoint_kind === "baseline" &&
+        (payload.sequence !== 0 || payload.lease_status !== "active" ||
+         previousKind !== "none" || admissionKind !== "none")) {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_BASELINE_INVALID", "$", "Baseline checkpoints require sequence 0, active status, and none references."));
+    }
+    if (payload.checkpoint_kind !== "baseline" &&
+        (!Number.isInteger(payload.sequence) || payload.sequence < 1 || previousKind !== "concrete")) {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_CHAIN_INVALID", "$.previous_checkpoint_ref", "Every non-baseline checkpoint requires a positive sequence and concrete predecessor."));
+    }
+    if (payload.checkpoint_kind === "post_tool" &&
+        (payload.sequence < 1 || admissionKind !== "concrete")) {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_POST_TOOL_INVALID", "$.tool_admission_ref", "post_tool checkpoints require a positive sequence and concrete tool admission reference."));
+    }
+    const executionResult = payload.execution_result || {};
+    if (payload.checkpoint_kind === "post_tool" &&
+        (executionResult.status === "not_applicable" ||
+         executionResult.provider_result_sha256 === "none")) {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_RESULT_MISSING", "$.execution_result", "post_tool checkpoints require a concrete provider-result digest and execution status."));
+    }
+    if (payload.checkpoint_kind !== "post_tool" &&
+        (executionResult.status !== "not_applicable" ||
+         executionResult.provider_result_sha256 !== "none" ||
+         executionResult.external_effects !== "none")) {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_RESULT_UNEXPECTED", "$.execution_result", "Lifecycle checkpoints must use the exact not-applicable execution-result sentinel."));
+    }
+    if (["failed", "unknown"].includes(executionResult.status) &&
+        payload.lease_status !== "blocked") {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_UNRESOLVED_EFFECT_ACTIVE", "$.lease_status", "Failed or unknown tool effects must block the lease for reconciliation."));
+    }
+    if (!["baseline", "post_tool"].includes(payload.checkpoint_kind) && admissionKind !== "none") {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_TRANSITION_TOOL_REF", "$.tool_admission_ref", "Lifecycle transition checkpoints must use the none tool-admission sentinel."));
+    }
+    if (["interruption", "revocation", "supersession", "completion"].includes(payload.checkpoint_kind) &&
+        payload.lease_status === "active") {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_ACTIVE_TERMINAL_KIND", "$.lease_status", "Interruption and terminal checkpoint kinds must map to non-active lease status."));
+    }
+    if (payload.resume_authorized !== false || retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_AUTHORITY_EXPANSION", "$.authority", "Checkpoint state cannot authorize resume, self-approval, or release."));
+    }
+    if (!isValidDate(payload.recorded_at)) {
+      issues.push(issue("critical", "EXECUTION_CHECKPOINT_INVALID_TIMESTAMP", "$.recorded_at", "Execution checkpoint requires a valid recorded timestamp."));
     }
   }
 
@@ -1164,6 +1438,30 @@ function semanticRules(payload, type) {
       if ((CLASSIFICATION_RANK[agent.context_scope] ?? 99) >
           (CLASSIFICATION_RANK[payload.mission_profile && payload.mission_profile.classification] ?? -1)) {
         issues.push(issue("critical", "MISSION_WAVE_CONTEXT_EXCEEDS_MISSION", `${pointer}.context_scope`, "Agent context scope cannot exceed the mission classification."));
+      }
+    }
+    const dispatchControl = payload.dispatch_control;
+    if (dispatchControl) {
+      const authorizations = Array.isArray(dispatchControl.policy_authorizations)
+        ? dispatchControl.policy_authorizations
+        : [];
+      const policyIds = authorizations.map(item => item && item.policy_id);
+      if (new Set(policyIds).size !== policyIds.length) {
+        issues.push(issue("critical", "MISSION_WAVE_DUPLICATE_DISPATCH_POLICY", "$.dispatch_control.policy_authorizations", "Dispatch policy IDs must be unique within one wave."));
+      }
+      for (const [index, authorization] of authorizations.entries()) {
+        if (!agentIds.includes(authorization.agent_id)) {
+          issues.push(issue("critical", "MISSION_WAVE_UNKNOWN_DISPATCH_AGENT", `$.dispatch_control.policy_authorizations[${index}].agent_id`, "Dispatch policy authorization must name one assigned mission agent."));
+        }
+      }
+      for (const agentId of agentIds) {
+        const agentAuthorizations = authorizations
+          .filter(item => item && item.agent_id === agentId);
+        if (agentAuthorizations.length === 0) {
+          issues.push(issue("critical", "MISSION_WAVE_DISPATCH_POLICY_MISSING", "$.dispatch_control.policy_authorizations", `Dispatch enforcement requires a policy authorization for ${agentId}.`));
+        } else if (agentAuthorizations.length > 1) {
+          issues.push(issue("critical", "MISSION_WAVE_MULTIPLE_DISPATCH_POLICIES", "$.dispatch_control.policy_authorizations", `Dispatch enforcement permits exactly one policy authorization for ${agentId} in one wave.`));
+        }
       }
     }
     if (payload.mission_profile && payload.mission_profile.roe_class === "Black") {

@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/agent-dispatch-lease.schema.json",
+  "title": "Agent Dispatch Lease",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "session_binding",
+    "plan_ref",
+    "routing_preflight_ref",
+    "context_pack_ref",
+    "tool_policy_ref",
+    "repository_binding",
+    "initial_repository_state",
+    "previous_lease_ref",
+    "issuance_reason",
+    "nonce",
+    "request_budget",
+    "issued_at",
+    "not_before",
+    "expires_at",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "AgentDispatchLease" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "session_binding": { "$ref": "#/$defs/session_binding" },
+    "plan_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "routing_preflight_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "context_pack_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "tool_policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "initial_repository_state": { "$ref": "#/$defs/repository_state" },
+    "previous_lease_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "issuance_reason": {
+      "type": "string",
+      "enum": ["initial", "resume"]
+    },
+    "nonce": { "$ref": "common.schema.json#/$defs/sha256" },
+    "request_budget": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "not_before": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "session_binding": {
+      "type": "object",
+      "required": ["session_id", "provider_agent_id"],
+      "additionalProperties": false,
+      "properties": {
+        "session_id": { "$ref": "#/$defs/safe_identifier" },
+        "provider_agent_id": { "$ref": "#/$defs/safe_identifier" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": {
+          "type": "string",
+          "pattern": "^(unborn|[a-f0-9]{40,64})$"
+        },
+        "worktree_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "none_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "type": "string", "const": "none" },
+        "relative_path": { "type": "string", "const": "none" },
+        "sha256": { "type": "string", "const": "none" }
+      }
+    },
+    "artifact_ref_or_none": {
+      "oneOf": [
+        { "$ref": "common.schema.json#/$defs/artifact_ref" },
+        { "$ref": "#/$defs/none_ref" }
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "release_authorized": { "type": "boolean", "const": false }
+      }
+    }
+  }
+}

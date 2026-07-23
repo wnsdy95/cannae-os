@@ -128,6 +128,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
 - [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan and mandatory routing through report, AAR, and bounded improvement.
+- [Enforced Dispatch And Resumable Execution](docs/enforced-dispatch-and-resume.md): per-agent session leases, fail-closed tool admission, checkpoints, interruption, revocation, and explicit resume.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md): manifest-pinned GitHub OIDC/JWKS appraisal for hosted reusable workflows.
 - [GitLab CI Native Verifier Adapter](docs/gitlab-ci-native-verifier-adapter.md): manifest-pinned GitLab.com OIDC/JWKS appraisal for protected same-project pipelines.
@@ -201,7 +202,56 @@ node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js
   --artifact-root .cannae/artifacts
 ```
 
-The controller returns `dispatch_authorized: true` only after routing, optional model assignment, bounded campaign, context digest, and repository artifact checks pass. It never grants release authority. See [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md).
+The controller returns `context_dispatch_authorized: true` only after routing,
+optional model assignment, bounded campaign, context digest, and repository
+artifact checks pass. It still returns `tool_execution_authorized: false` and
+`dispatch_authorized: false`: opening a wave creates context, not executable
+authority. It never grants release authority. See
+[Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md).
+
+### Enforced Agent Dispatch
+
+Mission `open` proves routing readiness; it does not authorize a tool call. Each
+independently acting agent receives a separate deny-by-default policy and one
+lease lineage bound to its repository, mission, wave, provider session, and last
+checkpoint:
+
+```text
+USER plan authorizes exact policy-draft digest
+             -> controller-compiled dispatch policy -> session lease
+             -> PreToolUse admission -> tool -> PostToolUse checkpoint
+```
+
+Hash the policy draft before opening the wave, place that digest in the
+`MissionWavePlan.dispatch_control.policy_authorizations` row for the exact
+agent/provider/policy tuple, then open, compile, and issue:
+
+```bash
+node install-dispatch-hooks.js --provider all --repository . --dry-run
+
+node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  hash-input dispatch-tool-policy-draft.json --repository .
+
+node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
+  open mission-wave-plan.json --repository . --artifact-root .cannae/artifacts
+
+node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  authorize-policy --repository . --artifact-root .cannae/artifacts \
+  --policy dispatch-tool-policy-draft.json
+
+node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  issue --repository . --artifact-root .cannae/artifacts \
+  --policy-id DTP-example --session provider-session-id \
+  --provider-agent main
+```
+
+Unknown tools, replay, ambiguous rules, repository drift, expiry, and retained
+actions deny by default. Complete the lease before reporting successful agent
+work. `resume`, `clear`, and `fork` never restore authority from conversation
+history; explicit checkpoint review and a lineage-continuation lease are
+required. Project-local hooks cover supported local tool paths but are not a
+non-bypassable security boundary. See
+[Enforced Dispatch And Resumable Execution](docs/enforced-dispatch-and-resume.md).
 
 ### Heterogeneous Model Dispatch
 
@@ -357,7 +407,8 @@ Important examples:
 - `run-model-force-assignment-fixtures.js`: task readiness, model routing, force composition, independent assurance, PACE, and authority-separation gates.
 - `run-model-force-v0.2-fixtures.js`: registry eligibility, deterministic compilation, agent/billet/receipt binding, dispatch manifest, and usage telemetry gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
-- `run-skill-mission-controller-fixtures.js`: full open/report/close lifecycle, mandatory per-wave routing, context integrity, model binding, bounded AAR improvement, and multi-repository isolation.
+- `run-skill-mission-controller-fixtures.js`: full open/report/close lifecycle, mandatory per-wave routing, context-versus-tool authority separation, exact one-policy-per-agent planning, settled dispatch-lineage reporting, model binding, bounded AAR improvement, and multi-repository isolation.
+- `run-dispatch-runtime-fixtures.js`: plan-digest policy authorization, concurrent one-lineage issuance, ordered cross-agent repository handoff, exact tool admission and post-tool correlation, serial result checkpoints, replay, drift, interruption, same-session resume, revocation, expiry, retained-action, malformed-hook, cross-session, cross-agent, and cross-repository gates.
 - `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
 - `run-repository-artifact-concurrency-fixtures.js`: 24-writer serialization, monotonic fencing, foreign-host lease expiry, and stale-writer rejection.
 - `run-repository-artifact-recovery-fixtures.js`: journal recovery, reserved-history finalization, history reconciliation, and artifact/manifest tamper detection.
@@ -387,6 +438,7 @@ sample-payloads/              Valid and invalid validator payloads
 *-runner.js                   Focused policy, projection, or preflight runners
 validator-cli-prototype/      Dependency-free validator prototype
 policy-engine-prototype/      Tool-use policy prototype
+dispatch-*-controller.js      Session lease and covered-tool admission runtime
 codex-skills/                 Codex Controls Doctrine Operator skill
 .claude/skills/               Claude Code Controls Doctrine Operator skill
 ```
@@ -404,6 +456,7 @@ Working today:
 - document routing skill for Codex and Claude Code;
 - routing receipt and preflight model for delegated agent waves;
 - operational Codex/Claude mission lifecycle with automatic receipts, digest-bound context packs, manifest-backed reporting, AAR closeout, and bounded follow-on work;
+- manifest-backed per-agent dispatch policies, short-lived session leases, covered-tool admission events, serial post-tool checkpoints, revocation, interruption, and explicit resume for Codex and Claude Code hooks;
 - deterministic manifest-backed campaign supervision with finite cycle and retry orders;
 - authenticated verifier workload admission with short-lived SPIFFE X.509 evidence and transparency inclusion;
 - native Sigstore workload admission with manifest-pinned TrustedRoot material, exact Fulcio identity/issuer policy, Rekor/CT verification, and dual binding to the static verifier key;
@@ -439,6 +492,7 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - Phase 13 verifies supplied checkpoint, consistency, observer, root, incident, and revocation evidence but does not poll Rekor, discover shards, operate TUF metadata services, or provide a witness/monitor/gossip network. A withheld split view still requires external independent observers to expose it.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded, time-limited cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
+- Project-local Codex and Claude hooks are bypassable client-side guardrails and do not cover every provider execution path. Strict concurrent isolation requires separate repository-scoped sub-missions/worktrees and top-level sessions followed by an integration wave, plus managed controls, an OS sandbox, or an independently protected tool gateway. Codex's documented hook payload also does not provide a unique identity for internal subagents.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
 - Source mappings are useful traceability aids, but they do not prove that an interpretation is universally valid.
 - US doctrine is not treated as universal; multinational and local adaptation remain required.
@@ -491,7 +545,7 @@ git diff --check
 
 Near-term:
 
-- harden the operational skill lifecycle with additional real Codex/Claude campaign trials and resumable interruption drills;
+- exercise enforced dispatch in additional real Codex/Claude multi-session campaign trials and harden managed-hook installation;
 - tighten public documentation and contribution structure;
 - continue removing generated artifacts from source control;
 - improve source-map coverage and source interpretation notes;
@@ -502,8 +556,8 @@ Near-term:
 Mid-term:
 
 - define a persistent event model for missions, approvals, releases, handoffs, and AARs;
-- implement a production-shaped policy gateway;
-- connect approval scope and release gates to real tool calls;
+- implement an independently protected policy gateway as the only side-effect path;
+- connect approval scope and release gates to that gateway;
 - implement authenticated self-hosted runner, local sandbox, and TEE execution-evidence adapters;
 - operate production transparency polling, witnesses, monitors, gossip, TUF distribution, and incident response around the implemented Phase 13 verifier;
 - build a useful command-post dashboard from event projections;

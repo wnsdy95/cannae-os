@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.2",
+  "type": "AgentExecutionCheckpoint",
+  "id": "AEC-unresolved-active",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "session_binding": {
+    "session_id": "session-phase16-01",
+    "provider_agent_id": "main"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f",
+    "relative_path": "sample-payloads/valid-agent-dispatch-lease.json",
+    "sha256": "fc58278951bbe05fc6cd7c3bb649d3f13f58e4101d48b1683c2c129c60a8aebc"
+  },
+  "sequence": 1,
+  "checkpoint_kind": "post_tool",
+  "lease_status": "active",
+  "previous_checkpoint_ref": {
+    "artifact_id": "AEC-2c22888479b6ab7d35f0f80a",
+    "relative_path": "sample-payloads/valid-agent-execution-checkpoint.json",
+    "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "tool_admission_ref": {
+    "artifact_id": "TAE-example-admission",
+    "relative_path": "sample-payloads/valid-tool-admission-event.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "repository_state": {
+    "head_commit": "5555555555555555555555555555555555555555",
+    "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+    "dirty": false
+  },
+  "execution_result": {
+    "status": "failed",
+    "provider_result_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "external_effects": "unknown"
+  },
+  "reason_codes": [
+    "PROVIDER_TOOL_FAILURE_REQUIRES_RECONCILIATION"
+  ],
+  "resume_authorized": false,
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  },
+  "recorded_at": "2026-07-23T04:40:00Z"
+}

@@ -73,16 +73,47 @@ Read these only when needed:
 ### Operating A Delegated Mission
 
 1. Create a schema-valid `MissionWavePlan` from `sample-payloads/valid-mission-wave-plan.json`. Preserve `USER` final authority, give each AI a non-command operational role, state allowed/approval-required/prohibited actions, and set finite validity and adaptive budgets.
-2. Run `scripts/operate_controls_mission.js open`. Do not dispatch from manually assembled chat claims. Require `status: ready`, `dispatch_authorized: true`, one context pack per expected agent, and a valid artifact store.
-3. Give each agent only its exact `AgentContextPack`. The S3 receipt is its mandatory control-plane route; `operational_role`, `department`, `task`, and `delegated_authority` remain its actual mission assignment.
-4. If `model_assignment.required` is true, first persist a ready integrated mission preflight and cite its exact manifest reference and per-agent billet. A missing or mismatched model binding blocks `open`.
-5. Store every work product and verification result through `repository-artifact-store.js`. A completion claim, plan, receipt, preflight, or context pack is not work evidence.
-6. Create a `MissionWaveReport` with the exact plan, preflight, context, and work-evidence references. Run `scripts/operate_controls_mission.js report`; a blocked or failed result returns nonzero and stops continuation.
-7. Create an AAR and run `scripts/operate_controls_mission.js close --mission <id> --wave <id>`. Follow its next-wave trigger. Ordinary findings enter the bounded campaign; retained decisions return to the user.
-8. Run `status` for handoff and `verify` before consuming evidence or declaring wave completion. Conversation history is not mission state.
-9. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from `open`, `report`, `close`, a context pack, or a queued improvement.
+2. For a dispatch-controlled wave, create one deny-by-default policy draft per agent, hash each exact draft with `scripts/operate_dispatch_runtime.js hash-input`, and put each digest plus its exact agent, provider, and policy ID in the USER-authorized `MissionWavePlan.dispatch_control.policy_authorizations`.
+3. Run `scripts/operate_controls_mission.js open`. Do not dispatch from manually assembled chat claims. Require `status: ready`, `context_dispatch_authorized: true`, `tool_execution_authorized: false`, `dispatch_authorized: false`, one context pack per expected agent, and a valid artifact store.
+4. Give each agent only its exact `AgentContextPack`. The S3 receipt is its mandatory control-plane route; `operational_role`, `department`, `task`, and `delegated_authority` remain its actual mission assignment.
+5. If `model_assignment.required` is true, first persist a ready integrated mission preflight and cite its exact manifest reference and per-agent billet. A missing or mismatched model binding blocks `open`.
+6. Before any covered tool call, run `authorize-policy` on the exact preauthorized draft, then issue one short-lived `AgentDispatchLease` from its persisted `--policy-id` for this exact provider session and mission agent. Enable the provider hook adapter. A ready context pack is necessary but is not tool authority.
+7. Store every work product and verification result through `repository-artifact-store.js`. A completion claim, plan, receipt, preflight, context pack, policy, or lease is not work evidence.
+8. Run `complete --lease <lease-id>` for each successful dispatch-controlled agent before reporting. Blocked or failed agents must have no active lease or unresolved tool request.
+9. Create a `MissionWaveReport` with the exact plan, preflight, context, and work-evidence references. Run `scripts/operate_controls_mission.js report`; a blocked or failed result returns nonzero and stops continuation.
+10. Create an AAR and run `scripts/operate_controls_mission.js close --mission <id> --wave <id>`. Follow its next-wave trigger. Ordinary findings enter the bounded campaign; retained decisions return to the user.
+11. Run `status` for handoff and `verify` before consuming evidence or declaring wave completion. Conversation history is not mission state.
+12. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from `open`, `report`, `close`, a context pack, a dispatch lease, or a queued improvement.
 
 Read `docs/skill-operational-mission-lifecycle.md` for commands, exact contracts, model binding, failure behavior, and operational limits.
+
+### Enforcing Delegated Tool Dispatch
+
+For every independently acting AI agent:
+
+1. Use a separate top-level provider session and policy draft per agent. In one repository-bound wave, stage agents against the same target worktree and artifact namespace; complete or settle one lease before issuing the next. Do not infer a parallel exception from a caller-declared read-only class. Treat parallel worktrees as separate sub-missions that require a later integration wave.
+2. Hash each exact draft before `open`, place its digest in the matching `MissionWavePlan.dispatch_control.policy_authorizations` row, and require retained USER authorization over that protected plan.
+3. After `open` returns context ready, compile the preauthorized draft and issue the one initial lease lineage:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  authorize-policy --repository <repo> --artifact-root <artifact-root> \
+  --policy <dispatch-tool-policy-draft.json>
+
+node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  issue --repository <repo> --artifact-root <artifact-root> \
+  --policy-id <policy-id> --session <provider-session-id> \
+  --provider-agent <provider-agent-id>
+```
+
+4. Install or externally manage the provider hooks with `node codex-skills/controls-doctrine-operator/scripts/install_dispatch_hooks.js --provider codex --repository <repo>`, then launch the agent with `CANNAE_REPOSITORY`, `CANNAE_ARTIFACT_ROOT`, `CANNAE_MISSION_ID`, `CANNAE_WAVE_ID`, `CANNAE_AGENT_ID`, and `CANNAE_PROVIDER_AGENT_ID`.
+5. Require a manifest-backed allow event before each covered call and an exact tool-name, input-digest, provider-result, and repository-state checkpoint before another call. Unknown tools, ambiguous rules, replay, drift, expired authority, and retained actions deny by default.
+6. On interrupt, `resume`, `clear`, or `fork`, assume the old authority is interrupted. Review the exact checkpoint and run explicit `resume` to issue a lineage-continuation lease. Session history never renews authority.
+7. Revoke on scope change, operator stop, unexpected drift, unresolved post-tool failure, or handoff. Run `complete --lease <lease-id>` before a successful agent result enters the wave report.
+
+Project hooks are a deterministic guardrail for covered local calls, not a non-bypassable security boundary. Codex does not expose a unique subagent identity in the documented `PreToolUse` payload, so strict mission-agent isolation requires separate top-level sessions or an external gateway.
+
+Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup, provider limits, failure matrix, and production deployment levels.
 
 ### Answering Framework Questions
 
@@ -175,6 +206,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-skill-mission-controller-fixtures.js
+node run-dispatch-runtime-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
@@ -215,6 +247,12 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - AI agents must route by role, department, authority, task, and need-to-know.
 - Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
 - Operational delegated work requires a controller-issued context pack from the current wave; a manually claimed route or stale context pack does not authorize work.
+- Covered delegated tool use requires one current manifest-backed dispatch
+  lease lineage per mission agent. The exact policy-draft digest must be
+  USER-authorized in the mission plan before compilation; no lease means no
+  covered work. A resumed, cleared, or forked session requires explicit lineage
+  continuation after checkpoint review.
+- Project-local hooks guard covered calls but are not a complete security boundary. For concurrency, use separate repository-scoped sub-missions/worktrees and top-level sessions followed by an integration wave; add managed controls, an OS sandbox, or an independently protected tool gateway according to the deployment risk.
 - Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
 - Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed receipt quorum for v0.3+, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint. Trust-policy v0.2+ additionally requires fresh manifest-backed evidence for each verifier's selected SPIFFE or Sigstore workload-identity adapter; Sigstore also requires an exact fresh TrustedRoot. Trust-policy v0.4+ requires an exact runtime policy before dispatch and dual-signed execution evidence for each receipt/report attestation before it can count toward quorum. Trust-policy v0.5+ requires the supervisor's exact unexpired single-use challenge and dual-signed nonce responses before dispatch. Trust-policy v0.6+ requires runtime-policy v0.2+, complete failure-domain identities, and enough computed `VID-*` domains before dispatch and after execution. Runtime-policy v0.3 GitHub Actions and GitLab CI evidence additionally requires the exact native OIDC/JWKS artifact chain and a clean token-bound commit. Trust-policy v0.7 additionally requires a contiguous, current, manifest-backed transparency state with valid checkpoint consistency, observer quorum, root, incident and revocation status. Self-improvement never creates self-approval, self-release, trust-root/runtime-policy/builder-root/incident authority, or unbounded recursion.

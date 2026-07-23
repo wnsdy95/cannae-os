@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/agent-execution-checkpoint.schema.json",
+  "title": "Agent Execution Checkpoint",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "session_binding",
+    "lease_ref",
+    "sequence",
+    "checkpoint_kind",
+    "lease_status",
+    "previous_checkpoint_ref",
+    "tool_admission_ref",
+    "repository_state",
+    "execution_result",
+    "reason_codes",
+    "resume_authorized",
+    "authority",
+    "recorded_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.2" },
+    "type": { "type": "string", "const": "AgentExecutionCheckpoint" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "session_binding": { "$ref": "#/$defs/session_binding" },
+    "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "checkpoint_kind": {
+      "type": "string",
+      "enum": [
+        "baseline",
+        "post_tool",
+        "interruption",
+        "revocation",
+        "supersession",
+        "completion"
+      ]
+    },
+    "lease_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "interrupted",
+        "revoked",
+        "superseded",
+        "completed",
+        "blocked"
+      ]
+    },
+    "previous_checkpoint_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "tool_admission_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "repository_state": { "$ref": "#/$defs/repository_state" },
+    "execution_result": { "$ref": "#/$defs/execution_result" },
+    "reason_codes": { "$ref": "#/$defs/reason_codes" },
+    "resume_authorized": { "type": "boolean", "const": false },
+    "authority": { "$ref": "#/$defs/authority" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "session_binding": {
+      "type": "object",
+      "required": ["session_id", "provider_agent_id"],
+      "additionalProperties": false,
+      "properties": {
+        "session_id": { "$ref": "#/$defs/safe_identifier" },
+        "provider_agent_id": { "$ref": "#/$defs/safe_identifier" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": {
+          "type": "string",
+          "pattern": "^(unborn|[a-f0-9]{40,64})$"
+        },
+        "worktree_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "none_ref": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": { "type": "string", "const": "none" },
+        "relative_path": { "type": "string", "const": "none" },
+        "sha256": { "type": "string", "const": "none" }
+      }
+    },
+    "artifact_ref_or_none": {
+      "oneOf": [
+        { "$ref": "common.schema.json#/$defs/artifact_ref" },
+        { "$ref": "#/$defs/none_ref" }
+      ]
+    },
+    "execution_result": {
+      "type": "object",
+      "required": [
+        "status",
+        "provider_result_sha256",
+        "external_effects"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["not_applicable", "succeeded", "failed", "unknown"]
+        },
+        "provider_result_sha256": {
+          "oneOf": [
+            { "$ref": "common.schema.json#/$defs/sha256" },
+            { "type": "string", "const": "none" }
+          ]
+        },
+        "external_effects": {
+          "type": "string",
+          "enum": ["none", "repository_state_recorded", "unknown"]
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "release_authorized": { "type": "boolean", "const": false }
+      }
+    }
+  }
+}

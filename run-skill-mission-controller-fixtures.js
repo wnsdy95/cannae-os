@@ -19,6 +19,12 @@ const {
   writeRepositoryFileArtifact
 } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const {
+  authorizeDispatchPolicy,
+  completeLease,
+  inputDigest,
+  issueLease
+} = require("./dispatch-runtime-controller");
 
 const ROOT = __dirname;
 const FIXED_OPEN_TIME = "2026-07-23T04:30:00+09:00";
@@ -69,7 +75,14 @@ function loadArtifact(artifactRoot, ref) {
   return JSON.parse(fs.readFileSync(path.join(artifactRoot, ref.relative_path), "utf8"));
 }
 
-function evidence(repository, artifactRoot, plan, artifactId, payload, createdAt) {
+function evidence(
+  repository,
+  artifactRoot,
+  plan,
+  artifactId,
+  payload,
+  createdAt = "2026-07-23T04:50:00+09:00"
+) {
   const result = writeRepositoryArtifact({
     repositoryPath: repository,
     artifactRoot,
@@ -120,10 +133,50 @@ function wavePlan(base, waveId) {
   return plan;
 }
 
+function dispatchDraft(plan, agent, policyId) {
+  const toolInput = { command: "true" };
+  return {
+    schema_version: "0.1",
+    type: "DispatchToolPolicy",
+    id: policyId,
+    mission_id: plan.mission_id,
+    wave_id: plan.wave_id,
+    agent_id: agent.agent_id,
+    provider: "codex",
+    default_decision: "deny",
+    tool_rules: [{
+      rule_id: `DTR-${agent.agent_id}`,
+      mission_action: agent.allowed_actions[0],
+      tool_name: "Bash",
+      operation_class: "process_execute",
+      input_match: {
+        mode: "exact_sha256",
+        allowed_sha256: [inputDigest(toolInput)]
+      },
+      max_uses: 1
+    }],
+    max_total_admissions: 1,
+    lease_ttl_seconds: 3600,
+    repository_state: {
+      require_head_match: true,
+      require_serial_state_chain: true,
+      require_clean_start: true
+    },
+    authority: {
+      human_final_decision_authority: "USER",
+      self_approval_prohibited: true,
+      release_authorized: false
+    },
+    approved_at: plan.created_at,
+    valid_until: plan.valid_until
+  };
+}
+
 const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "cannae-skill-mission-fixtures-"));
 const artifactRoot = path.join(temporaryRoot, "artifacts");
 const repositoryA = initRepository(temporaryRoot, "alpha");
 const repositoryB = initRepository(temporaryRoot, "bravo");
+const repositoryC = initRepository(temporaryRoot, "charlie");
 const basePlan = readJson("sample-payloads/valid-mission-wave-plan.json");
 const fixtures = [];
 
@@ -136,6 +189,28 @@ let report;
 
 fixture("valid mission wave plan passes schema and semantic validation", () => {
   assert(validatePayload(basePlan, "mission-wave-plan").valid, "valid plan should pass");
+});
+
+fixture("dispatch control permits exactly one policy authorization per mission agent", () => {
+  const plan = clone(basePlan);
+  const first = dispatchDraft(plan, plan.agents[0], "DTP-DUPLICATE-A");
+  const second = dispatchDraft(plan, plan.agents[0], "DTP-DUPLICATE-B");
+  const verification = dispatchDraft(plan, plan.agents[1], "DTP-VERIFICATION");
+  plan.dispatch_control = {
+    required: true,
+    enforcement_level: "guardrail",
+    gateway_exclusive: false,
+    policy_authorizations: [first, second, verification].map(draft => ({
+      agent_id: draft.agent_id,
+      provider: draft.provider,
+      policy_id: draft.id,
+      draft_sha256: inputDigest(draft)
+    }))
+  };
+  const result = validatePayload(plan, "mission-wave-plan");
+  assert(!result.valid, "multiple policies for one mission agent should fail");
+  assert(result.issues.some(item => item.code === "MISSION_WAVE_MULTIPLE_DISPATCH_POLICIES"),
+    "multiple-policy failure code is missing");
 });
 
 fixture("AI final decision authority is rejected before artifact creation", () => {
@@ -156,7 +231,9 @@ fixture("open creates one CoS receipt and one S3 receipt per expected agent", ()
     doctrineRoot: ROOT,
     now: FIXED_OPEN_TIME
   });
-  assert(opened.status === "ready" && opened.dispatch_authorized === true, "wave should be ready");
+  assert(opened.status === "ready" && opened.context_dispatch_authorized === true, "wave context should be ready");
+  assert(opened.dispatch_authorized === false && opened.tool_execution_authorized === false,
+    "mission open must not authorize tool execution");
   assert(opened.release_authorized === false, "open must not authorize release");
   const bundle = loadArtifact(artifactRoot, opened.routing_bundle_ref);
   assert(bundle.receipts.filter(item => item.wave_scope === "wave").length === 1, "expected one wave receipt");
@@ -316,7 +393,8 @@ fixture("manifest-backed agent evidence produces a complete wave report", () => 
     kind: "deliverables",
     artifactId: "OUT-SKILL-MARKDOWN",
     sourcePath: markdownPath,
-    contentType: "text/markdown"
+    contentType: "text/markdown",
+    createdAt: "2026-07-23T04:50:00+09:00"
   });
   evidenceRefs[0] = {
     artifact_id: "OUT-SKILL-MARKDOWN",
@@ -481,6 +559,104 @@ fixture("every new wave receives fresh wave and agent routing evidence", () => {
   assert(waveOneReceipts.length === basePlan.agents.length + 1, "W1 routing evidence incomplete");
   assert(waveTwoReceipts.length === basePlan.agents.length + 1, "W2 routing evidence incomplete");
   assert(waveOneReceipts.every(left => waveTwoReceipts.every(right => left.ref.relative_path !== right.ref.relative_path)), "wave routing evidence was reused");
+});
+
+fixture("dispatch-controlled waves reject completion reports until every agent lease is settled", () => {
+  const plan = wavePlan(basePlan, "WDISPATCH");
+  plan.id = "MWP-DISPATCH-LIFECYCLE";
+  plan.mission_id = "MIS-DISPATCH-LIFECYCLE";
+  const drafts = plan.agents.map((agent, index) =>
+    dispatchDraft(plan, agent, `DTP-DISPATCH-LIFECYCLE-${index + 1}`));
+  plan.dispatch_control = {
+    required: true,
+    enforcement_level: "guardrail",
+    gateway_exclusive: false,
+    policy_authorizations: drafts.map(draft => ({
+      agent_id: draft.agent_id,
+      provider: draft.provider,
+      policy_id: draft.id,
+      draft_sha256: inputDigest(draft)
+    }))
+  };
+  const openedDispatch = openWave(plan, {
+    repository: repositoryC,
+    artifactRoot,
+    doctrineRoot: ROOT,
+    now: FIXED_OPEN_TIME
+  });
+  assert(openedDispatch.dispatch_authorized === false,
+    "routing-ready open must not claim tool execution authority");
+  const runtimeOptions = {
+    repository: repositoryC,
+    artifactRoot,
+    now: "2026-07-23T04:40:00+09:00"
+  };
+  drafts.forEach(draft => authorizeDispatchPolicy(runtimeOptions, draft));
+  const leases = [issueLease(runtimeOptions, drafts[0].id, {
+    sessionId: "session-lifecycle-1",
+    providerAgentId: "main"
+  })];
+  const evidenceRefs = plan.agents.map((agent, index) => evidence(
+    repositoryC,
+    artifactRoot,
+    plan,
+    `OUT-DISPATCH-${index + 1}`,
+    { agent_id: agent.agent_id, result: "fixture" },
+    "2026-07-23T04:55:00+09:00"
+  ));
+  const candidateReport = completeReport(plan, openedDispatch, evidenceRefs);
+  expectThrow(
+    () => recordWave(candidateReport, {
+      repository: repositoryC,
+      artifactRoot,
+      now: FIXED_REPORT_TIME
+    }),
+    /has no lease lineage|must close its dispatch lease as completed/,
+    "active dispatch lease report rejection"
+  );
+  completeLease({
+    repository: repositoryC,
+    artifactRoot,
+    now: "2026-07-23T04:50:00+09:00"
+  }, leases[0].lease.id);
+  leases.push(issueLease({
+    repository: repositoryC,
+    artifactRoot,
+    now: "2026-07-23T04:51:00+09:00"
+  }, drafts[1].id, {
+    sessionId: "session-lifecycle-2",
+    providerAgentId: "main"
+  }));
+  expectThrow(
+    () => recordWave(candidateReport, {
+      repository: repositoryC,
+      artifactRoot,
+      now: FIXED_REPORT_TIME
+    }),
+    /must close its dispatch lease as completed/,
+    "active handoff lease report rejection"
+  );
+  completeLease({
+    repository: repositoryC,
+    artifactRoot,
+    now: "2026-07-23T04:52:00+09:00"
+  }, leases[1].lease.id);
+  const recordedDispatch = recordWave(candidateReport, {
+    repository: repositoryC,
+    artifactRoot,
+    now: FIXED_REPORT_TIME
+  });
+  assert(recordedDispatch.dispatch_control.status === "settled",
+    "completed dispatch lineages should settle the report gate");
+  const status = missionStatus({
+    repository: repositoryC,
+    artifactRoot,
+    missionId: plan.mission_id
+  });
+  assert(status.dispatch.leases.length === plan.agents.length,
+    "mission status should expose every dispatch lease");
+  assert(status.dispatch.leases.every(item => item.status === "completed"),
+    "mission status should show settled dispatch leases");
 });
 
 fixture("identical mission IDs remain isolated across target repositories", () => {

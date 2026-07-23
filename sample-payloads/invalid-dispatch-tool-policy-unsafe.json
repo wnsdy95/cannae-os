@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.2",
+  "type": "DispatchToolPolicy",
+  "id": "DTP-W1-unsafe",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "default_decision": "deny",
+  "tool_rules": [
+    {
+      "rule_id": "duplicate-rule",
+      "mission_action": "Inspect scoped repository files.",
+      "tool_name": "Read",
+      "operation_class": "process_execute",
+      "input_match": {
+        "mode": "path_prefix",
+        "allowed_sha256": [
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "path_fields": ["/file_path"],
+        "allowed_path_prefixes": ["../outside"]
+      },
+      "max_uses": 1
+    },
+    {
+      "rule_id": "duplicate-rule",
+      "mission_action": "Edit the assigned skill and test surfaces.",
+      "tool_name": "apply_patch",
+      "operation_class": "repository_read",
+      "input_match": {
+        "mode": "patch_paths",
+        "path_fields": ["/command"]
+      },
+      "max_uses": 1
+    }
+  ],
+  "max_total_admissions": 2,
+  "lease_ttl_seconds": 900,
+  "repository_state": {
+    "require_head_match": true,
+    "require_serial_state_chain": true,
+    "require_clean_start": true
+  },
+  "authorization": {
+    "source": "mission_plan_policy_digest",
+    "authorized_by": "USER",
+    "compiled_by": "controls_dispatch_controller",
+    "plan_ref": {
+      "artifact_id": "MWP-ENFORCED-DISPATCH-W1",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/mission-wave-plans/MWP-ENFORCED-DISPATCH-W1.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "context_pack_ref": {
+      "artifact_id": "ACP-W1-runtime-agent",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/agent-context-packs/ACP-W1-runtime-agent.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "draft_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "enforcement_level": "guardrail",
+    "gateway_exclusive": false
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  },
+  "approved_at": "2026-07-23T06:30:00Z",
+  "valid_until": "2026-07-23T04:30:00Z"
+}

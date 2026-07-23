@@ -41,6 +41,8 @@ const OFFICIAL_HOST_PATTERNS = [
   /nist\.gov$/,
   /w3\.org$/,
   /sre\.google$/,
+  /learn\.chatgpt\.com$/,
+  /code\.claude\.com$/,
   /developers\.openai\.com$/,
   /platform\.openai\.com$/
 ];

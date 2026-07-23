@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1",
+  "type": "AgentDispatchLease",
+  "id": "ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "session_binding": {
+    "session_id": "session-phase16-01",
+    "provider_agent_id": "main"
+  },
+  "plan_ref": {
+    "artifact_id": "MWP-ENFORCED-DISPATCH-W1",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/mission-wave-plans/MWP-ENFORCED-DISPATCH-W1.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "routing_preflight_ref": {
+    "artifact_id": "ARP-W1",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/routing-preflights/ARP-W1.json",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "context_pack_ref": {
+    "artifact_id": "ACP-W1-runtime-agent",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/agent-context-packs/ACP-W1-runtime-agent.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "tool_policy_ref": {
+    "artifact_id": "DTP-W1-runtime-agent",
+    "relative_path": "sample-payloads/valid-dispatch-tool-policy.json",
+    "sha256": "083276188835b9f629634b3389ff0caf8a36b103aa40c4c2130f8f6e5d31cb2c"
+  },
+  "repository_binding": {
+    "repository_key": "controls-example",
+    "identity_fingerprint": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "initial_repository_state": {
+    "head_commit": "5555555555555555555555555555555555555555",
+    "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+    "dirty": false
+  },
+  "previous_lease_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "issuance_reason": "initial",
+  "nonce": "7777777777777777777777777777777777777777777777777777777777777777",
+  "request_budget": 6,
+  "issued_at": "2026-07-23T04:35:00Z",
+  "not_before": "2026-07-23T04:35:00Z",
+  "expires_at": "2026-07-23T04:50:00Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  }
+}

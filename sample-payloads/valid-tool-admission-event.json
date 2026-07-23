@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolAdmissionEvent",
+  "id": "TAE-1493d2863394b06cf14c4364",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "session_binding": {
+    "session_id": "session-phase16-01",
+    "provider_agent_id": "main"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f",
+    "relative_path": "sample-payloads/valid-agent-dispatch-lease.json",
+    "sha256": "fc58278951bbe05fc6cd7c3bb649d3f13f58e4101d48b1683c2c129c60a8aebc"
+  },
+  "tool_policy_ref": {
+    "artifact_id": "DTP-W1-runtime-agent",
+    "relative_path": "sample-payloads/valid-dispatch-tool-policy.json",
+    "sha256": "083276188835b9f629634b3389ff0caf8a36b103aa40c4c2130f8f6e5d31cb2c"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-2c22888479b6ab7d35f0f80a",
+    "relative_path": "sample-payloads/valid-agent-execution-checkpoint.json",
+    "sha256": "96410361d50657f924ac4fe0b6f06cc5dba2c42e950d00cf5298ab812f366d92"
+  },
+  "tool_use_id": "tool-use-phase16-001",
+  "tool_name": "Read",
+  "operation_class": "repository_read",
+  "rule_id": "read-contract-scope",
+  "tool_input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "request_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "sequence": 1,
+  "state_before": {
+    "head_commit": "5555555555555555555555555555555555555555",
+    "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+    "dirty": false
+  },
+  "decision": "allow",
+  "reason_codes": ["DISPATCH_TOOL_ADMITTED"],
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  },
+  "decided_at": "2026-07-23T04:40:00Z"
+}

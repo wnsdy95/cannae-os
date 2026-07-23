@@ -50,6 +50,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - readiness ledger entries
 - routing receipts
 - operational mission wave plans, per-agent context packs, wave reports, and closeouts
+- deny-by-default dispatch tool policies, short-lived agent leases, tool admission events, and resumable execution checkpoints
 
 Recommended validation order:
 
@@ -131,6 +132,10 @@ Recommended validation order:
 76. `agent-context-pack.schema.json`
 77. `mission-wave-report.schema.json`
 78. `mission-wave-closeout.schema.json`
+79. `dispatch-tool-policy.schema.json`
+80. `agent-dispatch-lease.schema.json`
+81. `tool-admission-event.schema.json`
+82. `agent-execution-checkpoint.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -152,4 +157,6 @@ All schemas target JSON Schema draft 2020-12.
 
 `SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. v0.6 adds deterministic failure-domain bindings and graph reconstruction. v0.7 adds exact transparency policy/state references, sequence, freshness, observer/incident counts, and a transparency-bounded validity window. Earlier orders remain readable.
 
-`MissionWavePlan` is the operational skill entry contract. It preserves USER final authority, requires routing and repository evidence on every wave, optionally binds a ready integrated model preflight, and limits adaptive work to a finite campaign target. `AgentContextPack`, `MissionWaveReport`, and `MissionWaveCloseout` carry exact manifest references through dispatch, execution evidence, AAR learning, and the next-wave queue without granting release.
+`MissionWavePlan` is the operational skill entry contract. It preserves USER final authority, requires routing and repository evidence on every wave, optionally binds a ready integrated model preflight, and can bind exact per-agent dispatch-policy draft digests before context issuance. `AgentContextPack`, `MissionWaveReport`, and `MissionWaveCloseout` carry exact manifest references through dispatch, execution evidence, AAR learning, and the next-wave queue without granting release.
+
+`DispatchToolPolicy` v0.2 must be controller-compiled from a policy-draft digest already authorized by the exact USER-authored mission plan. Each rule binds one allowed mission action, exact provider tool, operation class, matcher input, repository-state control, and finite budget under default deny; project-hook policies cannot authorize network or delegation classes. `AgentDispatchLease` binds that policy to one provider session, repository identity/state, context chain, nonce, and validity window. `ToolAdmissionEvent` records each pre-tool allow or deny decision, while `AgentExecutionCheckpoint` v0.2 maintains the serial state chain, exact provider-result digest, and unresolved-effect disposition. All four retain `USER` final authority and keep release unauthorized.
