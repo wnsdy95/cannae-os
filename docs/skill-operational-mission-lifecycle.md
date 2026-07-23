@@ -12,6 +12,8 @@ MissionWavePlan
 -> routing preflight
 -> optional integrated model preflight
 -> per-agent context packs
+-> per-agent dispatch policy and session lease
+-> pre-tool admission and post-tool checkpoint
 -> manifest-backed work evidence
 -> MissionWaveReport and SITREP
 -> AAR and readiness update
@@ -64,9 +66,17 @@ The controller performs these ordered, fail-closed actions:
 7. Create or reuse a bounded campaign restricted to the plan's single adaptive target type.
 8. Hash every routed doctrine document plus the router and controller code.
 9. Persist one minimal context pack per agent only after all gates are ready.
-10. Verify the repository artifact store before returning `dispatch_authorized: true`.
+10. Verify the repository artifact store before returning
+    `context_dispatch_authorized: true`,
+    `tool_execution_authorized: false`, and `dispatch_authorized: false`.
 
-No ready preflight means no context pack and no dispatch. Each artifact write is atomic, but the multi-step open sequence is not one all-or-nothing transaction; a failed open may retain verified plan, receipt, or preflight evidence while still withholding context packs. Opening the same unchanged wave is idempotent and does not advance the manifest revision.
+No ready preflight means no context pack. A ready context pack permits the
+orchestrator to continue policy authorization, but it is not executable tool
+authority. Each artifact write is atomic, but the multi-step open sequence is
+not one all-or-nothing transaction; a failed open may retain verified plan,
+receipt, or preflight evidence while still withholding context packs. Opening
+the same unchanged wave is idempotent and does not advance the manifest
+revision.
 
 ## 3. Agent Execution
 
@@ -77,6 +87,31 @@ An agent executes only from its exact `AgentContextPack`.
 - `allowed_actions` are executable only inside the assigned task and target repository.
 - `approval_required` and `escalation_conditions` stop the agent before scope, authority, release, risk, or irreversible boundaries.
 - `release_authorized` is always false.
+
+The context pack proves current routing and task context; it is not tool
+authority. Before opening a dispatch-controlled wave, hash one deny-by-default
+policy draft per agent and put the exact digest, policy ID, provider, and agent
+in `MissionWavePlan.dispatch_control.policy_authorizations`. After `open`, the
+dispatch controller recompiles that exact draft against the persisted plan and
+context pack. Only the compiled policy may issue the single initial
+`AgentDispatchLease` lineage for the exact mission agent, provider session,
+provider-agent identity, repository, and checkpoint.
+
+Enable the provider hook adapter so every covered call passes `PreToolUse`
+admission and every completed or failed call creates a result-bound post-tool
+checkpoint. Write/process agents in one repository-bound wave use separate
+top-level sessions but receive authority in ordered stages against the same
+artifact namespace; complete or settle one lease before issuing the next. The
+local guardrail does not create a parallel exception from a caller-declared
+read-only class. A second initial session for the same mission/wave/agent is
+rejected; use a different agent assignment or a later explicit lineage
+continuation. Parallel worktrees are separate repository-scoped sub-missions
+whose outputs require a later integration wave.
+
+On `resume`, `clear`, `fork`, interruption, or handoff, the old lease cannot be
+reused. Review the exact manifest-backed checkpoint and explicitly issue a new
+lease through the resume command. Restored conversation history never restores
+authority. See `enforced-dispatch-and-resume.md` for commands and provider limits.
 
 Store each durable work product or verification result before reporting it:
 
@@ -91,7 +126,11 @@ node repository-artifact-store.js \
   --source ./result.md
 ```
 
-Use the returned `artifact_id`, `relative_path`, and `sha256` in the agent's report evidence.
+Use the returned `artifact_id`, `relative_path`, and `sha256` in the agent's
+report evidence. For a dispatch-controlled wave, first run
+`complete --lease <lease-id>` for every agent reported as complete. A blocked or
+failed agent must leave no active lease and no unresolved tool request. The
+report gate rejects any missing, ambiguous, active, or unsettled lease lineage.
 
 ## 4. Record A Wave
 
@@ -117,6 +156,9 @@ The controller rejects:
 - a report outside the plan validity window;
 - a report timestamp more than five minutes ahead of the controller evaluation time;
 - any release request.
+- a dispatch-controlled result with no lease lineage, an unresolved tool
+  request, an active lease for a blocked/failed agent, or a non-completed lease
+  for a completed agent.
 
 A valid report creates a manifest-backed report and SITREP. Work evidence may be a JSON artifact or a regular file artifact such as source code, Markdown, or a test log. Lifecycle control records cannot substitute for work evidence. A blocked or failed report is recorded but returns a nonzero CLI status so automation cannot silently continue. Omit `--at` in normal operation; it exists for deterministic replay and testing.
 
@@ -180,6 +222,7 @@ The default installer uses symlinks, so both skill wrappers resolve the live rep
 
 ```bash
 node run-skill-mission-controller-fixtures.js
+node run-dispatch-runtime-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
@@ -189,7 +232,7 @@ The E2E suite uses independent temporary Git repositories and covers mandatory r
 
 ## 10. Operational Limits
 
-- The controller is a local command, not a persistent scheduler or a tool-call interception layer. An orchestrator must make it the only dispatch path to prevent agents from bypassing it.
+- The mission controller is a local lifecycle command, not a persistent scheduler. The separate dispatch runtime and provider hooks intercept covered local calls, but repository-local hooks remain a bypassable guardrail. Stronger deployments must protect the hook/runtime outside the agent's writable boundary or expose side effects only through an independent gateway.
 - Repository manifest integrity proves the bytes and namespace of an integrated model preflight, not who produced it. Generate that projection with the model compiler and integrated preflight runner; use stronger signed provenance where the deployment requires producer identity.
 - Context-pack hashes reveal later doctrine drift but cannot force an external model process to read or obey the pack. The surrounding harness must provide only the issued context and enforce tool policy.
 - The artifact coordinator assumes coherent shared-filesystem semantics. Distributed or partition-prone deployments need an external linearizable coordinator and storage-side fencing.
@@ -202,5 +245,6 @@ The E2E suite uses independent temporary Git repositories and covers mandatory r
 - `agent-battle-rhythm.md`
 - `model-force-v0.2-operations.md`
 - `repository-artifact-isolation-policy.md`
+- `enforced-dispatch-and-resume.md`
 - `knowledge-management-sop.md`
 - `bounded-self-improvement-operations.md`

@@ -3,7 +3,7 @@
   "as_of": "2026-07-23",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 46,
+  "checked_hosts": 48,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -66,6 +66,13 @@
         "docs/multinational-doctrine-consistency-review.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "code.claude.com",
+      "files": [
+        "docs/enforced-dispatch-and-resume.md",
+        "docs/research-compendium.md"
       ]
     },
     {
@@ -191,6 +198,13 @@
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
+      "host": "learn.chatgpt.com",
+      "files": [
+        "docs/enforced-dispatch-and-resume.md",
+        "docs/research-compendium.md"
       ]
     },
     {

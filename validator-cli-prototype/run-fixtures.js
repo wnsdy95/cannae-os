@@ -43,6 +43,102 @@ const fixtures = [
     requiredCodes: ["RED_WITHOUT_APPROVAL"]
   },
   {
+    name: "valid dispatch tool policy",
+    file: "sample-payloads/valid-dispatch-tool-policy.json",
+    type: "dispatch-tool-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unsafe dispatch tool policy",
+    file: "sample-payloads/invalid-dispatch-tool-policy-unsafe.json",
+    type: "dispatch-tool-policy",
+    exitCode: 1,
+    requiredCodes: [
+      "DISPATCH_POLICY_INVALID_VALIDITY",
+      "DISPATCH_POLICY_DUPLICATE_RULE_ID",
+      "DISPATCH_POLICY_UNSAFE_PATH_PREFIX"
+    ]
+  },
+  {
+    name: "self-minted dispatch tool policy",
+    file: "sample-payloads/invalid-dispatch-tool-policy-untrusted-issuer.json",
+    type: "dispatch-tool-policy",
+    exitCode: 1,
+    requiredCodes: ["DISPATCH_POLICY_UNTRUSTED_ISSUER"]
+  },
+  {
+    name: "valid agent dispatch lease",
+    file: "sample-payloads/valid-agent-dispatch-lease.json",
+    type: "agent-dispatch-lease",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unsafe agent dispatch lease",
+    file: "sample-payloads/invalid-agent-dispatch-lease-unsafe.json",
+    type: "agent-dispatch-lease",
+    exitCode: 1,
+    requiredCodes: [
+      "DISPATCH_LEASE_INVALID_VALIDITY",
+      "DISPATCH_LEASE_AUTHORITY_DRIFT",
+      "DISPATCH_LEASE_REASON_REF_MISMATCH",
+      "DISPATCH_LEASE_DIRTY_CLEAN_START"
+    ]
+  },
+  {
+    name: "valid tool admission event",
+    file: "sample-payloads/valid-tool-admission-event.json",
+    type: "tool-admission-event",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "tool admission allow without rule",
+    file: "sample-payloads/invalid-tool-admission-event-allow-without-rule.json",
+    type: "tool-admission-event",
+    exitCode: 1,
+    requiredCodes: ["TOOL_ADMISSION_ALLOW_WITHOUT_RULE"]
+  },
+  {
+    name: "tool admission deny without reason",
+    file: "sample-payloads/invalid-tool-admission-event-deny-without-reason.json",
+    type: "tool-admission-event",
+    exitCode: 1,
+    requiredCodes: ["TOOL_ADMISSION_DENY_WITHOUT_REASON"]
+  },
+  {
+    name: "valid agent execution checkpoint",
+    file: "sample-payloads/valid-agent-execution-checkpoint.json",
+    type: "agent-execution-checkpoint",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "invalid post-tool checkpoint chain",
+    file: "sample-payloads/invalid-agent-execution-checkpoint-post-tool.json",
+    type: "agent-execution-checkpoint",
+    exitCode: 1,
+    requiredCodes: [
+      "EXECUTION_CHECKPOINT_CHAIN_INVALID",
+      "EXECUTION_CHECKPOINT_POST_TOOL_INVALID"
+    ]
+  },
+  {
+    name: "execution checkpoint authority expansion",
+    file: "sample-payloads/invalid-agent-execution-checkpoint-authority.json",
+    type: "agent-execution-checkpoint",
+    exitCode: 1,
+    requiredCodes: ["EXECUTION_CHECKPOINT_AUTHORITY_EXPANSION"]
+  },
+  {
+    name: "unresolved tool effect cannot remain active",
+    file: "sample-payloads/invalid-agent-execution-checkpoint-unresolved-active.json",
+    type: "agent-execution-checkpoint",
+    exitCode: 1,
+    requiredCodes: ["EXECUTION_CHECKPOINT_UNRESOLVED_EFFECT_ACTIVE"]
+  },
+  {
     name: "valid approval request",
     file: "sample-payloads/valid-approval-request.json",
     type: "approval-request",

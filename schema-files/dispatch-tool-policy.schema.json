@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/dispatch-tool-policy.schema.json",
+  "title": "Dispatch Tool Policy",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "default_decision",
+    "tool_rules",
+    "max_total_admissions",
+    "lease_ttl_seconds",
+    "repository_state",
+    "authorization",
+    "authority",
+    "approved_at",
+    "valid_until"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.2" },
+    "type": { "type": "string", "const": "DispatchToolPolicy" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "default_decision": { "type": "string", "const": "deny" },
+    "tool_rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/tool_rule" }
+    },
+    "max_total_admissions": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "lease_ttl_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400
+    },
+    "repository_state": { "$ref": "#/$defs/repository_state_controls" },
+    "authorization": { "$ref": "#/$defs/authorization" },
+    "authority": { "$ref": "#/$defs/authority" },
+    "approved_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "rule_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "tool_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+/-]*$"
+    },
+    "operation_class": {
+      "type": "string",
+      "enum": [
+        "observe",
+        "repository_read",
+        "repository_write",
+        "process_execute",
+        "network_access",
+        "delegation"
+      ]
+    },
+    "json_pointer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?:/(?:[^~/]|~[01])*)+$"
+    },
+    "input_match": {
+      "type": "object",
+      "required": ["mode"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["exact_sha256", "path_prefix", "patch_paths"]
+        },
+        "allowed_sha256": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": { "$ref": "common.schema.json#/$defs/sha256" }
+        },
+        "path_fields": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/json_pointer" }
+        },
+        "allowed_path_prefixes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        }
+      }
+    },
+    "tool_rule": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "mission_action",
+        "tool_name",
+        "operation_class",
+        "input_match",
+        "max_uses"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": { "$ref": "#/$defs/rule_id" },
+        "mission_action": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "tool_name": { "$ref": "#/$defs/tool_name" },
+        "operation_class": { "$ref": "#/$defs/operation_class" },
+        "input_match": { "$ref": "#/$defs/input_match" },
+        "max_uses": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        }
+      }
+    },
+    "repository_state_controls": {
+      "type": "object",
+      "required": [
+        "require_head_match",
+        "require_serial_state_chain",
+        "require_clean_start"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "require_head_match": { "type": "boolean" },
+        "require_serial_state_chain": { "type": "boolean" },
+        "require_clean_start": { "type": "boolean" }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "required": [
+        "source",
+        "authorized_by",
+        "compiled_by",
+        "plan_ref",
+        "context_pack_ref",
+        "draft_sha256",
+        "enforcement_level",
+        "gateway_exclusive"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "const": "mission_plan_policy_digest"
+        },
+        "authorized_by": {
+          "type": "string",
+          "const": "USER"
+        },
+        "compiled_by": {
+          "type": "string",
+          "const": "controls_dispatch_controller"
+        },
+        "plan_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "context_pack_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "draft_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "enforcement_level": {
+          "type": "string",
+          "const": "guardrail"
+        },
+        "gateway_exclusive": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "release_authorized": { "type": "boolean", "const": false }
+      }
+    }
+  }
+}

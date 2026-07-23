@@ -3350,3 +3350,102 @@ Residual limits:
 - local process invocation cannot itself intercept every external tool call;
 - production authorization, identity provider, event service, approval UI, distributed coordinator, and sandbox enforcement remain external;
 - no lifecycle result grants commit, push, merge, risk acceptance, policy change, authority change, or release permission.
+
+## Phase 16: Enforced Dispatch And Resumable Execution
+
+Research question:
+
+> How can a routed agent be required to present current, repository-bound
+> authority at every covered tool call, and how can an interrupted session
+> continue without inheriting stale authority?
+
+Primary product sources:
+
+- Codex lifecycle hooks: https://learn.chatgpt.com/docs/hooks
+- Claude Code hooks reference: https://code.claude.com/docs/en/hooks
+- Claude Code settings reference: https://code.claude.com/docs/en/settings
+- Claude Agent SDK session behavior: https://code.claude.com/docs/en/agent-sdk/sessions
+
+Findings:
+
+1. A context pack is necessary but not sufficient. It proves what the agent was
+   told, while a pre-tool admission proves whether that exact provider identity
+   may perform that exact current action.
+2. A policy supplied by the acting agent is not authority. The exact canonical
+   policy-draft digest and agent/provider/policy tuple must be present in the
+   retained-authority mission plan before `open`, and the controller must
+   compile the final policy against the persisted plan and context pack.
+3. Provider hooks should adapt one common decision contract. Policy, lease,
+   repository state, replay state, and checkpoints remain provider-neutral.
+4. An allow should not auto-approve the provider permission prompt. Cannae
+   admission and native provider permission are cumulative gates.
+5. Deny-by-default requires exact tool names, an exact action from the agent's
+   plan `allowed_actions`, and deterministic argument
+   constraints. Regex-only or prose-only tool scopes cannot support a strong
+   execution claim.
+6. Repository continuity is a state chain, not a single dispatch-time hash.
+   One admitted tool is in flight at a time; the next request waits for a
+   post-tool checkpoint carrying the exact tool/input binding, provider-result
+   digest, effect disposition, resulting HEAD, and worktree fingerprint.
+7. A tool-use ID is a transaction identifier. Reusing it is replay even when
+   the input bytes are identical.
+8. One mission-agent assignment needs one lease lineage. Repository-scoped
+   issuance locking must reject concurrent initial issuance and a second
+   provider session. In one repository-bound wave, covered-tool agents need
+   ordered lease handoff. The local controller cannot safely infer a parallel
+   read-only exception from caller-declared operation classes. Parallel
+   worktrees become separate repository-scoped sub-missions and need a later
+   integration wave.
+9. Resume is a new admission boundary. Session history may be restored, but
+   the old lease is interrupted and explicit resume creates a new nonce,
+   expiry, and repository baseline only from an exact checkpoint.
+10. Session-start hooks cannot be treated as an authority grant. They can
+   reconstruct context and invalidate stale authority, while protected
+   `PreToolUse` remains the executable gate.
+11. Codex currently covers shell, `apply_patch`, MCP, and most local function
+   tools, but not hosted tools and every specialized path. Codex also does not
+   expose a distinct subagent identity in the documented `PreToolUse` input.
+   Strict per-agent binding therefore uses separate top-level sessions or an
+   external gateway.
+12. Claude Code can expose a subagent `agent_id` to hooks, but project settings
+    remain client-side. Managed endpoint policy is required when a user must
+    not disable or replace hooks.
+13. Repository-local hooks are a deterministic guardrail, not a complete
+    security boundary. A production design makes an independently protected
+    tool gateway the only side-effect path and applies the same contracts
+    there.
+14. Hook process launch failure is distinct from controller failure. The
+    adapter can translate caught controller errors to native deny output, but
+    only managed deployment, native deny rules, and process/tool isolation can
+    address a skipped or disabled hook.
+15. Mission `open` should report context readiness separately from executable
+    authority. A dispatch-controlled wave should not accept a complete result
+    until every agent has one settled lease lineage and no unresolved request.
+
+Implemented surfaces:
+
+- `DispatchToolPolicy`, `AgentDispatchLease`, `ToolAdmissionEvent`, and
+  `AgentExecutionCheckpoint` schemas and samples;
+- `dispatch-runtime-controller.js`;
+- `dispatch-hook-adapter.js`;
+- `install-dispatch-hooks.js`;
+- `skill-mission-controller.js` context-authority separation and settled-lineage
+  report gate;
+- `MissionWavePlan.dispatch_control` exact one-policy-per-agent authorization;
+- Codex and Claude runtime and hook wrappers;
+- `run-dispatch-runtime-fixtures.js`;
+- `docs/enforced-dispatch-and-resume.md`.
+
+Residual limits:
+
+- no authenticated human policy signature or remote authorization service;
+- no protection when an agent can rewrite the mission plan, artifact store,
+  issuer, hook configuration, or runtime;
+- no complete command-semantic classifier;
+- no universal provider-tool interception;
+- no cancellation of a tool that was already admitted and began executing;
+- no all-or-nothing transaction across multi-artifact policy, lease, and
+  checkpoint transitions;
+- no partition-tolerant distributed state machine;
+- no non-bypassable claim for repository-local hooks;
+- no production MCP/tool gateway or multi-user scheduler.

@@ -464,6 +464,8 @@ function openWave(plan, options = {}) {
       mission_id: plan.mission_id,
       wave_id: plan.wave_id,
       status: "blocked",
+      context_dispatch_authorized: false,
+      tool_execution_authorized: false,
       dispatch_authorized: false,
       release_authorized: false,
       plan_ref: planRef,
@@ -543,8 +545,23 @@ function openWave(plan, options = {}) {
     mission_id: plan.mission_id,
     wave_id: plan.wave_id,
     status: "ready",
-    dispatch_authorized: true,
+    context_dispatch_authorized: true,
+    tool_execution_authorized: false,
+    dispatch_authorized: false,
     release_authorized: false,
+    dispatch_control: plan.dispatch_control
+      ? {
+          required: true,
+          status: "policy_authorization_required",
+          enforcement_level: plan.dispatch_control.enforcement_level,
+          gateway_exclusive: plan.dispatch_control.gateway_exclusive
+        }
+      : {
+          required: false,
+          status: "not_configured",
+          enforcement_level: "advisory",
+          gateway_exclusive: false
+        },
     plan_ref: planRef,
     routing_bundle_ref: routingBundleRef,
     routing_preflight_ref: preflightRef,
@@ -589,6 +606,49 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
   }
 }
 
+function validateDispatchCompletion(report, plan, options) {
+  if (!plan.dispatch_control || plan.dispatch_control.required !== true) {
+    return {
+      required: false,
+      status: "not_configured",
+      release_authorized: false
+    };
+  }
+  const { dispatchStatus } = require("./dispatch-runtime-controller");
+  const projection = dispatchStatus(options, {
+    missionId: report.mission_id,
+    waveId: report.wave_id
+  });
+  for (const result of report.agent_results) {
+    const leases = projection.leases.filter(item => item.agent_id === result.agent_id);
+    if (leases.length === 0) {
+      throw new Error(`Dispatch-controlled agent ${result.agent_id} has no lease lineage.`);
+    }
+    if (leases.some(item => item.pending_tool_requests > 0)) {
+      throw new Error(`Dispatch-controlled agent ${result.agent_id} has an unresolved tool request.`);
+    }
+    const lineageHeads = leases.filter(item => item.status !== "superseded");
+    if (lineageHeads.length !== 1) {
+      throw new Error(`Dispatch-controlled agent ${result.agent_id} does not have one unambiguous lease head.`);
+    }
+    const head = lineageHeads[0];
+    if (result.status === "complete" && head.status !== "completed") {
+      throw new Error(`Completed agent ${result.agent_id} must close its dispatch lease as completed.`);
+    }
+    if (result.status !== "complete" && head.status === "active") {
+      throw new Error(`Blocked or failed agent ${result.agent_id} must interrupt, revoke, or block its active lease before reporting.`);
+    }
+  }
+  return {
+    required: true,
+    status: "settled",
+    enforcement_level: plan.dispatch_control.enforcement_level,
+    gateway_exclusive: plan.dispatch_control.gateway_exclusive,
+    leases: projection.leases,
+    release_authorized: false
+  };
+}
+
 function recordWave(report, options = {}) {
   assertValid(report, "mission-wave-report", "Mission wave report");
   const repository = resolveRepository(options.repository);
@@ -602,6 +662,7 @@ function recordWave(report, options = {}) {
   });
   const contextArtifacts = contexts.entries.map(entry => ({ entry, ref: entryRef(entry), payload: readEntryPayload(contexts, entry) }));
   validateReportBindings(report, planArtifact, preflightArtifact, contextArtifacts, operationOptions);
+  const dispatchControl = validateDispatchCompletion(report, planArtifact.payload, operationOptions);
   const recordedAt = Date.parse(report.recorded_at);
   const now = Date.parse(options.now || new Date().toISOString());
   if (Number.isNaN(now)) throw new Error("Wave report evaluation timestamp is invalid.");
@@ -653,6 +714,7 @@ function recordWave(report, options = {}) {
     status: report.wave_status,
     continuation_authorized: report.wave_status === "complete",
     release_authorized: false,
+    dispatch_control: dispatchControl,
     report_ref: reportRef,
     sitrep_ref: sitrepRef,
     repository: publicRepository(repository),
@@ -879,12 +941,15 @@ function missionStatus(options = {}) {
     if (!byWave.has(entry.wave_id)) byWave.set(entry.wave_id, []);
     byWave.get(entry.wave_id).push({ kind: entry.kind, ref: entryRef(entry), created_at: entry.created_at });
   }
+  const { dispatchStatus } = require("./dispatch-runtime-controller");
+  const dispatch = dispatchStatus(options, { missionId: options.missionId });
   return {
     schema_version: "0.1",
     type: "MissionOperationStatus",
     mission_id: options.missionId,
     repository: publicRepository(store.repository),
     release_authorized: false,
+    dispatch,
     artifact_store: summarizeVerification(store.verification),
     waves: [...byWave.entries()].sort(([left], [right]) => left.localeCompare(right)).map(([wave_id, artifacts]) => ({
       wave_id,

@@ -510,7 +510,74 @@ Completion criteria:
 
 See `skill-operational-mission-lifecycle.md` for operator commands, contracts, failure behavior, and limitations.
 
-## 17. Release Gates
+## 17. Phase 16: Enforced Dispatch And Resumable Orchestration
+
+Status: implemented as a provider-neutral, manifest-backed local admission
+controller with Codex and Claude Code hook adapters. Non-bypassable managed
+deployment and a production tool gateway remain external.
+
+Goal:
+
+- Make a current route, exact context pack, short-lived per-agent lease, tool
+  policy, provider identity, and serialized repository-state checkpoint
+  prerequisites for every covered delegated tool call.
+
+Implemented controls:
+
+- a USER-authorized `MissionWavePlan` must preauthorize the canonical digest
+  and exact agent/provider/policy identity of every policy draft;
+- `authorize-policy` compiles the final `DispatchToolPolicy` only after
+  reloading the exact persisted plan and context pack; a raw caller policy
+  cannot issue a lease;
+- `DispatchToolPolicy` is deny-by-default, exact-tool, input-constrained,
+  plan-action-bound, budgeted, finite, repository-scoped, and release-inert;
+- `AgentDispatchLease` binds one mission agent, provider session,
+  provider-agent identity, plan, routing preflight, context pack, policy,
+  repository identity, baseline state, nonce, request budget, and expiry;
+- one initial lease lineage is permitted per repository/mission/wave/agent,
+  repository-scoped issuance locks reject concurrent issuance or a second
+  provider session under the same assignment, and every covered-tool agent uses
+  ordered cross-agent handoff within one repository namespace;
+- `dispatch-runtime-controller.js` reloads every authority-bearing object from
+  the verified artifact manifest before admission;
+- `ToolAdmissionEvent` binds each tool-use ID and canonical input digest to one
+  allow or deny decision, and replay is rejected;
+- `AgentExecutionCheckpoint` permits one in-flight tool per lease and advances
+  the repository state only after a post-tool event matching the exact tool
+  name and input digest records provider-result digest, status, and external
+  effect disposition;
+- read-only repository mutation, HEAD drift, external worktree drift,
+  cross-agent/session/provider binding, expired or revoked authority, unresolved
+  in-flight work, and obvious retained commands fail closed;
+- resume lifecycle events never renew authority. They interrupt the old lease,
+  and explicit resume issues a new nonce and baseline only from an exact
+  interruption checkpoint;
+- `dispatch-hook-adapter.js` preserves native provider permission checks on
+  allow and emits provider-native structured deny on failure;
+- `install-dispatch-hooks.js` merges project-local lifecycle hooks without
+  replacing existing settings;
+- mission `open` distinguishes context readiness from tool authority, and the
+  report gate requires one settled lease lineage per dispatch-controlled agent;
+- Codex and Claude skill wrappers invoke the same runtime and preserve
+  `USER` final decision authority.
+
+Completion criteria:
+
+- A covered tool call without one exact active lease is denied.
+- Two concurrent calls cannot advance one lease from the same checkpoint.
+- A replayed tool-use ID, stale checkpoint, expired lease, revoked lease, wrong
+  repository, wrong session, wrong agent, or wrong provider cannot execute.
+- A resumed session cannot inherit the old lease.
+- A complete agent result cannot enter the wave report until its lease lineage
+  is completed and free of unresolved tool requests.
+- An allow never bypasses native provider permissions and never grants release.
+- Project-hook coverage and bypass limits are documented without representing
+  local hooks as a complete security boundary.
+
+See `enforced-dispatch-and-resume.md` for contracts, commands, provider
+differences, deployment levels, failure behavior, and residual limits.
+
+## 18. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -534,8 +601,9 @@ See `skill-operational-mission-lifecycle.md` for operator commands, contracts, f
 | G18 | Runtime-policy v0.3 GitHub evidence has a valid manifest-pinned JWKS, strict OIDC signature/claim appraisal, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G19 | Runtime-policy v0.3 GitLab evidence has a valid manifest-pinned GitLab.com JWKS, strict OIDC signature/claim appraisal, stable source/job identity, protected same-project config, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G20 | A delegated skill wave has one generated CoS receipt, every expected S3 receipt, ready routing/model admission, digest-bound context packs, repository-manifest evidence, report/AAR closeout, bounded next-wave disposition, and no AI release authority |
+| G21 | Every covered delegated tool call has one active per-agent lease compiled from an exact USER-plan-authorized draft digest, exact policy/context/checkpoint binding, replay-safe serialized admission, and a result-bound post-tool state checkpoint; one settled lineage is required before reporting, resume requires explicit continuation, and release remains false |
 
-## 18. Related Documents
+## 19. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -549,3 +617,4 @@ See `skill-operational-mission-lifecycle.md` for operator commands, contracts, f
 - `github-actions-native-verifier-adapter.md`
 - `gitlab-ci-native-verifier-adapter.md`
 - `skill-operational-mission-lifecycle.md`
+- `enforced-dispatch-and-resume.md`

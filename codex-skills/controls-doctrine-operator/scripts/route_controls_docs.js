@@ -105,6 +105,23 @@ const RULES = [
     ]
   },
   {
+    id: "enforced-dispatch",
+    keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate"],
+    docs: [
+      "docs/enforced-dispatch-and-resume.md",
+      "docs/skill-operational-mission-lifecycle.md",
+      "docs/tool-use-roe.md",
+      "docs/repository-artifact-isolation-policy.md",
+      "docs/agent-roles-and-authority.md"
+    ],
+    commands: [
+      "node run-dispatch-runtime-fixtures.js",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-dispatch-tool-policy.json dispatch-tool-policy",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-agent-dispatch-lease.json agent-dispatch-lease",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-agent-execution-checkpoint.json agent-execution-checkpoint"
+    ]
+  },
+  {
     id: "bounded-self-improvement",
     keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "verifier independence", "failure domain", "correlation domain", "shared runner", "shared account", "shared project", "pre-dispatch admission", "pre-dispatch challenge", "challenge", "nonce", "liveness", "replay", "stale responder", "offline verifier", "remote verifier", "verifier identity", "verifier execution", "execution integrity", "execution evidence", "runtime policy", "github actions oidc", "gitlab ci oidc", "gitlab oidc", "native provider adapter", "jwks", "jwt", "oci", "sandbox", "workload identity", "spiffe", "svid", "x509", "x.509", "transparency log", "transparency operations", "transparency state", "consistency proof", "witness", "monitor", "gossip", "root rotation", "equivocation", "revocation", "tuf", "merkle", "checkpoint", "sigstore", "sigstore bundle", "cosign bundle", "fulcio", "trustedroot", "trusted root", "rekor", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
     docs: [
@@ -283,7 +300,8 @@ const ROLE_DOCS = {
   S3: [
     "docs/orders-production-pipeline.md",
     "docs/tool-use-roe.md",
-    "docs/policy-engine-rules.md"
+    "docs/policy-engine-rules.md",
+    "docs/enforced-dispatch-and-resume.md"
   ],
   S4: [
     "docs/maintenance-readiness-model.md",
@@ -335,7 +353,7 @@ const AUTHORITY_DOCS = [
   },
   {
     keywords: ["execution", "tool", "scoped-execution", "carry-out", "instrument"],
-    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md"]
+    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/enforced-dispatch-and-resume.md"]
   }
 ];
 
@@ -374,6 +392,10 @@ const ROUTE_HINTS = [
   {
     id: "repository-artifact-isolation",
     keywords: ["repository-artifact", "artifact-store", "artifact-verify", "artifact-recovery", "repository-lease", "lease", "fencing", "stale-writer", "write-ahead", "manifest-history", "artifact-isolation", "repository-output", "multi-repo", "cross-repository", "generated-artifact"]
+  },
+  {
+    id: "enforced-dispatch",
+    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution"]
   },
   {
     id: "bounded-self-improvement",
@@ -538,6 +560,7 @@ function routeIdsForArtifact(file) {
       file === "comparative-evaluation-attestation.js" || file === "comparative-evaluation-attestation-runner.js" ||
       file === "run-comparative-evaluation-attestation-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "repository-artifact-verify.js" || file === "repository-lease.js" || file === "run-repository-artifact-recovery-fixtures.js" || file === "run-repository-artifact-concurrency-fixtures.js") routeIds.push("repository-artifact-isolation", "runtime-validation");
+  if (file === "dispatch-runtime-controller.js" || file === "dispatch-hook-adapter.js" || file === "install-dispatch-hooks.js" || file === "run-dispatch-runtime-fixtures.js") routeIds.push("enforced-dispatch", "runtime-validation");
 
   return unique(routeIds);
 }
