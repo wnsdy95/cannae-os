@@ -221,14 +221,32 @@ Escalate to the user before:
 - Mixing artifacts from separate target repositories in one flat output namespace.
 - Continuing adaptive work without a finite campaign, runtime-issued receipt, fresh trusted signed receipt quorum for v0.3+, required signed report quorum for v0.4 control-plane work, required manifest-backed evidence for every counted verifier's selected SPIFFE or Sigstore adapter under trust-policy v0.2+, the selected Sigstore TrustedRoot when applicable, the exact runtime policy and per-attestation execution evidence under trust-policy v0.4+, the exact unexpired supervisor challenge and dual-signed nonce responses under v0.5+, runtime-policy v0.2+ and enough computed failure domains under v0.6+, the exact native OIDC/JWKS chain and clean token-bound commit for runtime-policy v0.3 GitHub Actions and GitLab CI evidence, a contiguous current manifest-backed transparency state under v0.7, verified accepted baseline, integrity-checked proof store, mandatory checkpoint, or evidence-backed stop decision.
 
-## Self-Improvement
+## Mandatory Skill Adaptation
 
-Patch this skill or the shared router when:
+Every accepted Controls improvement must include one concrete, reusable skill
+adaptation before completion. Do not defer it to another phase.
 
-- `--coverage` reports an unrouted artifact.
-- A repeated user request does not map to an obvious route.
-- A new artifact type, runner family, fixture family, or validation command appears.
-- Work required reading several unrelated docs before finding the right source.
+1. State the operational lesson exposed by the improvement.
+2. Patch at least one real skill surface: `SKILL.md`, a routing/reference file,
+   or a bundled script. A date bump, typo-only edit, or restatement of completed
+   work does not count.
+3. Apply the same operational rule to both the Claude and Codex skill trees.
+   Provider-specific wording and commands may differ, but authority, routing,
+   execution, validation, and stop semantics must remain equivalent.
+4. Keep the product change, skill adaptation, and validation in the same commit
+   or pull request.
+5. In the completion report, identify the product delta, corresponding skill
+   delta, and validation that proves both.
+
+If no honest reusable skill adaptation can be identified, do not label or close
+the work as an improvement. Re-examine the operational lesson or classify the
+change as maintenance explicitly authorized by the human user.
+
+After every improvement, check whether coverage missed an artifact, a repeated
+request lacks a route, a new artifact or validation family appeared, several
+unrelated documents were needed, or a validation failure exposed a missing
+instruction. Update the smallest skill surface that makes the next operator
+perform the improved procedure by default.
 
 This Claude skill is self-contained. Its bundled files are:
 
