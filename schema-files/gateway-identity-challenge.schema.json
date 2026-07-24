@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/gateway-identity-challenge.schema.json",
+  "title": "Gateway Identity Challenge",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "identity_policy_ref",
+    "transaction_id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "session_binding",
+    "gateway_binding_sha256",
+    "repository_binding",
+    "nonce",
+    "issued_at",
+    "expires_at",
+    "signature",
+    "challenge_sha256",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "GatewayIdentityChallenge" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "identity_policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "session_binding": { "$ref": "#/$defs/session_binding" },
+    "gateway_binding_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "nonce": { "$ref": "common.schema.json#/$defs/sha256" },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "signature": { "$ref": "#/$defs/signature" },
+    "challenge_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "session_binding": {
+      "type": "object",
+      "required": ["session_id", "provider_agent_id"],
+      "additionalProperties": false,
+      "properties": {
+        "session_id": { "$ref": "#/$defs/safe_identifier" },
+        "provider_agent_id": { "$ref": "#/$defs/safe_identifier" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["key_id", "algorithm", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "key_id": { "$ref": "common.schema.json#/$defs/sha256" },
+        "algorithm": {
+          "type": "string",
+          "const": "ed25519"
+        },
+        "signature_base64": {
+          "type": "string",
+          "minLength": 80,
+          "maxLength": 256
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "production_execution_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "production_execution_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    }
+  }
+}

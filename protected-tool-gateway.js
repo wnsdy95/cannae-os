@@ -26,6 +26,9 @@ const {
   sameRepositoryState
 } = require("./dispatch-runtime-controller");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const {
+  verifyGatewayPrincipalEvidence
+} = require("./gateway-identity-adapter");
 
 const TERMINAL_STATES = new Set(["denied", "committed", "aborted", "recovery_required"]);
 const KINDS = Object.freeze({
@@ -306,6 +309,9 @@ function recordsForTransaction(view, transactionId) {
       if (current.payload.mission_id !== request.payload.mission_id ||
           current.payload.wave_id !== request.payload.wave_id ||
           current.payload.agent_id !== request.payload.agent_id ||
+          !sameRef(current.payload.identity_policy_ref, request.payload.identity_policy_ref) ||
+          !sameRef(current.payload.identity_challenge_ref, request.payload.identity_challenge_ref) ||
+          !sameRef(current.payload.principal_evidence_ref, request.payload.principal_evidence_ref) ||
           current.payload.idempotency_key !== request.payload.idempotency_key ||
           current.payload.tool_input_sha256 !== request.payload.tool_call.tool_input_sha256 ||
           current.payload.repository_binding.repository_key !== request.payload.repository_binding.repository_key ||
@@ -321,10 +327,22 @@ function recordsForTransaction(view, transactionId) {
   if (decision && (!request || !sameRef(decision.payload.request_ref, request.ref))) {
     throw new Error(`Gateway transaction ${transactionId} decision is not request-bound.`);
   }
+  if (decision && (
+      !sameRef(decision.payload.identity_policy_ref, request.payload.identity_policy_ref) ||
+      !sameRef(decision.payload.identity_challenge_ref, request.payload.identity_challenge_ref) ||
+      !sameRef(decision.payload.principal_evidence_ref, request.payload.principal_evidence_ref))) {
+    throw new Error(`Gateway transaction ${transactionId} decision changed identity evidence.`);
+  }
   if (receipt && (!request || !decision ||
       !sameRef(receipt.payload.request_ref, request.ref) ||
       !sameRef(receipt.payload.decision_ref, decision.ref))) {
     throw new Error(`Gateway transaction ${transactionId} receipt is not request-and-decision-bound.`);
+  }
+  if (receipt && (
+      !sameRef(receipt.payload.identity_policy_ref, request.payload.identity_policy_ref) ||
+      !sameRef(receipt.payload.identity_challenge_ref, request.payload.identity_challenge_ref) ||
+      !sameRef(receipt.payload.principal_evidence_ref, request.payload.principal_evidence_ref))) {
+    throw new Error(`Gateway transaction ${transactionId} receipt changed identity evidence.`);
   }
   for (const event of events) {
     if (!isNoneRef(event.payload.decision_ref) &&
@@ -350,7 +368,7 @@ function snapshotStatus(view, records) {
   if (!records.request) return null;
   const state = records.latest ? records.latest.payload.state : "request_persisted";
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ProtectedToolGatewayStatus",
     transaction_id: records.request.payload.transaction_id,
     mission_id: records.request.payload.mission_id,
@@ -383,7 +401,7 @@ function eventPayload(request, requestRef, descriptor) {
     throw new Error("Gateway event time cannot precede its predecessor.");
   }
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ToolGatewayTransactionEvent",
     id: deterministicId("GTE", request.transaction_id, String(sequence)),
     transaction_id: request.transaction_id,
@@ -398,6 +416,9 @@ function eventPayload(request, requestRef, descriptor) {
     receipt_ref: clone(descriptor.receiptRef || NONE_REF),
     admission_ref: clone(descriptor.admissionRef || NONE_REF),
     checkpoint_ref: clone(descriptor.checkpointRef || request.checkpoint_ref),
+    identity_policy_ref: clone(request.identity_policy_ref),
+    identity_challenge_ref: clone(request.identity_challenge_ref),
+    principal_evidence_ref: clone(request.principal_evidence_ref),
     repository_binding: clone(request.repository_binding),
     idempotency_key: request.idempotency_key,
     tool_input_sha256: request.tool_call.tool_input_sha256,
@@ -443,10 +464,24 @@ function trustedBindingReasons(options, request) {
   if (options.gatewayBindingSha256 !== expected.gateway) {
     reasons.push("GATEWAY_TRUSTED_BINDING_MISMATCH");
   }
-  if (options.verifiedPrincipalSha256 !== expected.principal) {
+  let identityVerification = null;
+  if (request.gateway.assurance_level === "authenticated_reference") {
+    identityVerification = verifyGatewayPrincipalEvidence({
+      repository: options.repository,
+      artifactRoot: options.artifactRoot,
+      request,
+      evaluatedAt: nowIso(options)
+    });
+    if (!identityVerification.valid) {
+      reasons.push(...identityVerification.codes);
+    }
+    if (identityVerification.verified_principal_sha256 !== expected.principal) {
+      reasons.push("GATEWAY_PRINCIPAL_BINDING_MISMATCH");
+    }
+  } else if (options.verifiedPrincipalSha256 !== expected.principal) {
     reasons.push("GATEWAY_PRINCIPAL_BINDING_MISMATCH");
   }
-  return { expected, reasons };
+  return { expected, identityVerification, reasons: unique(reasons) };
 }
 
 function admissionRecordForRequest(view, request) {
@@ -488,7 +523,8 @@ function runtimeBindingReasons(options, request, toolInput) {
       now >= timestamp(request.authenticated_principal.expires_at, "principal expires_at")) {
     reasons.push("GATEWAY_REQUEST_OUTSIDE_VALIDITY");
   }
-  if (request.gateway.assurance_level !== "contract_reference" ||
+  if (!["contract_reference", "authenticated_reference"]
+    .includes(request.gateway.assurance_level) ||
       request.gateway.exclusive_path_verified !== false) {
     reasons.push("GATEWAY_MANAGED_ASSURANCE_UNVERIFIED");
   }
@@ -542,7 +578,7 @@ function decisionPayload(options, requestRecord, descriptor) {
     ? new Date(allowExpiry).toISOString()
     : new Date(timestamp(decidedAt, "decision time") + 1000).toISOString();
   const payload = {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ToolGatewayDecision",
     id: deterministicId("TGD", request.transaction_id),
     transaction_id: request.transaction_id,
@@ -555,6 +591,9 @@ function decisionPayload(options, requestRecord, descriptor) {
     tool_policy_ref: clone(request.tool_policy_ref),
     checkpoint_ref: clone(descriptor.checkpointRef || request.checkpoint_ref),
     admission_ref: clone(descriptor.admissionRef || NONE_REF),
+    identity_policy_ref: clone(request.identity_policy_ref),
+    identity_challenge_ref: clone(request.identity_challenge_ref),
+    principal_evidence_ref: clone(request.principal_evidence_ref),
     gateway_binding_sha256: digests.gateway,
     principal_binding_sha256: digests.principal,
     tool_call: clone(request.tool_call),
@@ -877,7 +916,7 @@ function receiptPayload(options, records, descriptor) {
   const digests = bindingDigests(request);
   const view = storeView(options);
   const payload = {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ToolExecutionReceipt",
     id: deterministicId("TER", request.transaction_id),
     transaction_id: request.transaction_id,
@@ -889,6 +928,9 @@ function receiptPayload(options, records, descriptor) {
     decision_ref: clone(records.decision.ref),
     admission_ref: clone(decision.admission_ref),
     checkpoint_ref: clone(descriptor.checkpointRef),
+    identity_policy_ref: clone(request.identity_policy_ref),
+    identity_challenge_ref: clone(request.identity_challenge_ref),
+    principal_evidence_ref: clone(request.principal_evidence_ref),
     gateway_binding_sha256: digests.gateway,
     principal_binding_sha256: digests.principal,
     tool_call: clone(request.tool_call),
@@ -1328,7 +1370,7 @@ function gatewayStatus(options, filters = {}) {
     );
   });
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ProtectedToolGatewayProjection",
     repository: {
       key: view.repository.key,

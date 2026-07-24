@@ -1,9 +1,9 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-07-23",
+  "as_of": "2026-07-24",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 48,
+  "checked_hosts": 49,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -157,6 +157,7 @@
     {
       "host": "github.com",
       "files": [
+        "docs/gateway-identity-admission.md",
         "docs/research-compendium.md",
         "docs/sigstore-verifier-workload-admission.md",
         "docs/source-map.md",
@@ -219,6 +220,14 @@
       ]
     },
     {
+      "host": "nodejs.org",
+      "files": [
+        "docs/gateway-identity-admission.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
       "host": "pages.nist.gov",
       "files": [
         "docs/research-compendium.md",
@@ -242,6 +251,8 @@
     {
       "host": "spiffe.io",
       "files": [
+        "docs/gateway-identity-admission.md",
+        "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
       ]
@@ -406,6 +417,7 @@
     {
       "host": "www.rfc-editor.org",
       "files": [
+        "docs/gateway-identity-admission.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md",

@@ -636,9 +636,10 @@ Completion criteria:
 - The local controller cannot claim managed exclusivity or production
   deployment verification.
 
-Phase 17B remains:
+Phase 17B after 17B1 remains:
 
-- authenticated mTLS, DPoP, and workload-OIDC adapters;
+- independently managed credential delivery, key custody, rotation, and
+  revocation for mTLS, DPoP, and workload-OIDC adapters;
 - provider-specific shell, filesystem, MCP, network, and delegation execution
   adapters;
 - independently managed configuration and deployment evidence;
@@ -652,7 +653,66 @@ Phase 17B remains:
 See `protected-tool-gateway-contract.md` for contracts, commands, state
 transitions, failure behavior, deployment requirements, and residual limits.
 
-## 19. Release Gates
+## 19. Phase 17B1: Authenticated Gateway Identity Admission
+
+Status: implemented as a repository-manifest-backed authenticated-reference
+adapter. Managed exclusivity, production execution, and release remain false.
+
+Implemented controls:
+
+- `GatewayIdentityPolicy` pins one repository and gateway projection,
+  adapter code/runtime/configuration identifiers, Ed25519 signing key, TLS 1.3-only
+  profile, server certificate, X.509 roots, exact agent/provider/SPIFFE
+  principals, revocations, and bounded challenge/evidence lifetimes;
+- `GatewayIdentityChallenge` binds one random 32-byte nonce to the exact
+  transaction, mission, wave, agent, provider, provider session, gateway,
+  repository, policy, issue time, and expiry under the adapter signature;
+- the reference adapter observes the gateway-side `TLSSocket`, requires an
+  authorized TLS 1.3 client, validates exactly one SPIFFE URI SAN and an
+  ordered chain to one pinned root, records both endpoint certificate digests,
+  and derives a 32-byte `EXPORTER-Channel-Binding` proof;
+- `GatewayPrincipalEvidence` signs the exact TLS observation, principal and
+  gateway projection digests, challenge/policy references, adapter
+  policy-pinned adapter identifiers, repository, session, and short validity
+  window;
+- `ToolGatewayRequest`, decision, event, and receipt v0.2 carry the same three
+  immutable identity references;
+- `authenticated_reference` admission derives the verified-principal digest
+  from retained evidence rather than trusting a caller-provided digest;
+- admission, begin, commit, and recovery revalidate signature, digest,
+  certificate, policy, freshness, revocation, projection, one-use challenge,
+  and cross-transaction replay state;
+- `contract_reference` remains available with three exact none sentinels, while
+  `managed_exclusive` remains denied.
+
+Completion criteria:
+
+- A real TLS 1.3 mutual-authentication handshake and matching client/server TLS
+  exporter can authorize one exact dispatch-controlled transaction.
+- A stale challenge/evidence, reused challenge, cross-transaction replay,
+  revoked principal/certificate, wrong SPIFFE leaf, server-certificate drift,
+  exporter substitution, or payload change with repaired digest cannot enter
+  admission.
+- Identity references cannot change between request, decision, events, and
+  receipt.
+- The adapter cannot claim an exclusive deployment, production execution,
+  production deployment verification, or release.
+
+Phase 17B2 and later remain:
+
+- provider-specific shell, filesystem, MCP, network, and delegation executors;
+- independently protected adapter key/configuration/deployment evidence;
+- OS/container sandbox and egress enforcement that eliminate side paths;
+- linearizable multi-host coordination and storage-side fencing;
+- managed credential rotation, Workload API integration, incident,
+  break-glass, reconciliation, and multi-user administration;
+- adversarial deployment tests proving tools are unreachable when the gateway
+  is unavailable.
+
+See `gateway-identity-admission.md` for the exact trust boundaries, contracts,
+operations, failure matrix, and residual limits.
+
+## 20. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -672,14 +732,14 @@ transitions, failure behavior, deployment requirements, and residual limits.
 | G14 | Trust-policy v0.4 attestation enters quorum only with valid dual-signed execution evidence matching the exact runtime policy, repository state and verification target |
 | G15 | Trust-policy v0.5 dispatch has one exact active supervisor challenge and enough fresh dual-signed nonce responses to satisfy every required purpose quorum without ambiguity or replay |
 | G16 | Trust-policy v0.6 dispatch and post-execution quorum use computed failure domains instead of declared group labels |
-| G17 | Trust-policy v0.7 dispatch has a current, contiguous, reconstructable and manifest-backed transparency state with valid consistency, observer, root, incident and revocation status |
 | G18 | Runtime-policy v0.3 GitHub evidence has a valid manifest-pinned JWKS, strict OIDC signature/claim appraisal, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G19 | Runtime-policy v0.3 GitLab evidence has a valid manifest-pinned GitLab.com JWKS, strict OIDC signature/claim appraisal, stable source/job identity, protected same-project config, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G20 | A delegated skill wave has one generated CoS receipt, every expected S3 receipt, ready routing/model admission, digest-bound context packs, repository-manifest evidence, report/AAR closeout, bounded next-wave disposition, and no AI release authority |
 | G21 | Every covered delegated tool call has one active per-agent lease compiled from an exact USER-plan-authorized draft digest, exact policy/context/checkpoint binding, replay-safe serialized admission, and a result-bound post-tool state checkpoint; one settled lineage is required before reporting, resume requires explicit continuation, and release remains false |
 | G22 | Every Phase 17A gateway commit has an exact trusted principal/gateway binding, current dispatch and repository bindings, one canonical idempotent request, one current execution token, one result-bound receipt and append-only terminal event; cancellation or unknown-outcome recovery fails closed, while production and release claims remain false |
+| G23 | Every Phase 17B1 authenticated-reference gateway transition reloads one exact manifest-backed policy/challenge/evidence chain and validates its signatures, freshness, TLS 1.3 SPIFFE certificate path, exporter-bound principal projection, revocation, one-use state and immutable downstream references without claiming managed exclusivity, production, or release |
 
-## 20. Related Documents
+## 21. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -695,3 +755,4 @@ transitions, failure behavior, deployment requirements, and residual limits.
 - `skill-operational-mission-lifecycle.md`
 - `enforced-dispatch-and-resume.md`
 - `protected-tool-gateway-contract.md`
+- `gateway-identity-admission.md`

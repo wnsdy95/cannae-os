@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "ToolExecutionReceipt",
   "id": "TER-W1-incomplete",
   "transaction_id": "GTX-W1-incomplete",
@@ -23,6 +23,21 @@
     "sha256": "none"
   },
   "checkpoint_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "identity_policy_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "identity_challenge_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "principal_evidence_ref": {
     "artifact_id": "none",
     "relative_path": "none",
     "sha256": "none"

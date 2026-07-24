@@ -44,6 +44,7 @@ const OFFICIAL_HOST_PATTERNS = [
   /learn\.chatgpt\.com$/,
   /code\.claude\.com$/,
   /developers\.openai\.com$/,
+  /nodejs\.org$/,
   /platform\.openai\.com$/
 ];
 
@@ -134,7 +135,7 @@ function coverageReport() {
 
   return {
     report_type: "source-map-url-coverage",
-    as_of: "2026-07-23",
+    as_of: "2026-07-24",
     source_map: "docs/source-map.md",
     valid: findings.length === 0,
     checked_hosts: official.size,

@@ -3,8 +3,10 @@
 ## 0. Status
 
 Phase 17A is implemented as a repository-manifest-backed contract and reference
-controller. It does not deploy a production gateway and does not prove that the
-gateway is the only path to a tool.
+controller. Phase 17B1 adds a TLS 1.3 mTLS, SPIFFE X.509, signed challenge, and
+TLS-exporter identity adapter at `authenticated_reference` assurance. Neither
+phase deploys a production executor or proves that the gateway is the only path
+to a tool.
 
 The controller deliberately fixes:
 
@@ -14,9 +16,9 @@ production_deployment_verified: false
 release_authorized: false
 ```
 
-Phase 17B must supply independently managed provider adapters, exclusive
-network/process routing, authenticated configuration, and deployment evidence
-before any production exclusivity claim is possible.
+Later Phase 17B work must supply independently managed provider executors,
+exclusive network/process routing, authenticated configuration, and deployment
+evidence before any production exclusivity claim is possible.
 
 ## 1. Purpose
 
@@ -55,11 +57,18 @@ The contract adapts the following non-military security principles:
   information is protected from unauthorized change or deletion.
 - [RFC 8705](https://www.rfc-editor.org/rfc/rfc8705.html): sender-constrained
   credentials bind token use to proof of possession.
+- [RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.html): TLS 1.3 mutual
+  certificate authentication proves possession within the handshake.
+- [RFC 9266](https://www.rfc-editor.org/rfc/rfc9266.html): the
+  `EXPORTER-Channel-Binding` value binds higher-layer proof to one TLS 1.3
+  channel.
 - [RFC 9449](https://www.rfc-editor.org/rfc/rfc9449.html): proof-of-possession,
   audience, freshness, nonce, and replay controls reduce bearer-token replay.
 - [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html): authorization
   deployments should use sender-constrained and audience-restricted access
   tokens with minimum privileges.
+- [SPIFFE X.509-SVID](https://spiffe.io/docs/latest/spiffe-specs/x509-svid/):
+  one exact workload SPIFFE ID is validated under a configured trust domain.
 - [etcd v3.6 transactions](https://etcd.io/docs/v3.6/learning/api/): protected
   state updates require atomic comparison, revisions, and lease-aware
   coordination.
@@ -72,8 +81,8 @@ claims that must be joined by exact references.
 
 ### 3.1 Trusted inputs
 
-`admit`, `begin`, `commit`, and `recover` require two externally appraised
-digests:
+At `contract_reference`, `admit`, `begin`, `commit`, and `recover` require two
+externally appraised digests:
 
 - `verifiedPrincipalSha256`: digest of the exact authenticated-principal
   projection produced by an identity adapter.
@@ -83,6 +92,13 @@ digests:
 The acting agent must not calculate these values and then treat them as
 independent proof. The Phase 17A CLI accepts them so adapters can integrate with
 the common contract; the CLI alone cannot establish their provenance.
+
+At `authenticated_reference`, the controller does not accept a caller-supplied
+principal digest. It reloads one exact `GatewayIdentityPolicy`, signed
+`GatewayIdentityChallenge`, and signed `GatewayPrincipalEvidence` chain from
+the repository manifest, verifies it at every state-changing continuation, and
+derives the principal digest. `gatewayBindingSha256` remains a separate trusted
+deployment/configuration input.
 
 ### 3.2 Raw tool input
 
@@ -105,10 +121,13 @@ risk acceptance, policy change, or authority change.
 
 | Contract | Purpose | Critical bindings |
 | --- | --- | --- |
-| `ToolGatewayRequest` | Immutable request envelope | gateway, principal, lease, policy, checkpoint, repository, exact tool digest, idempotency, validity |
-| `ToolGatewayDecision` | Admission result | exact request and dispatch admission, principal/gateway digests, rule, repository state, coordination observation |
-| `ToolExecutionReceipt` | Final execution disposition | exact request/decision/admission/checkpoint, executor measurements, result digest, before/after state |
-| `ToolGatewayTransactionEvent` | Append-only state transition | transaction sequence, predecessor, immutable request bindings, decision/receipt references |
+| `GatewayIdentityPolicy` | Authenticated-reference trust envelope | gateway, repository, adapter key/identifiers, TLS profile, roots, principals, revocations, TTLs |
+| `GatewayIdentityChallenge` | One-use liveness challenge | policy, transaction/session, nonce, gateway/repository, signature, expiry |
+| `GatewayPrincipalEvidence` | Gateway-side TLS observation | challenge, SPIFFE chain, client/server certificates, TLS exporter, adapter signature, expiry |
+| `ToolGatewayRequest` v0.2 | Immutable request envelope | identity refs, gateway, principal, lease, policy, checkpoint, repository, exact tool digest, idempotency, validity |
+| `ToolGatewayDecision` v0.2 | Admission result | exact request, identity refs, dispatch admission, principal/gateway digests, rule, repository state, coordination observation |
+| `ToolExecutionReceipt` v0.2 | Final execution disposition | exact request/decision/identity/admission/checkpoint refs, executor measurements, result digest, before/after state |
+| `ToolGatewayTransactionEvent` v0.2 | Append-only state transition | transaction sequence, predecessor, immutable request and identity bindings, decision/receipt references |
 
 The repository artifact manifest is the custody layer. Conversation history is
 not transaction state.
@@ -169,6 +188,15 @@ node protected-tool-gateway.js hash-input tool-input.json
 Construct a schema-valid `ToolGatewayRequest` from the active lease, policy,
 checkpoint, repository state, authenticated-principal projection, and trusted
 gateway projection.
+
+For `contract_reference`, set all three identity references to the exact
+all-`none` sentinel and supply both trusted digests below. For
+`authenticated_reference`, first execute
+`gateway-identity-admission.md`; use its exact policy, challenge, evidence,
+gateway, and principal projection, and omit `--verified-principal-sha256`.
+The following gateway command examples show the contract-reference flag; omit
+that flag from `admit`, `begin`, `commit`, and `recover` on the
+authenticated-reference path.
 
 ### 6.2 Admit
 
@@ -300,6 +328,7 @@ storage-side fencing.
 | Condition | Result |
 | --- | --- |
 | Principal or gateway digest mismatch | deny |
+| Identity policy, challenge, evidence, signature, freshness, SPIFFE chain, revocation, TLS exporter, or one-use binding mismatch | deny |
 | Fixture identity or local reference controller claims managed exclusivity | deny |
 | Lease, policy, checkpoint, session, agent, provider, or repository mismatch | deny |
 | Raw input digest mismatch | deny before dispatch admission |
@@ -316,14 +345,14 @@ storage-side fencing.
 | Executing request loses outcome | block lease and require recovery |
 | Post-tool correlation failure | block lease and require recovery |
 
-## 10. Phase 17B Requirements
+## 10. Remaining Phase 17B Requirements
 
 A production claim requires all of the following outside this reference
 controller:
 
 - gateway process and policy configuration protected from the acting agent;
-- authenticated mTLS, DPoP, or workload-OIDC adapter with issuer, audience,
-  freshness, revocation, and proof-of-possession appraisal;
+- independently managed mTLS, DPoP, or workload-OIDC credential delivery,
+  key custody, rotation, and revocation operations;
 - provider-specific MCP, shell, filesystem, network, and delegation adapters;
 - OS/container sandboxing and egress policy that prevent direct side paths;
 - a linearizable coordinator and storage-enforced fencing;
@@ -334,14 +363,17 @@ controller:
 - adversarial tests proving that direct tool access fails when the gateway is
   unavailable.
 
-Until those conditions are measured, `contract_reference` is the only honest
-assurance level.
+Phase 17B1 supports `authenticated_reference` only. Until the remaining
+conditions are measured, `managed_exclusive` is not an honest assurance level.
+See `gateway-identity-admission.md` for the identity contracts, API, challenge
+lifecycle, and residual limits.
 
 ## 11. Validation
 
 ```bash
 node validator-cli-prototype/run-fixtures.js
 node run-dispatch-runtime-fixtures.js
+node run-gateway-identity-adapter-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
@@ -351,3 +383,8 @@ conflict, backdated transition rejection, principal substitution,
 managed-assurance overclaim, raw-input mismatch, operation-class substitution,
 exact pre-execution cancellation, both exact and fail-closed orphan-admission
 revocation, and unknown in-flight recovery.
+
+The gateway identity fixture additionally performs a real TLS 1.3 mTLS
+handshake, verifies equal client/server exporter bytes, admits one signed
+SPIFFE principal chain, and rejects stale, replayed, revoked,
+digest-repaired/tampered, reused-challenge, and substituted-certificate cases.

@@ -160,6 +160,60 @@ const fixtures = [
     ]
   },
   {
+    name: "valid gateway identity policy",
+    file: "sample-payloads/valid-gateway-identity-policy.json",
+    type: "gateway-identity-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "gateway identity policy overclaims authority",
+    file: "sample-payloads/invalid-gateway-identity-policy-overclaim.json",
+    type: "gateway-identity-policy",
+    exitCode: 1,
+    requiredCodes: [
+      "GATEWAY_IDENTITY_POLICY_VALIDITY_INVALID",
+      "GATEWAY_IDENTITY_POLICY_SIGNING_KEY_INVALID",
+      "GATEWAY_IDENTITY_POLICY_AUTHORITY_OVERCLAIM"
+    ]
+  },
+  {
+    name: "valid gateway identity challenge",
+    file: "sample-payloads/valid-gateway-identity-challenge.json",
+    type: "gateway-identity-challenge",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "stale gateway identity challenge",
+    file: "sample-payloads/invalid-gateway-identity-challenge-stale.json",
+    type: "gateway-identity-challenge",
+    exitCode: 1,
+    requiredCodes: [
+      "GATEWAY_IDENTITY_CHALLENGE_VALIDITY_INVALID",
+      "GATEWAY_IDENTITY_CHALLENGE_DIGEST_MISMATCH"
+    ]
+  },
+  {
+    name: "valid gateway principal evidence",
+    file: "sample-payloads/valid-gateway-principal-evidence.json",
+    type: "gateway-principal-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound gateway principal evidence",
+    file: "sample-payloads/invalid-gateway-principal-evidence-unbound.json",
+    type: "gateway-principal-evidence",
+    exitCode: 1,
+    requiredCodes: [
+      "GATEWAY_IDENTITY_EVIDENCE_VALIDITY_INVALID",
+      "GATEWAY_IDENTITY_EVIDENCE_DIGEST_MISMATCH",
+      "GATEWAY_IDENTITY_EVIDENCE_LEAF_INVALID",
+      "GATEWAY_IDENTITY_EVIDENCE_LEAF_DIGEST_MISMATCH"
+    ]
+  },
+  {
     name: "valid tool gateway decision",
     file: "sample-payloads/valid-tool-gateway-decision.json",
     type: "tool-gateway-decision",

@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1",
+  "type": "GatewayPrincipalEvidence",
+  "id": "GPE-W1-plans-agent-001",
+  "identity_policy_ref": {
+    "artifact_id": "GIP-W1-reference",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-GATEWAY/W1/gateway-identity-policies/GIP-W1-reference.json",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "identity_challenge_ref": {
+    "artifact_id": "GIC-W1-plans-agent-001",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-GATEWAY/W1/gateway-identity-challenges/GIC-W1-plans-agent-001.json",
+    "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "transaction_id": "GTX-W1-authenticated-001",
+  "mission_id": "MIS-GATEWAY",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "provider": "codex",
+  "session_binding": {
+    "session_id": "session-plans-agent",
+    "provider_agent_id": "main"
+  },
+  "principal_id": "PRINCIPAL-plans-agent",
+  "gateway_binding_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "principal_binding_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "transport": {
+    "mode": "mtls_spiffe_x509",
+    "tls_version": "TLSv1.3",
+    "cipher_suite": "TLS_AES_256_GCM_SHA384",
+    "peer_authorized": true,
+    "authorization_error": "none",
+    "spiffe_id": "spiffe://agents.controls.test/mission/plans-agent",
+    "trust_root_id": "ROOT-GATEWAY-AGENTS",
+    "leaf_certificate_pem": "-----BEGIN CERTIFICATE-----\nMIIBljCCAUigAwIBAgIUKdxibAepnkNCo8lA3zwBuSQhXVYwBQYDK2VwMB4xHDAa\nBgNVBAMME2dhdGV3YXktc2FtcGxlLXJvb3QwHhcNMjYwNzI0MDQzMDUxWhcNMjYw\nNzI1MDQzMDUxWjAWMRQwEgYDVQQDDAtwbGFucy1hZ2VudDAqMAUGAytlcAMhALri\nVoQWFKT+wu6odfCexJrDdUV60iNFW7SnBv0IufqNo4GfMIGcMAwGA1UdEwEB/wQC\nMAAwDgYDVR0PAQH/BAQDAgeAMDwGA1UdEQQ1MDOGMXNwaWZmZTovL2FnZW50cy5j\nb250cm9scy50ZXN0L21pc3Npb24vcGxhbnMtYWdlbnQwHQYDVR0OBBYEFPfHMzRs\n48qmYagqP1lcIGRBFfnRMB8GA1UdIwQYMBaAFAMgYGXxFQaLu1p29dD6SUp3pH/d\nMAUGAytlcANBAMScm3zDsVjFzuHbm5VT7oOtvXQCR61MlkhjlYZmnCl89vSvBE5I\nQpLa6ezbQjxRX1asdA4jj3PrtWAIoFx0mwk=\n-----END CERTIFICATE-----\n",
+    "certificate_chain_pem": [],
+    "client_certificate_sha256": "fe314945ac6a5ed7b5dc34200828b6334db23b65b47da3e9add21dff6952cf3a",
+    "server_certificate_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "tls_exporter_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+  },
+  "adapter": {
+    "adapter_id": "cannae-gateway-identity-adapter",
+    "adapter_version": "0.1.0",
+    "adapter_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "runtime_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "configuration_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "observed_at": "2026-07-24T04:31:30Z",
+  "expires_at": "2026-07-24T04:32:30Z",
+  "signature": {
+    "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+    "algorithm": "ed25519",
+    "signature_base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  },
+  "evidence_sha256": "56e79b10342f76adf07df71a8e2654b709c10bb9756784f1de54f832fde05a7e",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  }
+}

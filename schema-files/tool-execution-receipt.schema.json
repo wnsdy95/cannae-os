@@ -16,6 +16,9 @@
     "decision_ref",
     "admission_ref",
     "checkpoint_ref",
+    "identity_policy_ref",
+    "identity_challenge_ref",
+    "principal_evidence_ref",
     "gateway_binding_sha256",
     "principal_binding_sha256",
     "tool_call",
@@ -32,7 +35,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "ToolExecutionReceipt" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -44,6 +47,9 @@
     "decision_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "admission_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "identity_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "identity_challenge_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "principal_evidence_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
     "gateway_binding_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
     "principal_binding_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
     "tool_call": { "$ref": "#/$defs/tool_call" },
@@ -59,6 +65,25 @@
     "authority": { "$ref": "#/$defs/authority" }
   },
   "$defs": {
+    "artifact_ref_or_none": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^(none|[A-Z]+-[A-Za-z0-9_-]+)$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^(none|[a-f0-9]{64})$"
+        }
+      }
+    },
     "safe_identifier": {
       "type": "string",
       "minLength": 1,

@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1",
+  "type": "GatewayIdentityPolicy",
+  "id": "GIP-W1-reference",
+  "gateway": {
+    "gateway_id": "cannae-reference-gateway",
+    "instance_id": "gateway-instance-01",
+    "audience": "cannae-protected-tools",
+    "deployment_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "configuration_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "assurance_level": "authenticated_reference",
+    "exclusive_path_verified": false
+  },
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "adapter_profile": {
+    "adapter_id": "cannae-gateway-identity-adapter",
+    "adapter_version": "0.1.0",
+    "adapter_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "runtime_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "configuration_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "signing_key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+    "signing_algorithm": "ed25519",
+    "signing_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA+pRpUDUqUmy3TcDSTO+t+Q/7OMQW1XbMyxniDk982dM=\n-----END PUBLIC KEY-----\n"
+  },
+  "transport_profile": {
+    "transport": "mtls_spiffe_x509",
+    "minimum_tls_version": "TLSv1.3",
+    "maximum_tls_version": "TLSv1.3",
+    "require_client_certificate": true,
+    "allow_early_data": false,
+    "tls_exporter_label": "EXPORTER-Channel-Binding",
+    "tls_exporter_length": 32,
+    "server_certificate_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "trusted_x509_roots": [
+    {
+      "id": "ROOT-GATEWAY-AGENTS",
+      "trust_domain": "agents.controls.test",
+      "certificate_pem": "-----BEGIN CERTIFICATE-----\nMIIBYTCCAROgAwIBAgIUDvXnYS+Kpp5wP6TG7/MKqi8M0vEwBQYDK2VwMB4xHDAa\nBgNVBAMME2dhdGV3YXktc2FtcGxlLXJvb3QwHhcNMjYwNzI0MDQzMDUxWhcNMjYw\nNzI2MDQzMDUxWjAeMRwwGgYDVQQDDBNnYXRld2F5LXNhbXBsZS1yb290MCowBQYD\nK2VwAyEAr2iAbZ6DhB5rCyPkBBKNsgYOinTE2tZk7TmlwV+7UQ6jYzBhMB0GA1Ud\nDgQWBBQDIGBl8RUGi7tadvXQ+klKd6R/3TAfBgNVHSMEGDAWgBQDIGBl8RUGi7ta\ndvXQ+klKd6R/3TAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBBjAFBgMr\nZXADQQDmnFA49XYEq0mD5E3slBl+Xuy/0MU11xNtkS2HPvhlWJF3lo02NLzul5dC\nazoHCb0XxQZ4VVMY3Pe4uE9Iy48K\n-----END CERTIFICATE-----\n",
+      "certificate_sha256": "ce1c153786f40a95ffe646414c36e33177929af06721418b66eada33a01f00e8",
+      "valid_until": "2026-07-25T04:30:00Z"
+    }
+  ],
+  "principals": [
+    {
+      "id": "PRINCIPAL-plans-agent",
+      "agent_id": "plans-agent",
+      "provider": "codex",
+      "spiffe_id": "spiffe://agents.controls.test/mission/plans-agent",
+      "trust_root_id": "ROOT-GATEWAY-AGENTS"
+    }
+  ],
+  "revocations": {
+    "principal_ids": [],
+    "certificate_sha256": []
+  },
+  "challenge_ttl_seconds": 120,
+  "evidence_ttl_seconds": 60,
+  "valid_from": "2026-07-24T04:30:00Z",
+  "expires_at": "2026-07-24T04:40:00Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  }
+}
