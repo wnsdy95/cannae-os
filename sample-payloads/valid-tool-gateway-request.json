@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "ToolGatewayRequest",
   "id": "TGR-W1-tool-001",
   "transaction_id": "GTX-W1-tool-001",
@@ -28,6 +28,21 @@
     "provider_agent_id": "main",
     "authenticated_at": "2026-07-23T12:59:00Z",
     "expires_at": "2026-07-23T13:10:00Z"
+  },
+  "identity_policy_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "identity_challenge_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "principal_evidence_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
   },
   "lease_ref": {
     "artifact_id": "ADL-W1-runtime-agent",

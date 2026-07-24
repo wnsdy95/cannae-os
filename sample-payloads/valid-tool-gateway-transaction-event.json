@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "ToolGatewayTransactionEvent",
   "id": "GTE-W1-tool-001-004",
   "transaction_id": "GTX-W1-tool-001",
@@ -37,6 +37,21 @@
     "artifact_id": "AEC-W1-runtime-agent-1",
     "relative_path": "checkpoint.json",
     "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "identity_policy_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "identity_challenge_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "principal_evidence_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
   },
   "repository_binding": {
     "repository_key": "example",

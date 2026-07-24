@@ -56,6 +56,10 @@ const {
   rotationDigest,
   stateDigest
 } = require("../transparency-operations");
+const {
+  gatewayChallengeDigest,
+  gatewayEvidenceDigest
+} = require("../gateway-identity-evidence");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -74,6 +78,9 @@ const TYPE_TO_SCHEMA = {
   "tool-gateway-decision": "tool-gateway-decision.schema.json",
   "tool-execution-receipt": "tool-execution-receipt.schema.json",
   "tool-gateway-transaction-event": "tool-gateway-transaction-event.schema.json",
+  "gateway-identity-policy": "gateway-identity-policy.schema.json",
+  "gateway-identity-challenge": "gateway-identity-challenge.schema.json",
+  "gateway-principal-evidence": "gateway-principal-evidence.schema.json",
   "approval-request": "approval-request.schema.json",
   sitrep: "sitrep.schema.json",
   frago: "frago.schema.json",
@@ -641,9 +648,152 @@ function semanticRules(payload, type) {
     }
   }
 
+  if (type === "gateway-identity-policy") {
+    if (!isValidDate(payload.valid_from) || !isValidDate(payload.expires_at) ||
+        Date.parse(payload.valid_from) >= Date.parse(payload.expires_at)) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_VALIDITY_INVALID", "$.expires_at", "Gateway identity policy expiry must be later than its activation time."));
+    }
+    try {
+      const signingKey = crypto.createPublicKey(payload.adapter_profile && payload.adapter_profile.signing_public_key_pem);
+      if (signingKey.asymmetricKeyType !== "ed25519" ||
+          publicKeyId(signingKey) !== payload.adapter_profile.signing_key_id) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_SIGNING_KEY_INVALID", "$.adapter_profile.signing_key_id", "Gateway adapter signing key must be Ed25519 and match its SHA-256 SPKI key ID."));
+      }
+    } catch (error) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_SIGNING_KEY_INVALID", "$.adapter_profile.signing_public_key_pem", "Gateway adapter signing key must be valid SPKI PEM."));
+    }
+    const rootIds = new Set();
+    for (const [index, root] of (payload.trusted_x509_roots || []).entries()) {
+      const pointer = `$.trusted_x509_roots[${index}]`;
+      if (rootIds.has(root.id)) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_DUPLICATE_ROOT", `${pointer}.id`, "Trusted X.509 root IDs must be unique."));
+      }
+      rootIds.add(root.id);
+      if (!isValidDate(root.valid_until) ||
+          (isValidDate(payload.valid_from) &&
+           Date.parse(root.valid_until) <= Date.parse(payload.valid_from))) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_ROOT_VALIDITY_INVALID", `${pointer}.valid_until`, "A trusted root must remain valid after policy activation."));
+      }
+      try {
+        const certificate = new crypto.X509Certificate(root.certificate_pem);
+        if (certificate.ca !== true || !certificate.verify(certificate.publicKey)) {
+          issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_ROOT_INVALID", `${pointer}.certificate_pem`, "A trusted X.509 root must be a self-signed CA certificate."));
+        }
+        if (certificateSha256(certificate) !== root.certificate_sha256) {
+          issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_ROOT_DIGEST_MISMATCH", `${pointer}.certificate_sha256`, "Trusted-root digest must match the certificate DER bytes."));
+        }
+      } catch (error) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_ROOT_INVALID", `${pointer}.certificate_pem`, "Trusted root must be a valid PEM certificate."));
+      }
+    }
+    const principalIds = new Set();
+    const spiffeIds = new Set();
+    const agentBindings = new Set();
+    for (const [index, principal] of (payload.principals || []).entries()) {
+      const pointer = `$.principals[${index}]`;
+      const agentBinding = `${principal.agent_id}:${principal.provider}`;
+      if (principalIds.has(principal.id) || spiffeIds.has(principal.spiffe_id) ||
+          agentBindings.has(agentBinding)) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_DUPLICATE_PRINCIPAL", pointer, "Principal IDs, SPIFFE IDs, and agent-provider bindings must each be unique."));
+      }
+      principalIds.add(principal.id);
+      spiffeIds.add(principal.spiffe_id);
+      agentBindings.add(agentBinding);
+      const root = (payload.trusted_x509_roots || [])
+        .find(item => item.id === principal.trust_root_id);
+      if (!root) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_ROOT_REF_INVALID", `${pointer}.trust_root_id`, "Every principal must reference exactly one trusted X.509 root."));
+      }
+      try {
+        const parsed = new URL(principal.spiffe_id);
+        if (parsed.protocol !== "spiffe:" || !parsed.hostname ||
+            parsed.pathname === "/" || parsed.search || parsed.hash ||
+            parsed.href !== principal.spiffe_id ||
+            (root && parsed.hostname !== root.trust_domain)) {
+          issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_SPIFFE_ID_INVALID", `${pointer}.spiffe_id`, "SPIFFE ID must use its selected trust domain and a non-root path."));
+        }
+      } catch (error) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_SPIFFE_ID_INVALID", `${pointer}.spiffe_id`, "Principal SPIFFE ID must be a valid SPIFFE URI."));
+      }
+    }
+    for (const principalId of payload.revocations && payload.revocations.principal_ids || []) {
+      if (!principalIds.has(principalId)) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_REVOCATION_UNKNOWN", "$.revocations.principal_ids", "Principal revocations must name principals retained by this exact policy."));
+      }
+    }
+    if (!payload.gateway || payload.gateway.assurance_level !== "authenticated_reference" ||
+        payload.gateway.exclusive_path_verified !== false ||
+        retainedAuthorityDrift(payload.authority) ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_AUTHORITY_OVERCLAIM", "$.authority", "Phase 17B1 identity policy must remain authenticated-reference, non-exclusive, non-production, USER-controlled authority."));
+    }
+  }
+
+  if (type === "gateway-identity-challenge") {
+    const issuedAt = Date.parse(payload.issued_at);
+    const expiresAt = Date.parse(payload.expires_at);
+    if (!isValidDate(payload.issued_at) || !isValidDate(payload.expires_at) ||
+        issuedAt >= expiresAt || expiresAt > issuedAt + 300000) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_CHALLENGE_VALIDITY_INVALID", "$.expires_at", "Gateway identity challenge must have a positive validity window no longer than five minutes."));
+    }
+    if (gatewayChallengeDigest(payload) !== payload.challenge_sha256) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_CHALLENGE_DIGEST_MISMATCH", "$.challenge_sha256", "Challenge digest must bind the complete signed challenge."));
+    }
+    if (!strictBase64(payload.signature && payload.signature.signature_base64)) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_CHALLENGE_SIGNATURE_ENCODING_INVALID", "$.signature.signature_base64", "Challenge signature must be strict base64."));
+    }
+    if (artifactRefKind(payload.identity_policy_ref) !== "concrete") {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_CHALLENGE_POLICY_REF_INVALID", "$.identity_policy_ref", "Challenge requires one concrete identity-policy reference."));
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_CHALLENGE_AUTHORITY_DRIFT", "$.authority", "Gateway challenge cannot authorize production execution, self-approval, or release."));
+    }
+  }
+
+  if (type === "gateway-principal-evidence") {
+    const observedAt = Date.parse(payload.observed_at);
+    const expiresAt = Date.parse(payload.expires_at);
+    if (!isValidDate(payload.observed_at) || !isValidDate(payload.expires_at) ||
+        observedAt >= expiresAt || expiresAt > observedAt + 900000) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_VALIDITY_INVALID", "$.expires_at", "Gateway principal evidence must have a positive validity window no longer than fifteen minutes."));
+    }
+    if (gatewayEvidenceDigest(payload) !== payload.evidence_sha256) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_DIGEST_MISMATCH", "$.evidence_sha256", "Evidence digest must bind the complete signed evidence."));
+    }
+    if (!strictBase64(payload.signature && payload.signature.signature_base64)) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_SIGNATURE_ENCODING_INVALID", "$.signature.signature_base64", "Evidence signature must be strict base64."));
+    }
+    if (artifactRefKind(payload.identity_policy_ref) !== "concrete" ||
+        artifactRefKind(payload.identity_challenge_ref) !== "concrete") {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_REF_INVALID", "$", "Principal evidence requires concrete identity-policy and challenge references."));
+    }
+    try {
+      const leaf = new crypto.X509Certificate(payload.transport && payload.transport.leaf_certificate_pem);
+      const spiffeId = parseSpiffeId(leaf);
+      if (leaf.ca || !spiffeId || spiffeId !== payload.transport.spiffe_id) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_LEAF_INVALID", "$.transport.leaf_certificate_pem", "Evidence leaf certificate must be a non-CA certificate with exactly the declared SPIFFE URI SAN."));
+      }
+      if (certificateSha256(leaf) !== payload.transport.client_certificate_sha256) {
+        issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_LEAF_DIGEST_MISMATCH", "$.transport.client_certificate_sha256", "Client-certificate digest must match the leaf DER bytes."));
+      }
+    } catch (error) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_LEAF_INVALID", "$.transport.leaf_certificate_pem", "Evidence leaf certificate must be valid PEM."));
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "GATEWAY_IDENTITY_EVIDENCE_AUTHORITY_DRIFT", "$.authority", "Gateway principal evidence cannot authorize production execution, self-approval, or release."));
+    }
+  }
+
   if (type === "tool-gateway-request") {
     const gateway = payload.gateway || {};
     const principal = payload.authenticated_principal || {};
+    const identityRefKinds = [
+      artifactRefKind(payload.identity_policy_ref),
+      artifactRefKind(payload.identity_challenge_ref),
+      artifactRefKind(payload.principal_evidence_ref)
+    ];
     const authenticatedAt = Date.parse(principal.authenticated_at);
     const principalExpiresAt = Date.parse(principal.expires_at);
     const requestedAt = Date.parse(payload.requested_at);
@@ -660,13 +810,23 @@ function semanticRules(payload, type) {
     if (gateway.audience !== principal.audience) {
       issues.push(issue("critical", "GATEWAY_REQUEST_AUDIENCE_MISMATCH", "$.authenticated_principal.audience", "Authenticated principal audience must match the exact gateway audience."));
     }
-    if ((gateway.assurance_level === "contract_reference" && gateway.exclusive_path_verified !== false) ||
+    if ((["contract_reference", "authenticated_reference"].includes(gateway.assurance_level) &&
+         gateway.exclusive_path_verified !== false) ||
         (gateway.assurance_level === "managed_exclusive" && gateway.exclusive_path_verified !== true)) {
       issues.push(issue("critical", "GATEWAY_REQUEST_ASSURANCE_MISMATCH", "$.gateway", "Reference assurance must not claim exclusivity; managed-exclusive assurance must carry verified exclusivity."));
     }
     if (gateway.assurance_level === "managed_exclusive" &&
         principal.authentication_method === "fixture") {
       issues.push(issue("critical", "GATEWAY_REQUEST_FIXTURE_IDENTITY_FOR_MANAGED", "$.authenticated_principal.authentication_method", "Fixture identity cannot enter a managed-exclusive gateway."));
+    }
+    if ((gateway.assurance_level === "contract_reference" &&
+         identityRefKinds.some(kind => kind !== "none")) ||
+        (["authenticated_reference", "managed_exclusive"].includes(gateway.assurance_level) &&
+         identityRefKinds.some(kind => kind !== "concrete")) ||
+        (gateway.assurance_level === "authenticated_reference" &&
+         principal.authentication_method !== "mtls") ||
+        identityRefKinds.includes("malformed")) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_IDENTITY_EVIDENCE_MISMATCH", "$", "Contract-reference requests require all-none identity references; stronger assurance requires three concrete references and mTLS for authenticated-reference admission."));
     }
     if (principal.proof_verified !== true) {
       issues.push(issue("critical", "GATEWAY_REQUEST_PRINCIPAL_UNVERIFIED", "$.authenticated_principal.proof_verified", "Gateway admission requires a verified principal proof."));
@@ -681,8 +841,17 @@ function semanticRules(payload, type) {
 
   if (type === "tool-gateway-decision") {
     const admissionKind = artifactRefKind(payload.admission_ref);
+    const identityRefKinds = [
+      artifactRefKind(payload.identity_policy_ref),
+      artifactRefKind(payload.identity_challenge_ref),
+      artifactRefKind(payload.principal_evidence_ref)
+    ];
     if (admissionKind === "malformed") {
       issues.push(issue("critical", "GATEWAY_DECISION_ADMISSION_REF_MALFORMED", "$.admission_ref", "Admission reference must be concrete or use the exact all-none sentinel."));
+    }
+    if (identityRefKinds.includes("malformed") ||
+        new Set(identityRefKinds).size !== 1) {
+      issues.push(issue("critical", "GATEWAY_DECISION_IDENTITY_REF_MISMATCH", "$", "Decision must preserve either three concrete identity references or three exact none sentinels."));
     }
     if (payload.decision === "allow" &&
         (payload.execution_permitted !== true ||
@@ -711,12 +880,21 @@ function semanticRules(payload, type) {
   if (type === "tool-execution-receipt") {
     const admissionKind = artifactRefKind(payload.admission_ref);
     const checkpointKind = artifactRefKind(payload.checkpoint_ref);
+    const identityRefKinds = [
+      artifactRefKind(payload.identity_policy_ref),
+      artifactRefKind(payload.identity_challenge_ref),
+      artifactRefKind(payload.principal_evidence_ref)
+    ];
     const execution = payload.execution || {};
     if (admissionKind === "malformed" || checkpointKind === "malformed") {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_REF_MALFORMED", "$", "Receipt admission and checkpoint references must be concrete or use the exact all-none sentinel."));
     }
     if (admissionKind !== "concrete" || checkpointKind !== "concrete") {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_REF_UNBOUND", "$", "Every execution receipt requires concrete admission and checkpoint references."));
+    }
+    if (identityRefKinds.includes("malformed") ||
+        new Set(identityRefKinds).size !== 1) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_IDENTITY_REF_MISMATCH", "$", "Receipt must preserve either three concrete identity references or three exact none sentinels."));
     }
     if (execution.transaction_state === "committed" &&
         (admissionKind !== "concrete" ||
@@ -774,8 +952,17 @@ function semanticRules(payload, type) {
     const decisionKind = artifactRefKind(payload.decision_ref);
     const receiptKind = artifactRefKind(payload.receipt_ref);
     const admissionKind = artifactRefKind(payload.admission_ref);
+    const identityRefKinds = [
+      artifactRefKind(payload.identity_policy_ref),
+      artifactRefKind(payload.identity_challenge_ref),
+      artifactRefKind(payload.principal_evidence_ref)
+    ];
     if ([previousKind, decisionKind, receiptKind, admissionKind].includes("malformed")) {
       issues.push(issue("critical", "GATEWAY_TRANSACTION_REF_MALFORMED", "$", "Transaction references must be concrete or use the exact all-none sentinel."));
+    }
+    if (identityRefKinds.includes("malformed") ||
+        new Set(identityRefKinds).size !== 1) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_IDENTITY_REF_MISMATCH", "$", "Transaction events must preserve either three concrete identity references or three exact none sentinels."));
     }
     if (payload.state === "received" &&
         (payload.sequence !== 1 ||

@@ -3577,3 +3577,137 @@ Residual limits and Phase 17B work:
 - no adversarial production test proving tools are unreachable when the
   gateway is down;
 - no production-execution, deployment-verification, or release authority.
+
+## Phase 17B1: Authenticated Gateway Identity Admission
+
+Research question:
+
+> How can the protected gateway derive the acting principal from a live,
+> sender-constrained channel instead of trusting a caller-provided digest,
+> while preserving one-use freshness and refusing to overclaim deployment
+> exclusivity?
+
+Primary standards and runtime sources:
+
+- SPIFFE X.509-SVID:
+  https://spiffe.io/docs/latest/spiffe-specs/x509-svid/
+- SPIFFE Workload API:
+  https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Workload_API.md
+- TLS 1.3, RFC 8446:
+  https://www.rfc-editor.org/rfc/rfc8446.html
+- TLS 1.3 channel bindings, RFC 9266:
+  https://www.rfc-editor.org/rfc/rfc9266.html
+- OAuth 2.0 mutual-TLS client authentication, RFC 8705:
+  https://www.rfc-editor.org/rfc/rfc8705.html
+- OAuth 2.0 Security Best Current Practice, RFC 9700:
+  https://www.rfc-editor.org/rfc/rfc9700.html
+- Node.js TLS exporter API:
+  https://nodejs.org/api/tls.html#tlssocketexportkeyingmateriallength-label-context
+
+Findings:
+
+1. Identity must be observed by the resource boundary. A principal projection
+   assembled by the acting agent is a claim. The gateway-side TLS stack can
+   establish certificate possession, protocol, peer authorization, endpoint
+   certificates, and channel exporter state.
+2. An X.509-SVID is selected by exact SPIFFE URI, not by display name or first
+   favorable SAN. Admission should require one URI SAN, one non-root path, one
+   configured trust domain, one pinned root, a non-CA leaf, ordered signatures,
+   and current certificate validity.
+3. TLS client authentication proves possession in one handshake but does not
+   by itself bind an application request retained later. A TLS exporter binds
+   the higher-layer principal proof to that exact negotiated channel.
+4. The RFC 9266 profile supplies a stable interoperable choice:
+   `EXPORTER-Channel-Binding`, empty context, and 32-byte output. The audit
+   artifact stores only its SHA-256 digest.
+5. A live channel is not sufficient freshness for a queued transaction. A
+   gateway-signed unpredictable 32-byte challenge must bind transaction,
+   mission, wave, agent, provider, provider session, gateway, repository,
+   policy, issue time, and expiry.
+6. Challenge state is durable security state. One challenge can produce one
+   principal evidence artifact, and its evidence cannot enter another
+   transaction. Repository-manifest custody makes stale/replay checks
+   reconstructable after process restart. An identity-specific repository
+   lease serializes challenge issuance and evidence consumption on one coherent
+   filesystem; distributed deployments still need a linearizable coordinator.
+7. The policy, challenge, and observation form separate claims. The policy is
+   USER-controlled trust configuration; the challenge proves transaction
+   freshness; the observation proves what the adapter saw. Exact references
+   are repeated in request, decision, events, and receipt.
+8. The adapter signature and signed-artifact digest address different
+   failures. The digest detects content mismatch and binds the signature bytes;
+   the signature prevents a caller from changing the observation and repairing
+   only the digest.
+9. The authenticated-principal projection must be deterministic:
+   authentication method `mtls`, issuer `spiffe://<trust-domain>`, subject
+   exact SPIFFE ID, audience exact gateway audience, credential digest exact
+   client leaf, proof digest exact exporter, session exact challenge, and
+   timestamps exact evidence window.
+10. Revocation is policy state, not a model conclusion. The reference policy
+    can revoke exact principal IDs or certificate digests. Production
+    distribution, rotation, CRL/OCSP, and Workload API operation remain outside
+    the prototype.
+11. Every gateway transition that changes state should re-appraise the
+    manifest evidence and current time. Conversation history, a previous
+    successful `admit`, or a still-open provider session does not renew
+    expired identity.
+12. Re-authentication cannot silently rewrite an original request. A future
+    long-running recovery path needs a separate USER-controlled recovery
+    credential/event contract while preserving the original identity chain.
+13. Exact mTLS identity does not prove gateway deployment integrity. The
+    adapter private key, policy writer, server configuration, executor,
+    sandbox, network routes, and alternate tool paths can remain correlated
+    with the acting process.
+14. `authenticated_reference` is therefore a useful but bounded assurance
+    level. `managed_exclusive` remains a separate deployment assertion that
+    requires independent key/configuration custody, provider executors,
+    sandbox/egress enforcement, side-path denial, and deployment evidence.
+15. Human authority remains unchanged. Identity evidence authorizes at most
+    one otherwise policy-admissible tool transaction and cannot authorize
+    production, commit, push, merge, release, risk acceptance, policy change,
+    or authority change.
+
+Implemented surfaces:
+
+- `GatewayIdentityPolicy`, `GatewayIdentityChallenge`, and
+  `GatewayPrincipalEvidence` schemas with valid and adversarial samples;
+- `ToolGatewayRequest`, `ToolGatewayDecision`, `ToolExecutionReceipt`, and
+  `ToolGatewayTransactionEvent` v0.2 immutable identity references;
+- shared canonical signing, digest, certificate, SPIFFE, freshness, revocation,
+  and projection verification in `gateway-identity-evidence.js`;
+- policy persistence, signed challenge issuance, live `TLSSocket` observation,
+  signed evidence creation, manifest reload, one-use, and replay appraisal in
+  `gateway-identity-adapter.js`;
+- authenticated-reference integration and transition-time revalidation in
+  `protected-tool-gateway.js`;
+- `run-gateway-identity-adapter-fixtures.js`;
+- `docs/gateway-identity-admission.md`;
+- equivalent Codex and Claude routing and operation instructions.
+
+Measured behavior:
+
+- a real ephemeral Ed25519 CA, server certificate, and SPIFFE client
+  certificate complete an authorized TLS 1.3 mutual handshake;
+- client and server derive equal exporter bytes;
+- the gateway-side observation creates one valid signed evidence chain;
+- that chain authorizes, begins, and commits one Phase 16-bound gateway
+  transaction without a caller-provided principal digest;
+- request identity references remain exact in decision and receipt;
+- stale challenge/evidence, cross-transaction replay, challenge reuse,
+  principal revocation, exporter substitution with repaired digest, signature
+  tamper, and leaf/SPIFFE substitution are rejected.
+
+Residual limits:
+
+- policy approval and adapter key custody are not independently managed;
+- the direct chain verifier is a documented PKIX subset, not a general RFC
+  5280 path builder;
+- no Workload API client, managed rotation service, CRL/OCSP distribution, or
+  hardware-backed key;
+- no production provider executor, sandbox, egress enforcement, or side-path
+  denial;
+- no independent gateway deployment/configuration attestation;
+- no multi-host linearizable transaction coordinator or storage-side fencing;
+- no long-running re-authenticated recovery contract;
+- no production execution, managed exclusivity, deployment verification, or
+  release authority.

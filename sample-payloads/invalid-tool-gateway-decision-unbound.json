@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "ToolGatewayDecision",
   "id": "TGD-W1-unbound",
   "transaction_id": "GTX-W1-unbound",
@@ -28,6 +28,21 @@
     "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
   },
   "admission_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "identity_policy_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "identity_challenge_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "principal_evidence_ref": {
     "artifact_id": "none",
     "relative_path": "none",
     "sha256": "none"

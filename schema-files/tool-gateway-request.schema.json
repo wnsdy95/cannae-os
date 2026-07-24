@@ -14,6 +14,9 @@
     "provider",
     "gateway",
     "authenticated_principal",
+    "identity_policy_ref",
+    "identity_challenge_ref",
+    "principal_evidence_ref",
     "lease_ref",
     "tool_policy_ref",
     "checkpoint_ref",
@@ -28,7 +31,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "ToolGatewayRequest" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -38,6 +41,9 @@
     "provider": { "$ref": "#/$defs/provider" },
     "gateway": { "$ref": "#/$defs/gateway_binding" },
     "authenticated_principal": { "$ref": "#/$defs/authenticated_principal" },
+    "identity_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "identity_challenge_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "principal_evidence_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
     "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "tool_policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
@@ -85,7 +91,11 @@
         "configuration_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "assurance_level": {
           "type": "string",
-          "enum": ["contract_reference", "managed_exclusive"]
+          "enum": [
+            "contract_reference",
+            "authenticated_reference",
+            "managed_exclusive"
+          ]
         },
         "exclusive_path_verified": { "type": "boolean" }
       }
@@ -194,6 +204,25 @@
           ]
         },
         "tool_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "artifact_ref_or_none": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^(none|[A-Z]+-[A-Za-z0-9_-]+)$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^(none|[a-f0-9]{64})$"
+        }
       }
     },
     "authority": {

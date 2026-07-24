@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1",
+  "type": "GatewayIdentityChallenge",
+  "id": "GIC-W1-plans-agent-001",
+  "identity_policy_ref": {
+    "artifact_id": "GIP-W1-reference",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-GATEWAY/W1/gateway-identity-policies/GIP-W1-reference.json",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "transaction_id": "GTX-W1-authenticated-001",
+  "mission_id": "MIS-GATEWAY",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "provider": "codex",
+  "session_binding": {
+    "session_id": "session-plans-agent",
+    "provider_agent_id": "main"
+  },
+  "gateway_binding_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "nonce": "4444444444444444444444444444444444444444444444444444444444444444",
+  "issued_at": "2026-07-24T04:31:00Z",
+  "expires_at": "2026-07-24T04:33:00Z",
+  "signature": {
+    "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+    "algorithm": "ed25519",
+    "signature_base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  },
+  "challenge_sha256": "d44fb5bb661816dda064ced3710b5168fa2ca6033313732417be95e777e5e2ab",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  }
+}

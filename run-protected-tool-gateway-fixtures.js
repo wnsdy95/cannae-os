@@ -169,7 +169,7 @@ function gatewayRequest(setup, sequence, overrides = {}) {
   assert.strictEqual(selected.code, "LEASE_ACTIVE");
   const transactionId = `GTX-${setup.plan.mission_id.replace(/^MIS-/, "")}-${sequence}`;
   const request = {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ToolGatewayRequest",
     id: `TGR-${setup.plan.mission_id.replace(/^MIS-/, "")}-${sequence}`,
     transaction_id: transactionId,
@@ -199,6 +199,9 @@ function gatewayRequest(setup, sequence, overrides = {}) {
       authenticated_at: "2026-07-24T00:59:00Z",
       expires_at: "2026-07-24T02:00:00Z"
     },
+    identity_policy_ref: clone(NONE_REF),
+    identity_challenge_ref: clone(NONE_REF),
+    principal_evidence_ref: clone(NONE_REF),
     lease_ref: clone(selected.leaseRecord.ref),
     tool_policy_ref: clone(selected.leaseRecord.payload.tool_policy_ref),
     checkpoint_ref: clone(selected.checkpointRecord.ref),
@@ -255,7 +258,7 @@ function persistReceivedRequest(setup, request) {
     sha256: requestWrite.sha256
   };
   const event = {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ToolGatewayTransactionEvent",
     id: `GTE-${request.id.replace(/^TGR-/, "")}-received`,
     transaction_id: request.transaction_id,
@@ -270,6 +273,9 @@ function persistReceivedRequest(setup, request) {
     receipt_ref: clone(NONE_REF),
     admission_ref: clone(NONE_REF),
     checkpoint_ref: clone(request.checkpoint_ref),
+    identity_policy_ref: clone(request.identity_policy_ref),
+    identity_challenge_ref: clone(request.identity_challenge_ref),
+    principal_evidence_ref: clone(request.principal_evidence_ref),
     repository_binding: clone(request.repository_binding),
     idempotency_key: request.idempotency_key,
     tool_input_sha256: request.tool_call.tool_input_sha256,
@@ -419,6 +425,21 @@ fixture("reference controller refuses a managed-exclusive deployment claim", () 
   request.gateway.assurance_level = "managed_exclusive";
   request.gateway.exclusive_path_verified = true;
   request.authenticated_principal.authentication_method = "mtls";
+  request.identity_policy_ref = {
+    artifact_id: "GIP-MANAGED-CLAIM",
+    relative_path: "managed/policy.json",
+    sha256: digest("managed-policy")
+  };
+  request.identity_challenge_ref = {
+    artifact_id: "GIC-MANAGED-CLAIM",
+    relative_path: "managed/challenge.json",
+    sha256: digest("managed-challenge")
+  };
+  request.principal_evidence_ref = {
+    artifact_id: "GPE-MANAGED-CLAIM",
+    relative_path: "managed/evidence.json",
+    sha256: digest("managed-evidence")
+  };
   const denied = admitGatewayRequest(
     trustedOptions(setup, request, "2026-07-24T01:00:10Z"),
     request,

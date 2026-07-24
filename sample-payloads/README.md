@@ -48,6 +48,7 @@ Use these examples to test:
 - routing receipt validation
 - operational mission wave, context pack, report, and closeout validation
 - dispatch tool policy, agent lease, tool admission, and execution checkpoint validation
+- gateway identity policy, one-use challenge, TLS principal evidence, and immutable identity-reference validation
 - approval UI rendering
 - AAR/readiness update logic
 - agent routing preflight logic
@@ -87,4 +88,6 @@ The mission lifecycle samples show the plan an operator supplies and the context
 
 The enforced-dispatch samples form a reference controller-authorized policy, lease, baseline checkpoint, and admitted tool event. Their unsafe counterparts cover a self-declared issuer, traversal or mixed matcher fields, lease budget and clean-start drift, malformed none sentinels, allow-without-rule, deny-without-reason, invalid checkpoint chains, active terminal state, unresolved effects, and authority expansion. Use `run-dispatch-runtime-fixtures.js` for mission-plan draft authorization, concurrent one-agent issuance, ordered cross-agent repository handoff, exact post-tool binding, replay denial, repository-state drift, unresolved-effect reconciliation, revocation, interruption, and explicit lineage-continuation behavior.
 
-The protected-gateway samples define the Phase 17A request, decision, receipt, and append-only transaction-event contracts. Invalid examples cover managed-assurance mismatch, audience and validity drift, raw-input retention, unbound allow, incomplete commit, broken transition, and authority expansion. These samples are structural examples rather than one mutually linked manifest history. Use `run-protected-tool-gateway-fixtures.js` for coherent temporary-repository authorization, idempotency, exact begin/commit correlation, pre-execution cancellation, and unknown-outcome recovery.
+The protected-gateway samples define the Phase 17A request, decision, receipt, and append-only transaction-event contracts at v0.2. The Phase 17B1 identity samples add the gateway identity policy, signed challenge, and signed TLS principal-evidence contracts. Invalid examples cover managed-assurance mismatch, mixed identity references, audience and validity drift, raw-input retention, policy/authority overclaim, stale challenge, unbound certificate projection, incomplete commit, broken transition, and authority expansion. These static samples are structural examples rather than one mutually linked manifest history.
+
+Use `run-protected-tool-gateway-fixtures.js` for coherent contract-reference authorization, idempotency, exact begin/commit correlation, pre-execution cancellation, and unknown-outcome recovery. Use `run-gateway-identity-adapter-fixtures.js` for a real TLS 1.3 mTLS handshake, SPIFFE X.509 chain, equal endpoint exporter proof, Ed25519 challenge/evidence signatures, manifest-backed gateway commit, and adversarial expiry, replay, revocation, tamper, challenge-reuse, and certificate-substitution rejection.

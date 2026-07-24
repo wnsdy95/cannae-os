@@ -119,15 +119,16 @@ Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup,
 
 Use this path when a tool call must have a durable gateway transaction in addition to the Phase 16 dispatch admission:
 
-1. Finish routing, policy authorization, and lease issuance first. Build a `ToolGatewayRequest` from the exact active lease, policy, checkpoint, repository state, authenticated-principal projection, trusted gateway projection, and canonical tool-input digest.
-2. Treat `--verified-principal-sha256` and `--gateway-binding-sha256` as outputs of independently trusted adapters. Never let the acting agent self-calculate them and claim that this proves identity or deployment trust.
-3. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`; `production_execution_authorized` always remains false in Phase 17A.
-4. Run `begin` immediately before the external adapter acts. Give the adapter only the returned exact `execution_event_ref`, raw input, and required secret material.
-5. Run `commit` with that execution reference, exact input, result, and measured executor digests. A stale reference or post-tool binding failure stops in `recovery_required`.
-6. If execution never began, run `recover` with the exact raw input to cancel the admission and record `aborted`. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. If execution began and the result is unknown, run `recover` without asserting success; the lease becomes blocked pending human reconciliation.
-7. Reuse an idempotency key only for byte-equivalent canonical requests, and never reuse a transaction ID for a different request or key. Never interpret a transaction receipt as commit, push, merge, release, policy, risk, or authority approval.
+1. Finish routing, policy authorization, and lease issuance first. Build a `ToolGatewayRequest` v0.2 from the exact active lease, policy, checkpoint, repository state, authenticated-principal projection, trusted gateway projection, three identity references, and canonical tool-input digest.
+2. Select one identity path explicitly. `contract_reference` uses three exact none references and independently appraised principal/gateway digests. `authenticated_reference` uses a manifest-backed `GatewayIdentityPolicy`, one adapter-generated signed transaction challenge, and one gateway-side TLS 1.3 SPIFFE/exporter observation derived directly from a live server `TLSSocket` and signed as `GatewayPrincipalEvidence`; never pass a caller-built transport observation or caller-supplied principal digest.
+3. Never let the acting agent self-calculate identity or gateway trust material. Keep the adapter private key outside request/artifact payloads. Authenticated-reference verification must cover policy, challenge, certificate, exporter, revocation, freshness, one-use, and request projection. `--gateway-binding-sha256` still comes from a separate trusted deployment/configuration appraiser.
+4. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`; production execution, deployment verification, and release remain false.
+5. Run `begin` immediately before the external adapter acts. Give the adapter only the returned exact `execution_event_ref`, raw input, and required secret material. Every authenticated-reference state transition revalidates identity freshness.
+6. Run `commit` with that execution reference, exact input, result, and measured executor digests. A stale identity, stale execution reference, or post-tool binding failure cannot become a commit.
+7. If execution never began, run `recover` with the exact raw input to cancel the admission and record `aborted`. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. If execution began and the result is unknown, run `recover` without asserting success; the lease becomes blocked pending human reconciliation.
+8. Reuse an idempotency key only for byte-equivalent canonical requests, never reuse an identity challenge or evidence across transactions, and never reuse a transaction ID for a different request or key. Never interpret identity evidence or a receipt as commit, push, merge, release, policy, risk, or authority approval.
 
-Phase 17A is a contract/reference controller and does not execute tools or prove an exclusive deployment. Read `docs/protected-tool-gateway-contract.md` before integrating an adapter.
+Phase 17B1 proves authenticated-reference identity but does not execute tools or prove an exclusive deployment. `managed_exclusive` remains denied. Read `docs/gateway-identity-admission.md` and `docs/protected-tool-gateway-contract.md` before integrating an adapter.
 
 ### Answering Framework Questions
 
@@ -238,6 +239,8 @@ node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-skill-mission-controller-fixtures.js
 node run-dispatch-runtime-fixtures.js
+node run-protected-tool-gateway-fixtures.js
+node run-gateway-identity-adapter-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js

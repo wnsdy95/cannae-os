@@ -130,6 +130,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan and mandatory routing through report, AAR, and bounded improvement.
 - [Enforced Dispatch And Resumable Execution](docs/enforced-dispatch-and-resume.md): per-agent session leases, fail-closed tool admission, checkpoints, interruption, revocation, and explicit resume.
 - [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md): identity-bound, idempotent tool transactions with exact begin/commit correlation, cancellation, receipts, and fail-closed recovery.
+- [Gateway Identity Admission](docs/gateway-identity-admission.md): TLS 1.3 mTLS, SPIFFE X.509, signed one-use challenge, exporter-bound principal evidence, and replay-safe authenticated-reference admission.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md): manifest-pinned GitHub OIDC/JWKS appraisal for hosted reusable workflows.
 - [GitLab CI Native Verifier Adapter](docs/gitlab-ci-native-verifier-adapter.md): manifest-pinned GitLab.com OIDC/JWKS appraisal for protected same-project pipelines.
@@ -256,10 +257,13 @@ non-bypassable security boundary. See
 
 ### Protected Tool Transactions
 
-Phase 17A adds a durable transaction around the Phase 16 dispatch admission:
+Phase 17A adds a durable transaction around the Phase 16 dispatch admission.
+Phase 17B1 adds a manifest-backed authenticated principal:
 
 ```text
-authenticated principal + trusted gateway config
+TLS 1.3 mTLS + exact SPIFFE identity + one-use signed challenge
+-> exporter-bound signed principal evidence
+-> authenticated principal + trusted gateway config
 -> exact lease/policy/checkpoint/repository/input binding
 -> received -> authorized -> executing
 -> committed receipt | aborted cancellation | recovery-required block
@@ -273,12 +277,14 @@ a crash-retained allow admission is cancelled or its lease is blocked, and an
 executing request with an unknown outcome blocks the lease instead of claiming
 success.
 
-This is a contract and reference controller, not a production gateway. It does
-not execute tools or prove that direct side paths are unavailable, and every
-decision keeps production execution and release authorization false. Managed
-identity adapters, provider executors, sandbox/egress enforcement, linearizable
-coordination, and independently verified exclusive deployment remain Phase
-17B. See [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md).
+This is an authenticated reference controller, not a production gateway. It
+does not execute tools or prove that direct side paths are unavailable, and
+every decision keeps production execution and release authorization false.
+Provider executors, managed key/configuration custody, sandbox/egress
+enforcement, linearizable coordination, and independently verified exclusive
+deployment remain later Phase 17B work. See
+[Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md) and
+[Gateway Identity Admission](docs/gateway-identity-admission.md).
 
 ### Heterogeneous Model Dispatch
 

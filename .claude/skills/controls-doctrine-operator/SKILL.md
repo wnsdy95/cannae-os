@@ -103,16 +103,17 @@ Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup,
 Use the gateway transaction path when a covered tool call needs durable
 authorization and outcome evidence beyond the project hook:
 
-1. Complete routing, policy authorization, and lease issuance first. Construct a `ToolGatewayRequest` from the exact active lease, policy, checkpoint, repository state, authenticated principal, trusted gateway projection, and canonical input digest.
-2. Accept `--verified-principal-sha256` and `--gateway-binding-sha256` only from independently trusted adapters. An acting agent cannot self-assert either digest as proof.
-3. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`.
-4. Run `begin` directly before the adapter acts and retain the exact returned `execution_event_ref`.
-5. Run `commit` with that reference, exact input, result, and measured executor digests. A stale token or post-tool mismatch becomes `recovery_required`.
-6. Recover authorized-but-unstarted work with the exact raw input so admission can be cancelled. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. Recover an executing transaction without claiming an outcome; the lease blocks for human reconciliation.
-7. Reuse an idempotency key only for the same canonical request, and never reuse a transaction ID for a different request or key. A receipt never grants commit, push, merge, release, risk, policy, or authority approval.
+1. Complete routing, policy authorization, and lease issuance first. Construct a `ToolGatewayRequest` v0.2 from the exact active lease, policy, checkpoint, repository state, authenticated principal, trusted gateway projection, three identity references, and canonical input digest.
+2. Select one identity path explicitly. `contract_reference` uses three exact none references and independently appraised principal/gateway digests. `authenticated_reference` uses a manifest-backed `GatewayIdentityPolicy`, one adapter-generated signed transaction challenge, and one gateway-side TLS 1.3 SPIFFE/exporter observation derived directly from a live server `TLSSocket` and signed as `GatewayPrincipalEvidence`; never pass a caller-built transport observation or caller-supplied principal digest.
+3. Never let the acting agent self-calculate identity or gateway trust material. Keep the adapter private key outside request/artifact payloads. Authenticated-reference verification must cover policy, challenge, certificate, exporter, revocation, freshness, one-use, and request projection. `--gateway-binding-sha256` still comes from a separate trusted deployment/configuration appraiser.
+4. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`; production execution, deployment verification, and release remain false.
+5. Run `begin` directly before the adapter acts and retain the exact returned `execution_event_ref`. Every authenticated-reference state transition revalidates identity freshness.
+6. Run `commit` with that reference, exact input, result, and measured executor digests. A stale identity, stale token, or post-tool mismatch cannot become a commit.
+7. Recover authorized-but-unstarted work with the exact raw input so admission can be cancelled. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. Recover an executing transaction without claiming an outcome; the lease blocks for human reconciliation.
+8. Reuse an idempotency key only for the same canonical request, never reuse an identity challenge or evidence across transactions, and never reuse a transaction ID for a different request or key. Identity evidence and receipts never grant commit, push, merge, release, risk, policy, or authority approval.
 
-Phase 17A does not execute tools or prove gateway exclusivity. Read
-`docs/protected-tool-gateway-contract.md` before integrating an adapter.
+Phase 17B1 proves authenticated-reference identity but does not execute tools or prove gateway exclusivity. `managed_exclusive` remains denied. Read
+`docs/gateway-identity-admission.md` and `docs/protected-tool-gateway-contract.md` before integrating an adapter.
 
 ## References
 
@@ -190,6 +191,7 @@ node run-agent-routing-preflight-fixtures.js
 node run-skill-mission-controller-fixtures.js
 node run-dispatch-runtime-fixtures.js
 node run-protected-tool-gateway-fixtures.js
+node run-gateway-identity-adapter-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
