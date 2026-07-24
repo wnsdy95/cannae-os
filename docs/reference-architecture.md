@@ -215,11 +215,15 @@ Prohibited:
   approval.
 
 Phase 17A implements the contracts and a local reference controller in
-`protected-tool-gateway.js`. It does not execute tools or prove that direct tool
-paths have been removed. A production deployment must make managed adapters the
-only side-effect path and independently verify gateway code, configuration,
-identity appraisal, sandbox, egress policy, coordination, and fencing. See
-`protected-tool-gateway-contract.md`.
+`protected-tool-gateway.js`. Phase 17B2A adds
+`protected-process-executor.js`, which executes one exact policy-pinned local
+process and retains signed pre/post evidence. It does not isolate filesystems,
+syscalls, privileges, descendant processes, or network access and does not
+prove that direct tool paths have been removed. A production deployment must
+make managed adapters the only side-effect path and independently verify
+gateway code, configuration, identity appraisal, sandbox, egress policy,
+coordination, and fencing. See `protected-tool-gateway-contract.md` and
+`protected-process-execution.md`.
 
 ### 2.10 Evidence Store
 
@@ -426,3 +430,4 @@ Characteristics:
 - `bounded-self-improvement-operations.md`
 - `enforced-dispatch-and-resume.md`
 - `protected-tool-gateway-contract.md`
+- `protected-process-execution.md`

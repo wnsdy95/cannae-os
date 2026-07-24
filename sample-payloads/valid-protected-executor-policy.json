@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1",
+  "type": "ProtectedExecutorPolicy",
+  "id": "PEP-W1-reference",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "gateway_binding_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "platform": "posix_reference",
+  "providers": ["codex"],
+  "adapter_profile": {
+    "adapter_id": "cannae-protected-process-executor",
+    "adapter_version": "0.1.0",
+    "adapter_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "runtime_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "signing_key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+    "signing_algorithm": "ed25519",
+    "signing_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA+pRpUDUqUmy3TcDSTO+t+Q/7OMQW1XbMyxniDk982dM=\n-----END PUBLIC KEY-----\n",
+    "execution_mode": "bounded_process_reference"
+  },
+  "process_controls": {
+    "shell": false,
+    "detached": false,
+    "environment_mode": "empty",
+    "stdin_mode": "none",
+    "require_non_root": true,
+    "filesystem_isolation": false,
+    "syscall_filter": false,
+    "privilege_drop": false,
+    "process_tree_containment": false,
+    "sandbox_profile_sha256": "c92fc068c804747d3c3b28fa62d8b5a4247c3645459035c8f4106615a51fbc90"
+  },
+  "network_controls": {
+    "enforcement": "not_enforced",
+    "outbound": "unknown",
+    "network_policy_sha256": "82cc6e10c70c76f7407de2a45f36e2f698ee78fdaf27eddc840ef06460a18466"
+  },
+  "rules": [
+    {
+      "rule_id": "PER-W1-node-check",
+      "tool_name": "Bash",
+      "operation_class": "process_execute",
+      "executable_path": "/usr/bin/node",
+      "executable_format": "native_binary",
+      "executable_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "argv": ["--check", "protected-tool-gateway.js"],
+      "cwd_relative": ".",
+      "timeout_ms": 5000,
+      "max_stdout_bytes": 65536,
+      "max_stderr_bytes": 65536,
+      "success_exit_codes": [0],
+      "expected_repository_effect": "none"
+    }
+  ],
+  "valid_from": "2026-07-24T00:00:00Z",
+  "expires_at": "2026-07-25T00:00:00Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  }
+}

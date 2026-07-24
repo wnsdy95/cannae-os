@@ -246,7 +246,76 @@ const fixtures = [
     requiredCodes: [
       "TOOL_EXECUTION_RECEIPT_COMMIT_INCOMPLETE",
       "TOOL_EXECUTION_RECEIPT_REF_UNBOUND",
+      "TOOL_EXECUTION_RECEIPT_EXECUTOR_REF_MISMATCH",
       "TOOL_EXECUTION_RECEIPT_AUTHORITY_DRIFT"
+    ]
+  },
+  {
+    name: "valid protected executor policy",
+    file: "sample-payloads/valid-protected-executor-policy.json",
+    type: "protected-executor-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound protected executor policy",
+    file: "sample-payloads/invalid-protected-executor-policy-unbound.json",
+    type: "protected-executor-policy",
+    exitCode: 1,
+    requiredCodes: [
+      "PROTECTED_EXECUTOR_POLICY_INVALID_VALIDITY",
+      "PROTECTED_EXECUTOR_POLICY_SIGNING_KEY_INVALID",
+      "PROTECTED_EXECUTOR_POLICY_AUTHORITY_DRIFT"
+    ]
+  },
+  {
+    name: "valid protected process tool input",
+    file: "sample-payloads/valid-protected-process-tool-input.json",
+    type: "protected-process-tool-input",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound protected process tool input",
+    file: "sample-payloads/invalid-protected-process-tool-input-unbound.json",
+    type: "protected-process-tool-input",
+    exitCode: 1,
+    requiredCodes: ["PROTECTED_PROCESS_POLICY_REF_UNBOUND"]
+  },
+  {
+    name: "valid protected execution envelope",
+    file: "sample-payloads/valid-protected-execution-envelope.json",
+    type: "protected-execution-envelope",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound protected execution envelope",
+    file: "sample-payloads/invalid-protected-execution-envelope-unbound.json",
+    type: "protected-execution-envelope",
+    exitCode: 1,
+    requiredCodes: [
+      "PROTECTED_EXECUTION_ENVELOPE_REF_UNBOUND",
+      "PROTECTED_EXECUTION_ENVELOPE_SIGNATURE_MALFORMED",
+      "PROTECTED_EXECUTION_ENVELOPE_DIGEST_MISMATCH"
+    ]
+  },
+  {
+    name: "valid protected execution observation",
+    file: "sample-payloads/valid-protected-execution-observation.json",
+    type: "protected-execution-observation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "inconsistent protected execution observation",
+    file: "sample-payloads/invalid-protected-execution-observation-inconsistent.json",
+    type: "protected-execution-observation",
+    exitCode: 1,
+    requiredCodes: [
+      "PROTECTED_EXECUTION_OUTPUT_ACCOUNTING_INVALID",
+      "PROTECTED_EXECUTION_PROCESS_STATE_INVALID",
+      "PROTECTED_EXECUTION_OBSERVATION_DIGEST_MISMATCH"
     ]
   },
   {

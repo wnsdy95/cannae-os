@@ -1,0 +1,10 @@
+{
+  "schema_version": "0.1",
+  "type": "ProtectedProcessToolInput",
+  "executor_policy_ref": {
+    "artifact_id": "PEP-W1-reference",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-PROTECTED/W1/protected-executor-policies/PEP-W1-reference.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "rule_id": "PER-W1-node-check"
+}

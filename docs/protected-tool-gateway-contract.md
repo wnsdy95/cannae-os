@@ -4,9 +4,10 @@
 
 Phase 17A is implemented as a repository-manifest-backed contract and reference
 controller. Phase 17B1 adds a TLS 1.3 mTLS, SPIFFE X.509, signed challenge, and
-TLS-exporter identity adapter at `authenticated_reference` assurance. Neither
-phase deploys a production executor or proves that the gateway is the only path
-to a tool.
+TLS-exporter identity adapter at `authenticated_reference` assurance. Phase
+17B2A adds a policy-pinned local process reference adapter with signed
+pre-execution and post-execution evidence. None of these phases deploys a
+production sandbox or proves that the gateway is the only path to a tool.
 
 The controller deliberately fixes:
 
@@ -17,8 +18,9 @@ release_authorized: false
 ```
 
 Later Phase 17B work must supply independently managed provider executors,
-exclusive network/process routing, authenticated configuration, and deployment
-evidence before any production exclusivity claim is possible.
+OS/container isolation, exclusive network/process routing, authenticated
+configuration, and deployment evidence before any production exclusivity claim
+is possible.
 
 ## 1. Purpose
 
@@ -126,7 +128,7 @@ risk acceptance, policy change, or authority change.
 | `GatewayPrincipalEvidence` | Gateway-side TLS observation | challenge, SPIFFE chain, client/server certificates, TLS exporter, adapter signature, expiry |
 | `ToolGatewayRequest` v0.2 | Immutable request envelope | identity refs, gateway, principal, lease, policy, checkpoint, repository, exact tool digest, idempotency, validity |
 | `ToolGatewayDecision` v0.2 | Admission result | exact request, identity refs, dispatch admission, principal/gateway digests, rule, repository state, coordination observation |
-| `ToolExecutionReceipt` v0.2 | Final execution disposition | exact request/decision/identity/admission/checkpoint refs, executor measurements, result digest, before/after state |
+| `ToolExecutionReceipt` v0.3 | Final execution disposition | exact request/decision/identity/admission/checkpoint refs, executor measurements, optional bounded policy/envelope/observation refs, result digest, before/after state |
 | `ToolGatewayTransactionEvent` v0.2 | Append-only state transition | transaction sequence, predecessor, immutable request and identity bindings, decision/receipt references |
 
 The repository artifact manifest is the custody layer. Conversation history is
@@ -223,14 +225,21 @@ node protected-tool-gateway.js begin \
   --gateway-binding-sha256 <trusted-gateway-digest>
 ```
 
-The returned `execution_event_ref` is the one current execution token. Phase
-17A does not invoke the tool. An external adapter executes only after this
-transition and keeps the raw input in protected transient memory.
+The returned `execution_event_ref` is the one current execution token. The
+Phase 17A path does not invoke the tool; a non-protected external adapter acts
+only after this transition and keeps raw input in protected transient memory.
+
+Do not call `begin` manually for `ProtectedProcessToolInput`. Use
+`protected-process-executor.js execute`, which owns begin, persists a signed
+envelope before spawn, executes the policy-fixed process, persists its signed
+observation, and submits all evidence to commit. See
+`protected-process-execution.md`.
 
 ### 6.4 Commit
 
-The adapter records its own code, runtime, sandbox, and network-policy digests,
-then submits the result:
+For a non-protected integration, the adapter records its own code, runtime,
+sandbox, and network-policy digests, uses exact none sentinels for the three
+bounded-execution references, then submits the result:
 
 ```bash
 node protected-tool-gateway.js commit \
@@ -252,6 +261,12 @@ node protected-tool-gateway.js commit \
 The controller sends an exact post-tool correlation to the Phase 16 dispatch
 runtime. A binding failure is not converted into success; it produces
 `recovery_required`.
+
+For `ProtectedProcessToolInput`, direct caller-declared commit is prohibited.
+The gateway reloads the exact `ProtectedExecutorPolicy`,
+`ProtectedExecutionEnvelope`, and `ProtectedExecutionObservation` references,
+verifies their signatures, digests, command, timing, output, repository, and
+transaction bindings, and commits only `bounded_process_reference` evidence.
 
 ### 6.5 Recover
 
@@ -341,6 +356,8 @@ storage-side fencing.
 | Begin or execution timestamps precede their retained predecessor | do not begin or commit |
 | Execution completion timestamp exceeds receipt time | do not commit |
 | Wrong or stale execution token | do not commit |
+| Protected process input paired with fixture or external result | do not commit |
+| Bounded policy, envelope, observation, signature, command, output, timing, or repository-effect mismatch | do not commit; recover unknown executing outcome |
 | Authorized request stopped before begin | exact cancellation and abort |
 | Executing request loses outcome | block lease and require recovery |
 | Post-tool correlation failure | block lease and require recovery |
@@ -363,10 +380,12 @@ controller:
 - adversarial tests proving that direct tool access fails when the gateway is
   unavailable.
 
-Phase 17B1 supports `authenticated_reference` only. Until the remaining
-conditions are measured, `managed_exclusive` is not an honest assurance level.
-See `gateway-identity-admission.md` for the identity contracts, API, challenge
-lifecycle, and residual limits.
+Phase 17B1 supports `authenticated_reference`. Phase 17B2A supports a bounded
+local process reference without filesystem, syscall, privilege, process-tree,
+or network isolation. Until the remaining conditions are measured,
+`managed_exclusive` is not an honest assurance level. See
+`gateway-identity-admission.md` for identity and
+`protected-process-execution.md` for execution evidence and residual limits.
 
 ## 11. Validation
 
@@ -375,6 +394,7 @@ node validator-cli-prototype/run-fixtures.js
 node run-dispatch-runtime-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-tool-gateway-fixtures.js
+node run-protected-process-executor-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 
@@ -388,3 +408,8 @@ The gateway identity fixture additionally performs a real TLS 1.3 mTLS
 handshake, verifies equal client/server exporter bytes, admits one signed
 SPIFFE principal chain, and rejects stale, replayed, revoked,
 digest-repaired/tampered, reused-challenge, and substituted-certificate cases.
+
+The protected-process fixture executes real policy-pinned child processes and
+rejects caller-declared result injection, rule substitution, executable drift,
+forbidden repository effects, and automatic rerun after an execution claim. It
+also records bounded timeout failure.

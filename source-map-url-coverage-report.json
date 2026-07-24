@@ -3,7 +3,7 @@
   "as_of": "2026-07-24",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 49,
+  "checked_hosts": 51,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -85,10 +85,18 @@
     {
       "host": "csrc.nist.gov",
       "files": [
+        "docs/protected-process-execution.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
+      "host": "cwe.mitre.org",
+      "files": [
+        "docs/protected-process-execution.md",
+        "docs/source-map.md"
       ]
     },
     {
@@ -158,6 +166,7 @@
       "host": "github.com",
       "files": [
         "docs/gateway-identity-admission.md",
+        "docs/protected-process-execution.md",
         "docs/research-compendium.md",
         "docs/sigstore-verifier-workload-admission.md",
         "docs/source-map.md",
@@ -223,6 +232,7 @@
       "host": "nodejs.org",
       "files": [
         "docs/gateway-identity-admission.md",
+        "docs/protected-process-execution.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
       ]
@@ -371,6 +381,13 @@
         "docs/opsec-classification-model.md",
         "docs/research-compendium.md",
         "docs/risk-acceptance-authority.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "www.kernel.org",
+      "files": [
+        "docs/protected-process-execution.md",
         "docs/source-map.md"
       ]
     },

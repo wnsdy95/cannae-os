@@ -1,0 +1,74 @@
+{
+  "schema_version": "0.1",
+  "type": "ProtectedExecutionEnvelope",
+  "id": "PEE-W1-reference",
+  "transaction_id": "GTX-W1-reference",
+  "mission_id": "MIS-PROTECTED",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "provider": "codex",
+  "request_ref": {
+    "artifact_id": "TGR-W1-reference",
+    "relative_path": "request.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "decision_ref": {
+    "artifact_id": "TGD-W1-reference",
+    "relative_path": "decision.json",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "execution_event_ref": {
+    "artifact_id": "GTE-W1-reference",
+    "relative_path": "execution-event.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "executor_policy_ref": {
+    "artifact_id": "PEP-W1-reference",
+    "relative_path": "executor-policy.json",
+    "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "tool_input_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "rule_id": "PER-W1-node-check",
+  "command": {
+    "executable_path": "/usr/bin/node",
+    "executable_format": "native_binary",
+    "executable_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "argv": ["--check", "protected-tool-gateway.js"],
+    "cwd_relative": ".",
+    "environment_mode": "empty",
+    "stdin_mode": "none",
+    "shell": false,
+    "detached": false
+  },
+  "limits": {
+    "timeout_ms": 5000,
+    "max_stdout_bytes": 65536,
+    "max_stderr_bytes": 65536,
+    "success_exit_codes": [0]
+  },
+  "sandbox_profile_sha256": "c92fc068c804747d3c3b28fa62d8b5a4247c3645459035c8f4106615a51fbc90",
+  "network_policy_sha256": "82cc6e10c70c76f7407de2a45f36e2f698ee78fdaf27eddc840ef06460a18466",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "repository_state_before": {
+    "head_commit": "0123456789abcdef0123456789abcdef01234567",
+    "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+    "dirty": false
+  },
+  "issued_at": "2026-07-24T01:00:00Z",
+  "expires_at": "2026-07-24T01:00:06Z",
+  "signature": {
+    "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+    "algorithm": "ed25519",
+    "signature_base64": "DvSOIAFAIGGWU0BfQAkL7X0fsmEufXyRT/2MhzIuwKJvHZQxKHQwBQ4ZmYo2U6jUcnd/0REKH6C0aFt58IE0Ag=="
+  },
+  "envelope_sha256": "59a0a16d4045bda38b74169933b554baa1e0624280f32dea8eb0ea431b05f245",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  }
+}

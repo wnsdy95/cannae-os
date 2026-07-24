@@ -144,6 +144,10 @@ Recommended validation order:
 87. `gateway-identity-policy.schema.json`
 88. `gateway-identity-challenge.schema.json`
 89. `gateway-principal-evidence.schema.json`
+90. `protected-executor-policy.schema.json`
+91. `protected-process-tool-input.schema.json`
+92. `protected-execution-envelope.schema.json`
+93. `protected-execution-observation.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -169,6 +173,8 @@ All schemas target JSON Schema draft 2020-12.
 
 `DispatchToolPolicy` v0.2 must be controller-compiled from a policy-draft digest already authorized by the exact USER-authored mission plan. Each rule binds one allowed mission action, exact provider tool, operation class, matcher input, repository-state control, and finite budget under default deny; project-hook policies cannot authorize network or delegation classes. `AgentDispatchLease` binds that policy to one provider session, repository identity/state, context chain, nonce, and validity window. `ToolAdmissionEvent` records each pre-tool allow or deny decision, while `AgentExecutionCheckpoint` v0.2 maintains the serial state chain, exact provider-result digest, and unresolved-effect disposition. All four retain `USER` final authority and keep release unauthorized.
 
-`ToolGatewayRequest` v0.2 binds an externally authenticated principal and exact gateway configuration to the active Phase 16 lease, policy, checkpoint, repository state, canonical tool-input digest, validity window, idempotency key, and three immutable identity references without retaining raw input. `ToolGatewayDecision`, `ToolExecutionReceipt`, and `ToolGatewayTransactionEvent` v0.2 preserve those references through admission, execution disposition, and the append-only state sequence.
+`ToolGatewayRequest` v0.2 binds an externally authenticated principal and exact gateway configuration to the active Phase 16 lease, policy, checkpoint, repository state, canonical tool-input digest, validity window, idempotency key, and three immutable identity references without retaining raw input. `ToolGatewayDecision` and `ToolGatewayTransactionEvent` v0.2 preserve those references through admission and the append-only state sequence. `ToolExecutionReceipt` v0.3 additionally carries exact protected-executor policy, envelope, and observation references for bounded process execution; every non-bounded mode uses three exact none sentinels.
 
 `GatewayIdentityPolicy`, `GatewayIdentityChallenge`, and `GatewayPrincipalEvidence` implement Phase 17B1 `authenticated_reference` admission. They bind an exact USER-controlled gateway/repository policy, TLS 1.3 SPIFFE X.509 principal, one-use signed challenge, server/client certificate digests, TLS exporter proof, policy-pinned adapter identifiers, revocation, and bounded freshness. `contract_reference` uses three exact none sentinels. `managed_exclusive`, production execution, deployment verification, and release remain false.
+
+`ProtectedExecutorPolicy`, `ProtectedProcessToolInput`, `ProtectedExecutionEnvelope`, and `ProtectedExecutionObservation` implement Phase 17B2A bounded process evidence. They bind one exact ELF or Mach-O executable and argv to the authorized gateway transaction, retain a signed intent before spawn and a signed observation after close, and keep sandbox, network, production, exclusivity, and release claims false.

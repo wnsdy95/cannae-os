@@ -3704,10 +3704,160 @@ Residual limits:
   5280 path builder;
 - no Workload API client, managed rotation service, CRL/OCSP distribution, or
   hardware-backed key;
-- no production provider executor, sandbox, egress enforcement, or side-path
-  denial;
+- no production-grade provider executor, sandbox, egress enforcement, or
+  side-path denial at Phase 17B1;
 - no independent gateway deployment/configuration attestation;
 - no multi-host linearizable transaction coordinator or storage-side fencing;
 - no long-running re-authenticated recovery contract;
 - no production execution, managed exclusivity, deployment verification, or
   release authority.
+
+## Phase 17B2A: Protected Process Execution Evidence
+
+### Research Question
+
+How can the reference gateway execute one local process without accepting an
+agent-authored command string, prove which policy and executable were used,
+prevent automatic duplicate execution after a crash, and avoid overstating
+unimplemented sandbox or network controls?
+
+### Primary Findings
+
+1. Node.js exposes an executable-plus-argv process API.
+   `child_process.spawn(command, args, options)` keeps the executable and
+   argument vector distinct, defaults `shell` to false, and permits exact cwd,
+   environment, stdio, and timeout options. This is the appropriate primitive
+   for an exact-command reference adapter. It does not itself make the child a
+   sandbox.
+2. Command injection must be prevented before process construction.
+   CWE-78 describes the failure as externally influenced data changing an OS
+   command. Escaping an arbitrary command string would retain parser and
+   platform ambiguity. The stronger contract is to let the USER-controlled
+   policy fix the complete executable and argv and let the runtime input select
+   only one retained rule.
+3. Privilege and syscall controls are separate evidence claims.
+   Linux `no_new_privs` prevents `execve` from granting new privilege but does
+   not create a general confinement boundary. Seccomp filter mode restricts
+   syscalls and has explicit synchronization and privilege prerequisites.
+   Neither can be inferred from `spawn`, a non-root UID, or a policy label.
+4. OCI configuration shows that sandbox assurance is multidimensional.
+   Namespaces, mounts, devices, resources, capabilities, seccomp, masked paths,
+   and related controls are distinct runtime configuration. An executable,
+   image, or runtime digest cannot prove that those controls were applied.
+5. Container operation adds independent risk domains.
+   NIST SP 800-190 separates image, registry, orchestrator, container runtime,
+   and host risks. A later container adapter must retain and appraise evidence
+   for each applicable layer rather than upgrade assurance from one image
+   digest.
+6. An execution receipt needs a durable claim marker before the side effect.
+   Request idempotency prevents a second authorization record, but it cannot
+   distinguish "authorized but never invoked" from "invoked and crashed before
+   result." A signed, manifest-retained pre-execution envelope marks the
+   transaction as claimed. Once present, the safe retry behavior is replay or
+   reconciliation, never automatic process invocation.
+7. Executor self-report is insufficient at commit.
+   The gateway must reload policy, envelope, and observation bytes from the
+   verified artifact manifest and reconstruct all command, transaction,
+   result, time, and repository bindings. Otherwise a caller can pair protected
+   input with a fabricated external result.
+8. Direct-child termination is not process-tree containment.
+   Killing the spawned child on timeout or output overflow does not prove that
+   descendants are gone. The reference adapter records
+   `process_tree_containment: false`; a cgroup, PID namespace, or equivalent
+   provider control is required for a stronger claim.
+9. A shebang introduces another executable.
+   The kernel selects the script interpreter, while a policy that measures only
+   the script would omit that executable from the evidence chain. The reference
+   adapter therefore accepts only ELF or Mach-O executables. A native
+   interpreter such as Node may be selected directly only when its digest and
+   every code or script argument are fixed by policy.
+10. User-space path appraisal has an unavoidable race.
+    Digest checks at admission, immediately before spawn, and after process
+    close narrow executable drift, but portable Node does not bind `spawn` to
+    an already appraised file descriptor. An immutable executable mount or
+    provider-native image/runtime evidence is required to eliminate a
+    replace-execute-restore attack.
+
+### Controls Interpretation
+
+The bounded admission equation is:
+
+```text
+current dispatch and gateway authorization
++ exact retained policy and rule
++ measured executor and runtime
++ canonical ELF/Mach-O executable file and digest
++ exact argv/cwd/empty environment/no runtime-inserted shell/no stdin
++ signed envelope persisted before spawn
++ signed observation persisted after close
++ independent gateway bundle appraisal
+= result may enter the execution receipt
+```
+
+The following are deliberately not terms in the Phase 17B2A equation:
+
+- filesystem isolation;
+- syscall filtering;
+- `no_new_privs`, capability bounding, or privilege transition;
+- process-tree containment;
+- network or egress enforcement;
+- exclusive tool routing;
+- production or release authority.
+
+Their policy values are fixed to false or unknown so downstream consumers
+cannot confuse configuration intent with observed enforcement.
+
+### Implemented Artifacts
+
+- `schema-files/protected-executor-policy.schema.json`;
+- `schema-files/protected-process-tool-input.schema.json`;
+- `schema-files/protected-execution-envelope.schema.json`;
+- `schema-files/protected-execution-observation.schema.json`;
+- `protected-execution-evidence.js`;
+- `protected-process-executor.js`;
+- `ToolExecutionReceipt` v0.3 bounded evidence references;
+- `run-protected-process-executor-fixtures.js`;
+- `docs/protected-process-execution.md`;
+- Codex and Claude protected-executor wrappers, routing, references, and
+  mandatory operating guidance.
+
+### Measured Behavior
+
+- one real policy-pinned Node process creates signed envelope and observation
+  artifacts and commits one exact receipt;
+- replay returns the retained terminal transaction and does not increment an
+  execution counter;
+- a protected input paired with caller-declared fixture evidence cannot commit;
+- a shebang script is rejected before gateway begin because its interpreter is
+  not part of the executable measurement;
+- rule substitution and executable file drift fail before process spawn;
+- timeout is retained as a failed process result;
+- a fault after process completion produces `recovery_required` and retry does
+  not execute again;
+- a rule that prohibits repository effects fails closed when the observed
+  worktree changes;
+- static valid/invalid contracts and both skill routing inventories validate.
+
+### Residual Limits And Next Research
+
+- The executor evidence key and policy approval path remain locally managed.
+- The adapter file digest is measured locally and not independently attested.
+- Repeated path and digest checks do not eliminate a
+  replace-execute-restore race on a mutable executable filesystem.
+- Empty environment does not prevent direct filesystem or network access by
+  the executable.
+- A policy-pinned native executable can still perform an indirect `exec` or
+  create descendants; Phase 17B2A does not measure or contain those paths.
+- Output is bounded and retained, but secret-aware redaction is not
+  implemented.
+- Direct child `SIGKILL` does not prove descendant termination.
+- The shared-filesystem lease is not a multi-host consensus protocol.
+- There is no provider-native filesystem, MCP, network, or delegation adapter.
+- There is no adversarial deployment proof that all alternate executable paths
+  are unavailable.
+
+Phase 17B2B research should specify an OCI/Linux provider profile with exact
+image and runtime configuration, mount and namespace policy, seccomp,
+`no_new_privs`, capability and UID/GID state, cgroup/PID containment, network
+namespace and egress policy, independent deployment identity, and tests that
+observe each claimed control directly.

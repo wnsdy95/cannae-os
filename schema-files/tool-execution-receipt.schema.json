@@ -35,7 +35,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.2" },
+    "schema_version": { "type": "string", "const": "0.3" },
     "type": { "type": "string", "const": "ToolExecutionReceipt" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -138,7 +138,10 @@
         "runtime_sha256",
         "sandbox_profile_sha256",
         "network_policy_sha256",
-        "execution_mode"
+        "execution_mode",
+        "executor_policy_ref",
+        "execution_envelope_ref",
+        "execution_observation_ref"
       ],
       "additionalProperties": false,
       "properties": {
@@ -154,8 +157,16 @@
         "network_policy_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "execution_mode": {
           "type": "string",
-          "enum": ["none", "fixture", "external_adapter"]
-        }
+          "enum": [
+            "none",
+            "fixture",
+            "external_adapter",
+            "bounded_process_reference"
+          ]
+        },
+        "executor_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+        "execution_envelope_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+        "execution_observation_ref": { "$ref": "#/$defs/artifact_ref_or_none" }
       }
     },
     "execution": {

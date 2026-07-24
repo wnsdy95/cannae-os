@@ -303,7 +303,10 @@ function fixtureExecutor() {
     runtime_sha256: digest("fixture-runtime"),
     sandbox_profile_sha256: digest("fixture-sandbox"),
     network_policy_sha256: digest("fixture-network-policy"),
-    execution_mode: "fixture"
+    execution_mode: "fixture",
+    executor_policy_ref: clone(NONE_REF),
+    execution_envelope_ref: clone(NONE_REF),
+    execution_observation_ref: clone(NONE_REF)
   };
 }
 

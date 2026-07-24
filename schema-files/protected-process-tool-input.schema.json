@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/protected-process-tool-input.schema.json",
+  "title": "Protected Process Tool Input",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "executor_policy_ref",
+    "rule_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ProtectedProcessToolInput" },
+    "executor_policy_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "rule_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    }
+  }
+}

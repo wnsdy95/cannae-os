@@ -1,0 +1,99 @@
+{
+  "schema_version": "0.1",
+  "type": "ProtectedExecutionObservation",
+  "id": "PEO-W1-reference",
+  "transaction_id": "GTX-W1-reference",
+  "mission_id": "MIS-PROTECTED",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "provider": "codex",
+  "request_ref": {
+    "artifact_id": "TGR-W1-reference",
+    "relative_path": "request.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "decision_ref": {
+    "artifact_id": "TGD-W1-reference",
+    "relative_path": "decision.json",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "execution_event_ref": {
+    "artifact_id": "GTE-W1-reference",
+    "relative_path": "execution-event.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "executor_policy_ref": {
+    "artifact_id": "PEP-W1-reference",
+    "relative_path": "executor-policy.json",
+    "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "execution_envelope_ref": {
+    "artifact_id": "PEE-W1-reference",
+    "relative_path": "execution-envelope.json",
+    "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+  },
+  "tool_input_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+  "rule_id": "PER-W1-node-check",
+  "command": {
+    "executable_path": "/usr/bin/node",
+    "executable_format": "native_binary",
+    "executable_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "argv": ["--check", "protected-tool-gateway.js"],
+    "cwd_relative": ".",
+    "environment_mode": "empty",
+    "stdin_mode": "none",
+    "shell": false,
+    "detached": false
+  },
+  "process": {
+    "spawned": true,
+    "exit_code": 0,
+    "signal": "none",
+    "termination_reason": "exited",
+    "timed_out": false,
+    "output_limit_exceeded": false
+  },
+  "stdout": {
+    "sha256": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+    "observed_bytes": 2,
+    "retained_bytes": 2,
+    "truncated": false
+  },
+  "stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "observed_bytes": 0,
+    "retained_bytes": 0,
+    "truncated": false
+  },
+  "result_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+  "sandbox_profile_sha256": "c92fc068c804747d3c3b28fa62d8b5a4247c3645459035c8f4106615a51fbc90",
+  "network_policy_sha256": "82cc6e10c70c76f7407de2a45f36e2f698ee78fdaf27eddc840ef06460a18466",
+  "repository_binding": {
+    "repository_key": "cannae-os-aaaaaaaaaaaa",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "repository_state_before": {
+    "head_commit": "0123456789abcdef0123456789abcdef01234567",
+    "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+    "dirty": false
+  },
+  "repository_state_after": {
+    "head_commit": "0123456789abcdef0123456789abcdef01234567",
+    "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+    "dirty": false
+  },
+  "started_at": "2026-07-24T01:00:01Z",
+  "finished_at": "2026-07-24T01:00:02Z",
+  "signature": {
+    "key_id": "2067678756bf65c7a05339e843e9748feb414c223e97694be2d8c7c09d3f359f",
+    "algorithm": "ed25519",
+    "signature_base64": "DvSOIAFAIGGWU0BfQAkL7X0fsmEufXyRT/2MhzIuwKJvHZQxKHQwBQ4ZmYo2U6jUcnd/0REKH6C0aFt58IE0Ag=="
+  },
+  "observation_sha256": "ebc1f54749d8e68dc7c8db1a3ce9ec4269c184fa87f8acfece0d25def538357b",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  }
+}

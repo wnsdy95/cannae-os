@@ -107,13 +107,18 @@ authorization and outcome evidence beyond the project hook:
 2. Select one identity path explicitly. `contract_reference` uses three exact none references and independently appraised principal/gateway digests. `authenticated_reference` uses a manifest-backed `GatewayIdentityPolicy`, one adapter-generated signed transaction challenge, and one gateway-side TLS 1.3 SPIFFE/exporter observation derived directly from a live server `TLSSocket` and signed as `GatewayPrincipalEvidence`; never pass a caller-built transport observation or caller-supplied principal digest.
 3. Never let the acting agent self-calculate identity or gateway trust material. Keep the adapter private key outside request/artifact payloads. Authenticated-reference verification must cover policy, challenge, certificate, exporter, revocation, freshness, one-use, and request projection. `--gateway-binding-sha256` still comes from a separate trusted deployment/configuration appraiser.
 4. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`; production execution, deployment verification, and release remain false.
-5. Run `begin` directly before the adapter acts and retain the exact returned `execution_event_ref`. Every authenticated-reference state transition revalidates identity freshness.
-6. Run `commit` with that reference, exact input, result, and measured executor digests. A stale identity, stale token, or post-tool mismatch cannot become a commit.
+5. Select the execution path from the exact raw input. For ordinary integration inputs, run `begin` directly before the external adapter acts and `commit` with exact none sentinels for bounded-execution references. For `ProtectedProcessToolInput`, never run manual `begin` or accept a caller-declared result: run `scripts/operate_protected_executor.js execute`, which reloads the policy, owns begin, persists a signed envelope before spawn, executes only the policy-fixed ELF or Mach-O executable and argv, reappraises that executable after close, persists a signed observation, and submits all three exact evidence references.
+6. Require `ToolExecutionReceipt` v0.3. `bounded_process_reference` requires concrete policy, envelope, and observation references that the gateway independently reloads and verifies; `fixture` and `external_adapter` require three exact none references. A stale identity, stale execution reference, changed executable, substituted command/result, forbidden repository effect, or post-tool binding failure cannot become a commit.
 7. Recover authorized-but-unstarted work with the exact raw input so admission can be cancelled. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. Recover an executing transaction without claiming an outcome; the lease blocks for human reconciliation.
 8. Reuse an idempotency key only for the same canonical request, never reuse an identity challenge or evidence across transactions, and never reuse a transaction ID for a different request or key. Identity evidence and receipts never grant commit, push, merge, release, risk, policy, or authority approval.
 
-Phase 17B1 proves authenticated-reference identity but does not execute tools or prove gateway exclusivity. `managed_exclusive` remains denied. Read
-`docs/gateway-identity-admission.md` and `docs/protected-tool-gateway-contract.md` before integrating an adapter.
+Phase 17B1 proves authenticated-reference identity. Phase 17B2A executes one
+policy-pinned local process but does not provide filesystem, syscall,
+privilege, process-tree, or network isolation and does not prove gateway
+exclusivity. `managed_exclusive`, production execution, and release remain
+denied. Read `docs/gateway-identity-admission.md`,
+`docs/protected-tool-gateway-contract.md`, and
+`docs/protected-process-execution.md` before integrating an adapter.
 
 ## References
 
@@ -137,7 +142,7 @@ Read these only when needed (bundled with this skill):
 When editing the corpus:
 
 - Update the target document and its index/source-map entry together.
-- If changing a runtime contract, update schema, valid sample, invalid sample, runner/fixture, and docs. Protected-gateway changes also update both skill wrappers and transaction/recovery guidance.
+- If changing a runtime contract, update schema, valid sample, invalid sample, runner/fixture, and docs. Protected-gateway or executor changes also update both CLI skill wrappers, both routing tables, and transaction/execution/recovery guidance.
 - If adding, renaming, moving, or deleting any corpus artifact, run coverage:
 
 ```bash
@@ -192,6 +197,7 @@ node run-skill-mission-controller-fixtures.js
 node run-dispatch-runtime-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
+node run-protected-process-executor-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
@@ -238,6 +244,7 @@ Escalate to the user before:
 - Starting delegated work without the current controller-issued context pack, or reusing a prior wave's routing evidence.
 - Starting covered delegated tool work without a current manifest-backed dispatch lease for the exact mission agent and provider session, or treating resumed conversational context as renewed authority.
 - Describing project-local hooks as a complete security boundary when the deployment requires managed policy, separate repository-scoped sub-missions/worktrees and sessions followed by an integration wave, an OS sandbox, or an independently protected gateway.
+- Describing the protected process reference adapter as a sandbox, production executor, or exclusive tool path; it fixes one executable and argv and prevents automatic rerun but does not isolate filesystems, syscalls, privileges, descendant processes, or network access.
 - Mixing artifacts from separate target repositories in one flat output namespace.
 - Continuing adaptive work without a finite campaign, runtime-issued receipt, fresh trusted signed receipt quorum for v0.3+, required signed report quorum for v0.4 control-plane work, required manifest-backed evidence for every counted verifier's selected SPIFFE or Sigstore adapter under trust-policy v0.2+, the selected Sigstore TrustedRoot when applicable, the exact runtime policy and per-attestation execution evidence under trust-policy v0.4+, the exact unexpired supervisor challenge and dual-signed nonce responses under v0.5+, runtime-policy v0.2+ and enough computed failure domains under v0.6+, the exact native OIDC/JWKS chain and clean token-bound commit for runtime-policy v0.3 GitHub Actions and GitLab CI evidence, a contiguous current manifest-backed transparency state under v0.7, verified accepted baseline, integrity-checked proof store, mandatory checkpoint, or evidence-backed stop decision.
 
@@ -278,5 +285,8 @@ This Claude skill is self-contained. Its bundled files are:
 - `.claude/skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js`
 - `.claude/skills/controls-doctrine-operator/scripts/enforce_controls_dispatch.js`
 - `.claude/skills/controls-doctrine-operator/scripts/install_dispatch_hooks.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_protected_gateway.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_gateway_identity.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_protected_executor.js`
 
 The Codex copy under `codex-skills/controls-doctrine-operator/` is the parallel skill for Codex (`~/.codex/skills`). When the router script or a reference changes, update both copies so they do not drift.

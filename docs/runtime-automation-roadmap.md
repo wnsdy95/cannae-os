@@ -672,11 +672,10 @@ Implemented controls:
   ordered chain to one pinned root, records both endpoint certificate digests,
   and derives a 32-byte `EXPORTER-Channel-Binding` proof;
 - `GatewayPrincipalEvidence` signs the exact TLS observation, principal and
-  gateway projection digests, challenge/policy references, adapter
-  policy-pinned adapter identifiers, repository, session, and short validity
-  window;
-- `ToolGatewayRequest`, decision, event, and receipt v0.2 carry the same three
-  immutable identity references;
+  gateway projection digests, challenge/policy references, policy-pinned
+  adapter identifiers, repository, session, and short validity window;
+- `ToolGatewayRequest`, decision, and event v0.2 plus receipt v0.3 carry the
+  same three immutable identity references;
 - `authenticated_reference` admission derives the verified-principal digest
   from retained evidence rather than trusting a caller-provided digest;
 - admission, begin, commit, and recovery revalidate signature, digest,
@@ -712,7 +711,79 @@ Phase 17B2 and later remain:
 See `gateway-identity-admission.md` for the exact trust boundaries, contracts,
 operations, failure matrix, and residual limits.
 
-## 20. Release Gates
+## 20. Phase 17B2A: Protected Process Execution Adapter
+
+Status: implemented as a repository-manifest-backed POSIX reference adapter.
+It executes a policy-pinned local process but does not claim an OS/container
+sandbox, network isolation, managed exclusivity, production execution, or
+release authority.
+
+Implemented controls:
+
+- `ProtectedExecutorPolicy` binds one repository and trusted gateway
+  projection to exact adapter/runtime measurements, an Ed25519 evidence key,
+  explicit process/network control profiles, finite validity, and exact
+  executable/argv/cwd/limit/effect rules;
+- `ProtectedProcessToolInput` contains only one concrete policy reference and
+  one rule ID, so caller-supplied command fragments, options, paths,
+  environment, and stdin cannot enter after dispatch authorization;
+- the adapter requires a canonical ELF or Mach-O executable with an exact file
+  digest, appraises its path, format, and digest before gateway begin,
+  immediately before spawn, and after process close, and requires a
+  repository-contained cwd, a non-root POSIX parent, an empty environment, no
+  runtime-inserted shell, no detached mode, no stdin, bounded output, and a
+  finite timeout;
+- a signed `ProtectedExecutionEnvelope` binds the exact transaction, request,
+  decision, executing event, policy, input, rule, command, limits, controls,
+  repository state, and expiry before process spawn;
+- a signed `ProtectedExecutionObservation` binds the envelope to process exit,
+  signal, termination reason, output accounting and hashes, result digest,
+  before/after repository state, and ordered timestamps;
+- `ToolExecutionReceipt` v0.3 carries exact policy, envelope, and observation
+  references only for `bounded_process_reference`; other modes require exact
+  none sentinels;
+- the gateway independently reloads and verifies the complete evidence bundle
+  before dispatch completion and rejects protected input paired with a
+  caller-declared fixture or external result;
+- a retained envelope is a no-rerun claim marker: any later crash or ambiguous
+  continuation becomes `recovery_required`;
+- a rule declaring no repository effect fails closed if the observed
+  repository fingerprint changes;
+- Codex and Claude skills route the same protected-executor workflow and expose
+  equivalent wrappers.
+
+Completion criteria:
+
+- A real exact ELF or Mach-O executable and argv can commit once with signed pre/post
+  evidence and an idempotent retry cannot execute it again.
+- Rule, tool input, policy, executable digest, adapter/runtime, evidence,
+  execution event, result, output, timestamp, or repository-effect substitution
+  cannot commit.
+- Timeout and output-limit termination are recorded as failed process results.
+- A crash after the execution claim or process run cannot trigger automatic
+  re-execution.
+- Caller-declared external results cannot satisfy a protected process request.
+- Every artifact and skill route remains indexed and both skill surfaces use
+  the improved procedure.
+
+Phase 17B2B and later remain:
+
+- OCI/Linux sandbox provider adapters with namespaces, read-only mounts,
+  seccomp, `no_new_privs`, capability/UID controls, process-tree containment,
+  and measured runtime configuration;
+- enforced network namespace, DNS/proxy, and egress policies;
+- provider-specific filesystem, MCP, network, and delegation adapters;
+- independently protected executor key/configuration/deployment evidence;
+- linearizable multi-host coordination and storage-side fencing;
+- secret brokering, managed rotation, incident, break-glass, reconciliation,
+  and multi-user administration;
+- adversarial deployment tests proving direct tool paths are unavailable when
+  the gateway or sandbox is unavailable.
+
+See `protected-process-execution.md` for contracts, operation sequence,
+commands, gateway appraisal, failure behavior, and explicit residual limits.
+
+## 21. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -738,8 +809,9 @@ operations, failure matrix, and residual limits.
 | G21 | Every covered delegated tool call has one active per-agent lease compiled from an exact USER-plan-authorized draft digest, exact policy/context/checkpoint binding, replay-safe serialized admission, and a result-bound post-tool state checkpoint; one settled lineage is required before reporting, resume requires explicit continuation, and release remains false |
 | G22 | Every Phase 17A gateway commit has an exact trusted principal/gateway binding, current dispatch and repository bindings, one canonical idempotent request, one current execution token, one result-bound receipt and append-only terminal event; cancellation or unknown-outcome recovery fails closed, while production and release claims remain false |
 | G23 | Every Phase 17B1 authenticated-reference gateway transition reloads one exact manifest-backed policy/challenge/evidence chain and validates its signatures, freshness, TLS 1.3 SPIFFE certificate path, exporter-bound principal projection, revocation, one-use state and immutable downstream references without claiming managed exclusivity, production, or release |
+| G24 | Every Phase 17B2A protected process commit reloads one exact manifest-backed policy/envelope/observation chain, verifies signatures and complete command/result/repository bindings, and proves one policy-pinned native execution with no runtime-inserted shell or automatic rerun while explicitly denying sandbox, network, production, exclusivity, and release claims |
 
-## 21. Related Documents
+## 22. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -756,3 +828,4 @@ operations, failure matrix, and residual limits.
 - `enforced-dispatch-and-resume.md`
 - `protected-tool-gateway-contract.md`
 - `gateway-identity-admission.md`
+- `protected-process-execution.md`
