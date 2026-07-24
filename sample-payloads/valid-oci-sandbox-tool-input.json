@@ -1,0 +1,10 @@
+{
+  "schema_version": "0.1",
+  "type": "OciSandboxToolInput",
+  "sandbox_policy_ref": {
+    "artifact_id": "OSP-SUCCESS",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/oci-linux-sandbox-policies/OSP-SUCCESS.json",
+    "sha256": "dd39bff197ec079116da7ce517cca0234f3c2095dfec86f3e27dced9bf564bb4"
+  },
+  "rule_id": "OSR-SUCCESS"
+}

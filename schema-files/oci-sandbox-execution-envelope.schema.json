@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/oci-sandbox-execution-envelope.schema.json",
+  "title": "OCI Sandbox Execution Envelope",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "transaction_id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "request_ref",
+    "decision_ref",
+    "execution_event_ref",
+    "sandbox_policy_ref",
+    "tool_input_sha256",
+    "rule_id",
+    "image",
+    "launch",
+    "runtime",
+    "sandbox_profile_sha256",
+    "network_policy_sha256",
+    "repository_binding",
+    "repository_state_before",
+    "issued_at",
+    "expires_at",
+    "signature",
+    "envelope_sha256",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "OciSandboxExecutionEnvelope" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "request_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "decision_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "execution_event_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "sandbox_policy_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "tool_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "rule_id": { "$ref": "#/$defs/safe_identifier" },
+    "image": { "$ref": "#/$defs/image" },
+    "launch": { "$ref": "#/$defs/launch" },
+    "runtime": { "$ref": "#/$defs/runtime" },
+    "sandbox_profile_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "network_policy_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "repository_state_before": { "$ref": "#/$defs/repository_state" },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "signature": { "$ref": "#/$defs/signature" },
+    "envelope_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "image": {
+      "type": "object",
+      "required": ["image_id", "operating_system", "architecture"],
+      "additionalProperties": false,
+      "properties": {
+        "image_id": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "operating_system": { "type": "string", "const": "linux" },
+        "architecture": {
+          "type": "string",
+          "enum": ["amd64", "arm64"]
+        }
+      }
+    },
+    "launch": {
+      "type": "object",
+      "required": [
+        "container_name",
+        "probe_path",
+        "entrypoint",
+        "command",
+        "target_executable_path",
+        "target_executable_sha256",
+        "target_argv",
+        "cwd",
+        "timeout_ms",
+        "max_stdout_bytes",
+        "max_stderr_bytes",
+        "docker_create_argv_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "container_name": {
+          "type": "string",
+          "pattern": "^cannae-[a-f0-9]{24}$"
+        },
+        "probe_path": { "type": "string", "const": "/cannae-probe" },
+        "entrypoint": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": { "type": "string", "const": "/cannae-probe" }
+        },
+        "command": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "items": { "type": "string", "maxLength": 4096 }
+        },
+        "target_executable_path": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 4096,
+          "pattern": "^/"
+        },
+        "target_executable_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "target_argv": {
+          "type": "array",
+          "maxItems": 128,
+          "items": { "type": "string", "maxLength": 4096 }
+        },
+        "cwd": { "type": "string", "const": "/workspace" },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 60000
+        },
+        "max_stdout_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "max_stderr_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "docker_create_argv_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "required": [
+        "docker_cli_sha256",
+        "client_version",
+        "server_version",
+        "api_version",
+        "runtime_name",
+        "runtime_version",
+        "operating_system",
+        "architecture",
+        "kernel_version",
+        "cgroup_version",
+        "security_options",
+        "rootless",
+        "userns_remap"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "docker_cli_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "client_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "server_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "api_version": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "runtime_name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "runtime_version": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "operating_system": { "type": "string", "const": "linux" },
+        "architecture": {
+          "type": "string",
+          "enum": ["amd64", "arm64"]
+        },
+        "kernel_version": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "cgroup_version": {
+          "type": "string",
+          "enum": ["1", "2"]
+        },
+        "security_options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 512 }
+        },
+        "rootless": { "type": "boolean" },
+        "userns_remap": { "type": "boolean" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": {
+          "type": "string",
+          "pattern": "^(unborn|[a-f0-9]{40,64})$"
+        },
+        "worktree_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["key_id", "algorithm", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "key_id": { "$ref": "common.schema.json#/$defs/sha256" },
+        "algorithm": { "type": "string", "const": "ed25519" },
+        "signature_base64": {
+          "type": "string",
+          "minLength": 88,
+          "maxLength": 88
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "production_execution_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "production_execution_authorized": { "type": "boolean", "const": false },
+        "release_authorized": { "type": "boolean", "const": false }
+      }
+    }
+  }
+}

@@ -219,11 +219,19 @@ Phase 17A implements the contracts and a local reference controller in
 `protected-process-executor.js`, which executes one exact policy-pinned local
 process and retains signed pre/post evidence. It does not isolate filesystems,
 syscalls, privileges, descendant processes, or network access and does not
-prove that direct tool paths have been removed. A production deployment must
-make managed adapters the only side-effect path and independently verify
-gateway code, configuration, identity appraisal, sandbox, egress policy,
-coordination, and fencing. See `protected-tool-gateway-contract.md` and
-`protected-process-execution.md`.
+prove that direct tool paths have been removed.
+
+Phase 17B2B adds `oci-linux-sandbox-provider.js` and a static Linux probe. The
+provider directly extracts and hashes the image probe before execution, retains
+signed pre-create intent, exact Docker inspection, and direct kernel
+observations for namespace, privilege, mount, cgroup, and network controls
+before a result can enter `ToolExecutionReceipt` v0.4. It still trusts
+the local Docker daemon, host, and evidence key and does not prove exclusive
+deployment. A production deployment must make managed adapters the only
+side-effect path and independently verify gateway code, configuration,
+identity appraisal, sandbox host/runtime/image, egress policy, coordination,
+and fencing. See `protected-tool-gateway-contract.md`,
+`protected-process-execution.md`, and `oci-linux-sandbox-provider.md`.
 
 ### 2.10 Evidence Store
 

@@ -261,7 +261,7 @@ non-bypassable security boundary. See
 Phase 17A adds a durable transaction around the Phase 16 dispatch admission.
 Phase 17B1 adds a manifest-backed authenticated principal. Phase 17B2A adds
 one policy-pinned ELF or Mach-O local process with signed before/after
-evidence:
+evidence. Phase 17B2B adds a measured OCI/Linux provider:
 
 ```text
 TLS 1.3 mTLS + exact SPIFFE identity + one-use signed challenge
@@ -269,7 +269,10 @@ TLS 1.3 mTLS + exact SPIFFE identity + one-use signed challenge
 -> authenticated principal + trusted gateway config
 -> exact lease/policy/checkpoint/repository/input binding
 -> received -> authorized -> executing
--> signed exact-command envelope -> bounded process -> signed observation
+-> signed pre-create envelope
+-> immutable image + exact target + measured Docker configuration
+-> kernel probe for privilege + mounts + cgroup + network
+-> verified container cleanup + signed observation
 -> committed receipt | aborted cancellation | recovery-required block
 ```
 
@@ -279,22 +282,30 @@ and `begin` returns the exact execution-event reference needed by `commit`. An
 authorized request that never started can be cancelled with the same raw input;
 a crash-retained allow admission is cancelled or its lease is blocked, and an
 executing request with an unknown outcome blocks the lease instead of claiming
-success. Protected process input contains only a policy reference and rule ID;
-the gateway reloads the policy, envelope, and observation before issuing a
-receipt. Once an envelope exists, a retry never executes the transaction again.
+success. Protected process and OCI sandbox inputs contain only one policy
+reference and rule ID. The gateway reloads every retained policy, envelope,
+probe, observation, and result binding before issuing `ToolExecutionReceipt`
+v0.4. Once an envelope exists, retry never executes the transaction again.
 
-This is an authenticated reference controller with a bounded process adapter,
-not a production gateway or sandbox. The adapter fixes an executable, argv,
-cwd, empty environment, timeout, and output limits, but does not isolate the
-filesystem, syscalls, privileges, descendant processes, or network, and does
-not prove that direct side paths are unavailable. Every decision keeps
-production execution and release authorization false. Managed
-key/configuration custody, OCI/OS sandbox and egress enforcement, provider
-adapters, linearizable coordination, and independently verified exclusive
-deployment remain later Phase 17B work. See
+The OCI reference provider uses an immutable image with an exact probe
+entrypoint and directly extracts and hashes `/cannae-probe` before execution.
+It applies
+digest-pinned seccomp, non-root UID/GID, all capabilities dropped,
+`no_new_privs`, private namespaces, read-only root and repository mounts,
+cgroup v2 limits, and measured external IP egress denial. A static probe directly measures
+the corresponding `/proc`, mount, cgroup, address, route, and connection state.
+
+This is still not a production gateway or managed exclusive sandbox. The local
+Docker daemon, host kernel, image provenance, evidence key, deployment
+configuration, and absence of alternate shell/MCP/Docker paths are not
+independently proven. Every decision keeps production execution and release
+authorization false. Independent key/configuration custody, host and image
+attestation, provider-native adapters, linearizable coordination, and
+verified exclusive deployment remain later Phase 17B work. See
 [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md) and
 [Gateway Identity Admission](docs/gateway-identity-admission.md), then
-[Protected Process Execution](docs/protected-process-execution.md).
+[Protected Process Execution](docs/protected-process-execution.md) and
+[OCI Linux Sandbox Provider](docs/oci-linux-sandbox-provider.md).
 
 ### Heterogeneous Model Dispatch
 
@@ -454,6 +465,7 @@ Important examples:
 - `run-dispatch-runtime-fixtures.js`: plan-digest policy authorization, concurrent one-lineage issuance, ordered cross-agent repository handoff, exact tool admission and post-tool correlation, serial result checkpoints, replay, drift, interruption, same-session resume, revocation, expiry, retained-action, malformed-hook, cross-session, cross-agent, and cross-repository gates.
 - `run-protected-tool-gateway-fixtures.js`: trusted principal/gateway binding, exact transaction/idempotency admission, execution-token commit, raw-input non-retention, operation-class substitution, cancellation, orphan-admission revocation, and unknown-outcome recovery.
 - `run-protected-process-executor-fixtures.js`: real exact executable/argv execution, signed policy/envelope/observation binding, caller-result, shebang, and executable-drift rejection, timeout recording, forbidden repository-effect rejection, and no automatic rerun after an execution claim.
+- `run-oci-linux-sandbox-provider-fixtures.js`: required-in-CI live probe compilation and scratch-image execution, signed pre-create/post-cleanup evidence, Docker and kernel control measurement, caller-result, profile/image/probe substitution rejection, timeout, post-create/post-container cleanup, and no-rerun recovery.
 - `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
 - `run-repository-artifact-concurrency-fixtures.js`: 24-writer serialization, monotonic fencing, foreign-host lease expiry, and stale-writer rejection.
 - `run-repository-artifact-recovery-fixtures.js`: journal recovery, reserved-history finalization, history reconciliation, and artifact/manifest tamper detection.
@@ -539,7 +551,7 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - The shared-filesystem lease backend is not a consensus system. Partition-tolerant multi-host operation requires an external linearizable coordinator and storage-side fencing enforcement.
 - The campaign supervisor issues and persists bounded, time-limited cycle orders; it does not execute agent work, create checkpoints, produce evidence, resolve an escalation, or grant release authority.
 - Project-local Codex and Claude hooks are bypassable client-side guardrails and do not cover every provider execution path. Strict concurrent isolation requires separate repository-scoped sub-missions/worktrees and top-level sessions followed by an integration wave, plus managed controls, an OS sandbox, or an independently protected tool gateway. Codex's documented hook payload also does not provide a unique identity for internal subagents.
-- The Phase 17A protected gateway is a transaction/reference controller. Its trusted principal and gateway digests are adapter inputs, not self-authenticating proof; it does not invoke tools, protect its own deployment, remove alternate execution paths, enforce a sandbox or network policy, or support distributed consensus. Its production and release fields are therefore fixed to false.
+- The Phase 17A gateway core is a transaction/reference controller. Phase 17B2B can invoke one measured OCI/Linux reference provider, but neither component protects its own deployment, independently attests the Docker host/image/evidence key, removes alternate execution paths, or supports distributed consensus. Production and release fields therefore remain fixed to false.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
 - Source mappings are useful traceability aids, but they do not prove that an interpretation is universally valid.
 - US doctrine is not treated as universal; multinational and local adaptation remain required.

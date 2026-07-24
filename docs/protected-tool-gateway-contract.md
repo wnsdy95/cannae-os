@@ -6,7 +6,9 @@ Phase 17A is implemented as a repository-manifest-backed contract and reference
 controller. Phase 17B1 adds a TLS 1.3 mTLS, SPIFFE X.509, signed challenge, and
 TLS-exporter identity adapter at `authenticated_reference` assurance. Phase
 17B2A adds a policy-pinned local process reference adapter with signed
-pre-execution and post-execution evidence. None of these phases deploys a
+pre-execution and post-execution evidence. Phase 17B2B adds a measured
+OCI/Linux reference sandbox with signed configuration, probe, result, and
+cleanup evidence. None of these phases deploys an independently attested
 production sandbox or proves that the gateway is the only path to a tool.
 
 The controller deliberately fixes:
@@ -18,9 +20,9 @@ release_authorized: false
 ```
 
 Later Phase 17B work must supply independently managed provider executors,
-OS/container isolation, exclusive network/process routing, authenticated
-configuration, and deployment evidence before any production exclusivity claim
-is possible.
+host/runtime/image provenance, exclusive network/process routing, protected key
+custody, authenticated configuration, and deployment evidence before any
+production exclusivity claim is possible.
 
 ## 1. Purpose
 
@@ -128,7 +130,7 @@ risk acceptance, policy change, or authority change.
 | `GatewayPrincipalEvidence` | Gateway-side TLS observation | challenge, SPIFFE chain, client/server certificates, TLS exporter, adapter signature, expiry |
 | `ToolGatewayRequest` v0.2 | Immutable request envelope | identity refs, gateway, principal, lease, policy, checkpoint, repository, exact tool digest, idempotency, validity |
 | `ToolGatewayDecision` v0.2 | Admission result | exact request, identity refs, dispatch admission, principal/gateway digests, rule, repository state, coordination observation |
-| `ToolExecutionReceipt` v0.3 | Final execution disposition | exact request/decision/identity/admission/checkpoint refs, executor measurements, optional bounded policy/envelope/observation refs, result digest, before/after state |
+| `ToolExecutionReceipt` v0.4 | Final execution disposition | exact request/decision/identity/admission/checkpoint refs, executor and optional probe measurements, retained process/OCI policy-envelope-observation refs, result digest, before/after state |
 | `ToolGatewayTransactionEvent` v0.2 | Append-only state transition | transaction sequence, predecessor, immutable request and identity bindings, decision/receipt references |
 
 The repository artifact manifest is the custody layer. Conversation history is
@@ -235,6 +237,13 @@ envelope before spawn, executes the policy-fixed process, persists its signed
 observation, and submits all evidence to commit. See
 `protected-process-execution.md`.
 
+Do not call `begin` manually for `OciSandboxToolInput`. Use
+`oci-linux-sandbox-provider.js execute`, which owns begin, persists a signed
+envelope before Docker creates a container, executes only the policy-fixed
+probe/target under the retained OCI controls, persists direct kernel evidence,
+verifies terminal cleanup, signs the observation, and submits the complete
+chain. See `oci-linux-sandbox-provider.md`.
+
 ### 6.4 Commit
 
 For a non-protected integration, the adapter records its own code, runtime,
@@ -267,6 +276,14 @@ The gateway reloads the exact `ProtectedExecutorPolicy`,
 `ProtectedExecutionEnvelope`, and `ProtectedExecutionObservation` references,
 verifies their signatures, digests, command, timing, output, repository, and
 transaction bindings, and commits only `bounded_process_reference` evidence.
+
+For `OciSandboxToolInput`, direct caller-declared commit is also prohibited.
+The gateway reloads `OciLinuxSandboxPolicy`, `OciSandboxExecutionEnvelope`,
+`OciSandboxExecutionObservation`, and its concrete
+`OciSandboxProbeObservation`; verifies the image, probe, seccomp, Docker
+configuration, kernel privilege/mount/cgroup/network evidence, result,
+repository, cleanup, timing, signatures, and transaction bindings; and commits
+only `oci_linux_sandbox_reference` evidence.
 
 ### 6.5 Recover
 
@@ -371,7 +388,8 @@ controller:
 - independently managed mTLS, DPoP, or workload-OIDC credential delivery,
   key custody, rotation, and revocation operations;
 - provider-specific MCP, shell, filesystem, network, and delegation adapters;
-- OS/container sandboxing and egress policy that prevent direct side paths;
+- independently protected and attested OS/container sandboxing, egress policy,
+  and provider routing that prevent direct side paths;
 - a linearizable coordinator and storage-enforced fencing;
 - secrets handling that does not expose raw input to the model or audit store;
 - deployment/code/configuration evidence independently verified by the
@@ -381,11 +399,14 @@ controller:
   unavailable.
 
 Phase 17B1 supports `authenticated_reference`. Phase 17B2A supports a bounded
-local process reference without filesystem, syscall, privilege, process-tree,
-or network isolation. Until the remaining conditions are measured,
-`managed_exclusive` is not an honest assurance level. See
+local process reference. Phase 17B2B supports a measured OCI/Linux reference
+with read-only mounts, seccomp, `no_new_privs`, capability/UID, cgroup, and
+external-IP-egress-denial evidence. The local Docker daemon, host, evidence key,
+deployment, and side-path exclusion are not independently proven, so
+`managed_exclusive` is still not an honest assurance level. See
 `gateway-identity-admission.md` for identity and
-`protected-process-execution.md` for execution evidence and residual limits.
+`protected-process-execution.md` and `oci-linux-sandbox-provider.md` for
+execution evidence and residual limits.
 
 ## 11. Validation
 
@@ -395,6 +416,7 @@ node run-dispatch-runtime-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-protected-process-executor-fixtures.js
+node run-oci-linux-sandbox-provider-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 
@@ -413,3 +435,9 @@ The protected-process fixture executes real policy-pinned child processes and
 rejects caller-declared result injection, rule substitution, executable drift,
 forbidden repository effects, and automatic rerun after an execution claim. It
 also records bounded timeout failure.
+
+The OCI sandbox fixture compiles a real static Linux probe, builds a scratch
+image without network access, runs live Docker containers, and rejects
+caller-result injection, profile/image drift, privileged probe evidence, and
+automatic rerun after a claimed container execution. It also measures timeout,
+kernel controls, repository immutability, and verified cleanup.

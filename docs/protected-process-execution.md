@@ -40,7 +40,7 @@ exact authorized tool-input digest
 + signed envelope retained before spawn
 + signed observation retained after process close
 + gateway-side independent bundle verification
-= result may enter a ToolExecutionReceipt v0.3
+= result may enter a ToolExecutionReceipt v0.4
 ```
 
 The acting model cannot submit a command string. The only process input is a
@@ -65,11 +65,11 @@ The implementation applies the following primary guidance:
   The reference adapter does not set either and therefore does not claim them.
 - [OCI Runtime Specification, Linux](https://github.com/opencontainers/runtime-spec/blob/main/config-linux.md)
   defines namespaces, devices, resources, seccomp, masked paths, and related
-  container controls. These belong in a later sandbox provider, not in a
-  generic process receipt.
+  container controls. These belong in the separate Phase 17B2B sandbox
+  provider, not in a generic process receipt.
 - [NIST SP 800-190](https://csrc.nist.gov/pubs/sp/800/190/final) treats container
   image, runtime, host, registry, and orchestration risks as separate
-  operational concerns. A future container adapter must preserve those
+  operational concerns. The Phase 17B2B container adapter preserves those
   distinctions and cannot infer isolation from an image digest alone.
 
 ## 3. Contracts
@@ -80,7 +80,7 @@ The implementation applies the following primary guidance:
 | `ProtectedProcessToolInput` v0.1 | Complete raw tool input | one concrete policy ref and one rule ID only |
 | `ProtectedExecutionEnvelope` v0.1 | Signed intent retained before spawn | transaction refs, command, limits, controls, repository state, expiry |
 | `ProtectedExecutionObservation` v0.1 | Signed result retained after close | envelope ref, process disposition, bounded output, result digest, before/after state |
-| `ToolExecutionReceipt` v0.3 | Gateway terminal disposition | all earlier refs plus policy, envelope, and observation refs |
+| `ToolExecutionReceipt` v0.4 | Gateway terminal disposition | all earlier refs plus policy, envelope, and observation refs |
 
 The policy's signing public key is retained. The private key is supplied from a
 separate local file at execution time and is never written to a request,
@@ -281,10 +281,13 @@ Phase 17B2A does not provide:
 - proof that every alternate path to the executable is unavailable;
 - production execution, managed exclusivity, release, or authority expansion.
 
-Phase 17B2B should introduce an OCI/Linux sandbox provider with independently
-measured image, runtime configuration, namespaces, seccomp, privilege and
-egress policy. It must preserve this policy/envelope/observation interface while
-making stronger claims only when those controls are directly observed.
+Phase 17B2B now provides the separate OCI/Linux policy-envelope-probe-
+observation chain described in `oci-linux-sandbox-provider.md`. It measures
+image and runtime configuration, namespaces, mounts, seccomp, privilege,
+cgroup, and external-IP-egress-denial state while preserving the same gateway
+no-rerun and independent-appraisal pattern. Use the Phase 17B2A path only when
+local exact-process evidence is sufficient and its explicit absence of
+isolation is acceptable.
 
 ## 10. Validation
 
@@ -292,6 +295,7 @@ making stronger claims only when those controls are directly observed.
 node validator-cli-prototype/run-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-protected-process-executor-fixtures.js
+node run-oci-linux-sandbox-provider-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   "protected process executor exact argv envelope observation"
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \

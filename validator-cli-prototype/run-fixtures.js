@@ -319,6 +319,82 @@ const fixtures = [
     ]
   },
   {
+    name: "valid OCI Linux sandbox policy",
+    file: "sample-payloads/valid-oci-linux-sandbox-policy.json",
+    type: "oci-linux-sandbox-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "overclaiming OCI Linux sandbox policy",
+    file: "sample-payloads/invalid-oci-linux-sandbox-policy-overclaim.json",
+    type: "oci-linux-sandbox-policy",
+    exitCode: 1,
+    requiredCodes: ["OCI_SANDBOX_POLICY_AUTHORITY_DRIFT"]
+  },
+  {
+    name: "valid OCI sandbox tool input",
+    file: "sample-payloads/valid-oci-sandbox-tool-input.json",
+    type: "oci-sandbox-tool-input",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound OCI sandbox tool input",
+    file: "sample-payloads/invalid-oci-sandbox-tool-input-unbound.json",
+    type: "oci-sandbox-tool-input",
+    exitCode: 1,
+    requiredCodes: ["OCI_SANDBOX_POLICY_REF_UNBOUND"]
+  },
+  {
+    name: "valid OCI sandbox execution envelope",
+    file: "sample-payloads/valid-oci-sandbox-execution-envelope.json",
+    type: "oci-sandbox-execution-envelope",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound OCI sandbox execution envelope",
+    file: "sample-payloads/invalid-oci-sandbox-execution-envelope-unbound.json",
+    type: "oci-sandbox-execution-envelope",
+    exitCode: 1,
+    requiredCodes: [
+      "OCI_SANDBOX_ENVELOPE_REF_UNBOUND",
+      "OCI_SANDBOX_ENVELOPE_DIGEST_MISMATCH"
+    ]
+  },
+  {
+    name: "valid OCI sandbox probe observation",
+    file: "sample-payloads/valid-oci-sandbox-probe-observation.json",
+    type: "oci-sandbox-probe-observation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "privileged OCI sandbox probe observation",
+    file: "sample-payloads/invalid-oci-sandbox-probe-observation-privileged.json",
+    type: "oci-sandbox-probe-observation",
+    exitCode: 1,
+    requiredCodes: ["OCI_SANDBOX_PROBE_PRIVILEGE_INVALID"]
+  },
+  {
+    name: "valid OCI sandbox execution observation",
+    file: "sample-payloads/valid-oci-sandbox-execution-observation.json",
+    type: "oci-sandbox-execution-observation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unclean OCI sandbox execution observation",
+    file: "sample-payloads/invalid-oci-sandbox-execution-observation-unclean.json",
+    type: "oci-sandbox-execution-observation",
+    exitCode: 1,
+    requiredCodes: [
+      "OCI_SANDBOX_OBSERVATION_STATE_INVALID",
+      "OCI_SANDBOX_OBSERVATION_DIGEST_MISMATCH"
+    ]
+  },
+  {
     name: "valid tool gateway transaction event",
     file: "sample-payloads/valid-tool-gateway-transaction-event.json",
     type: "tool-gateway-transaction-event",

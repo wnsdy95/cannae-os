@@ -1,0 +1,135 @@
+{
+  "schema_version": "0.1",
+  "type": "OciSandboxProbeObservation",
+  "id": "OSPO-9080a33c261060e63e538a31",
+  "transaction_id": "GTX-OCI-SANDBOX-SUCCESS",
+  "probe_sha256": "5a62852f444465f68b53e3806dba024b7261abaeaaf229243a0890078c12d524",
+  "platform": "linux",
+  "status": {
+    "uid": {
+      "real": 65532,
+      "effective": 65532,
+      "saved": 65532,
+      "filesystem": 65532
+    },
+    "gid": {
+      "real": 65532,
+      "effective": 65532,
+      "saved": 65532,
+      "filesystem": 65532
+    },
+    "capabilities": {
+      "inheritable": "0000000000000000",
+      "permitted": "0000000000000000",
+      "effective": "0000000000000000",
+      "bounding": "0000000000000000",
+      "ambient": "0000000000000000"
+    },
+    "no_new_privs": 0,
+    "seccomp_mode": 2,
+    "seccomp_filters": 1,
+    "nspid": [
+      7
+    ]
+  },
+  "namespaces": {
+    "cgroup": "cgroup:[4026532832]",
+    "ipc": "ipc:[4026532830]",
+    "mnt": "mnt:[4026532828]",
+    "net": "net:[4026532833]",
+    "pid": "pid:[4026532831]",
+    "uts": "uts:[4026532829]"
+  },
+  "mounts": {
+    "root": {
+      "destination": "/",
+      "read_only": true,
+      "options": [
+        "relatime",
+        "ro",
+        "rw"
+      ]
+    },
+    "workspace": {
+      "destination": "/workspace",
+      "read_only": true,
+      "options": [
+        "fakeowner",
+        "nodev",
+        "nosuid",
+        "relatime",
+        "ro",
+        "rw"
+      ]
+    },
+    "tmp": {
+      "destination": "/tmp",
+      "read_only": false,
+      "options": [
+        "nodev",
+        "noexec",
+        "nosuid",
+        "relatime",
+        "rw"
+      ]
+    },
+    "workspace_recursive_read_only": true
+  },
+  "cgroup": {
+    "version": "2",
+    "path": "/",
+    "memory_max": "134217728",
+    "pids_max": "64",
+    "cpu_max": "50000 100000"
+  },
+  "network": {
+    "interfaces": [
+      "erspan0",
+      "gre0",
+      "gretap0",
+      "ip6_vti0",
+      "ip6gre0",
+      "ip6tnl0",
+      "ip_vti0",
+      "lo",
+      "sit0",
+      "tunl0"
+    ],
+    "addressed_interfaces": [
+      "lo"
+    ],
+    "non_loopback_addresses": [],
+    "default_route_count": 0,
+    "outbound_connect_denied": true
+  },
+  "write_tests": {
+    "root_denied": true,
+    "workspace_denied": true,
+    "tmp_writable": true
+  },
+  "child": {
+    "spawned": true,
+    "exit_code": 0,
+    "signal": "none",
+    "termination_reason": "exited",
+    "timed_out": false,
+    "output_limit_exceeded": false,
+    "stdout": {
+      "sha256": "20d55d8327259ffd09dcc460ddc51514aabe60071b0b6d99a90f265266fddf45",
+      "observed_bytes": 19,
+      "retained_bytes": 19,
+      "truncated": false,
+      "base64": "c2FuZGJveC13b3JrbG9hZC1vaw=="
+    },
+    "stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observed_bytes": 0,
+      "retained_bytes": 0,
+      "truncated": false,
+      "base64": ""
+    },
+    "started_at": "2026-07-24T21:30:27.026955713Z",
+    "finished_at": "2026-07-24T21:30:27.027511129Z"
+  },
+  "collected_at": "2026-07-24T21:30:27.027614379Z"
+}

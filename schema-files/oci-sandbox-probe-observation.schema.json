@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/oci-sandbox-probe-observation.schema.json",
+  "title": "OCI Sandbox Probe Observation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "transaction_id",
+    "probe_sha256",
+    "platform",
+    "status",
+    "namespaces",
+    "mounts",
+    "cgroup",
+    "network",
+    "write_tests",
+    "child",
+    "collected_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "OciSandboxProbeObservation" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
+    "probe_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "platform": { "type": "string", "const": "linux" },
+    "status": { "$ref": "#/$defs/status" },
+    "namespaces": { "$ref": "#/$defs/namespaces" },
+    "mounts": { "$ref": "#/$defs/mounts" },
+    "cgroup": { "$ref": "#/$defs/cgroup" },
+    "network": { "$ref": "#/$defs/network" },
+    "write_tests": { "$ref": "#/$defs/write_tests" },
+    "child": { "$ref": "#/$defs/child" },
+    "collected_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "hex_capability": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{16}$"
+    },
+    "identity_set": {
+      "type": "object",
+      "required": ["real", "effective", "saved", "filesystem"],
+      "additionalProperties": false,
+      "properties": {
+        "real": { "type": "integer", "minimum": 0 },
+        "effective": { "type": "integer", "minimum": 0 },
+        "saved": { "type": "integer", "minimum": 0 },
+        "filesystem": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "status": {
+      "type": "object",
+      "required": [
+        "uid",
+        "gid",
+        "capabilities",
+        "no_new_privs",
+        "seccomp_mode",
+        "seccomp_filters",
+        "nspid"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "uid": { "$ref": "#/$defs/identity_set" },
+        "gid": { "$ref": "#/$defs/identity_set" },
+        "capabilities": {
+          "type": "object",
+          "required": [
+            "inheritable",
+            "permitted",
+            "effective",
+            "bounding",
+            "ambient"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "inheritable": { "$ref": "#/$defs/hex_capability" },
+            "permitted": { "$ref": "#/$defs/hex_capability" },
+            "effective": { "$ref": "#/$defs/hex_capability" },
+            "bounding": { "$ref": "#/$defs/hex_capability" },
+            "ambient": { "$ref": "#/$defs/hex_capability" }
+          }
+        },
+        "no_new_privs": { "type": "integer", "enum": [0, 1] },
+        "seccomp_mode": { "type": "integer", "enum": [0, 1, 2] },
+        "seccomp_filters": { "type": "integer", "minimum": 0 },
+        "nspid": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "namespaces": {
+      "type": "object",
+      "required": ["cgroup", "ipc", "mnt", "net", "pid", "uts"],
+      "additionalProperties": false,
+      "properties": {
+        "cgroup": { "type": "string", "pattern": "^cgroup:\\[[0-9]+\\]$" },
+        "ipc": { "type": "string", "pattern": "^ipc:\\[[0-9]+\\]$" },
+        "mnt": { "type": "string", "pattern": "^mnt:\\[[0-9]+\\]$" },
+        "net": { "type": "string", "pattern": "^net:\\[[0-9]+\\]$" },
+        "pid": { "type": "string", "pattern": "^pid:\\[[0-9]+\\]$" },
+        "uts": { "type": "string", "pattern": "^uts:\\[[0-9]+\\]$" }
+      }
+    },
+    "mount": {
+      "type": "object",
+      "required": ["destination", "read_only", "options"],
+      "additionalProperties": false,
+      "properties": {
+        "destination": { "type": "string", "pattern": "^/" },
+        "read_only": { "type": "boolean" },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+        }
+      }
+    },
+    "mounts": {
+      "type": "object",
+      "required": [
+        "root",
+        "workspace",
+        "tmp",
+        "workspace_recursive_read_only"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "root": { "$ref": "#/$defs/mount" },
+        "workspace": { "$ref": "#/$defs/mount" },
+        "tmp": { "$ref": "#/$defs/mount" },
+        "workspace_recursive_read_only": { "type": "boolean" }
+      }
+    },
+    "cgroup": {
+      "type": "object",
+      "required": [
+        "version",
+        "path",
+        "memory_max",
+        "pids_max",
+        "cpu_max"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "type": "string", "enum": ["1", "2"] },
+        "path": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "memory_max": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "pids_max": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "cpu_max": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    },
+    "network": {
+      "type": "object",
+      "required": [
+        "interfaces",
+        "addressed_interfaces",
+        "non_loopback_addresses",
+        "default_route_count",
+        "outbound_connect_denied"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "interfaces": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "addressed_interfaces": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "non_loopback_addresses": {
+          "type": "array",
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "default_route_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128
+        },
+        "outbound_connect_denied": {
+          "type": "boolean"
+        }
+      }
+    },
+    "write_tests": {
+      "type": "object",
+      "required": ["root_denied", "workspace_denied", "tmp_writable"],
+      "additionalProperties": false,
+      "properties": {
+        "root_denied": { "type": "boolean" },
+        "workspace_denied": { "type": "boolean" },
+        "tmp_writable": { "type": "boolean" }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "sha256",
+        "observed_bytes",
+        "retained_bytes",
+        "truncated",
+        "base64"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "observed_bytes": { "type": "integer", "minimum": 0 },
+        "retained_bytes": { "type": "integer", "minimum": 0 },
+        "truncated": { "type": "boolean" },
+        "base64": { "type": "string" }
+      }
+    },
+    "child": {
+      "type": "object",
+      "required": [
+        "spawned",
+        "exit_code",
+        "signal",
+        "termination_reason",
+        "timed_out",
+        "output_limit_exceeded",
+        "stdout",
+        "stderr",
+        "started_at",
+        "finished_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "spawned": { "type": "boolean" },
+        "exit_code": { "type": "integer", "minimum": -1, "maximum": 255 },
+        "signal": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "termination_reason": {
+          "type": "string",
+          "enum": [
+            "exited",
+            "timeout",
+            "stdout_limit",
+            "stderr_limit",
+            "spawn_error"
+          ]
+        },
+        "timed_out": { "type": "boolean" },
+        "output_limit_exceeded": { "type": "boolean" },
+        "stdout": { "$ref": "#/$defs/output" },
+        "stderr": { "$ref": "#/$defs/output" },
+        "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    }
+  }
+}

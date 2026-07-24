@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.3",
+  "schema_version": "0.4",
   "type": "ToolExecutionReceipt",
   "id": "TER-W1-incomplete",
   "transaction_id": "GTX-W1-incomplete",

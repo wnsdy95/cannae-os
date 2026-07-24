@@ -42,6 +42,8 @@ jobs:
 
       - name: Runner fixtures
         shell: bash
+        env:
+          CANNAE_REQUIRE_LIVE_OCI: "1"
         run: |
           for f in $(ls run-*.js | sort); do
             node "$f" || exit 1

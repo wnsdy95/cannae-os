@@ -106,12 +106,13 @@ const RULES = [
   },
   {
     id: "enforced-dispatch",
-    keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency", "protected process", "bounded process", "process executor", "native executable", "shebang", "interpreter", "exact argv", "execution envelope", "execution observation"],
+    keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency", "protected process", "bounded process", "process executor", "native executable", "shebang", "interpreter", "exact argv", "execution envelope", "execution observation", "oci linux sandbox", "oci sandbox", "linux sandbox", "sandbox provider", "immutable image", "seccomp profile", "no new privileges", "no_new_privs", "cap drop", "read only rootfs", "recursive read only", "cgroup v2", "network none", "kernel probe", "container cleanup"],
     docs: [
       "docs/enforced-dispatch-and-resume.md",
       "docs/protected-tool-gateway-contract.md",
       "docs/gateway-identity-admission.md",
       "docs/protected-process-execution.md",
+      "docs/oci-linux-sandbox-provider.md",
       "docs/skill-operational-mission-lifecycle.md",
       "docs/tool-use-roe.md",
       "docs/repository-artifact-isolation-policy.md",
@@ -122,6 +123,7 @@ const RULES = [
       "node run-protected-tool-gateway-fixtures.js",
       "node run-gateway-identity-adapter-fixtures.js",
       "node run-protected-process-executor-fixtures.js",
+      "node run-oci-linux-sandbox-provider-fixtures.js",
       "node validator-cli-prototype/validate.js sample-payloads/valid-dispatch-tool-policy.json dispatch-tool-policy",
       "node validator-cli-prototype/validate.js sample-payloads/valid-agent-dispatch-lease.json agent-dispatch-lease",
       "node validator-cli-prototype/validate.js sample-payloads/valid-agent-execution-checkpoint.json agent-execution-checkpoint",
@@ -130,7 +132,7 @@ const RULES = [
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "verifier independence", "failure domain", "correlation domain", "shared runner", "shared account", "shared project", "pre-dispatch admission", "pre-dispatch challenge", "challenge", "nonce", "liveness", "replay", "stale responder", "offline verifier", "remote verifier", "verifier identity", "verifier execution", "execution integrity", "execution evidence", "runtime policy", "github actions oidc", "gitlab ci oidc", "gitlab oidc", "native provider adapter", "jwks", "jwt", "oci", "sandbox", "workload identity", "spiffe", "svid", "x509", "x.509", "transparency log", "transparency operations", "transparency state", "consistency proof", "witness", "monitor", "gossip", "root rotation", "equivocation", "revocation", "tuf", "merkle", "checkpoint", "sigstore", "sigstore bundle", "cosign bundle", "fulcio", "trustedroot", "trusted root", "rekor", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
+    keywords: ["self-improvement", "self improvement", "autonomous improvement", "continuous improvement", "adaptive work", "improvement campaign", "checkpoint controller", "campaign supervisor", "cycle order", "resume campaign", "proof carrying", "verification receipt", "verification attestation", "comparative attestation", "signed comparative report", "attestation", "ed25519", "dsse", "signed quorum", "trust policy", "trust admission", "verifier readiness", "verifier independence", "failure domain", "correlation domain", "shared runner", "shared account", "shared project", "pre-dispatch admission", "pre-dispatch challenge", "challenge", "nonce", "liveness", "replay", "stale responder", "offline verifier", "remote verifier", "verifier identity", "verifier execution", "execution integrity", "execution evidence", "runtime policy", "github actions oidc", "gitlab ci oidc", "gitlab oidc", "native provider adapter", "jwks", "jwt", "verifier oci", "verifier sandbox", "verifier execution sandbox", "workload identity", "spiffe", "svid", "x509", "x.509", "transparency log", "transparency operations", "transparency state", "consistency proof", "witness", "monitor", "gossip", "root rotation", "equivocation", "revocation", "tuf", "merkle", "checkpoint", "sigstore", "sigstore bundle", "cosign bundle", "fulcio", "trustedroot", "trusted root", "rekor", "compare", "comparison", "comparative evaluation", "comparative promotion", "candidate promotion", "promote candidate", "promotion gate", "canary", "non-regression", "baseline", "baseline candidate", "improve in-progress work", "evolve work", "quality loop", "learning loop"],
     docs: [
       "docs/bounded-self-improvement-operations.md",
       "docs/sigstore-verifier-workload-admission.md",
@@ -312,7 +314,8 @@ const ROLE_DOCS = {
     "docs/policy-engine-rules.md",
     "docs/enforced-dispatch-and-resume.md",
     "docs/protected-tool-gateway-contract.md",
-    "docs/protected-process-execution.md"
+    "docs/protected-process-execution.md",
+    "docs/oci-linux-sandbox-provider.md"
   ],
   S4: [
     "docs/maintenance-readiness-model.md",
@@ -364,11 +367,11 @@ const AUTHORITY_DOCS = [
   },
   {
     keywords: ["execution", "tool", "scoped-execution", "carry-out", "instrument"],
-    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md", "docs/protected-process-execution.md"]
+    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md", "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md"]
   }
 ];
 
-const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".sh", ".svg", ".yaml", ".yml"]);
+const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".go", ".sh", ".svg", ".yaml", ".yml"]);
 const EXCLUDED_DIRS = new Set([".cannae", ".git", "node_modules"]);
 
 const ROUTE_HINTS = [
@@ -406,11 +409,11 @@ const ROUTE_HINTS = [
   },
   {
     id: "enforced-dispatch",
-    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction", "protected-process", "protected-executor", "bounded-process", "native-executable", "shebang", "interpreter", "execution-envelope", "execution-observation", "operate_protected_executor", "exact-argv"]
+    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction", "protected-process", "protected-executor", "bounded-process", "native-executable", "shebang", "interpreter", "execution-envelope", "execution-observation", "operate_protected_executor", "exact-argv", "oci-linux-sandbox", "oci-sandbox", "sandbox-provider", "operate_oci_sandbox", "seccomp", "no-new-privileges", "cgroup", "network-none", "kernel-probe", "container-cleanup"]
   },
   {
     id: "bounded-self-improvement",
-    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "self-improvement-cycle-order", "campaign-supervisor", "cycle-order", "verification-plan", "verification-receipt", "verification-attestation", "comparative-evaluation-attestation", "signed-comparative-report", "verifier-trust-policy", "verifier-identity-evidence", "verifier-runtime-policy", "verifier-execution-evidence", "verifier-execution-integrity", "native-verifier-adapter", "gitlab-ci", "oidc", "jwks", "verifier-independence", "failure-domain", "correlation-domain", "execution-integrity", "verifier-challenge-set", "verifier-pre-dispatch-challenge", "pre-dispatch-challenge", "challenge", "nonce", "liveness", "replay", "sigstore-verifier-identity-evidence", "sigstore-trusted-root", "workload-identity", "spiffe", "svid", "x509", "transparency-log", "transparency-operations", "transparency-state", "transparency-policy", "transparency-observation", "transparency-incident", "trust-root-rotation", "consistency-proof", "witness", "monitor", "gossip", "equivocation", "revocation", "tuf", "merkle", "sigstore", "fulcio", "trustedroot", "rekor", "oci", "sandbox", "attestation", "ed25519", "dsse", "quorum", "verification-runner", "comparative-evaluation", "comparative-promotion", "canary", "non-regression", "baseline-candidate", "proof-carrying", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
+    keywords: ["self-improvement", "self-improvement-campaign", "self-improvement-checkpoint", "self-improvement-decision", "self-improvement-cycle-order", "campaign-supervisor", "cycle-order", "verification-plan", "verification-receipt", "verification-attestation", "comparative-evaluation-attestation", "signed-comparative-report", "verifier-trust-policy", "verifier-identity-evidence", "verifier-runtime-policy", "verifier-execution-evidence", "verifier-execution-integrity", "native-verifier-adapter", "gitlab-ci", "oidc", "jwks", "verifier-independence", "failure-domain", "correlation-domain", "execution-integrity", "verifier-challenge-set", "verifier-pre-dispatch-challenge", "pre-dispatch-challenge", "challenge", "nonce", "liveness", "replay", "sigstore-verifier-identity-evidence", "sigstore-trusted-root", "workload-identity", "spiffe", "svid", "x509", "transparency-log", "transparency-operations", "transparency-state", "transparency-policy", "transparency-observation", "transparency-incident", "trust-root-rotation", "consistency-proof", "witness", "monitor", "gossip", "equivocation", "revocation", "tuf", "merkle", "sigstore", "fulcio", "trustedroot", "rekor", "verifier-oci", "verifier-sandbox", "attestation", "ed25519", "dsse", "quorum", "verification-runner", "comparative-evaluation", "comparative-promotion", "canary", "non-regression", "baseline-candidate", "proof-carrying", "autonomous-improvement", "continuous-improvement", "adaptive-work", "quality-loop", "learning-loop"]
   },
   {
     id: "sof-tf",
@@ -526,7 +529,7 @@ function artifactType(file) {
   if (file.startsWith("schema-files/")) return "schema";
   if (file.startsWith("sample-payloads/") || file.startsWith("runtime-demo-payloads/")) return "sample";
   if (file.includes("-fixtures/") || file.startsWith("event-fixtures/")) return "fixture";
-  if (file.endsWith(".js") || file.endsWith(".sh")) return "runner-or-tool";
+  if (file.endsWith(".js") || file.endsWith(".go") || file.endsWith(".sh")) return "runner-or-tool";
   if (file.endsWith(".json")) return "projection-or-data";
   return "artifact";
 }
@@ -571,7 +574,7 @@ function routeIdsForArtifact(file) {
       file === "comparative-evaluation-attestation.js" || file === "comparative-evaluation-attestation-runner.js" ||
       file === "run-comparative-evaluation-attestation-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "repository-artifact-verify.js" || file === "repository-lease.js" || file === "run-repository-artifact-recovery-fixtures.js" || file === "run-repository-artifact-concurrency-fixtures.js") routeIds.push("repository-artifact-isolation", "runtime-validation");
-  if (file === "dispatch-runtime-controller.js" || file === "dispatch-hook-adapter.js" || file === "install-dispatch-hooks.js" || file === "protected-tool-gateway.js" || file === "gateway-identity-adapter.js" || file === "gateway-identity-evidence.js" || file === "protected-process-executor.js" || file === "protected-execution-evidence.js" || file === "run-dispatch-runtime-fixtures.js" || file === "run-protected-tool-gateway-fixtures.js" || file === "run-gateway-identity-adapter-fixtures.js" || file === "run-protected-process-executor-fixtures.js") routeIds.push("enforced-dispatch", "runtime-validation");
+  if (file === "dispatch-runtime-controller.js" || file === "dispatch-hook-adapter.js" || file === "install-dispatch-hooks.js" || file === "protected-tool-gateway.js" || file === "gateway-identity-adapter.js" || file === "gateway-identity-evidence.js" || file === "protected-process-executor.js" || file === "protected-execution-evidence.js" || file === "oci-linux-sandbox-provider.js" || file === "oci-linux-sandbox-evidence.js" || file === "oci-linux-sandbox-probe.go" || file === "run-dispatch-runtime-fixtures.js" || file === "run-protected-tool-gateway-fixtures.js" || file === "run-gateway-identity-adapter-fixtures.js" || file === "run-protected-process-executor-fixtures.js" || file === "run-oci-linux-sandbox-provider-fixtures.js") routeIds.push("enforced-dispatch", "runtime-validation");
 
   return unique(routeIds);
 }

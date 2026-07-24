@@ -3815,7 +3815,7 @@ cannot confuse configuration intent with observed enforcement.
 - `schema-files/protected-execution-observation.schema.json`;
 - `protected-execution-evidence.js`;
 - `protected-process-executor.js`;
-- `ToolExecutionReceipt` v0.3 bounded evidence references;
+- `ToolExecutionReceipt` v0.4 bounded evidence references;
 - `run-protected-process-executor-fixtures.js`;
 - `docs/protected-process-execution.md`;
 - Codex and Claude protected-executor wrappers, routing, references, and
@@ -3856,8 +3856,186 @@ cannot confuse configuration intent with observed enforcement.
 - There is no adversarial deployment proof that all alternate executable paths
   are unavailable.
 
-Phase 17B2B research should specify an OCI/Linux provider profile with exact
-image and runtime configuration, mount and namespace policy, seccomp,
-`no_new_privs`, capability and UID/GID state, cgroup/PID containment, network
-namespace and egress policy, independent deployment identity, and tests that
-observe each claimed control directly.
+These gaps define the Phase 17B2B research boundary: exact image and runtime
+configuration, mount and namespace policy, seccomp, `no_new_privs`, capability
+and UID/GID state, cgroup/PID containment, network namespace and egress policy,
+deployment identity, and tests that observe each claimed control directly.
+
+## Phase 17B2B: OCI Linux Sandbox Provider
+
+### Research Question
+
+How can the protected gateway strengthen a bounded process claim into a
+measured Linux container claim without confusing Docker configuration intent,
+image identity, or provider self-report with direct enforcement evidence?
+
+### Primary Findings
+
+1. OCI Linux isolation is a composition, not one flag.
+   The OCI Runtime Specification models PID, network, mount, IPC, UTS, user,
+   cgroup, and time namespaces separately. An omitted namespace inherits the
+   runtime namespace. Resources, capabilities, seccomp, masked/readonly paths,
+   devices, and filesystem configuration are also independent fields.
+2. Docker create is the correct pre-execution boundary.
+   `docker container create` fixes image, process, mounts, security options,
+   namespace modes, and cgroup limits without starting the target. Therefore a
+   signed intent envelope can be retained before create, followed by a
+   pre-start inspect appraisal and explicit start.
+3. Image tags are mutable and pulls expand the authority surface.
+   The provider must use an immutable `sha256:` image ID and `--pull never`.
+   An image ID identifies local image content, but it does not prove source,
+   signature, provenance, reproducibility, registry policy, or host trust.
+4. Read-only configuration needs kernel-side confirmation.
+   Docker's `ReadonlyRootfs` and bind-mount `RW: false` are necessary
+   configuration evidence. `/proc/self/mountinfo` and denied writes provide
+   the execution-side observation. Recursive read-only requires every
+   repository submount to be read-only, not only the top bind.
+5. Mountinfo VFS and superblock options must not be conflated.
+   Overlay and bind observations may expose a read-only VFS mount while the
+   underlying superblock reports `rw`. The probe evaluates the per-mount VFS
+   options for the read-only claim and retains normalized options separately.
+6. `no_new_privs`, capabilities, and seccomp are directly visible.
+   `/proc/self/status` exposes four UID/GID values, five capability sets,
+   `NoNewPrivs`, seccomp mode, filter count, and namespace PID projection. The
+   provider requires non-root identities, all-zero capability sets,
+   `NoNewPrivs: 1`, filter mode `2`, and at least one filter.
+7. A seccomp label is weaker than an exact profile.
+   Docker inspect retains the applied custom seccomp JSON. The provider
+   compares that parsed object with a repository-retained profile whose bytes,
+   source commit, and default action are policy-bound. `unconfined` is always
+   rejected.
+8. The general Moby default profile is one layer, not least privilege.
+   Its default action is `SCMP_ACT_ERRNO` and it allows a broad set of common
+   syscalls, with capability- and architecture-dependent rules. Dropping all
+   capabilities disables capability-gated privileged rules, but an
+   application-minimal syscall policy remains future work.
+9. Cgroup configuration is directly readable under cgroup v2.
+   `memory.max`, `pids.max`, and `cpu.max` can be compared with exact policy
+   bytes, PID count, quota, and period. The provider requires unified cgroup
+   v2 and rejects an unsupported daemon before gateway begin.
+10. Process-tree containment requires a provider boundary.
+    The target runs beneath Docker init in a private PID namespace and one
+    resource-bounded container cgroup. The probe kills the target process
+    group on timeout/output overflow, while provider timeout containment kills
+    the container. Verified container exit and removal close the local
+    reference lifecycle.
+11. Network interface names alone are not portable egress evidence.
+    Docker Engine documents `none` as an isolated network with loopback.
+    Docker Desktop may still expose unaddressed tunnel device names. The
+    provider therefore binds Docker `none` mode and directly requires only
+    loopback to have addresses, no non-loopback address, no usable default
+    route, and failure of a bounded outbound connection.
+12. Docker inspect and an in-container probe have different trust roles.
+    Inspect proves the daemon's retained configuration. The probe proves what
+    the container process observed. Requiring both catches config/observation
+    disagreement, but both still depend on the local daemon, runtime, kernel,
+    provider code, and evidence key.
+13. Cleanup is part of the result, not housekeeping.
+    A terminal observation is signed only after the container has exited, was
+    force-removed, and a subsequent inspect fails. If cleanup cannot be
+    verified, the transaction cannot commit.
+14. Pre-create intent remains the no-rerun marker.
+    Once the signed envelope exists, a crash may trigger containment cleanup
+    and human reconciliation but never another create/start. This preserves
+    Phase 17B2A's unknown-outcome safety across the larger container lifecycle.
+15. Image metadata does not prove the probe bytes.
+    Image inspect binds the immutable local ID, architecture, entrypoint, and
+    environment, but those fields do not prove that `/cannae-probe` equals the
+    host-measured binary. Docker permits copying from a stopped container, so
+    the provider creates an unstarted, network-none appraisal container,
+    extracts the probe, compares its byte digest, verifies container removal,
+    and repeats the appraisal immediately before the signed execution create.
+    A substituted probe is denied before gateway begin.
+
+### Assurance Interpretation
+
+```text
+exact active gateway transaction
++ immutable image ID and directly extracted static probe digest
++ digest-pinned seccomp profile
++ signed pre-create launch intent
++ exact Docker inspect projection
++ direct kernel privilege, mount, cgroup, and network observations
++ exact child output/result
++ unchanged repository
++ verified container removal
++ independent gateway evidence reconstruction
+= OCI sandbox result may enter ToolExecutionReceipt v0.4
+```
+
+The equation does not include:
+
+- independent Docker daemon or host-kernel attestation;
+- image signature or provenance;
+- rootless or user-namespace enforcement;
+- mandatory access control;
+- managed key custody or deployment identity;
+- exclusive provider routing or side-path denial;
+- multi-host fencing;
+- production execution or release.
+
+### Implemented Artifacts
+
+- `schema-files/oci-linux-sandbox-policy.schema.json`;
+- `schema-files/oci-sandbox-tool-input.schema.json`;
+- `schema-files/oci-sandbox-execution-envelope.schema.json`;
+- `schema-files/oci-sandbox-probe-observation.schema.json`;
+- `schema-files/oci-sandbox-execution-observation.schema.json`;
+- `oci-linux-sandbox-evidence.js`;
+- `oci-linux-sandbox-provider.js`;
+- `oci-linux-sandbox-probe.go`;
+- `runtime-profiles/moby-seccomp-v0.2.1.json`;
+- `ToolExecutionReceipt` v0.4 OCI mode and exact probe digest;
+- five valid and five adversarial static samples;
+- `run-oci-linux-sandbox-provider-fixtures.js`;
+- `docs/oci-linux-sandbox-provider.md`;
+- equivalent Codex and Claude wrappers, routes, references, and mandatory
+  operating guidance.
+
+### Measured Behavior
+
+- the fixture compiles a static Linux probe for the Docker daemon architecture;
+- it builds a network-disabled scratch image and resolves its immutable local
+  image ID;
+- it extracts `/cannae-probe` from an unstarted appraisal container and
+  compares the exact bytes with the host-measured probe;
+- one exact target commits with signed pre-create and post-cleanup evidence;
+- replay returns the retained terminal transaction without another create;
+- caller-declared fixture evidence cannot satisfy OCI sandbox input;
+- seccomp byte drift, missing image identity, and an image containing a
+  substituted probe fail before gateway begin;
+- UID/GID, capabilities, `NoNewPrivs`, seccomp, namespace handles, VFS mounts,
+  cgroup values, addressed interfaces, routes, and outbound-connect denial are
+  retained from a real container;
+- a changed privilege observation is rejected;
+- timeout becomes a committed failed result;
+- a post-container interruption removes the container, enters
+  `recovery_required`, and cannot rerun.
+
+### Residual Limits And Next Research
+
+- The Docker socket and daemon remain highly privileged local trust roots.
+- Docker Desktop adds a Linux VM boundary that this local evidence does not
+  independently attest.
+- The image ID and probe digest are locally measured, not supply-chain
+  attestations.
+- Probe-byte extraction does not inventory every image filesystem entry or
+  prove that the image contains no additional files.
+- The Moby default profile is broad and evolves separately from the provider.
+- Rootless mode and user-namespace remapping are observed but not required.
+- No AppArmor, SELinux, Landlock, or equivalent MAC policy is required.
+- The probe and signed observation depend on a locally managed Ed25519 key.
+- The provider supports measured external IP egress denial under Docker
+  `none` networking, not approved egress or a proof that every network-related
+  kernel mechanism is absent.
+- The repository mount is read-only; controlled write workflows need a
+  separate copy-on-write/output-promotion contract.
+- The shared-filesystem artifact store remains a single-host reference.
+- There is no proof that shell, Docker, MCP, filesystem, network, or delegation
+  side paths are unreachable outside the gateway.
+
+Phase 17B2C should add independent provider/host/image deployment evidence,
+rootless/user-namespace and MAC profiles, application-minimal seccomp,
+credential brokering, storage-side fencing, provider-native adapters, and
+adversarial deployment tests that prove the gateway is the only reachable
+side-effect path.

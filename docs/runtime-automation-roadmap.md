@@ -636,14 +636,15 @@ Completion criteria:
 - The local controller cannot claim managed exclusivity or production
   deployment verification.
 
-Phase 17B after 17B1 remains:
+Phase 17B residuals after implemented 17B1, 17B2A, and 17B2B:
 
 - independently managed credential delivery, key custody, rotation, and
   revocation for mTLS, DPoP, and workload-OIDC adapters;
 - provider-specific shell, filesystem, MCP, network, and delegation execution
-  adapters;
-- independently managed configuration and deployment evidence;
-- OS/container sandbox and egress enforcement that remove direct side paths;
+  adapters beyond the OCI reference path;
+- independently managed host, runtime, image, key, configuration, and
+  deployment evidence;
+- exclusive routing and adversarial enforcement that remove direct side paths;
 - linearizable coordination and storage-side fencing;
 - multi-user permission, secret, incident, break-glass, and reconciliation
   operations;
@@ -674,7 +675,7 @@ Implemented controls:
 - `GatewayPrincipalEvidence` signs the exact TLS observation, principal and
   gateway projection digests, challenge/policy references, policy-pinned
   adapter identifiers, repository, session, and short validity window;
-- `ToolGatewayRequest`, decision, and event v0.2 plus receipt v0.3 carry the
+- `ToolGatewayRequest`, decision, and event v0.2 plus receipt v0.4 carry the
   same three immutable identity references;
 - `authenticated_reference` admission derives the verified-principal digest
   from retained evidence rather than trusting a caller-provided digest;
@@ -697,11 +698,14 @@ Completion criteria:
 - The adapter cannot claim an exclusive deployment, production execution,
   production deployment verification, or release.
 
-Phase 17B2 and later remain:
+After implemented Phase 17B2A and 17B2B, the production boundary still
+requires:
 
-- provider-specific shell, filesystem, MCP, network, and delegation executors;
-- independently protected adapter key/configuration/deployment evidence;
-- OS/container sandbox and egress enforcement that eliminate side paths;
+- provider-specific shell, filesystem, MCP, network, and delegation executors
+  beyond the measured OCI reference path;
+- independently protected sandbox host/runtime/image, adapter key,
+  configuration, and deployment evidence;
+- exclusive execution and egress routing that eliminate direct side paths;
 - linearizable multi-host coordination and storage-side fencing;
 - managed credential rotation, Workload API integration, incident,
   break-glass, reconciliation, and multi-user administration;
@@ -739,7 +743,7 @@ Implemented controls:
 - a signed `ProtectedExecutionObservation` binds the envelope to process exit,
   signal, termination reason, output accounting and hashes, result digest,
   before/after repository state, and ordered timestamps;
-- `ToolExecutionReceipt` v0.3 carries exact policy, envelope, and observation
+- `ToolExecutionReceipt` v0.4 carries exact policy, envelope, and observation
   references only for `bounded_process_reference`; other modes require exact
   none sentinels;
 - the gateway independently reloads and verifies the complete evidence bundle
@@ -766,24 +770,94 @@ Completion criteria:
 - Every artifact and skill route remains indexed and both skill surfaces use
   the improved procedure.
 
-Phase 17B2B and later remain:
+## 21. Phase 17B2B: OCI Linux Sandbox Provider
 
-- OCI/Linux sandbox provider adapters with namespaces, read-only mounts,
-  seccomp, `no_new_privs`, capability/UID controls, process-tree containment,
-  and measured runtime configuration;
-- enforced network namespace, DNS/proxy, and egress policies;
+Status: implemented as a Docker Engine reference provider. It executes one
+policy-pinned static Linux target in a measured container, but does not claim
+an independently trusted host/daemon, managed exclusivity, production
+execution, deployment verification, or release authority.
+
+Implemented controls:
+
+- `OciLinuxSandboxPolicy` binds one repository and gateway projection to exact
+  adapter, Docker CLI, static probe, immutable image ID, vendored seccomp
+  profile, namespace, UID/GID, capability, filesystem, cgroup, network, target,
+  limit, validity, and authority controls;
+- `OciSandboxToolInput` contains one concrete policy reference and one rule ID;
+  the acting agent cannot add a command, image, mount, environment, network,
+  privilege, or Docker option after authorization;
+- the live reference fixture builds a `FROM scratch` image containing only
+  `/cannae-probe`; the provider uses an immutable image ID and `--pull never`
+  but does not claim a complete image-filesystem inventory;
+- before gateway begin and again immediately before execution create, the
+  provider extracts `/cannae-probe` from an unstarted appraisal container,
+  matches its byte digest to the measured host probe, and verifies cleanup;
+- a signed `OciSandboxExecutionEnvelope` is retained before `docker create` and
+  binds the exact image, target, probe command, Docker create-argv digest,
+  daemon/runtime measurements, controls, repository state, and expiry;
+- Docker inspect must preserve the exact entrypoint, command, user, fixed
+  supervisor environment, read-only root, recursively read-only repository
+  mount, constrained tmpfs, all capabilities dropped, `no_new_privileges`,
+  exact seccomp JSON, private namespace modes, init, cgroup limits, and `none`
+  network mode before start;
+- the static probe directly reads `/proc/self/status`, namespace handles,
+  mountinfo, cgroup v2 limits, interfaces, addresses, routes, and bounded
+  outbound-connect behavior, performs root/workspace/tmp write tests, and
+  supervises the exact target with an empty environment, bounded output, and
+  timeout;
+- the provider retains `OciSandboxProbeObservation`, verifies terminal Docker
+  state, removes the container, verifies removal, and signs
+  `OciSandboxExecutionObservation`;
+- `ToolExecutionReceipt` v0.4 requires concrete policy, envelope, and
+  observation references plus the exact probe digest for
+  `oci_linux_sandbox_reference`; the signed observation carries the concrete
+  probe reference;
+- the gateway independently reloads and verifies the complete policy,
+  envelope, probe, observation, result, repository, and transaction chain;
+- an envelope remains the no-rerun claim marker. Recovery may contain and
+  remove an existing container but cannot invoke the target again;
+- live Docker fixtures compile the probe, build the scratch image without
+  network access, and exercise success, replay, timeout, profile drift, image
+  absence, image-probe substitution, caller-result injection, probe tampering,
+  cleanup, and interrupted no-rerun recovery;
+- Codex and Claude skills expose equivalent OCI wrappers and route the same
+  doctrine and validation.
+
+Completion criteria:
+
+- One exact static Linux target commits once with signed pre-create and
+  post-cleanup evidence, and replay cannot execute it again.
+- Policy, rule, input, image, probe, seccomp, Docker configuration, kernel
+  privilege, mount, cgroup, network, result, time, cleanup, or repository
+  substitution cannot commit.
+- Timeout and output limits become exact failed process results rather than
+  fabricated success.
+- A caller-declared fixture/external result cannot satisfy OCI sandbox input.
+- A crash after the envelope or container run cannot trigger automatic
+  re-execution.
+- Every schema has valid and adversarial samples, runtime fixtures pass, route
+  coverage is complete, and both skill surfaces use the improved procedure.
+
+Phase 17B2C and later remain:
+
+- independently protected provider key, policy, configuration, deployment,
+  Docker daemon, runtime, host, and image provenance evidence;
+- rootless/user-namespace and mandatory-access-control provider profiles;
+- application-minimal seccomp generation and verification;
+- network allowlist, DNS, proxy, and authenticated egress adapters beyond
+  measured external IP egress denial under Docker `none` networking;
 - provider-specific filesystem, MCP, network, and delegation adapters;
-- independently protected executor key/configuration/deployment evidence;
 - linearizable multi-host coordination and storage-side fencing;
 - secret brokering, managed rotation, incident, break-glass, reconciliation,
   and multi-user administration;
 - adversarial deployment tests proving direct tool paths are unavailable when
   the gateway or sandbox is unavailable.
 
-See `protected-process-execution.md` for contracts, operation sequence,
-commands, gateway appraisal, failure behavior, and explicit residual limits.
+See `oci-linux-sandbox-provider.md` for contracts, operation sequence,
+commands, gateway appraisal, direct observations, failure behavior, and
+explicit residual limits.
 
-## 21. Release Gates
+## 22. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -810,8 +884,9 @@ commands, gateway appraisal, failure behavior, and explicit residual limits.
 | G22 | Every Phase 17A gateway commit has an exact trusted principal/gateway binding, current dispatch and repository bindings, one canonical idempotent request, one current execution token, one result-bound receipt and append-only terminal event; cancellation or unknown-outcome recovery fails closed, while production and release claims remain false |
 | G23 | Every Phase 17B1 authenticated-reference gateway transition reloads one exact manifest-backed policy/challenge/evidence chain and validates its signatures, freshness, TLS 1.3 SPIFFE certificate path, exporter-bound principal projection, revocation, one-use state and immutable downstream references without claiming managed exclusivity, production, or release |
 | G24 | Every Phase 17B2A protected process commit reloads one exact manifest-backed policy/envelope/observation chain, verifies signatures and complete command/result/repository bindings, and proves one policy-pinned native execution with no runtime-inserted shell or automatic rerun while explicitly denying sandbox, network, production, exclusivity, and release claims |
+| G25 | Every Phase 17B2B OCI sandbox commit reloads one exact policy/envelope/probe/observation chain, verifies image, probe, seccomp, Docker configuration, directly observed kernel privilege/mount/cgroup/network state, terminal result, repository immutability, cleanup, and no-rerun recovery while denying independent host trust, production, exclusivity, and release claims |
 
-## 22. Related Documents
+## 23. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -829,3 +904,4 @@ commands, gateway appraisal, failure behavior, and explicit residual limits.
 - `protected-tool-gateway-contract.md`
 - `gateway-identity-admission.md`
 - `protected-process-execution.md`
+- `oci-linux-sandbox-provider.md`
