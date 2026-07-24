@@ -78,6 +78,10 @@ const TYPE_TO_SCHEMA = {
   "tool-gateway-decision": "tool-gateway-decision.schema.json",
   "tool-execution-receipt": "tool-execution-receipt.schema.json",
   "tool-gateway-transaction-event": "tool-gateway-transaction-event.schema.json",
+  "protected-executor-policy": "protected-executor-policy.schema.json",
+  "protected-process-tool-input": "protected-process-tool-input.schema.json",
+  "protected-execution-envelope": "protected-execution-envelope.schema.json",
+  "protected-execution-observation": "protected-execution-observation.schema.json",
   "gateway-identity-policy": "gateway-identity-policy.schema.json",
   "gateway-identity-challenge": "gateway-identity-challenge.schema.json",
   "gateway-principal-evidence": "gateway-principal-evidence.schema.json",
@@ -404,6 +408,39 @@ function canonicalDigestWithout(value, fieldPath) {
   for (let index = 0; index < fieldPath.length - 1; index += 1) cursor = cursor && cursor[fieldPath[index]];
   if (cursor) delete cursor[fieldPath.at(-1)];
   return crypto.createHash("sha256").update(`${JSON.stringify(clone, null, 2)}\n`).digest("hex");
+}
+
+function canonicalObjectDigestWithout(value, fields) {
+  const copy = JSON.parse(JSON.stringify(value));
+  for (const field of fields) delete copy[field];
+  return crypto.createHash("sha256").update(canonicalJsonBytes(copy)).digest("hex");
+}
+
+function canonicalControlDigestWithout(value, fields) {
+  const copy = JSON.parse(JSON.stringify(value));
+  for (const field of fields) delete copy[field];
+  return crypto.createHash("sha256")
+    .update(`${JSON.stringify(sortedJsonValue(copy))}\n`)
+    .digest("hex");
+}
+
+function safeProtectedCwd(value) {
+  if (typeof value !== "string" || value.length === 0 ||
+      value.includes("\\") || value.includes("\0")) return false;
+  if (value === ".") return true;
+  if (value.startsWith("/") || value.endsWith("/")) return false;
+  return value.split("/").every(part => part && part !== "." && part !== "..");
+}
+
+function validEd25519Signature(signature) {
+  try {
+    return Boolean(signature &&
+      signature.algorithm === "ed25519" &&
+      /^[a-f0-9]{64}$/.test(signature.key_id || "") &&
+      strictBase64(signature.signature_base64).length === 64);
+  } catch (error) {
+    return false;
+  }
 }
 
 const ROE_RANK = { Green: 0, Amber: 1, Red: 2, Black: 3 };
@@ -886,6 +923,12 @@ function semanticRules(payload, type) {
       artifactRefKind(payload.principal_evidence_ref)
     ];
     const execution = payload.execution || {};
+    const executor = payload.executor || {};
+    const executorRefKinds = [
+      artifactRefKind(executor.executor_policy_ref),
+      artifactRefKind(executor.execution_envelope_ref),
+      artifactRefKind(executor.execution_observation_ref)
+    ];
     if (admissionKind === "malformed" || checkpointKind === "malformed") {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_REF_MALFORMED", "$", "Receipt admission and checkpoint references must be concrete or use the exact all-none sentinel."));
     }
@@ -895,6 +938,14 @@ function semanticRules(payload, type) {
     if (identityRefKinds.includes("malformed") ||
         new Set(identityRefKinds).size !== 1) {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_IDENTITY_REF_MISMATCH", "$", "Receipt must preserve either three concrete identity references or three exact none sentinels."));
+    }
+    if (executorRefKinds.includes("malformed") ||
+        new Set(executorRefKinds).size !== 1 ||
+        (executor.execution_mode === "bounded_process_reference" &&
+          executorRefKinds[0] !== "concrete") ||
+        (executor.execution_mode !== "bounded_process_reference" &&
+          executorRefKinds[0] !== "none")) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_EXECUTOR_REF_MISMATCH", "$.executor", "Bounded process execution requires three concrete evidence references; every other mode requires three exact none sentinels."));
     }
     if (execution.transaction_state === "committed" &&
         (admissionKind !== "concrete" ||
@@ -944,6 +995,144 @@ function semanticRules(payload, type) {
         (execution.transaction_state === "recovery_required" &&
          isValidDate(execution.started_at) && startedAt > recordedAt)) {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_TIMESTAMP_INVALID", "$.recorded_at", "Receipt recording must be valid and no earlier than a known execution timestamp."));
+    }
+  }
+
+  if (type === "protected-executor-policy") {
+    const adapter = payload.adapter_profile || {};
+    const processControls = payload.process_controls || {};
+    const networkControls = payload.network_controls || {};
+    if (!isBefore(payload.valid_from, payload.expires_at)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTOR_POLICY_INVALID_VALIDITY", "$.expires_at", "Protected executor policy validity must have an ordered, non-empty interval."));
+    }
+    try {
+      const publicKey = crypto.createPublicKey(adapter.signing_public_key_pem);
+      if (publicKey.asymmetricKeyType !== "ed25519" ||
+          publicKeyId(publicKey) !== adapter.signing_key_id) {
+        throw new Error("key mismatch");
+      }
+    } catch (error) {
+      issues.push(issue("critical", "PROTECTED_EXECUTOR_POLICY_SIGNING_KEY_INVALID", "$.adapter_profile", "Protected executor policy requires a matching Ed25519 public key and key identifier."));
+    }
+    if (canonicalControlDigestWithout(
+      processControls,
+      ["sandbox_profile_sha256"]
+    ) !== processControls.sandbox_profile_sha256) {
+      issues.push(issue("critical", "PROTECTED_EXECUTOR_SANDBOX_PROFILE_DIGEST_MISMATCH", "$.process_controls.sandbox_profile_sha256", "Sandbox profile digest must bind the exact declared process controls."));
+    }
+    if (canonicalControlDigestWithout(
+      networkControls,
+      ["network_policy_sha256"]
+    ) !== networkControls.network_policy_sha256) {
+      issues.push(issue("critical", "PROTECTED_EXECUTOR_NETWORK_POLICY_DIGEST_MISMATCH", "$.network_controls.network_policy_sha256", "Network policy digest must bind the exact declared network controls."));
+    }
+    const rules = Array.isArray(payload.rules) ? payload.rules : [];
+    const ruleIds = rules.map(rule => rule && rule.rule_id);
+    if (new Set(ruleIds).size !== ruleIds.length) {
+      issues.push(issue("critical", "PROTECTED_EXECUTOR_POLICY_DUPLICATE_RULE", "$.rules", "Protected executor rule identifiers must be unique."));
+    }
+    for (const [index, rule] of rules.entries()) {
+      if (!safeProtectedCwd(rule && rule.cwd_relative)) {
+        issues.push(issue("critical", "PROTECTED_EXECUTOR_POLICY_CWD_UNSAFE", `$.rules[${index}].cwd_relative`, "Protected executor cwd must be canonical and repository-relative."));
+      }
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        !payload.authority ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "PROTECTED_EXECUTOR_POLICY_AUTHORITY_DRIFT", "$.authority", "Protected executor policy cannot expand USER authority or claim production execution."));
+    }
+  }
+
+  if (type === "protected-process-tool-input") {
+    if (artifactRefKind(payload.executor_policy_ref) !== "concrete") {
+      issues.push(issue("critical", "PROTECTED_PROCESS_POLICY_REF_UNBOUND", "$.executor_policy_ref", "Protected process input requires one concrete executor policy reference."));
+    }
+  }
+
+  if (type === "protected-execution-envelope") {
+    const refs = [
+      payload.request_ref,
+      payload.decision_ref,
+      payload.execution_event_ref,
+      payload.executor_policy_ref
+    ];
+    if (refs.some(ref => artifactRefKind(ref) !== "concrete")) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_ENVELOPE_REF_UNBOUND", "$", "Protected execution envelope requires concrete request, decision, event, and policy references."));
+    }
+    if (!isBefore(payload.issued_at, payload.expires_at)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_ENVELOPE_INVALID_VALIDITY", "$.expires_at", "Protected execution envelope must expire after issuance."));
+    }
+    if (!safeProtectedCwd(payload.command && payload.command.cwd_relative)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_ENVELOPE_CWD_UNSAFE", "$.command.cwd_relative", "Protected execution envelope cwd must be canonical and repository-relative."));
+    }
+    if (!validEd25519Signature(payload.signature)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_ENVELOPE_SIGNATURE_MALFORMED", "$.signature", "Protected execution envelope requires a canonical Ed25519 signature."));
+    }
+    if (canonicalObjectDigestWithout(payload, ["envelope_sha256"]) !==
+        payload.envelope_sha256) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_ENVELOPE_DIGEST_MISMATCH", "$.envelope_sha256", "Envelope digest must bind the complete signed artifact."));
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        !payload.authority ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_ENVELOPE_AUTHORITY_DRIFT", "$.authority", "Protected execution envelope cannot expand USER authority or claim production execution."));
+    }
+  }
+
+  if (type === "protected-execution-observation") {
+    const refs = [
+      payload.request_ref,
+      payload.decision_ref,
+      payload.execution_event_ref,
+      payload.executor_policy_ref,
+      payload.execution_envelope_ref
+    ];
+    if (refs.some(ref => artifactRefKind(ref) !== "concrete")) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_OBSERVATION_REF_UNBOUND", "$", "Protected execution observation requires concrete transaction, policy, and envelope references."));
+    }
+    if (!isValidDate(payload.started_at) ||
+        !isValidDate(payload.finished_at) ||
+        Date.parse(payload.started_at) > Date.parse(payload.finished_at)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_OBSERVATION_TIME_INVALID", "$.finished_at", "Protected execution observation requires ordered process timestamps."));
+    }
+    if (!safeProtectedCwd(payload.command && payload.command.cwd_relative)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_OBSERVATION_CWD_UNSAFE", "$.command.cwd_relative", "Protected execution observation cwd must be canonical and repository-relative."));
+    }
+    for (const name of ["stdout", "stderr"]) {
+      const output = payload[name] || {};
+      if (!Number.isInteger(output.observed_bytes) ||
+          !Number.isInteger(output.retained_bytes) ||
+          output.retained_bytes > output.observed_bytes ||
+          output.truncated !== (output.observed_bytes > output.retained_bytes)) {
+        issues.push(issue("critical", "PROTECTED_EXECUTION_OUTPUT_ACCOUNTING_INVALID", `$.${name}`, "Observed, retained, and truncated output fields must agree."));
+      }
+    }
+    const processResult = payload.process || {};
+    if (processResult.timed_out !==
+          (processResult.termination_reason === "timeout") ||
+        processResult.output_limit_exceeded !==
+          ["stdout_limit", "stderr_limit"].includes(
+            processResult.termination_reason
+          )) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_PROCESS_STATE_INVALID", "$.process", "Process flags must agree with the recorded termination reason."));
+    }
+    if ((processResult.termination_reason === "spawn_error" &&
+          processResult.spawned !== false) ||
+        (processResult.termination_reason !== "spawn_error" &&
+          processResult.spawned !== true)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_SPAWN_STATE_INVALID", "$.process.spawned", "Spawn state must agree with the recorded termination reason."));
+    }
+    if (!validEd25519Signature(payload.signature)) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_OBSERVATION_SIGNATURE_MALFORMED", "$.signature", "Protected execution observation requires a canonical Ed25519 signature."));
+    }
+    if (canonicalObjectDigestWithout(payload, ["observation_sha256"]) !==
+        payload.observation_sha256) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_OBSERVATION_DIGEST_MISMATCH", "$.observation_sha256", "Observation digest must bind the complete signed artifact."));
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        !payload.authority ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "PROTECTED_EXECUTION_OBSERVATION_AUTHORITY_DRIFT", "$.authority", "Protected execution observation cannot expand USER authority or claim production execution."));
     }
   }
 

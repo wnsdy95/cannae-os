@@ -343,6 +343,11 @@ function loadArtifact(ref) {
 }
 
 function fixtureExecutor() {
+  const noneRef = {
+    artifact_id: "none",
+    relative_path: "none",
+    sha256: "none"
+  };
   return {
     adapter_id: "gateway-identity-fixture-executor",
     adapter_version: "0.1.0",
@@ -350,12 +355,15 @@ function fixtureExecutor() {
     runtime_sha256: digest(process.version),
     sandbox_profile_sha256: digest("fixture-sandbox"),
     network_policy_sha256: digest("fixture-network-policy"),
-    execution_mode: "fixture"
+    execution_mode: "fixture",
+    executor_policy_ref: clone(noneRef),
+    execution_envelope_ref: clone(noneRef),
+    execution_observation_ref: clone(noneRef)
   };
 }
 
 async function main() {
-  const baseTime = Date.now();
+  let baseTime = Date.now();
   for (const wrapper of [
     "codex-skills/controls-doctrine-operator/scripts/operate_gateway_identity.js",
     ".claude/skills/controls-doctrine-operator/scripts/operate_gateway_identity.js"
@@ -394,6 +402,13 @@ async function main() {
     materials.ca,
     "foreign-agent",
     ["spiffe://agents.controls.test/mission/foreign-agent"]
+  );
+  baseTime = Math.max(
+    baseTime,
+    ...[materials.ca, materials.server, materials.client, materials.foreign]
+      .map(item =>
+        new crypto.X509Certificate(item.certificate).validFromDate.getTime() +
+        1000)
   );
   const adapterKey = keyPair();
   const policy = gatewayIdentityPolicy(setup, selected, materials, adapterKey, baseTime);

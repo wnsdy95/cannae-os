@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/protected-executor-policy.schema.json",
+  "title": "Protected Executor Policy",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "repository_binding",
+    "gateway_binding_sha256",
+    "platform",
+    "providers",
+    "adapter_profile",
+    "process_controls",
+    "network_controls",
+    "rules",
+    "valid_from",
+    "expires_at",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ProtectedExecutorPolicy" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "gateway_binding_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "platform": { "type": "string", "const": "posix_reference" },
+    "providers": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/provider" }
+    },
+    "adapter_profile": { "$ref": "#/$defs/adapter_profile" },
+    "process_controls": { "$ref": "#/$defs/process_controls" },
+    "network_controls": { "$ref": "#/$defs/network_controls" },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": { "$ref": "#/$defs/rule" }
+    },
+    "valid_from": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "adapter_profile": {
+      "type": "object",
+      "required": [
+        "adapter_id",
+        "adapter_version",
+        "adapter_sha256",
+        "runtime_sha256",
+        "signing_key_id",
+        "signing_algorithm",
+        "signing_public_key_pem",
+        "execution_mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": { "$ref": "#/$defs/safe_identifier" },
+        "adapter_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "adapter_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "runtime_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "signing_key_id": { "$ref": "common.schema.json#/$defs/sha256" },
+        "signing_algorithm": { "type": "string", "const": "ed25519" },
+        "signing_public_key_pem": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 8192
+        },
+        "execution_mode": {
+          "type": "string",
+          "const": "bounded_process_reference"
+        }
+      }
+    },
+    "process_controls": {
+      "type": "object",
+      "required": [
+        "shell",
+        "detached",
+        "environment_mode",
+        "stdin_mode",
+        "require_non_root",
+        "filesystem_isolation",
+        "syscall_filter",
+        "privilege_drop",
+        "process_tree_containment",
+        "sandbox_profile_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "shell": { "type": "boolean", "const": false },
+        "detached": { "type": "boolean", "const": false },
+        "environment_mode": { "type": "string", "const": "empty" },
+        "stdin_mode": { "type": "string", "const": "none" },
+        "require_non_root": { "type": "boolean", "const": true },
+        "filesystem_isolation": { "type": "boolean", "const": false },
+        "syscall_filter": { "type": "boolean", "const": false },
+        "privilege_drop": { "type": "boolean", "const": false },
+        "process_tree_containment": { "type": "boolean", "const": false },
+        "sandbox_profile_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "network_controls": {
+      "type": "object",
+      "required": [
+        "enforcement",
+        "outbound",
+        "network_policy_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "enforcement": { "type": "string", "const": "not_enforced" },
+        "outbound": { "type": "string", "const": "unknown" },
+        "network_policy_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "tool_name",
+        "operation_class",
+        "executable_path",
+        "executable_format",
+        "executable_sha256",
+        "argv",
+        "cwd_relative",
+        "timeout_ms",
+        "max_stdout_bytes",
+        "max_stderr_bytes",
+        "success_exit_codes",
+        "expected_repository_effect"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": { "$ref": "#/$defs/safe_identifier" },
+        "tool_name": { "$ref": "#/$defs/safe_identifier" },
+        "operation_class": {
+          "type": "string",
+          "const": "process_execute"
+        },
+        "executable_path": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 4096,
+          "pattern": "^/"
+        },
+        "executable_format": {
+          "type": "string",
+          "const": "native_binary"
+        },
+        "executable_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "argv": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "cwd_relative": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 60000
+        },
+        "max_stdout_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "max_stderr_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "success_exit_codes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": -255,
+            "maximum": 255
+          }
+        },
+        "expected_repository_effect": {
+          "type": "string",
+          "enum": ["none", "recorded"]
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "production_execution_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "production_execution_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/protected-execution-observation.schema.json",
+  "title": "Protected Execution Observation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "transaction_id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "request_ref",
+    "decision_ref",
+    "execution_event_ref",
+    "executor_policy_ref",
+    "execution_envelope_ref",
+    "tool_input_sha256",
+    "rule_id",
+    "command",
+    "process",
+    "stdout",
+    "stderr",
+    "result_sha256",
+    "sandbox_profile_sha256",
+    "network_policy_sha256",
+    "repository_binding",
+    "repository_state_before",
+    "repository_state_after",
+    "started_at",
+    "finished_at",
+    "signature",
+    "observation_sha256",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ProtectedExecutionObservation" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "request_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "decision_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "execution_event_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "executor_policy_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "execution_envelope_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "tool_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "rule_id": { "$ref": "#/$defs/safe_identifier" },
+    "command": { "$ref": "#/$defs/command" },
+    "process": { "$ref": "#/$defs/process" },
+    "stdout": { "$ref": "#/$defs/output" },
+    "stderr": { "$ref": "#/$defs/output" },
+    "result_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "sandbox_profile_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "network_policy_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "repository_state_before": { "$ref": "#/$defs/repository_state" },
+    "repository_state_after": { "$ref": "#/$defs/repository_state" },
+    "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "signature": { "$ref": "#/$defs/signature" },
+    "observation_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "command": {
+      "type": "object",
+      "required": [
+        "executable_path",
+        "executable_format",
+        "executable_sha256",
+        "argv",
+        "cwd_relative",
+        "environment_mode",
+        "stdin_mode",
+        "shell",
+        "detached"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "executable_path": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 4096,
+          "pattern": "^/"
+        },
+        "executable_format": {
+          "type": "string",
+          "const": "native_binary"
+        },
+        "executable_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "argv": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "cwd_relative": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "environment_mode": { "type": "string", "const": "empty" },
+        "stdin_mode": { "type": "string", "const": "none" },
+        "shell": { "type": "boolean", "const": false },
+        "detached": { "type": "boolean", "const": false }
+      }
+    },
+    "process": {
+      "type": "object",
+      "required": [
+        "spawned",
+        "exit_code",
+        "signal",
+        "termination_reason",
+        "timed_out",
+        "output_limit_exceeded"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "spawned": { "type": "boolean" },
+        "exit_code": {
+          "type": "integer",
+          "minimum": -255,
+          "maximum": 255
+        },
+        "signal": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "termination_reason": {
+          "type": "string",
+          "enum": [
+            "exited",
+            "spawn_error",
+            "timeout",
+            "stdout_limit",
+            "stderr_limit"
+          ]
+        },
+        "timed_out": { "type": "boolean" },
+        "output_limit_exceeded": { "type": "boolean" }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "sha256",
+        "observed_bytes",
+        "retained_bytes",
+        "truncated"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "observed_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retained_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "truncated": { "type": "boolean" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": {
+          "type": "string",
+          "pattern": "^(unborn|[a-f0-9]{40,64})$"
+        },
+        "worktree_fingerprint": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["key_id", "algorithm", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "key_id": { "$ref": "common.schema.json#/$defs/sha256" },
+        "algorithm": { "type": "string", "const": "ed25519" },
+        "signature_base64": {
+          "type": "string",
+          "minLength": 80,
+          "maxLength": 256
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "production_execution_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "production_execution_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    }
+  }
+}

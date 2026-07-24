@@ -106,11 +106,12 @@ const RULES = [
   },
   {
     id: "enforced-dispatch",
-    keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency"],
+    keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency", "protected process", "bounded process", "process executor", "native executable", "shebang", "interpreter", "exact argv", "execution envelope", "execution observation"],
     docs: [
       "docs/enforced-dispatch-and-resume.md",
       "docs/protected-tool-gateway-contract.md",
       "docs/gateway-identity-admission.md",
+      "docs/protected-process-execution.md",
       "docs/skill-operational-mission-lifecycle.md",
       "docs/tool-use-roe.md",
       "docs/repository-artifact-isolation-policy.md",
@@ -120,6 +121,7 @@ const RULES = [
       "node run-dispatch-runtime-fixtures.js",
       "node run-protected-tool-gateway-fixtures.js",
       "node run-gateway-identity-adapter-fixtures.js",
+      "node run-protected-process-executor-fixtures.js",
       "node validator-cli-prototype/validate.js sample-payloads/valid-dispatch-tool-policy.json dispatch-tool-policy",
       "node validator-cli-prototype/validate.js sample-payloads/valid-agent-dispatch-lease.json agent-dispatch-lease",
       "node validator-cli-prototype/validate.js sample-payloads/valid-agent-execution-checkpoint.json agent-execution-checkpoint",
@@ -309,7 +311,8 @@ const ROLE_DOCS = {
     "docs/tool-use-roe.md",
     "docs/policy-engine-rules.md",
     "docs/enforced-dispatch-and-resume.md",
-    "docs/protected-tool-gateway-contract.md"
+    "docs/protected-tool-gateway-contract.md",
+    "docs/protected-process-execution.md"
   ],
   S4: [
     "docs/maintenance-readiness-model.md",
@@ -361,7 +364,7 @@ const AUTHORITY_DOCS = [
   },
   {
     keywords: ["execution", "tool", "scoped-execution", "carry-out", "instrument"],
-    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md"]
+    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md", "docs/protected-process-execution.md"]
   }
 ];
 
@@ -403,7 +406,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "enforced-dispatch",
-    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction"]
+    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction", "protected-process", "protected-executor", "bounded-process", "native-executable", "shebang", "interpreter", "execution-envelope", "execution-observation", "operate_protected_executor", "exact-argv"]
   },
   {
     id: "bounded-self-improvement",
@@ -568,7 +571,7 @@ function routeIdsForArtifact(file) {
       file === "comparative-evaluation-attestation.js" || file === "comparative-evaluation-attestation-runner.js" ||
       file === "run-comparative-evaluation-attestation-fixtures.js") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "repository-artifact-verify.js" || file === "repository-lease.js" || file === "run-repository-artifact-recovery-fixtures.js" || file === "run-repository-artifact-concurrency-fixtures.js") routeIds.push("repository-artifact-isolation", "runtime-validation");
-  if (file === "dispatch-runtime-controller.js" || file === "dispatch-hook-adapter.js" || file === "install-dispatch-hooks.js" || file === "protected-tool-gateway.js" || file === "gateway-identity-adapter.js" || file === "gateway-identity-evidence.js" || file === "run-dispatch-runtime-fixtures.js" || file === "run-protected-tool-gateway-fixtures.js" || file === "run-gateway-identity-adapter-fixtures.js") routeIds.push("enforced-dispatch", "runtime-validation");
+  if (file === "dispatch-runtime-controller.js" || file === "dispatch-hook-adapter.js" || file === "install-dispatch-hooks.js" || file === "protected-tool-gateway.js" || file === "gateway-identity-adapter.js" || file === "gateway-identity-evidence.js" || file === "protected-process-executor.js" || file === "protected-execution-evidence.js" || file === "run-dispatch-runtime-fixtures.js" || file === "run-protected-tool-gateway-fixtures.js" || file === "run-gateway-identity-adapter-fixtures.js" || file === "run-protected-process-executor-fixtures.js") routeIds.push("enforced-dispatch", "runtime-validation");
 
   return unique(routeIds);
 }

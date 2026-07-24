@@ -45,6 +45,8 @@ const OFFICIAL_HOST_PATTERNS = [
   /code\.claude\.com$/,
   /developers\.openai\.com$/,
   /nodejs\.org$/,
+  /cwe\.mitre\.org$/,
+  /kernel\.org$/,
   /platform\.openai\.com$/
 ];
 

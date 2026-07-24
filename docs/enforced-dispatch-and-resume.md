@@ -427,5 +427,7 @@ Phase 17A now defines that transaction boundary in
 `protected-tool-gateway-contract.md`. It adds exact principal/gateway binding,
 idempotent request state, one execution token, result receipts, pre-execution
 cancellation, and unknown-outcome recovery. The reference controller remains a
-Level 2 contract implementation: it does not execute tools or establish the
-Level 4 exclusive deployment claim.
+Level 2 contract implementation. Phase 17B2A adds one policy-pinned local
+process adapter with signed before/after evidence, but it does not establish an
+OS/container sandbox, network isolation, or the Level 4 exclusive deployment
+claim.

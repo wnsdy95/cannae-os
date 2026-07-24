@@ -131,6 +131,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Enforced Dispatch And Resumable Execution](docs/enforced-dispatch-and-resume.md): per-agent session leases, fail-closed tool admission, checkpoints, interruption, revocation, and explicit resume.
 - [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md): identity-bound, idempotent tool transactions with exact begin/commit correlation, cancellation, receipts, and fail-closed recovery.
 - [Gateway Identity Admission](docs/gateway-identity-admission.md): TLS 1.3 mTLS, SPIFFE X.509, signed one-use challenge, exporter-bound principal evidence, and replay-safe authenticated-reference admission.
+- [Protected Process Execution](docs/protected-process-execution.md): policy-pinned executable/argv, signed pre-execution envelope, signed post-execution observation, exact gateway appraisal, and no-rerun recovery.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md): manifest-pinned GitHub OIDC/JWKS appraisal for hosted reusable workflows.
 - [GitLab CI Native Verifier Adapter](docs/gitlab-ci-native-verifier-adapter.md): manifest-pinned GitLab.com OIDC/JWKS appraisal for protected same-project pipelines.
@@ -258,7 +259,9 @@ non-bypassable security boundary. See
 ### Protected Tool Transactions
 
 Phase 17A adds a durable transaction around the Phase 16 dispatch admission.
-Phase 17B1 adds a manifest-backed authenticated principal:
+Phase 17B1 adds a manifest-backed authenticated principal. Phase 17B2A adds
+one policy-pinned ELF or Mach-O local process with signed before/after
+evidence:
 
 ```text
 TLS 1.3 mTLS + exact SPIFFE identity + one-use signed challenge
@@ -266,6 +269,7 @@ TLS 1.3 mTLS + exact SPIFFE identity + one-use signed challenge
 -> authenticated principal + trusted gateway config
 -> exact lease/policy/checkpoint/repository/input binding
 -> received -> authorized -> executing
+-> signed exact-command envelope -> bounded process -> signed observation
 -> committed receipt | aborted cancellation | recovery-required block
 ```
 
@@ -275,16 +279,22 @@ and `begin` returns the exact execution-event reference needed by `commit`. An
 authorized request that never started can be cancelled with the same raw input;
 a crash-retained allow admission is cancelled or its lease is blocked, and an
 executing request with an unknown outcome blocks the lease instead of claiming
-success.
+success. Protected process input contains only a policy reference and rule ID;
+the gateway reloads the policy, envelope, and observation before issuing a
+receipt. Once an envelope exists, a retry never executes the transaction again.
 
-This is an authenticated reference controller, not a production gateway. It
-does not execute tools or prove that direct side paths are unavailable, and
-every decision keeps production execution and release authorization false.
-Provider executors, managed key/configuration custody, sandbox/egress
-enforcement, linearizable coordination, and independently verified exclusive
+This is an authenticated reference controller with a bounded process adapter,
+not a production gateway or sandbox. The adapter fixes an executable, argv,
+cwd, empty environment, timeout, and output limits, but does not isolate the
+filesystem, syscalls, privileges, descendant processes, or network, and does
+not prove that direct side paths are unavailable. Every decision keeps
+production execution and release authorization false. Managed
+key/configuration custody, OCI/OS sandbox and egress enforcement, provider
+adapters, linearizable coordination, and independently verified exclusive
 deployment remain later Phase 17B work. See
 [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md) and
-[Gateway Identity Admission](docs/gateway-identity-admission.md).
+[Gateway Identity Admission](docs/gateway-identity-admission.md), then
+[Protected Process Execution](docs/protected-process-execution.md).
 
 ### Heterogeneous Model Dispatch
 
@@ -443,6 +453,7 @@ Important examples:
 - `run-skill-mission-controller-fixtures.js`: full open/report/close lifecycle, mandatory per-wave routing, context-versus-tool authority separation, exact one-policy-per-agent planning, settled dispatch-lineage reporting, model binding, bounded AAR improvement, and multi-repository isolation.
 - `run-dispatch-runtime-fixtures.js`: plan-digest policy authorization, concurrent one-lineage issuance, ordered cross-agent repository handoff, exact tool admission and post-tool correlation, serial result checkpoints, replay, drift, interruption, same-session resume, revocation, expiry, retained-action, malformed-hook, cross-session, cross-agent, and cross-repository gates.
 - `run-protected-tool-gateway-fixtures.js`: trusted principal/gateway binding, exact transaction/idempotency admission, execution-token commit, raw-input non-retention, operation-class substitution, cancellation, orphan-admission revocation, and unknown-outcome recovery.
+- `run-protected-process-executor-fixtures.js`: real exact executable/argv execution, signed policy/envelope/observation binding, caller-result, shebang, and executable-drift rejection, timeout recording, forbidden repository-effect rejection, and no automatic rerun after an execution claim.
 - `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
 - `run-repository-artifact-concurrency-fixtures.js`: 24-writer serialization, monotonic fencing, foreign-host lease expiry, and stale-writer rejection.
 - `run-repository-artifact-recovery-fixtures.js`: journal recovery, reserved-history finalization, history reconciliation, and artifact/manifest tamper detection.

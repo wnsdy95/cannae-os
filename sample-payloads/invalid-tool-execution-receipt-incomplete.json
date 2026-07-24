@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.2",
+  "schema_version": "0.3",
   "type": "ToolExecutionReceipt",
   "id": "TER-W1-incomplete",
   "transaction_id": "GTX-W1-incomplete",
@@ -57,7 +57,22 @@
     "runtime_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     "sandbox_profile_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     "network_policy_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    "execution_mode": "fixture"
+    "execution_mode": "bounded_process_reference",
+    "executor_policy_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "execution_envelope_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "execution_observation_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    }
   },
   "execution": {
     "transaction_state": "committed",

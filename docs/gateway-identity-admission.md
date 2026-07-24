@@ -72,8 +72,10 @@ name constraints, or every RFC 5280 extension.
 | `ToolGatewayRequest` v0.2 | execution request | exact references to all three identity artifacts |
 
 `ToolGatewayDecision`, `ToolGatewayTransactionEvent`, and
-`ToolExecutionReceipt` v0.2 repeat the same three references. The controller
-rejects a transaction history that changes any reference.
+`ToolExecutionReceipt` v0.3 repeat the same three identity references. The
+receipt may additionally carry the three Phase 17B2A bounded-execution
+references. The controller rejects a transaction history that changes any
+identity reference.
 
 For `contract_reference`, all three references are the exact all-`none`
 sentinel. For `authenticated_reference`, all three must be concrete
@@ -276,7 +278,9 @@ challenge state, and cross-transaction replay.
 
 ## 6. Residual Limits And Next Phase
 
-Phase 17B1 is not a production execution gateway. Remaining Phase 17B work:
+Phase 17B1 is not a production execution gateway. Phase 17B2A adds a bounded
+local process reference but not an OS/container sandbox or exclusive path.
+Remaining Phase 17B work:
 
 1. Provider-specific shell, filesystem, MCP, network, and delegation executors.
 2. OS/container sandbox and egress policy with adapter measurement and
@@ -295,6 +299,7 @@ Only those controls can justify a later `managed_exclusive` assurance level.
 node validator-cli-prototype/run-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-tool-gateway-fixtures.js
+node run-protected-process-executor-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 

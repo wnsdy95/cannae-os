@@ -29,6 +29,9 @@ const { validatePayload } = require("./validator-cli-prototype/validate");
 const {
   verifyGatewayPrincipalEvidence
 } = require("./gateway-identity-adapter");
+const {
+  verifyProtectedExecutionBundle
+} = require("./protected-execution-evidence");
 
 const TERMINAL_STATES = new Set(["denied", "committed", "aborted", "recovery_required"]);
 const KINDS = Object.freeze({
@@ -836,6 +839,20 @@ function loadTransaction(options, transactionId) {
   return { view, records };
 }
 
+function gatewayTransactionContext(options, transactionId) {
+  assertIdentifier(transactionId, "transaction_id");
+  const { view, records } = loadTransaction(options, transactionId);
+  return {
+    status: snapshotStatus(view, records),
+    request: clone(records.request.payload),
+    request_ref: clone(records.request.ref),
+    decision: records.decision ? clone(records.decision.payload) : null,
+    decision_ref: records.decision ? clone(records.decision.ref) : clone(NONE_REF),
+    latest_event: records.latest ? clone(records.latest.payload) : null,
+    latest_event_ref: records.latest ? clone(records.latest.ref) : clone(NONE_REF)
+  };
+}
+
 function beginGatewayExecution(options, transactionId) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
@@ -906,7 +923,10 @@ function noneExecutor() {
     runtime_sha256: noneDigest,
     sandbox_profile_sha256: noneDigest,
     network_policy_sha256: noneDigest,
-    execution_mode: "none"
+    execution_mode: "none",
+    executor_policy_ref: clone(NONE_REF),
+    execution_envelope_ref: clone(NONE_REF),
+    execution_observation_ref: clone(NONE_REF)
   };
 }
 
@@ -916,7 +936,7 @@ function receiptPayload(options, records, descriptor) {
   const digests = bindingDigests(request);
   const view = storeView(options);
   const payload = {
-    schema_version: "0.2",
+    schema_version: "0.3",
     type: "ToolExecutionReceipt",
     id: deterministicId("TER", request.transaction_id),
     transaction_id: request.transaction_id,
@@ -1041,6 +1061,78 @@ function validateExecutor(executor) {
   ]) {
     assertSha256(executor[field], `executor.${field}`);
   }
+  const refs = [
+    executor.executor_policy_ref,
+    executor.execution_envelope_ref,
+    executor.execution_observation_ref
+  ];
+  const bounded = executor.execution_mode === "bounded_process_reference";
+  if (bounded && refs.some(ref => !ref || isNoneRef(ref))) {
+    throw new Error("Bounded process execution requires three concrete evidence references.");
+  }
+  if (!bounded && refs.some(ref => !isNoneRef(ref))) {
+    throw new Error("Non-bounded executors must use exact none evidence references.");
+  }
+}
+
+function verifyBoundedExecution(options, view, records, descriptor) {
+  const protectedInput = descriptor.toolInput &&
+    descriptor.toolInput.type === "ProtectedProcessToolInput";
+  const bounded = descriptor.executor.execution_mode ===
+    "bounded_process_reference";
+  if (protectedInput !== bounded) {
+    throw new Error(
+      "Protected process input and bounded executor evidence must be used together."
+    );
+  }
+  if (!bounded) return;
+
+  assertValid(
+    descriptor.toolInput,
+    "protected-process-tool-input",
+    "Protected process tool input"
+  );
+  const policyRecord = loadArtifactRef(
+    view,
+    descriptor.executor.executor_policy_ref,
+    "protected-executor-policy"
+  );
+  const envelopeRecord = loadArtifactRef(
+    view,
+    descriptor.executor.execution_envelope_ref,
+    "protected-execution-envelope"
+  );
+  const observationRecord = loadArtifactRef(
+    view,
+    descriptor.executor.execution_observation_ref,
+    "protected-execution-observation"
+  );
+  const repositoryStateAfter = runtimeRepositoryState(view.repository.root);
+  const verification = verifyProtectedExecutionBundle({
+    policy: policyRecord.payload,
+    toolInput: descriptor.toolInput,
+    request: records.request.payload,
+    requestRef: records.request.ref,
+    decision: records.decision.payload,
+    decisionRef: records.decision.ref,
+    executionEvent: records.latest.payload,
+    executionEventRef: records.latest.ref,
+    envelope: envelopeRecord.payload,
+    envelopeRef: envelopeRecord.ref,
+    observation: observationRecord.payload,
+    observationRef: observationRecord.ref,
+    executor: descriptor.executor,
+    result: descriptor.result,
+    status: descriptor.status,
+    exitCode: descriptor.exitCode,
+    evaluatedAt: nowIso(options),
+    repositoryStateAfter
+  });
+  if (!verification.valid) {
+    throw new Error(
+      `Protected execution evidence failed verification: ${verification.codes.join(", ")}`
+    );
+  }
 }
 
 function commitGatewayExecution(options, transactionId, descriptor) {
@@ -1085,6 +1177,7 @@ function commitGatewayExecution(options, transactionId, descriptor) {
     if (!/^-?[0-9]+$/.test(String(descriptor.exitCode))) {
       throw new Error("Execution exit_code must be an integer.");
     }
+    verifyBoundedExecution(options, view, records, descriptor);
 
     const admissionRef = records.decision.payload.admission_ref;
     let completionCheckpoint = checkpointForAdmission(storeView(options), admissionRef);
@@ -1513,6 +1606,7 @@ module.exports = {
   beginGatewayExecution,
   bindingDigests,
   commitGatewayExecution,
+  gatewayTransactionContext,
   gatewayStatus,
   recoverGatewayTransaction
 };

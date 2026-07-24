@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1",
+  "type": "ProtectedExecutorPolicy",
+  "id": "PEP-W1-unbound",
+  "adapter_profile": {
+    "signing_public_key_pem": "not-an-ed25519-public-key",
+    "signing_key_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "process_controls": {
+    "sandbox_profile_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "network_controls": {
+    "network_policy_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "rules": [],
+  "valid_from": "2026-07-25T00:00:00Z",
+  "expires_at": "2026-07-24T00:00:00Z",
+  "authority": {
+    "human_final_decision_authority": "AI",
+    "self_approval_prohibited": false,
+    "production_execution_authorized": true,
+    "release_authorized": true
+  }
+}

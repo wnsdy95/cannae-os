@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "type": "ProtectedExecutionEnvelope",
+  "id": "PEE-W1-unbound",
+  "issued_at": "2026-07-24T01:00:06Z",
+  "expires_at": "2026-07-24T01:00:00Z",
+  "signature": {
+    "key_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "algorithm": "ed25519",
+    "signature_base64": "invalid"
+  },
+  "envelope_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "authority": {
+    "human_final_decision_authority": "AI",
+    "self_approval_prohibited": false,
+    "production_execution_authorized": true,
+    "release_authorized": true
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1",
+  "type": "ProtectedExecutionObservation",
+  "id": "PEO-W1-inconsistent",
+  "process": {
+    "spawned": true,
+    "exit_code": 0,
+    "signal": "none",
+    "termination_reason": "exited",
+    "timed_out": true,
+    "output_limit_exceeded": true
+  },
+  "stdout": {
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "observed_bytes": 1,
+    "retained_bytes": 2,
+    "truncated": false
+  },
+  "stderr": {
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "observed_bytes": 0,
+    "retained_bytes": 0,
+    "truncated": true
+  },
+  "started_at": "2026-07-24T01:00:03Z",
+  "finished_at": "2026-07-24T01:00:02Z",
+  "signature": {
+    "key_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "algorithm": "ed25519",
+    "signature_base64": "invalid"
+  },
+  "observation_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "authority": {
+    "human_final_decision_authority": "AI",
+    "self_approval_prohibited": false,
+    "production_execution_authorized": true,
+    "release_authorized": true
+  }
+}
