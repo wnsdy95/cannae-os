@@ -143,7 +143,7 @@
       "properties": {
         "status": {
           "type": "string",
-          "enum": ["not_applicable", "succeeded", "failed", "unknown"]
+          "enum": ["not_applicable", "succeeded", "failed", "cancelled", "unknown"]
         },
         "provider_result_sha256": {
           "oneOf": [

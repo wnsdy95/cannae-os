@@ -3449,3 +3449,131 @@ Residual limits:
 - no partition-tolerant distributed state machine;
 - no non-bypassable claim for repository-local hooks;
 - no production MCP/tool gateway or multi-user scheduler.
+
+## Phase 17A: Protected Tool Gateway Contract
+
+Research question:
+
+> How can an external tool boundary authenticate the acting principal, bind one
+> exact current authorization to one exact tool input, survive retries and
+> crashes, and refuse to report success when the execution outcome is unknown?
+
+Primary standards:
+
+- NIST SP 800-207, Zero Trust Architecture:
+  https://csrc.nist.gov/pubs/sp/800/207/final
+- NIST SP 800-207A, cloud-native zero-trust access control:
+  https://csrc.nist.gov/pubs/sp/800/207/a/final
+- NIST SP 800-53 Rev. 5.1, AU-3 and AU-9:
+  https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final
+- RFC 8705, mutual-TLS client authentication and certificate-bound tokens:
+  https://www.rfc-editor.org/rfc/rfc8705.html
+- RFC 9449, DPoP:
+  https://www.rfc-editor.org/rfc/rfc9449.html
+- RFC 9700, OAuth 2.0 Security Best Current Practice:
+  https://www.rfc-editor.org/rfc/rfc9700.html
+- etcd v3.6 transaction model:
+  https://etcd.io/docs/v3.6/learning/api/
+
+Findings:
+
+1. A gateway is an authorization boundary only if it authenticates the
+   principal and appraises current authority for the exact resource operation.
+   Being inside a provider process, repository, network, or prior approved
+   session is not authority.
+2. Identity and gateway configuration are separate trust inputs. The common
+   contract can bind their canonical digests, but an external trusted adapter
+   must establish issuer, audience, proof of possession, freshness, revocation,
+   deployment, and configuration provenance.
+3. The acting model cannot be both claimant and independent verifier. A CLI
+   argument containing a digest is integration material, not proof that its
+   source was trustworthy.
+4. Phase 16 admission remains necessary. The gateway should reload the exact
+   dispatch lease, policy, checkpoint, repository binding, and repository state
+   rather than restating policy in a second caller-controlled format.
+5. Raw tool input and audit retention have different confidentiality
+   requirements. The gateway needs raw input transiently to calculate the
+   canonical digest and execute, while durable ordinary artifacts need only the
+   digest. Low-entropy secrets still require protected transport and secret
+   handling because hashing is not redaction.
+6. Tool name, canonical input digest, and operation class are one binding. If
+   the gateway request labels a process execution as repository-read, the exact
+   admission must be cancelled and the request denied.
+7. A tool-use ID prevents dispatch replay; a gateway idempotency key prevents
+   transaction replay. The same idempotency key may return retained state only
+   for an identical canonical request. Changed bytes are a conflict.
+8. Authorization and execution are separate transitions. A concrete
+   `executing` event is the single current execution token, so a stale
+   authorization or earlier retry cannot later submit a result.
+9. A committed transaction means the tool outcome was correlated and durably
+   recorded. It can record either a successful or failed invocation; it is not
+   synonymous with business success, wave completion, or release.
+10. Cancellation is safe only before execution and only when the exact raw
+    input can settle the exact dispatch admission. A changed input cannot be
+    used to manufacture an abort.
+11. Once execution may have begun, absence of a result is not evidence of
+    failure or no effect. The correct state is `recovery_required`, with unknown
+    effects and a blocked lease pending external reconciliation.
+12. Append-only request, decision, receipt, and predecessor-linked event
+    artifacts make crash recovery reconstructable. Existing admission,
+    checkpoint, receipt, or terminal-event evidence should be completed, not
+    replayed or overwritten.
+13. A shared-filesystem lock can serialize a reference implementation in one
+    coherent filesystem. Transaction-ID and idempotency-key uniqueness must be
+    checked under the same lock before a second request is persisted. It cannot
+    establish partition-tolerant exclusivity. Multi-host production needs a
+    linearizable coordinator and storage-side fencing.
+14. `managed_exclusive` is a deployment claim, not a schema decoration. The
+    Phase 17A reference controller must reject it because it cannot prove that
+    its own process, configuration, network, sandbox, and all alternate tool
+    paths are independently protected.
+15. Tool execution authorization does not imply commit, push, merge, policy
+    change, risk acceptance, authority change, or release. Every gateway
+    contract preserves USER final decision authority and leaves those effects
+    false.
+
+Implemented surfaces:
+
+- `schema-files/tool-gateway-request.schema.json`;
+- `schema-files/tool-gateway-decision.schema.json`;
+- `schema-files/tool-execution-receipt.schema.json`;
+- `schema-files/tool-gateway-transaction-event.schema.json`;
+- valid and adversarial sample payloads for all four contracts;
+- `protected-tool-gateway.js`;
+- exact dispatch-admission cancellation in `dispatch-runtime-controller.js`;
+- `run-protected-tool-gateway-fixtures.js`;
+- `docs/protected-tool-gateway-contract.md`;
+- Codex and Claude `operate_protected_gateway.js` wrappers and routing
+  instructions.
+
+Measured behavior:
+
+- exact admission, begin token, result correlation, receipt, and terminal event;
+- no raw input in the persisted gateway request;
+- idempotent equivalent replay, changed-request conflict, and reused
+  transaction conflict before a second write;
+- principal-digest substitution denial;
+- managed-assurance overclaim denial;
+- raw-input digest denial before dispatch authority is consumed;
+- operation-class substitution cancellation;
+- exact authorized-but-unstarted abort;
+- exact cancellation or lease blocking for a crash-retained allow admission
+  that has no gateway decision;
+- rejection of begin/commit timestamps that precede retained transaction
+  events;
+- executing unknown-outcome transition to blocked recovery.
+
+Residual limits and Phase 17B work:
+
+- no production mTLS, DPoP, workload-OIDC, revocation, or identity-provider
+  adapter;
+- no MCP, shell, filesystem, network, or delegation executor adapter;
+- no independently protected policy/configuration service;
+- no OS/container sandbox or egress enforcement that removes side paths;
+- no distributed linearizable coordinator or storage-enforced fencing;
+- no protected secret transport or confidential raw-input vault;
+- no multi-user permission, break-glass, incident, or reconciliation service;
+- no deployment attestation proving gateway code and configuration;
+- no adversarial production test proving tools are unreachable when the
+  gateway is down;
+- no production-execution, deployment-verification, or release authority.

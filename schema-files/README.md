@@ -51,6 +51,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - routing receipts
 - operational mission wave plans, per-agent context packs, wave reports, and closeouts
 - deny-by-default dispatch tool policies, short-lived agent leases, tool admission events, and resumable execution checkpoints
+- protected tool gateway requests, decisions, execution receipts, and append-only transaction events
 
 Recommended validation order:
 
@@ -136,6 +137,10 @@ Recommended validation order:
 80. `agent-dispatch-lease.schema.json`
 81. `tool-admission-event.schema.json`
 82. `agent-execution-checkpoint.schema.json`
+83. `tool-gateway-request.schema.json`
+84. `tool-gateway-decision.schema.json`
+85. `tool-execution-receipt.schema.json`
+86. `tool-gateway-transaction-event.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -160,3 +165,5 @@ All schemas target JSON Schema draft 2020-12.
 `MissionWavePlan` is the operational skill entry contract. It preserves USER final authority, requires routing and repository evidence on every wave, optionally binds a ready integrated model preflight, and can bind exact per-agent dispatch-policy draft digests before context issuance. `AgentContextPack`, `MissionWaveReport`, and `MissionWaveCloseout` carry exact manifest references through dispatch, execution evidence, AAR learning, and the next-wave queue without granting release.
 
 `DispatchToolPolicy` v0.2 must be controller-compiled from a policy-draft digest already authorized by the exact USER-authored mission plan. Each rule binds one allowed mission action, exact provider tool, operation class, matcher input, repository-state control, and finite budget under default deny; project-hook policies cannot authorize network or delegation classes. `AgentDispatchLease` binds that policy to one provider session, repository identity/state, context chain, nonce, and validity window. `ToolAdmissionEvent` records each pre-tool allow or deny decision, while `AgentExecutionCheckpoint` v0.2 maintains the serial state chain, exact provider-result digest, and unresolved-effect disposition. All four retain `USER` final authority and keep release unauthorized.
+
+`ToolGatewayRequest` binds an externally authenticated principal and exact gateway configuration to the active Phase 16 lease, policy, checkpoint, repository state, canonical tool-input digest, validity window, and idempotency key without retaining raw input. `ToolGatewayDecision` joins that request to one exact dispatch admission and matched rule. `ToolExecutionReceipt` records committed, aborted, or recovery-required disposition plus executor and result bindings. `ToolGatewayTransactionEvent` preserves the append-only state sequence. Phase 17A fixes production-execution and deployment-verification claims to false.

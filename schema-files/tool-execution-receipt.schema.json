@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/tool-execution-receipt.schema.json",
+  "title": "Tool Execution Receipt",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "transaction_id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "request_ref",
+    "decision_ref",
+    "admission_ref",
+    "checkpoint_ref",
+    "gateway_binding_sha256",
+    "principal_binding_sha256",
+    "tool_call",
+    "executor",
+    "execution",
+    "repository_state_before",
+    "repository_state_after",
+    "coordination",
+    "idempotency_key",
+    "production_deployment_verified",
+    "reason_codes",
+    "recorded_at",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ToolExecutionReceipt" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "request_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "decision_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "admission_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "gateway_binding_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "principal_binding_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "tool_call": { "$ref": "#/$defs/tool_call" },
+    "executor": { "$ref": "#/$defs/executor" },
+    "execution": { "$ref": "#/$defs/execution" },
+    "repository_state_before": { "$ref": "#/$defs/repository_state" },
+    "repository_state_after": { "$ref": "#/$defs/repository_state" },
+    "coordination": { "$ref": "#/$defs/coordination" },
+    "idempotency_key": { "$ref": "common.schema.json#/$defs/sha256" },
+    "production_deployment_verified": { "type": "boolean", "const": false },
+    "reason_codes": { "$ref": "#/$defs/reason_codes" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "tool_call": {
+      "type": "object",
+      "required": [
+        "tool_use_id",
+        "tool_name",
+        "operation_class",
+        "tool_input_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tool_use_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "tool_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+/-]*$"
+        },
+        "operation_class": {
+          "type": "string",
+          "enum": [
+            "observe",
+            "repository_read",
+            "repository_write",
+            "process_execute",
+            "network_access",
+            "delegation"
+          ]
+        },
+        "tool_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "executor": {
+      "type": "object",
+      "required": [
+        "adapter_id",
+        "adapter_version",
+        "adapter_sha256",
+        "runtime_sha256",
+        "sandbox_profile_sha256",
+        "network_policy_sha256",
+        "execution_mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": { "$ref": "#/$defs/safe_identifier" },
+        "adapter_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "adapter_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "runtime_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "sandbox_profile_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "network_policy_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "execution_mode": {
+          "type": "string",
+          "enum": ["none", "fixture", "external_adapter"]
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": [
+        "transaction_state",
+        "status",
+        "started_at",
+        "finished_at",
+        "result_sha256",
+        "exit_code",
+        "external_effects"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "transaction_state": {
+          "type": "string",
+          "enum": ["committed", "aborted", "recovery_required"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["succeeded", "failed", "not_executed", "unknown"]
+        },
+        "started_at": { "type": "string", "minLength": 1 },
+        "finished_at": { "type": "string", "minLength": 1 },
+        "result_sha256": {
+          "type": "string",
+          "pattern": "^(none|[a-f0-9]{64})$"
+        },
+        "exit_code": {
+          "type": "string",
+          "pattern": "^(none|-?[0-9]+)$"
+        },
+        "external_effects": {
+          "type": "string",
+          "enum": [
+            "none",
+            "repository_state_recorded",
+            "network_effect_recorded",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": {
+          "type": "string",
+          "pattern": "^(unborn|[a-f0-9]{40,64})$"
+        },
+        "worktree_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "coordination": {
+      "type": "object",
+      "required": [
+        "backend",
+        "manifest_revision",
+        "fencing_token"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "backend": {
+          "type": "string",
+          "enum": ["shared_filesystem_reference", "external_linearizable"]
+        },
+        "manifest_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fencing_token": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "release_authorized": { "type": "boolean", "const": false }
+      }
+    }
+  }
+}

@@ -98,6 +98,22 @@ Project hooks are a deterministic guardrail for covered calls, not a non-bypassa
 
 Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup, provider limits, failure matrix, and production deployment levels.
 
+## Protected Tool Gateway
+
+Use the gateway transaction path when a covered tool call needs durable
+authorization and outcome evidence beyond the project hook:
+
+1. Complete routing, policy authorization, and lease issuance first. Construct a `ToolGatewayRequest` from the exact active lease, policy, checkpoint, repository state, authenticated principal, trusted gateway projection, and canonical input digest.
+2. Accept `--verified-principal-sha256` and `--gateway-binding-sha256` only from independently trusted adapters. An acting agent cannot self-assert either digest as proof.
+3. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`.
+4. Run `begin` directly before the adapter acts and retain the exact returned `execution_event_ref`.
+5. Run `commit` with that reference, exact input, result, and measured executor digests. A stale token or post-tool mismatch becomes `recovery_required`.
+6. Recover authorized-but-unstarted work with the exact raw input so admission can be cancelled. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. Recover an executing transaction without claiming an outcome; the lease blocks for human reconciliation.
+7. Reuse an idempotency key only for the same canonical request, and never reuse a transaction ID for a different request or key. A receipt never grants commit, push, merge, release, risk, policy, or authority approval.
+
+Phase 17A does not execute tools or prove gateway exclusivity. Read
+`docs/protected-tool-gateway-contract.md` before integrating an adapter.
+
 ## References
 
 Read these only when needed (bundled with this skill):
@@ -120,7 +136,7 @@ Read these only when needed (bundled with this skill):
 When editing the corpus:
 
 - Update the target document and its index/source-map entry together.
-- If changing a runtime contract, update schema, valid sample, invalid sample, runner/fixture, and docs.
+- If changing a runtime contract, update schema, valid sample, invalid sample, runner/fixture, and docs. Protected-gateway changes also update both skill wrappers and transaction/recovery guidance.
 - If adding, renaming, moving, or deleting any corpus artifact, run coverage:
 
 ```bash
@@ -172,6 +188,7 @@ node .github/scripts/check-english-only.js
 node run-agent-routing-preflight-fixtures.js
 node run-skill-mission-controller-fixtures.js
 node run-dispatch-runtime-fixtures.js
+node run-protected-tool-gateway-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js

@@ -139,6 +139,81 @@ const fixtures = [
     requiredCodes: ["EXECUTION_CHECKPOINT_UNRESOLVED_EFFECT_ACTIVE"]
   },
   {
+    name: "valid tool gateway request",
+    file: "sample-payloads/valid-tool-gateway-request.json",
+    type: "tool-gateway-request",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unsafe tool gateway request",
+    file: "sample-payloads/invalid-tool-gateway-request-unsafe.json",
+    type: "tool-gateway-request",
+    exitCode: 1,
+    requiredCodes: [
+      "GATEWAY_REQUEST_INVALID_VALIDITY",
+      "GATEWAY_REQUEST_AUDIENCE_MISMATCH",
+      "GATEWAY_REQUEST_ASSURANCE_MISMATCH",
+      "GATEWAY_REQUEST_FIXTURE_IDENTITY_FOR_MANAGED",
+      "GATEWAY_REQUEST_RAW_INPUT_RETAINED",
+      "GATEWAY_REQUEST_AUTHORITY_DRIFT"
+    ]
+  },
+  {
+    name: "valid tool gateway decision",
+    file: "sample-payloads/valid-tool-gateway-decision.json",
+    type: "tool-gateway-decision",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "unbound tool gateway allow decision",
+    file: "sample-payloads/invalid-tool-gateway-decision-unbound.json",
+    type: "tool-gateway-decision",
+    exitCode: 1,
+    requiredCodes: [
+      "GATEWAY_DECISION_ALLOW_UNBOUND",
+      "GATEWAY_DECISION_REASON_MISSING",
+      "GATEWAY_DECISION_INVALID_VALIDITY"
+    ]
+  },
+  {
+    name: "valid tool execution receipt",
+    file: "sample-payloads/valid-tool-execution-receipt.json",
+    type: "tool-execution-receipt",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "incomplete committed tool execution receipt",
+    file: "sample-payloads/invalid-tool-execution-receipt-incomplete.json",
+    type: "tool-execution-receipt",
+    exitCode: 1,
+    requiredCodes: [
+      "TOOL_EXECUTION_RECEIPT_COMMIT_INCOMPLETE",
+      "TOOL_EXECUTION_RECEIPT_REF_UNBOUND",
+      "TOOL_EXECUTION_RECEIPT_AUTHORITY_DRIFT"
+    ]
+  },
+  {
+    name: "valid tool gateway transaction event",
+    file: "sample-payloads/valid-tool-gateway-transaction-event.json",
+    type: "tool-gateway-transaction-event",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "invalid tool gateway transaction transition",
+    file: "sample-payloads/invalid-tool-gateway-transaction-event-transition.json",
+    type: "tool-gateway-transaction-event",
+    exitCode: 1,
+    requiredCodes: [
+      "GATEWAY_TRANSACTION_CHAIN_INVALID",
+      "GATEWAY_TRANSACTION_TERMINAL_INVALID",
+      "GATEWAY_TRANSACTION_AUTHORITY_DRIFT"
+    ]
+  },
+  {
     name: "valid approval request",
     file: "sample-payloads/valid-approval-request.json",
     type: "approval-request",

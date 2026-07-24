@@ -70,6 +70,10 @@ const TYPE_TO_SCHEMA = {
   "agent-dispatch-lease": "agent-dispatch-lease.schema.json",
   "tool-admission-event": "tool-admission-event.schema.json",
   "agent-execution-checkpoint": "agent-execution-checkpoint.schema.json",
+  "tool-gateway-request": "tool-gateway-request.schema.json",
+  "tool-gateway-decision": "tool-gateway-decision.schema.json",
+  "tool-execution-receipt": "tool-execution-receipt.schema.json",
+  "tool-gateway-transaction-event": "tool-gateway-transaction-event.schema.json",
   "approval-request": "approval-request.schema.json",
   sitrep: "sitrep.schema.json",
   frago: "frago.schema.json",
@@ -634,6 +638,185 @@ function semanticRules(payload, type) {
     }
     if (!isValidDate(payload.recorded_at)) {
       issues.push(issue("critical", "EXECUTION_CHECKPOINT_INVALID_TIMESTAMP", "$.recorded_at", "Execution checkpoint requires a valid recorded timestamp."));
+    }
+  }
+
+  if (type === "tool-gateway-request") {
+    const gateway = payload.gateway || {};
+    const principal = payload.authenticated_principal || {};
+    const authenticatedAt = Date.parse(principal.authenticated_at);
+    const principalExpiresAt = Date.parse(principal.expires_at);
+    const requestedAt = Date.parse(payload.requested_at);
+    const validUntil = Date.parse(payload.valid_until);
+    if (!isValidDate(principal.authenticated_at) ||
+        !isValidDate(principal.expires_at) ||
+        !isValidDate(payload.requested_at) ||
+        !isValidDate(payload.valid_until) ||
+        authenticatedAt > requestedAt ||
+        requestedAt >= validUntil ||
+        validUntil > principalExpiresAt) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_INVALID_VALIDITY", "$.valid_until", "Gateway request validity must satisfy authenticated_at <= requested_at < valid_until <= principal expiry."));
+    }
+    if (gateway.audience !== principal.audience) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_AUDIENCE_MISMATCH", "$.authenticated_principal.audience", "Authenticated principal audience must match the exact gateway audience."));
+    }
+    if ((gateway.assurance_level === "contract_reference" && gateway.exclusive_path_verified !== false) ||
+        (gateway.assurance_level === "managed_exclusive" && gateway.exclusive_path_verified !== true)) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_ASSURANCE_MISMATCH", "$.gateway", "Reference assurance must not claim exclusivity; managed-exclusive assurance must carry verified exclusivity."));
+    }
+    if (gateway.assurance_level === "managed_exclusive" &&
+        principal.authentication_method === "fixture") {
+      issues.push(issue("critical", "GATEWAY_REQUEST_FIXTURE_IDENTITY_FOR_MANAGED", "$.authenticated_principal.authentication_method", "Fixture identity cannot enter a managed-exclusive gateway."));
+    }
+    if (principal.proof_verified !== true) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_PRINCIPAL_UNVERIFIED", "$.authenticated_principal.proof_verified", "Gateway admission requires a verified principal proof."));
+    }
+    if (payload.raw_input_retained !== false) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_RAW_INPUT_RETAINED", "$.raw_input_retained", "Gateway audit artifacts must retain the exact input digest, not raw tool input."));
+    }
+    if (retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_AUTHORITY_DRIFT", "$.authority", "Gateway request cannot expand authority or authorize release."));
+    }
+  }
+
+  if (type === "tool-gateway-decision") {
+    const admissionKind = artifactRefKind(payload.admission_ref);
+    if (admissionKind === "malformed") {
+      issues.push(issue("critical", "GATEWAY_DECISION_ADMISSION_REF_MALFORMED", "$.admission_ref", "Admission reference must be concrete or use the exact all-none sentinel."));
+    }
+    if (payload.decision === "allow" &&
+        (payload.execution_permitted !== true ||
+         payload.production_execution_authorized !== false ||
+         admissionKind !== "concrete" ||
+         payload.matched_rule_id === "none")) {
+      issues.push(issue("critical", "GATEWAY_DECISION_ALLOW_UNBOUND", "$", "An allow decision requires execution permission, a concrete admission, and an exact matched rule."));
+    }
+    if (payload.decision === "deny" &&
+        (payload.execution_permitted !== false ||
+         payload.production_execution_authorized !== false ||
+         payload.matched_rule_id !== "none")) {
+      issues.push(issue("critical", "GATEWAY_DECISION_DENY_PERMITS_EXECUTION", "$", "A deny decision must prohibit execution and use the none rule sentinel."));
+    }
+    if (!hasSubstantiveItems(payload.reason_codes)) {
+      issues.push(issue("critical", "GATEWAY_DECISION_REASON_MISSING", "$.reason_codes", "Gateway decision requires at least one substantive reason code."));
+    }
+    if (!isBefore(payload.decided_at, payload.valid_until)) {
+      issues.push(issue("critical", "GATEWAY_DECISION_INVALID_VALIDITY", "$.valid_until", "Gateway decision validity must end after the decision."));
+    }
+    if (retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "GATEWAY_DECISION_AUTHORITY_DRIFT", "$.authority", "Gateway decision cannot expand authority or authorize release."));
+    }
+  }
+
+  if (type === "tool-execution-receipt") {
+    const admissionKind = artifactRefKind(payload.admission_ref);
+    const checkpointKind = artifactRefKind(payload.checkpoint_ref);
+    const execution = payload.execution || {};
+    if (admissionKind === "malformed" || checkpointKind === "malformed") {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_REF_MALFORMED", "$", "Receipt admission and checkpoint references must be concrete or use the exact all-none sentinel."));
+    }
+    if (admissionKind !== "concrete" || checkpointKind !== "concrete") {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_REF_UNBOUND", "$", "Every execution receipt requires concrete admission and checkpoint references."));
+    }
+    if (execution.transaction_state === "committed" &&
+        (admissionKind !== "concrete" ||
+         checkpointKind !== "concrete" ||
+         !["succeeded", "failed"].includes(execution.status) ||
+         !payload.executor || payload.executor.execution_mode === "none" ||
+         execution.result_sha256 === "none" ||
+         !isValidDate(execution.started_at) ||
+         !isValidDate(execution.finished_at) ||
+         Date.parse(execution.started_at) > Date.parse(execution.finished_at))) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_COMMIT_INCOMPLETE", "$.execution", "Committed execution requires concrete admission/checkpoint/result bindings and ordered execution timestamps."));
+    }
+    if (execution.transaction_state === "aborted" &&
+        (execution.status !== "not_executed" ||
+         !payload.executor || payload.executor.execution_mode !== "none" ||
+         execution.result_sha256 !== "none" ||
+         execution.started_at !== "none" ||
+         execution.finished_at !== "none" ||
+         execution.exit_code !== "none" ||
+         execution.external_effects !== "none")) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_ABORT_INVALID", "$.execution", "An aborted transaction must prove that execution did not start and no effect was observed."));
+    }
+    if (execution.transaction_state === "recovery_required" &&
+        (execution.status !== "unknown" ||
+         !payload.executor || payload.executor.execution_mode !== "none" ||
+         execution.result_sha256 !== "none" ||
+         (execution.started_at !== "none" && !isValidDate(execution.started_at)) ||
+         execution.finished_at !== "none" ||
+         execution.exit_code !== "none" ||
+         execution.external_effects !== "unknown")) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_RECOVERY_INVALID", "$.execution", "Recovery-required state must preserve an unknown result and effect disposition."));
+    }
+    if (!hasSubstantiveItems(payload.reason_codes)) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_REASON_MISSING", "$.reason_codes", "Execution receipt requires at least one substantive reason code."));
+    }
+    if (retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_AUTHORITY_DRIFT", "$.authority", "Execution receipt cannot expand authority or authorize release."));
+    }
+    if (payload.production_deployment_verified !== false) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_PRODUCTION_OVERCLAIM", "$.production_deployment_verified", "Phase 17A receipt cannot claim a verified production deployment."));
+    }
+    const recordedAt = Date.parse(payload.recorded_at);
+    const finishedAt = Date.parse(execution.finished_at);
+    const startedAt = Date.parse(execution.started_at);
+    if (!isValidDate(payload.recorded_at) ||
+        (isValidDate(execution.finished_at) && finishedAt > recordedAt) ||
+        (execution.transaction_state === "recovery_required" &&
+         isValidDate(execution.started_at) && startedAt > recordedAt)) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_TIMESTAMP_INVALID", "$.recorded_at", "Receipt recording must be valid and no earlier than a known execution timestamp."));
+    }
+  }
+
+  if (type === "tool-gateway-transaction-event") {
+    const previousKind = artifactRefKind(payload.previous_event_ref);
+    const decisionKind = artifactRefKind(payload.decision_ref);
+    const receiptKind = artifactRefKind(payload.receipt_ref);
+    const admissionKind = artifactRefKind(payload.admission_ref);
+    if ([previousKind, decisionKind, receiptKind, admissionKind].includes("malformed")) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_REF_MALFORMED", "$", "Transaction references must be concrete or use the exact all-none sentinel."));
+    }
+    if (payload.state === "received" &&
+        (payload.sequence !== 1 ||
+         previousKind !== "none" ||
+         decisionKind !== "none" ||
+         receiptKind !== "none" ||
+         admissionKind !== "none")) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_RECEIVED_INVALID", "$", "Received must be sequence one with no predecessor, decision, receipt, or admission."));
+    }
+    if (payload.state !== "received" &&
+        (!Number.isInteger(payload.sequence) || payload.sequence < 2 || previousKind !== "concrete")) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_CHAIN_INVALID", "$.previous_event_ref", "Every post-receipt event requires a positive next sequence and concrete predecessor."));
+    }
+    if (payload.state === "authorized" &&
+        (decisionKind !== "concrete" || admissionKind !== "concrete" || receiptKind !== "none")) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_AUTHORIZED_INVALID", "$", "Authorized requires concrete decision and admission references without a receipt."));
+    }
+    if (payload.state === "denied" &&
+        (decisionKind !== "concrete" || receiptKind !== "none")) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_DENIED_INVALID", "$", "Denied requires a concrete decision and no receipt."));
+    }
+    if (payload.state === "executing" &&
+        (payload.sequence < 3 || decisionKind !== "concrete" ||
+         admissionKind !== "concrete" || receiptKind !== "none")) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_EXECUTING_INVALID", "$", "Executing requires a prior authorized decision and admission without a receipt."));
+    }
+    const terminalSequenceInvalid =
+      (payload.state === "committed" && payload.sequence < 4) ||
+      (["aborted", "recovery_required"].includes(payload.state) && payload.sequence < 3);
+    if (["committed", "aborted", "recovery_required"].includes(payload.state) &&
+        (terminalSequenceInvalid || decisionKind !== "concrete" || receiptKind !== "concrete")) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_TERMINAL_INVALID", "$", "Terminal transaction events require concrete decision and receipt references."));
+    }
+    if (!hasSubstantiveItems(payload.reason_codes)) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_REASON_MISSING", "$.reason_codes", "Transaction event requires at least one substantive reason code."));
+    }
+    if (retainedAuthorityDrift(payload.authority)) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_AUTHORITY_DRIFT", "$.authority", "Gateway transaction event cannot expand authority or authorize release."));
+    }
+    if (!isValidDate(payload.recorded_at)) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_TIMESTAMP_INVALID", "$.recorded_at", "Gateway transaction event requires a valid timestamp."));
     }
   }
 

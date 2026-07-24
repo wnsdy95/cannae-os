@@ -1275,6 +1275,94 @@ function completeToolRequest(options, identity, hookInput) {
   }
 }
 
+function cancelToolRequest(options, identity, descriptor) {
+  assertProvider(identity.provider);
+  if (!descriptor || !descriptor.toolUseId || !descriptor.toolName) {
+    return inMemoryDenial("TOOL_CANCELLATION_IDENTITY_MISSING");
+  }
+  const view = storeView(options);
+  const matching = leaseRecords(view, identity.missionId, identity.waveId)
+    .filter(item => bindingMatches(item.payload, identity));
+  if (matching.length === 0) return inMemoryDenial("LEASE_NOT_FOUND");
+  const initialCandidates = completionCandidates(view, matching, descriptor.toolUseId);
+  if (initialCandidates.unresolved.length === 0) {
+    return inMemoryDenial(initialCandidates.completed.length > 0
+      ? "TOOL_CANCELLATION_REPLAY"
+      : "TOOL_ADMISSION_NOT_FOUND");
+  }
+  if (initialCandidates.unresolved.length !== 1) {
+    return inMemoryDenial("TOOL_CANCELLATION_AMBIGUOUS");
+  }
+  const leaseRecord = initialCandidates.unresolved[0].leaseRecord;
+  const lock = dispatchLock(view, leaseRecord.payload.id);
+  try {
+    const refreshed = storeView(options);
+    const currentLease = leaseRecords(refreshed, identity.missionId, identity.waveId)
+      .find(item => item.payload.id === leaseRecord.payload.id);
+    if (!currentLease || !bindingMatches(currentLease.payload, identity)) {
+      return inMemoryDenial("LEASE_BINDING_MISMATCH");
+    }
+    const candidates = completionCandidates(refreshed, [currentLease], descriptor.toolUseId);
+    if (candidates.unresolved.length === 0) {
+      return inMemoryDenial(candidates.completed.length > 0
+        ? "TOOL_CANCELLATION_REPLAY"
+        : "TOOL_ADMISSION_NOT_FOUND");
+    }
+    if (candidates.unresolved.length !== 1) {
+      return inMemoryDenial("TOOL_CANCELLATION_AMBIGUOUS");
+    }
+    const admission = candidates.unresolved[0].admission;
+    const toolInputSha256 = inputDigest(descriptor.toolInput);
+    if (descriptor.toolName !== admission.payload.tool_name ||
+        toolInputSha256 !== admission.payload.tool_input_sha256) {
+      return inMemoryDenial("TOOL_CANCELLATION_BINDING_MISMATCH");
+    }
+    const previous = latestCheckpoint(refreshed, currentLease);
+    if (previous.payload.lease_status !== "active") {
+      return inMemoryDenial(`LEASE_${previous.payload.lease_status.toUpperCase()}`);
+    }
+    const state = runtimeRepositoryState(refreshed.repository.root);
+    if (!sameRepositoryState(state, admission.payload.state_before) ||
+        !sameRepositoryState(state, previous.payload.repository_state)) {
+      return inMemoryDenial("TOOL_CANCELLATION_STATE_DRIFT");
+    }
+    const policy = policyForLease(refreshed, currentLease).payload;
+    if (policy.repository_state.require_head_match === true &&
+        state.head_commit !== currentLease.payload.initial_repository_state.head_commit) {
+      return inMemoryDenial("REPOSITORY_HEAD_DRIFT");
+    }
+    const reasonCode = String(descriptor.reasonCode || "TOOL_EXECUTION_CANCELLED");
+    const checkpoint = postToolCheckpoint(currentLease, previous, admission, state, {
+      status: "active",
+      reasonCodes: ["TOOL_EXECUTION_CANCELLED", reasonCode],
+      executionResult: {
+        status: "cancelled",
+        provider_result_sha256: sha256(canonicalBytes({
+          event: "ToolExecutionCancelled",
+          tool_use_id: descriptor.toolUseId,
+          tool_name: descriptor.toolName,
+          tool_input_sha256: toolInputSha256,
+          reason_code: reasonCode
+        })),
+        external_effects: "none"
+      },
+      recordedAt: nowIso(options)
+    });
+    renewRepositoryLease(lock);
+    const checkpointRef = persistCheckpoint(options, checkpoint);
+    return {
+      status: "cancelled",
+      execution_authorized: false,
+      release_authorized: false,
+      checkpoint,
+      checkpoint_ref: checkpointRef,
+      admission_ref: admission.ref
+    };
+  } finally {
+    releaseRepositoryLease(lock);
+  }
+}
+
 function transitionCheckpoint(leaseRecord, previous, state, descriptor) {
   const sequence = previous.payload.sequence + 1;
   return {
@@ -1581,6 +1669,7 @@ module.exports = {
   activeLease,
   admitToolRequest,
   authorizeDispatchPolicy,
+  cancelToolRequest,
   canonicalBytes,
   completeLease,
   completeToolRequest,

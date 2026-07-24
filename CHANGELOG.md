@@ -6,6 +6,7 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added Phase 17A protected tool gateway contracts and reference controller with trusted principal/configuration binding, raw-input digest separation, idempotent append-only transactions, exact execution tokens, executor-bound receipts, pre-execution cancellation, unknown-outcome recovery, adversarial fixtures, and equivalent Codex/Claude skill routing.
 - Added a fail-closed Codex/Claude skill mission lifecycle with per-wave routing enforcement, repository-bound and digest-bound agent context packs, optional exact model dispatch bindings, manifest-backed work reporting, SITREP/AAR closeout, bounded improvement handoff, and retained human release authority.
 - Added Phase 13 transparency operations: trust-policy/cycle-order v0.7, durable append-only checkpoint state, RFC 6962 consistency proofs, distinct witness/monitor operator quorums, sequential dual-threshold TUF root rotation and expiry, immutable incident supersession and revocation history, manifest-backed supervisor admission, adversarial fixtures, and official research traceability.
 - Added Phase 12C verifier failure-domain independence: trust-policy v0.6, runtime-policy and execution-evidence v0.2, nine required component identities, transitive correlation domains, declared-label bypass prevention, supervisor/cycle projection, execution-bound receipt/report quorum, adversarial fixtures, and official research traceability.

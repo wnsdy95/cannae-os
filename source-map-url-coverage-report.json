@@ -85,6 +85,7 @@
     {
       "host": "csrc.nist.gov",
       "files": [
+        "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"
@@ -148,6 +149,8 @@
     {
       "host": "etcd.io",
       "files": [
+        "docs/protected-tool-gateway-contract.md",
+        "docs/research-compendium.md",
         "docs/source-map.md"
       ]
     },
@@ -403,6 +406,7 @@
     {
       "host": "www.rfc-editor.org",
       "files": [
+        "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/transparency-operations.md"

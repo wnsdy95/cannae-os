@@ -1,0 +1,71 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolGatewayRequest",
+  "id": "TGR-W1-unsafe",
+  "transaction_id": "GTX-W1-unsafe",
+  "mission_id": "MIS-GATEWAY",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "gateway": {
+    "gateway_id": "unverified-gateway",
+    "instance_id": "gateway-instance-unsafe",
+    "audience": "cannae-tool-gateway",
+    "deployment_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "configuration_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "assurance_level": "managed_exclusive",
+    "exclusive_path_verified": false
+  },
+  "authenticated_principal": {
+    "authentication_method": "fixture",
+    "issuer": "fixture://unsafe",
+    "subject": "agent:runtime-agent",
+    "audience": "wrong-audience",
+    "credential_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "proof_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "proof_verified": true,
+    "session_id": "session-runtime-agent",
+    "provider_agent_id": "main",
+    "authenticated_at": "2026-07-23T13:00:00Z",
+    "expires_at": "2026-07-23T13:01:00Z"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-W1-runtime-agent",
+    "relative_path": "lease.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "tool_policy_ref": {
+    "artifact_id": "DTP-W1-runtime-agent",
+    "relative_path": "policy.json",
+    "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-W1-runtime-agent-0",
+    "relative_path": "checkpoint.json",
+    "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "repository_binding": {
+    "repository_key": "example",
+    "identity_fingerprint": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "expected_repository_state": {
+    "head_commit": "0123456789abcdef0123456789abcdef01234567",
+    "worktree_fingerprint": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "dirty": false
+  },
+  "tool_call": {
+    "tool_use_id": "tool-use-unsafe",
+    "tool_name": "Bash",
+    "operation_class": "process_execute",
+    "tool_input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "idempotency_key": "2222222222222222222222222222222222222222222222222222222222222222",
+  "raw_input_retained": true,
+  "requested_at": "2026-07-23T13:00:30Z",
+  "valid_until": "2026-07-23T13:05:00Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": true
+  }
+}

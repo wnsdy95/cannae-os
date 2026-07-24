@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/tool-gateway-request.schema.json",
+  "title": "Tool Gateway Request",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "transaction_id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "gateway",
+    "authenticated_principal",
+    "lease_ref",
+    "tool_policy_ref",
+    "checkpoint_ref",
+    "repository_binding",
+    "expected_repository_state",
+    "tool_call",
+    "idempotency_key",
+    "raw_input_retained",
+    "requested_at",
+    "valid_until",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ToolGatewayRequest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "provider": { "$ref": "#/$defs/provider" },
+    "gateway": { "$ref": "#/$defs/gateway_binding" },
+    "authenticated_principal": { "$ref": "#/$defs/authenticated_principal" },
+    "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "tool_policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "expected_repository_state": { "$ref": "#/$defs/repository_state" },
+    "tool_call": { "$ref": "#/$defs/tool_call" },
+    "idempotency_key": { "$ref": "common.schema.json#/$defs/sha256" },
+    "raw_input_retained": { "type": "boolean", "const": false },
+    "requested_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["codex", "claude_code"]
+    },
+    "gateway_binding": {
+      "type": "object",
+      "required": [
+        "gateway_id",
+        "instance_id",
+        "audience",
+        "deployment_sha256",
+        "configuration_sha256",
+        "assurance_level",
+        "exclusive_path_verified"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "gateway_id": { "$ref": "#/$defs/safe_identifier" },
+        "instance_id": { "$ref": "#/$defs/safe_identifier" },
+        "audience": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "deployment_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "configuration_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "assurance_level": {
+          "type": "string",
+          "enum": ["contract_reference", "managed_exclusive"]
+        },
+        "exclusive_path_verified": { "type": "boolean" }
+      }
+    },
+    "authenticated_principal": {
+      "type": "object",
+      "required": [
+        "authentication_method",
+        "issuer",
+        "subject",
+        "audience",
+        "credential_sha256",
+        "proof_sha256",
+        "proof_verified",
+        "session_id",
+        "provider_agent_id",
+        "authenticated_at",
+        "expires_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "authentication_method": {
+          "type": "string",
+          "enum": ["fixture", "mtls", "dpop", "workload_oidc"]
+        },
+        "issuer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "audience": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "credential_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "proof_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "proof_verified": { "type": "boolean", "const": true },
+        "session_id": { "$ref": "#/$defs/safe_identifier" },
+        "provider_agent_id": { "$ref": "#/$defs/safe_identifier" },
+        "authenticated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": ["head_commit", "worktree_fingerprint", "dirty"],
+      "additionalProperties": false,
+      "properties": {
+        "head_commit": {
+          "type": "string",
+          "pattern": "^(unborn|[a-f0-9]{40,64})$"
+        },
+        "worktree_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" },
+        "dirty": { "type": "boolean" }
+      }
+    },
+    "tool_call": {
+      "type": "object",
+      "required": [
+        "tool_use_id",
+        "tool_name",
+        "operation_class",
+        "tool_input_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tool_use_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "tool_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+/-]*$"
+        },
+        "operation_class": {
+          "type": "string",
+          "enum": [
+            "observe",
+            "repository_read",
+            "repository_write",
+            "process_execute",
+            "network_access",
+            "delegation"
+          ]
+        },
+        "tool_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "release_authorized": { "type": "boolean", "const": false }
+      }
+    }
+  }
+}

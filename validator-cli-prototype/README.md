@@ -46,6 +46,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-verification-atte
 node validator-cli-prototype/validate.js sample-payloads/valid-comparative-evaluation-attestation.json comparative-evaluation-attestation
 node validator-cli-prototype/validate.js sample-payloads/valid-document-access-manifest.json document-access-manifest
 node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt
+node validator-cli-prototype/validate.js sample-payloads/valid-tool-gateway-request.json tool-gateway-request
+node validator-cli-prototype/validate.js sample-payloads/valid-tool-execution-receipt.json tool-execution-receipt
 ```
 
 ## Exit Codes
@@ -61,6 +63,14 @@ node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-a
 - `opord`
 - `task-order`
 - `tool-request`
+- `dispatch-tool-policy`
+- `agent-dispatch-lease`
+- `tool-admission-event`
+- `agent-execution-checkpoint`
+- `tool-gateway-request`
+- `tool-gateway-decision`
+- `tool-execution-receipt`
+- `tool-gateway-transaction-event`
 - `approval-request`
 - `sitrep`
 - `frago`

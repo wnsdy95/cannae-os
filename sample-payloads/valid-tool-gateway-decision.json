@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolGatewayDecision",
+  "id": "TGD-W1-tool-001",
+  "transaction_id": "GTX-W1-tool-001",
+  "mission_id": "MIS-GATEWAY",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "request_ref": {
+    "artifact_id": "TGR-W1-tool-001",
+    "relative_path": "repositories/example/missions/MIS-GATEWAY/W1/tool-gateway-requests/TGR-W1-tool-001.json",
+    "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-W1-runtime-agent",
+    "relative_path": "repositories/example/missions/MIS-GATEWAY/W1/agent-dispatch-leases/ADL-W1-runtime-agent.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "tool_policy_ref": {
+    "artifact_id": "DTP-W1-runtime-agent",
+    "relative_path": "repositories/example/missions/MIS-GATEWAY/W1/dispatch-tool-policies/DTP-W1-runtime-agent.json",
+    "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-W1-runtime-agent-0",
+    "relative_path": "repositories/example/missions/MIS-GATEWAY/W1/agent-execution-checkpoints/AEC-W1-runtime-agent-0.json",
+    "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "admission_ref": {
+    "artifact_id": "TAE-W1-tool-001",
+    "relative_path": "repositories/example/missions/MIS-GATEWAY/W1/tool-admission-events/TAE-W1-tool-001.json",
+    "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "gateway_binding_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+  "principal_binding_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+  "tool_call": {
+    "tool_use_id": "tool-use-001",
+    "tool_name": "Bash",
+    "operation_class": "process_execute",
+    "tool_input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "repository_state_before": {
+    "head_commit": "0123456789abcdef0123456789abcdef01234567",
+    "worktree_fingerprint": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "dirty": false
+  },
+  "coordination": {
+    "backend": "shared_filesystem_reference",
+    "manifest_revision": 12,
+    "fencing_token": 7
+  },
+  "decision": "allow",
+  "execution_permitted": true,
+  "production_execution_authorized": false,
+  "matched_rule_id": "DTR-GATEWAY-EXACT",
+  "reason_codes": ["GATEWAY_TOOL_ADMITTED"],
+  "idempotency_key": "2222222222222222222222222222222222222222222222222222222222222222",
+  "decided_at": "2026-07-23T13:00:10Z",
+  "valid_until": "2026-07-23T13:01:00Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  }
+}
