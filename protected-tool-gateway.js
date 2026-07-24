@@ -32,6 +32,9 @@ const {
 const {
   verifyProtectedExecutionBundle
 } = require("./protected-execution-evidence");
+const {
+  verifyOciSandboxExecutionBundle
+} = require("./oci-linux-sandbox-evidence");
 
 const TERMINAL_STATES = new Set(["denied", "committed", "aborted", "recovery_required"]);
 const KINDS = Object.freeze({
@@ -936,7 +939,7 @@ function receiptPayload(options, records, descriptor) {
   const digests = bindingDigests(request);
   const view = storeView(options);
   const payload = {
-    schema_version: "0.3",
+    schema_version: "0.4",
     type: "ToolExecutionReceipt",
     id: deterministicId("TER", request.transaction_id),
     transaction_id: request.transaction_id,
@@ -1061,17 +1064,23 @@ function validateExecutor(executor) {
   ]) {
     assertSha256(executor[field], `executor.${field}`);
   }
+  if (executor.execution_mode === "oci_linux_sandbox_reference") {
+    assertSha256(executor.probe_sha256, "executor.probe_sha256");
+  }
   const refs = [
     executor.executor_policy_ref,
     executor.execution_envelope_ref,
     executor.execution_observation_ref
   ];
-  const bounded = executor.execution_mode === "bounded_process_reference";
-  if (bounded && refs.some(ref => !ref || isNoneRef(ref))) {
-    throw new Error("Bounded process execution requires three concrete evidence references.");
+  const retained = [
+    "bounded_process_reference",
+    "oci_linux_sandbox_reference"
+  ].includes(executor.execution_mode);
+  if (retained && refs.some(ref => !ref || isNoneRef(ref))) {
+    throw new Error("Retained execution requires three concrete evidence references.");
   }
-  if (!bounded && refs.some(ref => !isNoneRef(ref))) {
-    throw new Error("Non-bounded executors must use exact none evidence references.");
+  if (!retained && refs.some(ref => !isNoneRef(ref))) {
+    throw new Error("Non-retained executors must use exact none evidence references.");
   }
 }
 
@@ -1135,6 +1144,74 @@ function verifyBoundedExecution(options, view, records, descriptor) {
   }
 }
 
+function verifyOciSandboxExecution(options, view, records, descriptor) {
+  const sandboxInput = descriptor.toolInput &&
+    descriptor.toolInput.type === "OciSandboxToolInput";
+  const sandboxed = descriptor.executor.execution_mode ===
+    "oci_linux_sandbox_reference";
+  if (sandboxInput !== sandboxed) {
+    throw new Error(
+      "OCI sandbox input and OCI sandbox executor evidence must be used together."
+    );
+  }
+  if (!sandboxed) return;
+
+  assertValid(
+    descriptor.toolInput,
+    "oci-sandbox-tool-input",
+    "OCI sandbox tool input"
+  );
+  const policyRecord = loadArtifactRef(
+    view,
+    descriptor.executor.executor_policy_ref,
+    "oci-linux-sandbox-policy"
+  );
+  const envelopeRecord = loadArtifactRef(
+    view,
+    descriptor.executor.execution_envelope_ref,
+    "oci-sandbox-execution-envelope"
+  );
+  const observationRecord = loadArtifactRef(
+    view,
+    descriptor.executor.execution_observation_ref,
+    "oci-sandbox-execution-observation"
+  );
+  const probeRecord = loadArtifactRef(
+    view,
+    observationRecord.payload.probe_observation_ref,
+    "oci-sandbox-probe-observation"
+  );
+  const repositoryStateAfter = runtimeRepositoryState(view.repository.root);
+  const verification = verifyOciSandboxExecutionBundle({
+    policy: policyRecord.payload,
+    toolInput: descriptor.toolInput,
+    request: records.request.payload,
+    requestRef: records.request.ref,
+    decision: records.decision.payload,
+    decisionRef: records.decision.ref,
+    executionEvent: records.latest.payload,
+    executionEventRef: records.latest.ref,
+    envelope: envelopeRecord.payload,
+    envelopeRef: envelopeRecord.ref,
+    probe: probeRecord.payload,
+    probeRef: probeRecord.ref,
+    observation: observationRecord.payload,
+    observationRef: observationRecord.ref,
+    executor: descriptor.executor,
+    result: descriptor.result,
+    status: descriptor.status,
+    exitCode: descriptor.exitCode,
+    evaluatedAt: nowIso(options),
+    repositoryRoot: view.repository.root,
+    repositoryStateAfter
+  });
+  if (!verification.valid) {
+    throw new Error(
+      `OCI sandbox evidence failed verification: ${verification.codes.join(", ")}`
+    );
+  }
+}
+
 function commitGatewayExecution(options, transactionId, descriptor) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
@@ -1178,6 +1255,7 @@ function commitGatewayExecution(options, transactionId, descriptor) {
       throw new Error("Execution exit_code must be an integer.");
     }
     verifyBoundedExecution(options, view, records, descriptor);
+    verifyOciSandboxExecution(options, view, records, descriptor);
 
     const admissionRef = records.decision.payload.admission_ref;
     let completionCheckpoint = checkpointForAdmission(storeView(options), admissionRef);

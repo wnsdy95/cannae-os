@@ -1,9 +1,9 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-07-24",
+  "as_of": "2026-07-25",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 51,
+  "checked_hosts": 53,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -85,6 +85,7 @@
     {
       "host": "csrc.nist.gov",
       "files": [
+        "docs/oci-linux-sandbox-provider.md",
         "docs/protected-process-execution.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
@@ -130,6 +131,13 @@
       ]
     },
     {
+      "host": "docs.docker.com",
+      "files": [
+        "docs/oci-linux-sandbox-provider.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
       "host": "docs.github.com",
       "files": [
         "docs/research-compendium.md",
@@ -144,6 +152,13 @@
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"
+      ]
+    },
+    {
+      "host": "docs.kernel.org",
+      "files": [
+        "docs/oci-linux-sandbox-provider.md",
+        "docs/source-map.md"
       ]
     },
     {
@@ -166,6 +181,7 @@
       "host": "github.com",
       "files": [
         "docs/gateway-identity-admission.md",
+        "docs/oci-linux-sandbox-provider.md",
         "docs/protected-process-execution.md",
         "docs/research-compendium.md",
         "docs/sigstore-verifier-workload-admission.md",

@@ -428,6 +428,7 @@ Phase 17A now defines that transaction boundary in
 idempotent request state, one execution token, result receipts, pre-execution
 cancellation, and unknown-outcome recovery. The reference controller remains a
 Level 2 contract implementation. Phase 17B2A adds one policy-pinned local
-process adapter with signed before/after evidence, but it does not establish an
-OS/container sandbox, network isolation, or the Level 4 exclusive deployment
-claim.
+process adapter with signed before/after evidence. Phase 17B2B adds a measured
+OCI/Linux reference sandbox with direct kernel observations, but neither
+adapter independently attests its host/runtime deployment or establishes the
+Level 4 exclusive-path claim.

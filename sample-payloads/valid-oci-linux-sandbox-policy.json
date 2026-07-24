@@ -1,0 +1,119 @@
+{
+  "schema_version": "0.1",
+  "type": "OciLinuxSandboxPolicy",
+  "id": "OSP-SUCCESS",
+  "repository_binding": {
+    "repository_key": "success-4f6a2c9480b9",
+    "identity_fingerprint": "4f6a2c9480b9d08b2a8b8b58958ca48d855f5626774ccfc7b69d8d5089721490"
+  },
+  "gateway_binding_sha256": "d4c566b8c55d1d83a1ecb7910ad95d33aef23d928e8f6daba5ef6c66fdf958f4",
+  "platform": "linux_oci_docker_reference",
+  "providers": [
+    "codex"
+  ],
+  "adapter_profile": {
+    "adapter_id": "cannae-oci-linux-sandbox-provider",
+    "adapter_version": "0.1.0",
+    "adapter_sha256": "d64541d34811a376f989d9502018392cdacae5a7cc2afc70630860696445551b",
+    "runtime_sha256": "cd2bc434d320a47e104fe9241fe71c06fe343e863847baf82d944703514bf1cc",
+    "probe_sha256": "5a62852f444465f68b53e3806dba024b7261abaeaaf229243a0890078c12d524",
+    "execution_mode": "oci_linux_sandbox_reference",
+    "signing_key_id": "4cf49fc6b2eb141ab1afe1977eb08c4a8ce7784a3163612df15109d42406edac",
+    "signing_algorithm": "ed25519",
+    "signing_public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAQHk3Rr63C8BuQzAZs/TNXLLGWfPGGRvBvwRwwFnSjao=\n-----END PUBLIC KEY-----\n"
+  },
+  "image": {
+    "image_id": "sha256:8bbcb8041d601b35d3d6c67979415b51418d87a3e178f77735c7c952b2e679a6",
+    "operating_system": "linux",
+    "architecture": "arm64",
+    "pull_policy": "never",
+    "content_trust_verified": false
+  },
+  "process_controls": {
+    "shell": false,
+    "detached": false,
+    "environment_mode": "empty",
+    "stdin_mode": "none",
+    "uid": 65532,
+    "gid": 65532,
+    "cap_drop": [
+      "ALL"
+    ],
+    "no_new_privileges": true,
+    "init": true,
+    "pid_namespace": "private",
+    "ipc_namespace": "private",
+    "uts_namespace": "private",
+    "cgroup_namespace": "private"
+  },
+  "filesystem_controls": {
+    "read_only_rootfs": true,
+    "repository_destination": "/workspace",
+    "repository_read_only": true,
+    "recursive_read_only_required": true,
+    "tmpfs_destination": "/tmp",
+    "tmpfs_size_bytes": 16777216,
+    "tmpfs_options": [
+      "rw",
+      "noexec",
+      "nosuid",
+      "nodev"
+    ]
+  },
+  "seccomp": {
+    "profile_name": "moby-default-seccomp-v0.2.1",
+    "source_uri": "https://raw.githubusercontent.com/moby/profiles/5ad5f40ecde90d78e4a7c861c003fe92747d5518/seccomp/default.json",
+    "source_commit": "5ad5f40ecde90d78e4a7c861c003fe92747d5518",
+    "profile_relative_path": "runtime-profiles/moby-seccomp-v0.2.1.json",
+    "profile_sha256": "0a72fe3121b8d406a40342c0f5620f229420b2feebe8eab6690a9d4046308f8d",
+    "default_action": "SCMP_ACT_ERRNO"
+  },
+  "resource_controls": {
+    "memory_bytes": 134217728,
+    "memory_swap_bytes": 134217728,
+    "pids_limit": 64,
+    "cpu_period_us": 100000,
+    "cpu_quota_us": 50000
+  },
+  "network_controls": {
+    "mode": "none",
+    "outbound": "prohibited",
+    "allowed_interfaces": [
+      "lo"
+    ],
+    "dns": "none",
+    "proxy_environment": "prohibited",
+    "network_policy_sha256": "c2de1bf095172db1a7310daef7a1dabc7788401dc1c662dbbde2731b7dd6f938"
+  },
+  "rules": [
+    {
+      "rule_id": "OSR-SUCCESS",
+      "tool_name": "Bash",
+      "operation_class": "process_execute",
+      "executable_path": "/cannae-probe",
+      "executable_format": "static_linux_binary",
+      "executable_sha256": "5a62852f444465f68b53e3806dba024b7261abaeaaf229243a0890078c12d524",
+      "argv": [
+        "workload",
+        "success"
+      ],
+      "cwd": "/workspace",
+      "timeout_ms": 2000,
+      "max_stdout_bytes": 4096,
+      "max_stderr_bytes": 4096,
+      "success_exit_codes": [
+        0
+      ],
+      "expected_repository_effect": "none"
+    }
+  ],
+  "valid_from": "2026-07-24T21:29:20.455Z",
+  "expires_at": "2026-07-24T22:00:20.455Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  },
+  "sandbox_profile_sha256": "c123932ce100a77c3b55dd416adb2ee2e404e80642e7a67e6016dc0f2989b0df"
+}

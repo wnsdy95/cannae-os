@@ -1,0 +1,10 @@
+{
+  "schema_version": "0.1",
+  "type": "OciSandboxToolInput",
+  "sandbox_policy_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "rule_id": "OSR-SUCCESS"
+}

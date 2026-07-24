@@ -72,10 +72,10 @@ name constraints, or every RFC 5280 extension.
 | `ToolGatewayRequest` v0.2 | execution request | exact references to all three identity artifacts |
 
 `ToolGatewayDecision`, `ToolGatewayTransactionEvent`, and
-`ToolExecutionReceipt` v0.3 repeat the same three identity references. The
-receipt may additionally carry the three Phase 17B2A bounded-execution
-references. The controller rejects a transaction history that changes any
-identity reference.
+`ToolExecutionReceipt` v0.4 repeat the same three identity references. The
+receipt may additionally carry the Phase 17B2A bounded-process chain or the
+Phase 17B2B OCI policy-envelope-observation chain and exact probe digest. The
+controller rejects a transaction history that changes any identity reference.
 
 For `contract_reference`, all three references are the exact all-`none`
 sentinel. For `authenticated_reference`, all three must be concrete
@@ -279,12 +279,13 @@ challenge state, and cross-transaction replay.
 ## 6. Residual Limits And Next Phase
 
 Phase 17B1 is not a production execution gateway. Phase 17B2A adds a bounded
-local process reference but not an OS/container sandbox or exclusive path.
-Remaining Phase 17B work:
+local process reference. Phase 17B2B adds a measured OCI/Linux reference
+sandbox, but does not independently attest the Docker daemon, host, image
+provenance, signing-key custody, or exclusive path. Remaining Phase 17B work:
 
 1. Provider-specific shell, filesystem, MCP, network, and delegation executors.
-2. OS/container sandbox and egress policy with adapter measurement and
-   independently appraised deployment evidence.
+2. Independently protected sandbox hosts, runtimes, images, egress controls,
+   key custody, and deployment evidence.
 3. Proof that direct side paths fail when the gateway is unavailable.
 4. A linearizable coordinator and storage-side fencing across hosts.
 5. Managed key rotation, Workload API integration, revocation distribution,
@@ -300,6 +301,7 @@ node validator-cli-prototype/run-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-protected-process-executor-fixtures.js
+node run-oci-linux-sandbox-provider-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 

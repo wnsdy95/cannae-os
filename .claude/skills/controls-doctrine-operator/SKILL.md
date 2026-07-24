@@ -107,18 +107,22 @@ authorization and outcome evidence beyond the project hook:
 2. Select one identity path explicitly. `contract_reference` uses three exact none references and independently appraised principal/gateway digests. `authenticated_reference` uses a manifest-backed `GatewayIdentityPolicy`, one adapter-generated signed transaction challenge, and one gateway-side TLS 1.3 SPIFFE/exporter observation derived directly from a live server `TLSSocket` and signed as `GatewayPrincipalEvidence`; never pass a caller-built transport observation or caller-supplied principal digest.
 3. Never let the acting agent self-calculate identity or gateway trust material. Keep the adapter private key outside request/artifact payloads. Authenticated-reference verification must cover policy, challenge, certificate, exporter, revocation, freshness, one-use, and request projection. `--gateway-binding-sha256` still comes from a separate trusted deployment/configuration appraiser.
 4. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`; production execution, deployment verification, and release remain false.
-5. Select the execution path from the exact raw input. For ordinary integration inputs, run `begin` directly before the external adapter acts and `commit` with exact none sentinels for bounded-execution references. For `ProtectedProcessToolInput`, never run manual `begin` or accept a caller-declared result: run `scripts/operate_protected_executor.js execute`, which reloads the policy, owns begin, persists a signed envelope before spawn, executes only the policy-fixed ELF or Mach-O executable and argv, reappraises that executable after close, persists a signed observation, and submits all three exact evidence references.
-6. Require `ToolExecutionReceipt` v0.3. `bounded_process_reference` requires concrete policy, envelope, and observation references that the gateway independently reloads and verifies; `fixture` and `external_adapter` require three exact none references. A stale identity, stale execution reference, changed executable, substituted command/result, forbidden repository effect, or post-tool binding failure cannot become a commit.
-7. Recover authorized-but-unstarted work with the exact raw input so admission can be cancelled. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. Recover an executing transaction without claiming an outcome; the lease blocks for human reconciliation.
+5. Select the execution path from the exact raw input. For ordinary integration inputs, run `begin` directly before the external adapter acts and `commit` with exact none sentinels for retained-execution references. For `ProtectedProcessToolInput`, never run manual `begin` or accept a caller-declared result: run `scripts/operate_protected_executor.js execute`, which reloads the policy, owns begin, persists a signed envelope before spawn, executes only the policy-fixed ELF or Mach-O executable and argv, reappraises that executable after close, persists a signed observation, and submits all three exact evidence references. For `OciSandboxToolInput`, use `scripts/operate_oci_sandbox.js execute` instead: it appraises the Docker daemon, static probe, immutable image, and digest-pinned seccomp profile before begin; extracts the image probe from an unstarted appraisal container and matches its bytes to the measured host probe; retains a signed envelope before create; verifies Docker configuration, tmpfs and bind propagation, plus direct kernel privilege, mount, cgroup, and external-IP-egress-denial evidence; removes and verifies removal of the container; signs the observation; and submits the exact OCI chain.
+6. Require `ToolExecutionReceipt` v0.4. `bounded_process_reference` and `oci_linux_sandbox_reference` require concrete policy, envelope, and observation references that the gateway independently reloads and verifies; OCI mode also requires the exact probe digest and a concrete probe reference inside the signed observation. `fixture` and `external_adapter` require three exact none references. A stale identity, stale execution reference, changed executable/image/probe/profile, substituted configuration/result, forbidden repository effect, missing cleanup, or post-tool binding failure cannot become a commit.
+7. Recover authorized-but-unstarted work with the exact raw input so admission can be cancelled. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. Recover an executing transaction without claiming an outcome; the lease blocks for human reconciliation. An OCI `recovery_required` replay may retry container removal but must never rerun the target, and unverifiable cleanup must remain visible as `provider_failure`.
 8. Reuse an idempotency key only for the same canonical request, never reuse an identity challenge or evidence across transactions, and never reuse a transaction ID for a different request or key. Identity evidence and receipts never grant commit, push, merge, release, risk, policy, or authority approval.
 
 Phase 17B1 proves authenticated-reference identity. Phase 17B2A executes one
-policy-pinned local process but does not provide filesystem, syscall,
-privilege, process-tree, or network isolation and does not prove gateway
-exclusivity. `managed_exclusive`, production execution, and release remain
-denied. Read `docs/gateway-identity-admission.md`,
-`docs/protected-tool-gateway-contract.md`, and
-`docs/protected-process-execution.md` before integrating an adapter.
+policy-pinned local process without isolation. Phase 17B2B executes one static
+target in a measured OCI/Linux reference sandbox with read-only mounts,
+seccomp, `no_new_privs`, zero capabilities, non-root UID/GID, cgroup limits,
+and measured external IP egress denial. It still does not independently attest the Docker
+daemon, host, image provenance, key custody, deployment, or exclusive path.
+`managed_exclusive`, production execution, and release remain denied. Read
+`docs/gateway-identity-admission.md`,
+`docs/protected-tool-gateway-contract.md`,
+`docs/protected-process-execution.md`, and
+`docs/oci-linux-sandbox-provider.md` before integrating an adapter.
 
 ## References
 
@@ -198,6 +202,7 @@ node run-dispatch-runtime-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-process-executor-fixtures.js
+node run-oci-linux-sandbox-provider-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js

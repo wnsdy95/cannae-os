@@ -493,7 +493,7 @@ fixture("exact executable and argv commit once with signed evidence", async () =
     "1"
   );
   const receipt = loadArtifact(completed.receipt_ref);
-  assert.strictEqual(receipt.schema_version, "0.3");
+  assert.strictEqual(receipt.schema_version, "0.4");
   assert.strictEqual(
     receipt.executor.execution_mode,
     "bounded_process_reference"

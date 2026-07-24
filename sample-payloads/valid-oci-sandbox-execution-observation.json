@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1",
+  "type": "OciSandboxExecutionObservation",
+  "id": "OSO-7f83e17d4b5196c0a20dcc16",
+  "transaction_id": "GTX-OCI-SANDBOX-SUCCESS",
+  "mission_id": "MIS-OCI-SANDBOX-SUCCESS",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "provider": "codex",
+  "request_ref": {
+    "artifact_id": "TGR-OCI-SANDBOX-SUCCESS",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-requests/TGR-OCI-SANDBOX-SUCCESS.json",
+    "sha256": "2f0eb6d9bed49b3d1681ce0491a3897b2ca3f64ff6404702dd12f785888b10df"
+  },
+  "decision_ref": {
+    "artifact_id": "TGD-79e1486288bf603546a432cb",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-decisions/TGD-79e1486288bf603546a432cb.json",
+    "sha256": "5d19d93169b5a8861d2c8d0a160270a99dc5a0b18408fa15955cafba63482d74"
+  },
+  "execution_event_ref": {
+    "artifact_id": "GTE-8691e1ffdae388a3c4bd8b78",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-transaction-events/GTE-8691e1ffdae388a3c4bd8b78.json",
+    "sha256": "aad569ea25bc5e8cf5f16d954a233a21bd023292edb70f89a2d830c2b1aae467"
+  },
+  "sandbox_policy_ref": {
+    "artifact_id": "OSP-SUCCESS",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/oci-linux-sandbox-policies/OSP-SUCCESS.json",
+    "sha256": "dd39bff197ec079116da7ce517cca0234f3c2095dfec86f3e27dced9bf564bb4"
+  },
+  "execution_envelope_ref": {
+    "artifact_id": "OSE-d201ea52fbaae11847f4331a",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/oci-sandbox-execution-envelopes/OSE-d201ea52fbaae11847f4331a.json",
+    "sha256": "5fa5d17af09811bb5b373788f74b6f6d192f860844fb0d066009ba0e8fae073d"
+  },
+  "probe_observation_ref": {
+    "artifact_id": "OSPO-9080a33c261060e63e538a31",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/oci-sandbox-probe-observations/OSPO-9080a33c261060e63e538a31.json",
+    "sha256": "24a6636454b04eeb6eb0d1341964ff1f5adc4bf2e1777c3d6e6094e44f78758b"
+  },
+  "tool_input_sha256": "572707990228ac34e116db7c5b96d1abea5646e917833786ee9ade0541b77fe1",
+  "rule_id": "OSR-SUCCESS",
+  "container": {
+    "container_id": "75b803bcbe3f4a0bd78d3bf9af257297702f552676fc29be1439d760ea843108",
+    "container_name": "cannae-1337fd9195871f47b0addc15",
+    "image_id": "sha256:8bbcb8041d601b35d3d6c67979415b51418d87a3e178f77735c7c952b2e679a6",
+    "state": "exited",
+    "exit_code": 0,
+    "oom_killed": false,
+    "error": ""
+  },
+  "runtime_config": {
+    "user": "65532:65532",
+    "entrypoint": [
+      "/cannae-probe"
+    ],
+    "command": [
+      "supervise",
+      "--target",
+      "/cannae-probe",
+      "--cwd",
+      "/workspace",
+      "--timeout-ms",
+      "2000",
+      "--max-stdout-bytes",
+      "4096",
+      "--max-stderr-bytes",
+      "4096",
+      "--",
+      "workload",
+      "success"
+    ],
+    "environment": [
+      "PATH="
+    ],
+    "read_only_rootfs": true,
+    "network_mode": "none",
+    "tmpfs": {
+      "destination": "/tmp",
+      "size_bytes": 16777216,
+      "options": [
+        "nodev",
+        "noexec",
+        "nosuid",
+        "rw"
+      ]
+    },
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_options": [
+      "no-new-privileges=true",
+      "seccomp-sha256=0a72fe3121b8d406a40342c0f5620f229420b2feebe8eab6690a9d4046308f8d"
+    ],
+    "cgroupns_mode": "private",
+    "pid_mode": "private",
+    "ipc_mode": "private",
+    "uts_mode": "private",
+    "init": true,
+    "pids_limit": 64,
+    "memory_bytes": 134217728,
+    "memory_swap_bytes": 134217728,
+    "cpu_period_us": 100000,
+    "cpu_quota_us": 50000,
+    "repository_mount": {
+      "destination": "/workspace",
+      "source_sha256": "4f6a2c9480b9d08b2a8b8b58958ca48d855f5626774ccfc7b69d8d5089721490",
+      "read_only": true,
+      "propagation": "rprivate"
+    },
+    "config_sha256": "f9bc5a49c03d10f52ee1abfb355b11283ac240badefbe6e9f9a468789f2de02f"
+  },
+  "process": {
+    "spawned": true,
+    "exit_code": 0,
+    "signal": "none",
+    "termination_reason": "exited",
+    "timed_out": false,
+    "output_limit_exceeded": false
+  },
+  "result_sha256": "719ef43eb88f5e739cfeed04bfdba9bc8f20953f30c0b32a49f967901962909b",
+  "sandbox_profile_sha256": "c123932ce100a77c3b55dd416adb2ee2e404e80642e7a67e6016dc0f2989b0df",
+  "network_policy_sha256": "c2de1bf095172db1a7310daef7a1dabc7788401dc1c662dbbde2731b7dd6f938",
+  "repository_binding": {
+    "repository_key": "success-4f6a2c9480b9",
+    "identity_fingerprint": "4f6a2c9480b9d08b2a8b8b58958ca48d855f5626774ccfc7b69d8d5089721490"
+  },
+  "repository_state_before": {
+    "head_commit": "f046eb5c71121be43ea5a9e6816a660e059080dc",
+    "worktree_fingerprint": "5fc4a8853ae9954b52d8e6e553a3c4764fc8231b3419ff966e52d51888321956",
+    "dirty": false
+  },
+  "repository_state_after": {
+    "head_commit": "f046eb5c71121be43ea5a9e6816a660e059080dc",
+    "worktree_fingerprint": "5fc4a8853ae9954b52d8e6e553a3c4764fc8231b3419ff966e52d51888321956",
+    "dirty": false
+  },
+  "cleanup": {
+    "container_removed": true,
+    "verified_at": "2026-07-24T21:30:27.394Z"
+  },
+  "started_at": "2026-07-24T21:30:27.026955713Z",
+  "finished_at": "2026-07-24T21:30:27.394Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  },
+  "signature": {
+    "key_id": "4cf49fc6b2eb141ab1afe1977eb08c4a8ce7784a3163612df15109d42406edac",
+    "algorithm": "ed25519",
+    "signature_base64": "hMkFHmaP0IF4y2Y/QQ71qWLXYvna7BZztJT5HMghkER9mPVVSqwIicD7Bmp+6K6iO97NFIwcua3CfCwP6sm+Cg=="
+  },
+  "observation_sha256": "d4203ce19dda4b7a26ed8f6c97409d0b63184342ba9edb1c4a4b9a8278b27740"
+}

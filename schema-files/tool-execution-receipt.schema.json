@@ -35,7 +35,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.3" },
+    "schema_version": { "type": "string", "const": "0.4" },
     "type": { "type": "string", "const": "ToolExecutionReceipt" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -153,6 +153,7 @@
         },
         "adapter_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "runtime_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "probe_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "sandbox_profile_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "network_policy_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "execution_mode": {
@@ -161,7 +162,8 @@
             "none",
             "fixture",
             "external_adapter",
-            "bounded_process_reference"
+            "bounded_process_reference",
+            "oci_linux_sandbox_reference"
           ]
         },
         "executor_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" },

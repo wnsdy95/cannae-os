@@ -82,6 +82,11 @@ const TYPE_TO_SCHEMA = {
   "protected-process-tool-input": "protected-process-tool-input.schema.json",
   "protected-execution-envelope": "protected-execution-envelope.schema.json",
   "protected-execution-observation": "protected-execution-observation.schema.json",
+  "oci-linux-sandbox-policy": "oci-linux-sandbox-policy.schema.json",
+  "oci-sandbox-tool-input": "oci-sandbox-tool-input.schema.json",
+  "oci-sandbox-execution-envelope": "oci-sandbox-execution-envelope.schema.json",
+  "oci-sandbox-probe-observation": "oci-sandbox-probe-observation.schema.json",
+  "oci-sandbox-execution-observation": "oci-sandbox-execution-observation.schema.json",
   "gateway-identity-policy": "gateway-identity-policy.schema.json",
   "gateway-identity-challenge": "gateway-identity-challenge.schema.json",
   "gateway-principal-evidence": "gateway-principal-evidence.schema.json",
@@ -422,6 +427,30 @@ function canonicalControlDigestWithout(value, fields) {
   return crypto.createHash("sha256")
     .update(`${JSON.stringify(sortedJsonValue(copy))}\n`)
     .digest("hex");
+}
+
+function sandboxProfileDigest(policy) {
+  return canonicalControlDigestWithout({
+    image: policy && policy.image,
+    process_controls: policy && policy.process_controls,
+    filesystem_controls: policy && policy.filesystem_controls,
+    seccomp: policy && policy.seccomp,
+    resource_controls: policy && policy.resource_controls
+  }, []);
+}
+
+function networkPolicyDigest(networkControls) {
+  return canonicalControlDigestWithout(
+    networkControls || {},
+    ["network_policy_sha256"]
+  );
+}
+
+function runtimeConfigDigest(runtimeConfig) {
+  return canonicalControlDigestWithout(
+    runtimeConfig || {},
+    ["config_sha256"]
+  );
 }
 
 function safeProtectedCwd(value) {
@@ -929,6 +958,18 @@ function semanticRules(payload, type) {
       artifactRefKind(executor.execution_envelope_ref),
       artifactRefKind(executor.execution_observation_ref)
     ];
+    const retainedExecutionMode = [
+      "bounded_process_reference",
+      "oci_linux_sandbox_reference"
+    ].includes(executor.execution_mode);
+    if (executor.execution_mode === "oci_linux_sandbox_reference" &&
+        !/^[a-f0-9]{64}$/.test(String(executor.probe_sha256 || ""))) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_PROBE_UNBOUND", "$.executor.probe_sha256", "OCI sandbox execution requires the exact probe digest."));
+    }
+    if (executor.execution_mode !== "oci_linux_sandbox_reference" &&
+        Object.prototype.hasOwnProperty.call(executor, "probe_sha256")) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_PROBE_MODE_MISMATCH", "$.executor.probe_sha256", "Only OCI sandbox execution may carry a probe digest."));
+    }
     if (admissionKind === "malformed" || checkpointKind === "malformed") {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_REF_MALFORMED", "$", "Receipt admission and checkpoint references must be concrete or use the exact all-none sentinel."));
     }
@@ -941,11 +982,11 @@ function semanticRules(payload, type) {
     }
     if (executorRefKinds.includes("malformed") ||
         new Set(executorRefKinds).size !== 1 ||
-        (executor.execution_mode === "bounded_process_reference" &&
+        (retainedExecutionMode &&
           executorRefKinds[0] !== "concrete") ||
-        (executor.execution_mode !== "bounded_process_reference" &&
+        (!retainedExecutionMode &&
           executorRefKinds[0] !== "none")) {
-      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_EXECUTOR_REF_MISMATCH", "$.executor", "Bounded process execution requires three concrete evidence references; every other mode requires three exact none sentinels."));
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_EXECUTOR_REF_MISMATCH", "$.executor", "Retained process or OCI sandbox execution requires three concrete evidence references; every other mode requires three exact none sentinels."));
     }
     if (execution.transaction_state === "committed" &&
         (admissionKind !== "concrete" ||
@@ -1133,6 +1174,181 @@ function semanticRules(payload, type) {
         !payload.authority ||
         payload.authority.production_execution_authorized !== false) {
       issues.push(issue("critical", "PROTECTED_EXECUTION_OBSERVATION_AUTHORITY_DRIFT", "$.authority", "Protected execution observation cannot expand USER authority or claim production execution."));
+    }
+  }
+
+  if (type === "oci-linux-sandbox-policy") {
+    const adapter = payload.adapter_profile || {};
+    const network = payload.network_controls || {};
+    if (!isBefore(payload.valid_from, payload.expires_at)) {
+      issues.push(issue("critical", "OCI_SANDBOX_POLICY_INVALID_VALIDITY", "$.expires_at", "OCI sandbox policy validity must have an ordered, non-empty interval."));
+    }
+    try {
+      const publicKey = crypto.createPublicKey(adapter.signing_public_key_pem);
+      if (publicKey.asymmetricKeyType !== "ed25519" ||
+          publicKeyId(publicKey) !== adapter.signing_key_id) {
+        throw new Error("key mismatch");
+      }
+    } catch (error) {
+      issues.push(issue("critical", "OCI_SANDBOX_POLICY_SIGNING_KEY_INVALID", "$.adapter_profile", "OCI sandbox policy requires a matching Ed25519 public key and key identifier."));
+    }
+    if (sandboxProfileDigest(payload) !== payload.sandbox_profile_sha256) {
+      issues.push(issue("critical", "OCI_SANDBOX_PROFILE_DIGEST_MISMATCH", "$.sandbox_profile_sha256", "Sandbox profile digest must bind the exact image, process, filesystem, seccomp, and resource controls."));
+    }
+    if (networkPolicyDigest(network) !== network.network_policy_sha256) {
+      issues.push(issue("critical", "OCI_SANDBOX_NETWORK_POLICY_DIGEST_MISMATCH", "$.network_controls.network_policy_sha256", "Network policy digest must bind the exact declared network controls."));
+    }
+    const ruleIds = (payload.rules || []).map(rule => rule && rule.rule_id);
+    if (new Set(ruleIds).size !== ruleIds.length) {
+      issues.push(issue("critical", "OCI_SANDBOX_POLICY_DUPLICATE_RULE", "$.rules", "OCI sandbox rule identifiers must be unique."));
+    }
+    for (const [index, rule] of (payload.rules || []).entries()) {
+      if (!rule || rule.executable_path !== "/cannae-probe" ||
+          rule.executable_sha256 !== adapter.probe_sha256 ||
+          rule.cwd !== "/workspace" ||
+          rule.expected_repository_effect !== "none") {
+        issues.push(issue("critical", "OCI_SANDBOX_RULE_UNSUPPORTED", `$.rules[${index}]`, "The reference provider supports only the pinned static probe target in the read-only repository workspace."));
+      }
+    }
+    const profilePath = payload.seccomp &&
+      payload.seccomp.profile_relative_path;
+    if (typeof profilePath !== "string" ||
+        profilePath.startsWith("/") ||
+        profilePath.includes("\\") ||
+        profilePath.split("/").some(part =>
+          !part || part === "." || part === "..")) {
+      issues.push(issue("critical", "OCI_SANDBOX_SECCOMP_PATH_UNSAFE", "$.seccomp.profile_relative_path", "Seccomp profile path must be canonical and repository-relative."));
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        !payload.authority ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "OCI_SANDBOX_POLICY_AUTHORITY_DRIFT", "$.authority", "OCI sandbox policy cannot expand USER authority or claim production execution."));
+    }
+  }
+
+  if (type === "oci-sandbox-tool-input") {
+    if (artifactRefKind(payload.sandbox_policy_ref) !== "concrete") {
+      issues.push(issue("critical", "OCI_SANDBOX_POLICY_REF_UNBOUND", "$.sandbox_policy_ref", "OCI sandbox input requires one concrete policy reference."));
+    }
+  }
+
+  if (type === "oci-sandbox-execution-envelope") {
+    const refs = [
+      payload.request_ref,
+      payload.decision_ref,
+      payload.execution_event_ref,
+      payload.sandbox_policy_ref
+    ];
+    if (refs.some(ref => artifactRefKind(ref) !== "concrete")) {
+      issues.push(issue("critical", "OCI_SANDBOX_ENVELOPE_REF_UNBOUND", "$", "OCI sandbox envelope requires concrete request, decision, event, and policy references."));
+    }
+    if (!isBefore(payload.issued_at, payload.expires_at)) {
+      issues.push(issue("critical", "OCI_SANDBOX_ENVELOPE_INVALID_VALIDITY", "$.expires_at", "OCI sandbox envelope must expire after issuance."));
+    }
+    if (!validEd25519Signature(payload.signature)) {
+      issues.push(issue("critical", "OCI_SANDBOX_ENVELOPE_SIGNATURE_MALFORMED", "$.signature", "OCI sandbox envelope requires a canonical Ed25519 signature."));
+    }
+    if (canonicalObjectDigestWithout(payload, ["envelope_sha256"]) !==
+        payload.envelope_sha256) {
+      issues.push(issue("critical", "OCI_SANDBOX_ENVELOPE_DIGEST_MISMATCH", "$.envelope_sha256", "Envelope digest must bind the complete signed artifact."));
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        !payload.authority ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "OCI_SANDBOX_ENVELOPE_AUTHORITY_DRIFT", "$.authority", "OCI sandbox envelope cannot expand USER authority or claim production execution."));
+    }
+  }
+
+  if (type === "oci-sandbox-probe-observation") {
+    const status = payload.status || {};
+    const capabilityValues = Object.values(status.capabilities || {});
+    if (status.no_new_privs !== 1 ||
+        status.seccomp_mode !== 2 ||
+        status.seccomp_filters < 1 ||
+        capabilityValues.length !== 5 ||
+        capabilityValues.some(value => value !== "0000000000000000")) {
+      issues.push(issue("critical", "OCI_SANDBOX_PROBE_PRIVILEGE_INVALID", "$.status", "Probe must observe no-new-privileges, filter-mode seccomp, and empty capability sets."));
+    }
+    const mounts = payload.mounts || {};
+    if (!(mounts.root || {}).read_only ||
+        !(mounts.workspace || {}).read_only ||
+        (mounts.tmp || {}).read_only ||
+        mounts.workspace_recursive_read_only !== true ||
+        !(payload.write_tests || {}).root_denied ||
+        !(payload.write_tests || {}).workspace_denied ||
+        !(payload.write_tests || {}).tmp_writable) {
+      issues.push(issue("critical", "OCI_SANDBOX_PROBE_FILESYSTEM_INVALID", "$.mounts", "Probe must observe a read-only root and repository with a writable constrained tmpfs."));
+    }
+    const probeNetwork = payload.network || {};
+    if (probeNetwork.default_route_count !== 0 ||
+        probeNetwork.outbound_connect_denied !== true ||
+        !Array.isArray(probeNetwork.non_loopback_addresses) ||
+        probeNetwork.non_loopback_addresses.length !== 0) {
+      issues.push(issue("critical", "OCI_SANDBOX_PROBE_NETWORK_INVALID", "$.network", "Probe must observe no default route and no non-loopback IP address."));
+    }
+    const child = payload.child || {};
+    for (const name of ["stdout", "stderr"]) {
+      const output = child[name] || {};
+      let bytes = null;
+      try {
+        bytes = output.base64 === ""
+          ? Buffer.alloc(0)
+          : strictBase64(output.base64);
+      } catch (error) {
+        bytes = null;
+      }
+      if (!bytes ||
+          output.retained_bytes > output.observed_bytes ||
+          output.retained_bytes !== bytes.length ||
+          output.truncated !==
+            (output.observed_bytes > output.retained_bytes) ||
+          crypto.createHash("sha256").update(bytes).digest("hex") !==
+            output.sha256) {
+        issues.push(issue("critical", "OCI_SANDBOX_PROBE_OUTPUT_INVALID", `$.child.${name}`, "Probe output bytes, digest, retention, and truncation fields must agree."));
+      }
+    }
+    if (!isValidDate(child.started_at) ||
+        !isValidDate(child.finished_at) ||
+        Date.parse(child.started_at) > Date.parse(child.finished_at) ||
+        !isValidDate(payload.collected_at) ||
+        Date.parse(child.finished_at) > Date.parse(payload.collected_at)) {
+      issues.push(issue("critical", "OCI_SANDBOX_PROBE_TIME_INVALID", "$.collected_at", "Probe collection must follow an ordered child execution interval."));
+    }
+  }
+
+  if (type === "oci-sandbox-execution-observation") {
+    const refs = [
+      payload.request_ref,
+      payload.decision_ref,
+      payload.execution_event_ref,
+      payload.sandbox_policy_ref,
+      payload.execution_envelope_ref,
+      payload.probe_observation_ref
+    ];
+    if (refs.some(ref => artifactRefKind(ref) !== "concrete")) {
+      issues.push(issue("critical", "OCI_SANDBOX_OBSERVATION_REF_UNBOUND", "$", "OCI sandbox observation requires concrete transaction, policy, envelope, and probe references."));
+    }
+    if (!isValidDate(payload.started_at) ||
+        !isValidDate(payload.finished_at) ||
+        Date.parse(payload.started_at) > Date.parse(payload.finished_at) ||
+        !(payload.cleanup || {}).container_removed) {
+      issues.push(issue("critical", "OCI_SANDBOX_OBSERVATION_STATE_INVALID", "$", "OCI sandbox observation requires ordered execution timestamps and verified container cleanup."));
+    }
+    if (runtimeConfigDigest(payload.runtime_config || {}) !==
+        (payload.runtime_config || {}).config_sha256) {
+      issues.push(issue("critical", "OCI_SANDBOX_RUNTIME_CONFIG_DIGEST_MISMATCH", "$.runtime_config.config_sha256", "Runtime config digest must bind the exact normalized Docker inspection."));
+    }
+    if (!validEd25519Signature(payload.signature)) {
+      issues.push(issue("critical", "OCI_SANDBOX_OBSERVATION_SIGNATURE_MALFORMED", "$.signature", "OCI sandbox observation requires a canonical Ed25519 signature."));
+    }
+    if (canonicalObjectDigestWithout(payload, ["observation_sha256"]) !==
+        payload.observation_sha256) {
+      issues.push(issue("critical", "OCI_SANDBOX_OBSERVATION_DIGEST_MISMATCH", "$.observation_sha256", "Observation digest must bind the complete signed artifact."));
+    }
+    if (retainedAuthorityDrift(payload.authority) ||
+        !payload.authority ||
+        payload.authority.production_execution_authorized !== false) {
+      issues.push(issue("critical", "OCI_SANDBOX_OBSERVATION_AUTHORITY_DRIFT", "$.authority", "OCI sandbox observation cannot expand USER authority or claim production execution."));
     }
   }
 
