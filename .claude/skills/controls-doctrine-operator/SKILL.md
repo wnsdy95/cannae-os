@@ -154,6 +154,7 @@ Before creating durable control evidence or deliverables, identify the target Gi
 - Treat persistence failure as a blocked wave.
 - Run `repository-artifact-verify.js` before consuming proof and before wave completion. Treat pending journals, non-monotonic fencing, and integrity findings as blocking.
 - Treat the built-in lease as a coherent shared-filesystem backend, not a partition-tolerant distributed lock. Distributed operation requires an external linearizable coordinator and storage-side fencing.
+- Size lease acquisition timeout for worst-case serialized writer contention independently from lease TTL. A longer contention budget must not weaken bounded rejection of an unexpired foreign lease.
 - Read `docs/repository-artifact-isolation-policy.md` for the complete command and file-handling contract.
 
 ## Bounded Self-Improvement

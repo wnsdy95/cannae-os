@@ -29,6 +29,8 @@ function writeWithCli(repositoryPath, artifactRoot, artifactId, extraArgs = []) 
       "--wave", "W1",
       "--kind", "agent-outputs",
       "--artifact-id", artifactId,
+      "--lease-timeout-ms", "30000",
+      "--lease-ttl-ms", "30000",
       ...extraArgs
     ], { cwd: ROOT, stdio: ["pipe", "pipe", "pipe"] });
     let stdout = "";

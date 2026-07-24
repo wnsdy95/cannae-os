@@ -158,6 +158,7 @@ Phase 17A is a contract/reference controller and does not execute tools or prove
 5. Treat persistence failure as a blocked wave. Do not dispatch from an integrated preflight whose artifact write failed.
 6. Run `repository-artifact-verify.js` before consuming proof and before wave completion. A pending journal, broken history, non-monotonic fencing token, sidecar mismatch, or artifact hash mismatch blocks the wave. Use `--recover` only for a valid pending transaction under a current lease.
 7. Treat the built-in coordinator as a coherent shared-filesystem backend, not a partition-tolerant distributed lock. Stop writes on split-brain, delayed visibility, fencing-token rollback, or unsupported atomic operations; require an external linearizable coordinator and storage-side fencing for those deployments.
+8. Size lease acquisition timeout for worst-case serialized writer contention independently from lease TTL. A longer contention budget must not weaken the bounded rejection test for an unexpired foreign lease.
 
 ### Operating Bounded Self-Improvement
 
