@@ -577,7 +577,82 @@ Completion criteria:
 See `enforced-dispatch-and-resume.md` for contracts, commands, provider
 differences, deployment levels, failure behavior, and residual limits.
 
-## 18. Release Gates
+## 18. Phase 17A: Protected Tool Gateway Contract
+
+Status: implemented as a provider-neutral, repository-manifest-backed contract
+and reference controller. Production execution adapters and a non-bypassable
+managed deployment remain Phase 17B.
+
+Goal:
+
+- Move exact identity, authority, repository-state, idempotency, execution, and
+  recovery correlation to a durable gateway transaction boundary.
+
+Implemented controls:
+
+- `ToolGatewayRequest` binds one authenticated-principal projection and exact
+  gateway deployment/configuration projection to the active dispatch lease,
+  policy, checkpoint, repository identity/state, tool name, operation class,
+  canonical input digest, validity, and idempotency key;
+- raw tool input is supplied separately for digest verification and is not
+  copied into request, decision, receipt, or event artifacts;
+- trusted principal and gateway digests are required at admission and every
+  state-changing continuation;
+- the reference controller refuses `managed_exclusive` assurance because it
+  cannot independently prove deployment exclusivity;
+- Phase 16 dispatch admission remains cumulative and supplies the exact matched
+  rule; operation-class substitution is cancelled and denied;
+- `ToolGatewayDecision` records one exact allow or deny, dispatch admission,
+  repository state, coordination observation, and retained USER authority;
+- `ToolGatewayTransactionEvent` creates the append-only sequence `received ->
+  authorized/denied -> executing -> committed/aborted/recovery_required`;
+- `begin` creates the one current execution-event reference required for
+  completion;
+- `ToolExecutionReceipt` binds a committed result to the exact executor
+  measurements and post-tool checkpoint, proves exact cancellation for
+  `aborted`, or records unknown effects for `recovery_required`;
+- one idempotency key maps to one canonical request; equivalent retries reload
+  state, a reused transaction or changed request conflicts before write, and
+  partial writes resume from retained admission/checkpoint/receipt evidence;
+- the repository gateway transaction store is serialized for atomic
+  transaction/idempotency uniqueness, and explicit recovery cancels an orphan
+  allow admission or blocks its lease before denial;
+- authorized but unstarted work can be cancelled only with the exact raw input;
+  an unknown executing outcome blocks the dispatch lease and requires human
+  reconciliation;
+- all contracts keep production execution, production deployment verification,
+  release, self-approval, and authority expansion false;
+- Codex and Claude skills route to the same controller and recovery procedure.
+
+Completion criteria:
+
+- A principal, gateway, lease, policy, checkpoint, repository, input, operation
+  class, idempotency, or execution-token substitution cannot commit.
+- A retry cannot create a second execution for the same request.
+- Raw input is absent from ordinary gateway audit artifacts.
+- An unstarted authorization can be proven cancelled without leaving an
+  unresolved dispatch admission.
+- An executing call with no trustworthy result cannot be reported as success.
+- The local controller cannot claim managed exclusivity or production
+  deployment verification.
+
+Phase 17B remains:
+
+- authenticated mTLS, DPoP, and workload-OIDC adapters;
+- provider-specific shell, filesystem, MCP, network, and delegation execution
+  adapters;
+- independently managed configuration and deployment evidence;
+- OS/container sandbox and egress enforcement that remove direct side paths;
+- linearizable coordination and storage-side fencing;
+- multi-user permission, secret, incident, break-glass, and reconciliation
+  operations;
+- adversarial deployment tests proving that tools are unreachable when the
+  gateway is unavailable.
+
+See `protected-tool-gateway-contract.md` for contracts, commands, state
+transitions, failure behavior, deployment requirements, and residual limits.
+
+## 19. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -602,8 +677,9 @@ differences, deployment levels, failure behavior, and residual limits.
 | G19 | Runtime-policy v0.3 GitLab evidence has a valid manifest-pinned GitLab.com JWKS, strict OIDC signature/claim appraisal, stable source/job identity, protected same-project config, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G20 | A delegated skill wave has one generated CoS receipt, every expected S3 receipt, ready routing/model admission, digest-bound context packs, repository-manifest evidence, report/AAR closeout, bounded next-wave disposition, and no AI release authority |
 | G21 | Every covered delegated tool call has one active per-agent lease compiled from an exact USER-plan-authorized draft digest, exact policy/context/checkpoint binding, replay-safe serialized admission, and a result-bound post-tool state checkpoint; one settled lineage is required before reporting, resume requires explicit continuation, and release remains false |
+| G22 | Every Phase 17A gateway commit has an exact trusted principal/gateway binding, current dispatch and repository bindings, one canonical idempotent request, one current execution token, one result-bound receipt and append-only terminal event; cancellation or unknown-outcome recovery fails closed, while production and release claims remain false |
 
-## 19. Related Documents
+## 20. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -618,3 +694,4 @@ differences, deployment levels, failure behavior, and residual limits.
 - `gitlab-ci-native-verifier-adapter.md`
 - `skill-operational-mission-lifecycle.md`
 - `enforced-dispatch-and-resume.md`
+- `protected-tool-gateway-contract.md`

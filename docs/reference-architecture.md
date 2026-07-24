@@ -192,14 +192,34 @@ The integrated preflight combines the current-wave routing receipt projection wi
 
 Role:
 
-- Single gateway for all external actions.
-- Write tool-use logs.
-- Execute dry-run first.
-- Record results to the state store.
+- Authenticate the principal and load an independently trusted gateway
+  configuration.
+- Reload the exact active dispatch lease, policy, checkpoint, and repository
+  state before every call.
+- Bind one canonical tool-input digest and operation class to one idempotent
+  transaction.
+- Issue one append-only execution token only after a manifest-backed allow
+  decision.
+- Correlate the exact post-tool result and repository state into an execution
+  receipt.
+- Cancel an authorized but unstarted admission or block on an unknown in-flight
+  outcome.
 
 Prohibited:
 
 - An agent calling a tool directly, bypassing the gateway.
+- Treating a bearer claim, network location, context pack, model identity, or
+  prior success as current tool authority.
+- Persisting raw tool input in ordinary audit artifacts.
+- Treating tool authorization as commit, release, policy, risk, or authority
+  approval.
+
+Phase 17A implements the contracts and a local reference controller in
+`protected-tool-gateway.js`. It does not execute tools or prove that direct tool
+paths have been removed. A production deployment must make managed adapters the
+only side-effect path and independently verify gateway code, configuration,
+identity appraisal, sandbox, egress policy, coordination, and fencing. See
+`protected-tool-gateway-contract.md`.
 
 ### 2.10 Evidence Store
 
@@ -283,7 +303,10 @@ User request
 -> ROE precheck
 -> Task Router
 -> Agent Runtime
--> Tool Gateway
+-> Tool Gateway received/authorized event
+-> one execution token
+-> external adapter
+-> committed receipt or recovery-required block
 -> Verification
 -> Final response
 -> AAR
@@ -318,7 +341,7 @@ Agent detects CCIR
 | mission_state | missions, opords, task_orders |
 | operations_state | sitreps, fragos, decisions |
 | evidence | sources, claims, interpretations |
-| audit | tool_requests, approvals, policy_decisions |
+| audit | tool_requests, gateway_decisions, gateway_transaction_events, execution_receipts, approvals, policy_decisions |
 | learning | aars, sop_updates, readiness |
 
 ## 5. Deployment Patterns
@@ -373,6 +396,7 @@ Characteristics:
 | --- | --- |
 | User data -> model | redaction, policy check |
 | Agent -> tool | tool gateway |
+| Gateway request -> execution | authenticated principal, trusted gateway digest, active lease/policy/checkpoint, exact input digest, idempotency, one execution token |
 | Tool -> external service | approval and audit |
 | Evidence -> output | citation check |
 | Candidate -> adaptive promotion | executed receipt, trusted signed quorum, paired canary for skill/runtime control, accepted-parent lineage, consumed approval binding |
@@ -389,6 +413,8 @@ Characteristics:
 7. AAR and readiness update.
 8. Bounded self-improvement checkpoint and next task order.
 9. Multi-agent routing.
+10. Protected tool transaction and recovery controller.
+11. Managed exclusive gateway adapters and side-path isolation.
 
 ## 8. Related Documents
 
@@ -398,3 +424,5 @@ Characteristics:
 - `sample-runtime-state.md`
 - `approval-ui-patterns.md`
 - `bounded-self-improvement-operations.md`
+- `enforced-dispatch-and-resume.md`
+- `protected-tool-gateway-contract.md`

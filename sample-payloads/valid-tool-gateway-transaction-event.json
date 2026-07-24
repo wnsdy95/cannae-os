@@ -1,0 +1,54 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolGatewayTransactionEvent",
+  "id": "GTE-W1-tool-001-004",
+  "transaction_id": "GTX-W1-tool-001",
+  "mission_id": "MIS-GATEWAY",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "sequence": 4,
+  "previous_event_ref": {
+    "artifact_id": "GTE-W1-tool-001-003",
+    "relative_path": "events/GTE-W1-tool-001-003.json",
+    "sha256": "1414141414141414141414141414141414141414141414141414141414141414"
+  },
+  "state": "committed",
+  "request_ref": {
+    "artifact_id": "TGR-W1-tool-001",
+    "relative_path": "request.json",
+    "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "decision_ref": {
+    "artifact_id": "TGD-W1-tool-001",
+    "relative_path": "decision.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "receipt_ref": {
+    "artifact_id": "TER-W1-tool-001",
+    "relative_path": "receipt.json",
+    "sha256": "1515151515151515151515151515151515151515151515151515151515151515"
+  },
+  "admission_ref": {
+    "artifact_id": "TAE-W1-tool-001",
+    "relative_path": "admission.json",
+    "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-W1-runtime-agent-1",
+    "relative_path": "checkpoint.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "repository_binding": {
+    "repository_key": "example",
+    "identity_fingerprint": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "idempotency_key": "2222222222222222222222222222222222222222222222222222222222222222",
+  "tool_input_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "reason_codes": ["TOOL_EXECUTION_COMMITTED"],
+  "recorded_at": "2026-07-23T13:00:22Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolExecutionReceipt",
+  "id": "TER-W1-tool-001",
+  "transaction_id": "GTX-W1-tool-001",
+  "mission_id": "MIS-GATEWAY",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "request_ref": {
+    "artifact_id": "TGR-W1-tool-001",
+    "relative_path": "request.json",
+    "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "decision_ref": {
+    "artifact_id": "TGD-W1-tool-001",
+    "relative_path": "decision.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "admission_ref": {
+    "artifact_id": "TAE-W1-tool-001",
+    "relative_path": "admission.json",
+    "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-W1-runtime-agent-1",
+    "relative_path": "checkpoint.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "gateway_binding_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+  "principal_binding_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+  "tool_call": {
+    "tool_use_id": "tool-use-001",
+    "tool_name": "Bash",
+    "operation_class": "process_execute",
+    "tool_input_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "executor": {
+    "adapter_id": "fixture-executor",
+    "adapter_version": "0.1.0",
+    "adapter_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "runtime_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "sandbox_profile_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "network_policy_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "execution_mode": "fixture"
+  },
+  "execution": {
+    "transaction_state": "committed",
+    "status": "succeeded",
+    "started_at": "2026-07-23T13:00:20Z",
+    "finished_at": "2026-07-23T13:00:21Z",
+    "result_sha256": "1212121212121212121212121212121212121212121212121212121212121212",
+    "exit_code": "0",
+    "external_effects": "none"
+  },
+  "repository_state_before": {
+    "head_commit": "0123456789abcdef0123456789abcdef01234567",
+    "worktree_fingerprint": "1313131313131313131313131313131313131313131313131313131313131313",
+    "dirty": false
+  },
+  "repository_state_after": {
+    "head_commit": "0123456789abcdef0123456789abcdef01234567",
+    "worktree_fingerprint": "1313131313131313131313131313131313131313131313131313131313131313",
+    "dirty": false
+  },
+  "coordination": {
+    "backend": "shared_filesystem_reference",
+    "manifest_revision": 18,
+    "fencing_token": 11
+  },
+  "idempotency_key": "2222222222222222222222222222222222222222222222222222222222222222",
+  "production_deployment_verified": false,
+  "reason_codes": ["TOOL_EXECUTION_COMMITTED"],
+  "recorded_at": "2026-07-23T13:00:22Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  }
+}

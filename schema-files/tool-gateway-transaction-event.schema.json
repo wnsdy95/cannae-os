@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/tool-gateway-transaction-event.schema.json",
+  "title": "Tool Gateway Transaction Event",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "transaction_id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "sequence",
+    "previous_event_ref",
+    "state",
+    "request_ref",
+    "decision_ref",
+    "receipt_ref",
+    "admission_ref",
+    "checkpoint_ref",
+    "repository_binding",
+    "idempotency_key",
+    "tool_input_sha256",
+    "reason_codes",
+    "recorded_at",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ToolGatewayTransactionEvent" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "#/$defs/safe_identifier" },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "previous_event_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "state": {
+      "type": "string",
+      "enum": [
+        "received",
+        "authorized",
+        "denied",
+        "executing",
+        "committed",
+        "aborted",
+        "recovery_required"
+      ]
+    },
+    "request_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "decision_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "receipt_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "admission_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "idempotency_key": { "$ref": "common.schema.json#/$defs/sha256" },
+    "tool_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "reason_codes": { "$ref": "#/$defs/reason_codes" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "artifact_ref_or_none": {
+      "type": "object",
+      "required": ["artifact_id", "relative_path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^(none|[A-Z]+-[A-Za-z0-9_-]+)$"
+        },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": {
+          "type": "string",
+          "pattern": "^(none|[a-f0-9]{64})$"
+        }
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": { "type": "string", "const": "USER" },
+        "self_approval_prohibited": { "type": "boolean", "const": true },
+        "release_authorized": { "type": "boolean", "const": false }
+      }
+    }
+  }
+}

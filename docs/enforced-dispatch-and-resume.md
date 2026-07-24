@@ -391,6 +391,7 @@ Do not describe Level 1 or Level 2 as non-bypassable security.
 | Another tool is in flight | deny |
 | Rule or lease budget exhausted | deny |
 | Post-tool name/input mismatch or failed/unknown result | block lease |
+| Gateway-authorized call is cancelled before execution with exact input | record cancelled checkpoint and keep lease active |
 | Second initial session for one mission agent/wave | no new lease |
 | Another nonterminal lease in the repository | no new lease |
 | Resume state differs from interruption checkpoint | no new lease |
@@ -421,3 +422,10 @@ Do not describe Level 1 or Level 2 as non-bypassable security.
 
 The production target is a separately protected gateway that verifies these
 same contracts before exposing any side-effecting tool.
+
+Phase 17A now defines that transaction boundary in
+`protected-tool-gateway-contract.md`. It adds exact principal/gateway binding,
+idempotent request state, one execution token, result receipts, pre-execution
+cancellation, and unknown-outcome recovery. The reference controller remains a
+Level 2 contract implementation: it does not execute tools or establish the
+Level 4 exclusive deployment claim.

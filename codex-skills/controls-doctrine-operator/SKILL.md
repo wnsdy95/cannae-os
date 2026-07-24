@@ -115,6 +115,20 @@ Project hooks are a deterministic guardrail for covered local calls, not a non-b
 
 Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup, provider limits, failure matrix, and production deployment levels.
 
+### Operating The Protected Tool Gateway
+
+Use this path when a tool call must have a durable gateway transaction in addition to the Phase 16 dispatch admission:
+
+1. Finish routing, policy authorization, and lease issuance first. Build a `ToolGatewayRequest` from the exact active lease, policy, checkpoint, repository state, authenticated-principal projection, trusted gateway projection, and canonical tool-input digest.
+2. Treat `--verified-principal-sha256` and `--gateway-binding-sha256` as outputs of independently trusted adapters. Never let the acting agent self-calculate them and claim that this proves identity or deployment trust.
+3. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Continue only from `state: authorized`; `production_execution_authorized` always remains false in Phase 17A.
+4. Run `begin` immediately before the external adapter acts. Give the adapter only the returned exact `execution_event_ref`, raw input, and required secret material.
+5. Run `commit` with that execution reference, exact input, result, and measured executor digests. A stale reference or post-tool binding failure stops in `recovery_required`.
+6. If execution never began, run `recover` with the exact raw input to cancel the admission and record `aborted`. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. If execution began and the result is unknown, run `recover` without asserting success; the lease becomes blocked pending human reconciliation.
+7. Reuse an idempotency key only for byte-equivalent canonical requests, and never reuse a transaction ID for a different request or key. Never interpret a transaction receipt as commit, push, merge, release, policy, risk, or authority approval.
+
+Phase 17A is a contract/reference controller and does not execute tools or prove an exclusive deployment. Read `docs/protected-tool-gateway-contract.md` before integrating an adapter.
+
 ### Answering Framework Questions
 
 1. Route the question in human final decision authority mode unless the user explicitly asks for AI delegation.
@@ -144,6 +158,7 @@ Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup,
 5. Treat persistence failure as a blocked wave. Do not dispatch from an integrated preflight whose artifact write failed.
 6. Run `repository-artifact-verify.js` before consuming proof and before wave completion. A pending journal, broken history, non-monotonic fencing token, sidecar mismatch, or artifact hash mismatch blocks the wave. Use `--recover` only for a valid pending transaction under a current lease.
 7. Treat the built-in coordinator as a coherent shared-filesystem backend, not a partition-tolerant distributed lock. Stop writes on split-brain, delayed visibility, fencing-token rollback, or unsupported atomic operations; require an external linearizable coordinator and storage-side fencing for those deployments.
+8. Size lease acquisition timeout for worst-case serialized writer contention independently from lease TTL. A longer contention budget must not weaken the bounded rejection test for an unexpired foreign lease.
 
 ### Operating Bounded Self-Improvement
 
@@ -171,7 +186,7 @@ Read `docs/bounded-self-improvement-operations.md` for the full state machine an
 ### Editing Doctrine Or Policy
 
 1. Read `docs/source-map.md`, the target policy, and any referenced schemas/runners.
-2. If changing a runtime contract, update all four: schema, valid sample, invalid sample, runner/fixture.
+2. If changing a runtime contract, update all four: schema, valid sample, invalid sample, runner/fixture. Protected-gateway changes must also update both gateway skill wrappers and the transaction/recovery guidance.
 3. If adding official sources, update `docs/source-map.md`, `docs/research-compendium.md`, and `source-map-url-coverage-report.json`.
 4. Run targeted validation first, then the relevant `run-*.js` fixture.
 5. Commit coherent changes when the repo is clean except ignored files.

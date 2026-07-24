@@ -45,6 +45,7 @@ Evaluation fixtures are used to verify that runtime gates actually function, not
 | Transparency operations fixtures | Validates RFC 6962 consistency above 32 bits, rollback/equivocation detection, observer time/operator quorum, TUF root rotation/expiry, immutable incident recovery, monotonic evidence time, state reconstruction, freshness, and v0.7 admission |
 | Transparency supervisor fixtures | Validates that embedded transparency evidence or incident evidence references absent from the verified repository manifest cannot authorize dispatch |
 | Artifact concurrency/recovery fixtures | Validates shared-filesystem leases, monotonic fencing, stale-writer rejection, write-ahead recovery, hash-linked history, and tamper detection |
+| Protected tool gateway fixtures | Validates trusted principal/gateway binding, exact tool admission, idempotency conflict, execution-token correlation, committed receipt, pre-execution cancellation, and unknown-outcome recovery |
 
 ## 2. Required Fixtures
 
@@ -153,6 +154,10 @@ Validator changes must not:
 - count duplicate, expired, untrusted, or same-group report attestations toward comparative quorum.
 - accept a repository artifact store with a pending journal, broken history chain, sidecar mismatch, or changed artifact bytes.
 - let an expired writer commit after a replacement lease has received a higher fencing token, steal an unexpired foreign-host lease, reuse a fencing token across different lease IDs, regress a token, or lose a revision reserved in immutable history.
+- allow a protected tool transaction with a substituted principal, gateway configuration, repository checkpoint, raw-input digest, operation class, or stale execution token.
+- reuse one gateway idempotency key for a changed request, reuse one transaction ID for a different request or key, persist raw tool input in audit artifacts, claim managed exclusivity from the Phase 17A reference controller, or infer production/release authority from a receipt.
+- mark an authorized-but-unstarted request aborted without exact cancellation, or mark an executing request successful when its outcome cannot be correlated.
+- leave a crash-retained allow admission active after recovery, or accept begin/commit timestamps that precede their retained transaction events.
 - accept research task with no source discipline.
 
 ## 6. Related Documents
