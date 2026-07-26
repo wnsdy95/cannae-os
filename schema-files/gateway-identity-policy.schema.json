@@ -22,7 +22,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "type": { "type": "string", "const": "GatewayIdentityPolicy" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "gateway": { "$ref": "#/$defs/gateway" },
@@ -106,12 +106,9 @@
         "configuration_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "assurance_level": {
           "type": "string",
-          "const": "authenticated_reference"
+          "enum": ["authenticated_reference", "managed_exclusive"]
         },
-        "exclusive_path_verified": {
-          "type": "boolean",
-          "const": false
-        }
+        "exclusive_path_verified": { "type": "boolean" }
       }
     },
     "adapter_profile": {

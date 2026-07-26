@@ -4034,8 +4034,210 @@ The equation does not include:
 - There is no proof that shell, Docker, MCP, filesystem, network, or delegation
   side paths are unreachable outside the gateway.
 
-Phase 17B2C should add independent provider/host/image deployment evidence,
-rootless/user-namespace and MAC profiles, application-minimal seccomp,
-credential brokering, storage-side fencing, provider-native adapters, and
-adversarial deployment tests that prove the gateway is the only reachable
-side-effect path.
+The Phase 17B2C1 research below defines the contract for those controls.
+Provider deployment and installation-level side-path proof remain external.
+
+## Phase 17B2C1: Production Sandbox Admission
+
+### Research Question
+
+Phase 17B2B proves one measured OCI execution under a local Docker reference
+provider. It does not establish that the daemon, host, image supply chain,
+evidence keys, policy, gateway deployment, distributed coordination, or
+alternate tool paths are independently trustworthy.
+
+The Phase 17B2C1 question is therefore:
+
+> What exact evidence must a relying gateway require before it may set
+> production execution and deployment verification true without also granting
+> release or trusting one self-authored claim?
+
+### Primary Standards Findings
+
+1. RATS separates evidence production, appraisal, and reliance.
+   [RFC 9334](https://www.rfc-editor.org/rfc/rfc9334.html) defines Attester,
+   Verifier, Attestation Result, and Relying Party roles. The gateway should
+   consume a signed appraisal result from a policy-trusted verifier; it should
+   not treat raw evidence or a caller boolean as the trust decision.
+2. Evidence inputs remain semantically distinct.
+   [RFC 9999](https://www.rfc-editor.org/rfc/rfc9999.html) preserves Evidence,
+   Reference Values, Endorsements, Appraisal Policy, and Attestation Results as
+   different conceptual messages. A production record therefore retains a
+   digest for each one.
+3. Freshness must be profile-bound.
+   [RFC 9711](https://www.rfc-editor.org/rfc/rfc9711.html) supports EAT
+   freshness and profile constraints. Cannae fixes one EAT profile, nonce
+   length, evidence age, and expiry in policy. A nonce string outside that
+   profile cannot count.
+4. Image identity is content identity, not a mutable name.
+   The [OCI descriptor specification](https://github.com/opencontainers/image-spec/blob/main/descriptor.md)
+   treats the digest as the content identifier and requires SHA-256
+   verification support. Tags and unverified registry responses cannot enter
+   production policy.
+5. Provenance must bind a subject and be checked against expectations.
+   [in-toto Statement v1](https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md)
+   binds metadata to subject digests and predicate type.
+   [SLSA provenance v1](https://slsa.dev/spec/v1.2/build-provenance) fixes the
+   current in-toto and predicate type strings, while
+   [SLSA artifact verification](https://slsa.dev/spec/v1.2/verifying-artifacts)
+   requires consumers to compare provenance with protected expectations.
+   A valid signature on an unexpected source, builder, or image is not
+   sufficient.
+6. Signature verification must preserve claims.
+   [Sigstore verification guidance](https://docs.sigstore.dev/cosign/verifying/verify/)
+   verifies the container digest and signer identity/issuer. Disabling claim
+   checks would reduce the result to signature possession and is outside this
+   production profile.
+7. Credential custody and lifecycle are separate controls.
+   The [SPIFFE Workload API](https://spiffe.io/docs/latest/spiffe-specs/spiffe_workload_api/)
+   delivers short-lived credentials and bundles. Production evidence records
+   verified workload identity, custody class, rotation, and revocation rather
+   than equating a public key in JSON with managed key custody.
+8. Container assurance is layered.
+   [NIST SP 800-190](https://csrc.nist.gov/pubs/sp/800/190/final) identifies
+   image, registry, orchestrator, runtime, and host risks separately. Cannae
+   does not collapse those layers into one `sandbox_verified` field.
+9. Rootless and user-namespace operation reduce different risks.
+   [Docker rootless mode](https://docs.docker.com/engine/security/rootless/)
+   places both daemon and containers in a user namespace without root.
+   [Docker userns-remap](https://docs.docker.com/engine/security/userns-remap/)
+   maps container root to an unprivileged host UID while the daemon remains
+   rootful. Policy permits either only when independently appraised.
+10. General seccomp compatibility is not application minimization.
+    [Docker seccomp guidance](https://docs.docker.com/engine/security/seccomp/)
+    describes its broad default compatibility profile. Production evidence
+    requires a digest-pinned application profile with
+    `SCMP_ACT_ERRNO` default action.
+11. Mandatory access control is additional to namespaces and seccomp.
+    [Docker AppArmor guidance](https://docs.docker.com/engine/security/apparmor/)
+    demonstrates enforcing profiles, and
+    [Linux Landlock](https://docs.kernel.org/security/landlock.html) adds
+    restrictions for unprivileged processes. One enforcing MAC provider and
+    profile digest is mandatory.
+12. A local file lock is not a distributed production coordinator.
+    The [etcd concurrency API](https://etcd.io/docs/v3.6/dev-guide/api_concurrency_reference_v3/)
+    associates locks with leases, and the
+    [etcd API](https://etcd.io/docs/v3.6/learning/api/) supplies atomic
+    compare-and-swap transactions. Production needs equivalent linearizable
+    acquisition, renewal, release, revision, and fencing behavior plus
+    storage-side enforcement.
+
+### Design Decisions
+
+1. Use three artifacts, not one all-purpose certificate.
+   `ProductionSandboxPolicy` defines trust, `ProductionSandboxEvidence`
+   records one appraiser result, and `ProductionSandboxAdmission` aggregates
+   current consensus. This keeps USER policy, appraiser observation, and
+   admission authority reviewable and revocable independently.
+2. Separate admission and appraiser keys.
+   The admission authority cannot also be a counted appraiser. Otherwise one
+   compromised key could both create evidence and declare its quorum valid.
+3. Require at least two appraisers and compute failure domains.
+   Nine provider/operator/infrastructure dimensions are signed. Any shared
+   required component creates an edge; transitive connected components become
+   the actual domains. Human-readable group labels are ignored for diversity.
+4. Require byte-equivalent deployment consensus.
+   Appraisers do not vote on a vague environment name. They must sign the same
+   canonical deployment object and exact execution scope.
+5. Keep vendor quote parsing in provider adapters.
+   A generic TPM, TEE, cloud-attestation, EAT, endorsement, and reference-value
+   parser would either be incomplete or pretend that incompatible trust models
+   are interchangeable. The generic contract verifies the signed appraisal
+   result and exact references; the selected provider must appraise the
+   original evidence.
+6. Bind production only to the OCI reference mode.
+   Phase 17B2A intentionally lacks an isolation boundary. Production policy
+   therefore permits one `oci_linux_sandbox_reference` mode and exact
+   manifest-backed OCI policy refs.
+7. Require a live coordinator in addition to signed deployment evidence.
+   Evidence that a coordinator was configured does not prove that it is
+   reachable for the current transaction. The gateway obtains a current
+   handle and binds its adapter/configuration, transaction, idempotency key,
+   admission digest, revision, fencing token, lease, and expiry.
+8. Preserve local and external coordination roles.
+   The repository lease still serializes one coherent artifact store. The
+   external coordinator supplies the production claim. Neither silently
+   substitutes for the other.
+9. Reverify at every state-changing transition.
+   Admission, begin, commit, and recovery can occur after evidence, identity,
+   admission, or coordinator expiry. Every transition reloads the manifest and
+   reacquires current production coordination.
+10. Keep execution authorization and release independent.
+    A production admission may authorize one exact tool transaction. It does
+    not authorize source commit, push, merge, publication, risk acceptance,
+    policy change, or release.
+
+### Rejected Alternatives
+
+- A caller-supplied `production: true` flag: no evidence or trust boundary.
+- One self-signed appraiser: no independent observation or failure tolerance.
+- Declared independence labels: shared accounts and infrastructure can be
+  relabeled without becoming independent.
+- Signature success without subject/source/builder expectations: authenticates
+  a signer but not the intended image or build.
+- Treating the existing artifact-store lease as multi-host linearizability:
+  unsupported under partition, delayed visibility, or storage failover.
+- Issuing admission from in-memory objects: bypasses repository custody and
+  permits substituted refs.
+- Letting the standalone CLI inject a fixture coordinator: would turn a test
+  affordance into a production-claim bypass.
+- Making release true when production succeeds: conflates execution assurance
+  with retained human release authority.
+
+### Implemented Artifacts
+
+- `schema-files/production-sandbox-policy.schema.json`;
+- `schema-files/production-sandbox-evidence.schema.json`;
+- `schema-files/production-sandbox-admission.schema.json`;
+- valid and adversarial samples for all three contracts;
+- `production-sandbox-admission.js`;
+- `production-sandbox-admission-adapter.js`;
+- `production-sandbox-fixture-support.js`;
+- `ToolGatewayRequest`/decision/event v0.3 and
+  `ToolExecutionReceipt` v0.5;
+- external `productionCoordinator` gateway interface;
+- `run-production-sandbox-admission-fixtures.js`;
+- `run-production-sandbox-gateway-fixtures.js`;
+- `docs/production-sandbox-admission.md`;
+- equivalent Codex and Claude wrappers, routes, references, and mandatory
+  operating guidance.
+
+### Measured Behavior
+
+- two independently keyed and failure-domain-separated appraisals authorize one
+  agreed deployment;
+- an exact manifest-backed OCI policy verifies, while a foreign policy is
+  denied before artifact loading;
+- one shared required infrastructure component collapses diversity;
+- appraisers that sign different deployment identities cannot form consensus;
+- evidence payload mutation with a repaired digest still fails its signature;
+- evidence and admission expiry remove production authorization;
+- an admission payload mutation with a repaired digest still fails its
+  admission signature;
+- an appraiser signature under an unregistered key cannot enter quorum;
+- a real TLS 1.3 SPIFFE identity plus exact production admission and matching
+  external coordinator authorizes a managed gateway transaction;
+- missing external coordination denies before dispatch admission is consumed;
+- exact cancellation creates a v0.5 aborted receipt with deployment proof
+  preserved and release false;
+- legacy gateway, identity, protected-process, and OCI fixture families remain
+  compatible.
+
+### Residual Provider Work
+
+- TPM 2.0, cloud confidential-computing, TEE, or other attestation adapters;
+- profile-specific EAT/CMW parsing and endorsement/reference-value services;
+- SLSA/Sigstore registry verification against protected expectations;
+- KMS/HSM and SPIFFE Workload API key delivery, rotation, and revocation;
+- hardened rootless or userns Docker hosts with independently appraised MAC,
+  seccomp, cgroup, filesystem, and network policy;
+- a real etcd/database/cloud coordinator adapter and storage-enforced fencing;
+- installation-level adversarial tests that remove every shell, Docker, MCP,
+  filesystem, network, and delegation side path;
+- multi-user policy administration, health, incident, revocation, break-glass,
+  reconciliation, and disaster-recovery operations;
+- release approval.
+
+The repository now has a fail-closed contract for consuming those provider
+claims. It does not manufacture provider trust or convert an ordinary local
+Docker installation into production.

@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/production-sandbox-admission.schema.json",
+  "title": "Production Sandbox Admission",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "policy_ref",
+    "evidence_refs",
+    "repository_binding",
+    "gateway",
+    "deployment_identity_sha256",
+    "execution_scope_sha256",
+    "quorum",
+    "assurance_level",
+    "production_execution_authorized",
+    "production_deployment_verified",
+    "release_authorized",
+    "issued_at",
+    "expires_at",
+    "signature",
+    "admission_sha256",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ProductionSandboxAdmission" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 20,
+      "items": { "$ref": "common.schema.json#/$defs/artifact_ref" }
+    },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "gateway": { "$ref": "#/$defs/gateway" },
+    "deployment_identity_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "execution_scope_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "quorum": { "$ref": "#/$defs/quorum" },
+    "assurance_level": {
+      "type": "string",
+      "const": "managed_exclusive"
+    },
+    "production_execution_authorized": {
+      "type": "boolean",
+      "const": true
+    },
+    "production_deployment_verified": {
+      "type": "boolean",
+      "const": true
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "signature": { "$ref": "#/$defs/signature" },
+    "admission_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "gateway": {
+      "type": "object",
+      "required": [
+        "gateway_id",
+        "instance_id",
+        "audience",
+        "deployment_sha256",
+        "configuration_sha256",
+        "assurance_level",
+        "exclusive_path_verified"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "gateway_id": { "$ref": "#/$defs/safe_identifier" },
+        "instance_id": { "$ref": "#/$defs/safe_identifier" },
+        "audience": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "deployment_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "configuration_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "assurance_level": {
+          "type": "string",
+          "const": "managed_exclusive"
+        },
+        "exclusive_path_verified": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "domain": {
+      "type": "object",
+      "required": [
+        "domain_id",
+        "appraiser_ids",
+        "shared_dimensions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "domain_id": {
+          "type": "string",
+          "pattern": "^PSD-[a-f0-9]{24}$"
+        },
+        "appraiser_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": { "$ref": "common.schema.json#/$defs/id" }
+        },
+        "shared_dimensions": {
+          "type": "array",
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "provider_id",
+              "operator_id",
+              "control_plane_id",
+              "account_id",
+              "project_id",
+              "runner_pool_id",
+              "infrastructure_id",
+              "region_id",
+              "zone_id"
+            ]
+          }
+        }
+      }
+    },
+    "quorum": {
+      "type": "object",
+      "required": [
+        "valid_evidence_ids",
+        "appraiser_ids",
+        "key_ids",
+        "independence_domains",
+        "valid_evidence_count",
+        "distinct_key_count",
+        "independent_domain_count",
+        "minimum_valid_evidence",
+        "minimum_independent_domains",
+        "satisfied"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "valid_evidence_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": { "$ref": "common.schema.json#/$defs/id" }
+        },
+        "appraiser_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": { "$ref": "common.schema.json#/$defs/id" }
+        },
+        "key_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          }
+        },
+        "independence_domains": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 20,
+          "items": { "$ref": "#/$defs/domain" }
+        },
+        "valid_evidence_count": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "distinct_key_count": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "independent_domain_count": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "minimum_valid_evidence": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "minimum_independent_domains": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "satisfied": { "type": "boolean", "const": true }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["key_id", "algorithm", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "key_id": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "algorithm": { "type": "string", "const": "ed25519" },
+        "signature_base64": {
+          "type": "string",
+          "minLength": 88,
+          "maxLength": 88
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "production_execution_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "production_execution_authorized": {
+          "type": "boolean",
+          "const": true
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    }
+  }
+}

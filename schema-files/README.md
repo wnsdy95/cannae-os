@@ -51,7 +51,7 @@ The schemas are intentionally small and composable. They define the minimum stat
 - routing receipts
 - operational mission wave plans, per-agent context packs, wave reports, and closeouts
 - deny-by-default dispatch tool policies, short-lived agent leases, tool admission events, and resumable execution checkpoints
-- protected tool gateway requests, decisions, execution receipts, append-only transaction events, and authenticated gateway identity evidence
+- protected tool gateway requests, decisions, execution receipts, append-only transaction events, authenticated gateway identity evidence, and production sandbox admission
 
 Recommended validation order:
 
@@ -148,6 +148,14 @@ Recommended validation order:
 91. `protected-process-tool-input.schema.json`
 92. `protected-execution-envelope.schema.json`
 93. `protected-execution-observation.schema.json`
+94. `oci-linux-sandbox-policy.schema.json`
+95. `oci-sandbox-tool-input.schema.json`
+96. `oci-sandbox-execution-envelope.schema.json`
+97. `oci-sandbox-probe-observation.schema.json`
+98. `oci-sandbox-execution-observation.schema.json`
+99. `production-sandbox-policy.schema.json`
+100. `production-sandbox-evidence.schema.json`
+101. `production-sandbox-admission.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -173,10 +181,12 @@ All schemas target JSON Schema draft 2020-12.
 
 `DispatchToolPolicy` v0.2 must be controller-compiled from a policy-draft digest already authorized by the exact USER-authored mission plan. Each rule binds one allowed mission action, exact provider tool, operation class, matcher input, repository-state control, and finite budget under default deny; project-hook policies cannot authorize network or delegation classes. `AgentDispatchLease` binds that policy to one provider session, repository identity/state, context chain, nonce, and validity window. `ToolAdmissionEvent` records each pre-tool allow or deny decision, while `AgentExecutionCheckpoint` v0.2 maintains the serial state chain, exact provider-result digest, and unresolved-effect disposition. All four retain `USER` final authority and keep release unauthorized.
 
-`ToolGatewayRequest` v0.2 binds an externally authenticated principal and exact gateway configuration to the active Phase 16 lease, policy, checkpoint, repository state, canonical tool-input digest, validity window, idempotency key, and three immutable identity references without retaining raw input. `ToolGatewayDecision` and `ToolGatewayTransactionEvent` v0.2 preserve those references through admission and the append-only state sequence. `ToolExecutionReceipt` v0.4 carries exact policy, envelope, and observation references for bounded process and OCI sandbox execution, plus the exact OCI probe digest when applicable; fixture and external modes use three exact none sentinels.
+`ToolGatewayRequest` v0.2 binds an externally authenticated principal and exact gateway configuration to the active Phase 16 lease, policy, checkpoint, repository state, canonical tool-input digest, validity window, idempotency key, and three immutable identity references without retaining raw input. v0.3 additionally fixes one production admission and OCI execution mode. `ToolGatewayDecision` and `ToolGatewayTransactionEvent` v0.2/v0.3 preserve the applicable references through admission and the append-only state sequence. `ToolExecutionReceipt` v0.4 carries exact policy, envelope, and observation references for bounded process and OCI sandbox execution, plus the exact OCI probe digest when applicable; v0.5 also preserves production admission and deployment verification. Fixture and external modes use three exact none sentinels.
 
-`GatewayIdentityPolicy`, `GatewayIdentityChallenge`, and `GatewayPrincipalEvidence` implement Phase 17B1 `authenticated_reference` admission. They bind an exact USER-controlled gateway/repository policy, TLS 1.3 SPIFFE X.509 principal, one-use signed challenge, server/client certificate digests, TLS exporter proof, policy-pinned adapter identifiers, revocation, and bounded freshness. `contract_reference` uses three exact none sentinels. `managed_exclusive`, production execution, deployment verification, and release remain false.
+`GatewayIdentityPolicy`, `GatewayIdentityChallenge`, and `GatewayPrincipalEvidence` implement Phase 17B1 identity admission. They bind an exact USER-controlled gateway/repository policy, TLS 1.3 SPIFFE X.509 principal, one-use signed challenge, server/client certificate digests, TLS exporter proof, policy-pinned adapter identifiers, revocation, and bounded freshness. `contract_reference` uses three exact none sentinels. Identity evidence alone cannot claim `managed_exclusive`, production execution, deployment verification, or release.
 
 `ProtectedExecutorPolicy`, `ProtectedProcessToolInput`, `ProtectedExecutionEnvelope`, and `ProtectedExecutionObservation` implement Phase 17B2A bounded process evidence. They bind one exact ELF or Mach-O executable and argv to the authorized gateway transaction, retain a signed intent before spawn and a signed observation after close, and keep sandbox, network, production, exclusivity, and release claims false.
 
 `OciLinuxSandboxPolicy`, `OciSandboxToolInput`, `OciSandboxExecutionEnvelope`, `OciSandboxProbeObservation`, and `OciSandboxExecutionObservation` implement Phase 17B2B OCI/Linux evidence. They bind an immutable probe-only image, exact static target, Docker create configuration, digest-pinned seccomp profile, namespace, UID/GID, capability, mount, cgroup, and complete-network-denial controls to signed pre-create and post-cleanup artifacts. The unsigned kernel probe is retained by exact manifest reference inside the signed observation. Docker/host independence, image provenance, managed exclusivity, production execution, deployment verification, and release remain false.
+
+`ProductionSandboxPolicy`, `ProductionSandboxEvidence`, and `ProductionSandboxAdmission` implement Phase 17B2C1 managed deployment admission. The USER policy pins appraiser and admission keys, RATS/EAT profile, computed failure-domain quorum, exact OCI policies, deployment controls, and validity. Each appraiser signs one complete deployment result, while the separate admission authority signs only a recomputed, consensus-backed quorum over exact manifest references. Production execution and deployment verification may become true only for that scope; release remains false.

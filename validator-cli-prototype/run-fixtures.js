@@ -214,6 +214,61 @@ const fixtures = [
     ]
   },
   {
+    name: "valid production sandbox policy",
+    file: "sample-payloads/valid-production-sandbox-policy.json",
+    type: "production-sandbox-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "production sandbox policy overclaims authority",
+    file: "sample-payloads/invalid-production-sandbox-policy-overclaim.json",
+    type: "production-sandbox-policy",
+    exitCode: 1,
+    requiredCodes: [
+      "PRODUCTION_SANDBOX_POLICY_APPRAISER_INVALID",
+      "PRODUCTION_SANDBOX_POLICY_AUTHORITY_INVALID",
+      "PRODUCTION_SANDBOX_POLICY_NOT_ACTIVE",
+      "PRODUCTION_SANDBOX_POLICY_REQUIRED_CONTROL_MISSING"
+    ]
+  },
+  {
+    name: "valid production sandbox evidence",
+    file: "sample-payloads/valid-production-sandbox-evidence.json",
+    type: "production-sandbox-evidence",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "production sandbox evidence overclaims authority",
+    file: "sample-payloads/invalid-production-sandbox-evidence-overclaim.json",
+    type: "production-sandbox-evidence",
+    exitCode: 1,
+    requiredCodes: [
+      "PRODUCTION_SANDBOX_EVIDENCE_ATTESTATION_RESULT_INVALID",
+      "PRODUCTION_SANDBOX_EVIDENCE_NOT_ACTIVE",
+      "PRODUCTION_SANDBOX_EVIDENCE_AUTHORITY_INVALID"
+    ]
+  },
+  {
+    name: "valid production sandbox admission",
+    file: "sample-payloads/valid-production-sandbox-admission.json",
+    type: "production-sandbox-admission",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "production sandbox admission overclaims authority",
+    file: "sample-payloads/invalid-production-sandbox-admission-overclaim.json",
+    type: "production-sandbox-admission",
+    exitCode: 1,
+    requiredCodes: [
+      "PRODUCTION_SANDBOX_ADMISSION_PROJECTION_MISMATCH",
+      "PRODUCTION_SANDBOX_ADMISSION_NOT_ACTIVE",
+      "PRODUCTION_SANDBOX_ADMISSION_AUTHORITY_INVALID"
+    ]
+  },
+  {
     name: "valid tool gateway decision",
     file: "sample-payloads/valid-tool-gateway-decision.json",
     type: "tool-gateway-decision",

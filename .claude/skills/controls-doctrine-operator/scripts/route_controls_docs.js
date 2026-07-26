@@ -106,13 +106,14 @@ const RULES = [
   },
   {
     id: "enforced-dispatch",
-    keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency", "protected process", "bounded process", "process executor", "native executable", "shebang", "interpreter", "exact argv", "execution envelope", "execution observation", "oci linux sandbox", "oci sandbox", "linux sandbox", "sandbox provider", "immutable image", "seccomp profile", "no new privileges", "no_new_privs", "cap drop", "read only rootfs", "recursive read only", "cgroup v2", "network none", "kernel probe", "container cleanup"],
+    keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency", "protected process", "bounded process", "process executor", "native executable", "shebang", "interpreter", "exact argv", "execution envelope", "execution observation", "oci linux sandbox", "oci sandbox", "linux sandbox", "sandbox provider", "immutable image", "seccomp profile", "no new privileges", "no_new_privs", "cap drop", "read only rootfs", "recursive read only", "cgroup v2", "network none", "kernel probe", "container cleanup", "production sandbox", "production admission", "rats", "eat", "slsa provenance", "managed exclusive", "appraiser quorum", "external coordinator", "storage fencing", "exclusive path"],
     docs: [
       "docs/enforced-dispatch-and-resume.md",
       "docs/protected-tool-gateway-contract.md",
       "docs/gateway-identity-admission.md",
       "docs/protected-process-execution.md",
       "docs/oci-linux-sandbox-provider.md",
+      "docs/production-sandbox-admission.md",
       "docs/skill-operational-mission-lifecycle.md",
       "docs/tool-use-roe.md",
       "docs/repository-artifact-isolation-policy.md",
@@ -124,6 +125,8 @@ const RULES = [
       "node run-gateway-identity-adapter-fixtures.js",
       "node run-protected-process-executor-fixtures.js",
       "node run-oci-linux-sandbox-provider-fixtures.js",
+      "node run-production-sandbox-admission-fixtures.js",
+      "node run-production-sandbox-gateway-fixtures.js",
       "node validator-cli-prototype/validate.js sample-payloads/valid-dispatch-tool-policy.json dispatch-tool-policy",
       "node validator-cli-prototype/validate.js sample-payloads/valid-agent-dispatch-lease.json agent-dispatch-lease",
       "node validator-cli-prototype/validate.js sample-payloads/valid-agent-execution-checkpoint.json agent-execution-checkpoint",
@@ -315,7 +318,8 @@ const ROLE_DOCS = {
     "docs/enforced-dispatch-and-resume.md",
     "docs/protected-tool-gateway-contract.md",
     "docs/protected-process-execution.md",
-    "docs/oci-linux-sandbox-provider.md"
+    "docs/oci-linux-sandbox-provider.md",
+    "docs/production-sandbox-admission.md"
   ],
   S4: [
     "docs/maintenance-readiness-model.md",
@@ -367,7 +371,7 @@ const AUTHORITY_DOCS = [
   },
   {
     keywords: ["execution", "tool", "scoped-execution", "carry-out", "instrument"],
-    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md", "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md"]
+    docs: ["docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md", "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md", "docs/production-sandbox-admission.md"]
   }
 ];
 
@@ -409,7 +413,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "enforced-dispatch",
-    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction", "protected-process", "protected-executor", "bounded-process", "native-executable", "shebang", "interpreter", "execution-envelope", "execution-observation", "operate_protected_executor", "exact-argv", "oci-linux-sandbox", "oci-sandbox", "sandbox-provider", "operate_oci_sandbox", "seccomp", "no-new-privileges", "cgroup", "network-none", "kernel-probe", "container-cleanup"]
+    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction", "protected-process", "protected-executor", "bounded-process", "native-executable", "shebang", "interpreter", "execution-envelope", "execution-observation", "operate_protected_executor", "exact-argv", "oci-linux-sandbox", "oci-sandbox", "sandbox-provider", "operate_oci_sandbox", "production-sandbox", "production-admission", "operate_production_sandbox", "rats", "eat", "slsa-provenance", "managed-exclusive", "appraiser-quorum", "external-coordinator", "storage-fencing", "exclusive-path", "seccomp", "no-new-privileges", "cgroup", "network-none", "kernel-probe", "container-cleanup"]
   },
   {
     id: "bounded-self-improvement",

@@ -1,0 +1,131 @@
+{
+  "schema_version": "0.1",
+  "type": "ProductionSandboxPolicy",
+  "id": "PSP-PRODUCTION-SAMPLE",
+  "repository_binding": {
+    "repository_key": "github.com/wnsdy95/controls",
+    "identity_fingerprint": "4ed9906da9ab199b4e21ffbf35f58b5c0fd04f462b46e56fd15a0763600e6eb3"
+  },
+  "gateway": {
+    "gateway_id": "cannae-managed-gateway",
+    "instance_id": "production-sample-001",
+    "audience": "cannae-protected-tools",
+    "deployment_sha256": "00313b5e7454ce19e9266119e5290d0ce3ac72d13aed4073b755090381370964",
+    "configuration_sha256": "ee36d05e1b796dc36399f770c6c909cb81ead0901c87d25bb8de380432fe4cc8",
+    "assurance_level": "managed_exclusive",
+    "exclusive_path_verified": true
+  },
+  "admission_authority": {
+    "key_id": "149061bb6f211bad9bac8d25da7e7f7b4b5edac4ce623faebe6ce97e54f2c8a9",
+    "algorithm": "ed25519",
+    "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAcfSJcsp7+sDGO5tFpKMwQ7+apki0u5+k66tWJzWYlHI=\n-----END PUBLIC KEY-----\n"
+  },
+  "appraisers": [
+    {
+      "id": "APPRAISER-PRODUCTION-SAMPLE-A",
+      "key_id": "b3044ff6ee875d0e0d41a9a29bb789c42116f1f8fd268422f6b06b90df1a64e5",
+      "algorithm": "ed25519",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAHFgz2t3AyLrV3sOnacrfhDB0v1JhLl+/Y5i4811k8ZU=\n-----END PUBLIC KEY-----\n",
+      "workload_identity": {
+        "spiffe_id": "spiffe://appraisers.controls.test/sample-a",
+        "trust_domain": "appraisers.controls.test"
+      },
+      "independence": {
+        "provider_id": "cannae:provider:sample-a",
+        "operator_id": "cannae:operator:sample-a",
+        "control_plane_id": "cannae:control-plane:sample-a",
+        "account_id": "cannae:account:sample-a",
+        "project_id": "cannae:project:sample-a",
+        "runner_pool_id": "cannae:runner-pool:sample-a",
+        "infrastructure_id": "cannae:infrastructure:sample-a",
+        "region_id": "cannae:region:sample-a",
+        "zone_id": "cannae:zone:sample-a"
+      }
+    },
+    {
+      "id": "APPRAISER-PRODUCTION-SAMPLE-B",
+      "key_id": "b3044ff6ee875d0e0d41a9a29bb789c42116f1f8fd268422f6b06b90df1a64e5",
+      "algorithm": "ed25519",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA56DkypRWQENCylAdfCOrwfhaQ9FaW6bGniRutYJORhg=\n-----END PUBLIC KEY-----\n",
+      "workload_identity": {
+        "spiffe_id": "spiffe://appraisers.controls.test/sample-b",
+        "trust_domain": "appraisers.controls.test"
+      },
+      "independence": {
+        "provider_id": "cannae:provider:sample-b",
+        "operator_id": "cannae:operator:sample-b",
+        "control_plane_id": "cannae:control-plane:sample-b",
+        "account_id": "cannae:account:sample-b",
+        "project_id": "cannae:project:sample-b",
+        "runner_pool_id": "cannae:runner-pool:sample-b",
+        "infrastructure_id": "cannae:infrastructure:sample-b",
+        "region_id": "cannae:region:sample-b",
+        "zone_id": "cannae:zone:sample-b"
+      }
+    }
+  ],
+  "quorum": {
+    "minimum_valid_evidence": 2,
+    "minimum_independent_domains": 2,
+    "require_distinct_key_ids": true,
+    "correlation_rule": "shared_required_component",
+    "required_dimensions": [
+      "provider_id",
+      "operator_id",
+      "control_plane_id",
+      "account_id",
+      "project_id",
+      "runner_pool_id",
+      "infrastructure_id",
+      "region_id",
+      "zone_id"
+    ]
+  },
+  "evidence_profile": {
+    "adapter": "rats_attestation_result_v1",
+    "eat_profile": "https://controls.example/eat/production-sandbox/v1",
+    "nonce_bytes": 32,
+    "max_evidence_age_seconds": 300,
+    "require_reference_values": true,
+    "require_endorsements": true
+  },
+  "execution_scope": {
+    "allowed_operation_classes": [
+      "process_execute"
+    ],
+    "allowed_execution_modes": [
+      "oci_linux_sandbox_reference"
+    ],
+    "executor_policy_refs": [
+      {
+        "artifact_id": "OLSP-PRODUCTION-SAMPLE",
+        "relative_path": "repositories/controls/missions/MIS-PRODUCTION-SAMPLE/W1/oci-linux-sandbox-policies/OLSP-PRODUCTION-SAMPLE.json",
+        "sha256": "1a02cbc03e7a0f18e3c88a56cef830a955afc5d352a07c21a693721a990b3598"
+      }
+    ]
+  },
+  "required_controls": {
+    "host_attestation": true,
+    "runtime_attestation": true,
+    "image_provenance": true,
+    "credential_key_custody": true,
+    "rootless_or_userns": true,
+    "mandatory_access_control": true,
+    "application_minimal_seccomp": true,
+    "network_policy": "none_or_authenticated_allowlist",
+    "read_only_filesystems": true,
+    "linearizable_coordination": true,
+    "storage_fencing": false,
+    "exclusive_gateway_path": true,
+    "gateway_outage_denies_tools": true,
+    "sandbox_outage_denies_tools": true
+  },
+  "valid_from": "2026-07-26T01:00:00.000Z",
+  "expires_at": "2026-07-26T00:58:20.000Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": true,
+    "release_authorized": true
+  }
+}

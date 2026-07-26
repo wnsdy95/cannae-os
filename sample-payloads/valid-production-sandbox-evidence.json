@@ -1,0 +1,178 @@
+{
+  "schema_version": "0.1",
+  "type": "ProductionSandboxEvidence",
+  "id": "PSE-PRODUCTION-SAMPLE-A",
+  "policy_ref": {
+    "artifact_id": "PSP-PRODUCTION-SAMPLE",
+    "relative_path": "repositories/controls/missions/MIS-PRODUCTION-SAMPLE/W1/production-sandbox-policies/PSP-PRODUCTION-SAMPLE.json",
+    "sha256": "92e6be99672cf1cc9e5d80a6675b51f3f66585acc0166a65d93419132ad37e44"
+  },
+  "appraiser_id": "APPRAISER-PRODUCTION-SAMPLE-A",
+  "repository_binding": {
+    "repository_key": "github.com/wnsdy95/controls",
+    "identity_fingerprint": "4ed9906da9ab199b4e21ffbf35f58b5c0fd04f462b46e56fd15a0763600e6eb3"
+  },
+  "gateway": {
+    "gateway_id": "cannae-managed-gateway",
+    "instance_id": "production-sample-001",
+    "audience": "cannae-protected-tools",
+    "deployment_sha256": "00313b5e7454ce19e9266119e5290d0ce3ac72d13aed4073b755090381370964",
+    "configuration_sha256": "ee36d05e1b796dc36399f770c6c909cb81ead0901c87d25bb8de380432fe4cc8",
+    "assurance_level": "managed_exclusive",
+    "exclusive_path_verified": true
+  },
+  "nonce": "e3ee664db5b49117687e4c4ee7c22c5405e2b230693c214a6f330aefb6b1e58f",
+  "appraiser_identity": {
+    "spiffe_id": "spiffe://appraisers.controls.test/sample-a",
+    "trust_domain": "appraisers.controls.test",
+    "credential_sha256": "e190a87fbeb7287d0c0b93be81d9facdc73ce0d5d5a10056f9df802a8ac3d0cb",
+    "proof_verified": true,
+    "authenticated_at": "2026-07-26T00:00:01.000Z",
+    "expires_at": "2026-07-26T00:05:00.000Z",
+    "independence": {
+      "provider_id": "cannae:provider:sample-a",
+      "operator_id": "cannae:operator:sample-a",
+      "control_plane_id": "cannae:control-plane:sample-a",
+      "account_id": "cannae:account:sample-a",
+      "project_id": "cannae:project:sample-a",
+      "runner_pool_id": "cannae:runner-pool:sample-a",
+      "infrastructure_id": "cannae:infrastructure:sample-a",
+      "region_id": "cannae:region:sample-a",
+      "zone_id": "cannae:zone:sample-a"
+    }
+  },
+  "attestation_result": {
+    "architecture": "rats_rfc9334",
+    "adapter": "rats_attestation_result_v1",
+    "eat_profile": "https://controls.example/eat/production-sandbox/v1",
+    "freshness_nonce": "e3ee664db5b49117687e4c4ee7c22c5405e2b230693c214a6f330aefb6b1e58f",
+    "appraisal": "pass",
+    "evidence": {
+      "uri": "urn:cannae:rats:evidence:SAMPLE-A",
+      "sha256": "9872d5fdc47b1a803b1cf266d5822148ec84aea49a66fb84733f1297b4687de3"
+    },
+    "result": {
+      "uri": "urn:cannae:rats:result:SAMPLE-A",
+      "sha256": "8ae9e885c37554e4bf5ee102044a3ee49045ea05b08af05fbd65e81c8300dcfb"
+    },
+    "appraisal_policy": {
+      "uri": "urn:cannae:rats:appraisal-policy:v1",
+      "sha256": "a4627ca390ade1d84cd04b670c625722b22d90655d926afc849221ca88a58e74"
+    },
+    "reference_values": {
+      "uri": "urn:cannae:rats:reference-values:v1",
+      "sha256": "95596012ceeb6ccfa7584afec9edd8747fd1acae673ea97138280868e5c8bc6b"
+    },
+    "endorsements": {
+      "uri": "urn:cannae:rats:endorsements:v1",
+      "sha256": "942cc74660993466a77ae8057797e521bcd386805b81e8e09b53bd70b012b074"
+    }
+  },
+  "deployment": {
+    "deployment_id": "production-sandbox-deployment-001",
+    "gateway": {
+      "gateway_id": "cannae-managed-gateway",
+      "instance_id": "production-sample-001",
+      "audience": "cannae-protected-tools",
+      "deployment_sha256": "00313b5e7454ce19e9266119e5290d0ce3ac72d13aed4073b755090381370964",
+      "configuration_sha256": "ee36d05e1b796dc36399f770c6c909cb81ead0901c87d25bb8de380432fe4cc8",
+      "assurance_level": "managed_exclusive",
+      "exclusive_path_verified": true
+    },
+    "host": {
+      "platform": "linux-amd64-tpm2",
+      "host_id": "host-production-001",
+      "boot_id": "boot-production-001",
+      "attestation_result_sha256": "8ae9e885c37554e4bf5ee102044a3ee49045ea05b08af05fbd65e81c8300dcfb",
+      "boot_measurement_sha256": "0129d59110255c96d2d51fe9778bf7bc0e87b3d40afce7942ce755d7dbcbc034",
+      "host_configuration_sha256": "8ac9e2ff8dafb13a9aaa9815850ead796a6ea77c76f9ee468484c4a8ba19a815"
+    },
+    "runtime": {
+      "engine": "docker",
+      "daemon_sha256": "83df5566be9a66f0c155cf78656c45c721e3223313f7e8ee44741306efaf1e77",
+      "runtime_name": "runc",
+      "runtime_sha256": "af7607c2317ff57794e929aa7b2b7d11f461ecbd8f0aef158e47b49f10c607b8",
+      "daemon_configuration_sha256": "fe57c3050e923d9aec75e7831188bee430be53b5bbe4151675561f505b2a4daf",
+      "rootless": true,
+      "user_namespace_mode": "private"
+    },
+    "image": {
+      "reference": "registry.example/cannae/sandbox@sha256:c5ed537d3e98a498d3945e1b738414c71795167722900680da7efd0f47e3e60e",
+      "manifest_media_type": "application/vnd.oci.image.manifest.v1+json",
+      "manifest_sha256": "c5ed537d3e98a498d3945e1b738414c71795167722900680da7efd0f47e3e60e",
+      "statement_type": "https://in-toto.io/Statement/v1",
+      "provenance_predicate_type": "https://slsa.dev/provenance/v1",
+      "provenance_statement_sha256": "0a311a8cfd2ddb48ce5bea36ea4ed6d0f70af3850055a00bbe75d0fce81a430c",
+      "provenance_verified": true,
+      "signature_verified": true,
+      "transparency_verified": true,
+      "builder_id": "https://builder.example/cannae/production",
+      "source_repository": "https://github.com/wnsdy95/cannae-os",
+      "source_commit": "0123456789abcdef0123456789abcdef01234567"
+    },
+    "credentials": {
+      "key_custody": "spiffe_workload_api",
+      "workload_identity_verified": true,
+      "rotation_managed": true,
+      "revocation_managed": true,
+      "configuration_sha256": "a810228313b23544fc2792a5c20f7b5635d4afbf85b588ee414c01621fad0aa6"
+    },
+    "mandatory_access_control": {
+      "provider": "apparmor",
+      "enforcing": true,
+      "profile_sha256": "7b05e97425ac72e9d856f21fa76fbc7565e3c6ecdedb1c96de30fa13995e56be"
+    },
+    "seccomp": {
+      "mode": "application_minimal",
+      "default_action": "SCMP_ACT_ERRNO",
+      "enforced": true,
+      "profile_sha256": "382ce5e038c7888c86fa9156d296af428674710dc89aaf2303a6cbd3cd682f7a"
+    },
+    "filesystem": {
+      "rootfs_read_only": true,
+      "repository_read_only": true,
+      "host_mounts_prohibited": true,
+      "policy_sha256": "7832299f6d043935b126a42a7cae29d2df54ed8cfeaafb31268ecd95f51367cf"
+    },
+    "network": {
+      "mode": "none",
+      "enforced": true,
+      "dns_policy_verified": true,
+      "proxy_policy_verified": true,
+      "policy_sha256": "51ca343f4cd77272a62f79d907b06b96a91745503f8c445823cb58f1c88d2628"
+    },
+    "coordination": {
+      "backend": "external_linearizable",
+      "adapter_sha256": "5aea1968378a9b5e32c52a3cad14e3d1e882d9834fe46ed5be84c71f62b0bd42",
+      "configuration_sha256": "78fb2d3ada41a983a80da7663f22964fa97e3e8239c1a2f2e56e5aa9aecc21aa",
+      "storage_fencing_verified": true,
+      "lease_expiry_verified": true,
+      "fencing_test_sha256": "e805deb646be2e0758261e7eb9c1d8fd8aa02cf7fe55663385eb4bd92cb750bb"
+    },
+    "exclusive_path": {
+      "gateway_only": true,
+      "direct_tool_path_blocked": true,
+      "gateway_outage_tool_unreachable": true,
+      "sandbox_outage_tool_unreachable": true,
+      "adversarial_tests_passed": true,
+      "test_suite_sha256": "516d87a429edf500664f68d221ad1fc47d2913fb787eaebe2875980e74c04fe2",
+      "tested_at": "2026-07-26T00:00:01.000Z"
+    }
+  },
+  "deployment_identity_sha256": "6c35791c8fe8a050463bed2e075fd6a9ae8bbb12006ce7a66adb0035d3431395",
+  "execution_scope_sha256": "fdabd995530819019d10d13bdfe55fb063aea7b9a33ec4cd4eb9936b88c212fa",
+  "observed_at": "2026-07-26T00:00:02.000Z",
+  "expires_at": "2026-07-26T00:04:00.000Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  },
+  "signature": {
+    "key_id": "b3044ff6ee875d0e0d41a9a29bb789c42116f1f8fd268422f6b06b90df1a64e5",
+    "algorithm": "ed25519",
+    "signature_base64": "mw87f/hy0/SMU+ABp0ToqJzuKwrWot7+Bg3sgiGBgszazJCYXmx7idLQMC9WrSwULs/UujmfPLwmyUZ0+GNrAw=="
+  },
+  "evidence_sha256": "34e886f7ac493c2662c18065f1a7ba60c3d8713411b23ba42b3621a027d56bee"
+}

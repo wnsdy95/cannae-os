@@ -636,16 +636,18 @@ Completion criteria:
 - The local controller cannot claim managed exclusivity or production
   deployment verification.
 
-Phase 17B residuals after implemented 17B1, 17B2A, and 17B2B:
+Phase 17B residuals after implemented 17B1, 17B2A, 17B2B, and the 17B2C1
+production-admission contract:
 
 - independently managed credential delivery, key custody, rotation, and
   revocation for mTLS, DPoP, and workload-OIDC adapters;
 - provider-specific shell, filesystem, MCP, network, and delegation execution
   adapters beyond the OCI reference path;
-- independently managed host, runtime, image, key, configuration, and
-  deployment evidence;
-- exclusive routing and adversarial enforcement that remove direct side paths;
-- linearizable coordination and storage-side fencing;
+- provider adapters and live infrastructure that produce independently managed
+  host, runtime, image, key, configuration, and deployment evidence;
+- installation-level exclusive routing and adversarial enforcement that remove
+  direct side paths;
+- a real external linearizable coordinator and storage-side fencing backend;
 - multi-user permission, secret, incident, break-glass, and reconciliation
   operations;
 - adversarial deployment tests proving that tools are unreachable when the
@@ -698,8 +700,8 @@ Completion criteria:
 - The adapter cannot claim an exclusive deployment, production execution,
   production deployment verification, or release.
 
-After implemented Phase 17B2A and 17B2B, the production boundary still
-requires:
+After implemented Phase 17B2A, 17B2B, and the 17B2C1 contract, a real
+production deployment still requires:
 
 - provider-specific shell, filesystem, MCP, network, and delegation executors
   beyond the measured OCI reference path;
@@ -838,7 +840,9 @@ Completion criteria:
 - Every schema has valid and adversarial samples, runtime fixtures pass, route
   coverage is complete, and both skill surfaces use the improved procedure.
 
-Phase 17B2C and later remain:
+Phase 17B2C1 now supplies the provider-neutral policy, evidence, admission,
+quorum, scope, and gateway/coordinator contract for these controls. The
+following provider and operational implementations remain:
 
 - independently protected provider key, policy, configuration, deployment,
   Docker daemon, runtime, host, and image provenance evidence;
@@ -857,7 +861,83 @@ See `oci-linux-sandbox-provider.md` for contracts, operation sequence,
 commands, gateway appraisal, direct observations, failure behavior, and
 explicit residual limits.
 
-## 22. Release Gates
+## 22. Phase 17B2C1: Production Sandbox Admission
+
+Status: provider-neutral admission contracts, validator, repository adapter,
+gateway binding, external-coordinator interface, adversarial fixtures, and
+Codex/Claude operator surfaces are implemented. Production infrastructure and
+provider adapters are not bundled.
+
+Goal:
+
+- Permit `managed_exclusive` only when independent appraisers agree on one
+  exact production deployment and the protected gateway proves current scope,
+  identity, coordination, and fencing at every transition.
+
+Implemented controls:
+
+- `ProductionSandboxPolicy` pins one repository and managed gateway,
+  a separate Ed25519 admission authority, at least two Ed25519 appraisers,
+  exact SPIFFE workload identities, nine-dimensional failure-domain claims,
+  quorum thresholds, one RATS/EAT profile, exact OCI executor policies, all
+  required production controls, validity, USER authority, and release false;
+- `ProductionSandboxEvidence` signs one fresh appraisal over Evidence,
+  Attestation Result, Appraisal Policy, Reference Values, Endorsements,
+  appraiser identity, repository/gateway, complete deployment layers, and
+  exact execution scope;
+- host, Docker runtime, immutable OCI manifest, in-toto/SLSA provenance,
+  signature/transparency, credential custody, rootless/userns, MAC,
+  application-minimal seccomp, read-only filesystem, network policy,
+  external coordination, storage fencing, and exclusive-path claims are all
+  mandatory;
+- any shared provider, operator, control-plane, account, project, runner-pool,
+  infrastructure, region, or zone identity creates a correlation edge, and
+  transitive components form deterministic failure domains;
+- `ProductionSandboxAdmission` recomputes signatures, trust, freshness,
+  deployment consensus, scope, key diversity, and failure-domain quorum from
+  exact repository-manifest references and is signed by the separate admission
+  authority;
+- `ToolGatewayRequest` v0.3, decision/event v0.3, and receipt v0.5 preserve one
+  exact production admission and policy-fixed
+  `oci_linux_sandbox_reference` mode;
+- managed admission, begin, commit, and recovery reload and reverify the
+  production bundle and require an external coordinator handle whose adapter,
+  configuration, transaction, idempotency key, admission digest, revision,
+  fencing token, lease, and expiry all match;
+- a missing coordinator denies before dispatch authority is consumed, while
+  terminal settlement records production deployment verification only after
+  the managed checks pass;
+- production admission never authorizes release.
+
+Completion criteria:
+
+- A different policy, evidence record, appraiser key, repository, gateway,
+  deployment, OCI policy, execution mode, or repaired admission digest cannot
+  authorize production.
+- Correlated appraisers or appraisers that disagree on deployment cannot form
+  quorum.
+- Expired policy, identity, evidence, admission, coordinator, or request cannot
+  continue.
+- A missing, failed, or mismatched external coordinator denies managed
+  execution.
+- Reference and authenticated paths remain backward compatible and retain
+  production false.
+- Codex and Claude route and operate the same production procedure.
+- Release remains false.
+
+Provider boundary:
+
+- a provider must still appraise original TPM/TEE or cloud evidence, operate
+  the EAT/CMW profile and endorsement/reference-value services, secure keys,
+  verify registry/SLSA/Sigstore material, harden the host/runtime, operate the
+  coordinator and storage fencing, and prove direct side-path denial;
+- the deterministic fixture coordinator is not a production backend;
+- the standalone CLI intentionally cannot inject a production coordinator and
+  therefore cannot enable managed execution by itself.
+
+See `production-sandbox-admission.md`.
+
+## 23. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -885,8 +965,9 @@ explicit residual limits.
 | G23 | Every Phase 17B1 authenticated-reference gateway transition reloads one exact manifest-backed policy/challenge/evidence chain and validates its signatures, freshness, TLS 1.3 SPIFFE certificate path, exporter-bound principal projection, revocation, one-use state and immutable downstream references without claiming managed exclusivity, production, or release |
 | G24 | Every Phase 17B2A protected process commit reloads one exact manifest-backed policy/envelope/observation chain, verifies signatures and complete command/result/repository bindings, and proves one policy-pinned native execution with no runtime-inserted shell or automatic rerun while explicitly denying sandbox, network, production, exclusivity, and release claims |
 | G25 | Every Phase 17B2B OCI sandbox commit reloads one exact policy/envelope/probe/observation chain, verifies image, probe, seccomp, Docker configuration, directly observed kernel privilege/mount/cgroup/network state, terminal result, repository immutability, cleanup, and no-rerun recovery while denying independent host trust, production, exclusivity, and release claims |
+| G26 | Every Phase 17B2C1 managed transition reloads one exact production policy/evidence/admission chain, recomputes trusted independent deployment consensus and OCI scope, and holds a matching live external revision/fencing lease; production may be true only for that deployment and release remains false |
 
-## 23. Related Documents
+## 24. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -898,6 +979,7 @@ explicit residual limits.
 - `verifier-execution-integrity.md`
 - `transparency-operations.md`
 - `github-actions-native-verifier-adapter.md`
+- `production-sandbox-admission.md`
 - `gitlab-ci-native-verifier-adapter.md`
 - `skill-operational-mission-lifecycle.md`
 - `enforced-dispatch-and-resume.md`

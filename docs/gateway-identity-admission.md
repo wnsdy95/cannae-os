@@ -30,7 +30,11 @@ production_deployment_verified: false
 release_authorized: false
 ```
 
-`managed_exclusive` remains denied.
+Identity evidence alone cannot authorize `managed_exclusive`. Phase 17B2C1
+permits a `GatewayIdentityPolicy` v0.2 managed projection only when the same
+gateway and repository are covered by a valid `ProductionSandboxAdmission`
+and the gateway obtains a matching external coordinator handle. Without those
+separate proofs, managed execution remains denied.
 
 ## 1. Standards Basis
 
@@ -66,10 +70,10 @@ name constraints, or every RFC 5280 extension.
 
 | Contract | Role | Binding |
 | --- | --- | --- |
-| `GatewayIdentityPolicy` | USER-controlled trust envelope | exact gateway and repository, adapter identifiers/key, TLS profile, roots, principals, revocations, TTLs |
+| `GatewayIdentityPolicy` v0.1/v0.2 | USER-controlled trust envelope | exact authenticated or managed gateway and repository, adapter identifiers/key, TLS profile, roots, principals, revocations, TTLs |
 | `GatewayIdentityChallenge` | one transaction liveness challenge | policy, mission, wave, agent, provider, session, gateway digest, repository, random nonce, issue/expiry, adapter signature |
 | `GatewayPrincipalEvidence` | TLS observation | policy/challenge, transaction/session, principal and gateway digests, SPIFFE leaf/chain/root, server certificate, exporter, policy-pinned adapter identifiers, signature, expiry |
-| `ToolGatewayRequest` v0.2 | execution request | exact references to all three identity artifacts |
+| `ToolGatewayRequest` v0.2/v0.3 | execution request | exact references to all three identity artifacts; v0.3 also binds production admission and OCI mode |
 
 `ToolGatewayDecision`, `ToolGatewayTransactionEvent`, and
 `ToolExecutionReceipt` v0.4 repeat the same three identity references. The
@@ -80,6 +84,10 @@ controller rejects a transaction history that changes any identity reference.
 For `contract_reference`, all three references are the exact all-`none`
 sentinel. For `authenticated_reference`, all three must be concrete
 repository-manifest references. Mixed references are invalid.
+
+For `managed_exclusive`, the identity references remain concrete and the
+request must also contain one concrete production-sandbox admission reference.
+The identity policy does not inherit production or release authority.
 
 ## 3. Trust Boundaries
 
@@ -274,14 +282,15 @@ challenge state, and cross-transaction replay.
 | Server certificate differs from policy | deny |
 | TLS exporter differs from principal proof projection | deny |
 | Agent, provider, session, repository, audience, or gateway differs | deny |
-| `managed_exclusive` claimed | deny |
+| `managed_exclusive` claimed without exact production admission and coordinator proof | deny |
 
 ## 6. Residual Limits And Next Phase
 
-Phase 17B1 is not a production execution gateway. Phase 17B2A adds a bounded
-local process reference. Phase 17B2B adds a measured OCI/Linux reference
-sandbox, but does not independently attest the Docker daemon, host, image
-provenance, signing-key custody, or exclusive path. Remaining Phase 17B work:
+Phase 17B1 identity evidence is not a production execution gateway. Phase
+17B2A adds a bounded local process reference, and Phase 17B2B adds a measured
+OCI/Linux reference sandbox. Phase 17B2C1 adds the independent appraisal,
+quorum, scope, and external-coordination contract needed to compose those
+layers into managed admission. Real provider operation still requires:
 
 1. Provider-specific shell, filesystem, MCP, network, and delegation executors.
 2. Independently protected sandbox hosts, runtimes, images, egress controls,
@@ -292,7 +301,12 @@ provenance, signing-key custody, or exclusive path. Remaining Phase 17B work:
    incident, break-glass, reconciliation, and multi-user administration.
 6. Independent gateway code/configuration/deployment attestation.
 
-Only those controls can justify a later `managed_exclusive` assurance level.
+Only evidence that those controls are operating can justify
+`managed_exclusive`; changing the identity-policy version or assurance string
+cannot.
+
+See `production-sandbox-admission.md` for the production evidence and gateway
+composition.
 
 ## 7. Validation
 
@@ -302,6 +316,8 @@ node run-gateway-identity-adapter-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-protected-process-executor-fixtures.js
 node run-oci-linux-sandbox-provider-fixtures.js
+node run-production-sandbox-admission-fixtures.js
+node run-production-sandbox-gateway-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 
