@@ -4561,7 +4561,12 @@ repository administrator or release authority?
    release-event values are passed to the shell through quoted environment
    variables. Every policy and observation field keeps repository-policy
    change and release false.
-9. Fail visibly when credential setup is incomplete.
+9. Reproduce the validator dependency closure.
+   A clean Actions runner installs the exact package lock with
+   `npm ci --ignore-scripts` before the monitor imports schema and semantic
+   validators. A preinstalled local `node_modules` directory is not deployment
+   evidence.
+10. Fail visibly when credential setup is incomplete.
    A missing Administration-read monitor token produces a retained blocked
    observation and failed workflow. Cannae does not copy the owner's broad
    local OAuth credential into repository secrets.

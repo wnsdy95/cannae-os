@@ -476,7 +476,11 @@ Requirements:
 - Bash-compatible shell for the installer and validation loops.
 - Python 3 only for optional Codex skill validation.
 
-No npm install is required for the current prototype suite.
+Install the exact lockfile dependencies in a clean checkout:
+
+```bash
+npm ci --ignore-scripts
+```
 
 Run the main validation suite:
 
