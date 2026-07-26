@@ -954,6 +954,9 @@ Implemented controls:
 
 - `GitHubReleaseAuthorization` is the only pre-action artifact allowed to
   carry `release_authorized: true`;
+- newly issued authorization version `0.2` requires the repository
+  immutable-releases policy to be enabled and records the observed policy
+  state;
 - it binds owner/repository, public visibility, default branch, write-level
   viewer permission, stable tag, release name, full commit SHA, previous latest
   release, tracked release-notes path/digest/length, successful exact
@@ -966,8 +969,8 @@ Implemented controls:
 - `gh release create` receives the exact full commit SHA, title, notes file,
   no-commit failure, and latest-release selection;
 - terminal verification reloads the GitHub release, compares its body digest,
-  resolves the remote tag commit, checks mode/latest status, and emits
-  `GitHubReleaseReceipt`;
+  resolves the remote tag commit, checks mode/latest/immutable status, and
+  emits `GitHubReleaseReceipt`;
 - retry against one byte-equivalent existing release is idempotent, while
   partial and mismatched states deny;
 - mission, campaign, verifier, dispatch, gateway, executor, sandbox,
@@ -991,14 +994,73 @@ Remaining hardening:
 - cryptographic USER signatures and protected signing devices;
 - signed or annotated release tags and provenance binding;
 - GitHub environment/repository-rule evidence and credential isolation;
-- immutable-release policy, mutation monitoring, transparency logging, and
-  independent witnessing;
+- mutation monitoring, transparency logging, and independent witnessing;
 - support for private repositories, prereleases, first releases, alternate
   workflow/check names, and provider-neutral release adapters.
 
 See `github-release-authorization.md`.
 
-## 24. Release Gates
+## 24. Phase 19A: Repository Release Immutability
+
+Status: official GitHub policy semantics, exact USER authorization and terminal
+receipt contracts, a `gh`/Git system adapter, prospective future-release
+enforcement, adversarial fixtures, and equivalent Codex/Claude wrappers are
+implemented.
+
+Goal:
+
+- Activate the repository immutable-releases policy through one exact,
+  short-lived USER policy decision and require immutable platform state for
+  every future release authorization and receipt.
+
+Implemented controls:
+
+- `GitHubReleaseImmutabilityAuthorization` binds the exact public repository,
+  equal origin, ADMIN permission, clean origin-synchronized default branch,
+  successful exact `Validate` push run, policy endpoint/API/method, disabled
+  prior state, enabled desired state, latest-release snapshot, USER grant,
+  expiry, and canonical digest;
+- `GitHubReleaseImmutabilityReceipt` records the consumed authorization,
+  GET-before, optional PUT, actual HTTP 204, GET-after, verified enabled state,
+  and unchanged historical-release immutability;
+- activation performs one PUT, while an exact retry verifies the
+  already-enabled state without another request;
+- missing status evidence, state drift, failed post-action verification,
+  retroactive historical-release mutation, and authority expansion deny;
+- both policy artifacts retain `release_authorized: false`;
+- future `GitHubReleaseAuthorization` and `GitHubReleaseReceipt` version `0.2`
+  require enabled policy at authorization/publication and observed immutable
+  release state at terminal verification;
+- historical version `0.1` release evidence remains readable but is not
+  retroactively upgraded; and
+- both skills route, operate, and validate the same policy procedure.
+
+Completion criteria:
+
+- A USER policy grant for repository A, commit A, run A, and endpoint A cannot
+  authorize any B value.
+- Only an authenticated repository ADMIN on a clean synchronized main commit
+  with successful exact main CI may issue the activation authorization.
+- Execution fails unless GitHub returns an observable HTTP 204 or the exact
+  policy is already enabled for an idempotent retry.
+- A terminal receipt requires a verified enabled GET response and records that
+  the pre-existing `v0.2.0` release remains non-immutable.
+- No policy artifact grants a release, and no future release can receive a
+  valid version `0.2` receipt unless GitHub reports it immutable.
+
+Remaining hardening:
+
+- cryptographic USER signatures and protected signing devices;
+- organization-owner enforcement and policy drift monitoring;
+- independent release-attestation verification and transparency witnessing;
+- signed tags and credential isolation;
+- provider-neutral repository-policy adapters; and
+- an explicit, separately authorized disable/rollback contract if ever
+  required.
+
+See `github-release-immutability.md`.
+
+## 25. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -1028,8 +1090,9 @@ See `github-release-authorization.md`.
 | G25 | Every Phase 17B2B OCI sandbox commit reloads one exact policy/envelope/probe/observation chain, verifies image, probe, seccomp, Docker configuration, directly observed kernel privilege/mount/cgroup/network state, terminal result, repository immutability, cleanup, and no-rerun recovery while denying independent host trust, production, exclusivity, and release claims |
 | G26 | Every Phase 17B2C1 managed transition reloads one exact production policy/evidence/admission chain, recomputes trusted independent deployment consensus and OCI scope, and holds a matching live external revision/fencing lease; production may be true only for that deployment and release remains false |
 | G27 | A GitHub release may carry release true only through one explicit USER-granted, unexpired authorization bound to the exact public repository, advancing stable tag, full main commit, successful exact Validate push run, tracked notes digest, clean origin state, absent target, and terminal verified tag/release receipt |
+| G28 | Repository release immutability may be enabled only through one explicit USER-granted, unexpired ADMIN authorization bound to the exact public repository, origin-synchronized main commit, successful exact Validate push run, policy endpoint and prior state; future release authorization and receipt require enabled policy and observed immutable release state while policy artifacts retain release false |
 
-## 25. Related Documents
+## 26. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -1050,3 +1113,4 @@ See `github-release-authorization.md`.
 - `protected-process-execution.md`
 - `oci-linux-sandbox-provider.md`
 - `github-release-authorization.md`
+- `github-release-immutability.md`

@@ -6,6 +6,8 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const { canonicalJsonBytes } = require("./verifier-identity-evidence");
 
+const GITHUB_API_VERSION = "2026-03-10";
+
 class ReleaseAuthorizationError extends Error {
   constructor(code, message, details = {}) {
     super(message);
@@ -82,6 +84,7 @@ function validateAuthorizationSemantics(document, options = {}) {
   const review = document && document.release_review || {};
   const grant = document && document.user_grant || {};
   const authority = document && document.authority || {};
+  const immutability = document && document.release_immutability || {};
 
   if (document && document.authorization_sha256 !== authorizationDigest(document)) {
     issues.push(semanticIssue(
@@ -132,6 +135,20 @@ function validateAuthorizationSemantics(document, options = {}) {
       "$.repository.origin_full_name",
       "The normalized Git origin repository must equal the authorized GitHub repository."
     ));
+  }
+  if (document && document.schema_version === "0.2") {
+    const checkedAt = parseTimestamp(immutability.checked_at);
+    const issuedAt = parseTimestamp(document.issued_at);
+    if (immutability.api_version !== GITHUB_API_VERSION ||
+        immutability.enabled !== true ||
+        typeof immutability.enforced_by_owner !== "boolean" ||
+        checkedAt === null || issuedAt === null || checkedAt > issuedAt) {
+      issues.push(semanticIssue(
+        "GITHUB_RELEASE_IMMUTABILITY_NOT_VERIFIED",
+        "$.release_immutability",
+        "Release authorization v0.2 requires current repository release immutability evidence."
+      ));
+    }
   }
   if (target.draft !== false || target.prerelease !== false ||
       target.latest !== true || target.fail_on_no_commits !== true) {
@@ -274,6 +291,14 @@ function validateReceiptSemantics(document) {
       "GITHUB_RELEASE_RECEIPT_TARGET_MISMATCH",
       "$.release",
       "The observed GitHub release and resolved tag must match the exact authorized target."
+    ));
+  }
+  if (document && document.schema_version === "0.2" &&
+      release.immutable !== true) {
+    issues.push(semanticIssue(
+      "GITHUB_RELEASE_RECEIPT_NOT_IMMUTABLE",
+      "$.release.immutable",
+      "Release receipt v0.2 requires the observed GitHub release to be immutable."
     ));
   }
   if (!isSafeRelativePath(document && document.authorization_ref &&
@@ -500,6 +525,39 @@ class SystemGitHubReleaseAdapter {
     ), "GITHUB_RUN_JSON_INVALID");
   }
 
+  inspectReleaseImmutability(repository) {
+    const result = commandResult(
+      "gh",
+      [
+        "api",
+        "--method",
+        "GET",
+        "-H",
+        "Accept: application/vnd.github+json",
+        "-H",
+        `X-GitHub-Api-Version: ${GITHUB_API_VERSION}`,
+        `repos/${repository}/immutable-releases`
+      ],
+      { cwd: this.repositoryRoot }
+    );
+    if (result.status !== 0) {
+      const detail = [result.stdout, result.stderr].filter(Boolean).join("\n").trim();
+      throw new ReleaseAuthorizationError(
+        "GITHUB_RELEASE_IMMUTABILITY_INSPECTION_FAILED",
+        `Could not inspect immutable-release policy.${detail ? ` ${detail}` : ""}`
+      );
+    }
+    const policy = parseJsonOutput(
+      result.stdout,
+      "GITHUB_RELEASE_IMMUTABILITY_JSON_INVALID"
+    );
+    return {
+      api_version: GITHUB_API_VERSION,
+      enabled: policy.enabled === true,
+      enforced_by_owner: policy.enforced_by_owner === true
+    };
+  }
+
   resolveRemoteTag(tagName) {
     const output = requireCommand(
       "git",
@@ -586,7 +644,7 @@ class SystemGitHubReleaseAdapter {
     return parseJsonOutput(result.stdout, "GITHUB_RELEASE_JSON_INVALID");
   }
 
-  isLatestRelease(repository, tagName) {
+  inspectReleaseListing(repository, tagName) {
     const releases = parseJsonOutput(requireCommand(
       "gh",
       [
@@ -597,12 +655,20 @@ class SystemGitHubReleaseAdapter {
         "--limit",
         "100",
         "--json",
-        "tagName,isLatest"
+        "tagName,isLatest,isImmutable"
       ],
       { cwd: this.repositoryRoot, code: "GITHUB_RELEASE_LIST_FAILED" }
     ), "GITHUB_RELEASE_LIST_JSON_INVALID");
     const release = releases.find(item => item.tagName === tagName);
-    return Boolean(release && release.isLatest === true);
+    return release ? {
+      latest: release.isLatest === true,
+      immutable: release.isImmutable === true
+    } : null;
+  }
+
+  isLatestRelease(repository, tagName) {
+    const listing = this.inspectReleaseListing(repository, tagName);
+    return Boolean(listing && listing.latest);
   }
 
   createRelease(repository, target, notesAbsolutePath) {
@@ -804,7 +870,6 @@ function authorizeRelease(options, adapter = null) {
     options.runId
   );
 
-  const issuedAt = options.now || runtime.now();
   const validityMinutes = Number(options.expiresInMinutes || 30);
   if (!Number.isInteger(validityMinutes) || validityMinutes < 1 || validityMinutes > 60) {
     throw new ReleaseAuthorizationError(
@@ -812,6 +877,14 @@ function authorizeRelease(options, adapter = null) {
       "Release authorization validity must be between 1 and 60 minutes."
     );
   }
+  const releaseImmutability = runtime.inspectReleaseImmutability(repository.full_name);
+  if (releaseImmutability.enabled !== true) {
+    throw new ReleaseAuthorizationError(
+      "RELEASE_IMMUTABILITY_NOT_ENABLED",
+      "Future release authorization requires repository release immutability."
+    );
+  }
+  const issuedAt = options.now || runtime.now();
   const expiresAt = addMinutes(issuedAt, validityMinutes);
   const grant = {
     grant_id: options.grantId,
@@ -828,7 +901,7 @@ function authorizeRelease(options, adapter = null) {
   grant.directive_sha256 = userGrantDigest(grant);
 
   const document = {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "GitHubReleaseAuthorization",
     id: `GRA-${options.tagName.replace(/[^A-Za-z0-9]/g, "_")}-${repository.head_sha.slice(0, 12)}`,
     issued_at: issuedAt,
@@ -841,6 +914,12 @@ function authorizeRelease(options, adapter = null) {
       default_branch: repository.default_branch,
       visibility: repository.visibility,
       viewer_permission: repository.viewer_permission
+    },
+    release_immutability: {
+      api_version: releaseImmutability.api_version,
+      enabled: true,
+      enforced_by_owner: releaseImmutability.enforced_by_owner,
+      checked_at: issuedAt
     },
     target: {
       tag_name: options.tagName,
@@ -907,6 +986,20 @@ function assertAuthorizationAgainstCurrentState(document, repositoryRoot, runtim
       "The current repository no longer matches the exact authorized commit."
     );
   }
+  if (document.schema_version === "0.2") {
+    const releaseImmutability = runtime.inspectReleaseImmutability(
+      document.repository.full_name
+    );
+    if (releaseImmutability.api_version !== document.release_immutability.api_version ||
+        releaseImmutability.enabled !== true ||
+        releaseImmutability.enforced_by_owner !==
+          document.release_immutability.enforced_by_owner) {
+      throw new ReleaseAuthorizationError(
+        "AUTHORIZED_RELEASE_IMMUTABILITY_DRIFT",
+        "Repository release-immutability state changed after authorization."
+      );
+    }
+  }
   const notes = inspectReleaseNotes(repositoryRoot, document.release_notes.relative_path);
   if (!repository.notes_tracked(document.release_notes.relative_path) ||
       notes.sha256 !== document.release_notes.sha256 ||
@@ -962,7 +1055,7 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
     );
   }
   const tagCommitSha = runtime.resolveRemoteTag(document.target.tag_name);
-  const latest = runtime.isLatestRelease(
+  const listing = runtime.inspectReleaseListing(
     document.repository.full_name,
     document.target.tag_name
   );
@@ -972,7 +1065,9 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
       observed.targetCommitish !== document.target.commit_sha ||
       tagCommitSha !== document.target.commit_sha ||
       observed.isDraft !== false || observed.isPrerelease !== false ||
-      latest !== true || bodyDigest !== notes.sha256) {
+      !listing || listing.latest !== true ||
+      (document.schema_version === "0.2" && listing.immutable !== true) ||
+      bodyDigest !== notes.sha256) {
     throw new ReleaseAuthorizationError(
       "PUBLISHED_RELEASE_MISMATCH",
       "Observed GitHub release, resolved tag, mode, or notes do not match the exact authorization.",
@@ -980,12 +1075,13 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
         observed_tag: observed.tagName,
         observed_target: observed.targetCommitish,
         resolved_tag_commit_sha: tagCommitSha,
-        latest,
+        latest: listing && listing.latest,
+        immutable: listing && listing.immutable,
         observed_notes_sha256: bodyDigest
       }
     );
   }
-  return {
+  const release = {
     database_id: Number(observed.databaseId),
     node_id: observed.id,
     url: observed.url,
@@ -998,6 +1094,8 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
     prerelease: false,
     latest: true
   };
+  if (document.schema_version === "0.2") release.immutable = true;
+  return release;
 }
 
 function publishAuthorizedRelease(options, adapter = null) {
@@ -1041,7 +1139,7 @@ function publishAuthorizedRelease(options, adapter = null) {
   }
   const release = verifyPublishedRelease(document, observed, runtime, notes);
   const receipt = {
-    schema_version: "0.1",
+    schema_version: document.schema_version,
     type: "GitHubReleaseReceipt",
     id: `GRR-${document.target.tag_name.replace(/[^A-Za-z0-9]/g, "_")}-${document.target.commit_sha.slice(0, 12)}`,
     authorization_ref: {
@@ -1184,6 +1282,7 @@ function main(argv = process.argv.slice(2)) {
 }
 
 module.exports = {
+  GITHUB_API_VERSION,
   ReleaseAuthorizationError,
   SystemGitHubReleaseAdapter,
   authorizationDigest,

@@ -41,12 +41,14 @@ const RULES = [
       "docs/risk-acceptance-authority.md",
       "docs/context-releasability-policy.md",
       "docs/github-release-authorization.md",
+      "docs/github-release-immutability.md",
       "docs/policy-engine-rules.md"
     ],
     commands: [
       "node run-authority-integration-fixtures.js",
       "node run-release-integration-fixtures.js",
-      "node run-github-release-publisher-fixtures.js"
+      "node run-github-release-publisher-fixtures.js",
+      "node run-github-release-immutability-fixtures.js"
     ]
   },
   {
@@ -395,7 +397,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "operate-github-release", "decision-packet"]
+    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "release-immutability", "operate-github-release", "operate-github-release-immutability", "decision-packet"]
   },
   {
     id: "multi-agent-organization",

@@ -131,6 +131,33 @@ Use this path when a tool call must have a durable gateway transaction in additi
 
 Phase 17B1 proves authenticated-reference identity. Phase 17B2A executes one policy-pinned local process without isolation. Phase 17B2B executes one static target in a measured OCI/Linux reference sandbox. Phase 17B2C1 permits managed production only from independently appraised host/runtime/image/key/MAC/seccomp/filesystem/network/coordination/exclusive-path evidence, computed failure-domain quorum, exact OCI scope, and live external fencing. This repository validates those provider claims but does not operate the TPM/TEE, KMS/HSM, registry, hardened host, coordinator, storage fencing, or installation-level side-path controls. Read `docs/gateway-identity-admission.md`, `docs/protected-tool-gateway-contract.md`, `docs/protected-process-execution.md`, `docs/oci-linux-sandbox-provider.md`, and `docs/production-sandbox-admission.md` before integrating an adapter. Release remains separately USER-controlled.
 
+### Activating Repository Release Immutability
+
+Use this persistent repository-policy path only after the human USER explicitly
+directs activation for one exact repository:
+
+1. Merge the intended policy runtime, use a clean origin-synchronized default
+   branch, and require the successful exact default-branch `Validate` push run.
+2. Confirm the authenticated `gh` principal has repository `ADMIN`, the
+   immutable-releases endpoint reports disabled, and the current latest release
+   snapshot is understood. Activation is prospective and does not make an
+   existing release immutable.
+3. Run `scripts/operate_github_release_immutability.js authorize` with the
+   exact owner/repository, successful main run ID, USER grant ID, repository
+   contained output path, and a validity of at most 60 minutes. Require policy
+   true and release false.
+4. Run `enable` before expiry. Require an observed HTTP 204 for a performed
+   PUT, a terminal GET with `enabled: true`, an unchanged historical-release
+   immutable state, and a schema-valid receipt.
+5. An exact retry may verify the already-enabled state without another PUT.
+   Any other repository, CI, latest-release, policy, expiry, or authority drift
+   is a hard stop.
+6. Do not infer rollback authority. The runtime intentionally has no disable
+   command. A future rollback requires a separate exact USER decision and
+   contract.
+
+Read `docs/github-release-immutability.md` before operating this path.
+
 ### Authorizing An Exact GitHub Release
 
 Use this terminal path only after the human USER explicitly directs one exact
@@ -140,9 +167,10 @@ GitHub release:
    it to `origin`, and wait for the exact default-branch `Validate` push run to
    complete successfully. A pull-request check, feature-branch run, or stale
    main run is insufficient.
-2. Finalize and track the repository-relative release-notes file. Confirm the
-   stable target tag and release are absent and that the tag advances the
-   current latest release.
+2. Require the repository immutable-releases policy to be enabled. Finalize
+   and track the repository-relative release-notes file. Confirm the stable
+   target tag and release are absent and that the tag advances the current
+   latest release.
 3. Run `scripts/operate_github_release.js authorize` with the exact
    owner/repository, tag, release name, notes path, successful main run ID,
    USER grant ID, output path, and a validity of at most 60 minutes. Require
@@ -151,7 +179,8 @@ GitHub release:
 4. Run `scripts/operate_github_release.js publish` before expiry. The publisher
    must reappraise repository/CI/notes state, create the release from the full
    commit SHA with no-commit failure enabled, resolve the remote tag, compare
-   the GitHub release body, and persist a verified consumed receipt.
+   the GitHub release body, observe `isImmutable: true`, and persist a verified
+   consumed receipt.
 5. A matching existing release is an idempotent verification result. A partial
    tag/release state or any mismatch is a hard stop. Never repair, delete,
    retarget, or overwrite a release implicitly.
@@ -279,6 +308,7 @@ node run-protected-tool-gateway-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-process-executor-fixtures.js
 node run-oci-linux-sandbox-provider-fixtures.js
+node run-github-release-immutability-fixtures.js
 node run-github-release-publisher-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js

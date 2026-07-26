@@ -18,6 +18,7 @@ USER final decision
 + exact stable tag and commit
 + exact release-note digest
 + successful Validate push run for that commit
++ enabled repository release-immutability policy
 + absent target tag and release
 + bounded validity
 = one terminal release authorization
@@ -43,6 +44,9 @@ The authorization binds:
   length;
 - one completed successful `Validate` push run for the exact default branch
   and target commit;
+- schema version `0.2` evidence that the repository immutable-releases policy
+  is enabled, including the API version, owner-enforcement state, and check
+  time;
 - clean local HEAD, matching `origin/<default-branch>`, and absence of the
   target tag and release at issuance;
 - an exact USER decision over the already-public commit and release notes;
@@ -61,7 +65,7 @@ The terminal receipt binds:
 - the authorized repository, tag, release name, and commit;
 - GitHub release database/node IDs and API/browser URLs;
 - the observed release target, resolved remote tag commit, publish time, and
-  release mode;
+  release mode, including `immutable: true` for schema version `0.2`;
 - the exact release-notes digest; and
 - `published: true`, `verified: true`, and `authorization_consumed: true`.
 
@@ -76,6 +80,8 @@ Prerequisites:
 - the release implementation is merged;
 - local `main` is clean and equals `origin/main`;
 - the exact main `Validate` push run completed successfully;
+- the repository immutable-releases policy is enabled through the separately
+  USER-authorized procedure in `github-release-immutability.md`;
 - the tracked release-notes file is final;
 - the target tag and GitHub release do not exist; and
 - the human user explicitly authorizes this exact release.
@@ -109,7 +115,9 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
 The publisher invokes `gh release create` with the full authorized commit SHA,
 title, tracked notes file, `--fail-on-no-commits`, and `--latest`. It then
 reloads the release, resolves the remote tag, compares the release body digest,
-and writes a receipt only when every field matches.
+requires the release listing to report `isImmutable: true`, and writes a
+receipt only when every field matches. The publisher checks the repository
+immutability policy both at authorization and immediately before publication.
 
 The Claude Code skill exposes the same wrapper and semantics at
 `.claude/skills/controls-doctrine-operator/scripts/operate_github_release.js`.
@@ -128,10 +136,11 @@ The Claude Code skill exposes the same wrapper and semantics at
 | Version does not advance the latest stable release | deny |
 | Notes are untracked, outside the repository, empty, or changed | deny |
 | CI is not a successful `Validate` push for the exact commit | deny |
+| Immutable-releases policy is disabled or changes after authorization | deny |
 | Authorization expired | deny |
 | Tag exists without release, or release exists without tag | deny |
 | Existing release body, name, mode, target, or tag commit differs | deny |
-| Exact release already exists and still matches | verify idempotently |
+| Exact immutable release already exists and still matches | verify idempotently |
 
 ## Security Boundary And Limits
 
@@ -147,9 +156,11 @@ The Claude Code skill exposes the same wrapper and semantics at
   prior release, one `Validate` workflow name, and one required-check label.
 - Successful CI establishes the repository's configured checks, not universal
   correctness, absence of secrets, or production fitness.
-- GitHub release publication can be followed by deletion or mutation through
-  other privileged paths. Continuous release immutability, signed provenance,
-  transparency witnessing, and out-of-band monitoring remain future work.
+- Repository release immutability applies only to releases created after
+  activation. Historical `v0.2.0` remains non-immutable.
+- The policy and GitHub-generated release attestation strengthen future
+  release integrity but do not replace signed tags, credential isolation,
+  transparency witnessing, or out-of-band monitoring.
 
 ## Validation
 
@@ -163,6 +174,7 @@ node validator-cli-prototype/validate.js \
   github-release-receipt
 
 node run-github-release-publisher-fixtures.js
+node run-github-release-immutability-fixtures.js
 ```
 
 The fixture suite uses an injected adapter and never contacts GitHub or creates
@@ -177,3 +189,5 @@ a release.
   exposes the observed release fields used for terminal verification.
 - [GitHub Releases REST API](https://docs.github.com/en/rest/releases/releases#create-a-release)
   defines the release resource and target-commit behavior.
+- [GitHub immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases)
+  defines prospective release immutability and release attestations.

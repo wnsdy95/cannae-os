@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseImmutabilityAuthorization",
+  "id": "GRIA-enable-f7d3e2751d71",
+  "issued_at": "2026-07-27T00:00:00.000Z",
+  "expires_at": "2026-07-27T00:30:00.000Z",
+  "single_use": true,
+  "consumed": false,
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "origin_full_name": "wnsdy95/cannae-os",
+    "default_branch": "main",
+    "visibility": "PUBLIC",
+    "viewer_permission": "ADMIN"
+  },
+  "policy": {
+    "api_version": "2026-03-10",
+    "endpoint": "/repos/wnsdy95/cannae-os/immutable-releases",
+    "method": "PUT",
+    "operation": "enable_repository_release_immutability",
+    "previous_state": {
+      "api_version": "2026-03-10",
+      "enabled": false,
+      "enforced_by_owner": false
+    },
+    "desired_state": {
+      "enabled": true
+    },
+    "future_releases_only": true,
+    "rollback_operation": "disable_for_future_releases"
+  },
+  "repository_state": {
+    "branch": "main",
+    "head_sha": "f7d3e2751d715f1c7bb67f818b1135a10e90d888",
+    "origin_default_branch_sha": "f7d3e2751d715f1c7bb67f818b1135a10e90d888",
+    "clean": true
+  },
+  "main_validation": {
+    "workflow_name": "Validate",
+    "required_check": "Doctrine and runtime checks",
+    "required_check_job_id": 89809016677,
+    "required_check_job_url": "https://github.com/wnsdy95/cannae-os/actions/runs/30207884692/job/89809016677",
+    "required_check_status": "completed",
+    "required_check_conclusion": "success",
+    "run_id": 30207884692,
+    "run_url": "https://github.com/wnsdy95/cannae-os/actions/runs/30207884692",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_branch": "main",
+    "head_sha": "f7d3e2751d715f1c7bb67f818b1135a10e90d888"
+  },
+  "latest_release_snapshot": {
+    "tag_name": "v0.2.0",
+    "published_at": "2026-07-26T15:25:25Z",
+    "immutable": false
+  },
+  "user_grant": {
+    "grant_id": "UGR-enable_release_immutability",
+    "authority": "USER",
+    "scope": "enable_repository_release_immutability",
+    "repository": "wnsdy95/cannae-os",
+    "policy_endpoint": "/repos/wnsdy95/cannae-os/immutable-releases",
+    "target_commit_sha": "f7d3e2751d715f1c7bb67f818b1135a10e90d888",
+    "desired_enabled": true,
+    "approved": true,
+    "granted_at": "2026-07-27T00:00:00.000Z",
+    "expires_at": "2026-07-27T00:30:00.000Z",
+    "directive_sha256": "78bc5b390425ea1027c449e10a667870fd3bd359a52674f10d945b4f543e5e6e"
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "ai_approval_accepted": true,
+    "repository_policy_change_authorized": true,
+    "release_authorized": false
+  },
+  "repository_policy_change_authorized": true,
+  "release_authorized": false,
+  "authorization_sha256": "7c38db02518da6ae77a1ba7926c62c2b55e8c3af6df74605c05c5d44c5882266"
+}

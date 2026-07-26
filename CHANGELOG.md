@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added Phase 19A repository release immutability: exact USER-authorized ADMIN policy activation, clean-main and successful-CI binding, GET/PUT/GET verification, prospective-only historical-release handling, idempotent retry, future release authorization/receipt v0.2 enforcement, adversarial fixtures, and equivalent Codex/Claude skill operation.
+
 ## 0.2.0 - 2026-07-26
 
 - Added Phase 18 exact GitHub release authorization: one short-lived USER grant bound to the public repository, stable tag, full main commit, successful exact `Validate` push run, tracked notes digest, clean origin state, publication verification, resolved tag commit, and terminal consumed receipt.

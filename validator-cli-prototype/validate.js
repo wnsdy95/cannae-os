@@ -70,6 +70,10 @@ const {
   validateAuthorizationSemantics: validateGitHubReleaseAuthorization,
   validateReceiptSemantics: validateGitHubReleaseReceipt
 } = require("../github-release-publisher");
+const {
+  validateAuthorizationSemantics: validateGitHubReleaseImmutabilityAuthorization,
+  validateReceiptSemantics: validateGitHubReleaseImmutabilityReceipt
+} = require("../github-release-immutability");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -140,6 +144,8 @@ const TYPE_TO_SCHEMA = {
   "release-gate-decision-event": "release-gate-decision-event.schema.json",
   "github-release-authorization": "github-release-authorization.schema.json",
   "github-release-receipt": "github-release-receipt.schema.json",
+  "github-release-immutability-authorization": "github-release-immutability-authorization.schema.json",
+  "github-release-immutability-receipt": "github-release-immutability-receipt.schema.json",
   "routing-receipt": "routing-receipt.schema.json",
   "mission-wave-plan": "mission-wave-plan.schema.json",
   "agent-context-pack": "agent-context-pack.schema.json",
@@ -2476,6 +2482,28 @@ function semanticRules(payload, type) {
         releaseIssue.code,
         releaseIssue.path,
         releaseIssue.message
+      ));
+    }
+  }
+
+  if (type === "github-release-immutability-authorization") {
+    for (const policyIssue of validateGitHubReleaseImmutabilityAuthorization(payload)) {
+      issues.push(issue(
+        "critical",
+        policyIssue.code,
+        policyIssue.path,
+        policyIssue.message
+      ));
+    }
+  }
+
+  if (type === "github-release-immutability-receipt") {
+    for (const policyIssue of validateGitHubReleaseImmutabilityReceipt(payload)) {
+      issues.push(issue(
+        "critical",
+        policyIssue.code,
+        policyIssue.path,
+        policyIssue.message
       ));
     }
   }

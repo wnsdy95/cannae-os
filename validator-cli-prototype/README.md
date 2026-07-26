@@ -21,6 +21,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-context-item.json
 node validator-cli-prototype/validate.js sample-payloads/valid-release-gate-decision-event.json release-gate-decision-event
 node validator-cli-prototype/validate.js sample-payloads/valid-github-release-authorization.json github-release-authorization
 node validator-cli-prototype/validate.js sample-payloads/valid-github-release-receipt.json github-release-receipt
+node validator-cli-prototype/validate.js sample-payloads/valid-github-release-immutability-authorization.json github-release-immutability-authorization
+node validator-cli-prototype/validate.js sample-payloads/valid-github-release-immutability-receipt.json github-release-immutability-receipt
 node validator-cli-prototype/validate.js sample-payloads/valid-maintenance-readiness.json maintenance-readiness
 node validator-cli-prototype/validate.js sample-payloads/valid-backbrief.json backbrief
 node validator-cli-prototype/validate.js sample-payloads/valid-rehearsal.json rehearsal
@@ -108,6 +110,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-tool-execution-re
 - `release-gate-decision-event`
 - `github-release-authorization`
 - `github-release-receipt`
+- `github-release-immutability-authorization`
+- `github-release-immutability-receipt`
 - `maintenance-readiness`
 - `backbrief`
 - `rehearsal`

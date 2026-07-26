@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-release-immutability-authorization.schema.json",
+  "title": "GitHub Release Immutability Authorization",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "issued_at",
+    "expires_at",
+    "single_use",
+    "consumed",
+    "repository",
+    "policy",
+    "repository_state",
+    "main_validation",
+    "latest_release_snapshot",
+    "user_grant",
+    "authority",
+    "repository_policy_change_authorized",
+    "release_authorized",
+    "authorization_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseImmutabilityAuthorization"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "issued_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "single_use": {
+      "type": "boolean",
+      "const": true
+    },
+    "consumed": {
+      "type": "boolean",
+      "const": false
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "full_name",
+        "origin_full_name",
+        "default_branch",
+        "visibility",
+        "viewer_permission"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "origin_full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibility": {
+          "type": "string",
+          "const": "PUBLIC"
+        },
+        "viewer_permission": {
+          "type": "string",
+          "const": "ADMIN"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "endpoint",
+        "method",
+        "operation",
+        "previous_state",
+        "desired_state",
+        "future_releases_only",
+        "rollback_operation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "type": "string",
+          "const": "2026-03-10"
+        },
+        "endpoint": {
+          "type": "string",
+          "pattern": "^/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/immutable-releases$"
+        },
+        "method": {
+          "type": "string",
+          "const": "PUT"
+        },
+        "operation": {
+          "type": "string",
+          "const": "enable_repository_release_immutability"
+        },
+        "previous_state": {
+          "$ref": "#/$defs/policy_state_disabled"
+        },
+        "desired_state": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "const": true
+            }
+          }
+        },
+        "future_releases_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "rollback_operation": {
+          "type": "string",
+          "const": "disable_for_future_releases"
+        }
+      }
+    },
+    "repository_state": {
+      "type": "object",
+      "required": [
+        "branch",
+        "head_sha",
+        "origin_default_branch_sha",
+        "clean"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "head_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "origin_default_branch_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "clean": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "main_validation": {
+      "$ref": "#/$defs/main_validation"
+    },
+    "latest_release_snapshot": {
+      "type": "object",
+      "required": [
+        "tag_name",
+        "published_at",
+        "immutable"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tag_name": {
+          "type": "string",
+          "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+        },
+        "published_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "immutable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "user_grant": {
+      "type": "object",
+      "required": [
+        "grant_id",
+        "authority",
+        "scope",
+        "repository",
+        "policy_endpoint",
+        "target_commit_sha",
+        "desired_enabled",
+        "approved",
+        "granted_at",
+        "expires_at",
+        "directive_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "grant_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "scope": {
+          "type": "string",
+          "const": "enable_repository_release_immutability"
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "policy_endpoint": {
+          "type": "string",
+          "pattern": "^/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/immutable-releases$"
+        },
+        "target_commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "desired_enabled": {
+          "type": "boolean",
+          "const": true
+        },
+        "approved": {
+          "type": "boolean",
+          "const": true
+        },
+        "granted_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "expires_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "directive_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "ai_approval_accepted",
+        "repository_policy_change_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "ai_approval_accepted": {
+          "type": "boolean",
+          "const": false
+        },
+        "repository_policy_change_authorized": {
+          "type": "boolean",
+          "const": true
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "repository_policy_change_authorized": {
+      "type": "boolean",
+      "const": true
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "authorization_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "policy_state_disabled": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "enabled",
+        "enforced_by_owner"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "type": "string",
+          "const": "2026-03-10"
+        },
+        "enabled": {
+          "type": "boolean",
+          "const": false
+        },
+        "enforced_by_owner": {
+          "type": "boolean"
+        }
+      }
+    },
+    "main_validation": {
+      "type": "object",
+      "required": [
+        "workflow_name",
+        "required_check",
+        "required_check_job_id",
+        "required_check_job_url",
+        "required_check_status",
+        "required_check_conclusion",
+        "run_id",
+        "run_url",
+        "event",
+        "status",
+        "conclusion",
+        "head_branch",
+        "head_sha"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "workflow_name": {
+          "type": "string",
+          "const": "Validate"
+        },
+        "required_check": {
+          "type": "string",
+          "const": "Doctrine and runtime checks"
+        },
+        "required_check_job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "required_check_job_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "required_check_status": {
+          "type": "string",
+          "const": "completed"
+        },
+        "required_check_conclusion": {
+          "type": "string",
+          "const": "success"
+        },
+        "run_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "event": {
+          "type": "string",
+          "const": "push"
+        },
+        "status": {
+          "type": "string",
+          "const": "completed"
+        },
+        "conclusion": {
+          "type": "string",
+          "const": "success"
+        },
+        "head_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "head_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    }
+  }
+}

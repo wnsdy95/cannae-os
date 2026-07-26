@@ -1031,6 +1031,41 @@ const fixtures = [
     requiredCodes: ["GITHUB_RELEASE_RECEIPT_TARGET_MISMATCH"]
   },
   {
+    name: "valid GitHub release immutability authorization",
+    file: "sample-payloads/valid-github-release-immutability-authorization.json",
+    type: "github-release-immutability-authorization",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "GitHub release immutability authorization accepts AI approval",
+    file: "sample-payloads/invalid-github-release-immutability-authorization-ai-approval.json",
+    type: "github-release-immutability-authorization",
+    exitCode: 1,
+    requiredCodes: [
+      "CONST_MISMATCH",
+      "GITHUB_RELEASE_IMMUTABILITY_AUTHORITY_DRIFT"
+    ]
+  },
+  {
+    name: "valid GitHub release immutability receipt",
+    file: "sample-payloads/valid-github-release-immutability-receipt.json",
+    type: "github-release-immutability-receipt",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "GitHub release immutability receipt claims release authority",
+    file: "sample-payloads/invalid-github-release-immutability-receipt-release-authority.json",
+    type: "github-release-immutability-receipt",
+    exitCode: 1,
+    requiredCodes: [
+      "CONST_MISMATCH",
+      "GITHUB_RELEASE_IMMUTABILITY_RECEIPT_NOT_TERMINAL",
+      "GITHUB_RELEASE_IMMUTABILITY_RECEIPT_AUTHORITY_DRIFT"
+    ]
+  },
+  {
     name: "valid maintenance readiness",
     file: "sample-payloads/valid-maintenance-readiness.json",
     type: "maintenance-readiness",

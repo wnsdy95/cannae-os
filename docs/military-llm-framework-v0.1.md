@@ -481,6 +481,10 @@ Current document set:
 176. `schema-files/mission-wave-closeout.schema.json`: Contract for AAR/readiness lineage, bounded improvement disposition, and next-wave triggers.
 177. `run-skill-mission-controller-fixtures.js`: End-to-end fixtures for routing, context, evidence, model binding, time boundaries, closeout, and repository isolation.
 178. `codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js` and `.claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.js`: CLI-specific wrappers over the same lifecycle runtime.
+179. `github-release-authorization.md` and `github-release-publisher.js`: Bind one retained USER decision to an exact repository, immutable future release target, main CI result, notes digest, and terminal receipt.
+180. `github-release-immutability.md` and `github-release-immutability.js`: Bind one separate USER repository-policy decision to prospective immutable-release activation while keeping release authority false.
+181. `schema-files/github-release-immutability-authorization.schema.json` and `schema-files/github-release-immutability-receipt.schema.json`: Contracts for exact policy authorization and verified terminal state.
+182. `run-github-release-immutability-fixtures.js`: Offline adversarial verification of ADMIN/main-CI binding, one activation, idempotent retry, historical-release preservation, and authority separation.
 
 Next documentation tasks:
 
