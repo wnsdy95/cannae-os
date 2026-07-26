@@ -27,7 +27,10 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "0.1"
+      "enum": [
+        "0.1",
+        "0.2"
+      ]
     },
     "type": {
       "type": "string",
@@ -84,6 +87,32 @@
             "MAINTAIN",
             "WRITE"
           ]
+        }
+      }
+    },
+    "release_immutability": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "enabled",
+        "enforced_by_owner",
+        "checked_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "type": "string",
+          "const": "2026-03-10"
+        },
+        "enabled": {
+          "type": "boolean",
+          "const": true
+        },
+        "enforced_by_owner": {
+          "type": "boolean"
+        },
+        "checked_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
         }
       }
     },
@@ -419,5 +448,24 @@
     "authorization_sha256": {
       "$ref": "common.schema.json#/$defs/sha256"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.2"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "release_immutability"
+        ]
+      }
+    }
+  ]
 }

@@ -72,6 +72,7 @@
       "host": "cli.github.com",
       "files": [
         "docs/github-release-authorization.md",
+        "docs/github-release-immutability.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
       ]
@@ -152,6 +153,7 @@
       "host": "docs.github.com",
       "files": [
         "docs/github-release-authorization.md",
+        "docs/github-release-immutability.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"

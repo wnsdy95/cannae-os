@@ -4349,9 +4349,125 @@ recommendation into reusable publication authority?
 ### Residual Work
 
 - USER digital signatures and protected signing-key custody;
-- signed tag/provenance binding and immutable release policy;
+- signed tag/provenance binding;
 - GitHub environment and repository-rule evidence;
 - independent release monitor, transparency witness, and mutation alerting;
 - private repository, prerelease, first-release, and alternate provider
   profiles; and
 - provider-neutral release adapters.
+
+## Phase 19A: Repository Release Immutability
+
+### Research Question
+
+How can Cannae activate GitHub's persistent immutable-releases setting without
+treating a repository administration action as a release, and how should that
+setting become enforceable evidence for every later release?
+
+### Source Findings
+
+1. GitHub immutability is prospective.
+   The [immutable releases concept](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases)
+   states that enabling the feature protects future releases rather than
+   retroactively converting existing releases. Cannae therefore snapshots
+   `v0.2.0` as non-immutable and rejects any claim that activation repaired it.
+2. The platform locks both tag and assets.
+   GitHub documents immutable tags and release assets and automatically creates
+   a release attestation. This is stronger than merely checking a release body
+   immediately after creation, but it still depends on GitHub's control plane
+   and the authenticated repository administrator.
+3. Repository activation is an administrative REST operation.
+   The [repository REST API](https://docs.github.com/en/rest/repos/repos?apiVersion=2026-03-10)
+   exposes GET, PUT, and DELETE operations at
+   `/repos/{owner}/{repo}/immutable-releases`. Enabling requires repository
+   administration permission and returns HTTP 204.
+4. Owner enforcement and repository enablement are distinct observations.
+   The policy response reports both `enabled` and `enforced_by_owner`. Cannae
+   records both rather than collapsing organization policy into repository
+   state.
+5. Release attestation is separately verifiable.
+   The [`gh release verify` reference](https://cli.github.com/manual/gh_release_verify)
+   verifies the attestation associated with an immutable release. The current
+   Phase 19A gate records GitHub's immutable listing state; independent
+   attestation verification is retained as a follow-on control.
+
+### Design Decisions
+
+1. Create a separate policy authority class.
+   `GitHubReleaseImmutabilityAuthorization` carries
+   `repository_policy_change_authorized: true` and
+   `release_authorized: false`. It cannot publish a tag, release, or asset.
+2. Bind the activation to reviewed repository state.
+   The grant names the exact public repository, normalized origin, clean main
+   commit, successful main `Validate` run, policy endpoint, prior disabled
+   state, and desired enabled state.
+3. Reappraise before the persistent action.
+   Execution reloads repository state, CI, current latest release, and current
+   policy before PUT. Authorization stored outside the repository is rejected
+   before any network-changing request.
+4. Require response and resulting state.
+   A zero exit code is insufficient. The adapter must observe HTTP 204 and then
+   GET `enabled: true`.
+5. Keep retries idempotent.
+   If the exact authorization is retried after a successful activation, it
+   performs no second PUT and emits a receipt only after verifying the enabled
+   state and unchanged historical release.
+6. Upgrade future release evidence prospectively.
+   New release authorization and receipt version `0.2` require enabled policy
+   at issuance and publication plus `isImmutable: true` after creation.
+   Historical version `0.1` artifacts remain readable.
+7. Do not automate rollback.
+   GitHub exposes DELETE, but disabling immutability would weaken future
+   releases and therefore needs its own exact future USER authorization. The
+   Phase 19A runtime deliberately has no disable command.
+
+### Rejected Alternatives
+
+- Treating the user's release instruction as implicit repository-policy
+  permission: release scope and persistent administration scope are different.
+- Enabling the setting before merging and validating the control code: the
+  durable action would lack exact reviewed execution evidence.
+- Assuming HTTP 204 when response headers are missing: converts ambiguous CLI
+  output into false success.
+- Claiming `v0.2.0` became immutable: contradicts GitHub's prospective
+  semantics.
+- Letting an enabled-policy receipt carry release true: collapses policy and
+  publication authority.
+- Automatically disabling the setting for rollback: silently weakens all
+  future releases.
+
+### Implemented Artifacts
+
+- `docs/github-release-immutability.md`;
+- `schema-files/github-release-immutability-authorization.schema.json`;
+- `schema-files/github-release-immutability-receipt.schema.json`;
+- valid and adversarial policy authorization and receipt samples;
+- `github-release-immutability.js`;
+- `run-github-release-immutability-fixtures.js`;
+- `github-release-immutability-fixtures/README.md`;
+- release authorization/receipt version `0.2` prospective enforcement; and
+- equivalent Codex and Claude wrappers, routing references, and operating
+  rules.
+
+### Measured Behavior
+
+- one exact USER grant creates a valid disabled-to-enabled policy
+  authorization while release remains false;
+- non-admin, foreign origin, wrong-commit CI, expiry, and external
+  authorization paths deny;
+- one activation performs one PUT and an exact retry performs no second PUT;
+- HTTP success without an enabled post-action observation denies;
+- latest historical-release drift denies;
+- valid policy samples pass while AI approval and release-authority expansion
+  fail; and
+- future publisher fixtures deny when policy is disabled and require immutable
+  terminal release state.
+
+### Residual Work
+
+- protected USER signing keys and authenticated policy directives;
+- organization-owner enforcement evidence and continuous drift monitoring;
+- independent `gh release verify` attestation checks and retained results;
+- release transparency witnesses and mutation alerts;
+- signed tags, credential isolation, and environment protection; and
+- provider-neutral policy and release adapters.

@@ -1,0 +1,53 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseImmutabilityReceipt",
+  "id": "GRIR-enable-f7d3e2751d71",
+  "authorization_ref": {
+    "authorization_id": "GRIA-enable-f7d3e2751d71",
+    "relative_path": ".cannae/release-policy/immutability/authorization.json",
+    "sha256": "b90e646c63084fe4475be3caec7a16129e56703af368576eed8d78225a77d7fc"
+  },
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "default_branch": "main"
+  },
+  "policy": {
+    "api_version": "2026-03-10",
+    "endpoint": "/repos/wnsdy95/cannae-os/immutable-releases",
+    "method": "PUT",
+    "operation": "enable_repository_release_immutability",
+    "before": {
+      "api_version": "2026-03-10",
+      "enabled": false,
+      "enforced_by_owner": false
+    },
+    "after": {
+      "api_version": "2026-03-10",
+      "enabled": true,
+      "enforced_by_owner": false
+    },
+    "request_performed": true,
+    "response_status": 204,
+    "future_releases_only": true,
+    "verified_at": "2026-07-27T00:05:00.000Z"
+  },
+  "existing_release_observation": {
+    "tag_name": "v0.2.0",
+    "published_at": "2026-07-26T15:25:25Z",
+    "immutable_before": false,
+    "immutable_after": false
+  },
+  "authorization_consumed": true,
+  "policy_change_executed": true,
+  "policy_verified": true,
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "repository_policy_change_authorized": true,
+    "release_authorized": false
+  },
+  "repository_policy_change_authorized": true,
+  "release_authorized": false,
+  "recorded_at": "2026-07-27T00:05:01.000Z",
+  "receipt_sha256": "d6c70605e737f81ebf19b988276a38a54d575880d2e662dbaf83c332bcf69e64"
+}

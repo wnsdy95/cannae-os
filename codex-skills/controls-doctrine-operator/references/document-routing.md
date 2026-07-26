@@ -80,6 +80,7 @@ restored conversational context never restores authority.
 | Approval lifecycle | `docs/approval-scope-policy.md` | `approval-consumption-runner.js`, `approval-renewal-runner.js`, `approval-revocation-runner.js`, `approval-delegation-runner.js` |
 | Risk acceptance | `docs/risk-acceptance-authority.md` | `schema-files/risk-acceptance.schema.json`, `run-authority-integration-fixtures.js` |
 | Release review | `docs/context-releasability-policy.md`, `docs/opsec-classification-model.md` | `release-review-runner.js`, `policy-engine-release-integration.js`, `release-gate-decision-runner.js` |
+| GitHub repository release-immutability policy activation | `docs/github-release-immutability.md`, `docs/github-release-authorization.md` | `github-release-immutability.js`, policy authorization/receipt schemas and samples, `scripts/operate_github_release_immutability.js`, `run-github-release-immutability-fixtures.js` |
 | Exact GitHub tag/release authorization and publication | `docs/github-release-authorization.md`, exact tracked release notes | `github-release-publisher.js`, authorization/receipt schemas and samples, `scripts/operate_github_release.js`, `run-github-release-publisher-fixtures.js` |
 
 ## Multi-Agent Organization
@@ -128,6 +129,7 @@ restored conversational context never restores authority.
 | English-only corpus | `node .github/scripts/check-english-only.js` |
 | Source-map or official URL | `node source-map-linter.js --write-report` |
 | Release/authority/risk | `node run-authority-integration-fixtures.js`, `node run-release-integration-fixtures.js`, relevant lifecycle runner |
+| GitHub release-immutability policy authorization or receipt | `node run-github-release-immutability-fixtures.js`, targeted policy authorization/receipt validation, publisher regression fixtures, direct CLI module-entry validation, Codex and Claude wrapper resolution, routing coverage |
 | Exact GitHub release authorization or receipt | `node run-github-release-publisher-fixtures.js`, targeted authorization/receipt validation, direct CLI module-entry validation, Codex and Claude wrapper resolution, routing coverage |
 | Orders/backbrief/rehearsal | `node runtime-demo-runner.js`, `node orders-dissemination-runner.js ...`, relevant routing fixture |
 | Skill update | `node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/controls-doctrine-operator`, review both diffs for equivalent operational semantics |

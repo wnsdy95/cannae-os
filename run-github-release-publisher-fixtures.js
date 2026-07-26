@@ -30,8 +30,14 @@ class FakeReleaseAdapter {
     this.repositoryRoot = repositoryRoot;
     this.clock = ISSUED_AT;
     this.createCalls = [];
+    this.forceCreatedReleaseMutable = false;
     this.tags = new Map();
     this.releases = new Map();
+    this.releaseImmutability = {
+      api_version: "2026-03-10",
+      enabled: true,
+      enforced_by_owner: false
+    };
     this.repository = {
       root: repositoryRoot,
       branch: "main",
@@ -84,6 +90,10 @@ class FakeReleaseAdapter {
     return { ...this.run };
   }
 
+  inspectReleaseImmutability() {
+    return { ...this.releaseImmutability };
+  }
+
   resolveRemoteTag(tagName) {
     if (tagName === this.previousRelease.tag_name) return this.previousRelease.commit_sha;
     return this.tags.get(tagName) || null;
@@ -107,8 +117,16 @@ class FakeReleaseAdapter {
   }
 
   isLatestRelease(repository, tagName) {
+    const listing = this.inspectReleaseListing(repository, tagName);
+    return Boolean(listing && listing.latest);
+  }
+
+  inspectReleaseListing(repository, tagName) {
     const release = this.releases.get(tagName);
-    return Boolean(release && release.latest === true);
+    return release ? {
+      latest: release.latest === true,
+      immutable: release.immutable === true
+    } : null;
   }
 
   createRelease(repository, target, notesAbsolutePath) {
@@ -127,6 +145,8 @@ class FakeReleaseAdapter {
       isDraft: false,
       isPrerelease: false,
       latest: true,
+      immutable: this.releaseImmutability.enabled === true &&
+        this.forceCreatedReleaseMutable !== true,
       name: target.release_name,
       publishedAt: "2026-07-26T10:05:00.000Z",
       tagName: target.tag_name,
@@ -214,6 +234,16 @@ function runFixtures() {
 
   {
     const fixture = makeFixture();
+    fixture.adapter.releaseImmutability.enabled = false;
+    results.push(expectError(
+      "disabled repository release immutability blocks future authorization",
+      "RELEASE_IMMUTABILITY_NOT_ENABLED",
+      () => authorizeRelease(authorizationOptions(fixture), fixture.adapter)
+    ));
+  }
+
+  {
+    const fixture = makeFixture();
     fixture.adapter.run.headSha = PREVIOUS_SHA;
     results.push(expectError(
       "successful CI for a different commit blocks authorization",
@@ -286,6 +316,36 @@ function runFixtures() {
     );
     result.ok = result.ok && fixture.adapter.createCalls.length === 0;
     results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
+    persistAuthorization(fixture, authorization);
+    fixture.adapter.releaseImmutability.enabled = false;
+    results.push(expectError(
+      "release-immutability policy drift blocks publication",
+      "AUTHORIZED_RELEASE_IMMUTABILITY_DRIFT",
+      () => publishAuthorizedRelease({
+        repositoryRoot: fixture.repositoryRoot,
+        authorizationPath: fixture.authorizationPath
+      }, fixture.adapter)
+    ));
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
+    persistAuthorization(fixture, authorization);
+    fixture.adapter.forceCreatedReleaseMutable = true;
+    results.push(expectError(
+      "a newly published mutable release cannot produce a v0.2 receipt",
+      "PUBLISHED_RELEASE_MISMATCH",
+      () => publishAuthorizedRelease({
+        repositoryRoot: fixture.repositoryRoot,
+        authorizationPath: fixture.authorizationPath
+      }, fixture.adapter)
+    ));
   }
 
   {

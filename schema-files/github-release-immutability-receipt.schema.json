@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://controls.local/schema-files/github-release-receipt.schema.json",
-  "title": "GitHub Release Receipt",
+  "$id": "https://controls.local/schema-files/github-release-immutability-receipt.schema.json",
+  "title": "GitHub Release Immutability Receipt",
   "type": "object",
   "required": [
     "schema_version",
@@ -9,13 +9,13 @@
     "id",
     "authorization_ref",
     "repository",
-    "target",
-    "release",
-    "release_notes_sha256",
+    "policy",
+    "existing_release_observation",
     "authorization_consumed",
-    "published",
-    "verified",
+    "policy_change_executed",
+    "policy_verified",
     "authority",
+    "repository_policy_change_authorized",
     "release_authorized",
     "recorded_at",
     "receipt_sha256"
@@ -24,14 +24,11 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "enum": [
-        "0.1",
-        "0.2"
-      ]
+      "const": "0.1"
     },
     "type": {
       "type": "string",
-      "const": "GitHubReleaseReceipt"
+      "const": "GitHubReleaseImmutabilityReceipt"
     },
     "id": {
       "$ref": "common.schema.json#/$defs/id"
@@ -75,122 +72,96 @@
         }
       }
     },
-    "target": {
+    "policy": {
       "type": "object",
       "required": [
-        "tag_name",
-        "release_name",
-        "commit_sha",
-        "draft",
-        "prerelease",
-        "latest"
+        "api_version",
+        "endpoint",
+        "method",
+        "operation",
+        "before",
+        "after",
+        "request_performed",
+        "response_status",
+        "future_releases_only",
+        "verified_at"
       ],
       "additionalProperties": false,
       "properties": {
-        "tag_name": {
+        "api_version": {
           "type": "string",
-          "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+          "const": "2026-03-10"
         },
-        "release_name": {
+        "endpoint": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/immutable-releases$"
         },
-        "commit_sha": {
+        "method": {
           "type": "string",
-          "pattern": "^[a-f0-9]{40}$"
+          "const": "PUT"
         },
-        "draft": {
-          "type": "boolean",
-          "const": false
+        "operation": {
+          "type": "string",
+          "const": "enable_repository_release_immutability"
         },
-        "prerelease": {
-          "type": "boolean",
-          "const": false
+        "before": {
+          "$ref": "#/$defs/policy_state"
         },
-        "latest": {
+        "after": {
+          "$ref": "#/$defs/policy_state_enabled"
+        },
+        "request_performed": {
+          "type": "boolean"
+        },
+        "response_status": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "future_releases_only": {
           "type": "boolean",
           "const": true
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
         }
       }
     },
-    "release": {
+    "existing_release_observation": {
       "type": "object",
       "required": [
-        "database_id",
-        "node_id",
-        "url",
-        "api_url",
         "tag_name",
-        "target_commitish",
-        "resolved_tag_commit_sha",
         "published_at",
-        "draft",
-        "prerelease",
-        "latest"
+        "immutable_before",
+        "immutable_after"
       ],
       "additionalProperties": false,
       "properties": {
-        "database_id": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "node_id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "url": {
-          "type": "string",
-          "format": "uri"
-        },
-        "api_url": {
-          "type": "string",
-          "format": "uri"
-        },
         "tag_name": {
           "type": "string",
           "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
-        },
-        "target_commitish": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{40}$"
-        },
-        "resolved_tag_commit_sha": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{40}$"
         },
         "published_at": {
           "$ref": "common.schema.json#/$defs/timestamp"
         },
-        "draft": {
-          "type": "boolean",
-          "const": false
+        "immutable_before": {
+          "type": "boolean"
         },
-        "prerelease": {
-          "type": "boolean",
-          "const": false
-        },
-        "latest": {
-          "type": "boolean",
-          "const": true
-        },
-        "immutable": {
-          "type": "boolean",
-          "const": true
+        "immutable_after": {
+          "type": "boolean"
         }
       }
-    },
-    "release_notes_sha256": {
-      "$ref": "common.schema.json#/$defs/sha256"
     },
     "authorization_consumed": {
       "type": "boolean",
       "const": true
     },
-    "published": {
+    "policy_change_executed": {
       "type": "boolean",
       "const": true
     },
-    "verified": {
+    "policy_verified": {
       "type": "boolean",
       "const": true
     },
@@ -199,6 +170,7 @@
       "required": [
         "human_final_decision_authority",
         "self_approval_prohibited",
+        "repository_policy_change_authorized",
         "release_authorized"
       ],
       "additionalProperties": false,
@@ -211,15 +183,23 @@
           "type": "boolean",
           "const": true
         },
-        "release_authorized": {
+        "repository_policy_change_authorized": {
           "type": "boolean",
           "const": true
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
         }
       }
     },
-    "release_authorized": {
+    "repository_policy_change_authorized": {
       "type": "boolean",
       "const": true
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
     },
     "recorded_at": {
       "$ref": "common.schema.json#/$defs/timestamp"
@@ -228,27 +208,49 @@
       "$ref": "common.schema.json#/$defs/sha256"
     }
   },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "schema_version": {
-            "const": "0.2"
-          }
+  "$defs": {
+    "policy_state": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "enabled",
+        "enforced_by_owner"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "type": "string",
+          "const": "2026-03-10"
         },
-        "required": [
-          "schema_version"
-        ]
-      },
-      "then": {
-        "properties": {
-          "release": {
-            "required": [
-              "immutable"
-            ]
-          }
+        "enabled": {
+          "type": "boolean"
+        },
+        "enforced_by_owner": {
+          "type": "boolean"
+        }
+      }
+    },
+    "policy_state_enabled": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "enabled",
+        "enforced_by_owner"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "type": "string",
+          "const": "2026-03-10"
+        },
+        "enabled": {
+          "type": "boolean",
+          "const": true
+        },
+        "enforced_by_owner": {
+          "type": "boolean"
         }
       }
     }
-  ]
+  }
 }

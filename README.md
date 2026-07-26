@@ -109,6 +109,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Risk Acceptance Authority](docs/risk-acceptance-authority.md): residual risk acceptance and commander-retained authority.
 - [Context Releasability Policy](docs/context-releasability-policy.md): role-based context release and final-output controls.
 - [Exact GitHub Release Authorization](docs/github-release-authorization.md): one short-lived USER grant bound to the exact public repository, tag, commit, successful main CI run, notes digest, and verified release receipt.
+- [GitHub Release Immutability](docs/github-release-immutability.md): separately authorized repository policy activation and prospective immutable-state enforcement for future releases.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
 - [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.
 
@@ -134,6 +135,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Gateway Identity Admission](docs/gateway-identity-admission.md): TLS 1.3 mTLS, SPIFFE X.509, signed one-use challenge, exporter-bound principal evidence, and replay-safe authenticated-reference admission.
 - [Protected Process Execution](docs/protected-process-execution.md): policy-pinned executable/argv, signed pre-execution envelope, signed post-execution observation, exact gateway appraisal, and no-rerun recovery.
 - [Exact GitHub Release Authorization](docs/github-release-authorization.md): terminal authorization and publication verification without widening any lower execution contract.
+- [GitHub Release Immutability](docs/github-release-immutability.md): exact USER-authorized repository policy activation and future release immutability gate.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md): manifest-pinned GitHub OIDC/JWKS appraisal for hosted reusable workflows.
 - [GitLab CI Native Verifier Adapter](docs/gitlab-ci-native-verifier-adapter.md): manifest-pinned GitLab.com OIDC/JWKS appraisal for protected same-project pipelines.
@@ -409,12 +411,27 @@ explicitly selects one release, the terminal publisher can issue a short-lived
 
 ```text
 repository + stable tag + full commit + successful main CI + notes digest
++ enabled immutable-releases policy
 ```
 
 The publisher rechecks those values, creates the tag/release from the full
 commit SHA, reloads GitHub state, resolves the remote tag, compares the release
-body, and records consumption in `GitHubReleaseReceipt`. Drift, expiry, a
-partial tag/release, or a mismatched existing release blocks publication.
+body, requires `isImmutable: true`, and records consumption in
+`GitHubReleaseReceipt`. Drift, expiry, a disabled policy, a partial tag/release,
+or a mismatched existing release blocks publication.
+
+Repository policy activation uses a separate short-lived USER grant and never
+grants release authority:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_github_release_immutability.js \
+  authorize \
+  --repository-root . \
+  --repository <owner/repo> \
+  --run-id <successful-main-validate-run-id> \
+  --grant-id <USER-policy-grant-id> \
+  --output .cannae/release-policy/immutability/authorization.json
+```
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
@@ -429,8 +446,9 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
   --output .cannae/releases/<tag>/authorization.json
 ```
 
-See [Exact GitHub Release Authorization](docs/github-release-authorization.md)
-for the publish command, exact failure matrix, and trust boundary.
+See [GitHub Release Immutability](docs/github-release-immutability.md) and
+[Exact GitHub Release Authorization](docs/github-release-authorization.md) for
+the activation/publish commands, exact failure matrices, and trust boundaries.
 
 ## Quick Start
 
@@ -501,6 +519,7 @@ Important examples:
 - `run-authority-integration-fixtures.js`: scoped approval and risk acceptance composition.
 - `run-release-integration-fixtures.js`: separation between execution approval and release review.
 - `run-release-gate-decision-fixtures.js`: release gate event audit consistency.
+- `run-github-release-immutability-fixtures.js`: exact USER policy grant, repository ADMIN/main-CI binding, one activation, post-action verification, prospective historical state, and idempotent retry gates.
 - `run-github-release-publisher-fixtures.js`: exact USER grant, repository/tag/commit/main-CI/notes binding, expiry, tamper, partial-state, wrong-tag, publication, receipt, and idempotency gates.
 - `run-document-access-fixtures.js`: role, duty, authority, and need-to-know document access.
 - `run-doctrine-consistency-fixtures.js`: non-US source-family coverage and US-only assumption blocking.
@@ -571,6 +590,7 @@ Working today:
 - verifier execution-integrity contracts with exact runtime-policy admission, dual-signed in-toto execution evidence, immutable OCI/code/dependency/harness bindings, repository-state and target-digest checks, and fail-closed quorum integration;
 - supervisor-issued pre-dispatch verifier challenges with exact dispatch binding, dual-signed nonce responses, deadline enforcement, single-use replay checks, and cycle-order v0.5 admission;
 - computed verifier failure-domain assurance with strict component identities, transitive correlation, dual-signed execution observations, and cycle-order v0.6 admission;
+- exact USER-authorized repository release-immutability activation with verified prospective policy state and no release-authority widening;
 - short-lived exact GitHub release authorization and verified terminal receipts, with all lower runtime artifacts retaining release false;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
@@ -606,8 +626,10 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
 - The exact GitHub release authorization uses a canonical integrity digest, not
   a USER digital signature. It trusts the authenticated `gh` account, local
   operator environment, configured GitHub workflow, and platform controls; it
-  does not provide signed tags, immutable releases, credential isolation, or
-  continuous mutation monitoring.
+  does not provide signed tags, credential isolation, or continuous mutation
+  monitoring. Repository immutability protects only releases created after
+  Phase 19A activation; historical `v0.2.0` remains non-immutable, and the
+  runtime does not independently operate GitHub's attestation service.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
 - Source mappings are useful traceability aids, but they do not prove that an interpretation is universally valid.
 - US doctrine is not treated as universal; multinational and local adaptation remain required.
