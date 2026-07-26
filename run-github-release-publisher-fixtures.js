@@ -413,6 +413,19 @@ function runFixtures() {
     });
   }
 
+  {
+    const publisherSource = fs.readFileSync(
+      path.join(__dirname, "github-release-publisher.js"),
+      "utf8"
+    );
+    const exportsIndex = publisherSource.indexOf("module.exports = {");
+    const mainIndex = publisherSource.indexOf("if (require.main === module) main();");
+    results.push({
+      name: "CLI entry installs publisher exports before validator re-entry",
+      ok: exportsIndex >= 0 && mainIndex > exportsIndex
+    });
+  }
+
   return results;
 }
 
