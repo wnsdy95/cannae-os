@@ -128,7 +128,7 @@ restored conversational context never restores authority.
 | English-only corpus | `node .github/scripts/check-english-only.js` |
 | Source-map or official URL | `node source-map-linter.js --write-report` |
 | Release/authority/risk | `node run-authority-integration-fixtures.js`, `node run-release-integration-fixtures.js`, relevant lifecycle runner |
-| Exact GitHub release authorization or receipt | `node run-github-release-publisher-fixtures.js`, targeted authorization/receipt validation, Codex and Claude wrapper resolution, routing coverage |
+| Exact GitHub release authorization or receipt | `node run-github-release-publisher-fixtures.js`, targeted authorization/receipt validation, direct CLI module-entry validation, Codex and Claude wrapper resolution, routing coverage |
 | Orders/backbrief/rehearsal | `node runtime-demo-runner.js`, `node orders-dissemination-runner.js ...`, relevant routing fixture |
 | Skill update | `node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/controls-doctrine-operator`, `python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator`, review both diffs for equivalent operational semantics |
 | Delegated agent routing | `node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-agent-s3.json routing-receipt`, `node run-agent-routing-preflight-fixtures.js` |
