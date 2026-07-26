@@ -1,0 +1,624 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/production-sandbox-evidence.schema.json",
+  "title": "Production Sandbox Evidence",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "policy_ref",
+    "appraiser_id",
+    "repository_binding",
+    "gateway",
+    "nonce",
+    "appraiser_identity",
+    "attestation_result",
+    "deployment",
+    "deployment_identity_sha256",
+    "execution_scope_sha256",
+    "observed_at",
+    "expires_at",
+    "signature",
+    "evidence_sha256",
+    "authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ProductionSandboxEvidence" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "appraiser_id": { "$ref": "common.schema.json#/$defs/id" },
+    "repository_binding": { "$ref": "#/$defs/repository_binding" },
+    "gateway": { "$ref": "#/$defs/gateway" },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64,128}$"
+    },
+    "appraiser_identity": { "$ref": "#/$defs/appraiser_identity" },
+    "attestation_result": { "$ref": "#/$defs/attestation_result" },
+    "deployment": { "$ref": "#/$defs/deployment" },
+    "deployment_identity_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "execution_scope_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "observed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "signature": { "$ref": "#/$defs/signature" },
+    "evidence_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "authority": { "$ref": "#/$defs/authority" }
+  },
+  "$defs": {
+    "safe_identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": ["repository_key", "identity_fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "identity_fingerprint": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "gateway": {
+      "type": "object",
+      "required": [
+        "gateway_id",
+        "instance_id",
+        "audience",
+        "deployment_sha256",
+        "configuration_sha256",
+        "assurance_level",
+        "exclusive_path_verified"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "gateway_id": { "$ref": "#/$defs/safe_identifier" },
+        "instance_id": { "$ref": "#/$defs/safe_identifier" },
+        "audience": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "deployment_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "configuration_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "assurance_level": {
+          "type": "string",
+          "const": "managed_exclusive"
+        },
+        "exclusive_path_verified": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "component_id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 2048,
+      "pattern": "^[a-z][a-z0-9+.-]*:\\S+$"
+    },
+    "independence": {
+      "type": "object",
+      "required": [
+        "provider_id",
+        "operator_id",
+        "control_plane_id",
+        "account_id",
+        "project_id",
+        "runner_pool_id",
+        "infrastructure_id",
+        "region_id",
+        "zone_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id": { "$ref": "#/$defs/component_id" },
+        "operator_id": { "$ref": "#/$defs/component_id" },
+        "control_plane_id": { "$ref": "#/$defs/component_id" },
+        "account_id": { "$ref": "#/$defs/component_id" },
+        "project_id": { "$ref": "#/$defs/component_id" },
+        "runner_pool_id": { "$ref": "#/$defs/component_id" },
+        "infrastructure_id": { "$ref": "#/$defs/component_id" },
+        "region_id": { "$ref": "#/$defs/component_id" },
+        "zone_id": { "$ref": "#/$defs/component_id" }
+      }
+    },
+    "appraiser_identity": {
+      "type": "object",
+      "required": [
+        "spiffe_id",
+        "trust_domain",
+        "credential_sha256",
+        "proof_verified",
+        "authenticated_at",
+        "expires_at",
+        "independence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "spiffe_id": {
+          "type": "string",
+          "pattern": "^spiffe://"
+        },
+        "trust_domain": {
+          "type": "string",
+          "pattern": "^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$"
+        },
+        "credential_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "proof_verified": {
+          "type": "boolean",
+          "const": true
+        },
+        "authenticated_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "expires_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "independence": { "$ref": "#/$defs/independence" }
+      }
+    },
+    "digest_descriptor": {
+      "type": "object",
+      "required": ["uri", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "attestation_result": {
+      "type": "object",
+      "required": [
+        "architecture",
+        "adapter",
+        "eat_profile",
+        "freshness_nonce",
+        "appraisal",
+        "evidence",
+        "result",
+        "appraisal_policy",
+        "reference_values",
+        "endorsements"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "type": "string",
+          "const": "rats_rfc9334"
+        },
+        "adapter": {
+          "type": "string",
+          "const": "rats_attestation_result_v1"
+        },
+        "eat_profile": {
+          "type": "string",
+          "format": "uri"
+        },
+        "freshness_nonce": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64,128}$"
+        },
+        "appraisal": {
+          "type": "string",
+          "const": "pass"
+        },
+        "evidence": { "$ref": "#/$defs/digest_descriptor" },
+        "result": { "$ref": "#/$defs/digest_descriptor" },
+        "appraisal_policy": { "$ref": "#/$defs/digest_descriptor" },
+        "reference_values": { "$ref": "#/$defs/digest_descriptor" },
+        "endorsements": { "$ref": "#/$defs/digest_descriptor" }
+      }
+    },
+    "host": {
+      "type": "object",
+      "required": [
+        "platform",
+        "host_id",
+        "boot_id",
+        "attestation_result_sha256",
+        "boot_measurement_sha256",
+        "host_configuration_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "platform": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "host_id": { "$ref": "#/$defs/safe_identifier" },
+        "boot_id": { "$ref": "#/$defs/safe_identifier" },
+        "attestation_result_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "boot_measurement_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "host_configuration_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "required": [
+        "engine",
+        "daemon_sha256",
+        "runtime_name",
+        "runtime_sha256",
+        "daemon_configuration_sha256",
+        "rootless",
+        "user_namespace_mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "engine": { "type": "string", "const": "docker" },
+        "daemon_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "runtime_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "runtime_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "daemon_configuration_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "rootless": { "type": "boolean" },
+        "user_namespace_mode": {
+          "type": "string",
+          "enum": ["private", "remapped", "host"]
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": [
+        "reference",
+        "manifest_media_type",
+        "manifest_sha256",
+        "statement_type",
+        "provenance_predicate_type",
+        "provenance_statement_sha256",
+        "provenance_verified",
+        "signature_verified",
+        "transparency_verified",
+        "builder_id",
+        "source_repository",
+        "source_commit"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "manifest_media_type": {
+          "type": "string",
+          "const": "application/vnd.oci.image.manifest.v1+json"
+        },
+        "manifest_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "statement_type": {
+          "type": "string",
+          "const": "https://in-toto.io/Statement/v1"
+        },
+        "provenance_predicate_type": {
+          "type": "string",
+          "const": "https://slsa.dev/provenance/v1"
+        },
+        "provenance_statement_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "provenance_verified": { "type": "boolean", "const": true },
+        "signature_verified": { "type": "boolean", "const": true },
+        "transparency_verified": { "type": "boolean", "const": true },
+        "builder_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "source_repository": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "source_commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40,64}$"
+        }
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "required": [
+        "key_custody",
+        "workload_identity_verified",
+        "rotation_managed",
+        "revocation_managed",
+        "configuration_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "key_custody": {
+          "type": "string",
+          "enum": ["kms", "hsm", "spiffe_workload_api"]
+        },
+        "workload_identity_verified": {
+          "type": "boolean",
+          "const": true
+        },
+        "rotation_managed": { "type": "boolean", "const": true },
+        "revocation_managed": { "type": "boolean", "const": true },
+        "configuration_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "mandatory_access_control": {
+      "type": "object",
+      "required": ["provider", "enforcing", "profile_sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": ["apparmor", "selinux", "landlock"]
+        },
+        "enforcing": { "type": "boolean", "const": true },
+        "profile_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "seccomp": {
+      "type": "object",
+      "required": [
+        "mode",
+        "default_action",
+        "enforced",
+        "profile_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "const": "application_minimal"
+        },
+        "default_action": {
+          "type": "string",
+          "const": "SCMP_ACT_ERRNO"
+        },
+        "enforced": { "type": "boolean", "const": true },
+        "profile_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "filesystem": {
+      "type": "object",
+      "required": [
+        "rootfs_read_only",
+        "repository_read_only",
+        "host_mounts_prohibited",
+        "policy_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rootfs_read_only": { "type": "boolean", "const": true },
+        "repository_read_only": { "type": "boolean", "const": true },
+        "host_mounts_prohibited": { "type": "boolean", "const": true },
+        "policy_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "required": [
+        "mode",
+        "enforced",
+        "dns_policy_verified",
+        "proxy_policy_verified",
+        "policy_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["none", "authenticated_allowlist"]
+        },
+        "enforced": { "type": "boolean", "const": true },
+        "dns_policy_verified": { "type": "boolean", "const": true },
+        "proxy_policy_verified": { "type": "boolean", "const": true },
+        "policy_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "coordination": {
+      "type": "object",
+      "required": [
+        "backend",
+        "adapter_sha256",
+        "configuration_sha256",
+        "storage_fencing_verified",
+        "lease_expiry_verified",
+        "fencing_test_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "backend": {
+          "type": "string",
+          "const": "external_linearizable"
+        },
+        "adapter_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "configuration_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "storage_fencing_verified": {
+          "type": "boolean",
+          "const": true
+        },
+        "lease_expiry_verified": {
+          "type": "boolean",
+          "const": true
+        },
+        "fencing_test_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "exclusive_path": {
+      "type": "object",
+      "required": [
+        "gateway_only",
+        "direct_tool_path_blocked",
+        "gateway_outage_tool_unreachable",
+        "sandbox_outage_tool_unreachable",
+        "adversarial_tests_passed",
+        "test_suite_sha256",
+        "tested_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "gateway_only": { "type": "boolean", "const": true },
+        "direct_tool_path_blocked": {
+          "type": "boolean",
+          "const": true
+        },
+        "gateway_outage_tool_unreachable": {
+          "type": "boolean",
+          "const": true
+        },
+        "sandbox_outage_tool_unreachable": {
+          "type": "boolean",
+          "const": true
+        },
+        "adversarial_tests_passed": {
+          "type": "boolean",
+          "const": true
+        },
+        "test_suite_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "tested_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "required": [
+        "deployment_id",
+        "gateway",
+        "host",
+        "runtime",
+        "image",
+        "credentials",
+        "mandatory_access_control",
+        "seccomp",
+        "filesystem",
+        "network",
+        "coordination",
+        "exclusive_path"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "deployment_id": { "$ref": "#/$defs/safe_identifier" },
+        "gateway": { "$ref": "#/$defs/gateway" },
+        "host": { "$ref": "#/$defs/host" },
+        "runtime": { "$ref": "#/$defs/runtime" },
+        "image": { "$ref": "#/$defs/image" },
+        "credentials": { "$ref": "#/$defs/credentials" },
+        "mandatory_access_control": {
+          "$ref": "#/$defs/mandatory_access_control"
+        },
+        "seccomp": { "$ref": "#/$defs/seccomp" },
+        "filesystem": { "$ref": "#/$defs/filesystem" },
+        "network": { "$ref": "#/$defs/network" },
+        "coordination": { "$ref": "#/$defs/coordination" },
+        "exclusive_path": { "$ref": "#/$defs/exclusive_path" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["key_id", "algorithm", "signature_base64"],
+      "additionalProperties": false,
+      "properties": {
+        "key_id": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "algorithm": { "type": "string", "const": "ed25519" },
+        "signature_base64": {
+          "type": "string",
+          "minLength": 88,
+          "maxLength": 88
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "production_execution_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "production_execution_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    }
+  }
+}

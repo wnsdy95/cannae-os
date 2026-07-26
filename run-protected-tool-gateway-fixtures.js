@@ -422,7 +422,7 @@ fixture("trusted principal mismatch denies before dispatch admission", () => {
   assert(denied.reason_codes.includes("GATEWAY_PRINCIPAL_BINDING_MISMATCH"));
 });
 
-fixture("reference controller refuses a managed-exclusive deployment claim", () => {
+fixture("managed-exclusive claim without production admission is invalid", () => {
   const setup = setupScenario("MANAGED");
   const request = gatewayRequest(setup, "001");
   request.gateway.assurance_level = "managed_exclusive";
@@ -443,13 +443,14 @@ fixture("reference controller refuses a managed-exclusive deployment claim", () 
     relative_path: "managed/evidence.json",
     sha256: digest("managed-evidence")
   };
-  const denied = admitGatewayRequest(
-    trustedOptions(setup, request, "2026-07-24T01:00:10Z"),
-    request,
-    toolInput
+  expectThrow(
+    () => admitGatewayRequest(
+      trustedOptions(setup, request, "2026-07-24T01:00:10Z"),
+      request,
+      toolInput
+    ),
+    /GATEWAY_REQUEST_VERSION_BINDING_INVALID.*GATEWAY_REQUEST_PRODUCTION_ADMISSION_MISSING/
   );
-  assert.strictEqual(denied.state, "denied");
-  assert(denied.reason_codes.includes("GATEWAY_MANAGED_ASSURANCE_UNVERIFIED"));
 });
 
 fixture("raw input digest mismatch denies without consuming tool authority", () => {

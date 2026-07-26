@@ -227,11 +227,20 @@ signed pre-create intent, exact Docker inspection, and direct kernel
 observations for namespace, privilege, mount, cgroup, and network controls
 before a result can enter `ToolExecutionReceipt` v0.4. It still trusts
 the local Docker daemon, host, and evidence key and does not prove exclusive
-deployment. A production deployment must make managed adapters the only
-side-effect path and independently verify gateway code, configuration,
-identity appraisal, sandbox host/runtime/image, egress policy, coordination,
-and fencing. See `protected-tool-gateway-contract.md`,
-`protected-process-execution.md`, and `oci-linux-sandbox-provider.md`.
+deployment.
+
+Phase 17B2C1 adds `production-sandbox-admission.js` and its manifest adapter.
+It verifies a USER production policy, fresh independently signed
+RATS/EAT-shaped appraisals, one agreed deployment, transitive computed
+failure-domain diversity, exact OCI policy scope, and a separately signed
+admission. Managed request v0.3 also requires an injected external
+linearizable coordinator at admission, begin, commit, and recovery; receipt
+v0.5 records the terminal deployment projection. The repository does not
+operate or make truthful the TPM/TEE, KMS/HSM, registry, hardened host,
+coordinator, storage-fencing, or side-path controls asserted by those
+providers. See `protected-tool-gateway-contract.md`,
+`protected-process-execution.md`, `oci-linux-sandbox-provider.md`, and
+`production-sandbox-admission.md`.
 
 ### 2.10 Evidence Store
 
@@ -409,6 +418,7 @@ Characteristics:
 | User data -> model | redaction, policy check |
 | Agent -> tool | tool gateway |
 | Gateway request -> execution | authenticated principal, trusted gateway digest, active lease/policy/checkpoint, exact input digest, idempotency, one execution token |
+| Managed gateway -> production sandbox | USER policy, independent signed appraisal quorum, computed failure domains, exact OCI scope, admission-authority signature, external coordination and fencing |
 | Tool -> external service | approval and audit |
 | Evidence -> output | citation check |
 | Candidate -> adaptive promotion | executed receipt, trusted signed quorum, paired canary for skill/runtime control, accepted-parent lineage, consumed approval binding |
@@ -426,7 +436,9 @@ Characteristics:
 8. Bounded self-improvement checkpoint and next task order.
 9. Multi-agent routing.
 10. Protected tool transaction and recovery controller.
-11. Managed exclusive gateway adapters and side-path isolation.
+11. Production sandbox policy, appraisal, admission, and gateway composition.
+12. Provider-operated managed gateway, protected infrastructure, storage
+    fencing, and side-path isolation.
 
 ## 8. Related Documents
 
@@ -439,3 +451,5 @@ Characteristics:
 - `enforced-dispatch-and-resume.md`
 - `protected-tool-gateway-contract.md`
 - `protected-process-execution.md`
+- `oci-linux-sandbox-provider.md`
+- `production-sandbox-admission.md`

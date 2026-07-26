@@ -86,6 +86,7 @@
       "host": "csrc.nist.gov",
       "files": [
         "docs/oci-linux-sandbox-provider.md",
+        "docs/production-sandbox-admission.md",
         "docs/protected-process-execution.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
@@ -134,6 +135,8 @@
       "host": "docs.docker.com",
       "files": [
         "docs/oci-linux-sandbox-provider.md",
+        "docs/production-sandbox-admission.md",
+        "docs/research-compendium.md",
         "docs/source-map.md"
       ]
     },
@@ -158,12 +161,15 @@
       "host": "docs.kernel.org",
       "files": [
         "docs/oci-linux-sandbox-provider.md",
+        "docs/production-sandbox-admission.md",
+        "docs/research-compendium.md",
         "docs/source-map.md"
       ]
     },
     {
       "host": "docs.sigstore.dev",
       "files": [
+        "docs/production-sandbox-admission.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/transparency-operations.md"
@@ -172,6 +178,7 @@
     {
       "host": "etcd.io",
       "files": [
+        "docs/production-sandbox-admission.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
@@ -182,6 +189,7 @@
       "files": [
         "docs/gateway-identity-admission.md",
         "docs/oci-linux-sandbox-provider.md",
+        "docs/production-sandbox-admission.md",
         "docs/protected-process-execution.md",
         "docs/research-compendium.md",
         "docs/sigstore-verifier-workload-admission.md",
@@ -269,6 +277,7 @@
     {
       "host": "slsa.dev",
       "files": [
+        "docs/production-sandbox-admission.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"
@@ -278,6 +287,7 @@
       "host": "spiffe.io",
       "files": [
         "docs/gateway-identity-admission.md",
+        "docs/production-sandbox-admission.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
@@ -451,6 +461,7 @@
       "host": "www.rfc-editor.org",
       "files": [
         "docs/gateway-identity-admission.md",
+        "docs/production-sandbox-admission.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
         "docs/source-map.md",

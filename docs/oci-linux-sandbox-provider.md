@@ -220,9 +220,28 @@ The envelope is the no-rerun marker. Once retained, retry may return an existing
 terminal state or perform containment cleanup, but it cannot invoke the target
 again.
 
-## 9. Residual Limits
+## 9. Production Composition
 
-Phase 17B2B still does not prove:
+Phase 17B2B remains a reference executor and never self-promotes to
+production. Phase 17B2C1 can compose its exact manifest-backed
+`OciLinuxSandboxPolicy` into a `ProductionSandboxPolicy` only when independent
+appraisers additionally verify the host, daemon/runtime, OCI provenance,
+credential custody, rootless or user-namespace isolation, mandatory access
+control, application-minimal seccomp, filesystem/network policy, external
+coordination, storage fencing, and exclusive gateway path.
+
+The managed request must use `ToolGatewayRequest` v0.3, preserve
+`oci_linux_sandbox_reference`, cite the exact production admission, and pass a
+live external coordinator check at every gateway transition. The OCI execution
+bundle remains independently required at commit. Production admission does not
+replace runtime evidence, and runtime evidence does not replace production
+admission.
+
+See `production-sandbox-admission.md`.
+
+## 10. Residual Limits
+
+The local Phase 17B2B provider still does not prove:
 
 - independent trust in the Docker daemon, host kernel, Docker socket, runtime,
   or local evidence key;
@@ -244,15 +263,19 @@ Phase 17B2B still does not prove:
   or authority expansion.
 
 `content_trust_verified`, `production_execution_authorized`,
-`production_deployment_verified`, and `release_authorized` remain false.
+`production_deployment_verified`, and `release_authorized` remain false on the
+standalone reference path. Only a separately evidenced Phase 17B2C1 managed
+deployment may set the two production fields true; release remains false.
 
-## 10. Validation
+## 11. Validation
 
 ```bash
 node validator-cli-prototype/run-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-protected-process-executor-fixtures.js
 node run-oci-linux-sandbox-provider-fixtures.js
+node run-production-sandbox-admission-fixtures.js
+node run-production-sandbox-gateway-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   "OCI Linux sandbox seccomp cgroup network evidence"
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \

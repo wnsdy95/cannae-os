@@ -1,0 +1,91 @@
+{
+  "schema_version": "0.1",
+  "type": "ProductionSandboxAdmission",
+  "id": "PSA-PRODUCTION-SAMPLE",
+  "policy_ref": {
+    "artifact_id": "PSP-PRODUCTION-SAMPLE",
+    "relative_path": "repositories/controls/missions/MIS-PRODUCTION-SAMPLE/W1/production-sandbox-policies/PSP-PRODUCTION-SAMPLE.json",
+    "sha256": "92e6be99672cf1cc9e5d80a6675b51f3f66585acc0166a65d93419132ad37e44"
+  },
+  "evidence_refs": [
+    {
+      "artifact_id": "PSE-PRODUCTION-SAMPLE-A",
+      "relative_path": "repositories/controls/missions/MIS-PRODUCTION-SAMPLE/W1/production-sandbox-evidence/PSE-PRODUCTION-SAMPLE-A.json",
+      "sha256": "9b01161163f2beb0f6d55e66c157691529b91e59271a86af0df0924b52b06b8b"
+    },
+    {
+      "artifact_id": "PSE-PRODUCTION-SAMPLE-B",
+      "relative_path": "repositories/controls/missions/MIS-PRODUCTION-SAMPLE/W1/production-sandbox-evidence/PSE-PRODUCTION-SAMPLE-B.json",
+      "sha256": "cf793eb1daac1722a05b6b2a95c3a42f7841170d977add294624f35cce36953a"
+    }
+  ],
+  "repository_binding": {
+    "repository_key": "github.com/wnsdy95/controls",
+    "identity_fingerprint": "4ed9906da9ab199b4e21ffbf35f58b5c0fd04f462b46e56fd15a0763600e6eb3"
+  },
+  "gateway": {
+    "gateway_id": "cannae-managed-gateway",
+    "instance_id": "production-sample-001",
+    "audience": "cannae-protected-tools",
+    "deployment_sha256": "00313b5e7454ce19e9266119e5290d0ce3ac72d13aed4073b755090381370964",
+    "configuration_sha256": "ee36d05e1b796dc36399f770c6c909cb81ead0901c87d25bb8de380432fe4cc8",
+    "assurance_level": "managed_exclusive",
+    "exclusive_path_verified": true
+  },
+  "deployment_identity_sha256": "6c35791c8fe8a050463bed2e075fd6a9ae8bbb12006ce7a66adb0035d3431395",
+  "execution_scope_sha256": "fdabd995530819019d10d13bdfe55fb063aea7b9a33ec4cd4eb9936b88c212fa",
+  "quorum": {
+    "valid_evidence_ids": [
+      "PSE-PRODUCTION-SAMPLE-A",
+      "PSE-PRODUCTION-SAMPLE-B"
+    ],
+    "appraiser_ids": [
+      "APPRAISER-PRODUCTION-SAMPLE-A",
+      "APPRAISER-PRODUCTION-SAMPLE-B"
+    ],
+    "key_ids": [
+      "85526f86bcee279f65d9dbfa301dc291702b62e36fc56b7e6f65b2f872616312",
+      "b3044ff6ee875d0e0d41a9a29bb789c42116f1f8fd268422f6b06b90df1a64e5"
+    ],
+    "independence_domains": [
+      {
+        "domain_id": "PSD-5b39fe0184aebf7824c9a79b",
+        "appraiser_ids": [
+          "APPRAISER-PRODUCTION-SAMPLE-B"
+        ],
+        "shared_dimensions": []
+      },
+      {
+        "domain_id": "PSD-cf187ae07fb29e6ce2d5a73b",
+        "appraiser_ids": [
+          "APPRAISER-PRODUCTION-SAMPLE-A"
+        ],
+        "shared_dimensions": []
+      }
+    ],
+    "valid_evidence_count": 1,
+    "distinct_key_count": 2,
+    "independent_domain_count": 2,
+    "minimum_valid_evidence": 2,
+    "minimum_independent_domains": 2,
+    "satisfied": true
+  },
+  "assurance_level": "managed_exclusive",
+  "production_execution_authorized": true,
+  "production_deployment_verified": true,
+  "release_authorized": true,
+  "issued_at": "2026-07-26T00:00:04.000Z",
+  "expires_at": "2026-07-26T00:00:03.000Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": true,
+    "release_authorized": true
+  },
+  "signature": {
+    "key_id": "149061bb6f211bad9bac8d25da7e7f7b4b5edac4ce623faebe6ce97e54f2c8a9",
+    "algorithm": "ed25519",
+    "signature_base64": "mZ/ZWJfTit2OT7xZdcf4GcHVnZFsFtxGUNN1SIJAPeqtSNLZMdlO9wKwcv53jXXTjmoowZic41aY4rOUHh5cBQ=="
+  },
+  "admission_sha256": "a1476e68f6b4699d08d018a8284db30ae8e9e9eaf9dbcf0f150919f5ead0d9fd"
+}

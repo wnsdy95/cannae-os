@@ -60,6 +60,12 @@ const {
   gatewayChallengeDigest,
   gatewayEvidenceDigest
 } = require("../gateway-identity-evidence");
+const {
+  objectDigest: productionObjectDigest,
+  productionSandboxAdmissionDigest,
+  productionSandboxEvidenceDigest,
+  validateProductionSandboxPolicy
+} = require("../production-sandbox-admission");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -90,6 +96,9 @@ const TYPE_TO_SCHEMA = {
   "gateway-identity-policy": "gateway-identity-policy.schema.json",
   "gateway-identity-challenge": "gateway-identity-challenge.schema.json",
   "gateway-principal-evidence": "gateway-principal-evidence.schema.json",
+  "production-sandbox-policy": "production-sandbox-policy.schema.json",
+  "production-sandbox-evidence": "production-sandbox-evidence.schema.json",
+  "production-sandbox-admission": "production-sandbox-admission.schema.json",
   "approval-request": "approval-request.schema.json",
   sitrep: "sitrep.schema.json",
   frago: "frago.schema.json",
@@ -787,11 +796,17 @@ function semanticRules(payload, type) {
         issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_REVOCATION_UNKNOWN", "$.revocations.principal_ids", "Principal revocations must name principals retained by this exact policy."));
       }
     }
-    if (!payload.gateway || payload.gateway.assurance_level !== "authenticated_reference" ||
-        payload.gateway.exclusive_path_verified !== false ||
+    const gatewayAssuranceValid = Boolean(payload.gateway &&
+      ((payload.schema_version === "0.1" &&
+        payload.gateway.assurance_level === "authenticated_reference" &&
+        payload.gateway.exclusive_path_verified === false) ||
+       (payload.schema_version === "0.2" &&
+        payload.gateway.assurance_level === "managed_exclusive" &&
+        payload.gateway.exclusive_path_verified === true)));
+    if (!gatewayAssuranceValid ||
         retainedAuthorityDrift(payload.authority) ||
         payload.authority.production_execution_authorized !== false) {
-      issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_AUTHORITY_OVERCLAIM", "$.authority", "Phase 17B1 identity policy must remain authenticated-reference, non-exclusive, non-production, USER-controlled authority."));
+      issues.push(issue("critical", "GATEWAY_IDENTITY_POLICY_AUTHORITY_OVERCLAIM", "$.authority", "Gateway identity policy assurance must match its version and remain non-production, USER-controlled authority."));
     }
   }
 
@@ -852,9 +867,172 @@ function semanticRules(payload, type) {
     }
   }
 
+  if (type === "production-sandbox-policy") {
+    const verification = validateProductionSandboxPolicy(payload);
+    for (const code of verification.codes) {
+      issues.push(issue(
+        "critical",
+        code,
+        "$",
+        "Production sandbox policy failed structural trust validation."
+      ));
+    }
+  }
+
+  if (type === "production-sandbox-evidence") {
+    if (artifactRefKind(payload.policy_ref) !== "concrete") {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_EVIDENCE_POLICY_REF_MISMATCH",
+        "$.policy_ref",
+        "Production sandbox evidence requires one concrete policy reference."
+      ));
+    }
+    if (!validEd25519Signature(payload.signature)) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_EVIDENCE_SIGNATURE_INVALID",
+        "$.signature",
+        "Production sandbox evidence requires a canonical Ed25519 signature."
+      ));
+    }
+    if (productionSandboxEvidenceDigest(payload) !==
+        payload.evidence_sha256) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_EVIDENCE_DIGEST_MISMATCH",
+        "$.evidence_sha256",
+        "Evidence digest must bind the complete signed production appraisal."
+      ));
+    }
+    if (productionObjectDigest(payload.deployment || {}) !==
+        payload.deployment_identity_sha256) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_EVIDENCE_DEPLOYMENT_DIGEST_MISMATCH",
+        "$.deployment_identity_sha256",
+        "Deployment identity digest must bind every declared production layer."
+      ));
+    }
+    if (!payload.attestation_result ||
+        payload.attestation_result.freshness_nonce !== payload.nonce ||
+        payload.attestation_result.appraisal !== "pass") {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_EVIDENCE_ATTESTATION_RESULT_INVALID",
+        "$.attestation_result",
+        "RATS appraisal must pass and bind the exact fresh evidence nonce."
+      ));
+    }
+    if (!isBefore(payload.observed_at, payload.expires_at)) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_EVIDENCE_NOT_ACTIVE",
+        "$.expires_at",
+        "Production sandbox evidence requires an ordered positive validity window."
+      ));
+    }
+    if (!payload.authority ||
+        payload.authority.human_final_decision_authority !== "USER" ||
+        payload.authority.self_approval_prohibited !== true ||
+        payload.authority.production_execution_authorized !== false ||
+        payload.authority.release_authorized !== false) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_EVIDENCE_AUTHORITY_INVALID",
+        "$.authority",
+        "One appraiser observation cannot authorize production or release."
+      ));
+    }
+  }
+
+  if (type === "production-sandbox-admission") {
+    if (artifactRefKind(payload.policy_ref) !== "concrete" ||
+        !Array.isArray(payload.evidence_refs) ||
+        payload.evidence_refs.some(ref => artifactRefKind(ref) !== "concrete")) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_ADMISSION_EVIDENCE_REF_MISMATCH",
+        "$",
+        "Production admission requires one concrete policy and only concrete evidence references."
+      ));
+    }
+    if (!validEd25519Signature(payload.signature)) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_ADMISSION_SIGNATURE_INVALID",
+        "$.signature",
+        "Production admission requires a canonical policy-pinned Ed25519 signature."
+      ));
+    }
+    if (productionSandboxAdmissionDigest(payload) !==
+        payload.admission_sha256) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_ADMISSION_DIGEST_MISMATCH",
+        "$.admission_sha256",
+        "Admission digest must bind the signed quorum projection."
+      ));
+    }
+    const quorum = payload.quorum || {};
+    if (quorum.satisfied !== true ||
+        quorum.valid_evidence_count !==
+          (quorum.valid_evidence_ids || []).length ||
+        quorum.valid_evidence_count !==
+          (quorum.appraiser_ids || []).length ||
+        quorum.distinct_key_count !== (quorum.key_ids || []).length ||
+        quorum.independent_domain_count !==
+          (quorum.independence_domains || []).length ||
+        quorum.valid_evidence_count < quorum.minimum_valid_evidence ||
+        quorum.independent_domain_count <
+          quorum.minimum_independent_domains) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_ADMISSION_PROJECTION_MISMATCH",
+        "$.quorum",
+        "Production admission quorum counts must be internally consistent and satisfied."
+      ));
+    }
+    if (!isBefore(payload.issued_at, payload.expires_at)) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_ADMISSION_NOT_ACTIVE",
+        "$.expires_at",
+        "Production admission requires an ordered positive validity window."
+      ));
+    }
+    if (payload.assurance_level !== "managed_exclusive" ||
+        payload.production_execution_authorized !== true ||
+        payload.production_deployment_verified !== true ||
+        payload.release_authorized !== false ||
+        !payload.authority ||
+        payload.authority.human_final_decision_authority !== "USER" ||
+        payload.authority.self_approval_prohibited !== true ||
+        payload.authority.production_execution_authorized !== true ||
+        payload.authority.release_authorized !== false) {
+      issues.push(issue(
+        "critical",
+        "PRODUCTION_SANDBOX_ADMISSION_AUTHORITY_INVALID",
+        "$.authority",
+        "Production admission may authorize only the appraised managed deployment; USER and release boundaries remain fixed."
+      ));
+    }
+  }
+
   if (type === "tool-gateway-request") {
     const gateway = payload.gateway || {};
     const principal = payload.authenticated_principal || {};
+    const productionRefKind = artifactRefKind(
+      payload.production_sandbox_admission_ref
+    );
+    const productionRefPresent = Object.prototype.hasOwnProperty.call(
+      payload,
+      "production_sandbox_admission_ref"
+    );
+    const executionModePresent = Object.prototype.hasOwnProperty.call(
+      payload.tool_call || {},
+      "execution_mode"
+    );
     const identityRefKinds = [
       artifactRefKind(payload.identity_policy_ref),
       artifactRefKind(payload.identity_challenge_ref),
@@ -885,11 +1063,31 @@ function semanticRules(payload, type) {
         principal.authentication_method === "fixture") {
       issues.push(issue("critical", "GATEWAY_REQUEST_FIXTURE_IDENTITY_FOR_MANAGED", "$.authenticated_principal.authentication_method", "Fixture identity cannot enter a managed-exclusive gateway."));
     }
+    if ((payload.schema_version === "0.2" &&
+         (productionRefPresent || executionModePresent ||
+          gateway.assurance_level === "managed_exclusive")) ||
+        (payload.schema_version === "0.3" &&
+         (!productionRefPresent || !executionModePresent ||
+          productionRefKind === "malformed"))) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_VERSION_BINDING_INVALID", "$", "Gateway request v0.2 is reference-only; v0.3 requires an exact production-admission sentinel and requested execution mode."));
+    }
+    if (gateway.assurance_level === "managed_exclusive" &&
+        (payload.schema_version !== "0.3" ||
+         productionRefKind !== "concrete" ||
+         (payload.tool_call || {}).execution_mode !==
+           "oci_linux_sandbox_reference")) {
+      issues.push(issue("critical", "GATEWAY_REQUEST_PRODUCTION_ADMISSION_MISSING", "$.production_sandbox_admission_ref", "Managed-exclusive admission requires request v0.3, one concrete production sandbox admission, and OCI sandbox execution mode."));
+    }
+    if (gateway.assurance_level !== "managed_exclusive" &&
+        payload.schema_version === "0.3" &&
+        productionRefKind !== "none") {
+      issues.push(issue("critical", "GATEWAY_REQUEST_PRODUCTION_REF_UNEXPECTED", "$.production_sandbox_admission_ref", "A non-managed request must carry the exact none production-admission sentinel."));
+    }
     if ((gateway.assurance_level === "contract_reference" &&
          identityRefKinds.some(kind => kind !== "none")) ||
         (["authenticated_reference", "managed_exclusive"].includes(gateway.assurance_level) &&
          identityRefKinds.some(kind => kind !== "concrete")) ||
-        (gateway.assurance_level === "authenticated_reference" &&
+        (["authenticated_reference", "managed_exclusive"].includes(gateway.assurance_level) &&
          principal.authentication_method !== "mtls") ||
         identityRefKinds.includes("malformed")) {
       issues.push(issue("critical", "GATEWAY_REQUEST_IDENTITY_EVIDENCE_MISMATCH", "$", "Contract-reference requests require all-none identity references; stronger assurance requires three concrete references and mTLS for authenticated-reference admission."));
@@ -907,6 +1105,13 @@ function semanticRules(payload, type) {
 
   if (type === "tool-gateway-decision") {
     const admissionKind = artifactRefKind(payload.admission_ref);
+    const productionRefKind = artifactRefKind(
+      payload.production_sandbox_admission_ref
+    );
+    const productionRefPresent = Object.prototype.hasOwnProperty.call(
+      payload,
+      "production_sandbox_admission_ref"
+    );
     const identityRefKinds = [
       artifactRefKind(payload.identity_policy_ref),
       artifactRefKind(payload.identity_challenge_ref),
@@ -919,12 +1124,29 @@ function semanticRules(payload, type) {
         new Set(identityRefKinds).size !== 1) {
       issues.push(issue("critical", "GATEWAY_DECISION_IDENTITY_REF_MISMATCH", "$", "Decision must preserve either three concrete identity references or three exact none sentinels."));
     }
+    if ((payload.schema_version === "0.2" &&
+         (productionRefPresent ||
+          payload.production_execution_authorized !== false)) ||
+        (payload.schema_version === "0.3" &&
+         (!productionRefPresent || productionRefKind === "malformed"))) {
+      issues.push(issue("critical", "GATEWAY_DECISION_VERSION_BINDING_INVALID", "$", "Decision v0.2 is non-production; v0.3 must preserve one exact production-admission reference or none sentinel."));
+    }
     if (payload.decision === "allow" &&
         (payload.execution_permitted !== true ||
-         payload.production_execution_authorized !== false ||
          admissionKind !== "concrete" ||
          payload.matched_rule_id === "none")) {
       issues.push(issue("critical", "GATEWAY_DECISION_ALLOW_UNBOUND", "$", "An allow decision requires execution permission, a concrete admission, and an exact matched rule."));
+    }
+    if (payload.decision === "allow" &&
+        ((payload.production_execution_authorized === true &&
+          (payload.schema_version !== "0.3" ||
+           productionRefKind !== "concrete" ||
+           (payload.tool_call || {}).execution_mode !==
+             "oci_linux_sandbox_reference")) ||
+         (payload.production_execution_authorized === false &&
+          payload.schema_version === "0.3" &&
+          productionRefKind !== "none"))) {
+      issues.push(issue("critical", "GATEWAY_DECISION_PRODUCTION_BINDING_INVALID", "$", "Production allow requires one concrete managed admission and OCI execution; non-production allow requires the exact none sentinel."));
     }
     if (payload.decision === "deny" &&
         (payload.execution_permitted !== false ||
@@ -946,6 +1168,13 @@ function semanticRules(payload, type) {
   if (type === "tool-execution-receipt") {
     const admissionKind = artifactRefKind(payload.admission_ref);
     const checkpointKind = artifactRefKind(payload.checkpoint_ref);
+    const productionRefKind = artifactRefKind(
+      payload.production_sandbox_admission_ref
+    );
+    const productionRefPresent = Object.prototype.hasOwnProperty.call(
+      payload,
+      "production_sandbox_admission_ref"
+    );
     const identityRefKinds = [
       artifactRefKind(payload.identity_policy_ref),
       artifactRefKind(payload.identity_challenge_ref),
@@ -980,6 +1209,25 @@ function semanticRules(payload, type) {
         new Set(identityRefKinds).size !== 1) {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_IDENTITY_REF_MISMATCH", "$", "Receipt must preserve either three concrete identity references or three exact none sentinels."));
     }
+    if ((payload.schema_version === "0.4" &&
+         (productionRefPresent ||
+          payload.production_deployment_verified !== false)) ||
+        (payload.schema_version === "0.5" &&
+         (!productionRefPresent || productionRefKind === "malformed"))) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_PRODUCTION_BINDING_INVALID", "$", "Receipt v0.4 is non-production; v0.5 must preserve one exact production-admission reference or none sentinel."));
+    }
+    if (payload.production_deployment_verified === true &&
+        (payload.schema_version !== "0.5" ||
+         productionRefKind !== "concrete" ||
+         (payload.tool_call || {}).execution_mode !==
+           "oci_linux_sandbox_reference")) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_PRODUCTION_OVERCLAIM", "$.production_deployment_verified", "Verified production deployment requires receipt v0.5, one concrete managed admission, and OCI sandbox execution mode."));
+    }
+    if (payload.schema_version === "0.5" &&
+        payload.production_deployment_verified === false &&
+        productionRefKind !== "none") {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_PRODUCTION_OVERCLAIM", "$.production_sandbox_admission_ref", "A non-production receipt cannot retain a concrete production admission."));
+    }
     if (executorRefKinds.includes("malformed") ||
         new Set(executorRefKinds).size !== 1 ||
         (retainedExecutionMode &&
@@ -998,6 +1246,14 @@ function semanticRules(payload, type) {
          !isValidDate(execution.finished_at) ||
          Date.parse(execution.started_at) > Date.parse(execution.finished_at))) {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_COMMIT_INCOMPLETE", "$.execution", "Committed execution requires concrete admission/checkpoint/result bindings and ordered execution timestamps."));
+    }
+    if (execution.transaction_state === "committed" &&
+        Object.prototype.hasOwnProperty.call(
+          payload.tool_call || {},
+          "execution_mode"
+        ) &&
+        payload.tool_call.execution_mode !== executor.execution_mode) {
+      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_EXECUTOR_MODE_MISMATCH", "$.executor.execution_mode", "Committed executor mode must equal the mode fixed in the gateway request."));
     }
     if (execution.transaction_state === "aborted" &&
         (execution.status !== "not_executed" ||
@@ -1024,9 +1280,6 @@ function semanticRules(payload, type) {
     }
     if (retainedAuthorityDrift(payload.authority)) {
       issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_AUTHORITY_DRIFT", "$.authority", "Execution receipt cannot expand authority or authorize release."));
-    }
-    if (payload.production_deployment_verified !== false) {
-      issues.push(issue("critical", "TOOL_EXECUTION_RECEIPT_PRODUCTION_OVERCLAIM", "$.production_deployment_verified", "Phase 17A receipt cannot claim a verified production deployment."));
     }
     const recordedAt = Date.parse(payload.recorded_at);
     const finishedAt = Date.parse(execution.finished_at);
@@ -1357,6 +1610,13 @@ function semanticRules(payload, type) {
     const decisionKind = artifactRefKind(payload.decision_ref);
     const receiptKind = artifactRefKind(payload.receipt_ref);
     const admissionKind = artifactRefKind(payload.admission_ref);
+    const productionRefKind = artifactRefKind(
+      payload.production_sandbox_admission_ref
+    );
+    const productionRefPresent = Object.prototype.hasOwnProperty.call(
+      payload,
+      "production_sandbox_admission_ref"
+    );
     const identityRefKinds = [
       artifactRefKind(payload.identity_policy_ref),
       artifactRefKind(payload.identity_challenge_ref),
@@ -1368,6 +1628,11 @@ function semanticRules(payload, type) {
     if (identityRefKinds.includes("malformed") ||
         new Set(identityRefKinds).size !== 1) {
       issues.push(issue("critical", "GATEWAY_TRANSACTION_IDENTITY_REF_MISMATCH", "$", "Transaction events must preserve either three concrete identity references or three exact none sentinels."));
+    }
+    if ((payload.schema_version === "0.2" && productionRefPresent) ||
+        (payload.schema_version === "0.3" &&
+         (!productionRefPresent || productionRefKind === "malformed"))) {
+      issues.push(issue("critical", "GATEWAY_TRANSACTION_PRODUCTION_REF_INVALID", "$.production_sandbox_admission_ref", "Transaction event v0.3 must preserve the request's exact production admission or none sentinel; v0.2 cannot carry it."));
     }
     if (payload.state === "received" &&
         (payload.sequence !== 1 ||

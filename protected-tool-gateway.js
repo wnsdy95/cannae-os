@@ -35,6 +35,9 @@ const {
 const {
   verifyOciSandboxExecutionBundle
 } = require("./oci-linux-sandbox-evidence");
+const {
+  verifyProductionSandboxAdmission
+} = require("./production-sandbox-admission-adapter");
 
 const TERMINAL_STATES = new Set(["denied", "committed", "aborted", "recovery_required"]);
 const KINDS = Object.freeze({
@@ -70,6 +73,17 @@ function sameRef(left, right) {
 
 function isNoneRef(ref) {
   return sameRef(ref, NONE_REF);
+}
+
+function productionAdmissionRef(payload) {
+  return payload && payload.production_sandbox_admission_ref
+    ? payload.production_sandbox_admission_ref
+    : NONE_REF;
+}
+
+function isManagedRequest(request) {
+  return Boolean(request && request.gateway &&
+    request.gateway.assurance_level === "managed_exclusive");
 }
 
 function unique(values) {
@@ -191,7 +205,7 @@ function loadArtifactRef(view, ref, expectedType) {
 }
 
 function writeJsonArtifact(options, gatewayLease, descriptor) {
-  renewRepositoryLease(gatewayLease);
+  renewGatewayLock(gatewayLease);
   const repository = resolveRepository(options.repository);
   const artifactRoot = path.resolve(
     options.artifactRoot || path.join(repository.root, ".cannae", "artifacts")
@@ -209,18 +223,66 @@ function writeJsonArtifact(options, gatewayLease, descriptor) {
   return { ref: artifactRef(result, descriptor.artifactId), result };
 }
 
-function gatewayLock(options, idempotencyKey) {
+function gatewayLock(options, request) {
   const view = storeView(options);
-  assertSha256(idempotencyKey, "idempotency_key");
+  assertSha256(request.idempotency_key, "idempotency_key");
   const lockRoot = path.join(
     view.namespacePath,
     ".protected-tool-gateway",
     "transaction-store"
   );
-  return acquireRepositoryLease(lockRoot, {
+  const local = acquireRepositoryLease(lockRoot, {
     leaseTimeoutMs: options.lockTimeoutMs || 5000,
     leaseTtlMs: options.lockTtlMs || 30000
   });
+  const result = {
+    local,
+    external: null,
+    external_error: null
+  };
+  if (request.gateway.assurance_level !== "managed_exclusive") return result;
+  const coordinator = options.productionCoordinator;
+  if (!coordinator ||
+      typeof coordinator.acquire !== "function" ||
+      typeof coordinator.renew !== "function" ||
+      typeof coordinator.release !== "function") {
+    result.external_error = "PRODUCTION_SANDBOX_COORDINATOR_UNAVAILABLE";
+    return result;
+  }
+  try {
+    const handle = coordinator.acquire({
+      repository_key: request.repository_binding.repository_key,
+      repository_identity_fingerprint:
+        request.repository_binding.identity_fingerprint,
+      transaction_id: request.transaction_id,
+      idempotency_key: request.idempotency_key,
+      production_sandbox_admission_ref:
+        clone(request.production_sandbox_admission_ref)
+    });
+    result.external = { ...handle, coordinator };
+  } catch (error) {
+    result.external_error = "PRODUCTION_SANDBOX_COORDINATOR_ACQUIRE_FAILED";
+  }
+  return result;
+}
+
+function renewGatewayLock(gatewayLease) {
+  renewRepositoryLease(gatewayLease.local);
+  if (gatewayLease.external) {
+    const coordinator = gatewayLease.external.coordinator;
+    const renewed = coordinator.renew(gatewayLease.external);
+    gatewayLease.external = { ...renewed, coordinator };
+  }
+}
+
+function releaseGatewayLock(gatewayLease) {
+  try {
+    if (gatewayLease.external) {
+      gatewayLease.external.coordinator.release(gatewayLease.external);
+    }
+  } finally {
+    releaseRepositoryLease(gatewayLease.local);
+  }
 }
 
 function authority() {
@@ -231,7 +293,14 @@ function authority() {
   };
 }
 
-function coordination(view) {
+function coordination(view, gatewayLease, productionAuthorized) {
+  if (productionAuthorized && gatewayLease && gatewayLease.external) {
+    return {
+      backend: "external_linearizable",
+      manifest_revision: gatewayLease.external.manifest_revision,
+      fencing_token: gatewayLease.external.fencing_token
+    };
+  }
   const fencingToken = view.manifest.coordination &&
     Number.isSafeInteger(view.manifest.coordination.fencing_token)
     ? view.manifest.coordination.fencing_token
@@ -318,6 +387,10 @@ function recordsForTransaction(view, transactionId) {
           !sameRef(current.payload.identity_policy_ref, request.payload.identity_policy_ref) ||
           !sameRef(current.payload.identity_challenge_ref, request.payload.identity_challenge_ref) ||
           !sameRef(current.payload.principal_evidence_ref, request.payload.principal_evidence_ref) ||
+          !sameRef(
+            productionAdmissionRef(current.payload),
+            productionAdmissionRef(request.payload)
+          ) ||
           current.payload.idempotency_key !== request.payload.idempotency_key ||
           current.payload.tool_input_sha256 !== request.payload.tool_call.tool_input_sha256 ||
           current.payload.repository_binding.repository_key !== request.payload.repository_binding.repository_key ||
@@ -336,7 +409,11 @@ function recordsForTransaction(view, transactionId) {
   if (decision && (
       !sameRef(decision.payload.identity_policy_ref, request.payload.identity_policy_ref) ||
       !sameRef(decision.payload.identity_challenge_ref, request.payload.identity_challenge_ref) ||
-      !sameRef(decision.payload.principal_evidence_ref, request.payload.principal_evidence_ref))) {
+      !sameRef(decision.payload.principal_evidence_ref, request.payload.principal_evidence_ref) ||
+      !sameRef(
+        productionAdmissionRef(decision.payload),
+        productionAdmissionRef(request.payload)
+      ))) {
     throw new Error(`Gateway transaction ${transactionId} decision changed identity evidence.`);
   }
   if (receipt && (!request || !decision ||
@@ -347,7 +424,11 @@ function recordsForTransaction(view, transactionId) {
   if (receipt && (
       !sameRef(receipt.payload.identity_policy_ref, request.payload.identity_policy_ref) ||
       !sameRef(receipt.payload.identity_challenge_ref, request.payload.identity_challenge_ref) ||
-      !sameRef(receipt.payload.principal_evidence_ref, request.payload.principal_evidence_ref))) {
+      !sameRef(receipt.payload.principal_evidence_ref, request.payload.principal_evidence_ref) ||
+      !sameRef(
+        productionAdmissionRef(receipt.payload),
+        productionAdmissionRef(request.payload)
+      ))) {
     throw new Error(`Gateway transaction ${transactionId} receipt changed identity evidence.`);
   }
   for (const event of events) {
@@ -372,9 +453,10 @@ function recordsForTransaction(view, transactionId) {
 
 function snapshotStatus(view, records) {
   if (!records.request) return null;
+  const request = records.request.payload;
   const state = records.latest ? records.latest.payload.state : "request_persisted";
-  return {
-    schema_version: "0.2",
+  const payload = {
+    schema_version: request.schema_version === "0.3" ? "0.3" : "0.2",
     type: "ProtectedToolGatewayStatus",
     transaction_id: records.request.payload.transaction_id,
     mission_id: records.request.payload.mission_id,
@@ -383,7 +465,17 @@ function snapshotStatus(view, records) {
     state,
     terminal: TERMINAL_STATES.has(state),
     execution_permitted: ["authorized", "executing"].includes(state),
-    production_execution_authorized: false,
+    production_execution_authorized: Boolean(
+      records.decision &&
+      records.decision.payload.production_execution_authorized === true
+    ),
+    production_deployment_verified: Boolean(
+      records.receipt &&
+      records.receipt.payload.production_deployment_verified === true
+    ),
+    production_sandbox_admission_ref: clone(
+      productionAdmissionRef(records.request.payload)
+    ),
     request_ref: clone(records.request.ref),
     decision_ref: records.decision ? clone(records.decision.ref) : clone(NONE_REF),
     receipt_ref: records.receipt ? clone(records.receipt.ref) : clone(NONE_REF),
@@ -396,6 +488,7 @@ function snapshotStatus(view, records) {
     },
     release_authorized: false
   };
+  return payload;
 }
 
 function eventPayload(request, requestRef, descriptor) {
@@ -406,8 +499,8 @@ function eventPayload(request, requestRef, descriptor) {
         timestamp(previous.payload.recorded_at, "previous event recorded_at")) {
     throw new Error("Gateway event time cannot precede its predecessor.");
   }
-  return {
-    schema_version: "0.2",
+  const payload = {
+    schema_version: request.schema_version === "0.3" ? "0.3" : "0.2",
     type: "ToolGatewayTransactionEvent",
     id: deterministicId("GTE", request.transaction_id, String(sequence)),
     transaction_id: request.transaction_id,
@@ -432,6 +525,12 @@ function eventPayload(request, requestRef, descriptor) {
     recorded_at: descriptor.recordedAt,
     authority: authority()
   };
+  if (request.schema_version === "0.3") {
+    payload.production_sandbox_admission_ref = clone(
+      productionAdmissionRef(request)
+    );
+  }
+  return payload;
 }
 
 function persistEvent(options, gatewayLease, requestRecord, descriptor) {
@@ -464,14 +563,68 @@ function bindingDigests(request) {
   };
 }
 
-function trustedBindingReasons(options, request) {
+function productionCoordinatorReasons(
+  options,
+  request,
+  gatewayLease,
+  verification
+) {
+  if (request.gateway.assurance_level !== "managed_exclusive") return [];
+  const reasons = [];
+  if (!gatewayLease || gatewayLease.external_error) {
+    reasons.push(
+      gatewayLease && gatewayLease.external_error ||
+      "PRODUCTION_SANDBOX_COORDINATOR_UNAVAILABLE"
+    );
+    return reasons;
+  }
+  const handle = gatewayLease.external;
+  const coordinator = handle && handle.coordinator;
+  const handleExpiry = Date.parse(handle && handle.expires_at);
+  const evaluatedAt = Date.parse(nowIso(options));
+  if (!handle || !coordinator ||
+      handle.backend !== "external_linearizable" ||
+      handle.configuration_sha256 !==
+        verification.coordination_configuration_sha256 ||
+      handle.adapter_sha256 !== verification.coordination_adapter_sha256 ||
+      coordinator.configurationSha256 !==
+        verification.coordination_configuration_sha256 ||
+      coordinator.adapterSha256 !==
+        verification.coordination_adapter_sha256 ||
+      handle.repository_key !== request.repository_binding.repository_key ||
+      handle.repository_identity_fingerprint !==
+        request.repository_binding.identity_fingerprint ||
+      handle.transaction_id !== request.transaction_id ||
+      handle.idempotency_key !== request.idempotency_key ||
+      handle.production_sandbox_admission_sha256 !==
+        request.production_sandbox_admission_ref.sha256 ||
+      !Number.isSafeInteger(handle.manifest_revision) ||
+      handle.manifest_revision < 1 ||
+      !Number.isSafeInteger(handle.fencing_token) ||
+      handle.fencing_token < 1 ||
+      !Number.isFinite(handleExpiry) ||
+      !Number.isFinite(evaluatedAt) ||
+      handleExpiry <= evaluatedAt) {
+    reasons.push("PRODUCTION_SANDBOX_COORDINATOR_BINDING_INVALID");
+  }
+  return reasons;
+}
+
+function trustedBindingReasons(
+  options,
+  request,
+  toolInput,
+  executor,
+  gatewayLease
+) {
   const expected = bindingDigests(request);
   const reasons = [];
   if (options.gatewayBindingSha256 !== expected.gateway) {
     reasons.push("GATEWAY_TRUSTED_BINDING_MISMATCH");
   }
   let identityVerification = null;
-  if (request.gateway.assurance_level === "authenticated_reference") {
+  if (["authenticated_reference", "managed_exclusive"]
+    .includes(request.gateway.assurance_level)) {
     identityVerification = verifyGatewayPrincipalEvidence({
       repository: options.repository,
       artifactRoot: options.artifactRoot,
@@ -487,7 +640,33 @@ function trustedBindingReasons(options, request) {
   } else if (options.verifiedPrincipalSha256 !== expected.principal) {
     reasons.push("GATEWAY_PRINCIPAL_BINDING_MISMATCH");
   }
-  return { expected, identityVerification, reasons: unique(reasons) };
+  let productionVerification = null;
+  if (request.gateway.assurance_level === "managed_exclusive") {
+    productionVerification = verifyProductionSandboxAdmission({
+      repository: options.repository,
+      artifactRoot: options.artifactRoot,
+      request,
+      toolInput,
+      executor,
+      evaluatedAt: nowIso(options)
+    });
+    if (!productionVerification.valid) {
+      reasons.push(...productionVerification.codes);
+    } else {
+      reasons.push(...productionCoordinatorReasons(
+        options,
+        request,
+        gatewayLease,
+        productionVerification
+      ));
+    }
+  }
+  return {
+    expected,
+    identityVerification,
+    productionVerification,
+    reasons: unique(reasons)
+  };
 }
 
 function admissionRecordForRequest(view, request) {
@@ -529,9 +708,13 @@ function runtimeBindingReasons(options, request, toolInput) {
       now >= timestamp(request.authenticated_principal.expires_at, "principal expires_at")) {
     reasons.push("GATEWAY_REQUEST_OUTSIDE_VALIDITY");
   }
-  if (!["contract_reference", "authenticated_reference"]
-    .includes(request.gateway.assurance_level) ||
-      request.gateway.exclusive_path_verified !== false) {
+  const assuranceValid =
+    (["contract_reference", "authenticated_reference"]
+      .includes(request.gateway.assurance_level) &&
+      request.gateway.exclusive_path_verified === false) ||
+    (request.gateway.assurance_level === "managed_exclusive" &&
+      request.gateway.exclusive_path_verified === true);
+  if (!assuranceValid) {
     reasons.push("GATEWAY_MANAGED_ASSURANCE_UNVERIFIED");
   }
   if (inputDigest(toolInput) !== request.tool_call.tool_input_sha256) {
@@ -578,13 +761,22 @@ function decisionPayload(options, requestRecord, descriptor) {
     descriptor.leaseExpiresAt
       ? timestamp(descriptor.leaseExpiresAt, "lease expires_at")
       : Number.POSITIVE_INFINITY,
+    descriptor.productionExpiresAt
+      ? timestamp(
+        descriptor.productionExpiresAt,
+        "production admission expires_at"
+      )
+      : Number.POSITIVE_INFINITY,
     timestamp(request.authenticated_principal.expires_at, "principal expires_at")
   );
   const validUntil = descriptor.decision === "allow"
     ? new Date(allowExpiry).toISOString()
     : new Date(timestamp(decidedAt, "decision time") + 1000).toISOString();
+  const productionExecutionAuthorized =
+    descriptor.decision === "allow" &&
+    descriptor.productionExecutionAuthorized === true;
   const payload = {
-    schema_version: "0.2",
+    schema_version: request.schema_version === "0.3" ? "0.3" : "0.2",
     type: "ToolGatewayDecision",
     id: deterministicId("TGD", request.transaction_id),
     transaction_id: request.transaction_id,
@@ -606,10 +798,14 @@ function decisionPayload(options, requestRecord, descriptor) {
     repository_state_before: clone(
       descriptor.repositoryState || request.expected_repository_state
     ),
-    coordination: coordination(view),
+    coordination: coordination(
+      view,
+      descriptor.gatewayLease,
+      productionExecutionAuthorized
+    ),
     decision: descriptor.decision,
     execution_permitted: descriptor.decision === "allow",
-    production_execution_authorized: false,
+    production_execution_authorized: productionExecutionAuthorized,
     matched_rule_id: descriptor.decision === "allow" ? descriptor.matchedRuleId : "none",
     reason_codes: unique(descriptor.reasonCodes),
     idempotency_key: request.idempotency_key,
@@ -617,6 +813,11 @@ function decisionPayload(options, requestRecord, descriptor) {
     valid_until: validUntil,
     authority: authority()
   };
+  if (request.schema_version === "0.3") {
+    payload.production_sandbox_admission_ref = clone(
+      productionAdmissionRef(request)
+    );
+  }
   assertValid(payload, "tool-gateway-decision", "Tool gateway decision");
   return payload;
 }
@@ -627,7 +828,10 @@ function persistDecision(options, gatewayLease, requestRecord, descriptor) {
     requestRecord.payload.transaction_id
   ).decision;
   if (existing) return existing;
-  const payload = decisionPayload(options, requestRecord, descriptor);
+  const payload = decisionPayload(options, requestRecord, {
+    ...descriptor,
+    gatewayLease
+  });
   const written = writeJsonArtifact(options, gatewayLease, {
     missionId: payload.mission_id,
     waveId: payload.wave_id,
@@ -675,7 +879,7 @@ function requestByIdempotency(view, idempotencyKey) {
 
 function admitGatewayRequest(options, request, toolInput) {
   assertValid(request, "tool-gateway-request", "Tool gateway request");
-  const gatewayLease = gatewayLock(options, request.idempotency_key);
+  const gatewayLease = gatewayLock(options, request);
   try {
     let view = storeView(options);
     let requestRecord = requestByIdempotency(view, request.idempotency_key);
@@ -716,7 +920,13 @@ function admitGatewayRequest(options, request, toolInput) {
       throw new Error("Gateway admission cannot precede the received event.");
     }
 
-    const trusted = trustedBindingReasons(options, request);
+    const trusted = trustedBindingReasons(
+      options,
+      request,
+      toolInput,
+      undefined,
+      gatewayLease
+    );
     const runtime = runtimeBindingReasons(options, request, toolInput);
     const preAdmissionReasons = unique([...trusted.reasons, ...runtime.reasons]);
     if (preAdmissionReasons.length > 0) {
@@ -820,19 +1030,39 @@ function admitGatewayRequest(options, request, toolInput) {
       repositoryState: runtime.currentState,
       matchedRuleId: admission.payload.rule_id,
       leaseExpiresAt: runtime.selected.leaseRecord.payload.expires_at,
+      productionExecutionAuthorized:
+        isManagedRequest(request) &&
+        trusted.productionVerification &&
+        trusted.productionVerification.valid === true,
+      productionExpiresAt:
+        trusted.productionVerification &&
+        trusted.productionVerification.expires_at,
       reasonCodes: ["GATEWAY_TOOL_AUTHORIZED", ...admission.payload.reason_codes]
     });
     return snapshotStatus(storeView(options), records);
   } finally {
-    releaseRepositoryLease(gatewayLease);
+    releaseGatewayLock(gatewayLease);
   }
 }
 
-function requireTrustedBindings(options, request) {
-  const trusted = trustedBindingReasons(options, request);
+function requireTrustedBindings(
+  options,
+  request,
+  toolInput,
+  executor,
+  gatewayLease
+) {
+  const trusted = trustedBindingReasons(
+    options,
+    request,
+    toolInput,
+    executor,
+    gatewayLease
+  );
   if (trusted.reasons.length > 0) {
     throw new Error(`Trusted gateway binding failed: ${trusted.reasons.join(", ")}`);
   }
+  return trusted;
 }
 
 function loadTransaction(options, transactionId) {
@@ -859,10 +1089,16 @@ function gatewayTransactionContext(options, transactionId) {
 function beginGatewayExecution(options, transactionId) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
-  const gatewayLease = gatewayLock(options, initial.records.request.payload.idempotency_key);
+  const gatewayLease = gatewayLock(options, initial.records.request.payload);
   try {
     let { view, records } = loadTransaction(options, transactionId);
-    requireTrustedBindings(options, records.request.payload);
+    requireTrustedBindings(
+      options,
+      records.request.payload,
+      undefined,
+      undefined,
+      gatewayLease
+    );
     if (records.latest.payload.state === "executing" || TERMINAL_STATES.has(records.latest.payload.state)) {
       const status = snapshotStatus(view, records);
       if (records.latest.payload.state === "executing") {
@@ -913,7 +1149,7 @@ function beginGatewayExecution(options, transactionId) {
       execution_event_ref: clone(written.ref)
     };
   } finally {
-    releaseRepositoryLease(gatewayLease);
+    releaseGatewayLock(gatewayLease);
   }
 }
 
@@ -938,8 +1174,11 @@ function receiptPayload(options, records, descriptor) {
   const decision = records.decision.payload;
   const digests = bindingDigests(request);
   const view = storeView(options);
+  const productionDeploymentVerified =
+    decision.production_execution_authorized === true &&
+    Boolean(descriptor.gatewayLease && descriptor.gatewayLease.external);
   const payload = {
-    schema_version: "0.4",
+    schema_version: request.schema_version === "0.3" ? "0.5" : "0.4",
     type: "ToolExecutionReceipt",
     id: deterministicId("TER", request.transaction_id),
     transaction_id: request.transaction_id,
@@ -969,13 +1208,22 @@ function receiptPayload(options, records, descriptor) {
     },
     repository_state_before: clone(decision.repository_state_before),
     repository_state_after: clone(descriptor.repositoryStateAfter),
-    coordination: coordination(view),
+    coordination: coordination(
+      view,
+      descriptor.gatewayLease,
+      productionDeploymentVerified
+    ),
     idempotency_key: request.idempotency_key,
-    production_deployment_verified: false,
+    production_deployment_verified: productionDeploymentVerified,
     reason_codes: unique(descriptor.reasonCodes),
     recorded_at: nowIso(options),
     authority: authority()
   };
+  if (request.schema_version === "0.3") {
+    payload.production_sandbox_admission_ref = clone(
+      productionAdmissionRef(request)
+    );
+  }
   assertValid(payload, "tool-execution-receipt", "Tool execution receipt");
   return payload;
 }
@@ -986,7 +1234,10 @@ function persistReceipt(options, gatewayLease, records, descriptor) {
     records.request.payload.transaction_id
   );
   if (current.receipt) return current.receipt;
-  const payload = receiptPayload(options, records, descriptor);
+  const payload = receiptPayload(options, records, {
+    ...descriptor,
+    gatewayLease
+  });
   const written = writeJsonArtifact(options, gatewayLease, {
     missionId: payload.mission_id,
     waveId: payload.wave_id,
@@ -1215,10 +1466,16 @@ function verifyOciSandboxExecution(options, view, records, descriptor) {
 function commitGatewayExecution(options, transactionId, descriptor) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
-  const gatewayLease = gatewayLock(options, initial.records.request.payload.idempotency_key);
+  const gatewayLease = gatewayLock(options, initial.records.request.payload);
   try {
     let { view, records } = loadTransaction(options, transactionId);
-    requireTrustedBindings(options, records.request.payload);
+    requireTrustedBindings(
+      options,
+      records.request.payload,
+      descriptor && descriptor.toolInput,
+      descriptor && descriptor.executor,
+      gatewayLease
+    );
     if (records.receipt) {
       records = appendReceiptEvent(options, gatewayLease, records);
       return snapshotStatus(storeView(options), records);
@@ -1239,6 +1496,16 @@ function commitGatewayExecution(options, transactionId, descriptor) {
       throw new Error("Execution completion status must be succeeded or failed.");
     }
     validateExecutor(descriptor.executor);
+    if (Object.prototype.hasOwnProperty.call(
+      records.request.payload.tool_call,
+      "execution_mode"
+    ) &&
+        descriptor.executor.execution_mode !==
+          records.request.payload.tool_call.execution_mode) {
+      throw new Error(
+        "Executor mode does not match the mode fixed by the gateway request."
+      );
+    }
     const startedAt = timestamp(descriptor.startedAt, "execution started_at");
     const finishedAt = timestamp(descriptor.finishedAt, "execution finished_at");
     const recordedAt = timestamp(nowIso(options), "execution receipt time");
@@ -1322,7 +1589,7 @@ function commitGatewayExecution(options, transactionId, descriptor) {
     );
     return snapshotStatus(storeView(options), records);
   } finally {
-    releaseRepositoryLease(gatewayLease);
+    releaseGatewayLock(gatewayLease);
   }
 }
 
@@ -1415,10 +1682,16 @@ function settleOrphanAdmission(options, gatewayLease, records, admission, toolIn
 function recoverGatewayTransaction(options, transactionId, descriptor = {}) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
-  const gatewayLease = gatewayLock(options, initial.records.request.payload.idempotency_key);
+  const gatewayLease = gatewayLock(options, initial.records.request.payload);
   try {
     let { view, records } = loadTransaction(options, transactionId);
-    requireTrustedBindings(options, records.request.payload);
+    requireTrustedBindings(
+      options,
+      records.request.payload,
+      descriptor.toolInput,
+      undefined,
+      gatewayLease
+    );
     records = ensureReceivedEvent(options, gatewayLease, records);
     if (records.receipt) {
       records = appendReceiptEvent(options, gatewayLease, records);
@@ -1517,7 +1790,7 @@ function recoverGatewayTransaction(options, transactionId, descriptor = {}) {
 
     throw new Error(`Gateway transaction ${transactionId} cannot be recovered from ${records.latest.payload.state}.`);
   } finally {
-    releaseRepositoryLease(gatewayLease);
+    releaseGatewayLock(gatewayLease);
   }
 }
 

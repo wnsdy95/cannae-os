@@ -31,7 +31,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.2" },
+    "schema_version": { "type": "string", "enum": ["0.2", "0.3"] },
     "type": { "type": "string", "const": "ToolGatewayRequest" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -44,6 +44,9 @@
     "identity_policy_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
     "identity_challenge_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
     "principal_evidence_ref": { "$ref": "#/$defs/artifact_ref_or_none" },
+    "production_sandbox_admission_ref": {
+      "$ref": "#/$defs/artifact_ref_or_none"
+    },
     "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "tool_policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
@@ -201,6 +204,15 @@
             "process_execute",
             "network_access",
             "delegation"
+          ]
+        },
+        "execution_mode": {
+          "type": "string",
+          "enum": [
+            "fixture",
+            "external_adapter",
+            "bounded_process_reference",
+            "oci_linux_sandbox_reference"
           ]
         },
         "tool_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" }

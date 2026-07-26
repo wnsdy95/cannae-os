@@ -8,10 +8,12 @@ TLS-exporter identity adapter at `authenticated_reference` assurance. Phase
 17B2A adds a policy-pinned local process reference adapter with signed
 pre-execution and post-execution evidence. Phase 17B2B adds a measured
 OCI/Linux reference sandbox with signed configuration, probe, result, and
-cleanup evidence. None of these phases deploys an independently attested
-production sandbox or proves that the gateway is the only path to a tool.
+cleanup evidence. Phase 17B2C1 adds independently signed production deployment
+appraisals, computed failure-domain quorum, exact request scope, and an
+external-coordinator binding. The repository validates those claims but does
+not operate the attestation, key, registry, host, or coordinator providers.
 
-The controller deliberately fixes:
+Reference requests deliberately retain:
 
 ```text
 production_execution_authorized: false
@@ -19,10 +21,11 @@ production_deployment_verified: false
 release_authorized: false
 ```
 
-Later Phase 17B work must supply independently managed provider executors,
-host/runtime/image provenance, exclusive network/process routing, protected key
-custody, authenticated configuration, and deployment evidence before any
-production exclusivity claim is possible.
+`ToolGatewayRequest` v0.3 may reach `managed_exclusive` only with one exact
+`ProductionSandboxAdmission`, an OCI execution mode and policy in its scope,
+current authenticated identity, and a live external linearizable coordinator
+whose adapter, configuration, transaction, admission, revision, fencing token,
+lease, and expiry all match. Release remains false.
 
 ## 1. Purpose
 
@@ -104,6 +107,14 @@ the repository manifest, verifies it at every state-changing continuation, and
 derives the principal digest. `gatewayBindingSha256` remains a separate trusted
 deployment/configuration input.
 
+At `managed_exclusive`, the controller additionally reloads a production
+policy, all signed evidence, and the admission from the verified repository
+manifest at admission and every continuation. It recomputes appraiser trust,
+failure domains, deployment consensus, validity, OCI scope, and authority.
+It also acquires a fresh handle from the deployment-supplied
+`productionCoordinator`. The standalone CLI supplies no such adapter and
+therefore denies managed execution.
+
 ### 3.2 Raw tool input
 
 The exact tool input is passed separately to the controller. It is canonicalized
@@ -128,10 +139,13 @@ risk acceptance, policy change, or authority change.
 | `GatewayIdentityPolicy` | Authenticated-reference trust envelope | gateway, repository, adapter key/identifiers, TLS profile, roots, principals, revocations, TTLs |
 | `GatewayIdentityChallenge` | One-use liveness challenge | policy, transaction/session, nonce, gateway/repository, signature, expiry |
 | `GatewayPrincipalEvidence` | Gateway-side TLS observation | challenge, SPIFFE chain, client/server certificates, TLS exporter, adapter signature, expiry |
-| `ToolGatewayRequest` v0.2 | Immutable request envelope | identity refs, gateway, principal, lease, policy, checkpoint, repository, exact tool digest, idempotency, validity |
-| `ToolGatewayDecision` v0.2 | Admission result | exact request, identity refs, dispatch admission, principal/gateway digests, rule, repository state, coordination observation |
-| `ToolExecutionReceipt` v0.4 | Final execution disposition | exact request/decision/identity/admission/checkpoint refs, executor and optional probe measurements, retained process/OCI policy-envelope-observation refs, result digest, before/after state |
-| `ToolGatewayTransactionEvent` v0.2 | Append-only state transition | transaction sequence, predecessor, immutable request and identity bindings, decision/receipt references |
+| `ProductionSandboxPolicy` | USER production trust envelope | repository, managed gateway, admission/appraiser keys, failure-domain quorum, RATS/EAT profile, exact OCI policies, controls, validity |
+| `ProductionSandboxEvidence` | One appraiser result | appraiser identity, RATS inputs/result, deployment layers, execution scope, signature, freshness |
+| `ProductionSandboxAdmission` | Aggregated production admission | exact policy/evidence refs, deployment consensus, computed quorum, scope, admission signature and expiry |
+| `ToolGatewayRequest` v0.2/v0.3 | Immutable request envelope | identity refs, optional exact production admission, gateway, principal, lease, policy, checkpoint, repository, exact tool digest and mode, idempotency, validity |
+| `ToolGatewayDecision` v0.2/v0.3 | Admission result | exact request, identity/production refs, dispatch admission, principal/gateway digests, rule, repository state, local or external coordination observation |
+| `ToolExecutionReceipt` v0.4/v0.5 | Final execution disposition | exact request/decision/identity/production/admission/checkpoint refs, executor and optional probe measurements, retained process/OCI policy-envelope-observation refs, result digest, before/after state |
+| `ToolGatewayTransactionEvent` v0.2/v0.3 | Append-only state transition | transaction sequence, predecessor, immutable request, identity, and production bindings, decision/receipt references |
 
 The repository artifact manifest is the custody layer. Conversation history is
 not transaction state.
@@ -201,6 +215,13 @@ gateway, and principal projection, and omit `--verified-principal-sha256`.
 The following gateway command examples show the contract-reference flag; omit
 that flag from `admit`, `begin`, `commit`, and `recover` on the
 authenticated-reference path.
+
+For `managed_exclusive`, first follow
+`production-sandbox-admission.md`, construct request v0.3 with the exact
+admission reference and `oci_linux_sandbox_reference` mode, and operate the
+gateway as a managed service with a policy-matching external coordinator.
+The standalone command examples below cannot inject that service adapter and
+will deny the managed path.
 
 ### 6.2 Admit
 
@@ -353,7 +374,10 @@ The reference controller serializes its repository gateway transaction store
 with an expiring shared-filesystem lease. This makes transaction and
 idempotency uniqueness checks atomic within one coherent filesystem. A
 multi-host production gateway requires a linearizable coordinator and
-storage-side fencing.
+storage-side fencing. Managed requests now require an external coordinator
+adapter and compare its revision/fencing handle with the independently
+appraised production deployment. The local lease remains a repository
+serialization layer and is not promoted into distributed proof.
 
 ## 9. Failure Matrix
 
@@ -361,7 +385,9 @@ storage-side fencing.
 | --- | --- |
 | Principal or gateway digest mismatch | deny |
 | Identity policy, challenge, evidence, signature, freshness, SPIFFE chain, revocation, TLS exporter, or one-use binding mismatch | deny |
-| Fixture identity or local reference controller claims managed exclusivity | deny |
+| Managed identity without exact production admission | deny |
+| Production policy/evidence/admission, signature, freshness, consensus, scope, or failure-domain quorum mismatch | deny |
+| External coordinator unavailable, failed, stale, or mismatched, including a foreign repository binding | deny |
 | Lease, policy, checkpoint, session, agent, provider, or repository mismatch | deny |
 | Raw input digest mismatch | deny before dispatch admission |
 | Operation-class substitution | cancel exact admission, then deny |
@@ -379,10 +405,11 @@ storage-side fencing.
 | Executing request loses outcome | block lease and require recovery |
 | Post-tool correlation failure | block lease and require recovery |
 
-## 10. Remaining Phase 17B Requirements
+## 10. Production Composition And Residual Requirements
 
-A production claim requires all of the following outside this reference
-controller:
+Phase 17B2C1 provides the production policy/evidence/admission contract and its
+gateway enforcement. A real deployment still requires all of the following
+outside this repository:
 
 - gateway process and policy configuration protected from the acting agent;
 - independently managed mTLS, DPoP, or workload-OIDC credential delivery,
@@ -398,15 +425,14 @@ controller:
 - adversarial tests proving that direct tool access fails when the gateway is
   unavailable.
 
-Phase 17B1 supports `authenticated_reference`. Phase 17B2A supports a bounded
-local process reference. Phase 17B2B supports a measured OCI/Linux reference
-with read-only mounts, seccomp, `no_new_privs`, capability/UID, cgroup, and
-external-IP-egress-denial evidence. The local Docker daemon, host, evidence key,
-deployment, and side-path exclusion are not independently proven, so
-`managed_exclusive` is still not an honest assurance level. See
-`gateway-identity-admission.md` for identity and
-`protected-process-execution.md` and `oci-linux-sandbox-provider.md` for
-execution evidence and residual limits.
+Phase 17B1 supports `authenticated_reference`. Phase 17B2A supplies bounded
+local execution evidence. Phase 17B2B supplies measured OCI/Linux execution
+evidence. Phase 17B2C1 can authorize `managed_exclusive` only when independent
+provider appraisers attest the additional host, runtime, image, key, MAC,
+seccomp, network, coordination, and side-path controls. No local default or
+boolean upgrade satisfies that contract. See `gateway-identity-admission.md`,
+`protected-process-execution.md`, `oci-linux-sandbox-provider.md`, and
+`production-sandbox-admission.md`.
 
 ## 11. Validation
 
@@ -417,6 +443,8 @@ node run-gateway-identity-adapter-fixtures.js
 node run-protected-tool-gateway-fixtures.js
 node run-protected-process-executor-fixtures.js
 node run-oci-linux-sandbox-provider-fixtures.js
+node run-production-sandbox-admission-fixtures.js
+node run-production-sandbox-gateway-fixtures.js
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 
@@ -441,3 +469,9 @@ image without network access, runs live Docker containers, and rejects
 caller-result injection, profile/image drift, privileged probe evidence, and
 automatic rerun after a claimed container execution. It also measures timeout,
 kernel controls, repository immutability, and verified cleanup.
+
+The production fixtures verify independent signed appraisals, transitive
+failure-domain correlation, deployment consensus, exact OCI scope, admission
+tamper and expiry rejection, managed gateway identity, external coordinator
+binding, fail-closed coordinator absence, v0.3 decision, and v0.5 terminal
+receipt while release remains false.
