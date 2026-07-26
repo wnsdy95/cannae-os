@@ -131,6 +131,41 @@ Use this path when a tool call must have a durable gateway transaction in additi
 
 Phase 17B1 proves authenticated-reference identity. Phase 17B2A executes one policy-pinned local process without isolation. Phase 17B2B executes one static target in a measured OCI/Linux reference sandbox. Phase 17B2C1 permits managed production only from independently appraised host/runtime/image/key/MAC/seccomp/filesystem/network/coordination/exclusive-path evidence, computed failure-domain quorum, exact OCI scope, and live external fencing. This repository validates those provider claims but does not operate the TPM/TEE, KMS/HSM, registry, hardened host, coordinator, storage fencing, or installation-level side-path controls. Read `docs/gateway-identity-admission.md`, `docs/protected-tool-gateway-contract.md`, `docs/protected-process-execution.md`, `docs/oci-linux-sandbox-provider.md`, and `docs/production-sandbox-admission.md` before integrating an adapter. Release remains separately USER-controlled.
 
+### Authorizing An Exact GitHub Release
+
+Use this terminal path only after the human USER explicitly directs one exact
+GitHub release:
+
+1. Merge the intended release state, switch to the clean default branch, sync
+   it to `origin`, and wait for the exact default-branch `Validate` push run to
+   complete successfully. A pull-request check, feature-branch run, or stale
+   main run is insufficient.
+2. Finalize and track the repository-relative release-notes file. Confirm the
+   stable target tag and release are absent and that the tag advances the
+   current latest release.
+3. Run `scripts/operate_github_release.js authorize` with the exact
+   owner/repository, tag, release name, notes path, successful main run ID,
+   USER grant ID, output path, and a validity of at most 60 minutes. Require
+   `release_authorized: true` and inspect its repository, commit, CI, notes
+   digest, expiry, and USER scope before proceeding.
+4. Run `scripts/operate_github_release.js publish` before expiry. The publisher
+   must reappraise repository/CI/notes state, create the release from the full
+   commit SHA with no-commit failure enabled, resolve the remote tag, compare
+   the GitHub release body, and persist a verified consumed receipt.
+5. A matching existing release is an idempotent verification result. A partial
+   tag/release state or any mismatch is a hard stop. Never repair, delete,
+   retarget, or overwrite a release implicitly.
+6. Only `GitHubReleaseAuthorization` and its terminal
+   `GitHubReleaseReceipt` may carry release true. Never copy that value into
+   mission, campaign, verifier, dispatch, gateway, executor, sandbox, or
+   production artifacts.
+
+The authorization digest is an integrity binding, not a USER digital
+signature. The authenticated `gh` principal, local operator environment,
+GitHub credential protection, branch policy, and release mutation monitoring
+remain external trust boundaries. Read
+`docs/github-release-authorization.md` before operating this path.
+
 ### Answering Framework Questions
 
 1. Route the question in human final decision authority mode unless the user explicitly asks for AI delegation.
@@ -244,6 +279,7 @@ node run-protected-tool-gateway-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-process-executor-fixtures.js
 node run-oci-linux-sandbox-provider-fixtures.js
+node run-github-release-publisher-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
@@ -295,6 +331,9 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
 - Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed receipt quorum for v0.3+, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint. Trust-policy v0.2+ additionally requires fresh manifest-backed evidence for each verifier's selected SPIFFE or Sigstore workload-identity adapter; Sigstore also requires an exact fresh TrustedRoot. Trust-policy v0.4+ requires an exact runtime policy before dispatch and dual-signed execution evidence for each receipt/report attestation before it can count toward quorum. Trust-policy v0.5+ requires the supervisor's exact unexpired single-use challenge and dual-signed nonce responses before dispatch. Trust-policy v0.6+ requires runtime-policy v0.2+, complete failure-domain identities, and enough computed `VID-*` domains before dispatch and after execution. Runtime-policy v0.3 GitHub Actions and GitLab CI evidence additionally requires the exact native OIDC/JWKS artifact chain and a clean token-bound commit. Trust-policy v0.7 additionally requires a contiguous, current, manifest-backed transparency state with valid checkpoint consistency, observer quorum, root, incident and revocation status. Self-improvement never creates self-approval, self-release, trust-root/runtime-policy/builder-root/incident authority, or unbounded recursion.
 - Skill and runtime-control promotion additionally require one pre-persisted sealed evaluation contract executed against isolated baseline/candidate worktrees with an identical harness. Schema v0.4 also requires a fresh trusted signed report quorum. Promotion revisions must differ; completion revalidation runs the same accepted revision twice. Comparison evidence never grants release authority.
+- Only an explicit USER-granted, exact, unexpired `GitHubReleaseAuthorization`
+  may set release true, and only its verified terminal receipt may retain that
+  result. Every lower control-plane artifact remains release false.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.

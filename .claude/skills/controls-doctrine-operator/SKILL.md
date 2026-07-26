@@ -129,6 +129,41 @@ installation-level side-path controls. Read
 `docs/production-sandbox-admission.md` before integrating an adapter. Release
 remains separately USER-controlled.
 
+## Exact GitHub Release Authorization
+
+Use this terminal path only after the human USER explicitly directs one exact
+GitHub release:
+
+1. Merge the intended release state, switch to the clean default branch, sync
+   it to `origin`, and wait for the exact default-branch `Validate` push run to
+   complete successfully. A pull-request check, feature-branch run, or stale
+   main run is insufficient.
+2. Finalize and track the repository-relative release-notes file. Confirm the
+   stable target tag and release are absent and that the tag advances the
+   current latest release.
+3. Run `scripts/operate_github_release.js authorize` with the exact
+   owner/repository, tag, release name, notes path, successful main run ID,
+   USER grant ID, output path, and a validity of at most 60 minutes. Require
+   `release_authorized: true` and inspect its repository, commit, CI, notes
+   digest, expiry, and USER scope before proceeding.
+4. Run `scripts/operate_github_release.js publish` before expiry. The publisher
+   must reappraise repository/CI/notes state, create the release from the full
+   commit SHA with no-commit failure enabled, resolve the remote tag, compare
+   the GitHub release body, and persist a verified consumed receipt.
+5. A matching existing release is an idempotent verification result. A partial
+   tag/release state or any mismatch is a hard stop. Never repair, delete,
+   retarget, or overwrite a release implicitly.
+6. Only `GitHubReleaseAuthorization` and its terminal
+   `GitHubReleaseReceipt` may carry release true. Never copy that value into
+   mission, campaign, verifier, dispatch, gateway, executor, sandbox, or
+   production artifacts.
+
+The authorization digest is an integrity binding, not a USER digital
+signature. The authenticated `gh` principal, local operator environment,
+GitHub credential protection, branch policy, and release mutation monitoring
+remain external trust boundaries. Read
+`docs/github-release-authorization.md` before operating this path.
+
 ## References
 
 Read these only when needed (bundled with this skill):
@@ -208,6 +243,7 @@ node run-protected-tool-gateway-fixtures.js
 node run-gateway-identity-adapter-fixtures.js
 node run-protected-process-executor-fixtures.js
 node run-oci-linux-sandbox-provider-fixtures.js
+node run-github-release-publisher-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
 node run-model-force-v0.2-fixtures.js
@@ -245,7 +281,8 @@ For doc-only changes, also check Markdown links and JSON parsing when affected.
 
 Escalate to the user before:
 
-- External, final, or cross-boundary release.
+- External, final, or cross-boundary release unless the USER has just granted
+  the exact short-lived `GitHubReleaseAuthorization` being consumed.
 - High-risk or irreversible tool use.
 - Reading or sharing documents outside delegated need-to-know.
 - Accepting risk above the delegated role's authority.
@@ -257,6 +294,9 @@ Escalate to the user before:
 - Describing the protected process reference adapter as a sandbox, production executor, or exclusive tool path; it fixes one executable and argv and prevents automatic rerun but does not isolate filesystems, syscalls, privileges, descendant processes, or network access.
 - Mixing artifacts from separate target repositories in one flat output namespace.
 - Continuing adaptive work without a finite campaign, runtime-issued receipt, fresh trusted signed receipt quorum for v0.3+, required signed report quorum for v0.4 control-plane work, required manifest-backed evidence for every counted verifier's selected SPIFFE or Sigstore adapter under trust-policy v0.2+, the selected Sigstore TrustedRoot when applicable, the exact runtime policy and per-attestation execution evidence under trust-policy v0.4+, the exact unexpired supervisor challenge and dual-signed nonce responses under v0.5+, runtime-policy v0.2+ and enough computed failure domains under v0.6+, the exact native OIDC/JWKS chain and clean token-bound commit for runtime-policy v0.3 GitHub Actions and GitLab CI evidence, a contiguous current manifest-backed transparency state under v0.7, verified accepted baseline, integrity-checked proof store, mandatory checkpoint, or evidence-backed stop decision.
+- Setting release true anywhere except one explicit USER-granted exact GitHub
+  release authorization and its verified consumed receipt. Every lower
+  control-plane artifact remains release false.
 
 ## Mandatory Skill Adaptation
 
@@ -298,5 +338,8 @@ This Claude skill is self-contained. Its bundled files are:
 - `.claude/skills/controls-doctrine-operator/scripts/operate_protected_gateway.js`
 - `.claude/skills/controls-doctrine-operator/scripts/operate_gateway_identity.js`
 - `.claude/skills/controls-doctrine-operator/scripts/operate_protected_executor.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_oci_sandbox.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_production_sandbox.js`
+- `.claude/skills/controls-doctrine-operator/scripts/operate_github_release.js`
 
 The Codex copy under `codex-skills/controls-doctrine-operator/` is the parallel skill for Codex (`~/.codex/skills`). When the router script or a reference changes, update both copies so they do not drift.

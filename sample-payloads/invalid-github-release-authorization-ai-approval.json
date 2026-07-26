@@ -1,0 +1,88 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseAuthorization",
+  "id": "GRA-v0_2_0-130c09a02a6b",
+  "issued_at": "2026-07-26T10:00:00.000Z",
+  "expires_at": "2026-07-26T10:30:00.000Z",
+  "single_use": true,
+  "consumed": false,
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "origin_full_name": "wnsdy95/cannae-os",
+    "default_branch": "main",
+    "visibility": "PUBLIC",
+    "viewer_permission": "ADMIN"
+  },
+  "target": {
+    "tag_name": "v0.2.0",
+    "release_name": "Cannae OS v0.2.0",
+    "commit_sha": "130c09a02a6b03da30564666df46cf26838afee3",
+    "draft": false,
+    "prerelease": false,
+    "latest": true,
+    "fail_on_no_commits": true
+  },
+  "previous_release": {
+    "tag_name": "v0.1.0",
+    "commit_sha": "38109f7b7a6d46fe9ddbc11724f140792ec54725",
+    "published_at": "2026-06-25T05:06:43Z"
+  },
+  "release_notes": {
+    "relative_path": "docs/releases/v0.2.0.md",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "byte_length": 1024
+  },
+  "main_validation": {
+    "workflow_name": "Validate",
+    "required_check": "Doctrine and runtime checks",
+    "required_check_job_id": 89794946579,
+    "required_check_job_url": "https://github.com/wnsdy95/cannae-os/actions/runs/30202562268/job/89794946579",
+    "required_check_status": "completed",
+    "required_check_conclusion": "success",
+    "run_id": 30202562268,
+    "run_url": "https://github.com/wnsdy95/cannae-os/actions/runs/30202562268",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "head_branch": "main",
+    "head_sha": "130c09a02a6b03da30564666df46cf26838afee3"
+  },
+  "repository_state": {
+    "branch": "main",
+    "head_sha": "130c09a02a6b03da30564666df46cf26838afee3",
+    "origin_default_branch_sha": "130c09a02a6b03da30564666df46cf26838afee3",
+    "clean": true,
+    "tag_absent": true,
+    "release_absent": true
+  },
+  "release_review": {
+    "reviewed_by": "USER",
+    "decision": "approve",
+    "repository_visibility": "PUBLIC",
+    "target_was_already_public": true,
+    "reviewed_commit_sha": "130c09a02a6b03da30564666df46cf26838afee3",
+    "reviewed_release_notes_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "reviewed_at": "2026-07-26T10:00:00.000Z"
+  },
+  "user_grant": {
+    "grant_id": "UGR-v0_2_0",
+    "authority": "USER",
+    "scope": "single_github_release",
+    "repository": "wnsdy95/cannae-os",
+    "tag_name": "v0.2.0",
+    "target_commit_sha": "130c09a02a6b03da30564666df46cf26838afee3",
+    "release_notes_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "approved": true,
+    "granted_at": "2026-07-26T10:00:00.000Z",
+    "expires_at": "2026-07-26T10:30:00.000Z",
+    "directive_sha256": "2ea86a90ac20f909458fbe022d2d4db412a67069682563e51ddd114d95f23521"
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "ai_approval_accepted": true,
+    "release_authorized": true
+  },
+  "release_authorized": true,
+  "authorization_sha256": "3273a8fd7acd82dc648da637591dc9d160f481ec2468d1b90513ad45f84d4b39"
+}

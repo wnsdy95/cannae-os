@@ -39,6 +39,10 @@
 | `sample-payloads/invalid-release-review-eefi-approved.json` | `release-review` | fail with `NO_RELEASE_CONSTRAINTS`, `RESTRICTED_OR_EEFI_RAW_RELEASE`, and `NON_PUBLIC_RAW_FINAL_OUTPUT` |
 | `sample-payloads/valid-release-gate-decision-event.json` | `release-gate-decision-event` | pass |
 | `sample-payloads/invalid-release-gate-decision-event-missing-review.json` | `release-gate-decision-event` | fail with `RELEASE_GATE_RELEASE_BLOCK_NOT_FINAL`, `RELEASE_GATE_ALLOW_WITH_FAILED_RELEASE_REVIEW`, and `RELEASE_GATE_WITHOUT_EVIDENCE` |
+| `sample-payloads/valid-github-release-authorization.json` | `github-release-authorization` | pass with one exact USER-granted `release_authorized: true` terminal boundary |
+| `sample-payloads/invalid-github-release-authorization-ai-approval.json` | `github-release-authorization` | fail with `CONST_MISMATCH` and `GITHUB_RELEASE_AUTHORITY_DRIFT` |
+| `sample-payloads/valid-github-release-receipt.json` | `github-release-receipt` | pass with exact resolved tag and consumed authorization |
+| `sample-payloads/invalid-github-release-receipt-tag-drift.json` | `github-release-receipt` | fail with `GITHUB_RELEASE_RECEIPT_TARGET_MISMATCH` |
 | `sample-payloads/valid-maintenance-readiness.json` | `maintenance-readiness` | pass |
 | `sample-payloads/invalid-maintenance-readiness-unavailable-no-fallback.json` | `maintenance-readiness` | fail with `MIN_LENGTH`, `OVERALL_FULLY_WITH_BAD_ASSETS`, `FAILED_ASSET_WITHOUT_FALLBACK`, `UNAVAILABLE_WITHOUT_CCIR`, and `BAD_ASSETS_WITHOUT_COMMANDER_DECISION_FLAG` |
 | `sample-payloads/valid-backbrief.json` | `backbrief` | pass |
