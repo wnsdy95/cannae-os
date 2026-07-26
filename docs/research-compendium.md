@@ -4466,8 +4466,170 @@ setting become enforceable evidence for every later release?
 ### Residual Work
 
 - protected USER signing keys and authenticated policy directives;
-- organization-owner enforcement evidence and continuous drift monitoring;
-- independent `gh release verify` attestation checks and retained results;
-- release transparency witnesses and mutation alerts;
+- organization-owner enforcement evidence;
+- release transparency witnesses and cross-provider mutation alerts;
 - signed tags, credential isolation, and environment protection; and
 - provider-neutral policy and release adapters.
+
+## Phase 19B: Release Attestation And Policy Drift Monitoring
+
+### Research Question
+
+How can Cannae continuously distinguish an intact immutable-release boundary
+from policy drift, credential blindness, release/tag mutation, or a valid
+GitHub attestation for the wrong release without turning a monitor into a
+repository administrator or release authority?
+
+### Source Findings
+
+1. GitHub release attestations are cryptographically verified by a dedicated
+   CLI path.
+   The [`gh release verify` reference](https://cli.github.com/manual/gh_release_verify)
+   states that the command fetches and verifies the signed release
+   attestation and can return JSON metadata and asset digests. A successful
+   command is stronger than reading `isImmutable`, but its result still needs
+   exact repository/tag/commit scoping before Cannae can consume it.
+2. The verified statement is a multi-subject release claim.
+   A live immutable `cli/cli` release returned a Sigstore bundle v0.3 and
+   verified in-toto Statement v1 with one package subject containing the Git
+   SHA-1 plus uploaded-asset SHA-256 subjects. Cannae retains the complete
+   result and normalizes those exact subjects instead of reducing success to a
+   Boolean.
+3. Historical releases correctly lack this evidence.
+   Live verification of Cannae `v0.2.0`, which predates Phase 19A activation,
+   returned no attestation. This matches GitHub's prospective semantics and
+   requires an explicit grandfather baseline rather than retroactive failure
+   or false upgrade.
+4. Generated source archives are outside the asset-verification set.
+   GitHub's [release-integrity guidance](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/verify-release-integrity)
+   states that source ZIP and tar archives are generated on demand and cannot
+   be verified with the release-attestation asset path. The policy records
+   that exclusion rather than implying complete archive coverage.
+5. Policy observation has a stronger credential requirement than release
+   observation.
+   GitHub's [fine-grained token permission table](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens)
+   requires repository Administration read permission for
+   `GET /repos/{owner}/{repo}/immutable-releases`. An unauthenticated live
+   request returned HTTP 401. Ordinary `contents: read` therefore cannot be
+   assumed to prove policy state.
+6. Workflow-token lifetime does not grant missing permissions.
+   GitHub documents the repository `GITHUB_TOKEN` as a short-lived per-job
+   installation token, but supported workflow permission keys do not include
+   repository Administration. The full monitor must attempt the live GET,
+   retain the result, and represent 401/403 as credential uncertainty rather
+   than no drift.
+
+### Design Decisions
+
+1. Separate expected policy from observations.
+   The tracked `GitHubReleaseIntegrityPolicy` seals repository identity,
+   activation evidence, exact grandfathered releases, attestation profile,
+   cadence, retries, and authority. Each
+   `GitHubReleaseIntegrityObservation` is a time-specific measured result.
+2. Preserve three policy meanings.
+   `verified enabled`, `verified disabled`, and
+   `credential_unavailable/inspection_failed` are distinct. Only the first
+   can support readiness; the last does not set
+   `policy_drift_assessed: true`.
+3. Normalize after GitHub CLI verification.
+   Cannae requires the CLI's successful cryptographic verification, then
+   checks Sigstore bundle media type, strict DSSE payload decoding, canonical
+   equality between the signed payload and verification-result statement,
+   verified timestamp, GitHub signer identity, in-toto type, release
+   predicate, package URI, repository, tag, commit, unique assets, and asset
+   digests.
+4. Retain the raw result.
+   The normalized projection and complete JSON result enter the receipt or
+   monitor observation under a canonical digest. This supports later
+   independent re-verification and prevents lossy Boolean evidence.
+5. Upgrade publication prospectively.
+   New authorization and receipt version `0.3` binds the verifier profile and
+   requires attestation after immutable publication. Version `0.2` remains
+   historical evidence but does not claim retained attestation.
+6. Split full and release-event scopes.
+   The release-event path can verify one exact published tag with the
+   short-lived repository token. It explicitly does not claim policy
+   assessment. Full scope requires the administrative GET and every release.
+7. Bind monitoring to committed repository state.
+   A merely tracked or staged policy is insufficient. Its bytes must equal
+   the current HEAD blob, its activation commit must be in HEAD ancestry, and
+   HEAD must equal the current origin default-branch commit. Output parents
+   resolving through a symlink outside the repository are rejected.
+8. Make monitoring read-only.
+   The workflow uses `contents: read` and `attestations: read`, never runs on
+   pull requests, checks out `main`, and only uploads observations. Untrusted
+   release-event values are passed to the shell through quoted environment
+   variables. Every policy and observation field keeps repository-policy
+   change and release false.
+9. Fail visibly when credential setup is incomplete.
+   A missing Administration-read monitor token produces a retained blocked
+   observation and failed workflow. Cannae does not copy the owner's broad
+   local OAuth credential into repository secrets.
+
+### Rejected Alternatives
+
+- Treating `isImmutable: true` as the attestation: it does not retain the
+  signed repository/tag/commit/asset statement.
+- Accepting any successful `gh release verify`: a valid attestation for
+  repository or tag B must not satisfy A.
+- Trusting the CLI's projected statement without comparing it with the signed
+  DSSE payload: the two representations must be canonically identical.
+- Accepting a staged policy or stale feature-branch checkout: either can
+  rewrite the baseline without producing evidence from current protected
+  `main`.
+- Interpolating a release-event tag directly into a shell script: tags are
+  untrusted event data and must enter through a quoted environment variable.
+- Requiring attestations from `v0.1.0` or `v0.2.0`: contradicts prospective
+  activation and observed GitHub state.
+- Recording credential failure as `drift_detected: false` with assessment
+  complete: turns blindness into false assurance.
+- Storing the owner's `repo`/`workflow` OAuth token as an Actions secret:
+  unnecessarily exposes broad write authority to the monitor.
+- Automatically re-enabling a disabled policy or deleting a bad release:
+  converts observation into an unreviewed persistent action.
+- Trusting generated source archives as attested assets: contradicts GitHub's
+  documented on-demand generation behavior.
+
+### Implemented Artifacts
+
+- `docs/github-release-integrity-monitoring.md`;
+- `.github/release-integrity-policy.json`;
+- `.github/workflows/release-integrity.yml`;
+- `schema-files/github-release-integrity-policy.schema.json`;
+- `schema-files/github-release-integrity-observation.schema.json`;
+- valid and adversarial policy and observation samples;
+- `github-release-integrity-monitor.js`;
+- `run-github-release-integrity-fixtures.js`;
+- `github-release-integrity-fixtures/README.md`;
+- publisher authorization/receipt version `0.3` attestation enforcement; and
+- equivalent Codex and Claude wrappers, routing references, and operating
+  rules.
+
+### Measured Behavior
+
+- a pre-deployment live query verified the currently enabled policy and exact
+  `v0.1.0`/`v0.2.0` grandfather baseline with no post-activation releases;
+- a full fixture verifies one immutable post-activation release and retains
+  its exact package/asset statement;
+- disabled policy and unavailable Administration-read credentials produce
+  different blocked states;
+- mutable post-activation release, attestation commit substitution,
+  grandfather tag drift, and missing baseline release all block;
+- bounded retry does not convert an unavailable or mismatched attestation into
+  success;
+- release-event scope verifies one exact tag while policy assessment remains
+  false;
+- staged policy substitution, stale default-branch state, parent-symlink
+  output escape, and repaired policy authority all fail closed;
+- all 17 release-integrity fixtures preserve mutation and release false; and
+- publisher fixtures require immutable state plus exact attestation before
+  issuing a version `0.3` receipt.
+
+### Residual Work
+
+- independent Sigstore re-verification of retained bundles;
+- short-lived GitHub App installation-token minting and automated rotation;
+- signed release tags, protected USER keys, and environment protection;
+- external monitor-liveness checks and long-term transparency storage;
+- independent witnesses and cross-provider gossip; and
+- private, prerelease, first-release, and provider-neutral profiles.

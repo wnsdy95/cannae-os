@@ -954,9 +954,9 @@ Implemented controls:
 
 - `GitHubReleaseAuthorization` is the only pre-action artifact allowed to
   carry `release_authorized: true`;
-- newly issued authorization version `0.2` requires the repository
-  immutable-releases policy to be enabled and records the observed policy
-  state;
+- authorization version `0.2` introduced the repository immutable-releases
+  prerequisite and records the observed policy state; Phase 19B supersedes
+  new issuance with version `0.3`;
 - it binds owner/repository, public visibility, default branch, write-level
   viewer permission, stable tag, release name, full commit SHA, previous latest
   release, tracked release-notes path/digest/length, successful exact
@@ -994,7 +994,7 @@ Remaining hardening:
 - cryptographic USER signatures and protected signing devices;
 - signed or annotated release tags and provenance binding;
 - GitHub environment/repository-rule evidence and credential isolation;
-- mutation monitoring, transparency logging, and independent witnessing;
+- independent transparency logging and witnessing;
 - support for private repositories, prereleases, first releases, alternate
   workflow/check names, and provider-neutral release adapters.
 
@@ -1028,9 +1028,9 @@ Implemented controls:
 - missing status evidence, state drift, failed post-action verification,
   retroactive historical-release mutation, and authority expansion deny;
 - both policy artifacts retain `release_authorized: false`;
-- future `GitHubReleaseAuthorization` and `GitHubReleaseReceipt` version `0.2`
-  require enabled policy at authorization/publication and observed immutable
-  release state at terminal verification;
+- `GitHubReleaseAuthorization` and `GitHubReleaseReceipt` version `0.2` or
+  later require enabled policy at authorization/publication and observed
+  immutable release state at terminal verification;
 - historical version `0.1` release evidence remains readable but is not
   retroactively upgraded; and
 - both skills route, operate, and validate the same policy procedure.
@@ -1045,14 +1045,13 @@ Completion criteria:
   policy is already enabled for an idempotent retry.
 - A terminal receipt requires a verified enabled GET response and records that
   the pre-existing `v0.2.0` release remains non-immutable.
-- No policy artifact grants a release, and no future release can receive a
-  valid version `0.2` receipt unless GitHub reports it immutable.
+- No policy artifact grants a release, and no version `0.2` or later release
+  receipt is valid unless GitHub reports it immutable.
 
 Remaining hardening:
 
 - cryptographic USER signatures and protected signing devices;
-- organization-owner enforcement and policy drift monitoring;
-- independent release-attestation verification and transparency witnessing;
+- organization-owner enforcement and independent transparency witnessing;
 - signed tags and credential isolation;
 - provider-neutral repository-policy adapters; and
 - an explicit, separately authorized disable/rollback contract if ever
@@ -1060,7 +1059,87 @@ Remaining hardening:
 
 See `github-release-immutability.md`.
 
-## 25. Release Gates
+## 25. Phase 19B: Release Attestation And Drift Monitoring
+
+Status: tracked read-only policy, GitHub-signed release-attestation
+normalization and retention, full and release-event observation contracts,
+publisher version `0.3`, fail-closed drift monitoring, scheduled CI, offline
+adversarial fixtures, and equivalent Codex/Claude wrappers are implemented.
+
+Goal:
+
+- Continuously verify that repository release immutability remains enabled and
+  that every post-activation release is immutable and carries the exact
+  GitHub-signed attestation for its repository, tag, commit, and uploaded
+  assets.
+
+Implemented controls:
+
+- `GitHubReleaseIntegrityPolicy` binds the exact repository, Phase 19A
+  activation receipt/commit/time, two grandfathered releases, expected policy
+  endpoint, attestation profile, cadence, bounded retries, fail-closed
+  behavior, USER authority, and release false;
+- `GitHubReleaseIntegrityObservation` records exact repository state, trigger,
+  policy result, releases, resolved tag commits, immutable classifications,
+  complete normalized attestation evidence, issues, derived summary, and a
+  canonical digest while keeping policy mutation and release false;
+- policy status has explicit `verified`, `credential_unavailable`,
+  `inspection_failed`, and `not_requested` states; an unavailable
+  Administration-read credential cannot become a no-drift claim;
+- `full` scope checks the live policy and all published releases, while
+  `release_attestation` scope checks one exact release event and explicitly
+  does not claim policy assessment;
+- GitHub CLI must cryptographically verify the Sigstore bundle; Cannae then
+  constrains the verified in-toto Statement v1, release/v0.2 predicate,
+  GitHub signer identity, package URI, commit SHA-1, unique asset names and
+  SHA-256 digests, and retains the complete raw JSON with its digest;
+- publisher authorization and receipt version `0.3` bind this attestation
+  profile and permit no terminal receipt until bounded verification succeeds;
+- exact retry can finish delayed attestation verification for an already
+  matching immutable release but cannot recreate, repair, retarget, or delete
+  it;
+- `.github/workflows/release-integrity.yml` verifies every release event,
+  performs a six-hour full scan, retains observations, and fails the run on
+  credential, policy, baseline, mutability, or attestation failure; and
+- both skills route, operate, and validate the same read-only procedure.
+
+Completion criteria:
+
+- A valid GitHub attestation for repository, tag, or commit B cannot satisfy
+  A.
+- A mutable post-activation release, missing attestation, asset digest
+  substitution, grandfather tag drift, or missing baseline release blocks.
+- Policy disablement blocks, and inability to inspect policy state remains
+  distinguishable from observed no drift.
+- Release-event scope never claims policy assessment.
+- Monitoring artifacts cannot authorize a repository policy change or a
+  release.
+
+Credential boundary:
+
+- the release-attestation job can use the short-lived repository
+  `GITHUB_TOKEN`;
+- the immutable-policy GET requires repository Administration read permission;
+- the full workflow accepts `CANNAE_IMMUTABILITY_MONITOR_TOKEN` from a
+  repository-selected read-only monitoring identity and must not receive the
+  owner's broad OAuth token;
+- absent or insufficient credentials intentionally produce a failed run and a
+  blocked retained observation.
+
+Remaining hardening:
+
+- independently reverify retained Sigstore bundles outside GitHub CLI;
+- short-lived GitHub App credential minting and automated rotation;
+- signed tags and protected USER signing devices;
+- long-term transparency storage, independent witnesses, and cross-provider
+  monitoring;
+- automatic monitor-liveness supervision outside GitHub Actions; and
+- private repository, prerelease, first-release, and provider-neutral
+  profiles.
+
+See `github-release-integrity-monitoring.md`.
+
+## 26. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -1091,8 +1170,9 @@ See `github-release-immutability.md`.
 | G26 | Every Phase 17B2C1 managed transition reloads one exact production policy/evidence/admission chain, recomputes trusted independent deployment consensus and OCI scope, and holds a matching live external revision/fencing lease; production may be true only for that deployment and release remains false |
 | G27 | A GitHub release may carry release true only through one explicit USER-granted, unexpired authorization bound to the exact public repository, advancing stable tag, full main commit, successful exact Validate push run, tracked notes digest, clean origin state, absent target, and terminal verified tag/release receipt |
 | G28 | Repository release immutability may be enabled only through one explicit USER-granted, unexpired ADMIN authorization bound to the exact public repository, origin-synchronized main commit, successful exact Validate push run, policy endpoint and prior state; future release authorization and receipt require enabled policy and observed immutable release state while policy artifacts retain release false |
+| G29 | Every Phase 19B full observation binds the tracked activation baseline to a live Administration-read enabled policy and every published tag; each post-activation release must be immutable and carry a GitHub-verified exact repository/tag/commit/asset attestation, credential uncertainty remains blocked, and monitoring retains policy mutation and release false |
 
-## 26. Related Documents
+## 27. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -1114,3 +1194,4 @@ See `github-release-immutability.md`.
 - `oci-linux-sandbox-provider.md`
 - `github-release-authorization.md`
 - `github-release-immutability.md`
+- `github-release-integrity-monitoring.md`

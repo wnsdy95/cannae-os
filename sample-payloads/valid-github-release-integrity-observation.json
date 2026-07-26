@@ -1,0 +1,94 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseIntegrityObservation",
+  "id": "GRIO-20260727030000-sample",
+  "scope": "full",
+  "policy_ref": {
+    "policy_id": "GRIP-cannae-os-20260726",
+    "relative_path": ".github/release-integrity-policy.json",
+    "sha256": "bd4fc00490dc74ee9d3d87868dbfe8c29687103c78b2624642f92982a0a09701",
+    "head_blob_sha256": "c5d98075a6c7432ec0e58a80faed06ecb0fa213c00fe643b5ce3f512b6b4dadb",
+    "committed_at_head": true
+  },
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "default_branch": "main",
+    "visibility": "PUBLIC",
+    "branch": "main",
+    "observed_head_sha": "28ffca6616b245fc56450235fe54802a49458286",
+    "origin_default_branch_sha": "28ffca6616b245fc56450235fe54802a49458286",
+    "clean": true
+  },
+  "trigger": {
+    "kind": "schedule",
+    "actor": "github-actions",
+    "run_id": "30211775021",
+    "ref": "refs/heads/main"
+  },
+  "policy_observation": {
+    "api_version": "2026-03-10",
+    "endpoint": "/repos/wnsdy95/cannae-os/immutable-releases",
+    "status": "verified",
+    "enabled": true,
+    "enforced_by_owner": false,
+    "checked_at": "2026-07-27T03:00:00.000Z"
+  },
+  "releases": [
+    {
+      "tag_name": "v0.1.0",
+      "release_name": "Cannae OS v0.1.0",
+      "commit_sha": "38109f7b7a6d46fe9ddbc11724f140792ec54725",
+      "published_at": "2026-06-25T05:06:43Z",
+      "draft": false,
+      "prerelease": false,
+      "latest": false,
+      "immutable": false,
+      "classification": "grandfathered",
+      "attestation": {
+        "required": false,
+        "status": "not_required"
+      }
+    },
+    {
+      "tag_name": "v0.2.0",
+      "release_name": "Cannae OS v0.2.0",
+      "commit_sha": "f7d3e2751d715f1c7bb67f818b1135a10e90d888",
+      "published_at": "2026-07-26T15:25:25Z",
+      "draft": false,
+      "prerelease": false,
+      "latest": true,
+      "immutable": false,
+      "classification": "grandfathered",
+      "attestation": {
+        "required": false,
+        "status": "not_required"
+      }
+    }
+  ],
+  "issues": [],
+  "summary": {
+    "status": "ready",
+    "monitoring_complete": true,
+    "policy_assessment_complete": true,
+    "policy_drift_assessed": true,
+    "policy_drift_detected": false,
+    "release_integrity_assessed": true,
+    "release_count": 2,
+    "grandfathered_count": 2,
+    "post_activation_count": 0,
+    "required_attestation_count": 0,
+    "verified_attestation_count": 0,
+    "issue_count": 0
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "monitoring_only": true,
+    "repository_policy_change_authorized": false,
+    "release_authorized": false
+  },
+  "repository_policy_change_authorized": false,
+  "release_authorized": false,
+  "observed_at": "2026-07-27T03:00:00.000Z",
+  "observation_sha256": "a4e59844bbcce0ecbdacc72579954bef06866776878678f8fac968a94ed1894f"
+}

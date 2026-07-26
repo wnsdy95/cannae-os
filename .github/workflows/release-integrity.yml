@@ -1,0 +1,113 @@
+name: Release Integrity
+
+on:
+  release:
+    types:
+      - published
+  schedule:
+    - cron: "37 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  attestations: read
+  contents: read
+
+concurrency:
+  group: release-integrity-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release-attestation:
+    name: Verify published release attestation
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPECTED_TAG: ${{ github.event.release.tag_name }}
+      OBSERVATION_DIR: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}
+      TRIGGER_ACTOR: ${{ github.actor }}
+      TRIGGER_REF: ${{ github.ref }}
+      TRIGGER_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Checkout monitored default branch
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22.22.3"
+
+      - name: Verify exact release event
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node github-release-integrity-monitor.js monitor \
+            --repository-root . \
+            --policy .github/release-integrity-policy.json \
+            --output "${OBSERVATION_DIR}/release-attestation.json" \
+            --scope release_attestation \
+            --expected-tag "${EXPECTED_TAG}" \
+            --trigger release \
+            --actor "${TRIGGER_ACTOR}" \
+            --run-id "${TRIGGER_RUN_ID}" \
+            --ref "${TRIGGER_REF}"
+
+      - name: Retain release-attestation observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-attestation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/release-attestation.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+  full-monitor:
+    name: Monitor immutable policy and all releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OBSERVATION_DIR: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}
+      TRIGGER_ACTOR: ${{ github.actor }}
+      TRIGGER_KIND: ${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event_name }}
+      TRIGGER_REF: ${{ github.ref }}
+      TRIGGER_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Checkout monitored default branch
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22.22.3"
+
+      - name: Inspect policy and release integrity
+        env:
+          CANNAE_IMMUTABILITY_MONITOR_TOKEN: ${{ secrets.CANNAE_IMMUTABILITY_MONITOR_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node github-release-integrity-monitor.js monitor \
+            --repository-root . \
+            --policy .github/release-integrity-policy.json \
+            --output "${OBSERVATION_DIR}/full-observation.json" \
+            --scope full \
+            --trigger "${TRIGGER_KIND}" \
+            --actor "${TRIGGER_ACTOR}" \
+            --run-id "${TRIGGER_RUN_ID}" \
+            --ref "${TRIGGER_REF}"
+
+      - name: Retain full integrity observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-integrity-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/full-observation.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

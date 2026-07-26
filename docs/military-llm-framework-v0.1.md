@@ -485,6 +485,9 @@ Current document set:
 180. `github-release-immutability.md` and `github-release-immutability.js`: Bind one separate USER repository-policy decision to prospective immutable-release activation while keeping release authority false.
 181. `schema-files/github-release-immutability-authorization.schema.json` and `schema-files/github-release-immutability-receipt.schema.json`: Contracts for exact policy authorization and verified terminal state.
 182. `run-github-release-immutability-fixtures.js`: Offline adversarial verification of ADMIN/main-CI binding, one activation, idempotent retry, historical-release preservation, and authority separation.
+183. `github-release-integrity-monitoring.md` and `github-release-integrity-monitor.js`: Continuously bind the activation baseline to live immutable-policy state, resolved release tags, and retained GitHub-signed release attestations without mutation or release authority.
+184. `schema-files/github-release-integrity-policy.schema.json` and `schema-files/github-release-integrity-observation.schema.json`: Contracts for the tracked read-only baseline, explicit credential state, full/release-event scopes, and canonical monitoring evidence.
+185. `run-github-release-integrity-fixtures.js`: Offline adversarial verification of policy drift, credential uncertainty, mutable future releases, attestation substitution, baseline loss, bounded retry, and authority separation.
 
 Next documentation tasks:
 

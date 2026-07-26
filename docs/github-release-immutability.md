@@ -36,7 +36,8 @@ GitHub's immutable-releases setting:
 
 For this repository, `v0.2.0` predates activation and therefore remains an
 explicit non-immutable historical release. Future Cannae release receipts
-using schema version `0.2` must observe `isImmutable: true`.
+using schema version `0.3` must observe `isImmutable: true` and retain a
+verified GitHub release attestation.
 
 ## Contracts
 
@@ -117,14 +118,19 @@ The Claude Code skill exposes the same wrapper at
 
 ## Future Release Gate
 
-Newly issued `GitHubReleaseAuthorization` documents use schema version `0.2`.
+Newly issued `GitHubReleaseAuthorization` documents use schema version `0.3`.
 The authorizer and publisher both query the immutable-releases endpoint and
 require `enabled: true`. Terminal release verification also requires the new
-release listing to report `isImmutable: true`.
+release listing to report `isImmutable: true` and the GitHub-signed release
+attestation to bind the exact repository, tag, commit, and uploaded assets.
 
-Historical schema `0.1` release artifacts remain readable as evidence. They do
-not satisfy the new prospective policy gate and are not upgraded
-retroactively.
+Historical schema `0.1` and `0.2` release artifacts remain readable as
+evidence. They do not satisfy the current prospective attestation gate and are
+not upgraded retroactively.
+
+Phase 19B continuously checks the live policy and future release attestations
+under `github-release-integrity-monitoring.md`. Monitoring is read-only and
+does not inherit this activation authority.
 
 ## Failure Rules
 
@@ -143,6 +149,8 @@ retroactively.
 | Historical release immutable state changes unexpectedly | deny |
 | Future release policy is disabled at authorization or publication | deny release |
 | Future release is not observed immutable after publication | deny terminal receipt |
+| Future release attestation is missing or scope-mismatched | deny terminal receipt and alert |
+| Scheduled monitor cannot read Administration state | block with credential-unavailable evidence |
 
 ## Security Boundary And Limits
 
@@ -158,9 +166,9 @@ retroactively.
 - The runtime intentionally has no automatic disable command. Disabling the
   policy is a separate future repository-policy decision and cannot be
   inferred from the recorded rollback operation name.
-- Signed tags, independent mutation monitoring, credential isolation,
-  transparency witnesses, and provider-neutral release adapters remain
-  separate controls.
+- Phase 19B provides continuous GitHub policy and attestation monitoring, but
+  independent providers, signed tags, credential isolation, and external
+  transparency witnesses remain separate controls.
 
 ## Validation
 
@@ -175,6 +183,7 @@ node validator-cli-prototype/validate.js \
 
 node run-github-release-immutability-fixtures.js
 node run-github-release-publisher-fixtures.js
+node run-github-release-integrity-fixtures.js
 ```
 
 The fixture adapters never contact GitHub or change repository policy.

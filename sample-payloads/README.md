@@ -32,6 +32,7 @@ Use these examples to test:
 - release gate decision validation
 - exact GitHub release authorization and terminal receipt validation
 - GitHub release-immutability policy authorization and receipt validation
+- GitHub release-integrity policy and continuous observation validation
 - maintenance readiness validation
 - backbrief validation
 - rehearsal validation
@@ -112,5 +113,17 @@ preserving the historical release's non-immutable status; the invalid receipt
 proves that policy execution cannot claim release authority. Use
 `run-github-release-immutability-fixtures.js` for activation, retry, drift, and
 post-action verification behavior without network access.
+
+The GitHub release-integrity samples define the Phase 19B read-only monitoring
+boundary. The valid policy seals the activation receipt, two grandfathered
+releases, attestation verifier profile, cadence, retries, and fail-closed
+behavior. The valid observation records an enabled live policy and unchanged
+baseline while keeping policy mutation and release false. The invalid samples
+show that neither contract can be repaired into mutation or release authority.
+Use `run-github-release-integrity-fixtures.js` for policy drift, credential
+uncertainty, mutable future releases, GitHub attestation commit substitution,
+missing or changed baseline releases, uncommitted-policy substitution, stale
+default-branch state, parent-symlink output escape, bounded retry, and exact
+release-event scope.
 
 Use `run-protected-tool-gateway-fixtures.js` for coherent contract-reference authorization, idempotency, exact begin/commit correlation, pre-execution cancellation, and unknown-outcome recovery. Use `run-gateway-identity-adapter-fixtures.js` for a real TLS 1.3 mTLS handshake, SPIFFE X.509 chain, equal endpoint exporter proof, Ed25519 challenge/evidence signatures, manifest-backed gateway commit, and adversarial expiry, replay, revocation, tamper, challenge-reuse, and certificate-substitution rejection. Use `run-protected-process-executor-fixtures.js` for real exact process execution, signed before/after evidence, caller-result rejection, executable drift, timeout, no-rerun recovery, and forbidden repository-effect rejection. Use `run-oci-linux-sandbox-provider-fixtures.js` for measured container execution and no-rerun recovery. Use `run-production-sandbox-admission-fixtures.js` for cryptographic quorum/admission behavior and `run-production-sandbox-gateway-fixtures.js` for actual mTLS identity, exact production scope, external coordinator enforcement, and v0.5 terminal projection.

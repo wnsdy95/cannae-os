@@ -1,6 +1,6 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-07-25",
+  "as_of": "2026-07-27",
   "source_map": "docs/source-map.md",
   "valid": true,
   "checked_hosts": 54,
@@ -73,6 +73,7 @@
       "files": [
         "docs/github-release-authorization.md",
         "docs/github-release-immutability.md",
+        "docs/github-release-integrity-monitoring.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
       ]
@@ -154,6 +155,7 @@
       "files": [
         "docs/github-release-authorization.md",
         "docs/github-release-immutability.md",
+        "docs/github-release-integrity-monitoring.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"

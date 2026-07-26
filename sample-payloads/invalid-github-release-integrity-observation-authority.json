@@ -1,0 +1,9 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseIntegrityObservation",
+  "id": "GRIO-invalid-authority",
+  "scope": "full",
+  "repository_policy_change_authorized": true,
+  "release_authorized": true,
+  "observation_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+}

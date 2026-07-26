@@ -31,6 +31,10 @@ class FakeReleaseAdapter {
     this.clock = ISSUED_AT;
     this.createCalls = [];
     this.forceCreatedReleaseMutable = false;
+    this.forceAttestationUnavailable = false;
+    this.forceAttestationCommitDrift = false;
+    this.forceAttestationEnvelopeDrift = false;
+    this.sleepCalls = [];
     this.tags = new Map();
     this.releases = new Map();
     this.releaseImmutability = {
@@ -82,6 +86,14 @@ class FakeReleaseAdapter {
     return this.clock;
   }
 
+  sleep(milliseconds) {
+    this.sleepCalls.push(milliseconds);
+  }
+
+  inspectGhVersion() {
+    return "2.93.0";
+  }
+
   inspectRepository() {
     return { ...this.repository };
   }
@@ -127,6 +139,102 @@ class FakeReleaseAdapter {
       latest: release.latest === true,
       immutable: release.immutable === true
     } : null;
+  }
+
+  inspectReleaseAttestation(repository, tagName) {
+    if (this.forceAttestationUnavailable) {
+      throw new ReleaseAuthorizationError(
+        "GITHUB_RELEASE_ATTESTATION_VERIFY_FAILED",
+        "fixture attestation unavailable"
+      );
+    }
+    const release = this.releases.get(tagName);
+    if (!release) {
+      throw new ReleaseAuthorizationError(
+        "GITHUB_RELEASE_ATTESTATION_VERIFY_FAILED",
+        "fixture release missing"
+      );
+    }
+    const commitSha = this.forceAttestationCommitDrift
+      ? PREVIOUS_SHA
+      : this.tags.get(tagName);
+    const packageUri = `pkg:github/${repository}@${tagName}`;
+    const statement = {
+      _type: "https://in-toto.io/Statement/v1",
+      subject: [
+        {
+          uri: packageUri,
+          digest: { sha1: commitSha }
+        },
+        {
+          name: "cannae-os.txt",
+          digest: {
+            sha256:
+              "40d06bd25e36d85728990018e84f08c8dd633259e5327436f78a1eeec0bde98c"
+          }
+        }
+      ],
+      predicateType:
+        "https://in-toto.io/attestation/release/v0.2",
+      predicate: {
+        databaseId: "200000001",
+        ownerId: "1000",
+        packageId: "2000",
+        purl: packageUri,
+        repository,
+        repositoryId: "2000",
+        tag: tagName
+      }
+    };
+    const envelopeStatement = this.forceAttestationEnvelopeDrift
+      ? {
+        ...statement,
+        predicate: {
+          ...statement.predicate,
+          tag: "v9.9.9"
+        }
+      }
+      : statement;
+    return {
+      gh_version: "2.93.0",
+      raw_verification: {
+        attestation: {
+          bundle: {
+            mediaType: "application/vnd.dev.sigstore.bundle.v0.3+json",
+            dsseEnvelope: {
+              payload: Buffer.from(
+                JSON.stringify(envelopeStatement),
+                "utf8"
+              ).toString("base64"),
+              payloadType: "application/vnd.in-toto+json",
+              signatures: [
+                { sig: "fixture-signature" }
+              ]
+            }
+          }
+        },
+        verificationResult: {
+          mediaType:
+            "application/vnd.dev.sigstore.verificationresult+json;version=0.1",
+          signature: {
+            certificate: {
+              certificateIssuer:
+                "CN=Fulcio Intermediate l1,O=GitHub\\, Inc.",
+              subjectAlternativeName:
+                "https://dotcom.releases.github.com"
+            }
+          },
+          verifiedTimestamps: [
+            {
+              type: "TimestampAuthority",
+              uri: "timestamp.githubapp.com",
+              timestamp: "2026-07-26T10:05:00.000Z"
+            }
+          ],
+          statement
+        }
+      }
+    };
   }
 
   createRelease(repository, target, notesAbsolutePath) {
@@ -224,11 +332,46 @@ function runFixtures() {
 
   {
     const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    authorization.release_attestation.minimum_verifier_version = "2.94.0";
+    authorization.authorization_sha256 =
+      authorizationDigest(authorization);
+    results.push({
+      name: "authorization cannot widen the fixed release-attestation profile",
+      ok: validateAuthorizationSemantics(authorization).some(issue =>
+        issue.code === "GITHUB_RELEASE_ATTESTATION_POLICY_INVALID") &&
+        validatePayload(
+          authorization,
+          "github-release-authorization"
+        ).valid === false
+    });
+  }
+
+  {
+    const fixture = makeFixture();
     fixture.adapter.repository.clean = false;
     results.push(expectError(
       "dirty worktree blocks authorization",
       "RELEASE_REPOSITORY_DIRTY",
       () => authorizeRelease(authorizationOptions(fixture), fixture.adapter)
+    ));
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
+    persistAuthorization(fixture, authorization);
+    fixture.adapter.forceAttestationEnvelopeDrift = true;
+    results.push(expectError(
+      "DSSE payload and verification-result statement cannot diverge",
+      "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
+      () => publishAuthorizedRelease({
+        repositoryRoot: fixture.repositoryRoot,
+        authorizationPath: fixture.authorizationPath
+      }, fixture.adapter)
     ));
   }
 
@@ -339,7 +482,7 @@ function runFixtures() {
     persistAuthorization(fixture, authorization);
     fixture.adapter.forceCreatedReleaseMutable = true;
     results.push(expectError(
-      "a newly published mutable release cannot produce a v0.2 receipt",
+      "a newly published mutable release cannot produce a v0.3 receipt",
       "PUBLISHED_RELEASE_MISMATCH",
       () => publishAuthorizedRelease({
         repositoryRoot: fixture.repositoryRoot,
@@ -381,17 +524,51 @@ function runFixtures() {
     }, fixture.adapter);
     const schema = validatePayload(receipt, "github-release-receipt");
     results.push({
-      name: "exact release publishes once and an exact retry is idempotent",
+      name: "exact release and GitHub attestation publish once and retry idempotently",
       ok: firstCreateCount === 1 &&
         fixture.adapter.createCalls.length === 1 &&
         receipt.release_authorized === true &&
         receipt.authorization_consumed === true &&
+        receipt.schema_version === "0.3" &&
         receipt.release.resolved_tag_commit_sha === TARGET_SHA &&
+        receipt.attestation.verification_succeeded === true &&
+        receipt.attestation.statement.commit_sha1 === TARGET_SHA &&
+        receipt.attestation.statement.repository === "wnsdy95/cannae-os" &&
         receipt.receipt_sha256 === receiptDigest(receipt) &&
         validateReceiptSemantics(receipt).length === 0 &&
         replayReceipt.release.database_id === receipt.release.database_id &&
         schema.valid === true
     });
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
+    persistAuthorization(fixture, authorization);
+    fixture.adapter.forceAttestationUnavailable = true;
+    results.push(expectError(
+      "release without a verifiable GitHub attestation cannot produce a receipt",
+      "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
+      () => publishAuthorizedRelease({
+        repositoryRoot: fixture.repositoryRoot,
+        authorizationPath: fixture.authorizationPath
+      }, fixture.adapter)
+    ));
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
+    persistAuthorization(fixture, authorization);
+    fixture.adapter.forceAttestationCommitDrift = true;
+    results.push(expectError(
+      "attestation for a different commit cannot satisfy the release receipt",
+      "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
+      () => publishAuthorizedRelease({
+        repositoryRoot: fixture.repositoryRoot,
+        authorizationPath: fixture.authorizationPath
+      }, fixture.adapter)
+    ));
   }
 
   {

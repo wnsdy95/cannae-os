@@ -26,7 +26,8 @@
       "type": "string",
       "enum": [
         "0.1",
-        "0.2"
+        "0.2",
+        "0.3"
       ]
     },
     "type": {
@@ -179,6 +180,187 @@
         }
       }
     },
+    "attestation": {
+      "type": "object",
+      "required": [
+        "verification_succeeded",
+        "verifier",
+        "verified_at",
+        "attestation_sha256",
+        "bundle_media_type",
+        "verification_result_media_type",
+        "certificate",
+        "verified_timestamps",
+        "statement",
+        "raw_verification"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verification_succeeded": {
+          "type": "boolean",
+          "const": true
+        },
+        "verifier": {
+          "type": "object",
+          "required": [
+            "tool",
+            "version",
+            "minimum_version",
+            "command",
+            "output_format"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "type": "string",
+              "const": "gh"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+            },
+            "minimum_version": {
+              "type": "string",
+              "const": "2.93.0"
+            },
+            "command": {
+              "type": "array",
+              "minItems": 7,
+              "maxItems": 7,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "output_format": {
+              "type": "string",
+              "const": "json"
+            }
+          }
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "attestation_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "bundle_media_type": {
+          "type": "string",
+          "const": "application/vnd.dev.sigstore.bundle.v0.3+json"
+        },
+        "verification_result_media_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "certificate": {
+          "type": "object",
+          "required": [
+            "issuer",
+            "subject_alternative_name"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "issuer": {
+              "type": "string",
+              "minLength": 1
+            },
+            "subject_alternative_name": {
+              "type": "string",
+              "const": "https://dotcom.releases.github.com"
+            }
+          }
+        },
+        "verified_timestamps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "uri",
+              "timestamp"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uri": {
+                "type": "string",
+                "minLength": 1
+              },
+              "timestamp": {
+                "$ref": "common.schema.json#/$defs/timestamp"
+              }
+            }
+          }
+        },
+        "statement": {
+          "type": "object",
+          "required": [
+            "statement_type",
+            "predicate_type",
+            "repository",
+            "tag_name",
+            "package_uri",
+            "commit_sha1",
+            "asset_subjects"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "statement_type": {
+              "type": "string",
+              "const": "https://in-toto.io/Statement/v1"
+            },
+            "predicate_type": {
+              "type": "string",
+              "const": "https://in-toto.io/attestation/release/v0.2"
+            },
+            "repository": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+            },
+            "tag_name": {
+              "type": "string",
+              "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+            },
+            "package_uri": {
+              "type": "string",
+              "minLength": 1
+            },
+            "commit_sha1": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "asset_subjects": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "sha256"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sha256": {
+                    "$ref": "common.schema.json#/$defs/sha256"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "raw_verification": {
+          "type": "object"
+        }
+      }
+    },
     "release_notes_sha256": {
       "$ref": "common.schema.json#/$defs/sha256"
     },
@@ -233,7 +415,10 @@
       "if": {
         "properties": {
           "schema_version": {
-            "const": "0.2"
+            "enum": [
+              "0.2",
+              "0.3"
+            ]
           }
         },
         "required": [
@@ -248,6 +433,23 @@
             ]
           }
         }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.3"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "attestation"
+        ]
       }
     }
   ]

@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseIntegrityPolicy",
+  "id": "GRIP-cannae-os-20260726",
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "default_branch": "main",
+    "visibility": "PUBLIC"
+  },
+  "activation": {
+    "receipt_id": "GRIR-enable-28ffca6616b2",
+    "receipt_sha256": "db1195f627134148e016f30317e2d7d51e491d1469ac8ca6d1de8a29daff363d",
+    "activation_commit_sha": "28ffca6616b245fc56450235fe54802a49458286",
+    "activated_at": "2026-07-26T17:11:54.605Z",
+    "future_releases_only": true
+  },
+  "immutable_release_policy": {
+    "api_version": "2026-03-10",
+    "endpoint": "/repos/wnsdy95/cannae-os/immutable-releases",
+    "expected_enabled": true
+  },
+  "grandfathered_releases": [
+    {
+      "tag_name": "v0.1.0",
+      "commit_sha": "38109f7b7a6d46fe9ddbc11724f140792ec54725",
+      "published_at": "2026-06-25T05:06:43Z",
+      "expected_immutable": false,
+      "attestation_required": false
+    },
+    {
+      "tag_name": "v0.2.0",
+      "commit_sha": "f7d3e2751d715f1c7bb67f818b1135a10e90d888",
+      "published_at": "2026-07-26T15:25:25Z",
+      "expected_immutable": false,
+      "attestation_required": false
+    }
+  ],
+  "attestation_policy": {
+    "required_for_non_grandfathered": true,
+    "verifier_tool": "gh",
+    "minimum_verifier_version": "2.93.0",
+    "output_format": "json",
+    "statement_type": "https://in-toto.io/Statement/v1",
+    "predicate_type": "https://in-toto.io/attestation/release/v0.2",
+    "signer_identity": "https://dotcom.releases.github.com",
+    "source_archives_in_scope": false
+  },
+  "monitoring": {
+    "cadence_minutes": 360,
+    "maximum_release_count": 100,
+    "attestation_retry_attempts": 6,
+    "attestation_retry_interval_seconds": 10,
+    "fail_closed_on_credential_unavailable": true,
+    "fail_closed_on_policy_drift": true,
+    "fail_closed_on_attestation_failure": true
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "monitoring_authorized": true,
+    "repository_policy_change_authorized": false,
+    "release_authorized": false
+  },
+  "repository_policy_change_authorized": false,
+  "release_authorized": false,
+  "policy_sha256": "bd4fc00490dc74ee9d3d87868dbfe8c29687103c78b2624642f92982a0a09701"
+}

@@ -59,6 +59,7 @@ Use these signals to choose which skill surface to improve:
 | New adaptive workflow | bounded campaign, ready cycle order, executed verification receipt, signed verifier quorum for v0.3, checkpoint, accepted-parent lineage, decision, supervisor/controller fixtures, and integrity-checked repository evidence |
 | New retained release path | exact USER grant, repository/tag/commit/notes/main-CI binding, bounded authorization, pre-action reappraisal, terminal receipt, adversarial fixture, and equivalent Codex/Claude wrapper |
 | Persistent repository policy activation | separate exact USER policy grant, administrator/repository/main-CI/prior-state binding, bounded authorization, pre-action reappraisal, terminal observed-state receipt, explicit rollback exclusion, downstream enforcement, adversarial fixture, and equivalent Codex/Claude wrapper |
+| Continuous release-integrity monitor | tracked activation baseline, explicit credential state, live policy check, resolved tag/immutability scan, exact retained signed attestation, fail-closed observation, scheduled/release-event CI, no mutation/release authority, adversarial fixture, and equivalent Codex/Claude wrapper |
 | New or moved corpus artifact | route coverage remains `valid: true` with `unrouted_artifact_count: 0` |
 | Any accepted Controls improvement | one concrete skill delta in both provider skill trees, same-change validation, and an explicit product-to-skill mapping |
 

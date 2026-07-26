@@ -162,6 +162,8 @@ Recommended validation order:
 103. `github-release-receipt.schema.json`
 104. `github-release-immutability-authorization.schema.json`
 105. `github-release-immutability-receipt.schema.json`
+106. `github-release-integrity-policy.schema.json`
+107. `github-release-integrity-observation.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -189,10 +191,11 @@ All schemas target JSON Schema draft 2020-12.
 to carry `release_authorized: true`. It binds one explicit USER grant to the
 exact public repository, stable tag, full commit, previous release, tracked
 notes digest, successful default-branch `Validate` push run, clean repository
-state, enabled release-immutability policy for version `0.2`, and short expiry.
-`GitHubReleaseReceipt` records exact publication, tag verification, observed
-immutable state for version `0.2`, and authorization consumption. No lower
-control-plane contract inherits that value.
+state, enabled release-immutability policy, GitHub attestation profile for
+version `0.3`, and short expiry. `GitHubReleaseReceipt` records exact
+publication, tag verification, observed immutable state, complete normalized
+GitHub-signed attestation evidence for version `0.3`, and authorization
+consumption. No lower control-plane contract inherits that value.
 
 `GitHubReleaseImmutabilityAuthorization` separately binds one USER-approved
 repository ADMIN action to the exact immutable-releases endpoint, disabled
@@ -200,6 +203,15 @@ prior state, clean origin-synchronized main commit, successful `Validate` push
 run, historical latest-release snapshot, and bounded validity.
 `GitHubReleaseImmutabilityReceipt` records one verified activation or
 already-enabled idempotent retry while keeping `release_authorized: false`.
+
+`GitHubReleaseIntegrityPolicy` seals the Phase 19A activation baseline,
+expected enabled state, grandfathered releases, attestation profile, cadence,
+bounded retry, and fail-closed behavior. `GitHubReleaseIntegrityObservation`
+retains the exact committed policy-blob digest, current default-branch state,
+live policy status, explicit credential uncertainty, every selected resolved
+release, immutable classification, complete verified attestation evidence,
+derived issues and a canonical digest. Both contracts are read-only:
+repository-policy mutation and release remain false.
 
 `DispatchToolPolicy` v0.2 must be controller-compiled from a policy-draft digest already authorized by the exact USER-authored mission plan. Each rule binds one allowed mission action, exact provider tool, operation class, matcher input, repository-state control, and finite budget under default deny; project-hook policies cannot authorize network or delegation classes. `AgentDispatchLease` binds that policy to one provider session, repository identity/state, context chain, nonce, and validity window. `ToolAdmissionEvent` records each pre-tool allow or deny decision, while `AgentExecutionCheckpoint` v0.2 maintains the serial state chain, exact provider-result digest, and unresolved-effect disposition. All four retain `USER` final authority and keep release unauthorized.
 
