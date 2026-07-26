@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-release-integrity-policy.schema.json",
+  "title": "GitHub Release Integrity Policy",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "repository",
+    "activation",
+    "immutable_release_policy",
+    "grandfathered_releases",
+    "attestation_policy",
+    "monitoring",
+    "authority",
+    "repository_policy_change_authorized",
+    "release_authorized",
+    "policy_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseIntegrityPolicy"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "full_name",
+        "default_branch",
+        "visibility"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibility": {
+          "type": "string",
+          "const": "PUBLIC"
+        }
+      }
+    },
+    "activation": {
+      "type": "object",
+      "required": [
+        "receipt_id",
+        "receipt_sha256",
+        "activation_commit_sha",
+        "activated_at",
+        "future_releases_only"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "receipt_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "receipt_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "activation_commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "activated_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "future_releases_only": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "immutable_release_policy": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "endpoint",
+        "expected_enabled"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "type": "string",
+          "const": "2026-03-10"
+        },
+        "endpoint": {
+          "type": "string",
+          "pattern": "^/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/immutable-releases$"
+        },
+        "expected_enabled": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "grandfathered_releases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "required": [
+          "tag_name",
+          "commit_sha",
+          "published_at",
+          "expected_immutable",
+          "attestation_required"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "tag_name": {
+            "type": "string",
+            "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+          },
+          "commit_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "published_at": {
+            "$ref": "common.schema.json#/$defs/timestamp"
+          },
+          "expected_immutable": {
+            "type": "boolean",
+            "const": false
+          },
+          "attestation_required": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      }
+    },
+    "attestation_policy": {
+      "type": "object",
+      "required": [
+        "required_for_non_grandfathered",
+        "verifier_tool",
+        "minimum_verifier_version",
+        "output_format",
+        "statement_type",
+        "predicate_type",
+        "signer_identity",
+        "source_archives_in_scope"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "required_for_non_grandfathered": {
+          "type": "boolean",
+          "const": true
+        },
+        "verifier_tool": {
+          "type": "string",
+          "const": "gh"
+        },
+        "minimum_verifier_version": {
+          "type": "string",
+          "const": "2.93.0"
+        },
+        "output_format": {
+          "type": "string",
+          "const": "json"
+        },
+        "statement_type": {
+          "type": "string",
+          "const": "https://in-toto.io/Statement/v1"
+        },
+        "predicate_type": {
+          "type": "string",
+          "const": "https://in-toto.io/attestation/release/v0.2"
+        },
+        "signer_identity": {
+          "type": "string",
+          "const": "https://dotcom.releases.github.com"
+        },
+        "source_archives_in_scope": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "monitoring": {
+      "type": "object",
+      "required": [
+        "cadence_minutes",
+        "maximum_release_count",
+        "attestation_retry_attempts",
+        "attestation_retry_interval_seconds",
+        "fail_closed_on_credential_unavailable",
+        "fail_closed_on_policy_drift",
+        "fail_closed_on_attestation_failure"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "cadence_minutes": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 1440
+        },
+        "maximum_release_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "attestation_retry_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "attestation_retry_interval_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "fail_closed_on_credential_unavailable": {
+          "type": "boolean",
+          "const": true
+        },
+        "fail_closed_on_policy_drift": {
+          "type": "boolean",
+          "const": true
+        },
+        "fail_closed_on_attestation_failure": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "monitoring_authorized",
+        "repository_policy_change_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "monitoring_authorized": {
+          "type": "boolean",
+          "const": true
+        },
+        "repository_policy_change_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "repository_policy_change_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "policy_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}

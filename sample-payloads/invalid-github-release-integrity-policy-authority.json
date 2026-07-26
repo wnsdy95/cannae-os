@@ -1,0 +1,8 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseIntegrityPolicy",
+  "id": "GRIP-invalid-authority",
+  "repository_policy_change_authorized": true,
+  "release_authorized": true,
+  "policy_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+}

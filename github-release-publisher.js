@@ -7,6 +7,14 @@ const { spawnSync } = require("child_process");
 const { canonicalJsonBytes } = require("./verifier-identity-evidence");
 
 const GITHUB_API_VERSION = "2026-03-10";
+const RELEASE_ATTESTATION_MINIMUM_GH_VERSION = "2.93.0";
+const RELEASE_ATTESTATION_STATEMENT_TYPE = "https://in-toto.io/Statement/v1";
+const RELEASE_ATTESTATION_PREDICATE_TYPE =
+  "https://in-toto.io/attestation/release/v0.2";
+const RELEASE_ATTESTATION_SIGNER_IDENTITY =
+  "https://dotcom.releases.github.com";
+const RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE =
+  "application/vnd.dev.sigstore.bundle.v0.3+json";
 
 class ReleaseAuthorizationError extends Error {
   constructor(code, message, details = {}) {
@@ -73,6 +81,25 @@ function compareSemverTags(left, right) {
   return 0;
 }
 
+function compareVersions(left, right) {
+  const parse = value => {
+    const match = /^v?(\d+)\.(\d+)\.(\d+)$/.exec(String(value || ""));
+    return match ? match.slice(1).map(Number) : null;
+  };
+  const a = parse(left);
+  const b = parse(right);
+  if (!a || !b) return null;
+  for (let index = 0; index < 3; index += 1) {
+    if (a[index] !== b[index]) return a[index] > b[index] ? 1 : -1;
+  }
+  return 0;
+}
+
+function sameCanonicalJson(left, right) {
+  return sha256(canonicalJsonBytes(left)) ===
+    sha256(canonicalJsonBytes(right));
+}
+
 function validateAuthorizationSemantics(document, options = {}) {
   const issues = [];
   const target = document && document.target || {};
@@ -136,7 +163,7 @@ function validateAuthorizationSemantics(document, options = {}) {
       "The normalized Git origin repository must equal the authorized GitHub repository."
     ));
   }
-  if (document && document.schema_version === "0.2") {
+  if (document && ["0.2", "0.3"].includes(document.schema_version)) {
     const checkedAt = parseTimestamp(immutability.checked_at);
     const issuedAt = parseTimestamp(document.issued_at);
     if (immutability.api_version !== GITHUB_API_VERSION ||
@@ -146,7 +173,25 @@ function validateAuthorizationSemantics(document, options = {}) {
       issues.push(semanticIssue(
         "GITHUB_RELEASE_IMMUTABILITY_NOT_VERIFIED",
         "$.release_immutability",
-        "Release authorization v0.2 requires current repository release immutability evidence."
+        "Release authorization v0.2 or later requires current repository release immutability evidence."
+      ));
+    }
+  }
+  if (document && document.schema_version === "0.3") {
+    const attestation = document.release_attestation || {};
+    if (attestation.required !== true ||
+        attestation.verifier_tool !== "gh" ||
+        attestation.minimum_verifier_version !==
+          RELEASE_ATTESTATION_MINIMUM_GH_VERSION ||
+        attestation.output_format !== "json" ||
+        attestation.statement_type !== RELEASE_ATTESTATION_STATEMENT_TYPE ||
+        attestation.predicate_type !== RELEASE_ATTESTATION_PREDICATE_TYPE ||
+        attestation.signer_identity !== RELEASE_ATTESTATION_SIGNER_IDENTITY ||
+        attestation.source_archives_in_scope !== false) {
+      issues.push(semanticIssue(
+        "GITHUB_RELEASE_ATTESTATION_POLICY_INVALID",
+        "$.release_attestation",
+        "Release authorization v0.3 requires the exact GitHub release-attestation verification profile."
       ));
     }
   }
@@ -293,13 +338,35 @@ function validateReceiptSemantics(document) {
       "The observed GitHub release and resolved tag must match the exact authorized target."
     ));
   }
-  if (document && document.schema_version === "0.2" &&
+  if (document && ["0.2", "0.3"].includes(document.schema_version) &&
       release.immutable !== true) {
     issues.push(semanticIssue(
       "GITHUB_RELEASE_RECEIPT_NOT_IMMUTABLE",
       "$.release.immutable",
-      "Release receipt v0.2 requires the observed GitHub release to be immutable."
+      "Release receipt v0.2 or later requires the observed GitHub release to be immutable."
     ));
+  }
+  if (document && document.schema_version === "0.3") {
+    const attestationIssues = validateReleaseAttestationEvidence(
+      document.attestation,
+      {
+        repository: document.repository && document.repository.full_name,
+        tagName: target.tag_name,
+        commitSha: target.commit_sha,
+        minimumVerifierVersion: RELEASE_ATTESTATION_MINIMUM_GH_VERSION,
+        statementType: RELEASE_ATTESTATION_STATEMENT_TYPE,
+        predicateType: RELEASE_ATTESTATION_PREDICATE_TYPE,
+        signerIdentity: RELEASE_ATTESTATION_SIGNER_IDENTITY
+      }
+    );
+    for (const attestationIssue of attestationIssues) {
+      issues.push(semanticIssue(
+        attestationIssue.code,
+        `$.attestation${attestationIssue.path === "$" ? "" :
+          attestationIssue.path.slice(1)}`,
+        attestationIssue.message
+      ));
+    }
   }
   if (!isSafeRelativePath(document && document.authorization_ref &&
       document.authorization_ref.relative_path)) {
@@ -324,6 +391,7 @@ function validateReceiptSemantics(document) {
 function commandResult(executable, args, options = {}) {
   const result = spawnSync(executable, args, {
     cwd: options.cwd,
+    env: options.env,
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024
   });
@@ -355,6 +423,278 @@ function parseJsonOutput(output, code) {
   } catch (error) {
     throw new ReleaseAuthorizationError(code, `Command returned invalid JSON: ${error.message}`);
   }
+}
+
+function parseGhVersionOutput(output) {
+  const match = /^gh version (\d+\.\d+\.\d+)\b/m.exec(String(output || ""));
+  if (!match) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_CLI_VERSION_INVALID",
+      "Could not parse the installed GitHub CLI version."
+    );
+  }
+  return match[1];
+}
+
+function releasePackageUri(repository, tagName) {
+  return `pkg:github/${repository}@${tagName}`;
+}
+
+function decodeDssePayload(value) {
+  if (typeof value !== "string" || value.length === 0 ||
+      value.length % 4 !== 0 ||
+      !/^[A-Za-z0-9+/]*={0,2}$/.test(value)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_ATTESTATION_PAYLOAD_INVALID",
+      "Release attestation DSSE payload must be strict base64."
+    );
+  }
+  const bytes = Buffer.from(value, "base64");
+  if (bytes.toString("base64") !== value) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_ATTESTATION_PAYLOAD_INVALID",
+      "Release attestation DSSE payload is not canonical base64."
+    );
+  }
+  try {
+    return JSON.parse(bytes.toString("utf8"));
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_ATTESTATION_PAYLOAD_INVALID",
+      `Release attestation DSSE payload is not JSON: ${error.message}`
+    );
+  }
+}
+
+function normalizeReleaseAttestationEvidence(rawVerification, options) {
+  if (!rawVerification || typeof rawVerification !== "object" ||
+      Array.isArray(rawVerification)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_ATTESTATION_OUTPUT_INVALID",
+      "GitHub release verification must return one JSON object."
+    );
+  }
+  const repository = options && options.repository;
+  const tagName = options && options.tagName;
+  const commitSha = options && options.commitSha;
+  const ghVersion = options && options.ghVersion;
+  const verifiedAt = options && options.verifiedAt;
+  const minimumVerifierVersion = options && options.minimumVerifierVersion ||
+    RELEASE_ATTESTATION_MINIMUM_GH_VERSION;
+  const statementType = options && options.statementType ||
+    RELEASE_ATTESTATION_STATEMENT_TYPE;
+  const predicateType = options && options.predicateType ||
+    RELEASE_ATTESTATION_PREDICATE_TYPE;
+  const signerIdentity = options && options.signerIdentity ||
+    RELEASE_ATTESTATION_SIGNER_IDENTITY;
+  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository || "") ||
+      !parseSemverTag(tagName) ||
+      !/^[a-f0-9]{40}$/.test(commitSha || "") ||
+      compareVersions(ghVersion, minimumVerifierVersion) === null ||
+      compareVersions(ghVersion, minimumVerifierVersion) === -1 ||
+      parseTimestamp(verifiedAt) === null) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_ATTESTATION_EXPECTATION_INVALID",
+      "Release-attestation verification requires an exact repository, stable tag, commit, supported gh version, and timestamp."
+    );
+  }
+
+  const attestation = rawVerification.attestation || {};
+  const bundle = attestation.bundle || {};
+  const envelope = bundle.dsseEnvelope || {};
+  const result = rawVerification.verificationResult || {};
+  const statement = result.statement || {};
+  const envelopeStatement = decodeDssePayload(envelope.payload);
+  const predicate = statement.predicate || {};
+  const certificate = result.signature && result.signature.certificate || {};
+  const subjects = Array.isArray(statement.subject) ? statement.subject : [];
+  const packageUri = releasePackageUri(repository, tagName);
+  const packageSubjects = subjects.filter(subject => subject &&
+    subject.uri === packageUri && subject.name === undefined);
+  const assetSubjects = subjects.filter(subject => subject &&
+    typeof subject.name === "string" && subject.uri === undefined);
+  const invalidSubjects = subjects.filter(subject => !subject ||
+    !((subject.uri === packageUri && subject.name === undefined) ||
+      (typeof subject.name === "string" && subject.uri === undefined)));
+  const duplicateAssets = new Set(assetSubjects.map(subject => subject.name)).size !==
+    assetSubjects.length;
+  const normalizedAssets = assetSubjects.map(subject => ({
+    name: subject.name,
+    sha256: subject.digest && subject.digest.sha256
+  })).sort((left, right) => left.name.localeCompare(right.name));
+  const timestamps = Array.isArray(result.verifiedTimestamps)
+    ? result.verifiedTimestamps.map(timestamp => ({
+      type: timestamp && timestamp.type,
+      uri: timestamp && timestamp.uri,
+      timestamp: timestamp && timestamp.timestamp
+    }))
+    : [];
+  const verifiedAtMs = parseTimestamp(verifiedAt);
+  const timestampsValid = timestamps.length > 0 && timestamps.every(timestamp =>
+    typeof timestamp.type === "string" && timestamp.type.length > 0 &&
+    typeof timestamp.uri === "string" && timestamp.uri.length > 0 &&
+    parseTimestamp(timestamp.timestamp) !== null &&
+    parseTimestamp(timestamp.timestamp) <= verifiedAtMs);
+
+  if (bundle.mediaType !== RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE ||
+      envelope.payloadType !== "application/vnd.in-toto+json" ||
+      typeof envelope.payload !== "string" || envelope.payload.length === 0 ||
+      !Array.isArray(envelope.signatures) || envelope.signatures.length < 1 ||
+      envelope.signatures.some(signature =>
+        !signature || typeof signature.sig !== "string" ||
+        signature.sig.length === 0) ||
+      typeof result.mediaType !== "string" ||
+      !result.mediaType.startsWith(
+        "application/vnd.dev.sigstore.verificationresult+json"
+      ) ||
+      statement._type !== statementType ||
+      !sameCanonicalJson(envelopeStatement, statement) ||
+      statement.predicateType !== predicateType ||
+      predicate.repository !== repository ||
+      predicate.tag !== tagName ||
+      predicate.purl !== packageUri ||
+      packageSubjects.length !== 1 ||
+      !packageSubjects[0].digest ||
+      packageSubjects[0].digest.sha1 !== commitSha ||
+      invalidSubjects.length > 0 ||
+      duplicateAssets ||
+      normalizedAssets.some(asset =>
+        asset.name.length === 0 ||
+        !/^[a-f0-9]{64}$/.test(asset.sha256 || "")) ||
+      certificate.subjectAlternativeName !== signerIdentity ||
+      typeof certificate.certificateIssuer !== "string" ||
+      certificate.certificateIssuer.length === 0 ||
+      !timestampsValid) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_ATTESTATION_SCOPE_MISMATCH",
+      "The verified GitHub attestation does not bind the exact repository, tag, commit, signer, predicate, or asset digest set."
+    );
+  }
+
+  const rawCopy = JSON.parse(JSON.stringify(rawVerification));
+  return {
+    verification_succeeded: true,
+    verifier: {
+      tool: "gh",
+      version: ghVersion,
+      minimum_version: minimumVerifierVersion,
+      command: [
+        "release",
+        "verify",
+        tagName,
+        "--repo",
+        repository,
+        "--format",
+        "json"
+      ],
+      output_format: "json"
+    },
+    verified_at: verifiedAt,
+    attestation_sha256: sha256(canonicalJsonBytes(rawCopy)),
+    bundle_media_type: bundle.mediaType,
+    verification_result_media_type: result.mediaType,
+    certificate: {
+      issuer: certificate.certificateIssuer,
+      subject_alternative_name: certificate.subjectAlternativeName
+    },
+    verified_timestamps: timestamps,
+    statement: {
+      statement_type: statement._type,
+      predicate_type: statement.predicateType,
+      repository,
+      tag_name: tagName,
+      package_uri: packageUri,
+      commit_sha1: commitSha,
+      asset_subjects: normalizedAssets
+    },
+    raw_verification: rawCopy
+  };
+}
+
+function validateReleaseAttestationEvidence(evidence, expected) {
+  if (!evidence || typeof evidence !== "object" || Array.isArray(evidence)) {
+    return [{
+      code: "GITHUB_RELEASE_ATTESTATION_EVIDENCE_MISSING",
+      path: "$",
+      message: "Release receipt v0.3 requires retained GitHub attestation evidence."
+    }];
+  }
+  try {
+    const normalized = normalizeReleaseAttestationEvidence(
+      evidence.raw_verification,
+      {
+        repository: expected.repository,
+        tagName: expected.tagName,
+        commitSha: expected.commitSha,
+        ghVersion: evidence.verifier && evidence.verifier.version,
+        verifiedAt: evidence.verified_at,
+        minimumVerifierVersion: expected.minimumVerifierVersion,
+        statementType: expected.statementType,
+        predicateType: expected.predicateType,
+        signerIdentity: expected.signerIdentity
+      }
+    );
+    if (sha256(canonicalJsonBytes(normalized)) !==
+        sha256(canonicalJsonBytes(evidence))) {
+      return [{
+        code: "GITHUB_RELEASE_ATTESTATION_EVIDENCE_MISMATCH",
+        path: "$",
+        message: "Retained attestation evidence must equal the normalized verified GitHub output."
+      }];
+    }
+  } catch (error) {
+    return [{
+      code: error.code || "GITHUB_RELEASE_ATTESTATION_EVIDENCE_INVALID",
+      path: "$",
+      message: error.message
+    }];
+  }
+  return [];
+}
+
+function verifyReleaseAttestationWithRetry(document, runtime, options = {}) {
+  const attempts = Number(options.attempts || 6);
+  const intervalSeconds = Number(options.intervalSeconds || 10);
+  if (!Number.isInteger(attempts) || attempts < 1 || attempts > 12 ||
+      !Number.isInteger(intervalSeconds) || intervalSeconds < 1 ||
+      intervalSeconds > 60) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_ATTESTATION_RETRY_INVALID",
+      "Attestation retry attempts and interval are outside the bounded profile."
+    );
+  }
+  let lastError = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const observed = runtime.inspectReleaseAttestation(
+        document.repository.full_name,
+        document.target.tag_name
+      );
+      return normalizeReleaseAttestationEvidence(observed.raw_verification, {
+        repository: document.repository.full_name,
+        tagName: document.target.tag_name,
+        commitSha: document.target.commit_sha,
+        ghVersion: observed.gh_version,
+        verifiedAt: runtime.now(),
+        minimumVerifierVersion:
+          document.release_attestation.minimum_verifier_version,
+        statementType: document.release_attestation.statement_type,
+        predicateType: document.release_attestation.predicate_type,
+        signerIdentity: document.release_attestation.signer_identity
+      });
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) runtime.sleep(intervalSeconds * 1000);
+    }
+  }
+  throw new ReleaseAuthorizationError(
+    "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
+    `GitHub release attestation did not verify after ${attempts} attempt(s).`,
+    {
+      last_code: lastError && lastError.code,
+      last_message: lastError && lastError.message
+    }
+  );
 }
 
 function resolveRepositoryFile(repositoryRoot, relativePath) {
@@ -411,6 +751,46 @@ class SystemGitHubReleaseAdapter {
 
   now() {
     return new Date().toISOString();
+  }
+
+  sleep(milliseconds) {
+    Atomics.wait(
+      new Int32Array(new SharedArrayBuffer(4)),
+      0,
+      0,
+      milliseconds
+    );
+  }
+
+  inspectGhVersion() {
+    return parseGhVersionOutput(requireCommand(
+      "gh",
+      ["--version"],
+      { cwd: this.repositoryRoot, code: "GITHUB_CLI_VERSION_INSPECTION_FAILED" }
+    ));
+  }
+
+  inspectReleaseAttestation(repository, tagName) {
+    const rawVerification = parseJsonOutput(requireCommand(
+      "gh",
+      [
+        "release",
+        "verify",
+        tagName,
+        "--repo",
+        repository,
+        "--format",
+        "json"
+      ],
+      {
+        cwd: this.repositoryRoot,
+        code: "GITHUB_RELEASE_ATTESTATION_VERIFY_FAILED"
+      }
+    ), "GITHUB_RELEASE_ATTESTATION_JSON_INVALID");
+    return {
+      gh_version: this.inspectGhVersion(),
+      raw_verification: rawVerification
+    };
   }
 
   inspectRepository() {
@@ -884,6 +1264,14 @@ function authorizeRelease(options, adapter = null) {
       "Future release authorization requires repository release immutability."
     );
   }
+  const ghVersion = runtime.inspectGhVersion();
+  if (compareVersions(ghVersion, RELEASE_ATTESTATION_MINIMUM_GH_VERSION) === null ||
+      compareVersions(ghVersion, RELEASE_ATTESTATION_MINIMUM_GH_VERSION) === -1) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_CLI_ATTESTATION_UNSUPPORTED",
+      `GitHub CLI ${RELEASE_ATTESTATION_MINIMUM_GH_VERSION} or newer is required for release attestation verification.`
+    );
+  }
   const issuedAt = options.now || runtime.now();
   const expiresAt = addMinutes(issuedAt, validityMinutes);
   const grant = {
@@ -901,7 +1289,7 @@ function authorizeRelease(options, adapter = null) {
   grant.directive_sha256 = userGrantDigest(grant);
 
   const document = {
-    schema_version: "0.2",
+    schema_version: "0.3",
     type: "GitHubReleaseAuthorization",
     id: `GRA-${options.tagName.replace(/[^A-Za-z0-9]/g, "_")}-${repository.head_sha.slice(0, 12)}`,
     issued_at: issuedAt,
@@ -920,6 +1308,16 @@ function authorizeRelease(options, adapter = null) {
       enabled: true,
       enforced_by_owner: releaseImmutability.enforced_by_owner,
       checked_at: issuedAt
+    },
+    release_attestation: {
+      required: true,
+      verifier_tool: "gh",
+      minimum_verifier_version: RELEASE_ATTESTATION_MINIMUM_GH_VERSION,
+      output_format: "json",
+      statement_type: RELEASE_ATTESTATION_STATEMENT_TYPE,
+      predicate_type: RELEASE_ATTESTATION_PREDICATE_TYPE,
+      signer_identity: RELEASE_ATTESTATION_SIGNER_IDENTITY,
+      source_archives_in_scope: false
     },
     target: {
       tag_name: options.tagName,
@@ -986,7 +1384,7 @@ function assertAuthorizationAgainstCurrentState(document, repositoryRoot, runtim
       "The current repository no longer matches the exact authorized commit."
     );
   }
-  if (document.schema_version === "0.2") {
+  if (["0.2", "0.3"].includes(document.schema_version)) {
     const releaseImmutability = runtime.inspectReleaseImmutability(
       document.repository.full_name
     );
@@ -1066,7 +1464,8 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
       tagCommitSha !== document.target.commit_sha ||
       observed.isDraft !== false || observed.isPrerelease !== false ||
       !listing || listing.latest !== true ||
-      (document.schema_version === "0.2" && listing.immutable !== true) ||
+      (["0.2", "0.3"].includes(document.schema_version) &&
+        listing.immutable !== true) ||
       bodyDigest !== notes.sha256) {
     throw new ReleaseAuthorizationError(
       "PUBLISHED_RELEASE_MISMATCH",
@@ -1094,7 +1493,9 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
     prerelease: false,
     latest: true
   };
-  if (document.schema_version === "0.2") release.immutable = true;
+  if (["0.2", "0.3"].includes(document.schema_version)) {
+    release.immutable = true;
+  }
   return release;
 }
 
@@ -1138,6 +1539,9 @@ function publishAuthorizedRelease(options, adapter = null) {
     );
   }
   const release = verifyPublishedRelease(document, observed, runtime, notes);
+  const attestation = document.schema_version === "0.3"
+    ? verifyReleaseAttestationWithRetry(document, runtime)
+    : null;
   const receipt = {
     schema_version: document.schema_version,
     type: "GitHubReleaseReceipt",
@@ -1160,6 +1564,7 @@ function publishAuthorizedRelease(options, adapter = null) {
       latest: true
     },
     release,
+    ...(attestation ? { attestation } : {}),
     release_notes_sha256: document.release_notes.sha256,
     authorization_consumed: true,
     published: true,
@@ -1283,19 +1688,34 @@ function main(argv = process.argv.slice(2)) {
 
 module.exports = {
   GITHUB_API_VERSION,
+  RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE,
+  RELEASE_ATTESTATION_MINIMUM_GH_VERSION,
+  RELEASE_ATTESTATION_PREDICATE_TYPE,
+  RELEASE_ATTESTATION_SIGNER_IDENTITY,
+  RELEASE_ATTESTATION_STATEMENT_TYPE,
   ReleaseAuthorizationError,
   SystemGitHubReleaseAdapter,
   authorizationDigest,
   authorizeRelease,
+  commandResult,
   compareSemverTags,
+  compareVersions,
   inspectReleaseNotes,
   isSafeRelativePath,
   main,
+  normalizeReleaseAttestationEvidence,
+  parseGhVersionOutput,
+  parseJsonOutput,
   publishAuthorizedRelease,
   receiptDigest,
+  releasePackageUri,
+  requireCommand,
+  sha256,
   userGrantDigest,
   validateAuthorizationSemantics,
+  validateReleaseAttestationEvidence,
   validateReceiptSemantics,
+  verifyReleaseAttestationWithRetry,
   writeJsonAtomic
 };
 

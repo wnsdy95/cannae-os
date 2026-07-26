@@ -158,6 +158,35 @@ directs activation for one exact repository:
 
 Read `docs/github-release-immutability.md` before operating this path.
 
+### Monitoring GitHub Release Integrity
+
+Use this read-only path after Phase 19A activation and before accepting any
+future release evidence:
+
+1. Load `.github/release-integrity-policy.json` only when its bytes exactly
+   equal the tracked current-HEAD blob and its activation commit is in HEAD
+   ancestry; never infer or rewrite its baseline from the current release
+   list.
+2. Run `scripts/operate_github_release_integrity.js monitor` with a
+   repository-contained output path. Use `--scope full` for scheduled/manual
+   policy and all-release inspection, or `--scope release_attestation
+   --expected-tag <tag> --trigger release` for one exact release event.
+3. Require the current origin default-branch commit, a repository-contained
+   output path that does not traverse a parent symlink, and a schema-valid
+   observation whose `summary.status` is `ready`.
+   `credential_unavailable`, policy drift, changed/missing grandfather state,
+   mutable future releases, missing attestation, or any repository/tag/commit/
+   asset mismatch is a hard stop.
+4. The release-event scope may use the short-lived repository token but must
+   keep policy assessment false. Full scope needs repository Administration
+   read. Use a dedicated least-privilege monitor credential; never copy the
+   owner's broad local OAuth token into repository secrets.
+5. Store each observation under the target repository or its repository-named
+   CI artifact. Monitoring may alert and escalate to USER but must never
+   enable/disable policy, repair/delete a release, or set release true.
+
+Read `docs/github-release-integrity-monitoring.md` before operating this path.
+
 ### Authorizing An Exact GitHub Release
 
 Use this terminal path only after the human USER explicitly directs one exact
@@ -167,10 +196,10 @@ GitHub release:
    it to `origin`, and wait for the exact default-branch `Validate` push run to
    complete successfully. A pull-request check, feature-branch run, or stale
    main run is insufficient.
-2. Require the repository immutable-releases policy to be enabled. Finalize
-   and track the repository-relative release-notes file. Confirm the stable
-   target tag and release are absent and that the tag advances the current
-   latest release.
+2. Require the repository immutable-releases policy to be enabled and the
+   version `0.3` GitHub attestation profile to be available. Finalize and track
+   the repository-relative release-notes file. Confirm the stable target tag
+   and release are absent and that the tag advances the current latest release.
 3. Run `scripts/operate_github_release.js authorize` with the exact
    owner/repository, tag, release name, notes path, successful main run ID,
    USER grant ID, output path, and a validity of at most 60 minutes. Require
@@ -179,8 +208,9 @@ GitHub release:
 4. Run `scripts/operate_github_release.js publish` before expiry. The publisher
    must reappraise repository/CI/notes state, create the release from the full
    commit SHA with no-commit failure enabled, resolve the remote tag, compare
-   the GitHub release body, observe `isImmutable: true`, and persist a verified
-   consumed receipt.
+   the GitHub release body, observe `isImmutable: true`, cryptographically
+   verify and retain the exact GitHub-signed repository/tag/commit/asset
+   statement, and persist a verified consumed receipt.
 5. A matching existing release is an idempotent verification result. A partial
    tag/release state or any mismatch is a hard stop. Never repair, delete,
    retarget, or overwrite a release implicitly.
@@ -191,8 +221,8 @@ GitHub release:
 
 The authorization digest is an integrity binding, not a USER digital
 signature. The authenticated `gh` principal, local operator environment,
-GitHub credential protection, branch policy, and release mutation monitoring
-remain external trust boundaries. Read
+GitHub credential protection, branch policy, independent bundle verification,
+and external transparency witnessing remain trust boundaries. Read
 `docs/github-release-authorization.md` before operating this path.
 
 ### Answering Framework Questions
@@ -309,6 +339,7 @@ node run-gateway-identity-adapter-fixtures.js
 node run-protected-process-executor-fixtures.js
 node run-oci-linux-sandbox-provider-fixtures.js
 node run-github-release-immutability-fixtures.js
+node run-github-release-integrity-fixtures.js
 node run-github-release-publisher-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
@@ -364,6 +395,9 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Only an explicit USER-granted, exact, unexpired `GitHubReleaseAuthorization`
   may set release true, and only its verified terminal receipt may retain that
   result. Every lower control-plane artifact remains release false.
+- Release-integrity policy and observation artifacts are read-only and remain
+  release false. A full observation without a successful Administration-read
+  policy check is blocked; never treat credential uncertainty as no drift.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.

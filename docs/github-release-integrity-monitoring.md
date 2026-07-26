@@ -1,0 +1,244 @@
+# GitHub Release Integrity Monitoring
+
+## 1. Purpose
+
+Phase 19B verifies that the Phase 19A repository policy remains enabled and
+that every release created after activation carries the exact GitHub-signed
+release attestation for its repository, tag, commit, and uploaded assets.
+
+This is a read-only assurance path. It can alert and retain evidence. It cannot
+enable or disable repository policy, repair a tag or release, publish an
+asset, or authorize a release.
+
+## 2. Platform Facts
+
+GitHub immutable releases lock the release tag and assets and automatically
+produce a release attestation. The attestation identifies the release tag,
+commit, and release assets. GitHub documents two distinct verification
+commands:
+
+- [`gh release verify`](https://cli.github.com/manual/gh_release_verify)
+  verifies the signed release attestation and returns the attested subjects;
+- [`gh release verify-asset`](https://cli.github.com/manual/gh_release_verify-asset)
+  compares one downloaded local asset with the digest in the release
+  attestation.
+
+GitHub's [release-integrity guidance](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/verify-release-integrity)
+states that automatically generated source ZIP and tar archives cannot be
+verified this way because GitHub generates them on demand. Cannae therefore
+sets `source_archives_in_scope: false`; only the package subject and uploaded
+release assets enter this evidence class.
+
+The repository policy endpoint is
+`GET /repos/{owner}/{repo}/immutable-releases`. GitHub's
+[fine-grained token permission table](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens)
+requires repository Administration read permission for that GET. This is a
+different credential boundary from ordinary release reads.
+
+## 3. Trust Equation
+
+```text
+Expected repository policy is enabled
++ Policy bytes equal the exact blob committed at current HEAD
++ HEAD is the current origin default-branch commit
++ Live Administration-read policy observation is enabled
++ Every pre-activation release matches the sealed grandfather baseline
++ Every later release reports isImmutable = true
++ gh cryptographically verifies GitHub's release attestation
++ The verified in-toto statement binds exact repository + tag + commit
++ Every attested uploaded asset has one unique SHA-256 subject
+= release integrity observation may be ready
+```
+
+Any missing term produces `status: blocked`. A blocked observation still
+retains the facts that were available; it never converts uncertainty into
+`policy_drift_detected: false` with an assessment claim.
+
+## 4. Contracts
+
+### 4.1 `GitHubReleaseIntegrityPolicy`
+
+The policy at `.github/release-integrity-policy.json` must be tracked, must
+exactly equal its current `HEAD` blob, and must name an activation commit in
+the current commit ancestry. It binds:
+
+- `wnsdy95/cannae-os` and `main`;
+- the exact Phase 19A activation receipt ID, digest, commit, and time;
+- the expected enabled REST endpoint;
+- the exact `v0.1.0` and `v0.2.0` grandfather baseline;
+- GitHub CLI JSON verification, in-toto Statement v1,
+  `release/v0.2`, and the GitHub release signer identity;
+- a six-hour cadence and bounded attestation retry;
+- fail-closed credential, policy-drift, and attestation behavior; and
+- USER final authority with both policy mutation and release false.
+
+Its canonical `policy_sha256` prevents a monitor from silently changing the
+baseline or verification profile.
+
+### 4.2 `GitHubReleaseIntegrityObservation`
+
+One observation records:
+
+- the exact policy reference, canonical digest, committed-blob digest, and
+  committed-at-HEAD assertion;
+- repository branch, HEAD, origin main, visibility, and worktree state;
+- trigger, actor, run, ref, and observation time;
+- live policy status, including an explicit
+  `credential_unavailable` state;
+- every selected release, resolved remote tag commit, immutable state, and
+  grandfather/post-activation classification;
+- normalized attestation metadata and the complete verified CLI JSON result;
+- issue codes and derived counts;
+- a canonical `observation_sha256`; and
+- policy mutation and release false.
+
+`scope: full` requires the live policy observation and all published releases.
+`scope: release_attestation` verifies one exact release-event tag and
+explicitly records that policy drift was not assessed.
+
+## 5. Attestation Normalization
+
+`github-release-publisher.js` and
+`github-release-integrity-monitor.js` accept an attestation only after
+`gh release verify TAG --repo OWNER/REPO --format json` exits successfully.
+They then independently constrain the returned verified projection:
+
+1. The bundle uses Sigstore bundle v0.3 and a signed DSSE in-toto envelope.
+2. The strict-base64 DSSE payload parses as JSON and canonically equals the
+   CLI verification-result statement.
+3. The verification result contains a valid timestamp no later than the
+   retained verification time.
+4. The certificate subject alternative name is
+   `https://dotcom.releases.github.com`.
+5. The statement is in-toto Statement v1 with GitHub release predicate v0.2.
+6. Predicate repository, tag, and package URL are exact.
+7. Exactly one package subject binds the full 40-character Git commit.
+8. Every other subject is a uniquely named asset with a SHA-256 digest.
+9. The complete raw verification JSON is retained and canonically hashed.
+
+This does not replace GitHub CLI's Sigstore verification. It prevents a valid
+attestation for release B from satisfying authorization or monitoring for
+release A.
+
+## 6. Publisher v0.3
+
+New `GitHubReleaseAuthorization` artifacts use schema `0.3`. In addition to
+the Phase 19A policy check, they bind the exact attestation-verifier profile
+and require GitHub CLI `2.93.0` or newer.
+
+After publication, the publisher:
+
+1. verifies release body, target, resolved tag, latest state, and immutable
+   state;
+2. retries attestation availability at most six times with ten-second waits;
+3. normalizes and retains the verified bundle and statement; and
+4. emits `GitHubReleaseReceipt` `0.3` only when every binding matches.
+
+Attestation delay can leave a correctly created release without a receipt.
+An exact retry verifies the existing release and may finish the receipt. It
+must not recreate, delete, retarget, or repair the release.
+
+Historical authorization and receipt versions remain readable. Version `0.2`
+proves observed immutability but does not claim retained attestation evidence.
+
+## 7. Operations
+
+Run a full local observation with an authenticated repository administrator:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_github_release_integrity.js \
+  monitor \
+  --repository-root . \
+  --policy .github/release-integrity-policy.json \
+  --output .cannae/release-integrity/manual.json \
+  --scope full \
+  --trigger manual
+```
+
+Run the exact release-event scope:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_github_release_integrity.js \
+  monitor \
+  --repository-root . \
+  --policy .github/release-integrity-policy.json \
+  --output .cannae/release-integrity/release-v0.3.0.json \
+  --scope release_attestation \
+  --expected-tag v0.3.0 \
+  --trigger release
+```
+
+Run authoritative observations from a synchronized default-branch checkout.
+A feature branch, stale HEAD, uncommitted policy edit, activation commit
+outside HEAD ancestry, or output path that resolves through a parent symlink
+blocks before readiness. Exit zero means the requested scope is ready. Exit
+nonzero means blocked.
+Always inspect the retained observation; the exit code alone does not identify
+credential failure, policy drift, baseline drift, mutability, or attestation
+failure.
+
+## 8. GitHub Actions
+
+`.github/workflows/release-integrity.yml` runs:
+
+- `release-attestation` on every published release using the short-lived
+  repository `GITHUB_TOKEN`;
+- `full-monitor` every six hours, on every release, and on manual dispatch;
+- artifact retention for each observation, including blocked observations.
+
+The workflow grants only `contents: read` and `attestations: read`. Event tag,
+actor, run, and ref values enter the shell through quoted environment
+variables rather than direct expression interpolation. The optional
+Administration-read secret is exposed only to the full-monitor command step,
+not to checkout, Node setup, or artifact-upload actions.
+
+The full monitor first tries `CANNAE_IMMUTABILITY_MONITOR_TOKEN` and otherwise
+uses the job token. If the active token cannot read repository Administration,
+the observation records `credential_unavailable` and the job fails.
+
+Do not place the owner's broad `gh` OAuth token in this secret. Use a
+repository-selected fine-grained token held by a dedicated monitoring
+principal, with Administration **read-only**, or inject an equivalently
+scoped short-lived GitHub App installation token. Store only that credential:
+
+```bash
+gh secret set CANNAE_IMMUTABILITY_MONITOR_TOKEN \
+  --repo wnsdy95/cannae-os
+```
+
+The workflow does not run on pull requests, checks out the full `main` history
+so activation ancestry can be proven, and performs no mutation request. A
+failed scheduled run is the alert signal. It does not open issues or change
+policy automatically.
+
+## 9. Incident Disposition
+
+| Finding | Automatic effect | Required disposition |
+| --- | --- | --- |
+| Credential unavailable | Block and retain partial observation | Restore or rotate least-privilege monitor identity |
+| Policy disabled | Block and report drift | USER decides whether a new Phase 19A authorization is appropriate |
+| Grandfather baseline drift | Block | Investigate remote tag/release history; never rewrite automatically |
+| Post-activation mutable release | Block | Treat as release-control incident |
+| Missing or mismatched attestation | Block | Retry bounded verification, then investigate GitHub/release state |
+| Asset digest mismatch | Block | Quarantine the asset and investigate publication provenance |
+
+No finding grants rollback, deletion, repair, policy activation, or a new
+release. Those remain separate exact USER decisions.
+
+## 10. Limits
+
+- GitHub remains the release control plane, attestation signer, timestamp
+  authority, and immutable-state reporter.
+- The monitor trusts the installed `gh` verifier and its embedded Sigstore
+  trust behavior; the retained raw bundle enables later independent
+  verification but this phase does not implement a second verifier.
+- Policy-state freshness depends on the workflow actually running. GitHub
+  schedule delay or workflow disablement is an external availability risk.
+- Artifact retention is 30 days; long-term external transparency witnessing
+  is not yet implemented.
+- Generated source archives are outside attested asset verification.
+- The current profile supports public, stable releases and at most 100 listed
+  releases before requiring policy revision.
+- Credential custody, protected USER signatures, signed tags, independent
+  witnesses, and provider-neutral release adapters remain external or future
+  controls.

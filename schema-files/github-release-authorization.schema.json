@@ -29,7 +29,8 @@
       "type": "string",
       "enum": [
         "0.1",
-        "0.2"
+        "0.2",
+        "0.3"
       ]
     },
     "type": {
@@ -113,6 +114,54 @@
         },
         "checked_at": {
           "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      }
+    },
+    "release_attestation": {
+      "type": "object",
+      "required": [
+        "required",
+        "verifier_tool",
+        "minimum_verifier_version",
+        "output_format",
+        "statement_type",
+        "predicate_type",
+        "signer_identity",
+        "source_archives_in_scope"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "const": true
+        },
+        "verifier_tool": {
+          "type": "string",
+          "const": "gh"
+        },
+        "minimum_verifier_version": {
+          "type": "string",
+          "const": "2.93.0"
+        },
+        "output_format": {
+          "type": "string",
+          "const": "json"
+        },
+        "statement_type": {
+          "type": "string",
+          "const": "https://in-toto.io/Statement/v1"
+        },
+        "predicate_type": {
+          "type": "string",
+          "const": "https://in-toto.io/attestation/release/v0.2"
+        },
+        "signer_identity": {
+          "type": "string",
+          "const": "https://dotcom.releases.github.com"
+        },
+        "source_archives_in_scope": {
+          "type": "boolean",
+          "const": false
         }
       }
     },
@@ -454,7 +503,10 @@
       "if": {
         "properties": {
           "schema_version": {
-            "const": "0.2"
+            "enum": [
+              "0.2",
+              "0.3"
+            ]
           }
         },
         "required": [
@@ -464,6 +516,23 @@
       "then": {
         "required": [
           "release_immutability"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.3"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "release_attestation"
         ]
       }
     }

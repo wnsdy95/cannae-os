@@ -1,0 +1,427 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-release-integrity-observation.schema.json",
+  "title": "GitHub Release Integrity Observation",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "scope",
+    "policy_ref",
+    "repository",
+    "trigger",
+    "policy_observation",
+    "releases",
+    "issues",
+    "summary",
+    "authority",
+    "repository_policy_change_authorized",
+    "release_authorized",
+    "observed_at",
+    "observation_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseIntegrityObservation"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "full",
+        "release_attestation"
+      ]
+    },
+    "policy_ref": {
+      "type": "object",
+      "required": [
+        "policy_id",
+        "relative_path",
+        "sha256",
+        "head_blob_sha256",
+        "committed_at_head"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "policy_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "head_blob_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "committed_at_head": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "full_name",
+        "default_branch",
+        "visibility",
+        "branch",
+        "observed_head_sha",
+        "origin_default_branch_sha",
+        "clean"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibility": {
+          "type": "string",
+          "const": "PUBLIC"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "observed_head_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "origin_default_branch_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "clean": {
+          "type": "boolean"
+        }
+      }
+    },
+    "trigger": {
+      "type": "object",
+      "required": [
+        "kind",
+        "actor",
+        "run_id",
+        "ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "schedule",
+            "release"
+          ]
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "policy_observation": {
+      "type": "object",
+      "required": [
+        "api_version",
+        "endpoint",
+        "status",
+        "checked_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "type": "string",
+          "const": "2026-03-10"
+        },
+        "endpoint": {
+          "type": "string",
+          "pattern": "^/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/immutable-releases$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "not_requested",
+            "credential_unavailable",
+            "inspection_failed"
+          ]
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "enforced_by_owner": {
+          "type": "boolean"
+        },
+        "checked_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      }
+    },
+    "releases": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "required": [
+          "tag_name",
+          "release_name",
+          "commit_sha",
+          "published_at",
+          "draft",
+          "prerelease",
+          "latest",
+          "immutable",
+          "classification",
+          "attestation"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "tag_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "release_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "commit_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "published_at": {
+            "$ref": "common.schema.json#/$defs/timestamp"
+          },
+          "draft": {
+            "type": "boolean"
+          },
+          "prerelease": {
+            "type": "boolean"
+          },
+          "latest": {
+            "type": "boolean"
+          },
+          "immutable": {
+            "type": "boolean"
+          },
+          "classification": {
+            "type": "string",
+            "enum": [
+              "grandfathered",
+              "post_activation"
+            ]
+          },
+          "attestation": {
+            "type": "object",
+            "required": [
+              "required",
+              "status"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "required": {
+                "type": "boolean"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "verified",
+                  "not_required",
+                  "failed"
+                ]
+              },
+              "failure_code": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "required": [
+          "severity",
+          "code",
+          "scope",
+          "message"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "error"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "repository",
+              "policy",
+              "release",
+              "attestation"
+            ]
+          },
+          "tag_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "status",
+        "monitoring_complete",
+        "policy_assessment_complete",
+        "policy_drift_assessed",
+        "policy_drift_detected",
+        "release_integrity_assessed",
+        "release_count",
+        "grandfathered_count",
+        "post_activation_count",
+        "required_attestation_count",
+        "verified_attestation_count",
+        "issue_count"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "blocked"
+          ]
+        },
+        "monitoring_complete": {
+          "type": "boolean"
+        },
+        "policy_assessment_complete": {
+          "type": "boolean"
+        },
+        "policy_drift_assessed": {
+          "type": "boolean"
+        },
+        "policy_drift_detected": {
+          "type": "boolean"
+        },
+        "release_integrity_assessed": {
+          "type": "boolean"
+        },
+        "release_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "grandfathered_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "post_activation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "required_attestation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verified_attestation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "issue_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "monitoring_only",
+        "repository_policy_change_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "monitoring_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "repository_policy_change_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "repository_policy_change_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "observed_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "observation_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}

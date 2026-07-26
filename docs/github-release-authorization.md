@@ -19,6 +19,7 @@ USER final decision
 + exact release-note digest
 + successful Validate push run for that commit
 + enabled repository release-immutability policy
++ exact GitHub release-attestation verification profile
 + absent target tag and release
 + bounded validity
 = one terminal release authorization
@@ -44,9 +45,11 @@ The authorization binds:
   length;
 - one completed successful `Validate` push run for the exact default branch
   and target commit;
-- schema version `0.2` evidence that the repository immutable-releases policy
+- schema version `0.3` evidence that the repository immutable-releases policy
   is enabled, including the API version, owner-enforcement state, and check
   time;
+- the required GitHub CLI version, JSON output, in-toto statement and
+  predicate types, GitHub signer identity, and source-archive exclusion;
 - clean local HEAD, matching `origin/<default-branch>`, and absence of the
   target tag and release at issuance;
 - an exact USER decision over the already-public commit and release notes;
@@ -65,7 +68,11 @@ The terminal receipt binds:
 - the authorized repository, tag, release name, and commit;
 - GitHub release database/node IDs and API/browser URLs;
 - the observed release target, resolved remote tag commit, publish time, and
-  release mode, including `immutable: true` for schema version `0.2`;
+  release mode, including `immutable: true`;
+- the complete successful `gh release verify` JSON result, its canonical
+  digest, verifier command/version, signer certificate identity, verified
+  timestamps, exact package subject, commit, and uploaded-asset SHA-256
+  subjects for schema version `0.3`;
 - the exact release-notes digest; and
 - `published: true`, `verified: true`, and `authorization_consumed: true`.
 
@@ -82,6 +89,7 @@ Prerequisites:
 - the exact main `Validate` push run completed successfully;
 - the repository immutable-releases policy is enabled through the separately
   USER-authorized procedure in `github-release-immutability.md`;
+- GitHub CLI `2.93.0` or newer is installed;
 - the tracked release-notes file is final;
 - the target tag and GitHub release do not exist; and
 - the human user explicitly authorizes this exact release.
@@ -93,12 +101,12 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
   authorize \
   --repository-root . \
   --repository wnsdy95/cannae-os \
-  --tag v0.2.0 \
-  --name "Cannae OS v0.2.0" \
-  --notes docs/releases/v0.2.0.md \
+  --tag v0.3.0 \
+  --name "Cannae OS v0.3.0" \
+  --notes docs/releases/v0.3.0.md \
   --run-id <successful-main-run-id> \
-  --grant-id UGR-v0_2_0 \
-  --output .cannae/releases/v0.2.0/authorization.json \
+  --grant-id UGR-v0_3_0 \
+  --output .cannae/releases/v0.3.0/authorization.json \
   --expires-in-minutes 30
 ```
 
@@ -108,16 +116,19 @@ Publish before expiry:
 node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
   publish \
   --repository-root . \
-  --authorization .cannae/releases/v0.2.0/authorization.json \
-  --receipt .cannae/releases/v0.2.0/receipt.json
+  --authorization .cannae/releases/v0.3.0/authorization.json \
+  --receipt .cannae/releases/v0.3.0/receipt.json
 ```
 
 The publisher invokes `gh release create` with the full authorized commit SHA,
 title, tracked notes file, `--fail-on-no-commits`, and `--latest`. It then
 reloads the release, resolves the remote tag, compares the release body digest,
 requires the release listing to report `isImmutable: true`, and writes a
-receipt only when every field matches. The publisher checks the repository
-immutability policy both at authorization and immediately before publication.
+receipt only when every field matches. For version `0.3`, it also runs
+`gh release verify`, retains the complete GitHub-signed attestation result,
+and rejects a different repository, tag, commit, signer, predicate, or asset
+digest. The publisher checks the repository immutability policy both at
+authorization and immediately before publication.
 
 The Claude Code skill exposes the same wrapper and semantics at
 `.claude/skills/controls-doctrine-operator/scripts/operate_github_release.js`.
@@ -140,6 +151,8 @@ The Claude Code skill exposes the same wrapper and semantics at
 | Authorization expired | deny |
 | Tag exists without release, or release exists without tag | deny |
 | Existing release body, name, mode, target, or tag commit differs | deny |
+| GitHub release attestation is unavailable after bounded retry | deny receipt |
+| Attestation repository, tag, commit, signer, predicate, or asset digest is different | deny receipt |
 | Exact immutable release already exists and still matches | verify idempotently |
 
 ## Security Boundary And Limits
@@ -158,9 +171,13 @@ The Claude Code skill exposes the same wrapper and semantics at
   correctness, absence of secrets, or production fitness.
 - Repository release immutability applies only to releases created after
   activation. Historical `v0.2.0` remains non-immutable.
-- The policy and GitHub-generated release attestation strengthen future
-  release integrity but do not replace signed tags, credential isolation,
-  transparency witnessing, or out-of-band monitoring.
+- GitHub CLI performs the Sigstore verification. Cannae retains and constrains
+  its verified result but does not implement a second cryptographic verifier.
+- Automatically generated source ZIP and tar archives are outside the release
+  attestation's uploaded-asset set.
+- Continuous policy and attestation monitoring is defined in
+  `github-release-integrity-monitoring.md`; it does not replace signed tags,
+  credential isolation, or independent transparency witnesses.
 
 ## Validation
 
@@ -175,6 +192,7 @@ node validator-cli-prototype/validate.js \
 
 node run-github-release-publisher-fixtures.js
 node run-github-release-immutability-fixtures.js
+node run-github-release-integrity-fixtures.js
 ```
 
 The fixture suite uses an injected adapter and never contacts GitHub or creates
@@ -191,3 +209,5 @@ a release.
   defines the release resource and target-commit behavior.
 - [GitHub immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases)
   defines prospective release immutability and release attestations.
+- [GitHub CLI `gh release verify`](https://cli.github.com/manual/gh_release_verify)
+  defines signed release-attestation verification and JSON output.

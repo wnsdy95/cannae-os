@@ -1066,6 +1066,40 @@ const fixtures = [
     ]
   },
   {
+    name: "valid GitHub release integrity policy",
+    file: "sample-payloads/valid-github-release-integrity-policy.json",
+    type: "github-release-integrity-policy",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "GitHub release integrity policy claims mutation and release authority",
+    file: "sample-payloads/invalid-github-release-integrity-policy-authority.json",
+    type: "github-release-integrity-policy",
+    exitCode: 1,
+    requiredCodes: [
+      "CONST_MISMATCH",
+      "GITHUB_RELEASE_INTEGRITY_POLICY_AUTHORITY_DRIFT"
+    ]
+  },
+  {
+    name: "valid GitHub release integrity observation",
+    file: "sample-payloads/valid-github-release-integrity-observation.json",
+    type: "github-release-integrity-observation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "GitHub release integrity observation claims mutation and release authority",
+    file: "sample-payloads/invalid-github-release-integrity-observation-authority.json",
+    type: "github-release-integrity-observation",
+    exitCode: 1,
+    requiredCodes: [
+      "CONST_MISMATCH",
+      "GITHUB_RELEASE_INTEGRITY_OBSERVATION_AUTHORITY_DRIFT"
+    ]
+  },
+  {
     name: "valid maintenance readiness",
     file: "sample-payloads/valid-maintenance-readiness.json",
     type: "maintenance-readiness",

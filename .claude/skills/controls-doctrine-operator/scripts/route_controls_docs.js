@@ -33,7 +33,7 @@ const RULES = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment"],
+    keywords: ["authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment", "immutability", "attestation", "integrity", "drift"],
     docs: [
       "docs/agent-roles-and-authority.md",
       "docs/tool-use-roe.md",
@@ -42,13 +42,15 @@ const RULES = [
       "docs/context-releasability-policy.md",
       "docs/github-release-authorization.md",
       "docs/github-release-immutability.md",
+      "docs/github-release-integrity-monitoring.md",
       "docs/policy-engine-rules.md"
     ],
     commands: [
       "node run-authority-integration-fixtures.js",
       "node run-release-integration-fixtures.js",
       "node run-github-release-publisher-fixtures.js",
-      "node run-github-release-immutability-fixtures.js"
+      "node run-github-release-immutability-fixtures.js",
+      "node run-github-release-integrity-fixtures.js"
     ]
   },
   {
@@ -397,7 +399,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "release-immutability", "operate-github-release", "operate-github-release-immutability", "decision-packet"]
+    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "release-immutability", "release-integrity", "release-attestation", "operate-github-release", "operate-github-release-immutability", "operate-github-release-integrity", "decision-packet"]
   },
   {
     id: "multi-agent-organization",
