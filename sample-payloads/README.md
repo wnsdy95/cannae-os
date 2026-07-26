@@ -30,6 +30,7 @@ Use these examples to test:
 - doctrine consistency review validation
 - release review validation
 - release gate decision validation
+- exact GitHub release authorization and terminal receipt validation
 - maintenance readiness validation
 - backbrief validation
 - rehearsal validation
@@ -90,5 +91,14 @@ The mission lifecycle samples show the plan an operator supplies and the context
 The enforced-dispatch samples form a reference controller-authorized policy, lease, baseline checkpoint, and admitted tool event. Their unsafe counterparts cover a self-declared issuer, traversal or mixed matcher fields, lease budget and clean-start drift, malformed none sentinels, allow-without-rule, deny-without-reason, invalid checkpoint chains, active terminal state, unresolved effects, and authority expansion. Use `run-dispatch-runtime-fixtures.js` for mission-plan draft authorization, concurrent one-agent issuance, ordered cross-agent repository handoff, exact post-tool binding, replay denial, repository-state drift, unresolved-effect reconciliation, revocation, interruption, and explicit lineage-continuation behavior.
 
 The protected-gateway samples define the Phase 17A request, decision, receipt, and append-only transaction-event contracts. Receipt v0.4 cites exact bounded-process or OCI policy/envelope/observation references while other modes retain exact none sentinels; v0.5 additionally binds managed production admission and deployment verification. The Phase 17B1 identity samples add the gateway identity policy, signed challenge, and signed TLS principal-evidence contracts. Phase 17B2A adds the protected executor policy, minimal native-executable policy/rule tool input, signed pre-execution envelope, and signed post-execution observation. Phase 17B2B adds OCI policy, tool input, envelope, direct probe, and terminal observation. Phase 17B2C1 adds production policy, signed appraiser evidence, and quorum admission. Invalid examples cover managed-assurance mismatch, mixed identity or executor references, audience and validity drift, raw-input retention, policy/authority overclaim, stale challenge, unbound certificate projection, incomplete commit, unbound execution evidence, inconsistent output/process state, broken transition, correlated or inconsistent deployment evidence, admission expiry, and authority expansion. These static samples are structural examples rather than one mutually linked manifest history.
+
+The GitHub release samples define the terminal Phase 18 exception to the
+otherwise false release boundary. The valid authorization carries true only
+for one USER-granted repository/tag/commit/main-CI/notes tuple; the invalid
+authorization proves that AI approval cannot enter the boundary. The valid
+receipt binds the resolved tag commit and consumed authorization, while the
+invalid receipt proves that a repaired digest cannot hide tag drift. Use
+`run-github-release-publisher-fixtures.js` for state reappraisal, expiry,
+tamper, publication, and idempotency behavior without network access.
 
 Use `run-protected-tool-gateway-fixtures.js` for coherent contract-reference authorization, idempotency, exact begin/commit correlation, pre-execution cancellation, and unknown-outcome recovery. Use `run-gateway-identity-adapter-fixtures.js` for a real TLS 1.3 mTLS handshake, SPIFFE X.509 chain, equal endpoint exporter proof, Ed25519 challenge/evidence signatures, manifest-backed gateway commit, and adversarial expiry, replay, revocation, tamper, challenge-reuse, and certificate-substitution rejection. Use `run-protected-process-executor-fixtures.js` for real exact process execution, signed before/after evidence, caller-result rejection, executable drift, timeout, no-rerun recovery, and forbidden repository-effect rejection. Use `run-oci-linux-sandbox-provider-fixtures.js` for measured container execution and no-rerun recovery. Use `run-production-sandbox-admission-fixtures.js` for cryptographic quorum/admission behavior and `run-production-sandbox-gateway-fixtures.js` for actual mTLS identity, exact production scope, external coordinator enforcement, and v0.5 terminal projection.

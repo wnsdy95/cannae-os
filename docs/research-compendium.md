@@ -4241,3 +4241,117 @@ The Phase 17B2C1 question is therefore:
 The repository now has a fail-closed contract for consuming those provider
 claims. It does not manufacture provider trust or convert an ordinary local
 Docker installation into production.
+
+## Phase 18: Exact GitHub Release Authorization
+
+### Research Question
+
+How can the framework finally set `release_authorized: true` without turning a
+category-level release review, successful CI run, production admission, or AI
+recommendation into reusable publication authority?
+
+### Source Findings
+
+1. A release target must be explicit.
+   The [GitHub CLI release-create reference](https://cli.github.com/manual/gh_release_create)
+   allows an explicit target branch or full commit SHA. If a tag does not
+   already exist, GitHub otherwise creates it from the default branch. Cannae
+   therefore supplies the full authorized commit SHA instead of relying on
+   ambient branch state.
+2. Release body input and no-change behavior are selectable controls.
+   The same CLI supports an exact notes file and
+   `--fail-on-no-commits`. Cannae hashes the tracked notes bytes before
+   authorization and compares the reloaded body after publication.
+3. Publication output must be reloaded.
+   The [GitHub CLI release-view reference](https://cli.github.com/manual/gh_release_view)
+   exposes release IDs, tag, target, body, URLs, draft/prerelease state, and
+   publish time. Command success alone is not a terminal receipt.
+4. The release object and Git tag are related but distinct state.
+   The [GitHub Releases REST API](https://docs.github.com/en/rest/releases/releases#create-a-release)
+   defines the target commitish used when a tag is created. Cannae separately
+   resolves the remote tag after creation so a release object cannot hide a tag
+   pointing elsewhere.
+5. Human approval must name the action instance.
+   Existing military-style authority doctrine already separates retained human
+   decisions from staff recommendations. The release boundary therefore binds
+   USER authority to one repository/tag/commit/notes tuple and a short expiry,
+   rather than adding release authority to an agent role.
+
+### Design Decisions
+
+1. Keep every lower contract false.
+   Mission, campaign, verifier, dispatch, gateway, executor, sandbox,
+   production, and cycle-order evidence can inform the USER decision but cannot
+   become publication authority.
+2. Introduce one terminal authorization type.
+   `GitHubReleaseAuthorization` is the only pre-action artifact that may carry
+   release true. Its scope is a single stable release in one public repository.
+3. Bind the exact successful main run.
+   Pull-request success is not sufficient because the merged commit can differ.
+   The authorization requires a completed successful `Validate` push run whose
+   branch and head SHA equal the release target.
+4. Reappraise immediately before action.
+   A valid document is not enough if the worktree, origin, notes, CI, expiry,
+   tag, or release changed after issuance.
+5. Separate immutable authorization from consumption.
+   Mutating `consumed` would invalidate the authorization digest. A terminal
+   `GitHubReleaseReceipt` instead cites the exact authorization and records
+   consumption.
+6. Make exact retries idempotent.
+   A retry may verify an already-created byte-equivalent release, but it cannot
+   create, repair, retarget, delete, or overwrite mismatched state.
+7. Record the actual trust boundary.
+   The canonical SHA-256 digest detects accidental or unpaired mutation but is
+   not a USER signature. The local operator process and authenticated `gh`
+   credential remain trusted.
+
+### Rejected Alternatives
+
+- Changing all existing `release_authorized` constants to true: destroys
+  authority separation.
+- Treating `allow_scoped_execution_and_release` as a repository release token:
+  it names only a release category, not a GitHub subject.
+- Releasing from ambient `main`: branch state can drift after review.
+- Trusting a successful `gh release create` exit code: does not independently
+  establish body or tag correctness.
+- Reusing an unexpired authorization for a different patch release: violates
+  exact USER scope.
+- Automatically deleting a mismatched tag or release: converts fail-closed
+  verification into destructive repair.
+- Calling a digest a human signature: overstates the current trust boundary.
+
+### Implemented Artifacts
+
+- `docs/github-release-authorization.md`;
+- `schema-files/github-release-authorization.schema.json`;
+- `schema-files/github-release-receipt.schema.json`;
+- valid and adversarial authorization and receipt samples;
+- `github-release-publisher.js`;
+- `run-github-release-publisher-fixtures.js`;
+- `github-release-fixtures/README.md`;
+- equivalent Codex and Claude release wrappers, routing references, and skill
+  operating rules; and
+- tracked `docs/releases/v0.2.0.md` release notes.
+
+### Measured Behavior
+
+- one exact USER grant produces a schema-valid terminal authorization with
+  release true;
+- dirty state, wrong-commit CI, foreign repository/origin identity, and an
+  authorization artifact outside the repository deny before publication;
+- expiry and post-authorization notes mutation deny publication;
+- one exact release publishes once and an exact retry performs verification
+  without a second create call;
+- an existing release whose remote tag resolves to a different commit denies;
+- a tag without a release denies as partial state; and
+- repaired self-digests do not make AI approval or tag drift valid.
+
+### Residual Work
+
+- USER digital signatures and protected signing-key custody;
+- signed tag/provenance binding and immutable release policy;
+- GitHub environment and repository-rule evidence;
+- independent release monitor, transparency witness, and mutation alerting;
+- private repository, prerelease, first-release, and alternate provider
+  profiles; and
+- provider-neutral release adapters.

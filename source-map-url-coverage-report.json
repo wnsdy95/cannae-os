@@ -3,7 +3,7 @@
   "as_of": "2026-07-25",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 53,
+  "checked_hosts": 54,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -64,6 +64,14 @@
       "host": "assets.publishing.service.gov.uk",
       "files": [
         "docs/multinational-doctrine-consistency-review.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "cli.github.com",
+      "files": [
+        "docs/github-release-authorization.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
       ]
@@ -143,6 +151,7 @@
     {
       "host": "docs.github.com",
       "files": [
+        "docs/github-release-authorization.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"

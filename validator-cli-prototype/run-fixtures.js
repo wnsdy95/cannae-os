@@ -1003,6 +1003,34 @@ const fixtures = [
     requiredCodes: ["RELEASE_GATE_RELEASE_BLOCK_NOT_FINAL", "RELEASE_GATE_ALLOW_WITH_FAILED_RELEASE_REVIEW", "RELEASE_GATE_WITHOUT_EVIDENCE"]
   },
   {
+    name: "valid exact GitHub release authorization",
+    file: "sample-payloads/valid-github-release-authorization.json",
+    type: "github-release-authorization",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "GitHub release authorization accepts AI approval",
+    file: "sample-payloads/invalid-github-release-authorization-ai-approval.json",
+    type: "github-release-authorization",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH", "GITHUB_RELEASE_AUTHORITY_DRIFT"]
+  },
+  {
+    name: "valid exact GitHub release receipt",
+    file: "sample-payloads/valid-github-release-receipt.json",
+    type: "github-release-receipt",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "GitHub release receipt resolves tag to a different commit",
+    file: "sample-payloads/invalid-github-release-receipt-tag-drift.json",
+    type: "github-release-receipt",
+    exitCode: 1,
+    requiredCodes: ["GITHUB_RELEASE_RECEIPT_TARGET_MISMATCH"]
+  },
+  {
     name: "valid maintenance readiness",
     file: "sample-payloads/valid-maintenance-readiness.json",
     type: "maintenance-readiness",

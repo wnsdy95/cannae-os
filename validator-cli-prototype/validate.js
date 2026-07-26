@@ -66,6 +66,10 @@ const {
   productionSandboxEvidenceDigest,
   validateProductionSandboxPolicy
 } = require("../production-sandbox-admission");
+const {
+  validateAuthorizationSemantics: validateGitHubReleaseAuthorization,
+  validateReceiptSemantics: validateGitHubReleaseReceipt
+} = require("../github-release-publisher");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -134,6 +138,8 @@ const TYPE_TO_SCHEMA = {
   "approval-delegation-event": "approval-delegation-event.schema.json",
   "approval-delegation-revocation-event": "approval-delegation-revocation-event.schema.json",
   "release-gate-decision-event": "release-gate-decision-event.schema.json",
+  "github-release-authorization": "github-release-authorization.schema.json",
+  "github-release-receipt": "github-release-receipt.schema.json",
   "routing-receipt": "routing-receipt.schema.json",
   "mission-wave-plan": "mission-wave-plan.schema.json",
   "agent-context-pack": "agent-context-pack.schema.json",
@@ -2449,6 +2455,28 @@ function semanticRules(payload, type) {
     }
     if (!hasSubstantiveItems(payload.evidence)) {
       issues.push(issue("error", "RELEASE_GATE_WITHOUT_EVIDENCE", "$.evidence", "Release gate decision event must include evidence."));
+    }
+  }
+
+  if (type === "github-release-authorization") {
+    for (const releaseIssue of validateGitHubReleaseAuthorization(payload)) {
+      issues.push(issue(
+        "critical",
+        releaseIssue.code,
+        releaseIssue.path,
+        releaseIssue.message
+      ));
+    }
+  }
+
+  if (type === "github-release-receipt") {
+    for (const releaseIssue of validateGitHubReleaseReceipt(payload)) {
+      issues.push(issue(
+        "critical",
+        releaseIssue.code,
+        releaseIssue.path,
+        releaseIssue.message
+      ));
     }
   }
 

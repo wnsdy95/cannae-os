@@ -937,7 +937,68 @@ Provider boundary:
 
 See `production-sandbox-admission.md`.
 
-## 23. Release Gates
+## 23. Phase 18: Exact GitHub Release Authorization
+
+Status: exact public-repository authorization and receipt contracts,
+dependency-free semantic validation, a `gh`/Git system adapter, offline
+adversarial fixtures, and equivalent Codex/Claude operator wrappers are
+implemented.
+
+Goal:
+
+- Convert one explicit human USER release decision into a short-lived,
+  single-use terminal authorization for one exact GitHub release without
+  widening any lower execution or assurance contract.
+
+Implemented controls:
+
+- `GitHubReleaseAuthorization` is the only pre-action artifact allowed to
+  carry `release_authorized: true`;
+- it binds owner/repository, public visibility, default branch, write-level
+  viewer permission, stable tag, release name, full commit SHA, previous latest
+  release, tracked release-notes path/digest/length, successful exact
+  `Validate` push run, clean origin-synchronized repository state, USER review,
+  USER grant, expiry, and canonical self-digest;
+- authorization requires the target tag and release to be absent, the version
+  to advance, and the target commit to differ from the previous release;
+- publication reappraises the repository, CI, notes, expiry, tag, and release
+  state immediately before invoking GitHub;
+- `gh release create` receives the exact full commit SHA, title, notes file,
+  no-commit failure, and latest-release selection;
+- terminal verification reloads the GitHub release, compares its body digest,
+  resolves the remote tag commit, checks mode/latest status, and emits
+  `GitHubReleaseReceipt`;
+- retry against one byte-equivalent existing release is idempotent, while
+  partial and mismatched states deny;
+- mission, campaign, verifier, dispatch, gateway, executor, sandbox,
+  production, and cycle-order artifacts remain release false; and
+- both skills route, operate, and validate the same terminal procedure.
+
+Completion criteria:
+
+- A USER grant for repository A, tag A, commit A, notes A, and CI run A cannot
+  authorize any B value.
+- Dirty state, origin drift, untracked or changed notes, wrong/stale CI,
+  insufficient permission, version regression, expiry, and existing partial
+  state all deny.
+- A published release is accepted only when the release body and resolved tag
+  commit match the exact authorization.
+- Publication consumes authority in a terminal receipt and never converts a
+  lower control-plane artifact to release true.
+
+Remaining hardening:
+
+- cryptographic USER signatures and protected signing devices;
+- signed or annotated release tags and provenance binding;
+- GitHub environment/repository-rule evidence and credential isolation;
+- immutable-release policy, mutation monitoring, transparency logging, and
+  independent witnessing;
+- support for private repositories, prereleases, first releases, alternate
+  workflow/check names, and provider-neutral release adapters.
+
+See `github-release-authorization.md`.
+
+## 24. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -966,8 +1027,9 @@ See `production-sandbox-admission.md`.
 | G24 | Every Phase 17B2A protected process commit reloads one exact manifest-backed policy/envelope/observation chain, verifies signatures and complete command/result/repository bindings, and proves one policy-pinned native execution with no runtime-inserted shell or automatic rerun while explicitly denying sandbox, network, production, exclusivity, and release claims |
 | G25 | Every Phase 17B2B OCI sandbox commit reloads one exact policy/envelope/probe/observation chain, verifies image, probe, seccomp, Docker configuration, directly observed kernel privilege/mount/cgroup/network state, terminal result, repository immutability, cleanup, and no-rerun recovery while denying independent host trust, production, exclusivity, and release claims |
 | G26 | Every Phase 17B2C1 managed transition reloads one exact production policy/evidence/admission chain, recomputes trusted independent deployment consensus and OCI scope, and holds a matching live external revision/fencing lease; production may be true only for that deployment and release remains false |
+| G27 | A GitHub release may carry release true only through one explicit USER-granted, unexpired authorization bound to the exact public repository, advancing stable tag, full main commit, successful exact Validate push run, tracked notes digest, clean origin state, absent target, and terminal verified tag/release receipt |
 
-## 24. Related Documents
+## 25. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -987,3 +1049,4 @@ See `production-sandbox-admission.md`.
 - `gateway-identity-admission.md`
 - `protected-process-execution.md`
 - `oci-linux-sandbox-provider.md`
+- `github-release-authorization.md`

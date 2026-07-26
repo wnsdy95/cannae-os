@@ -19,6 +19,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-authority-matrix.
 node validator-cli-prototype/validate.js sample-payloads/valid-decision-packet.json decision-packet
 node validator-cli-prototype/validate.js sample-payloads/valid-context-item.json context-item
 node validator-cli-prototype/validate.js sample-payloads/valid-release-gate-decision-event.json release-gate-decision-event
+node validator-cli-prototype/validate.js sample-payloads/valid-github-release-authorization.json github-release-authorization
+node validator-cli-prototype/validate.js sample-payloads/valid-github-release-receipt.json github-release-receipt
 node validator-cli-prototype/validate.js sample-payloads/valid-maintenance-readiness.json maintenance-readiness
 node validator-cli-prototype/validate.js sample-payloads/valid-backbrief.json backbrief
 node validator-cli-prototype/validate.js sample-payloads/valid-rehearsal.json rehearsal
@@ -104,6 +106,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-tool-execution-re
 - `context-item`
 - `release-review`
 - `release-gate-decision-event`
+- `github-release-authorization`
+- `github-release-receipt`
 - `maintenance-readiness`
 - `backbrief`
 - `rehearsal`

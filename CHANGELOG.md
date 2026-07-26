@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+## 0.2.0 - 2026-07-26
+
+- Added Phase 18 exact GitHub release authorization: one short-lived USER grant bound to the public repository, stable tag, full main commit, successful exact `Validate` push run, tracked notes digest, clean origin state, publication verification, resolved tag commit, and terminal consumed receipt.
+- Added Phase 17B2A protected process execution, Phase 17B2B measured OCI/Linux reference sandbox execution, and Phase 17B2C1 provider-neutral production sandbox admission with independent appraiser failure-domain quorum and mandatory external coordination.
+- Added Phase 16 per-agent dispatch policies, short-lived leases, exact pre/post-tool checkpoints, interruption, revocation, explicit resume, and Codex/Claude hook adapters.
+- Added Phase 14 native GitHub Actions and GitLab CI OIDC/JWKS verifier identity adapters.
 - Added Phase 17A protected tool gateway contracts and reference controller with trusted principal/configuration binding, raw-input digest separation, idempotent append-only transactions, exact execution tokens, executor-bound receipts, pre-execution cancellation, unknown-outcome recovery, adversarial fixtures, and equivalent Codex/Claude skill routing.
 - Added a fail-closed Codex/Claude skill mission lifecycle with per-wave routing enforcement, repository-bound and digest-bound agent context packs, optional exact model dispatch bindings, manifest-backed work reporting, SITREP/AAR closeout, bounded improvement handoff, and retained human release authority.
 - Added Phase 13 transparency operations: trust-policy/cycle-order v0.7, durable append-only checkpoint state, RFC 6962 consistency proofs, distinct witness/monitor operator quorums, sequential dual-threshold TUF root rotation and expiry, immutable incident supersession and revocation history, manifest-backed supervisor admission, adversarial fixtures, and official research traceability.

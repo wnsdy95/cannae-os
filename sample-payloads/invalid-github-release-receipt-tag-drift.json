@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseReceipt",
+  "id": "GRR-v0_2_0-130c09a02a6b",
+  "authorization_ref": {
+    "authorization_id": "GRA-v0_2_0-130c09a02a6b",
+    "relative_path": ".cannae/releases/v0.2.0/authorization.json",
+    "sha256": "c36814f9eb9d58a71ff8e82dd904e0df2294dcfe8cf8cf233debc81af7b78d3f"
+  },
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "default_branch": "main"
+  },
+  "target": {
+    "tag_name": "v0.2.0",
+    "release_name": "Cannae OS v0.2.0",
+    "commit_sha": "130c09a02a6b03da30564666df46cf26838afee3",
+    "draft": false,
+    "prerelease": false,
+    "latest": true
+  },
+  "release": {
+    "database_id": 200000001,
+    "node_id": "RE_kwDOCannae4Ltest",
+    "url": "https://github.com/wnsdy95/cannae-os/releases/tag/v0.2.0",
+    "api_url": "https://api.github.com/repos/wnsdy95/cannae-os/releases/200000001",
+    "tag_name": "v0.2.0",
+    "target_commitish": "130c09a02a6b03da30564666df46cf26838afee3",
+    "resolved_tag_commit_sha": "38109f7b7a6d46fe9ddbc11724f140792ec54725",
+    "published_at": "2026-07-26T10:05:00.000Z",
+    "draft": false,
+    "prerelease": false,
+    "latest": true
+  },
+  "release_notes_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "authorization_consumed": true,
+  "published": true,
+  "verified": true,
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": true
+  },
+  "release_authorized": true,
+  "recorded_at": "2026-07-26T10:05:01.000Z",
+  "receipt_sha256": "fb0170a7e110d274aa619a8540676b7a9f1e4b76cdc976aaa57874892ada6bb7"
+}

@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-release-receipt.schema.json",
+  "title": "GitHub Release Receipt",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "authorization_ref",
+    "repository",
+    "target",
+    "release",
+    "release_notes_sha256",
+    "authorization_consumed",
+    "published",
+    "verified",
+    "authority",
+    "release_authorized",
+    "recorded_at",
+    "receipt_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseReceipt"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "authorization_ref": {
+      "type": "object",
+      "required": [
+        "authorization_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "authorization_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "full_name",
+        "default_branch"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "tag_name",
+        "release_name",
+        "commit_sha",
+        "draft",
+        "prerelease",
+        "latest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tag_name": {
+          "type": "string",
+          "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+        },
+        "release_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "draft": {
+          "type": "boolean",
+          "const": false
+        },
+        "prerelease": {
+          "type": "boolean",
+          "const": false
+        },
+        "latest": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "release": {
+      "type": "object",
+      "required": [
+        "database_id",
+        "node_id",
+        "url",
+        "api_url",
+        "tag_name",
+        "target_commitish",
+        "resolved_tag_commit_sha",
+        "published_at",
+        "draft",
+        "prerelease",
+        "latest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "database_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "node_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "api_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "tag_name": {
+          "type": "string",
+          "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+        },
+        "target_commitish": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "resolved_tag_commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "published_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "draft": {
+          "type": "boolean",
+          "const": false
+        },
+        "prerelease": {
+          "type": "boolean",
+          "const": false
+        },
+        "latest": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "release_notes_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "authorization_consumed": {
+      "type": "boolean",
+      "const": true
+    },
+    "published": {
+      "type": "boolean",
+      "const": true
+    },
+    "verified": {
+      "type": "boolean",
+      "const": true
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "self_approval_prohibited",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "self_approval_prohibited": {
+          "type": "boolean",
+          "const": true
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": true
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "receipt_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}
