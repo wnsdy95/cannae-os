@@ -171,6 +171,8 @@ future release evidence:
    repository-contained output path. Use `--scope full` for scheduled/manual
    policy and all-release inspection, or `--scope release_attestation
    --expected-tag <tag> --trigger release` for one exact release event.
+   In a clean checkout, install the pinned validator dependencies first with
+   `npm ci --ignore-scripts`.
 3. Require the current origin default-branch commit, a repository-contained
    output path that does not traverse a parent symlink, and a schema-valid
    observation whose `summary.status` is `ready`.

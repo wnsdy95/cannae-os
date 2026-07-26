@@ -190,7 +190,9 @@ The workflow grants only `contents: read` and `attestations: read`. Event tag,
 actor, run, and ref values enter the shell through quoted environment
 variables rather than direct expression interpolation. The optional
 Administration-read secret is exposed only to the full-monitor command step,
-not to checkout, Node setup, or artifact-upload actions.
+not to checkout, Node setup, dependency installation, or artifact-upload
+actions. Both jobs install the exact lockfile with
+`npm ci --ignore-scripts` before loading the schema validator.
 
 The full monitor first tries `CANNAE_IMMUTABILITY_MONITOR_TOKEN` and otherwise
 uses the job token. If the active token cannot read repository Administration,

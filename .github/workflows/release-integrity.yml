@@ -40,6 +40,9 @@ jobs:
         with:
           node-version: "22.22.3"
 
+      - name: Install pinned runtime dependencies
+        run: npm ci --ignore-scripts
+
       - name: Verify exact release event
         env:
           GH_TOKEN: ${{ github.token }}
@@ -86,6 +89,9 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: "22.22.3"
+
+      - name: Install pinned runtime dependencies
+        run: npm ci --ignore-scripts
 
       - name: Inspect policy and release integrity
         env:

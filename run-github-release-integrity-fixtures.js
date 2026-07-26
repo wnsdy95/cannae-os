@@ -474,6 +474,7 @@ function runFixtures() {
         workflow.includes('--expected-tag "${EXPECTED_TAG}"') &&
         (workflow.match(/fetch-depth: 0/g) || []).length === 2 &&
         (workflow.match(/node-version: "22\.22\.3"/g) || []).length === 2 &&
+        (workflow.match(/npm ci --ignore-scripts/g) || []).length === 2 &&
         (workflow.match(/CANNAE_IMMUTABILITY_MONITOR_TOKEN:/g) || [])
           .length === 1 &&
         !/--(?:expected-tag|actor|run-id|ref|trigger)[^\n]*\$\{\{/.test(
