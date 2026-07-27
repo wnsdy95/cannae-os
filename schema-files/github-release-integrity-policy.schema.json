@@ -22,7 +22,10 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "0.1"
+      "enum": [
+        "0.1",
+        "0.2"
+      ]
     },
     "type": {
       "type": "string",
@@ -189,6 +192,30 @@
         "source_archives_in_scope": {
           "type": "boolean",
           "const": false
+        },
+        "independent_verification_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "independent_verifier_package": {
+          "type": "string",
+          "const": "@sigstore/verify"
+        },
+        "minimum_independent_verifier_version": {
+          "type": "string",
+          "const": "4.1.0"
+        },
+        "trusted_root_tuf_mirror": {
+          "type": "string",
+          "const": "https://tuf-repo.github.com"
+        },
+        "trusted_root_bootstrap_path": {
+          "type": "string",
+          "const": ".github/tuf/github-release-root.json"
+        },
+        "maximum_trusted_root_age_seconds": {
+          "type": "integer",
+          "const": 86400
         }
       }
     },
@@ -283,5 +310,33 @@
     "policy_sha256": {
       "$ref": "common.schema.json#/$defs/sha256"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.2"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "attestation_policy": {
+            "required": [
+              "independent_verification_required",
+              "independent_verifier_package",
+              "minimum_independent_verifier_version",
+              "trusted_root_tuf_mirror",
+              "trusted_root_bootstrap_path",
+              "maximum_trusted_root_age_seconds"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

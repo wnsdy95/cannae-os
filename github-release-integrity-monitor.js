@@ -18,6 +18,18 @@ const {
   verifyReleaseAttestationWithRetry,
   writeJsonAtomic
 } = require("./github-release-publisher");
+const {
+  MINIMUM_SIGSTORE_VERIFY_VERSION,
+  validateIndependentVerificationEvidence,
+  verifyGitHubReleaseBundle
+} = require("./github-release-bundle-verifier");
+const {
+  DEFAULT_MAXIMUM_AGE_SECONDS,
+  GITHUB_TUF_BOOTSTRAP_PATH,
+  GITHUB_TUF_MIRROR,
+  refreshGitHubReleaseTrustedRoot,
+  validateGitHubReleaseTrustedRoot
+} = require("./github-release-trusted-root");
 const { canonicalJsonBytes } = require("./verifier-identity-evidence");
 
 class ReleaseIntegrityError extends Error {
@@ -136,6 +148,22 @@ function validateIntegrityPolicySemantics(document) {
       "The policy must require the exact supported GitHub release-attestation profile for every non-grandfathered release."
     ));
   }
+  if (document && document.schema_version === "0.2" &&
+      (attestation.independent_verification_required !== true ||
+      attestation.independent_verifier_package !== "@sigstore/verify" ||
+      attestation.minimum_independent_verifier_version !==
+        MINIMUM_SIGSTORE_VERIFY_VERSION ||
+      attestation.trusted_root_tuf_mirror !== GITHUB_TUF_MIRROR ||
+      attestation.trusted_root_bootstrap_path !==
+        GITHUB_TUF_BOOTSTRAP_PATH ||
+      attestation.maximum_trusted_root_age_seconds !==
+        DEFAULT_MAXIMUM_AGE_SECONDS)) {
+    issues.push(semanticIssue(
+      "GITHUB_RELEASE_INTEGRITY_INDEPENDENT_POLICY_INVALID",
+      "$.attestation_policy",
+      "Phase 19C monitoring requires the exact independent Sigstore verifier and GitHub TUF profile."
+    ));
+  }
   if (!Number.isInteger(monitoring.cadence_minutes) ||
       monitoring.cadence_minutes < 60 ||
       monitoring.cadence_minutes > 1440 ||
@@ -179,10 +207,15 @@ function validateIntegrityObservationSemantics(document) {
   const policyRef = document && document.policy_ref || {};
   const trigger = document && document.trigger || {};
   const policyObservation = document && document.policy_observation || {};
+  const trustedRootObservation =
+    document && document.trusted_root_observation || {};
   const releases = document && document.releases || [];
   const recordedIssues = document && document.issues || [];
   const summary = document && document.summary || {};
   const authority = document && document.authority || {};
+  const independentVerificationRequired =
+    document && document.schema_version === "0.2";
+  let trustedRoot = null;
 
   if (document && document.observation_sha256 !== observationDigest(document)) {
     issues.push(semanticIssue(
@@ -206,6 +239,47 @@ function validateIntegrityObservationSemantics(document) {
       "$.policy_ref",
       "The observation must bind the exact policy blob committed at the observed HEAD."
     ));
+  }
+  if (independentVerificationRequired) {
+    if (trustedRootObservation.status === "verified" &&
+        trustedRootObservation.artifact &&
+        trustedRootObservation.failure_code === undefined &&
+        trustedRootObservation.message === undefined) {
+      trustedRoot = trustedRootObservation.artifact;
+      for (const trustIssue of validateGitHubReleaseTrustedRoot(
+        trustedRoot,
+        {
+          evaluatedAt: document.observed_at,
+          maximumAgeSeconds: DEFAULT_MAXIMUM_AGE_SECONDS
+        }
+      )) {
+        issues.push(semanticIssue(
+          trustIssue.code,
+          "$.trusted_root_observation.artifact",
+          trustIssue.message
+        ));
+      }
+    } else if (trustedRootObservation.status === "unavailable" &&
+        trustedRootObservation.artifact === undefined &&
+        typeof trustedRootObservation.failure_code === "string" &&
+        trustedRootObservation.failure_code.length > 0 &&
+        typeof trustedRootObservation.message === "string" &&
+        trustedRootObservation.message.length > 0) {
+      if (!recordedIssues.some(item =>
+        item && item.code === trustedRootObservation.failure_code)) {
+        issues.push(semanticIssue(
+          "GITHUB_RELEASE_INTEGRITY_TRUST_FAILURE_UNRECORDED",
+          "$.trusted_root_observation.failure_code",
+          "Unavailable trusted-root evidence must have a matching retained monitor issue."
+        ));
+      }
+    } else {
+      issues.push(semanticIssue(
+        "GITHUB_RELEASE_INTEGRITY_TRUST_OBSERVATION_INVALID",
+        "$.trusted_root_observation",
+        "Phase 19C observations must retain either a verified trusted root or an explicit acquisition failure."
+      ));
+    }
   }
   if (policyObservation.api_version !== GITHUB_API_VERSION ||
       policyObservation.endpoint !== expectedEndpoint(repository.full_name) ||
@@ -272,6 +346,7 @@ function validateIntegrityObservationSemantics(document) {
       if (attestation.required !== false ||
           attestation.status !== "not_required" ||
           attestation.evidence !== undefined ||
+          attestation.independent_verification !== undefined ||
           attestation.failure_code !== undefined) {
         issues.push(semanticIssue(
           "GITHUB_RELEASE_INTEGRITY_GRANDFATHER_DRIFT",
@@ -315,8 +390,38 @@ function validateIntegrityObservationSemantics(document) {
             evidenceIssue.message
           ));
         }
+        if (independentVerificationRequired) {
+          for (const independentIssue of
+            validateIndependentVerificationEvidence(
+              attestation.independent_verification,
+              attestation.evidence &&
+                attestation.evidence.raw_verification,
+              trustedRoot,
+              {
+                repository: repository.full_name,
+                tagName: release.tag_name,
+                commitSha: release.commit_sha,
+                signerIdentity:
+                  RELEASE_ATTESTATION_SIGNER_IDENTITY,
+                assets: attestation.evidence &&
+                  attestation.evidence.statement &&
+                  attestation.evidence.statement.asset_subjects
+              },
+              {
+                maximumTrustedRootAgeSeconds:
+                  DEFAULT_MAXIMUM_AGE_SECONDS
+              }
+            )) {
+            issues.push(semanticIssue(
+              independentIssue.code,
+              `${pointer}.attestation.independent_verification`,
+              independentIssue.message
+            ));
+          }
+        }
       } else if (!attestation.failure_code ||
-          attestation.evidence !== undefined) {
+          attestation.evidence !== undefined ||
+          attestation.independent_verification !== undefined) {
         issues.push(semanticIssue(
           "GITHUB_RELEASE_INTEGRITY_ATTESTATION_FAILURE_UNEXPLAINED",
           `${pointer}.attestation.failure_code`,
@@ -333,11 +438,21 @@ function validateIntegrityObservationSemantics(document) {
     release.attestation && release.attestation.required === true).length;
   const verifiedAttestationCount = releases.filter(release =>
     release.attestation && release.attestation.status === "verified").length;
+  const independentlyVerifiedAttestationCount = releases.filter(release =>
+    release.attestation &&
+    release.attestation.independent_verification &&
+    release.attestation.independent_verification
+      .cryptographic_verification_succeeded === true).length;
   if (summary.release_count !== releases.length ||
       summary.grandfathered_count !== grandfatheredCount ||
       summary.post_activation_count !== postActivationCount ||
       summary.required_attestation_count !== requiredAttestationCount ||
       summary.verified_attestation_count !== verifiedAttestationCount ||
+      (independentVerificationRequired &&
+       (summary.independently_verified_attestation_count !==
+          independentlyVerifiedAttestationCount ||
+        independentlyVerifiedAttestationCount !==
+          verifiedAttestationCount)) ||
       summary.issue_count !== recordedIssues.length ||
       summary.release_integrity_assessed !== true) {
     issues.push(semanticIssue(
@@ -347,6 +462,8 @@ function validateIntegrityObservationSemantics(document) {
     ));
   }
   const shouldBeReady = recordedIssues.length === 0 &&
+    (!independentVerificationRequired ||
+      trustedRootObservation.status === "verified") &&
     (document.scope === "release_attestation" ||
       (policyObservation.status === "verified" &&
        policyObservation.enabled === true));
@@ -593,6 +710,57 @@ function monitorIssue(code, scope, message, tagName) {
   };
 }
 
+function buildTrustedRootObservation(
+  policy,
+  options,
+  observedAt,
+  issues
+) {
+  if (policy.schema_version !== "0.2") return null;
+  if (options.trustedRoot) {
+    const trustIssues = validateGitHubReleaseTrustedRoot(
+      options.trustedRoot,
+      {
+        evaluatedAt: observedAt,
+        maximumAgeSeconds:
+          policy.attestation_policy.maximum_trusted_root_age_seconds
+      }
+    );
+    if (trustIssues.length === 0) {
+      return {
+        status: "verified",
+        artifact: JSON.parse(JSON.stringify(options.trustedRoot))
+      };
+    }
+    const first = trustIssues[0];
+    issues.push(monitorIssue(
+      first.code,
+      "attestation",
+      first.message
+    ));
+    return {
+      status: "unavailable",
+      failure_code: first.code,
+      message: first.message
+    };
+  }
+  const failure = options.trustedRootFailure || {};
+  const failureCode = failure.code ||
+    "GITHUB_RELEASE_TRUSTED_ROOT_UNAVAILABLE";
+  const message = failure.message ||
+    "GitHub TUF trusted-root evidence was not available.";
+  issues.push(monitorIssue(
+    failureCode,
+    "attestation",
+    message
+  ));
+  return {
+    status: "unavailable",
+    failure_code: failureCode,
+    message
+  };
+}
+
 function makeAttestationDocument(policy, release) {
   return {
     repository: { full_name: policy.repository.full_name },
@@ -610,7 +778,13 @@ function makeAttestationDocument(policy, release) {
   };
 }
 
-function inspectOneRelease(policy, observed, runtime, issues) {
+function inspectOneRelease(
+  policy,
+  observed,
+  runtime,
+  issues,
+  trustedRootObservation
+) {
   const grandfathered = new Map(
     policy.grandfathered_releases.map(item => [item.tag_name, item])
   );
@@ -689,6 +863,17 @@ function inspectOneRelease(policy, observed, runtime, issues) {
         status: "failed",
         failure_code: "GITHUB_RELEASE_INTEGRITY_POST_ACTIVATION_MUTABLE"
       };
+    } else if (policy.schema_version === "0.2" &&
+        (!trustedRootObservation ||
+         trustedRootObservation.status !== "verified")) {
+      attestation = {
+        required: true,
+        status: "failed",
+        failure_code:
+          trustedRootObservation &&
+          trustedRootObservation.failure_code ||
+          "GITHUB_RELEASE_TRUSTED_ROOT_UNAVAILABLE"
+      };
     } else {
       try {
         const evidence = verifyReleaseAttestationWithRetry(
@@ -700,10 +885,32 @@ function inspectOneRelease(policy, observed, runtime, issues) {
               policy.monitoring.attestation_retry_interval_seconds
           }
         );
+        const independentVerification =
+          policy.schema_version === "0.2"
+            ? verifyGitHubReleaseBundle({
+              rawVerification: evidence.raw_verification,
+              trustedRoot: trustedRootObservation.artifact,
+              expected: {
+                repository: policy.repository.full_name,
+                tagName: release.tagName,
+                commitSha: release.commitSha,
+                signerIdentity:
+                  policy.attestation_policy.signer_identity,
+                assets: evidence.statement.asset_subjects
+              },
+              verifiedAt: evidence.verified_at,
+              maximumTrustedRootAgeSeconds:
+                policy.attestation_policy
+                  .maximum_trusted_root_age_seconds
+            })
+            : null;
         attestation = {
           required: true,
           status: "verified",
-          evidence
+          evidence,
+          ...(independentVerification
+            ? { independent_verification: independentVerification }
+            : {})
         };
       } catch (error) {
         const failureCode = error.code ||
@@ -795,6 +1002,12 @@ function monitorRepository(options, adapter = null) {
       "The monitor must execute from the current origin default-branch commit."
     ));
   }
+  const trustedRootObservation = buildTrustedRootObservation(
+    policy,
+    options,
+    observedAt,
+    issues
+  );
 
   const scope = options.scope || "full";
   const policyObservation = {
@@ -887,7 +1100,13 @@ function monitorRepository(options, adapter = null) {
   }
 
   const releases = selectedReleases.map(observed =>
-    inspectOneRelease(policy, observed, runtime, issues)
+    inspectOneRelease(
+      policy,
+      observed,
+      runtime,
+      issues,
+      trustedRootObservation
+    )
   ).sort((left, right) => {
     const timeOrder = Date.parse(left.published_at) - Date.parse(right.published_at);
     return timeOrder === 0
@@ -920,11 +1139,17 @@ function monitorRepository(options, adapter = null) {
     release.attestation.required === true).length;
   const verifiedAttestationCount = releases.filter(release =>
     release.attestation.status === "verified").length;
+  const independentlyVerifiedAttestationCount = releases.filter(release =>
+    release.attestation.independent_verification &&
+    release.attestation.independent_verification
+      .cryptographic_verification_succeeded === true).length;
   const ready = issues.length === 0 &&
+    (policy.schema_version !== "0.2" ||
+      trustedRootObservation.status === "verified") &&
     (scope === "release_attestation" ||
       (policyAssessmentComplete && policyObservation.enabled === true));
   const observation = {
-    schema_version: "0.1",
+    schema_version: policy.schema_version,
     type: "GitHubReleaseIntegrityObservation",
     id: `GRIO-${observedAt.replace(/[^0-9]/g, "").slice(0, 14)}-${
       sha256(Buffer.from(
@@ -956,6 +1181,9 @@ function monitorRepository(options, adapter = null) {
       ref: options.ref || process.env.GITHUB_REF || "local"
     },
     policy_observation: policyObservation,
+    ...(trustedRootObservation
+      ? { trusted_root_observation: trustedRootObservation }
+      : {}),
     releases,
     issues,
     summary: {
@@ -970,6 +1198,12 @@ function monitorRepository(options, adapter = null) {
       post_activation_count: postActivationCount,
       required_attestation_count: requiredAttestationCount,
       verified_attestation_count: verifiedAttestationCount,
+      ...(policy.schema_version === "0.2"
+        ? {
+          independently_verified_attestation_count:
+            independentlyVerifiedAttestationCount
+        }
+        : {}),
       issue_count: issues.length
     },
     authority: {
@@ -1017,11 +1251,11 @@ function parseCli(argv) {
 function usage() {
   return [
     "Usage:",
-    "  node github-release-integrity-monitor.js monitor --repository-root <path> --policy <repo-relative.json> --output <repo-relative.json> [--scope full|release_attestation] [--expected-tag <tag>] [--trigger manual|schedule|release] [--actor <actor>] [--run-id <id>] [--ref <ref>]"
+    "  node github-release-integrity-monitor.js monitor --repository-root <path> --policy <repo-relative.json> --trusted-root-output <repo-relative.json> --output <repo-relative.json> [--scope full|release_attestation] [--expected-tag <tag>] [--trigger manual|schedule|release] [--actor <actor>] [--run-id <id>] [--ref <ref>]"
   ].join("\n");
 }
 
-function main(argv = process.argv.slice(2)) {
+async function main(argv = process.argv.slice(2)) {
   try {
     const { command, options } = parseCli(argv);
     if (command !== "monitor") {
@@ -1030,7 +1264,7 @@ function main(argv = process.argv.slice(2)) {
         "Expected monitor command."
       );
     }
-    for (const field of ["policy", "output"]) {
+    for (const field of ["policy", "trusted-root-output", "output"]) {
       if (!options[field]) {
         throw new ReleaseIntegrityError(
           "GITHUB_RELEASE_INTEGRITY_OPTION_MISSING",
@@ -1046,6 +1280,25 @@ function main(argv = process.argv.slice(2)) {
       options.output,
       false
     );
+    const trustedRootOutputPath = resolveRepositoryPath(
+      repositoryRoot,
+      options["trusted-root-output"],
+      false
+    );
+    let trustedRoot = null;
+    let trustedRootFailure = null;
+    try {
+      trustedRoot = await refreshGitHubReleaseTrustedRoot({
+        repositoryRoot
+      });
+      writeJsonAtomic(trustedRootOutputPath.absolute, trustedRoot);
+    } catch (error) {
+      trustedRootFailure = {
+        code: error.code ||
+          "GITHUB_RELEASE_TRUSTED_ROOT_UNAVAILABLE",
+        message: error.message
+      };
+    }
     const observation = monitorRepository({
       repositoryRoot,
       policyPath: options.policy,
@@ -1054,7 +1307,9 @@ function main(argv = process.argv.slice(2)) {
       triggerKind: options.trigger || "manual",
       actor: options.actor,
       runId: options["run-id"],
-      ref: options.ref
+      ref: options.ref,
+      trustedRoot,
+      trustedRootFailure
     });
     writeJsonAtomic(outputPath.absolute, observation);
     process.stdout.write(`${JSON.stringify({
@@ -1068,6 +1323,9 @@ function main(argv = process.argv.slice(2)) {
       release_count: observation.summary.release_count,
       verified_attestation_count:
         observation.summary.verified_attestation_count,
+      independently_verified_attestation_count:
+        observation.summary
+          .independently_verified_attestation_count || 0,
       issue_codes: observation.issues.map(issue => issue.code),
       output: outputPath.absolute,
       release_authorized: false
@@ -1099,6 +1357,7 @@ function main(argv = process.argv.slice(2)) {
 module.exports = {
   ReleaseIntegrityError,
   SystemGitHubReleaseIntegrityAdapter,
+  buildTrustedRootObservation,
   expectedEndpoint,
   main,
   monitorRepository,

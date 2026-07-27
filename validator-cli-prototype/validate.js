@@ -78,6 +78,12 @@ const {
   validateIntegrityObservationSemantics: validateGitHubReleaseIntegrityObservation,
   validateIntegrityPolicySemantics: validateGitHubReleaseIntegrityPolicy
 } = require("../github-release-integrity-monitor");
+const {
+  validateGitHubReleaseTrustedRoot
+} = require("../github-release-trusted-root");
+const {
+  independentVerificationDigest
+} = require("../github-release-bundle-verifier");
 
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
@@ -152,6 +158,8 @@ const TYPE_TO_SCHEMA = {
   "github-release-immutability-receipt": "github-release-immutability-receipt.schema.json",
   "github-release-integrity-policy": "github-release-integrity-policy.schema.json",
   "github-release-integrity-observation": "github-release-integrity-observation.schema.json",
+  "github-release-trusted-root": "github-release-trusted-root.schema.json",
+  "github-release-independent-verification": "github-release-independent-verification.schema.json",
   "routing-receipt": "routing-receipt.schema.json",
   "mission-wave-plan": "mission-wave-plan.schema.json",
   "agent-context-pack": "agent-context-pack.schema.json",
@@ -509,7 +517,7 @@ function authorityAtLeast(actual, minimum) {
   return AUTHORITY_RANK[actual] >= AUTHORITY_RANK[minimum];
 }
 
-function semanticRules(payload, type) {
+function semanticRules(payload, type, options = {}) {
   const issues = [];
 
   if (type === "mission") {
@@ -2533,6 +2541,44 @@ function semanticRules(payload, type) {
         observationIssue.code,
         observationIssue.path,
         observationIssue.message
+      ));
+    }
+  }
+
+  if (type === "github-release-trusted-root") {
+    for (const trustIssue of validateGitHubReleaseTrustedRoot(payload, {
+      evaluatedAt: options.evaluatedAt
+    })) {
+      issues.push(issue(
+        "critical",
+        trustIssue.code,
+        trustIssue.path,
+        trustIssue.message
+      ));
+    }
+  }
+
+  if (type === "github-release-independent-verification") {
+    if (payload && payload.verification_sha256 !==
+        independentVerificationDigest(payload)) {
+      issues.push(issue(
+        "critical",
+        "GITHUB_RELEASE_INDEPENDENT_EVIDENCE_DIGEST_MISMATCH",
+        "$.verification_sha256",
+        "Independent verification digest must bind the complete evidence."
+      ));
+    }
+    if (!payload || payload.cryptographic_verification_succeeded !== true ||
+        payload.release_authorized !== false ||
+        !payload.authority ||
+        payload.authority.human_final_decision_authority !== "USER" ||
+        payload.authority.monitoring_only !== true ||
+        payload.authority.release_authorized !== false) {
+      issues.push(issue(
+        "critical",
+        "GITHUB_RELEASE_INDEPENDENT_EVIDENCE_AUTHORITY_DRIFT",
+        "$.authority",
+        "Independent verification evidence is monitoring-only and cannot grant release authority."
       ));
     }
   }
@@ -5042,13 +5088,14 @@ function maxSeverity(issues) {
   return issues.reduce((max, item) => order.indexOf(item.severity) > order.indexOf(max) ? item.severity : max, "info");
 }
 
-function validatePayload(payload, type) {
+function validatePayload(payload, type, options = {}) {
   if (!TYPE_TO_SCHEMA[type]) throw new Error(`Unknown payload type: ${type}`);
   const schemas = loadSchemas();
   const schema = schemas[TYPE_TO_SCHEMA[type]];
   const issues = [
     ...validateSchema(payload, schema, schemas).map(item => ({ ...item, layer: "schema" })),
-    ...semanticRules(payload, type).map(item => ({ ...item, layer: "semantic" }))
+    ...semanticRules(payload, type, options)
+      .map(item => ({ ...item, layer: "semantic" }))
   ];
   const severity = maxSeverity(issues);
   return {
@@ -5061,16 +5108,28 @@ function validatePayload(payload, type) {
 }
 
 function main() {
-  const [, , payloadArg, typeArg] = process.argv;
+  const [, , payloadArg, typeArg, ...optionArgs] = process.argv;
   if (!payloadArg || !typeArg || !TYPE_TO_SCHEMA[typeArg]) {
-    console.error(`Usage: node validator-cli-prototype/validate.js <payload.json> <${Object.keys(TYPE_TO_SCHEMA).join("|")}>`);
+    console.error(`Usage: node validator-cli-prototype/validate.js <payload.json> <${Object.keys(TYPE_TO_SCHEMA).join("|")}> [--evaluated-at <timestamp>]`);
     process.exit(2);
   }
 
   try {
+    const options = {};
+    for (let index = 0; index < optionArgs.length; index += 1) {
+      const token = optionArgs[index];
+      if (token !== "--evaluated-at" || !optionArgs[index + 1] ||
+          optionArgs[index + 1].startsWith("--")) {
+        throw new Error(
+          "Only --evaluated-at <timestamp> is supported after the payload type."
+        );
+      }
+      options.evaluatedAt = optionArgs[index + 1];
+      index += 1;
+    }
     const payloadPath = path.resolve(process.cwd(), payloadArg);
     const payload = readJson(payloadPath);
-    const result = validatePayload(payload, typeArg);
+    const result = validatePayload(payload, typeArg, options);
     console.log(JSON.stringify(result, null, 2));
     process.exit(result.valid ? 0 : 1);
   } catch (error) {

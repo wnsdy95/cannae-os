@@ -1,7 +1,7 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "GitHubReleaseIntegrityPolicy",
-  "id": "GRIP-cannae-os-20260726",
+  "id": "GRIP-cannae-os-20260727",
   "repository": {
     "full_name": "wnsdy95/cannae-os",
     "default_branch": "main",
@@ -43,7 +43,13 @@
     "statement_type": "https://in-toto.io/Statement/v1",
     "predicate_type": "https://in-toto.io/attestation/release/v0.2",
     "signer_identity": "https://dotcom.releases.github.com",
-    "source_archives_in_scope": false
+    "source_archives_in_scope": false,
+    "independent_verification_required": true,
+    "independent_verifier_package": "@sigstore/verify",
+    "minimum_independent_verifier_version": "4.1.0",
+    "trusted_root_tuf_mirror": "https://tuf-repo.github.com",
+    "trusted_root_bootstrap_path": ".github/tuf/github-release-root.json",
+    "maximum_trusted_root_age_seconds": 86400
   },
   "monitoring": {
     "cadence_minutes": 360,
@@ -63,5 +69,5 @@
   },
   "repository_policy_change_authorized": false,
   "release_authorized": false,
-  "policy_sha256": "bd4fc00490dc74ee9d3d87868dbfe8c29687103c78b2624642f92982a0a09701"
+  "policy_sha256": "d4d0756d5f775b3d6b7ef71381e7201dfe3ded12db12267a54ca448c6838ea30"
 }

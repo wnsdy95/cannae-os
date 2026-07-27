@@ -21,7 +21,7 @@ Manual doctrine docs
 -> Operational skill mission lifecycle
 ```
 
-Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, GitHub Actions and GitLab CI OIDC execution adapters, and the operational Codex/Claude skill lifecycle are implemented as local runtimes. UI, enterprise/self-managed providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
+Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, GitHub Actions and GitLab CI OIDC execution adapters, independent GitHub release bundle/TUF verification, and the operational Codex/Claude skill lifecycle are implemented as local runtimes. UI, enterprise/self-managed providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
 
 ## 1. Phase 0: Documentation Base
 
@@ -1128,7 +1128,6 @@ Credential boundary:
 
 Remaining hardening:
 
-- independently reverify retained Sigstore bundles outside GitHub CLI;
 - short-lived GitHub App credential minting and automated rotation;
 - signed tags and protected USER signing devices;
 - long-term transparency storage, independent witnesses, and cross-provider
@@ -1139,7 +1138,70 @@ Remaining hardening:
 
 See `github-release-integrity-monitoring.md`.
 
-## 26. Release Gates
+## 26. Phase 19C: Independent Retained-Bundle Verification
+
+Status: pinned GitHub TUF bootstrap, complete retained root/metadata chain,
+offline TUF replay, pinned Sigstore JavaScript verification, CLI-to-signed
+statement cross-check, real public fixtures, publisher v0.4, monitor v0.2,
+scheduled acquisition, and equivalent Codex/Claude wrappers are implemented.
+
+Goal:
+
+- Verify the exact retained release bundle and trust material without treating
+  the GitHub CLI conclusion or a recomputable wrapper digest as sufficient.
+
+Implemented controls:
+
+- `GitHubReleaseTrustedRoot` retains root v1 through the current GitHub root,
+  timestamp, snapshot, targets, exact `trusted_root.json` target bytes,
+  metadata projections, normalized trust material, and release false;
+- offline replay verifies root v1 self-threshold, every old/new root
+  transition, exact sequential versions, current metadata signatures and
+  expiry against an explicit caller clock, snapshot/targets links, target
+  length/hash, and normalized target equality;
+- `GitHubReleaseIndependentVerification` uses pinned
+  `@sigstore/verify 4.1.0`, records verifier-module and lockfile digests, and
+  binds the exact trusted root, certificate, RFC 3161 timestamp, DSSE payload,
+  repository, tag, commit, package URI, assets, and raw CLI result;
+- the signed DSSE statement must equal the GitHub CLI projection;
+- publisher authorization/receipt v0.4 requires and embeds the trusted root
+  and independently replayed evidence before a terminal receipt; active
+  publication rejects legacy authorization versions and preflights root
+  freshness through authorization expiry before creating a release;
+- integrity policy/observation v0.2 refreshes one root per run, independently
+  verifies each required release, and retains TUF acquisition failure as a
+  blocked schema-valid observation;
+- successful publisher and monitor fixtures use a real public
+  `cli/cli v2.93.0` bundle instead of a fake signature; and
+- root and independent evidence remain monitoring-only with USER final
+  authority and release false.
+
+Completion criteria:
+
+- Omitting a root version or changing signed root/targets data fails even
+  after wrapper digests are recomputed.
+- Changing the DSSE payload fails cryptographic verification.
+- Changing only the CLI statement fails the signed-statement cross-check.
+- A valid bundle for repository, tag, or commit B cannot satisfy A.
+- Missing, stale, or invalid TUF evidence blocks publication receipts and
+  monitor readiness.
+- Missing evaluation time, signed metadata expiry within wrapper age, a root
+  that expires inside the operation window, or a legacy authorization blocks
+  before publication.
+- Independent evidence cannot be converted into release authority.
+
+Remaining hardening:
+
+- independently operated verification infrastructure and failure domains;
+- durable prior TUF state for long-term rollback detection;
+- external long-term bundle/root archives, witnesses, and gossip;
+- protected USER signing devices and signed tags;
+- short-lived GitHub App monitoring credentials; and
+- private, prerelease, first-release, and provider-neutral profiles.
+
+See `github-release-independent-verification.md`.
+
+## 27. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -1171,8 +1233,9 @@ See `github-release-integrity-monitoring.md`.
 | G27 | A GitHub release may carry release true only through one explicit USER-granted, unexpired authorization bound to the exact public repository, advancing stable tag, full main commit, successful exact Validate push run, tracked notes digest, clean origin state, absent target, and terminal verified tag/release receipt |
 | G28 | Repository release immutability may be enabled only through one explicit USER-granted, unexpired ADMIN authorization bound to the exact public repository, origin-synchronized main commit, successful exact Validate push run, policy endpoint and prior state; future release authorization and receipt require enabled policy and observed immutable release state while policy artifacts retain release false |
 | G29 | Every Phase 19B full observation binds the tracked activation baseline to a live Administration-read enabled policy and every published tag; each post-activation release must be immutable and carry a GitHub-verified exact repository/tag/commit/asset attestation, credential uncertainty remains blocked, and monitoring retains policy mutation and release false |
+| G30 | Every Phase 19C publisher receipt or ready integrity observation replays the complete pinned GitHub TUF chain and target against an explicit clock, independently verifies the retained Sigstore bundle and exact signed release statement, cross-checks the CLI projection, retains verifier/root digests, and leaves all verification evidence release false; active publication accepts only v0.4 and preflights TUF validity through authorization expiry before external mutation |
 
-## 27. Related Documents
+## 28. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -1195,3 +1258,4 @@ See `github-release-integrity-monitoring.md`.
 - `github-release-authorization.md`
 - `github-release-immutability.md`
 - `github-release-integrity-monitoring.md`
+- `github-release-independent-verification.md`

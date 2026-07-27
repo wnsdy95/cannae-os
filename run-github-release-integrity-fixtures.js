@@ -23,9 +23,25 @@ const {
 } = require("./.claude/skills/controls-doctrine-operator/scripts/operate_github_release_integrity");
 
 const BASELINE_SHA = "38109f7b7a6d46fe9ddbc11724f140792ec54725";
-const FUTURE_SHA = "130c09a02a6b03da30564666df46cf26838afee3";
+const FUTURE_SHA = "f96972ce1c11fdb8eaa556257fde962a363dffde";
 const ACTIVATION_SHA = "28ffca6616b245fc56450235fe54802a49458286";
 const OBSERVED_AT = "2026-07-27T12:00:00.000Z";
+const RAW_RELEASE_VERIFICATION = JSON.parse(fs.readFileSync(
+  path.join(
+    __dirname,
+    "github-release-independent-verification-fixtures",
+    "cli-v2.93.0-release-verification.json"
+  ),
+  "utf8"
+));
+const TRUSTED_ROOT = JSON.parse(fs.readFileSync(
+  path.join(
+    __dirname,
+    "github-release-independent-verification-fixtures",
+    "github-trusted-root.json"
+  ),
+  "utf8"
+));
 
 function runGit(repositoryRoot, args) {
   const result = spawnSync("git", args, {
@@ -40,11 +56,11 @@ function runGit(repositoryRoot, args) {
 
 function makePolicy(options = {}) {
   const policy = {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "GitHubReleaseIntegrityPolicy",
     id: "GRIP-fixture-20260727",
     repository: {
-      full_name: "wnsdy95/cannae-os",
+      full_name: "cli/cli",
       default_branch: "main",
       visibility: "PUBLIC"
     },
@@ -59,14 +75,14 @@ function makePolicy(options = {}) {
     },
     immutable_release_policy: {
       api_version: "2026-03-10",
-      endpoint: "/repos/wnsdy95/cannae-os/immutable-releases",
+      endpoint: "/repos/cli/cli/immutable-releases",
       expected_enabled: true
     },
     grandfathered_releases: [
       {
-        tag_name: "v0.1.0",
+        tag_name: "v2.92.1",
         commit_sha: BASELINE_SHA,
-        published_at: "2026-06-25T05:06:43Z",
+        published_at: "2026-07-27T09:00:00.000Z",
         expected_immutable: false,
         attestation_required: false
       }
@@ -79,7 +95,14 @@ function makePolicy(options = {}) {
       statement_type: "https://in-toto.io/Statement/v1",
       predicate_type: "https://in-toto.io/attestation/release/v0.2",
       signer_identity: "https://dotcom.releases.github.com",
-      source_archives_in_scope: false
+      source_archives_in_scope: false,
+      independent_verification_required: true,
+      independent_verifier_package: "@sigstore/verify",
+      minimum_independent_verifier_version: "4.1.0",
+      trusted_root_tuf_mirror: "https://tuf-repo.github.com",
+      trusted_root_bootstrap_path:
+        ".github/tuf/github-release-root.json",
+      maximum_trusted_root_age_seconds: 86400
     },
     monitoring: {
       cadence_minutes: 360,
@@ -115,13 +138,13 @@ class FakeIntegrityAdapter {
     this.repositoryStateDrift = false;
     this.sleepCalls = [];
     this.tags = new Map([
-      ["v0.1.0", BASELINE_SHA],
-      ["v0.2.0", FUTURE_SHA]
+      ["v2.92.1", BASELINE_SHA],
+      ["v2.93.0", FUTURE_SHA]
     ]);
     this.releases = [
       {
-        tagName: "v0.2.0",
-        name: "Cannae OS v0.2.0",
+        tagName: "v2.93.0",
+        name: "GitHub CLI 2.93.0",
         isDraft: false,
         isPrerelease: false,
         isLatest: true,
@@ -129,13 +152,13 @@ class FakeIntegrityAdapter {
         publishedAt: "2026-07-27T10:10:00.000Z"
       },
       {
-        tagName: "v0.1.0",
-        name: "Cannae OS v0.1.0",
+        tagName: "v2.92.1",
+        name: "GitHub CLI 2.92.1",
         isDraft: false,
         isPrerelease: false,
         isLatest: false,
         isImmutable: false,
-        publishedAt: "2026-06-25T05:06:43Z"
+        publishedAt: "2026-07-27T09:00:00.000Z"
       }
     ];
   }
@@ -157,8 +180,8 @@ class FakeIntegrityAdapter {
         ? BASELINE_SHA
         : FUTURE_SHA,
       clean: true,
-      full_name: "wnsdy95/cannae-os",
-      origin_full_name: "wnsdy95/cannae-os",
+      full_name: "cli/cli",
+      origin_full_name: "cli/cli",
       default_branch: "main",
       visibility: "PUBLIC",
       viewer_permission: "READ",
@@ -190,76 +213,23 @@ class FakeIntegrityAdapter {
         "fixture attestation unavailable"
       );
     }
-    const commitSha = this.attestationCommitDrift
-      ? BASELINE_SHA
-      : this.tags.get(tagName);
-    const packageUri = `pkg:github/${repository}@${tagName}`;
-    const statement = {
-      _type: "https://in-toto.io/Statement/v1",
-      subject: [
-        {
-          uri: packageUri,
-          digest: { sha1: commitSha }
-        },
-        {
-          name: "cannae-os.txt",
-          digest: {
-            sha256:
-              "40d06bd25e36d85728990018e84f08c8dd633259e5327436f78a1eeec0bde98c"
-          }
-        }
-      ],
-      predicateType:
-        "https://in-toto.io/attestation/release/v0.2",
-      predicate: {
-        databaseId: "200000001",
-        ownerId: "1000",
-        packageId: "2000",
-        purl: packageUri,
-        repository,
-        repositoryId: "2000",
-        tag: tagName
-      }
-    };
+    const rawVerification =
+      JSON.parse(JSON.stringify(RAW_RELEASE_VERIFICATION));
+    if (this.attestationCommitDrift) {
+      const statement = JSON.parse(Buffer.from(
+        rawVerification.attestation.bundle.dsseEnvelope.payload,
+        "base64"
+      ).toString("utf8"));
+      statement.subject[0].digest.sha1 = BASELINE_SHA;
+      rawVerification.attestation.bundle.dsseEnvelope.payload =
+        Buffer.from(JSON.stringify(statement), "utf8")
+          .toString("base64");
+      rawVerification.verificationResult.statement
+        .subject[0].digest.sha1 = BASELINE_SHA;
+    }
     return {
       gh_version: "2.93.0",
-      raw_verification: {
-        attestation: {
-          bundle: {
-            mediaType: "application/vnd.dev.sigstore.bundle.v0.3+json",
-            dsseEnvelope: {
-              payload: Buffer.from(
-                JSON.stringify(statement),
-                "utf8"
-              ).toString("base64"),
-              payloadType: "application/vnd.in-toto+json",
-              signatures: [
-                { sig: "fixture-signature" }
-              ]
-            }
-          }
-        },
-        verificationResult: {
-          mediaType:
-            "application/vnd.dev.sigstore.verificationresult+json;version=0.1",
-          signature: {
-            certificate: {
-              certificateIssuer:
-                "CN=Fulcio Intermediate l1,O=GitHub\\, Inc.",
-              subjectAlternativeName:
-                "https://dotcom.releases.github.com"
-            }
-          },
-          verifiedTimestamps: [
-            {
-              type: "TimestampAuthority",
-              uri: "timestamp.githubapp.com",
-              timestamp: "2026-07-27T10:10:01.000Z"
-            }
-          ],
-          statement
-        }
-      }
+      raw_verification: rawVerification
     };
   }
 }
@@ -310,6 +280,7 @@ function monitorOptions(fixture, overrides = {}) {
     runId: "12345",
     ref: "refs/heads/main",
     now: OBSERVED_AT,
+    trustedRoot: JSON.parse(JSON.stringify(TRUSTED_ROOT)),
     ...overrides
   };
 }
@@ -365,6 +336,23 @@ function runFixtures() {
   }
 
   {
+    const policy = makePolicy();
+    policy.attestation_policy
+      .minimum_independent_verifier_version = "4.2.0";
+    policy.policy_sha256 = policyDigest(policy);
+    results.push({
+      name: "policy cannot weaken or substitute the independent verifier",
+      ok: validateIntegrityPolicySemantics(policy).some(issue =>
+        issue.code ===
+          "GITHUB_RELEASE_INTEGRITY_INDEPENDENT_POLICY_INVALID") &&
+        validatePayload(
+          policy,
+          "github-release-integrity-policy"
+        ).valid === false
+    });
+  }
+
+  {
     const fixture = makeFixture();
     const observation = monitorRepository(
       monitorOptions(fixture),
@@ -373,11 +361,22 @@ function runFixtures() {
     results.push({
       name: "full monitor verifies policy baseline and future attestation",
       ok: observation.summary.status === "ready" &&
+        observation.schema_version === "0.2" &&
         observation.summary.policy_assessment_complete === true &&
         observation.summary.release_count === 2 &&
         observation.summary.grandfathered_count === 1 &&
         observation.summary.post_activation_count === 1 &&
         observation.summary.verified_attestation_count === 1 &&
+        observation.summary
+          .independently_verified_attestation_count === 1 &&
+        observation.trusted_root_observation.status === "verified" &&
+        observation.trusted_root_observation.artifact
+          .release_authorized === false &&
+        observation.releases[1].attestation
+          .independent_verification
+          .cryptographic_verification_succeeded === true &&
+        observation.releases[1].attestation
+          .independent_verification.release_authorized === false &&
         observation.policy_ref.committed_at_head === true &&
         /^[a-f0-9]{64}$/.test(
           observation.policy_ref.head_blob_sha256
@@ -387,6 +386,36 @@ function runFixtures() {
         observation.repository_policy_change_authorized === false &&
         observation.observation_sha256 === observationDigest(observation) &&
         validateIntegrityObservationSemantics(observation).length === 0 &&
+        validatePayload(
+          observation,
+          "github-release-integrity-observation"
+        ).valid === true
+    });
+  }
+
+  {
+    const fixture = makeFixture();
+    const observation = monitorRepository(
+      monitorOptions(fixture, {
+        trustedRoot: null,
+        trustedRootFailure: {
+          code: "GITHUB_RELEASE_TUF_REFRESH_FAILED",
+          message: "fixture TUF refresh failed"
+        }
+      }),
+      fixture.adapter
+    );
+    results.push({
+      name: "trusted-root acquisition failure is retained and fails closed",
+      ok: observation.summary.status === "blocked" &&
+        observation.summary
+          .independently_verified_attestation_count === 0 &&
+        observation.trusted_root_observation.status === "unavailable" &&
+        observation.trusted_root_observation.failure_code ===
+          "GITHUB_RELEASE_TUF_REFRESH_FAILED" &&
+        observation.releases[1].attestation.status === "failed" &&
+        observation.releases[1].attestation.failure_code ===
+          "GITHUB_RELEASE_TUF_REFRESH_FAILED" &&
         validatePayload(
           observation,
           "github-release-integrity-observation"
@@ -472,6 +501,7 @@ function runFixtures() {
       ok: workflow.includes("attestations: read") &&
         workflow.includes('EXPECTED_TAG: ${{ github.event.release.tag_name }}') &&
         workflow.includes('--expected-tag "${EXPECTED_TAG}"') &&
+        (workflow.match(/--trusted-root-output/g) || []).length === 2 &&
         (workflow.match(/fetch-depth: 0/g) || []).length === 2 &&
         (workflow.match(/node-version: "22\.22\.3"/g) || []).length === 2 &&
         (workflow.match(/npm ci --ignore-scripts/g) || []).length === 2 &&
@@ -572,7 +602,7 @@ function runFixtures() {
 
   {
     const fixture = makeFixture();
-    fixture.adapter.tags.set("v0.1.0", FUTURE_SHA);
+    fixture.adapter.tags.set("v2.92.1", FUTURE_SHA);
     const observation = monitorRepository(
       monitorOptions(fixture),
       fixture.adapter
@@ -593,7 +623,7 @@ function runFixtures() {
   {
     const fixture = makeFixture();
     fixture.adapter.releases = fixture.adapter.releases.filter(release =>
-      release.tagName !== "v0.1.0");
+      release.tagName !== "v2.92.1");
     const observation = monitorRepository(
       monitorOptions(fixture),
       fixture.adapter
@@ -617,8 +647,8 @@ function runFixtures() {
       monitorOptions(fixture, {
         scope: "release_attestation",
         triggerKind: "release",
-        expectedTag: "v0.2.0",
-        ref: "refs/tags/v0.2.0"
+        expectedTag: "v2.93.0",
+        ref: "refs/tags/v2.93.0"
       }),
       fixture.adapter
     );
@@ -629,6 +659,8 @@ function runFixtures() {
         observation.summary.policy_assessment_complete === false &&
         observation.summary.release_count === 1 &&
         observation.summary.verified_attestation_count === 1 &&
+        observation.summary
+          .independently_verified_attestation_count === 1 &&
         validatePayload(
           observation,
           "github-release-integrity-observation"

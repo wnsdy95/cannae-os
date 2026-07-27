@@ -111,6 +111,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Exact GitHub Release Authorization](docs/github-release-authorization.md): one short-lived USER grant bound to the exact public repository, tag, commit, successful main CI run, notes digest, and verified release receipt.
 - [GitHub Release Immutability](docs/github-release-immutability.md): separately authorized repository policy activation and prospective immutable-state enforcement for future releases.
 - [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md): continuous policy-drift and GitHub-signed release-attestation verification without mutation or release authority.
+- [Independent GitHub Release Verification](docs/github-release-independent-verification.md): pinned TUF-chain replay and independent Sigstore verification of retained release bundles.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
 - [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.
 
@@ -138,6 +139,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Exact GitHub Release Authorization](docs/github-release-authorization.md): terminal authorization and publication verification without widening any lower execution contract.
 - [GitHub Release Immutability](docs/github-release-immutability.md): exact USER-authorized repository policy activation and future release immutability gate.
 - [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md): tracked activation baseline, full/release-event observations, retained attestation evidence, and fail-closed scheduled monitoring.
+- [Independent GitHub Release Verification](docs/github-release-independent-verification.md): complete GitHub TUF evidence, offline root replay, pinned bundle verification, and CLI-to-signed-statement cross-checks.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md): manifest-pinned GitHub OIDC/JWKS appraisal for hosted reusable workflows.
 - [GitLab CI Native Verifier Adapter](docs/gitlab-ci-native-verifier-adapter.md): manifest-pinned GitLab.com OIDC/JWKS appraisal for protected same-project pipelines.
@@ -414,14 +416,17 @@ explicitly selects one release, the terminal publisher can issue a short-lived
 ```text
 repository + stable tag + full commit + successful main CI + notes digest
 + enabled immutable-releases policy + exact GitHub release attestation
++ pinned GitHub TUF chain + independent Sigstore bundle verification
 ```
 
 The publisher rechecks those values, creates the tag/release from the full
 commit SHA, reloads GitHub state, resolves the remote tag, compares the release
 body, requires `isImmutable: true`, verifies and retains GitHub's signed
-repository/tag/commit/asset statement, and records consumption in
-`GitHubReleaseReceipt`. Drift, expiry, a disabled policy, a partial tag/release,
-or a mismatched release or attestation blocks publication.
+repository/tag/commit/asset statement, replays the complete pinned GitHub TUF
+chain, independently verifies the bundle with pinned Sigstore code, and
+records consumption in `GitHubReleaseReceipt`. Drift, expiry, a disabled
+policy, a partial tag/release, stale trust material, or a mismatched release
+or attestation blocks publication.
 
 Repository policy activation uses a separate short-lived USER grant and never
 grants release authority:
@@ -449,6 +454,11 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
   --output .cannae/releases/<tag>/authorization.json
 ```
 
+Active publication accepts only authorization v0.4. It must refresh and
+verify the GitHub TUF root with an explicit current UTC evaluation time, then
+prove every signed role remains valid through authorization expiry before any
+release creation call.
+
 Continuous read-only monitoring is separate from both authorities:
 
 ```bash
@@ -456,6 +466,7 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   monitor \
   --repository-root . \
   --policy .github/release-integrity-policy.json \
+  --trusted-root-output .cannae/release-integrity/manual-root.json \
   --output .cannae/release-integrity/manual.json \
   --scope full \
   --trigger manual
@@ -465,7 +476,9 @@ See [GitHub Release Immutability](docs/github-release-immutability.md) and
 [Exact GitHub Release Authorization](docs/github-release-authorization.md) for
 the activation/publish commands. See
 [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md)
-for attestation, credential, schedule, and incident boundaries.
+for attestation, credential, schedule, and incident boundaries, and
+[Independent GitHub Release Verification](docs/github-release-independent-verification.md)
+for TUF and bundle replay.
 
 ## Quick Start
 
@@ -543,6 +556,7 @@ Important examples:
 - `run-github-release-immutability-fixtures.js`: exact USER policy grant, repository ADMIN/main-CI binding, one activation, post-action verification, prospective historical state, and idempotent retry gates.
 - `run-github-release-publisher-fixtures.js`: exact USER grant, repository/tag/commit/main-CI/notes binding, expiry, tamper, partial-state, wrong-tag, immutable publication, signed-attestation scope, receipt, and idempotency gates.
 - `run-github-release-integrity-fixtures.js`: committed read-only policy baseline, credential uncertainty, stale repository state, path escape, drift, mutable release, attestation substitution, missing historical state, release-event scope, and authority-boundary gates.
+- `run-github-release-independent-verification-fixtures.js`: real GitHub release bundle, complete TUF replay, DSSE and CLI cross-checks, root/targets mutation, commit substitution, wrapper-rehash, and authority-boundary gates.
 - `run-document-access-fixtures.js`: role, duty, authority, and need-to-know document access.
 - `run-doctrine-consistency-fixtures.js`: non-US source-family coverage and US-only assumption blocking.
 - `run-sof-tf-fixtures.js`: high-risk task force activation gates.
@@ -614,7 +628,8 @@ Working today:
 - computed verifier failure-domain assurance with strict component identities, transitive correlation, dual-signed execution observations, and cycle-order v0.6 admission;
 - exact USER-authorized repository release-immutability activation with verified prospective policy state and no release-authority widening;
 - continuous immutable-policy and GitHub-signed release-attestation monitoring with explicit credential uncertainty and no mutation authority;
-- short-lived exact GitHub release authorization and attestation-bound terminal receipts, with all lower runtime artifacts retaining release false;
+- independent retained-bundle verification with complete pinned GitHub TUF evidence, Sigstore replay, and CLI-to-signed-statement cross-checking;
+- short-lived exact GitHub release authorization and independently attestation-bound terminal receipts, with all lower runtime artifacts retaining release false;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
 Not complete yet:
@@ -651,11 +666,13 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
   operator environment, configured GitHub workflow, and platform controls; it
   does not provide signed tags or credential isolation. Repository
   immutability protects only releases created after Phase 19A activation;
-  historical `v0.2.0` remains non-immutable. Phase 19B monitors platform state
-  and retains GitHub CLI-verified attestations, but does not independently
-  operate GitHub's signer, timestamp authority, policy service, or a second
-  Sigstore verifier. Full policy monitoring also needs a separately scoped
-  Administration-read credential.
+  historical `v0.2.0` remains non-immutable. Phase 19B monitors platform
+  state, and Phase 19C independently replays retained bundles and the complete
+  GitHub TUF chain with pinned Sigstore code. GitHub still operates the
+  signer, Fulcio/TSA services, policy service, and TUF repository; two
+  verifiers in one job are not independent infrastructure failure domains.
+  Full policy monitoring also needs a separately scoped Administration-read
+  credential.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.
 - Source mappings are useful traceability aids, but they do not prove that an interpretation is universally valid.
 - US doctrine is not treated as universal; multinational and local adaptation remain required.

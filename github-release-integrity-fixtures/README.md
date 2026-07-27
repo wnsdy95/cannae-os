@@ -11,7 +11,9 @@ adapter. It performs no network mutation. It covers:
 
 - a digest-bound read-only USER monitoring policy;
 - fixed verifier-profile widening rejection;
-- full live-policy and release-attestation readiness;
+- full live-policy, TUF trust, and independently verified release-attestation
+  readiness using a real public `cli/cli v2.93.0` bundle;
+- retained trusted-root acquisition failure and fail-closed readiness;
 - exact committed-HEAD policy and activation-ancestry binding;
 - stale default-branch and parent-symlink output rejection;
 - read-only workflow permissions and shell-expression injection rejection;
@@ -24,5 +26,6 @@ adapter. It performs no network mutation. It covers:
 - authority-expansion rejection; and
 - equivalent Codex and Claude runtime wrappers.
 
-These fixtures validate the monitor and evidence contracts. They do not
-authorize repository-policy mutation or a release.
+These fixtures validate the monitor and evidence contracts with retained
+public cryptographic material. They do not authorize repository-policy
+mutation or a release.

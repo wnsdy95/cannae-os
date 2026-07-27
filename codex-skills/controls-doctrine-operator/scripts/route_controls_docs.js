@@ -33,7 +33,7 @@ const RULES = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment", "immutability", "attestation", "integrity", "drift"],
+    keywords: ["authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment", "immutability", "attestation", "integrity", "drift", "tuf", "trusted-root", "bundle", "sigstore", "offline verification"],
     docs: [
       "docs/agent-roles-and-authority.md",
       "docs/tool-use-roe.md",
@@ -43,6 +43,7 @@ const RULES = [
       "docs/github-release-authorization.md",
       "docs/github-release-immutability.md",
       "docs/github-release-integrity-monitoring.md",
+      "docs/github-release-independent-verification.md",
       "docs/policy-engine-rules.md"
     ],
     commands: [
@@ -50,7 +51,8 @@ const RULES = [
       "node run-release-integration-fixtures.js",
       "node run-github-release-publisher-fixtures.js",
       "node run-github-release-immutability-fixtures.js",
-      "node run-github-release-integrity-fixtures.js"
+      "node run-github-release-integrity-fixtures.js",
+      "node run-github-release-independent-verification-fixtures.js"
     ]
   },
   {
@@ -295,8 +297,8 @@ const RULES = [
     commands: [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
       "node run-skill-mission-controller-fixtures.js",
-      "python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py codex-skills/controls-doctrine-operator",
-      "python3 /Users/work/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/controls-doctrine-operator"
+      "python3 \"${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py\" codex-skills/controls-doctrine-operator",
+      "python3 \"${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py\" .claude/skills/controls-doctrine-operator"
     ]
   }
 ];
@@ -399,7 +401,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "release-immutability", "release-integrity", "release-attestation", "operate-github-release", "operate-github-release-immutability", "operate-github-release-integrity", "decision-packet"]
+    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "release-immutability", "release-integrity", "release-attestation", "trusted-root", "bundle-verifier", "independent-verification", "operate-github-release", "operate-github-release-immutability", "operate-github-release-integrity", "operate-github-release-verification", "decision-packet"]
   },
   {
     id: "multi-agent-organization",

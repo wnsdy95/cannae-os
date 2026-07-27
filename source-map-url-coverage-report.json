@@ -3,7 +3,7 @@
   "as_of": "2026-07-27",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 54,
+  "checked_hosts": 55,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -73,6 +73,7 @@
       "files": [
         "docs/github-release-authorization.md",
         "docs/github-release-immutability.md",
+        "docs/github-release-independent-verification.md",
         "docs/github-release-integrity-monitoring.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
@@ -155,6 +156,7 @@
       "files": [
         "docs/github-release-authorization.md",
         "docs/github-release-immutability.md",
+        "docs/github-release-independent-verification.md",
         "docs/github-release-integrity-monitoring.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
@@ -182,10 +184,19 @@
     {
       "host": "docs.sigstore.dev",
       "files": [
+        "docs/github-release-authorization.md",
+        "docs/github-release-independent-verification.md",
         "docs/production-sandbox-admission.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/transparency-operations.md"
+      ]
+    },
+    {
+      "host": "dotcom.releases.github.com",
+      "files": [
+        "docs/github-release-independent-verification.md",
+        "docs/source-map.md"
       ]
     },
     {
@@ -201,6 +212,7 @@
       "host": "github.com",
       "files": [
         "docs/gateway-identity-admission.md",
+        "docs/github-release-independent-verification.md",
         "docs/oci-linux-sandbox-provider.md",
         "docs/production-sandbox-admission.md",
         "docs/protected-process-execution.md",

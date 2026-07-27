@@ -50,6 +50,7 @@ jobs:
           node github-release-integrity-monitor.js monitor \
             --repository-root . \
             --policy .github/release-integrity-policy.json \
+            --trusted-root-output "${OBSERVATION_DIR}/github-trusted-root.json" \
             --output "${OBSERVATION_DIR}/release-attestation.json" \
             --scope release_attestation \
             --expected-tag "${EXPECTED_TAG}" \
@@ -63,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: release-attestation-${{ github.run_id }}-${{ github.run_attempt }}
-          path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/release-attestation.json
+          path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
@@ -101,6 +102,7 @@ jobs:
           node github-release-integrity-monitor.js monitor \
             --repository-root . \
             --policy .github/release-integrity-policy.json \
+            --trusted-root-output "${OBSERVATION_DIR}/github-trusted-root.json" \
             --output "${OBSERVATION_DIR}/full-observation.json" \
             --scope full \
             --trigger "${TRIGGER_KIND}" \
@@ -113,7 +115,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: release-integrity-${{ github.run_id }}-${{ github.run_attempt }}
-          path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/full-observation.json
+          path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30

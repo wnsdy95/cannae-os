@@ -4632,9 +4632,163 @@ repository administrator or release authority?
 
 ### Residual Work
 
-- independent Sigstore re-verification of retained bundles;
 - short-lived GitHub App installation-token minting and automated rotation;
 - signed release tags, protected USER keys, and environment protection;
 - external monitor-liveness checks and long-term transparency storage;
 - independent witnesses and cross-provider gossip; and
+- private, prerelease, first-release, and provider-neutral profiles.
+
+## Phase 19C: Independent Retained-Bundle Verification
+
+### Research Question
+
+How can Cannae independently replay the cryptographic verification of a
+retained GitHub release-attestation bundle and its trust root without trusting
+the GitHub CLI's success conclusion, a mutable downloaded root, or a wrapper
+digest?
+
+### Source Findings
+
+1. Offline verification requires both the bundle and trusted-root material.
+   GitHub's
+   [offline-verification guidance](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/verify-attestations-offline)
+   separates bundle acquisition from later verification and documents
+   acquiring a trusted root for disconnected use.
+2. The GitHub trusted root is a TUF target, not an unversioned JSON constant.
+   [`gh attestation trusted-root`](https://cli.github.com/manual/gh_attestation_trusted-root)
+   exposes the current material, while the
+   [TUF specification](https://theupdateframework.github.io/specification/latest/)
+   requires trusted root rotation, role thresholds, metadata linkage, expiry,
+   and target hash and length checks. Retaining only the final target loses the
+   update proof from the pinned bootstrap root.
+3. A Sigstore bundle is portable verification material.
+   The [Sigstore bundle specification](https://docs.sigstore.dev/about/bundle/)
+   packages the signature, certificate, and transparency or timestamp
+   evidence needed by a verifier. The
+   [Sigstore JavaScript client](https://docs.sigstore.dev/language_clients/javascript/)
+   provides an independent verifier implementation that can consume explicit
+   trusted-root material.
+4. Cryptographic validity does not establish release scope.
+   The [in-toto Statement v1 specification](https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md)
+   binds subjects and a predicate, but the consumer must still require the
+   exact repository, tag, commit, package URI, and uploaded-asset set expected
+   for the release.
+5. GitHub release attestations currently use a GitHub-specific profile.
+   A retained public `cli/cli v2.93.0` result used bundle v0.3, the
+   `https://dotcom.releases.github.com` Fulcio certificate identity, and one
+   RFC 3161 timestamp with no retained Rekor or CT-log entry. Those thresholds
+   are exact profile constraints, not defaults for arbitrary Sigstore
+   attestations.
+
+### Design Decisions
+
+1. Pin a bootstrap trust anchor in the repository.
+   Cannae commits GitHub TUF root v1 and its exact digest. A refresh retains
+   every root version through the current root plus timestamp, snapshot,
+   targets, and `trusted_root.json` bytes.
+2. Replay the complete TUF chain offline.
+   Root v1 verifies its own threshold. Each subsequent root must advance by
+   exactly one and satisfy both old-root and new-root thresholds. Current
+   metadata signatures, expiry, version links, hashes, lengths, and the final
+   target are verified again from retained bytes. Expiry is evaluated against
+   an explicit caller clock, never the wrapper's self-declared retrieval time.
+3. Use a second verifier, not the acquisition command's conclusion.
+   `@sigstore/verify` validates the DSSE signature, certificate chain,
+   certificate identity, and timestamp against the retained trusted root.
+   GitHub CLI output remains acquisition and comparison evidence.
+4. Require three-way statement agreement.
+   The signed DSSE payload must equal the CLI-projected statement and the
+   exact expected release scope. Recomputing an outer artifact digest cannot
+   repair a changed signed payload, TUF role, tag, commit, or asset set.
+5. Bind verifier implementation and dependencies into evidence.
+   The independent record includes verifier package version, verifier-module
+   digest, dependency-lock digest, trusted-root digests, bundle digest,
+   payload digest, certificate digest, and timestamp projection.
+6. Integrate prospectively without widening authority.
+   Publisher authorization and receipt v0.4 require independent evidence.
+   Older schemas remain readable but cannot enter active publication.
+   Integrity policy and observation v0.2 refresh and retain one TUF artifact
+   per run and one independent result per non-grandfathered release. All
+   artifacts remain monitoring-only, USER-controlled, and release false.
+7. Represent trust acquisition failure as blocked evidence.
+   TUF refresh or offline replay failure does not disappear and does not
+   become `drift_detected: false`; the monitor emits a schema-valid blocked
+   observation when other repository checks remain possible.
+8. Preflight every available trust input before external mutation.
+   The publisher loads and replays the root before release creation and
+   requires every signed TUF role to remain valid through authorization
+   expiry. It verifies the post-publication bundle again under that root
+   before issuing a receipt.
+
+### Rejected Alternatives
+
+- Trusting `gh release verify` exit zero as the final decision: this repeats
+  the same implementation and trust conclusion rather than independently
+  replaying it.
+- Retaining only normalized trusted-root JSON: this omits the signed TUF
+  rotation and target-delivery chain.
+- Checking only an outer artifact digest: an attacker who can replace the
+  wrapper can recompute that digest.
+- Trusting the CLI statement without decoding the signed DSSE payload: the
+  unsigned projection can be substituted independently.
+- Treating any valid GitHub release signature as sufficient: repository, tag,
+  commit, package, and assets must all match the exact release expectation.
+- Reusing the GitHub release profile for arbitrary Sigstore artifacts:
+  transparency and identity thresholds differ by profile.
+- Defaulting current time to the artifact's `fetched_at`: a recomputable
+  wrapper could backdate validation or remain usable after signed metadata
+  expiry.
+- Executing historical authorization v0.3 after v0.4 activation: readable
+  compatibility must not become a downgrade around independent verification.
+- Creating an immutable release before checking the supplied trusted root:
+  preflightable trust failures must stop before the irreversible side effect.
+- Allowing independent evidence to set release true: verification evidence is
+  not decision or publication authority.
+
+### Implemented Artifacts
+
+- `docs/github-release-independent-verification.md`;
+- `.github/tuf/github-release-root.json`;
+- `github-release-trusted-root.js`;
+- `github-release-bundle-verifier.js`;
+- `schema-files/github-release-trusted-root.schema.json`;
+- `schema-files/github-release-independent-verification.schema.json`;
+- retained public release and TUF fixtures;
+- `run-github-release-independent-verification-fixtures.js`;
+- publisher authorization and receipt v0.4 integration;
+- integrity policy and observation v0.2 integration;
+- workflow retention of trusted-root and observation artifacts; and
+- equivalent Codex and Claude verification wrappers, routing, and operating
+  rules.
+
+### Measured Behavior
+
+- the retained GitHub TUF chain replays offline from root v1 through current
+  signed metadata and the exact trusted-root target;
+- the real public `cli/cli v2.93.0` bundle verifies with the independent
+  Sigstore implementation and exact release scope;
+- omitted clocks or root versions, signed metadata expiry within wrapper age,
+  insufficient operation-window validity, forged root or targets bodies after
+  wrapper rehash, DSSE mutation, CLI projection substitution, commit
+  substitution, legacy authorization downgrade, and authority expansion all
+  fail;
+- Codex and Claude wrappers resolve the same repository runtime;
+- all 17 independent-verification, 25 publisher, 19 monitor, and 218 validator
+  fixtures pass; and
+- every new root, verification, receipt, policy, and observation contract
+  preserves USER final authority and release false.
+
+### Residual Work
+
+- durable prior-root state and an external continuity monitor for stronger
+  rollback detection;
+- independent witnesses, gossip, and long-term transparency storage;
+- short-lived GitHub App installation credentials for administrative policy
+  inspection;
+- protected USER signing keys, signed release tags, and environment
+  protection;
+- infrastructure-independent verification rather than a second verifier in
+  the same job;
+- an external trusted-time source where the local caller clock is not an
+  acceptable freshness authority; and
 - private, prerelease, first-release, and provider-neutral profiles.
