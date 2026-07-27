@@ -27,7 +27,8 @@
       "enum": [
         "0.1",
         "0.2",
-        "0.3"
+        "0.3",
+        "0.4"
       ]
     },
     "type": {
@@ -361,6 +362,12 @@
         }
       }
     },
+    "trusted_root": {
+      "$ref": "github-release-trusted-root.schema.json"
+    },
+    "independent_verification": {
+      "$ref": "github-release-independent-verification.schema.json"
+    },
     "release_notes_sha256": {
       "$ref": "common.schema.json#/$defs/sha256"
     },
@@ -417,7 +424,8 @@
           "schema_version": {
             "enum": [
               "0.2",
-              "0.3"
+              "0.3",
+              "0.4"
             ]
           }
         },
@@ -439,7 +447,10 @@
       "if": {
         "properties": {
           "schema_version": {
-            "const": "0.3"
+            "enum": [
+              "0.3",
+              "0.4"
+            ]
           }
         },
         "required": [
@@ -449,6 +460,24 @@
       "then": {
         "required": [
           "attestation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.4"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "trusted_root",
+          "independent_verification"
         ]
       }
     }

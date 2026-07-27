@@ -5,6 +5,8 @@
 Phase 19B verifies that the Phase 19A repository policy remains enabled and
 that every release created after activation carries the exact GitHub-signed
 release attestation for its repository, tag, commit, and uploaded assets.
+Phase 19C independently replays the retained Sigstore bundle under trust
+material reconstructed from GitHub's TUF repository.
 
 This is a read-only assurance path. It can alert and retain evidence. It cannot
 enable or disable repository policy, repair a tag or release, publish an
@@ -45,6 +47,9 @@ Expected repository policy is enabled
 + Every pre-activation release matches the sealed grandfather baseline
 + Every later release reports isImmutable = true
 + gh cryptographically verifies GitHub's release attestation
++ Pinned TUF root authorizes every sequential GitHub root rotation
++ Current timestamp, snapshot, targets, and trusted-root target verify
++ Pinned Sigstore code independently verifies the retained DSSE bundle
 + The verified in-toto statement binds exact repository + tag + commit
 + Every attested uploaded asset has one unique SHA-256 subject
 = release integrity observation may be ready
@@ -68,6 +73,8 @@ the current commit ancestry. It binds:
 - the exact `v0.1.0` and `v0.2.0` grandfather baseline;
 - GitHub CLI JSON verification, in-toto Statement v1,
   `release/v0.2`, and the GitHub release signer identity;
+- pinned `@sigstore/verify`, the official GitHub TUF mirror, committed root v1
+  path, and a 24-hour trusted-root freshness limit;
 - a six-hour cadence and bounded attestation retry;
 - fail-closed credential, policy-drift, and attestation behavior; and
 - USER final authority with both policy mutation and release false.
@@ -88,6 +95,9 @@ One observation records:
 - every selected release, resolved remote tag commit, immutable state, and
   grandfather/post-activation classification;
 - normalized attestation metadata and the complete verified CLI JSON result;
+- one retained `GitHubReleaseTrustedRoot` with the complete TUF metadata chain;
+- one `GitHubReleaseIndependentVerification` for every verified
+  post-activation release;
 - issue codes and derived counts;
 - a canonical `observation_sha256`; and
 - policy mutation and release false.
@@ -96,12 +106,12 @@ One observation records:
 `scope: release_attestation` verifies one exact release-event tag and
 explicitly records that policy drift was not assessed.
 
-## 5. Attestation Normalization
+## 5. Attestation Verification
 
 `github-release-publisher.js` and
 `github-release-integrity-monitor.js` accept an attestation only after
 `gh release verify TAG --repo OWNER/REPO --format json` exits successfully.
-They then independently constrain the returned verified projection:
+They then constrain the returned verified projection:
 
 1. The bundle uses Sigstore bundle v0.3 and a signed DSSE in-toto envelope.
 2. The strict-base64 DSSE payload parses as JSON and canonically equals the
@@ -116,30 +126,47 @@ They then independently constrain the returned verified projection:
 8. Every other subject is a uniquely named asset with a SHA-256 digest.
 9. The complete raw verification JSON is retained and canonically hashed.
 
-This does not replace GitHub CLI's Sigstore verification. It prevents a valid
-attestation for release B from satisfying authorization or monitoring for
-release A.
+Phase 19C then separately verifies the bundle with pinned
+`@sigstore/verify`. The verifier replays the complete root v1-to-current TUF
+rotation, timestamp/snapshot/targets signatures and links, trusted-root target
+digest, Fulcio chain, release-service certificate identity, RFC 3161
+timestamp, DSSE signature, and exact statement subjects. It also requires the
+CLI statement to equal the signed DSSE statement. TUF expiry is evaluated
+against the observation's explicit clock, not the root wrapper's retrieval
+time.
 
-## 6. Publisher v0.3
+This prevents a CLI projection, valid attestation for release B, modified
+trust target, or recomputed wrapper digest from satisfying release A. See
+`github-release-independent-verification.md`.
 
-New `GitHubReleaseAuthorization` artifacts use schema `0.3`. In addition to
+## 6. Publisher v0.4
+
+New `GitHubReleaseAuthorization` artifacts use schema `0.4`. In addition to
 the Phase 19A policy check, they bind the exact attestation-verifier profile
-and require GitHub CLI `2.93.0` or newer.
+and require GitHub CLI `2.93.0` or newer, pinned Sigstore verification, and
+the exact GitHub TUF source and bootstrap.
+
+Before publication, the active publisher rejects every authorization version
+older than v0.4 and validates the repository-contained root against the
+current clock and the complete authorization window.
 
 After publication, the publisher:
 
 1. verifies release body, target, resolved tag, latest state, and immutable
    state;
 2. retries attestation availability at most six times with ten-second waits;
-3. normalizes and retains the verified bundle and statement; and
-4. emits `GitHubReleaseReceipt` `0.3` only when every binding matches.
+3. normalizes and retains the verified bundle and statement;
+4. independently verifies the retained bundle and signed statement under the
+   preflighted root; and
+5. emits `GitHubReleaseReceipt` `0.4` only when every binding matches.
 
 Attestation delay can leave a correctly created release without a receipt.
 An exact retry verifies the existing release and may finish the receipt. It
 must not recreate, delete, retarget, or repair the release.
 
 Historical authorization and receipt versions remain readable. Version `0.2`
-proves observed immutability but does not claim retained attestation evidence.
+proves observed immutability, and version `0.3` retains the CLI attestation,
+but neither claims Phase 19C independent verification.
 
 ## 7. Operations
 
@@ -150,6 +177,7 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   monitor \
   --repository-root . \
   --policy .github/release-integrity-policy.json \
+  --trusted-root-output .cannae/release-integrity/manual-root.json \
   --output .cannae/release-integrity/manual.json \
   --scope full \
   --trigger manual
@@ -162,6 +190,7 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   monitor \
   --repository-root . \
   --policy .github/release-integrity-policy.json \
+  --trusted-root-output .cannae/release-integrity/release-root.json \
   --output .cannae/release-integrity/release-v0.3.0.json \
   --scope release_attestation \
   --expected-tag v0.3.0 \
@@ -185,6 +214,7 @@ failure.
   repository `GITHUB_TOKEN`;
 - `full-monitor` every six hours, on every release, and on manual dispatch;
 - artifact retention for each observation, including blocked observations.
+- retention of the exact trusted-root artifact when TUF refresh succeeds.
 
 The workflow grants only `contents: read` and `attestations: read`. Event tag,
 actor, run, and ref values enter the shell through quoted environment
@@ -222,6 +252,8 @@ policy automatically.
 | Grandfather baseline drift | Block | Investigate remote tag/release history; never rewrite automatically |
 | Post-activation mutable release | Block | Treat as release-control incident |
 | Missing or mismatched attestation | Block | Retry bounded verification, then investigate GitHub/release state |
+| TUF root or metadata unavailable, stale, or invalid | Block and retain explicit trust failure | Investigate network, metadata rotation, expiry, or bootstrap integrity |
+| Independent bundle replay fails | Block | Compare raw bundle, root, signed statement, package lock, and verifier code |
 | Asset digest mismatch | Block | Quarantine the asset and investigate publication provenance |
 
 No finding grants rollback, deletion, repair, policy activation, or a new
@@ -231,9 +263,11 @@ release. Those remain separate exact USER decisions.
 
 - GitHub remains the release control plane, attestation signer, timestamp
   authority, and immutable-state reporter.
-- The monitor trusts the installed `gh` verifier and its embedded Sigstore
-  trust behavior; the retained raw bundle enables later independent
-  verification but this phase does not implement a second verifier.
+- The monitor uses both GitHub CLI and pinned `@sigstore/verify`, but both run
+  in the same job and therefore do not establish an independent
+  infrastructure failure domain.
+- GitHub still operates the signer, Fulcio/TSA trust services, and TUF mirror.
+  This repository verifies their retained evidence but does not operate them.
 - Policy-state freshness depends on the workflow actually running. GitHub
   schedule delay or workflow disablement is an external availability risk.
 - Artifact retention is 30 days; long-term external transparency witnessing

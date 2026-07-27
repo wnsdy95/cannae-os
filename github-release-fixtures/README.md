@@ -10,6 +10,10 @@ The fixture adapter covers:
 - dirty repository, foreign repository, wrong-commit CI, expired authority,
   and post-authorization release-note drift;
 - one exact publish followed by an idempotent retry;
+- complete GitHub TUF-chain replay and independent verification of a real
+  public `cli/cli v2.93.0` release bundle before a v0.4 receipt;
+- denial of legacy authorization downgrade or a missing trusted root before
+  any immutable release creation call;
 - an existing release whose tag resolves to the wrong commit;
 - a partial state where a tag exists without a GitHub release; and
 - static valid and adversarial authorization and receipt payloads.

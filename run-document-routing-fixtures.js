@@ -49,9 +49,12 @@ for (const router of ROUTERS) {
   assert(adaptation.recommended_documents.some(item =>
     item.path === ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md"));
   assert(adaptation.validation_commands.some(command =>
-    command.endsWith("quick_validate.py codex-skills/controls-doctrine-operator")));
+    command.includes("${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py") &&
+    command.endsWith("\" codex-skills/controls-doctrine-operator")));
   assert(adaptation.validation_commands.some(command =>
-    command.endsWith("quick_validate.py .claude/skills/controls-doctrine-operator")));
+    command.includes("${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py") &&
+    command.endsWith("\" .claude/skills/controls-doctrine-operator")));
+  assert(adaptation.validation_commands.every(command => !command.includes("/Users/work")));
 }
 
 console.log("Document routing fixtures: 6/6 passed");

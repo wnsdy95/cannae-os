@@ -23,6 +23,7 @@ node validator-cli-prototype/validate.js sample-payloads/valid-github-release-au
 node validator-cli-prototype/validate.js sample-payloads/valid-github-release-receipt.json github-release-receipt
 node validator-cli-prototype/validate.js sample-payloads/valid-github-release-immutability-authorization.json github-release-immutability-authorization
 node validator-cli-prototype/validate.js sample-payloads/valid-github-release-immutability-receipt.json github-release-immutability-receipt
+node validator-cli-prototype/validate.js github-release-independent-verification-fixtures/github-trusted-root.json github-release-trusted-root --evaluated-at <current-UTC-timestamp>
 node validator-cli-prototype/validate.js sample-payloads/valid-maintenance-readiness.json maintenance-readiness
 node validator-cli-prototype/validate.js sample-payloads/valid-backbrief.json backbrief
 node validator-cli-prototype/validate.js sample-payloads/valid-rehearsal.json rehearsal
@@ -53,6 +54,10 @@ node validator-cli-prototype/validate.js sample-payloads/valid-routing-receipt-a
 node validator-cli-prototype/validate.js sample-payloads/valid-tool-gateway-request.json tool-gateway-request
 node validator-cli-prototype/validate.js sample-payloads/valid-tool-execution-receipt.json tool-execution-receipt
 ```
+
+`github-release-trusted-root` validation requires `--evaluated-at`. Omitting
+it fails closed; the validator never treats the artifact's own `fetched_at`
+as the current clock.
 
 ## Exit Codes
 
@@ -112,6 +117,8 @@ node validator-cli-prototype/validate.js sample-payloads/valid-tool-execution-re
 - `github-release-receipt`
 - `github-release-immutability-authorization`
 - `github-release-immutability-receipt`
+- `github-release-trusted-root`
+- `github-release-independent-verification`
 - `maintenance-readiness`
 - `backbrief`
 - `rehearsal`

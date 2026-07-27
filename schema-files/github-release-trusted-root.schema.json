@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-release-trusted-root.schema.json",
+  "title": "GitHub Release Trusted Root",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "source",
+    "media_type",
+    "trusted_root",
+    "trusted_root_sha256",
+    "verification_profile",
+    "authority",
+    "release_authorized",
+    "artifact_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseTrustedRoot"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "tuf_mirror",
+        "target_name",
+        "bootstrap_root",
+        "metadata",
+        "tuf_evidence",
+        "target_base64",
+        "target_file_sha256",
+        "target_byte_length",
+        "fetched_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tuf_mirror": {
+          "type": "string",
+          "const": "https://tuf-repo.github.com"
+        },
+        "target_name": {
+          "type": "string",
+          "const": "trusted_root.json"
+        },
+        "bootstrap_root": {
+          "type": "object",
+          "required": [
+            "relative_path",
+            "version",
+            "sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "relative_path": {
+              "type": "string",
+              "const": ".github/tuf/github-release-root.json"
+            },
+            "version": {
+              "type": "integer",
+              "const": 1
+            },
+            "sha256": {
+              "type": "string",
+              "const": "661d12d0fa0e13c5f702caddba0fe012d94c4ab7d947a1c2423b3168a7d092bd"
+            }
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "root",
+            "timestamp",
+            "snapshot",
+            "targets"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "root": {
+              "$ref": "#/$defs/tufMetadata"
+            },
+            "timestamp": {
+              "$ref": "#/$defs/tufMetadata"
+            },
+            "snapshot": {
+              "$ref": "#/$defs/tufMetadata"
+            },
+            "targets": {
+              "$ref": "#/$defs/tufMetadata"
+            }
+          }
+        },
+        "tuf_evidence": {
+          "type": "object",
+          "required": [
+            "root_chain_base64",
+            "timestamp_base64",
+            "snapshot_base64",
+            "targets_base64"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "root_chain_base64": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 100,
+              "items": {
+                "$ref": "#/$defs/base64"
+              }
+            },
+            "timestamp_base64": {
+              "$ref": "#/$defs/base64"
+            },
+            "snapshot_base64": {
+              "$ref": "#/$defs/base64"
+            },
+            "targets_base64": {
+              "$ref": "#/$defs/base64"
+            }
+          }
+        },
+        "target_file_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "target_base64": {
+          "$ref": "#/$defs/base64"
+        },
+        "target_byte_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fetched_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      }
+    },
+    "media_type": {
+      "type": "string",
+      "const": "application/vnd.dev.sigstore.trustedroot+json;version=0.1"
+    },
+    "trusted_root": {
+      "type": "object",
+      "required": [
+        "mediaType",
+        "certificateAuthorities",
+        "timestampAuthorities"
+      ],
+      "properties": {
+        "mediaType": {
+          "type": "string",
+          "const": "application/vnd.dev.sigstore.trustedroot+json;version=0.1"
+        },
+        "certificateAuthorities": {
+          "type": "array",
+          "minItems": 1
+        },
+        "timestampAuthorities": {
+          "type": "array",
+          "minItems": 1
+        },
+        "tlogs": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "ctlogs": {
+          "type": "array",
+          "maxItems": 0
+        }
+      }
+    },
+    "trusted_root_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "verification_profile": {
+      "type": "object",
+      "required": [
+        "bundle_media_type",
+        "signer_identity",
+        "certificate_authority_organization",
+        "timestamp_authority_organization",
+        "ctlog_threshold",
+        "tlog_threshold",
+        "timestamp_threshold"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "bundle_media_type": {
+          "type": "string",
+          "const": "application/vnd.dev.sigstore.bundle.v0.3+json"
+        },
+        "signer_identity": {
+          "type": "string",
+          "const": "https://dotcom.releases.github.com"
+        },
+        "certificate_authority_organization": {
+          "type": "string",
+          "const": "GitHub, Inc."
+        },
+        "timestamp_authority_organization": {
+          "type": "string",
+          "const": "GitHub, Inc."
+        },
+        "ctlog_threshold": {
+          "type": "integer",
+          "const": 0
+        },
+        "tlog_threshold": {
+          "type": "integer",
+          "const": 0
+        },
+        "timestamp_threshold": {
+          "type": "integer",
+          "const": 1
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "monitoring_only",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "monitoring_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "artifact_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "base64": {
+      "type": "string",
+      "minLength": 4,
+      "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+    },
+    "tufMetadata": {
+      "type": "object",
+      "required": [
+        "type",
+        "version",
+        "expires",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "root",
+            "timestamp",
+            "snapshot",
+            "targets"
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expires": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

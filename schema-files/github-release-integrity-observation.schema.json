@@ -25,7 +25,10 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "0.1"
+      "enum": [
+        "0.1",
+        "0.2"
+      ]
     },
     "type": {
       "type": "string",
@@ -182,6 +185,33 @@
         }
       }
     },
+    "trusted_root_observation": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "verified",
+            "unavailable"
+          ]
+        },
+        "artifact": {
+          "$ref": "github-release-trusted-root.schema.json"
+        },
+        "failure_code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "releases": {
       "type": "array",
       "maxItems": 100,
@@ -260,6 +290,9 @@
               },
               "evidence": {
                 "type": "object"
+              },
+              "independent_verification": {
+                "$ref": "github-release-independent-verification.schema.json"
               }
             }
           }
@@ -370,6 +403,10 @@
           "type": "integer",
           "minimum": 0
         },
+        "independently_verified_attestation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
         "issue_count": {
           "type": "integer",
           "minimum": 0
@@ -423,5 +460,31 @@
     "observation_sha256": {
       "$ref": "common.schema.json#/$defs/sha256"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.2"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "trusted_root_observation"
+        ],
+        "properties": {
+          "summary": {
+            "required": [
+              "independently_verified_attestation_count"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

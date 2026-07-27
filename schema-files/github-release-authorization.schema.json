@@ -30,7 +30,8 @@
       "enum": [
         "0.1",
         "0.2",
-        "0.3"
+        "0.3",
+        "0.4"
       ]
     },
     "type": {
@@ -162,6 +163,30 @@
         "source_archives_in_scope": {
           "type": "boolean",
           "const": false
+        },
+        "independent_verification_required": {
+          "type": "boolean",
+          "const": true
+        },
+        "independent_verifier_package": {
+          "type": "string",
+          "const": "@sigstore/verify"
+        },
+        "minimum_independent_verifier_version": {
+          "type": "string",
+          "const": "4.1.0"
+        },
+        "trusted_root_tuf_mirror": {
+          "type": "string",
+          "const": "https://tuf-repo.github.com"
+        },
+        "trusted_root_bootstrap_path": {
+          "type": "string",
+          "const": ".github/tuf/github-release-root.json"
+        },
+        "maximum_trusted_root_age_seconds": {
+          "type": "integer",
+          "const": 86400
         }
       }
     },
@@ -505,7 +530,8 @@
           "schema_version": {
             "enum": [
               "0.2",
-              "0.3"
+              "0.3",
+              "0.4"
             ]
           }
         },
@@ -523,7 +549,10 @@
       "if": {
         "properties": {
           "schema_version": {
-            "const": "0.3"
+            "enum": [
+              "0.3",
+              "0.4"
+            ]
           }
         },
         "required": [
@@ -534,6 +563,32 @@
         "required": [
           "release_attestation"
         ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.4"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "release_attestation": {
+            "required": [
+              "independent_verification_required",
+              "independent_verifier_package",
+              "minimum_independent_verifier_version",
+              "trusted_root_tuf_mirror",
+              "trusted_root_bootstrap_path",
+              "maximum_trusted_root_age_seconds"
+            ]
+          }
+        }
       }
     }
   ]

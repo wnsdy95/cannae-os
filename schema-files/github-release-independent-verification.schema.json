@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-release-independent-verification.schema.json",
+  "title": "GitHub Release Independent Verification",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "verified_at",
+    "verifier",
+    "trusted_root_ref",
+    "profile",
+    "bundle",
+    "statement",
+    "cli_cross_check",
+    "cryptographic_verification_succeeded",
+    "authority",
+    "release_authorized",
+    "verification_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseIndependentVerification"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "verified_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "verifier": {
+      "type": "object",
+      "required": [
+        "package",
+        "version",
+        "minimum_version",
+        "module_sha256",
+        "dependency_lock_sha256",
+        "node_minimum_version"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "package": {
+          "type": "string",
+          "const": "@sigstore/verify"
+        },
+        "version": {
+          "type": "string",
+          "const": "4.1.0"
+        },
+        "minimum_version": {
+          "type": "string",
+          "const": "4.1.0"
+        },
+        "module_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "dependency_lock_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "node_minimum_version": {
+          "type": "string",
+          "const": "22.22.2"
+        }
+      }
+    },
+    "trusted_root_ref": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "artifact_sha256",
+        "trusted_root_sha256",
+        "target_file_sha256",
+        "fetched_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "artifact_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "trusted_root_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "target_file_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "fetched_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "bundle_media_type",
+        "payload_type",
+        "signer_identity",
+        "ctlog_threshold",
+        "tlog_threshold",
+        "timestamp_threshold"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "bundle_media_type": {
+          "type": "string",
+          "const": "application/vnd.dev.sigstore.bundle.v0.3+json"
+        },
+        "payload_type": {
+          "type": "string",
+          "const": "application/vnd.in-toto+json"
+        },
+        "signer_identity": {
+          "type": "string",
+          "const": "https://dotcom.releases.github.com"
+        },
+        "ctlog_threshold": {
+          "type": "integer",
+          "const": 0
+        },
+        "tlog_threshold": {
+          "type": "integer",
+          "const": 0
+        },
+        "timestamp_threshold": {
+          "type": "integer",
+          "const": 1
+        }
+      }
+    },
+    "bundle": {
+      "type": "object",
+      "required": [
+        "sha256",
+        "dsse_payload_sha256",
+        "signature_count",
+        "tlog_entry_count",
+        "rfc3161_timestamp_count",
+        "certificate_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "dsse_payload_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "signature_count": {
+          "type": "integer",
+          "const": 1
+        },
+        "tlog_entry_count": {
+          "type": "integer",
+          "const": 0
+        },
+        "rfc3161_timestamp_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "certificate_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "statement": {
+      "type": "object",
+      "required": [
+        "statement_type",
+        "predicate_type",
+        "repository",
+        "tag_name",
+        "package_uri",
+        "commit_sha1",
+        "asset_subjects"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "statement_type": {
+          "type": "string",
+          "const": "https://in-toto.io/Statement/v1"
+        },
+        "predicate_type": {
+          "type": "string",
+          "const": "https://in-toto.io/attestation/release/v0.2"
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "tag_name": {
+          "type": "string",
+          "pattern": "^v(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)$"
+        },
+        "package_uri": {
+          "type": "string",
+          "minLength": 1
+        },
+        "commit_sha1": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "asset_subjects": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "sha256"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "$ref": "common.schema.json#/$defs/sha256"
+              }
+            }
+          }
+        }
+      }
+    },
+    "cli_cross_check": {
+      "type": "object",
+      "required": [
+        "raw_verification_sha256",
+        "statement_equal",
+        "signer_identity_equal"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "raw_verification_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "statement_equal": {
+          "type": "boolean",
+          "const": true
+        },
+        "signer_identity_equal": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "cryptographic_verification_succeeded": {
+      "type": "boolean",
+      "const": true
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "monitoring_only",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "monitoring_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "verification_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}

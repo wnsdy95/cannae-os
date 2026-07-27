@@ -164,8 +164,16 @@ Recommended validation order:
 105. `github-release-immutability-receipt.schema.json`
 106. `github-release-integrity-policy.schema.json`
 107. `github-release-integrity-observation.schema.json`
+108. `github-release-trusted-root.schema.json`
+109. `github-release-independent-verification.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
+
+`GitHubReleaseTrustedRoot` retains the complete pinned GitHub TUF
+root/metadata/target chain for offline replay. `GitHubReleaseIndependentVerification`
+binds pinned Sigstore verifier code and dependencies to the exact retained
+release bundle, trusted root, signer, timestamp, repository, tag, commit,
+package, assets, and GitHub CLI cross-check while keeping release false.
 
 `VerifierTrustPolicy.verifiers[].allowed_attestation_types` can purpose-limit a key to `verification_receipt`, `comparative_evaluation_report`, or both. Comparative signing requires the explicit report grant; existing receipt-only policies may omit the field for v0.3 compatibility.
 

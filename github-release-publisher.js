@@ -5,6 +5,17 @@ const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const { canonicalJsonBytes } = require("./verifier-identity-evidence");
+const {
+  MINIMUM_SIGSTORE_VERIFY_VERSION,
+  validateIndependentVerificationEvidence,
+  verifyGitHubReleaseBundle
+} = require("./github-release-bundle-verifier");
+const {
+  DEFAULT_MAXIMUM_AGE_SECONDS,
+  GITHUB_TUF_BOOTSTRAP_PATH,
+  GITHUB_TUF_MIRROR,
+  validateGitHubReleaseTrustedRoot
+} = require("./github-release-trusted-root");
 
 const GITHUB_API_VERSION = "2026-03-10";
 const RELEASE_ATTESTATION_MINIMUM_GH_VERSION = "2.93.0";
@@ -15,6 +26,7 @@ const RELEASE_ATTESTATION_SIGNER_IDENTITY =
   "https://dotcom.releases.github.com";
 const RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE =
   "application/vnd.dev.sigstore.bundle.v0.3+json";
+const CURRENT_RELEASE_SCHEMA_VERSION = "0.4";
 
 class ReleaseAuthorizationError extends Error {
   constructor(code, message, details = {}) {
@@ -113,6 +125,15 @@ function validateAuthorizationSemantics(document, options = {}) {
   const authority = document && document.authority || {};
   const immutability = document && document.release_immutability || {};
 
+  if (options.requireCurrentVersion === true &&
+      (!document ||
+      document.schema_version !== CURRENT_RELEASE_SCHEMA_VERSION)) {
+    issues.push(semanticIssue(
+      "GITHUB_RELEASE_AUTHORIZATION_VERSION_DOWNGRADE",
+      "$.schema_version",
+      `Active publication requires authorization schema ${CURRENT_RELEASE_SCHEMA_VERSION}.`
+    ));
+  }
   if (document && document.authorization_sha256 !== authorizationDigest(document)) {
     issues.push(semanticIssue(
       "GITHUB_RELEASE_AUTHORIZATION_DIGEST_MISMATCH",
@@ -163,7 +184,8 @@ function validateAuthorizationSemantics(document, options = {}) {
       "The normalized Git origin repository must equal the authorized GitHub repository."
     ));
   }
-  if (document && ["0.2", "0.3"].includes(document.schema_version)) {
+  if (document &&
+      ["0.2", "0.3", "0.4"].includes(document.schema_version)) {
     const checkedAt = parseTimestamp(immutability.checked_at);
     const issuedAt = parseTimestamp(document.issued_at);
     if (immutability.api_version !== GITHUB_API_VERSION ||
@@ -177,7 +199,8 @@ function validateAuthorizationSemantics(document, options = {}) {
       ));
     }
   }
-  if (document && document.schema_version === "0.3") {
+  if (document &&
+      ["0.3", "0.4"].includes(document.schema_version)) {
     const attestation = document.release_attestation || {};
     if (attestation.required !== true ||
         attestation.verifier_tool !== "gh" ||
@@ -191,7 +214,23 @@ function validateAuthorizationSemantics(document, options = {}) {
       issues.push(semanticIssue(
         "GITHUB_RELEASE_ATTESTATION_POLICY_INVALID",
         "$.release_attestation",
-        "Release authorization v0.3 requires the exact GitHub release-attestation verification profile."
+        "Release authorization v0.3 or later requires the exact GitHub release-attestation verification profile."
+      ));
+    }
+    if (document.schema_version === "0.4" &&
+        (attestation.independent_verification_required !== true ||
+        attestation.independent_verifier_package !== "@sigstore/verify" ||
+        attestation.minimum_independent_verifier_version !==
+          MINIMUM_SIGSTORE_VERIFY_VERSION ||
+        attestation.trusted_root_tuf_mirror !== GITHUB_TUF_MIRROR ||
+        attestation.trusted_root_bootstrap_path !==
+          GITHUB_TUF_BOOTSTRAP_PATH ||
+        attestation.maximum_trusted_root_age_seconds !==
+          DEFAULT_MAXIMUM_AGE_SECONDS)) {
+      issues.push(semanticIssue(
+        "GITHUB_RELEASE_INDEPENDENT_VERIFICATION_POLICY_INVALID",
+        "$.release_attestation",
+        "Release authorization v0.4 requires the exact independent Sigstore and GitHub TUF profile."
       ));
     }
   }
@@ -294,12 +333,21 @@ function validateAuthorizationSemantics(document, options = {}) {
   return issues;
 }
 
-function validateReceiptSemantics(document) {
+function validateReceiptSemantics(document, options = {}) {
   const issues = [];
   const target = document && document.target || {};
   const release = document && document.release || {};
   const authority = document && document.authority || {};
 
+  if (options.requireCurrentVersion === true &&
+      (!document ||
+      document.schema_version !== CURRENT_RELEASE_SCHEMA_VERSION)) {
+    issues.push(semanticIssue(
+      "GITHUB_RELEASE_RECEIPT_VERSION_DOWNGRADE",
+      "$.schema_version",
+      `Active publication requires receipt schema ${CURRENT_RELEASE_SCHEMA_VERSION}.`
+    ));
+  }
   if (document && document.receipt_sha256 !== receiptDigest(document)) {
     issues.push(semanticIssue(
       "GITHUB_RELEASE_RECEIPT_DIGEST_MISMATCH",
@@ -338,7 +386,8 @@ function validateReceiptSemantics(document) {
       "The observed GitHub release and resolved tag must match the exact authorized target."
     ));
   }
-  if (document && ["0.2", "0.3"].includes(document.schema_version) &&
+  if (document &&
+      ["0.2", "0.3", "0.4"].includes(document.schema_version) &&
       release.immutable !== true) {
     issues.push(semanticIssue(
       "GITHUB_RELEASE_RECEIPT_NOT_IMMUTABLE",
@@ -346,7 +395,8 @@ function validateReceiptSemantics(document) {
       "Release receipt v0.2 or later requires the observed GitHub release to be immutable."
     ));
   }
-  if (document && document.schema_version === "0.3") {
+  if (document &&
+      ["0.3", "0.4"].includes(document.schema_version)) {
     const attestationIssues = validateReleaseAttestationEvidence(
       document.attestation,
       {
@@ -365,6 +415,34 @@ function validateReceiptSemantics(document) {
         `$.attestation${attestationIssue.path === "$" ? "" :
           attestationIssue.path.slice(1)}`,
         attestationIssue.message
+      ));
+    }
+  }
+  if (document && document.schema_version === "0.4") {
+    const independentIssues = validateIndependentVerificationEvidence(
+      document.independent_verification,
+      document.attestation && document.attestation.raw_verification,
+      document.trusted_root,
+      {
+        repository: document.repository && document.repository.full_name,
+        tagName: target.tag_name,
+        commitSha: target.commit_sha,
+        signerIdentity: RELEASE_ATTESTATION_SIGNER_IDENTITY
+      },
+      {
+        maximumTrustedRootAgeSeconds:
+          DEFAULT_MAXIMUM_AGE_SECONDS
+      }
+    );
+    for (const independentIssue of independentIssues) {
+      issues.push(semanticIssue(
+        independentIssue.code,
+        `$.independent_verification${
+          independentIssue.path === "$"
+            ? ""
+            : independentIssue.path.slice(1)
+        }`,
+        independentIssue.message
       ));
     }
   }
@@ -695,6 +773,95 @@ function verifyReleaseAttestationWithRetry(document, runtime, options = {}) {
       last_message: lastError && lastError.message
     }
   );
+}
+
+function loadTrustedRootForRelease(
+  repositoryRoot,
+  relativePath,
+  verifiedAt,
+  requiredValidUntil
+) {
+  if (!relativePath) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUSTED_ROOT_REQUIRED",
+      "Active publication requires a repository-contained trusted-root artifact."
+    );
+  }
+  if (!isSafeRelativePath(relativePath)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUSTED_ROOT_PATH_UNSAFE",
+      "Independent release verification requires a repository-relative trusted-root artifact."
+    );
+  }
+  const root = fs.realpathSync(repositoryRoot);
+  const absolute = path.resolve(root, relativePath);
+  if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile() ||
+      fs.lstatSync(absolute).isSymbolicLink()) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUSTED_ROOT_MISSING",
+      `Trusted-root artifact does not exist: ${relativePath}`
+    );
+  }
+  const real = fs.realpathSync(absolute);
+  const fromRoot = path.relative(root, real);
+  if (fromRoot.startsWith("..") || path.isAbsolute(fromRoot)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUSTED_ROOT_PATH_ESCAPE",
+      "Trusted-root artifact must resolve beneath the release repository."
+    );
+  }
+  let trustedRoot;
+  try {
+    trustedRoot = JSON.parse(fs.readFileSync(real, "utf8"));
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUSTED_ROOT_INVALID",
+      `Trusted-root artifact is not JSON: ${error.message}`
+    );
+  }
+  const issues = validateGitHubReleaseTrustedRoot(trustedRoot, {
+    evaluatedAt: verifiedAt,
+    maximumAgeSeconds: DEFAULT_MAXIMUM_AGE_SECONDS,
+    requiredValidUntil
+  });
+  if (issues.length > 0) {
+    throw new ReleaseAuthorizationError(
+      issues[0].code,
+      issues[0].message,
+      { issues }
+    );
+  }
+  return trustedRoot;
+}
+
+function independentlyVerifyReleaseAttestation(
+  document,
+  attestation,
+  trustedRoot
+) {
+  try {
+    return verifyGitHubReleaseBundle({
+      rawVerification: attestation.raw_verification,
+      trustedRoot,
+      expected: {
+        repository: document.repository.full_name,
+        tagName: document.target.tag_name,
+        commitSha: document.target.commit_sha,
+        signerIdentity: document.release_attestation.signer_identity,
+        assets: attestation.statement.asset_subjects
+      },
+      verifiedAt: attestation.verified_at,
+      maximumTrustedRootAgeSeconds:
+        document.release_attestation.maximum_trusted_root_age_seconds
+    });
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      error.code ||
+        "GITHUB_RELEASE_INDEPENDENT_VERIFICATION_FAILED",
+      error.message,
+      error.details || {}
+    );
+  }
 }
 
 function resolveRepositoryFile(repositoryRoot, relativePath) {
@@ -1289,7 +1456,7 @@ function authorizeRelease(options, adapter = null) {
   grant.directive_sha256 = userGrantDigest(grant);
 
   const document = {
-    schema_version: "0.3",
+    schema_version: "0.4",
     type: "GitHubReleaseAuthorization",
     id: `GRA-${options.tagName.replace(/[^A-Za-z0-9]/g, "_")}-${repository.head_sha.slice(0, 12)}`,
     issued_at: issuedAt,
@@ -1317,7 +1484,15 @@ function authorizeRelease(options, adapter = null) {
       statement_type: RELEASE_ATTESTATION_STATEMENT_TYPE,
       predicate_type: RELEASE_ATTESTATION_PREDICATE_TYPE,
       signer_identity: RELEASE_ATTESTATION_SIGNER_IDENTITY,
-      source_archives_in_scope: false
+      source_archives_in_scope: false,
+      independent_verification_required: true,
+      independent_verifier_package: "@sigstore/verify",
+      minimum_independent_verifier_version:
+        MINIMUM_SIGSTORE_VERIFY_VERSION,
+      trusted_root_tuf_mirror: GITHUB_TUF_MIRROR,
+      trusted_root_bootstrap_path: GITHUB_TUF_BOOTSTRAP_PATH,
+      maximum_trusted_root_age_seconds:
+        DEFAULT_MAXIMUM_AGE_SECONDS
     },
     target: {
       tag_name: options.tagName,
@@ -1369,6 +1544,7 @@ function authorizeRelease(options, adapter = null) {
 
 function assertAuthorizationAgainstCurrentState(document, repositoryRoot, runtime) {
   assertNoSemanticIssues(validateAuthorizationSemantics(document, {
+    requireCurrentVersion: true,
     requireFresh: true,
     now: runtime.now()
   }));
@@ -1384,7 +1560,7 @@ function assertAuthorizationAgainstCurrentState(document, repositoryRoot, runtim
       "The current repository no longer matches the exact authorized commit."
     );
   }
-  if (["0.2", "0.3"].includes(document.schema_version)) {
+  if (["0.2", "0.3", "0.4"].includes(document.schema_version)) {
     const releaseImmutability = runtime.inspectReleaseImmutability(
       document.repository.full_name
     );
@@ -1464,7 +1640,7 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
       tagCommitSha !== document.target.commit_sha ||
       observed.isDraft !== false || observed.isPrerelease !== false ||
       !listing || listing.latest !== true ||
-      (["0.2", "0.3"].includes(document.schema_version) &&
+      (["0.2", "0.3", "0.4"].includes(document.schema_version) &&
         listing.immutable !== true) ||
       bodyDigest !== notes.sha256) {
     throw new ReleaseAuthorizationError(
@@ -1493,7 +1669,7 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
     prerelease: false,
     latest: true
   };
-  if (["0.2", "0.3"].includes(document.schema_version)) {
+  if (["0.2", "0.3", "0.4"].includes(document.schema_version)) {
     release.immutable = true;
   }
   return release;
@@ -1517,6 +1693,12 @@ function publishAuthorizedRelease(options, adapter = null) {
     repositoryRoot,
     runtime
   );
+  const trustedRoot = loadTrustedRootForRelease(
+    repositoryRoot,
+    options.trustedRootPath,
+    runtime.now(),
+    document.expires_at
+  );
 
   let observed = existingRelease;
   if (!observed) {
@@ -1539,9 +1721,12 @@ function publishAuthorizedRelease(options, adapter = null) {
     );
   }
   const release = verifyPublishedRelease(document, observed, runtime, notes);
-  const attestation = document.schema_version === "0.3"
-    ? verifyReleaseAttestationWithRetry(document, runtime)
-    : null;
+  const attestation = verifyReleaseAttestationWithRetry(document, runtime);
+  const independentVerification = independentlyVerifyReleaseAttestation(
+    document,
+    attestation,
+    trustedRoot
+  );
   const receipt = {
     schema_version: document.schema_version,
     type: "GitHubReleaseReceipt",
@@ -1564,7 +1749,9 @@ function publishAuthorizedRelease(options, adapter = null) {
       latest: true
     },
     release,
-    ...(attestation ? { attestation } : {}),
+    attestation,
+    trusted_root: trustedRoot,
+    independent_verification: independentVerification,
     release_notes_sha256: document.release_notes.sha256,
     authorization_consumed: true,
     published: true,
@@ -1578,7 +1765,9 @@ function publishAuthorizedRelease(options, adapter = null) {
     recorded_at: runtime.now()
   };
   receipt.receipt_sha256 = receiptDigest(receipt);
-  assertNoSemanticIssues(validateReceiptSemantics(receipt));
+  assertNoSemanticIssues(validateReceiptSemantics(receipt, {
+    requireCurrentVersion: true
+  }));
   requireSchemaValid(receipt, "github-release-receipt");
   return receipt;
 }
@@ -1614,7 +1803,7 @@ function usage() {
   return [
     "Usage:",
     "  node github-release-publisher.js authorize --repository-root <path> --repository <owner/repo> --tag <vX.Y.Z> --name <name> --notes <repo-relative.md> --run-id <id> --grant-id <ID> --output <authorization.json> [--expires-in-minutes <1-60>]",
-    "  node github-release-publisher.js publish --repository-root <path> --authorization <authorization.json> --receipt <receipt.json>"
+    "  node github-release-publisher.js publish --repository-root <path> --authorization <authorization.json> --trusted-root <repo-relative.json> --receipt <receipt.json>"
   ].join("\n");
 }
 
@@ -1650,12 +1839,13 @@ function main(argv = process.argv.slice(2)) {
       return;
     }
     if (command === "publish") {
-      for (const field of ["authorization", "receipt"]) {
+      for (const field of ["authorization", "trusted-root", "receipt"]) {
         if (!options[field]) throw new ReleaseAuthorizationError("CLI_ARGUMENT_REQUIRED", `--${field} is required.`);
       }
       const receipt = publishAuthorizedRelease({
         repositoryRoot: options["repository-root"] || process.cwd(),
-        authorizationPath: options.authorization
+        authorizationPath: options.authorization,
+        trustedRootPath: options["trusted-root"]
       });
       writeJsonAtomic(options.receipt, receipt);
       process.stdout.write(`${JSON.stringify({
@@ -1701,6 +1891,7 @@ module.exports = {
   compareSemverTags,
   compareVersions,
   inspectReleaseNotes,
+  independentlyVerifyReleaseAttestation,
   isSafeRelativePath,
   main,
   normalizeReleaseAttestationEvidence,
@@ -1716,6 +1907,7 @@ module.exports = {
   validateReleaseAttestationEvidence,
   validateReceiptSemantics,
   verifyReleaseAttestationWithRetry,
+  loadTrustedRootForRelease,
   writeJsonAtomic
 };
 

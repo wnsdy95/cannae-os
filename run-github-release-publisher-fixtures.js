@@ -19,11 +19,24 @@ const {
 const {
   findRuntimeRoot: findClaudeRuntimeRoot
 } = require("./.claude/skills/controls-doctrine-operator/scripts/operate_github_release");
+const {
+  trustedRootArtifactDigest
+} = require("./github-release-trusted-root");
 
-const TARGET_SHA = "130c09a02a6b03da30564666df46cf26838afee3";
+const TARGET_SHA = "f96972ce1c11fdb8eaa556257fde962a363dffde";
 const PREVIOUS_SHA = "38109f7b7a6d46fe9ddbc11724f140792ec54725";
-const ISSUED_AT = "2026-07-26T10:00:00.000Z";
-const RELEASE_TAG = "v0.2.0";
+const ISSUED_AT = "2026-07-27T00:00:00.000Z";
+const RELEASE_TAG = "v2.93.0";
+const TRUSTED_ROOT_RELATIVE_PATH =
+  ".cannae/release-integrity/github-trusted-root.json";
+const RAW_RELEASE_VERIFICATION = JSON.parse(fs.readFileSync(
+  path.join(
+    __dirname,
+    "github-release-independent-verification-fixtures",
+    "cli-v2.93.0-release-verification.json"
+  ),
+  "utf8"
+));
 
 class FakeReleaseAdapter {
   constructor(repositoryRoot) {
@@ -48,12 +61,13 @@ class FakeReleaseAdapter {
       head_sha: TARGET_SHA,
       origin_default_branch_sha: TARGET_SHA,
       clean: true,
-      full_name: "wnsdy95/cannae-os",
-      origin_full_name: "wnsdy95/cannae-os",
+      full_name: "cli/cli",
+      origin_full_name: "cli/cli",
       default_branch: "main",
       visibility: "PUBLIC",
       viewer_permission: "ADMIN",
-      notes_tracked: relativePath => relativePath === "docs/releases/v0.2.0.md"
+      notes_tracked: relativePath =>
+        relativePath === "docs/releases/v2.93.0.md"
     };
     this.run = {
       databaseId: 30202562268,
@@ -64,19 +78,19 @@ class FakeReleaseAdapter {
       conclusion: "success",
       headBranch: "main",
       headSha: TARGET_SHA,
-      url: "https://github.com/wnsdy95/cannae-os/actions/runs/30202562268",
+      url: "https://github.com/cli/cli/actions/runs/30202562268",
       jobs: [
         {
           databaseId: 89794946579,
           name: "Doctrine and runtime checks",
           status: "completed",
           conclusion: "success",
-          url: "https://github.com/wnsdy95/cannae-os/actions/runs/30202562268/job/89794946579"
+          url: "https://github.com/cli/cli/actions/runs/30202562268/job/89794946579"
         }
       ]
     };
     this.previousRelease = {
-      tag_name: "v0.1.0",
+      tag_name: "v2.92.1",
       commit_sha: PREVIOUS_SHA,
       published_at: "2026-06-25T05:06:43Z"
     };
@@ -155,85 +169,26 @@ class FakeReleaseAdapter {
         "fixture release missing"
       );
     }
-    const commitSha = this.forceAttestationCommitDrift
-      ? PREVIOUS_SHA
-      : this.tags.get(tagName);
-    const packageUri = `pkg:github/${repository}@${tagName}`;
-    const statement = {
-      _type: "https://in-toto.io/Statement/v1",
-      subject: [
-        {
-          uri: packageUri,
-          digest: { sha1: commitSha }
-        },
-        {
-          name: "cannae-os.txt",
-          digest: {
-            sha256:
-              "40d06bd25e36d85728990018e84f08c8dd633259e5327436f78a1eeec0bde98c"
-          }
-        }
-      ],
-      predicateType:
-        "https://in-toto.io/attestation/release/v0.2",
-      predicate: {
-        databaseId: "200000001",
-        ownerId: "1000",
-        packageId: "2000",
-        purl: packageUri,
-        repository,
-        repositoryId: "2000",
-        tag: tagName
-      }
-    };
-    const envelopeStatement = this.forceAttestationEnvelopeDrift
-      ? {
-        ...statement,
-        predicate: {
-          ...statement.predicate,
-          tag: "v9.9.9"
-        }
-      }
-      : statement;
+    const rawVerification =
+      JSON.parse(JSON.stringify(RAW_RELEASE_VERIFICATION));
+    const envelopeStatement = JSON.parse(Buffer.from(
+      rawVerification.attestation.bundle.dsseEnvelope.payload,
+      "base64"
+    ).toString("utf8"));
+    if (this.forceAttestationCommitDrift) {
+      envelopeStatement.subject[0].digest.sha1 = PREVIOUS_SHA;
+      rawVerification.verificationResult.statement
+        .subject[0].digest.sha1 = PREVIOUS_SHA;
+    }
+    if (this.forceAttestationEnvelopeDrift) {
+      envelopeStatement.predicate.tag = "v9.9.9";
+    }
+    rawVerification.attestation.bundle.dsseEnvelope.payload =
+      Buffer.from(JSON.stringify(envelopeStatement), "utf8")
+        .toString("base64");
     return {
       gh_version: "2.93.0",
-      raw_verification: {
-        attestation: {
-          bundle: {
-            mediaType: "application/vnd.dev.sigstore.bundle.v0.3+json",
-            dsseEnvelope: {
-              payload: Buffer.from(
-                JSON.stringify(envelopeStatement),
-                "utf8"
-              ).toString("base64"),
-              payloadType: "application/vnd.in-toto+json",
-              signatures: [
-                { sig: "fixture-signature" }
-              ]
-            }
-          }
-        },
-        verificationResult: {
-          mediaType:
-            "application/vnd.dev.sigstore.verificationresult+json;version=0.1",
-          signature: {
-            certificate: {
-              certificateIssuer:
-                "CN=Fulcio Intermediate l1,O=GitHub\\, Inc.",
-              subjectAlternativeName:
-                "https://dotcom.releases.github.com"
-            }
-          },
-          verifiedTimestamps: [
-            {
-              type: "TimestampAuthority",
-              uri: "timestamp.githubapp.com",
-              timestamp: "2026-07-26T10:05:00.000Z"
-            }
-          ],
-          statement
-        }
-      }
+      raw_verification: rawVerification
     };
   }
 
@@ -246,7 +201,7 @@ class FakeReleaseAdapter {
     this.tags.set(target.tag_name, target.commit_sha);
     for (const release of this.releases.values()) release.latest = false;
     this.releases.set(target.tag_name, {
-      apiUrl: "https://api.github.com/repos/wnsdy95/cannae-os/releases/200000001",
+      apiUrl: "https://api.github.com/repos/cli/cli/releases/200000001",
       body: fs.readFileSync(notesAbsolutePath, "utf8"),
       databaseId: 200000001,
       id: "RE_kwDOCannae4Ltest",
@@ -256,13 +211,13 @@ class FakeReleaseAdapter {
       immutable: this.releaseImmutability.enabled === true &&
         this.forceCreatedReleaseMutable !== true,
       name: target.release_name,
-      publishedAt: "2026-07-26T10:05:00.000Z",
+      publishedAt: "2026-07-27T00:05:00.000Z",
       tagName: target.tag_name,
       targetCommitish: target.commit_sha,
-      url: "https://github.com/wnsdy95/cannae-os/releases/tag/v0.2.0"
+      url: "https://github.com/cli/cli/releases/tag/v2.93.0"
     });
-    this.clock = "2026-07-26T10:05:01.000Z";
-    return "https://github.com/wnsdy95/cannae-os/releases/tag/v0.2.0";
+    this.clock = "2026-07-27T00:05:01.000Z";
+    return "https://github.com/cli/cli/releases/tag/v2.93.0";
   }
 }
 
@@ -271,27 +226,54 @@ function makeFixture() {
   const notesDirectory = path.join(repositoryRoot, "docs", "releases");
   fs.mkdirSync(notesDirectory, { recursive: true });
   fs.writeFileSync(
-    path.join(notesDirectory, "v0.2.0.md"),
-    "# Cannae OS v0.2.0\n\nExact release fixture notes.\n"
+    path.join(notesDirectory, "v2.93.0.md"),
+    "# GitHub CLI 2.93.0\n\nExact release fixture notes.\n"
+  );
+  const trustedRootPath = path.join(
+    repositoryRoot,
+    TRUSTED_ROOT_RELATIVE_PATH
+  );
+  fs.mkdirSync(path.dirname(trustedRootPath), { recursive: true });
+  fs.copyFileSync(
+    path.join(
+      __dirname,
+      "github-release-independent-verification-fixtures",
+      "github-trusted-root.json"
+    ),
+    trustedRootPath
   );
   return {
     repositoryRoot,
     adapter: new FakeReleaseAdapter(repositoryRoot),
-    authorizationPath: path.join(repositoryRoot, ".cannae", "releases", "v0.2.0", "authorization.json")
+    authorizationPath: path.join(
+      repositoryRoot,
+      ".cannae",
+      "releases",
+      "v2.93.0",
+      "authorization.json"
+    )
   };
 }
 
 function authorizationOptions(fixture) {
   return {
     repositoryRoot: fixture.repositoryRoot,
-    repository: "wnsdy95/cannae-os",
+    repository: "cli/cli",
     tagName: RELEASE_TAG,
-    releaseName: "Cannae OS v0.2.0",
-    notesPath: "docs/releases/v0.2.0.md",
+    releaseName: "GitHub CLI 2.93.0",
+    notesPath: "docs/releases/v2.93.0.md",
     runId: 30202562268,
-    grantId: "UGR-v0_2_0",
+    grantId: "UGR-v2_93_0",
     expiresInMinutes: 30,
     now: ISSUED_AT
+  };
+}
+
+function publicationOptions(fixture) {
+  return {
+    repositoryRoot: fixture.repositoryRoot,
+    authorizationPath: fixture.authorizationPath,
+    trustedRootPath: TRUSTED_ROOT_RELATIVE_PATH
   };
 }
 
@@ -368,10 +350,10 @@ function runFixtures() {
     results.push(expectError(
       "DSSE payload and verification-result statement cannot diverge",
       "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
@@ -429,15 +411,96 @@ function runFixtures() {
     const fixture = makeFixture();
     const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
     persistAuthorization(fixture, authorization);
-    fixture.adapter.clock = "2026-07-26T10:31:00.000Z";
+    fixture.adapter.clock = "2026-07-27T00:31:00.000Z";
     results.push(expectError(
       "expired authorization cannot publish",
       "GITHUB_RELEASE_AUTHORIZATION_EXPIRED",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    authorization.schema_version = "0.3";
+    for (const field of [
+      "independent_verification_required",
+      "independent_verifier_package",
+      "minimum_independent_verifier_version",
+      "trusted_root_tuf_mirror",
+      "trusted_root_bootstrap_path",
+      "maximum_trusted_root_age_seconds"
+    ]) {
+      delete authorization.release_attestation[field];
+    }
+    authorization.authorization_sha256 =
+      authorizationDigest(authorization);
+    persistAuthorization(fixture, authorization);
+    const result = expectError(
+      "legacy authorization cannot downgrade active publication",
+      "GITHUB_RELEASE_AUTHORIZATION_VERSION_DOWNGRADE",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    const rootPath = path.join(
+      fixture.repositoryRoot,
+      TRUSTED_ROOT_RELATIVE_PATH
+    );
+    const trustedRoot = JSON.parse(fs.readFileSync(rootPath, "utf8"));
+    trustedRoot.source.fetched_at = "2026-07-25T00:00:00.000Z";
+    trustedRoot.artifact_sha256 =
+      trustedRootArtifactDigest(trustedRoot);
+    fs.writeFileSync(
+      rootPath,
+      `${JSON.stringify(trustedRoot, null, 2)}\n`
+    );
+    const result = expectError(
+      "stale trusted root is denied before immutable publication",
+      "GITHUB_RELEASE_TRUST_STALE",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    const options = publicationOptions(fixture);
+    delete options.trustedRootPath;
+    const result = expectError(
+      "missing trusted root is denied before immutable publication",
+      "GITHUB_RELEASE_TRUSTED_ROOT_REQUIRED",
+      () => publishAuthorizedRelease(options, fixture.adapter)
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
   }
 
   {
@@ -454,7 +517,8 @@ function runFixtures() {
       "AUTHORIZATION_PATH_OUTSIDE_REPOSITORY",
       () => publishAuthorizedRelease({
         repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: externalAuthorizationPath
+        authorizationPath: externalAuthorizationPath,
+        trustedRootPath: TRUSTED_ROOT_RELATIVE_PATH
       }, fixture.adapter)
     );
     result.ok = result.ok && fixture.adapter.createCalls.length === 0;
@@ -469,10 +533,10 @@ function runFixtures() {
     results.push(expectError(
       "release-immutability policy drift blocks publication",
       "AUTHORIZED_RELEASE_IMMUTABILITY_DRIFT",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
@@ -482,12 +546,12 @@ function runFixtures() {
     persistAuthorization(fixture, authorization);
     fixture.adapter.forceCreatedReleaseMutable = true;
     results.push(expectError(
-      "a newly published mutable release cannot produce a v0.3 receipt",
+      "a newly published mutable release cannot produce a v0.4 receipt",
       "PUBLISHED_RELEASE_MISMATCH",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
@@ -496,16 +560,16 @@ function runFixtures() {
     const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
     persistAuthorization(fixture, authorization);
     fs.appendFileSync(
-      path.join(fixture.repositoryRoot, "docs", "releases", "v0.2.0.md"),
+      path.join(fixture.repositoryRoot, "docs", "releases", "v2.93.0.md"),
       "\nTampered after authorization.\n"
     );
     results.push(expectError(
       "release notes tamper blocks publication",
       "AUTHORIZED_RELEASE_NOTES_DRIFT",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
@@ -513,15 +577,15 @@ function runFixtures() {
     const fixture = makeFixture();
     const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
     persistAuthorization(fixture, authorization);
-    const receipt = publishAuthorizedRelease({
-      repositoryRoot: fixture.repositoryRoot,
-      authorizationPath: fixture.authorizationPath
-    }, fixture.adapter);
+    const receipt = publishAuthorizedRelease(
+      publicationOptions(fixture),
+      fixture.adapter
+    );
     const firstCreateCount = fixture.adapter.createCalls.length;
-    const replayReceipt = publishAuthorizedRelease({
-      repositoryRoot: fixture.repositoryRoot,
-      authorizationPath: fixture.authorizationPath
-    }, fixture.adapter);
+    const replayReceipt = publishAuthorizedRelease(
+      publicationOptions(fixture),
+      fixture.adapter
+    );
     const schema = validatePayload(receipt, "github-release-receipt");
     results.push({
       name: "exact release and GitHub attestation publish once and retry idempotently",
@@ -529,11 +593,15 @@ function runFixtures() {
         fixture.adapter.createCalls.length === 1 &&
         receipt.release_authorized === true &&
         receipt.authorization_consumed === true &&
-        receipt.schema_version === "0.3" &&
+        receipt.schema_version === "0.4" &&
         receipt.release.resolved_tag_commit_sha === TARGET_SHA &&
         receipt.attestation.verification_succeeded === true &&
         receipt.attestation.statement.commit_sha1 === TARGET_SHA &&
-        receipt.attestation.statement.repository === "wnsdy95/cannae-os" &&
+        receipt.attestation.statement.repository === "cli/cli" &&
+        receipt.trusted_root.release_authorized === false &&
+        receipt.independent_verification
+          .cryptographic_verification_succeeded === true &&
+        receipt.independent_verification.release_authorized === false &&
         receipt.receipt_sha256 === receiptDigest(receipt) &&
         validateReceiptSemantics(receipt).length === 0 &&
         replayReceipt.release.database_id === receipt.release.database_id &&
@@ -549,10 +617,10 @@ function runFixtures() {
     results.push(expectError(
       "release without a verifiable GitHub attestation cannot produce a receipt",
       "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
@@ -564,10 +632,10 @@ function runFixtures() {
     results.push(expectError(
       "attestation for a different commit cannot satisfy the release receipt",
       "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
@@ -577,26 +645,34 @@ function runFixtures() {
     persistAuthorization(fixture, authorization);
     fixture.adapter.tags.set(RELEASE_TAG, PREVIOUS_SHA);
     fixture.adapter.releases.set(RELEASE_TAG, {
-      apiUrl: "https://api.github.com/repos/wnsdy95/cannae-os/releases/200000001",
-      body: fs.readFileSync(path.join(fixture.repositoryRoot, "docs", "releases", "v0.2.0.md"), "utf8"),
+      apiUrl: "https://api.github.com/repos/cli/cli/releases/200000001",
+      body: fs.readFileSync(
+        path.join(
+          fixture.repositoryRoot,
+          "docs",
+          "releases",
+          "v2.93.0.md"
+        ),
+        "utf8"
+      ),
       databaseId: 200000001,
       id: "RE_kwDOCannae4Ltest",
       isDraft: false,
       isPrerelease: false,
       latest: true,
-      name: "Cannae OS v0.2.0",
-      publishedAt: "2026-07-26T10:05:00.000Z",
+      name: "GitHub CLI 2.93.0",
+      publishedAt: "2026-07-27T00:05:00.000Z",
       tagName: RELEASE_TAG,
       targetCommitish: PREVIOUS_SHA,
-      url: "https://github.com/wnsdy95/cannae-os/releases/tag/v0.2.0"
+      url: "https://github.com/cli/cli/releases/tag/v2.93.0"
     });
     results.push(expectError(
       "existing release at a different commit cannot satisfy idempotency",
       "PUBLISHED_RELEASE_MISMATCH",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
@@ -608,10 +684,10 @@ function runFixtures() {
     results.push(expectError(
       "orphan target tag blocks publication",
       "PARTIAL_RELEASE_STATE",
-      () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: fixture.authorizationPath
-      }, fixture.adapter)
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
     ));
   }
 
