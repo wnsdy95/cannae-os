@@ -1,0 +1,364 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/github-release-trust-checkpoint.schema.json",
+  "title": "GitHub Release Trust Checkpoint",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "sequence",
+    "repository",
+    "predecessor",
+    "trusted_state",
+    "transition",
+    "producer",
+    "authority",
+    "checkpoint_reset_authorized",
+    "release_authorized",
+    "recorded_at",
+    "checkpoint_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseTrustCheckpoint"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "full_name",
+        "default_branch"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "predecessor": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "bootstrap_authorization"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "genesis"
+            },
+            "bootstrap_authorization": {
+              "type": "object",
+              "required": [
+                "authority",
+                "grant_id",
+                "granted_at"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "authority": {
+                  "type": "string",
+                  "const": "USER"
+                },
+                "grant_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "granted_at": {
+                  "$ref": "common.schema.json#/$defs/timestamp"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "checkpoint_id",
+            "checkpoint_sha256",
+            "sequence"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "checkpoint"
+            },
+            "checkpoint_id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "checkpoint_sha256": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      ]
+    },
+    "trusted_state": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "artifact_sha256",
+        "trusted_root_sha256",
+        "target_file_sha256",
+        "source_fetched_at",
+        "checkpoint_evaluated_at",
+        "metadata"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "artifact_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "artifact_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "trusted_root_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "target_file_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "source_fetched_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "checkpoint_evaluated_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "root",
+            "timestamp",
+            "snapshot",
+            "targets"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "root": {
+              "$ref": "#/$defs/tufMetadata"
+            },
+            "timestamp": {
+              "$ref": "#/$defs/tufMetadata"
+            },
+            "snapshot": {
+              "$ref": "#/$defs/tufMetadata"
+            },
+            "targets": {
+              "$ref": "#/$defs/tufMetadata"
+            }
+          }
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "required": [
+        "classification",
+        "version_deltas",
+        "current_trusted_root_verified",
+        "root_chain_continuity_verified",
+        "same_version_digest_consistency_verified",
+        "rollback_detected",
+        "equivocation_detected"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "type": "string",
+          "enum": [
+            "bootstrap",
+            "unchanged",
+            "advanced"
+          ]
+        },
+        "version_deltas": {
+          "type": "object",
+          "required": [
+            "root",
+            "timestamp",
+            "snapshot",
+            "targets"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "root": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "timestamp": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "snapshot": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "targets": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "current_trusted_root_verified": {
+          "type": "boolean",
+          "const": true
+        },
+        "root_chain_continuity_verified": {
+          "type": "boolean",
+          "const": true
+        },
+        "same_version_digest_consistency_verified": {
+          "type": "boolean",
+          "const": true
+        },
+        "rollback_detected": {
+          "type": "boolean",
+          "const": false
+        },
+        "equivocation_detected": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "producer": {
+      "type": "object",
+      "required": [
+        "kind",
+        "repository_head_sha",
+        "workflow_ref",
+        "run_id",
+        "run_attempt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "repository_bootstrap",
+            "github_actions",
+            "local_operator"
+          ]
+        },
+        "repository_head_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "workflow_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "run_attempt": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "monitoring_only",
+        "checkpoint_reset_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "monitoring_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "checkpoint_reset_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "checkpoint_reset_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "checkpoint_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "tufMetadata": {
+      "type": "object",
+      "required": [
+        "type",
+        "version",
+        "expires",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "root",
+            "timestamp",
+            "snapshot",
+            "targets"
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expires": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

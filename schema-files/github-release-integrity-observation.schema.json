@@ -27,7 +27,8 @@
       "type": "string",
       "enum": [
         "0.1",
-        "0.2"
+        "0.2",
+        "0.3"
       ]
     },
     "type": {
@@ -130,7 +131,8 @@
           "enum": [
             "manual",
             "schedule",
-            "release"
+            "release",
+            "push"
           ]
         },
         "actor": {
@@ -211,6 +213,62 @@
           "minLength": 1
         }
       }
+    },
+    "trust_checkpoint_observation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "status",
+            "provenance",
+            "previous_checkpoint",
+            "previous_trusted_root",
+            "current_checkpoint"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "const": "verified"
+            },
+            "provenance": {
+              "$ref": "#/$defs/checkpointProvenance"
+            },
+            "previous_checkpoint": {
+              "$ref": "github-release-trust-checkpoint.schema.json"
+            },
+            "previous_trusted_root": {
+              "$ref": "github-release-trusted-root.schema.json"
+            },
+            "current_checkpoint": {
+              "$ref": "github-release-trust-checkpoint.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "status",
+            "failure_code",
+            "message"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "const": "unavailable"
+            },
+            "failure_code": {
+              "type": "string",
+              "minLength": 1
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
     },
     "releases": {
       "type": "array",
@@ -329,7 +387,8 @@
               "repository",
               "policy",
               "release",
-              "attestation"
+              "attestation",
+              "checkpoint"
             ]
           },
           "tag_name": {
@@ -407,6 +466,9 @@
           "type": "integer",
           "minimum": 0
         },
+        "trust_checkpoint_continuity_verified": {
+          "type": "boolean"
+        },
         "issue_count": {
           "type": "integer",
           "minimum": 0
@@ -466,7 +528,10 @@
       "if": {
         "properties": {
           "schema_version": {
-            "const": "0.2"
+            "enum": [
+              "0.2",
+              "0.3"
+            ]
           }
         },
         "required": [
@@ -485,6 +550,135 @@
           }
         }
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.3"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "trust_checkpoint_observation"
+        ],
+        "properties": {
+          "summary": {
+            "required": [
+              "trust_checkpoint_continuity_verified"
+            ]
+          }
+        }
+      }
     }
-  ]
+  ],
+  "$defs": {
+    "checkpointProvenance": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "source",
+            "policy_introduction_commit",
+            "policy_introduction_time",
+            "bootstrap_checkpoint_path",
+            "bootstrap_checkpoint_sha256",
+            "bootstrap_trusted_root_path",
+            "bootstrap_trusted_root_sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "string",
+              "const": "repository_bootstrap"
+            },
+            "policy_introduction_commit": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "policy_introduction_time": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            },
+            "bootstrap_checkpoint_path": {
+              "type": "string",
+              "const": ".github/tuf/github-release-trust-checkpoint.json"
+            },
+            "bootstrap_checkpoint_sha256": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            },
+            "bootstrap_trusted_root_path": {
+              "type": "string",
+              "const": ".github/tuf/github-release-trust-bootstrap-root.json"
+            },
+            "bootstrap_trusted_root_sha256": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "source",
+            "run_id",
+            "run_attempt",
+            "head_sha",
+            "conclusion",
+            "artifact_id",
+            "artifact_name",
+            "artifact_digest",
+            "artifact_created_at",
+            "artifact_expires_at"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "string",
+              "const": "github_actions_artifact"
+            },
+            "run_id": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "run_attempt": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "head_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "conclusion": {
+              "type": "string",
+              "enum": [
+                "success",
+                "failure"
+              ]
+            },
+            "artifact_id": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "artifact_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_digest": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "artifact_created_at": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            },
+            "artifact_expires_at": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            }
+          }
+        }
+      ]
+    }
+  }
 }

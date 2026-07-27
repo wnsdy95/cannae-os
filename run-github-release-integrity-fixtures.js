@@ -21,6 +21,9 @@ const {
 const {
   findRuntimeRoot: findClaudeRuntimeRoot
 } = require("./.claude/skills/controls-doctrine-operator/scripts/operate_github_release_integrity");
+const {
+  initializeGitHubReleaseTrustCheckpoint
+} = require("./github-release-trust-checkpoint");
 
 const BASELINE_SHA = "38109f7b7a6d46fe9ddbc11724f140792ec54725";
 const FUTURE_SHA = "f96972ce1c11fdb8eaa556257fde962a363dffde";
@@ -56,7 +59,7 @@ function runGit(repositoryRoot, args) {
 
 function makePolicy(options = {}) {
   const policy = {
-    schema_version: "0.2",
+    schema_version: "0.3",
     type: "GitHubReleaseIntegrityPolicy",
     id: "GRIP-fixture-20260727",
     repository: {
@@ -112,6 +115,24 @@ function makePolicy(options = {}) {
       fail_closed_on_credential_unavailable: true,
       fail_closed_on_policy_drift: true,
       fail_closed_on_attestation_failure: true
+    },
+    trust_checkpoint_policy: {
+      required: true,
+      continuity_mode: "github_actions_artifact_chain",
+      bootstrap_checkpoint_path:
+        ".github/tuf/github-release-trust-checkpoint.json",
+      bootstrap_trusted_root_path:
+        ".github/tuf/github-release-trust-bootstrap-root.json",
+      workflow_path: ".github/workflows/release-integrity.yml",
+      artifact_name_prefix: "release-integrity-",
+      checkpoint_file_name:
+        "github-release-trust-checkpoint.json",
+      trusted_root_file_name: "github-trusted-root.json",
+      maximum_checkpoint_age_seconds: 43200,
+      bootstrap_window_seconds: 14400,
+      maximum_run_history: 100,
+      fail_closed_on_missing_previous: true,
+      independent_persistence_required: false
     },
     authority: {
       human_final_decision_authority: "USER",
@@ -271,6 +292,23 @@ function makeFixture() {
 }
 
 function monitorOptions(fixture, overrides = {}) {
+  const previousTrustCheckpoint =
+    initializeGitHubReleaseTrustCheckpoint({
+      repository: {
+        full_name: "cli/cli",
+        default_branch: "main"
+      },
+      trustedRoot: TRUSTED_ROOT,
+      evaluatedAt: "2026-07-27T00:05:00.000Z",
+      userGrantId: "USER-GRANT-FIXTURE-PHASE-19D",
+      grantedAt: "2026-07-27T00:05:00.000Z",
+      producer: {
+        repository_head_sha: FUTURE_SHA,
+        workflow_ref: "none",
+        run_id: "bootstrap",
+        run_attempt: 0
+      }
+    });
   return {
     repositoryRoot: fixture.repositoryRoot,
     policyPath: fixture.policyPath,
@@ -281,6 +319,31 @@ function monitorOptions(fixture, overrides = {}) {
     ref: "refs/heads/main",
     now: OBSERVED_AT,
     trustedRoot: JSON.parse(JSON.stringify(TRUSTED_ROOT)),
+    previousTrustCheckpoint,
+    previousTrustedRoot:
+      JSON.parse(JSON.stringify(TRUSTED_ROOT)),
+    checkpointProvenance: {
+      source: "repository_bootstrap",
+      policy_introduction_commit: FUTURE_SHA,
+      policy_introduction_time: "2026-07-27T11:00:00.000Z",
+      bootstrap_checkpoint_path:
+        ".github/tuf/github-release-trust-checkpoint.json",
+      bootstrap_checkpoint_sha256:
+        previousTrustCheckpoint.checkpoint_sha256,
+      bootstrap_trusted_root_path:
+        ".github/tuf/github-release-trust-bootstrap-root.json",
+      bootstrap_trusted_root_sha256:
+        TRUSTED_ROOT.artifact_sha256
+    },
+    checkpointProducer: {
+      kind: "github_actions",
+      repository_head_sha: FUTURE_SHA,
+      workflow_ref:
+        "cli/cli/.github/workflows/release-integrity.yml@refs/heads/main",
+      run_id: "12345",
+      run_attempt: 1
+    },
+    runAttempt: 1,
     ...overrides
   };
 }
@@ -361,7 +424,7 @@ function runFixtures() {
     results.push({
       name: "full monitor verifies policy baseline and future attestation",
       ok: observation.summary.status === "ready" &&
-        observation.schema_version === "0.2" &&
+        observation.schema_version === "0.3" &&
         observation.summary.policy_assessment_complete === true &&
         observation.summary.release_count === 2 &&
         observation.summary.grandfathered_count === 1 &&
@@ -372,6 +435,12 @@ function runFixtures() {
         observation.trusted_root_observation.status === "verified" &&
         observation.trusted_root_observation.artifact
           .release_authorized === false &&
+        observation.trust_checkpoint_observation.status ===
+          "verified" &&
+        observation.trust_checkpoint_observation
+          .current_checkpoint.sequence === 1 &&
+        observation.summary
+          .trust_checkpoint_continuity_verified === true &&
         observation.releases[1].attestation
           .independent_verification
           .cryptographic_verification_succeeded === true &&
@@ -386,6 +455,39 @@ function runFixtures() {
         observation.repository_policy_change_authorized === false &&
         observation.observation_sha256 === observationDigest(observation) &&
         validateIntegrityObservationSemantics(observation).length === 0 &&
+        validatePayload(
+          observation,
+          "github-release-integrity-observation"
+        ).valid === true
+    });
+  }
+
+  {
+    const fixture = makeFixture();
+    const observation = monitorRepository(
+      monitorOptions(fixture, {
+        previousTrustCheckpoint: null,
+        previousTrustedRoot: null,
+        checkpointProvenance: null,
+        trustCheckpointFailure: {
+          code: "GITHUB_RELEASE_CHECKPOINT_ARTIFACT_MISSING",
+          message: "fixture predecessor artifact missing"
+        }
+      }),
+      fixture.adapter
+    );
+    results.push({
+      name: "missing predecessor artifact blocks without bootstrap fallback",
+      ok: observation.summary.status === "blocked" &&
+        observation.trust_checkpoint_observation.status ===
+          "unavailable" &&
+        observation.trust_checkpoint_observation.failure_code ===
+          "GITHUB_RELEASE_CHECKPOINT_ARTIFACT_MISSING" &&
+        observation.summary
+          .trust_checkpoint_continuity_verified === false &&
+        observation.issues.some(issue =>
+          issue.code ===
+            "GITHUB_RELEASE_CHECKPOINT_ARTIFACT_MISSING") &&
         validatePayload(
           observation,
           "github-release-integrity-observation"
@@ -502,11 +604,15 @@ function runFixtures() {
         workflow.includes('EXPECTED_TAG: ${{ github.event.release.tag_name }}') &&
         workflow.includes('--expected-tag "${EXPECTED_TAG}"') &&
         (workflow.match(/--trusted-root-output/g) || []).length === 2 &&
+        (workflow.match(/--trust-checkpoint-output/g) || [])
+          .length === 2 &&
+        (workflow.match(/--run-attempt/g) || []).length === 2 &&
         (workflow.match(/fetch-depth: 0/g) || []).length === 2 &&
         (workflow.match(/node-version: "22\.22\.3"/g) || []).length === 2 &&
         (workflow.match(/npm ci --ignore-scripts/g) || []).length === 2 &&
         (workflow.match(/CANNAE_IMMUTABILITY_MONITOR_TOKEN:/g) || [])
           .length === 1 &&
+        workflow.includes("push:") &&
         !/--(?:expected-tag|actor|run-id|ref|trigger)[^\n]*\$\{\{/.test(
           workflow
         ) &&

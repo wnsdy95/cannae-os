@@ -82,6 +82,9 @@ const {
   validateGitHubReleaseTrustedRoot
 } = require("../github-release-trusted-root");
 const {
+  validateGitHubReleaseTrustCheckpoint
+} = require("../github-release-trust-checkpoint");
+const {
   independentVerificationDigest
 } = require("../github-release-bundle-verifier");
 
@@ -159,6 +162,7 @@ const TYPE_TO_SCHEMA = {
   "github-release-integrity-policy": "github-release-integrity-policy.schema.json",
   "github-release-integrity-observation": "github-release-integrity-observation.schema.json",
   "github-release-trusted-root": "github-release-trusted-root.schema.json",
+  "github-release-trust-checkpoint": "github-release-trust-checkpoint.schema.json",
   "github-release-independent-verification": "github-release-independent-verification.schema.json",
   "routing-receipt": "routing-receipt.schema.json",
   "mission-wave-plan": "mission-wave-plan.schema.json",
@@ -2554,6 +2558,20 @@ function semanticRules(payload, type, options = {}) {
         trustIssue.code,
         trustIssue.path,
         trustIssue.message
+      ));
+    }
+  }
+
+  if (type === "github-release-trust-checkpoint") {
+    for (const checkpointIssue of
+      validateGitHubReleaseTrustCheckpoint(payload, {
+        evaluatedAt: options.evaluatedAt
+      })) {
+      issues.push(issue(
+        "critical",
+        checkpointIssue.code,
+        checkpointIssue.path,
+        checkpointIssue.message
       ));
     }
   }

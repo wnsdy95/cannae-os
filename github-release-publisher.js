@@ -16,6 +16,11 @@ const {
   GITHUB_TUF_MIRROR,
   validateGitHubReleaseTrustedRoot
 } = require("./github-release-trusted-root");
+const {
+  DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS,
+  assertTrustedRootMatchesCheckpoint,
+  validateGitHubReleaseTrustCheckpoint
+} = require("./github-release-trust-checkpoint");
 
 const GITHUB_API_VERSION = "2026-03-10";
 const RELEASE_ATTESTATION_MINIMUM_GH_VERSION = "2.93.0";
@@ -26,7 +31,7 @@ const RELEASE_ATTESTATION_SIGNER_IDENTITY =
   "https://dotcom.releases.github.com";
 const RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE =
   "application/vnd.dev.sigstore.bundle.v0.3+json";
-const CURRENT_RELEASE_SCHEMA_VERSION = "0.4";
+const CURRENT_RELEASE_SCHEMA_VERSION = "0.5";
 
 class ReleaseAuthorizationError extends Error {
   constructor(code, message, details = {}) {
@@ -124,6 +129,7 @@ function validateAuthorizationSemantics(document, options = {}) {
   const grant = document && document.user_grant || {};
   const authority = document && document.authority || {};
   const immutability = document && document.release_immutability || {};
+  const checkpoint = document && document.trust_checkpoint || {};
 
   if (options.requireCurrentVersion === true &&
       (!document ||
@@ -170,11 +176,16 @@ function validateAuthorizationSemantics(document, options = {}) {
   if (grant.repository !== repository.full_name ||
       grant.tag_name !== target.tag_name ||
       grant.target_commit_sha !== target.commit_sha ||
-      grant.release_notes_sha256 !== notes.sha256) {
+      grant.release_notes_sha256 !== notes.sha256 ||
+      (document && document.schema_version === "0.5" &&
+       (grant.trust_checkpoint_sha256 !==
+          checkpoint.checkpoint_sha256 ||
+        grant.trusted_root_artifact_sha256 !==
+          checkpoint.trusted_root_artifact_sha256))) {
     issues.push(semanticIssue(
       "GITHUB_RELEASE_USER_GRANT_SCOPE_MISMATCH",
       "$.user_grant",
-      "The USER grant must bind the exact repository, tag, commit, and release-notes digest."
+      "The USER grant must bind the exact repository, tag, commit, release notes, and active trust checkpoint profile."
     ));
   }
   if (repository.origin_full_name !== repository.full_name) {
@@ -185,7 +196,9 @@ function validateAuthorizationSemantics(document, options = {}) {
     ));
   }
   if (document &&
-      ["0.2", "0.3", "0.4"].includes(document.schema_version)) {
+      ["0.2", "0.3", "0.4", "0.5"].includes(
+        document.schema_version
+      )) {
     const checkedAt = parseTimestamp(immutability.checked_at);
     const issuedAt = parseTimestamp(document.issued_at);
     if (immutability.api_version !== GITHUB_API_VERSION ||
@@ -200,7 +213,9 @@ function validateAuthorizationSemantics(document, options = {}) {
     }
   }
   if (document &&
-      ["0.3", "0.4"].includes(document.schema_version)) {
+      ["0.3", "0.4", "0.5"].includes(
+        document.schema_version
+      )) {
     const attestation = document.release_attestation || {};
     if (attestation.required !== true ||
         attestation.verifier_tool !== "gh" ||
@@ -217,7 +232,7 @@ function validateAuthorizationSemantics(document, options = {}) {
         "Release authorization v0.3 or later requires the exact GitHub release-attestation verification profile."
       ));
     }
-    if (document.schema_version === "0.4" &&
+    if (["0.4", "0.5"].includes(document.schema_version) &&
         (attestation.independent_verification_required !== true ||
         attestation.independent_verifier_package !== "@sigstore/verify" ||
         attestation.minimum_independent_verifier_version !==
@@ -230,9 +245,60 @@ function validateAuthorizationSemantics(document, options = {}) {
       issues.push(semanticIssue(
         "GITHUB_RELEASE_INDEPENDENT_VERIFICATION_POLICY_INVALID",
         "$.release_attestation",
-        "Release authorization v0.4 requires the exact independent Sigstore and GitHub TUF profile."
+        "Release authorization v0.4 or later requires the exact independent Sigstore and GitHub TUF profile."
       ));
     }
+  }
+  if (document && document.schema_version === "0.5") {
+    const checkpointRecordedAt = parseTimestamp(
+      checkpoint.recorded_at
+    );
+    const issuedAt = parseTimestamp(document.issued_at);
+    const expiresAt = parseTimestamp(document.expires_at);
+    if (checkpoint.required !== true ||
+        checkpoint.continuity_mode !==
+          "github_actions_artifact_chain" ||
+        !isSafeRelativePath(checkpoint.relative_path) ||
+        !isSafeRelativePath(
+          checkpoint.trusted_root_relative_path
+        ) ||
+        typeof checkpoint.checkpoint_id !== "string" ||
+        !Number.isSafeInteger(checkpoint.sequence) ||
+        checkpoint.sequence < 0 ||
+        !/^[a-f0-9]{64}$/.test(
+          checkpoint.checkpoint_sha256 || ""
+        ) ||
+        typeof checkpoint.trusted_root_artifact_id !== "string" ||
+        !/^[a-f0-9]{64}$/.test(
+          checkpoint.trusted_root_artifact_sha256 || ""
+        ) ||
+        !/^[a-f0-9]{64}$/.test(
+          checkpoint.trusted_root_sha256 || ""
+        ) ||
+        checkpoint.maximum_age_seconds !==
+          DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS ||
+        checkpoint.checkpoint_reset_authorized !== false ||
+        checkpoint.independent_persistence_verified !== false ||
+        checkpoint.release_authorized !== false ||
+        checkpointRecordedAt === null ||
+        issuedAt === null ||
+        expiresAt === null ||
+        checkpointRecordedAt > issuedAt ||
+        expiresAt - checkpointRecordedAt >
+          DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS * 1000) {
+      issues.push(semanticIssue(
+        "GITHUB_RELEASE_TRUST_CHECKPOINT_POLICY_INVALID",
+        "$.trust_checkpoint",
+        "Release authorization v0.5 requires one recent release-false monitor checkpoint bound to the exact trusted-root artifact."
+      ));
+    }
+  } else if (document &&
+      document.trust_checkpoint !== undefined) {
+    issues.push(semanticIssue(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_VERSION_MISMATCH",
+      "$.trust_checkpoint",
+      "Release trust checkpoints are active only in authorization v0.5."
+    ));
   }
   if (target.draft !== false || target.prerelease !== false ||
       target.latest !== true || target.fail_on_no_commits !== true) {
@@ -387,7 +453,9 @@ function validateReceiptSemantics(document, options = {}) {
     ));
   }
   if (document &&
-      ["0.2", "0.3", "0.4"].includes(document.schema_version) &&
+      ["0.2", "0.3", "0.4", "0.5"].includes(
+        document.schema_version
+      ) &&
       release.immutable !== true) {
     issues.push(semanticIssue(
       "GITHUB_RELEASE_RECEIPT_NOT_IMMUTABLE",
@@ -396,7 +464,9 @@ function validateReceiptSemantics(document, options = {}) {
     ));
   }
   if (document &&
-      ["0.3", "0.4"].includes(document.schema_version)) {
+      ["0.3", "0.4", "0.5"].includes(
+        document.schema_version
+      )) {
     const attestationIssues = validateReleaseAttestationEvidence(
       document.attestation,
       {
@@ -418,7 +488,8 @@ function validateReceiptSemantics(document, options = {}) {
       ));
     }
   }
-  if (document && document.schema_version === "0.4") {
+  if (document &&
+      ["0.4", "0.5"].includes(document.schema_version)) {
     const independentIssues = validateIndependentVerificationEvidence(
       document.independent_verification,
       document.attestation && document.attestation.raw_verification,
@@ -445,6 +516,35 @@ function validateReceiptSemantics(document, options = {}) {
         independentIssue.message
       ));
     }
+  }
+  if (document && document.schema_version === "0.5") {
+    for (const checkpointIssue of
+      validateGitHubReleaseTrustCheckpoint(
+        document.trust_checkpoint,
+        {
+          evaluatedAt: document.recorded_at,
+          maximumAgeSeconds:
+            DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS,
+          trustedRoot: document.trusted_root
+        }
+      )) {
+      issues.push(semanticIssue(
+        checkpointIssue.code,
+        `$.trust_checkpoint${
+          checkpointIssue.path === "$"
+            ? ""
+            : checkpointIssue.path.slice(1)
+        }`,
+        checkpointIssue.message
+      ));
+    }
+  } else if (document &&
+      document.trust_checkpoint !== undefined) {
+    issues.push(semanticIssue(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_VERSION_MISMATCH",
+      "$.trust_checkpoint",
+      "Release trust checkpoints are active only in receipt v0.5."
+    ));
   }
   if (!isSafeRelativePath(document && document.authorization_ref &&
       document.authorization_ref.relative_path)) {
@@ -832,6 +932,74 @@ function loadTrustedRootForRelease(
     );
   }
   return trustedRoot;
+}
+
+function loadTrustCheckpointForRelease(
+  repositoryRoot,
+  relativePath,
+  trustedRoot,
+  verifiedAt,
+  requiredFreshUntil
+) {
+  if (!relativePath) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_REQUIRED",
+      "Active publication requires a repository-contained trust checkpoint."
+    );
+  }
+  if (!isSafeRelativePath(relativePath)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_PATH_UNSAFE",
+      "Release trust checkpoint requires a normalized repository-relative path."
+    );
+  }
+  const root = fs.realpathSync(repositoryRoot);
+  const absolute = path.resolve(root, relativePath);
+  if (!fs.existsSync(absolute) ||
+      !fs.statSync(absolute).isFile() ||
+      fs.lstatSync(absolute).isSymbolicLink()) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_MISSING",
+      `Trust checkpoint does not exist: ${relativePath}`
+    );
+  }
+  const real = fs.realpathSync(absolute);
+  const fromRoot = path.relative(root, real);
+  if (fromRoot.startsWith("..") || path.isAbsolute(fromRoot)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_PATH_ESCAPE",
+      "Trust checkpoint must resolve beneath the release repository."
+    );
+  }
+  let checkpoint;
+  try {
+    checkpoint = JSON.parse(fs.readFileSync(real, "utf8"));
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_INVALID",
+      `Trust checkpoint is not JSON: ${error.message}`
+    );
+  }
+  try {
+    assertTrustedRootMatchesCheckpoint(
+      checkpoint,
+      trustedRoot,
+      {
+        evaluatedAt: verifiedAt,
+        maximumAgeSeconds:
+          DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS,
+        requiredFreshUntil
+      }
+    );
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      error.code ||
+        "GITHUB_RELEASE_TRUST_CHECKPOINT_INVALID",
+      error.message,
+      error.details || {}
+    );
+  }
+  return checkpoint;
 }
 
 function independentlyVerifyReleaseAttestation(
@@ -1441,6 +1609,19 @@ function authorizeRelease(options, adapter = null) {
   }
   const issuedAt = options.now || runtime.now();
   const expiresAt = addMinutes(issuedAt, validityMinutes);
+  const trustedRoot = loadTrustedRootForRelease(
+    repositoryRoot,
+    options.trustedRootPath,
+    issuedAt,
+    expiresAt
+  );
+  const trustCheckpoint = loadTrustCheckpointForRelease(
+    repositoryRoot,
+    options.trustCheckpointPath,
+    trustedRoot,
+    issuedAt,
+    expiresAt
+  );
   const grant = {
     grant_id: options.grantId,
     authority: "USER",
@@ -1449,6 +1630,10 @@ function authorizeRelease(options, adapter = null) {
     tag_name: options.tagName,
     target_commit_sha: repository.head_sha,
     release_notes_sha256: notes.sha256,
+    trust_checkpoint_sha256:
+      trustCheckpoint.checkpoint_sha256,
+    trusted_root_artifact_sha256:
+      trustedRoot.artifact_sha256,
     approved: true,
     granted_at: issuedAt,
     expires_at: expiresAt
@@ -1456,7 +1641,7 @@ function authorizeRelease(options, adapter = null) {
   grant.directive_sha256 = userGrantDigest(grant);
 
   const document = {
-    schema_version: "0.4",
+    schema_version: CURRENT_RELEASE_SCHEMA_VERSION,
     type: "GitHubReleaseAuthorization",
     id: `GRA-${options.tagName.replace(/[^A-Za-z0-9]/g, "_")}-${repository.head_sha.slice(0, 12)}`,
     issued_at: issuedAt,
@@ -1493,6 +1678,26 @@ function authorizeRelease(options, adapter = null) {
       trusted_root_bootstrap_path: GITHUB_TUF_BOOTSTRAP_PATH,
       maximum_trusted_root_age_seconds:
         DEFAULT_MAXIMUM_AGE_SECONDS
+    },
+    trust_checkpoint: {
+      required: true,
+      continuity_mode: "github_actions_artifact_chain",
+      relative_path: options.trustCheckpointPath,
+      trusted_root_relative_path: options.trustedRootPath,
+      checkpoint_id: trustCheckpoint.id,
+      sequence: trustCheckpoint.sequence,
+      checkpoint_sha256:
+        trustCheckpoint.checkpoint_sha256,
+      recorded_at: trustCheckpoint.recorded_at,
+      trusted_root_artifact_id: trustedRoot.id,
+      trusted_root_artifact_sha256:
+        trustedRoot.artifact_sha256,
+      trusted_root_sha256: trustedRoot.trusted_root_sha256,
+      maximum_age_seconds:
+        DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS,
+      checkpoint_reset_authorized: false,
+      independent_persistence_verified: false,
+      release_authorized: false
     },
     target: {
       tag_name: options.tagName,
@@ -1560,7 +1765,9 @@ function assertAuthorizationAgainstCurrentState(document, repositoryRoot, runtim
       "The current repository no longer matches the exact authorized commit."
     );
   }
-  if (["0.2", "0.3", "0.4"].includes(document.schema_version)) {
+  if (["0.2", "0.3", "0.4", "0.5"].includes(
+    document.schema_version
+  )) {
     const releaseImmutability = runtime.inspectReleaseImmutability(
       document.repository.full_name
     );
@@ -1640,7 +1847,9 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
       tagCommitSha !== document.target.commit_sha ||
       observed.isDraft !== false || observed.isPrerelease !== false ||
       !listing || listing.latest !== true ||
-      (["0.2", "0.3", "0.4"].includes(document.schema_version) &&
+      (["0.2", "0.3", "0.4", "0.5"].includes(
+        document.schema_version
+      ) &&
         listing.immutable !== true) ||
       bodyDigest !== notes.sha256) {
     throw new ReleaseAuthorizationError(
@@ -1669,7 +1878,9 @@ function verifyPublishedRelease(document, observed, runtime, notes) {
     prerelease: false,
     latest: true
   };
-  if (["0.2", "0.3", "0.4"].includes(document.schema_version)) {
+  if (["0.2", "0.3", "0.4", "0.5"].includes(
+    document.schema_version
+  )) {
     release.immutable = true;
   }
   return release;
@@ -1693,12 +1904,48 @@ function publishAuthorizedRelease(options, adapter = null) {
     repositoryRoot,
     runtime
   );
+  if (options.trustedRootPath !==
+      document.trust_checkpoint.trusted_root_relative_path ||
+      options.trustCheckpointPath !==
+      document.trust_checkpoint.relative_path) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_PATH_MISMATCH",
+      "Publication inputs must use the exact trusted-root and checkpoint paths bound by authorization."
+    );
+  }
+  const preflightAt = runtime.now();
   const trustedRoot = loadTrustedRootForRelease(
     repositoryRoot,
     options.trustedRootPath,
-    runtime.now(),
+    preflightAt,
     document.expires_at
   );
+  const trustCheckpoint = loadTrustCheckpointForRelease(
+    repositoryRoot,
+    options.trustCheckpointPath,
+    trustedRoot,
+    preflightAt,
+    document.expires_at
+  );
+  if (trustCheckpoint.id !==
+      document.trust_checkpoint.checkpoint_id ||
+      trustCheckpoint.sequence !==
+        document.trust_checkpoint.sequence ||
+      trustCheckpoint.checkpoint_sha256 !==
+        document.trust_checkpoint.checkpoint_sha256 ||
+      trustCheckpoint.recorded_at !==
+        document.trust_checkpoint.recorded_at ||
+      trustedRoot.id !==
+        document.trust_checkpoint.trusted_root_artifact_id ||
+      trustedRoot.artifact_sha256 !==
+        document.trust_checkpoint.trusted_root_artifact_sha256 ||
+      trustedRoot.trusted_root_sha256 !==
+        document.trust_checkpoint.trusted_root_sha256) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_AUTHORIZATION_MISMATCH",
+      "Loaded checkpoint or trusted root no longer matches the exact USER authorization."
+    );
+  }
 
   let observed = existingRelease;
   if (!observed) {
@@ -1751,6 +1998,7 @@ function publishAuthorizedRelease(options, adapter = null) {
     release,
     attestation,
     trusted_root: trustedRoot,
+    trust_checkpoint: trustCheckpoint,
     independent_verification: independentVerification,
     release_notes_sha256: document.release_notes.sha256,
     authorization_consumed: true,
@@ -1802,8 +2050,8 @@ function parseCli(argv) {
 function usage() {
   return [
     "Usage:",
-    "  node github-release-publisher.js authorize --repository-root <path> --repository <owner/repo> --tag <vX.Y.Z> --name <name> --notes <repo-relative.md> --run-id <id> --grant-id <ID> --output <authorization.json> [--expires-in-minutes <1-60>]",
-    "  node github-release-publisher.js publish --repository-root <path> --authorization <authorization.json> --trusted-root <repo-relative.json> --receipt <receipt.json>"
+    "  node github-release-publisher.js authorize --repository-root <path> --repository <owner/repo> --tag <vX.Y.Z> --name <name> --notes <repo-relative.md> --run-id <id> --grant-id <ID> --trusted-root <repo-relative.json> --trust-checkpoint <repo-relative.json> --output <authorization.json> [--expires-in-minutes <1-60>]",
+    "  node github-release-publisher.js publish --repository-root <path> --authorization <authorization.json> --trusted-root <repo-relative.json> --trust-checkpoint <repo-relative.json> --receipt <receipt.json>"
   ].join("\n");
 }
 
@@ -1811,7 +2059,17 @@ function main(argv = process.argv.slice(2)) {
   try {
     const { command, options } = parseCli(argv);
     if (command === "authorize") {
-      for (const field of ["repository", "tag", "name", "notes", "run-id", "grant-id", "output"]) {
+      for (const field of [
+        "repository",
+        "tag",
+        "name",
+        "notes",
+        "run-id",
+        "grant-id",
+        "trusted-root",
+        "trust-checkpoint",
+        "output"
+      ]) {
         if (!options[field]) throw new ReleaseAuthorizationError("CLI_ARGUMENT_REQUIRED", `--${field} is required.`);
       }
       const authorization = authorizeRelease({
@@ -1822,6 +2080,8 @@ function main(argv = process.argv.slice(2)) {
         notesPath: options.notes,
         runId: Number(options["run-id"]),
         grantId: options["grant-id"],
+        trustedRootPath: options["trusted-root"],
+        trustCheckpointPath: options["trust-checkpoint"],
         expiresInMinutes: options["expires-in-minutes"]
       });
       writeJsonAtomic(options.output, authorization);
@@ -1839,13 +2099,19 @@ function main(argv = process.argv.slice(2)) {
       return;
     }
     if (command === "publish") {
-      for (const field of ["authorization", "trusted-root", "receipt"]) {
+      for (const field of [
+        "authorization",
+        "trusted-root",
+        "trust-checkpoint",
+        "receipt"
+      ]) {
         if (!options[field]) throw new ReleaseAuthorizationError("CLI_ARGUMENT_REQUIRED", `--${field} is required.`);
       }
       const receipt = publishAuthorizedRelease({
         repositoryRoot: options["repository-root"] || process.cwd(),
         authorizationPath: options.authorization,
-        trustedRootPath: options["trusted-root"]
+        trustedRootPath: options["trusted-root"],
+        trustCheckpointPath: options["trust-checkpoint"]
       });
       writeJsonAtomic(options.receipt, receipt);
       process.stdout.write(`${JSON.stringify({
@@ -1877,6 +2143,7 @@ function main(argv = process.argv.slice(2)) {
 }
 
 module.exports = {
+  CURRENT_RELEASE_SCHEMA_VERSION,
   GITHUB_API_VERSION,
   RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE,
   RELEASE_ATTESTATION_MINIMUM_GH_VERSION,
@@ -1893,6 +2160,8 @@ module.exports = {
   inspectReleaseNotes,
   independentlyVerifyReleaseAttestation,
   isSafeRelativePath,
+  loadTrustCheckpointForRelease,
+  loadTrustedRootForRelease,
   main,
   normalizeReleaseAttestationEvidence,
   parseGhVersionOutput,
