@@ -10,7 +10,12 @@ The runner uses the retained real GitHub trusted-root fixture from
 - unchanged-state continuation;
 - rollback, same-version equivocation, root-chain discontinuity, backdated
   retrieval, staleness, and authority-expansion rejection; and
-- explicit-clock behavior in both the runtime and generic validator CLI.
+- explicit-clock behavior in both the runtime and generic validator CLI;
+- one-time bootstrap expiry that ordinary policy edits cannot reopen;
+- latest eligible artifact selection without older/bootstrap fallback;
+- exact workflow producer binding; and
+- archive traversal and option-injection rejection before bounded direct
+  member reads.
 
 Run:
 

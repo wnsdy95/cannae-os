@@ -101,7 +101,10 @@ authorization proves that AI approval cannot enter the boundary. The valid
 receipt binds the resolved tag commit and consumed authorization, while the
 invalid receipt proves that a repaired digest cannot hide tag drift. Use
 `run-github-release-publisher-fixtures.js` for state reappraisal, expiry,
-tamper, publication, and idempotency behavior without network access.
+tamper, publication, and idempotency behavior without network access. The
+small static files remain historical v0.1 compatibility examples; the runner
+generates and schema-validates the active v0.5 checkpoint/root-bound
+authorization and receipt.
 
 The GitHub release-immutability samples define the Phase 19A repository-policy
 boundary. The valid authorization binds one disabled-to-enabled ADMIN action
@@ -114,12 +117,13 @@ proves that policy execution cannot claim release authority. Use
 `run-github-release-immutability-fixtures.js` for activation, retry, drift, and
 post-action verification behavior without network access.
 
-The GitHub release-integrity samples define the Phase 19B read-only monitoring
-boundary. The valid policy seals the activation receipt, two grandfathered
-releases, attestation verifier profile, cadence, retries, and fail-closed
-behavior. The valid observation records an enabled live policy and unchanged
-baseline while keeping policy mutation and release false. The invalid samples
-show that neither contract can be repaired into mutation or release authority.
+The GitHub release-integrity samples define the historical Phase 19B read-only
+monitoring boundary. The active fixture runner generates policy/observation
+v0.3 with Phase 19C independent verification and Phase 19D predecessor
+checkpoint continuity. The static valid observation records an enabled live
+policy and unchanged baseline while keeping policy mutation and release false.
+The invalid samples show that neither contract can be repaired into mutation
+or release authority.
 Use `run-github-release-integrity-fixtures.js` for policy drift, credential
 uncertainty, mutable future releases, GitHub attestation commit substitution,
 missing or changed baseline releases, uncommitted-policy substitution, stale

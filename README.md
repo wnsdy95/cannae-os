@@ -112,6 +112,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [GitHub Release Immutability](docs/github-release-immutability.md): separately authorized repository policy activation and prospective immutable-state enforcement for future releases.
 - [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md): continuous policy-drift and GitHub-signed release-attestation verification without mutation or release authority.
 - [Independent GitHub Release Verification](docs/github-release-independent-verification.md): pinned TUF-chain replay and independent Sigstore verification of retained release bundles.
+- [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): monotonic prior-state comparison, exact workflow artifact lineage, and fail-closed rollback/equivocation detection.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
 - [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.
 
@@ -140,6 +141,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [GitHub Release Immutability](docs/github-release-immutability.md): exact USER-authorized repository policy activation and future release immutability gate.
 - [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md): tracked activation baseline, full/release-event observations, retained attestation evidence, and fail-closed scheduled monitoring.
 - [Independent GitHub Release Verification](docs/github-release-independent-verification.md): complete GitHub TUF evidence, offline root replay, pinned bundle verification, and CLI-to-signed-statement cross-checks.
+- [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): USER genesis, monotonic TUF state, bounded artifact retention, publisher v0.5, and monitor v0.3.
 - [Verifier Execution Integrity](docs/verifier-execution-integrity.md): exact code, runtime, repository state, and execution-evidence assurance.
 - [GitHub Actions Native Verifier Adapter](docs/github-actions-native-verifier-adapter.md): manifest-pinned GitHub OIDC/JWKS appraisal for hosted reusable workflows.
 - [GitLab CI Native Verifier Adapter](docs/gitlab-ci-native-verifier-adapter.md): manifest-pinned GitLab.com OIDC/JWKS appraisal for protected same-project pipelines.
@@ -417,6 +419,7 @@ explicitly selects one release, the terminal publisher can issue a short-lived
 repository + stable tag + full commit + successful main CI + notes digest
 + enabled immutable-releases policy + exact GitHub release attestation
 + pinned GitHub TUF chain + independent Sigstore bundle verification
++ fresh monotonic trust checkpoint + exact retained root
 ```
 
 The publisher rechecks those values, creates the tag/release from the full
@@ -451,13 +454,15 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
   --notes <tracked-release-notes.md> \
   --run-id <successful-main-validate-run-id> \
   --grant-id <USER-grant-id> \
+  --trusted-root .cannae/releases/<tag>/github-trusted-root.json \
+  --trust-checkpoint .cannae/releases/<tag>/github-release-trust-checkpoint.json \
   --output .cannae/releases/<tag>/authorization.json
 ```
 
-Active publication accepts only authorization v0.4. It must refresh and
-verify the GitHub TUF root with an explicit current UTC evaluation time, then
-prove every signed role remains valid through authorization expiry before any
-release creation call.
+Active publication accepts only authorization v0.5. It must consume and
+verify the exact retained GitHub TUF root and monotonic checkpoint with an
+explicit current UTC evaluation time, then prove both remain valid through
+authorization expiry before any release creation call.
 
 Continuous read-only monitoring is separate from both authorities:
 
@@ -467,6 +472,7 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   --repository-root . \
   --policy .github/release-integrity-policy.json \
   --trusted-root-output .cannae/release-integrity/manual-root.json \
+  --trust-checkpoint-output .cannae/release-integrity/manual-checkpoint.json \
   --output .cannae/release-integrity/manual.json \
   --scope full \
   --trigger manual
@@ -478,7 +484,9 @@ the activation/publish commands. See
 [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md)
 for attestation, credential, schedule, and incident boundaries, and
 [Independent GitHub Release Verification](docs/github-release-independent-verification.md)
-for TUF and bundle replay.
+for TUF and bundle replay, and
+[GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md)
+for monotonic prior-state and artifact-lineage controls.
 
 ## Quick Start
 
@@ -557,6 +565,7 @@ Important examples:
 - `run-github-release-publisher-fixtures.js`: exact USER grant, repository/tag/commit/main-CI/notes binding, expiry, tamper, partial-state, wrong-tag, immutable publication, signed-attestation scope, receipt, and idempotency gates.
 - `run-github-release-integrity-fixtures.js`: committed read-only policy baseline, credential uncertainty, stale repository state, path escape, drift, mutable release, attestation substitution, missing historical state, release-event scope, and authority-boundary gates.
 - `run-github-release-independent-verification-fixtures.js`: real GitHub release bundle, complete TUF replay, DSSE and CLI cross-checks, root/targets mutation, commit substitution, wrapper-rehash, and authority-boundary gates.
+- `run-github-release-trust-checkpoint-fixtures.js`: monotonic TUF sequence, rollback/equivocation, root/retrieval continuity, bounded bootstrap, latest-artifact non-fallback, producer binding, and archive-safety gates.
 - `run-document-access-fixtures.js`: role, duty, authority, and need-to-know document access.
 - `run-doctrine-consistency-fixtures.js`: non-US source-family coverage and US-only assumption blocking.
 - `run-sof-tf-fixtures.js`: high-risk task force activation gates.
@@ -629,6 +638,7 @@ Working today:
 - exact USER-authorized repository release-immutability activation with verified prospective policy state and no release-authority widening;
 - continuous immutable-policy and GitHub-signed release-attestation monitoring with explicit credential uncertainty and no mutation authority;
 - independent retained-bundle verification with complete pinned GitHub TUF evidence, Sigstore replay, and CLI-to-signed-statement cross-checking;
+- provider-retained monotonic GitHub TUF checkpoints with rollback, equivocation, fork, artifact, producer, and bootstrap controls;
 - short-lived exact GitHub release authorization and independently attestation-bound terminal receipts, with all lower runtime artifacts retaining release false;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
@@ -668,8 +678,11 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
   immutability protects only releases created after Phase 19A activation;
   historical `v0.2.0` remains non-immutable. Phase 19B monitors platform
   state, and Phase 19C independently replays retained bundles and the complete
-  GitHub TUF chain with pinned Sigstore code. GitHub still operates the
-  signer, Fulcio/TSA services, policy service, and TUF repository; two
+  GitHub TUF chain with pinned Sigstore code. Phase 19D compares each refresh
+  with the prior GitHub Actions artifact checkpoint, but that artifact can
+  expire or be deleted and is not an independent archive or witness. GitHub
+  still operates the signer, Fulcio/TSA services, policy service, workflow
+  artifact service, and TUF repository; two
   verifiers in one job are not independent infrastructure failure domains.
   Full policy monitoring also needs a separately scoped Administration-read
   credential.
@@ -740,6 +753,7 @@ Mid-term:
 - connect approval scope and release gates to that gateway;
 - implement authenticated self-hosted runner, local sandbox, and TEE execution-evidence adapters;
 - operate production transparency polling, witnesses, monitors, gossip, TUF distribution, and incident response around the implemented Phase 13 verifier;
+- operate independently durable release-trust checkpoint storage and cross-provider liveness monitoring around Phase 19D;
 - build a useful command-post dashboard from event projections;
 - formalize an evidence store for claims, sources, reliability, and interpretation.
 

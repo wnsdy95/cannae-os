@@ -158,6 +158,7 @@
         "docs/github-release-immutability.md",
         "docs/github-release-independent-verification.md",
         "docs/github-release-integrity-monitoring.md",
+        "docs/github-release-trust-checkpoint-continuity.md",
         "docs/research-compendium.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"

@@ -21,7 +21,7 @@ Manual doctrine docs
 -> Operational skill mission lifecycle
 ```
 
-Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, GitHub Actions and GitLab CI OIDC execution adapters, independent GitHub release bundle/TUF verification, and the operational Codex/Claude skill lifecycle are implemented as local runtimes. UI, enterprise/self-managed providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
+Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, GitHub Actions and GitLab CI OIDC execution adapters, independent GitHub release bundle/TUF verification, provider-retained monotonic release-trust checkpoints, and the operational Codex/Claude skill lifecycle are implemented as local runtimes. UI, enterprise/self-managed providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
 
 ## 1. Phase 0: Documentation Base
 
@@ -1193,7 +1193,7 @@ Completion criteria:
 Remaining hardening:
 
 - independently operated verification infrastructure and failure domains;
-- durable prior TUF state for long-term rollback detection;
+- independently durable prior TUF state for cross-provider rollback detection;
 - external long-term bundle/root archives, witnesses, and gossip;
 - protected USER signing devices and signed tags;
 - short-lived GitHub App monitoring credentials; and
@@ -1201,7 +1201,71 @@ Remaining hardening:
 
 See `github-release-independent-verification.md`.
 
-## 27. Release Gates
+## 27. Phase 19D: Monotonic Trust Checkpoint Continuity
+
+Status: USER-authorized genesis, monotonic checkpoint contract, bounded
+GitHub Actions artifact store, publisher v0.5, monitor v0.3, push/scheduled
+acquisition, adversarial fixtures, and equivalent Codex/Claude operating
+rules are implemented.
+
+Goal:
+
+- Detect a validly signed rollback, same-version equivocation, predecessor
+  fork, or retained-state substitution by comparing every GitHub TUF refresh
+  with the exact state previously accepted.
+
+Implemented controls:
+
+- `GitHubReleaseTrustCheckpoint` retains sequence, predecessor, repository,
+  TUF role versions/digests/expiries, trusted-root and target digests,
+  retrieval/evaluation times, transition result, producer, and release false;
+- genesis requires one explicit USER grant, while runtime reset authority is
+  fixed false;
+- every transition rejects version rollback, same-version digest conflict,
+  missing prior root-chain bytes, target/root conflict, backdated retrieval,
+  stale state, sequence gaps, and predecessor substitution;
+- `github-release-checkpoint-store.js` selects only the latest completed
+  default-branch run whose commit contains the exact current policy, verifies
+  artifact ID/digest/expiry/run/head bindings, reads only bounded uniquely
+  named files, and checks exact workflow producer identity;
+- a missing latest eligible artifact never falls back to an older artifact or
+  repository bootstrap;
+- repository bootstrap exists only for four hours after the first
+  `trust_checkpoint_policy` introduction commit; ordinary policy edits cannot
+  reopen it;
+- integrity policy/observation v0.3 retain predecessor provenance, prior
+  checkpoint/root, deterministic current checkpoint, and explicit blocked
+  failures;
+- publisher authorization/receipt v0.5 binds the exact fresh checkpoint/root
+  pair into the USER grant and rechecks it before any release creation; and
+- the workflow retains observation, root, and checkpoint together every six
+  hours and on relevant `main` pushes, releases, and manual runs.
+
+Completion criteria:
+
+- Authenticated prior higher versions make a lower current version fail.
+- Equal versions with different signed digests fail as equivocation.
+- Root-chain discontinuity, retrieval-time rollback, sequence forks, and
+  rehashed predecessor substitutions fail.
+- Missing latest artifacts do not select older or bootstrap state.
+- Ordinary policy edits do not reauthorize bootstrap.
+- Missing, stale, path-substituted, or otherwise valid but unauthorized
+  checkpoints block before any release creation call.
+- Checkpoint, policy, root, and observation artifacts cannot claim release or
+  reset authority.
+
+Remaining hardening:
+
+- independently operated durable checkpoint storage and witnesses;
+- cross-provider monitor liveness and gossip;
+- a separately designed exact USER-authorized incident reset contract;
+- protected USER signatures and trusted time;
+- short-lived GitHub App monitoring credentials; and
+- private, prerelease, first-release, and provider-neutral profiles.
+
+See `github-release-trust-checkpoint-continuity.md`.
+
+## 28. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -1234,8 +1298,9 @@ See `github-release-independent-verification.md`.
 | G28 | Repository release immutability may be enabled only through one explicit USER-granted, unexpired ADMIN authorization bound to the exact public repository, origin-synchronized main commit, successful exact Validate push run, policy endpoint and prior state; future release authorization and receipt require enabled policy and observed immutable release state while policy artifacts retain release false |
 | G29 | Every Phase 19B full observation binds the tracked activation baseline to a live Administration-read enabled policy and every published tag; each post-activation release must be immutable and carry a GitHub-verified exact repository/tag/commit/asset attestation, credential uncertainty remains blocked, and monitoring retains policy mutation and release false |
 | G30 | Every Phase 19C publisher receipt or ready integrity observation replays the complete pinned GitHub TUF chain and target against an explicit clock, independently verifies the retained Sigstore bundle and exact signed release statement, cross-checks the CLI projection, retains verifier/root digests, and leaves all verification evidence release false; active publication accepts only v0.4 and preflights TUF validity through authorization expiry before external mutation |
+| G31 | Every Phase 19D ready observation and active v0.5 release operation consumes one fresh exact predecessor lineage, rejects rollback, same-version conflict, root discontinuity, retrieval rollback, sequence fork, artifact or producer substitution, and missing latest retention without fallback; USER remains final authority while checkpoint reset and all nonterminal release claims remain false |
 
-## 28. Related Documents
+## 29. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`
@@ -1248,6 +1313,7 @@ See `github-release-independent-verification.md`.
 - `transparency-operations.md`
 - `github-actions-native-verifier-adapter.md`
 - `production-sandbox-admission.md`
+- `github-release-trust-checkpoint-continuity.md`
 - `gitlab-ci-native-verifier-adapter.md`
 - `skill-operational-mission-lifecycle.md`
 - `enforced-dispatch-and-resume.md`

@@ -7,6 +7,9 @@ that every release created after activation carries the exact GitHub-signed
 release attestation for its repository, tag, commit, and uploaded assets.
 Phase 19C independently replays the retained Sigstore bundle under trust
 material reconstructed from GitHub's TUF repository.
+Phase 19D compares that state with a retained predecessor checkpoint so a
+validly signed rollback or same-version conflict cannot silently replace a
+newer state.
 
 This is a read-only assurance path. It can alert and retain evidence. It cannot
 enable or disable repository policy, repair a tag or release, publish an
@@ -49,6 +52,9 @@ Expected repository policy is enabled
 + gh cryptographically verifies GitHub's release attestation
 + Pinned TUF root authorizes every sequential GitHub root rotation
 + Current timestamp, snapshot, targets, and trusted-root target verify
++ Prior checkpoint and root are fresh and exactly predecessor-bound
++ Every TUF role is monotonic and same-version digests remain equal
++ Current root chain contains the exact previously trusted root
 + Pinned Sigstore code independently verifies the retained DSSE bundle
 + The verified in-toto statement binds exact repository + tag + commit
 + Every attested uploaded asset has one unique SHA-256 subject
@@ -75,6 +81,9 @@ the current commit ancestry. It binds:
   `release/v0.2`, and the GitHub release signer identity;
 - pinned `@sigstore/verify`, the official GitHub TUF mirror, committed root v1
   path, and a 24-hour trusted-root freshness limit;
+- committed Phase 19D bootstrap checkpoint/root paths, exact workflow and
+  artifact naming, a 12-hour checkpoint limit, four-hour one-time bootstrap,
+  bounded run history, and fail-closed predecessor behavior;
 - a six-hour cadence and bounded attestation retry;
 - fail-closed credential, policy-drift, and attestation behavior; and
 - USER final authority with both policy mutation and release false.
@@ -96,6 +105,9 @@ One observation records:
   grandfather/post-activation classification;
 - normalized attestation metadata and the complete verified CLI JSON result;
 - one retained `GitHubReleaseTrustedRoot` with the complete TUF metadata chain;
+- verified predecessor provenance, prior checkpoint/root, and the newly
+  computed `GitHubReleaseTrustCheckpoint`, or an explicit blocked checkpoint
+  failure;
 - one `GitHubReleaseIndependentVerification` for every verified
   post-activation release;
 - issue codes and derived counts;
@@ -139,16 +151,17 @@ This prevents a CLI projection, valid attestation for release B, modified
 trust target, or recomputed wrapper digest from satisfying release A. See
 `github-release-independent-verification.md`.
 
-## 6. Publisher v0.4
+## 6. Publisher v0.5
 
-New `GitHubReleaseAuthorization` artifacts use schema `0.4`. In addition to
+New `GitHubReleaseAuthorization` artifacts use schema `0.5`. In addition to
 the Phase 19A policy check, they bind the exact attestation-verifier profile
 and require GitHub CLI `2.93.0` or newer, pinned Sigstore verification, and
-the exact GitHub TUF source and bootstrap.
+the exact GitHub TUF source and bootstrap. They also bind one fresh Phase 19D
+checkpoint and its exact retained root.
 
 Before publication, the active publisher rejects every authorization version
-older than v0.4 and validates the repository-contained root against the
-current clock and the complete authorization window.
+older than v0.5 and validates the repository-contained root and checkpoint
+against the current clock and the complete authorization window.
 
 After publication, the publisher:
 
@@ -158,15 +171,17 @@ After publication, the publisher:
 3. normalizes and retains the verified bundle and statement;
 4. independently verifies the retained bundle and signed statement under the
    preflighted root; and
-5. emits `GitHubReleaseReceipt` `0.4` only when every binding matches.
+5. embeds and replays the exact trust checkpoint; and
+6. emits `GitHubReleaseReceipt` `0.5` only when every binding matches.
 
 Attestation delay can leave a correctly created release without a receipt.
 An exact retry verifies the existing release and may finish the receipt. It
 must not recreate, delete, retarget, or repair the release.
 
-Historical authorization and receipt versions remain readable. Version `0.2`
-proves observed immutability, and version `0.3` retains the CLI attestation,
-but neither claims Phase 19C independent verification.
+Historical authorization and receipt versions remain readable. Version `0.3`
+retains the CLI attestation, and version `0.4` adds Phase 19C independent
+verification, but neither can enter active publication without Phase 19D
+checkpoint continuity.
 
 ## 7. Operations
 
@@ -178,6 +193,7 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   --repository-root . \
   --policy .github/release-integrity-policy.json \
   --trusted-root-output .cannae/release-integrity/manual-root.json \
+  --trust-checkpoint-output .cannae/release-integrity/manual-checkpoint.json \
   --output .cannae/release-integrity/manual.json \
   --scope full \
   --trigger manual
@@ -191,6 +207,7 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   --repository-root . \
   --policy .github/release-integrity-policy.json \
   --trusted-root-output .cannae/release-integrity/release-root.json \
+  --trust-checkpoint-output .cannae/release-integrity/release-checkpoint.json \
   --output .cannae/release-integrity/release-v0.3.0.json \
   --scope release_attestation \
   --expected-tag v0.3.0 \
@@ -213,8 +230,11 @@ failure.
 - `release-attestation` on every published release using the short-lived
   repository `GITHUB_TOKEN`;
 - `full-monitor` every six hours, on every release, and on manual dispatch;
+- `full-monitor` on relevant pushes to `main` so a new checkpoint policy can
+  establish its first retained artifact inside the bootstrap window;
 - artifact retention for each observation, including blocked observations.
-- retention of the exact trusted-root artifact when TUF refresh succeeds.
+- retention of the exact trusted-root and trust-checkpoint artifacts when
+  continuity succeeds.
 
 The workflow grants only `contents: read` and `attestations: read`. Event tag,
 actor, run, and ref values enter the shell through quoted environment
@@ -253,6 +273,7 @@ policy automatically.
 | Post-activation mutable release | Block | Treat as release-control incident |
 | Missing or mismatched attestation | Block | Retry bounded verification, then investigate GitHub/release state |
 | TUF root or metadata unavailable, stale, or invalid | Block and retain explicit trust failure | Investigate network, metadata rotation, expiry, or bootstrap integrity |
+| Prior checkpoint missing, stale, forked, rolled back, equivocated, or no longer retained | Block without older/bootstrap fallback | Investigate workflow and artifact lineage; no automatic reset |
 | Independent bundle replay fails | Block | Compare raw bundle, root, signed statement, package lock, and verifier code |
 | Asset digest mismatch | Block | Quarantine the asset and investigate publication provenance |
 
@@ -272,6 +293,9 @@ release. Those remain separate exact USER decisions.
   schedule delay or workflow disablement is an external availability risk.
 - Artifact retention is 30 days; long-term external transparency witnessing
   is not yet implemented.
+- GitHub hosts both the workflow metadata and checkpoint artifact. The chain
+  detects many local substitutions but is not independently durable against
+  GitHub deletion or equivocation.
 - Generated source archives are outside attested asset verification.
 - The current profile supports public, stable releases and at most 100 listed
   releases before requiring policy revision.

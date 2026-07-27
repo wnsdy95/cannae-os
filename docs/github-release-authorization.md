@@ -21,6 +21,7 @@ USER final decision
 + enabled repository release-immutability policy
 + exact GitHub release-attestation verification profile
 + fresh GitHub trusted root reconstructed through pinned TUF metadata
++ fresh monotonic trust checkpoint bound to the exact retained root
 + independent Sigstore verification of the retained bundle
 + absent target tag and release
 + bounded validity
@@ -47,13 +48,15 @@ The authorization binds:
   length;
 - one completed successful `Validate` push run for the exact default branch
   and target commit;
-- schema version `0.4` evidence that the repository immutable-releases policy
+- schema version `0.5` evidence that the repository immutable-releases policy
   is enabled, including the API version, owner-enforcement state, and check
   time;
 - the required GitHub CLI version, JSON output, in-toto statement and
   predicate types, GitHub signer identity, and source-archive exclusion;
 - pinned independent verifier package/version, official GitHub TUF mirror,
   committed bootstrap path, and trusted-root freshness limit;
+- the exact Phase 19D checkpoint path, ID, sequence, digest, record time,
+  12-hour freshness boundary, and trusted-root IDs and digests;
 - clean local HEAD, matching `origin/<default-branch>`, and absence of the
   target tag and release at issuance;
 - an exact USER decision over the already-public commit and release notes;
@@ -63,8 +66,8 @@ The authorization binds:
 
 The authorization is immutable. Publication records consumption in a separate
 receipt instead of modifying and invalidating the authorization digest.
-Versions `0.1` through `0.3` remain readable for historical validation, but
-the active publisher rejects them as a downgrade and accepts only v0.4.
+Versions `0.1` through `0.4` remain readable for historical validation, but
+the active publisher rejects them as a downgrade and accepts only v0.5.
 
 ### GitHubReleaseReceipt
 
@@ -80,9 +83,11 @@ The terminal receipt binds:
   timestamps, exact package subject, commit, and uploaded-asset SHA-256
   subjects;
 - the complete `GitHubReleaseTrustedRoot` TUF chain and target artifact;
+- the complete `GitHubReleaseTrustCheckpoint` that binds the prior trusted
+  state, transition, producer, sequence, and root;
 - an independently replayable `GitHubReleaseIndependentVerification` binding
   verifier code, dependency lock, trust root, certificate, timestamp, DSSE
-  payload, signed statement, and CLI cross-check for schema version `0.4`;
+  payload, signed statement, and CLI cross-check for schema version `0.5`;
 - the exact release-notes digest; and
 - `published: true`, `verified: true`, and `authorization_consumed: true`.
 
@@ -101,11 +106,29 @@ Prerequisites:
   USER-authorized procedure in `github-release-immutability.md`;
 - GitHub CLI `2.93.0` or newer is installed;
 - Node dependencies are installed from the exact lockfile;
+- the latest eligible full-monitor artifact has been downloaded into a
+  repository-contained release directory and its root/checkpoint pair has
+  been validated against an explicit current clock;
 - the tracked release-notes file is final;
 - the target tag and GitHub release do not exist; and
 - the human user explicitly authorizes this exact release.
 
-Issue a 30-minute authorization:
+Verify the retained monitor root and checkpoint with an explicit current
+clock:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_github_release_verification.js \
+  trusted-root verify \
+  --input .cannae/releases/v0.3.0/github-trusted-root.json \
+  --evaluated-at <current-UTC-timestamp>
+
+node validator-cli-prototype/validate.js \
+  .cannae/releases/v0.3.0/github-release-trust-checkpoint.json \
+  github-release-trust-checkpoint \
+  --evaluated-at <current-UTC-timestamp>
+```
+
+Issue a 30-minute authorization over that exact pair:
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
@@ -117,6 +140,8 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
   --notes docs/releases/v0.3.0.md \
   --run-id <successful-main-run-id> \
   --grant-id UGR-v0_3_0 \
+  --trusted-root .cannae/releases/v0.3.0/github-trusted-root.json \
+  --trust-checkpoint .cannae/releases/v0.3.0/github-release-trust-checkpoint.json \
   --output .cannae/releases/v0.3.0/authorization.json \
   --expires-in-minutes 30
 ```
@@ -124,27 +149,12 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
 Publish before expiry:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/operate_github_release_verification.js \
-  trusted-root refresh \
-  --repository-root . \
-  --output .cannae/releases/v0.3.0/github-trusted-root.json
-```
-
-Verify with an explicit current clock before publication:
-
-```bash
-node codex-skills/controls-doctrine-operator/scripts/operate_github_release_verification.js \
-  trusted-root verify \
-  --input .cannae/releases/v0.3.0/github-trusted-root.json \
-  --evaluated-at <current-UTC-timestamp>
-```
-
-```bash
 node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
   publish \
   --repository-root . \
   --authorization .cannae/releases/v0.3.0/authorization.json \
   --trusted-root .cannae/releases/v0.3.0/github-trusted-root.json \
+  --trust-checkpoint .cannae/releases/v0.3.0/github-release-trust-checkpoint.json \
   --receipt .cannae/releases/v0.3.0/receipt.json
 ```
 
@@ -154,15 +164,17 @@ reloads the release, resolves the remote tag, compares the release body digest,
 requires the release listing to report `isImmutable: true`, and writes a
 receipt only when every field matches. Before creating any release, the
 publisher rejects legacy authorization versions, requires the trusted-root
-artifact, replays it against the current clock, and requires every TUF role to
-remain valid through authorization expiry. For version `0.4`, it also runs
+and trust-checkpoint artifacts, replays them against the current clock, and
+requires every TUF role and the checkpoint to remain valid through
+authorization expiry. For version `0.5`, it also runs
 `gh release verify`, retains the complete GitHub-signed attestation result,
 replays the repository-contained GitHub TUF chain, independently verifies the
 bundle through pinned `@sigstore/verify`, cross-checks the CLI statement
 against the signed DSSE payload, and rejects a different repository, tag,
 commit, signer, predicate, or asset digest. The publisher checks the
 repository immutability policy both at authorization and immediately before
-publication.
+publication. It also reloads the exact checkpoint/root paths and rejects any
+substitution against the USER authorization before external mutation.
 
 The Claude Code skill exposes the same wrapper and semantics at
 `.claude/skills/controls-doctrine-operator/scripts/operate_github_release.js`.
@@ -183,12 +195,13 @@ The Claude Code skill exposes the same wrapper and semantics at
 | CI is not a successful `Validate` push for the exact commit | deny |
 | Immutable-releases policy is disabled or changes after authorization | deny |
 | Authorization expired | deny |
-| Authorization version is older than v0.4 | deny before publication |
+| Authorization version is older than v0.5 | deny before publication |
 | Tag exists without release, or release exists without tag | deny |
 | Existing release body, name, mode, target, or tag commit differs | deny |
 | GitHub release attestation is unavailable after bounded retry | deny receipt |
 | Attestation repository, tag, commit, signer, predicate, or asset digest is different | deny receipt |
 | Trusted-root artifact is absent, stale, outside the repository, invalid, or expires within the authorization window | deny before publication |
+| Trust checkpoint is absent, stale, outside the repository, forked, substituted, or does not bind the exact root and authorization | deny before publication |
 | TUF rotation, metadata, or target verification fails | deny before publication |
 | Certificate, timestamp, or DSSE verification fails | deny receipt |
 | CLI statement differs from the signed DSSE statement | deny receipt |
@@ -215,6 +228,9 @@ The Claude Code skill exposes the same wrapper and semantics at
   independent infrastructure failure domain.
 - GitHub remains the signer, Fulcio/TSA operator, TUF repository operator, and
   immutable-state reporter.
+- GitHub Actions checkpoint artifacts are same-provider continuity evidence.
+  They can expire or be deleted and do not replace an independent archive or
+  witness.
 - Automatically generated source ZIP and tar archives are outside the release
   attestation's uploaded-asset set.
 - Continuous policy and attestation monitoring is defined in
@@ -236,6 +252,7 @@ node run-github-release-publisher-fixtures.js
 node run-github-release-immutability-fixtures.js
 node run-github-release-integrity-fixtures.js
 node run-github-release-independent-verification-fixtures.js
+node run-github-release-trust-checkpoint-fixtures.js
 ```
 
 The fixture suite uses an injected adapter and never contacts GitHub or creates
@@ -262,3 +279,5 @@ a release.
   document the independent verifier family.
 - [The Update Framework specification](https://theupdateframework.github.io/specification/latest/)
   defines the retained root and metadata chain verification.
+- [GitHub Actions artifact REST API](https://docs.github.com/en/rest/actions/artifacts?apiVersion=2026-03-10)
+  exposes artifact digest, expiry, workflow run, and head SHA bindings.

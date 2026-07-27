@@ -13,6 +13,10 @@ adapter. It performs no network mutation. It covers:
 - fixed verifier-profile widening rejection;
 - full live-policy, TUF trust, and independently verified release-attestation
   readiness using a real public `cli/cli v2.93.0` bundle;
+- USER genesis and exact predecessor checkpoint advancement under the same
+  retained root;
+- missing predecessor artifact rejection without repository-bootstrap
+  fallback;
 - retained trusted-root acquisition failure and fail-closed readiness;
 - exact committed-HEAD policy and activation-ancestry binding;
 - stale default-branch and parent-symlink output rejection;
@@ -28,4 +32,4 @@ adapter. It performs no network mutation. It covers:
 
 These fixtures validate the monitor and evidence contracts with retained
 public cryptographic material. They do not authorize repository-policy
-mutation or a release.
+mutation, checkpoint reset, or a release.

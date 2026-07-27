@@ -166,6 +166,7 @@ Recommended validation order:
 107. `github-release-integrity-observation.schema.json`
 108. `github-release-trusted-root.schema.json`
 109. `github-release-independent-verification.schema.json`
+110. `github-release-trust-checkpoint.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -174,6 +175,9 @@ root/metadata/target chain for offline replay. `GitHubReleaseIndependentVerifica
 binds pinned Sigstore verifier code and dependencies to the exact retained
 release bundle, trusted root, signer, timestamp, repository, tag, commit,
 package, assets, and GitHub CLI cross-check while keeping release false.
+`GitHubReleaseTrustCheckpoint` binds one USER genesis or exact predecessor to
+monotonic TUF role versions/digests, root and target digests, retrieval time,
+producer, and sequence while keeping checkpoint reset and release false.
 
 `VerifierTrustPolicy.verifiers[].allowed_attestation_types` can purpose-limit a key to `verification_receipt`, `comparative_evaluation_report`, or both. Comparative signing requires the explicit report grant; existing receipt-only policies may omit the field for v0.3 compatibility.
 
@@ -199,11 +203,13 @@ package, assets, and GitHub CLI cross-check while keeping release false.
 to carry `release_authorized: true`. It binds one explicit USER grant to the
 exact public repository, stable tag, full commit, previous release, tracked
 notes digest, successful default-branch `Validate` push run, clean repository
-state, enabled release-immutability policy, GitHub attestation profile for
-version `0.3`, and short expiry. `GitHubReleaseReceipt` records exact
+state, enabled release-immutability policy, GitHub attestation and independent
+verification profiles, exact fresh trust checkpoint/root pair for version
+`0.5`, and short expiry. `GitHubReleaseReceipt` records exact
 publication, tag verification, observed immutable state, complete normalized
-GitHub-signed attestation evidence for version `0.3`, and authorization
-consumption. No lower control-plane contract inherits that value.
+GitHub-signed attestation evidence, independent bundle replay, full trust
+checkpoint/root evidence, and authorization consumption. No lower
+control-plane contract inherits that value.
 
 `GitHubReleaseImmutabilityAuthorization` separately binds one USER-approved
 repository ADMIN action to the exact immutable-releases endpoint, disabled
@@ -214,12 +220,14 @@ already-enabled idempotent retry while keeping `release_authorized: false`.
 
 `GitHubReleaseIntegrityPolicy` seals the Phase 19A activation baseline,
 expected enabled state, grandfathered releases, attestation profile, cadence,
-bounded retry, and fail-closed behavior. `GitHubReleaseIntegrityObservation`
+bounded retry, monotonic checkpoint-store policy for version `0.3`, and
+fail-closed behavior. `GitHubReleaseIntegrityObservation`
 retains the exact committed policy-blob digest, current default-branch state,
 live policy status, explicit credential uncertainty, every selected resolved
 release, immutable classification, complete verified attestation evidence,
-derived issues and a canonical digest. Both contracts are read-only:
-repository-policy mutation and release remain false.
+prior/current checkpoint lineage, derived issues and a canonical digest. Both
+contracts are read-only: repository-policy mutation, checkpoint reset, and
+release remain false.
 
 `DispatchToolPolicy` v0.2 must be controller-compiled from a policy-draft digest already authorized by the exact USER-authored mission plan. Each rule binds one allowed mission action, exact provider tool, operation class, matcher input, repository-state control, and finite budget under default deny; project-hook policies cannot authorize network or delegation classes. `AgentDispatchLease` binds that policy to one provider session, repository identity/state, context chain, nonce, and validity window. `ToolAdmissionEvent` records each pre-tool allow or deny decision, while `AgentExecutionCheckpoint` v0.2 maintains the serial state chain, exact provider-result digest, and unresolved-effect disposition. All four retain `USER` final authority and keep release unauthorized.
 

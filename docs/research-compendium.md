@@ -4773,15 +4773,16 @@ digest?
   substitution, legacy authorization downgrade, and authority expansion all
   fail;
 - Codex and Claude wrappers resolve the same repository runtime;
-- all 17 independent-verification, 25 publisher, 19 monitor, and 218 validator
-  fixtures pass; and
+- the current integrated regression retains all 17 independent-verification,
+  29 publisher, 20 monitor, 23 checkpoint, and 218 validator fixture passes;
+  and
 - every new root, verification, receipt, policy, and observation contract
   preserves USER final authority and release false.
 
 ### Residual Work
 
-- durable prior-root state and an external continuity monitor for stronger
-  rollback detection;
+- independently durable prior-root state and a cross-provider continuity
+  monitor beyond the Phase 19D GitHub Actions artifact chain;
 - independent witnesses, gossip, and long-term transparency storage;
 - short-lived GitHub App installation credentials for administrative policy
   inspection;
@@ -4791,4 +4792,135 @@ digest?
   the same job;
 - an external trusted-time source where the local caller clock is not an
   acceptable freshness authority; and
+- private, prerelease, first-release, and provider-neutral profiles.
+
+## Phase 19D: Monotonic TUF Checkpoint Continuity
+
+### Research Question
+
+How can Cannae detect that a newly valid GitHub TUF state is older than, forks
+from, or conflicts with a state it previously trusted, while keeping release
+authority with the USER and representing provider-retention limits honestly?
+
+### Source Findings
+
+1. TUF rollback resistance depends on retained client state.
+   The [TUF specification](https://theupdateframework.github.io/specification/latest/)
+   requires trusted timestamp, snapshot, and targets metadata to be persisted
+   to non-volatile storage. New metadata is compared with trusted versions;
+   lower versions are rollback, equal timestamp versions stop the update, and
+   expiry detects freeze.
+2. Root continuity is sequential.
+   TUF requires root `N+1` to follow root `N` exactly and establishes a trusted
+   line through every intermediate root. A final valid root alone does not
+   prove which state the client had previously accepted.
+3. GitHub artifact metadata provides useful but bounded lineage fields.
+   The [Actions artifact REST API](https://docs.github.com/en/rest/actions/artifacts?apiVersion=2026-03-10)
+   exposes artifact ID, SHA-256 archive digest, expiry, workflow run, and head
+   SHA. These can bind checkpoint bytes to one exact workflow execution.
+4. GitHub artifacts are not independent durable storage.
+   GitHub's [artifact-removal guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/remove-workflow-artifacts)
+   says a repository writer can delete an artifact, deletion is irreversible,
+   retention is configurable, and artifacts from deleted runs disappear.
+   The workflow's 30-day artifact is therefore same-provider continuity, not
+   an external archive or witness.
+5. Failure must remain distinguishable from reset.
+   TUF reports attacks and aborts; it does not decide application-specific
+   recovery. A missing predecessor cannot safely authorize a new genesis
+   without a separate authority decision.
+
+### Design Decisions
+
+1. Retain a canonical monotonic checkpoint.
+   It binds repository, sequence, predecessor, every TUF role's
+   version/digest/expiry, target/root digests, retrieval and evaluation times,
+   producer, transition result, and release false.
+2. Require exact prior-root authentication.
+   Before comparing versions, advancement proves that the prior checkpoint
+   exactly represents the retained predecessor root. Rehashing a fabricated
+   prior state cannot create rollback evidence or authorize a transition.
+3. Treat equal-version changed bytes as equivocation.
+   Version monotonicity alone is insufficient. Every unchanged role version
+   must retain the same signed digest, and unchanged targets must retain the
+   same target and normalized-root digests.
+4. Bind root and retrieval continuity.
+   The current root chain must contain the exact previously trusted root
+   bytes, and current retrieval time cannot precede prior retrieval time.
+5. Use one bounded provider store.
+   The latest eligible run must be in current ancestry, contain the exact
+   current policy bytes, retain exactly one expected artifact, and match the
+   checkpoint's workflow, run, attempt, and head producer. Archive digest,
+   expiry, bounded file sizes, unique names, and safe paths are verified.
+6. Refuse silent fallback.
+   If the latest eligible run exists but its artifact is absent, older
+   artifacts and repository bootstrap are not considered. This turns
+   deletion or interrupted lineage into a visible blocked state.
+7. Bound genesis narrowly.
+   One committed genesis carries an explicit USER grant. Repository bootstrap
+   is accepted only for four hours after the commit that first introduces the
+   checkpoint policy. Later policy edits cannot reopen the window.
+8. Integrate without widening authority.
+   Monitor policy/observation v0.3 require continuity. Publisher
+   authorization/receipt v0.5 bind the exact checkpoint/root pair into the
+   USER grant and recheck it before any release creation. Checkpoint reset and
+   all monitoring release fields remain false.
+
+### Rejected Alternatives
+
+- Comparing only the current TUF metadata with the pinned root: this proves
+  point-in-time validity, not prior client state.
+- Trusting version numbers without digests: a same-version signed-byte
+  conflict would be invisible.
+- Accepting a rehashed prior wrapper: an attacker could fabricate an arbitrary
+  comparison baseline.
+- Falling back to the oldest available artifact after the latest disappears:
+  artifact deletion would become a rollback mechanism.
+- Reopening bootstrap after every policy edit: routine changes would become
+  implicit checkpoint-reset authority.
+- Extracting the entire ZIP before path and type validation: crafted archive
+  members could affect the filesystem before rejection.
+- Calling GitHub artifacts independently durable: GitHub controls workflow,
+  artifact, deletion, retention, and TUF state.
+- Letting the monitor repair sequence state or issue release authority:
+  observation is not command authority.
+
+### Implemented Artifacts
+
+- `docs/github-release-trust-checkpoint-continuity.md`;
+- `.github/tuf/github-release-trust-checkpoint.json`;
+- `.github/tuf/github-release-trust-bootstrap-root.json`;
+- `github-release-trust-checkpoint.js`;
+- `github-release-checkpoint-store.js`;
+- `schema-files/github-release-trust-checkpoint.schema.json`;
+- `run-github-release-trust-checkpoint-fixtures.js`;
+- integrity policy/observation v0.3 integration;
+- publisher authorization/receipt v0.5 integration;
+- push, release, schedule, and manual workflow retention; and
+- equivalent Codex and Claude routing and operating rules.
+
+### Measured Behavior
+
+- USER genesis, unchanged transitions, and later exact-root matching pass;
+- authenticated higher prior versions detect current rollback;
+- equal-version digest conflict detects equivocation;
+- missing prior root bytes, backdated retrieval, stale predecessors, sequence
+  forks, root substitution, and authority expansion fail;
+- bootstrap expiry and ordinary-policy-change replay fail;
+- latest artifact selection succeeds, while missing latest retention,
+  producer substitution, path traversal, and option-like archive members
+  fail;
+- missing, stale, path-substituted, or alternate valid checkpoints stop the
+  publisher before any release creation call; and
+- all 23 checkpoint, 29 publisher, 20 monitor, and 218 validator fixtures
+  pass.
+
+### Residual Work
+
+- independently operated append-only checkpoint storage;
+- cross-provider witnesses, gossip, and monitor-liveness supervision;
+- a separately specified exact USER-authorized incident reset;
+- protected USER signatures and an external trusted-time source;
+- recovery classification for provider setup failures versus artifact
+  deletion without weakening fail-closed continuity;
+- short-lived GitHub App monitoring credentials; and
 - private, prerelease, first-release, and provider-neutral profiles.
