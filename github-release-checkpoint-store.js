@@ -9,8 +9,13 @@ const {
   commandResult,
   parseJsonOutput
 } = require("./github-release-publisher");
+const {
+  validateGitHubReleaseBootstrapRecovery
+} = require("./github-release-bootstrap-recovery");
 
 const DEFAULT_ARTIFACT_NAME_PREFIX = "release-integrity-";
+const DEFAULT_BOOTSTRAP_RECOVERY_PATH =
+  ".github/tuf/github-release-bootstrap-recovery.json";
 const DEFAULT_BOOTSTRAP_WINDOW_SECONDS = 4 * 60 * 60;
 const DEFAULT_MAXIMUM_RUN_HISTORY = 100;
 const DEFAULT_WORKFLOW_PATH =
@@ -502,6 +507,264 @@ class SystemGitHubReleaseCheckpointStore {
     }
   }
 
+  loadInitialBootstrapFailureArtifact(
+    repository,
+    run,
+    artifactName
+  ) {
+    const artifact = this.inspectArtifact(
+      repository,
+      run,
+      artifactName
+    );
+    const archive = this.downloadArtifact(repository, artifact);
+    const temp = fs.mkdtempSync(
+      path.join(os.tmpdir(), "cannae-bootstrap-recovery-")
+    );
+    try {
+      const archivePath = path.join(temp, "blocked.zip");
+      fs.writeFileSync(archivePath, archive);
+      const listing = commandResult(
+        "unzip",
+        ["-Z1", archivePath],
+        { cwd: temp }
+      );
+      if (listing.status !== 0) {
+        throw new GitHubReleaseCheckpointStoreError(
+          "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_ARCHIVE_INVALID",
+          "Initial recovery artifact is not a valid ZIP archive."
+        );
+      }
+      const entries = assertSafeArchiveEntries(listing.stdout);
+      const files = entries.filter(entry => !entry.endsWith("/"));
+      const checkpointMatches = files.filter(entry =>
+        path.posix.basename(entry) === CHECKPOINT_FILE_NAME);
+      if (files.length !== 2 || checkpointMatches.length !== 0) {
+        throw new GitHubReleaseCheckpointStoreError(
+          "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_ARCHIVE_CONTENT_INVALID",
+          "Initial recovery requires exactly one full observation and trusted root with no checkpoint or additional file."
+        );
+      }
+      const trustedRootEntry = findUniqueEntry(
+        entries,
+        TRUSTED_ROOT_FILE_NAME
+      );
+      const fullObservationEntry = findUniqueEntry(
+        entries,
+        FULL_OBSERVATION_FILE_NAME
+      );
+      return {
+        trusted_root: readBoundedArchiveJson(
+          archivePath,
+          trustedRootEntry,
+          2 * 1024 * 1024,
+          "Recovery trusted-root artifact"
+        ),
+        full_observation: readBoundedArchiveJson(
+          archivePath,
+          fullObservationEntry,
+          16 * 1024 * 1024,
+          "Recovery full integrity observation"
+        ),
+        provenance: {
+          source: "github_actions_artifact",
+          run_id: String(run.id),
+          run_attempt: run.run_attempt,
+          head_sha: run.head_sha,
+          conclusion: run.conclusion,
+          artifact_id: String(artifact.id),
+          artifact_name: artifact.name,
+          artifact_digest: artifact.digest,
+          artifact_created_at: artifact.created_at,
+          artifact_expires_at: artifact.expires_at
+        }
+      };
+    } finally {
+      fs.rmSync(temp, { recursive: true, force: true });
+    }
+  }
+
+  resolveInitialBootstrapRecovery(options = {}) {
+    const {
+      repository,
+      defaultBranch,
+      policyPath,
+      policyBytes,
+      bootstrapCheckpointPath,
+      bootstrapTrustedRootPath,
+      bootstrapRecoveryPath =
+        DEFAULT_BOOTSTRAP_RECOVERY_PATH,
+      workflowPath,
+      artifactNamePrefix,
+      maximumRunHistory,
+      bootstrapWindowSeconds,
+      now,
+      currentRunId,
+      currentRunAttempt,
+      candidates,
+      introduction,
+      runHistoryComplete,
+      initialBootstrapFailureValidator
+    } = options;
+    if (runHistoryComplete !== true ||
+        Number(currentRunAttempt) !== 1 ||
+        !/^[1-9][0-9]*$/.test(String(currentRunId || "")) ||
+        candidates.length < 1 ||
+        candidates.length >= maximumRunHistory ||
+        typeof initialBootstrapFailureValidator !== "function" ||
+        parseTimestamp(now) - parseTimestamp(
+          introduction.committed_at
+        ) > bootstrapWindowSeconds * 1000) {
+      throw new GitHubReleaseCheckpointStoreError(
+        "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_NOT_ELIGIBLE",
+        "Initial bootstrap recovery is unavailable outside one exact first-attempt, bounded, original-window failure set."
+      );
+    }
+    const currentRun = this.inspectRunAttempt(
+      repository,
+      Number(currentRunId),
+      Number(currentRunAttempt)
+    );
+    const currentHeadResult = commandResult(
+      "git",
+      ["rev-parse", "HEAD"],
+      { cwd: this.repositoryRoot }
+    );
+    const currentHeadSha = currentHeadResult.status === 0
+      ? currentHeadResult.stdout.trim()
+      : "";
+    const newestCandidateRunNumber = Math.max(
+      ...candidates.map(run => run.run_number)
+    );
+    if (!currentRun ||
+        Number(currentRun.id) !== Number(currentRunId) ||
+        currentRun.run_attempt !== 1 ||
+        currentRun.run_number <= newestCandidateRunNumber ||
+        currentRun.path !== workflowPath ||
+        currentRun.status !== "in_progress" ||
+        currentRun.head_branch !== defaultBranch ||
+        !["push", "schedule", "workflow_dispatch"].includes(
+          currentRun.event
+        ) ||
+        parseTimestamp(currentRun.created_at) === null ||
+        !/^[a-f0-9]{40}$/.test(currentRun.head_sha || "") ||
+        currentRun.head_sha !== currentHeadSha ||
+        !policyMatchesCommit(
+          this.repositoryRoot,
+          currentRun.head_sha,
+          policyPath,
+          policyBytes
+        )) {
+      throw new GitHubReleaseCheckpointStoreError(
+        "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_CURRENT_RUN_INVALID",
+        "Initial bootstrap recovery requires the exact newest in-progress first attempt at the current policy-bound HEAD."
+      );
+    }
+    const recovery = readCommittedJson(
+      this.repositoryRoot,
+      bootstrapRecoveryPath
+    );
+    const checkpoint = readCommittedJson(
+      this.repositoryRoot,
+      bootstrapCheckpointPath
+    );
+    const trustedRoot = readCommittedJson(
+      this.repositoryRoot,
+      bootstrapTrustedRootPath
+    );
+    const orderedRuns = [...candidates].sort((left, right) =>
+      left.run_number - right.run_number ||
+      left.id - right.id);
+    const blockedRuns = orderedRuns.map(run => {
+      const artifactName = `${artifactNamePrefix}${run.id}-${
+        run.run_attempt
+      }`;
+      const loaded = this.loadInitialBootstrapFailureArtifact(
+        repository,
+        run,
+        artifactName
+      );
+      initialBootstrapFailureValidator(loaded, {
+        repository,
+        defaultBranch,
+        workflowPath,
+        policyPath,
+        policyBytes,
+        expectedRun: run,
+        expectedArtifactName: artifactName
+      });
+      const observation = loaded.full_observation;
+      return {
+        run_id: String(run.id),
+        run_number: run.run_number,
+        run_attempt: run.run_attempt,
+        run_created_at: run.created_at,
+        head_sha: run.head_sha,
+        conclusion: run.conclusion,
+        artifact_id: loaded.provenance.artifact_id,
+        artifact_name: loaded.provenance.artifact_name,
+        artifact_digest: loaded.provenance.artifact_digest,
+        artifact_created_at:
+          loaded.provenance.artifact_created_at,
+        artifact_expires_at:
+          loaded.provenance.artifact_expires_at,
+        observation_id: observation.id,
+        observation_sha256: observation.observation_sha256,
+        observed_at: observation.observed_at,
+        checkpoint_failure_code:
+          observation.trust_checkpoint_observation.failure_code
+      };
+    });
+    const {
+      validateSchemaPayload
+    } = require("./validator-cli-prototype/validate");
+    const schemaResult = validateSchemaPayload(
+      recovery,
+      "github-release-bootstrap-recovery"
+    );
+    const recoveryIssues =
+      validateGitHubReleaseBootstrapRecovery(recovery, {
+        evaluatedAt: now,
+        repository,
+        defaultBranch,
+        policyBytes,
+        introduction,
+        bootstrapCheckpoint: checkpoint,
+        bootstrapTrustedRoot: trustedRoot,
+        blockedRuns
+      });
+    if (!schemaResult.valid || recoveryIssues.length > 0) {
+      const first = schemaResult.issues[0] ||
+        recoveryIssues[0] || {};
+      throw new GitHubReleaseCheckpointStoreError(
+        first.code ||
+          "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_INVALID",
+        first.message ||
+          "Initial bootstrap recovery authorization is invalid."
+      );
+    }
+    return {
+      checkpoint,
+      trusted_root: trustedRoot,
+      provenance: {
+        source: "repository_bootstrap_recovery",
+        policy_introduction_commit: introduction.commit_sha,
+        policy_introduction_time: introduction.committed_at,
+        bootstrap_checkpoint_path: bootstrapCheckpointPath,
+        bootstrap_checkpoint_sha256:
+          checkpoint.checkpoint_sha256,
+        bootstrap_trusted_root_path: bootstrapTrustedRootPath,
+        bootstrap_trusted_root_sha256:
+          trustedRoot.artifact_sha256,
+        recovery_authorization_path: bootstrapRecoveryPath,
+        recovery_authorization_sha256:
+          recovery.recovery_sha256,
+        recovery_grant_id: recovery.user_grant.grant_id,
+        blocked_run_count: blockedRuns.length
+      }
+    };
+  }
+
   resolve(options = {}) {
     const {
       repository,
@@ -510,6 +773,8 @@ class SystemGitHubReleaseCheckpointStore {
       policyBytes,
       bootstrapCheckpointPath,
       bootstrapTrustedRootPath,
+      bootstrapRecoveryPath =
+        DEFAULT_BOOTSTRAP_RECOVERY_PATH,
       workflowPath = DEFAULT_WORKFLOW_PATH,
       artifactNamePrefix = DEFAULT_ARTIFACT_NAME_PREFIX,
       maximumRunHistory = DEFAULT_MAXIMUM_RUN_HISTORY,
@@ -517,7 +782,8 @@ class SystemGitHubReleaseCheckpointStore {
         DEFAULT_BOOTSTRAP_WINDOW_SECONDS,
       now,
       currentRunId,
-      currentRunAttempt
+      currentRunAttempt,
+      initialBootstrapFailureValidator
     } = options;
     if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(
       repository || ""
@@ -551,6 +817,25 @@ class SystemGitHubReleaseCheckpointStore {
       workflowPath,
       maximumRunHistory
     );
+    const introduction = latestPolicyChange(
+      this.repositoryRoot,
+      policyPath
+    );
+    const oldestListedRunTime = runs.reduce(
+      (oldest, run) => {
+        const candidate = parseTimestamp(run && run.created_at);
+        if (candidate === null) return oldest;
+        return oldest === null || candidate < oldest
+          ? candidate
+          : oldest;
+      },
+      null
+    );
+    const runHistoryComplete =
+      runs.length < maximumRunHistory ||
+      (oldestListedRunTime !== null &&
+       oldestListedRunTime <=
+         parseTimestamp(introduction.committed_at));
     const workflowRef =
       `${repository}/${workflowPath}@refs/heads/${defaultBranch}`;
     const isEligibleCompletedRun = run =>
@@ -644,11 +929,43 @@ class SystemGitHubReleaseCheckpointStore {
       const artifactName = `${artifactNamePrefix}${selected.id}-${
         selected.run_attempt
       }`;
-      const loaded = this.loadArtifact(
-        repository,
-        selected,
-        artifactName
-      );
+      let loaded;
+      try {
+        loaded = this.loadArtifact(
+          repository,
+          selected,
+          artifactName
+        );
+      } catch (error) {
+        if (error.code !==
+            "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID") {
+          throw error;
+        }
+        if (typeof initialBootstrapFailureValidator !==
+            "function") {
+          throw error;
+        }
+        return this.resolveInitialBootstrapRecovery({
+          repository,
+          defaultBranch,
+          policyPath,
+          policyBytes,
+          bootstrapCheckpointPath,
+          bootstrapTrustedRootPath,
+          bootstrapRecoveryPath,
+          workflowPath,
+          artifactNamePrefix,
+          maximumRunHistory,
+          bootstrapWindowSeconds,
+          now,
+          currentRunId,
+          currentRunAttempt,
+          candidates,
+          introduction,
+          runHistoryComplete,
+          initialBootstrapFailureValidator
+        });
+      }
       const producer = loaded.checkpoint &&
         loaded.checkpoint.producer || {};
       if (producer.kind !== "github_actions" ||
@@ -664,10 +981,6 @@ class SystemGitHubReleaseCheckpointStore {
       return loaded;
     }
 
-    const introduction = latestPolicyChange(
-      this.repositoryRoot,
-      policyPath
-    );
     if (parseTimestamp(now) - parseTimestamp(
       introduction.committed_at
     ) > bootstrapWindowSeconds * 1000) {
@@ -705,6 +1018,7 @@ class SystemGitHubReleaseCheckpointStore {
 module.exports = {
   CHECKPOINT_FILE_NAME,
   DEFAULT_ARTIFACT_NAME_PREFIX,
+  DEFAULT_BOOTSTRAP_RECOVERY_PATH,
   DEFAULT_BOOTSTRAP_WINDOW_SECONDS,
   DEFAULT_MAXIMUM_RUN_HISTORY,
   DEFAULT_WORKFLOW_PATH,

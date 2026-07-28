@@ -85,6 +85,9 @@ const {
   validateGitHubReleaseTrustCheckpoint
 } = require("../github-release-trust-checkpoint");
 const {
+  validateGitHubReleaseBootstrapRecovery
+} = require("../github-release-bootstrap-recovery");
+const {
   independentVerificationDigest
 } = require("../github-release-bundle-verifier");
 
@@ -163,6 +166,7 @@ const TYPE_TO_SCHEMA = {
   "github-release-integrity-observation": "github-release-integrity-observation.schema.json",
   "github-release-trusted-root": "github-release-trusted-root.schema.json",
   "github-release-trust-checkpoint": "github-release-trust-checkpoint.schema.json",
+  "github-release-bootstrap-recovery": "github-release-bootstrap-recovery.schema.json",
   "github-release-independent-verification": "github-release-independent-verification.schema.json",
   "routing-receipt": "routing-receipt.schema.json",
   "mission-wave-plan": "mission-wave-plan.schema.json",
@@ -2767,6 +2771,20 @@ function semanticRules(payload, type, options = {}) {
         checkpointIssue.code,
         checkpointIssue.path,
         checkpointIssue.message
+      ));
+    }
+  }
+
+  if (type === "github-release-bootstrap-recovery") {
+    for (const recoveryIssue of
+      validateGitHubReleaseBootstrapRecovery(payload, {
+        evaluatedAt: options.evaluatedAt
+      })) {
+      issues.push(issue(
+        "critical",
+        recoveryIssue.code,
+        recoveryIssue.path,
+        recoveryIssue.message
       ));
     }
   }

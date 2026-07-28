@@ -1,6 +1,7 @@
 # GitHub Release Trust Checkpoint Fixtures
 
-These fixtures exercise the Phase 19D monotonic TUF checkpoint contract.
+These fixtures exercise the Phase 19D monotonic TUF checkpoint contract and
+the Phase 19E one-time initial-bootstrap recovery.
 
 The runner uses the retained real GitHub trusted-root fixture from
 `github-release-independent-verification-fixtures/` and proves:
@@ -15,7 +16,11 @@ The runner uses the retained real GitHub trusted-root fixture from
 - latest eligible artifact selection without older/bootstrap fallback;
 - exact completed default-branch run and rerun-attempt binding;
 - mandatory observation/root/checkpoint ZIP members and bounded parsing;
-- exact workflow producer binding; and
+- exact workflow producer binding;
+- exact USER recovery over every retained two-file initial failure artifact;
+- recovery run-set, expiry, current in-progress attempt, and no-fallback
+  enforcement;
+- proof that complete provider checkpoints never invoke recovery; and
 - archive traversal and option-injection rejection before bounded direct
   member reads.
 

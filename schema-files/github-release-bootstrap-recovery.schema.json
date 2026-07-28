@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/github-release-bootstrap-recovery.schema.json",
+  "title": "GitHub Release Initial Bootstrap Recovery",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "repository",
+    "policy",
+    "bootstrap",
+    "blocked_runs",
+    "user_grant",
+    "authority",
+    "initial_bootstrap_recovery_authorized",
+    "checkpoint_reset_authorized",
+    "release_authorized",
+    "authorized_at",
+    "expires_at",
+    "recovery_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "GitHubReleaseBootstrapRecovery"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "full_name",
+        "default_branch"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "id",
+        "relative_path",
+        "sha256",
+        "head_blob_sha256",
+        "introduction_commit_sha",
+        "introduction_time"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "relative_path": {
+          "type": "string",
+          "const": ".github/release-integrity-policy.json"
+        },
+        "sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "head_blob_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "introduction_commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "introduction_time": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      }
+    },
+    "bootstrap": {
+      "type": "object",
+      "required": [
+        "checkpoint_relative_path",
+        "checkpoint_id",
+        "checkpoint_sha256",
+        "trusted_root_relative_path",
+        "trusted_root_artifact_id",
+        "trusted_root_artifact_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint_relative_path": {
+          "type": "string",
+          "const": ".github/tuf/github-release-trust-checkpoint.json"
+        },
+        "checkpoint_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "checkpoint_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "trusted_root_relative_path": {
+          "type": "string",
+          "const": ".github/tuf/github-release-trust-bootstrap-root.json"
+        },
+        "trusted_root_artifact_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "trusted_root_artifact_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "blocked_runs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 99,
+      "items": {
+        "type": "object",
+        "required": [
+          "run_id",
+          "run_number",
+          "run_attempt",
+          "run_created_at",
+          "head_sha",
+          "conclusion",
+          "artifact_id",
+          "artifact_name",
+          "artifact_digest",
+          "artifact_created_at",
+          "artifact_expires_at",
+          "observation_id",
+          "observation_sha256",
+          "observed_at",
+          "checkpoint_failure_code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "run_number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "run_attempt": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "run_created_at": {
+            "$ref": "common.schema.json#/$defs/timestamp"
+          },
+          "head_sha": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "conclusion": {
+            "type": "string",
+            "const": "failure"
+          },
+          "artifact_id": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "artifact_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifact_digest": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "artifact_created_at": {
+            "$ref": "common.schema.json#/$defs/timestamp"
+          },
+          "artifact_expires_at": {
+            "$ref": "common.schema.json#/$defs/timestamp"
+          },
+          "observation_id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "observation_sha256": {
+            "$ref": "common.schema.json#/$defs/sha256"
+          },
+          "observed_at": {
+            "$ref": "common.schema.json#/$defs/timestamp"
+          },
+          "checkpoint_failure_code": {
+            "type": "string",
+            "enum": [
+              "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+              "GITHUB_RELEASE_TRUST_CHECKPOINT_STALE"
+            ]
+          }
+        }
+      }
+    },
+    "user_grant": {
+      "type": "object",
+      "required": [
+        "authority",
+        "grant_id",
+        "purpose",
+        "granted_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "grant_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "purpose": {
+          "type": "string",
+          "const": "initial_bootstrap_recovery"
+        },
+        "granted_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "human_final_decision_authority",
+        "monitoring_only",
+        "checkpoint_reset_authorized",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "monitoring_only": {
+          "type": "boolean",
+          "const": true
+        },
+        "checkpoint_reset_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "initial_bootstrap_recovery_authorized": {
+      "type": "boolean",
+      "const": true
+    },
+    "checkpoint_reset_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "authorized_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "recovery_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    }
+  }
+}

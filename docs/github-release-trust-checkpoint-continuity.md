@@ -11,6 +11,9 @@ Phase 19D retains the prior trusted state and compares every later refresh
 against it. It detects rollback, same-version equivocation, root-chain
 discontinuity, backdated retrieval, stale predecessors, sequence forks, and
 checkpoint substitution before monitor readiness or release publication.
+Phase 19E handles one narrower deployment failure: initial monitor runs that
+retained a verified root and full blocked observation but could not emit the
+first checkpoint. It does not reset an established lineage.
 
 This is continuity evidence, not release authority:
 
@@ -128,8 +131,9 @@ It blocks.
 9. require the checkpoint producer and observation to equal the exact
    workflow, run, attempt, default branch, and head commit.
 
-Observation time may precede artifact creation by at most 60 seconds to
-accommodate GitHub API timestamp precision. This tolerance does not extend
+Observation and artifact creation time may differ by at most 60 seconds to
+accommodate GitHub API timestamp precision and immediate upload. This
+tolerance does not extend
 checkpoint age, authorization, trusted-root expiry, or artifact expiry.
 
 For attempt two or later, the store inspects the exact current attempt and
@@ -158,6 +162,57 @@ window and the twelve-hour predecessor-age limit expire. The bootstrap window
 does not make a stale root or genesis acceptable. Once an eligible artifact
 lineage exists, never rewrite the bootstrap files; any later reset requires a
 separate exact USER decision and a new contract.
+
+### Initial Bootstrap Recovery
+
+`GitHubReleaseBootstrapRecovery` v0.1 is a one-time monitoring authorization,
+not a fallback rule. It is considered only after the latest exact
+policy-matching artifact fails normal three-file loading because its checkpoint
+member is absent.
+
+Recovery requires all of the following:
+
+1. every policy-matching completed run is retained and the bounded run query
+   proves that it reaches the original policy-introduction boundary;
+2. every run is a first attempt with `conclusion: failure`;
+3. every artifact contains exactly one full observation and trusted root, no
+   checkpoint, and no additional file;
+4. every observation is schema-valid, semantically replayable, exact-policy,
+   exact-default-branch, exact-run evidence with a verified trusted root;
+5. the checkpoint failure is only
+   `GITHUB_RELEASE_TRUST_CHECKPOINT_STALE` or
+   `GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID`; the only other
+   permitted issue is monitor-credential unavailability;
+6. one committed recovery document binds the original policy introduction,
+   exact current policy bytes, fresh sequence-zero checkpoint/root, every run
+   and artifact ID/digest/time, every blocked observation digest, and the same
+   USER grant carried by the genesis;
+7. the USER grant follows every retained artifact, authorization lasts at
+   most 60 minutes, artifact retention covers expiry, and expiry remains
+   inside the original four-hour bootstrap window; and
+8. the consumer is the newest GitHub workflow run, currently
+   `in_progress`, at attempt one and the exact current `HEAD`.
+
+Missing or deleted evidence, a successful run, any complete checkpoint, an
+unknown issue, a rerun, incomplete run history, changed policy bytes, a
+different grant, expiry, or an offline/local consumer blocks recovery. The
+store never deletes, reruns, renames, or falls back to older evidence.
+
+An accepted recovery returns the original sequence-zero checkpoint with
+`repository_bootstrap_recovery` provenance. The current monitor then performs
+the ordinary deterministic transition to sequence one. Therefore:
+
+```text
+initial bootstrap recovery
+= permission to consume one exact USER genesis for monitoring
+!= checkpoint reset
+!= policy repair
+!= release authorization
+```
+
+After that run retains a complete observation/root/checkpoint triplet, normal
+provider-artifact continuity takes over and the recovery document is no
+longer consulted.
 
 ## 6. Monitor v0.3
 
@@ -250,6 +305,41 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   --scope full \
   --trigger manual
 ```
+
+When and only when initial provider runs retained the exact recoverable
+two-file artifacts described above, refresh the bootstrap root and genesis
+against one clock, then have the runtime derive the authorization from GitHub
+rather than assembling its run list manually:
+
+```bash
+node github-release-trusted-root.js refresh \
+  --repository-root . \
+  --output .github/tuf/github-release-trust-bootstrap-root.json
+
+node github-release-trust-checkpoint.js initialize \
+  --trusted-root .github/tuf/github-release-trust-bootstrap-root.json \
+  --repository <owner/repo> \
+  --default-branch main \
+  --evaluated-at <current-UTC-timestamp> \
+  --user-grant-id <exact-USER-recovery-grant> \
+  --granted-at <current-UTC-timestamp> \
+  --repository-head-sha <current-pre-merge-main-SHA> \
+  --output .github/tuf/github-release-trust-checkpoint.json
+
+node codex-skills/controls-doctrine-operator/scripts/operate_github_release_integrity.js \
+  authorize-bootstrap-recovery \
+  --repository-root . \
+  --user-grant-id <same-exact-USER-recovery-grant> \
+  --granted-at <timestamp-after-all-blocked-artifacts> \
+  --authorized-at <current-UTC-timestamp> \
+  --expires-at <at-most-60-minutes-and-inside-original-window>
+```
+
+Commit the refreshed root, genesis, and generated
+`.github/tuf/github-release-bootstrap-recovery.json` together. Do not run
+this command after any complete provider checkpoint exists. The command
+always reports `checkpoint_reset_authorized: false` and
+`release_authorized: false`.
 
 For an exact release, download the latest eligible full-monitor artifact into
 the target repository's release directory. Validate the checkpoint with an

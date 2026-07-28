@@ -14,11 +14,17 @@ const {
   validateGitHubReleaseTrustCheckpoint
 } = require("./github-release-trust-checkpoint");
 const {
+  DEFAULT_BOOTSTRAP_RECOVERY_PATH,
   GitHubReleaseCheckpointStoreError,
   SystemGitHubReleaseCheckpointStore,
   assertSafeArchiveEntries,
+  latestPolicyChange,
   sha256
 } = require("./github-release-checkpoint-store");
+const {
+  createGitHubReleaseBootstrapRecovery,
+  recoveryDigest
+} = require("./github-release-bootstrap-recovery");
 const {
   trustedRootArtifactDigest
 } = require("./github-release-trusted-root");
@@ -148,6 +154,8 @@ function makeStoreFixture(root) {
   const policy = {
     schema_version: "0.3",
     type: "GitHubReleaseIntegrityPolicy",
+    id: "GRIP-checkpoint-store-fixture",
+    policy_sha256: "d".repeat(64),
     trust_checkpoint_policy: {
       required: true,
       continuity_mode: "github_actions_artifact_chain"
@@ -212,12 +220,20 @@ function makeStoreFixture(root) {
 }
 
 class FixtureCheckpointStore extends SystemGitHubReleaseCheckpointStore {
-  constructor(repositoryRoot, runs, loader, attemptInspector = null) {
+  constructor(
+    repositoryRoot,
+    runs,
+    loader,
+    attemptInspector = null,
+    recoveryLoader = null
+  ) {
     super(repositoryRoot);
     this.runs = runs;
     this.loader = loader;
     this.attemptInspector = attemptInspector;
+    this.recoveryLoader = recoveryLoader;
     this.loadCalls = [];
+    this.recoveryLoadCalls = [];
   }
 
   listCompletedRuns() {
@@ -233,6 +249,30 @@ class FixtureCheckpointStore extends SystemGitHubReleaseCheckpointStore {
     return this.loader(repository, run, artifactName);
   }
 
+  loadInitialBootstrapFailureArtifact(
+    repository,
+    run,
+    artifactName
+  ) {
+    this.recoveryLoadCalls.push({
+      repository,
+      run: clone(run),
+      artifactName
+    });
+    if (!this.recoveryLoader) {
+      return super.loadInitialBootstrapFailureArtifact(
+        repository,
+        run,
+        artifactName
+      );
+    }
+    return clone(this.recoveryLoader(
+      repository,
+      run,
+      artifactName
+    ));
+  }
+
   inspectRunAttempt(repository, runId, runAttempt) {
     if (!this.attemptInspector) {
       throw new Error("run attempt inspector must not run");
@@ -243,6 +283,173 @@ class FixtureCheckpointStore extends SystemGitHubReleaseCheckpointStore {
       runAttempt
     ));
   }
+}
+
+function makeBlockedRun(fixture, id, runNumber, createdAt) {
+  return {
+    id,
+    run_number: runNumber,
+    path: fixture.options.workflowPath,
+    status: "completed",
+    head_branch: "main",
+    conclusion: "failure",
+    run_attempt: 1,
+    created_at: createdAt,
+    updated_at: createdAt,
+    head_sha: fixture.headSha
+  };
+}
+
+function makeBlockedArtifact(run, root, failureCode, index) {
+  const observedAt = new Date(
+    Date.parse(run.created_at) + 5 * 60 * 1000
+  ).toISOString();
+  const artifactCreatedAt = new Date(
+    Date.parse(observedAt) + 1000
+  ).toISOString();
+  return {
+    trusted_root: clone(root),
+    full_observation: {
+      id: `GRIO-bootstrap-recovery-${index}`,
+      observation_sha256:
+        String(index).repeat(64).slice(0, 64),
+      observed_at: observedAt,
+      trust_checkpoint_observation: {
+        status: "unavailable",
+        failure_code: failureCode
+      }
+    },
+    provenance: {
+      source: "github_actions_artifact",
+      run_id: String(run.id),
+      run_attempt: run.run_attempt,
+      head_sha: run.head_sha,
+      conclusion: run.conclusion,
+      artifact_id: String(8100 + index),
+      artifact_name:
+        `release-integrity-${run.id}-${run.run_attempt}`,
+      artifact_digest:
+        `sha256:${String(index + 1).repeat(64).slice(0, 64)}`,
+      artifact_created_at: artifactCreatedAt,
+      artifact_expires_at: "2026-08-26T02:00:00.000Z"
+    }
+  };
+}
+
+function blockedRunRecord(run, artifact) {
+  const observation = artifact.full_observation;
+  return {
+    run_id: String(run.id),
+    run_number: run.run_number,
+    run_attempt: run.run_attempt,
+    run_created_at: run.created_at,
+    head_sha: run.head_sha,
+    conclusion: run.conclusion,
+    artifact_id: artifact.provenance.artifact_id,
+    artifact_name: artifact.provenance.artifact_name,
+    artifact_digest: artifact.provenance.artifact_digest,
+    artifact_created_at:
+      artifact.provenance.artifact_created_at,
+    artifact_expires_at:
+      artifact.provenance.artifact_expires_at,
+    observation_id: observation.id,
+    observation_sha256: observation.observation_sha256,
+    observed_at: observation.observed_at,
+    checkpoint_failure_code:
+      observation.trust_checkpoint_observation.failure_code
+  };
+}
+
+function commitRecoveryFixture(
+  fixture,
+  root,
+  runs,
+  artifacts,
+  mutate = null
+) {
+  const introduction = latestPolicyChange(
+    fixture.repositoryRoot,
+    fixture.options.policyPath
+  );
+  const policy = JSON.parse(
+    fixture.options.policyBytes.toString("utf8")
+  );
+  const blockedRuns = runs.map((run, index) =>
+    blockedRunRecord(run, artifacts[index]));
+  const recovery = createGitHubReleaseBootstrapRecovery({
+    repository: {
+      full_name: REPOSITORY.full_name,
+      default_branch: REPOSITORY.default_branch
+    },
+    policy: {
+      id: policy.id,
+      relative_path: fixture.options.policyPath,
+      sha256: policy.policy_sha256,
+      head_blob_sha256: sha256(fixture.options.policyBytes),
+      introduction_commit_sha: introduction.commit_sha,
+      introduction_time: introduction.committed_at
+    },
+    introduction,
+    policyBytes: fixture.options.policyBytes,
+    bootstrapCheckpoint: fixture.genesis,
+    bootstrapTrustedRoot: root,
+    blockedRuns,
+    userGrantId:
+      fixture.genesis.predecessor
+        .bootstrap_authorization.grant_id,
+    grantedAt: "2026-07-27T01:40:00.000Z",
+    authorizedAt: "2026-07-27T01:40:00.000Z",
+    expiresAt: "2026-07-27T02:30:00.000Z"
+  });
+  if (mutate) {
+    mutate(recovery);
+    recovery.recovery_sha256 = recoveryDigest(recovery);
+  }
+  const recoveryPath = path.join(
+    fixture.repositoryRoot,
+    DEFAULT_BOOTSTRAP_RECOVERY_PATH
+  );
+  fs.writeFileSync(
+    recoveryPath,
+    `${JSON.stringify(recovery, null, 2)}\n`
+  );
+  runGit(fixture.repositoryRoot, [
+    "add",
+    DEFAULT_BOOTSTRAP_RECOVERY_PATH
+  ]);
+  runGit(
+    fixture.repositoryRoot,
+    ["commit", "-q", "-m", "authorize bootstrap recovery"],
+    {
+      GIT_AUTHOR_DATE: "2026-07-27T01:45:00Z",
+      GIT_COMMITTER_DATE: "2026-07-27T01:45:00Z"
+    }
+  );
+  return {
+    recovery,
+    blockedRuns,
+    currentHeadSha: runGit(
+      fixture.repositoryRoot,
+      ["rev-parse", "HEAD"]
+    )
+  };
+}
+
+function recoveryCurrentRun(fixture, headSha, overrides = {}) {
+  return {
+    id: Number(fixture.options.currentRunId),
+    run_number: 83,
+    path: fixture.options.workflowPath,
+    status: "in_progress",
+    head_branch: "main",
+    conclusion: null,
+    event: "push",
+    run_attempt: 1,
+    created_at: "2026-07-27T01:50:00.000Z",
+    updated_at: "2026-07-27T02:00:00.000Z",
+    head_sha: headSha,
+    ...overrides
+  };
 }
 
 class ArchiveFixtureCheckpointStore
@@ -874,6 +1081,7 @@ function runFixtures() {
         name: "latest policy-matching completed run is the sole artifact lineage predecessor",
         ok: loaded.checkpoint.producer.run_id === "7002" &&
           store.loadCalls.length === 1 &&
+          store.recoveryLoadCalls.length === 0 &&
           store.loadCalls[0].artifactName ===
             "release-integrity-7002-1"
       });
@@ -1163,6 +1371,307 @@ function runFixtures() {
           ...fixture.options,
           currentRunId: String(runId),
           currentRunAttempt: 2
+        })
+      ));
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const runs = [
+        makeBlockedRun(
+          fixture,
+          8001,
+          81,
+          "2026-07-27T01:00:00.000Z"
+        ),
+        makeBlockedRun(
+          fixture,
+          8002,
+          82,
+          "2026-07-27T01:20:00.000Z"
+        )
+      ];
+      const artifacts = [
+        makeBlockedArtifact(
+          runs[0],
+          root,
+          "GITHUB_RELEASE_TRUST_CHECKPOINT_STALE",
+          1
+        ),
+        makeBlockedArtifact(
+          runs[1],
+          root,
+          "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+          2
+        )
+      ];
+      const committed = commitRecoveryFixture(
+        fixture,
+        root,
+        runs,
+        artifacts
+      );
+      let validatedArtifactCount = 0;
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        runs,
+        () => {
+          throw new GitHubReleaseCheckpointStoreError(
+            "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+            "fixture initial artifact has no checkpoint"
+          );
+        },
+        () => recoveryCurrentRun(
+          fixture,
+          committed.currentHeadSha
+        ),
+        (repository, run) =>
+          artifacts[runs.findIndex(item => item.id === run.id)]
+      );
+      const loaded = store.resolve({
+        ...fixture.options,
+        initialBootstrapFailureValidator:
+          (artifact, options) => {
+            validatedArtifactCount += 1;
+            if (String(options.expectedRun.id) !==
+                artifact.provenance.run_id) {
+              throw new Error("fixture run binding mismatch");
+            }
+            return true;
+          }
+      });
+      results.push({
+        name: "one exact USER recovery admits the complete retained initial failure set once",
+        ok: loaded.provenance.source ===
+            "repository_bootstrap_recovery" &&
+          loaded.provenance.recovery_authorization_sha256 ===
+            committed.recovery.recovery_sha256 &&
+          loaded.provenance.blocked_run_count === 2 &&
+          loaded.checkpoint.checkpoint_sha256 ===
+            fixture.genesis.checkpoint_sha256 &&
+          validatedArtifactCount === 2 &&
+          store.loadCalls.length === 1 &&
+          store.recoveryLoadCalls.length === 2 &&
+          validatePayload(
+            committed.recovery,
+            "github-release-bootstrap-recovery",
+            { evaluatedAt: fixture.options.now }
+          ).valid === true
+      });
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const runs = [
+        makeBlockedRun(
+          fixture,
+          8011,
+          81,
+          "2026-07-27T01:00:00.000Z"
+        ),
+        makeBlockedRun(
+          fixture,
+          8012,
+          82,
+          "2026-07-27T01:20:00.000Z"
+        )
+      ];
+      const artifacts = [
+        makeBlockedArtifact(
+          runs[0],
+          root,
+          "GITHUB_RELEASE_TRUST_CHECKPOINT_STALE",
+          3
+        ),
+        makeBlockedArtifact(
+          runs[1],
+          root,
+          "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+          4
+        )
+      ];
+      const committed = commitRecoveryFixture(
+        fixture,
+        root,
+        runs,
+        artifacts,
+        recovery => {
+          recovery.blocked_runs.pop();
+        }
+      );
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        runs,
+        () => {
+          throw new GitHubReleaseCheckpointStoreError(
+            "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+            "fixture initial artifact has no checkpoint"
+          );
+        },
+        () => recoveryCurrentRun(
+          fixture,
+          committed.currentHeadSha
+        ),
+        (repository, run) =>
+          artifacts[runs.findIndex(item => item.id === run.id)]
+      );
+      results.push(expectError(
+        "recovery cannot omit one policy-matching failed run",
+        "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_RUN_SET_MISMATCH",
+        () => store.resolve({
+          ...fixture.options,
+          initialBootstrapFailureValidator: () => true
+        })
+      ));
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const run = makeBlockedRun(
+        fixture,
+        8021,
+        82,
+        "2026-07-27T01:20:00.000Z"
+      );
+      const artifact = makeBlockedArtifact(
+        run,
+        root,
+        "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+        5
+      );
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [run],
+        () => {
+          throw new GitHubReleaseCheckpointStoreError(
+            "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+            "fixture initial artifact has no checkpoint"
+          );
+        },
+        () => recoveryCurrentRun(
+          fixture,
+          fixture.headSha
+        ),
+        () => artifact
+      );
+      results.push(expectError(
+        "missing committed recovery never falls back to repository bootstrap",
+        "GITHUB_RELEASE_CHECKPOINT_FILE_MISSING",
+        () => store.resolve({
+          ...fixture.options,
+          initialBootstrapFailureValidator: () => true
+        })
+      ));
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const run = makeBlockedRun(
+        fixture,
+        8031,
+        82,
+        "2026-07-27T01:20:00.000Z"
+      );
+      const artifact = makeBlockedArtifact(
+        run,
+        root,
+        "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+        6
+      );
+      const committed = commitRecoveryFixture(
+        fixture,
+        root,
+        [run],
+        [artifact]
+      );
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [run],
+        () => {
+          throw new GitHubReleaseCheckpointStoreError(
+            "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+            "fixture initial artifact has no checkpoint"
+          );
+        },
+        () => recoveryCurrentRun(
+          fixture,
+          committed.currentHeadSha,
+          { status: "completed" }
+        ),
+        () => artifact
+      );
+      results.push(expectError(
+        "recovery cannot run from an offline or completed workflow attempt",
+        "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_CURRENT_RUN_INVALID",
+        () => store.resolve({
+          ...fixture.options,
+          initialBootstrapFailureValidator: () => true
+        })
+      ));
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const run = makeBlockedRun(
+        fixture,
+        8041,
+        82,
+        "2026-07-27T01:20:00.000Z"
+      );
+      const artifact = makeBlockedArtifact(
+        run,
+        root,
+        "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+        7
+      );
+      const committed = commitRecoveryFixture(
+        fixture,
+        root,
+        [run],
+        [artifact]
+      );
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [run],
+        () => {
+          throw new GitHubReleaseCheckpointStoreError(
+            "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+            "fixture initial artifact has no checkpoint"
+          );
+        },
+        () => recoveryCurrentRun(
+          fixture,
+          committed.currentHeadSha
+        ),
+        () => artifact
+      );
+      results.push(expectError(
+        "expired initial recovery is never renewed from repository state",
+        "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_AUTHORITY_INVALID",
+        () => store.resolve({
+          ...fixture.options,
+          now: "2026-07-27T02:30:00.000Z",
+          initialBootstrapFailureValidator: () => true
         })
       ));
     } finally {

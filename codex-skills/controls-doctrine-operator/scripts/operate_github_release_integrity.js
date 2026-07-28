@@ -38,11 +38,20 @@ function findRuntimeRoot() {
 function main() {
   try {
     const root = findRuntimeRoot();
+    const args = process.argv.slice(2);
+    const bootstrapRecovery =
+      args[0] === "authorize-bootstrap-recovery";
+    const runtime = bootstrapRecovery
+      ? "github-release-bootstrap-recovery-operator.js"
+      : "github-release-integrity-monitor.js";
+    const runtimeArgs = bootstrapRecovery
+      ? ["authorize", ...args.slice(1)]
+      : args;
     const result = spawnSync(
       process.execPath,
       [
-        path.join(root, "github-release-integrity-monitor.js"),
-        ...process.argv.slice(2)
+        path.join(root, runtime),
+        ...runtimeArgs
       ],
       { cwd: process.cwd(), stdio: "inherit" }
     );

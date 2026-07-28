@@ -623,6 +623,65 @@
           "type": "object",
           "required": [
             "source",
+            "policy_introduction_commit",
+            "policy_introduction_time",
+            "bootstrap_checkpoint_path",
+            "bootstrap_checkpoint_sha256",
+            "bootstrap_trusted_root_path",
+            "bootstrap_trusted_root_sha256",
+            "recovery_authorization_path",
+            "recovery_authorization_sha256",
+            "recovery_grant_id",
+            "blocked_run_count"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "string",
+              "const": "repository_bootstrap_recovery"
+            },
+            "policy_introduction_commit": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "policy_introduction_time": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            },
+            "bootstrap_checkpoint_path": {
+              "type": "string",
+              "const": ".github/tuf/github-release-trust-checkpoint.json"
+            },
+            "bootstrap_checkpoint_sha256": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            },
+            "bootstrap_trusted_root_path": {
+              "type": "string",
+              "const": ".github/tuf/github-release-trust-bootstrap-root.json"
+            },
+            "bootstrap_trusted_root_sha256": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            },
+            "recovery_authorization_path": {
+              "type": "string",
+              "const": ".github/tuf/github-release-bootstrap-recovery.json"
+            },
+            "recovery_authorization_sha256": {
+              "$ref": "common.schema.json#/$defs/sha256"
+            },
+            "recovery_grant_id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "blocked_run_count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 99
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "source",
             "run_id",
             "run_attempt",
             "head_sha",

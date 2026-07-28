@@ -1128,6 +1128,27 @@ const fixtures = [
     ]
   },
   {
+    name: "valid USER-authorized GitHub release bootstrap recovery",
+    file:
+      "sample-payloads/valid-github-release-bootstrap-recovery.json",
+    type: "github-release-bootstrap-recovery",
+    evaluatedAt: "2026-07-28T00:30:00.000Z",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "GitHub release bootstrap recovery accepts AI authority",
+    file:
+      "sample-payloads/invalid-github-release-bootstrap-recovery-authority.json",
+    type: "github-release-bootstrap-recovery",
+    evaluatedAt: "2026-07-28T00:30:00.000Z",
+    exitCode: 1,
+    requiredCodes: [
+      "CONST_MISMATCH",
+      "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_AUTHORITY_INVALID"
+    ]
+  },
+  {
     name: "valid maintenance readiness",
     file: "sample-payloads/valid-maintenance-readiness.json",
     type: "maintenance-readiness",
@@ -1835,9 +1856,17 @@ function runFixture(fixture) {
       `${JSON.stringify(payload, null, 2)}\n`
     );
   }
+  const validatorArgs = [
+    VALIDATOR,
+    fixturePath,
+    fixture.type,
+    ...(fixture.evaluatedAt
+      ? ["--evaluated-at", fixture.evaluatedAt]
+      : [])
+  ];
   const result = spawnSync(
     "node",
-    [VALIDATOR, fixturePath, fixture.type],
+    validatorArgs,
     {
       cwd: ROOT,
       encoding: "utf8"

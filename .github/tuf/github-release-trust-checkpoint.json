@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "type": "GitHubReleaseTrustCheckpoint",
-  "id": "GRTC-0-10df4562f467",
+  "id": "GRTC-0-1b479ae7dab5",
   "sequence": 0,
   "repository": {
     "full_name": "wnsdy95/cannae-os",
@@ -11,17 +11,17 @@
     "kind": "genesis",
     "bootstrap_authorization": {
       "authority": "USER",
-      "grant_id": "USER-GRANT-PHASE-19D-LIVE-BOOTSTRAP-20260728",
-      "granted_at": "2026-07-28T05:50:52.000Z"
+      "grant_id": "USER-GRANT-PHASE-19E-INITIAL-RECOVERY-20260728",
+      "granted_at": "2026-07-28T06:56:39.000Z"
     }
   },
   "trusted_state": {
     "artifact_id": "GRTR-10-8481a3ed2d43",
-    "artifact_sha256": "49b1ab66fa8db5d99f19c4b4eb40b777f2d121679d1855143517384257ceb97e",
+    "artifact_sha256": "0a604372b694ed5fa76925e9c84bc5d46fbf601b6b709ffc283053b28e0214ed",
     "trusted_root_sha256": "8481a3ed2d435fbf6d421b6ad45734d268dfd15807ef8da26da57fb977766cf7",
     "target_file_sha256": "484cdfe1a7c65479c5ba2a22193d1be90f0020db1997de696ab207434c62fbb7",
-    "source_fetched_at": "2026-07-28T05:50:52.000Z",
-    "checkpoint_evaluated_at": "2026-07-28T05:50:52.000Z",
+    "source_fetched_at": "2026-07-28T06:56:31.295Z",
+    "checkpoint_evaluated_at": "2026-07-28T06:56:39.000Z",
     "metadata": {
       "root": {
         "type": "root",
@@ -65,7 +65,7 @@
   },
   "producer": {
     "kind": "repository_bootstrap",
-    "repository_head_sha": "b389896410c89e908e1931d012dfbfa222bc4ea7",
+    "repository_head_sha": "10ed991e26b8d2db5f983fddd63ff98f9fd6794f",
     "workflow_ref": "none",
     "run_id": "bootstrap",
     "run_attempt": 0
@@ -78,6 +78,6 @@
   },
   "checkpoint_reset_authorized": false,
   "release_authorized": false,
-  "recorded_at": "2026-07-28T05:50:52.000Z",
-  "checkpoint_sha256": "389e36445f9d39cdf15f1fa6655692133ac961e4f828c3d143b1b2032854532e"
+  "recorded_at": "2026-07-28T06:56:39.000Z",
+  "checkpoint_sha256": "5bd5ac4d08bc729fedb29a0ba9f84f7338b75bc40bfd425da24627d8d03ebbf4"
 }

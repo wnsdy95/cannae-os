@@ -176,6 +176,15 @@ future release evidence:
    bootstrap evidence valid. Never rewrite bootstrap files after provider
    lineage exists; a later reset needs a separate exact USER decision and
    contract.
+   If initial policy-matching runs already retain exact blocked
+   observation/root pairs but no checkpoint, do not delete artifacts, rerun
+   old runs, change policy identity, or fall back. Phase 19E is available only
+   before any complete provider checkpoint: refresh the same-grant genesis and
+   root, then run `scripts/operate_github_release_integrity.js
+   authorize-bootstrap-recovery` with an explicit USER grant and at most
+   60-minute validity inside the original bootstrap window. Require the
+   generated contract to enumerate every matching failure and keep reset and
+   release false.
 2. Run `scripts/operate_github_release_integrity.js monitor` with a
    repository-contained observation path, `--trusted-root-output` path, and
    `--trust-checkpoint-output` path.
@@ -206,9 +215,15 @@ future release evidence:
    Store the uniquely named full observation, retained root, and checkpoint together under the
    target repository or its repository-named CI artifact. The latest eligible
    artifact missing any member, carrying an off-default/incomplete run, or
-   failing observation replay is a hard stop without older/bootstrap
-   fallback. A blocked observation may continue checkpoint lineage but cannot
-   authorize release. For a rerun, consume only the exact completed
+   failing observation replay is normally a hard stop without older/bootstrap
+   fallback. The sole partial initial exception is a committed, unexpired
+   `GitHubReleaseBootstrapRecovery` over every exact two-file failed artifact,
+   only the supported checkpoint failures, and the newest in-progress
+   attempt-one run at current `HEAD`. Missing/deleted evidence, a successful
+   run, any complete checkpoint, unknown issue, rerun, incomplete history, or
+   expired authority blocks. A recovered run may continue checkpoint lineage
+   but remains blocked for release until a later successful `ready` provider
+   triplet exists. For a rerun, consume only the exact completed
    immediately prior attempt of the same stable run; if a newer eligible run
    exists, stop as a lineage fork. Monitoring may alert and escalate to USER but must never reset
    checkpoint state, enable/disable policy, repair/delete a release, or set

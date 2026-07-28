@@ -167,6 +167,7 @@ Recommended validation order:
 108. `github-release-trusted-root.schema.json`
 109. `github-release-independent-verification.schema.json`
 110. `github-release-trust-checkpoint.schema.json`
+111. `github-release-bootstrap-recovery.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -178,6 +179,11 @@ package, assets, and GitHub CLI cross-check while keeping release false.
 `GitHubReleaseTrustCheckpoint` binds one USER genesis or exact predecessor to
 monotonic TUF role versions/digests, root and target digests, retrieval time,
 producer, and sequence while keeping checkpoint reset and release false.
+`GitHubReleaseBootstrapRecovery` binds one short-lived USER decision to the
+original checkpoint-policy introduction, exact current policy bytes, fresh
+sequence-zero checkpoint/root, and every retained policy-matching initial
+failure artifact. It can authorize only one monitoring bootstrap and keeps
+checkpoint reset and release false.
 
 `VerifierTrustPolicy.verifiers[].allowed_attestation_types` can purpose-limit a key to `verification_receipt`, `comparative_evaluation_report`, or both. Comparative signing requires the explicit report grant; existing receipt-only policies may omit the field for v0.3 compatibility.
 

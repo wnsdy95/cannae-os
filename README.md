@@ -482,6 +482,24 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_inte
   --trigger manual
 ```
 
+If the first provider runs retained exact blocked observation/root pairs but
+no checkpoint, Phase 19E offers one evidence-derived recovery command:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_github_release_integrity.js \
+  authorize-bootstrap-recovery \
+  --repository-root . \
+  --user-grant-id <exact-USER-grant> \
+  --granted-at <UTC-timestamp-after-all-failed-artifacts> \
+  --authorized-at <current-UTC-timestamp> \
+  --expires-at <at-most-60-minutes>
+```
+
+It binds every exact failed run, artifact, observation, fresh genesis, root,
+and original policy-introduction boundary. It cannot skip missing evidence,
+consume a complete checkpoint, run from a rerun or offline caller, reset
+lineage, repair policy, or authorize release.
+
 See [GitHub Release Immutability](docs/github-release-immutability.md) and
 [Exact GitHub Release Authorization](docs/github-release-authorization.md) for
 the activation/publish commands. See
@@ -690,6 +708,9 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
   still operates the signer, Fulcio/TSA services, policy service, workflow
   artifact service, and TUF repository; two
   verifiers in one job are not independent infrastructure failure domains.
+  Phase 19E can recover only an unestablished initial sequence from exact
+  retained two-file failures under a short-lived USER contract; it is not an
+  established-lineage reset and does not make a blocked monitor ready.
   Full policy monitoring also needs a separately scoped Administration-read
   credential.
 - Campaign v0.1 supervision does not resume past an `escalate` decision automatically. Resumption needs a future explicit, manifest-backed human-resolution contract or a new bounded campaign.

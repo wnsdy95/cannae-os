@@ -4873,9 +4873,10 @@ authority with the USER and representing provider-retention limits honestly?
    safe paths are verified. The archive must carry one full observation whose
    schema, deterministic transition replay, root, checkpoint, repository,
    policy, run, branch, and producer bindings all verify. Mutable timestamp
-   strings do not order lineage. A 60-second observation-to-artifact creation
-   tolerance covers API timestamp precision only and does not widen any trust
-   expiry or authorization window.
+   strings do not order lineage. A bidirectional 60-second
+   observation-to-artifact creation tolerance covers API timestamp precision
+   and immediate upload only and does not widen any trust expiry or
+   authorization window.
 6. Refuse silent fallback.
    If the latest eligible run exists but its artifact is absent, older
    artifacts and repository bootstrap are not considered. This turns
@@ -4977,7 +4978,7 @@ authority with the USER and representing provider-retention limits honestly?
 - missing, stale, schema-invalid, local, genesis, path-substituted,
   superseded, or alternate valid checkpoints stop the publisher before any
   release creation call; and
-- all 31 checkpoint, 39 publisher, 24 monitor, and 221 validator fixtures
+- all 36 checkpoint, 39 publisher, 29 monitor, and 223 validator fixtures
   pass.
 
 ### Residual Work
@@ -4990,3 +4991,103 @@ authority with the USER and representing provider-retention limits honestly?
   deletion without weakening fail-closed continuity;
 - short-lived GitHub App monitoring credentials; and
 - private, prerelease, first-release, and provider-neutral profiles.
+
+## Phase 19E: Initial Bootstrap Recovery
+
+### Operational Finding
+
+The first live Phase 19D deployment exposed a failure class that the original
+contract correctly blocked but could not repair:
+
+1. run `30332600269` retained a schema-valid full observation and verified
+   trusted root but no checkpoint because the committed genesis was stale;
+2. the refreshed genesis was merged without deleting that artifact;
+3. run `30333702332` correctly selected the latest exact-policy run, found its
+   two-file archive, refused repository-bootstrap fallback, and retained
+   another blocked observation/root pair with
+   `GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID`; and
+4. both runs independently recorded monitor-credential unavailability.
+
+This was not established-lineage loss: no provider checkpoint had ever
+existed. It was also not safe to ignore. Deleting the failed runs, rerunning an
+old run, changing the policy ID, or selecting an older bootstrap would erase
+the evidence boundary or create an implicit reset.
+
+### Design Decision
+
+Add one explicit `GitHubReleaseBootstrapRecovery` contract. The USER
+authorizes consumption of the same sequence-zero genesis for monitoring only,
+while the runtime derives and verifies the complete failed-run set from
+GitHub.
+
+Admission requires:
+
+- exact current policy bytes and original introduction commit/time;
+- one fresh committed genesis/root carrying the same USER grant;
+- every exact policy-matching completed failed run and artifact;
+- exactly one blocked full observation and verified root per artifact, with
+  no checkpoint or extra member;
+- only stale-genesis or missing-checkpoint archive failure, plus optional
+  monitor-credential unavailability;
+- a USER grant issued after all retained artifacts;
+- maximum 60-minute validity inside the original four-hour bootstrap window;
+- artifact retention through expiry; and
+- the newest in-progress first attempt at exact current `HEAD`.
+
+The accepted provenance advances the normal deterministic sequence from zero
+to one. It does not change the genesis sequence, mint a replacement
+predecessor, authorize reset, make a blocked observation ready, or authorize a
+release.
+
+### Rejected Alternatives
+
+- Delete the partial artifacts: deletion would make failed acquisition
+  invisible and could change predecessor selection.
+- Rerun the old workflow: a rerun preserves the old commit and creates an
+  attempt branch rather than a new stable checkpoint event.
+- Change the policy ID or bytes to hide prior runs: routine policy mutation
+  would become reset authority.
+- Accept only the latest two-file artifact: an earlier matching failed run
+  could be omitted or substituted.
+- Accept arbitrary blocked observations: an unrelated integrity failure could
+  be laundered through recovery.
+- Recover after any complete checkpoint exists: that would fork established
+  lineage.
+- Treat recovery as release readiness: a separate credential or policy issue
+  must remain blocked.
+
+### Implemented Artifacts
+
+- `github-release-bootstrap-recovery.js`;
+- `github-release-bootstrap-recovery-operator.js`;
+- `schema-files/github-release-bootstrap-recovery.schema.json`;
+- valid and authority-invalid static samples;
+- exact two-file artifact replay in
+  `github-release-integrity-monitor.js`;
+- one-time store admission and recovery provenance in
+  `github-release-checkpoint-store.js`;
+- observation provenance schema/semantic integration;
+- Codex and Claude operating-wrapper support; and
+- checkpoint, monitor, validator, routing, and skill regressions.
+
+### Measured Behavior
+
+- both retained live initial artifacts replay under the exact current policy;
+- exact USER recovery, complete failed-run enumeration, and sequence-one
+  provenance pass;
+- omitted runs, AI authority, expiry, completed/offline current run, unknown
+  issue, and any artifact carrying a checkpoint fail;
+- normal complete checkpoint artifacts never invoke recovery;
+- missing authorization never falls back to repository bootstrap; and
+- all 36 checkpoint, 28 monitor, and 223 validator fixtures pass before live
+  provider continuation.
+
+### Residual Work
+
+- install a dedicated least-privilege Administration-read monitoring identity;
+- prove the first recovered provider triplet and its next ordinary successor
+  in live Actions;
+- retain checkpoint state in an independently operated append-only store;
+- add independent liveness witnesses and trusted time; and
+- design a separate incident-reset contract for established lineage. Phase
+  19E must never be generalized into that reset path.

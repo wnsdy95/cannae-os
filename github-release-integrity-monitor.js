@@ -45,6 +45,9 @@ const {
   SystemGitHubReleaseCheckpointStore,
   TRUSTED_ROOT_FILE_NAME
 } = require("./github-release-checkpoint-store");
+const {
+  RECOVERABLE_CHECKPOINT_FAILURE_CODES
+} = require("./github-release-bootstrap-recovery");
 const { canonicalJsonBytes } = require("./verifier-identity-evidence");
 
 const ARTIFACT_TIMESTAMP_TOLERANCE_MS = 60 * 1000;
@@ -792,7 +795,9 @@ function validateRetainedFullObservationArtifact(
       observedAt === null ||
       artifactCreatedAt === null ||
       observedAt >
-        artifactCreatedAt + ARTIFACT_TIMESTAMP_TOLERANCE_MS;
+        artifactCreatedAt + ARTIFACT_TIMESTAMP_TOLERANCE_MS ||
+      artifactCreatedAt >
+        observedAt + ARTIFACT_TIMESTAMP_TOLERANCE_MS;
   if (bindingInvalid) {
     throw new ReleaseIntegrityError(
       "GITHUB_RELEASE_INTEGRITY_ARTIFACT_BINDING_INVALID",
@@ -810,6 +815,162 @@ function validateRetainedFullObservationArtifact(
     throw new ReleaseIntegrityError(
       "GITHUB_RELEASE_INTEGRITY_ARTIFACT_NOT_READY",
       "Release authorization requires an exact successful ready full-monitor observation."
+    );
+  }
+  return true;
+}
+
+function validateRetainedInitialBootstrapFailureArtifact(
+  artifact,
+  options = {}
+) {
+  const observation = artifact && artifact.full_observation;
+  const trustedRoot = artifact && artifact.trusted_root;
+  const provenance = artifact && artifact.provenance || {};
+  const expectedRun = options.expectedRun || {};
+  const validationIssues = [];
+  if (!observation || artifact.checkpoint !== undefined ||
+      !trustedRoot || !Buffer.isBuffer(options.policyBytes)) {
+    throw new ReleaseIntegrityError(
+      "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_ARTIFACT_INVALID",
+      `An initial bootstrap recovery artifact must contain exactly one ${FULL_OBSERVATION_FILE_NAME} and ${TRUSTED_ROOT_FILE_NAME}, with no ${CHECKPOINT_FILE_NAME}.`
+    );
+  }
+
+  let policy;
+  try {
+    policy = JSON.parse(options.policyBytes.toString("utf8"));
+  } catch (error) {
+    throw new ReleaseIntegrityError(
+      "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_ARTIFACT_INVALID",
+      "The policy used to replay initial bootstrap failure evidence is not JSON."
+    );
+  }
+  const {
+    validateSchemaPayload
+  } = require("./validator-cli-prototype/validate");
+  const observationSchema = validateSchemaPayload(
+    observation,
+    "github-release-integrity-observation"
+  );
+  const trustedRootSchema = validateSchemaPayload(
+    trustedRoot,
+    "github-release-trusted-root"
+  );
+  validationIssues.push(
+    ...observationSchema.issues,
+    ...trustedRootSchema.issues,
+    ...validateIntegrityObservationSemantics(observation),
+    ...validateGitHubReleaseTrustedRoot(trustedRoot, {
+      evaluatedAt: observation.observed_at,
+      maximumAgeSeconds: DEFAULT_MAXIMUM_AGE_SECONDS
+    })
+  );
+
+  const repository = options.repository;
+  const defaultBranch = options.defaultBranch;
+  const policyPath = options.policyPath;
+  const expectedRef = `refs/heads/${defaultBranch}`;
+  const checkpointObservation =
+    observation.trust_checkpoint_observation || {};
+  const trustedRootObservation =
+    observation.trusted_root_observation || {};
+  const issueCodes = (observation.issues || [])
+    .map(issue => issue && issue.code);
+  const allowedIssueCodes = new Set([
+    checkpointObservation.failure_code,
+    "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE"
+  ]);
+  const observedAt = parseTimestamp(observation.observed_at);
+  const runCreatedAt = parseTimestamp(expectedRun.created_at);
+  const artifactCreatedAt = parseTimestamp(
+    provenance.artifact_created_at
+  );
+  const artifactExpiresAt = parseTimestamp(
+    provenance.artifact_expires_at
+  );
+  const expectedTriggerKind =
+    expectedRun.event === "workflow_dispatch"
+      ? "manual"
+      : expectedRun.event;
+  const checkpointIssue = (observation.issues || [])
+    .find(issue =>
+      issue && issue.code ===
+        checkpointObservation.failure_code);
+  const credentialIssue = (observation.issues || [])
+    .find(issue =>
+      issue && issue.code ===
+        "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE");
+  const bindingInvalid =
+    observation.schema_version !== "0.3" ||
+      observation.scope !== "full" ||
+      observation.repository.full_name !== repository ||
+      observation.repository.default_branch !== defaultBranch ||
+      observation.repository.branch !== defaultBranch ||
+      observation.repository.observed_head_sha !==
+        provenance.head_sha ||
+      observation.repository.origin_default_branch_sha !==
+        provenance.head_sha ||
+      observation.repository.clean !== true ||
+      observation.policy_ref.policy_id !== policy.id ||
+      observation.policy_ref.relative_path !== policyPath ||
+      observation.policy_ref.sha256 !== policy.policy_sha256 ||
+      observation.policy_ref.head_blob_sha256 !==
+        sha256(options.policyBytes) ||
+      observation.policy_ref.committed_at_head !== true ||
+      observation.trigger.run_id !== provenance.run_id ||
+      observation.trigger.ref !== expectedRef ||
+      observation.trigger.kind !== expectedTriggerKind ||
+      provenance.source !== "github_actions_artifact" ||
+      provenance.conclusion !== "failure" ||
+      String(expectedRun.id || "") !== provenance.run_id ||
+      expectedRun.run_attempt !== provenance.run_attempt ||
+      expectedRun.head_sha !== provenance.head_sha ||
+      expectedRun.conclusion !== provenance.conclusion ||
+      expectedRun.path !== options.workflowPath ||
+      expectedRun.status !== "completed" ||
+      provenance.artifact_name !== options.expectedArtifactName ||
+      checkpointObservation.status !== "unavailable" ||
+      !RECOVERABLE_CHECKPOINT_FAILURE_CODES.includes(
+        checkpointObservation.failure_code
+      ) ||
+      checkpointObservation.provenance !== undefined ||
+      checkpointObservation.previous_checkpoint !== undefined ||
+      checkpointObservation.previous_trusted_root !== undefined ||
+      checkpointObservation.current_checkpoint !== undefined ||
+      trustedRootObservation.status !== "verified" ||
+      !sameCanonicalJson(
+        trustedRootObservation.artifact,
+        trustedRoot
+      ) ||
+      observation.summary.status !== "blocked" ||
+      observation.summary.monitoring_complete !== false ||
+      observation.summary.trust_checkpoint_continuity_verified !==
+        false ||
+      !checkpointIssue ||
+      checkpointIssue.scope !== "checkpoint" ||
+      checkpointIssue.severity !== "critical" ||
+      (credentialIssue &&
+       (credentialIssue.scope !== "policy" ||
+        credentialIssue.severity !== "critical")) ||
+      !issueCodes.includes(checkpointObservation.failure_code) ||
+      issueCodes.some(code => !allowedIssueCodes.has(code)) ||
+      new Set(issueCodes).size !== issueCodes.length ||
+      observedAt === null ||
+      runCreatedAt === null ||
+      artifactCreatedAt === null ||
+      artifactExpiresAt === null ||
+      runCreatedAt > observedAt ||
+      observedAt >
+        artifactCreatedAt + ARTIFACT_TIMESTAMP_TOLERANCE_MS ||
+      artifactCreatedAt >
+        observedAt + ARTIFACT_TIMESTAMP_TOLERANCE_MS ||
+      artifactExpiresAt <= artifactCreatedAt;
+  if (bindingInvalid || validationIssues.length > 0) {
+    throw new ReleaseIntegrityError(
+      "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_ARTIFACT_INVALID",
+      "Retained initial failure evidence does not bind one exact recoverable policy, repository, workflow run, observation, and trusted root.",
+      { issues: validationIssues }
     );
   }
   return true;
@@ -1032,6 +1193,45 @@ function validateCheckpointProvenance(
         "GITHUB_RELEASE_INTEGRITY_CHECKPOINT_BOOTSTRAP_PROVENANCE_INVALID",
         "$.trust_checkpoint_observation.provenance",
         "Repository bootstrap provenance must bind the exact committed genesis checkpoint and trusted-root artifact."
+      ));
+    }
+  } else if (provenance.source ===
+      "repository_bootstrap_recovery") {
+    if (!/^[a-f0-9]{40}$/.test(
+      provenance.policy_introduction_commit || ""
+    ) ||
+        parseTimestamp(provenance.policy_introduction_time) === null ||
+        provenance.bootstrap_checkpoint_path !==
+          ".github/tuf/github-release-trust-checkpoint.json" ||
+        provenance.bootstrap_checkpoint_sha256 !==
+          previousCheckpoint.checkpoint_sha256 ||
+        provenance.bootstrap_trusted_root_path !==
+          ".github/tuf/github-release-trust-bootstrap-root.json" ||
+        provenance.bootstrap_trusted_root_sha256 !==
+          previousTrustedRoot.artifact_sha256 ||
+        provenance.recovery_authorization_path !==
+          ".github/tuf/github-release-bootstrap-recovery.json" ||
+        !/^[a-f0-9]{64}$/.test(
+          provenance.recovery_authorization_sha256 || ""
+        ) ||
+        typeof provenance.recovery_grant_id !== "string" ||
+        provenance.recovery_grant_id.length < 1 ||
+        !previousCheckpoint.predecessor ||
+        !previousCheckpoint.predecessor
+          .bootstrap_authorization ||
+        previousCheckpoint.predecessor
+          .bootstrap_authorization.grant_id !==
+            provenance.recovery_grant_id ||
+        !Number.isSafeInteger(provenance.blocked_run_count) ||
+        provenance.blocked_run_count < 1 ||
+        provenance.blocked_run_count > 99 ||
+        previousCheckpoint.sequence !== 0 ||
+        previousCheckpoint.producer.kind !==
+          "repository_bootstrap") {
+      issues.push(semanticIssue(
+        "GITHUB_RELEASE_INTEGRITY_CHECKPOINT_BOOTSTRAP_RECOVERY_PROVENANCE_INVALID",
+        "$.trust_checkpoint_observation.provenance",
+        "Bootstrap recovery provenance must bind the exact USER-authorized recovery, committed genesis, trusted root, and retained blocked-run count."
       ));
     }
   } else if (provenance.source === "github_actions_artifact") {
@@ -1856,7 +2056,9 @@ async function main(argv = process.argv.slice(2)) {
           currentRunAttempt:
             options["run-attempt"] ||
             process.env.GITHUB_RUN_ATTEMPT ||
-            1
+            1,
+          initialBootstrapFailureValidator:
+            validateRetainedInitialBootstrapFailureArtifact
         });
         if (previous.provenance.source ===
             "github_actions_artifact") {
@@ -1978,6 +2180,7 @@ module.exports = {
   resolveRepositoryPath,
   validateIntegrityObservationSemantics,
   validateIntegrityPolicySemantics,
+  validateRetainedInitialBootstrapFailureArtifact,
   validateRetainedFullObservationArtifact
 };
 
