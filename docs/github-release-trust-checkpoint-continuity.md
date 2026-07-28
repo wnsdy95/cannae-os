@@ -150,6 +150,15 @@ exists and only for four hours after the first commit that introduced
 window. The bootstrap contains one explicit USER grant and cannot authorize a
 release or a future reset.
 
+Before the first merge that can create provider lineage, refresh and validate
+the committed bootstrap root and genesis checkpoint against one explicit UTC
+clock, bind the genesis producer to the current pre-merge default-branch HEAD,
+and complete the first `main` monitor run before both the four-hour bootstrap
+window and the twelve-hour predecessor-age limit expire. The bootstrap window
+does not make a stale root or genesis acceptable. Once an eligible artifact
+lineage exists, never rewrite the bootstrap files; any later reset requires a
+separate exact USER decision and a new contract.
+
 ## 6. Monitor v0.3
 
 `GitHubReleaseIntegrityPolicy` v0.3 binds:
