@@ -168,7 +168,8 @@ future release evidence:
    ancestry; never infer or rewrite its baseline from the current release
    list.
 2. Run `scripts/operate_github_release_integrity.js monitor` with a
-   repository-contained observation path and `--trusted-root-output` path.
+   repository-contained observation path, `--trusted-root-output` path, and
+   `--trust-checkpoint-output` path.
    Use `--scope full` for scheduled/manual policy and all-release inspection,
    or `--scope release_attestation
    --expected-tag <tag> --trigger release` for one exact release event.
@@ -177,23 +178,37 @@ future release evidence:
 3. Require the current origin default-branch commit, a repository-contained
    output path that does not traverse a parent symlink, and a schema-valid
    observation whose `summary.status` is `ready`.
+   In CI, require the exact default-branch `workflow_ref`, immutable
+   `workflow_sha`, full-commit action pins, and no narrow main-push path
+   allowlist.
    `credential_unavailable`, policy drift, changed/missing grandfather state,
    mutable future releases, missing attestation, failed TUF acquisition or
-   replay, failed independent bundle verification, or any
+   replay, missing/stale/forked predecessor, historical rerun after a newer
+   stable run, mismatched prior attempt, rollback, same-version conflict,
+   failed independent bundle verification, or any
    repository/tag/commit/asset mismatch is a hard stop.
 4. The release-event scope may use the short-lived repository token but must
    keep policy assessment false. Full scope needs repository Administration
    read. Use a dedicated least-privilege monitor credential; never copy the
    owner's broad local OAuth token into repository secrets.
-5. Require `trusted_root_observation.status: verified` and one
+5. Require `trusted_root_observation.status: verified`,
+   `trust_checkpoint_observation.status: verified`, and one
    `independent_verification` for every verified non-grandfathered release.
-   Store the observation and retained root under the target repository or its
-   repository-named CI artifact. Monitoring may alert and escalate to USER but
-   must never enable/disable policy, repair/delete a release, or set release
-   true.
+   Store the uniquely named full observation, retained root, and checkpoint together under the
+   target repository or its repository-named CI artifact. The latest eligible
+   artifact missing any member, carrying an off-default/incomplete run, or
+   failing observation replay is a hard stop without older/bootstrap
+   fallback. A blocked observation may continue checkpoint lineage but cannot
+   authorize release. For a rerun, consume only the exact completed
+   immediately prior attempt of the same stable run; if a newer eligible run
+   exists, stop as a lineage fork. Monitoring may alert and escalate to USER but must never reset
+   checkpoint state, enable/disable policy, repair/delete a release, or set
+   release true.
 
 Read `docs/github-release-integrity-monitoring.md` and
-`docs/github-release-independent-verification.md` before operating this path.
+`docs/github-release-independent-verification.md`, then
+`docs/github-release-trust-checkpoint-continuity.md` before operating this
+path.
 
 ### Authorizing An Exact GitHub Release
 
@@ -205,32 +220,47 @@ GitHub release:
    complete successfully. A pull-request check, feature-branch run, or stale
    main run is insufficient.
 2. Require the repository immutable-releases policy to be enabled and the
-   version `0.4` GitHub attestation plus independent-verification profile to be
+   version `0.5` GitHub attestation, independent-verification, and monotonic
+   trust-checkpoint profile to be
    available. Finalize and track the repository-relative release-notes file.
    Confirm the stable target tag and release are absent and that the tag
    advances the current latest release.
-3. Run `scripts/operate_github_release.js authorize` with the exact
+3. Download the latest eligible full-monitor artifact into the release's
+   repository-contained artifact directory. Validate and replay its full
+   observation, trusted root, and trust checkpoint against one explicit
+   current UTC clock. Require `summary.status: ready`, successful run
+   provenance, exact observation/root/checkpoint equality, sequence greater
+   than zero, a GitHub Actions producer, a maximum checkpoint age of 12 hours,
+   and release and checkpoint-reset false. A local pair, two-file archive, or
+   committed genesis is not lineage proof by itself.
+4. Run `scripts/operate_github_release.js authorize` with the exact
    owner/repository, tag, release name, notes path, successful main run ID,
-   USER grant ID, output path, and a validity of at most 60 minutes. Require
-   `release_authorized: true` and inspect its repository, commit, CI, notes
-   digest, expiry, and USER scope before proceeding.
-4. Run `scripts/operate_github_release_verification.js trusted-root refresh`
-   into the release's repository-contained artifact directory, then run
-   `trusted-root verify --input <path> --evaluated-at
-   <current-UTC-timestamp>`. Never substitute the artifact's `fetched_at` for
-   the caller clock. Require a schema-valid root that replays every pinned
-   GitHub TUF rotation and remains valid through authorization expiry while
-   staying release false.
-5. Run `scripts/operate_github_release.js publish --trusted-root <path>` before
-   expiry. Active publication accepts only authorization v0.4 and must reject
-   a missing, stale, expired, or short-lived root before creating a release.
-   The publisher must reappraise repository/CI/notes state, create the release
+   USER grant ID, exact `--trusted-root` and `--trust-checkpoint` paths, output
+   path, and a validity of at most 60 minutes. Require
+   `release_authorized: true` and inspect its repository, commit, CI, notes,
+   checkpoint/root digests, exact workflow/run/attempt/head/artifact lineage,
+   expiry, and USER scope before proceeding. Authorization must independently
+   resolve the committed policy's latest full-monitor artifact and require
+   byte equality with the supplied pair.
+5. Run `scripts/operate_github_release.js publish` before expiry, passing both
+   `--trusted-root <path>` and `--trust-checkpoint <path>`. Active publication
+   accepts only authorization v0.5 and must reject a missing, stale, expired,
+   schema-invalid, genesis, local, forked, substituted, superseded, or
+   short-lived root/checkpoint pair before creating a release. It must resolve
+   the latest artifact again, reload schema-valid trust inputs, and then
+   reappraise authorization time, repository/CI/notes/target state, and
+   immutable-policy state before any `gh release create`.
+   The publisher must create the release
    from the full commit SHA with no-commit failure enabled, resolve the remote
    tag, compare the GitHub release body, observe
    `isImmutable: true`, retain the exact GitHub-signed
    repository/tag/commit/asset statement, independently verify its DSSE bundle
    under the retained root, cross-check the CLI statement, and persist a
    verified consumed receipt.
+   If publication succeeded inside the authorization window but verification
+   failed, an exact retry may verify that existing immutable release under
+   current trust evidence; it must never create another release or adopt one
+   published outside the original window.
 6. A matching existing release is an idempotent verification result. A partial
    tag/release state or any mismatch is a hard stop. Never repair, delete,
    retarget, or overwrite a release implicitly.
@@ -244,7 +274,10 @@ signature. The authenticated `gh` principal, local operator environment,
 GitHub credential protection, branch policy, independent infrastructure
 failure domains, and external transparency witnessing remain trust
 boundaries. Read `docs/github-release-authorization.md` and
-`docs/github-release-independent-verification.md` before operating this path.
+`docs/github-release-independent-verification.md`, then
+`docs/github-release-trust-checkpoint-continuity.md` before operating this
+path. GitHub Actions artifacts are same-provider continuity evidence, not an
+independent durable archive or witness.
 
 ### Answering Framework Questions
 
@@ -304,6 +337,10 @@ Read `docs/bounded-self-improvement-operations.md` for the full state machine an
 
 1. Read `docs/source-map.md`, the target policy, and any referenced schemas/runners.
 2. If changing a runtime contract, update all four: schema, valid sample, invalid sample, runner/fixture. Protected-gateway or executor changes must also update both CLI skill wrappers, both routing tables, and the transaction/execution/recovery guidance.
+   When the custom validator is affected, add a regression for each used
+   combinator or keyword whose enforcement changed; nested
+   `additionalProperties`, `allOf`/`oneOf`, conditional requirements,
+   positional items, and contained items must fail closed.
 3. If adding official sources, update `docs/source-map.md`, `docs/research-compendium.md`, and `source-map-url-coverage-report.json`.
 4. Run targeted validation first, then the relevant `run-*.js` fixture.
 5. Commit coherent changes when the repo is clean except ignored files.
@@ -362,6 +399,7 @@ node run-oci-linux-sandbox-provider-fixtures.js
 node run-github-release-immutability-fixtures.js
 node run-github-release-integrity-fixtures.js
 node run-github-release-independent-verification-fixtures.js
+node run-github-release-trust-checkpoint-fixtures.js
 node run-github-release-publisher-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
@@ -415,17 +453,25 @@ For doc-only changes, also check Markdown links and JSON parsing when indexes or
 - Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed receipt quorum for v0.3+, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint. Trust-policy v0.2+ additionally requires fresh manifest-backed evidence for each verifier's selected SPIFFE or Sigstore workload-identity adapter; Sigstore also requires an exact fresh TrustedRoot. Trust-policy v0.4+ requires an exact runtime policy before dispatch and dual-signed execution evidence for each receipt/report attestation before it can count toward quorum. Trust-policy v0.5+ requires the supervisor's exact unexpired single-use challenge and dual-signed nonce responses before dispatch. Trust-policy v0.6+ requires runtime-policy v0.2+, complete failure-domain identities, and enough computed `VID-*` domains before dispatch and after execution. Runtime-policy v0.3 GitHub Actions and GitLab CI evidence additionally requires the exact native OIDC/JWKS artifact chain and a clean token-bound commit. Trust-policy v0.7 additionally requires a contiguous, current, manifest-backed transparency state with valid checkpoint consistency, observer quorum, root, incident and revocation status. Self-improvement never creates self-approval, self-release, trust-root/runtime-policy/builder-root/incident authority, or unbounded recursion.
 - Skill and runtime-control promotion additionally require one pre-persisted sealed evaluation contract executed against isolated baseline/candidate worktrees with an identical harness. Schema v0.4 also requires a fresh trusted signed report quorum. Promotion revisions must differ; completion revalidation runs the same accepted revision twice. Comparison evidence never grants release authority.
 - Only an explicit USER-granted, exact, unexpired `GitHubReleaseAuthorization`
-  v0.4 may set release true in active publication, and only its verified
+  v0.5 may set release true in active publication, and only its verified
   terminal receipt may retain that result. Legacy versions are historical
   read contracts, not executable downgrade paths. Every lower control-plane
   artifact remains release false.
-- Never validate a GitHub release trusted root without an explicit caller
-  clock. Before external release creation, require every signed TUF role to
-  remain valid through the authorization expiry.
+- Never validate a GitHub release trusted root or checkpoint without an
+  explicit caller clock. Before external release creation, require their exact
+  equality, monotonic continuity, and freshness, and require every signed TUF
+  role to remain valid through the authorization expiry.
 - Release-integrity policy and observation artifacts are read-only and remain
   release false. A full observation without a successful Administration-read
-  policy check, verified TUF root, and independent bundle replay is blocked;
-  never treat credential or trust uncertainty as no drift.
+  policy check, verified TUF root, verified checkpoint continuity, and
+  independent bundle replay is blocked; never treat credential or trust
+  uncertainty as no drift.
+- Never authorize from a manually supplied checkpoint alone. Active release
+  authorization requires the latest eligible non-genesis successful `ready`
+  full-observation/root/checkpoint artifact, exact
+  producer/run/attempt/head/artifact metadata, and pre-create trust,
+  lineage, time, repository, target, and immutability revalidation.
+  Historical reruns after a newer stable run are forks, not recovery.
 - Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
 - Do not add external-source claims without source-map coverage.
 - Do not leave a new policy without a validation or review path.

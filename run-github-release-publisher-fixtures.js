@@ -9,6 +9,7 @@ const {
   authorizeRelease,
   publishAuthorizedRelease,
   receiptDigest,
+  userGrantDigest,
   validateAuthorizationSemantics,
   validateReceiptSemantics
 } = require("./github-release-publisher");
@@ -20,6 +21,11 @@ const {
   findRuntimeRoot: findClaudeRuntimeRoot
 } = require("./.claude/skills/controls-doctrine-operator/scripts/operate_github_release");
 const {
+  advanceGitHubReleaseTrustCheckpoint,
+  checkpointDigest,
+  initializeGitHubReleaseTrustCheckpoint
+} = require("./github-release-trust-checkpoint");
+const {
   trustedRootArtifactDigest
 } = require("./github-release-trusted-root");
 
@@ -29,6 +35,8 @@ const ISSUED_AT = "2026-07-27T00:00:00.000Z";
 const RELEASE_TAG = "v2.93.0";
 const TRUSTED_ROOT_RELATIVE_PATH =
   ".cannae/release-integrity/github-trusted-root.json";
+const TRUST_CHECKPOINT_RELATIVE_PATH =
+  ".cannae/release-integrity/github-trust-checkpoint.json";
 const RAW_RELEASE_VERIFICATION = JSON.parse(fs.readFileSync(
   path.join(
     __dirname,
@@ -242,9 +250,121 @@ function makeFixture() {
     ),
     trustedRootPath
   );
+  const trustedRoot = JSON.parse(fs.readFileSync(
+    trustedRootPath,
+    "utf8"
+  ));
+  const trustCheckpointPath = path.join(
+    repositoryRoot,
+    TRUST_CHECKPOINT_RELATIVE_PATH
+  );
+  const genesisCheckpoint = initializeGitHubReleaseTrustCheckpoint({
+    repository: {
+      full_name: "cli/cli",
+      default_branch: "main"
+    },
+    trustedRoot,
+    evaluatedAt: ISSUED_AT,
+    userGrantId: "USER-GRANT-PHASE-19D-FIXTURE",
+    grantedAt: ISSUED_AT,
+    producer: {
+      repository_head_sha: TARGET_SHA,
+      workflow_ref: "none",
+      run_id: "local",
+      run_attempt: 0
+    }
+  });
+  const trustCheckpoint = advanceGitHubReleaseTrustCheckpoint({
+    repository: {
+      full_name: "cli/cli",
+      default_branch: "main"
+    },
+    previousCheckpoint: genesisCheckpoint,
+    previousTrustedRoot: trustedRoot,
+    trustedRoot,
+    evaluatedAt: ISSUED_AT,
+    producer: {
+      kind: "github_actions",
+      repository_head_sha: TARGET_SHA,
+      workflow_ref:
+        "cli/cli/.github/workflows/release-integrity.yml@refs/heads/main",
+      run_id: "41001",
+      run_attempt: 1
+    }
+  });
+  fs.writeFileSync(
+    trustCheckpointPath,
+    `${JSON.stringify(trustCheckpoint, null, 2)}\n`
+  );
+  const checkpointStore = {
+    resolveCalls: [],
+    artifact: {
+      checkpoint: trustCheckpoint,
+      trusted_root: trustedRoot,
+      full_observation: {
+        fixture_status: "ready"
+      },
+      provenance: {
+        source: "github_actions_artifact",
+        run_id: "41001",
+        run_attempt: 1,
+        head_sha: TARGET_SHA,
+        conclusion: "success",
+        artifact_id: "51001",
+        artifact_name: "release-integrity-41001-1",
+        artifact_digest: `sha256:${"a".repeat(64)}`,
+        artifact_created_at: "2026-07-26T23:59:00.000Z",
+        artifact_expires_at: "2026-08-26T23:59:00.000Z"
+      }
+    },
+    resolve(options) {
+      this.resolveCalls.push(JSON.parse(JSON.stringify(options)));
+      return JSON.parse(JSON.stringify(this.artifact));
+    }
+  };
+  const integrityPolicyContext = {
+    policyBytes: Buffer.from("{}", "utf8"),
+    policy: {
+      repository: {
+        full_name: "cli/cli",
+        default_branch: "main"
+      },
+      trust_checkpoint_policy: {
+        required: true,
+        continuity_mode: "github_actions_artifact_chain",
+        bootstrap_checkpoint_path:
+          ".github/tuf/github-release-trust-checkpoint.json",
+        bootstrap_trusted_root_path:
+          ".github/tuf/github-release-trust-bootstrap-root.json",
+        workflow_path: ".github/workflows/release-integrity.yml",
+        artifact_name_prefix: "release-integrity-",
+        maximum_run_history: 100,
+        bootstrap_window_seconds: 14400
+      }
+    }
+  };
+  const integrityObservationValidator = artifact => {
+    if (!artifact ||
+        !artifact.full_observation ||
+        artifact.full_observation.fixture_status !== "ready") {
+      const error = new Error(
+        "Fixture full-monitor observation is not ready."
+      );
+      error.code =
+        "GITHUB_RELEASE_INTEGRITY_ARTIFACT_NOT_READY";
+      throw error;
+    }
+    return true;
+  };
   return {
     repositoryRoot,
     adapter: new FakeReleaseAdapter(repositoryRoot),
+    checkpointStore,
+    integrityPolicyContext,
+    integrityObservationValidator,
+    trustCheckpoint,
+    trustedRoot,
+    genesisCheckpoint,
     authorizationPath: path.join(
       repositoryRoot,
       ".cannae",
@@ -265,7 +385,13 @@ function authorizationOptions(fixture) {
     runId: 30202562268,
     grantId: "UGR-v2_93_0",
     expiresInMinutes: 30,
-    now: ISSUED_AT
+    now: ISSUED_AT,
+    trustedRootPath: TRUSTED_ROOT_RELATIVE_PATH,
+    trustCheckpointPath: TRUST_CHECKPOINT_RELATIVE_PATH,
+    checkpointStore: fixture.checkpointStore,
+    integrityPolicyContext: fixture.integrityPolicyContext,
+    integrityObservationValidator:
+      fixture.integrityObservationValidator
   };
 }
 
@@ -273,7 +399,12 @@ function publicationOptions(fixture) {
   return {
     repositoryRoot: fixture.repositoryRoot,
     authorizationPath: fixture.authorizationPath,
-    trustedRootPath: TRUSTED_ROOT_RELATIVE_PATH
+    trustedRootPath: TRUSTED_ROOT_RELATIVE_PATH,
+    trustCheckpointPath: TRUST_CHECKPOINT_RELATIVE_PATH,
+    checkpointStore: fixture.checkpointStore,
+    integrityPolicyContext: fixture.integrityPolicyContext,
+    integrityObservationValidator:
+      fixture.integrityObservationValidator
   };
 }
 
@@ -306,10 +437,169 @@ function runFixtures() {
       name: "exact USER grant creates one valid release_authorized true terminal authorization",
       ok: authorization.release_authorized === true &&
         authorization.authority.release_authorized === true &&
+        authorization.trust_checkpoint.sequence === 1 &&
+        authorization.trust_checkpoint.lineage_artifact.run_id ===
+          "41001" &&
+        fixture.checkpointStore.resolveCalls.length === 1 &&
         authorization.authorization_sha256 === authorizationDigest(authorization) &&
         validateAuthorizationSemantics(authorization).length === 0 &&
         schema.valid === true
     });
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    const foreignWorkflow = JSON.parse(JSON.stringify(
+      authorization
+    ));
+    foreignWorkflow.trust_checkpoint.lineage_artifact.workflow_ref =
+      "attacker/repository/.github/workflows/release-integrity.yml@refs/heads/main";
+    foreignWorkflow.authorization_sha256 =
+      authorizationDigest(foreignWorkflow);
+    const unrelatedArtifact = JSON.parse(JSON.stringify(
+      authorization
+    ));
+    unrelatedArtifact.trust_checkpoint.lineage_artifact
+      .artifact_name = "unrelated";
+    unrelatedArtifact.authorization_sha256 =
+      authorizationDigest(unrelatedArtifact);
+    results.push({
+      name: "standalone authorization semantics bind exact monitor workflow and artifact name",
+      ok: validateAuthorizationSemantics(
+        foreignWorkflow
+      ).some(issue =>
+        issue.code ===
+          "GITHUB_RELEASE_TRUST_CHECKPOINT_POLICY_INVALID") &&
+        validateAuthorizationSemantics(
+          unrelatedArtifact
+        ).some(issue =>
+          issue.code ===
+            "GITHUB_RELEASE_TRUST_CHECKPOINT_POLICY_INVALID")
+    });
+  }
+
+  {
+    const fixture = makeFixture();
+    fixture.checkpointStore.artifact.full_observation
+      .fixture_status = "blocked";
+    const result = expectError(
+      "blocked full-monitor observation cannot enter release authorization",
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_NOT_READY",
+      () => authorizeRelease(
+        authorizationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok &&
+      fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const localCheckpoint = advanceGitHubReleaseTrustCheckpoint({
+      repository: {
+        full_name: "cli/cli",
+        default_branch: "main"
+      },
+      previousCheckpoint: fixture.genesisCheckpoint,
+      previousTrustedRoot: fixture.trustedRoot,
+      trustedRoot: fixture.trustedRoot,
+      evaluatedAt: ISSUED_AT,
+      producer: {
+        kind: "local_operator",
+        repository_head_sha: TARGET_SHA,
+        workflow_ref: "none",
+        run_id: "local",
+        run_attempt: 0
+      }
+    });
+    fs.writeFileSync(
+      path.join(
+        fixture.repositoryRoot,
+        TRUST_CHECKPOINT_RELATIVE_PATH
+      ),
+      `${JSON.stringify(localCheckpoint, null, 2)}\n`
+    );
+    fixture.checkpointStore.artifact.checkpoint = localCheckpoint;
+    const result = expectError(
+      "a locally produced non-genesis checkpoint cannot enter release quorum",
+      "GITHUB_RELEASE_LINEAGE_ARTIFACT_MISMATCH",
+      () => authorizeRelease(
+        authorizationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const malformed = JSON.parse(JSON.stringify(
+      fixture.trustCheckpoint
+    ));
+    malformed.predecessor.policy_override = "allow-release";
+    malformed.checkpoint_sha256 = checkpointDigest(malformed);
+    fs.writeFileSync(
+      path.join(
+        fixture.repositoryRoot,
+        TRUST_CHECKPOINT_RELATIVE_PATH
+      ),
+      `${JSON.stringify(malformed, null, 2)}\n`
+    );
+    fixture.checkpointStore.artifact.checkpoint = malformed;
+    const result = expectError(
+      "nested checkpoint schema drift is denied before artifact lookup or release creation",
+      "RELEASE_DOCUMENT_SCHEMA_INVALID",
+      () => authorizeRelease(
+        authorizationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok &&
+      fixture.checkpointStore.resolveCalls.length === 0 &&
+      fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    const rootPath = path.join(
+      fixture.repositoryRoot,
+      TRUSTED_ROOT_RELATIVE_PATH
+    );
+    const trustedRoot = JSON.parse(fs.readFileSync(
+      rootPath,
+      "utf8"
+    ));
+    trustedRoot.policy_override = "allow-release";
+    trustedRoot.artifact_sha256 =
+      trustedRootArtifactDigest(trustedRoot);
+    fs.writeFileSync(
+      rootPath,
+      `${JSON.stringify(trustedRoot, null, 2)}\n`
+    );
+    const result = expectError(
+      "schema-invalid trusted root is denied before immutable publication",
+      "RELEASE_DOCUMENT_SCHEMA_INVALID",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok &&
+      fixture.adapter.createCalls.length === 0;
+    results.push(result);
   }
 
   {
@@ -428,17 +718,12 @@ function runFixtures() {
       authorizationOptions(fixture),
       fixture.adapter
     );
-    authorization.schema_version = "0.3";
-    for (const field of [
-      "independent_verification_required",
-      "independent_verifier_package",
-      "minimum_independent_verifier_version",
-      "trusted_root_tuf_mirror",
-      "trusted_root_bootstrap_path",
-      "maximum_trusted_root_age_seconds"
-    ]) {
-      delete authorization.release_attestation[field];
-    }
+    authorization.schema_version = "0.4";
+    delete authorization.trust_checkpoint;
+    delete authorization.user_grant.trust_checkpoint_sha256;
+    delete authorization.user_grant.trusted_root_artifact_sha256;
+    authorization.user_grant.directive_sha256 =
+      userGrantDigest(authorization.user_grant);
     authorization.authorization_sha256 =
       authorizationDigest(authorization);
     persistAuthorization(fixture, authorization);
@@ -492,14 +777,216 @@ function runFixtures() {
       fixture.adapter
     );
     persistAuthorization(fixture, authorization);
-    const options = publicationOptions(fixture);
-    delete options.trustedRootPath;
+    fs.unlinkSync(path.join(
+      fixture.repositoryRoot,
+      TRUSTED_ROOT_RELATIVE_PATH
+    ));
     const result = expectError(
-      "missing trusted root is denied before immutable publication",
-      "GITHUB_RELEASE_TRUSTED_ROOT_REQUIRED",
+      "missing trusted root artifact is denied before immutable publication",
+      "GITHUB_RELEASE_TRUSTED_ROOT_MISSING",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    fs.unlinkSync(path.join(
+      fixture.repositoryRoot,
+      TRUST_CHECKPOINT_RELATIVE_PATH
+    ));
+    const result = expectError(
+      "missing trust checkpoint is denied before immutable publication",
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_MISSING",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    const rootPath = path.join(
+      fixture.repositoryRoot,
+      TRUSTED_ROOT_RELATIVE_PATH
+    );
+    const alternate = initializeGitHubReleaseTrustCheckpoint({
+      repository: {
+        full_name: "cli/cli",
+        default_branch: "main"
+      },
+      trustedRoot: JSON.parse(fs.readFileSync(rootPath, "utf8")),
+      evaluatedAt: ISSUED_AT,
+      userGrantId: "USER-GRANT-ALTERNATE-FIXTURE",
+      grantedAt: ISSUED_AT,
+      producer: {
+        repository_head_sha: TARGET_SHA,
+        workflow_ref: "none",
+        run_id: "local",
+        run_attempt: 0
+      }
+    });
+    fs.writeFileSync(
+      path.join(
+        fixture.repositoryRoot,
+        TRUST_CHECKPOINT_RELATIVE_PATH
+      ),
+      `${JSON.stringify(alternate, null, 2)}\n`
+    );
+    const result = expectError(
+      "a different valid checkpoint cannot replace the USER-authorized checkpoint",
+      "GITHUB_RELEASE_LINEAGE_ARTIFACT_MISMATCH",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const rootPath = path.join(
+      fixture.repositoryRoot,
+      TRUSTED_ROOT_RELATIVE_PATH
+    );
+    const trustedRoot = JSON.parse(fs.readFileSync(rootPath, "utf8"));
+    const staleAt = "2026-07-26T11:59:59.000Z";
+    trustedRoot.source.fetched_at = staleAt;
+    trustedRoot.artifact_sha256 =
+      trustedRootArtifactDigest(trustedRoot);
+    fs.writeFileSync(
+      rootPath,
+      `${JSON.stringify(trustedRoot, null, 2)}\n`
+    );
+    const staleCheckpoint = initializeGitHubReleaseTrustCheckpoint({
+      repository: {
+        full_name: "cli/cli",
+        default_branch: "main"
+      },
+      trustedRoot,
+      evaluatedAt: staleAt,
+      userGrantId: "USER-GRANT-STALE-FIXTURE",
+      grantedAt: staleAt,
+      producer: {
+        repository_head_sha: TARGET_SHA,
+        workflow_ref: "none",
+        run_id: "local",
+        run_attempt: 0
+      }
+    });
+    fs.writeFileSync(
+      path.join(
+        fixture.repositoryRoot,
+        TRUST_CHECKPOINT_RELATIVE_PATH
+      ),
+      `${JSON.stringify(staleCheckpoint, null, 2)}\n`
+    );
+    const result = expectError(
+      "a checkpoint older than twelve hours cannot authorize publication",
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_STALE",
+      () => authorizeRelease(
+        authorizationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    const options = publicationOptions(fixture);
+    delete options.trustCheckpointPath;
+    const result = expectError(
+      "publication cannot substitute or omit an authorized trust path",
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_PATH_MISMATCH",
       () => publishAuthorizedRelease(options, fixture.adapter)
     );
     result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    fixture.adapter.clock = "2026-07-27T00:29:59.000Z";
+    const originalResolve =
+      fixture.checkpointStore.resolve;
+    fixture.checkpointStore.resolve = function resolve(options) {
+      const artifact = originalResolve.call(this, options);
+      if (this.resolveCalls.length === 2) {
+        fixture.adapter.clock =
+          "2026-07-27T00:31:00.000Z";
+      }
+      return artifact;
+    };
+    const result = expectError(
+      "authorization expiry during lineage resolution blocks before create",
+      "GITHUB_RELEASE_AUTHORIZATION_EXPIRED",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok &&
+      fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    const originalResolve =
+      fixture.checkpointStore.resolve;
+    fixture.checkpointStore.resolve = function resolve(options) {
+      const artifact = originalResolve.call(this, options);
+      if (this.resolveCalls.length === 2) {
+        fixture.adapter.releaseImmutability.enabled = false;
+      }
+      return artifact;
+    };
+    const result = expectError(
+      "immutability drift during lineage resolution blocks before create",
+      "AUTHORIZED_RELEASE_IMMUTABILITY_DRIFT",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok &&
+      fixture.adapter.createCalls.length === 0;
     results.push(result);
   }
 
@@ -516,12 +1003,33 @@ function runFixtures() {
       "authorization outside the repository is denied before publication",
       "AUTHORIZATION_PATH_OUTSIDE_REPOSITORY",
       () => publishAuthorizedRelease({
-        repositoryRoot: fixture.repositoryRoot,
-        authorizationPath: externalAuthorizationPath,
-        trustedRootPath: TRUSTED_ROOT_RELATIVE_PATH
+        ...publicationOptions(fixture),
+        authorizationPath: externalAuthorizationPath
       }, fixture.adapter)
     );
     result.ok = result.ok && fixture.adapter.createCalls.length === 0;
+    results.push(result);
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(authorizationOptions(fixture), fixture.adapter);
+    persistAuthorization(fixture, authorization);
+    fixture.checkpointStore.artifact.provenance.artifact_id =
+      "51002";
+    fixture.checkpointStore.artifact.provenance.artifact_digest =
+      `sha256:${"b".repeat(64)}`;
+    const result = expectError(
+      "publication re-resolves and rejects changed latest checkpoint artifact lineage",
+      "GITHUB_RELEASE_TRUST_CHECKPOINT_AUTHORIZATION_MISMATCH",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    result.ok = result.ok &&
+      fixture.checkpointStore.resolveCalls.length === 2 &&
+      fixture.adapter.createCalls.length === 0;
     results.push(result);
   }
 
@@ -546,7 +1054,7 @@ function runFixtures() {
     persistAuthorization(fixture, authorization);
     fixture.adapter.forceCreatedReleaseMutable = true;
     results.push(expectError(
-      "a newly published mutable release cannot produce a v0.4 receipt",
+      "a newly published mutable release cannot produce a v0.5 receipt",
       "PUBLISHED_RELEASE_MISMATCH",
       () => publishAuthorizedRelease(
         publicationOptions(fixture),
@@ -593,12 +1101,15 @@ function runFixtures() {
         fixture.adapter.createCalls.length === 1 &&
         receipt.release_authorized === true &&
         receipt.authorization_consumed === true &&
-        receipt.schema_version === "0.4" &&
+        receipt.schema_version === "0.5" &&
         receipt.release.resolved_tag_commit_sha === TARGET_SHA &&
         receipt.attestation.verification_succeeded === true &&
         receipt.attestation.statement.commit_sha1 === TARGET_SHA &&
         receipt.attestation.statement.repository === "cli/cli" &&
         receipt.trusted_root.release_authorized === false &&
+        receipt.trust_checkpoint.release_authorized === false &&
+        receipt.trust_checkpoint.checkpoint_sha256 ===
+          checkpointDigest(receipt.trust_checkpoint) &&
         receipt.independent_verification
           .cryptographic_verification_succeeded === true &&
         receipt.independent_verification.release_authorized === false &&
@@ -606,6 +1117,17 @@ function runFixtures() {
         validateReceiptSemantics(receipt).length === 0 &&
         replayReceipt.release.database_id === receipt.release.database_id &&
         schema.valid === true
+    });
+    const genesisReceipt = JSON.parse(JSON.stringify(receipt));
+    genesisReceipt.trust_checkpoint =
+      JSON.parse(JSON.stringify(fixture.genesisCheckpoint));
+    genesisReceipt.receipt_sha256 =
+      receiptDigest(genesisReceipt);
+    results.push({
+      name: "standalone v0.5 receipt semantics reject genesis checkpoint substitution",
+      ok: validateReceiptSemantics(genesisReceipt).some(issue =>
+        issue.code ===
+          "GITHUB_RELEASE_RECEIPT_CHECKPOINT_LINEAGE_INVALID")
     });
   }
 
@@ -622,6 +1144,35 @@ function runFixtures() {
         fixture.adapter
       )
     ));
+  }
+
+  {
+    const fixture = makeFixture();
+    const authorization = authorizeRelease(
+      authorizationOptions(fixture),
+      fixture.adapter
+    );
+    persistAuthorization(fixture, authorization);
+    fixture.adapter.forceAttestationUnavailable = true;
+    const firstResult = expectError(
+      "post-create verification failure retains one exact immutable release",
+      "GITHUB_RELEASE_ATTESTATION_UNAVAILABLE",
+      () => publishAuthorizedRelease(
+        publicationOptions(fixture),
+        fixture.adapter
+      )
+    );
+    fixture.adapter.forceAttestationUnavailable = false;
+    fixture.adapter.clock = "2026-07-27T00:31:00.000Z";
+    const recovered = publishAuthorizedRelease(
+      publicationOptions(fixture),
+      fixture.adapter
+    );
+    firstResult.ok = firstResult.ok &&
+      fixture.adapter.createCalls.length === 1 &&
+      recovered.verified === true &&
+      recovered.release.resolved_tag_commit_sha === TARGET_SHA;
+    results.push(firstResult);
   }
 
   {

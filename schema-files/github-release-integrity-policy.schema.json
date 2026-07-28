@@ -24,7 +24,8 @@
       "type": "string",
       "enum": [
         "0.1",
-        "0.2"
+        "0.2",
+        "0.3"
       ]
     },
     "type": {
@@ -266,6 +267,84 @@
         }
       }
     },
+    "trust_checkpoint_policy": {
+      "type": "object",
+      "required": [
+        "required",
+        "continuity_mode",
+        "bootstrap_checkpoint_path",
+        "bootstrap_trusted_root_path",
+        "workflow_path",
+        "artifact_name_prefix",
+        "checkpoint_file_name",
+        "trusted_root_file_name",
+        "full_observation_file_name",
+        "maximum_checkpoint_age_seconds",
+        "bootstrap_window_seconds",
+        "maximum_run_history",
+        "fail_closed_on_missing_previous",
+        "independent_persistence_required"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "const": true
+        },
+        "continuity_mode": {
+          "type": "string",
+          "const": "github_actions_artifact_chain"
+        },
+        "bootstrap_checkpoint_path": {
+          "type": "string",
+          "const": ".github/tuf/github-release-trust-checkpoint.json"
+        },
+        "bootstrap_trusted_root_path": {
+          "type": "string",
+          "const": ".github/tuf/github-release-trust-bootstrap-root.json"
+        },
+        "workflow_path": {
+          "type": "string",
+          "const": ".github/workflows/release-integrity.yml"
+        },
+        "artifact_name_prefix": {
+          "type": "string",
+          "const": "release-integrity-"
+        },
+        "checkpoint_file_name": {
+          "type": "string",
+          "const": "github-release-trust-checkpoint.json"
+        },
+        "trusted_root_file_name": {
+          "type": "string",
+          "const": "github-trusted-root.json"
+        },
+        "full_observation_file_name": {
+          "type": "string",
+          "const": "full-observation.json"
+        },
+        "maximum_checkpoint_age_seconds": {
+          "type": "integer",
+          "const": 43200
+        },
+        "bootstrap_window_seconds": {
+          "type": "integer",
+          "const": 14400
+        },
+        "maximum_run_history": {
+          "type": "integer",
+          "const": 100
+        },
+        "fail_closed_on_missing_previous": {
+          "type": "boolean",
+          "const": true
+        },
+        "independent_persistence_required": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
     "authority": {
       "type": "object",
       "required": [
@@ -316,7 +395,10 @@
       "if": {
         "properties": {
           "schema_version": {
-            "const": "0.2"
+            "enum": [
+              "0.2",
+              "0.3"
+            ]
           }
         },
         "required": [
@@ -336,6 +418,23 @@
             ]
           }
         }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.3"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "trust_checkpoint_policy"
+        ]
       }
     }
   ]

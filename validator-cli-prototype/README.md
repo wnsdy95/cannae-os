@@ -24,6 +24,7 @@ node validator-cli-prototype/validate.js sample-payloads/valid-github-release-re
 node validator-cli-prototype/validate.js sample-payloads/valid-github-release-immutability-authorization.json github-release-immutability-authorization
 node validator-cli-prototype/validate.js sample-payloads/valid-github-release-immutability-receipt.json github-release-immutability-receipt
 node validator-cli-prototype/validate.js github-release-independent-verification-fixtures/github-trusted-root.json github-release-trusted-root --evaluated-at <current-UTC-timestamp>
+node validator-cli-prototype/validate.js .github/tuf/github-release-trust-checkpoint.json github-release-trust-checkpoint --evaluated-at <current-UTC-timestamp>
 node validator-cli-prototype/validate.js sample-payloads/valid-maintenance-readiness.json maintenance-readiness
 node validator-cli-prototype/validate.js sample-payloads/valid-backbrief.json backbrief
 node validator-cli-prototype/validate.js sample-payloads/valid-rehearsal.json rehearsal
@@ -55,9 +56,9 @@ node validator-cli-prototype/validate.js sample-payloads/valid-tool-gateway-requ
 node validator-cli-prototype/validate.js sample-payloads/valid-tool-execution-receipt.json tool-execution-receipt
 ```
 
-`github-release-trusted-root` validation requires `--evaluated-at`. Omitting
-it fails closed; the validator never treats the artifact's own `fetched_at`
-as the current clock.
+`github-release-trusted-root` and `github-release-trust-checkpoint`
+validation require `--evaluated-at`. Omitting it fails closed; the validator
+never treats an artifact's own retrieval or record time as the current clock.
 
 ## Exit Codes
 
@@ -117,7 +118,10 @@ as the current clock.
 - `github-release-receipt`
 - `github-release-immutability-authorization`
 - `github-release-immutability-receipt`
+- `github-release-integrity-policy`
+- `github-release-integrity-observation`
 - `github-release-trusted-root`
+- `github-release-trust-checkpoint`
 - `github-release-independent-verification`
 - `maintenance-readiness`
 - `backbrief`
@@ -133,7 +137,16 @@ as the current clock.
 
 ## Current Limits
 
-- Supports only the JSON Schema subset currently used in `schema-files/`.
+- Supports the repository-used structural subset: local/file `$ref`,
+  `type`, `const`, `enum`, numeric/string bounds, patterns,
+  `required`, `properties`, `additionalProperties`, property counts,
+  item counts, uniqueness, `items`, `prefixItems`, `contains`,
+  `allOf`, `anyOf`, `oneOf`, `not`, and `if`/`then`/`else`.
+- Structural violations, including nested additional fields and lightweight
+  HTTP(S) URI or parseable date-time format failures, are blocking errors.
+- The exported `validateSchemaPayload` path performs structural-only
+  preflight where time-based semantic errors need separate policy codes.
+- This remains a repository-specific subset, not a complete JSON Schema
+  draft 2020-12 implementation.
 - Does not yet resolve recursive or remote refs.
-- `format` is treated as a warning-level lightweight check.
 - Semantic rules are intentionally conservative.

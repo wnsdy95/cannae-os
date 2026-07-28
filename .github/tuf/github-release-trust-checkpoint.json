@@ -1,0 +1,83 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseTrustCheckpoint",
+  "id": "GRTC-0-ec074f79c41e",
+  "sequence": 0,
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "default_branch": "main"
+  },
+  "predecessor": {
+    "kind": "genesis",
+    "bootstrap_authorization": {
+      "authority": "USER",
+      "grant_id": "USER-GRANT-PHASE-19D-20260727",
+      "granted_at": "2026-07-27T07:02:37.664Z"
+    }
+  },
+  "trusted_state": {
+    "artifact_id": "GRTR-10-8481a3ed2d43",
+    "artifact_sha256": "860e6d8a1053c5c787b28d1620aba25728669b61342a5438aee1dc5ae096d0d3",
+    "trusted_root_sha256": "8481a3ed2d435fbf6d421b6ad45734d268dfd15807ef8da26da57fb977766cf7",
+    "target_file_sha256": "484cdfe1a7c65479c5ba2a22193d1be90f0020db1997de696ab207434c62fbb7",
+    "source_fetched_at": "2026-07-27T00:00:00.000Z",
+    "checkpoint_evaluated_at": "2026-07-27T07:02:37.664Z",
+    "metadata": {
+      "root": {
+        "type": "root",
+        "version": 9,
+        "expires": "2027-01-28T20:18:53.000Z",
+        "sha256": "eb303461e0109458144b6ebcbfd62aaa6f6d7481e9ca77504b85f17761661462"
+      },
+      "timestamp": {
+        "type": "timestamp",
+        "version": 917,
+        "expires": "2026-08-03T01:58:34.000Z",
+        "sha256": "2668d262fb0212b007348e029fc6242ea4efdf17dda0f68918966909052b0d24"
+      },
+      "snapshot": {
+        "type": "snapshot",
+        "version": 75,
+        "expires": "2026-08-11T08:00:27.000Z",
+        "sha256": "869d521c90893cae65c021fa6b2a71c161cf638a6af9a455e231358d7bbfc13b"
+      },
+      "targets": {
+        "type": "targets",
+        "version": 10,
+        "expires": "2027-02-08T01:48:44.000Z",
+        "sha256": "0fa9dec2a92ff98570d611080ae334b6f0db4af42551d957de0fc447a18acc9c"
+      }
+    }
+  },
+  "transition": {
+    "classification": "bootstrap",
+    "version_deltas": {
+      "root": 0,
+      "timestamp": 0,
+      "snapshot": 0,
+      "targets": 0
+    },
+    "current_trusted_root_verified": true,
+    "root_chain_continuity_verified": true,
+    "same_version_digest_consistency_verified": true,
+    "rollback_detected": false,
+    "equivocation_detected": false
+  },
+  "producer": {
+    "kind": "repository_bootstrap",
+    "repository_head_sha": "786c38af6af6b79c185991c3e7e7374fc47a9eea",
+    "workflow_ref": "none",
+    "run_id": "bootstrap",
+    "run_attempt": 0
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "monitoring_only": true,
+    "checkpoint_reset_authorized": false,
+    "release_authorized": false
+  },
+  "checkpoint_reset_authorized": false,
+  "release_authorized": false,
+  "recorded_at": "2026-07-27T07:02:37.664Z",
+  "checkpoint_sha256": "970af34dd4fa7b0b1de7654b7562f7179de30752a7d878fec3703d08ecdbe05b"
+}

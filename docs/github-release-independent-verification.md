@@ -10,6 +10,8 @@ The GitHub CLI result remains useful acquisition evidence. Cannae separately
 verifies the signed bundle with pinned Sigstore code, reconstructs the GitHub
 trust material from a pinned TUF root, and compares the signed in-toto
 statement with both the exact release expectation and the CLI projection.
+Phase 19D adds retained prior-state continuity around this point-in-time
+verification; see `github-release-trust-checkpoint-continuity.md`.
 
 This is verification evidence, not release authority:
 
@@ -100,25 +102,29 @@ verification may be required.
 
 ## 5. Runtime Integration
 
-New release authorizations and receipts use schema v0.4:
+New release authorizations and receipts use schema v0.5:
 
 - authorization fixes the independent verifier, GitHub TUF source, bootstrap
   path, and 24-hour maximum trusted-root age;
-- active publication accepts only authorization v0.4; older versions remain
+- active publication accepts only authorization v0.5; older versions remain
   readable historical contracts and cannot enter the publisher;
+- authorization and publication require the exact fresh Phase 19D checkpoint
+  and trusted-root pair before external mutation;
 - publication validates the repository-contained trusted-root artifact,
   current clock, and complete authorization window before creating a release;
 - the receipt embeds the raw CLI evidence, trusted-root artifact, and
   independent verification evidence; and
 - receipt semantics replay all three before accepting the terminal record.
 
-Release-integrity policy and observations use schema v0.2:
+Release-integrity policy and observations use schema v0.3:
 
 - every run refreshes GitHub trust material through TUF;
 - one root artifact is retained per observation;
 - every non-grandfathered verified release has its own independent evidence;
 - root acquisition or replay failure becomes an explicit blocked observation;
-  and
+- every run compares the retained TUF projection with the exact prior
+  checkpoint, blocks rollback, equivocation, and forks, and emits the next
+  checkpoint; and
 - policy mutation and release remain false.
 
 ## 6. Operations
@@ -151,10 +157,15 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_veri
   --output <independent-verification.json>
 ```
 
-The release publisher consumes the same root through `--trusted-root`. The
-integrity monitor refreshes and retains its own root through
-`--trusted-root-output`; refresh failure still produces a blocked observation
-when the remaining repository checks can run.
+The release publisher receives the exact root and checkpoint input copies
+through `--trusted-root` and `--trust-checkpoint`, then independently resolves
+and replays the latest eligible `full-observation.json` artifact before either
+input may enter release admission. The integrity monitor refreshes and retains
+the observation, root, and checkpoint as one artifact triplet through its
+observation output, `--trusted-root-output`, and
+`--trust-checkpoint-output`; refresh or continuity failure still produces a
+blocked observation when the remaining repository checks can run. A local
+two-file pair is therefore never provider-lineage evidence.
 
 ## 7. Adversarial Coverage
 
@@ -172,8 +183,9 @@ when the remaining repository checks can run.
 
 Publisher and integrity-monitor fixtures consume the same real bundle, so
 their successful paths cannot rely on a fake signature. Publisher fixtures
-also reject legacy authorization downgrade and a missing root before any
-immutable release creation call.
+also reject legacy authorization downgrade, missing or stale trust inputs,
+path drift, and valid-checkpoint substitution before any immutable release
+creation call.
 
 ## 8. Limits
 
@@ -182,8 +194,9 @@ immutable release creation call.
 - Independent code execution in the same repository or CI job is not an
   independent infrastructure failure domain.
 - The retained point-in-time TUF chain verifies authenticity, rotation,
-  linkage, and freshness. Long-term rollback detection also needs durable
-  prior trusted state and external monitor continuity.
+  linkage, and freshness. Phase 19D adds provider-retained prior state, but
+  long-term rollback resistance still needs independently durable state and
+  external monitor continuity.
 - Freshness depends on a trustworthy caller clock. The artifact's own
   retrieval time is evidence input, never the current-time authority.
 - The current GitHub release profile has no retained Rekor or CT-log entry.

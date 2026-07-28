@@ -31,7 +31,8 @@
         "0.1",
         "0.2",
         "0.3",
-        "0.4"
+        "0.4",
+        "0.5"
       ]
     },
     "type": {
@@ -187,6 +188,140 @@
         "maximum_trusted_root_age_seconds": {
           "type": "integer",
           "const": 86400
+        }
+      }
+    },
+    "trust_checkpoint": {
+      "type": "object",
+      "required": [
+        "required",
+        "continuity_mode",
+        "relative_path",
+        "trusted_root_relative_path",
+        "checkpoint_id",
+        "sequence",
+        "checkpoint_sha256",
+        "recorded_at",
+        "trusted_root_artifact_id",
+        "trusted_root_artifact_sha256",
+        "trusted_root_sha256",
+        "lineage_artifact",
+        "maximum_age_seconds",
+        "checkpoint_reset_authorized",
+        "independent_persistence_verified",
+        "release_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "const": true
+        },
+        "continuity_mode": {
+          "type": "string",
+          "const": "github_actions_artifact_chain"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trusted_root_relative_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checkpoint_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "checkpoint_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "recorded_at": {
+          "$ref": "common.schema.json#/$defs/timestamp"
+        },
+        "trusted_root_artifact_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "trusted_root_artifact_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "trusted_root_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "lineage_artifact": {
+          "type": "object",
+          "required": [
+            "source",
+            "workflow_ref",
+            "run_id",
+            "run_attempt",
+            "head_sha",
+            "artifact_id",
+            "artifact_name",
+            "artifact_digest",
+            "artifact_created_at",
+            "artifact_expires_at"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "string",
+              "const": "github_actions_artifact"
+            },
+            "workflow_ref": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\\.github/workflows/[^@\\s]+@refs/heads/[^@\\s]+$"
+            },
+            "run_id": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "run_attempt": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "head_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "artifact_id": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "artifact_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_digest": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "artifact_created_at": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            },
+            "artifact_expires_at": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            }
+          }
+        },
+        "maximum_age_seconds": {
+          "type": "integer",
+          "const": 43200
+        },
+        "checkpoint_reset_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "independent_persistence_verified": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
         }
       }
     },
@@ -472,6 +607,12 @@
         "release_notes_sha256": {
           "$ref": "common.schema.json#/$defs/sha256"
         },
+        "trust_checkpoint_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "trusted_root_artifact_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
         "approved": {
           "type": "boolean",
           "const": true
@@ -531,7 +672,8 @@
             "enum": [
               "0.2",
               "0.3",
-              "0.4"
+              "0.4",
+              "0.5"
             ]
           }
         },
@@ -551,7 +693,8 @@
           "schema_version": {
             "enum": [
               "0.3",
-              "0.4"
+              "0.4",
+              "0.5"
             ]
           }
         },
@@ -569,7 +712,10 @@
       "if": {
         "properties": {
           "schema_version": {
-            "const": "0.4"
+            "enum": [
+              "0.4",
+              "0.5"
+            ]
           }
         },
         "required": [
@@ -586,6 +732,31 @@
               "trusted_root_tuf_mirror",
               "trusted_root_bootstrap_path",
               "maximum_trusted_root_age_seconds"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {
+            "const": "0.5"
+          }
+        },
+        "required": [
+          "schema_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "trust_checkpoint"
+        ],
+        "properties": {
+          "user_grant": {
+            "required": [
+              "trust_checkpoint_sha256",
+              "trusted_root_artifact_sha256"
             ]
           }
         }

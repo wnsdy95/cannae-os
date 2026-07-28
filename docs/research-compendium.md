@@ -4773,15 +4773,16 @@ digest?
   substitution, legacy authorization downgrade, and authority expansion all
   fail;
 - Codex and Claude wrappers resolve the same repository runtime;
-- all 17 independent-verification, 25 publisher, 19 monitor, and 218 validator
-  fixtures pass; and
+- the current integrated regression retains all 17 independent-verification,
+  39 publisher, 24 monitor, 31 checkpoint, and 221 validator fixture passes;
+  and
 - every new root, verification, receipt, policy, and observation contract
   preserves USER final authority and release false.
 
 ### Residual Work
 
-- durable prior-root state and an external continuity monitor for stronger
-  rollback detection;
+- independently durable prior-root state and a cross-provider continuity
+  monitor beyond the Phase 19D GitHub Actions artifact chain;
 - independent witnesses, gossip, and long-term transparency storage;
 - short-lived GitHub App installation credentials for administrative policy
   inspection;
@@ -4791,4 +4792,201 @@ digest?
   the same job;
 - an external trusted-time source where the local caller clock is not an
   acceptable freshness authority; and
+- private, prerelease, first-release, and provider-neutral profiles.
+
+## Phase 19D: Monotonic TUF Checkpoint Continuity
+
+### Research Question
+
+How can Cannae detect that a newly valid GitHub TUF state is older than, forks
+from, or conflicts with a state it previously trusted, while keeping release
+authority with the USER and representing provider-retention limits honestly?
+
+### Source Findings
+
+1. TUF rollback resistance depends on retained client state.
+   The [TUF specification](https://theupdateframework.github.io/specification/latest/)
+   requires trusted timestamp, snapshot, and targets metadata to be persisted
+   to non-volatile storage. New metadata is compared with trusted versions;
+   lower versions are rollback, equal timestamp versions stop the update, and
+   expiry detects freeze.
+2. Root continuity is sequential.
+   TUF requires root `N+1` to follow root `N` exactly and establishes a trusted
+   line through every intermediate root. A final valid root alone does not
+   prove which state the client had previously accepted.
+3. GitHub artifact metadata provides useful but bounded lineage fields.
+   The [Actions artifact REST API](https://docs.github.com/en/rest/actions/artifacts?apiVersion=2026-03-10)
+   exposes artifact ID, SHA-256 archive digest, expiry, workflow run, and head
+   SHA. These can bind checkpoint bytes to one exact workflow execution.
+4. GitHub artifacts are not independent durable storage.
+   GitHub's [artifact-removal guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/remove-workflow-artifacts)
+   says a repository writer can delete an artifact, deletion is irreversible,
+   retention is configurable, and artifacts from deleted runs disappear.
+   The workflow's 30-day artifact is therefore same-provider continuity, not
+   an external archive or witness.
+5. Failure must remain distinguishable from reset.
+   TUF reports attacks and aborts; it does not decide application-specific
+   recovery. A missing predecessor cannot safely authorize a new genesis
+   without a separate authority decision.
+6. GitHub reruns preserve one stable run identity.
+   GitHub's [rerun guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs)
+   says reruns retain the original event SHA/ref. The
+   [variables reference](https://docs.github.com/en/actions/reference/workflows-and-actions/variables)
+   keeps run ID/number stable while incrementing the attempt, and the
+   [workflow-run API](https://docs.github.com/en/rest/actions/workflow-runs?apiVersion=2026-03-10)
+   exposes one exact attempt under Actions read permission.
+7. Event SHA and workflow SHA are different trust inputs.
+   GitHub's [event reference](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)
+   defines release `GITHUB_SHA` as the tagged commit, while the
+   [contexts reference](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts)
+   exposes `workflow_ref` and the commit containing the workflow as
+   `workflow_sha`. Release-tag code must remain inspection input rather than
+   executable monitor code.
+8. Full commit pins are the immutable action reference.
+   GitHub's [secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use)
+   states that a full-length commit SHA is the only immutable action
+   reference. A moving major tag is not sufficient for a credential-bearing
+   monitor.
+
+### Design Decisions
+
+1. Retain a canonical monotonic checkpoint.
+   It binds repository, sequence, predecessor, every TUF role's
+   version/digest/expiry, target/root digests, retrieval and evaluation times,
+   producer, transition result, and release false.
+2. Require exact prior-root authentication.
+   Before comparing versions, advancement proves that the prior checkpoint
+   exactly represents the retained predecessor root. Rehashing a fabricated
+   prior state cannot create rollback evidence or authorize a transition.
+3. Treat equal-version changed bytes as equivocation.
+   Version monotonicity alone is insufficient. Every unchanged role version
+   must retain the same signed digest, and unchanged targets must retain the
+   same target and normalized-root digests.
+4. Bind root and retrieval continuity.
+   The current root chain must contain the exact previously trusted root
+   bytes, and current retrieval time cannot precede prior retrieval time.
+5. Use one bounded provider store.
+   The greatest stable eligible run number must be in current ancestry,
+   contain the exact current policy bytes, retain exactly one expected
+   artifact, and match the checkpoint's workflow, run, attempt, and head
+   producer. Archive digest, expiry, bounded file sizes, unique names, and
+   safe paths are verified. The archive must carry one full observation whose
+   schema, deterministic transition replay, root, checkpoint, repository,
+   policy, run, branch, and producer bindings all verify. Mutable timestamp
+   strings do not order lineage. A 60-second observation-to-artifact creation
+   tolerance covers API timestamp precision only and does not widen any trust
+   expiry or authorization window.
+6. Refuse silent fallback.
+   If the latest eligible run exists but its artifact is absent, older
+   artifacts and repository bootstrap are not considered. This turns
+   deletion or interrupted lineage into a visible blocked state.
+7. Bound genesis narrowly.
+   One committed genesis carries an explicit USER grant. Repository bootstrap
+   is accepted only for four hours after the commit that first introduces the
+   checkpoint policy. Later policy edits cannot reopen the window.
+8. Integrate without widening authority.
+   Monitor policy/observation v0.3 require continuity. Publisher
+   authorization/receipt v0.5 accept only a successful `ready` non-genesis
+   observation/root/checkpoint triplet from the latest full-monitor artifact,
+   bind its run/attempt/artifact lineage into the USER grant, resolve it
+   again, and recheck mutable authorization/repository/policy state before any
+   release creation.
+   Checkpoint reset and all monitoring release fields remain false.
+9. Treat reruns as attempts, not newer events.
+   An attempt after the first may consume only its immediately prior attempt.
+   If a newer stable run exists, rerunning the historical run would fork the
+   checkpoint chain and is rejected.
+10. Fail closed at schema and workflow boundaries.
+    Used schema combinators, conditional requirements, positional items,
+    contained items, and nested additional-property bans are executable
+    errors. Workflows require exact default-branch workflow identity, check
+    out immutable `workflow_sha`, pin every action by full commit SHA, grant
+    Actions read, and run on every `main` push rather than maintaining a
+    brittle dependency-path allowlist.
+
+### Rejected Alternatives
+
+- Comparing only the current TUF metadata with the pinned root: this proves
+  point-in-time validity, not prior client state.
+- Trusting version numbers without digests: a same-version signed-byte
+  conflict would be invisible.
+- Accepting a rehashed prior wrapper: an attacker could fabricate an arbitrary
+  comparison baseline.
+- Falling back to the oldest available artifact after the latest disappears:
+  artifact deletion would become a rollback mechanism.
+- Reopening bootstrap after every policy edit: routine changes would become
+  implicit checkpoint-reset authority.
+- Sorting by workflow `updated_at`: a rerun can mutate that field and make an
+  older run look newer than its stable run number.
+- Allowing historical reruns to consume their own old attempt after a newer
+  run: this creates two valid-looking successors from one predecessor.
+- Treating a downloaded local checkpoint as proof of latest artifact state:
+  an operator or compromised process could mint or preserve a different
+  sequence and present it to release authorization.
+- Accepting only checkpoint/root files from an artifact: both are
+  self-asserted without the schema-valid full observation that replays their
+  predecessor transition and monitor result.
+- Executing release-event `github.sha`: it is the tagged release commit, not
+  the protected default-branch workflow commit.
+- Referencing credential-bearing third-party actions through a moving major
+  tag: the action source can change without a workflow commit.
+- Maintaining a hand-written push path allowlist: future runtime inputs such
+  as npm configuration or a new helper can escape checkpoint acquisition.
+- Extracting the entire ZIP before path and type validation: crafted archive
+  members could affect the filesystem before rejection.
+- Calling GitHub artifacts independently durable: GitHub controls workflow,
+  artifact, deletion, retention, and TUF state.
+- Letting the monitor repair sequence state or issue release authority:
+  observation is not command authority.
+
+### Implemented Artifacts
+
+- `docs/github-release-trust-checkpoint-continuity.md`;
+- `.github/tuf/github-release-trust-checkpoint.json`;
+- `.github/tuf/github-release-trust-bootstrap-root.json`;
+- `github-release-trust-checkpoint.js`;
+- `github-release-checkpoint-store.js`;
+- `schema-files/github-release-trust-checkpoint.schema.json`;
+- `run-github-release-trust-checkpoint-fixtures.js`;
+- integrity policy/observation v0.3 integration;
+- publisher authorization/receipt v0.5 integration;
+- every-main-push, schedule, default-branch manual, and separate release-event
+  attestation retention with immutable workflow/action source; and
+- equivalent Codex and Claude routing and operating rules.
+
+### Measured Behavior
+
+- USER genesis, unchanged transitions, and later exact-root matching pass;
+- authenticated higher prior versions detect current rollback;
+- equal-version digest conflict detects equivocation;
+- missing prior root bytes, backdated retrieval, stale predecessors, sequence
+  forks, root substitution, and authority expansion fail;
+- bootstrap expiry and ordinary-policy-change replay fail;
+- latest artifact selection succeeds, while missing latest retention,
+  producer substitution, historical rerun forks, missing exact attempts,
+  path traversal, and option-like archive members fail;
+- a real artifact ZIP requires all three observation/root/checkpoint members;
+- blocked observations remain usable only as continuity predecessors, while
+  release admission requires a successful `ready` replay;
+- incomplete/off-default reruns, forged transition replay, policy drift or
+  authorization expiry during lineage resolution, and schema-invalid trusted
+  roots fail before release creation;
+- a post-create attestation failure can reconcile only the exact immutable
+  release published within the original authorization window and does not
+  create a second release;
+- missing, stale, schema-invalid, local, genesis, path-substituted,
+  superseded, or alternate valid checkpoints stop the publisher before any
+  release creation call; and
+- all 31 checkpoint, 39 publisher, 24 monitor, and 221 validator fixtures
+  pass.
+
+### Residual Work
+
+- independently operated append-only checkpoint storage;
+- cross-provider witnesses, gossip, and monitor-liveness supervision;
+- a separately specified exact USER-authorized incident reset;
+- protected USER signatures and an external trusted-time source;
+- recovery classification for provider setup failures versus artifact
+  deletion without weakening fail-closed continuity;
+- short-lived GitHub App monitoring credentials; and
 - private, prerelease, first-release, and provider-neutral profiles.

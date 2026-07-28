@@ -1,6 +1,9 @@
 name: Release Integrity
 
 on:
+  push:
+    branches:
+      - main
   release:
     types:
       - published
@@ -9,6 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   attestations: read
   contents: read
 
@@ -19,7 +23,9 @@ concurrency:
 jobs:
   release-attestation:
     name: Verify published release attestation
-    if: github.event_name == 'release'
+    if: >-
+      github.event_name == 'release' &&
+      github.workflow_ref == format('{0}/.github/workflows/release-integrity.yml@refs/heads/main', github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -28,17 +34,21 @@ jobs:
       TRIGGER_ACTOR: ${{ github.actor }}
       TRIGGER_REF: ${{ github.ref }}
       TRIGGER_RUN_ID: ${{ github.run_id }}
+      TRIGGER_RUN_ATTEMPT: ${{ github.run_attempt }}
     steps:
       - name: Checkout monitored default branch
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-          ref: main
+          ref: ${{ github.workflow_sha }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "22.22.3"
+
+      - name: Bind checkout to default branch identity
+        run: git checkout -B main HEAD
 
       - name: Install pinned runtime dependencies
         run: npm ci --ignore-scripts
@@ -51,17 +61,19 @@ jobs:
             --repository-root . \
             --policy .github/release-integrity-policy.json \
             --trusted-root-output "${OBSERVATION_DIR}/github-trusted-root.json" \
+            --trust-checkpoint-output "${OBSERVATION_DIR}/github-release-trust-checkpoint.json" \
             --output "${OBSERVATION_DIR}/release-attestation.json" \
             --scope release_attestation \
             --expected-tag "${EXPECTED_TAG}" \
             --trigger release \
             --actor "${TRIGGER_ACTOR}" \
             --run-id "${TRIGGER_RUN_ID}" \
+            --run-attempt "${TRIGGER_RUN_ATTEMPT}" \
             --ref "${TRIGGER_REF}"
 
       - name: Retain release-attestation observation
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: release-attestation-${{ github.run_id }}-${{ github.run_attempt }}
           path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/
@@ -71,6 +83,9 @@ jobs:
 
   full-monitor:
     name: Monitor immutable policy and all releases
+    if: >-
+      github.event_name != 'release' &&
+      github.workflow_ref == format('{0}/.github/workflows/release-integrity.yml@refs/heads/main', github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -79,17 +94,21 @@ jobs:
       TRIGGER_KIND: ${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event_name }}
       TRIGGER_REF: ${{ github.ref }}
       TRIGGER_RUN_ID: ${{ github.run_id }}
+      TRIGGER_RUN_ATTEMPT: ${{ github.run_attempt }}
     steps:
       - name: Checkout monitored default branch
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-          ref: main
+          ref: ${{ github.workflow_sha }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "22.22.3"
+
+      - name: Bind checkout to default branch identity
+        run: git checkout -B main HEAD
 
       - name: Install pinned runtime dependencies
         run: npm ci --ignore-scripts
@@ -103,16 +122,18 @@ jobs:
             --repository-root . \
             --policy .github/release-integrity-policy.json \
             --trusted-root-output "${OBSERVATION_DIR}/github-trusted-root.json" \
+            --trust-checkpoint-output "${OBSERVATION_DIR}/github-release-trust-checkpoint.json" \
             --output "${OBSERVATION_DIR}/full-observation.json" \
             --scope full \
             --trigger "${TRIGGER_KIND}" \
             --actor "${TRIGGER_ACTOR}" \
             --run-id "${TRIGGER_RUN_ID}" \
+            --run-attempt "${TRIGGER_RUN_ATTEMPT}" \
             --ref "${TRIGGER_REF}"
 
       - name: Retain full integrity observation
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: release-integrity-${{ github.run_id }}-${{ github.run_attempt }}
           path: .cannae/release-integrity/${{ github.run_id }}-${{ github.run_attempt }}/

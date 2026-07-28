@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.2",
+  "schema_version": "0.3",
   "type": "GitHubReleaseIntegrityPolicy",
   "id": "GRIP-cannae-os-20260727",
   "repository": {
@@ -60,6 +60,22 @@
     "fail_closed_on_policy_drift": true,
     "fail_closed_on_attestation_failure": true
   },
+  "trust_checkpoint_policy": {
+    "required": true,
+    "continuity_mode": "github_actions_artifact_chain",
+    "bootstrap_checkpoint_path": ".github/tuf/github-release-trust-checkpoint.json",
+    "bootstrap_trusted_root_path": ".github/tuf/github-release-trust-bootstrap-root.json",
+    "workflow_path": ".github/workflows/release-integrity.yml",
+    "artifact_name_prefix": "release-integrity-",
+    "checkpoint_file_name": "github-release-trust-checkpoint.json",
+    "trusted_root_file_name": "github-trusted-root.json",
+    "full_observation_file_name": "full-observation.json",
+    "maximum_checkpoint_age_seconds": 43200,
+    "bootstrap_window_seconds": 14400,
+    "maximum_run_history": 100,
+    "fail_closed_on_missing_previous": true,
+    "independent_persistence_required": false
+  },
   "authority": {
     "human_final_decision_authority": "USER",
     "self_approval_prohibited": true,
@@ -69,5 +85,5 @@
   },
   "repository_policy_change_authorized": false,
   "release_authorized": false,
-  "policy_sha256": "d4d0756d5f775b3d6b7ef71381e7201dfe3ded12db12267a54ca448c6838ea30"
+  "policy_sha256": "d436e787bb3d8547f10d03f0b2e1aad5a333dbfce3a27c9a14af6386f15f958e"
 }
