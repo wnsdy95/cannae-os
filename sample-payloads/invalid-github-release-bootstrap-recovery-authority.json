@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseBootstrapRecovery",
+  "id": "GRBR-sample-20260728",
+  "repository": {
+    "full_name": "example/control-plane",
+    "default_branch": "main"
+  },
+  "policy": {
+    "id": "GRIP-sample-20260728",
+    "relative_path": ".github/release-integrity-policy.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "head_blob_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "introduction_commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "introduction_time": "2026-07-28T00:00:00.000Z"
+  },
+  "bootstrap": {
+    "checkpoint_relative_path": ".github/tuf/github-release-trust-checkpoint.json",
+    "checkpoint_id": "GRTC-sample-genesis",
+    "checkpoint_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "trusted_root_relative_path": ".github/tuf/github-release-trust-bootstrap-root.json",
+    "trusted_root_artifact_id": "GRTR-sample-root",
+    "trusted_root_artifact_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "blocked_runs": [
+    {
+      "run_id": "1001",
+      "run_number": 1,
+      "run_attempt": 1,
+      "run_created_at": "2026-07-28T00:10:00.000Z",
+      "head_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "conclusion": "failure",
+      "artifact_id": "2001",
+      "artifact_name": "release-integrity-1001-1",
+      "artifact_digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "artifact_created_at": "2026-07-28T00:15:01.000Z",
+      "artifact_expires_at": "2026-08-27T00:15:01.000Z",
+      "observation_id": "GRIO-sample-blocked",
+      "observation_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+      "observed_at": "2026-07-28T00:15:00.000Z",
+      "checkpoint_failure_code": "GITHUB_RELEASE_TRUST_CHECKPOINT_STALE"
+    }
+  ],
+  "user_grant": {
+    "authority": "AI",
+    "grant_id": "USER-GRANT-sample-recovery",
+    "purpose": "initial_bootstrap_recovery",
+    "granted_at": "2026-07-28T00:20:00.000Z"
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "monitoring_only": true,
+    "checkpoint_reset_authorized": false,
+    "release_authorized": false
+  },
+  "initial_bootstrap_recovery_authorized": true,
+  "checkpoint_reset_authorized": false,
+  "release_authorized": false,
+  "authorized_at": "2026-07-28T00:20:00.000Z",
+  "expires_at": "2026-07-28T01:00:00.000Z",
+  "recovery_sha256": "a9d8c6de675e197fc644ee8abffe179b4ca7cb0f158dd94f6bcc1e78610eddbc"
+}

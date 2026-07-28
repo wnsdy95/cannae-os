@@ -1,0 +1,79 @@
+{
+  "schema_version": "0.1",
+  "type": "GitHubReleaseBootstrapRecovery",
+  "id": "GRBR-73b3ec37a953",
+  "repository": {
+    "full_name": "wnsdy95/cannae-os",
+    "default_branch": "main"
+  },
+  "policy": {
+    "id": "GRIP-cannae-os-20260727",
+    "relative_path": ".github/release-integrity-policy.json",
+    "sha256": "d436e787bb3d8547f10d03f0b2e1aad5a333dbfce3a27c9a14af6386f15f958e",
+    "head_blob_sha256": "f7b97452bd59b35405892d0f247540f8819cc9486978f921806b112267eb9092",
+    "introduction_commit_sha": "b389896410c89e908e1931d012dfbfa222bc4ea7",
+    "introduction_time": "2026-07-28T14:45:27+09:00"
+  },
+  "bootstrap": {
+    "checkpoint_relative_path": ".github/tuf/github-release-trust-checkpoint.json",
+    "checkpoint_id": "GRTC-0-1b479ae7dab5",
+    "checkpoint_sha256": "5bd5ac4d08bc729fedb29a0ba9f84f7338b75bc40bfd425da24627d8d03ebbf4",
+    "trusted_root_relative_path": ".github/tuf/github-release-trust-bootstrap-root.json",
+    "trusted_root_artifact_id": "GRTR-10-8481a3ed2d43",
+    "trusted_root_artifact_sha256": "0a604372b694ed5fa76925e9c84bc5d46fbf601b6b709ffc283053b28e0214ed"
+  },
+  "blocked_runs": [
+    {
+      "run_id": "30332600269",
+      "run_number": 9,
+      "run_attempt": 1,
+      "run_created_at": "2026-07-28T05:45:30Z",
+      "head_sha": "b389896410c89e908e1931d012dfbfa222bc4ea7",
+      "conclusion": "failure",
+      "artifact_id": "8677915306",
+      "artifact_name": "release-integrity-30332600269-1",
+      "artifact_digest": "sha256:02d59ab55240e0d888f2dee81062face78f229ad9785ddf3e09dba951b4614ef",
+      "artifact_created_at": "2026-07-28T05:45:48Z",
+      "artifact_expires_at": "2026-08-27T05:45:47Z",
+      "observation_id": "GRIO-20260728054543-70888f0b6861",
+      "observation_sha256": "97fe488b54e62a7f4d8dbad686c2337d38c54ad15630f1e85f3165a66e251a14",
+      "observed_at": "2026-07-28T05:45:43.909Z",
+      "checkpoint_failure_code": "GITHUB_RELEASE_TRUST_CHECKPOINT_STALE"
+    },
+    {
+      "run_id": "30333702332",
+      "run_number": 10,
+      "run_attempt": 1,
+      "run_created_at": "2026-07-28T06:06:17Z",
+      "head_sha": "10ed991e26b8d2db5f983fddd63ff98f9fd6794f",
+      "conclusion": "failure",
+      "artifact_id": "8678313083",
+      "artifact_name": "release-integrity-30333702332-1",
+      "artifact_digest": "sha256:c2e1ac605d6cd43d9635c567e1cae28a3fbf462f7884b0cbf20208a83603ccd1",
+      "artifact_created_at": "2026-07-28T06:06:35Z",
+      "artifact_expires_at": "2026-08-27T06:06:34Z",
+      "observation_id": "GRIO-20260728060629-a888d60312b0",
+      "observation_sha256": "d3d7b415bcb977e19175564a002dcb57b6555ff81bcc5dbe62a68669c99e3f14",
+      "observed_at": "2026-07-28T06:06:29.359Z",
+      "checkpoint_failure_code": "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID"
+    }
+  ],
+  "user_grant": {
+    "authority": "USER",
+    "grant_id": "USER-GRANT-PHASE-19E-INITIAL-RECOVERY-20260728",
+    "purpose": "initial_bootstrap_recovery",
+    "granted_at": "2026-07-28T06:56:39.000Z"
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "monitoring_only": true,
+    "checkpoint_reset_authorized": false,
+    "release_authorized": false
+  },
+  "initial_bootstrap_recovery_authorized": true,
+  "checkpoint_reset_authorized": false,
+  "release_authorized": false,
+  "authorized_at": "2026-07-28T06:56:54.000Z",
+  "expires_at": "2026-07-28T07:51:54.000Z",
+  "recovery_sha256": "0801571808955f500a484972f22407e65afff3555d57f5f0e6c0471a0355d337"
+}

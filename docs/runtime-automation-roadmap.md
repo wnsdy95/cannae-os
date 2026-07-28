@@ -21,7 +21,7 @@ Manual doctrine docs
 -> Operational skill mission lifecycle
 ```
 
-Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, GitHub Actions and GitLab CI OIDC execution adapters, independent GitHub release bundle/TUF verification, provider-retained monotonic release-trust checkpoints, and the operational Codex/Claude skill lifecycle are implemented as local runtimes. UI, enterprise/self-managed providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
+Current repository state: Phases 0-3 have executable prototypes. Repository-scoped proof persistence, bounded campaign supervision, comparative control-plane promotion, signed comparative evidence, pre-dispatch verifier readiness, GitHub Actions and GitLab CI OIDC execution adapters, independent GitHub release bundle/TUF verification, provider-retained monotonic release-trust checkpoints with bounded initial-bootstrap recovery, and the operational Codex/Claude skill lifecycle are implemented as local runtimes. UI, enterprise/self-managed providers, operated transparency infrastructure, and native sandbox enforcement remain prototype-grade or external.
 
 ## 1. Phase 0: Documentation Base
 
@@ -1287,7 +1287,64 @@ Remaining hardening:
 
 See `github-release-trust-checkpoint-continuity.md`.
 
-## 28. Release Gates
+## 28. Phase 19E: Initial Bootstrap Recovery
+
+Status: one-time USER recovery contract, exact failed-artifact replay,
+current-run admission, schema/semantic validation, operating wrapper, and
+adversarial fixtures are implemented.
+
+Goal:
+
+- Recover only the first provider checkpoint transition when initial runs
+  retained complete blocked observations and trusted roots but emitted no
+  checkpoint, without turning missing evidence into fallback or reset
+  authority.
+
+Implemented controls:
+
+- `GitHubReleaseBootstrapRecovery` binds the original policy introduction,
+  exact current policy bytes, fresh committed sequence-zero checkpoint/root,
+  every policy-matching failed run and artifact, every blocked observation,
+  one USER grant, and a maximum 60-minute validity inside the original
+  four-hour bootstrap window;
+- the provider store proves complete bounded run history and accepts only
+  first-attempt failed artifacts containing exactly observation and root;
+- each observation is schema-validated and semantically replayed against the
+  exact policy, repository, default branch, run, artifact metadata, and root;
+- only stale-genesis or missing-checkpoint archive failure is recoverable,
+  with credential unavailability as the sole optional second issue;
+- the consumer must be the newest in-progress attempt-one workflow run at
+  exact current `HEAD`;
+- successful runs, complete checkpoints, missing/deleted artifacts, unknown
+  issues, reruns, history truncation, expiry, and substitutions fail closed;
+- accepted provenance advances the ordinary deterministic sequence from zero
+  to one and never authorizes checkpoint reset or release; and
+- Codex and Claude expose the same evidence-derived authorization command and
+  operating rules.
+
+Completion criteria:
+
+- Exact retained initial failure evidence and one current USER contract admit
+  sequence-zero consumption once.
+- Omitted runs, altered authority, expired validity, offline consumers,
+  additional archive members, and unknown issues fail.
+- A complete provider checkpoint always uses normal lineage and never invokes
+  recovery.
+- Recovery provenance is schema-valid and replayable in the sequence-one full
+  observation.
+- Monitoring can remain blocked for a separate credential issue; release
+  authorization still requires a later successful `ready` provider artifact.
+
+Remaining hardening:
+
+- dedicated short-lived Administration-read monitor credentials;
+- external durable checkpoint storage and independent witnesses;
+- protected USER signatures and trusted time; and
+- a separately designed incident reset contract for established lineage.
+
+See `github-release-trust-checkpoint-continuity.md`.
+
+## 29. Release Gates
 
 | Gate | Condition |
 | --- | --- |
@@ -1321,8 +1378,9 @@ See `github-release-trust-checkpoint-continuity.md`.
 | G29 | Every Phase 19B full observation binds the tracked activation baseline to a live Administration-read enabled policy and every published tag; each post-activation release must be immutable and carry a GitHub-verified exact repository/tag/commit/asset attestation, credential uncertainty remains blocked, and monitoring retains policy mutation and release false |
 | G30 | Every Phase 19C publisher receipt or ready integrity observation replays the complete pinned GitHub TUF chain and target against an explicit clock, independently verifies the retained Sigstore bundle and exact signed release statement, cross-checks the CLI projection, retains verifier/root digests, and leaves all verification evidence release false; active publication accepts only v0.4 and preflights TUF validity through authorization expiry before external mutation |
 | G31 | Every Phase 19D ready observation and active v0.5 release operation consumes one fresh exact predecessor lineage, rejects rollback, same-version conflict, root discontinuity, retrieval rollback, sequence fork, artifact or producer substitution, and missing latest retention without fallback; USER remains final authority while checkpoint reset and all nonterminal release claims remain false |
+| G32 | Phase 19E may consume sequence zero only from one unexpired USER contract that exactly enumerates every retained policy-matching initial failure artifact, proves each two-file observation/root pair and the newest in-progress current run, and leaves checkpoint reset and release false |
 
-## 29. Related Documents
+## 30. Related Documents
 
 - `schema-files/README.md`
 - `validator-prototype.md`

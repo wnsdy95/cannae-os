@@ -10,6 +10,9 @@ material reconstructed from GitHub's TUF repository.
 Phase 19D compares that state with a retained predecessor checkpoint so a
 validly signed rollback or same-version conflict cannot silently replace a
 newer state.
+Phase 19E permits one exact USER-authorized initial-bootstrap recovery only
+when every policy-matching failed run retained a replayable blocked
+observation and verified root but no checkpoint.
 
 This is a read-only assurance path. It can alert and retain evidence. It cannot
 enable or disable repository policy, repair a tag or release, publish an
@@ -84,6 +87,8 @@ the current commit ancestry. It binds:
 - committed Phase 19D bootstrap checkpoint/root paths, exact workflow and
   artifact naming, a 12-hour checkpoint limit, four-hour one-time bootstrap,
   bounded run history, and fail-closed predecessor behavior;
+- the fixed Phase 19E recovery path, whose separate contract may authorize
+  only one monitoring bootstrap and never checkpoint reset or release;
 - a six-hour cadence and bounded attestation retry;
 - fail-closed credential, policy-drift, and attestation behavior; and
 - USER final authority with both policy mutation and release false.
@@ -117,6 +122,12 @@ One observation records:
 `scope: full` requires the live policy observation and all published releases.
 `scope: release_attestation` verifies one exact release-event tag and
 explicitly records that policy drift was not assessed.
+
+Sequence one may record `repository_bootstrap_recovery` predecessor
+provenance. That provenance binds the committed recovery digest, USER grant,
+blocked-run count, original policy introduction, genesis, and bootstrap root.
+It remains monitoring evidence with reset and release false. Later
+observations return to ordinary `github_actions_artifact` provenance.
 
 ## 5. Attestation Verification
 
@@ -269,6 +280,15 @@ The full monitor first tries `CANNAE_IMMUTABILITY_MONITOR_TOKEN` and otherwise
 uses the job token. If the active token cannot read repository Administration,
 the observation records `credential_unavailable` and the job fails.
 
+The only partial-artifact exception is Phase 19E. It accepts exactly the
+two-file observation/root shape, only the two enumerated initial checkpoint
+failure codes, every matching failed run, one fresh committed USER recovery,
+and the newest in-progress first attempt at current `HEAD`. It cannot consume
+a successful run, a complete checkpoint, a deleted artifact, an unknown
+issue, a rerun, incomplete history, or an expired authorization. The accepted
+run can advance checkpoint continuity while remaining blocked on an
+independent credential issue.
+
 Do not place the owner's broad `gh` OAuth token in this secret. Use a
 repository-selected fine-grained token held by a dedicated monitoring
 principal, with Administration **read-only**, or inject an equivalently
@@ -295,6 +315,7 @@ automatically.
 | Missing or mismatched attestation | Block | Retry bounded verification, then investigate GitHub/release state |
 | TUF root or metadata unavailable, stale, or invalid | Block and retain explicit trust failure | Investigate network, metadata rotation, expiry, or bootstrap integrity |
 | Prior checkpoint missing, stale, forked, rolled back, equivocated, or no longer retained | Block without older/bootstrap fallback | Investigate workflow and artifact lineage; no automatic reset |
+| Initial runs retained only exact recoverable observation/root pairs | Block unless the USER issues the bounded Phase 19E contract inside the original bootstrap window | Generate the contract from provider evidence; never delete, rerun, or fall back |
 | Historical rerun has a newer stable run, or prior attempt identity differs | Block as checkpoint fork | Inspect exact run/attempt history; do not mint replacement genesis |
 | Full observation is missing, blocked for release use, malformed, or differs from the archived root/checkpoint | Block release admission | Replay the exact observation triplet; never trust a two-file or self-asserted checkpoint |
 | Independent bundle replay fails | Block | Compare raw bundle, root, signed statement, package lock, and verifier code |

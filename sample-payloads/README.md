@@ -33,6 +33,7 @@ Use these examples to test:
 - exact GitHub release authorization and terminal receipt validation
 - GitHub release-immutability policy authorization and receipt validation
 - GitHub release-integrity policy and continuous observation validation
+- GitHub release initial-bootstrap recovery validation
 - maintenance readiness validation
 - backbrief validation
 - rehearsal validation
@@ -129,5 +130,13 @@ uncertainty, mutable future releases, GitHub attestation commit substitution,
 missing or changed baseline releases, uncommitted-policy substitution, stale
 default-branch state, parent-symlink output escape, bounded retry, and exact
 release-event scope.
+
+The Phase 19E bootstrap-recovery samples define the only partial initial
+checkpoint exception. The valid contract binds one exact USER grant, policy
+introduction, sequence-zero checkpoint/root, failed run, retained artifact,
+and blocked observation while reset and release remain false. The invalid
+sample proves that AI authority cannot enter this path. Use
+`run-github-release-trust-checkpoint-fixtures.js` for exact run-set,
+current-run, expiry, missing-authorization, and normal-lineage behavior.
 
 Use `run-protected-tool-gateway-fixtures.js` for coherent contract-reference authorization, idempotency, exact begin/commit correlation, pre-execution cancellation, and unknown-outcome recovery. Use `run-gateway-identity-adapter-fixtures.js` for a real TLS 1.3 mTLS handshake, SPIFFE X.509 chain, equal endpoint exporter proof, Ed25519 challenge/evidence signatures, manifest-backed gateway commit, and adversarial expiry, replay, revocation, tamper, challenge-reuse, and certificate-substitution rejection. Use `run-protected-process-executor-fixtures.js` for real exact process execution, signed before/after evidence, caller-result rejection, executable drift, timeout, no-rerun recovery, and forbidden repository-effect rejection. Use `run-oci-linux-sandbox-provider-fixtures.js` for measured container execution and no-rerun recovery. Use `run-production-sandbox-admission-fixtures.js` for cryptographic quorum/admission behavior and `run-production-sandbox-gateway-fixtures.js` for actual mTLS identity, exact production scope, external coordinator enforcement, and v0.5 terminal projection.

@@ -12,6 +12,7 @@ const {
   resolveRepositoryPath,
   validateIntegrityObservationSemantics,
   validateIntegrityPolicySemantics,
+  validateRetainedInitialBootstrapFailureArtifact,
   validateRetainedFullObservationArtifact
 } = require("./github-release-integrity-monitor");
 const { ReleaseAuthorizationError } = require("./github-release-publisher");
@@ -549,6 +550,20 @@ function runFixtures() {
       )
     ));
 
+    const delayedArtifactTime = JSON.parse(
+      JSON.stringify(artifact)
+    );
+    delayedArtifactTime.provenance.artifact_created_at =
+      "2026-07-27T12:01:01.000Z";
+    results.push(expectError(
+      "artifact creation more than 60 seconds after observation is rejected",
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_BINDING_INVALID",
+      () => validateRetainedFullObservationArtifact(
+        delayedArtifactTime,
+        retainedValidationOptions(fixture, true)
+      )
+    ));
+
     const forgedTransition = JSON.parse(
       JSON.stringify(artifact)
     );
@@ -599,6 +614,143 @@ function runFixtures() {
         observation.issues.some(issue =>
           issue.code ===
             "GITHUB_RELEASE_CHECKPOINT_ARTIFACT_MISSING") &&
+        validatePayload(
+          observation,
+          "github-release-integrity-observation"
+        ).valid === true
+    });
+  }
+
+  {
+    const fixture = makeFixture();
+    const observation = monitorRepository(
+      monitorOptions(fixture, {
+        previousTrustCheckpoint: null,
+        previousTrustedRoot: null,
+        checkpointProvenance: null,
+        trustCheckpointFailure: {
+          code: "GITHUB_RELEASE_TRUST_CHECKPOINT_STALE",
+          message: "fixture genesis exceeded its age bound"
+        }
+      }),
+      fixture.adapter
+    );
+    const artifactName =
+      `release-integrity-${observation.trigger.run_id}-1`;
+    const artifact = {
+      trusted_root: JSON.parse(JSON.stringify(
+        observation.trusted_root_observation.artifact
+      )),
+      full_observation:
+        JSON.parse(JSON.stringify(observation)),
+      provenance: {
+        source: "github_actions_artifact",
+        run_id: observation.trigger.run_id,
+        run_attempt: 1,
+        head_sha: observation.repository.observed_head_sha,
+        conclusion: "failure",
+        artifact_id: "54322",
+        artifact_name: artifactName,
+        artifact_digest: `sha256:${"b".repeat(64)}`,
+        artifact_created_at:
+          "2026-07-27T12:00:01.000Z",
+        artifact_expires_at:
+          "2026-08-26T12:00:01.000Z"
+      }
+    };
+    const options = {
+      ...retainedValidationOptions(fixture, false),
+      expectedRun: {
+        id: Number(observation.trigger.run_id),
+        run_attempt: 1,
+        head_sha: observation.repository.observed_head_sha,
+        conclusion: "failure",
+        path: ".github/workflows/release-integrity.yml",
+        status: "completed",
+        event: "schedule",
+        created_at: "2026-07-27T11:59:00.000Z"
+      },
+      expectedArtifactName: artifactName
+    };
+    results.push({
+      name: "recoverable initial failure artifact replays one exact blocked observation and root",
+      ok: validateRetainedInitialBootstrapFailureArtifact(
+        artifact,
+        options
+      ) === true
+    });
+
+    const unknownIssue = JSON.parse(JSON.stringify(artifact));
+    unknownIssue.full_observation.issues.push({
+      severity: "critical",
+      code: "GITHUB_RELEASE_UNKNOWN_RECOVERY_BYPASS",
+      scope: "checkpoint",
+      message: "fixture unknown issue"
+    });
+    unknownIssue.full_observation.summary.issue_count += 1;
+    unknownIssue.full_observation.observation_sha256 =
+      observationDigest(unknownIssue.full_observation);
+    results.push(expectError(
+      "unknown blocked issue cannot enter initial recovery",
+      "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_ARTIFACT_INVALID",
+      () => validateRetainedInitialBootstrapFailureArtifact(
+        unknownIssue,
+        options
+      )
+    ));
+
+    const completedArtifact = JSON.parse(JSON.stringify(artifact));
+    completedArtifact.checkpoint =
+      monitorOptions(fixture).previousTrustCheckpoint;
+    results.push(expectError(
+      "artifact carrying any checkpoint cannot enter initial recovery",
+      "GITHUB_RELEASE_BOOTSTRAP_RECOVERY_ARTIFACT_INVALID",
+      () => validateRetainedInitialBootstrapFailureArtifact(
+        completedArtifact,
+        options
+      )
+    ));
+  }
+
+  {
+    const fixture = makeFixture();
+    const baseOptions = monitorOptions(fixture);
+    const observation = monitorRepository(
+      {
+        ...baseOptions,
+        checkpointProvenance: {
+          source: "repository_bootstrap_recovery",
+          policy_introduction_commit: FUTURE_SHA,
+          policy_introduction_time:
+            "2026-07-27T11:00:00.000Z",
+          bootstrap_checkpoint_path:
+            ".github/tuf/github-release-trust-checkpoint.json",
+          bootstrap_checkpoint_sha256:
+            baseOptions.previousTrustCheckpoint
+              .checkpoint_sha256,
+          bootstrap_trusted_root_path:
+            ".github/tuf/github-release-trust-bootstrap-root.json",
+          bootstrap_trusted_root_sha256:
+            TRUSTED_ROOT.artifact_sha256,
+          recovery_authorization_path:
+            ".github/tuf/github-release-bootstrap-recovery.json",
+          recovery_authorization_sha256:
+            "c".repeat(64),
+          recovery_grant_id:
+            "USER-GRANT-FIXTURE-PHASE-19D",
+          blocked_run_count: 2
+        }
+      },
+      fixture.adapter
+    );
+    results.push({
+      name: "recovered genesis provenance remains schema-valid and replayable in sequence one",
+      ok: observation.trust_checkpoint_observation.status ===
+          "verified" &&
+        observation.trust_checkpoint_observation.provenance
+          .source === "repository_bootstrap_recovery" &&
+        validateIntegrityObservationSemantics(observation)
+          .length === 0 &&
         validatePayload(
           observation,
           "github-release-integrity-observation"
