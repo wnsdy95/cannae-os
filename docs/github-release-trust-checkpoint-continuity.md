@@ -214,6 +214,29 @@ After that run retains a complete observation/root/checkpoint triplet, normal
 provider-artifact continuity takes over and the recovery document is no
 longer consulted.
 
+### Live Continuity Proof
+
+The 2026-07-28 deployment proved both transitions on `main` at
+`6fc3cba04d01fe69fdee2bd20fa301215def123e`:
+
+| Transition | Workflow evidence | Checkpoint evidence | Predecessor provenance |
+| --- | --- | --- | --- |
+| sequence 0 to 1 | push run `30338646806`, artifact `8680141105`, artifact digest `sha256:ac623b59b4692dd537f3c94ef1ad5d8c304552efb6071c30cc3de5bc736949e3` | `GRTC-1-2c648122261b`, digest `62cb8928660c2aa46faec526422f5097146fafd623919aa3494f7601e7213724` | `repository_bootstrap_recovery`, recovery digest `0801571808955f500a484972f22407e65afff3555d57f5f0e6c0471a0355d337`, two blocked runs |
+| sequence 1 to 2 | manual run `30338779941`, artifact `8680186259`, artifact digest `sha256:43f0940cb9ad77bea269a6cbd3a85620f1f20dfe1ec352bfdc3c5e1200d2bdec` | `GRTC-2-f4f90a807d04`, digest `184bd1a977ed01de574fed24cf314e58d163a9bbd705baa2bffa7c5667cce854` | `github_actions_artifact`, exact run `30338646806` attempt 1 and its retained artifact digest |
+
+Both artifacts contained exactly the full observation, trusted root, and
+checkpoint. Both observations passed standalone schema and semantic replay,
+reported checkpoint continuity as verified, and kept checkpoint reset and
+release authorization false. The jobs remained blocked only by
+`GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE`; this is an independent
+policy-observation failure, not a checkpoint-continuity failure.
+
+Operational acceptance of an initial recovery therefore requires two
+distinct first-attempt runs: the recovery consumer must produce sequence one,
+and a new stable run must consume that complete provider artifact to produce
+sequence two through the normal path. Do not use a rerun of either historical
+failure as the second proof.
+
 ## 6. Monitor v0.3
 
 `GitHubReleaseIntegrityPolicy` v0.3 binds:

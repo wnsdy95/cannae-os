@@ -183,6 +183,14 @@ future release evidence:
    60-minute validity inside the original bootstrap window. Require the
    generated contract to enumerate every matching failure and keep reset and
    release false.
+   After merge, accept recovery only after two distinct new attempt-one
+   workflow runs. The first must retain a complete sequence-one triplet with
+   `repository_bootstrap_recovery` provenance. A second stable run, not a
+   rerun, must consume that exact provider artifact and retain sequence two
+   with `github_actions_artifact` provenance. Record both run, artifact,
+   observation, checkpoint, and digest identities; require semantic replay
+   and keep reset/release false even when a separate credential issue blocks
+   readiness.
 2. Run `scripts/operate_github_release_integrity.js monitor` with a
    repository-contained observation path, `--trusted-root-output` path, and
    `--trust-checkpoint-output` path.

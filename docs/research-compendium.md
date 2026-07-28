@@ -5079,14 +5079,37 @@ release.
   issue, and any artifact carrying a checkpoint fail;
 - normal complete checkpoint artifacts never invoke recovery;
 - missing authorization never falls back to repository bootstrap; and
-- all 36 checkpoint, 28 monitor, and 223 validator fixtures pass before live
-  provider continuation.
+- all 36 checkpoint, 29 monitor, and 223 validator fixtures pass.
+
+### Live Provider Continuation
+
+PR `#41` merged Phase 19E at
+`6fc3cba04d01fe69fdee2bd20fa301215def123e`. The resulting push run
+`30338646806` consumed recovery `GRBR-73b3ec37a953`, replayed both prior
+blocked artifacts, and retained artifact `8680141105` with digest
+`sha256:ac623b59b4692dd537f3c94ef1ad5d8c304552efb6071c30cc3de5bc736949e3`.
+Its observation proved
+`GRTC-0-1b479ae7dab5 -> GRTC-1-2c648122261b` with
+`repository_bootstrap_recovery` provenance.
+
+A separate first-attempt manual run `30338779941` then retained artifact
+`8680186259` with digest
+`sha256:43f0940cb9ad77bea269a6cbd3a85620f1f20dfe1ec352bfdc3c5e1200d2bdec`.
+It selected the exact run `30338646806` artifact through the ordinary provider
+path and proved
+`GRTC-1-2c648122261b -> GRTC-2-f4f90a807d04` with
+`github_actions_artifact` provenance.
+
+Both artifacts contained exactly three files. Both full observations passed
+standalone schema and semantic validation, reported verified checkpoint
+continuity, and retained false reset/release authority. Both workflow jobs
+failed only because the dedicated Administration-read monitor credential is
+not installed. The result proves checkpoint recovery and ordinary successor
+continuity without claiming policy-monitor readiness or release readiness.
 
 ### Residual Work
 
 - install a dedicated least-privilege Administration-read monitoring identity;
-- prove the first recovered provider triplet and its next ordinary successor
-  in live Actions;
 - retain checkpoint state in an independently operated append-only store;
 - add independent liveness witnesses and trusted time; and
 - design a separate incident-reset contract for established lineage. Phase

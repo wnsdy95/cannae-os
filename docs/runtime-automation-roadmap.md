@@ -1290,8 +1290,9 @@ See `github-release-trust-checkpoint-continuity.md`.
 ## 28. Phase 19E: Initial Bootstrap Recovery
 
 Status: one-time USER recovery contract, exact failed-artifact replay,
-current-run admission, schema/semantic validation, operating wrapper, and
-adversarial fixtures are implemented.
+current-run admission, schema/semantic validation, operating wrapper,
+adversarial fixtures, and live sequence-zero to sequence-two provider
+continuity are implemented.
 
 Goal:
 
@@ -1334,6 +1335,18 @@ Completion criteria:
   observation.
 - Monitoring can remain blocked for a separate credential issue; release
   authorization still requires a later successful `ready` provider artifact.
+
+Live acceptance evidence:
+
+- push run `30338646806` used
+  `repository_bootstrap_recovery` to produce
+  `GRTC-1-2c648122261b` from the committed sequence-zero genesis;
+- separate manual run `30338779941` used the retained run `30338646806`
+  artifact through normal `github_actions_artifact` provenance to produce
+  `GRTC-2-f4f90a807d04`; and
+- both exact three-file observations replayed successfully, kept reset and
+  release false, and remained blocked only on the independently missing
+  Administration-read monitor credential.
 
 Remaining hardening:
 
