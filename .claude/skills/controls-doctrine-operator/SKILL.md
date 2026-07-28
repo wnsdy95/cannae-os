@@ -165,6 +165,15 @@ future release evidence:
    equal the tracked current-HEAD blob and its activation commit is in HEAD
    ancestry; never infer or rewrite its baseline from the current release
    list.
+   For an initial deployment with no eligible artifact lineage, refresh and
+   validate the committed bootstrap root and genesis against one explicit UTC
+   clock immediately before merge, bind the genesis to the current pre-merge
+   default-branch HEAD and an exact USER grant, and finish the first `main`
+   monitor run within both the four-hour bootstrap window and twelve-hour
+   predecessor-age limit. An open bootstrap window does not make stale
+   bootstrap evidence valid. Never rewrite bootstrap files after provider
+   lineage exists; a later reset needs a separate exact USER decision and
+   contract.
 2. Run `scripts/operate_github_release_integrity.js monitor` with a
    repository-contained observation path, `--trusted-root-output` path, and
    `--trust-checkpoint-output` path.
