@@ -4774,7 +4774,7 @@ digest?
   fail;
 - Codex and Claude wrappers resolve the same repository runtime;
 - the current integrated regression retains all 17 independent-verification,
-  29 publisher, 20 monitor, 23 checkpoint, and 218 validator fixture passes;
+  39 publisher, 24 monitor, 31 checkpoint, and 221 validator fixture passes;
   and
 - every new root, verification, receipt, policy, and observation contract
   preserves USER final authority and release false.
@@ -4828,6 +4828,25 @@ authority with the USER and representing provider-retention limits honestly?
    TUF reports attacks and aborts; it does not decide application-specific
    recovery. A missing predecessor cannot safely authorize a new genesis
    without a separate authority decision.
+6. GitHub reruns preserve one stable run identity.
+   GitHub's [rerun guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs)
+   says reruns retain the original event SHA/ref. The
+   [variables reference](https://docs.github.com/en/actions/reference/workflows-and-actions/variables)
+   keeps run ID/number stable while incrementing the attempt, and the
+   [workflow-run API](https://docs.github.com/en/rest/actions/workflow-runs?apiVersion=2026-03-10)
+   exposes one exact attempt under Actions read permission.
+7. Event SHA and workflow SHA are different trust inputs.
+   GitHub's [event reference](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)
+   defines release `GITHUB_SHA` as the tagged commit, while the
+   [contexts reference](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts)
+   exposes `workflow_ref` and the commit containing the workflow as
+   `workflow_sha`. Release-tag code must remain inspection input rather than
+   executable monitor code.
+8. Full commit pins are the immutable action reference.
+   GitHub's [secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use)
+   states that a full-length commit SHA is the only immutable action
+   reference. A moving major tag is not sufficient for a credential-bearing
+   monitor.
 
 ### Design Decisions
 
@@ -4847,10 +4866,16 @@ authority with the USER and representing provider-retention limits honestly?
    The current root chain must contain the exact previously trusted root
    bytes, and current retrieval time cannot precede prior retrieval time.
 5. Use one bounded provider store.
-   The latest eligible run must be in current ancestry, contain the exact
-   current policy bytes, retain exactly one expected artifact, and match the
-   checkpoint's workflow, run, attempt, and head producer. Archive digest,
-   expiry, bounded file sizes, unique names, and safe paths are verified.
+   The greatest stable eligible run number must be in current ancestry,
+   contain the exact current policy bytes, retain exactly one expected
+   artifact, and match the checkpoint's workflow, run, attempt, and head
+   producer. Archive digest, expiry, bounded file sizes, unique names, and
+   safe paths are verified. The archive must carry one full observation whose
+   schema, deterministic transition replay, root, checkpoint, repository,
+   policy, run, branch, and producer bindings all verify. Mutable timestamp
+   strings do not order lineage. A 60-second observation-to-artifact creation
+   tolerance covers API timestamp precision only and does not widen any trust
+   expiry or authorization window.
 6. Refuse silent fallback.
    If the latest eligible run exists but its artifact is absent, older
    artifacts and repository bootstrap are not considered. This turns
@@ -4861,9 +4886,23 @@ authority with the USER and representing provider-retention limits honestly?
    checkpoint policy. Later policy edits cannot reopen the window.
 8. Integrate without widening authority.
    Monitor policy/observation v0.3 require continuity. Publisher
-   authorization/receipt v0.5 bind the exact checkpoint/root pair into the
-   USER grant and recheck it before any release creation. Checkpoint reset and
-   all monitoring release fields remain false.
+   authorization/receipt v0.5 accept only a successful `ready` non-genesis
+   observation/root/checkpoint triplet from the latest full-monitor artifact,
+   bind its run/attempt/artifact lineage into the USER grant, resolve it
+   again, and recheck mutable authorization/repository/policy state before any
+   release creation.
+   Checkpoint reset and all monitoring release fields remain false.
+9. Treat reruns as attempts, not newer events.
+   An attempt after the first may consume only its immediately prior attempt.
+   If a newer stable run exists, rerunning the historical run would fork the
+   checkpoint chain and is rejected.
+10. Fail closed at schema and workflow boundaries.
+    Used schema combinators, conditional requirements, positional items,
+    contained items, and nested additional-property bans are executable
+    errors. Workflows require exact default-branch workflow identity, check
+    out immutable `workflow_sha`, pin every action by full commit SHA, grant
+    Actions read, and run on every `main` push rather than maintaining a
+    brittle dependency-path allowlist.
 
 ### Rejected Alternatives
 
@@ -4877,6 +4916,22 @@ authority with the USER and representing provider-retention limits honestly?
   artifact deletion would become a rollback mechanism.
 - Reopening bootstrap after every policy edit: routine changes would become
   implicit checkpoint-reset authority.
+- Sorting by workflow `updated_at`: a rerun can mutate that field and make an
+  older run look newer than its stable run number.
+- Allowing historical reruns to consume their own old attempt after a newer
+  run: this creates two valid-looking successors from one predecessor.
+- Treating a downloaded local checkpoint as proof of latest artifact state:
+  an operator or compromised process could mint or preserve a different
+  sequence and present it to release authorization.
+- Accepting only checkpoint/root files from an artifact: both are
+  self-asserted without the schema-valid full observation that replays their
+  predecessor transition and monitor result.
+- Executing release-event `github.sha`: it is the tagged release commit, not
+  the protected default-branch workflow commit.
+- Referencing credential-bearing third-party actions through a moving major
+  tag: the action source can change without a workflow commit.
+- Maintaining a hand-written push path allowlist: future runtime inputs such
+  as npm configuration or a new helper can escape checkpoint acquisition.
 - Extracting the entire ZIP before path and type validation: crafted archive
   members could affect the filesystem before rejection.
 - Calling GitHub artifacts independently durable: GitHub controls workflow,
@@ -4895,7 +4950,8 @@ authority with the USER and representing provider-retention limits honestly?
 - `run-github-release-trust-checkpoint-fixtures.js`;
 - integrity policy/observation v0.3 integration;
 - publisher authorization/receipt v0.5 integration;
-- push, release, schedule, and manual workflow retention; and
+- every-main-push, schedule, default-branch manual, and separate release-event
+  attestation retention with immutable workflow/action source; and
 - equivalent Codex and Claude routing and operating rules.
 
 ### Measured Behavior
@@ -4907,11 +4963,21 @@ authority with the USER and representing provider-retention limits honestly?
   forks, root substitution, and authority expansion fail;
 - bootstrap expiry and ordinary-policy-change replay fail;
 - latest artifact selection succeeds, while missing latest retention,
-  producer substitution, path traversal, and option-like archive members
-  fail;
-- missing, stale, path-substituted, or alternate valid checkpoints stop the
-  publisher before any release creation call; and
-- all 23 checkpoint, 29 publisher, 20 monitor, and 218 validator fixtures
+  producer substitution, historical rerun forks, missing exact attempts,
+  path traversal, and option-like archive members fail;
+- a real artifact ZIP requires all three observation/root/checkpoint members;
+- blocked observations remain usable only as continuity predecessors, while
+  release admission requires a successful `ready` replay;
+- incomplete/off-default reruns, forged transition replay, policy drift or
+  authorization expiry during lineage resolution, and schema-invalid trusted
+  roots fail before release creation;
+- a post-create attestation failure can reconcile only the exact immutable
+  release published within the original authorization window and does not
+  create a second release;
+- missing, stale, schema-invalid, local, genesis, path-substituted,
+  superseded, or alternate valid checkpoints stop the publisher before any
+  release creation call; and
+- all 31 checkpoint, 39 publisher, 24 monitor, and 221 validator fixtures
   pass.
 
 ### Residual Work

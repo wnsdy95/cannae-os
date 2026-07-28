@@ -157,11 +157,20 @@ New `GitHubReleaseAuthorization` artifacts use schema `0.5`. In addition to
 the Phase 19A policy check, they bind the exact attestation-verifier profile
 and require GitHub CLI `2.93.0` or newer, pinned Sigstore verification, and
 the exact GitHub TUF source and bootstrap. They also bind one fresh Phase 19D
-checkpoint and its exact retained root.
+checkpoint, its exact retained root, and the latest non-genesis full-monitor
+artifact lineage. The provider artifact is release-eligible only when its
+uniquely named full observation is schema-valid, replays the checkpoint
+transition, equals the archived root/checkpoint, and reports `ready` from a
+successful run.
 
 Before publication, the active publisher rejects every authorization version
 older than v0.5 and validates the repository-contained root and checkpoint
-against the current clock and the complete authorization window.
+against the current clock and the complete authorization window. It resolves
+the latest eligible artifact from the exact committed policy at authorization
+and again before release creation; it then rechecks authorization freshness,
+repository/CI/notes state, target absence, and immutable-policy state. Local,
+bootstrap, superseded, blocked-observation, or schema-invalid root/checkpoint
+state cannot enter publication.
 
 After publication, the publisher:
 
@@ -175,7 +184,9 @@ After publication, the publisher:
 6. emits `GitHubReleaseReceipt` `0.5` only when every binding matches.
 
 Attestation delay can leave a correctly created release without a receipt.
-An exact retry verifies the existing release and may finish the receipt. It
+An exact retry verifies the existing release and may finish the receipt even
+after authorization expiry only when GitHub recorded publication inside the
+original authorization window and current trust evidence remains fresh. It
 must not recreate, delete, retarget, or repair the release.
 
 Historical authorization and receipt versions remain readable. Version `0.3`
@@ -229,20 +240,30 @@ failure.
 
 - `release-attestation` on every published release using the short-lived
   repository `GITHUB_TOKEN`;
-- `full-monitor` every six hours, on every release, and on manual dispatch;
-- `full-monitor` on relevant pushes to `main` so a new checkpoint policy can
+- `full-monitor` every six hours and on default-branch manual dispatch;
+- `full-monitor` on every push to `main` so a new checkpoint policy can
   establish its first retained artifact inside the bootstrap window;
-- artifact retention for each observation, including blocked observations.
+- artifact retention for each observation, including blocked observations;
 - retention of the exact trusted-root and trust-checkpoint artifacts when
   continuity succeeds.
 
-The workflow grants only `contents: read` and `attestations: read`. Event tag,
-actor, run, and ref values enter the shell through quoted environment
-variables rather than direct expression interpolation. The optional
-Administration-read secret is exposed only to the full-monitor command step,
-not to checkout, Node setup, dependency installation, or artifact-upload
-actions. Both jobs install the exact lockfile with
-`npm ci --ignore-scripts` before loading the schema validator.
+The workflow grants only `actions: read`, `contents: read`, and
+`attestations: read`. Actions read permits exact run-attempt and artifact
+inspection; it does not permit reruns or cancellation. Event tag, actor, run,
+and ref values enter the shell through quoted environment variables rather
+than direct expression interpolation. The optional Administration-read secret
+is exposed only to the full-monitor command step, not to checkout, Node setup,
+dependency installation, or artifact-upload actions. Both jobs install the
+exact lockfile with `npm ci --ignore-scripts` before loading the schema
+validator.
+
+Each job first requires the exact default-branch `github.workflow_ref`, checks
+out immutable `github.workflow_sha` with full history, restores the `main`
+branch identity, and then requires equality with current origin `main`.
+Release-tag `github.sha` is input data, never executable monitor source. Every
+third-party action is pinned to a full commit SHA. The workflow has no narrow
+push path filter, so every merged change produces a monitor run and a newly
+introduced runtime input cannot silently escape checkpoint acquisition.
 
 The full monitor first tries `CANNAE_IMMUTABILITY_MONITOR_TOKEN` and otherwise
 uses the job token. If the active token cannot read repository Administration,
@@ -258,10 +279,10 @@ gh secret set CANNAE_IMMUTABILITY_MONITOR_TOKEN \
   --repo wnsdy95/cannae-os
 ```
 
-The workflow does not run on pull requests, checks out the full `main` history
-so activation ancestry can be proven, and performs no mutation request. A
-failed scheduled run is the alert signal. It does not open issues or change
-policy automatically.
+The workflow does not run on pull requests, fetches full history so activation
+ancestry can be proven, and performs no mutation request. A failed scheduled
+run is the alert signal. It does not open issues or change policy
+automatically.
 
 ## 9. Incident Disposition
 
@@ -274,6 +295,8 @@ policy automatically.
 | Missing or mismatched attestation | Block | Retry bounded verification, then investigate GitHub/release state |
 | TUF root or metadata unavailable, stale, or invalid | Block and retain explicit trust failure | Investigate network, metadata rotation, expiry, or bootstrap integrity |
 | Prior checkpoint missing, stale, forked, rolled back, equivocated, or no longer retained | Block without older/bootstrap fallback | Investigate workflow and artifact lineage; no automatic reset |
+| Historical rerun has a newer stable run, or prior attempt identity differs | Block as checkpoint fork | Inspect exact run/attempt history; do not mint replacement genesis |
+| Full observation is missing, blocked for release use, malformed, or differs from the archived root/checkpoint | Block release admission | Replay the exact observation triplet; never trust a two-file or self-asserted checkpoint |
 | Independent bundle replay fails | Block | Compare raw bundle, root, signed statement, package lock, and verifier code |
 | Asset digest mismatch | Block | Quarantine the asset and investigate publication provenance |
 

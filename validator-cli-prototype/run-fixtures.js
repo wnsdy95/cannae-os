@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const { spawnSync } = require("child_process");
+const fs = require("fs");
+const os = require("os");
 const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
@@ -231,6 +233,22 @@ const fixtures = [
       "PRODUCTION_SANDBOX_POLICY_NOT_ACTIVE",
       "PRODUCTION_SANDBOX_POLICY_REQUIRED_CONTROL_MISSING"
     ]
+  },
+  {
+    name: "production sandbox policy reorders required failure-domain dimensions",
+    file: "sample-payloads/valid-production-sandbox-policy.json",
+    type: "production-sandbox-policy",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH"],
+    mutate(payload) {
+      [
+        payload.quorum.required_dimensions[0],
+        payload.quorum.required_dimensions[1]
+      ] = [
+        payload.quorum.required_dimensions[1],
+        payload.quorum.required_dimensions[0]
+      ];
+    }
   },
   {
     name: "valid production sandbox evidence",
@@ -1073,6 +1091,16 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "v0.3 release integrity policy omits conditional checkpoint policy",
+    file: ".github/release-integrity-policy.json",
+    type: "github-release-integrity-policy",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"],
+    mutate(payload) {
+      delete payload.trust_checkpoint_policy;
+    }
+  },
+  {
     name: "GitHub release integrity policy claims mutation and release authority",
     file: "sample-payloads/invalid-github-release-integrity-policy-authority.json",
     type: "github-release-integrity-policy",
@@ -1563,6 +1591,21 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "transparency incident omits a required contained action",
+    file: "sample-payloads/valid-transparency-incident.json",
+    type: "transparency-incident",
+    exitCode: 1,
+    requiredCodes: ["CONTAINS_MISMATCH"],
+    mutate(payload) {
+      payload.containment_actions =
+        payload.containment_actions.filter(action =>
+          action !== "preserve_evidence");
+      if (payload.containment_actions.length < 2) {
+        payload.containment_actions.push("notify_operator");
+      }
+    }
+  },
+  {
     name: "valid transparency state",
     file: "sample-payloads/valid-transparency-state.json",
     type: "transparency-state",
@@ -1775,10 +1818,37 @@ const fixtures = [
 ];
 
 function runFixture(fixture) {
-  const result = spawnSync("node", [VALIDATOR, fixture.file, fixture.type], {
-    cwd: ROOT,
-    encoding: "utf8"
-  });
+  let temporaryDirectory = null;
+  let fixturePath = fixture.file;
+  if (fixture.mutate) {
+    const payload = JSON.parse(fs.readFileSync(
+      path.resolve(ROOT, fixture.file),
+      "utf8"
+    ));
+    fixture.mutate(payload);
+    temporaryDirectory = fs.mkdtempSync(
+      path.join(os.tmpdir(), "controls-validator-fixture-")
+    );
+    fixturePath = path.join(temporaryDirectory, "payload.json");
+    fs.writeFileSync(
+      fixturePath,
+      `${JSON.stringify(payload, null, 2)}\n`
+    );
+  }
+  const result = spawnSync(
+    "node",
+    [VALIDATOR, fixturePath, fixture.type],
+    {
+      cwd: ROOT,
+      encoding: "utf8"
+    }
+  );
+  if (temporaryDirectory) {
+    fs.rmSync(temporaryDirectory, {
+      recursive: true,
+      force: true
+    });
+  }
 
   let parsed;
   try {

@@ -69,6 +69,7 @@
     "artifact_name_prefix": "release-integrity-",
     "checkpoint_file_name": "github-release-trust-checkpoint.json",
     "trusted_root_file_name": "github-trusted-root.json",
+    "full_observation_file_name": "full-observation.json",
     "maximum_checkpoint_age_seconds": 43200,
     "bootstrap_window_seconds": 14400,
     "maximum_run_history": 100,
@@ -84,5 +85,5 @@
   },
   "repository_policy_change_authorized": false,
   "release_authorized": false,
-  "policy_sha256": "8b8bdf60f9165567d1f1eff2c3e20811540ab1d54fe2eef027cc69c5ee815a25"
+  "policy_sha256": "d436e787bb3d8547f10d03f0b2e1aad5a333dbfce3a27c9a14af6386f15f958e"
 }

@@ -137,7 +137,16 @@ never treats an artifact's own retrieval or record time as the current clock.
 
 ## Current Limits
 
-- Supports only the JSON Schema subset currently used in `schema-files/`.
+- Supports the repository-used structural subset: local/file `$ref`,
+  `type`, `const`, `enum`, numeric/string bounds, patterns,
+  `required`, `properties`, `additionalProperties`, property counts,
+  item counts, uniqueness, `items`, `prefixItems`, `contains`,
+  `allOf`, `anyOf`, `oneOf`, `not`, and `if`/`then`/`else`.
+- Structural violations, including nested additional fields and lightweight
+  HTTP(S) URI or parseable date-time format failures, are blocking errors.
+- The exported `validateSchemaPayload` path performs structural-only
+  preflight where time-based semantic errors need separate policy codes.
+- This remains a repository-specific subset, not a complete JSON Schema
+  draft 2020-12 implementation.
 - Does not yet resolve recursive or remote refs.
-- `format` is treated as a warning-level lightweight check.
 - Semantic rules are intentionally conservative.

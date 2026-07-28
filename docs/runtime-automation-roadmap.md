@@ -1225,9 +1225,13 @@ Implemented controls:
   missing prior root-chain bytes, target/root conflict, backdated retrieval,
   stale state, sequence gaps, and predecessor substitution;
 - `github-release-checkpoint-store.js` selects only the latest completed
-  default-branch run whose commit contains the exact current policy, verifies
-  artifact ID/digest/expiry/run/head bindings, reads only bounded uniquely
-  named files, and checks exact workflow producer identity;
+  default-branch run by stable run number whose commit contains the exact
+  current policy, verifies status/branch/artifact ID/digest/expiry/run/head
+  bindings, reads only bounded uniquely named observation/root/checkpoint
+  files, and checks exact workflow producer identity;
+- reruns consume only the exact immediately prior attempt of the same stable
+  run, while a historical rerun after any newer eligible run is rejected as a
+  fork;
 - a missing latest eligible artifact never falls back to an older artifact or
   repository bootstrap;
 - repository bootstrap exists only for four hours after the first
@@ -1236,10 +1240,19 @@ Implemented controls:
 - integrity policy/observation v0.3 retain predecessor provenance, prior
   checkpoint/root, deterministic current checkpoint, and explicit blocked
   failures;
-- publisher authorization/receipt v0.5 binds the exact fresh checkpoint/root
-  pair into the USER grant and rechecks it before any release creation; and
+- publisher authorization/receipt v0.5 accepts only the latest non-genesis
+  successful `ready` full-monitor artifact, replays its observation, binds its
+  exact checkpoint/root and artifact lineage into the USER grant, resolves
+  that lineage again, and rechecks mutable authorization/repository/policy
+  state before any release creation;
+- the validator enforces used JSON Schema combinators, nested
+  `additionalProperties: false`, positional items, conditional requirements,
+  and contained-item requirements as blocking errors; and
 - the workflow retains observation, root, and checkpoint together every six
-  hours and on relevant `main` pushes, releases, and manual runs.
+  hours, on every `main` push, and on default-branch manual runs; release
+  events use the separate attestation job. Both jobs require exact
+  default-branch workflow identity, immutable `workflow_sha`, full-SHA action
+  pins, and Actions read permission.
 
 Completion criteria:
 
@@ -1248,9 +1261,18 @@ Completion criteria:
 - Root-chain discontinuity, retrieval-time rollback, sequence forks, and
   rehashed predecessor substitutions fail.
 - Missing latest artifacts do not select older or bootstrap state.
+- Historical reruns cannot branch from an older run, and valid reruns consume
+  only their exact prior attempt.
 - Ordinary policy edits do not reauthorize bootstrap.
-- Missing, stale, path-substituted, or otherwise valid but unauthorized
-  checkpoints block before any release creation call.
+- Missing, stale, schema-invalid, local, genesis, path-substituted,
+  superseded, or otherwise valid but unauthorized checkpoints block before
+  any release creation call.
+- Missing, blocked, forged, or root/checkpoint-mismatched full observations,
+  off-default or incomplete reruns, expiry during resolution, and
+  immutable-policy drift block before release creation.
+- A post-create verification retry never creates a second release and can
+  reconcile only the exact immutable release published inside the original
+  authorization window under currently fresh trust evidence.
 - Checkpoint, policy, root, and observation artifacts cannot claim release or
   reset authority.
 

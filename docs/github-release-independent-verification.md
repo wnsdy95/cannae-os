@@ -157,11 +157,15 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release_veri
   --output <independent-verification.json>
 ```
 
-The release publisher consumes the exact root/checkpoint pair through
-`--trusted-root` and `--trust-checkpoint`. The integrity monitor refreshes and
-retains the pair through `--trusted-root-output` and
+The release publisher receives the exact root and checkpoint input copies
+through `--trusted-root` and `--trust-checkpoint`, then independently resolves
+and replays the latest eligible `full-observation.json` artifact before either
+input may enter release admission. The integrity monitor refreshes and retains
+the observation, root, and checkpoint as one artifact triplet through its
+observation output, `--trusted-root-output`, and
 `--trust-checkpoint-output`; refresh or continuity failure still produces a
-blocked observation when the remaining repository checks can run.
+blocked observation when the remaining repository checks can run. A local
+two-file pair is therefore never provider-lineage evidence.
 
 ## 7. Adversarial Coverage
 

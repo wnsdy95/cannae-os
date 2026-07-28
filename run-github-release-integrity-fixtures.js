@@ -11,7 +11,8 @@ const {
   policyDigest,
   resolveRepositoryPath,
   validateIntegrityObservationSemantics,
-  validateIntegrityPolicySemantics
+  validateIntegrityPolicySemantics,
+  validateRetainedFullObservationArtifact
 } = require("./github-release-integrity-monitor");
 const { ReleaseAuthorizationError } = require("./github-release-publisher");
 const { validatePayload } = require("./validator-cli-prototype/validate");
@@ -22,6 +23,7 @@ const {
   findRuntimeRoot: findClaudeRuntimeRoot
 } = require("./.claude/skills/controls-doctrine-operator/scripts/operate_github_release_integrity");
 const {
+  checkpointDigest,
   initializeGitHubReleaseTrustCheckpoint
 } = require("./github-release-trust-checkpoint");
 
@@ -128,6 +130,7 @@ function makePolicy(options = {}) {
       checkpoint_file_name:
         "github-release-trust-checkpoint.json",
       trusted_root_file_name: "github-trusted-root.json",
+      full_observation_file_name: "full-observation.json",
       maximum_checkpoint_age_seconds: 43200,
       bootstrap_window_seconds: 14400,
       maximum_run_history: 100,
@@ -348,6 +351,46 @@ function monitorOptions(fixture, overrides = {}) {
   };
 }
 
+function retainedArtifact(observation, conclusion = "success") {
+  return {
+    checkpoint: JSON.parse(JSON.stringify(
+      observation.trust_checkpoint_observation.current_checkpoint
+    )),
+    trusted_root: JSON.parse(JSON.stringify(
+      observation.trusted_root_observation.artifact
+    )),
+    full_observation: JSON.parse(JSON.stringify(observation)),
+    provenance: {
+      source: "github_actions_artifact",
+      run_id: observation.trigger.run_id,
+      run_attempt:
+        observation.trust_checkpoint_observation
+          .current_checkpoint.producer.run_attempt,
+      head_sha: observation.repository.observed_head_sha,
+      conclusion,
+      artifact_id: "54321",
+      artifact_name:
+        `release-integrity-${observation.trigger.run_id}-1`,
+      artifact_digest: `sha256:${"a".repeat(64)}`,
+      artifact_created_at: "2026-07-27T12:00:01.000Z",
+      artifact_expires_at: "2026-08-26T12:00:01.000Z"
+    }
+  };
+}
+
+function retainedValidationOptions(fixture, requireReady) {
+  return {
+    repository: "cli/cli",
+    defaultBranch: "main",
+    workflowPath: ".github/workflows/release-integrity.yml",
+    policyPath: fixture.policyPath,
+    policyBytes: fs.readFileSync(
+      path.join(fixture.repositoryRoot, fixture.policyPath)
+    ),
+    requireReady
+  };
+}
+
 function expectError(name, expectedCode, callback) {
   try {
     callback();
@@ -421,6 +464,7 @@ function runFixtures() {
       monitorOptions(fixture),
       fixture.adapter
     );
+    const artifact = retainedArtifact(observation);
     results.push({
       name: "full monitor verifies policy baseline and future attestation",
       ok: observation.summary.status === "ready" &&
@@ -458,8 +502,75 @@ function runFixtures() {
         validatePayload(
           observation,
           "github-release-integrity-observation"
-        ).valid === true
+        ).valid === true &&
+        validateRetainedFullObservationArtifact(
+          artifact,
+          retainedValidationOptions(fixture, true)
+        ) === true
     });
+
+    const missingObservation = JSON.parse(
+      JSON.stringify(artifact)
+    );
+    delete missingObservation.full_observation;
+    results.push(expectError(
+      "checkpoint artifact without its full observation is never release-ready",
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_INCOMPLETE",
+      () => validateRetainedFullObservationArtifact(
+        missingObservation,
+        retainedValidationOptions(fixture, true)
+      )
+    ));
+
+    const roundedArtifactTime = JSON.parse(
+      JSON.stringify(artifact)
+    );
+    roundedArtifactTime.provenance.artifact_created_at =
+      "2026-07-27T11:59:01.000Z";
+    results.push({
+      name: "bounded artifact timestamp precision tolerance accepts a 59-second skew",
+      ok: validateRetainedFullObservationArtifact(
+        roundedArtifactTime,
+        retainedValidationOptions(fixture, true)
+      ) === true
+    });
+
+    const reversedArtifactTime = JSON.parse(
+      JSON.stringify(artifact)
+    );
+    reversedArtifactTime.provenance.artifact_created_at =
+      "2026-07-27T11:58:59.000Z";
+    results.push(expectError(
+      "artifact creation more than 60 seconds before observation is rejected",
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_BINDING_INVALID",
+      () => validateRetainedFullObservationArtifact(
+        reversedArtifactTime,
+        retainedValidationOptions(fixture, true)
+      )
+    ));
+
+    const forgedTransition = JSON.parse(
+      JSON.stringify(artifact)
+    );
+    forgedTransition.checkpoint.transition
+      .version_deltas.root = 999;
+    forgedTransition.checkpoint.checkpoint_sha256 =
+      checkpointDigest(forgedTransition.checkpoint);
+    forgedTransition.full_observation
+      .trust_checkpoint_observation.current_checkpoint =
+        JSON.parse(JSON.stringify(
+          forgedTransition.checkpoint
+        ));
+    forgedTransition.full_observation.observation_sha256 =
+      observationDigest(forgedTransition.full_observation);
+    results.push(expectError(
+      "self-rehashed observation cannot forge checkpoint transition replay",
+      "GITHUB_RELEASE_INTEGRITY_SCHEMA_INVALID",
+      () => validateRetainedFullObservationArtifact(
+        forgedTransition,
+        retainedValidationOptions(fixture, true)
+      )
+    ));
   }
 
   {
@@ -599,8 +710,9 @@ function runFixtures() {
       "utf8"
     );
     results.push({
-      name: "release workflow grants read-only attestation access and avoids shell expression injection",
-      ok: workflow.includes("attestations: read") &&
+      name: "release workflow pins immutable default-branch code and runs every main push",
+      ok: workflow.includes("actions: read") &&
+        workflow.includes("attestations: read") &&
         workflow.includes('EXPECTED_TAG: ${{ github.event.release.tag_name }}') &&
         workflow.includes('--expected-tag "${EXPECTED_TAG}"') &&
         (workflow.match(/--trusted-root-output/g) || []).length === 2 &&
@@ -608,15 +720,35 @@ function runFixtures() {
           .length === 2 &&
         (workflow.match(/--run-attempt/g) || []).length === 2 &&
         (workflow.match(/fetch-depth: 0/g) || []).length === 2 &&
+        (workflow.match(/ref: \$\{\{ github\.workflow_sha \}\}/g) || [])
+          .length === 2 &&
+        !workflow.includes("ref: ${{ github.sha }}") &&
+        (workflow.match(/git checkout -B main HEAD/g) || [])
+          .length === 2 &&
+        (workflow.match(
+          /actions\/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1/g
+        ) || []).length === 2 &&
+        (workflow.match(
+          /actions\/setup-node@820762786026740c76f36085b0efc47a31fe5020/g
+        ) || []).length === 2 &&
+        (workflow.match(
+          /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/g
+        ) || []).length === 2 &&
+        !workflow.includes("@v7") &&
+        (workflow.match(
+          /github\.workflow_ref == format\('\{0\}\/\.github\/workflows\/release-integrity\.yml@refs\/heads\/main', github\.repository\)/g
+        ) || []).length === 2 &&
+        workflow.includes("github.event_name != 'release'") &&
         (workflow.match(/node-version: "22\.22\.3"/g) || []).length === 2 &&
         (workflow.match(/npm ci --ignore-scripts/g) || []).length === 2 &&
         (workflow.match(/CANNAE_IMMUTABILITY_MONITOR_TOKEN:/g) || [])
           .length === 1 &&
         workflow.includes("push:") &&
+        !workflow.includes("    paths:") &&
         !/--(?:expected-tag|actor|run-id|ref|trigger)[^\n]*\$\{\{/.test(
           workflow
         ) &&
-        !/\b(?:contents|attestations): write\b/.test(workflow)
+        !/\b(?:actions|contents|attestations): write\b/.test(workflow)
     });
   }
 
@@ -627,6 +759,26 @@ function runFixtures() {
       monitorOptions(fixture),
       fixture.adapter
     );
+    const artifact = retainedArtifact(
+      observation,
+      "failure"
+    );
+    const predecessorAccepted =
+      validateRetainedFullObservationArtifact(
+        artifact,
+        retainedValidationOptions(fixture, false)
+      ) === true;
+    let releaseReadyDenied = false;
+    try {
+      validateRetainedFullObservationArtifact(
+        artifact,
+        retainedValidationOptions(fixture, true)
+      );
+    } catch (error) {
+      releaseReadyDenied =
+        error.code ===
+          "GITHUB_RELEASE_INTEGRITY_ARTIFACT_NOT_READY";
+    }
     results.push({
       name: "disabled immutable-release policy produces retained blocked drift evidence",
       ok: observation.summary.status === "blocked" &&
@@ -636,7 +788,9 @@ function runFixtures() {
         validatePayload(
           observation,
           "github-release-integrity-observation"
-        ).valid === true
+        ).valid === true &&
+        predecessorAccepted &&
+        releaseReadyDenied
     });
   }
 

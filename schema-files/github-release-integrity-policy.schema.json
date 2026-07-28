@@ -278,6 +278,7 @@
         "artifact_name_prefix",
         "checkpoint_file_name",
         "trusted_root_file_name",
+        "full_observation_file_name",
         "maximum_checkpoint_age_seconds",
         "bootstrap_window_seconds",
         "maximum_run_history",
@@ -317,6 +318,10 @@
         "trusted_root_file_name": {
           "type": "string",
           "const": "github-trusted-root.json"
+        },
+        "full_observation_file_name": {
+          "type": "string",
+          "const": "full-observation.json"
         },
         "maximum_checkpoint_age_seconds": {
           "type": "integer",

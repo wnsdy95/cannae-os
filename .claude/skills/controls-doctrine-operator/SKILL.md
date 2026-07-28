@@ -176,9 +176,13 @@ future release evidence:
 3. Require the current origin default-branch commit, a repository-contained
    output path that does not traverse a parent symlink, and a schema-valid
    observation whose `summary.status` is `ready`.
+   In CI, require the exact default-branch `workflow_ref`, immutable
+   `workflow_sha`, full-commit action pins, and no narrow main-push path
+   allowlist.
    `credential_unavailable`, policy drift, changed/missing grandfather state,
    mutable future releases, missing attestation, failed TUF acquisition or
-   replay, missing/stale/forked predecessor, rollback, same-version conflict,
+   replay, missing/stale/forked predecessor, historical rerun after a newer
+   stable run, mismatched prior attempt, rollback, same-version conflict,
    failed independent bundle verification, or any
    repository/tag/commit/asset mismatch is a hard stop.
 4. The release-event scope may use the short-lived repository token but must
@@ -188,10 +192,14 @@ future release evidence:
 5. Require `trusted_root_observation.status: verified`,
    `trust_checkpoint_observation.status: verified`, and one
    `independent_verification` for every verified non-grandfathered release.
-   Store the observation, retained root, and checkpoint together under the
+   Store the uniquely named full observation, retained root, and checkpoint together under the
    target repository or its repository-named CI artifact. The latest eligible
-   artifact missing its checkpoint is a hard stop without older/bootstrap
-   fallback. Monitoring may alert and escalate to USER but must never reset
+   artifact missing any member, carrying an off-default/incomplete run, or
+   failing observation replay is a hard stop without older/bootstrap
+   fallback. A blocked observation may continue checkpoint lineage but cannot
+   authorize release. For a rerun, consume only the exact completed
+   immediately prior attempt of the same stable run; if a newer eligible run
+   exists, stop as a lineage fork. Monitoring may alert and escalate to USER but must never reset
    checkpoint state, enable/disable policy, repair/delete a release, or set
    release true.
 
@@ -216,28 +224,41 @@ GitHub release:
    Confirm the stable target tag and release are absent and that the tag
    advances the current latest release.
 3. Download the latest eligible full-monitor artifact into the release's
-   repository-contained artifact directory. Validate its trusted root and
-   trust checkpoint against one explicit current UTC clock. Require exact
-   root/checkpoint equality, a maximum checkpoint age of 12 hours, and release
-   and checkpoint-reset false.
+   repository-contained artifact directory. Validate and replay its full
+   observation, trusted root, and trust checkpoint against one explicit
+   current UTC clock. Require `summary.status: ready`, successful run
+   provenance, exact observation/root/checkpoint equality, sequence greater
+   than zero, a GitHub Actions producer, a maximum checkpoint age of 12 hours,
+   and release and checkpoint-reset false. A local pair, two-file archive, or
+   committed genesis is not lineage proof by itself.
 4. Run `scripts/operate_github_release.js authorize` with the exact
    owner/repository, tag, release name, notes path, successful main run ID,
    USER grant ID, exact `--trusted-root` and `--trust-checkpoint` paths, output
    path, and a validity of at most 60 minutes. Require
    `release_authorized: true` and inspect its repository, commit, CI, notes,
-   checkpoint/root digests, expiry, and USER scope before proceeding.
+   checkpoint/root digests, exact workflow/run/attempt/head/artifact lineage,
+   expiry, and USER scope before proceeding. Authorization must independently
+   resolve the committed policy's latest full-monitor artifact and require
+   byte equality with the supplied pair.
 5. Run `scripts/operate_github_release.js publish` before expiry, passing both
    `--trusted-root <path>` and `--trust-checkpoint <path>`. Active publication
    accepts only authorization v0.5 and must reject a missing, stale, expired,
-   forked, substituted, or short-lived root/checkpoint pair before creating a
-   release.
-   The publisher must reappraise repository/CI/notes state, create the release
+   schema-invalid, genesis, local, forked, substituted, superseded, or
+   short-lived root/checkpoint pair before creating a release. It must resolve
+   the latest artifact again, reload schema-valid trust inputs, and then
+   reappraise authorization time, repository/CI/notes/target state, and
+   immutable-policy state before any `gh release create`.
+   The publisher must create the release
    from the full commit SHA with no-commit failure enabled, resolve the remote
    tag, compare the GitHub release body, observe
    `isImmutable: true`, retain the exact GitHub-signed
    repository/tag/commit/asset statement, independently verify its DSSE bundle
    under the retained root, cross-check the CLI statement, and persist a
    verified consumed receipt.
+   If publication succeeded inside the authorization window but verification
+   failed, an exact retry may verify that existing immutable release under
+   current trust evidence; it must never create another release or adopt one
+   published outside the original window.
 6. A matching existing release is an idempotent verification result. A partial
    tag/release state or any mismatch is a hard stop. Never repair, delete,
    retarget, or overwrite a release implicitly.
@@ -279,6 +300,10 @@ When editing the corpus:
 
 - Update the target document and its index/source-map entry together.
 - If changing a runtime contract, update schema, valid sample, invalid sample, runner/fixture, and docs. Protected-gateway or executor changes also update both CLI skill wrappers, both routing tables, and transaction/execution/recovery guidance.
+- When the custom validator is affected, add a regression for every used
+  combinator or keyword whose enforcement changed. Nested
+  `additionalProperties`, `allOf`/`oneOf`, conditional requirements,
+  positional items, and contained items must fail closed.
 - If adding, renaming, moving, or deleting any corpus artifact, run coverage:
 
 ```bash
@@ -338,6 +363,7 @@ node run-oci-linux-sandbox-provider-fixtures.js
 node run-github-release-immutability-fixtures.js
 node run-github-release-integrity-fixtures.js
 node run-github-release-independent-verification-fixtures.js
+node run-github-release-trust-checkpoint-fixtures.js
 node run-github-release-publisher-fixtures.js
 node run-document-routing-fixtures.js
 node run-model-force-assignment-fixtures.js
@@ -397,6 +423,12 @@ Escalate to the user before:
   caller clock, or creating a release before exact checkpoint/root equality,
   monotonic continuity, freshness, and every signed TUF role are proven
   through authorization expiry.
+- Authorizing from a manually supplied checkpoint alone. Active release
+  authorization requires the latest eligible non-genesis successful `ready`
+  full-observation/root/checkpoint artifact, exact
+  producer/run/attempt/head/artifact metadata, and pre-create trust,
+  lineage, time, repository, target, and immutability revalidation.
+  Historical reruns after a newer stable run are forks, not recovery.
 - Treating a release-integrity observation as policy mutation or release
   authority, or treating missing Administration-read credentials, TUF trust
   evidence, checkpoint continuity, or independent bundle replay as evidence

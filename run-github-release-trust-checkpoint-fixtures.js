@@ -16,7 +16,8 @@ const {
 const {
   GitHubReleaseCheckpointStoreError,
   SystemGitHubReleaseCheckpointStore,
-  assertSafeArchiveEntries
+  assertSafeArchiveEntries,
+  sha256
 } = require("./github-release-checkpoint-store");
 const {
   trustedRootArtifactDigest
@@ -211,10 +212,11 @@ function makeStoreFixture(root) {
 }
 
 class FixtureCheckpointStore extends SystemGitHubReleaseCheckpointStore {
-  constructor(repositoryRoot, runs, loader) {
+  constructor(repositoryRoot, runs, loader, attemptInspector = null) {
     super(repositoryRoot);
     this.runs = runs;
     this.loader = loader;
+    this.attemptInspector = attemptInspector;
     this.loadCalls = [];
   }
 
@@ -229,6 +231,57 @@ class FixtureCheckpointStore extends SystemGitHubReleaseCheckpointStore {
       artifactName
     });
     return this.loader(repository, run, artifactName);
+  }
+
+  inspectRunAttempt(repository, runId, runAttempt) {
+    if (!this.attemptInspector) {
+      throw new Error("run attempt inspector must not run");
+    }
+    return clone(this.attemptInspector(
+      repository,
+      runId,
+      runAttempt
+    ));
+  }
+}
+
+class ArchiveFixtureCheckpointStore
+  extends SystemGitHubReleaseCheckpointStore {
+  constructor(repositoryRoot, run, artifact, archive) {
+    super(repositoryRoot);
+    this.run = run;
+    this.artifact = artifact;
+    this.archive = archive;
+    this.inspectCalls = [];
+    this.downloadCalls = [];
+  }
+
+  listCompletedRuns() {
+    return [clone(this.run)];
+  }
+
+  inspectArtifact(repository, run, artifactName) {
+    this.inspectCalls.push({
+      repository,
+      run: clone(run),
+      artifactName
+    });
+    return clone(this.artifact);
+  }
+
+  downloadArtifact(repository, artifact) {
+    this.downloadCalls.push({
+      repository,
+      artifact: clone(artifact)
+    });
+    if (`sha256:${sha256(this.archive)}` !==
+        artifact.digest) {
+      throw new GitHubReleaseCheckpointStoreError(
+        "GITHUB_RELEASE_CHECKPOINT_ARTIFACT_DIGEST_MISMATCH",
+        "Fixture archive does not match artifact metadata."
+      );
+    }
+    return Buffer.from(this.archive);
   }
 }
 
@@ -276,6 +329,23 @@ function runFixtures() {
         { evaluatedAt: BOOTSTRAP_TIME }
       ).valid === true
   });
+
+  {
+    const attacked = clone(genesis);
+    attacked.predecessor.unexpected_policy_override = true;
+    rehash(attacked);
+    const result = validatePayload(
+      attacked,
+      "github-release-trust-checkpoint",
+      { evaluatedAt: BOOTSTRAP_TIME }
+    );
+    results.push({
+      name: "checkpoint predecessor rejects nested additional properties through oneOf",
+      ok: result.valid === false &&
+        result.issues.some(item =>
+          item.code === "ONE_OF_MISMATCH")
+    });
+  }
 
   {
     const result = validatePayload(
@@ -534,6 +604,172 @@ function runFixtures() {
 
   {
     const fixture = makeStoreFixture(root);
+    const archiveRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), "cannae-checkpoint-archive-")
+    );
+    try {
+      const run = {
+        id: 7051,
+        run_number: 75,
+        path: fixture.options.workflowPath,
+        status: "completed",
+        head_branch: "main",
+        conclusion: "failure",
+        run_attempt: 1,
+        created_at: "2026-07-27T01:00:00.000Z",
+        updated_at: "2026-07-27T02:00:00.000Z",
+        head_sha: fixture.headSha
+      };
+      const checkpoint =
+        advanceGitHubReleaseTrustCheckpoint({
+          repository: REPOSITORY,
+          previousCheckpoint: fixture.genesis,
+          previousTrustedRoot: root,
+          trustedRoot: root,
+          evaluatedAt: "2026-07-27T02:00:00.000Z",
+          producer: {
+            kind: "github_actions",
+            repository_head_sha: run.head_sha,
+            workflow_ref:
+              "wnsdy95/cannae-os/.github/workflows/release-integrity.yml@refs/heads/main",
+            run_id: String(run.id),
+            run_attempt: run.run_attempt
+          }
+        });
+      const payloadDirectory = path.join(
+        archiveRoot,
+        "payload",
+        "nested"
+      );
+      fs.mkdirSync(payloadDirectory, { recursive: true });
+      fs.writeFileSync(
+        path.join(
+          payloadDirectory,
+          "github-release-trust-checkpoint.json"
+        ),
+        `${JSON.stringify(checkpoint, null, 2)}\n`
+      );
+      fs.writeFileSync(
+        path.join(payloadDirectory, "github-trusted-root.json"),
+        `${JSON.stringify(root, null, 2)}\n`
+      );
+      fs.writeFileSync(
+        path.join(payloadDirectory, "full-observation.json"),
+        `${JSON.stringify({
+          type: "FullObservationArchiveFixture"
+        }, null, 2)}\n`
+      );
+      const archivePath = path.join(
+        archiveRoot,
+        "release-integrity.zip"
+      );
+      const zipped = spawnSync(
+        "zip",
+        ["-q", "-r", archivePath, "."],
+        {
+          cwd: path.join(archiveRoot, "payload"),
+          encoding: "utf8"
+        }
+      );
+      if (zipped.status !== 0) {
+        throw new Error(
+          `zip fixture failed: ${zipped.stderr || zipped.stdout}`
+        );
+      }
+      const archive = fs.readFileSync(archivePath);
+      const artifactName = `release-integrity-${run.id}-${
+        run.run_attempt
+      }`;
+      const artifact = {
+        id: 8051,
+        name: artifactName,
+        expired: false,
+        digest: `sha256:${sha256(archive)}`,
+        created_at: "2026-07-27T02:00:00.000Z",
+        expires_at: "2026-08-26T02:00:00.000Z",
+        workflow_run: {
+          id: run.id,
+          head_sha: run.head_sha
+        }
+      };
+      const missingObservationArchivePath = path.join(
+        archiveRoot,
+        "release-integrity-missing-observation.zip"
+      );
+      fs.copyFileSync(
+        archivePath,
+        missingObservationArchivePath
+      );
+      const removed = spawnSync(
+        "zip",
+        [
+          "-q",
+          "-d",
+          missingObservationArchivePath,
+          "nested/full-observation.json"
+        ],
+        { encoding: "utf8" }
+      );
+      if (removed.status !== 0) {
+        throw new Error(
+          `zip fixture removal failed: ${
+            removed.stderr || removed.stdout
+          }`
+        );
+      }
+      const missingObservationArchive = fs.readFileSync(
+        missingObservationArchivePath
+      );
+      const missingObservationArtifact = {
+        ...artifact,
+        digest:
+          `sha256:${sha256(missingObservationArchive)}`
+      };
+      const missingObservationStore =
+        new ArchiveFixtureCheckpointStore(
+          fixture.repositoryRoot,
+          run,
+          missingObservationArtifact,
+          missingObservationArchive
+        );
+      results.push(expectError(
+        "real artifact ZIP without full observation is rejected",
+        "GITHUB_RELEASE_CHECKPOINT_ARCHIVE_CONTENT_INVALID",
+        () => missingObservationStore.resolve(fixture.options)
+      ));
+      const store = new ArchiveFixtureCheckpointStore(
+        fixture.repositoryRoot,
+        run,
+        artifact,
+        archive
+      );
+      const loaded = store.resolve(fixture.options);
+      results.push({
+        name: "latest eligible artifact ZIP is parsed into one exact checkpoint lineage",
+        ok: loaded.checkpoint.checkpoint_sha256 ===
+            checkpoint.checkpoint_sha256 &&
+          loaded.trusted_root.artifact_sha256 ===
+            root.artifact_sha256 &&
+          loaded.full_observation.type ===
+            "FullObservationArchiveFixture" &&
+          loaded.provenance.run_id === String(run.id) &&
+          loaded.provenance.artifact_digest ===
+            artifact.digest &&
+          store.inspectCalls.length === 1 &&
+          store.inspectCalls[0].artifactName === artifactName &&
+          store.downloadCalls.length === 1
+      });
+    } finally {
+      fs.rmSync(
+        archiveRoot,
+        { recursive: true, force: true }
+      );
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
     try {
       const policyAbsolutePath = path.join(
         fixture.repositoryRoot,
@@ -609,16 +845,22 @@ function runFixtures() {
     try {
       const older = {
         id: 7001,
+        run_number: 71,
         path: fixture.options.workflowPath,
+        status: "completed",
+        head_branch: "main",
         conclusion: "success",
         run_attempt: 1,
-        updated_at: "2026-07-27T01:00:00.000Z",
+        created_at: "2026-07-27T01:00:00.000Z",
+        updated_at: "2026-07-27T02:00:00.000Z",
         head_sha: fixture.headSha
       };
       const latest = {
         ...older,
         id: 7002,
+        run_number: 72,
         conclusion: "failure",
+        created_at: "2026-07-27T01:30:00.000Z",
         updated_at: "2026-07-27T01:30:00.000Z"
       };
       const store = new FixtureCheckpointStore(
@@ -645,15 +887,21 @@ function runFixtures() {
     try {
       const older = {
         id: 7101,
+        run_number: 81,
         path: fixture.options.workflowPath,
+        status: "completed",
+        head_branch: "main",
         conclusion: "success",
         run_attempt: 1,
+        created_at: "2026-07-27T01:00:00.000Z",
         updated_at: "2026-07-27T01:00:00.000Z",
         head_sha: fixture.headSha
       };
       const latest = {
         ...older,
         id: 7102,
+        run_number: 82,
+        created_at: "2026-07-27T01:30:00.000Z",
         updated_at: "2026-07-27T01:30:00.000Z"
       };
       const store = new FixtureCheckpointStore(
@@ -685,9 +933,13 @@ function runFixtures() {
     try {
       const run = {
         id: 7201,
+        run_number: 91,
         path: fixture.options.workflowPath,
+        status: "completed",
+        head_branch: "main",
         conclusion: "success",
         run_attempt: 1,
+        created_at: "2026-07-27T01:00:00.000Z",
         updated_at: "2026-07-27T01:00:00.000Z",
         head_sha: fixture.headSha
       };
@@ -708,6 +960,210 @@ function runFixtures() {
         "artifact checkpoint producer must equal its exact workflow run",
         "GITHUB_RELEASE_CHECKPOINT_PRODUCER_MISMATCH",
         () => store.resolve(fixture.options)
+      ));
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [],
+        () => {
+          throw new Error("artifact loader must not run");
+        }
+      );
+      results.push(expectError(
+        "rerun attempt without an exact stable run ID is rejected",
+        "GITHUB_RELEASE_CHECKPOINT_STORE_OPTIONS_INVALID",
+        () => store.resolve({
+          ...fixture.options,
+          currentRunId: undefined,
+          currentRunAttempt: 2
+        })
+      ));
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const historicalRunId = 7301;
+      const historicalRunNumber = 101;
+      const newer = {
+        id: 7302,
+        run_number: 102,
+        path: fixture.options.workflowPath,
+        status: "completed",
+        head_branch: "main",
+        conclusion: "success",
+        run_attempt: 1,
+        created_at: "2026-07-27T01:30:00.000Z",
+        updated_at: "2026-07-27T01:30:00.000Z",
+        head_sha: fixture.headSha
+      };
+      const attemptInspector = (
+        repository,
+        runId,
+        runAttempt
+      ) => ({
+        id: runId,
+        run_number: historicalRunNumber,
+        path: fixture.options.workflowPath,
+        status: runAttempt === 2 ? "in_progress" : "completed",
+        head_branch: "main",
+        conclusion: runAttempt === 2 ? null : "success",
+        run_attempt: runAttempt,
+        created_at: "2026-07-27T01:00:00.000Z",
+        updated_at: "2026-07-27T02:00:00.000Z",
+        head_sha: fixture.headSha
+      });
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [newer],
+        () => {
+          throw new Error("artifact loader must not run");
+        },
+        attemptInspector
+      );
+      const result = expectError(
+        "historical rerun cannot fork after a newer eligible run",
+        "GITHUB_RELEASE_CHECKPOINT_RERUN_FORK_BLOCKED",
+        () => store.resolve({
+          ...fixture.options,
+          currentRunId: String(historicalRunId),
+          currentRunAttempt: 2
+        })
+      );
+      result.ok = result.ok && store.loadCalls.length === 0;
+      results.push(result);
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const latestRunId = 7401;
+      const latestRunNumber = 111;
+      const attemptInspector = (
+        repository,
+        runId,
+        runAttempt
+      ) => ({
+        id: runId,
+        run_number: latestRunNumber,
+        path: fixture.options.workflowPath,
+        status: runAttempt === 2 ? "in_progress" : "completed",
+        head_branch: "main",
+        conclusion: runAttempt === 2 ? null : "failure",
+        run_attempt: runAttempt,
+        created_at: "2026-07-27T01:00:00.000Z",
+        updated_at: "2026-07-27T01:30:00.000Z",
+        head_sha: fixture.headSha
+      });
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [],
+        (repository, run) =>
+          checkpointArtifact(fixture.genesis, run),
+        attemptInspector
+      );
+      const loaded = store.resolve({
+        ...fixture.options,
+        currentRunId: String(latestRunId),
+        currentRunAttempt: 2
+      });
+      results.push({
+        name: "latest rerun can consume only its exact immediately preceding attempt",
+        ok: loaded.checkpoint.producer.run_id ===
+            String(latestRunId) &&
+          loaded.checkpoint.producer.run_attempt === 1 &&
+          store.loadCalls.length === 1 &&
+          store.loadCalls[0].artifactName ===
+            `release-integrity-${latestRunId}-1`
+      });
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const runId = 7501;
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [],
+        () => {
+          throw new Error("artifact loader must not run");
+        },
+        (repository, inspectedRunId, runAttempt) => ({
+          id: inspectedRunId,
+          run_number: 121,
+          path: fixture.options.workflowPath,
+          status: "in_progress",
+          head_branch: "main",
+          conclusion: runAttempt === 2 ? null : "failure",
+          run_attempt: runAttempt,
+          created_at: "2026-07-27T01:00:00.000Z",
+          updated_at: "2026-07-27T01:30:00.000Z",
+          head_sha: fixture.headSha
+        })
+      );
+      results.push(expectError(
+        "rerun predecessor must be a completed prior attempt",
+        "GITHUB_RELEASE_CHECKPOINT_PREVIOUS_ATTEMPT_INVALID",
+        () => store.resolve({
+          ...fixture.options,
+          currentRunId: String(runId),
+          currentRunAttempt: 2
+        })
+      ));
+    } finally {
+      fixture.cleanup();
+    }
+  }
+
+  {
+    const fixture = makeStoreFixture(root);
+    try {
+      const runId = 7601;
+      const store = new FixtureCheckpointStore(
+        fixture.repositoryRoot,
+        [],
+        () => {
+          throw new Error("artifact loader must not run");
+        },
+        (repository, inspectedRunId, runAttempt) => ({
+          id: inspectedRunId,
+          run_number: 131,
+          path: fixture.options.workflowPath,
+          status: runAttempt === 2
+            ? "in_progress"
+            : "completed",
+          head_branch: "feature/off-default",
+          conclusion: runAttempt === 2 ? null : "success",
+          run_attempt: runAttempt,
+          created_at: "2026-07-27T01:00:00.000Z",
+          updated_at: "2026-07-27T01:30:00.000Z",
+          head_sha: fixture.headSha
+        })
+      );
+      results.push(expectError(
+        "rerun current attempt must originate on the default branch",
+        "GITHUB_RELEASE_CHECKPOINT_CURRENT_RERUN_INVALID",
+        () => store.resolve({
+          ...fixture.options,
+          currentRunId: String(runId),
+          currentRunAttempt: 2
+        })
       ));
     } finally {
       fixture.cleanup();

@@ -245,6 +245,11 @@ function typeMatches(value, expected) {
   return true;
 }
 
+function hasSchemaErrors(issues) {
+  return issues.some(item =>
+    item.severity === "error" || item.severity === "critical");
+}
+
 function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(), rootSchema = schema) {
   const issues = [];
   if (!schema || typeof schema !== "object") return issues;
@@ -261,6 +266,102 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
     return validateSchema(value, resolved, schemas, pointer, seen, schema.$ref.startsWith("#") ? rootSchema : resolved);
   }
 
+  if (Array.isArray(schema.allOf)) {
+    for (const branch of schema.allOf) {
+      issues.push(...validateSchema(
+        value,
+        branch,
+        schemas,
+        pointer,
+        new Set(seen),
+        rootSchema
+      ));
+    }
+  }
+
+  if (Array.isArray(schema.anyOf)) {
+    const matchingBranches = schema.anyOf.filter(branch =>
+      !hasSchemaErrors(validateSchema(
+        value,
+        branch,
+        schemas,
+        pointer,
+        new Set(seen),
+        rootSchema
+      )));
+    if (matchingBranches.length === 0) {
+      issues.push(issue(
+        "error",
+        "ANY_OF_MISMATCH",
+        pointer,
+        "Value must satisfy at least one allowed schema branch."
+      ));
+    }
+  }
+
+  if (Array.isArray(schema.oneOf)) {
+    const matchingBranches = schema.oneOf.filter(branch =>
+      !hasSchemaErrors(validateSchema(
+        value,
+        branch,
+        schemas,
+        pointer,
+        new Set(seen),
+        rootSchema
+      )));
+    if (matchingBranches.length !== 1) {
+      issues.push(issue(
+        "error",
+        "ONE_OF_MISMATCH",
+        pointer,
+        "Value must satisfy exactly one allowed schema branch."
+      ));
+    }
+  }
+
+  if (schema.not && typeof schema.not === "object") {
+    const excludedIssues = validateSchema(
+      value,
+      schema.not,
+      schemas,
+      pointer,
+      new Set(seen),
+      rootSchema
+    );
+    if (!hasSchemaErrors(excludedIssues)) {
+      issues.push(issue(
+        "error",
+        "NOT_SCHEMA_MATCH",
+        pointer,
+        "Value matches a prohibited schema."
+      ));
+    }
+  }
+
+  if (schema.if && typeof schema.if === "object") {
+    const conditionIssues = validateSchema(
+      value,
+      schema.if,
+      schemas,
+      pointer,
+      new Set(seen),
+      rootSchema
+    );
+    const selected = !hasSchemaErrors(conditionIssues)
+      ? schema.then
+      : schema.else;
+    if (selected && typeof selected === "object") {
+      issues.push(...validateSchema(
+        value,
+        selected,
+        schemas,
+        pointer,
+        new Set(seen),
+        rootSchema
+      ));
+    }
+  }
+
   if (schema.type && !typeMatches(value, schema.type)) {
     issues.push(issue("error", "TYPE_MISMATCH", pointer, `Expected ${schema.type}.`));
     return issues;
@@ -275,17 +376,20 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
   }
 
   if (schema.type === "string" && typeof value === "string") {
-    if (schema.minLength && value.length < schema.minLength) {
+    if (schema.minLength !== undefined && value.length < schema.minLength) {
       issues.push(issue("error", "MIN_LENGTH", pointer, `String must have length >= ${schema.minLength}.`));
+    }
+    if (schema.maxLength !== undefined && value.length > schema.maxLength) {
+      issues.push(issue("error", "MAX_LENGTH", pointer, `String must have length <= ${schema.maxLength}.`));
     }
     if (schema.pattern && !(new RegExp(schema.pattern).test(value))) {
       issues.push(issue("error", "PATTERN_MISMATCH", pointer, `String does not match ${schema.pattern}.`));
     }
     if (schema.format === "uri" && !/^https?:\/\//.test(value)) {
-      issues.push(issue("warning", "FORMAT_URI_WEAK", pointer, "Expected an http(s) URI."));
+      issues.push(issue("error", "FORMAT_URI_INVALID", pointer, "Expected an http(s) URI."));
     }
     if (schema.format === "date-time" && Number.isNaN(Date.parse(value))) {
-      issues.push(issue("warning", "FORMAT_DATETIME_WEAK", pointer, "Expected parseable date-time."));
+      issues.push(issue("error", "FORMAT_DATETIME_INVALID", pointer, "Expected parseable date-time."));
     }
   }
 
@@ -298,7 +402,32 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
     }
   }
 
-  if (schema.type === "object" && value && typeof value === "object" && !Array.isArray(value)) {
+  const hasObjectKeywords = schema.type === "object" ||
+    schema.required !== undefined ||
+    schema.properties !== undefined ||
+    schema.additionalProperties !== undefined ||
+    schema.minProperties !== undefined ||
+    schema.maxProperties !== undefined;
+  if (hasObjectKeywords && value && typeof value === "object" && !Array.isArray(value)) {
+    const propertyCount = Object.keys(value).length;
+    if (schema.minProperties !== undefined &&
+        propertyCount < schema.minProperties) {
+      issues.push(issue(
+        "error",
+        "MIN_PROPERTIES",
+        pointer,
+        `Object must contain at least ${schema.minProperties} properties.`
+      ));
+    }
+    if (schema.maxProperties !== undefined &&
+        propertyCount > schema.maxProperties) {
+      issues.push(issue(
+        "error",
+        "MAX_PROPERTIES",
+        pointer,
+        `Object must contain at most ${schema.maxProperties} properties.`
+      ));
+    }
     for (const required of schema.required || []) {
       if (!(required in value)) {
         issues.push(issue("error", "MISSING_REQUIRED", `${pointer}.${required}`, `Missing required field ${required}.`));
@@ -316,7 +445,14 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
     }
   }
 
-  if (schema.type === "array" && Array.isArray(value)) {
+  const hasArrayKeywords = schema.type === "array" ||
+    schema.minItems !== undefined ||
+    schema.maxItems !== undefined ||
+    schema.uniqueItems !== undefined ||
+    schema.prefixItems !== undefined ||
+    schema.items !== undefined ||
+    schema.contains !== undefined;
+  if (hasArrayKeywords && Array.isArray(value)) {
     if (schema.minItems !== undefined && value.length < schema.minItems) {
       issues.push(issue("error", "MIN_ITEMS", pointer, `Array must contain at least ${schema.minItems} item(s).`));
     }
@@ -329,9 +465,68 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
         issues.push(issue("error", "UNIQUE_ITEMS", pointer, "Array items must be unique."));
       }
     }
-    for (let index = 0; index < value.length; index += 1) {
-      if (schema.items) {
-        issues.push(...validateSchema(value[index], schema.items, schemas, `${pointer}[${index}]`, new Set(seen), rootSchema));
+    const prefixItems = Array.isArray(schema.prefixItems)
+      ? schema.prefixItems
+      : [];
+    for (let index = 0;
+      index < Math.min(value.length, prefixItems.length);
+      index += 1) {
+      issues.push(...validateSchema(
+        value[index],
+        prefixItems[index],
+        schemas,
+        `${pointer}[${index}]`,
+        new Set(seen),
+        rootSchema
+      ));
+    }
+    if (schema.items === false &&
+        value.length > prefixItems.length) {
+      issues.push(issue(
+        "error",
+        "ITEMS_NOT_ALLOWED",
+        pointer,
+        "Array contains items beyond the allowed positional schema."
+      ));
+    } else if (schema.items &&
+        typeof schema.items === "object") {
+      for (let index = prefixItems.length;
+        index < value.length;
+        index += 1) {
+        issues.push(...validateSchema(
+          value[index],
+          schema.items,
+          schemas,
+          `${pointer}[${index}]`,
+          new Set(seen),
+          rootSchema
+        ));
+      }
+    }
+    if (schema.contains && typeof schema.contains === "object") {
+      const matchingItems = value.filter((itemValue, index) =>
+        !hasSchemaErrors(validateSchema(
+          itemValue,
+          schema.contains,
+          schemas,
+          `${pointer}[${index}]`,
+          new Set(seen),
+          rootSchema
+        )));
+      const minimumMatches = schema.minContains === undefined
+        ? 1
+        : schema.minContains;
+      const maximumMatches = schema.maxContains === undefined
+        ? Number.POSITIVE_INFINITY
+        : schema.maxContains;
+      if (matchingItems.length < minimumMatches ||
+          matchingItems.length > maximumMatches) {
+        issues.push(issue(
+          "error",
+          "CONTAINS_MISMATCH",
+          pointer,
+          "Array does not satisfy its required contained-item count."
+        ));
       }
     }
   }
@@ -5106,15 +5301,7 @@ function maxSeverity(issues) {
   return issues.reduce((max, item) => order.indexOf(item.severity) > order.indexOf(max) ? item.severity : max, "info");
 }
 
-function validatePayload(payload, type, options = {}) {
-  if (!TYPE_TO_SCHEMA[type]) throw new Error(`Unknown payload type: ${type}`);
-  const schemas = loadSchemas();
-  const schema = schemas[TYPE_TO_SCHEMA[type]];
-  const issues = [
-    ...validateSchema(payload, schema, schemas).map(item => ({ ...item, layer: "schema" })),
-    ...semanticRules(payload, type, options)
-      .map(item => ({ ...item, layer: "semantic" }))
-  ];
+function validationResult(issues) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
@@ -5123,6 +5310,26 @@ function validatePayload(payload, type, options = {}) {
     issue_count: issues.length,
     issues
   };
+}
+
+function validateSchemaPayload(payload, type) {
+  if (!TYPE_TO_SCHEMA[type]) throw new Error(`Unknown payload type: ${type}`);
+  const schemas = loadSchemas();
+  const schema = schemas[TYPE_TO_SCHEMA[type]];
+  return validationResult(
+    validateSchema(payload, schema, schemas)
+      .map(item => ({ ...item, layer: "schema" }))
+  );
+}
+
+function validatePayload(payload, type, options = {}) {
+  const schemaResult = validateSchemaPayload(payload, type);
+  const issues = [
+    ...schemaResult.issues,
+    ...semanticRules(payload, type, options)
+      .map(item => ({ ...item, layer: "semantic" }))
+  ];
+  return validationResult(issues);
 }
 
 function main() {
@@ -5158,4 +5365,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { validatePayload };
+module.exports = { validatePayload, validateSchemaPayload };

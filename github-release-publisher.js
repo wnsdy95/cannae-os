@@ -32,6 +32,8 @@ const RELEASE_ATTESTATION_SIGNER_IDENTITY =
 const RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE =
   "application/vnd.dev.sigstore.bundle.v0.3+json";
 const CURRENT_RELEASE_SCHEMA_VERSION = "0.5";
+const RELEASE_INTEGRITY_POLICY_PATH =
+  ".github/release-integrity-policy.json";
 
 class ReleaseAuthorizationError extends Error {
   constructor(code, message, details = {}) {
@@ -253,8 +255,19 @@ function validateAuthorizationSemantics(document, options = {}) {
     const checkpointRecordedAt = parseTimestamp(
       checkpoint.recorded_at
     );
+    const lineage = checkpoint.lineage_artifact || {};
+    const lineageCreatedAt = parseTimestamp(
+      lineage.artifact_created_at
+    );
+    const lineageExpiresAt = parseTimestamp(
+      lineage.artifact_expires_at
+    );
     const issuedAt = parseTimestamp(document.issued_at);
     const expiresAt = parseTimestamp(document.expires_at);
+    const expectedWorkflowRef =
+      `${repository.full_name}/.github/workflows/release-integrity.yml@refs/heads/${repository.default_branch}`;
+    const expectedArtifactName =
+      `release-integrity-${lineage.run_id}-${lineage.run_attempt}`;
     if (checkpoint.required !== true ||
         checkpoint.continuity_mode !==
           "github_actions_artifact_chain" ||
@@ -264,7 +277,7 @@ function validateAuthorizationSemantics(document, options = {}) {
         ) ||
         typeof checkpoint.checkpoint_id !== "string" ||
         !Number.isSafeInteger(checkpoint.sequence) ||
-        checkpoint.sequence < 0 ||
+        checkpoint.sequence < 1 ||
         !/^[a-f0-9]{64}$/.test(
           checkpoint.checkpoint_sha256 || ""
         ) ||
@@ -285,11 +298,26 @@ function validateAuthorizationSemantics(document, options = {}) {
         expiresAt === null ||
         checkpointRecordedAt > issuedAt ||
         expiresAt - checkpointRecordedAt >
-          DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS * 1000) {
+          DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS * 1000 ||
+        lineage.source !== "github_actions_artifact" ||
+        lineage.workflow_ref !== expectedWorkflowRef ||
+        !/^[1-9][0-9]*$/.test(lineage.run_id || "") ||
+        !Number.isSafeInteger(lineage.run_attempt) ||
+        lineage.run_attempt < 1 ||
+        !/^[a-f0-9]{40}$/.test(lineage.head_sha || "") ||
+        !/^[1-9][0-9]*$/.test(lineage.artifact_id || "") ||
+        lineage.artifact_name !== expectedArtifactName ||
+        !/^sha256:[a-f0-9]{64}$/.test(
+          lineage.artifact_digest || ""
+        ) ||
+        lineageCreatedAt === null ||
+        lineageExpiresAt === null ||
+        lineageCreatedAt > issuedAt ||
+        lineageExpiresAt < expiresAt) {
       issues.push(semanticIssue(
         "GITHUB_RELEASE_TRUST_CHECKPOINT_POLICY_INVALID",
         "$.trust_checkpoint",
-        "Release authorization v0.5 requires one recent release-false monitor checkpoint bound to the exact trusted-root artifact."
+        "Release authorization v0.5 requires one recent release-false non-genesis monitor checkpoint and its exact live GitHub Actions artifact lineage."
       ));
     }
   } else if (document &&
@@ -404,6 +432,10 @@ function validateReceiptSemantics(document, options = {}) {
   const target = document && document.target || {};
   const release = document && document.release || {};
   const authority = document && document.authority || {};
+  const repository = document && document.repository || {};
+  const checkpoint = document && document.trust_checkpoint || {};
+  const authorizationRef =
+    document && document.authorization_ref || {};
 
   if (options.requireCurrentVersion === true &&
       (!document ||
@@ -537,6 +569,60 @@ function validateReceiptSemantics(document, options = {}) {
         }`,
         checkpointIssue.message
       ));
+    }
+    const expectedWorkflowRef =
+      `${repository.full_name}/.github/workflows/release-integrity.yml@refs/heads/${repository.default_branch}`;
+    const checkpointRepository = checkpoint.repository || {};
+    const checkpointRoot = checkpoint.trusted_state || {};
+    const producer = checkpoint.producer || {};
+    if (checkpoint.sequence < 1 ||
+        checkpointRepository.full_name !== repository.full_name ||
+        checkpointRepository.default_branch !==
+          repository.default_branch ||
+        producer.kind !== "github_actions" ||
+        producer.workflow_ref !== expectedWorkflowRef ||
+        !/^[1-9][0-9]*$/.test(producer.run_id || "") ||
+        !Number.isSafeInteger(producer.run_attempt) ||
+        producer.run_attempt < 1) {
+      issues.push(semanticIssue(
+        "GITHUB_RELEASE_RECEIPT_CHECKPOINT_LINEAGE_INVALID",
+        "$.trust_checkpoint",
+        "Receipt v0.5 requires a non-genesis GitHub Actions checkpoint from the exact repository default-branch monitor."
+      ));
+    }
+    const authorization = options.authorization;
+    if (authorization) {
+      const authorizationCheckpoint =
+        authorization.trust_checkpoint || {};
+      const lineage =
+        authorizationCheckpoint.lineage_artifact || {};
+      if (authorizationRef.authorization_id !==
+          authorization.id ||
+          authorizationRef.sha256 !==
+            authorization.authorization_sha256 ||
+          checkpoint.id !==
+            authorizationCheckpoint.checkpoint_id ||
+          checkpoint.sequence !==
+            authorizationCheckpoint.sequence ||
+          checkpoint.checkpoint_sha256 !==
+            authorizationCheckpoint.checkpoint_sha256 ||
+          checkpointRoot.artifact_id !==
+            authorizationCheckpoint.trusted_root_artifact_id ||
+          checkpointRoot.artifact_sha256 !==
+            authorizationCheckpoint
+              .trusted_root_artifact_sha256 ||
+          checkpointRoot.trusted_root_sha256 !==
+            authorizationCheckpoint.trusted_root_sha256 ||
+          producer.workflow_ref !== lineage.workflow_ref ||
+          producer.run_id !== lineage.run_id ||
+          producer.run_attempt !== lineage.run_attempt ||
+          producer.repository_head_sha !== lineage.head_sha) {
+        issues.push(semanticIssue(
+          "GITHUB_RELEASE_RECEIPT_AUTHORIZATION_LINEAGE_MISMATCH",
+          "$.trust_checkpoint",
+          "The terminal receipt checkpoint must exactly match the consumed authorization and provider lineage."
+        ));
+      }
     }
   } else if (document &&
       document.trust_checkpoint !== undefined) {
@@ -919,6 +1005,10 @@ function loadTrustedRootForRelease(
       `Trusted-root artifact is not JSON: ${error.message}`
     );
   }
+  requireSchemaValid(
+    trustedRoot,
+    "github-release-trusted-root"
+  );
   const issues = validateGitHubReleaseTrustedRoot(trustedRoot, {
     evaluatedAt: verifiedAt,
     maximumAgeSeconds: DEFAULT_MAXIMUM_AGE_SECONDS,
@@ -980,6 +1070,10 @@ function loadTrustCheckpointForRelease(
       `Trust checkpoint is not JSON: ${error.message}`
     );
   }
+  requireSchemaValid(
+    checkpoint,
+    "github-release-trust-checkpoint"
+  );
   try {
     assertTrustedRootMatchesCheckpoint(
       checkpoint,
@@ -1000,6 +1094,195 @@ function loadTrustCheckpointForRelease(
     );
   }
   return checkpoint;
+}
+
+function loadCommittedReleaseIntegrityPolicy(repositoryRoot) {
+  const root = fs.realpathSync(repositoryRoot);
+  const absolute = path.resolve(root, RELEASE_INTEGRITY_POLICY_PATH);
+  if (!fs.existsSync(absolute) ||
+      !fs.statSync(absolute).isFile() ||
+      fs.lstatSync(absolute).isSymbolicLink()) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_LINEAGE_POLICY_MISSING",
+      "Release authorization requires the tracked release-integrity policy."
+    );
+  }
+  const bytes = fs.readFileSync(absolute);
+  const committed = commandResult(
+    "git",
+    ["show", `HEAD:${RELEASE_INTEGRITY_POLICY_PATH}`],
+    { cwd: root }
+  );
+  if (committed.status !== 0 ||
+      !Buffer.from(committed.stdout, "utf8").equals(bytes)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_LINEAGE_POLICY_UNCOMMITTED",
+      "Release-integrity policy bytes must exactly equal the current HEAD blob."
+    );
+  }
+  let policy;
+  try {
+    policy = JSON.parse(bytes.toString("utf8"));
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_LINEAGE_POLICY_INVALID",
+      `Release-integrity policy is not JSON: ${error.message}`
+    );
+  }
+  requireSchemaValid(policy, "github-release-integrity-policy");
+  return { policy, policyBytes: bytes };
+}
+
+function resolveReleaseCheckpointLineage(options = {}) {
+  const repositoryRoot = fs.realpathSync(options.repositoryRoot);
+  const context = options.integrityPolicyContext ||
+    loadCommittedReleaseIntegrityPolicy(repositoryRoot);
+  const policy = context.policy || {};
+  const policyBytes = context.policyBytes;
+  const checkpointPolicy = policy.trust_checkpoint_policy || {};
+  const policyRepository = policy.repository || {};
+  if (!Buffer.isBuffer(policyBytes) ||
+      policyRepository.full_name !==
+        options.repository.full_name ||
+      policyRepository.default_branch !==
+        options.repository.default_branch ||
+      checkpointPolicy.required !== true ||
+      checkpointPolicy.continuity_mode !==
+        "github_actions_artifact_chain" ||
+      !isSafeRelativePath(checkpointPolicy.workflow_path) ||
+      typeof checkpointPolicy.artifact_name_prefix !== "string" ||
+      checkpointPolicy.artifact_name_prefix.length === 0) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_LINEAGE_POLICY_MISMATCH",
+      "Release-integrity policy does not authorize the exact repository checkpoint lineage."
+    );
+  }
+  const {
+    SystemGitHubReleaseCheckpointStore
+  } = require("./github-release-checkpoint-store");
+  const store = options.checkpointStore ||
+    new SystemGitHubReleaseCheckpointStore(repositoryRoot);
+  let loaded;
+  try {
+    loaded = store.resolve({
+      repository: options.repository.full_name,
+      defaultBranch: options.repository.default_branch,
+      policyPath: RELEASE_INTEGRITY_POLICY_PATH,
+      policyBytes,
+      bootstrapCheckpointPath:
+        checkpointPolicy.bootstrap_checkpoint_path,
+      bootstrapTrustedRootPath:
+        checkpointPolicy.bootstrap_trusted_root_path,
+      workflowPath: checkpointPolicy.workflow_path,
+      artifactNamePrefix:
+        checkpointPolicy.artifact_name_prefix,
+      maximumRunHistory:
+        checkpointPolicy.maximum_run_history,
+      bootstrapWindowSeconds:
+        checkpointPolicy.bootstrap_window_seconds,
+      now: options.evaluatedAt
+    });
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      error.code || "GITHUB_RELEASE_LINEAGE_RESOLUTION_FAILED",
+      error.message,
+      error.details || {}
+    );
+  }
+  const provenance = loaded && loaded.provenance || {};
+  const checkpoint = loaded && loaded.checkpoint;
+  const trustedRoot = loaded && loaded.trusted_root;
+  const producer = checkpoint && checkpoint.producer || {};
+  const validateObservation = options.integrityObservationValidator ||
+    require("./github-release-integrity-monitor")
+      .validateRetainedFullObservationArtifact;
+  try {
+    validateObservation(loaded, {
+      repository: options.repository.full_name,
+      defaultBranch: options.repository.default_branch,
+      workflowPath: checkpointPolicy.workflow_path,
+      policyPath: RELEASE_INTEGRITY_POLICY_PATH,
+      policyBytes,
+      requireReady: true
+    });
+  } catch (error) {
+    throw new ReleaseAuthorizationError(
+      error.code ||
+        "GITHUB_RELEASE_LINEAGE_OBSERVATION_INVALID",
+      error.message,
+      error.details || {}
+    );
+  }
+  if (provenance.source !== "github_actions_artifact" ||
+      !checkpoint ||
+      checkpoint.sequence < 1 ||
+      checkpoint.repository.full_name !==
+        options.repository.full_name ||
+      checkpoint.repository.default_branch !==
+        options.repository.default_branch ||
+      producer.kind !== "github_actions" ||
+      !sameCanonicalJson(checkpoint, options.checkpoint) ||
+      !sameCanonicalJson(trustedRoot, options.trustedRoot)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_LINEAGE_ARTIFACT_MISMATCH",
+      "The supplied root and checkpoint must exactly equal the latest eligible non-genesis full-monitor artifact."
+    );
+  }
+  const requiredFreshUntil = parseTimestamp(
+    options.requiredFreshUntil
+  );
+  const artifactCreatedAt = parseTimestamp(
+    provenance.artifact_created_at
+  );
+  const artifactExpiresAt = parseTimestamp(
+    provenance.artifact_expires_at
+  );
+  const evaluatedAt = parseTimestamp(options.evaluatedAt);
+  const expectedArtifactName =
+    `${checkpointPolicy.artifact_name_prefix}${
+      provenance.run_id
+    }-${provenance.run_attempt}`;
+  if (!/^[1-9][0-9]*$/.test(provenance.run_id || "") ||
+      !Number.isSafeInteger(provenance.run_attempt) ||
+      provenance.run_attempt < 1 ||
+      provenance.conclusion !== "success" ||
+      !/^[a-f0-9]{40}$/.test(provenance.head_sha || "") ||
+      !/^[1-9][0-9]*$/.test(provenance.artifact_id || "") ||
+      provenance.artifact_name !== expectedArtifactName ||
+      !/^sha256:[a-f0-9]{64}$/.test(
+        provenance.artifact_digest || ""
+      ) ||
+      artifactCreatedAt === null ||
+      artifactExpiresAt === null ||
+      requiredFreshUntil === null ||
+      evaluatedAt === null ||
+      artifactCreatedAt > evaluatedAt ||
+      artifactExpiresAt <= artifactCreatedAt ||
+      artifactExpiresAt < requiredFreshUntil ||
+      producer.workflow_ref !==
+        `${options.repository.full_name}/${
+          checkpointPolicy.workflow_path
+        }@refs/heads/${options.repository.default_branch}` ||
+      producer.run_id !== provenance.run_id ||
+      producer.run_attempt !== provenance.run_attempt ||
+      producer.repository_head_sha !== provenance.head_sha) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_LINEAGE_PROVENANCE_INVALID",
+      "Latest monitor lineage metadata is incomplete, mismatched, or expires before the release operation boundary."
+    );
+  }
+  return {
+    source: "github_actions_artifact",
+    workflow_ref: checkpoint.producer.workflow_ref,
+    run_id: provenance.run_id,
+    run_attempt: provenance.run_attempt,
+    head_sha: provenance.head_sha,
+    artifact_id: provenance.artifact_id,
+    artifact_name: provenance.artifact_name,
+    artifact_digest: provenance.artifact_digest,
+    artifact_created_at: provenance.artifact_created_at,
+    artifact_expires_at: provenance.artifact_expires_at
+  };
 }
 
 function independentlyVerifyReleaseAttestation(
@@ -1417,8 +1700,10 @@ function assertNoSemanticIssues(issues) {
 }
 
 function requireSchemaValid(document, type) {
-  const { validatePayload } = require("./validator-cli-prototype/validate");
-  const result = validatePayload(document, type);
+  const {
+    validateSchemaPayload
+  } = require("./validator-cli-prototype/validate");
+  const result = validateSchemaPayload(document, type);
   if (!result.valid) {
     throw new ReleaseAuthorizationError(
       "RELEASE_DOCUMENT_SCHEMA_INVALID",
@@ -1622,6 +1907,18 @@ function authorizeRelease(options, adapter = null) {
     issuedAt,
     expiresAt
   );
+  const checkpointLineage = resolveReleaseCheckpointLineage({
+    repositoryRoot,
+    repository,
+    checkpoint: trustCheckpoint,
+    trustedRoot,
+    evaluatedAt: issuedAt,
+    requiredFreshUntil: expiresAt,
+    checkpointStore: options.checkpointStore,
+    integrityPolicyContext: options.integrityPolicyContext,
+    integrityObservationValidator:
+      options.integrityObservationValidator
+  });
   const grant = {
     grant_id: options.grantId,
     authority: "USER",
@@ -1693,6 +1990,7 @@ function authorizeRelease(options, adapter = null) {
       trusted_root_artifact_sha256:
         trustedRoot.artifact_sha256,
       trusted_root_sha256: trustedRoot.trusted_root_sha256,
+      lineage_artifact: checkpointLineage,
       maximum_age_seconds:
         DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS,
       checkpoint_reset_authorized: false,
@@ -1749,9 +2047,7 @@ function authorizeRelease(options, adapter = null) {
 
 function assertAuthorizationAgainstCurrentState(document, repositoryRoot, runtime) {
   assertNoSemanticIssues(validateAuthorizationSemantics(document, {
-    requireCurrentVersion: true,
-    requireFresh: true,
-    now: runtime.now()
+    requireCurrentVersion: true
   }));
   requireSchemaValid(document, "github-release-authorization");
 
@@ -1822,6 +2118,27 @@ function assertAuthorizationAgainstCurrentState(document, repositoryRoot, runtim
       throw new ReleaseAuthorizationError(
         "AUTHORIZED_PREVIOUS_RELEASE_DRIFT",
         "The latest prior release changed after authorization."
+      );
+    }
+    assertNoSemanticIssues(validateAuthorizationSemantics(document, {
+      requireCurrentVersion: true,
+      requireFresh: true,
+      now: runtime.now()
+    }));
+  } else {
+    const publishedAt = parseTimestamp(
+      existingRelease.publishedAt
+    );
+    const issuedAt = parseTimestamp(document.issued_at);
+    const expiresAt = parseTimestamp(document.expires_at);
+    if (publishedAt === null ||
+        issuedAt === null ||
+        expiresAt === null ||
+        publishedAt < issuedAt ||
+        publishedAt >= expiresAt) {
+      throw new ReleaseAuthorizationError(
+        "EXISTING_RELEASE_OUTSIDE_AUTHORIZATION_WINDOW",
+        "An existing immutable release may be reconciled only when GitHub recorded publication inside the original authorization window."
       );
     }
   }
@@ -1899,7 +2216,7 @@ function publishAuthorizedRelease(options, adapter = null) {
     );
   }
   const document = JSON.parse(fs.readFileSync(authorizationPath, "utf8"));
-  const { notes, existingRelease } = assertAuthorizationAgainstCurrentState(
+  assertAuthorizationAgainstCurrentState(
     document,
     repositoryRoot,
     runtime
@@ -1914,19 +2231,39 @@ function publishAuthorizedRelease(options, adapter = null) {
     );
   }
   const preflightAt = runtime.now();
+  const preflightTrustValidUntil =
+    parseTimestamp(document.expires_at) >=
+      parseTimestamp(preflightAt)
+      ? document.expires_at
+      : preflightAt;
   const trustedRoot = loadTrustedRootForRelease(
     repositoryRoot,
     options.trustedRootPath,
     preflightAt,
-    document.expires_at
+    preflightTrustValidUntil
   );
   const trustCheckpoint = loadTrustCheckpointForRelease(
     repositoryRoot,
     options.trustCheckpointPath,
     trustedRoot,
     preflightAt,
-    document.expires_at
+    preflightTrustValidUntil
   );
+  const checkpointLineage = resolveReleaseCheckpointLineage({
+    repositoryRoot,
+    repository: {
+      full_name: document.repository.full_name,
+      default_branch: document.repository.default_branch
+    },
+    checkpoint: trustCheckpoint,
+    trustedRoot,
+    evaluatedAt: preflightAt,
+    requiredFreshUntil: preflightTrustValidUntil,
+    checkpointStore: options.checkpointStore,
+    integrityPolicyContext: options.integrityPolicyContext,
+    integrityObservationValidator:
+      options.integrityObservationValidator
+  });
   if (trustCheckpoint.id !==
       document.trust_checkpoint.checkpoint_id ||
       trustCheckpoint.sequence !==
@@ -1940,14 +2277,79 @@ function publishAuthorizedRelease(options, adapter = null) {
       trustedRoot.artifact_sha256 !==
         document.trust_checkpoint.trusted_root_artifact_sha256 ||
       trustedRoot.trusted_root_sha256 !==
-        document.trust_checkpoint.trusted_root_sha256) {
+        document.trust_checkpoint.trusted_root_sha256 ||
+      !sameCanonicalJson(
+        checkpointLineage,
+        document.trust_checkpoint.lineage_artifact
+      )) {
     throw new ReleaseAuthorizationError(
       "GITHUB_RELEASE_TRUST_CHECKPOINT_AUTHORIZATION_MISMATCH",
       "Loaded checkpoint or trusted root no longer matches the exact USER authorization."
     );
   }
 
-  let observed = existingRelease;
+  const finalLineageAt = runtime.now();
+  const finalTrustValidUntil =
+    parseTimestamp(document.expires_at) >=
+      parseTimestamp(finalLineageAt)
+      ? document.expires_at
+      : finalLineageAt;
+  const finalTrustedRoot = loadTrustedRootForRelease(
+    repositoryRoot,
+    options.trustedRootPath,
+    finalLineageAt,
+    finalTrustValidUntil
+  );
+  const finalTrustCheckpoint = loadTrustCheckpointForRelease(
+    repositoryRoot,
+    options.trustCheckpointPath,
+    finalTrustedRoot,
+    finalLineageAt,
+    finalTrustValidUntil
+  );
+  if (!sameCanonicalJson(finalTrustedRoot, trustedRoot) ||
+      !sameCanonicalJson(finalTrustCheckpoint, trustCheckpoint)) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_TRUST_INPUT_CHANGED_BEFORE_CREATE",
+      "Trusted-root or checkpoint input changed before the external release mutation."
+    );
+  }
+  const finalCheckpointLineage = resolveReleaseCheckpointLineage({
+    repositoryRoot,
+    repository: {
+      full_name: document.repository.full_name,
+      default_branch: document.repository.default_branch
+    },
+    checkpoint: trustCheckpoint,
+    trustedRoot,
+    evaluatedAt: finalLineageAt,
+    requiredFreshUntil: finalTrustValidUntil,
+    checkpointStore: options.checkpointStore,
+    integrityPolicyContext: options.integrityPolicyContext,
+    integrityObservationValidator:
+      options.integrityObservationValidator
+  });
+  if (!sameCanonicalJson(
+    finalCheckpointLineage,
+    checkpointLineage
+  ) ||
+      !sameCanonicalJson(
+        finalCheckpointLineage,
+        document.trust_checkpoint.lineage_artifact
+      )) {
+    throw new ReleaseAuthorizationError(
+      "GITHUB_RELEASE_LINEAGE_CHANGED_BEFORE_CREATE",
+      "The latest eligible checkpoint artifact changed before the external release mutation."
+    );
+  }
+
+  const finalState = assertAuthorizationAgainstCurrentState(
+    document,
+    repositoryRoot,
+    runtime
+  );
+  const notes = finalState.notes;
+  let observed = finalState.existingRelease;
   if (!observed) {
     try {
       runtime.createRelease(
@@ -2014,7 +2416,8 @@ function publishAuthorizedRelease(options, adapter = null) {
   };
   receipt.receipt_sha256 = receiptDigest(receipt);
   assertNoSemanticIssues(validateReceiptSemantics(receipt, {
-    requireCurrentVersion: true
+    requireCurrentVersion: true,
+    authorization: document
   }));
   requireSchemaValid(receipt, "github-release-receipt");
   return receipt;
@@ -2145,6 +2548,7 @@ function main(argv = process.argv.slice(2)) {
 module.exports = {
   CURRENT_RELEASE_SCHEMA_VERSION,
   GITHUB_API_VERSION,
+  RELEASE_INTEGRITY_POLICY_PATH,
   RELEASE_ATTESTATION_BUNDLE_MEDIA_TYPE,
   RELEASE_ATTESTATION_MINIMUM_GH_VERSION,
   RELEASE_ATTESTATION_PREDICATE_TYPE,
@@ -2167,6 +2571,7 @@ module.exports = {
   parseGhVersionOutput,
   parseJsonOutput,
   publishAuthorizedRelease,
+  resolveReleaseCheckpointLineage,
   receiptDigest,
   releasePackageUri,
   requireCommand,

@@ -13,10 +13,12 @@ The fixture adapter covers:
 - complete GitHub TUF-chain replay and independent verification of a real
   public `cli/cli v2.93.0` release bundle before a v0.5 receipt;
 - exact monotonic checkpoint/root binding in the USER authorization and
-  terminal receipt;
+  terminal receipt, backed by a successful replayed full observation;
 - denial of legacy authorization downgrade, missing or stale trust inputs,
-  path drift, and valid-checkpoint substitution before any immutable release
-  creation call;
+  path drift, blocked artifacts, schema-invalid roots, validity or policy drift
+  during lineage resolution, and valid-checkpoint substitution before any
+  immutable release creation call;
+- exact post-create verification reconciliation without a second release;
 - an existing release whose tag resolves to the wrong commit;
 - a partial state where a tag exists without a GitHub release; and
 - static valid and adversarial authorization and receipt payloads.

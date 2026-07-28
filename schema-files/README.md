@@ -205,7 +205,9 @@ exact public repository, stable tag, full commit, previous release, tracked
 notes digest, successful default-branch `Validate` push run, clean repository
 state, enabled release-immutability policy, GitHub attestation and independent
 verification profiles, exact fresh trust checkpoint/root pair for version
-`0.5`, and short expiry. `GitHubReleaseReceipt` records exact
+`0.5`, the exact successful ready full-observation/root/checkpoint artifact
+triplet that supplied that pair, and short
+expiry. `GitHubReleaseReceipt` records exact
 publication, tag verification, observed immutable state, complete normalized
 GitHub-signed attestation evidence, independent bundle replay, full trust
 checkpoint/root evidence, and authorization consumption. No lower
@@ -221,7 +223,8 @@ already-enabled idempotent retry while keeping `release_authorized: false`.
 `GitHubReleaseIntegrityPolicy` seals the Phase 19A activation baseline,
 expected enabled state, grandfathered releases, attestation profile, cadence,
 bounded retry, monotonic checkpoint-store policy for version `0.3`, and
-fail-closed behavior. `GitHubReleaseIntegrityObservation`
+the exact retained observation/root/checkpoint filenames with fail-closed
+behavior. `GitHubReleaseIntegrityObservation`
 retains the exact committed policy-blob digest, current default-branch state,
 live policy status, explicit credential uncertainty, every selected resolved
 release, immutable classification, complete verified attestation evidence,

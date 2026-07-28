@@ -108,11 +108,11 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Approval Scope Policy](docs/approval-scope-policy.md): single-use approvals, expiry, rollback, evidence, renewal, revocation, and delegation.
 - [Risk Acceptance Authority](docs/risk-acceptance-authority.md): residual risk acceptance and commander-retained authority.
 - [Context Releasability Policy](docs/context-releasability-policy.md): role-based context release and final-output controls.
-- [Exact GitHub Release Authorization](docs/github-release-authorization.md): one short-lived USER grant bound to the exact public repository, tag, commit, successful main CI run, notes digest, and verified release receipt.
+- [Exact GitHub Release Authorization](docs/github-release-authorization.md): one short-lived USER grant bound to the exact repository, tag, commit, main CI, notes, latest non-genesis monitor artifact, and verified receipt.
 - [GitHub Release Immutability](docs/github-release-immutability.md): separately authorized repository policy activation and prospective immutable-state enforcement for future releases.
 - [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md): continuous policy-drift and GitHub-signed release-attestation verification without mutation or release authority.
 - [Independent GitHub Release Verification](docs/github-release-independent-verification.md): pinned TUF-chain replay and independent Sigstore verification of retained release bundles.
-- [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): monotonic prior-state comparison, exact workflow artifact lineage, and fail-closed rollback/equivocation detection.
+- [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): monotonic prior-state comparison, stable run/attempt artifact lineage, rerun-fork rejection, and fail-closed rollback/equivocation detection.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
 - [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.
 
@@ -419,7 +419,8 @@ explicitly selects one release, the terminal publisher can issue a short-lived
 repository + stable tag + full commit + successful main CI + notes digest
 + enabled immutable-releases policy + exact GitHub release attestation
 + pinned GitHub TUF chain + independent Sigstore bundle verification
-+ fresh monotonic trust checkpoint + exact retained root
++ successful ready full-monitor observation
++ fresh monotonic trust checkpoint + exact retained root + provider lineage
 ```
 
 The publisher rechecks those values, creates the tag/release from the full
@@ -428,8 +429,10 @@ body, requires `isImmutable: true`, verifies and retains GitHub's signed
 repository/tag/commit/asset statement, replays the complete pinned GitHub TUF
 chain, independently verifies the bundle with pinned Sigstore code, and
 records consumption in `GitHubReleaseReceipt`. Drift, expiry, a disabled
-policy, a partial tag/release, stale trust material, or a mismatched release
-or attestation blocks publication.
+policy, a blocked or forged observation, a partial tag/release, stale trust
+material, or a mismatched release or attestation blocks publication. The
+publisher rechecks mutable state after lineage resolution and never creates a
+second release while reconciling an exact post-create verification failure.
 
 Repository policy activation uses a separate short-lived USER grant and never
 grants release authority:
@@ -460,9 +463,10 @@ node codex-skills/controls-doctrine-operator/scripts/operate_github_release.js \
 ```
 
 Active publication accepts only authorization v0.5. It must consume and
-verify the exact retained GitHub TUF root and monotonic checkpoint with an
-explicit current UTC evaluation time, then prove both remain valid through
-authorization expiry before any release creation call.
+verify the exact retained full observation, GitHub TUF root, and monotonic
+checkpoint with an explicit current UTC evaluation time, then prove the
+triplet and its successful provider run remain valid through the operation
+boundary before any release creation call.
 
 Continuous read-only monitoring is separate from both authorities:
 
@@ -562,10 +566,10 @@ Important examples:
 - `run-release-integration-fixtures.js`: separation between execution approval and release review.
 - `run-release-gate-decision-fixtures.js`: release gate event audit consistency.
 - `run-github-release-immutability-fixtures.js`: exact USER policy grant, repository ADMIN/main-CI binding, one activation, post-action verification, prospective historical state, and idempotent retry gates.
-- `run-github-release-publisher-fixtures.js`: exact USER grant, repository/tag/commit/main-CI/notes binding, expiry, tamper, partial-state, wrong-tag, immutable publication, signed-attestation scope, receipt, and idempotency gates.
-- `run-github-release-integrity-fixtures.js`: committed read-only policy baseline, credential uncertainty, stale repository state, path escape, drift, mutable release, attestation substitution, missing historical state, release-event scope, and authority-boundary gates.
+- `run-github-release-publisher-fixtures.js`: exact USER grant, repository/tag/commit/main-CI/notes binding, ready artifact lineage, pre-create expiry/policy drift, trusted-root schema, post-create reconciliation, immutable publication, signed-attestation scope, receipt, and idempotency gates.
+- `run-github-release-integrity-fixtures.js`: committed read-only policy baseline, credential uncertainty, stale repository state, immutable workflow source, full-observation replay, drift, mutable release, attestation substitution, missing historical state, release-event scope, and authority-boundary gates.
 - `run-github-release-independent-verification-fixtures.js`: real GitHub release bundle, complete TUF replay, DSSE and CLI cross-checks, root/targets mutation, commit substitution, wrapper-rehash, and authority-boundary gates.
-- `run-github-release-trust-checkpoint-fixtures.js`: monotonic TUF sequence, rollback/equivocation, root/retrieval continuity, bounded bootstrap, latest-artifact non-fallback, producer binding, and archive-safety gates.
+- `run-github-release-trust-checkpoint-fixtures.js`: monotonic TUF sequence, rollback/equivocation, root/retrieval continuity, bounded bootstrap, completed default-branch reruns, latest-artifact non-fallback, required observation/root/checkpoint ZIP members, producer binding, and archive-safety gates.
 - `run-document-access-fixtures.js`: role, duty, authority, and need-to-know document access.
 - `run-doctrine-consistency-fixtures.js`: non-US source-family coverage and US-only assumption blocking.
 - `run-sof-tf-fixtures.js`: high-risk task force activation gates.
@@ -638,7 +642,7 @@ Working today:
 - exact USER-authorized repository release-immutability activation with verified prospective policy state and no release-authority widening;
 - continuous immutable-policy and GitHub-signed release-attestation monitoring with explicit credential uncertainty and no mutation authority;
 - independent retained-bundle verification with complete pinned GitHub TUF evidence, Sigstore replay, and CLI-to-signed-statement cross-checking;
-- provider-retained monotonic GitHub TUF checkpoints with rollback, equivocation, fork, artifact, producer, and bootstrap controls;
+- provider-retained monotonic GitHub TUF checkpoints with rollback, equivocation, fork, full-observation replay, immutable workflow source, artifact, producer, and bootstrap controls;
 - short-lived exact GitHub release authorization and independently attestation-bound terminal receipts, with all lower runtime artifacts retaining release false;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
@@ -679,8 +683,10 @@ Cannae OS is an operating framework, not a guarantee of correct outputs.
   historical `v0.2.0` remains non-immutable. Phase 19B monitors platform
   state, and Phase 19C independently replays retained bundles and the complete
   GitHub TUF chain with pinned Sigstore code. Phase 19D compares each refresh
-  with the prior GitHub Actions artifact checkpoint, but that artifact can
-  expire or be deleted and is not an independent archive or witness. GitHub
+  with the prior GitHub Actions observation/root/checkpoint artifact, executes
+  the pinned default-branch workflow source, and requires a successful ready
+  observation before release admission, but that artifact can expire or be
+  deleted and is not an independent archive or witness. GitHub
   still operates the signer, Fulcio/TSA services, policy service, workflow
   artifact service, and TUF repository; two
   verifiers in one job are not independent infrastructure failure domains.

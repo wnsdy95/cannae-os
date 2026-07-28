@@ -15,12 +15,15 @@ adapter. It performs no network mutation. It covers:
   readiness using a real public `cli/cli v2.93.0` bundle;
 - USER genesis and exact predecessor checkpoint advancement under the same
   retained root;
+- full-observation schema, replay, root/checkpoint, run, and release-readiness
+  binding;
 - missing predecessor artifact rejection without repository-bootstrap
   fallback;
 - retained trusted-root acquisition failure and fail-closed readiness;
 - exact committed-HEAD policy and activation-ancestry binding;
 - stale default-branch and parent-symlink output rejection;
-- read-only workflow permissions and shell-expression injection rejection;
+- read-only workflow permissions, immutable workflow/action source, all-main
+  push acquisition, and shell-expression injection rejection;
 - immutable-policy drift;
 - missing Administration read credentials;
 - mutable post-activation releases;

@@ -16,6 +16,7 @@ const DEFAULT_MAXIMUM_RUN_HISTORY = 100;
 const DEFAULT_WORKFLOW_PATH =
   ".github/workflows/release-integrity.yml";
 const CHECKPOINT_FILE_NAME = "github-release-trust-checkpoint.json";
+const FULL_OBSERVATION_FILE_NAME = "full-observation.json";
 const TRUSTED_ROOT_FILE_NAME = "github-trusted-root.json";
 const MAXIMUM_ARCHIVE_BYTES = 32 * 1024 * 1024;
 const MAXIMUM_ARCHIVE_ENTRIES = 100;
@@ -330,6 +331,27 @@ class SystemGitHubReleaseCheckpointStore {
     return response.workflow_runs;
   }
 
+  inspectRunAttempt(repository, runId, runAttempt = null) {
+    const suffix = runAttempt === null
+      ? `repos/${repository}/actions/runs/${runId}`
+      : `repos/${repository}/actions/runs/${runId}/attempts/${runAttempt}`;
+    return requireJsonCommand(
+      "gh",
+      [
+        "api",
+        "-H",
+        "Accept: application/vnd.github+json",
+        "-H",
+        "X-GitHub-Api-Version: 2026-03-10",
+        suffix
+      ],
+      {
+        cwd: this.repositoryRoot,
+        code: "GITHUB_RELEASE_CHECKPOINT_RUN_INSPECTION_FAILED"
+      }
+    );
+  }
+
   inspectArtifact(repository, run, artifactName) {
     const response = requireJsonCommand(
       "gh",
@@ -439,6 +461,10 @@ class SystemGitHubReleaseCheckpointStore {
         entries,
         TRUSTED_ROOT_FILE_NAME
       );
+      const fullObservationEntry = findUniqueEntry(
+        entries,
+        FULL_OBSERVATION_FILE_NAME
+      );
       return {
         checkpoint: readBoundedArchiveJson(
           archivePath,
@@ -451,6 +477,12 @@ class SystemGitHubReleaseCheckpointStore {
           trustedRootEntry,
           2 * 1024 * 1024,
           "Trusted-root artifact"
+        ),
+        full_observation: readBoundedArchiveJson(
+          archivePath,
+          fullObservationEntry,
+          16 * 1024 * 1024,
+          "Full integrity observation"
         ),
         provenance: {
           source: "github_actions_artifact",
@@ -500,7 +532,13 @@ class SystemGitHubReleaseCheckpointStore {
         maximumRunHistory > 100 ||
         !Number.isSafeInteger(bootstrapWindowSeconds) ||
         bootstrapWindowSeconds < 60 ||
-        parseTimestamp(now) === null) {
+        parseTimestamp(now) === null ||
+        (Number(currentRunAttempt) > 1 &&
+         !/^[1-9][0-9]*$/.test(String(currentRunId || ""))) ||
+        (currentRunId !== undefined &&
+         (!/^[1-9][0-9]*$/.test(String(currentRunId)) ||
+          !Number.isSafeInteger(Number(currentRunAttempt)) ||
+          Number(currentRunAttempt) < 1))) {
       throw new GitHubReleaseCheckpointStoreError(
         "GITHUB_RELEASE_CHECKPOINT_STORE_OPTIONS_INVALID",
         "Checkpoint store options are incomplete or outside supported bounds."
@@ -515,41 +553,89 @@ class SystemGitHubReleaseCheckpointStore {
     );
     const workflowRef =
       `${repository}/${workflowPath}@refs/heads/${defaultBranch}`;
+    const isEligibleCompletedRun = run =>
+      Number.isSafeInteger(run && run.id) &&
+      Number.isSafeInteger(run.run_number) &&
+      run.run_number >= 1 &&
+      run.path === workflowPath &&
+      run.status === "completed" &&
+      run.head_branch === defaultBranch &&
+      ["success", "failure"].includes(run.conclusion) &&
+      Number.isSafeInteger(run.run_attempt) &&
+      run.run_attempt >= 1 &&
+      parseTimestamp(run.created_at) !== null &&
+      /^[a-f0-9]{40}$/.test(run.head_sha || "") &&
+      isAncestor(this.repositoryRoot, run.head_sha) &&
+      policyMatchesCommit(
+        this.repositoryRoot,
+        run.head_sha,
+        policyPath,
+        policyBytes
+      );
     const candidates = runs
       .filter(run =>
-        Number.isSafeInteger(run.id) &&
-        run.path === workflowPath &&
-        ["success", "failure"].includes(run.conclusion) &&
-        Number.isSafeInteger(run.run_attempt) &&
-        run.run_attempt >= 1 &&
-        parseTimestamp(run.updated_at) !== null &&
-        /^[a-f0-9]{40}$/.test(run.head_sha || "") &&
-        isAncestor(this.repositoryRoot, run.head_sha) &&
-        policyMatchesCommit(
-          this.repositoryRoot,
-          run.head_sha,
-          policyPath,
-          policyBytes
-        ) &&
+        isEligibleCompletedRun(run) &&
         String(run.id) !== String(currentRunId || ""))
       .sort((left, right) =>
-        parseTimestamp(right.updated_at) -
-        parseTimestamp(left.updated_at));
+        right.run_number - left.run_number ||
+        right.id - left.id);
 
     let selected = null;
     if (Number(currentRunAttempt) > 1 &&
         /^[1-9][0-9]*$/.test(String(currentRunId || ""))) {
-      selected = {
-        id: Number(currentRunId),
-        run_attempt: Number(currentRunAttempt) - 1,
-        head_sha: commandResult(
-          "git",
-          ["rev-parse", "HEAD"],
-          { cwd: this.repositoryRoot }
-        ).stdout.trim(),
-        conclusion: "failure",
-        path: workflowPath
-      };
+      const current = this.inspectRunAttempt(
+        repository,
+        Number(currentRunId),
+        Number(currentRunAttempt)
+      );
+      if (!current ||
+          Number(current.id) !== Number(currentRunId) ||
+          current.run_attempt !== Number(currentRunAttempt) ||
+          !Number.isSafeInteger(current.run_number) ||
+          current.run_number < 1 ||
+          current.path !== workflowPath ||
+          current.status !== "in_progress" ||
+          current.head_branch !== defaultBranch ||
+          parseTimestamp(current.created_at) === null ||
+          !/^[a-f0-9]{40}$/.test(current.head_sha || "") ||
+          !isAncestor(this.repositoryRoot, current.head_sha) ||
+          !policyMatchesCommit(
+            this.repositoryRoot,
+            current.head_sha,
+            policyPath,
+            policyBytes
+          )) {
+        throw new GitHubReleaseCheckpointStoreError(
+          "GITHUB_RELEASE_CHECKPOINT_CURRENT_RERUN_INVALID",
+          "The current rerun is not bound to the exact eligible workflow, commit, and policy."
+        );
+      }
+      if (candidates.some(run =>
+        run.run_number > current.run_number ||
+        (run.run_number === current.run_number &&
+         Number(run.id) !== Number(current.id)))) {
+        throw new GitHubReleaseCheckpointStoreError(
+          "GITHUB_RELEASE_CHECKPOINT_RERUN_FORK_BLOCKED",
+          "A historical workflow rerun cannot branch from an older checkpoint after a newer eligible run exists."
+        );
+      }
+      const previousAttempt = this.inspectRunAttempt(
+        repository,
+        Number(currentRunId),
+        Number(currentRunAttempt) - 1
+      );
+      if (!isEligibleCompletedRun(previousAttempt) ||
+          Number(previousAttempt.id) !== Number(current.id) ||
+          previousAttempt.run_number !== current.run_number ||
+          previousAttempt.run_attempt !==
+            Number(currentRunAttempt) - 1 ||
+          previousAttempt.head_sha !== current.head_sha) {
+        throw new GitHubReleaseCheckpointStoreError(
+          "GITHUB_RELEASE_CHECKPOINT_PREVIOUS_ATTEMPT_INVALID",
+          "A rerun requires one exact completed immediately preceding attempt from the same stable run."
+        );
+      }
+      selected = previousAttempt;
     } else if (candidates.length > 0) {
       selected = candidates[0];
     }
@@ -622,6 +708,7 @@ module.exports = {
   DEFAULT_BOOTSTRAP_WINDOW_SECONDS,
   DEFAULT_MAXIMUM_RUN_HISTORY,
   DEFAULT_WORKFLOW_PATH,
+  FULL_OBSERVATION_FILE_NAME,
   GitHubReleaseCheckpointStoreError,
   MAXIMUM_ARCHIVE_BYTES,
   MAXIMUM_ARCHIVE_ENTRIES,

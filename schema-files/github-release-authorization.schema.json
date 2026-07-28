@@ -205,6 +205,7 @@
         "trusted_root_artifact_id",
         "trusted_root_artifact_sha256",
         "trusted_root_sha256",
+        "lineage_artifact",
         "maximum_age_seconds",
         "checkpoint_reset_authorized",
         "independent_persistence_verified",
@@ -233,7 +234,7 @@
         },
         "sequence": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 1
         },
         "checkpoint_sha256": {
           "$ref": "common.schema.json#/$defs/sha256"
@@ -249,6 +250,62 @@
         },
         "trusted_root_sha256": {
           "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "lineage_artifact": {
+          "type": "object",
+          "required": [
+            "source",
+            "workflow_ref",
+            "run_id",
+            "run_attempt",
+            "head_sha",
+            "artifact_id",
+            "artifact_name",
+            "artifact_digest",
+            "artifact_created_at",
+            "artifact_expires_at"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "string",
+              "const": "github_actions_artifact"
+            },
+            "workflow_ref": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/\\.github/workflows/[^@\\s]+@refs/heads/[^@\\s]+$"
+            },
+            "run_id": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "run_attempt": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "head_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "artifact_id": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            },
+            "artifact_name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifact_digest": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "artifact_created_at": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            },
+            "artifact_expires_at": {
+              "$ref": "common.schema.json#/$defs/timestamp"
+            }
+          }
         },
         "maximum_age_seconds": {
           "type": "integer",

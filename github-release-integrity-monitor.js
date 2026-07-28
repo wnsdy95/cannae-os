@@ -41,10 +41,13 @@ const {
   DEFAULT_BOOTSTRAP_WINDOW_SECONDS,
   DEFAULT_MAXIMUM_RUN_HISTORY,
   DEFAULT_WORKFLOW_PATH,
+  FULL_OBSERVATION_FILE_NAME,
   SystemGitHubReleaseCheckpointStore,
   TRUSTED_ROOT_FILE_NAME
 } = require("./github-release-checkpoint-store");
 const { canonicalJsonBytes } = require("./verifier-identity-evidence");
+
+const ARTIFACT_TIMESTAMP_TOLERANCE_MS = 60 * 1000;
 
 class ReleaseIntegrityError extends Error {
   constructor(code, message, details = {}) {
@@ -204,6 +207,8 @@ function validateIntegrityPolicySemantics(document) {
           CHECKPOINT_FILE_NAME ||
         checkpoint.trusted_root_file_name !==
           TRUSTED_ROOT_FILE_NAME ||
+        checkpoint.full_observation_file_name !==
+          FULL_OBSERVATION_FILE_NAME ||
         checkpoint.maximum_checkpoint_age_seconds !==
           DEFAULT_MAXIMUM_CHECKPOINT_AGE_SECONDS ||
         checkpoint.bootstrap_window_seconds !==
@@ -698,6 +703,116 @@ function requireSchemaValid(document, type) {
       { result }
     );
   }
+}
+
+function validateRetainedFullObservationArtifact(
+  artifact,
+  options = {}
+) {
+  const observation = artifact && artifact.full_observation;
+  const checkpoint = artifact && artifact.checkpoint;
+  const trustedRoot = artifact && artifact.trusted_root;
+  const provenance = artifact && artifact.provenance || {};
+  if (!observation || !checkpoint || !trustedRoot ||
+      !Buffer.isBuffer(options.policyBytes)) {
+    throw new ReleaseIntegrityError(
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_INCOMPLETE",
+      `A retained checkpoint artifact must contain exactly one ${FULL_OBSERVATION_FILE_NAME}, ${CHECKPOINT_FILE_NAME}, and ${TRUSTED_ROOT_FILE_NAME}.`
+    );
+  }
+
+  let policy;
+  try {
+    policy = JSON.parse(options.policyBytes.toString("utf8"));
+  } catch (error) {
+    throw new ReleaseIntegrityError(
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_POLICY_INVALID",
+      "The policy used to validate retained observation evidence is not JSON."
+    );
+  }
+  requireSchemaValid(
+    observation,
+    "github-release-integrity-observation"
+  );
+  assertNoSemanticIssues(
+    validateIntegrityObservationSemantics(observation)
+  );
+
+  const repository = options.repository;
+  const defaultBranch = options.defaultBranch;
+  const workflowPath = options.workflowPath;
+  const policyPath = options.policyPath;
+  const expectedWorkflowRef =
+    `${repository}/${workflowPath}@refs/heads/${defaultBranch}`;
+  const expectedRef = `refs/heads/${defaultBranch}`;
+  const checkpointObservation =
+    observation.trust_checkpoint_observation || {};
+  const trustedRootObservation =
+    observation.trusted_root_observation || {};
+  const observedAt = parseTimestamp(observation.observed_at);
+  const artifactCreatedAt = parseTimestamp(
+    provenance.artifact_created_at
+  );
+  const readyRequired = options.requireReady === true;
+  const bindingInvalid =
+    observation.schema_version !== "0.3" ||
+      observation.scope !== "full" ||
+      observation.repository.full_name !== repository ||
+      observation.repository.default_branch !== defaultBranch ||
+      observation.repository.branch !== defaultBranch ||
+      observation.repository.observed_head_sha !==
+        provenance.head_sha ||
+      observation.repository.origin_default_branch_sha !==
+        provenance.head_sha ||
+      observation.repository.clean !== true ||
+      observation.policy_ref.relative_path !== policyPath ||
+      observation.policy_ref.sha256 !== policy.policy_sha256 ||
+      observation.policy_ref.head_blob_sha256 !==
+        sha256(options.policyBytes) ||
+      observation.trigger.run_id !== provenance.run_id ||
+      observation.trigger.ref !== expectedRef ||
+      observation.trigger.kind === "release" ||
+      checkpointObservation.status !== "verified" ||
+      trustedRootObservation.status !== "verified" ||
+      !sameCanonicalJson(
+        checkpointObservation.current_checkpoint,
+        checkpoint
+      ) ||
+      !sameCanonicalJson(
+        trustedRootObservation.artifact,
+        trustedRoot
+      ) ||
+      checkpoint.producer.kind !== "github_actions" ||
+      checkpoint.producer.workflow_ref !== expectedWorkflowRef ||
+      checkpoint.producer.run_id !== provenance.run_id ||
+      checkpoint.producer.run_attempt !==
+        provenance.run_attempt ||
+      checkpoint.producer.repository_head_sha !==
+        provenance.head_sha ||
+      observedAt === null ||
+      artifactCreatedAt === null ||
+      observedAt >
+        artifactCreatedAt + ARTIFACT_TIMESTAMP_TOLERANCE_MS;
+  if (bindingInvalid) {
+    throw new ReleaseIntegrityError(
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_BINDING_INVALID",
+      "Retained full-monitor evidence does not bind the exact policy, repository, workflow run, root, and checkpoint."
+    );
+  }
+  if (readyRequired &&
+      (provenance.conclusion !== "success" ||
+       observation.summary.status !== "ready" ||
+       observation.summary.monitoring_complete !== true ||
+       observation.summary.policy_assessment_complete !== true ||
+       observation.summary.trust_checkpoint_continuity_verified !==
+         true ||
+       observation.issues.length !== 0)) {
+    throw new ReleaseIntegrityError(
+      "GITHUB_RELEASE_INTEGRITY_ARTIFACT_NOT_READY",
+      "Release authorization requires an exact successful ready full-monitor observation."
+    );
+  }
+  return true;
 }
 
 function resolveRepositoryPath(repositoryRoot, candidatePath, mustExist) {
@@ -1743,6 +1858,18 @@ async function main(argv = process.argv.slice(2)) {
             process.env.GITHUB_RUN_ATTEMPT ||
             1
         });
+        if (previous.provenance.source ===
+            "github_actions_artifact") {
+          validateRetainedFullObservationArtifact(previous, {
+            repository: policy.repository.full_name,
+            defaultBranch: policy.repository.default_branch,
+            workflowPath:
+              policy.trust_checkpoint_policy.workflow_path,
+            policyPath: policyInputPath.relative,
+            policyBytes,
+            requireReady: false
+          });
+        }
         previousTrustCheckpoint = previous.checkpoint;
         previousTrustedRoot = previous.trusted_root;
         checkpointProvenance = previous.provenance;
@@ -1850,7 +1977,8 @@ module.exports = {
   policyDigest,
   resolveRepositoryPath,
   validateIntegrityObservationSemantics,
-  validateIntegrityPolicySemantics
+  validateIntegrityPolicySemantics,
+  validateRetainedFullObservationArtifact
 };
 
 if (require.main === module) main();
