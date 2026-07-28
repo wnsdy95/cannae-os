@@ -289,6 +289,15 @@ issue, a rerun, incomplete history, or an expired authorization. The accepted
 run can advance checkpoint continuity while remaining blocked on an
 independent credential issue.
 
+Live acceptance on 2026-07-28 used push run `30338646806` to advance the
+USER-authorized recovery from sequence zero to one, then a distinct manual
+first-attempt run `30338779941` to consume that complete provider artifact
+and advance from sequence one to two. The second observation recorded
+`github_actions_artifact`, not recovery, as predecessor provenance. Both
+three-file artifacts replayed successfully and remained blocked only on the
+missing monitor credential. Exact run, artifact, checkpoint, and digest
+evidence is retained in `github-release-trust-checkpoint-continuity.md`.
+
 Do not place the owner's broad `gh` OAuth token in this secret. Use a
 repository-selected fine-grained token held by a dedicated monitoring
 principal, with Administration **read-only**, or inject an equivalently
