@@ -6,6 +6,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const {
   ReleaseIntegrityError,
+  classifyPolicyInspectionFailure,
   monitorRepository,
   observationDigest,
   policyDigest,
@@ -412,6 +413,39 @@ function expectError(name, expectedCode, callback) {
 
 function runFixtures() {
   const results = [];
+
+  {
+    const unauthorized = classifyPolicyInspectionFailure(
+      "gh: Bad credentials (HTTP 401)",
+      1
+    );
+    const forbidden = classifyPolicyInspectionFailure(
+      "gh: Resource not accessible by personal access token (HTTP 403)",
+      1
+    );
+    const unavailable = classifyPolicyInspectionFailure(
+      "gh: upstream transport failed (HTTP 502)",
+      1
+    );
+    results.push({
+      name: "policy credential diagnostics distinguish 401, 403, and non-credential failures without response text",
+      ok:
+        unauthorized.code ===
+          "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE" &&
+        unauthorized.details.http_status === 401 &&
+        unauthorized.message.includes("invalid, expired, or malformed") &&
+        !unauthorized.message.includes("Bad credentials") &&
+        forbidden.code ===
+          "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE" &&
+        forbidden.details.http_status === 403 &&
+        forbidden.message.includes("Administration read") &&
+        !forbidden.message.includes("Resource not accessible") &&
+        unavailable.code ===
+          "GITHUB_RELEASE_POLICY_INSPECTION_FAILED" &&
+        unavailable.details.http_status === 502 &&
+        !unavailable.message.includes("upstream transport")
+    });
+  }
 
   {
     const policy = makePolicy();

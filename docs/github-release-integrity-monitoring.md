@@ -279,6 +279,10 @@ introduced runtime input cannot silently escape checkpoint acquisition.
 The full monitor first tries `CANNAE_IMMUTABILITY_MONITOR_TOKEN` and otherwise
 uses the job token. If the active token cannot read repository Administration,
 the observation records `credential_unavailable` and the job fails.
+The CLI emits only sanitized credential diagnosis: HTTP 401 means the secret
+value is invalid, expired, or malformed; HTTP 403 means the credential lacks
+Administration read or does not include the monitored repository. It never
+prints the provider response body or token.
 
 The only partial-artifact exception is Phase 19E. It accepts exactly the
 two-file observation/root shape, only the two enumerated initial checkpoint
@@ -298,6 +302,16 @@ three-file artifacts replayed successfully and remained blocked only on the
 missing monitor credential. Exact run, artifact, checkpoint, and digest
 evidence is retained in `github-release-trust-checkpoint-continuity.md`.
 
+Credential acceptance on 2026-07-30 used manual run `30522252521` at
+`1ce41636998742f65096ad1e0b4273ce3b359e42`. Artifact `8751232448`, with
+archive digest
+`sha256:ea704b6e4c608b807e0b1dddc7cc3aa32e5cae7994a3f67c248b932b4dfe2a57`,
+contained exactly the observation, trusted root, and checkpoint. The
+observation was `ready`, reported policy `verified`, `enabled: true`, zero
+issues, and verified checkpoint sequence 14 from the exact sequence-13
+provider predecessor. Standalone schema and semantic replay passed. Both
+checkpoint reset and release authorization remained false.
+
 Do not place the owner's broad `gh` OAuth token in this secret. Use a
 repository-selected fine-grained token held by a dedicated monitoring
 principal, with Administration **read-only**, or inject an equivalently
@@ -308,6 +322,20 @@ gh secret set CANNAE_IMMUTABILITY_MONITOR_TOKEN \
   --repo wnsdy95/cannae-os
 ```
 
+`gh secret list` proves only that a named encrypted value has an update
+timestamp. After every installation, permission change, or rotation, dispatch
+one new first-attempt full workflow on `main` and require:
+
+- a successful monitor job and retained three-file artifact;
+- `policy_observation.status: verified` and `enabled: true`;
+- `summary.status: ready`, `monitoring_complete: true`, and zero issues;
+- an exact predecessor checkpoint transition through
+  `github_actions_artifact`; and
+- `checkpoint_reset_authorized: false` and `release_authorized: false`.
+
+Do not substitute a successful local request made with a broader identity for
+this provider-secret proof.
+
 The workflow does not run on pull requests, fetches full history so activation
 ancestry can be proven, and performs no mutation request. A failed scheduled
 run is the alert signal. It does not open issues or change policy
@@ -317,7 +345,7 @@ automatically.
 
 | Finding | Automatic effect | Required disposition |
 | --- | --- | --- |
-| Credential unavailable | Block and retain partial observation | Restore or rotate least-privilege monitor identity |
+| Credential unavailable | Block and retain a full continuity artifact when possible | For HTTP 401, replace the invalid/expired/malformed value; for HTTP 403, grant Administration read and select the exact repository; then prove the new secret with a fresh full run |
 | Policy disabled | Block and report drift | USER decides whether a new Phase 19A authorization is appropriate |
 | Grandfather baseline drift | Block | Investigate remote tag/release history; never rewrite automatically |
 | Post-activation mutable release | Block | Treat as release-control incident |

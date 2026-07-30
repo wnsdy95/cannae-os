@@ -237,6 +237,22 @@ and a new stable run must consume that complete provider artifact to produce
 sequence two through the normal path. Do not use a rerun of either historical
 failure as the second proof.
 
+### Live Credential-Ready Continuation
+
+The 2026-07-30 credential acceptance run proved that a blocked but valid
+checkpoint remains the exact predecessor when policy visibility is restored:
+
+| Transition | Workflow evidence | Observation result | Checkpoint evidence |
+| --- | --- | --- | --- |
+| sequence 13 to 14 | manual run `30522252521` at `1ce41636998742f65096ad1e0b4273ce3b359e42`; artifact `8751232448`; archive digest `sha256:ea704b6e4c608b807e0b1dddc7cc3aa32e5cae7994a3f67c248b932b4dfe2a57` | `GRIO-20260730071430-6008f978239c`; digest `0a297db21feca41a7cae641609d5e432099147856a5bd592bb0b6821845fe19f`; policy verified and enabled; status ready; zero issues | exact predecessor `GRTC-13-1c58f2ba8c89` digest `ce256c2d5b4e17b918b87c8d88fe1fea026644e11cc4ff94391e3fa2ebf1aa2a`; current `GRTC-14-cacb442c429b` digest `052e3361e3b2f3d6129aecc201bf5696f9e98daf9c891348d29f71625471a8f9` |
+
+The archive contained exactly three files, its downloaded ZIP digest equaled
+the provider API digest, all three artifacts passed standalone validation,
+and the embedded predecessor/current checkpoints exactly matched their
+retained files. The transition used ordinary `github_actions_artifact`
+provenance. Monitoring became ready without resetting lineage, changing the
+policy, or granting release authority.
+
 ## 6. Monitor v0.3
 
 `GitHubReleaseIntegrityPolicy` v0.3 binds:
