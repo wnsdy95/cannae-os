@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const assert = require("assert");
+const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
@@ -55,6 +56,39 @@ for (const router of ROUTERS) {
     command.includes("${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py") &&
     command.endsWith("\" .claude/skills/controls-doctrine-operator")));
   assert(adaptation.validation_commands.every(command => !command.includes("/Users/work")));
+
+  const ignoredStateDir = path.join(ROOT, ".cxt");
+  const ignoredStatePath = path.join(
+    ignoredStateDir,
+    `routing-fixture-${path.basename(path.dirname(path.dirname(router)))}.json`
+  );
+  const beforeIgnoredState = route(
+    router,
+    ["--actor=user"],
+    "Check ignored local state routing coverage"
+  );
+  fs.mkdirSync(ignoredStateDir, { recursive: true });
+  try {
+    fs.writeFileSync(
+      ignoredStatePath,
+      `${JSON.stringify({ local_runtime_state: true })}\n`
+    );
+    const afterIgnoredState = route(
+      router,
+      ["--actor=user"],
+      "Check ignored local state routing coverage"
+    );
+    assert.strictEqual(
+      afterIgnoredState.route_inventory.routable_artifact_count,
+      beforeIgnoredState.route_inventory.routable_artifact_count
+    );
+    assert.strictEqual(
+      afterIgnoredState.route_inventory.unrouted_artifact_count,
+      0
+    );
+  } finally {
+    fs.rmSync(ignoredStatePath, { force: true });
+  }
 }
 
-console.log("Document routing fixtures: 6/6 passed");
+console.log("Document routing fixtures: 8/8 passed");

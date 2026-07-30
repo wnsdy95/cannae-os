@@ -100,6 +100,49 @@ function expectedEndpoint(repository) {
   return `/repos/${repository}/immutable-releases`;
 }
 
+function classifyPolicyInspectionFailure(detail, commandStatus) {
+  const sanitizedDetail = String(detail || "");
+  const httpMatch =
+    /\bHTTP\s+([1-5]\d{2})\b/i.exec(sanitizedDetail) ||
+    /\b(401|403)\b/.exec(sanitizedDetail);
+  const httpStatus = httpMatch ? Number(httpMatch[1]) : null;
+  const credentialFailure =
+    httpStatus === 401 ||
+    httpStatus === 403 ||
+    /requires authentication|resource not accessible|insufficient/i
+      .test(sanitizedDetail);
+
+  if (!credentialFailure) {
+    return {
+      code: "GITHUB_RELEASE_POLICY_INSPECTION_FAILED",
+      message: "GitHub immutable-release policy inspection failed.",
+      details: {
+        status: commandStatus,
+        ...(httpStatus !== null ? { http_status: httpStatus } : {})
+      }
+    };
+  }
+
+  let message =
+    "The policy monitor credential is missing or lacks repository Administration read permission.";
+  if (httpStatus === 401) {
+    message =
+      "GitHub rejected the policy monitor credential with HTTP 401; replace an invalid, expired, or malformed secret value.";
+  } else if (httpStatus === 403) {
+    message =
+      "GitHub denied the policy monitor credential with HTTP 403; grant repository Administration read and select the monitored repository.";
+  }
+
+  return {
+    code: "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE",
+    message,
+    details: {
+      status: commandStatus,
+      ...(httpStatus !== null ? { http_status: httpStatus } : {})
+    }
+  };
+}
+
 function validateIntegrityPolicySemantics(document) {
   const issues = [];
   const repository = document && document.repository || {};
@@ -1110,17 +1153,14 @@ class SystemGitHubReleaseIntegrityAdapter extends SystemGitHubReleaseAdapter {
         .filter(Boolean)
         .join("\n")
         .trim();
-      const credentialFailure =
-        /\b(?:401|403)\b|requires authentication|resource not accessible|insufficient/i
-          .test(detail);
+      const failure = classifyPolicyInspectionFailure(
+        detail,
+        result.status
+      );
       throw new ReleaseIntegrityError(
-        credentialFailure
-          ? "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE"
-          : "GITHUB_RELEASE_POLICY_INSPECTION_FAILED",
-        credentialFailure
-          ? "The policy monitor credential is missing or lacks repository Administration read permission."
-          : "GitHub immutable-release policy inspection failed.",
-        { status: result.status }
+        failure.code,
+        failure.message,
+        failure.details
       );
     }
     const policy = parseJsonOutput(
@@ -2141,6 +2181,10 @@ async function main(argv = process.argv.slice(2)) {
             .current_checkpoint.sequence
           : null,
       issue_codes: observation.issues.map(issue => issue.code),
+      issues: observation.issues.map(issue => ({
+        code: issue.code,
+        message: issue.message
+      })),
       output: outputPath.absolute,
       release_authorized: false
     }, null, 2)}\n`);
@@ -2172,6 +2216,7 @@ module.exports = {
   ReleaseIntegrityError,
   SystemGitHubReleaseIntegrityAdapter,
   buildTrustedRootObservation,
+  classifyPolicyInspectionFailure,
   expectedEndpoint,
   main,
   monitorRepository,

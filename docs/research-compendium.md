@@ -4978,7 +4978,7 @@ authority with the USER and representing provider-retention limits honestly?
 - missing, stale, schema-invalid, local, genesis, path-substituted,
   superseded, or alternate valid checkpoints stop the publisher before any
   release creation call; and
-- all 36 checkpoint, 39 publisher, 29 monitor, and 223 validator fixtures
+- all 36 checkpoint, 39 publisher, 30 monitor, and 223 validator fixtures
   pass.
 
 ### Residual Work
@@ -5079,7 +5079,7 @@ release.
   issue, and any artifact carrying a checkpoint fail;
 - normal complete checkpoint artifacts never invoke recovery;
 - missing authorization never falls back to repository bootstrap; and
-- all 36 checkpoint, 29 monitor, and 223 validator fixtures pass.
+- all 36 checkpoint, 30 monitor, and 223 validator fixtures pass.
 
 ### Live Provider Continuation
 
@@ -5103,13 +5103,52 @@ path and proved
 Both artifacts contained exactly three files. Both full observations passed
 standalone schema and semantic validation, reported verified checkpoint
 continuity, and retained false reset/release authority. Both workflow jobs
-failed only because the dedicated Administration-read monitor credential is
-not installed. The result proves checkpoint recovery and ordinary successor
-continuity without claiming policy-monitor readiness or release readiness.
+failed at that time because GitHub did not accept an Administration-read
+monitor credential. The result proves checkpoint recovery and ordinary
+successor continuity without claiming policy-monitor readiness or release
+readiness.
+
+### Live Credential Acceptance
+
+Secret registration metadata was not treated as permission evidence. Manual
+runs `30518311906` and `30518425006` retained valid sequence-12 and
+sequence-13 triplets but still reported
+`GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE`. After the token's
+repository selection and Administration-read permission were corrected, a
+new first-attempt run was required.
+
+Manual run `30522252521` at
+`1ce41636998742f65096ad1e0b4273ce3b359e42` succeeded and retained artifact
+`8751232448`. Its downloaded ZIP digest,
+`sha256:ea704b6e4c608b807e0b1dddc7cc3aa32e5cae7994a3f67c248b932b4dfe2a57`,
+equaled the provider API digest and contained exactly the full observation,
+trusted root, and checkpoint. Observation
+`GRIO-20260730071430-6008f978239c` reported:
+
+- immutable policy `verified`, `enabled: true`, and not owner-enforced;
+- two exact grandfathered releases and no post-activation release;
+- complete monitoring, no drift, zero issues, and status `ready`;
+- ordinary `github_actions_artifact` continuity from
+  `GRTC-13-1c58f2ba8c89` to `GRTC-14-cacb442c429b`; and
+- checkpoint reset and release authorization false.
+
+All three files passed standalone schema and semantic validation. The prior
+and current embedded checkpoints exactly matched the retained checkpoint
+artifacts. This proves the provider secret's live read capability and monitor
+readiness, not token custody quality, independent persistence, or release
+authority.
+
+The operational lesson is that secret-name existence and local administrator
+success are not provider-secret evidence. Every installation, permission
+change, or rotation needs a fresh full provider run and retained ready
+triplet. Diagnostics may expose only sanitized status: HTTP 401 identifies an
+invalid, expired, or malformed value; HTTP 403 identifies insufficient
+permission or repository selection.
 
 ### Residual Work
 
-- install a dedicated least-privilege Administration-read monitoring identity;
+- migrate the accepted repository-scoped credential to a short-lived GitHub
+  App installation token with automated rotation;
 - retain checkpoint state in an independently operated append-only store;
 - add independent liveness witnesses and trusted time; and
 - design a separate incident-reset contract for established lineage. Phase

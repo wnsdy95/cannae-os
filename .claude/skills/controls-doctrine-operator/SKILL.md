@@ -215,6 +215,15 @@ future release evidence:
    keep policy assessment false. Full scope needs repository Administration
    read. Use a dedicated least-privilege monitor credential; never copy the
    owner's broad local OAuth token into repository secrets.
+   Secret-list presence is not permission evidence. After installation,
+   permission change, or rotation, dispatch one new first-attempt full
+   workflow on the exact default-branch HEAD and verify its retained
+   observation/root/checkpoint triplet. Require policy verified and enabled,
+   summary ready, zero issues, ordinary provider-checkpoint continuity, and
+   reset/release false. Treat sanitized HTTP 401 as an invalid, expired, or
+   malformed secret value and HTTP 403 as missing Administration read or
+   repository selection. Never substitute a broader local credential's
+   successful request for this provider-secret proof.
 5. Require `trusted_root_observation.status: verified`,
    `trust_checkpoint_observation.status: verified`, and one
    `independent_verification` for every verified non-grandfathered release.

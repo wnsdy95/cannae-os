@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 const RULES = [
   {
@@ -495,6 +496,32 @@ function normalizeText(value) {
 }
 
 function walkRoutableFiles(repoRoot) {
+  const listed = spawnSync(
+    "git",
+    ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+    {
+      cwd: repoRoot,
+      encoding: "utf8",
+      maxBuffer: 16 * 1024 * 1024
+    }
+  );
+  if (!listed.error && listed.status === 0) {
+    return listed.stdout
+      .split("\0")
+      .filter(Boolean)
+      .map(file => file.split(path.sep).join("/"))
+      .filter(file => fs.existsSync(path.join(repoRoot, file)))
+      .filter(file => {
+        const ext = path.extname(file).toLowerCase();
+        return ROUTABLE_EXTENSIONS.has(ext);
+      })
+      .filter(file =>
+        !file.startsWith(".claude/") ||
+        file === ".claude/skills" ||
+        file.startsWith(".claude/skills/"))
+      .sort((left, right) => left.localeCompare(right));
+  }
+
   const files = [];
 
   function walk(relativeDir) {

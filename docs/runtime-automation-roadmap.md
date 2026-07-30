@@ -1063,7 +1063,8 @@ See `github-release-immutability.md`.
 
 Status: tracked read-only policy, GitHub-signed release-attestation
 normalization and retention, full and release-event observation contracts,
-publisher version `0.3`, fail-closed drift monitoring, scheduled CI, offline
+publisher version `0.3`, fail-closed drift monitoring, sanitized credential
+diagnosis, scheduled CI, live credential-ready acceptance, offline
 adversarial fixtures, and equivalent Codex/Claude wrappers are implemented.
 
 Goal:
@@ -1086,6 +1087,9 @@ Implemented controls:
 - policy status has explicit `verified`, `credential_unavailable`,
   `inspection_failed`, and `not_requested` states; an unavailable
   Administration-read credential cannot become a no-drift claim;
+- credential failures distinguish sanitized HTTP 401 secret-value rejection
+  from HTTP 403 permission/repository-selection denial without retaining the
+  response body or token;
 - `full` scope checks the live policy and all published releases, while
   `release_attestation` scope checks one exact release event and explicitly
   does not claim policy assessment;
@@ -1125,6 +1129,17 @@ Credential boundary:
   owner's broad OAuth token;
 - absent or insufficient credentials intentionally produce a failed run and a
   blocked retained observation.
+
+Live credential acceptance:
+
+- manual first-attempt run `30522252521` at
+  `1ce41636998742f65096ad1e0b4273ce3b359e42` retained artifact
+  `8751232448` with API-matching ZIP digest
+  `sha256:ea704b6e4c608b807e0b1dddc7cc3aa32e5cae7994a3f67c248b932b4dfe2a57`;
+- the exact three-file observation replayed as `ready`, policy verified and
+  enabled, zero issues, and ordinary sequence 13 to 14 provider continuity;
+  and
+- reset and release authorization remained false.
 
 Remaining hardening:
 
@@ -1347,6 +1362,11 @@ Live acceptance evidence:
 - both exact three-file observations replayed successfully, kept reset and
   release false, and remained blocked only on the independently missing
   Administration-read monitor credential.
+
+The later Phase 19B credential-acceptance run `30522252521` consumed the
+ordinary sequence-13 provider predecessor, advanced to sequence 14, and
+reported a ready enabled-policy observation with zero issues. This closes the
+deployment credential gap without changing the Phase 19E recovery boundary.
 
 Remaining hardening:
 

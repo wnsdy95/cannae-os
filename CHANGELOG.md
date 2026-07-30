@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added live release-monitor credential acceptance with an API-digest-matched sequence-14 artifact, sanitized HTTP 401/403 diagnosis, and Codex/Claude procedures that require a fresh retained ready run after every secret installation or rotation.
+- Made doctrine routing inventory use Git's tracked-plus-unignored source view, preventing ignored local `.cxt` and other runtime state from creating false unrouted-artifact failures.
 - Added Phase 19B release integrity: tracked activation baseline, explicit policy-credential state, full and release-event observations, retained GitHub-signed in-toto/Sigstore release evidence, publisher authorization/receipt v0.3, six-hour and release-triggered CI monitoring with reproducible validator dependencies, adversarial fixtures, and equivalent Codex/Claude skill operation.
 - Updated the transitive `brace-expansion` lock from 5.0.7 to 5.0.8 after the clean monitor install surfaced GHSA-mh99-v99m-4gvg; `npm audit` now reports zero vulnerabilities.
 - Added Phase 19A repository release immutability: exact USER-authorized ADMIN policy activation, clean-main and successful-CI binding, GET/PUT/GET verification, prospective-only historical-release handling, idempotent retry, future release authorization/receipt v0.2 enforcement, adversarial fixtures, and equivalent Codex/Claude skill operation.
