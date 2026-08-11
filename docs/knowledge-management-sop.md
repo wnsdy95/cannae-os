@@ -162,8 +162,9 @@ Rules:
 - Store verification plans, receipts, verifier trust policies, signed attestations, parent decisions, approval scopes, and consumption events through the same repository artifact store; cite their manifest paths and hashes rather than copying status text.
 - Treat trust policies as human-controlled roots. Keep private keys outside the repository and artifact store, and retain the exact policy artifact used for each signed quorum.
 - Run `repository-artifact-verify.js` before a checkpoint consumes proof and before every wave completes.
-- Update the README and source-map together.
-- In the compendium, record "why it was created" and "LLM application."
+- A new doctrine output is not complete until its exact `docs/...` path appears in `README.md`, `docs/source-map.md`, and `docs/research-compendium.md` in the same change.
+- In the compendium, record why the doctrine was created, its LLM application, and its current limit.
+- Keep the machine-audited doctrine output list between the `doctrine-index` markers in `docs/military-operating-deep-research-queue.md`; `node source-map-linter.js` must pass before the changelog may claim closure.
 
 Leave a source anchor at the end of a document whenever possible.
 
@@ -176,6 +177,7 @@ After a document change:
 - validator fixture if validation logic changed.
 - source-map entry if new military concept added.
 - compendium note if research interpretation added.
+- `node source-map-linter.js` after any doctrine, queue, README, source-map, or compendium change.
 
 Knowledge management failure conditions:
 
@@ -192,6 +194,7 @@ Knowledge management failure conditions:
 - A follow-on baseline names a parent ID but does not retain the parent decision artifact and hash.
 - A pending transaction journal or integrity failure was ignored.
 - A lease expiry, stale-writer fencing failure, fencing-token rollback, or shared-filesystem consistency warning was ignored.
+- A doctrine output was declared complete or recorded in the changelog without exact-path entries in the README, source map, and research compendium.
 
 ## 10. Prompt guard
 
@@ -200,24 +203,24 @@ When work is finished, perform a KM check.
 1. Which files are the source of truth?
 2. Have new decisions or the scope of approval been recorded?
 3. Are source-backed claims separated from interpretation?
-4. Do the README/source-map/compendium need updating?
+4. Does every new doctrine output appear by exact path in the README, source map, and compendium?
 5. Can the next operator continue without chat history?
 6. Does the next operator know the accepted baseline, rejected candidates, open quality gap, and next checkpoint?
 ```
 
 ## 11. Implementation candidates
 
-schema:
+Implemented schemas:
 
-- `decision-log.schema.json`
+- `decision-log.schema.json`: one decision log entry with a required authority basis and review trigger.
 - `handoff-packet.schema.json`
-- `source-record.schema.json`
+- `source-record.schema.json`: one knowledge source record with tier, claims, and linked documents.
 
-prototype:
+Implemented prototypes:
 
 - `handoff-generator.js`: combines event projection with the README queue to generate a packet.
-- `source-map-linter.js`: warns when docs contain a new URL that is not present in the source-map.
-- `km-review-runner.js`: integrates links, JSON, source-map, and compendium checks.
+- `source-map-linter.js`: fails when an official source host is absent from the source map or a doctrine output in the queue's audited index is missing from the README, source map, compendium, or filesystem (verified by `run-source-map-linter-fixtures.js`).
+- `km-review-runner.js`: validates decision-log, source-record, optional handoff, and authority artifacts against their schemas; resolves authority and document references; and reviews stale unresolved decisions. Supply authority evidence with `--authority-artifacts` and constrain local document references with `--repository-root` (verified by `run-km-review-fixtures.js`).
 
 ## 12. Source anchors
 
