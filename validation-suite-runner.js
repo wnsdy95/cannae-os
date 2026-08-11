@@ -38,6 +38,7 @@ function runSuite() {
 
   const runners = fs.readdirSync(ROOT)
     .filter(file => /^run-.*\.js$/.test(file))
+    .filter(file => file !== "run-all-fixtures.js")
     .sort();
   for (const runner of runners) completed.push(runNode(`runner fixture ${runner}`, runner));
 
