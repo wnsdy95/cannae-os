@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1",
+  "type": "READINESS_EVENT",
+  "id": "RE-DEMO-SELF-001",
+  "mission_id": "M-DEMO-001",
+  "metl_id": "METL-DEMO-S3",
+  "metl_task_id": "MET-DEMO-S3-001",
+  "agent_id": "S3",
+  "task": "runtime execution",
+  "actor": "S3",
+  "trigger": "evaluation",
+  "previous_rating": "X",
+  "new_rating": "T",
+  "evidence": [],
+  "authority_impact": {
+    "policy_source": "readiness-gate-prototype/readiness-gate.js",
+    "roe_effects": [
+      { "roe_class": "Green", "previous_decision": "draft_only", "new_decision": "allow" },
+      { "roe_class": "Amber", "previous_decision": "draft_only", "new_decision": "allow" },
+      { "roe_class": "Red", "previous_decision": "prohibit", "new_decision": "allow" },
+      { "roe_class": "Black", "previous_decision": "prohibit", "new_decision": "allow" }
+    ]
+  },
+  "effective_at": "2026-06-18T19:00:00+09:00"
+}

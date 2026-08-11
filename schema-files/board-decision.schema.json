@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/board-decision.schema.json",
+  "title": "Board Decision Record",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "board_event_id", "board_name", "decision_packet_id", "deciding_authority", "decided_at", "decision", "rationale", "constraints", "follow_up_orders", "evidence", "classification", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "BoardDecision" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "board_event_id": { "$ref": "common.schema.json#/$defs/id" },
+    "board_name": { "type": "string", "minLength": 1 },
+    "decision_packet_id": { "$ref": "common.schema.json#/$defs/id" },
+    "deciding_authority": {
+      "type": "string",
+      "enum": ["USER", "COMMANDER"]
+    },
+    "decided_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "decision": {
+      "type": "string",
+      "enum": ["approve", "approve_with_constraints", "revise", "reject", "defer"]
+    },
+    "selected_option": { "$ref": "common.schema.json#/$defs/id" },
+    "rationale": { "type": "string", "minLength": 1 },
+    "constraints": { "$ref": "common.schema.json#/$defs/string_list" },
+    "follow_up_orders": { "$ref": "common.schema.json#/$defs/string_list" },
+    "evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

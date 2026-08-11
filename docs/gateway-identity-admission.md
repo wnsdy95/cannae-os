@@ -228,6 +228,16 @@ Build `ToolGatewayRequest` v0.2 with the returned:
 
 Do not extend request validity beyond the evidence expiry.
 
+Evidence creation is a two-phase construction. Before persistence, the
+adapter pre-verifies the signed evidence against an internal pre-persistence
+reference whose `relative_path` is the literal `pending` and whose `sha256`
+is all zeros, because the retained artifact reference cannot exist until the
+write completes. That internal reference never enters a persisted request:
+the returned `evidence_ref` is the real retained reference, and store-backed
+verification resolves every reference against the exact repository manifest
+entry, so a request carrying the pre-persistence sentinel fails closed with
+`GATEWAY_IDENTITY_ARTIFACT_UNAVAILABLE`.
+
 ### 4.4 Admit and continue
 
 For `authenticated_reference`, omit the caller-supplied principal digest. The

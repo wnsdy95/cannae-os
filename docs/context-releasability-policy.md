@@ -220,9 +220,9 @@ schema:
 prototype:
 
 - `document-access-runner.js`: role, duty, authority and manifest -> allowed/denied document list.
-- `context-filter.js`: role and context items -> filtered packet.
+- `context-filter-prototype/`: role and context items -> filtered packet (implements the `context-filter.js` candidate).
 - `release-review-runner.js`: final output packet safety check.
-- `eefi-detector.js`: secret/private pattern and classification guard.
+- `eefi-detector.js`: secret/private pattern and classification guard reporting digests only, with distinct output-forbidden and tool-transfer-forbidden classes (verified by `run-eefi-detector-fixtures.js`).
 
 ## 13. Source anchors
 

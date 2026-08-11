@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/warno.schema.json",
+  "title": "WARNO",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "created_by", "classification", "issued_at", "anticipated_mission", "known_constraints", "preparation_tasks", "earliest_execution_at", "following_opord"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "WARNO" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "created_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "anticipated_mission": {
+      "type": "object",
+      "required": ["statement", "purpose"],
+      "additionalProperties": false,
+      "properties": {
+        "statement": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 }
+      }
+    },
+    "commander_intent_summary": { "$ref": "common.schema.json#/$defs/string_list" },
+    "known_constraints": { "$ref": "common.schema.json#/$defs/string_list" },
+    "preparation_tasks": { "$ref": "common.schema.json#/$defs/string_list" },
+    "earliest_execution_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "following_opord": {
+      "type": "object",
+      "required": ["expected_order_id"],
+      "additionalProperties": false,
+      "properties": {
+        "expected_order_id": { "$ref": "common.schema.json#/$defs/id" },
+        "expected_by": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    }
+  }
+}

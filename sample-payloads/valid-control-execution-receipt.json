@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "type": "ControlExecutionReceipt",
+  "id": "CER-DEMO-001",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "report_id": "MWR-SKILL-DEMO-W1",
+  "control": {
+    "control_id": "CTRL-6a29130c7d6dd8ed",
+    "command": "node run-document-routing-fixtures.js",
+    "command_sha256": "6a29130c7d6dd8ed39c3076f1a27d620e6f2628a42d46ba3ec45e548a7c98959",
+    "runner": "node",
+    "script_path": "run-document-routing-fixtures.js",
+    "argv": [],
+    "working_directory": "doctrine_root",
+    "shell": false
+  },
+  "agent_bindings": [
+    {
+      "agent_id": "plans-agent",
+      "context_pack_ref": {
+        "artifact_id": "ACP-SKILL-DEMO-W1-plans-agent",
+        "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/waves/W1/agent-context-packs/ACP-SKILL-DEMO-W1-plans-agent.json",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ],
+  "repository_identity_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_state_before_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "repository_state_after_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "doctrine_revision": "a3d0943e114d1436c86a2cf138d066278fe04ad8",
+  "doctrine_state_before_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "doctrine_state_after_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "started_at": "2026-08-11T00:00:00Z",
+  "finished_at": "2026-08-11T00:00:01Z",
+  "exit_code": 0,
+  "stdout_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "stdout_bytes": 100,
+  "stderr_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "stderr_bytes": 0,
+  "repository_unchanged": true,
+  "doctrine_unchanged": true,
+  "status": "passed",
+  "release_authorized": false
+}

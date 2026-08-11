@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/battle-rhythm-event.schema.json",
+  "title": "Battle Rhythm Event Definition",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "name", "event_class", "cadence", "duration_minutes", "required_inputs", "expected_outputs", "chair", "participants", "quorum", "skip_conditions", "cancel_conditions", "classification", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "BattleRhythmEvent" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "name": { "type": "string", "minLength": 1 },
+    "event_class": {
+      "type": "string",
+      "enum": ["board", "bureau", "center", "cell", "working_group"]
+    },
+    "cadence": {
+      "type": "object",
+      "required": ["kind", "anchor"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["cron", "interval"]
+        },
+        "cron_expression": { "type": "string", "minLength": 1 },
+        "interval_minutes": { "type": "integer", "minimum": 1 },
+        "anchor": { "$ref": "common.schema.json#/$defs/timestamp" }
+      }
+    },
+    "duration_minutes": { "type": "integer", "minimum": 1 },
+    "required_inputs": {
+      "type": "object",
+      "required": ["read_ahead", "decision_packets_due"],
+      "additionalProperties": false,
+      "properties": {
+        "read_ahead": { "$ref": "common.schema.json#/$defs/string_list" },
+        "decision_packets_due": { "$ref": "common.schema.json#/$defs/string_list" }
+      }
+    },
+    "expected_outputs": { "$ref": "common.schema.json#/$defs/string_list" },
+    "chair": { "$ref": "common.schema.json#/$defs/role_id" },
+    "participants": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "quorum": {
+      "type": "object",
+      "required": ["minimum_participants", "required_roles"],
+      "additionalProperties": false,
+      "properties": {
+        "minimum_participants": { "type": "integer", "minimum": 1 },
+        "required_roles": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/role_id" }
+        }
+      }
+    },
+    "skip_conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "cancel_conditions": { "$ref": "common.schema.json#/$defs/string_list" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

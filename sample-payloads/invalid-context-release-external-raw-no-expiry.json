@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "type": "ContextRelease",
+  "id": "CR-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "context_item_id": "CTX-DEMO-001",
+  "recipient": {
+    "kind": "external_party",
+    "external_party": "partner-observability-vendor"
+  },
+  "packet_form": "raw",
+  "justification": "Vendor asked for the full deployment context to debug their dashboard.",
+  "need_to_know": "Vendor integration troubleshooting.",
+  "released_by": "S6",
+  "released_at": "2026-02-01T10:00:00Z",
+  "revocation": {
+    "revoked": false
+  }
+}

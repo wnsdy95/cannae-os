@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1",
+  "type": "BoardDecision",
+  "id": "BD-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "board_event_id": "BRE-DEMO-001",
+  "board_name": "Commander Decision Board",
+  "decision_packet_id": "DP-DEMO-001",
+  "deciding_authority": "COMMANDER",
+  "decided_at": "2026-06-18T12:12:00+09:00",
+  "decision": "reject",
+  "selected_option": "OPT-DEMO-001",
+  "rationale": "Production deployment exceeds local-only mission authority.",
+  "constraints": [
+    "Any future deployment request must include a rollback plan and a time limit.",
+    "TR-DEMO-002 stays blocked until mission scope changes through FRAGO."
+  ],
+  "follow_up_orders": [
+    "S3 continues local-only demo work.",
+    "COS archives DP-DEMO-001 and closes WG-DEMO-001."
+  ],
+  "evidence": [
+    "sample-payloads/valid-decision-packet.json",
+    "event-fixtures/working-group-event-fixtures.json"
+  ],
+  "classification": "internal",
+  "status": "complete"
+}

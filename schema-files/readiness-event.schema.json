@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/readiness-event.schema.json",
+  "title": "Readiness Event",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "metl_id",
+    "metl_task_id",
+    "agent_id",
+    "task",
+    "actor",
+    "trigger",
+    "previous_rating",
+    "new_rating",
+    "evidence",
+    "authority_impact",
+    "effective_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "READINESS_EVENT" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "metl_id": { "$ref": "common.schema.json#/$defs/id" },
+    "metl_task_id": { "$ref": "common.schema.json#/$defs/id" },
+    "agent_id": { "$ref": "common.schema.json#/$defs/role_id" },
+    "task": { "type": "string", "minLength": 1 },
+    "actor": { "type": "string", "enum": ["EVALUATOR"] },
+    "trigger": {
+      "type": "string",
+      "enum": ["aar_finding", "evaluation", "fixture_regression", "decay"]
+    },
+    "previous_rating": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+    "new_rating": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "authority_impact": {
+      "type": "object",
+      "required": ["policy_source", "roe_effects"],
+      "additionalProperties": false,
+      "properties": {
+        "policy_source": { "type": "string", "minLength": 1 },
+        "roe_effects": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["roe_class", "previous_decision", "new_decision"],
+            "additionalProperties": false,
+            "properties": {
+              "roe_class": { "$ref": "common.schema.json#/$defs/roe_class" },
+              "previous_decision": {
+                "type": "string",
+                "enum": ["allow", "report_required", "approval_required", "draft_only", "prohibit"]
+              },
+              "new_decision": {
+                "type": "string",
+                "enum": ["allow", "report_required", "approval_required", "draft_only", "prohibit"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "effective_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "notes": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

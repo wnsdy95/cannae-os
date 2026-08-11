@@ -15,6 +15,7 @@ MissionWavePlan
 -> per-agent dispatch policy and session lease
 -> pre-tool admission and post-tool checkpoint
 -> manifest-backed work evidence
+-> controller-executed required controls and digest-only receipts
 -> MissionWaveReport and SITREP
 -> AAR and readiness update
 -> closeout and bounded next-wave queue
@@ -27,8 +28,9 @@ The human user remains final decision authority throughout this sequence.
 | Contract | Function |
 | --- | --- |
 | `MissionWavePlan` | Defines intent, success/failure conditions, agent tasks, operational roles, delegated authority, model-preflight requirement, finite adaptive budget, and retained USER authorities. |
-| `AgentContextPack` | Gives one agent only its task, role, authority, digest-bound doctrine documents, validation commands, model identity, escalation conditions, and exact control references. |
-| `MissionWaveReport` | Records one result per expected agent and requires exact context-pack and manifest-backed work-evidence references. |
+| `AgentContextPack` | Gives one agent only its task, role, authority, digest-bound doctrine documents, compiled required controls, model identity, escalation conditions, and exact control references. |
+| `ControlExecutionReceipt` | Proves that the controller ran one allowlisted, shell-free control against exact repository and doctrine states; stores only output digests and byte counts. |
+| `MissionWaveReport` | Records one result per expected agent and requires exact context-pack, control-receipt, and manifest-backed work-evidence references. |
 | `MissionWaveCloseout` | Binds plan, report, AAR, readiness update, campaign, next-wave decision, verified artifact state, and a permanently false release grant. |
 
 Schemas, valid examples, invalid authority/release examples, semantic validation, and E2E fixtures cover every contract.
@@ -65,8 +67,9 @@ The controller performs these ordered, fail-closed actions:
 6. If model assignment is required, reload the exact integrated preflight from the same repository manifest and require one ready dispatch binding per agent and billet.
 7. Create or reuse a bounded campaign restricted to the plan's single adaptive target type.
 8. Hash every routed doctrine document plus the router and controller code.
-9. Persist one minimal context pack per agent only after all gates are ready.
-10. Verify the repository artifact store before returning
+9. Compile every routed validation command into an allowlisted, shell-free required control.
+10. Persist one minimal context pack per agent only after all gates are ready.
+11. Verify the repository artifact store before returning
     `context_dispatch_authorized: true`,
     `tool_execution_authorized: false`, and `dispatch_authorized: false`.
 
@@ -132,6 +135,15 @@ report evidence. For a dispatch-controlled wave, first run
 failed agent must leave no active lease and no unresolved tool request. The
 report gate rejects any missing, ambiguous, active, or unsettled lease lineage.
 
+At report admission, the controller reloads every agent's exact context pack,
+deduplicates its required controls, and runs each control itself with a stripped
+credential environment. The caller cannot substitute a claimed result or
+choose the receipt references. A passing receipt is accepted only when command,
+context, report, mission, wave, repository identity, repository state, doctrine
+revision, and doctrine state all bind exactly and remain unchanged across the
+run. Raw stdout and stderr are not persisted; only their SHA-256 digests and
+byte counts enter the receipt.
+
 ## 4. Record A Wave
 
 Create a `MissionWaveReport` from `sample-payloads/valid-mission-wave-report.json` and run:
@@ -155,7 +167,8 @@ The controller rejects:
 - a wave status inconsistent with its agent results;
 - a report outside the plan validity window;
 - a report timestamp more than five minutes ahead of the controller evaluation time;
-- any release request.
+- any missing, caller-forged, failed, timed-out, unallowlisted, or state-drifting required control;
+- any release request;
 - a dispatch-controlled result with no lease lineage, an unresolved tool
   request, an active lease for a blocked/failed agent, or a non-completed lease
   for a completed agent.
@@ -222,13 +235,16 @@ The default installer uses symlinks, so both skill wrappers resolve the live rep
 
 ```bash
 node run-skill-mission-controller-fixtures.js
+node run-skill-control-enforcement-fixtures.js
 node run-dispatch-runtime-fixtures.js
 node validator-cli-prototype/run-fixtures.js
+node validate-controls-skill.js codex-skills/controls-doctrine-operator
+node validate-controls-skill.js .claude/skills/controls-doctrine-operator
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 
-The E2E suite uses independent temporary Git repositories and covers mandatory receipts, missing-receipt blocking, digest-bound context, finite campaign scope, idempotence, plan expiry, model-preflight admission, exact and time-bounded evidence, blocked closeout, per-wave rerouting, repository isolation, and both installed-skill wrappers.
+The E2E suite uses independent temporary Git repositories and covers mandatory routing, controller-executed controls, caller-forged receipt rejection, failure/timeout/state-drift blocking, digest-bound context, finite campaign scope, idempotence, plan expiry, model-preflight admission, exact and time-bounded evidence, blocked closeout, per-wave rerouting, repository isolation, and both installed-skill wrappers.
 
 ## 10. Operational Limits
 

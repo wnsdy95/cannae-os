@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1",
+  "type": "ClassificationLabel",
+  "id": "CL-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "subject_id": "CTX-DEMO-002",
+  "classification": "restricted",
+  "eefi_class": "output_forbidden",
+  "releasability": "internal",
+  "need_to_know_roles": ["COMMANDER", "S6"],
+  "labeling_authority": "S2",
+  "review_by": "2026-09-18T09:00:00+09:00",
+  "rationale": "Credential-like runtime value; final output exposure would compromise the demo gateway."
+}

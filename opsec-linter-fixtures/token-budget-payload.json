@@ -1,0 +1,7 @@
+{
+  "id": "RS-DEMO-TOKEN-001",
+  "mission_id": "M-DEMO-001",
+  "resource_class": "token_budget",
+  "token_budget": 12000,
+  "summary": "Token budget remains within the approved limit."
+}

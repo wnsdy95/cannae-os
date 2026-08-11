@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/classification-label.schema.json",
+  "title": "Classification Label",
+  "description": "Standalone classification label contract. Context items (context-item.schema.json) carry this metadata inline; this schema is the reusable label object that releasability reviews and redaction runners reference by label_id.",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "subject_id", "classification", "eefi_class", "releasability", "need_to_know_roles", "labeling_authority", "review_by"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ClassificationLabel" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "subject_id": { "$ref": "common.schema.json#/$defs/id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "eefi_class": {
+      "type": "string",
+      "description": "EEFI class membership: output_forbidden must never reach final output, tool_transfer_forbidden must never leave through tool calls, none is not EEFI.",
+      "enum": ["none", "output_forbidden", "tool_transfer_forbidden"]
+    },
+    "releasability": {
+      "type": "string",
+      "enum": ["internal", "partner", "public"]
+    },
+    "need_to_know_roles": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/role_id" }
+    },
+    "labeling_authority": { "$ref": "common.schema.json#/$defs/role_id" },
+    "review_by": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "rationale": { "type": "string" }
+  }
+}

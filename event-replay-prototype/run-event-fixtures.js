@@ -77,6 +77,35 @@ const s6Projection = replay([
   }
 ]);
 const s6Dashboard = projectionToDashboardState(s6Projection);
+const directReadinessProjection = replay([
+  {
+    schema_version: "0.1",
+    type: "READINESS_EVENT",
+    id: "RE-PROJECTION-001",
+    mission_id: "M-PROJECTION-001",
+    metl_id: "METL-PROJECTION-S3",
+    metl_task_id: "MET-PROJECTION-S3-001",
+    agent_id: "S3",
+    task: "projection compatibility",
+    actor: "EVALUATOR",
+    trigger: "evaluation",
+    previous_rating: "U",
+    new_rating: "P",
+    evidence: ["EV-1", "EV-2", "EV-3"],
+    authority_impact: { policy_source: "test", roe_effects: [] },
+    effective_at: "2026-06-18T11:03:00+09:00"
+  },
+  {
+    event_id: "EVT-READINESS-NEW-RATING",
+    event_type: "ReadinessUpdated",
+    timestamp: "2026-06-18T11:04:00+09:00",
+    payload: {
+      agent_id: "S2",
+      task: "new rating envelope",
+      new_rating: "T"
+    }
+  }
+]);
 
 const checks = [
   {
@@ -141,6 +170,14 @@ const checks = [
   {
     name: "dashboard approval row preserves tool request actor",
     ok: s6Dashboard.approvals.length === 1 && s6Dashboard.approvals[0].actor === "S6"
+  },
+  {
+    name: "readiness contract new_rating is projected directly",
+    ok: directReadinessProjection.readiness["S3:projection compatibility"] === "P"
+  },
+  {
+    name: "readiness event envelope accepts new_rating",
+    ok: directReadinessProjection.readiness["S2:new rating envelope"] === "T"
   }
 ];
 

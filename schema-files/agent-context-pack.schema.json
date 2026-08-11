@@ -20,6 +20,7 @@
     "doctrine_state",
     "documents",
     "validation_commands",
+    "required_controls",
     "model_assignment",
     "authority",
     "escalation_conditions",
@@ -66,6 +67,25 @@
       }
     },
     "validation_commands": { "$ref": "common.schema.json#/$defs/string_list" },
+    "required_controls": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["control_id", "command", "command_sha256", "runner", "script_path", "argv", "working_directory", "shell"],
+        "additionalProperties": false,
+        "properties": {
+          "control_id": { "$ref": "common.schema.json#/$defs/id" },
+          "command": { "type": "string", "minLength": 1 },
+          "command_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+          "runner": { "type": "string", "const": "node" },
+          "script_path": { "type": "string", "minLength": 1 },
+          "argv": { "$ref": "common.schema.json#/$defs/string_list" },
+          "working_directory": { "type": "string", "const": "doctrine_root" },
+          "shell": { "type": "boolean", "const": false }
+        }
+      }
+    },
     "model_assignment": {
       "type": "object",
       "required": ["required", "integrated_preflight_ref", "billet_id", "model_profile_id", "model_family", "model_version", "harness_version"],

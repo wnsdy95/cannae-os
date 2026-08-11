@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1",
+  "type": "BattleRhythmEvent",
+  "id": "BRE-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "name": "Commander Decision Board",
+  "event_class": "board",
+  "cadence": {
+    "kind": "interval",
+    "interval_minutes": 10080,
+    "anchor": "2026-06-18T12:00:00+09:00"
+  },
+  "duration_minutes": 30,
+  "required_inputs": {
+    "read_ahead": ["SITREP-DEMO-001"],
+    "decision_packets_due": ["DP-DEMO-001"]
+  },
+  "expected_outputs": [
+    "Board decision record for each pending decision packet.",
+    "FRAGO if mission scope or priority changes."
+  ],
+  "chair": "COMMANDER",
+  "participants": ["COMMANDER", "COS", "S3", "RED_TEAM"],
+  "quorum": {
+    "minimum_participants": 3,
+    "required_roles": ["COMMANDER", "COS"]
+  },
+  "skip_conditions": [
+    "No decision packet is pending and no Red action is queued."
+  ],
+  "cancel_conditions": [
+    "Mission M-DEMO-001 is closed or handed off."
+  ],
+  "classification": "internal",
+  "status": "in_progress"
+}

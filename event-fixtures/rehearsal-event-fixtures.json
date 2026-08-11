@@ -1,0 +1,148 @@
+[
+  {
+    "event_id": "EVT-RH-001",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalStarted",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:20:00+09:00",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-001",
+      "parent_order": "OPORD-DEMO-001",
+      "rehearsal_type": "dry_run",
+      "facilitator": "COS",
+      "backbriefs": ["BB-DEMO-001"]
+    }
+  },
+  {
+    "event_id": "EVT-RH-002",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalFrictionRaised",
+    "actor": "S3",
+    "timestamp": "2026-06-18T07:22:00Z",
+    "causation_id": "RH-DEMO-001",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-001",
+      "friction_index": 0,
+      "issue": "Dashboard projection may diverge from event replay if the projection contract changes.",
+      "severity": "medium",
+      "mitigation": "Stop and patch renderer or saved state before reporting completion.",
+      "owner": "S3"
+    }
+  },
+  {
+    "event_id": "EVT-RH-003",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalCCIRAlertRouted",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:24:00+09:00",
+    "causation_id": "EVT-RH-002",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-001",
+      "alert_id": "ALERT-RH-DEMO-001-001",
+      "ccir_type": "FFIR",
+      "severity": "Amber",
+      "blocks_execution": false
+    }
+  },
+  {
+    "event_id": "EVT-RH-004",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalCompleted",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:25:00+09:00",
+    "causation_id": "RH-DEMO-001",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-001",
+      "disposition": "execute",
+      "required_changes": ["None"]
+    }
+  },
+  {
+    "event_id": "EVT-RH-005",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalStarted",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:30:00+09:00",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-002",
+      "parent_order": "OPORD-DEMO-001",
+      "rehearsal_type": "walkthrough",
+      "facilitator": "COS",
+      "backbriefs": ["BB-DEMO-001"]
+    }
+  },
+  {
+    "event_id": "EVT-RH-006",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalFrictionRaised",
+    "actor": "S3",
+    "timestamp": "2026-06-18T07:32:00Z",
+    "causation_id": "RH-DEMO-002",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-002",
+      "friction_index": 0,
+      "issue": "Red tool request lacks an active approval scope for production deployment.",
+      "severity": "high",
+      "mitigation": "Request a commander approval scope before the execution window opens.",
+      "owner": "S3"
+    }
+  },
+  {
+    "event_id": "EVT-RH-007",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalCCIRAlertRouted",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:34:00+09:00",
+    "causation_id": "EVT-RH-006",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-002",
+      "alert_id": "ALERT-RH-DEMO-002-001",
+      "ccir_type": "DECISION_POINT",
+      "severity": "Red",
+      "blocks_execution": true
+    }
+  },
+  {
+    "event_id": "EVT-RH-008",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalDecisionPacketPrepared",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:35:00+09:00",
+    "causation_id": "EVT-RH-006",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-002",
+      "decision_packet_id": "DP-RH-DEMO-002-001",
+      "decision_type": "scope",
+      "recommended_option": "OPT-REVISE"
+    }
+  },
+  {
+    "event_id": "EVT-RH-009",
+    "mission_id": "M-DEMO-001",
+    "event_type": "RehearsalCompleted",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:36:00+09:00",
+    "causation_id": "RH-DEMO-002",
+    "payload": {
+      "rehearsal_id": "RH-DEMO-002",
+      "disposition": "revise",
+      "required_changes": [
+        "Issue a FRAGO adding an approval scope requirement before the deployment step."
+      ]
+    }
+  },
+  {
+    "event_id": "EVT-RH-010",
+    "mission_id": "M-DEMO-001",
+    "event_type": "OrderRevisionRequested",
+    "actor": "COS",
+    "timestamp": "2026-06-18T16:38:00+09:00",
+    "causation_id": "RH-DEMO-002",
+    "payload": {
+      "parent_order": "OPORD-DEMO-001",
+      "source_rehearsal_id": "RH-DEMO-002",
+      "revision_type": "frago",
+      "reason": "Rehearsal found a blocking approval gap before the deployment step."
+    }
+  }
+]

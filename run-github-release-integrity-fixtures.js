@@ -427,8 +427,16 @@ function runFixtures() {
       "gh: upstream transport failed (HTTP 502)",
       1
     );
+    const bareNumber = classifyPolicyInspectionFailure(
+      "gh: transfer aborted after 401 bytes",
+      1
+    );
+    const statusContext = classifyPolicyInspectionFailure(
+      "gh: request rejected with status 401",
+      1
+    );
     results.push({
-      name: "policy credential diagnostics distinguish 401, 403, and non-credential failures without response text",
+      name: "policy credential diagnostics distinguish 401, 403, bare-number, status-context, and non-credential failures without response text",
       ok:
         unauthorized.code ===
           "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE" &&
@@ -443,7 +451,12 @@ function runFixtures() {
         unavailable.code ===
           "GITHUB_RELEASE_POLICY_INSPECTION_FAILED" &&
         unavailable.details.http_status === 502 &&
-        !unavailable.message.includes("upstream transport")
+        !unavailable.message.includes("upstream transport") &&
+        bareNumber.code === "GITHUB_RELEASE_POLICY_INSPECTION_FAILED" &&
+        bareNumber.details.http_status === undefined &&
+        statusContext.code ===
+          "GITHUB_RELEASE_POLICY_MONITOR_CREDENTIAL_UNAVAILABLE" &&
+        statusContext.details.http_status === 401
     });
   }
 

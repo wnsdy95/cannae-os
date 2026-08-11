@@ -557,6 +557,24 @@ async function main() {
     assert.strictEqual(replayResult.valid, false);
     assert(replayResult.codes.includes("GATEWAY_IDENTITY_REQUEST_REPLAY_DETECTED"));
 
+    const prePersistenceRequest = clone(request);
+    prePersistenceRequest.principal_evidence_ref = {
+      artifact_id: identityResult.evidence.id,
+      relative_path: "pending",
+      sha256:
+        "0000000000000000000000000000000000000000000000000000000000000000"
+    };
+    const prePersistenceResult = verifyGatewayPrincipalEvidence({
+      repository,
+      artifactRoot,
+      request: prePersistenceRequest,
+      evaluatedAt: iso(baseTime + 8000)
+    });
+    assert.strictEqual(prePersistenceResult.valid, false);
+    assert(prePersistenceResult.codes.includes(
+      "GATEWAY_IDENTITY_ARTIFACT_UNAVAILABLE"
+    ));
+
     const tamperedEvidence = clone(identityResult.evidence);
     tamperedEvidence.transport.tls_exporter_sha256 = digest("substituted-exporter");
     tamperedEvidence.evidence_sha256 = gatewayEvidenceDigest(tamperedEvidence);
