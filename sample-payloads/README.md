@@ -13,6 +13,7 @@ Use these examples to test:
 - AI special operations TF charter validation
 - department collaboration charter validation
 - force structure change order validation
+- WARNO, battle-rhythm, METL, readiness-event, source-plan, context-release, resource-status, decision-log, source-record, and OPSEC label/review/alert validation
 - model force assignment validation
 - model registry and assignment request validation
 - integrated mission preflight validation
@@ -50,7 +51,7 @@ Use these examples to test:
 - risk acceptance validation
 - AAR readiness update validation
 - routing receipt validation
-- operational mission wave, context pack, report, and closeout validation
+- operational mission wave, context pack, mandatory control execution receipt, report, and closeout validation
 - dispatch tool policy, agent lease, tool admission, and execution checkpoint validation
 - gateway identity policy, one-use challenge, TLS principal evidence, and immutable identity-reference validation
 - production sandbox policy, signed appraiser evidence, failure-domain quorum, managed admission, and release-boundary validation
@@ -89,7 +90,7 @@ The `*-v0.7.json` trust-policy and cycle-order samples show Phase 13 continuous 
 
 The GitHub and GitLab native OIDC samples show Phase 14 trust-bundle, projected-evidence, and runtime-policy contracts. Use `run-github-actions-oidc-fixtures.js` and `run-gitlab-ci-oidc-fixtures.js` for real ephemeral RSA signatures, provider-specific adversarial claims, common execution-evidence admission, and missing-manifest-evidence rejection.
 
-The mission lifecycle samples show the plan an operator supplies and the context, report, and closeout contracts used by `skill-mission-controller.js`. The invalid examples prove that an AI cannot become final decision authority, request release in a wave report, or turn a closeout into release approval. Use `run-skill-mission-controller-fixtures.js` for real temporary Git repositories, generated routing receipts, manifest-backed evidence, model-preflight binding, AAR follow-on work, and repository isolation.
+The mission lifecycle samples show the plan an operator supplies and the context, controller-issued control receipt, report, and closeout contracts used by `skill-mission-controller.js`. The invalid examples prove that an AI cannot become final decision authority, forge a passing control receipt, request release in a wave report, or turn a closeout into release approval. Use `run-skill-control-enforcement-fixtures.js` for allowlist, shell, failure, timeout, and state-binding behavior, and `run-skill-mission-controller-fixtures.js` for real temporary Git repositories, generated routing receipts, controller-executed controls, manifest-backed evidence, model-preflight binding, AAR follow-on work, and repository isolation.
 
 The enforced-dispatch samples form a reference controller-authorized policy, lease, baseline checkpoint, and admitted tool event. Their unsafe counterparts cover a self-declared issuer, traversal or mixed matcher fields, lease budget and clean-start drift, malformed none sentinels, allow-without-rule, deny-without-reason, invalid checkpoint chains, active terminal state, unresolved effects, and authority expansion. Use `run-dispatch-runtime-fixtures.js` for mission-plan draft authorization, concurrent one-agent issuance, ordered cross-agent repository handoff, exact post-tool binding, replay denial, repository-state drift, unresolved-effect reconciliation, revocation, interruption, and explicit lineage-continuation behavior.
 

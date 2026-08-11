@@ -31,6 +31,338 @@ const fixtures = [
     requiredCodes: ["ADDITIONAL_PROPERTY"]
   },
   {
+    name: "valid WARNO",
+    file: "sample-payloads/valid-warno.json",
+    type: "warno",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "WARNO execution before issue",
+    file: "sample-payloads/invalid-warno-execution-before-issue.json",
+    type: "warno",
+    exitCode: 1,
+    requiredCodes: ["WARNO_WITHOUT_PREPARATION_TASKS", "WARNO_EXECUTION_BEFORE_ISSUE"]
+  },
+  {
+    name: "valid board decision",
+    file: "sample-payloads/valid-board-decision.json",
+    type: "board-decision",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "board decision without rationale",
+    file: "sample-payloads/invalid-board-decision-no-rationale.json",
+    type: "board-decision",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"]
+  },
+  {
+    name: "approving board decision without selected option",
+    file: "sample-payloads/valid-board-decision.json",
+    type: "board-decision",
+    exitCode: 1,
+    mutate(payload) {
+      payload.decision = "approve";
+      delete payload.selected_option;
+    },
+    requiredCodes: ["BOARD_DECISION_OPTION_REQUIRED"]
+  },
+  {
+    name: "valid battle rhythm event",
+    file: "sample-payloads/valid-battle-rhythm-event.json",
+    type: "battle-rhythm-event",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "battle rhythm event with unknown class",
+    file: "sample-payloads/invalid-battle-rhythm-event-unknown-class.json",
+    type: "battle-rhythm-event",
+    exitCode: 1,
+    requiredCodes: ["ENUM_MISMATCH"]
+  },
+  {
+    name: "battle rhythm event with impossible cron and quorum",
+    file: "sample-payloads/valid-battle-rhythm-event.json",
+    type: "battle-rhythm-event",
+    exitCode: 1,
+    mutate(payload) {
+      payload.cadence.kind = "cron";
+      payload.quorum.minimum_participants = 99;
+    },
+    requiredCodes: ["BATTLE_RHYTHM_CRON_CADENCE_INVALID", "BATTLE_RHYTHM_QUORUM_IMPOSSIBLE"]
+  },
+  {
+    name: "valid battle rhythm scheduler proposal",
+    file: "sample-payloads/valid-battle-rhythm-scheduler.json",
+    type: "battle-rhythm-scheduler",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "battle rhythm scheduler occurrence must be timestamp or null",
+    file: "sample-payloads/invalid-battle-rhythm-scheduler-object-occurrence.json",
+    type: "battle-rhythm-scheduler",
+    exitCode: 1,
+    requiredCodes: ["ANY_OF_MISMATCH"]
+  },
+  {
+    name: "battle rhythm scheduler claiming auto-execution",
+    file: "sample-payloads/invalid-battle-rhythm-scheduler-auto-executed.json",
+    type: "battle-rhythm-scheduler",
+    exitCode: 1,
+    requiredCodes: ["CONST_MISMATCH", "ENUM_MISMATCH"]
+  },
+  {
+    name: "battle rhythm scheduler cannot propose with missing inputs",
+    file: "sample-payloads/valid-battle-rhythm-scheduler.json",
+    type: "battle-rhythm-scheduler",
+    exitCode: 1,
+    mutate(payload) {
+      payload.proposals[0].inputs_missing = ["SITREP-MISSING-001"];
+    },
+    requiredCodes: ["SCHEDULER_PROPOSAL_STATE_INCONSISTENT"]
+  },
+  {
+    name: "valid agent METL",
+    file: "sample-payloads/valid-agent-metl.json",
+    type: "agent-metl",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "agent METL task without standards",
+    file: "sample-payloads/invalid-agent-metl-missing-standards.json",
+    type: "agent-metl",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"]
+  },
+  {
+    name: "agent METL cannot duplicate task ids",
+    file: "sample-payloads/valid-agent-metl.json",
+    type: "agent-metl",
+    exitCode: 1,
+    mutate(payload) {
+      payload.essential_tasks[1].task_id = payload.essential_tasks[0].task_id;
+    },
+    requiredCodes: ["AGENT_METL_DUPLICATE_TASK"]
+  },
+  {
+    name: "valid readiness event",
+    file: "sample-payloads/valid-readiness-event.json",
+    type: "readiness-event",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "readiness event with self-certified extra field",
+    file: "sample-payloads/invalid-readiness-event-extra-field.json",
+    type: "readiness-event",
+    exitCode: 1,
+    requiredCodes: ["ADDITIONAL_PROPERTY"]
+  },
+  {
+    name: "readiness event cannot self-promote or expand authority",
+    file: "sample-payloads/invalid-readiness-event-self-promotion.json",
+    type: "readiness-event",
+    exitCode: 1,
+    requiredCodes: ["ENUM_MISMATCH", "READINESS_UNAUTHORIZED_ACTOR", "READINESS_PROMOTION_STAGE_JUMP", "READINESS_PROMOTION_EVIDENCE_INSUFFICIENT", "READINESS_AUTHORITY_ESCALATION"]
+  },
+  {
+    name: "valid source plan annex",
+    file: "sample-payloads/valid-source-plan.json",
+    type: "source-plan",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "source plan with unusable source tier",
+    file: "sample-payloads/invalid-source-plan-unusable-tier.json",
+    type: "source-plan",
+    exitCode: 1,
+    requiredCodes: ["ENUM_MISMATCH"]
+  },
+  {
+    name: "source plan sequence cannot reference an unplanned source",
+    file: "sample-payloads/valid-source-plan.json",
+    type: "source-plan",
+    exitCode: 1,
+    mutate(payload) {
+      payload.collection_sequence[1].source_id = "SRC-GHOST-999";
+    },
+    requiredCodes: ["SOURCE_PLAN_UNKNOWN_SOURCE", "SOURCE_PLAN_UNSCHEDULED_SOURCE"]
+  },
+  {
+    name: "valid context release",
+    file: "sample-payloads/valid-context-release.json",
+    type: "context-release",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "external raw context release without expiry",
+    file: "sample-payloads/invalid-context-release-external-raw-no-expiry.json",
+    type: "context-release",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"]
+  },
+  {
+    name: "external raw context release by executor with invalid revocation",
+    file: "sample-payloads/invalid-context-release-external-raw-executor.json",
+    type: "context-release",
+    exitCode: 1,
+    evaluatedAt: "2026-08-11T01:00:00Z",
+    requiredCodes: [
+      "ENUM_MISMATCH",
+      "CONTEXT_RELEASE_INVALID_VALIDITY",
+      "CONTEXT_RELEASE_EXTERNAL_AUTHORITY_REQUIRED",
+      "CONTEXT_RELEASE_EXTERNAL_RAW_PROHIBITED",
+      "CONTEXT_RELEASE_REVIEW_BINDINGS_MISSING",
+      "CONTEXT_RELEASE_REVOCATION_INCOMPLETE",
+      "CONTEXT_RELEASE_REVOKED"
+    ]
+  },
+  {
+    name: "valid resource status",
+    file: "sample-payloads/valid-resource-status.json",
+    type: "resource-status",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "resource status rejects non-positive capacity",
+    file: "sample-payloads/invalid-resource-status-negative-capacity.json",
+    type: "resource-status",
+    exitCode: 1,
+    requiredCodes: ["EXCLUSIVE_MINIMUM"]
+  },
+  {
+    name: "resource status without thresholds",
+    file: "sample-payloads/invalid-resource-status-missing-thresholds.json",
+    type: "resource-status",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"]
+  },
+  {
+    name: "resource status rejects inconsistent level and threshold order",
+    file: "sample-payloads/valid-resource-status.json",
+    type: "resource-status",
+    exitCode: 1,
+    mutate(payload) {
+      payload.current_level = payload.capacity + 1;
+      payload.threshold_bands.green.min_remaining_ratio = 0.1;
+    },
+    requiredCodes: ["RESOURCE_LEVEL_EXCEEDS_CAPACITY", "RESOURCE_THRESHOLD_ORDER_INVALID"]
+  },
+  {
+    name: "valid decision log entry",
+    file: "sample-payloads/valid-decision-log.json",
+    type: "decision-log",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "decision log entry without authority basis",
+    file: "sample-payloads/invalid-decision-log-no-authority-basis.json",
+    type: "decision-log",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"]
+  },
+  {
+    name: "decision log chosen option must have been considered",
+    file: "sample-payloads/valid-decision-log.json",
+    type: "decision-log",
+    exitCode: 1,
+    mutate(payload) {
+      payload.chosen_option = "OPT-GHOST-999";
+    },
+    requiredCodes: ["DECISION_CHOICE_NOT_CONSIDERED"]
+  },
+  {
+    name: "valid source record",
+    file: "sample-payloads/valid-source-record.json",
+    type: "source-record",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "source record with unusable tier",
+    file: "sample-payloads/invalid-source-record-bad-tier.json",
+    type: "source-record",
+    exitCode: 1,
+    requiredCodes: ["ENUM_MISMATCH"]
+  },
+  {
+    name: "source record requires a linked document",
+    file: "sample-payloads/valid-source-record.json",
+    type: "source-record",
+    exitCode: 1,
+    mutate(payload) {
+      payload.linked_documents = [];
+    },
+    requiredCodes: ["SOURCE_RECORD_WITHOUT_DOCUMENT"]
+  },
+  {
+    name: "valid classification label",
+    file: "sample-payloads/valid-classification-label.json",
+    type: "classification-label",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "classification label with unknown EEFI class",
+    file: "sample-payloads/invalid-classification-label-unknown-eefi-class.json",
+    type: "classification-label",
+    exitCode: 1,
+    requiredCodes: ["ENUM_MISMATCH"]
+  },
+  {
+    name: "valid releasability review",
+    file: "sample-payloads/valid-releasability-review.json",
+    type: "releasability-review",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "releasability review with unknown decision",
+    file: "sample-payloads/invalid-releasability-review-unknown-decision.json",
+    type: "releasability-review",
+    exitCode: 1,
+    requiredCodes: ["ENUM_MISMATCH"]
+  },
+  {
+    name: "releasability review cannot release forbidden content",
+    file: "sample-payloads/invalid-releasability-review-forbidden-release.json",
+    type: "releasability-review",
+    exitCode: 1,
+    evaluatedAt: "2026-08-11T01:00:00Z",
+    requiredCodes: [
+      "ENUM_MISMATCH",
+      "RELEASABILITY_REVIEW_EXPIRED",
+      "RELEASABILITY_REVIEW_EXTERNAL_AUTHORITY_REQUIRED",
+      "RELEASABILITY_REVIEW_BLOCKING_FINDINGS",
+      "RELEASABILITY_REVIEW_OUTPUT_FORBIDDEN",
+      "RELEASABILITY_REVIEW_RESTRICTED_EXTERNAL_RELEASE",
+      "RELEASABILITY_REVIEW_NON_PUBLIC_RAW_RELEASE"
+    ]
+  },
+  {
+    name: "valid EEFI alert",
+    file: "sample-payloads/valid-eefi-alert.json",
+    type: "eefi-alert",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "EEFI alert carrying a raw excerpt",
+    file: "sample-payloads/invalid-eefi-alert-raw-excerpt.json",
+    type: "eefi-alert",
+    exitCode: 1,
+    requiredCodes: ["PATTERN_MISMATCH"]
+  },
+  {
     name: "valid green tool request",
     file: "sample-payloads/valid-tool-request-green.json",
     type: "tool-request",
@@ -673,6 +1005,20 @@ const fixtures = [
     type: "agent-context-pack",
     exitCode: 1,
     requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "valid mandatory control execution receipt",
+    file: "sample-payloads/valid-control-execution-receipt.json",
+    type: "control-execution-receipt",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "mandatory control receipt falsely claims pass",
+    file: "sample-payloads/invalid-control-execution-receipt-false-pass.json",
+    type: "control-execution-receipt",
+    exitCode: 1,
+    requiredCodes: ["CONTROL_RECEIPT_STATUS_MISMATCH"]
   },
   {
     name: "valid operational mission wave report",
@@ -1709,6 +2055,17 @@ const fixtures = [
     type: "verifier-identity-evidence",
     exitCode: 1,
     requiredCodes: ["ADDITIONAL_PROPERTY"]
+  },
+  {
+    name: "Black EEFI alert cannot leave release open",
+    file: "sample-payloads/valid-eefi-alert.json",
+    type: "eefi-alert",
+    exitCode: 1,
+    mutate(payload) {
+      payload.blocks_release = false;
+      payload.status = "complete";
+    },
+    requiredCodes: ["EEFI_SEVERE_ALERT_MUST_BLOCK_RELEASE"]
   },
   {
     name: "valid Sigstore verifier workload identity evidence",

@@ -18,6 +18,10 @@ function initialProjection() {
 }
 
 function applyEvent(state, event) {
+  if (event.type === "READINESS_EVENT") {
+    state.readiness[`${event.agent_id}:${event.task}`] = event.new_rating;
+    return state;
+  }
   const payload = event.payload || {};
   switch (event.event_type) {
     case "MissionCreated":
@@ -92,7 +96,7 @@ function applyEvent(state, event) {
       }
       break;
     case "ReadinessUpdated":
-      state.readiness[`${payload.agent_id}:${payload.task}`] = payload.rating;
+      state.readiness[`${payload.agent_id}:${payload.task}`] = payload.new_rating || payload.rating;
       break;
     default:
       break;
@@ -101,9 +105,10 @@ function applyEvent(state, event) {
 }
 
 function eventTime(event) {
-  const time = Date.parse(event.timestamp);
+  const timestamp = event.timestamp || (event.type === "READINESS_EVENT" ? event.effective_at : null);
+  const time = Date.parse(timestamp);
   if (Number.isNaN(time)) {
-    throw new Error(`INVALID_EVENT_TIMESTAMP: ${event.event_id || "unknown"} has timestamp ${event.timestamp || "missing"}`);
+    throw new Error(`INVALID_EVENT_TIMESTAMP: ${event.event_id || event.id || "unknown"} has timestamp ${timestamp || "missing"}`);
   }
   return time;
 }
@@ -115,7 +120,7 @@ function replay(events) {
     .sort((a, b) => {
       const timeDelta = eventTime(a) - eventTime(b);
       if (timeDelta !== 0) return timeDelta;
-      return String(a.event_id || "").localeCompare(String(b.event_id || ""));
+      return String(a.event_id || a.id || "").localeCompare(String(b.event_id || b.id || ""));
     })
     .reduce(applyEvent, initialProjection());
 }

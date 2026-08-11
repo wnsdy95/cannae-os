@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "type": "BattleRhythmEvent",
+  "id": "BRE-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "name": "Standing Committee Without a Charter",
+  "event_class": "committee",
+  "cadence": {
+    "kind": "interval",
+    "interval_minutes": 1440,
+    "anchor": "2026-06-18T09:00:00+09:00"
+  },
+  "duration_minutes": 60,
+  "required_inputs": {
+    "read_ahead": [],
+    "decision_packets_due": []
+  },
+  "expected_outputs": [],
+  "chair": "COS",
+  "participants": ["COS", "S2", "S3"],
+  "quorum": {
+    "minimum_participants": 2,
+    "required_roles": ["COS"]
+  },
+  "skip_conditions": [],
+  "cancel_conditions": [],
+  "classification": "internal",
+  "status": "draft"
+}

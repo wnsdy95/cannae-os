@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/releasability-review.schema.json",
+  "title": "Releasability Review",
+  "description": "Per-artifact label review performed before external release. It checks one artifact against its classification labels for a requested audience and feeds the final output release decision recorded by release-review.schema.json (ReleaseReview).",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "artifact", "labels", "requested_audience", "findings", "decision", "reviewer", "reviewed_at", "expires_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ReleasabilityReview" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "artifact": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "labels": {
+      "type": "array",
+      "description": "Classification labels found on the artifact during review.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label_id", "classification", "eefi_class"],
+        "additionalProperties": false,
+        "properties": {
+          "label_id": { "$ref": "common.schema.json#/$defs/id" },
+          "classification": { "$ref": "common.schema.json#/$defs/classification" },
+          "eefi_class": {
+            "type": "string",
+            "enum": ["none", "output_forbidden", "tool_transfer_forbidden"]
+          }
+        }
+      }
+    },
+    "requested_audience": {
+      "type": "string",
+      "enum": ["internal", "partner", "public"]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "code", "detail"],
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["info", "warning", "error", "critical"]
+          },
+          "code": { "type": "string", "minLength": 1 },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["release", "redact", "deny", "escalate"]
+    },
+    "release_review_id": {
+      "description": "The downstream ReleaseReview this per-artifact review feeds.",
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "reviewer": {
+      "type": "string",
+      "enum": ["USER", "COMMANDER", "COS", "S2", "S6"]
+    },
+    "reviewed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1",
+  "type": "DecisionLogEntry",
+  "id": "DL-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "decided_at": "2026-06-18T12:20:00+09:00",
+  "decision_maker": "COMMANDER",
+  "decision_type": "approval",
+  "question": "Should the blocked production deployment request TR-DEMO-002 be approved?",
+  "options_considered": [
+    "OPT-DEMO-001",
+    "OPT-DEMO-002"
+  ],
+  "chosen_option": "OPT-DEMO-001",
+  "rationale": "Production deployment exceeds the local-only demo mission authority, so TR-DEMO-002 stays rejected until a FRAGO changes the mission scope.",
+  "authority_basis": {
+    "basis_type": "board_decision",
+    "reference": "BD-DEMO-001",
+    "summary": "Commander disposition BD-DEMO-001 of decision packet DP-DEMO-001 at the demo decision board."
+  },
+  "affected_artifacts": [
+    "OPORD-DEMO-001",
+    "TR-DEMO-002",
+    "sample-payloads/valid-decision-packet.json"
+  ],
+  "review_trigger": "Review at the next AAR or when a FRAGO changes the local-only constraint.",
+  "status": "complete"
+}

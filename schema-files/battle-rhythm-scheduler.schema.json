@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/battle-rhythm-scheduler.schema.json",
+  "title": "Battle Rhythm Scheduler Proposal",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "generated_at", "generated_by", "event_log_refs", "proposals", "conflicts", "confirmation_queue", "auto_execution", "classification", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "BattleRhythmSchedulerProposal" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "generated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "generated_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "event_log_refs": { "$ref": "common.schema.json#/$defs/string_list" },
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["event_id", "event_name", "event_class", "proposed_occurrence", "state", "inputs_ready", "inputs_missing", "blocking_reasons", "proposed_agenda"],
+        "additionalProperties": false,
+        "properties": {
+          "event_id": { "$ref": "common.schema.json#/$defs/id" },
+          "event_name": { "type": "string", "minLength": 1 },
+          "event_class": {
+            "type": "string",
+            "enum": ["board", "bureau", "center", "cell", "working_group"]
+          },
+          "proposed_occurrence": {
+            "anyOf": [
+              { "$ref": "common.schema.json#/$defs/timestamp" },
+              { "type": "null" }
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": ["proposed", "blocked"]
+          },
+          "inputs_ready": { "$ref": "common.schema.json#/$defs/string_list" },
+          "inputs_missing": { "$ref": "common.schema.json#/$defs/string_list" },
+          "blocking_reasons": { "$ref": "common.schema.json#/$defs/string_list" },
+          "proposed_agenda": { "$ref": "common.schema.json#/$defs/string_list" }
+        }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["conflict_type", "event_ids", "detail"],
+        "additionalProperties": false,
+        "properties": {
+          "conflict_type": {
+            "type": "string",
+            "enum": ["overlapping_events", "participant_collision"]
+          },
+          "event_ids": {
+            "type": "array",
+            "minItems": 2,
+            "items": { "$ref": "common.schema.json#/$defs/id" }
+          },
+          "detail": { "type": "string", "minLength": 1 },
+          "shared_participants": {
+            "type": "array",
+            "items": { "$ref": "common.schema.json#/$defs/role_id" }
+          }
+        }
+      }
+    },
+    "confirmation_queue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "authority", "event_ids", "note"],
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["confirm_schedule", "resolve_blockers", "resolve_conflict"]
+          },
+          "authority": {
+            "type": "string",
+            "enum": ["USER", "COMMANDER", "COS"]
+          },
+          "event_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "common.schema.json#/$defs/id" }
+          },
+          "note": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "auto_execution": { "type": "boolean", "const": false },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

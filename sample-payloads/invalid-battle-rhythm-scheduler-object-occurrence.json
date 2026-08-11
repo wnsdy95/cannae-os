@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1",
+  "type": "BattleRhythmSchedulerProposal",
+  "id": "BRS-DEMO-NULL-001",
+  "mission_id": "M-DEMO-001",
+  "generated_at": "2026-06-18T03:15:00.000Z",
+  "generated_by": "COS",
+  "event_log_refs": ["EVT-WG-001"],
+  "proposals": [
+    {
+      "event_id": "BRE-DEMO-001",
+      "event_name": "Commander Decision Board",
+      "event_class": "board",
+      "proposed_occurrence": {},
+      "state": "blocked",
+      "inputs_ready": [],
+      "inputs_missing": ["DP-DEMO-001"],
+      "blocking_reasons": ["Required input is missing."],
+      "proposed_agenda": []
+    }
+  ],
+  "conflicts": [],
+  "confirmation_queue": [
+    {
+      "action": "resolve_blockers",
+      "authority": "COS",
+      "event_ids": ["BRE-DEMO-001"],
+      "note": "Resolve blockers before scheduling."
+    }
+  ],
+  "auto_execution": false,
+  "classification": "internal",
+  "status": "pending"
+}

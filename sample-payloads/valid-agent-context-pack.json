@@ -44,6 +44,18 @@
     }
   ],
   "validation_commands": ["node run-document-routing-fixtures.js"],
+  "required_controls": [
+    {
+      "control_id": "CTRL-6a29130c7d6dd8ed",
+      "command": "node run-document-routing-fixtures.js",
+      "command_sha256": "6a29130c7d6dd8ed39c3076f1a27d620e6f2628a42d46ba3ec45e548a7c98959",
+      "runner": "node",
+      "script_path": "run-document-routing-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    }
+  ],
   "model_assignment": {
     "required": false,
     "integrated_preflight_ref": {

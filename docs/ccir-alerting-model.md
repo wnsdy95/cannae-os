@@ -139,10 +139,13 @@ schema:
 - `ccir-alert.schema.json`
 - `decision-packet.schema.json`
 
-prototype:
+Implemented prototypes:
 
-- `alert-router.js`: reads the event log and policy decisions to generate the alert projection.
-- `ccir-linter.js`: fails any blocked item in a SITREP that lacks a CCIR classification.
+- `alert-router-prototype/route-alerts.js`: reads the event log and policy decisions to generate the alert projection (implements the `alert-router.js` candidate).
+- `ccir-linter.js`: fails any blocked item in a SITREP that lacks a CCIR classification or references an unknown CCIR id (verified by `run-ccir-linter-fixtures.js`).
+
+Remaining candidates:
+
 - Replace the dashboard `ccir_alerts` panel with event-derived alerts.
 
 ## 10. Source anchors

@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1",
+  "type": "SourceRecord",
+  "id": "SR-DEMO-001",
+  "tier": "B",
+  "title": "Executing Knowledge Management in Support of Mission Command: A Primer for Senior Leaders",
+  "publisher": "Center for Army Lessons Learned",
+  "url": "https://api.army.mil/e2/c/downloads/2023/01/19/919a5372/18-02-executing-knowledge-management-in-support-of-mission-command-a-primer-for-senior-leaders-nov-17-public.pdf",
+  "retrieved_at": "2026-06-18T11:40:00+09:00",
+  "claims": [
+    {
+      "label": "Claim",
+      "statement": "Knowledge management connects people, processes, and tools so relevant knowledge reaches the decision maker in time."
+    },
+    {
+      "label": "Interpretation",
+      "statement": "LLM missions must interconnect decisions, evidence, and current state so the next operator can continue without chat history."
+    }
+  ],
+  "reliability_notes": [
+    "Official CALL primer with a clear publishing entity and accessible original text.",
+    "Use as operating-procedure evidence, not as primary doctrinal basis."
+  ],
+  "linked_documents": [
+    "docs/knowledge-management-sop.md",
+    "docs/source-map.md"
+  ]
+}

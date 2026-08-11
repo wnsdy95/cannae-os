@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/agent-metl.schema.json",
+  "title": "Agent METL",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "role",
+    "mission_set",
+    "essential_tasks",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "AgentMetl" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "role": { "$ref": "common.schema.json#/$defs/role_id" },
+    "mission_set": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "essential_tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "task_id",
+          "task_statement",
+          "conditions",
+          "standards",
+          "supporting_fixtures",
+          "supporting_runners",
+          "current_proficiency",
+          "evaluation_evidence",
+          "review_cadence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "task_id": { "$ref": "common.schema.json#/$defs/id" },
+          "task_statement": { "type": "string", "minLength": 1 },
+          "conditions": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "standards": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "supporting_fixtures": { "$ref": "common.schema.json#/$defs/string_list" },
+          "supporting_runners": { "$ref": "common.schema.json#/$defs/string_list" },
+          "current_proficiency": { "$ref": "common.schema.json#/$defs/readiness_rating" },
+          "evaluation_evidence": { "$ref": "common.schema.json#/$defs/string_list" },
+          "review_cadence": {
+            "type": "string",
+            "enum": [
+              "mission_start",
+              "before_red_amber_approval",
+              "end_of_phase",
+              "on_repeated_failure",
+              "on_new_tool"
+            ]
+          }
+        }
+      }
+    },
+    "updated_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}

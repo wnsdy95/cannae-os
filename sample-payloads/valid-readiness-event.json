@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1",
+  "type": "READINESS_EVENT",
+  "id": "RE-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "metl_id": "METL-DEMO-S2",
+  "metl_task_id": "MET-DEMO-S2-001",
+  "agent_id": "S2",
+  "task": "source reliability rating",
+  "actor": "EVALUATOR",
+  "trigger": "evaluation",
+  "previous_rating": "P",
+  "new_rating": "T",
+  "evidence": [
+    "Same task succeeded on three consecutive missions with no verification failures.",
+    "AAR ARU-AAR-20260618-001 recommended sustain_or_raise for this task.",
+    "No Red Team critical findings against the rated products."
+  ],
+  "authority_impact": {
+    "policy_source": "readiness-gate-prototype/readiness-gate.js",
+    "roe_effects": [
+      {
+        "roe_class": "Green",
+        "previous_decision": "allow",
+        "new_decision": "allow"
+      },
+      {
+        "roe_class": "Amber",
+        "previous_decision": "approval_required",
+        "new_decision": "report_required"
+      },
+      {
+        "roe_class": "Red",
+        "previous_decision": "approval_required",
+        "new_decision": "approval_required"
+      },
+      {
+        "roe_class": "Black",
+        "previous_decision": "prohibit",
+        "new_decision": "prohibit"
+      }
+    ]
+  },
+  "effective_at": "2026-06-18T18:30:00+09:00",
+  "notes": [
+    "Promotion still grants no authority outside mission scope."
+  ]
+}

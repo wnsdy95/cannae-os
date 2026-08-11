@@ -152,11 +152,8 @@ Implemented schemas:
 
 - `annex.schema.json`
 - `frago-scope-change.schema.json`
-
-Additional candidates:
-
-- `source-plan.schema.json`
 - `verification-plan.schema.json`
+- `source-plan.schema.json`: the source-plan annex with tiered planned sources, collection sequence, and verification linkage.
 
 Validation rules:
 

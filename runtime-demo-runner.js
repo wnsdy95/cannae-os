@@ -9,6 +9,7 @@ const POLICY = path.join(ROOT, "policy-engine-prototype", "policy-engine.js");
 
 const validations = [
   ["runtime-demo-payloads/mission.json", "mission"],
+  ["runtime-demo-payloads/warno.json", "warno"],
   ["runtime-demo-payloads/opord.json", "opord"],
   ["runtime-demo-payloads/task-order.json", "task-order"],
   ["runtime-demo-payloads/backbrief.json", "backbrief"],
@@ -17,6 +18,7 @@ const validations = [
   ["runtime-demo-payloads/tool-request-red.json", "tool-request"],
   ["runtime-demo-payloads/approval-request.json", "approval-request"],
   ["runtime-demo-payloads/sitrep.json", "sitrep"],
+  ["runtime-demo-payloads/frago.json", "frago"],
   ["runtime-demo-payloads/evidence.json", "evidence"],
   ["runtime-demo-payloads/aar.json", "aar"]
 ];

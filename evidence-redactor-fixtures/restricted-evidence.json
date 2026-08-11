@@ -1,0 +1,14 @@
+{
+  "id": "E-DEMO-011",
+  "mission_id": "M-DEMO-001",
+  "source_title": "Gateway Deployment Notes",
+  "url": "https://controls.local/private/gateway-deployment-notes",
+  "source_type": "internal_note",
+  "reliability": "B",
+  "claim": "The staging gateway reads its secret store from srv/gateway/demo-credential-path.",
+  "interpretation": "Publishing the credential path would let an attacker target the gateway secret store directly.",
+  "linked_docs": [
+    "docs/opsec-classification-model.md"
+  ],
+  "checked_at": "2026-06-18T11:30:00+09:00"
+}

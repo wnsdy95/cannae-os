@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1",
+  "type": "SourcePlan",
+  "id": "SP-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "owner": "S2",
+  "information_requirements": [
+    "PIR: Which official doctrine defines METL-based training and evaluation?"
+  ],
+  "planned_sources": [
+    {
+      "source_id": "SRC-DEMO-004",
+      "tier": "X",
+      "access_method": "Reuse an unverified forum paste whose publisher cannot be identified.",
+      "expected_claims": [
+        "Core evidence for the final report."
+      ]
+    }
+  ],
+  "collection_sequence": [
+    {
+      "step": 1,
+      "source_id": "SRC-DEMO-004",
+      "action": "Cite the paste directly in the final output."
+    }
+  ],
+  "verification_linkage": {
+    "verification_plan_id": "VP-DEMO-001",
+    "linked_check_ids": ["VCK-DEMO-001"]
+  },
+  "gaps": [],
+  "created_at": "2026-06-18T14:10:00+09:00"
+}

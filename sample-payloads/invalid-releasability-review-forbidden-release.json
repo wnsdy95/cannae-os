@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1",
+  "type": "ReleasabilityReview",
+  "id": "RREV-ADVERSARIAL-001",
+  "mission_id": "M-DEMO-001",
+  "artifact": {
+    "artifact_id": "E-DEMO-012",
+    "relative_path": "evidence-redactor-fixtures/secret-evidence.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "labels": [
+    {
+      "label_id": "CL-DEMO-012",
+      "classification": "restricted",
+      "eefi_class": "output_forbidden"
+    }
+  ],
+  "requested_audience": "public",
+  "findings": [
+    {
+      "severity": "critical",
+      "code": "SECRET_EXPOSED",
+      "detail": "Output contains an output-forbidden credential."
+    }
+  ],
+  "decision": "release",
+  "release_review_id": "RR-ADVERSARIAL-001",
+  "reviewer": "EXECUTOR",
+  "reviewed_at": "2026-07-01T00:00:00Z",
+  "expires_at": "2026-07-02T00:00:00Z"
+}
