@@ -29,7 +29,7 @@ The human user remains final decision authority throughout this sequence.
 | --- | --- |
 | `MissionWavePlan` | Defines intent, success/failure conditions, agent tasks, operational roles, delegated authority, model-preflight requirement, finite adaptive budget, and retained USER authorities. |
 | `AgentContextPack` | Gives one agent only its task, role, authority, digest-bound doctrine documents, compiled required controls, model identity, escalation conditions, and exact control references. |
-| `ControlExecutionReceipt` | Proves that the controller ran one allowlisted, shell-free control against exact repository and doctrine states; stores only output digests and byte counts. |
+| `ControlExecutionReceipt` | Proves that the controller ran one allowlisted, shell-free control for the exact canonical report input, repository, and doctrine states; stores only output digests and byte counts. |
 | `MissionWaveReport` | Records one result per expected agent and requires exact context-pack, control-receipt, and manifest-backed work-evidence references. |
 | `MissionWaveCloseout` | Binds plan, report, AAR, readiness update, campaign, next-wave decision, verified artifact state, and a permanently false release grant. |
 
@@ -139,10 +139,18 @@ At report admission, the controller reloads every agent's exact context pack,
 deduplicates its required controls, and runs each control itself with a stripped
 credential environment. The caller cannot substitute a claimed result or
 choose the receipt references. A passing receipt is accepted only when command,
-context, report, mission, wave, repository identity, repository state, doctrine
+context, canonical report-input digest, mission, wave, repository identity, repository state, doctrine
 revision, and doctrine state all bind exactly and remain unchanged across the
 run. Raw stdout and stderr are not persisted; only their SHA-256 digests and
 byte counts enter the receipt.
+
+Freeze the report input before admission. A receipt may be reused only when a
+successfully admitted, immutable report already references its exact manifest
+entry. If an interrupted or failed admission leaves receipts without a report,
+assign a fresh report ID, omit old receipt references, and resubmit so the new
+digest forces the complete required-control set to run again. A successfully
+persisted report artifact is immutable. Subsequent corrections or additional
+work require a new wave rather than rewriting the admitted report.
 
 ## 4. Record A Wave
 
@@ -244,11 +252,12 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 
-The E2E suite uses independent temporary Git repositories and covers mandatory routing, controller-executed controls, caller-forged receipt rejection, failure/timeout/state-drift blocking, digest-bound context, finite campaign scope, idempotence, plan expiry, model-preflight admission, exact and time-bounded evidence, blocked closeout, per-wave rerouting, repository isolation, and both installed-skill wrappers.
+The E2E suite uses independent temporary Git repositories and covers mandatory routing, controller-executed controls, unadmitted preinserted receipt rejection, immutable report admission, failure/timeout/state-drift blocking, digest-bound context, finite campaign scope, idempotence, plan expiry, model-preflight admission, exact and time-bounded evidence, blocked closeout, per-wave rerouting, repository isolation, and both installed-skill wrappers.
 
 ## 10. Operational Limits
 
 - The mission controller is a local lifecycle command, not a persistent scheduler. The separate dispatch runtime and provider hooks intercept covered local calls, but repository-local hooks remain a bypassable guardrail. Stronger deployments must protect the hook/runtime outside the agent's writable boundary or expose side effects only through an independent gateway.
+- The local controller and artifact store are tamper-evident workflow controls, not an independent trust anchor against a principal that can rewrite the runtime, artifacts, manifest, and sidecar under the same OS identity. Production assurance requires write separation plus signed external provenance or an independently protected gateway/store.
 - Repository manifest integrity proves the bytes and namespace of an integrated model preflight, not who produced it. Generate that projection with the model compiler and integrated preflight runner; use stronger signed provenance where the deployment requires producer identity.
 - Context-pack hashes reveal later doctrine drift but cannot force an external model process to read or obey the pack. The surrounding harness must provide only the issued context and enforce tool policy.
 - The artifact coordinator assumes coherent shared-filesystem semantics. Distributed or partition-prone deployments need an external linearizable coordinator and storage-side fencing.

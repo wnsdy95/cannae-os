@@ -1,10 +1,11 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "ControlExecutionReceipt",
-  "id": "CER-DEMO-002",
+  "id": "CER-MWR-SKILL-DEMO-W1-abababababab-6a29130c7d6dd8ed",
   "mission_id": "MIS-SKILL-DEMO",
   "wave_id": "W1",
   "report_id": "MWR-SKILL-DEMO-W1",
+  "report_input_sha256": "abababababababababababababababababababababababababababababababab",
   "control": {
     "control_id": "CTRL-6a29130c7d6dd8ed",
     "command": "node run-document-routing-fixtures.js",

@@ -1021,6 +1021,36 @@ const fixtures = [
     requiredCodes: ["CONTROL_RECEIPT_STATUS_MISMATCH"]
   },
   {
+    name: "mandatory control receipt cannot substitute report input",
+    file: "sample-payloads/valid-control-execution-receipt.json",
+    type: "control-execution-receipt",
+    exitCode: 1,
+    mutate(payload) {
+      payload.report_input_sha256 = "cd".repeat(32);
+    },
+    requiredCodes: ["CONTROL_RECEIPT_ID_BINDING_MISMATCH"]
+  },
+  {
+    name: "mandatory control receipt cannot substitute its command descriptor",
+    file: "sample-payloads/valid-control-execution-receipt.json",
+    type: "control-execution-receipt",
+    exitCode: 1,
+    mutate(payload) {
+      payload.control.script_path = "source-map-linter.js";
+    },
+    requiredCodes: ["CONTROL_RECEIPT_DESCRIPTOR_MISMATCH"]
+  },
+  {
+    name: "mandatory control receipt cannot lie about unchanged state",
+    file: "sample-payloads/valid-control-execution-receipt.json",
+    type: "control-execution-receipt",
+    exitCode: 1,
+    mutate(payload) {
+      payload.repository_state_before_sha256 = "12".repeat(32);
+    },
+    requiredCodes: ["CONTROL_RECEIPT_STATE_BINDING_MISMATCH"]
+  },
+  {
     name: "valid operational mission wave report",
     file: "sample-payloads/valid-mission-wave-report.json",
     type: "mission-wave-report",

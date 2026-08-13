@@ -12,7 +12,11 @@ const {
   writeRepositoryArtifact
 } = require("./repository-artifact-store");
 const { buildCampaign } = require("./self-improvement-campaign-init");
-const { validatePayload } = require("./validator-cli-prototype/validate");
+const {
+  controlExecutionDescriptor,
+  controlExecutionReceiptId,
+  validatePayload
+} = require("./validator-cli-prototype/validate");
 
 const NONE_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const CONTROL_EVIDENCE_KINDS = new Set([
@@ -37,6 +41,33 @@ function sha256(value) {
 
 function jsonBytes(value) {
   return Buffer.from(`${JSON.stringify(value, null, 2)}\n`);
+}
+
+function canonicalValue(value) {
+  if (Array.isArray(value)) return value.map(canonicalValue);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.keys(value).sort().map(key => [key, canonicalValue(value[key])]));
+  }
+  return value;
+}
+
+function reportInputDigest(report) {
+  const { control_receipt_refs: _generatedRefs, ...input } = report;
+  return sha256(JSON.stringify(canonicalValue(input)));
+}
+
+function controlReceiptMatchesExecution(receipt, expected) {
+  return receipt.status === "passed" &&
+    receipt.mission_id === expected.missionId &&
+    receipt.wave_id === expected.waveId &&
+    receipt.report_id === expected.reportId &&
+    receipt.report_input_sha256 === expected.reportInputSha256 &&
+    JSON.stringify(receipt.control) === JSON.stringify(expected.control) &&
+    JSON.stringify(receipt.agent_bindings) === JSON.stringify(expected.agentBindings) &&
+    receipt.repository_identity_fingerprint === expected.repositoryIdentityFingerprint &&
+    receipt.repository_state_after_sha256 === expected.repositoryStateSha256 &&
+    receipt.doctrine_revision === expected.doctrineRevision &&
+    receipt.doctrine_state_after_sha256 === expected.doctrineStateSha256;
 }
 
 function readJson(filePath) {
@@ -255,43 +286,22 @@ function repositoryStateDigest(root) {
 }
 
 function compileValidationCommand(command, doctrineRoot) {
-  if (typeof command !== "string" || command.trim() !== command || command.length === 0) {
-    throw new Error("Validation command must be one exact non-empty string without surrounding whitespace.");
-  }
-  if (/[;&|`<>\n\r]/.test(command)) {
-    throw new Error(`Validation command contains a forbidden shell operator: ${command}`);
-  }
-
-  if (/["'$\\]/.test(command)) {
-    throw new Error(`Node validation command contains unsupported quoting or expansion: ${command}`);
-  }
-  const tokens = command.split(/\s+/);
-  if (tokens[0] !== "node" || tokens.length < 2) {
-    throw new Error(`Validation command runner is not allowlisted: ${command}`);
-  }
-  const scriptPath = tokens[1];
-  if (!/^[A-Za-z0-9._/-]+\.js$/.test(scriptPath) || path.isAbsolute(scriptPath) || scriptPath.split("/").includes("..")) {
-    throw new Error(`Validation command script path is unsafe: ${scriptPath}`);
-  }
+  const descriptor = controlExecutionDescriptor(command);
+  const scriptPath = descriptor.script_path;
   const root = fs.realpathSync(doctrineRoot);
   const absoluteScript = path.resolve(root, scriptPath);
   if (!absoluteScript.startsWith(`${root}${path.sep}`) || !fs.existsSync(absoluteScript)) {
     throw new Error(`Validation command script is missing from the doctrine root: ${scriptPath}`);
   }
+  const realScript = fs.realpathSync(absoluteScript);
+  if (!realScript.startsWith(`${root}${path.sep}`)) {
+    throw new Error(`Validation command script resolves outside the doctrine root: ${scriptPath}`);
+  }
   const stat = fs.lstatSync(absoluteScript);
   if (!stat.isFile() || stat.isSymbolicLink()) {
     throw new Error(`Validation command script must be a regular non-symlink file: ${scriptPath}`);
   }
-  return {
-    control_id: `CTRL-${sha256(command).slice(0, 16)}`,
-    command,
-    command_sha256: sha256(command),
-    runner: "node",
-    script_path: scriptPath,
-    argv: tokens.slice(2),
-    working_directory: "doctrine_root",
-    shell: false
-  };
+  return descriptor;
 }
 
 function buildRequiredControls(commands, doctrineRoot) {
@@ -333,6 +343,9 @@ function executeValidationControl(control, agentBindings, options) {
   const doctrineRevision = runGit(doctrineRoot, ["rev-parse", "HEAD"]);
   const evaluatedAt = Date.parse(options.now || new Date().toISOString());
   if (!Number.isFinite(evaluatedAt)) throw new Error("Mandatory control execution requires a valid evaluation time.");
+  if (!/^[a-f0-9]{64}$/.test(options.reportInputSha256 || "")) {
+    throw new Error("Mandatory control execution requires the exact report input digest.");
+  }
   const wallStarted = Date.now();
   const result = spawnSync(invocation.executable, invocation.argv, {
     cwd: doctrineRoot,
@@ -358,12 +371,13 @@ function executeValidationControl(control, agentBindings, options) {
   else if (!doctrineUnchanged) failureCode = "DOCTRINE_DRIFT";
 
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "ControlExecutionReceipt",
     id: options.receiptId,
     mission_id: options.missionId,
     wave_id: options.waveId,
     report_id: options.reportId,
+    report_input_sha256: options.reportInputSha256,
     control,
     agent_bindings: agentBindings,
     repository_identity_fingerprint: repository.identity_fingerprint,
@@ -754,6 +768,8 @@ function openWave(plan, options = {}) {
 
 function executeRequiredControls(report, contextArtifacts, options) {
   const doctrineRoot = resolveDoctrineRoot(options.doctrineRoot || __dirname);
+  const repository = resolveRepository(options.repository);
+  const reportDigest = reportInputDigest(report);
   const contextByAgent = new Map(contextArtifacts.map(item => [item.payload.agent_id, item]));
   const controls = new Map();
 
@@ -788,7 +804,11 @@ function executeRequiredControls(report, contextArtifacts, options) {
   for (const entry of [...controls.values()].sort((left, right) =>
     left.control.command_sha256.localeCompare(right.control.command_sha256))) {
     entry.agentBindings.sort((left, right) => left.agent_id.localeCompare(right.agent_id));
-    const receiptId = `CER-${safeIdPart(report.id)}-${entry.control.command_sha256.slice(0, 16)}`;
+    const receiptId = controlExecutionReceiptId({
+      reportId: report.id,
+      reportInputSha256: reportDigest,
+      commandSha256: entry.control.command_sha256
+    });
     const existing = optionalArtifact(options, {
       missionId: report.mission_id,
       waveId: report.wave_id,
@@ -796,15 +816,25 @@ function executeRequiredControls(report, contextArtifacts, options) {
       artifactId: receiptId
     });
     if (existing) {
+      const admittedRefs = options.admittedControlReceiptRefs || [];
+      if (!admittedRefs.some(ref => sameRef(ref, existing.ref))) {
+        throw new Error(`Existing control receipt ${receiptId} is not referenced by an admitted report and cannot be reused.`);
+      }
       assertValid(existing.payload, "control-execution-receipt", `Control receipt ${receiptId}`);
-      const currentRepositoryState = repositoryStateDigest(resolveRepository(options.repository).root);
+      const currentRepositoryState = repositoryStateDigest(repository.root);
       const currentDoctrineState = repositoryStateDigest(doctrineRoot);
-      if (existing.payload.status !== "passed" ||
-          existing.payload.report_id !== report.id ||
-          JSON.stringify(existing.payload.control) !== JSON.stringify(entry.control) ||
-          JSON.stringify(existing.payload.agent_bindings) !== JSON.stringify(entry.agentBindings) ||
-          existing.payload.repository_state_after_sha256 !== currentRepositoryState ||
-          existing.payload.doctrine_state_after_sha256 !== currentDoctrineState) {
+      if (!controlReceiptMatchesExecution(existing.payload, {
+        missionId: report.mission_id,
+        waveId: report.wave_id,
+        reportId: report.id,
+        reportInputSha256: reportDigest,
+        control: entry.control,
+        agentBindings: entry.agentBindings,
+        repositoryIdentityFingerprint: repository.identity_fingerprint,
+        repositoryStateSha256: currentRepositoryState,
+        doctrineRevision: runGit(doctrineRoot, ["rev-parse", "HEAD"]),
+        doctrineStateSha256: currentDoctrineState
+      })) {
         throw new Error(`Existing control receipt ${receiptId} cannot be reused after binding or repository-state drift.`);
       }
       refs.push(existing.ref);
@@ -817,7 +847,8 @@ function executeRequiredControls(report, contextArtifacts, options) {
       receiptId,
       missionId: report.mission_id,
       waveId: report.wave_id,
-      reportId: report.id
+      reportId: report.id,
+      reportInputSha256: reportDigest
     });
     assertValid(receipt, "control-execution-receipt", `Control receipt ${receiptId}`);
     const ref = persistJson(options, {
@@ -934,11 +965,34 @@ function recordWave(report, options = {}) {
     throw new Error("Wave report timestamp is outside the plan validity window.");
   }
   if (recordedAt > now + 300000) throw new Error("Wave report timestamp is in the future.");
+  const admittedReports = artifactEntries(operationOptions, {
+    missionId: report.mission_id,
+    waveId: report.wave_id,
+    kind: "mission-wave-reports"
+  });
+  if (admittedReports.entries.length > 1) {
+    throw new Error("Mission wave has multiple admitted reports and requires human reconciliation.");
+  }
+  let admittedReport = null;
+  if (admittedReports.entries.length === 1) {
+    const admittedEntry = admittedReports.entries[0];
+    admittedReport = readEntryPayload(admittedReports, admittedEntry);
+    assertValid(admittedReport, "mission-wave-report", `Admitted mission wave report ${admittedEntry.artifact_id}`);
+    if (admittedEntry.artifact_id !== report.id ||
+        reportInputDigest(admittedReport) !== reportInputDigest(report)) {
+      throw new Error("Mission wave report is immutable after admission; corrections require a new wave.");
+    }
+  }
   const controlReceiptRefs = executeRequiredControls(report, contextArtifacts, {
     ...operationOptions,
     doctrineRoot: options.doctrineRoot,
-    now: options.now || new Date().toISOString()
+    now: options.now || new Date().toISOString(),
+    admittedControlReceiptRefs: admittedReport ? admittedReport.control_receipt_refs || [] : []
   });
+  if (admittedReport &&
+      JSON.stringify(admittedReport.control_receipt_refs || []) !== JSON.stringify(controlReceiptRefs)) {
+    throw new Error("Admitted mission wave report does not reference the exact mandatory control receipts.");
+  }
   if (Array.isArray(report.control_receipt_refs) &&
       JSON.stringify(report.control_receipt_refs) !== JSON.stringify(controlReceiptRefs)) {
     throw new Error("Caller-supplied control receipt references do not match controller-issued receipts.");
@@ -1319,11 +1373,13 @@ module.exports = {
   buildRequiredControls,
   closeWave,
   compileValidationCommand,
+  controlReceiptMatchesExecution,
   executeRequiredControls,
   executeValidationControl,
   missionStatus,
   openWave,
   recordWave,
+  reportInputDigest,
   repositoryStateDigest,
   resolveDoctrineRoot,
   sameRef

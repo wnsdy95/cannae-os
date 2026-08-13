@@ -94,6 +94,42 @@ const {
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
 
+function controlExecutionReceiptId({ reportId, reportInputSha256, commandSha256 }) {
+  const reportPart = String(reportId || "unknown").replace(/[^A-Za-z0-9_-]+/g, "_") || "unknown";
+  return `CER-${reportPart}-${String(reportInputSha256 || "").slice(0, 12)}-${String(commandSha256 || "").slice(0, 16)}`;
+}
+
+function controlExecutionDescriptor(command) {
+  if (typeof command !== "string" || command.trim() !== command || command.length === 0) {
+    throw new Error("Validation command must be one exact non-empty string without surrounding whitespace.");
+  }
+  if (/[;&|`<>\n\r]/.test(command)) {
+    throw new Error(`Validation command contains a forbidden shell operator: ${command}`);
+  }
+  if (/["'$\\]/.test(command)) {
+    throw new Error(`Node validation command contains unsupported quoting or expansion: ${command}`);
+  }
+  const tokens = command.split(/\s+/);
+  if (tokens[0] !== "node" || tokens.length < 2) {
+    throw new Error(`Validation command runner is not allowlisted: ${command}`);
+  }
+  const scriptPath = tokens[1];
+  if (!/^[A-Za-z0-9._/-]+\.js$/.test(scriptPath) || path.isAbsolute(scriptPath) || scriptPath.split("/").includes("..")) {
+    throw new Error(`Validation command script path is unsafe: ${scriptPath}`);
+  }
+  const commandSha256 = crypto.createHash("sha256").update(command).digest("hex");
+  return {
+    control_id: `CTRL-${commandSha256.slice(0, 16)}`,
+    command,
+    command_sha256: commandSha256,
+    runner: "node",
+    script_path: scriptPath,
+    argv: tokens.slice(2),
+    working_directory: "doctrine_root",
+    shell: false
+  };
+}
+
 const TYPE_TO_SCHEMA = {
   mission: "mission.schema.json",
   agent: "agent.schema.json",
@@ -3264,6 +3300,21 @@ function semanticRules(payload, type, options = {}) {
     if (control.command_sha256 !== commandDigest) {
       issues.push(issue("critical", "CONTROL_RECEIPT_COMMAND_DIGEST_MISMATCH", "$.control.command_sha256", "Control receipt must bind the exact command string."));
     }
+    const expectedReceiptId = controlExecutionReceiptId({
+      reportId: payload.report_id,
+      reportInputSha256: payload.report_input_sha256,
+      commandSha256: control.command_sha256
+    });
+    if (payload.id !== expectedReceiptId) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_ID_BINDING_MISMATCH", "$.id", "Control receipt ID must derive from the exact report-input and command digests."));
+    }
+    try {
+      if (!canonicalJsonBytes(controlExecutionDescriptor(control.command)).equals(canonicalJsonBytes(control))) {
+        issues.push(issue("critical", "CONTROL_RECEIPT_DESCRIPTOR_MISMATCH", "$.control", "Control descriptor must derive exactly from its shell-free command."));
+      }
+    } catch (error) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_DESCRIPTOR_MISMATCH", "$.control", "Control descriptor must derive exactly from one allowlisted shell-free command."));
+    }
     if (!isValidDate(payload.started_at) || !isValidDate(payload.finished_at) ||
         Date.parse(payload.finished_at) < Date.parse(payload.started_at)) {
       issues.push(issue("critical", "CONTROL_RECEIPT_INVALID_TIME", "$.finished_at", "Control receipt must finish at or after its start time."));
@@ -3272,8 +3323,13 @@ function semanticRules(payload, type, options = {}) {
     if (new Set(agentIds).size !== agentIds.length) {
       issues.push(issue("critical", "CONTROL_RECEIPT_DUPLICATE_AGENT", "$.agent_bindings", "Control receipt agent bindings must be unique."));
     }
-    const passed = payload.exit_code === 0 && payload.repository_unchanged === true &&
-      payload.doctrine_unchanged === true && !payload.failure_code;
+    const repositoryStatesMatch = payload.repository_state_before_sha256 === payload.repository_state_after_sha256;
+    const doctrineStatesMatch = payload.doctrine_state_before_sha256 === payload.doctrine_state_after_sha256;
+    if (payload.repository_unchanged !== repositoryStatesMatch || payload.doctrine_unchanged !== doctrineStatesMatch) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_STATE_BINDING_MISMATCH", "$.repository_unchanged", "Unchanged flags must equal the bound before/after state digests."));
+    }
+    const passed = payload.exit_code === 0 && repositoryStatesMatch && doctrineStatesMatch &&
+      payload.repository_unchanged === true && payload.doctrine_unchanged === true && !payload.failure_code;
     if ((payload.status === "passed") !== passed) {
       issues.push(issue("critical", "CONTROL_RECEIPT_STATUS_MISMATCH", "$.status", "Passed status requires exit zero, unchanged repository and doctrine state, and no failure code."));
     }
@@ -5742,4 +5798,9 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { validatePayload, validateSchemaPayload };
+module.exports = {
+  controlExecutionDescriptor,
+  controlExecutionReceiptId,
+  validatePayload,
+  validateSchemaPayload
+};
