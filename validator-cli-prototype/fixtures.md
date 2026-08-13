@@ -42,6 +42,9 @@
 | `sample-payloads/invalid-eefi-alert-raw-excerpt.json` | `eefi-alert` | fail with `PATTERN_MISMATCH` |
 | `sample-payloads/valid-control-execution-receipt.json` | `control-execution-receipt` | pass |
 | `sample-payloads/invalid-control-execution-receipt-false-pass.json` | `control-execution-receipt` | fail with `CONTROL_RECEIPT_STATUS_MISMATCH` |
+| mutated `sample-payloads/valid-control-execution-receipt.json` report digest | `control-execution-receipt` | fail with `CONTROL_RECEIPT_ID_BINDING_MISMATCH` |
+| mutated `sample-payloads/valid-control-execution-receipt.json` command descriptor | `control-execution-receipt` | fail with `CONTROL_RECEIPT_DESCRIPTOR_MISMATCH` |
+| mutated `sample-payloads/valid-control-execution-receipt.json` state digest | `control-execution-receipt` | fail with `CONTROL_RECEIPT_STATE_BINDING_MISMATCH` |
 | `sample-payloads/valid-tool-request-green.json` | `tool-request` | pass |
 | `sample-payloads/invalid-tool-request-red-without-approval.json` | `tool-request` | fail with `RED_WITHOUT_APPROVAL` |
 | `sample-payloads/valid-approval-request.json` | `approval-request` | pass |

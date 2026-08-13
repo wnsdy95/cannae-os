@@ -10,6 +10,7 @@
     "mission_id",
     "wave_id",
     "report_id",
+    "report_input_sha256",
     "control",
     "agent_bindings",
     "repository_identity_fingerprint",
@@ -32,12 +33,13 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "ControlExecutionReceipt" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },
     "wave_id": { "type": "string", "minLength": 1 },
     "report_id": { "$ref": "common.schema.json#/$defs/id" },
+    "report_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
     "control": {
       "type": "object",
       "required": ["control_id", "command", "command_sha256", "runner", "script_path", "argv", "working_directory", "shell"],

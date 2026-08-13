@@ -7,7 +7,9 @@ const { spawnSync } = require("child_process");
 const {
   buildRequiredControls,
   compileValidationCommand,
+  controlReceiptMatchesExecution,
   executeValidationControl,
+  reportInputDigest,
   repositoryStateDigest
 } = require("./skill-mission-controller");
 const { validatePayload } = require("./validator-cli-prototype/validate");
@@ -76,25 +78,83 @@ const fixtures = [
     }
   },
   {
+    name: "intermediate symlinks cannot escape the doctrine root",
+    run() {
+      const doctrine = path.join(temporaryRoot, "doctrine");
+      const outside = path.join(temporaryRoot, "outside");
+      fs.mkdirSync(doctrine);
+      fs.mkdirSync(outside);
+      fs.writeFileSync(path.join(outside, "escaped.js"), "process.exit(0);\n");
+      fs.symlinkSync(outside, path.join(doctrine, "linked"));
+      expectThrow(() => compileValidationCommand("node linked/escaped.js", doctrine), /resolves outside/);
+    }
+  },
+  {
+    name: "report digest changes with report content but ignores generated receipt refs",
+    run() {
+      const report = {
+        id: "MWR-FIXTURE-001",
+        mission_id: "MIS-FIXTURE-001",
+        agent_results: [{ agent_id: "fixture-agent", summary: "original" }]
+      };
+      const original = reportInputDigest(report);
+      const withGeneratedRefs = reportInputDigest({
+        ...report,
+        control_receipt_refs: [{ artifact_id: "CER-ONE", relative_path: "receipt.json", sha256: "a".repeat(64) }]
+      });
+      const changed = reportInputDigest({
+        ...report,
+        agent_results: [{ agent_id: "fixture-agent", summary: "substituted" }]
+      });
+      assert(original === withGeneratedRefs, "generated control receipt refs changed the report input digest");
+      assert(original !== changed, "changed report content reused the same report input digest");
+    }
+  },
+  {
     name: "successful control binds unchanged doctrine and repository state",
     run() {
       const control = compileValidationCommand("node source-map-linter.js", ROOT);
       const before = repositoryStateDigest(repository);
+      const reportDigest = "1".repeat(64);
       const receipt = executeValidationControl(control, binding(), {
         doctrineRoot: ROOT,
         repository,
         now: "2026-08-11T00:00:00Z",
-        receiptId: "CER-FIXTURE-PASS",
+        receiptId: `CER-MWR-FIXTURE-001-${reportDigest.slice(0, 12)}-${control.command_sha256.slice(0, 16)}`,
         missionId: "MIS-FIXTURE-001",
         waveId: "W1",
-        reportId: "MWR-FIXTURE-001"
+        reportId: "MWR-FIXTURE-001",
+        reportInputSha256: reportDigest
       });
       assert(receipt.status === "passed" && receipt.exit_code === 0, "successful control did not pass");
       assert(receipt.repository_state_before_sha256 === before && receipt.repository_state_after_sha256 === before,
         "receipt did not bind the exact unchanged target state");
       assert(receipt.doctrine_unchanged === true && receipt.release_authorized === false,
         "receipt authority or doctrine state drifted");
+      assert(receipt.report_input_sha256 === "1".repeat(64), "receipt did not bind the report input digest");
       assert(validatePayload(receipt, "control-execution-receipt").valid, "generated pass receipt failed validation");
+      const expected = {
+        missionId: receipt.mission_id,
+        waveId: receipt.wave_id,
+        reportId: receipt.report_id,
+        reportInputSha256: receipt.report_input_sha256,
+        control: receipt.control,
+        agentBindings: receipt.agent_bindings,
+        repositoryIdentityFingerprint: receipt.repository_identity_fingerprint,
+        repositoryStateSha256: receipt.repository_state_after_sha256,
+        doctrineRevision: receipt.doctrine_revision,
+        doctrineStateSha256: receipt.doctrine_state_after_sha256
+      };
+      assert(controlReceiptMatchesExecution(receipt, expected), "exact receipt could not be reused");
+      for (const [field, value] of [
+        ["mission_id", "MIS-SUBSTITUTED"],
+        ["wave_id", "W-SUBSTITUTED"],
+        ["repository_identity_fingerprint", "f".repeat(64)],
+        ["doctrine_revision", "substituted"]
+      ]) {
+        assert(!controlReceiptMatchesExecution({ ...receipt, [field]: value }, expected),
+          `receipt reuse accepted substituted ${field}`);
+      }
     }
   },
   {
@@ -104,14 +164,16 @@ const fixtures = [
         "node validator-cli-prototype/validate.js sample-payloads/invalid-mission-missing-intent.json mission",
         ROOT
       );
+      const reportDigest = "2".repeat(64);
       const receipt = executeValidationControl(control, binding(), {
         doctrineRoot: ROOT,
         repository,
         now: "2026-08-11T00:00:00Z",
-        receiptId: "CER-FIXTURE-FAIL",
+        receiptId: `CER-MWR-FIXTURE-001-${reportDigest.slice(0, 12)}-${control.command_sha256.slice(0, 16)}`,
         missionId: "MIS-FIXTURE-001",
         waveId: "W1",
-        reportId: "MWR-FIXTURE-001"
+        reportId: "MWR-FIXTURE-001",
+        reportInputSha256: reportDigest
       });
       assert(receipt.status === "failed" && receipt.failure_code === "PROCESS_FAILED",
         "nonzero command did not produce a failed receipt");
