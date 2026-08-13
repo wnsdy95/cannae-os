@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "RoutingReceipt",
   "id": "RR-W2-plans-agent",
   "mission_id": "MIS-routing",
@@ -12,7 +12,8 @@
   "authority_scope": "scoped-execution",
   "routing_mode": "delegated_ai_role_department_authority",
   "router_query": "plans-agent W2 document routing",
-  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution \"plans-agent W2 document routing\" .",
+  "capability_query": "plans-agent W2 document routing",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution \"--capability-query=plans-agent W2 document routing\" \"plans-agent W2 document routing\" .",
   "matched_routes": [
     {
       "id": "orders",
@@ -23,6 +24,34 @@
       "score": 1
     }
   ],
+  "capability_routing": {
+    "status": "covered",
+    "reason_code": "MATCHED_DOCTRINE_ROUTE",
+    "capability_scope": "plans-agent W2 document routing",
+    "matched_capability_routes": ["orders", "multi-agent-organization"],
+    "provisional_organization": {
+      "required": false,
+      "organization_type": "existing_doctrine_route",
+      "organization_id": "none",
+      "name": "Existing doctrine route",
+      "task_organization_status": "not_required",
+      "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+      "authority_expansion_authorized": false,
+      "standing_department_activation_authorized": false,
+      "disband_condition": "Not applicable; no provisional organization was created."
+    },
+    "force_structure_review": {
+      "required": false,
+      "change_type": "none",
+      "target_kind": "none",
+      "status": "not_required",
+      "candidate_department_id": "none",
+      "candidate_department_name": "none",
+      "final_decision_authority": "USER",
+      "formal_approving_role": "COMMANDER"
+    },
+    "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+  },
   "recommended_documents": [
     {
       "path": "docs/orders-production-pipeline.md",

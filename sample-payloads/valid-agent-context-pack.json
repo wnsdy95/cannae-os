@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "AgentContextPack",
   "id": "ACP-W1-plans-agent",
   "mission_id": "MIS-SKILL-DEMO",
@@ -23,6 +23,35 @@
     "artifact_id": "ARP-W1",
     "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
     "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "capability_query": "Implement the bounded skill change and its fixtures.",
+  "capability_routing": {
+    "status": "covered",
+    "reason_code": "MATCHED_DOCTRINE_ROUTE",
+    "capability_scope": "Implement the bounded skill change and its fixtures.",
+    "matched_capability_routes": ["skill-operations"],
+    "provisional_organization": {
+      "required": false,
+      "organization_type": "existing_doctrine_route",
+      "organization_id": "none",
+      "name": "Existing doctrine route",
+      "task_organization_status": "not_required",
+      "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+      "authority_expansion_authorized": false,
+      "standing_department_activation_authorized": false,
+      "disband_condition": "Not applicable; no provisional organization was created."
+    },
+    "force_structure_review": {
+      "required": false,
+      "change_type": "none",
+      "target_kind": "none",
+      "status": "not_required",
+      "candidate_department_id": "none",
+      "candidate_department_name": "none",
+      "final_decision_authority": "USER",
+      "formal_approving_role": "COMMANDER"
+    },
+    "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
   },
   "doctrine_state": {
     "revision": "0123456789abcdef0123456789abcdef01234567",

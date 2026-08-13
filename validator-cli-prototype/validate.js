@@ -267,6 +267,84 @@ function issue(severity, code, pointer, message, fix) {
   return { severity, code, path: pointer || "$", message, ...(fix ? { fix } : {}) };
 }
 
+function renderedCommandArgument(value) {
+  const arg = String(value);
+  if (/^[A-Za-z0-9_./:=@-]+$/.test(arg)) return arg;
+  return `"${arg.replace(/(["\\$`])/g, "\\$1")}"`;
+}
+
+function validateCapabilityRouting(payload, options = {}) {
+  const issues = [];
+  const capability = payload.capability_routing || {};
+  const provisional = capability.provisional_organization || {};
+  const forceStructure = capability.force_structure_review || {};
+  const pathPrefix = options.pathPrefix || "$.capability_routing";
+  const routeIds = new Set(options.routeIds || []);
+  const documentPaths = new Set(options.documentPaths || []);
+  const commands = new Set(options.commands || []);
+
+  if (provisional.authority_expansion_authorized !== false ||
+      provisional.standing_department_activation_authorized !== false) {
+    issues.push(issue("critical", "CAPABILITY_ROUTING_AUTHORITY_EXPANSION", `${pathPrefix}.provisional_organization`, "A provisional capability cell cannot expand authority or activate a standing department."));
+  }
+  if (forceStructure.final_decision_authority !== "USER" ||
+      forceStructure.formal_approving_role !== "COMMANDER") {
+    issues.push(issue("critical", "CAPABILITY_ROUTING_FINAL_AUTHORITY_DRIFT", `${pathPrefix}.force_structure_review`, "The USER remains final decision authority and COMMANDER remains the formal force-structure approving role."));
+  }
+  if (options.capabilityQuery !== undefined &&
+      capability.capability_scope !== options.capabilityQuery) {
+    issues.push(issue("critical", "CAPABILITY_ROUTING_SCOPE_MISMATCH", `${pathPrefix}.capability_scope`, "Capability routing must bind the exact mission capability query."));
+  }
+
+  if (capability.status === "gap_detected") {
+    const expectedSuffix = crypto.createHash("sha256")
+      .update(String(options.missionId || ""))
+      .digest("hex")
+      .slice(0, 12)
+      .toUpperCase();
+    if (capability.reason_code !== "NO_CAPABILITY_ROUTE" ||
+        (capability.matched_capability_routes || []).length !== 0 ||
+        provisional.required !== true ||
+        provisional.organization_type !== "mission_scoped_capability_cell" ||
+        provisional.task_organization_status !== "task_organized" ||
+        forceStructure.required !== true ||
+        forceStructure.change_type !== "create" ||
+        forceStructure.target_kind !== "department" ||
+        forceStructure.status !== "analysis_required" ||
+        !/^DEPT-[A-F0-9]{12}$/.test(forceStructure.candidate_department_id || "") ||
+        String(forceStructure.candidate_department_id).slice(5) !== String(provisional.organization_id || "").slice(5)) {
+      issues.push(issue("critical", "CAPABILITY_GAP_WITHOUT_PROVISIONAL_ORGANIZATION", pathPrefix, "An unmatched capability must create a bounded mission cell and initiate department force-structure analysis."));
+    }
+    if (provisional.organization_id !== `CELL-${expectedSuffix}` ||
+        forceStructure.candidate_department_id !== `DEPT-${expectedSuffix}`) {
+      issues.push(issue("critical", "CAPABILITY_ROUTING_ORGANIZATION_ID_MISMATCH", `${pathPrefix}.provisional_organization.organization_id`, "Provisional cell and department-candidate ids must derive from the exact mission id."));
+    }
+    if ((options.requireRouteEvidence !== false && !routeIds.has("force-structure")) ||
+        !documentPaths.has("docs/force-structure-change-policy.md") ||
+        !commands.has("node run-force-structure-change-fixtures.js")) {
+      issues.push(issue("critical", "CAPABILITY_GAP_WITHOUT_FORCE_STRUCTURE_CONTROL", pathPrefix, "A capability gap must route force-structure doctrine and its executable fixture gate."));
+    }
+  }
+
+  const declaredCapabilityRoutes = capability.matched_capability_routes || [];
+  if (capability.status === "covered" &&
+      (declaredCapabilityRoutes.length === 0 ||
+       provisional.required !== false ||
+       provisional.organization_type !== "existing_doctrine_route" ||
+       provisional.task_organization_status !== "not_required" ||
+       forceStructure.required !== false ||
+       forceStructure.status !== "not_required" ||
+       forceStructure.candidate_department_id !== "none" ||
+       forceStructure.candidate_department_name !== "none")) {
+    issues.push(issue("critical", "COVERED_CAPABILITY_WITH_ORGANIZATION_DRIFT", pathPrefix, "A covered capability must use an existing route without inventing or activating an organization."));
+  }
+  if (capability.status === "covered" && options.requireRouteEvidence !== false &&
+      declaredCapabilityRoutes.some(routeId => !routeIds.has(routeId))) {
+    issues.push(issue("critical", "COVERED_CAPABILITY_ROUTE_MISMATCH", `${pathPrefix}.matched_capability_routes`, "Every declared capability route must exist in the router's matched route evidence."));
+  }
+  return issues;
+}
+
 function loadSchemas() {
   const schemas = {};
   for (const file of fs.readdirSync(SCHEMA_DIR)) {
@@ -3253,6 +3331,15 @@ function semanticRules(payload, type, options = {}) {
     const requiredControls = payload.required_controls || [];
     const controlCommands = requiredControls.map(control => control.command);
     const controlIds = requiredControls.map(control => control.control_id);
+    issues.push(...validateCapabilityRouting(payload, {
+      pathPrefix: "$.capability_routing",
+      routeIds: payload.capability_routing && payload.capability_routing.matched_capability_routes,
+      documentPaths,
+      commands: validationCommands,
+      requireRouteEvidence: false,
+      capabilityQuery: payload.capability_query,
+      missionId: payload.mission_id
+    }));
     if (validationCommands.length !== requiredControls.length ||
         validationCommands.some(command => !controlCommands.includes(command))) {
       issues.push(issue("critical", "AGENT_CONTEXT_CONTROL_SET_MISMATCH", "$.required_controls", "Every routed validation command must compile to exactly one mandatory control."));
@@ -3408,6 +3495,14 @@ function semanticRules(payload, type, options = {}) {
       issues.push(issue("critical", "ROUTING_RECEIPT_WITHOUT_RECOMMENDED_DOCS", "$.recommended_documents", "Routing receipt must record recommended documents."));
     }
     const recommendedPaths = new Set((payload.recommended_documents || []).map(document => document.path));
+    issues.push(...validateCapabilityRouting(payload, {
+      pathPrefix: "$.capability_routing",
+      routeIds: (payload.matched_routes || []).map(route => route.id),
+      documentPaths: [...recommendedPaths],
+      commands: payload.validation_commands || [],
+      capabilityQuery: payload.capability_query,
+      missionId: payload.mission_id
+    }));
     if (!recommendedPaths.has("docs/source-map.md")) {
       issues.push(issue("error", "ROUTING_RECEIPT_WITHOUT_SOURCE_MAP", "$.recommended_documents", "Routing receipt must keep source-map visible as a baseline document."));
     }
@@ -3423,6 +3518,10 @@ function semanticRules(payload, type, options = {}) {
     }
     if (!/--actor(?:=|\s+)ai\b/.test(payload.router_command || "")) {
       issues.push(issue("critical", "ROUTING_RECEIPT_NOT_AI_ACTOR", "$.router_command", "Delegated routing receipt must be produced with --actor=ai."));
+    }
+    const capabilityArgument = renderedCommandArgument(`--capability-query=${payload.capability_query}`);
+    if (!String(payload.router_command || "").includes(capabilityArgument)) {
+      issues.push(issue("critical", "ROUTING_RECEIPT_CAPABILITY_QUERY_NOT_REPLAYABLE", "$.router_command", "Routing receipt command must include the exact separate capability query."));
     }
     if (payload.actor !== "ai" || payload.routing_mode !== "delegated_ai_role_department_authority") {
       issues.push(issue("critical", "ROUTING_RECEIPT_NOT_DELEGATED_AI", "$.actor", "Routing receipt for agent preflight must be delegated AI routing."));

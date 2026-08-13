@@ -32,6 +32,15 @@ For delegated AI work:
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --actor=ai --role=S3 --department=operations --authority=scoped-execution "<mission request>" .
 ```
 
+Treat `capability_routing.status` as executable routing state. When it is
+`gap_detected`, never answer that the request is outside the corpus and then
+continue as unowned general work. Accept the original request through the
+returned mission-scoped capability cell, keep the existing role and authority
+limits, run the routed force-structure controls, and evaluate the returned
+standing-department candidate. The provisional cell is active only for the
+mission; authority expansion and standing activation remain false until the
+USER decides on a validated `ForceStructureChangeOrder`.
+
 For delegated AI waves, use the operational lifecycle controller. It generates the CoS and every expected S3 receipt, runs preflight, binds optional model assignment, and issues context packs only when ready:
 
 ```bash
@@ -41,11 +50,11 @@ node .claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.
   --artifact-root .cannae/artifacts
 ```
 
-The manual receipt commands below are for diagnosis or lower-level integration, not the default dispatch path:
+The manual receipt commands below are for diagnosis or lower-level integration, not the default dispatch path. Use the same mission objective as `--capability-query` on the wave and every agent receipt; use the final positional query for that receipt's narrower task:
 
 ```bash
-node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking "<wave mission>" .
-node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution "<agent task>" .
+node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking --capability-query="<mission objective>" "<wave task>" .
+node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution --capability-query="<mission objective>" "<agent task>" .
 node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
 ```
 

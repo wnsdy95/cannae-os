@@ -17,6 +17,8 @@
     "plan_ref",
     "routing_receipt_ref",
     "routing_preflight_ref",
+    "capability_query",
+    "capability_routing",
     "doctrine_state",
     "documents",
     "validation_commands",
@@ -30,7 +32,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "AgentContextPack" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -43,6 +45,8 @@
     "plan_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "routing_receipt_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
     "routing_preflight_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "capability_query": { "type": "string", "minLength": 1 },
+    "capability_routing": { "$ref": "common.schema.json#/$defs/capability_routing" },
     "doctrine_state": {
       "type": "object",
       "required": ["revision", "router_sha256", "controller_sha256"],

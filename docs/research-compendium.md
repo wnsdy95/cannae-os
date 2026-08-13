@@ -2152,6 +2152,8 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 
    LLM Application:
    - A new agent, department, unit, TF, runner, or dashboard panel is not created out of naming convenience. Evidence is required that the capability gap cannot be resolved by adjusting an existing SOP/schema/training/tool.
+   - A router-detected gap is never treated as permission to continue as unowned general work. The mission immediately receives one deterministic provisional capability cell for bounded analysis and drafting, while a paired standing-department candidate enters the force-structure review path.
+   - The provisional cell inherits the requesting agent's existing authority and expires with the mission. It cannot activate a standing department or expand authority; those actions require a validated `ForceStructureChangeOrder` and the human USER's decision.
    - Creating or expanding an organization requires Commander approval, retained release/risk/scope authority, a maintainer, validation fixtures, readiness evidence, a source-of-truth, and a sunset condition.
    - Disestablishing or reducing an organization is not complete without function transfer, handoff, data migration, authority withdrawal, documentation update, and an AAR/readiness update.
    - The force structure runner projects an order into a preflight block, commander queue, transition task, documentation queue, readiness requirement, and sunset watch.

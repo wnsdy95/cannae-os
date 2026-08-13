@@ -432,6 +432,7 @@ function invokeRouter(doctrineRoot, routeOptions) {
     `--role=${routeOptions.role}`,
     `--department=${routeOptions.department}`,
     `--authority=${routeOptions.authority}`,
+    `--capability-query=${routeOptions.capabilityQuery}`,
     routeOptions.query,
     doctrineRoot
   ];
@@ -453,9 +454,12 @@ function persistedOrGeneratedReceipt(plan, agent, options, doctrineRoot) {
   });
   if (existing) {
     assertValid(existing.payload, "routing-receipt", `Routing receipt ${agentId}`);
+    if (existing.payload.capability_query !== plan.objective) {
+      throw new Error(`Routing receipt ${agentId} does not bind the current mission capability query.`);
+    }
     return { receipt: existing.payload, ref: existing.ref };
   }
-  const receipt = invokeRouter(doctrineRoot, agent ? {
+  const routedReceipt = invokeRouter(doctrineRoot, agent ? {
     scope: "agent",
     missionId: plan.mission_id,
     waveId: plan.wave_id,
@@ -463,7 +467,8 @@ function persistedOrGeneratedReceipt(plan, agent, options, doctrineRoot) {
     role: "S3",
     department: "operations",
     authority: "scoped-execution",
-    query: `${plan.objective}. Agent task: ${agent.task}. Operational role: ${agent.operational_role}. Department: ${agent.department}. Delegated authority: ${agent.delegated_authority}.`
+    capabilityQuery: plan.objective,
+    query: `${plan.objective}. Assigned work: ${agent.task}.`
   } : {
     scope: "wave",
     missionId: plan.mission_id,
@@ -472,8 +477,10 @@ function persistedOrGeneratedReceipt(plan, agent, options, doctrineRoot) {
     role: "COS",
     department: "coordination",
     authority: "tasking",
-    query: `${plan.objective}. Open wave ${plan.wave_id}; route every expected agent and preserve USER final authority.`
+    capabilityQuery: plan.objective,
+    query: `${plan.objective}. Open wave ${plan.wave_id}.`
   });
+  const receipt = routedReceipt;
   const ref = persistJson(options, {
     missionId: plan.mission_id,
     waveId: plan.wave_id,
@@ -619,7 +626,8 @@ function openWave(plan, options = {}) {
   });
 
   const waveReceipt = persistedOrGeneratedReceipt(plan, null, operationOptions, doctrineRoot);
-  const agentReceipts = plan.agents.map(agent => persistedOrGeneratedReceipt(plan, agent, operationOptions, doctrineRoot));
+  const agentReceipts = plan.agents.map(agent =>
+    persistedOrGeneratedReceipt(plan, agent, operationOptions, doctrineRoot));
   const routingBundle = {
     schema_version: "0.1",
     type: "AgentRoutingPreflightBundle",
@@ -682,7 +690,7 @@ function openWave(plan, options = {}) {
     const routed = agentReceipts[index];
     const validationCommands = unique(routed.receipt.validation_commands || []);
     const contextPack = {
-      schema_version: "0.1",
+      schema_version: "0.2",
       type: "AgentContextPack",
       id: `ACP-${safeIdPart(plan.wave_id)}-${safeIdPart(agent.agent_id)}`,
       mission_id: plan.mission_id,
@@ -695,6 +703,8 @@ function openWave(plan, options = {}) {
       plan_ref: planRef,
       routing_receipt_ref: routed.ref,
       routing_preflight_ref: preflightRef,
+      capability_query: routed.receipt.capability_query,
+      capability_routing: routed.receipt.capability_routing,
       doctrine_state: doctrineState,
       documents: unique(routed.receipt.recommended_documents.map(document => document.path))
         .map(relativePath => safeDoctrineDocument(doctrineRoot, relativePath)),

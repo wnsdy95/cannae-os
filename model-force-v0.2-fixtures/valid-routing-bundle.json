@@ -3,10 +3,14 @@
   "type": "AgentRoutingPreflightBundle",
   "mission_id": "MIS-ModelV2",
   "wave_id": "W1",
-  "expected_agents": ["command-agent", "execution-agent", "assurance-agent"],
+  "expected_agents": [
+    "command-agent",
+    "execution-agent",
+    "assurance-agent"
+  ],
   "receipts": [
     {
-      "schema_version": "0.1",
+      "schema_version": "0.2",
       "type": "RoutingReceipt",
       "id": "RR-W1-COS",
       "mission_id": "MIS-ModelV2",
@@ -19,15 +23,70 @@
       "authority_scope": "tasking",
       "routing_mode": "delegated_ai_role_department_authority",
       "router_query": "Open the model force v0.2 wave.",
-      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-ModelV2 --wave=W1 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking model-force-assignment .",
-      "matched_routes": [{ "id": "model-force-assignment", "score": 3 }],
-      "recommended_documents": [{ "path": "docs/model-force-assignment-policy.md", "exists": true }],
-      "route_inventory": { "routable_artifact_count": 373, "routed_artifact_count": 373, "unrouted_artifact_count": 0 },
-      "validation_commands": ["node run-model-force-v0.2-fixtures.js"],
-      "created_at": "2026-07-20T10:00:00+09:00"
+      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-ModelV2 --wave=W1 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking model-force-assignment \"--capability-query=Allocate model force v0.2 for the mission wave.\" .",
+      "matched_routes": [
+        {
+          "id": "model-force-assignment",
+          "score": 3
+        }
+      ],
+      "recommended_documents": [
+        {
+          "path": "docs/model-force-assignment-policy.md",
+          "exists": true
+        },
+        {
+          "path": "README.md",
+          "exists": true
+        },
+        {
+          "path": "docs/source-map.md",
+          "exists": true
+        }
+      ],
+      "route_inventory": {
+        "routable_artifact_count": 373,
+        "routed_artifact_count": 373,
+        "unrouted_artifact_count": 0
+      },
+      "validation_commands": [
+        "node run-model-force-v0.2-fixtures.js"
+      ],
+      "created_at": "2026-07-20T10:00:00+09:00",
+      "capability_query": "Allocate model force v0.2 for the mission wave.",
+      "capability_routing": {
+        "status": "covered",
+        "reason_code": "MATCHED_DOCTRINE_ROUTE",
+        "capability_scope": "Allocate model force v0.2 for the mission wave.",
+        "matched_capability_routes": [
+          "model-force-assignment"
+        ],
+        "provisional_organization": {
+          "required": false,
+          "organization_type": "existing_doctrine_route",
+          "organization_id": "none",
+          "name": "Existing doctrine route",
+          "task_organization_status": "not_required",
+          "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+          "authority_expansion_authorized": false,
+          "standing_department_activation_authorized": false,
+          "disband_condition": "Not applicable; no provisional organization was created."
+        },
+        "force_structure_review": {
+          "required": false,
+          "change_type": "none",
+          "target_kind": "none",
+          "status": "not_required",
+          "candidate_department_id": "none",
+          "candidate_department_name": "none",
+          "final_decision_authority": "USER",
+          "formal_approving_role": "COMMANDER"
+        },
+        "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+      }
     },
     {
-      "schema_version": "0.1",
+      "schema_version": "0.2",
       "type": "RoutingReceipt",
       "id": "RR-W1-command-agent",
       "mission_id": "MIS-ModelV2",
@@ -40,15 +99,70 @@
       "authority_scope": "scoped-execution",
       "routing_mode": "delegated_ai_role_department_authority",
       "router_query": "Route command-agent for mission analysis.",
-      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-ModelV2 --wave=W1 --agent=command-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution model-force-assignment .",
-      "matched_routes": [{ "id": "model-force-assignment", "score": 3 }],
-      "recommended_documents": [{ "path": "docs/model-force-assignment-policy.md", "exists": true }],
-      "route_inventory": { "routable_artifact_count": 373, "routed_artifact_count": 373, "unrouted_artifact_count": 0 },
-      "validation_commands": ["node run-model-force-v0.2-fixtures.js"],
-      "created_at": "2026-07-20T10:01:00+09:00"
+      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-ModelV2 --wave=W1 --agent=command-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution model-force-assignment \"--capability-query=Allocate model force v0.2 for the mission wave.\" .",
+      "matched_routes": [
+        {
+          "id": "model-force-assignment",
+          "score": 3
+        }
+      ],
+      "recommended_documents": [
+        {
+          "path": "docs/model-force-assignment-policy.md",
+          "exists": true
+        },
+        {
+          "path": "README.md",
+          "exists": true
+        },
+        {
+          "path": "docs/source-map.md",
+          "exists": true
+        }
+      ],
+      "route_inventory": {
+        "routable_artifact_count": 373,
+        "routed_artifact_count": 373,
+        "unrouted_artifact_count": 0
+      },
+      "validation_commands": [
+        "node run-model-force-v0.2-fixtures.js"
+      ],
+      "created_at": "2026-07-20T10:01:00+09:00",
+      "capability_query": "Allocate model force v0.2 for the mission wave.",
+      "capability_routing": {
+        "status": "covered",
+        "reason_code": "MATCHED_DOCTRINE_ROUTE",
+        "capability_scope": "Allocate model force v0.2 for the mission wave.",
+        "matched_capability_routes": [
+          "model-force-assignment"
+        ],
+        "provisional_organization": {
+          "required": false,
+          "organization_type": "existing_doctrine_route",
+          "organization_id": "none",
+          "name": "Existing doctrine route",
+          "task_organization_status": "not_required",
+          "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+          "authority_expansion_authorized": false,
+          "standing_department_activation_authorized": false,
+          "disband_condition": "Not applicable; no provisional organization was created."
+        },
+        "force_structure_review": {
+          "required": false,
+          "change_type": "none",
+          "target_kind": "none",
+          "status": "not_required",
+          "candidate_department_id": "none",
+          "candidate_department_name": "none",
+          "final_decision_authority": "USER",
+          "formal_approving_role": "COMMANDER"
+        },
+        "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+      }
     },
     {
-      "schema_version": "0.1",
+      "schema_version": "0.2",
       "type": "RoutingReceipt",
       "id": "RR-W1-execution-agent",
       "mission_id": "MIS-ModelV2",
@@ -61,15 +175,70 @@
       "authority_scope": "scoped-execution",
       "routing_mode": "delegated_ai_role_department_authority",
       "router_query": "Route execution-agent for code implementation.",
-      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-ModelV2 --wave=W1 --agent=execution-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution model-force-assignment .",
-      "matched_routes": [{ "id": "model-force-assignment", "score": 3 }],
-      "recommended_documents": [{ "path": "docs/model-force-assignment-policy.md", "exists": true }],
-      "route_inventory": { "routable_artifact_count": 373, "routed_artifact_count": 373, "unrouted_artifact_count": 0 },
-      "validation_commands": ["node run-model-force-v0.2-fixtures.js"],
-      "created_at": "2026-07-20T10:02:00+09:00"
+      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-ModelV2 --wave=W1 --agent=execution-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution model-force-assignment \"--capability-query=Allocate model force v0.2 for the mission wave.\" .",
+      "matched_routes": [
+        {
+          "id": "model-force-assignment",
+          "score": 3
+        }
+      ],
+      "recommended_documents": [
+        {
+          "path": "docs/model-force-assignment-policy.md",
+          "exists": true
+        },
+        {
+          "path": "README.md",
+          "exists": true
+        },
+        {
+          "path": "docs/source-map.md",
+          "exists": true
+        }
+      ],
+      "route_inventory": {
+        "routable_artifact_count": 373,
+        "routed_artifact_count": 373,
+        "unrouted_artifact_count": 0
+      },
+      "validation_commands": [
+        "node run-model-force-v0.2-fixtures.js"
+      ],
+      "created_at": "2026-07-20T10:02:00+09:00",
+      "capability_query": "Allocate model force v0.2 for the mission wave.",
+      "capability_routing": {
+        "status": "covered",
+        "reason_code": "MATCHED_DOCTRINE_ROUTE",
+        "capability_scope": "Allocate model force v0.2 for the mission wave.",
+        "matched_capability_routes": [
+          "model-force-assignment"
+        ],
+        "provisional_organization": {
+          "required": false,
+          "organization_type": "existing_doctrine_route",
+          "organization_id": "none",
+          "name": "Existing doctrine route",
+          "task_organization_status": "not_required",
+          "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+          "authority_expansion_authorized": false,
+          "standing_department_activation_authorized": false,
+          "disband_condition": "Not applicable; no provisional organization was created."
+        },
+        "force_structure_review": {
+          "required": false,
+          "change_type": "none",
+          "target_kind": "none",
+          "status": "not_required",
+          "candidate_department_id": "none",
+          "candidate_department_name": "none",
+          "final_decision_authority": "USER",
+          "formal_approving_role": "COMMANDER"
+        },
+        "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+      }
     },
     {
-      "schema_version": "0.1",
+      "schema_version": "0.2",
       "type": "RoutingReceipt",
       "id": "RR-W1-assurance-agent",
       "mission_id": "MIS-ModelV2",
@@ -82,12 +251,67 @@
       "authority_scope": "scoped-execution",
       "routing_mode": "delegated_ai_role_department_authority",
       "router_query": "Route assurance-agent for independent review.",
-      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-ModelV2 --wave=W1 --agent=assurance-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution model-force-assignment .",
-      "matched_routes": [{ "id": "model-force-assignment", "score": 3 }],
-      "recommended_documents": [{ "path": "docs/model-force-assignment-policy.md", "exists": true }],
-      "route_inventory": { "routable_artifact_count": 373, "routed_artifact_count": 373, "unrouted_artifact_count": 0 },
-      "validation_commands": ["node run-model-force-v0.2-fixtures.js"],
-      "created_at": "2026-07-20T10:03:00+09:00"
+      "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-ModelV2 --wave=W1 --agent=assurance-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution model-force-assignment \"--capability-query=Allocate model force v0.2 for the mission wave.\" .",
+      "matched_routes": [
+        {
+          "id": "model-force-assignment",
+          "score": 3
+        }
+      ],
+      "recommended_documents": [
+        {
+          "path": "docs/model-force-assignment-policy.md",
+          "exists": true
+        },
+        {
+          "path": "README.md",
+          "exists": true
+        },
+        {
+          "path": "docs/source-map.md",
+          "exists": true
+        }
+      ],
+      "route_inventory": {
+        "routable_artifact_count": 373,
+        "routed_artifact_count": 373,
+        "unrouted_artifact_count": 0
+      },
+      "validation_commands": [
+        "node run-model-force-v0.2-fixtures.js"
+      ],
+      "created_at": "2026-07-20T10:03:00+09:00",
+      "capability_query": "Allocate model force v0.2 for the mission wave.",
+      "capability_routing": {
+        "status": "covered",
+        "reason_code": "MATCHED_DOCTRINE_ROUTE",
+        "capability_scope": "Allocate model force v0.2 for the mission wave.",
+        "matched_capability_routes": [
+          "model-force-assignment"
+        ],
+        "provisional_organization": {
+          "required": false,
+          "organization_type": "existing_doctrine_route",
+          "organization_id": "none",
+          "name": "Existing doctrine route",
+          "task_organization_status": "not_required",
+          "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+          "authority_expansion_authorized": false,
+          "standing_department_activation_authorized": false,
+          "disband_condition": "Not applicable; no provisional organization was created."
+        },
+        "force_structure_review": {
+          "required": false,
+          "change_type": "none",
+          "target_kind": "none",
+          "status": "not_required",
+          "candidate_department_id": "none",
+          "candidate_department_name": "none",
+          "final_decision_authority": "USER",
+          "formal_approving_role": "COMMANDER"
+        },
+        "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+      }
     }
   ]
 }

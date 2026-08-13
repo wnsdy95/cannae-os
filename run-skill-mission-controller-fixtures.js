@@ -179,6 +179,7 @@ const artifactRoot = path.join(temporaryRoot, "artifacts");
 const repositoryA = initRepository(temporaryRoot, "alpha");
 const repositoryB = initRepository(temporaryRoot, "bravo");
 const repositoryC = initRepository(temporaryRoot, "charlie");
+const repositoryGap = initRepository(temporaryRoot, "capability-gap");
 const basePlan = readJson("sample-payloads/valid-mission-wave-plan.json");
 const fixtures = [];
 
@@ -260,6 +261,57 @@ fixture("context packs bind exact doctrine bytes, role, authority, and no releas
     assert(pack.documents.some(document => document.path === "docs/source-map.md"), "context pack should include source map");
     assert(pack.documents.every(document => /^[a-f0-9]{64}$/.test(document.sha256)), "documents must be digest-bound");
     assert(pack.authority.release_authorized === false && pack.authority.human_final_decision_authority === "USER", "context authority drifted");
+  }
+});
+
+fixture("unmatched mission capability creates one bounded cell across every agent context", () => {
+  const plan = wavePlan(basePlan, "WGAP");
+  plan.id = "MWP-CAPABILITY-GAP-WGAP";
+  plan.mission_id = "MIS-CAPABILITY-GAP";
+  plan.title = "Analyze an uncovered commercial capability";
+  plan.objective = "Analyze ICP and rank sales targets from the canonical track view.";
+  plan.adaptive_work.campaign_id = "SIC-CAPABILITY-GAP";
+  const result = openWave(plan, {
+    repository: repositoryGap,
+    artifactRoot,
+    doctrineRoot: ROOT,
+    now: FIXED_OPEN_TIME
+  });
+  assert(result.status === "ready", "capability-gap wave should remain operable through a provisional cell");
+  const bundle = loadArtifact(artifactRoot, result.routing_bundle_ref);
+  const organizationIds = new Set(bundle.receipts.map(receipt =>
+    receipt.capability_routing.provisional_organization.organization_id));
+  const departmentIds = new Set(bundle.receipts.map(receipt =>
+    receipt.capability_routing.force_structure_review.candidate_department_id));
+  assert(bundle.receipts.every(receipt => receipt.capability_query === plan.objective),
+    "every receipt must bind the exact mission capability query");
+  assert(bundle.receipts.every(receipt => receipt.capability_routing.status === "gap_detected"),
+    "every receipt must retain the mission-level capability gap");
+  assert(organizationIds.size === 1 && !organizationIds.has("none"),
+    "wave and agents must share one provisional capability cell");
+  assert(departmentIds.size === 1 && !departmentIds.has("none"),
+    "wave and agents must share one standing-department candidate");
+  assert(bundle.receipts.every(receipt =>
+    receipt.matched_routes.some(route => route.id === "force-structure") &&
+    receipt.validation_commands.includes("node run-force-structure-change-fixtures.js")),
+  "every capability-gap receipt must carry the force-structure route and control");
+
+  for (const item of result.context_packs) {
+    const context = loadArtifact(artifactRoot, item.context_pack_ref);
+    assert(validatePayload(context, "agent-context-pack").valid,
+      "capability-gap context pack should validate");
+    assert(context.schema_version === "0.2" && context.capability_query === plan.objective,
+      "context pack must retain the v0.2 mission capability contract");
+    assert(context.capability_routing.provisional_organization.organization_id === [...organizationIds][0],
+      "context pack changed the provisional organization");
+    assert(context.documents.some(document => document.path === "docs/force-structure-change-policy.md"),
+      "context pack must carry force-structure doctrine");
+    assert(context.required_controls.some(control =>
+      control.command === "node run-force-structure-change-fixtures.js"),
+    "context pack must compile force-structure validation as a mandatory control");
+    assert(context.capability_routing.provisional_organization.authority_expansion_authorized === false &&
+      context.capability_routing.provisional_organization.standing_department_activation_authorized === false,
+    "provisional organization must not expand authority or self-activate a standing department");
   }
 });
 

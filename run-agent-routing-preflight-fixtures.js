@@ -28,13 +28,32 @@ const fixtures = [
     file: "agent-routing-preflight-fixtures/stale-wave-routing-bundle.json",
     expectedStatus: "blocked",
     expectedBlocks: ["chief-of-staff: wave_id does not match preflight bundle."]
+  },
+  {
+    name: "partial capability gap inheritance blocks wave",
+    file: "agent-routing-preflight-fixtures/partial-capability-gap-routing-bundle.json",
+    expectedStatus: "blocked",
+    expectedBlocks: ["Capability-gap routing must apply one mission-scoped provisional organization to the wave and every expected agent."]
+  },
+  {
+    name: "mixed covered capability decisions block wave",
+    file: "agent-routing-preflight-fixtures/valid-wave-routing-bundle.json",
+    mutate(bundle) {
+      const receipt = bundle.receipts.find(item => item.wave_scope === "agent");
+      receipt.capability_routing.matched_capability_routes = ["orders"];
+      receipt.matched_routes.push({ id: "orders", score: 1 });
+    },
+    expectedStatus: "blocked",
+    expectedBlocks: ["Wave and agent receipts must share one mission capability query and routing decision."]
   }
 ];
 
 let passed = 0;
 for (const fixture of fixtures) {
   try {
-    const projection = analyzeRoutingPreflight(readJson(fixture.file));
+    const bundle = JSON.parse(JSON.stringify(readJson(fixture.file)));
+    if (fixture.mutate) fixture.mutate(bundle);
+    const projection = analyzeRoutingPreflight(bundle);
     assert.strictEqual(projection.status, fixture.expectedStatus);
     for (const expectedBlock of fixture.expectedBlocks) {
       assert(

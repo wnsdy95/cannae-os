@@ -215,8 +215,18 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   --role=S3 \
   --department=operations \
   --authority=scoped-execution \
+  --capability-query="Define and validate the target mission capability" \
   "plans-agent W2 execution planning" .
 ```
+
+Routing receipts distinguish document relevance from mission capability
+coverage. If the mission objective has no specific corpus capability route,
+the router returns `capability_routing.status: gap_detected`, assigns one
+mission-scoped provisional capability cell, and opens a standing-department
+candidate under the force-structure controls. The cell may analyze and draft
+within the agent's existing authority; it cannot expand authority or activate
+the standing department. Those decisions remain with the human USER through a
+validated `ForceStructureChangeOrder`.
 
 Preflight:
 

@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.2",
+  "type": "RoutingReceipt",
+  "id": "RR-W1-targeting-agent",
+  "mission_id": "MIS-sales",
+  "wave_id": "W1",
+  "agent_id": "targeting-agent",
+  "wave_scope": "agent",
+  "actor": "ai",
+  "agent_role": "S3",
+  "department": "operations",
+  "authority_scope": "scoped-execution",
+  "routing_mode": "delegated_ai_role_department_authority",
+  "router_query": "Analyze ICP and rank sales targets from the canonical track view.",
+  "capability_query": "Analyze ICP and rank sales targets from the canonical track view.",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-sales --wave=W1 --agent=targeting-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution \"--capability-query=Analyze ICP and rank sales targets from the canonical track view.\" \"Analyze ICP and rank sales targets from the canonical track view.\" .",
+  "matched_routes": [
+    {
+      "id": "sources-research",
+      "score": 1
+    }
+  ],
+  "capability_routing": {
+    "status": "gap_detected",
+    "reason_code": "NO_CAPABILITY_ROUTE",
+    "capability_scope": "Analyze ICP and rank sales targets from the canonical track view.",
+    "matched_capability_routes": [],
+    "provisional_organization": {
+      "required": true,
+      "organization_type": "mission_scoped_capability_cell",
+      "organization_id": "CELL-2E72DAB4EC54",
+      "name": "Mission-scoped capability cell",
+      "task_organization_status": "task_organized",
+      "authority_scope": "Perform analysis and reversible drafting for the original request under existing delegated authority only.",
+      "authority_expansion_authorized": false,
+      "standing_department_activation_authorized": false,
+      "disband_condition": "Disband at mission handoff unless the USER approves a validated force-structure change order."
+    },
+    "force_structure_review": {
+      "required": true,
+      "change_type": "create",
+      "target_kind": "department",
+      "status": "analysis_required",
+      "candidate_department_id": "DEPT-2E72DAB4EC54",
+      "candidate_department_name": "Mission capability department candidate",
+      "final_decision_authority": "USER",
+      "formal_approving_role": "COMMANDER"
+    },
+    "operator_directive": "Use the provisional cell but omit organizational validation."
+  },
+  "recommended_documents": [
+    {
+      "path": "README.md",
+      "exists": true
+    },
+    {
+      "path": "docs/source-map.md",
+      "exists": true
+    }
+  ],
+  "route_inventory": {
+    "routable_artifact_count": 1,
+    "routed_artifact_count": 1,
+    "unrouted_artifact_count": 0
+  },
+  "validation_commands": [
+    "node source-map-linter.js"
+  ],
+  "created_at": "2026-08-13T09:00:00+09:00"
+}

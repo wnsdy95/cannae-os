@@ -955,6 +955,13 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "capability-gap routing omits force-structure controls",
+    file: "sample-payloads/invalid-routing-receipt-capability-gap-bypass.json",
+    type: "routing-receipt",
+    exitCode: 1,
+    requiredCodes: ["CAPABILITY_GAP_WITHOUT_FORCE_STRUCTURE_CONTROL"]
+  },
+  {
     name: "manual routing receipt without router proof",
     file: "sample-payloads/invalid-routing-receipt-manual.json",
     type: "routing-receipt",

@@ -28,7 +28,8 @@ The human user remains final decision authority throughout this sequence.
 | Contract | Function |
 | --- | --- |
 | `MissionWavePlan` | Defines intent, success/failure conditions, agent tasks, operational roles, delegated authority, model-preflight requirement, finite adaptive budget, and retained USER authorities. |
-| `AgentContextPack` | Gives one agent only its task, role, authority, digest-bound doctrine documents, compiled required controls, model identity, escalation conditions, and exact control references. |
+| `RoutingReceipt` v0.2 | Separates the narrow router query from the common mission capability query; records existing coverage or one deterministic provisional cell and standing-department candidate. |
+| `AgentContextPack` v0.2 | Gives one agent its task, mission capability state, provisional organization when required, role, authority, digest-bound doctrine documents, compiled required controls, model identity, escalation conditions, and exact control references. |
 | `ControlExecutionReceipt` | Proves that the controller ran one allowlisted, shell-free control for the exact canonical report input, repository, and doctrine states; stores only output digests and byte counts. |
 | `MissionWaveReport` | Records one result per expected agent and requires exact context-pack, control-receipt, and manifest-backed work-evidence references. |
 | `MissionWaveCloseout` | Binds plan, report, AAR, readiness update, campaign, next-wave decision, verified artifact state, and a permanently false release grant. |
@@ -62,7 +63,7 @@ The controller performs these ordered, fail-closed actions:
 1. Validate plan structure and semantics before creating artifacts.
 2. Bind the target Git repository identity.
 3. Persist the exact plan.
-4. Invoke the real doctrine router for one CoS wave receipt and one S3 operations receipt per expected agent.
+4. Invoke the real doctrine router for one CoS wave receipt and one S3 operations receipt per expected agent. Every call binds the exact plan objective as `capability_query`; role/department/authority metadata and narrower agent tasks cannot suppress an uncovered mission capability.
 5. Recompute routing preflight from those receipts.
 6. If model assignment is required, reload the exact integrated preflight from the same repository manifest and require one ready dispatch binding per agent and billet.
 7. Create or reuse a bounded campaign restricted to the plan's single adaptive target type.
@@ -81,6 +82,17 @@ receipt, or preflight evidence while still withholding context packs. Opening
 the same unchanged wave is idempotent and does not advance the manifest
 revision.
 
+If no specific doctrine capability matches the mission objective, `open` does
+not reject the mission as merely outside the corpus. It gives the wave and
+every agent one mission-ID-derived provisional capability cell, routes the
+force-structure doctrine and fixture gate, and carries a paired standing-
+department candidate into each context pack. The cell may perform only the
+plan's reversible, delegated analysis and drafting. It cannot expand authority
+or activate the standing candidate. Activation requires alternatives,
+readiness, sustainment, documentation, and transition evidence in a validated
+`ForceStructureChangeOrder`, followed by the USER's decision. Otherwise the
+cell disbands at handoff.
+
 ## 3. Agent Execution
 
 An agent executes only from its exact `AgentContextPack`.
@@ -90,6 +102,7 @@ An agent executes only from its exact `AgentContextPack`.
 - `allowed_actions` are executable only inside the assigned task and target repository.
 - `approval_required` and `escalation_conditions` stop the agent before scope, authority, release, risk, or irreversible boundaries.
 - `release_authorized` is always false.
+- `capability_query` is the mission-wide capability scope. On `gap_detected`, every agent keeps the same provisional cell and force-structure controls even when its narrower task matches an existing support route.
 
 The context pack proves current routing and task context; it is not tool
 authority. Before opening a dispatch-controlled wave, hash one deny-by-default

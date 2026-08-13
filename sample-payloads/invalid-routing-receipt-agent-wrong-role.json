@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "type": "RoutingReceipt",
   "id": "RR-W2-research-agent",
   "mission_id": "MIS-routing",
@@ -12,13 +12,42 @@
   "authority_scope": "source-verification",
   "routing_mode": "delegated_ai_role_department_authority",
   "router_query": "research-agent W2 document routing",
-  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=research-agent --actor=ai --role=S2 --department=research --authority=source-verification \"research-agent W2 document routing\" .",
+  "capability_query": "research-agent W2 document routing",
+  "router_command": "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-routing --wave=W2 --agent=research-agent --actor=ai --role=S2 --department=research --authority=source-verification \"--capability-query=research-agent W2 document routing\" \"research-agent W2 document routing\" .",
   "matched_routes": [
     {
       "id": "sources-research",
       "score": 2
     }
   ],
+  "capability_routing": {
+    "status": "covered",
+    "reason_code": "MATCHED_DOCTRINE_ROUTE",
+    "capability_scope": "research-agent W2 document routing",
+    "matched_capability_routes": ["sources-research"],
+    "provisional_organization": {
+      "required": false,
+      "organization_type": "existing_doctrine_route",
+      "organization_id": "none",
+      "name": "Existing doctrine route",
+      "task_organization_status": "not_required",
+      "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+      "authority_expansion_authorized": false,
+      "standing_department_activation_authorized": false,
+      "disband_condition": "Not applicable; no provisional organization was created."
+    },
+    "force_structure_review": {
+      "required": false,
+      "change_type": "none",
+      "target_kind": "none",
+      "status": "not_required",
+      "candidate_department_id": "none",
+      "candidate_department_name": "none",
+      "final_decision_authority": "USER",
+      "formal_approving_role": "COMMANDER"
+    },
+    "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+  },
   "recommended_documents": [
     {
       "path": "docs/source-reliability-rubric.md",
