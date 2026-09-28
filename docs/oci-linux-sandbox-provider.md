@@ -164,7 +164,8 @@ may exist, and outbound connect must fail.
 11. Recheck repository, image, profile, and exact create argv.
 12. Create, inspect, start, wait, and inspect the container without a shell.
 13. Retain and validate the probe observation.
-14. Remove the container and verify that inspection now fails.
+14. Remove the container and positively verify its absence with a successful
+    all-states, full-ID Docker listing filtered by its exact ID or retained name.
 15. Sign and retain the execution observation.
 16. Submit the exact evidence chain to the gateway.
 17. Let the gateway independently reload and verify the bundle before dispatch
@@ -219,6 +220,26 @@ Claude Code uses the equivalent wrapper under
 The envelope is the no-rerun marker. Once retained, retry may return an existing
 terminal state or perform containment cleanup, but it cannot invoke the target
 again.
+
+Removal verification uses `docker container ls --all --no-trunc` with JSON
+rows. Docker's name filter matches substrings, so the provider validates every
+returned row and compares exact names; similarly named containers are neither
+removed nor mistaken for the target. Failed commands, signals, stderr,
+malformed or ambiguous rows, and a remaining exact target cannot prove absence.
+A failed `inspect` is not absence evidence: the daemon or socket may be
+unavailable. This is the provider's fail-closed policy, not a Docker exit-code
+guarantee.
+
+Keep the same trusted Docker daemon/context during execution and containment.
+The reference provider does not independently attest daemon identity; switching
+to an empty daemon is not reconciliation. After a valid cleanup retry,
+`provider_failure` may clear, but `recovery_required`, the original envelope,
+and the CLI's nonzero exit remain. No new execution observation is synthesized.
+Gateway effect settlement and campaign restart remain separate work.
+
+Adapter changes alter the measured adapter digest. Remeasure it and obtain a
+new exact USER-authorized execution policy for future work; never rewrite old
+policies, envelopes, or signed observations to fit the new code.
 
 ## 9. Production Composition
 
@@ -295,18 +316,28 @@ image without network access, executes live Docker containers, and tests:
 - post-create interruption, cleanup, and no-rerun recovery;
 - recovery replay with unavailable cleanup, explicit failure reporting, and
   later containment retry;
+- real unavailable-daemon recovery, permission/signal/diagnostic failures,
+  malformed or ambiguous listings, remaining targets, and exact-name handling;
+- post-execution cleanup-verification failure without a committed observation;
+- both provider CLI wrappers retaining nonzero recovery exit after containment;
 - post-container interruption, cleanup, and no-rerun recovery.
 
 When Docker or Go is unavailable, local runs report explicit skips. Repository
 CI sets `CANNAE_REQUIRE_LIVE_OCI=1`, so a missing live runtime fails validation.
 Such a skip is not evidence that the provider works on that host.
 
-## 11. Primary Sources
+## 12. Primary Sources
 
 - OCI Runtime Specification, Linux configuration:
   <https://github.com/opencontainers/runtime-spec/blob/main/config-linux.md>
 - Docker container create:
   <https://docs.docker.com/reference/cli/docker/container/create/>
+- Docker container listing, filters, and JSON formatting:
+  <https://docs.docker.com/reference/cli/docker/container/ls/>
+- Docker container inspection:
+  <https://docs.docker.com/reference/cli/docker/container/inspect/>
+- Docker container removal:
+  <https://docs.docker.com/reference/cli/docker/container/rm/>
 - Docker seccomp:
   <https://docs.docker.com/engine/security/seccomp/>
 - Docker `none` network:

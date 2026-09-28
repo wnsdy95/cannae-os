@@ -326,6 +326,13 @@ whether an external effect occurred, so it blocks the lease and writes
 `recovery_required`. A human-led reconciliation must inspect the external
 system and repository before any new lease is issued.
 
+OCI containment requires a successful all-states Docker listing that excludes
+the exact retained container ID or name. A failed inspect, unavailable daemon,
+or malformed listing leaves cleanup unverified. Even a verified retry cannot
+turn `recovery_required` into a committed execution or rerun the target; both
+skill wrappers retain a nonzero exit. Keep the original trusted daemon/context
+and read `oci-linux-sandbox-provider.md` for the reference trust boundary.
+
 ### 6.6 Inspect
 
 ```bash

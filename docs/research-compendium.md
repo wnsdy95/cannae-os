@@ -4126,12 +4126,26 @@ image identity, or provider self-report with direct enforcement evidence?
     provider code, and evidence key.
 13. Cleanup is part of the result, not housekeeping.
     A terminal observation is signed only after the container has exited, was
-    force-removed, and a subsequent inspect fails. If cleanup cannot be
-    verified, the transaction cannot commit.
+    force-removed, and a successful all-states, full-ID Docker listing confirms
+    that the exact ID or retained name is absent. A failed inspect also occurs
+    when the daemon is unavailable; it cannot prove removal. Docker name
+    filters match substrings, so returned rows require exact-name comparison.
+    Failed, malformed, diagnostic-bearing, or ambiguous results block commit.
+    This positive-evidence rule is a local policy inference from Docker's
+    [listing](https://docs.docker.com/reference/cli/docker/container/ls/),
+    [inspection](https://docs.docker.com/reference/cli/docker/container/inspect/),
+    and [removal](https://docs.docker.com/reference/cli/docker/container/rm/)
+    interfaces, not a documented nonzero-exit absence guarantee.
 14. Pre-create intent remains the no-rerun marker.
     Once the signed envelope exists, a crash may trigger containment cleanup
     and human reconciliation but never another create/start. This preserves
     Phase 17B2A's unknown-outcome safety across the larger container lifecycle.
+    A local live fixture reproduced the former false-absence result by using
+    an unavailable Docker socket while the original daemon retained the target.
+    Regression checks cover that failure, malformed listings, exact-name
+    matching, and both CLI wrappers. Verified containment still leaves
+    `recovery_required` and no new execution observation. Same-daemon trust,
+    gateway effect settlement, and campaign restart are not proved by cleanup.
 15. Image metadata does not prove the probe bytes.
     Image inspect binds the immutable local ID, architecture, entrypoint, and
     environment, but those fields do not prove that `/cannae-probe` equals the

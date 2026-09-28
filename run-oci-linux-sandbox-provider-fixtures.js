@@ -3,6 +3,7 @@
 const assert = require("assert");
 const crypto = require("crypto");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const {
@@ -366,7 +367,8 @@ function executorPolicy(
     providers: ["codex"],
     adapter_profile: {
       ...ociSandboxRuntimeMeasurements({
-        probePath: liveRuntime.probePath
+        probePath: liveRuntime.probePath,
+        dockerPath: overrides.dockerPath
       }),
       signing_key_id: keys.keyId,
       signing_algorithm: "ed25519",
@@ -652,6 +654,56 @@ async function execute(setup, overrides = {}) {
   });
 }
 
+function dockerFailureProxy(name, config) {
+  const executable = path.join(temporaryRoot, `docker-${name}.js`);
+  const trace = `${executable}.trace`;
+  const marker = `${executable}.removed`;
+  fs.writeFileSync(executable, `#!${process.execPath}
+const fs = require("fs");
+const { spawnSync } = require("child_process");
+const config = ${JSON.stringify(config)};
+const trace = ${JSON.stringify(trace)};
+const marker = ${JSON.stringify(marker)};
+const args = process.argv.slice(2);
+fs.appendFileSync(trace, JSON.stringify(args) + "\\n");
+function docker(argv) {
+  const result = spawnSync("docker", argv, { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+  if (result.error) throw result.error;
+  return result;
+}
+function emit(result) {
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  process.exit(result.status === null ? 2 : result.status);
+}
+const removing = args[0] === "container" && args[1] === "rm";
+const inspecting = args[0] === "container" && args[1] === "inspect";
+const listing = args[0] === "container" && args[1] === "ls";
+if (config.afterWorkloadRemoval && removing) {
+  const before = docker(["container", "inspect", args[args.length - 1]]);
+  const result = docker(args);
+  if (before.status === 0 && result.status === 0) {
+    const row = JSON.parse(before.stdout)[0];
+    if (/^\\/cannae-[a-f0-9]{24}$/.test(row.Name)) {
+      fs.writeFileSync(marker, JSON.stringify({ id: row.Id, name: row.Name.slice(1) }));
+    }
+  }
+  emit(result);
+}
+const removed = fs.existsSync(marker) ? JSON.parse(fs.readFileSync(marker, "utf8")) : null;
+const inject = !config.afterWorkloadRemoval || (removed && args.some(arg =>
+  [removed.id, removed.name, "id=" + removed.id, "name=" + removed.name].includes(arg)));
+if (!config.afterWorkloadRemoval && removing) emit({ status: 0 });
+if (inject && inspecting) emit({ status: 1, stderr: "synthetic lookup failure\\n" });
+if (inject && listing) {
+  if (config.signal) process.kill(process.pid, "SIGTERM");
+  else emit(config.response);
+} else emit(docker(args));
+`);
+  fs.chmodSync(executable, 0o755);
+  return { executable, trace };
+}
+
 const fixtures = [];
 
 function fixture(name, fn, requiresLive = true) {
@@ -670,7 +722,7 @@ fixture(
 );
 
 fixture(
-  "Codex and Claude OCI sandbox wrappers resolve the same runtime",
+  "Codex and Claude OCI wrappers resolve runtime and route cleanup failures",
   async () => {
     for (const wrapper of [
       "codex-skills/controls-doctrine-operator/scripts/operate_oci_sandbox.js",
@@ -680,6 +732,18 @@ fixture(
         require(path.join(ROOT, wrapper)).findRuntimeRoot(),
         ROOT
       );
+      for (const query of ["cleanup failure", "daemon unavailable", "container absence"]) {
+        const routed = spawnSync(process.execPath, [
+          path.join(ROOT, path.dirname(wrapper), "route_controls_docs.js"),
+          "--actor=user", query, ROOT
+        ], { cwd: os.tmpdir(), encoding: "utf8" });
+        assert.strictEqual(routed.status, 0, routed.stderr);
+        const route = JSON.parse(routed.stdout);
+        assert(route.recommended_documents.some(doc =>
+          doc.path === "docs/oci-linux-sandbox-provider.md"));
+        assert(route.validation_commands.includes(
+          "node run-oci-linux-sandbox-provider-fixtures.js"));
+      }
     }
   },
   false
@@ -956,6 +1020,151 @@ fixture("recovery replay reports cleanup failure and retries containment", async
       ["container", "rm", "--force", containerName],
       { allowFailure: true }
     );
+  }
+});
+
+fixture("an unavailable daemon cannot turn recovery cleanup into verified absence", async () => {
+  const setup = setupScenario(
+    "CLEANUP-DAEMON-UNAVAILABLE",
+    sandboxRule("CLEANUP-DAEMON-UNAVAILABLE", ["workload", "success"])
+  );
+  const interrupted = await execute(setup, { faultInjectionStage: "after_create" });
+  assert.strictEqual(interrupted.state, "recovery_required");
+  const envelope = loadArtifact(interrupted.execution_envelope_ref);
+  const containerName = envelope.launch.container_name;
+  run("docker", ["container", "create", "--name", containerName,
+    "--pull", "never", liveRuntime.imageId, "workload", "sleep"]);
+  const previous = Object.fromEntries(["DOCKER_HOST", "DOCKER_CONTEXT", "DOCKER_TLS_VERIFY", "DOCKER_CERT_PATH"]
+    .map(key => [key, process.env[key]]));
+  try {
+    let unavailable;
+    try {
+      delete process.env.DOCKER_CONTEXT;
+      delete process.env.DOCKER_TLS_VERIFY;
+      delete process.env.DOCKER_CERT_PATH;
+      process.env.DOCKER_HOST = `unix://${path.join(temporaryRoot, "missing-docker.sock")}`;
+      unavailable = await execute(setup);
+    } finally {
+      for (const [key, value] of Object.entries(previous)) {
+        if (value === undefined) delete process.env[key];
+        else process.env[key] = value;
+      }
+    }
+    assert.strictEqual(run("docker", ["container", "inspect", containerName], { allowFailure: true }).status, 0,
+      "the original daemon must still contain the unremoved fixture container");
+    assert.strictEqual(unavailable.state, "recovery_required");
+    assert.strictEqual(unavailable.replayed, true);
+    assert.match(unavailable.provider_failure || "", /OCI_SANDBOX_CONTAINER_CLEANUP_/,
+      "daemon connection failure must remain an explicit cleanup failure");
+    const retry = await execute(setup);
+    assert.strictEqual(retry.state, "recovery_required");
+    assert.strictEqual(retry.replayed, true);
+    assert.strictEqual(retry.provider_failure, undefined);
+    assert.deepStrictEqual(retry.execution_envelope_ref, interrupted.execution_envelope_ref);
+    assert.strictEqual(retry.execution_observation_ref, null, "cleanup must not manufacture execution evidence");
+  } finally {
+    run("docker", ["container", "rm", "--force", containerName], { allowFailure: true });
+  }
+});
+
+fixture("recovery rejects failed, signaled, malformed and still-present cleanup observations", async () => {
+  const setup = setupScenario("CLEANUP-OBSERVATIONS", sandboxRule("CLEANUP-OBSERVATIONS", ["workload", "success"]));
+  const interrupted = await execute(setup, { faultInjectionStage: "after_create" });
+  assert.strictEqual(interrupted.state, "recovery_required");
+  const container = loadArtifact(interrupted.execution_envelope_ref).launch.container_name;
+  const id = run("docker", ["container", "create", "--name", container,
+    "--pull", "never", liveRuntime.imageId, "workload", "sleep"]).stdout.trim();
+  const row = { ID: id, Names: container };
+  const cases = [
+    ["permission", { status: 1, stderr: "permission denied\n" }],
+    ["diagnostic", { status: 0, stderr: "incomplete listing\n" }],
+    ["invalid-json", { status: 0, stdout: "not JSON\n" }],
+    ["array", { status: 0, stdout: "[]\n" }],
+    ["missing-fields", { status: 0, stdout: "{}\n" }],
+    ["invalid-id-type", { status: 0, stdout: JSON.stringify({ ...row, ID: [id], Names: `${container}-other` }) }],
+    ["truncated-id", { status: 0, stdout: JSON.stringify({ ...row, ID: id.slice(0, 12) }) }],
+    ["invalid-names", { status: 0, stdout: JSON.stringify({ ...row, Names: `/${container}` }) }],
+    ["unbound-row", { status: 0, stdout: JSON.stringify({ ...row, Names: "another-container" }) }],
+    ["duplicate-row", { status: 0, stdout: Array(2).fill(JSON.stringify({ ...row, Names: `${container}-other` })).join("\n") }],
+    ["present", { status: 0, stdout: JSON.stringify(row) }],
+    ["signaled", { status: 0 }]
+  ];
+  try {
+    for (const [name, response] of cases) {
+      const proxy = dockerFailureProxy(name, { response, signal: name === "signaled" });
+      const result = await execute(setup, { dockerPath: proxy.executable });
+      assert.strictEqual(result.state, "recovery_required", name);
+      assert.strictEqual(result.replayed, true, name);
+      assert.match(result.provider_failure || "", /OCI_SANDBOX_CONTAINER_CLEANUP_ERROR/, name);
+      assert.deepStrictEqual(result.execution_envelope_ref, interrupted.execution_envelope_ref, name);
+      assert.strictEqual(result.execution_observation_ref, null, name);
+      const calls = fs.readFileSync(proxy.trace, "utf8").trim().split("\n").map(line => JSON.parse(line));
+      assert(calls.every(args => args[0] === "container" && ["rm", "ls"].includes(args[1])),
+        `${name}: recovery invoked a non-cleanup operation`);
+      assert.deepStrictEqual(calls.find(args => args[1] === "ls"),
+        ["container", "ls", "--all", "--no-trunc", "--filter", `name=${container}`, "--format", "{{json .}}"]);
+    }
+    assert.strictEqual(run("docker", ["container", "inspect", id]).status, 0);
+    const retry = await execute(setup);
+    assert.strictEqual(retry.state, "recovery_required");
+    assert.strictEqual(retry.provider_failure, undefined);
+    const privateKey = path.join(temporaryRoot, "cleanup-wrapper-key.pem");
+    fs.writeFileSync(privateKey, setup.keys.privateKeyPem, { mode: 0o600 });
+    const input = path.join(temporaryRoot, "cleanup-wrapper-input.json");
+    fs.writeFileSync(input, JSON.stringify(setup.toolInput));
+    for (const root of ["codex-skills/controls-doctrine-operator", ".claude/skills/controls-doctrine-operator"]) {
+      const result = run(process.execPath, [path.join(ROOT, root, "scripts/operate_oci_sandbox.js"), "execute",
+        "--repository", setup.repository, "--artifact-root", artifactRoot, "--transaction", setup.transactionId,
+        "--tool-input", input, "--private-key", privateKey, "--probe", liveRuntime.probePath,
+        "--gateway-binding-sha256", setup.gatewayOptions.gatewayBindingSha256,
+        "--verified-principal-sha256", setup.gatewayOptions.verifiedPrincipalSha256], { allowFailure: true });
+      assert.strictEqual(result.status, 1, "verified cleanup must not turn recovery into CLI success");
+      const output = JSON.parse(result.stdout);
+      assert.strictEqual(output.state, "recovery_required");
+      assert.strictEqual(output.provider_failure, undefined);
+      assert.strictEqual(output.release_authorized, false);
+    }
+  } finally {
+    run("docker", ["container", "rm", "--force", id], { allowFailure: true });
+  }
+});
+
+fixture("cleanup failure after real target execution cannot produce a committed observation", async () => {
+  const proxy = dockerFailureProxy("post-removal", {
+    afterWorkloadRemoval: true,
+    response: { status: 1, stderr: "synthetic daemon failure after removal\n" }
+  });
+  const setup = setupScenario("CLEANUP-AFTER-EXECUTION", sandboxRule("CLEANUP-AFTER-EXECUTION", ["workload", "success"]),
+    { dockerPath: proxy.executable });
+  const result = await execute(setup, { dockerPath: proxy.executable });
+  assert.strictEqual(result.state, "recovery_required", "unverified cleanup committed a real execution result");
+  assert.match(result.provider_failure, /Docker cleanup absence verification failed/);
+  assert.strictEqual(result.execution_observation_ref, undefined);
+  const status = transactionStatus(setup);
+  assert.strictEqual(status.state, "recovery_required");
+  const retry = await execute(setup);
+  assert.strictEqual(retry.state, "recovery_required");
+  assert.strictEqual(retry.provider_failure, undefined);
+  assert.strictEqual(retry.execution_observation_ref, null);
+  const calls = fs.readFileSync(proxy.trace, "utf8").trim().split("\n").map(line => JSON.parse(line));
+  assert.strictEqual(calls.filter(args => args[0] === "container" && args[1] === "start").length, 1);
+});
+
+fixture("cleanup uses exact names and preserves a similarly named stopped container", async () => {
+  const setup = setupScenario("CLEANUP-NAME-MATCH", sandboxRule("CLEANUP-NAME-MATCH", ["workload", "success"]));
+  const interrupted = await execute(setup, { faultInjectionStage: "after_create" });
+  const name = loadArtifact(interrupted.execution_envelope_ref).launch.container_name;
+  const similarName = `${name}-other`;
+  const id = run("docker", ["container", "create", "--name", similarName,
+    "--pull", "never", liveRuntime.imageId, "workload", "sleep"]).stdout.trim();
+  try {
+    const retry = await execute(setup);
+    assert.strictEqual(retry.state, "recovery_required");
+    assert.strictEqual(retry.provider_failure, undefined, "substring matches must not stand in for the exact target");
+    assert.strictEqual(run("docker", ["container", "inspect", id]).status, 0,
+      "cleanup touched a different container");
+  } finally {
+    run("docker", ["container", "rm", "--force", id], { allowFailure: true });
   }
 });
 

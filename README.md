@@ -342,6 +342,9 @@ digest-pinned seccomp, non-root UID/GID, all capabilities dropped,
 `no_new_privs`, private namespaces, read-only root and repository mounts,
 cgroup v2 limits, and measured external IP egress denial. A static probe directly measures
 the corresponding `/proc`, mount, cgroup, address, route, and connection state.
+Cleanup requires a successful all-states listing excluding the exact container;
+a failed inspect or unavailable daemon is not evidence of absence. A containment
+retry never reruns the target or converts `recovery_required` into success.
 
 Phase 17B2B alone remains reference execution and keeps production execution
 false. Phase 17B2C1 raises `production_execution_authorized` only for a
@@ -632,7 +635,7 @@ Important examples:
 - `run-dispatch-runtime-fixtures.js`: plan-digest policy authorization, concurrent one-lineage issuance, ordered cross-agent repository handoff, exact tool admission and post-tool correlation, serial result checkpoints, replay, drift, interruption, same-session resume, revocation, expiry, retained-action, malformed-hook, cross-session, cross-agent, and cross-repository gates.
 - `run-protected-tool-gateway-fixtures.js`: trusted principal/gateway binding, exact transaction/idempotency admission, execution-token commit, raw-input non-retention, operation-class substitution, cancellation, orphan-admission revocation, and unknown-outcome recovery.
 - `run-protected-process-executor-fixtures.js`: real exact executable/argv execution, signed policy/envelope/observation binding, caller-result, shebang, and executable-drift rejection, timeout recording, forbidden repository-effect rejection, and no automatic rerun after an execution claim.
-- `run-oci-linux-sandbox-provider-fixtures.js`: required-in-CI live probe compilation and scratch-image execution, signed pre-create/post-cleanup evidence, Docker and kernel control measurement, caller-result, profile/image/probe substitution rejection, timeout, post-create/post-container cleanup, and no-rerun recovery.
+- `run-oci-linux-sandbox-provider-fixtures.js`: required-in-CI live probe compilation and scratch-image execution, signed pre-create/post-cleanup evidence, Docker and kernel control measurement, caller-result, profile/image/probe substitution rejection, timeout, unavailable-daemon and malformed-listing cleanup rejection, exact-name containment, both CLI recovery exits, and no-rerun recovery.
 - `run-production-sandbox-admission-fixtures.js`: signed appraisal quorum, transitive failure-domain collapse, deployment agreement, exact OCI scope, foreign policy, expiry, tamper, and wrong-key rejection.
 - `run-production-sandbox-gateway-fixtures.js`: Codex/Claude wrapper resolution, live TLS identity, exact production admission, mandatory external coordination, foreign-repository handle rejection, recovery, v0.5 receipt projection, and release separation.
 - `run-repository-artifact-isolation-fixtures.js`: repository identity, namespace separation, file/JSON persistence, overwrite, and traversal gates.
