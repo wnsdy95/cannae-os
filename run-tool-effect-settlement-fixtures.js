@@ -194,6 +194,22 @@ for (const resource of scope.resources) {
   request.decision_ref = persist(decision, "decision-logs", decision.decided_at);
 
   check("review alone leaves unknown effects blocked", () => assert.strictEqual(runtime.dispatchStatus(options).leases[0].unresolved_tool_effects, 1));
+  for (const [name, mutate] of [
+    ["metadata", value => { value.mission_id = "MIS-FORGED"; value.reviewed_at = new Date(Date.parse(value.reviewed_at) + 1).toISOString(); }],
+    ["chronology", value => { value.reviewed_at = scope.created_at; }]
+  ]) {
+    check(`retained review ${name} must match its original projection`, () => {
+      const isolated = forkStore(`review-${name}`);
+      const forged = JSON.parse(fs.readFileSync(path.join(artifactRoot, reviewRef.relative_path), "utf8"));
+      mutate(forged);
+      const references = { scope_ref: forged.scope_ref, verification_plan_ref: forged.verification_plan_ref,
+        verification_receipt_ref: forged.verification_receipt_ref };
+      forged.id = `TER-${runtime.inputDigest({ references, at: forged.reviewed_at }).slice(0, 32)}`;
+      valid(forged, "tool-effect-review");
+      const reference = persist(forged, "tool-effect-reviews", forged.reviewed_at, isolated.artifactRoot);
+      assert.throws(() => settleToolEffects(isolated, { ...request, review_ref: reference }), /TOOL_EFFECT_REVIEW_PROJECTION_MISMATCH/);
+    });
+  }
   check("missing quorum blocks settlement", () => assert.throws(() => settleToolEffects(options, {
     ...request, attestation_refs: [attestationRefs[0]] }), /TOOL_EFFECT_ATTESTATION_INVALID/));
   check("wrong USER actor cannot clear effects", () => {
@@ -280,7 +296,7 @@ for (const resource of scope.resources) {
       beforePublication = null; fired = true;
       fs.appendFileSync(path.join(repository, "README.md"), "concurrent change\n");
     };
-    try { assert.throws(() => settleToolEffects(options, request), /TOOL_EFFECT_REVIEW_NOT_BOUND/); assert(fired); }
+    try { assert.throws(() => settleToolEffects(options, request), /TOOL_EFFECT_REVIEW_PROJECTION_MISMATCH/); assert(fired); }
     finally { beforePublication = null; fs.writeFileSync(path.join(repository, "README.md"), "synthetic settlement fixture\n"); }
   });
   let settled;

@@ -76,8 +76,11 @@ Those stronger requirements are never downgraded by this controller.
 
 ## Integrity And Replay
 
-The request's canonical digest determines the settlement ID. The checkpoint,
-USER decision, and cycle order are consumed once. Exact byte-equivalent canonical
+The request's canonical digest determines the settlement ID. The retained
+review metadata and original review-time projection must reproduce exactly;
+retaining the correct scope reference cannot excuse misleading review identity.
+The inspection campaign's elapsed deadline also bounds the admission window.
+The checkpoint, USER decision, and cycle order are consumed once. Exact byte-equivalent canonical
 request retries return the existing record only after validating all retained
 settlements. Different requests cannot reuse those inputs.
 

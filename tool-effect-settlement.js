@@ -44,6 +44,8 @@ function appraise(store, request, at, repositoryState) {
   const references = { scope_ref: review.scope_ref, verification_plan_ref: review.verification_plan_ref,
     verification_receipt_ref: review.verification_receipt_ref };
   const scope = load(store, review.scope_ref, "tool-effect-scopes", "tool-effect-scope", request);
+  const original = require("./tool-effect-review").inspectToolEffects({ now: review.reviewed_at }, references, context(store, repositoryState));
+  requireTrue(hash(original) === hash(review), "TOOL_EFFECT_REVIEW_PROJECTION_MISMATCH");
   const fresh = require("./tool-effect-review").inspectToolEffects({ now: at }, references, context(store, repositoryState));
   requireTrue(review.status === "evidence_bound" && fresh.status === "evidence_bound" &&
     review.scope_sha256 === fresh.scope_sha256 && Date.parse(review.reviewed_at) <= Date.parse(at),
@@ -93,7 +95,8 @@ function appraise(store, request, at, repositoryState) {
   const nativeProviderEvidence = new Map();
   const nativeTrustBundles = new Map();
   const attestations = [];
-  const deadlines = [scope.expires_at, admission.valid_until];
+  const deadlines = [scope.expires_at, admission.valid_until,
+    new Date(Date.parse(campaign.created_at) + campaign.budgets.max_elapsed_minutes * 60000).toISOString()];
   for (const reference of request.attestation_refs) {
     const attestation = load(store, reference, "verification-attestations", "verification-attestation");
     requireTrue(attestation.receipt_id === receipt.id && admission.receipt_quorum.verifier_ids.includes(attestation.verifier_id),

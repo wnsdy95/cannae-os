@@ -90,6 +90,8 @@ exact scope/checker judgement after the review and attestations. Generate the
 decision option with `scripts/settle_tool_effects.js decision-option`; this is
 not consent. Changing any request content except its final decision reference
 invalidates that option. Run `settle` only with the actual retained USER decision,
+and never hand-edit review metadata or timestamps while keeping its scope refs;
+the original controller projection must replay exactly. Then
 inspect status, and explicitly revoke the old blocked lease. Do not turn the
 failed agent into a success report or resume the stopped campaign under another
 ID. A gateway request without a decision is still a gateway obligation, not a
