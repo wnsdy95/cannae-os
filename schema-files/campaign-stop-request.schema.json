@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-stop-request.schema.json",
+  "title": "Campaign Stop Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "mission_id", "campaign_ref", "decision_ref", "reason"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignStopRequest" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_ref": { "$ref": "#/$defs/ref" },
+    "decision_ref": { "oneOf": [{ "$ref": "#/$defs/ref" }, { "$ref": "#/$defs/none" }] },
+    "reason": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "ref": {
+      "type": "object", "additionalProperties": false, "required": ["artifact_id", "relative_path", "sha256"],
+      "properties": {
+        "artifact_id": { "$ref": "common.schema.json#/$defs/id" },
+        "relative_path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "none": {
+      "type": "object", "additionalProperties": false, "required": ["artifact_id", "relative_path", "sha256"],
+      "properties": { "artifact_id": { "const": "none" }, "relative_path": { "const": "none" }, "sha256": { "const": "none" } }
+    }
+  }
+}

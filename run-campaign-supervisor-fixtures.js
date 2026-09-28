@@ -17,6 +17,7 @@ const { superviseCampaign } = require("./campaign-supervisor");
 const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const { publicKeyId } = require("./verification-attestation");
+const { stopCampaign, stopDecisionOption, campaignStopStatus } = require("./campaign-stop-controller");
 const { openWave, recordWave, closeWave } = require("./skill-mission-controller");
 const {
   admitToolRequest, authorizeDispatchPolicy, completeToolRequest,
@@ -310,7 +311,256 @@ function stopBeforePublication(environment, kind) {
   };
 }
 
+function stopGrant(environment, now, mutateDecision = () => {}) {
+  const request = { schema_version: "0.1", type: "CampaignStopRequest", mission_id: environment.campaign.mission_id,
+    campaign_ref: { artifact_id: environment.campaign.id, relative_path: environment.campaignWrite.relative_path, sha256: environment.campaignWrite.sha256 },
+    decision_ref: { artifact_id: "none", relative_path: "none", sha256: "none" }, reason: "Stop mission work and retain admitted results for settlement." };
+  const decision = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-decision-log.json"), "utf8"));
+  Object.assign(decision, { id: "DL-Stop-Fixture", mission_id: request.mission_id, decided_at: now,
+    decision_maker: "USER", decision_type: "scope", status: "complete", chosen_option: stopDecisionOption(request),
+    authority_basis: { basis_type: "retained_authority", reference: environment.campaign.id, summary: "Synthetic exact USER stop fixture." },
+    affected_artifacts: [request.campaign_ref.relative_path] });
+  decision.options_considered = [decision.chosen_option];
+  mutateDecision(decision);
+  const written = writeRepositoryArtifact({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+    missionId: environment.campaign.mission_id, waveId: "C0", kind: "decision-logs", artifactId: decision.id, payload: decision, createdAt: now });
+  request.decision_ref = { artifact_id: decision.id, relative_path: written.relative_path, sha256: written.sha256 };
+  return request;
+}
+
 try {
+  run("an exact USER stop needs no artificial checkpoint and stays held after expiry and later decisions", () => {
+    const environment = makeEnvironment("explicit-stop");
+    try {
+      const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:01:00Z" };
+      const request = stopGrant(environment, options.now);
+      const stopped = stopCampaign(request, options);
+      assert.strictEqual(stopped.record.settlement_complete, false);
+      assert.strictEqual(stopped.record.execution_completion_claimed, false);
+      assert.strictEqual(supervise(environment, options.now).execution_authorized, false);
+      assert(supervise(environment, "2026-07-21T09:00:00Z").blocking_codes.includes("CAMPAIGN_STOP_REQUESTED"));
+      assert.strictEqual(campaignStopStatus(options, request.mission_id).stop_refs.length, 1);
+      const decision = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-decision-log.json"), "utf8"));
+      Object.assign(decision, { id: "DL-Later", mission_id: request.mission_id, decided_at: "2026-07-21T09:02:00Z",
+        decision_maker: "USER", decision_type: "scope", affected_artifacts: [request.campaign_ref.relative_path] });
+      writeRepositoryArtifact({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+        missionId: request.mission_id, waveId: "C0", kind: "decision-logs", artifactId: decision.id, payload: decision, createdAt: decision.decided_at });
+      options.now = "2026-07-22T09:02:00Z";
+      const before = verifyRepositoryArtifacts({ repositoryPath: options.repository, artifactRoot: options.artifactRoot });
+      const reused = stopCampaign(request, options);
+      assert.strictEqual(reused.existing, true);
+      assert.deepStrictEqual(reused.record_ref, stopped.record_ref);
+      assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath: options.repository, artifactRoot: options.artifactRoot }).manifest_revision, before.manifest_revision);
+      assert(supervise(environment, options.now).blocking_codes.includes("CAMPAIGN_STOP_REQUESTED"));
+      assert.throws(() => stopCampaign({ ...request, reason: "Changed request" }, options), /CAMPAIGN_STOP_IMMUTABLE/);
+      assert.strictEqual(superviseCampaign({ repositoryPath: options.repository, artifactRoot: options.artifactRoot,
+        campaignId: environment.campaign.id, evaluatedAt: options.now }).history.checkpoints.length, 0);
+    } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  for (const failure of ["actor", "scope", "campaign", "reason", "stale", "future", "missing", "mission", "repository"]) {
+    run(`explicit stop rejects ${failure} consent`, () => {
+      const environment = makeEnvironment(`stop-consent-${failure}`);
+      try {
+        const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:01:00Z" };
+        const request = stopGrant(environment, options.now, decision => {
+          if (failure === "actor") decision.decision_maker = "S3";
+          if (failure === "scope") decision.affected_artifacts.push("unrelated");
+          if (failure === "future") decision.decided_at = "2026-07-21T09:02:00Z";
+          if (failure === "mission") decision.mission_id = "MIS-Other";
+        });
+        if (failure === "campaign") request.campaign_ref.sha256 = "a".repeat(64);
+        if (failure === "reason") request.reason = "Substituted scope";
+        if (failure === "stale") options.now = "2026-07-21T10:01:00.001Z";
+        if (failure === "missing") request.decision_ref = { artifact_id: "none", relative_path: "none", sha256: "none" };
+        if (failure === "repository") {
+          const other = makeEnvironment("stop-other-repo");
+          try { assert.throws(() => stopCampaign(request, { ...options, repository: other.repositoryPath, artifactRoot: other.artifactRoot }), /CAMPAIGN_STOP_REFERENCE_INVALID/); }
+          finally { fs.rmSync(other.root, { recursive: true, force: true }); }
+        } else assert.throws(() => stopCampaign(request, options), /CAMPAIGN_STOP_/);
+        assert.strictEqual(campaignStopStatus(options, environment.campaign.mission_id).stop_refs.length, 0);
+      } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+    });
+  }
+
+  run("stop holds do not alias an earlier budget hold or a later exhausted-budget projection", () => {
+    const environment = makeEnvironment("stop-order-id", { budgets: { max_elapsed_minutes: 5 } });
+    try {
+      const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:01:00Z" };
+      const superviseAt = at => superviseCampaign({ repositoryPath: options.repository, artifactRoot: options.artifactRoot,
+        campaignId: environment.campaign.id, evaluatedAt: at, writeArtifact: true });
+      stopCampaign(stopGrant(environment, options.now), options);
+      const first = superviseAt(options.now);
+      const expired = superviseAt("2026-07-21T09:05:00Z");
+      assert.notStrictEqual(expired.order.id, first.order.id);
+      assert.strictEqual(expired.order.execution_authorized, false);
+      assert(expired.order.blocking_codes.includes("CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED"));
+      assert.strictEqual(superviseAt("2026-07-21T09:06:00Z").existing, true);
+    } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+    const prior = makeEnvironment("stop-prior-hold", { budgets: { max_elapsed_minutes: 1 } });
+    try {
+      const options = { repository: prior.repositoryPath, artifactRoot: prior.artifactRoot, now: "2026-07-21T09:01:00Z" };
+      const args = { repositoryPath: options.repository, artifactRoot: options.artifactRoot, campaignId: prior.campaign.id, evaluatedAt: options.now, writeArtifact: true };
+      const budgetHold = superviseCampaign(args);
+      stopCampaign(stopGrant(prior, options.now), options);
+      const stopHold = superviseCampaign(args);
+      assert.notStrictEqual(stopHold.order.id, budgetHold.order.id);
+      assert.strictEqual(stopHold.order.execution_authorized, false);
+    } finally { fs.rmSync(prior.root, { recursive: true, force: true }); }
+  });
+
+  run("stop refuses a competing retained USER scope decision", () => {
+    const environment = makeEnvironment("stop-conflict");
+    try {
+      const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:02:00Z" };
+      const request = stopGrant(environment, "2026-07-21T09:01:00Z");
+      stopGrant(environment, options.now, decision => { decision.id = "DL-Newer-Scope"; });
+      assert.throws(() => stopCampaign(request, options), /CAMPAIGN_STOP_CONFLICTING_USER_DECISION/);
+    } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  for (const race of ["expiry", "rollback"]) run(`stop rechecks ${race} under the publication lease`, () => {
+    const environment = makeEnvironment(`stop-time-${race}`);
+    try {
+      const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:01:00Z" };
+      const request = stopGrant(environment, options.now);
+      beforePublication = descriptor => {
+        if (descriptor.kind !== "campaign-stop-records") return;
+        beforePublication = null;
+        options.now = race === "expiry" ? "2026-07-21T10:01:00.001Z" : "2026-07-21T09:00:59Z";
+      };
+      assert.throws(() => stopCampaign(request, options), race === "expiry" ? /CAMPAIGN_STOP_USER_DECISION_REQUIRED/ : /CAMPAIGN_STOP_CLOCK_ROLLBACK/);
+      assert.strictEqual(campaignStopStatus(options, request.mission_id).stop_refs.length, 0);
+    } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  run("a schema-valid copied stop with an invented historical digest fails closed", () => {
+    const environment = makeEnvironment("stop-history-forgery");
+    try {
+      const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:01:00Z" };
+      const stopped = stopCampaign(stopGrant(environment, options.now), options);
+      const malformed = clone(stopped.record);
+      malformed.observed_manifest.sha256 = "a".repeat(64);
+      assert.strictEqual(validatePayload(malformed, "campaign-stop-record").valid, true);
+      writeRepositoryArtifact({ repositoryPath: options.repository, artifactRoot: options.artifactRoot, missionId: malformed.mission_id,
+        waveId: "C0", kind: "campaign-stop-records", artifactId: malformed.id, payload: malformed, createdAt: options.now, overwrite: true });
+      assert.throws(() => supervise(environment, options.now), /CAMPAIGN_STOP_HISTORY_INVALID/);
+    } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  run("stop CLI persists the current-clock request and status remains non-authorizing", () => {
+    const environment = makeEnvironment("stop-cli", { createdAt: new Date(Date.now() - 60000).toISOString() });
+    try {
+      const request = stopGrant(environment, new Date().toISOString());
+      const input = path.join(environment.root, "request.json");
+      fs.writeFileSync(input, JSON.stringify(request));
+      const common = ["--repository", environment.repositoryPath, "--artifact-root", environment.artifactRoot];
+      for (const tree of ["codex-skills", ".claude/skills"]) {
+        const wrapper = path.join(ROOT, tree, "controls-doctrine-operator/scripts/stop_controls_campaign.js");
+        const result = spawnSync(process.execPath, [wrapper, "stop", "--request", input, ...common], { cwd: os.tmpdir(), encoding: "utf8" });
+        assert.strictEqual(result.status, 0, result.stderr);
+        assert.strictEqual(JSON.parse(result.stdout).existing, tree === ".claude/skills");
+        const status = spawnSync(process.execPath, [wrapper, "status", "--mission", request.mission_id, ...common], { cwd: os.tmpdir(), encoding: "utf8" });
+        assert.strictEqual(status.status, 0, status.stderr);
+        const projection = JSON.parse(status.stdout);
+        assert.strictEqual(projection.status, "stop_requested");
+        assert.strictEqual(projection.settlement_complete, false);
+        assert.strictEqual(projection.continuation_authorized, false);
+      }
+    } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  run("a stopped mission cannot switch campaign ID, disable adaptation, or initialize a new campaign", () => {
+    const environment = makeEnvironment("stop-rename", { createdAt: "2026-07-23T04:00:00+09:00" });
+    try {
+      const options = waveOptions(environment);
+      stopCampaign(stopGrant(environment, options.now), options);
+      const plan = waveFor(environment);
+      plan.adaptive_work.campaign_id = "SIC-Renamed";
+      assert.throws(() => openWave(plan, options), /CAMPAIGN_STOP_REQUESTED/);
+      plan.adaptive_work.enabled = false;
+      assert.throws(() => openWave(plan, options), /CAMPAIGN_STOP_REQUESTED/);
+      const initialized = spawnSync(process.execPath, [path.join(ROOT, "self-improvement-campaign-init.js"),
+        "--repository", options.repository, "--artifact-root", options.artifactRoot,
+        "--mission", plan.mission_id, "--campaign", "SIC-Renamed", "--objective", "Retained mission", "--end-state", "Done", "--criterion", "Verified", "--write-artifact"], { encoding: "utf8" });
+      assert.notStrictEqual(initialized.status, 0);
+      assert.match(initialized.stderr, /CAMPAIGN_STOP_REQUESTED/);
+    } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  for (const kind of ["self-improvement-cycle-orders", "mission-wave-plans"]) {
+    run(`explicit USER stop wins the ${kind} publication race`, () => {
+      const environment = makeEnvironment(`stop-race-${kind}`, { createdAt: "2026-07-23T04:00:00+09:00" });
+      try {
+        const options = waveOptions(environment);
+        let fired = false;
+        beforePublication = descriptor => {
+          if (descriptor.kind !== kind) return;
+          beforePublication = null; fired = true;
+          stopCampaign(stopGrant(environment, options.now), options);
+        };
+        assert.throws(() => kind === "mission-wave-plans" ? openWave(waveFor(environment), options)
+          : superviseCampaign({ repositoryPath: options.repository, artifactRoot: options.artifactRoot,
+            campaignId: environment.campaign.id, evaluatedAt: options.now, writeArtifact: true }),
+        /CAMPAIGN_CONTINUATION_BLOCKED|SUPERVISOR_ORDER_PUBLICATION_CHANGED/);
+        assert(fired);
+        assert.strictEqual(campaignStopStatus(options, environment.campaign.mission_id).stop_refs.length, 1);
+      } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+    });
+  }
+
+  run("stop publication rejects snapshot drift instead of binding stale history", () => {
+    const environment = makeEnvironment("stop-snapshot-race");
+    try {
+      const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:01:00Z" };
+      const request = stopGrant(environment, options.now);
+      beforePublication = descriptor => {
+        if (descriptor.kind !== "campaign-stop-records") return;
+        beforePublication = null;
+        writeRepositoryArtifact({ repositoryPath: options.repository, artifactRoot: options.artifactRoot, missionId: request.mission_id,
+          waveId: "C0", kind: "maintenance-observations", artifactId: "MO-Race", payload: { note: "Concurrent write" }, createdAt: options.now });
+      };
+      assert.throws(() => stopCampaign(request, options), /CAMPAIGN_STOP_SNAPSHOT_CHANGED/);
+      assert.strictEqual(campaignStopStatus(options, request.mission_id).stop_refs.length, 0);
+      assert.strictEqual(stopCampaign(request, options).record.status, "stop_requested");
+    } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  for (const stage of ["prepared", "artifact_written", "history_created", "manifest_committed"]) {
+    run(`stop ${stage} crash preserves exact replay and recovery ordering`, () => {
+      const environment = makeEnvironment(`stop-crash-${stage}`);
+      try {
+        const options = { repository: environment.repositoryPath, artifactRoot: environment.artifactRoot, now: "2026-07-21T09:01:00Z" };
+        const request = stopGrant(environment, options.now);
+        beforePublication = descriptor => {
+          if (descriptor.kind !== "campaign-stop-records") return;
+          beforePublication = null; descriptor.faultInjectionStage = stage;
+        };
+        assert.throws(() => stopCampaign(request, options), /Injected artifact transaction failure/);
+        assert.throws(() => supervise(environment, options.now), /artifact verification failed/);
+        const recovered = verifyRepositoryArtifacts({ repositoryPath: options.repository, artifactRoot: options.artifactRoot, recover: true });
+        assert.strictEqual(recovered.valid, true);
+        assert.strictEqual(campaignStopStatus(options, request.mission_id).stop_refs.length, stage === "prepared" ? 0 : 1);
+        const retry = stopCampaign(request, options);
+        assert.strictEqual(retry.existing, stage !== "prepared");
+        assert(supervise(environment, options.now).blocking_codes.includes("CAMPAIGN_STOP_REQUESTED"));
+      } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+    });
+  }
+
+  run("both skill stop wrappers expose a non-authorizing decision option from outside the repository", () => {
+    const request = path.join(ROOT, "sample-payloads", "valid-campaign-stop-request.json");
+    const values = ["codex-skills", ".claude/skills"].map(tree => {
+      const result = spawnSync(process.execPath, [path.join(ROOT, tree, "controls-doctrine-operator/scripts/stop_controls_campaign.js"),
+        "decision-option", "--request", request], { cwd: os.tmpdir(), encoding: "utf8" });
+      assert.strictEqual(result.status, 0, result.stderr);
+      return JSON.parse(result.stdout);
+    });
+    assert.deepStrictEqual(values[0], values[1]);
+    assert.strictEqual(values[0].consent_granted, false);
+    assert.strictEqual(values[0].release_authorized, false);
+  });
+
   run("supervisor CLI cannot publish a ready order after a concurrent retained stop", () => {
     const environment = makeEnvironment("supervisor-cli-stop", { createdAt: new Date(Date.now() - 3600000).toISOString() });
     try {
@@ -628,14 +878,19 @@ store.writeRepositoryArtifact = descriptor => {
     }
   });
 
-  for (const reason of ["escalation", "expiry"]) run(`campaign ${reason} blocks stale lease calls and resume but permits result settlement and revocation`, () => {
+  for (const reason of ["escalation", "expiry", "user-stop"]) run(`campaign ${reason} blocks stale lease calls and resume but permits result settlement and revocation`, () => {
     const environment = makeEnvironment(`live-dispatch-${reason}`, {
-      createdAt: "2026-07-23T04:00:00+09:00", budgets: { max_elapsed_minutes: 16 }
+      createdAt: reason === "user-stop" ? new Date(Date.now() - 60000).toISOString() : "2026-07-23T04:00:00+09:00", budgets: { max_elapsed_minutes: 16 }
     });
     try {
       const plan = waveFor(environment);
       plan.agents = [plan.agents[0]];
       const options = waveOptions(environment);
+      if (reason === "user-stop") {
+        plan.created_at = environment.campaign.created_at;
+        plan.valid_until = new Date(Date.now() + 3600000).toISOString();
+        options.now = new Date().toISOString();
+      }
       const input = { command: "git status --short" };
       const draft = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-dispatch-tool-policy.json"), "utf8"));
       delete draft.authorization;
@@ -663,6 +918,10 @@ store.writeRepositoryArtifact = descriptor => {
       const admitted = admitToolRequest(options, identity, hook);
       assert.strictEqual(admitted.decision, "allow");
       if (reason === "escalation") persistPair(environment, checkpointFor(environment, 1, 1), "escalate");
+      else if (reason === "user-stop") {
+        options.now = new Date().toISOString();
+        stopCampaign(stopGrant(environment, options.now), options);
+      }
       else options.now = "2026-07-23T04:16:00+09:00";
       assert.throws(() => openWave(plan, options), /CAMPAIGN_CONTINUATION_BLOCKED/);
       const denied = admitToolRequest(options, identity, { ...hook, tool_use_id: "after-stop" });

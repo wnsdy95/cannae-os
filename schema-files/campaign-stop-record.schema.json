@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-stop-record.schema.json",
+  "title": "Campaign Stop Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "campaign_id", "request", "request_sha256", "observed_manifest", "status", "recorded_at", "settlement_complete", "execution_completion_claimed", "execution_authorized", "continuation_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignStopRecord" },
+    "id": { "type": "string", "pattern": "^CSR-[a-f0-9]{32}$" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "request": { "$ref": "campaign-stop-request.schema.json" },
+    "request_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "observed_manifest": {
+      "type": "object", "additionalProperties": false, "required": ["revision", "sha256"],
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "status": { "const": "stop_requested" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "settlement_complete": { "const": false },
+    "execution_completion_claimed": { "const": false },
+    "execution_authorized": { "const": false },
+    "continuation_authorized": { "const": false },
+    "release_authorized": { "const": false }
+  }
+}

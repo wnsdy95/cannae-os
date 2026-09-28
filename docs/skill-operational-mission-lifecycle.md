@@ -367,9 +367,12 @@ for crash ordering and the non-transactional multi-artifact boundary.
 
 This is an admission guard, not a complete campaign cancellation/restart protocol
 or an operating-system process kill. A call already admitted when a stop arrives
-still needs result reconciliation. Explicit USER stop/restart contracts,
-supervisor order/challenge publication integration, and campaign-wide terminal
-settlement remain open. Raw store writes and mutable runtime code are not an
+still needs result reconciliation. Use the separate
+[explicit USER stop intake](bounded-self-improvement-operations.md#210-explicit-user-stop-intake)
+instead of fabricating an evaluation checkpoint. It fences the same mission,
+including renamed campaigns and non-adaptive waves, and supervisor order/challenge
+publication now reappraises that stop. Campaign-wide terminal settlement and
+USER-authorized successor activation remain open. Raw store writes and mutable runtime code are not an
 independently protected authority service.
 
 ## 10. Regression Gate

@@ -1,5 +1,12 @@
 # Document Routing
 
+For campaign stop, cancellation intake, or a denied restart, route to
+`docs/bounded-self-improvement-operations.md#210-explicit-user-stop-intake`,
+`campaign-stop-controller.js`, its request/record schemas and
+`run-campaign-supervisor-fixtures.js`. Use `scripts/stop_controls_campaign.js`
+for decision preparation, exact USER-bound stop and status. It does not resume
+work, settle effects or create successor authority.
+
 Use this map after running `scripts/route_controls_docs.js`, or when a task is obvious enough to route manually.
 
 ## Inventory Coverage

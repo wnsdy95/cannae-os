@@ -54,6 +54,20 @@ restamp an older result or treat its date as proof of current coverage.
 
 ## Publication Denial And Partial State
 
+For an explicit USER stop, read the stop-intake section of
+`docs/bounded-self-improvement-operations.md` and use
+`scripts/stop_controls_campaign.js`. Prepare the exact decision option, obtain
+the actual USER scope decision, then invoke `stop` with its manifest reference.
+Do not manufacture a failed checkpoint to express a cancellation. When interrupted,
+verify/recover valid artifact journals and inspect `status` before retrying: the
+stop may already be durable. Exact retry preserves that stop even after its
+original consent window expires; a changed request needs a new decision.
+Keep collecting already-admitted results and reconcile/revoke their authority.
+Zero leases, a later generic approval, a renamed campaign or disabled adaptation
+does not clear the mission hold. Do not move the same stopped work to another
+mission to evade it. Terminal reconciliation and successor activation remain
+separate contracts, not operations provided by this stop wrapper.
+
 A ready result from before a stop is not reusable authority. When a controller
 denies at its publication boundary, inspect status and verify the current
 manifest before retrying. Earlier plan, routing, control, admission, or gateway

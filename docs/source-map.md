@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [explicit campaign stop](bounded-self-improvement-operations.md#210-explicit-user-stop-intake)
+is local engineering synthesis of retained USER decisions, manifest custody and
+the existing continuation gate. `campaign-stop-controller.js`, its request/record
+schemas, supervisor fixtures and both skill wrappers enforce a monotonic
+mission-scoped hold without invented checkpoints or new external doctrine claims.
+Stop intake does not prove USER authentication, terminal settlement or successor
+authorization.
+
 Supervisor publication guards in `campaign-supervisor.js` apply the existing
 repository-namespace predicate to challenge issuance and cycle-order storage,
 including exact reuse. Campaign and challenge fixtures exercise stop/expiry

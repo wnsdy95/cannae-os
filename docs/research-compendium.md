@@ -1,5 +1,20 @@
 # Research Compendium
 
+## Explicit Campaign Stop Intake (2026-09-29)
+
+Local inspection found that retained evaluator escalation stopped execution,
+but a user stop had no standalone immutable intake. The new
+[stop contract](bounded-self-improvement-operations.md#210-explicit-user-stop-intake)
+binds the exact campaign, reason and retained USER scope decision without
+inventing evaluation results. Publication records a verified historical manifest;
+path-sorted artifact arrays are not chronological event logs. Later decisions
+cannot silently erase a stop, and same-mission campaign renaming or disabled
+adaptation cannot bypass it. Already-admitted results and explicit revocation
+remain available. Synthetic USER fixtures do not authenticate a real person.
+This closes stop intake only; campaign-wide terminal reconciliation and exact
+successor activation remain open, as do managed process cancellation and trusted
+time. No new external military-source assertion is introduced.
+
 ## Supervisor Publication-Time Admission (2026-09-28)
 
 Source inspection found challenge writes inside the supervisor and cycle-order

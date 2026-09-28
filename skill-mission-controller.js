@@ -558,6 +558,7 @@ function modelAssignments(plan, options) {
 }
 
 function assertAdaptiveCampaignMayContinue(plan, options, allowMissing = false) {
+  require("./campaign-stop-controller").assertMissionNotStopped(loadStore(options, true), plan.mission_id);
   if (!plan.adaptive_work.enabled) return;
   try {
     const existing = optionalArtifact(options, {
