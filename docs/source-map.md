@@ -1,5 +1,10 @@
 # Source Map
 
+`docs/gateway-effect-settlement.md` is local engineering synthesis of the
+existing USER, supervisor, verifier, gateway review and OCI containment contracts.
+`gateway-effect-settlement.js`, its schema pair, fixture runner and both skill
+wrappers implement reference reconciliation without a new military-source claim.
+
 ## Implementation Traceability
 
 `docs/tool-effect-settlement.md` composes the existing review, USER decision,
@@ -9,13 +14,13 @@ inputs. Exact historical replay and one-use settlement do not prove arbitrary
 effect completeness, authenticated USER identity, gateway cleanup, or production
 deployment. No new external military-source claim is introduced.
 `effect-settlement-proof.js` factors those existing cryptographic, USER-decision
-and historical-manifest checks without changing hook ownership or granting a
-gateway clearing operation.
+and historical-manifest checks without changing hook ownership. Only the separate
+gateway controller above may discharge its supported gateway obligations.
 The reconciled-failure guard is a local regression repair: a schema-valid legacy
 success callback reproduced completion after effect settlement. The settlement
 fixtures now check same-agent lineage, explicit post-settlement revocation,
-report/termination admission and publication races. This does not extend USER
-consent, permit campaign restart, or implement gateway settlement.
+report/termination admission and publication races. The guard alone does not
+extend USER consent, permit campaign restart, or discharge gateway obligations.
 
 Dependency replay design in `docs/github-release-independent-verification.md`
 uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
@@ -43,8 +48,8 @@ synthetic local reproduction: a failed provider callback consumed its pending
 admission, then revocation permitted wave expiry despite unknown effects.
 Gateway fixtures now retain that history across current and legacy revocation
 and reject replacement/terminal authority. This is an engineering correction,
-not an external military claim. Its separate hook reconciliation contract is
-indexed below; gateway reconciliation remains open.
+not an external military claim. Separate hook and gateway reconciliation contracts
+are indexed below; unsupported containment and coordination remain open.
 
 `docs/implementation-candidate-registry.md` and
 `docs/completion-backlog.md` apply the existing KM separation of source,

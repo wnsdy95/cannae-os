@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/gateway-effect-settlement.schema.json",
+  "title": "Gateway Effect Settlement",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "request", "request_sha256", "transaction_id", "gateway_request_ref", "scope_ref", "lease_ref", "checkpoint_ref", "admission_ref", "effect_checkpoint_ref", "repository_state", "observed_manifest", "proof", "containment_required", "containment_verified", "settled_at", "admission_valid_until", "effects_settled", "scope_completeness_basis", "user_identity_authenticated", "tool_execution_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "GatewayEffectSettlement" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "request": { "$ref": "gateway-effect-settlement-request.schema.json" },
+    "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "transaction_id": { "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier" },
+    "gateway_request_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "scope_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "admission_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "effect_checkpoint_ref": { "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none" },
+    "repository_state": { "$ref": "verification-plan.schema.json#/properties/expected_repository_state" },
+    "observed_manifest": { "$ref": "tool-effect-settlement.schema.json#/properties/observed_manifest" },
+    "proof": { "$ref": "tool-effect-settlement.schema.json#/properties/proof" },
+    "containment_required": { "type": "boolean" },
+    "containment_verified": { "type": "boolean" },
+    "settled_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "admission_valid_until": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "effects_settled": { "const": true },
+    "scope_completeness_basis": { "const": "exact_user_judgement" },
+    "user_identity_authenticated": { "const": false },
+    "tool_execution_authorized": { "const": false },
+    "release_authorized": { "const": false }
+  }
+}

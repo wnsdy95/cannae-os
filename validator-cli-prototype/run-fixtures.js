@@ -9,6 +9,39 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["request", "record"].map(kind => ({
+    name: `valid gateway settlement ${kind}`,
+    file: `sample-payloads/valid-gateway-effect-settlement${kind === "request" ? "-request" : ""}.json`,
+    type: `gateway-effect-settlement${kind === "request" ? "-request" : ""}`, exitCode: 0, requiredCodes: []
+  })),
+  {
+    name: "gateway settlement rejects partial none references",
+    file: "sample-payloads/invalid-gateway-effect-settlement-request-none.json",
+    type: "gateway-effect-settlement-request", exitCode: 1, requiredCodes: ["GATEWAY_SETTLEMENT_CONTAINMENT_INVALID"]
+  },
+  {
+    name: "gateway settlement requires verified containment when execution started",
+    file: "sample-payloads/invalid-gateway-effect-settlement-containment.json",
+    type: "gateway-effect-settlement", exitCode: 1, requiredCodes: ["GATEWAY_SETTLEMENT_CONTAINMENT_INVALID"]
+  },
+  {
+    name: "gateway settlement cannot authorize execution",
+    file: "sample-payloads/valid-gateway-effect-settlement.json",
+    type: "gateway-effect-settlement", exitCode: 1,
+    mutate(payload) { payload.tool_execution_authorized = true; }, requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "gateway settlement identity binds the canonical request",
+    file: "sample-payloads/valid-gateway-effect-settlement.json",
+    type: "gateway-effect-settlement", exitCode: 1,
+    mutate(payload) { payload.request.id = "GESR-OTHER"; }, requiredCodes: ["TOOL_EFFECT_SETTLEMENT_REQUEST_BINDING_MISMATCH"]
+  },
+  {
+    name: "gateway settlement cannot outlive its proof admission",
+    file: "sample-payloads/valid-gateway-effect-settlement.json",
+    type: "gateway-effect-settlement", exitCode: 1,
+    mutate(payload) { payload.admission_valid_until = payload.settled_at; }, requiredCodes: ["TOOL_EFFECT_SETTLEMENT_TIME_INVALID"]
+  },
   {
     name: "external schema fragments resolve local none refs from their owning document",
     file: "sample-payloads/valid-gateway-effect-subject.json",

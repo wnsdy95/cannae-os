@@ -541,8 +541,10 @@ function gatewayDispatchSettled(view, records) {
 
 function gatewayDispatchObligations(view, options = {}, allowCurrentOperation = false) {
   const scope = allowCurrentOperation && dispatchScopes.get(options);
+  const reconciled = require("./gateway-effect-settlement").settledGatewayEffects(view);
   return dispatchGatewayRecords(view).filter(records => {
     if (gatewayDispatchSettled(view, records)) return false;
+    if (reconciled.some(item => sameRef(item.gateway_request_ref, records.request.ref))) return false;
     return !(scope && inputDigest(scope.request) === inputDigest(records.request.payload));
   }).map(records => ({
     transaction_id: records.request.payload.transaction_id,
@@ -618,6 +620,14 @@ function snapshotStatus(view, records) {
     },
     release_authorized: false
   };
+  const settlement = require("./gateway-effect-settlement").settledGatewayEffects(view)
+    .find(item => sameRef(item.gateway_request_ref, records.request.ref));
+  if (settlement) {
+    payload.effects_reconciled = true;
+    payload.settlement_ref = clone(settlement.settlement_ref);
+    payload.execution_permitted = false;
+    payload.production_execution_authorized = false;
+  }
   return payload;
 }
 

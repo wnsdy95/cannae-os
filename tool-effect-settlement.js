@@ -18,6 +18,7 @@ function assertValid(payload, type) {
 }
 function ref(entry) { return { artifact_id: entry.artifact_id, relative_path: entry.relative_path, sha256: entry.sha256 }; }
 function records(store) {
+  require("./effect-settlement-proof").assertEffectSettlementConsumptionUnique(store);
   return store.manifest.artifacts.filter(entry => entry.kind === "tool-effect-settlements").map(entry => {
     const payload = load(store, ref(entry), entry.kind, "tool-effect-settlement");
     requireTrue(payload.request.mission_id === entry.mission_id && payload.request.wave_id === entry.wave_id,
@@ -61,6 +62,7 @@ function appraise(store, request, at, repositoryState) {
       !sameRef(existing.payload.request.decision_ref, request.decision_ref) &&
       !sameRef(existing.payload.request.cycle_order_ref, request.cycle_order_ref), "TOOL_EFFECT_SETTLEMENT_ALREADY_CONSUMED");
   }
+  require("./effect-settlement-proof").assertEffectSettlementInputsAvailable(store, request);
   return appraiseEffectSettlementProof({ store, request, at, scope, review,
     scopeSha256: fresh.scope_sha256, expectedDecisionOption: decisionOption(request) });
 }

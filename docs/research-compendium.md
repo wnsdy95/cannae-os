@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Exact Gateway Reconciliation (2026-09-28)
+
+The [gateway settlement controller](gateway-effect-settlement.md) joins the
+previously separate subject/review, execution-bound verifier proof, fresh exact
+USER judgement and signed OCI containment. It supports orphan admissions and
+OCI reference outcomes. Discharge is an append-only projection, never a forged
+success checkpoint or receipt. Raw history stays separate from settlement-aware
+queries so historical appraisal cannot recursively rely on its own conclusion.
+Decisions and orders are consumed once across both hook and gateway families;
+the failed agent still requires post-settlement revocation and cannot resume or
+report success. The reusable skill lesson is to distinguish effect resolution,
+original outcome and future authority explicitly at handoff.
+
+This is local engineering synthesis. External/process containment, managed
+coordination/fencing, legacy-envelope migration and campaign restart are still
+open; fixture identity/isolation declarations are not deployed infrastructure.
+
 ## Retained Containment Before Gateway Settlement (2026-09-28)
 
 Local source inspection found that recovery returned cleanup success without
@@ -16,8 +33,9 @@ records, complete-effect inspection or USER judgement.
 This is an engineering result, not external doctrine or proof of an honest
 host. A reported daemon ID is not attestation. Legacy envelopes without the
 binding and managed deployments without retained external fencing evidence
-cannot use this reference path. The gateway settlement controller, production
-coordination evidence and full campaign restart remain unfinished.
+cannot use this reference path. At this prerequisite stage, the gateway
+settlement controller, production coordination and full campaign restart were
+unfinished; the later reconciliation entry above records the supported subset.
 
 ## Reconciled Failure And Authority (2026-09-28)
 
@@ -32,7 +50,9 @@ authority, wave publication and termination fail closed until revocation, with
 publication-time checks for concurrent reconciliation. The fixtures execute
 real checkers and signatures against synthetic USER/provider inputs. This is
 engineering synthesis, not a new military-source or production-isolation claim.
-Gateway effect settlement and complete campaign restart remain open.
+Gateway effect settlement was unfinished at this prerequisite stage; the later
+reconciliation entry above records its supported subset. Complete campaign
+restart remains open.
 
 ## 2026-09-28: Gateway Intake Before Settlement
 
@@ -48,8 +68,9 @@ This is local engineering synthesis, not an external doctrine claim. Fixtures
 use real gateway transitions and an executed local checker, with explicitly
 synthetic observations. Evidence consistency does not authenticate the verifier
 or prove containment, scope completeness, production coordination, or USER
-consent. Review does not clear holds or revoke/renew authority. Dedicated gateway
-settlement and campaign restart remain open in [the backlog](completion-backlog.md).
+consent. Review does not clear holds or revoke/renew authority. The separate
+gateway settlement contract above covers orphan/OCI reference subjects;
+unsupported adapters and campaign restart remain in [the backlog](completion-backlog.md).
 
 ## 2026-09-28: Gateway Ownership And Retained Obligations
 
@@ -88,8 +109,8 @@ Tests execute a real local checker and ephemeral signatures, while USER decision
 provider/isolation claims and v0.4 independence groups remain synthetic. Passing
 fixtures do not prove complete external scope or production infrastructure.
 USER identity is not cryptographically authenticated by a local decision log.
-Gateway requests and decisions are explicitly excluded pending their own cleanup
-and transaction contract. Failed leases require explicit revocation after
+Gateway requests and decisions are explicitly excluded from the hook controller
+and use the separate gateway contract above. Failed leases require explicit revocation after
 settlement; campaign restart and release remain independently controlled.
 This is local engineering synthesis from the existing contracts.
 

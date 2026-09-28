@@ -743,19 +743,21 @@ function unknownToolEffectRecords(view, leaseRecord) {
 function unresolvedToolEffectRecords(view, leaseRecord) {
   const unknown = unknownToolEffectRecords(view, leaseRecord);
   if (!unknown.length) return unknown;
-  const settled = require("./tool-effect-settlement").settledToolEffectRefs(view, leaseRecord.ref);
+  const settled = [...require("./tool-effect-settlement").settledToolEffectRefs(view, leaseRecord.ref),
+    ...require("./gateway-effect-settlement").settledGatewayEffectState(view, leaseRecord.ref).effect_checkpoint_refs];
   return unknown.filter(item => !settled.some(ref => sameRef(ref, item.ref)));
 }
 
 function reconciledFailureState(view, leaseRecord) {
-  if (!view.manifest.artifacts.some(entry => entry.kind === "tool-effect-settlements")) {
+  if (!view.manifest.artifacts.some(entry => ["tool-effect-settlements", "gateway-effect-settlements"].includes(entry.kind))) {
     return { checkpoint_refs: [], latest_settled_at: null, revocation_required: false };
   }
   const checkpoint = latestCheckpoint(view, leaseRecord);
   const related = leaseRecords(view, leaseRecord.payload.mission_id, leaseRecord.payload.wave_id)
     .filter(record => record.payload.agent_id === leaseRecord.payload.agent_id);
-  const settlements = related.map(record =>
-    require("./tool-effect-settlement").settledToolEffectState(view, record.ref, checkpoint.ref));
+  const settlements = related.flatMap(record => [
+    require("./tool-effect-settlement").settledToolEffectState(view, record.ref, checkpoint.ref),
+    require("./gateway-effect-settlement").settledGatewayEffectState(view, record.ref, checkpoint.ref)]);
   const refs = settlements.flatMap(settled => settled.checkpoint_refs);
   return {
     checkpoint_refs: refs,
@@ -769,7 +771,7 @@ function reconciledFailureState(view, leaseRecord) {
 }
 
 function hasReconciledFailureAwaitingRevocation(view) {
-  return view.manifest.artifacts.some(entry => entry.kind === "tool-effect-settlements") &&
+  return view.manifest.artifacts.some(entry => ["tool-effect-settlements", "gateway-effect-settlements"].includes(entry.kind)) &&
     leaseRecords(view).some(record => reconciledFailureState(view, record).revocation_required);
 }
 
@@ -819,12 +821,14 @@ function pendingAdmissions(view, leaseRecord) {
     leaseRecord.payload.wave_id
   );
   const completed = completedAdmissionIds(checkpoints);
+  const reconciled = require("./gateway-effect-settlement").settledGatewayEffectState(view, leaseRecord.ref).admission_refs;
   return admissionRecords(
     view,
     leaseRecord.ref,
     leaseRecord.payload.mission_id,
     leaseRecord.payload.wave_id
-  ).filter(item => item.payload.decision === "allow" && !completed.has(item.payload.id));
+  ).filter(item => item.payload.decision === "allow" && !completed.has(item.payload.id) &&
+    !reconciled.some(reference => sameRef(reference, item.ref)));
 }
 
 function completionCandidates(view, leaseRecordsValue, toolUseId) {
@@ -838,6 +842,7 @@ function completionCandidates(view, leaseRecordsValue, toolUseId) {
       leaseRecord.payload.wave_id
     );
     const completedIds = completedAdmissionIds(checkpoints);
+    const reconciled = require("./gateway-effect-settlement").settledGatewayEffectState(view, leaseRecord.ref).admission_refs;
     const admissions = admissionRecords(
       view,
       leaseRecord.ref,
@@ -845,7 +850,7 @@ function completionCandidates(view, leaseRecordsValue, toolUseId) {
       leaseRecord.payload.wave_id
     ).filter(item =>
       item.payload.tool_use_id === toolUseId &&
-      item.payload.decision === "allow");
+      item.payload.decision === "allow" && !reconciled.some(reference => sameRef(reference, item.ref)));
     for (const admission of admissions) {
       (completedIds.has(admission.payload.id) ? completed : unresolved)
         .push({ leaseRecord, admission });

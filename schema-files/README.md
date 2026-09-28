@@ -214,6 +214,12 @@ Recommended validation order:
 134. `gateway-effect-scope.schema.json`
 135. `gateway-effect-review.schema.json`
 136. `oci-sandbox-containment-observation.schema.json`
+137. `gateway-effect-settlement-request.schema.json`
+138. `gateway-effect-settlement.schema.json`
+
+Gateway settlement contracts bind exact USER judgement, execution-bound proof,
+admission discharge and separate containment. They preserve original failure and
+never grant execution or release. See [Gateway Effect Settlement](../docs/gateway-effect-settlement.md).
 
 All schemas target JSON Schema draft 2020-12.
 

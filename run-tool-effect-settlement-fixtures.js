@@ -413,11 +413,22 @@ for (const resource of scope.resources) {
     const isolated = forkStore("forged-settlement");
     const forged = clone(settled.settlement);
     forged.request.id = "TESR-FORGED";
+    for (const key of ["decision_ref", "cycle_order_ref"]) forged.request[key].sha256 = "f".repeat(64);
     forged.request_sha256 = runtime.inputDigest(forged.request);
     forged.id = `TESL-${forged.request_sha256.slice(0, 32)}`;
     persist(forged, "tool-effect-settlements", forged.settled_at, isolated.artifactRoot);
     assert.throws(() => settleToolEffects(isolated, request), /TOOL_EFFECT_SETTLEMENT_PUBLICATION_MISMATCH/);
     assert.throws(() => runtime.dispatchStatus(isolated), /TOOL_EFFECT_SETTLEMENT_PUBLICATION_MISMATCH/);
+  });
+  for (const key of ["decision_ref", "cycle_order_ref"]) check(`gateway ${key} cannot reuse a hook settlement input`, () => {
+    const isolated = forkStore(`gateway-consumption-${key}`);
+    const other = sample("valid-gateway-effect-settlement");
+    other.request.mission_id = request.mission_id; other.request.wave_id = request.wave_id;
+    other.request[key] = request[key];
+    other.request_sha256 = runtime.inputDigest(other.request); other.id = `GESL-${other.request_sha256.slice(0, 32)}`;
+    persist(other, "gateway-effect-settlements", other.settled_at, isolated.artifactRoot);
+    assert.throws(() => settleToolEffects(isolated, request), /EFFECT_SETTLEMENT_INPUT_CONFLICT/);
+    assert.throws(() => runtime.dispatchStatus(isolated), /EFFECT_SETTLEMENT_INPUT_CONFLICT/);
   });
   function waveReport() {
     const report = sample("valid-mission-wave-report");

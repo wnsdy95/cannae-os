@@ -1,0 +1,112 @@
+{
+  "schema_version": "0.1",
+  "type": "GatewayEffectSettlement",
+  "id": "GESL-75889adfd16244ac365eb9c4c53aba72",
+  "request": {
+    "schema_version": "0.1",
+    "type": "GatewayEffectSettlementRequest",
+    "id": "GESR-EXAMPLE",
+    "mission_id": "MIS-ENFORCED-DISPATCH",
+    "wave_id": "W1",
+    "review_ref": {
+      "artifact_id": "GER-EXAMPLE",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/gateway-effect-reviews/GER-EXAMPLE.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "campaign_ref": {
+      "artifact_id": "SIC-INSPECT",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/self-improvement-campaigns/SIC-INSPECT.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "cycle_order_ref": {
+      "artifact_id": "SCO-INSPECT",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/self-improvement-cycle-orders/SCO-INSPECT.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "attestation_refs": [
+      {
+        "artifact_id": "VA-INSPECT",
+        "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/verification-attestations/VA-INSPECT.json",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "decision_ref": {
+      "artifact_id": "DL-SETTLE",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/decision-logs/DL-SETTLE.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "scope_coverage_accepted": true,
+    "inspection_method_accepted": true,
+    "containment_observation_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    }
+  },
+  "request_sha256": "75889adfd16244ac365eb9c4c53aba7273e1fe62c7fcb1269057923e09cc857d",
+  "scope_ref": {
+    "artifact_id": "GES-EXAMPLE",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/gateway-effect-scopes/GES-EXAMPLE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-EXAMPLE",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/agent-dispatch-leases/ADL-EXAMPLE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-EXAMPLE",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/agent-execution-checkpoints/AEC-EXAMPLE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "admission_ref": {
+    "artifact_id": "TAE-EXAMPLE",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/tool-admission-events/TAE-EXAMPLE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "repository_state": {
+    "head_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "worktree_fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "observed_manifest": {
+    "revision": 20,
+    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "proof": {
+    "trust_policy_ref": {
+      "artifact_id": "VTP-EXAMPLE",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/verifier-trust-policies/VTP-EXAMPLE.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "assurance_scope": "authenticated_workload_and_policy_eligibility",
+    "verifier_ids": [
+      "VERIFIER-EXAMPLE"
+    ],
+    "key_ids": [
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    ],
+    "independence_groups": [
+      "example-group"
+    ]
+  },
+  "settled_at": "2026-09-28T13:00:00Z",
+  "admission_valid_until": "2026-09-28T13:04:00Z",
+  "effects_settled": true,
+  "scope_completeness_basis": "exact_user_judgement",
+  "user_identity_authenticated": false,
+  "tool_execution_authorized": false,
+  "release_authorized": false,
+  "transaction_id": "GTX-EXAMPLE",
+  "gateway_request_ref": {
+    "artifact_id": "TGR-EXAMPLE",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/tool-gateway-requests/TGR-EXAMPLE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "effect_checkpoint_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "containment_required": false,
+  "containment_verified": false
+}

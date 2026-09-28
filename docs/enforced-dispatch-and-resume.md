@@ -343,7 +343,9 @@ Keep inspection, result recording, and exact cancellation available. Do not
 change an old checkpoint or submit a second success callback to erase the
 failure. The [hook settlement contract](tool-effect-settlement.md) requires an
 exact USER decision and execution-bound verification evidence before the runtime
-can clear that checkpoint's hold. Gateway settlement remains open. Generic scope approval, notes,
+can clear that checkpoint's hold. Gateway-owned outcomes require the separate
+[gateway controller](gateway-effect-settlement.md), with exact containment when
+execution began and post-settlement failed-agent revocation. Generic scope approval, notes,
 repo cleanliness, or a lease revocation are not that proof. This does not detect
 unreported side effects from tools that bypass the covered provider/gateway path.
 

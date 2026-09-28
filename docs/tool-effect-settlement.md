@@ -109,7 +109,8 @@ The request's canonical digest determines the settlement ID. The retained
 review metadata and original review-time projection must reproduce exactly;
 retaining the correct scope reference cannot excuse misleading review identity.
 The inspection campaign's elapsed deadline also bounds the admission window.
-The checkpoint, USER decision, and cycle order are consumed once. Exact byte-equivalent canonical
+The checkpoint is consumed once; USER decisions and cycle orders are consumed
+once across hook and [gateway settlement](gateway-effect-settlement.md). Exact byte-equivalent canonical
 request retries return the existing record only after validating all retained
 settlements. Different requests cannot reuse those inputs.
 
@@ -140,7 +141,7 @@ independence groups; computed failure-domain assurance requires v0.6+.
 
 Manifest replay assumes cooperating local writers and a trustworthy system clock;
 it is not remote tamper-proof storage or a trusted timestamp service. Full
-campaign stop/restart, gateway settlement and production operations remain in the
+campaign stop/restart, unsupported gateway adapters and production operations remain in the
 [completion backlog](completion-backlog.md).
 
 Run `node run-tool-effect-settlement-fixtures.js` and

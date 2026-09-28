@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add exact USER/execution-bound gateway settlement for orphan admissions and signed-containment OCI reference outcomes. Preserve original failure, require post-settlement revocation, and prevent decision/order reuse across hook and gateway controllers. Other containment and managed-coordination adapters remain open. Update both operator skills with the dedicated settlement and failed-agent reporting procedure.
+
 - Added daemon-bound OCI envelopes and separate signed containment observations for recovered and committed-unknown reference transactions. Original CLI/daemon, exact target, finite freshness and manifest publication checks preserve unknown-effect holds. Both skills collect the observation before freezing gateway review scope; legacy unbound envelopes and managed coordination remain unsupported, with no settlement or authority grant.
 - Extracted shared effect-settlement proof appraisal without sharing hook/gateway ownership or publication authority. Both skills distinguish reusable verification from transaction discharge.
 

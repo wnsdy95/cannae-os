@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/gateway-effect-settlement-request.schema.json",
+  "title": "Gateway Effect Settlement Request",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "review_ref", "campaign_ref", "cycle_order_ref", "attestation_refs", "decision_ref", "containment_observation_ref", "scope_coverage_accepted", "inspection_method_accepted"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "GatewayEffectSettlementRequest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier" },
+    "review_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "campaign_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "cycle_order_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "attestation_refs": { "$ref": "tool-effect-settlement-request.schema.json#/properties/attestation_refs" },
+    "decision_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "containment_observation_ref": { "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none" },
+    "scope_coverage_accepted": { "const": true },
+    "inspection_method_accepted": { "const": true }
+  }
+}

@@ -17,9 +17,36 @@ function load(store, reference, kind, type, scope) {
   return value.payload;
 }
 
+function retainedEffectSettlements(store) {
+  return store.manifest.artifacts.filter(item =>
+    ["tool-effect-settlements", "gateway-effect-settlements"].includes(item.kind)).map(entry => {
+    const type = entry.kind === "tool-effect-settlements" ? "tool-effect-settlement" : "gateway-effect-settlement";
+    const previous = load(store, ref(entry), entry.kind, type);
+    requireTrue(previous.request.mission_id === entry.mission_id && previous.request.wave_id === entry.wave_id,
+      "EFFECT_SETTLEMENT_NAMESPACE_MISMATCH");
+    return previous;
+  });
+}
+function assertEffectSettlementInputsAvailable(store, request) {
+  for (const previous of retainedEffectSettlements(store)) {
+    requireTrue(!sameRef(previous.request.decision_ref, request.decision_ref) &&
+      !sameRef(previous.request.cycle_order_ref, request.cycle_order_ref), "EFFECT_SETTLEMENT_INPUT_ALREADY_CONSUMED");
+  }
+}
+function assertEffectSettlementConsumptionUnique(store) {
+  const consumed = new Set();
+  for (const previous of retainedEffectSettlements(store)) {
+    for (const reference of [previous.request.decision_ref, previous.request.cycle_order_ref]) {
+      requireTrue(!consumed.has(hash(reference)), "EFFECT_SETTLEMENT_INPUT_CONFLICT");
+      consumed.add(hash(reference));
+    }
+  }
+}
+
 // Ownership, review replay and one-use consumption remain the caller's separate gates.
 // This appraiser never publishes a settlement or grants execution authority.
-function appraiseEffectSettlementProof({ store, request, at, scope, review, scopeSha256, expectedDecisionOption }) {
+function appraiseEffectSettlementProof({ store, request, at, scope, review, scopeSha256, expectedDecisionOption,
+  additionalDecisionReferences = [] }) {
   const receipt = load(store, review.verification_receipt_ref, "verification-receipts", "verification-receipt", request);
   const campaign = load(store, request.campaign_ref, "self-improvement-campaigns", "self-improvement-campaign");
   requireTrue(["0.3", "0.4"].includes(campaign.schema_version) && campaign.id === receipt.campaign_id &&
@@ -97,7 +124,8 @@ function appraiseEffectSettlementProof({ store, request, at, scope, review, scop
   requireTrue(quorum.valid, `TOOL_EFFECT_ATTESTATION_INVALID:${quorum.codes.join(",")}`);
   const decision = load(store, request.decision_ref, "decision-logs", "decision-log", request);
   const expectedPaths = [request.review_ref, request.campaign_ref, request.cycle_order_ref, review.scope_ref,
-    review.verification_plan_ref, review.verification_receipt_ref, ...request.attestation_refs].map(item => item.relative_path).sort();
+    review.verification_plan_ref, review.verification_receipt_ref, ...request.attestation_refs,
+    ...additionalDecisionReferences].map(item => item.relative_path).sort();
   requireTrue(decision.decision_maker === "USER" && decision.decision_type === "scope" && decision.status === "complete" &&
     decision.mission_id === scope.mission_id && decision.authority_basis.basis_type === "retained_authority" &&
     decision.authority_basis.reference === scope.id && decision.chosen_option === expectedDecisionOption &&
@@ -131,6 +159,8 @@ function historicalStore(store, revision, sha256) {
 }
 
 module.exports = {
+  assertEffectSettlementInputsAvailable,
+  assertEffectSettlementConsumptionUnique,
   appraiseEffectSettlementProof,
   historicalSettlementStore: historicalStore,
   loadSettlementArtifact: load,
