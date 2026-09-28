@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolEffectScope",
+  "id": "TES-EXAMPLE",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "repository_binding": {
+    "repository_key": "controls-example",
+    "identity_fingerprint": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-EXAMPLE",
+    "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/agent-dispatch-leases/ADL-EXAMPLE.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-EXAMPLE",
+    "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/agent-execution-checkpoints/AEC-EXAMPLE.json",
+    "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "admission_ref": {
+    "artifact_id": "TAE-EXAMPLE",
+    "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-admission-events/TAE-EXAMPLE.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "expected_repository_state": {
+    "head_commit": "5555555555555555555555555555555555555555",
+    "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "coverage_statement": "Synthetic example only. Review README.md and separately establish whether the failed call could affect any external resource.",
+  "resources": [{
+    "id": "RES-README",
+    "target": "README.md",
+    "disposition": "observed",
+    "evidence_refs": [{
+      "artifact_id": "OBS-README",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-effect-observations/OBS-README.json",
+      "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+    }],
+    "check_ids": ["VCK-README"]
+  }],
+  "created_at": "2026-09-28T09:00:00Z",
+  "expires_at": "2026-09-28T10:00:00Z"
+}

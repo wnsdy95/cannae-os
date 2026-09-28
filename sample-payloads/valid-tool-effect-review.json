@@ -1,0 +1,37 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolEffectReview",
+  "id": "TER-EXAMPLE",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "repository_binding": {
+    "repository_key": "controls-example",
+    "identity_fingerprint": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "scope_ref": {
+    "artifact_id": "TES-EXAMPLE",
+    "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-effect-scopes/TES-EXAMPLE.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "scope_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "verification_plan_ref": {
+    "artifact_id": "VP-EFFECTS",
+    "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/verification-plans/VP-EFFECTS.json",
+    "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "verification_receipt_ref": {
+    "artifact_id": "VR-EFFECTS",
+    "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/verification-receipts/VR-EFFECTS.json",
+    "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "status": "evidence_bound",
+  "reason_codes": [],
+  "reviewed_at": "2026-09-28T09:05:00Z",
+  "effects_settled": false,
+  "scope_completeness_verified": false,
+  "verifier_identity_verified": false,
+  "user_decision_verified": false,
+  "tool_execution_authorized": false,
+  "release_authorized": false
+}

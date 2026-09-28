@@ -206,8 +206,16 @@ Recommended validation order:
 126. `control-execution-receipt.schema.json`
 127. `mission-wave-termination-request.schema.json`
 128. `mission-wave-termination.schema.json`
+129. `tool-effect-scope.schema.json`
+130. `tool-effect-review.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
+
+`ToolEffectScope` v0.1 binds one unknown invocation to a finite resource scope,
+exact observations, check IDs, and repository state. `ToolEffectReview` v0.1
+records evidence-binding checks, not settlement or approval. Its six authority
+and assurance booleans remain false, including when `status` is `evidence_bound`.
+See [Tool Effect Review](../docs/tool-effect-review.md) before using either.
 
 `GitHubReleaseTrustedRoot` retains the complete pinned GitHub TUF
 root/metadata/target chain for offline replay. `GitHubReleaseIndependentVerification`

@@ -1,5 +1,22 @@
 # Research Compendium
 
+## 2026-09-28: Effect Evidence Is Not Effect Settlement
+
+The unknown-effect reproduction requires two separate gates: binding the
+inspection evidence and authorizing terminal settlement. The first executable
+slice is [Tool Effect Review](tool-effect-review.md). It binds exact retained
+lease/admission/checkpoint identity, finite resource scope, source observations,
+verification plan, actual receipt claims, and unchanged repository state.
+Cross-scope substitution, incomplete checks, stale proof, and publication-time
+drift block the review. It neither executes inspection nor clears the hold.
+
+A receipt self-digest and explicit checker arguments establish consistency,
+not verifier identity, complete inspection, absence of arbitrary external
+effects, or USER consent. These distinctions remain explicit false fields even
+for an `evidence_bound` review. Stronger verifier policies must not be reduced
+to static signature verification when terminal settlement is implemented.
+This is local engineering synthesis, not a new external doctrine claim.
+
 ## Unknown Effects Versus Completed Callbacks (2026-09-28)
 
 **Reproduction:** at both main `e502101` and publication-fence head `fbfb495`,

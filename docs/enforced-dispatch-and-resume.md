@@ -347,6 +347,11 @@ that operation before the runtime can clear it. Generic scope approval, notes,
 repo cleanliness, or a lease revocation are not that proof. This does not detect
 unreported side effects from tools that bypass the covered provider/gateway path.
 
+Use the [tool-effect reviewer](tool-effect-review.md) to prepare the exact
+invocation/scope/observation/verification packet. `evidence_bound` is only a
+consistency result; it does not settle effects or verify USER consent, verifier
+identity, or completeness of the external effect scope. Keep the hold active.
+
 ## 6. Provider Adapters
 
 ### 6.1 Codex

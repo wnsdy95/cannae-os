@@ -75,6 +75,14 @@ authorized wave. Preserve the unknown-effect hold and gather effect evidence;
 until an exact USER reconciliation contract exists, neither chat approval nor
 manually inserted success records can clear it.
 
+Prepare a ToolEffectReview using the routed tool-effect-review procedure.
+Freeze the effect scope and observations before obtaining its verification plan
+and receipt; changing a resource, reference, or check requires fresh proof.
+Do not translate `evidence_bound` into "effects verified": independently inspect
+checker adequacy, verifier authenticity, and external scope completeness, then
+seek the separately contracted exact USER decision. The review has no clearing
+operation and never gives the blocked agent inspection or compensation authority.
+
 When extending a positive publisher, perform expensive validation outside the
 namespace lease and repeat a short, synchronous, read-only authority predicate
 inside the store's publication guard. Never write, recover, spawn a validator,
