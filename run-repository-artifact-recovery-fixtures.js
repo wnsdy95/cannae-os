@@ -177,6 +177,69 @@ try {
   assert.strictEqual(migratedHistoryTwo.coordination.fencing_token, migratedHistoryThree.coordination.fencing_token);
   console.log("PASS one lease may migrate and commit multiple revisions without weakening fencing");
 
+  const guarded = {
+    repositoryPath, artifactRoot, missionId: "MIS-Guard", waveId: "W1",
+    kind: "reports", artifactId: "OUT-Guard", payload: { state: "guarded" }
+  };
+  const beforeGuard = verifyRepositoryArtifacts({ repositoryPath, artifactRoot });
+  for (const result of [false, undefined, null, 1, "true"]) {
+    assert.throws(() => writeRepositoryArtifact({ ...guarded, publicationGuard: () => result }), /PUBLICATION_GUARD_REJECTED/);
+  }
+  assert.throws(() => writeRepositoryArtifact({ ...guarded, publicationGuard: () => { throw new Error("scope revoked"); } }), /scope revoked/);
+  assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).manifest_sha256, beforeGuard.manifest_sha256);
+  console.log("PASS rejected predicates leave no new artifact, journal, or manifest revision");
+
+  let asyncCalled = false;
+  assert.throws(() => writeRepositoryArtifact({ ...guarded, publicationGuard: async () => { asyncCalled = true; return true; } }), /PUBLICATION_GUARD_INVALID/);
+  assert.strictEqual(asyncCalled, false);
+  assert.throws(() => writeRepositoryArtifact({ ...guarded, publicationGuard: () => Promise.resolve(true) }), /PUBLICATION_GUARD_INVALID/);
+  assert.throws(() => writeRepositoryArtifact({ ...guarded, publicationGuard: () => writeRepositoryArtifact(guarded) }), /PUBLICATION_GUARD_REENTRANT/);
+  assert.throws(() => writeRepositoryArtifact({ ...guarded, publicationGuard: () => verifyRepositoryArtifacts({ repositoryPath, artifactRoot, recover: true }) }), /PUBLICATION_GUARD_REENTRANT/);
+  console.log("PASS asynchronous and recursive write or recovery predicates fail closed");
+
+  const admitted = writeRepositoryArtifact({ ...guarded, publicationGuard: context => {
+    assert.strictEqual(context.manifest.manifest_revision, beforeGuard.manifest_revision);
+    assert(Object.isFrozen(context) && Object.isFrozen(context.manifest.artifacts[0]));
+    assert.strictEqual(Reflect.set(context.manifest, "manifest_revision", 999), false);
+    assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).valid, true);
+    return true;
+  } });
+  const reused = writeRepositoryArtifact({ ...guarded, reuseExisting: true, publicationGuard: () => true });
+  assert.strictEqual(reused.manifest_revision, admitted.manifest_revision);
+  assert.strictEqual(reused.transaction_id, "none");
+  assert.throws(() => writeRepositoryArtifact({ ...guarded, reuseExisting: true, publicationGuard: () => false }), /PUBLICATION_GUARD_REJECTED/);
+  console.log("PASS frozen verified snapshots and exact reuse still require a current positive predicate");
+
+  assert.throws(() => writeRepositoryArtifact({
+    ...guarded, artifactId: "OUT-Expired-Guard", leaseTtlMs: 20,
+    publicationGuard: () => {
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 40);
+      return true;
+    }
+  }), /expired/);
+  assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).manifest_revision, admitted.manifest_revision);
+  console.log("PASS a predicate cannot renew a writer whose lease expired during appraisal");
+
+  for (const stage of ["prepared", "artifact_written", "history_created", "manifest_committed"]) {
+    const crashOptions = { ...guarded, artifactId: `OUT-Allow-${stage}`, faultInjectionStage: stage,
+      publicationGuard: () => true };
+    assert.throws(() => writeRepositoryArtifact(crashOptions), /Injected artifact transaction failure/);
+    let recoveredBeforeStop = false;
+    writeRepositoryArtifact({ ...guarded, artifactId: `OUT-Stop-${stage}`, publicationGuard: ({ manifest }) => {
+      const allow = manifest.artifacts.find(entry => entry.artifact_id === crashOptions.artifactId);
+      assert.strictEqual(Boolean(allow), stage !== "prepared");
+      assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).valid, true);
+      recoveredBeforeStop = true;
+      return true;
+    } });
+    assert(recoveredBeforeStop);
+    assert.throws(() => writeRepositoryArtifact({ ...guarded, artifactId: `OUT-Late-${stage}`,
+      publicationGuard: ({ manifest }) => !manifest.artifacts.some(entry => entry.artifact_id === `OUT-Stop-${stage}`)
+    }), /PUBLICATION_GUARD_REJECTED/);
+    assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).valid, true);
+    console.log(`PASS ${stage} recovery precedes the next stop appraisal and blocks a later allow`);
+  }
+
   const namespacePath = path.join(artifactRoot, "repositories", repository.key);
   const manifest = JSON.parse(fs.readFileSync(path.join(namespacePath, "manifest.json"), "utf8"));
   const tamperTarget = path.join(artifactRoot, manifest.artifacts[0].relative_path);
@@ -186,7 +249,7 @@ try {
   assert(artifactTamper.issues.some(item => item.code === "ARTIFACT_HASH_MISMATCH"));
   console.log("PASS artifact byte tampering is detected");
 
-  const untouchedArtifact = manifest.artifacts[1];
+  const untouchedArtifact = manifest.artifacts.find(entry => entry.sha256 !== manifest.artifacts[0].sha256);
   fs.writeFileSync(tamperTarget, fs.readFileSync(path.join(artifactRoot, untouchedArtifact.relative_path)));
   const stillInvalid = verifyRepositoryArtifacts({ repositoryPath, artifactRoot });
   assert.strictEqual(stillInvalid.valid, false);
@@ -201,7 +264,7 @@ try {
   assert(manifestTamper.issues.some(item => item.code === "MANIFEST_INTEGRITY_INVALID"));
   console.log("PASS manifest tampering is detected before artifact reuse");
 
-  console.log("Repository artifact recovery fixtures: 7/7 passed");
+  console.log("Repository artifact recovery fixtures: 15/15 passed");
 } finally {
   fs.rmSync(temporaryRoot, { recursive: true, force: true });
 }

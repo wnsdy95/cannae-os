@@ -525,6 +525,14 @@ reported progress, including idle campaigns and retained ready orders. Trusted
 time, hard process deadlines, and pause-adjusted budgets remain external or
 separately designed lifecycle work.
 
+Wave, dispatch, and gateway positive publications now repeat their readiness
+checks under the artifact namespace lease after pending-journal recovery. This
+closes the covered check/write gap against a preceding retained stop and keeps
+settlement available. It does not close campaign stop/restart contracts,
+supervisor order/challenge publication, or atomic multi-artifact settlement.
+See `repository-artifact-isolation-policy.md` for exact recovery ordering and
+the unchanged cooperating-writer/shared-filesystem trust boundary.
+
 ## 17. Phase 16: Enforced Dispatch And Resumable Orchestration
 
 Status: implemented as a provider-neutral, manifest-backed local admission

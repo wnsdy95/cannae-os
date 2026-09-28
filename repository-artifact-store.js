@@ -613,6 +613,9 @@ function verifyRepositoryArtifacts(options = {}) {
   }
   let recovered = [];
   if (options.recover === true) {
+    if (publicationGuardNamespaces.has(namespacePath)) {
+      throw new Error("ARTIFACT_PUBLICATION_GUARD_REENTRANT: predicates must not recover their namespace.");
+    }
     const lock = acquireNamespaceLock(artifactRoot, namespacePath, options);
     try {
       const paths = manifestPaths(namespacePath);
@@ -644,6 +647,36 @@ function verifyRepositoryArtifacts(options = {}) {
   };
 }
 
+const publicationGuardNamespaces = new Set();
+
+function frozenSnapshot(value) {
+  if (value && typeof value === "object") {
+    Object.values(value).forEach(frozenSnapshot);
+    Object.freeze(value);
+  }
+  return value;
+}
+
+function checkPublicationGuard(guard, context, namespacePath, lock) {
+  if (guard === undefined) return;
+  if (typeof guard !== "function" || require("util").types.isAsyncFunction(guard)) {
+    throw new Error("ARTIFACT_PUBLICATION_GUARD_INVALID: a synchronous predicate is required.");
+  }
+  assertRepositoryLease(lock);
+  publicationGuardNamespaces.add(namespacePath);
+  try {
+    const result = guard(frozenSnapshot(JSON.parse(JSON.stringify(context))));
+    if (result && typeof result.then === "function") {
+      Promise.resolve(result).catch(() => {});
+      throw new Error("ARTIFACT_PUBLICATION_GUARD_INVALID: asynchronous predicates are prohibited.");
+    }
+    if (result !== true) throw new Error("ARTIFACT_PUBLICATION_GUARD_REJECTED: explicit true is required.");
+    assertRepositoryLease(lock);
+  } finally {
+    publicationGuardNamespaces.delete(namespacePath);
+  }
+}
+
 function persistRepositoryArtifact(options, content, fileName, contentType) {
   const repository = resolveRepository(options.repositoryPath);
   const requestedArtifactRoot = path.resolve(options.artifactRoot || path.join(process.cwd(), ".cannae", "artifacts"));
@@ -662,6 +695,9 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
   ensureExistingPathInside(artifactRoot, artifactPath, "Artifact path");
   ensureExistingPathInside(artifactRoot, manifestPath, "Manifest path");
   const namespacePath = ensureInside(artifactRoot, path.join(artifactRoot, namespaceRoot), "Repository namespace");
+  if (publicationGuardNamespaces.has(namespacePath)) {
+    throw new Error("ARTIFACT_PUBLICATION_GUARD_REENTRANT: predicates must not write to their namespace.");
+  }
   const lock = acquireNamespaceLock(artifactRoot, namespacePath, options);
   try {
     const bytes = Buffer.isBuffer(content) ? content : Buffer.from(content);
@@ -681,6 +717,10 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
       const integrityIssues = collectIntegrityIssues(repository, artifactRoot, namespacePath);
       if (integrityIssues.length > 0) throw new Error(`Repository artifact integrity check failed: ${integrityIssues.map(item => item.code).join(", ")}`);
     }
+    // Recover older transactions before appraising the state used by this publication.
+    checkPublicationGuard(options.publicationGuard, {
+      repository, artifactRoot, manifest: existingManifest
+    }, namespacePath, lock);
     let created = true;
 
     if (fs.existsSync(artifactPath)) {
@@ -695,6 +735,19 @@ function persistRepositoryArtifact(options, content, fileName, contentType) {
     const now = options.createdAt || new Date().toISOString();
     const existingArtifact = existingManifest && (existingManifest.artifacts || [])
       .find(item => item.relative_path === relativePath.split(path.sep).join("/"));
+    if (!created && options.reuseExisting === true && existingArtifact &&
+        existingArtifact.artifact_id === artifactId && existingArtifact.sha256 === payloadHash) {
+      assertRepositoryLease(lock);
+      return {
+        repository, artifact_root: artifactRoot, namespace_root: namespacePath,
+        artifact_path: artifactPath, manifest_path: manifestPath,
+        relative_path: existingArtifact.relative_path, sha256: payloadHash,
+        manifest_revision: existingManifest.manifest_revision,
+        manifest_sha256: existingManifest.integrity.canonical_manifest_sha256,
+        lease_id: lock.lease_id, fencing_token: lock.fencing_token,
+        transaction_id: "none", created: false
+      };
+    }
     const artifactEntry = {
       id: `RA-${sha256(relativePath).slice(0, 16)}`,
       artifact_id: artifactId,

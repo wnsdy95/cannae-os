@@ -1,5 +1,31 @@
 # Research Compendium
 
+## Campaign Publication Appraisal (2026-09-28)
+
+**Local finding:** entry-time readiness checks left a gap before durable wave,
+dispatch, and gateway authority publication. Separate per-wave, per-agent, and
+per-lease locks do not serialize an independently persisted campaign decision.
+
+**Application:** a synchronous store predicate repeats the relevant readiness
+checks under the existing repository namespace lease, after verified recovery
+and before journal preparation. Earlier written candidates recover before a
+later stop commits; unwritten prepared candidates roll back. Exact reuse still
+requires appraisal. Frozen snapshots, explicit boolean success, expired-lease
+rejection, no recursive write/recovery, and actual competing-process tests make
+this a storage-boundary check rather than another early observation.
+
+**Scope:** wave plans/campaign creation/context/report/closeout, dispatch
+policy/lease/tool allow, and gateway allow/authorized/executing events. Denial,
+already-admitted checkpoint recording, cancellation, and recovery remain available.
+The fixtures inject an escalation or expiry between earlier checks and the
+actual publication, and verify the forbidden artifact is absent.
+
+**Limits:** cooperating local writers, not a hostile-writer or distributed
+security boundary; no multi-artifact transaction, hard process kill, USER
+stop/restart contract, or complete terminal reconciliation. Supervisor
+order/challenge publication still needs integration. No external military-source
+claim is added. See `docs/completion-backlog.md` for remaining lifecycle work.
+
 ## Sigstore Dependency Replay Migration (2026-09-28)
 
 **Primary evidence:** upstream [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)

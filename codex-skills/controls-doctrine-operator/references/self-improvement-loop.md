@@ -52,6 +52,32 @@ Regenerate retained audit snapshots through their source scanner after source
 changes. Their `as_of` must reflect the actual UTC execution date; never manually
 restamp an older result or treat its date as proof of current coverage.
 
+## Publication Denial And Partial State
+
+A ready result from before a stop is not reusable authority. When a controller
+denies at its publication boundary, inspect status and verify the current
+manifest before retrying. Earlier plan, routing, control, admission, or gateway
+records may already exist because one lifecycle command is not a multi-artifact
+transaction. Preserve those records; do not delete them, overwrite evidence,
+backdate the clock, or use the raw store CLI to insert the denied artifact.
+
+For an already admitted tool, distinguish not-started from started/unknown
+effects, then use exact cancellation, result settlement, or recovery. Denial of
+new authority does not establish process termination or settle old effects.
+If the campaign is stopped, do not resume with a new session or campaign ID
+without separately authorized successor scope and reconciled predecessor state.
+
+When extending a positive publisher, perform expensive validation outside the
+namespace lease and repeat a short, synchronous, read-only authority predicate
+inside the store's publication guard. Never write, recover, spawn a validator,
+or perform an external effect from that predicate. Test a stop or expiry inserted
+between the first check and publication, not only a stop before the command.
+Also test exact reuse and prepared/artifact-written/history-reserved/committed
+crash ordering. A generic store write without that integration is not admission.
+
+Read `docs/repository-artifact-isolation-policy.md` and the lifecycle document
+for covered publishers and residual cancellation/restart limits.
+
 ## Verifier Dependency Migrations
 
 Before editing a verifier or dependency lockfile, inspect the producer metadata

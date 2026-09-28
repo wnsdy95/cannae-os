@@ -342,10 +342,19 @@ Preserve the stop decision and reconcile the old execution before proposing
 separately authorized successor work. Never edit retained campaign bytes or
 fabricate a retry to clear an escalation.
 
+The controllers repeat readiness checks inside the artifact namespace lease at
+plan/campaign/context/report/closeout, dispatch policy/lease/tool-allow, and
+gateway allow/authorized/executing publication. A stop retained after the earlier
+check but before publication denies that new artifact. Exact artifact reuse also
+requires current appraisal. See [publication-time appraisal](repository-artifact-isolation-policy.md#31-publication-time-appraisal)
+for crash ordering and the non-transactional multi-artifact boundary.
+
 This is an admission guard, not a complete campaign cancellation/restart protocol
 or an operating-system process kill. A call already admitted when a stop arrives
-still needs result reconciliation. Atomic stop/publication fencing, explicit
-USER restart contracts, and campaign-wide terminal settlement remain open.
+still needs result reconciliation. Explicit USER stop/restart contracts,
+supervisor order/challenge publication integration, and campaign-wide terminal
+settlement remain open. Raw store writes and mutable runtime code are not an
+independently protected authority service.
 
 ## 10. Regression Gate
 

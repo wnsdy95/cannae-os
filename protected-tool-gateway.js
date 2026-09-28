@@ -218,7 +218,8 @@ function writeJsonArtifact(options, gatewayLease, descriptor) {
     kind: descriptor.kind,
     artifactId: descriptor.artifactId,
     payload: descriptor.payload,
-    createdAt: descriptor.createdAt
+    createdAt: descriptor.createdAt,
+    publicationGuard: descriptor.publicationGuard
   });
   return { ref: artifactRef(result, descriptor.artifactId), result };
 }
@@ -542,8 +543,29 @@ function persistEvent(options, gatewayLease, requestRecord, descriptor) {
     kind: KINDS.event,
     artifactId: payload.id,
     payload,
-    createdAt: payload.recorded_at
+    createdAt: payload.recorded_at,
+    publicationGuard: ["authorized", "executing"].includes(payload.state)
+      ? gatewayPublicationGuard(options, requestRecord.payload, descriptor.checkpointRef, descriptor.decisionRef)
+      : undefined
   });
+}
+
+function gatewayPublicationGuard(options, request, checkpointRef, decisionRef, validUntil) {
+  return () => {
+    const selected = activeLease(options, identityFromRequest(request), nowIso(options));
+    if (selected.code !== "LEASE_ACTIVE" || !sameRef(selected.leaseRecord.ref, request.lease_ref) ||
+        !sameRef(selected.checkpointRecord.ref, checkpointRef)) {
+      throw new Error(`Gateway publication no longer matches active dispatch state: ${selected.code}`);
+    }
+    if (decisionRef) {
+      const decision = loadArtifactRef(selected.view, decisionRef, "tool-gateway-decision");
+      validUntil = decision.payload.valid_until;
+    }
+    if (timestamp(nowIso(options), "Gateway publication time") >= timestamp(validUntil, "decision valid_until")) {
+      throw new Error("Gateway authorization expired before publication.");
+    }
+    return true;
+  };
 }
 
 function ensureReceivedEvent(options, gatewayLease, records) {
@@ -838,7 +860,10 @@ function persistDecision(options, gatewayLease, requestRecord, descriptor) {
     kind: KINDS.decision,
     artifactId: payload.id,
     payload,
-    createdAt: payload.decided_at
+    createdAt: payload.decided_at,
+    publicationGuard: payload.decision === "allow"
+      ? gatewayPublicationGuard(options, requestRecord.payload, payload.checkpoint_ref, undefined, payload.valid_until)
+      : undefined
   });
   return { payload, ref: written.ref, entry: null };
 }

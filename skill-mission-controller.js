@@ -225,7 +225,7 @@ function persistJson(options, descriptor) {
     if (existing.entry.sha256 !== sha256(jsonBytes(descriptor.payload))) {
       throw new Error(`Artifact ${descriptor.artifactId} already exists with different content.`);
     }
-    return existing.ref;
+    if (!descriptor.publicationGuard) return existing.ref;
   }
   const result = writeRepositoryArtifact({
     repositoryPath: options.repository,
@@ -235,7 +235,9 @@ function persistJson(options, descriptor) {
     kind: descriptor.kind,
     artifactId: descriptor.artifactId,
     payload: descriptor.payload,
-    createdAt: descriptor.createdAt
+    createdAt: descriptor.createdAt,
+    publicationGuard: descriptor.publicationGuard,
+    reuseExisting: true
   });
   return artifactRef(result, descriptor.artifactId);
 }
@@ -626,7 +628,8 @@ function campaignReference(plan, options) {
     kind: "self-improvement-campaigns",
     artifactId: campaign.id,
     payload: campaign,
-    createdAt: campaign.created_at
+    createdAt: campaign.created_at,
+    publicationGuard: wavePublicationGuard(plan, options, true)
   });
 }
 
@@ -666,6 +669,22 @@ function assertWaveNotTerminated(options, missionId, waveId) {
   if (store.entries.length) throw new Error("MISSION_WAVE_TERMINATED: use a new authorized wave; terminal history cannot be reopened.");
 }
 
+function wavePublicationGuard(plan, options, allowMissingCampaign = false) {
+  return ({ manifest }) => {
+    const now = Date.parse(options.now || new Date().toISOString());
+    if (!Number.isFinite(now) || now >= Date.parse(plan.valid_until)) {
+      throw new Error("Mission wave plan is expired or publication time is invalid.");
+    }
+    if (manifest) {
+      assertWaveNotTerminated(options, plan.mission_id, plan.wave_id);
+      assertAdaptiveCampaignMayContinue(plan, options, allowMissingCampaign);
+    } else if (!allowMissingCampaign) {
+      throw new Error("Wave publication requires a retained manifest.");
+    }
+    return true;
+  };
+}
+
 function openWave(plan, options = {}) {
   assertValid(plan, "mission-wave-plan", "Mission wave plan");
   return withWaveLifecycle(options, plan.mission_id, plan.wave_id, locked => {
@@ -689,7 +708,8 @@ function openWaveUnlocked(plan, options = {}) {
     kind: "mission-wave-plans",
     artifactId: plan.id,
     payload: plan,
-    createdAt: plan.created_at
+    createdAt: plan.created_at,
+    publicationGuard: wavePublicationGuard(plan, operationOptions, true)
   });
 
   const waveReceipt = persistedOrGeneratedReceipt(plan, null, operationOptions, doctrineRoot);
@@ -803,7 +823,8 @@ function openWaveUnlocked(plan, options = {}) {
       kind: "agent-context-packs",
       artifactId: contextPack.id,
       payload: contextPack,
-      createdAt: contextPack.created_at
+      createdAt: contextPack.created_at,
+      publicationGuard: wavePublicationGuard(plan, operationOptions)
     });
     contextPacks.push({ agent_id: agent.agent_id, context_pack_ref: ref });
   }
@@ -1093,7 +1114,8 @@ function recordWaveUnlocked(report, options = {}) {
     kind: "mission-wave-reports",
     artifactId: report.id,
     payload: recordedReport,
-    createdAt: report.recorded_at
+    createdAt: report.recorded_at,
+    publicationGuard: wavePublicationGuard(planArtifact.payload, operationOptions)
   });
   const completed = report.agent_results.filter(result => result.status === "complete").map(result => `${result.agent_id}: ${result.summary}`);
   const blocked = report.agent_results.filter(result => result.status !== "complete")
@@ -1338,7 +1360,8 @@ function closeWaveUnlocked(aar, options = {}) {
     kind: "mission-wave-closeouts",
     artifactId: closeout.id,
     payload: closeout,
-    createdAt: closedAt
+    createdAt: closedAt,
+    publicationGuard: wavePublicationGuard(planArtifact.payload, operationOptions)
   });
   const verification = verifyRepositoryArtifacts({ repositoryPath: repository.root, artifactRoot: artifactRootPath(operationOptions) });
   if (!verification.valid) throw new Error(`Post-close artifact verification failed: ${verification.issues.map(item => item.code).join(", ")}`);

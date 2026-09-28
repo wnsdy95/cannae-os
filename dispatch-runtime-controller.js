@@ -221,7 +221,8 @@ function writeJsonArtifact(options, descriptor) {
     kind: descriptor.kind,
     artifactId: descriptor.artifactId,
     payload: descriptor.payload,
-    createdAt: descriptor.createdAt
+    createdAt: descriptor.createdAt,
+    publicationGuard: descriptor.publicationGuard
   });
   return artifactRef(result, descriptor.artifactId);
 }
@@ -330,7 +331,12 @@ function persistPolicy(options, policy) {
     kind: "dispatch-tool-policies",
     artifactId: policy.id,
     payload: policy,
-    createdAt: policy.approved_at
+    createdAt: policy.approved_at,
+    publicationGuard: () => {
+      const bundle = contextBundle(options, policy);
+      policyValidity(policy, bundle.context.payload, nowIso(options));
+      return true;
+    }
   });
   return ref;
 }
@@ -563,7 +569,16 @@ function createLeaseFromRecord(
     kind: "agent-dispatch-leases",
     artifactId: lease.id,
     payload: lease,
-    createdAt: lease.issued_at
+    createdAt: lease.issued_at,
+    publicationGuard: () => {
+      const current = contextBundle(options, policy);
+      policyValidity(policy, current.context.payload, nowIso(options));
+      if (!sameRef(current.context.ref, lease.context_pack_ref) ||
+          timestamp(nowIso(options), "Lease publication time") >= timestamp(lease.expires_at, "Lease expires_at")) {
+        throw new Error("Dispatch lease publication no longer matches live authority.");
+      }
+      return true;
+    }
   });
   const checkpoint = initialCheckpoint(lease, leaseRef, repositoryState, now);
   renewRepositoryLease(coordinationLock);
@@ -1027,7 +1042,7 @@ function admissionEvent(leaseRecord, checkpointRecord, policyRecord, identity, h
   };
 }
 
-function persistAdmission(options, event) {
+function persistAdmission(options, event, publicationGuard) {
   assertValid(event, "tool-admission-event", "Tool admission event");
   return writeJsonArtifact(options, {
     missionId: event.mission_id,
@@ -1035,7 +1050,8 @@ function persistAdmission(options, event) {
     kind: "tool-admission-events",
     artifactId: event.id,
     payload: event,
-    createdAt: event.decided_at
+    createdAt: event.decided_at,
+    publicationGuard
   });
 }
 
@@ -1141,7 +1157,15 @@ function admitToolRequest(options, identity, hookInput) {
       decidedAt: now
     });
     renewRepositoryLease(lock);
-    const ref = persistAdmission(options, event);
+    const ref = persistAdmission(options, event, decision === "allow" ? () => {
+      const current = activeLease(options, identity, nowIso(options));
+      if (current.code !== "LEASE_ACTIVE" || !sameRef(current.leaseRecord.ref, leaseRecord.ref) ||
+          !sameRef(current.checkpointRecord.ref, checkpointRecord.ref)) {
+        throw new Error(`Dispatch publication no longer matches active authority: ${current.code}`);
+      }
+      policyValidity(policyRecord.payload, loadArtifactRef(current.view, leaseRecord.payload.context_pack_ref).payload, nowIso(options));
+      return true;
+    } : undefined);
     return {
       status: decision === "allow" ? "admitted" : "denied",
       decision,

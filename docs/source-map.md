@@ -16,6 +16,13 @@ elapsed deadline is likewise a local runtime correction: fixtures cover idle
 expiry, exact offset-aware boundaries, retained orders, clock rollback, and
 continued settlement after admission is denied. This does not prove trusted time.
 
+Publication-time appraisal in `docs/repository-artifact-isolation-policy.md`
+is a local concurrency correction, not new military doctrine. The artifact
+recovery/concurrency, campaign-supervisor, and protected-tool-gateway fixtures
+exercise stop/check/write races, expiry, exact reuse, and crash ordering.
+Only covered controller publications are guarded; this is not complete campaign
+cancellation, distributed consensus, or authentication of arbitrary store writes.
+
 `docs/implementation-candidate-registry.md` and
 `docs/completion-backlog.md` apply the existing KM separation of source,
 interpretation, evidence, and action queue to engineering completion. Their
