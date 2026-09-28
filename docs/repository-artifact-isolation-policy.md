@@ -94,6 +94,11 @@ lease, and tool-allow publication use this boundary to recheck campaign readines
 Gateway allow decisions and authorized/executing events also recheck current
 lease/checkpoint binding and authorization expiry. Already-admitted baseline and
 post-tool checkpoints, denial, cancellation, and recovery remain recordable.
+Supervisor challenge and cycle-order publication now use the same primitive.
+Exact order reuse rechecks current readiness; a new challenge also requires its
+unchanged signed manifest and finite window. Read
+[guarded supervisor publication](bounded-self-improvement-operations.md#281-guarded-supervisor-publication)
+for partial issuance and recovery handling.
 An artifact or ready projection is a historical observation, not durable immunity
 from a later stop; consumers must still reappraise current authority.
 
@@ -106,8 +111,8 @@ both orderings, exact reuse, stale leases, and all four injection boundaries.
 This is a local publication primitive, not authenticated campaign cancellation,
 an atomic multi-artifact operation, or a protected execution environment. Raw
 store writers can omit a predicate, and the shared-filesystem limits in section 9
-still apply. USER stop/restart contracts, complete terminal settlement, supervisor
-order/challenge publication integration, and process cancellation remain separate.
+still apply. USER stop/restart contracts, complete terminal settlement, and
+process cancellation remain separate.
 
 ## 4. Manifest
 

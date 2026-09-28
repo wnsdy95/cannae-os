@@ -10,12 +10,19 @@ const {
 } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const { evaluateVerifierTrustReadiness } = require("./verifier-trust-readiness");
-const { createVerifierChallengeSet } = require("./verifier-challenge-set");
+const { createVerifierChallengeSet, verifyVerifierChallengeSet } = require("./verifier-challenge-set");
 
 const NONE_ARTIFACT_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const NONE_DECISION_REF = Object.freeze({ decision_id: "none", relative_path: "none", sha256: "none" });
 const RETRY_DECISIONS = new Set(["revise_and_retry", "rollback", "continue"]);
 const TERMINAL_DECISIONS = new Set(["complete", "terminate", "escalate"]);
+const CHALLENGE_BOOTSTRAP_CODES = new Set([
+  "TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE",
+  "TRUST_ADMISSION_CHALLENGE_RESPONSE_UNAVAILABLE",
+  "TRUST_ADMISSION_RECEIPT_QUORUM_UNAVAILABLE",
+  "TRUST_ADMISSION_COMPARATIVE_QUORUM_UNAVAILABLE",
+  "TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE"
+]);
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -788,6 +795,26 @@ function selectIdempotentOrder(proposed, existingOrders) {
   return matching[0].payload;
 }
 
+function mayIssueChallenge(history, proposed) {
+  return Boolean(history.trustPolicy && ["0.5", "0.6", "0.7"].includes(history.trustPolicy.schema_version) &&
+    proposed._dispatchProjection.transition !== "hold" && proposed.blocking_codes.length > 0 &&
+    proposed.blocking_codes.every(code => CHALLENGE_BOOTSTRAP_CODES.has(code)) &&
+    proposed.blocking_codes.includes("TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE"));
+}
+
+function publicationState(options, snapshot, notBefore) {
+  const evaluatedAt = options.evaluatedAt || new Date().toISOString();
+  if (!Number.isFinite(Date.parse(evaluatedAt)) || Date.parse(evaluatedAt) < Date.parse(notBefore)) {
+    throw new Error("SUPERVISOR_PUBLICATION_TIME_INVALID");
+  }
+  const store = loadVerifiedStore(options.repositoryPath, options.artifactRoot);
+  if (!snapshot.manifest || manifestDigest(snapshot.manifest) !== store.verification.manifest_sha256) {
+    throw new Error("SUPERVISOR_PUBLICATION_MANIFEST_CHANGED");
+  }
+  const history = loadCampaignHistory(store, options.campaignId);
+  return { store, history, evaluatedAt, proposed: deriveOrder(store, history, evaluatedAt) };
+}
+
 function superviseCampaign(options) {
   if (!options || !options.repositoryPath || !options.campaignId) {
     throw new Error("repositoryPath and campaignId are required.");
@@ -796,18 +823,7 @@ function superviseCampaign(options) {
   let history = loadCampaignHistory(store, options.campaignId);
   let proposed = deriveOrder(store, history, options.evaluatedAt);
   let issuedChallenge = null;
-  const challengeBootstrapCodes = new Set([
-    "TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE",
-    "TRUST_ADMISSION_CHALLENGE_RESPONSE_UNAVAILABLE",
-    "TRUST_ADMISSION_RECEIPT_QUORUM_UNAVAILABLE",
-    "TRUST_ADMISSION_COMPARATIVE_QUORUM_UNAVAILABLE",
-    "TRUST_ADMISSION_WORKLOAD_IDENTITY_UNAVAILABLE"
-  ]);
-  const mayIssueChallenge = options.writeArtifact && history.trustPolicy &&
-    ["0.5", "0.6", "0.7"].includes(history.trustPolicy.schema_version) && proposed._dispatchProjection.transition !== "hold" &&
-    proposed.blocking_codes.length > 0 && proposed.blocking_codes.every(code => challengeBootstrapCodes.has(code)) &&
-    proposed.blocking_codes.includes("TRUST_ADMISSION_CHALLENGE_SET_UNAVAILABLE");
-  if (mayIssueChallenge) {
+  if (options.writeArtifact && mayIssueChallenge(history, proposed)) {
     if (!options.challengeIssuerPrivateKeyPem) {
       throw new Error("Trust-policy v0.5+ challenge issuance requires --challenge-private-key with the policy-pinned supervisor Ed25519 private key.");
     }
@@ -831,14 +847,44 @@ function superviseCampaign(options) {
       kind: "verifier-challenge-sets",
       artifactId: challenge.id,
       payload: challenge,
-      createdAt: challenge.issued_at
+      createdAt: challenge.issued_at,
+      publicationGuard: snapshot => {
+        const current = publicationState(options, snapshot, challenge.issued_at);
+        if (current.store.verification.manifest_sha256 !== challenge.observed_manifest.sha256 ||
+            !mayIssueChallenge(current.history, current.proposed)) {
+          throw new Error("SUPERVISOR_CHALLENGE_PUBLICATION_CHANGED");
+        }
+        const verification = verifyVerifierChallengeSet({
+          challengeSet: challenge, campaign: current.history.campaign, trustPolicy: current.history.trustPolicy,
+          order: current.proposed._dispatchProjection, repository: current.store.verification.repository,
+          evaluatedAt: current.evaluatedAt
+        });
+        if (!verification.valid) throw new Error(`SUPERVISOR_CHALLENGE_PUBLICATION_INVALID:${verification.codes.join(",")}`);
+        return true;
+      }
     });
     store = loadVerifiedStore(options.repositoryPath, options.artifactRoot);
     history = loadCampaignHistory(store, options.campaignId);
     proposed = deriveOrder(store, history, options.evaluatedAt);
   }
   const existing = selectIdempotentOrder(proposed, history.existingOrders);
-  return { order: existing || proposed, existing: Boolean(existing), issuedChallenge, store, history };
+  const order = existing || proposed;
+  // Exact reuse must pass the same current-state guard as a new publication.
+  const writtenOrder = options.writeArtifact ? writeRepositoryArtifact({
+    repositoryPath: options.repositoryPath, artifactRoot: options.artifactRoot,
+    missionId: order.mission_id, waveId: `C${order.cycle_number}`,
+    kind: "self-improvement-cycle-orders", artifactId: order.id, payload: order,
+    createdAt: order.generated_at, reuseExisting: true,
+    publicationGuard: snapshot => {
+      const current = publicationState(options, snapshot, proposed.generated_at);
+      if (JSON.stringify(comparableOrder(current.proposed)) !== JSON.stringify(comparableOrder(order))) {
+        throw new Error(`SUPERVISOR_ORDER_PUBLICATION_CHANGED:${current.proposed.status}:${current.proposed.blocking_codes.join(",")}`);
+      }
+      selectIdempotentOrder(current.proposed, current.history.existingOrders);
+      return true;
+    }
+  }) : null;
+  return { order, existing: Boolean(existing), issuedChallenge, writtenOrder, store, history };
 }
 
 function parseArgs(argv) {
@@ -879,19 +925,9 @@ function main() {
       options.challengeIssuerPrivateKeyPem = fs.readFileSync(keyPath);
     }
     const result = superviseCampaign(options);
-    let order = result.order;
+    const order = result.order;
     if (options.writeArtifact && !result.existing) {
-      const writeResult = writeRepositoryArtifact({
-        repositoryPath: options.repositoryPath,
-        artifactRoot: options.artifactRoot,
-        missionId: order.mission_id,
-        waveId: `C${order.cycle_number}`,
-        kind: "self-improvement-cycle-orders",
-        artifactId: order.id,
-        payload: order,
-        createdAt: order.generated_at
-      });
-      console.error(`Artifact written: ${writeResult.relative_path}`);
+      console.error(`Artifact written: ${result.writtenOrder.relative_path}`);
     } else if (options.writeArtifact) {
       console.error(`Artifact already current: ${order.id}`);
     }

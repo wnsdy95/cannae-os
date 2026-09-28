@@ -235,6 +235,36 @@ The supervisor rejects duplicate IDs, a checkpoint without exactly one decision,
 
 Cycle-order schema v0.3 records SPIFFE-specific `trust_policy_admission`; v0.4 records a provider-neutral identity projection; v0.5 adds the exact challenge set, responder evidence and challenge validity boundary; v0.6 adds the complete computed failure-domain graph; v0.7 adds continuous transparency state. The projection includes exact policy/root/evidence references, effective thresholds, eligible verifier/key/domain lists for each evidence purpose, provider and authority identities, transparency sequence/freshness/observer/incident state, evaluation time, conservative validity boundary, and blocking codes. An agent cannot satisfy this gate by reporting readiness; the supervisor derives it from policy, root, challenge, runtime profile, transparency history, and evidence bytes already verified by the repository manifest. Earlier orders remain readable. `SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, log keys, or authority. Only `status: ready` with `execution_authorized: true`, satisfied identity, challenge, independence, and transparency admission where required, and an unexpired signed-campaign `valid_until` may be dispatched. Re-running the supervisor against the same reconstructed state and admission population returns the existing persisted order instead of creating another manifest revision.
 
+### 2.8.1 Guarded Supervisor Publication
+
+`superviseCampaign({ writeArtifact: true, ... })` owns both challenge and cycle
+order publication. The CLI uses that same path. Without `writeArtifact`, the
+module only projects state. Immediately before either write, a synchronous,
+read-only predicate reloads verified history under the namespace lease and
+rechecks the current clock, campaign state and selected trust admission.
+
+A new order and exact reuse must still match the reconstructed order, excluding
+its historical observed-manifest reference and evaluation timestamps. A preceding stop, changed
+lineage, exhausted budget or expired verifier/challenge evidence denies the old
+publication. Unrelated manifest growth is allowed only when that order remains
+equivalent. A non-executable hold can still be retained after reappraisal; this
+guard is not a blanket ban on recording failures or settling admitted work.
+
+A challenge must still have its exact signed pre-publication manifest, current
+bootstrap eligibility, dispatch binding, issuer signature and unexpired window.
+Concurrent history changes require fresh preparation. A competing issuer cannot
+append a second nonce set from the same stale snapshot. Creating a challenge and
+publishing its resulting blocked order are separate transactions: an interruption
+can leave the challenge alone. Inspect retained state before retrying; never
+insert the missing order through the raw store or mint replacement nonces merely
+because a command did not finish. Recover valid pending journals explicitly.
+
+Prepared writes without bytes roll back; written/history-reserved/committed
+artifacts recover before a later writer. Current appraisal still denies stale
+continuation after recovery. This extends the existing cooperating-writer
+publication guard, not authenticated USER stop/restart, hostile-writer isolation,
+trusted time, or atomic cancellation of running processes.
+
 ### 2.9 Campaign Time Budget
 
 The campaign admission window is half-open:

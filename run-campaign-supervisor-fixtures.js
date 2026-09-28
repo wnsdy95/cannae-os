@@ -311,6 +311,137 @@ function stopBeforePublication(environment, kind) {
 }
 
 try {
+  run("supervisor CLI cannot publish a ready order after a concurrent retained stop", () => {
+    const environment = makeEnvironment("supervisor-cli-stop", { createdAt: new Date(Date.now() - 3600000).toISOString() });
+    try {
+      const checkpoint = checkpointFor(environment, 1, 1);
+      const decision = decisionFor(environment, checkpoint, "escalate");
+      const preload = path.join(environment.root, "stop-before-order.js");
+      const stop = { repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+        missionId: environment.campaign.mission_id, waveId: "C1" };
+      fs.writeFileSync(preload, `const store = require(${JSON.stringify(path.join(ROOT, "repository-artifact-store.js"))});
+const original = store.writeRepositoryArtifact;
+let fired = false;
+store.writeRepositoryArtifact = descriptor => {
+  if (!fired && descriptor.kind === "self-improvement-cycle-orders") {
+    fired = true;
+    const common = ${JSON.stringify(stop)};
+    const checkpoint = ${JSON.stringify(checkpoint)};
+    const decision = ${JSON.stringify(decision)};
+    original({ ...common, kind: "self-improvement-checkpoints", artifactId: checkpoint.id, payload: checkpoint, createdAt: checkpoint.generated_at });
+    original({ ...common, kind: "self-improvement-decisions", artifactId: decision.id, payload: decision, createdAt: decision.decided_at });
+  }
+  return original(descriptor);
+};\n`);
+      const result = spawnSync(process.execPath, ["--require", preload, path.join(ROOT, "campaign-supervisor.js"),
+        "--repository", environment.repositoryPath, "--artifact-root", environment.artifactRoot,
+        "--campaign", environment.campaign.id, "--write-artifact"], { encoding: "utf8" });
+      assert.strictEqual(result.status, 2, result.stdout || result.stderr);
+      assert.match(result.stderr, /SUPERVISOR_ORDER_PUBLICATION_CHANGED:awaiting_human/);
+      const manifest = JSON.parse(fs.readFileSync(path.join(environment.artifactRoot, "repositories", environment.repository.key, "manifest.json")));
+      assert(!manifest.artifacts.some(entry => entry.kind === "self-improvement-cycle-orders"));
+      assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot }).valid, true);
+    } finally { fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  for (const reuse of [false, true]) {
+    run(`supervisor ${reuse ? "reused" : "new"} order rejects a stop at publication`, () => {
+      const environment = makeEnvironment(`supervisor-stop-${reuse}`);
+      const options = { repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+        campaignId: environment.campaign.id, evaluatedAt: "2026-07-21T09:15:00Z", writeArtifact: true };
+      try {
+        const prior = reuse ? superviseCampaign(options) : null;
+        let fired = false;
+        beforePublication = descriptor => {
+          if (descriptor.kind !== "self-improvement-cycle-orders") return;
+          beforePublication = null; fired = true;
+          persistPair(environment, checkpointFor(environment, 1, 1), "escalate");
+        };
+        assert.throws(() => superviseCampaign(options), /SUPERVISOR_ORDER_PUBLICATION_CHANGED:awaiting_human/);
+        assert(fired);
+        const held = superviseCampaign(options);
+        assert.strictEqual(held.order.execution_authorized, false);
+        assert.strictEqual(held.order.status, "awaiting_human");
+        if (prior) assert.notStrictEqual(held.order.id, prior.order.id);
+        const verified = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+        assert.strictEqual(verified.valid, true);
+        const manifest = JSON.parse(fs.readFileSync(path.join(environment.artifactRoot, "repositories", environment.repository.key, "manifest.json")));
+        assert.strictEqual(manifest.artifacts.filter(entry => entry.kind === "self-improvement-cycle-orders").length, reuse ? 2 : 1);
+      } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+    });
+
+    for (const race of ["expiry", "clock-rollback"]) run(`supervisor ${reuse ? "reused" : "new"} order rejects ${race} at publication`, () => {
+      const environment = makeEnvironment(`supervisor-${race}-${reuse}`, { budgets: { max_elapsed_minutes: 5 } });
+      const options = { repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+        campaignId: environment.campaign.id, evaluatedAt: "2026-07-21T09:04:59.999Z", writeArtifact: true };
+      try {
+        if (reuse) superviseCampaign(options);
+        const before = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+        let fired = false;
+        beforePublication = descriptor => {
+          if (descriptor.kind !== "self-improvement-cycle-orders") return;
+          beforePublication = null; fired = true;
+          options.evaluatedAt = race === "expiry" ? "2026-07-21T18:05:00+09:00" : "2026-07-21T09:04:59.998Z";
+        };
+        assert.throws(() => superviseCampaign(options), race === "expiry"
+          ? /SUPERVISOR_ORDER_PUBLICATION_CHANGED:blocked:CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED/
+          : /SUPERVISOR_PUBLICATION_TIME_INVALID/);
+        assert(fired);
+        const after = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+        assert.strictEqual(after.valid, true);
+        assert.strictEqual(after.manifest_revision, before.manifest_revision);
+      } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+    });
+  }
+
+  run("supervisor permits unrelated manifest growth and reappraises exact reuse", () => {
+    const environment = makeEnvironment("supervisor-benign-growth");
+    const options = { repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+      campaignId: environment.campaign.id, evaluatedAt: "2026-07-21T09:01:00Z", writeArtifact: true };
+    try {
+      beforePublication = descriptor => {
+        if (descriptor.kind !== "self-improvement-cycle-orders") return;
+        beforePublication = null;
+        writeRepositoryArtifact({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+          missionId: environment.campaign.mission_id, waveId: "C0", kind: "maintenance-observations",
+          artifactId: "MO-BENIGN", payload: { note: "No authority change." } });
+      };
+      const first = superviseCampaign(options);
+      assert.strictEqual(first.order.status, "ready");
+      assert.strictEqual(first.writtenOrder.created, true);
+      options.evaluatedAt = "2026-07-21T09:02:00Z";
+      const second = superviseCampaign(options);
+      assert.strictEqual(second.existing, true);
+      assert.strictEqual(second.writtenOrder.transaction_id, "none");
+      assert.deepStrictEqual(second.order, first.order);
+    } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+  });
+
+  for (const stage of ["prepared", "artifact_written", "history_created", "manifest_committed"]) {
+    run(`supervisor ${stage} crash cannot publish a stale order after a later stop`, () => {
+      const environment = makeEnvironment(`supervisor-crash-${stage}`);
+      const options = { repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+        campaignId: environment.campaign.id, evaluatedAt: "2026-07-21T09:10:00Z", writeArtifact: true };
+      try {
+        beforePublication = descriptor => {
+          if (descriptor.kind !== "self-improvement-cycle-orders") return;
+          beforePublication = null; descriptor.faultInjectionStage = stage;
+        };
+        assert.throws(() => superviseCampaign(options), /Injected artifact transaction failure/);
+        assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot }).valid, false);
+        const stopped = persistPair(environment, checkpointFor(environment, 1, 1), "escalate");
+        options.evaluatedAt = stopped.decision.decided_at;
+        const held = superviseCampaign(options);
+        assert.strictEqual(held.order.status, "awaiting_human");
+        assert.strictEqual(held.order.execution_authorized, false);
+        const records = held.history.existingOrders;
+        assert.strictEqual(records.filter(item => item.payload.status === "ready").length, stage === "prepared" ? 0 : 1);
+        assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot }).valid, true);
+        if (stage !== "prepared") assert(records[0].entry.created_at < stopped.checkpoint.generated_at);
+      } finally { beforePublication = null; fs.rmSync(environment.root, { recursive: true, force: true }); }
+    });
+  }
+
   for (const kind of ["mission-wave-plans", "agent-context-packs", "mission-wave-reports", "mission-wave-closeouts"]) {
     run(`retained escalation at the ${kind} publication boundary denies the stale writer`, () => {
       const environment = makeEnvironment(`publication-${kind}`, { createdAt: "2026-07-23T04:00:00+09:00" });

@@ -525,11 +525,13 @@ reported progress, including idle campaigns and retained ready orders. Trusted
 time, hard process deadlines, and pause-adjusted budgets remain external or
 separately designed lifecycle work.
 
-Wave, dispatch, and gateway positive publications now repeat their readiness
+Wave, dispatch, gateway, and supervisor publications now repeat their readiness
 checks under the artifact namespace lease after pending-journal recovery. This
 closes the covered check/write gap against a preceding retained stop and keeps
-settlement available. It does not close campaign stop/restart contracts,
-supervisor order/challenge publication, or atomic multi-artifact settlement.
+settlement available. Supervisor exact order reuse is guarded too; signed
+challenge publication rejects snapshot drift, concurrent issuance and expiry.
+This does not close campaign stop/restart contracts or atomic multi-artifact
+settlement.
 See `repository-artifact-isolation-policy.md` for exact recovery ordering and
 the unchanged cooperating-writer/shared-filesystem trust boundary.
 

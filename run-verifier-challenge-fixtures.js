@@ -6,8 +6,15 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const artifactStore = require("./repository-artifact-store");
+const originalWrite = artifactStore.writeRepositoryArtifact;
+let beforePublication = null;
+artifactStore.writeRepositoryArtifact = options => {
+  if (beforePublication) beforePublication(options);
+  return originalWrite(options);
+};
 const { superviseCampaign } = require("./campaign-supervisor");
-const { resolveRepository, writeRepositoryArtifact } = require("./repository-artifact-store");
+const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { createVerifierIdentityEvidence, certificateSha256 } = require("./verifier-identity-evidence");
 const { evaluateVerifierTrustReadiness } = require("./verifier-trust-readiness");
 const {
@@ -472,6 +479,67 @@ function main() {
         createdAt: supervisedCampaign.created_at
       });
 
+      for (const race of ["manifest", "pause", "campaign-expiry", "challenge-expiry", "clock-rollback", "concurrent-issuer"]) {
+        run(`challenge publication rejects ${race} after preparation`, () => {
+          const copiedRoot = `${artifactRoot}-${race}`;
+          fs.cpSync(artifactRoot, copiedRoot, { recursive: true });
+          const options = { repositoryPath, artifactRoot: copiedRoot, campaignId: supervisedCampaign.id,
+            evaluatedAt: challengeIssuedAt, writeArtifact: true, challengeIssuerPrivateKeyPem: supervisorKey.privateKey };
+          let fired = false;
+          beforePublication = descriptor => {
+            if (descriptor.kind !== "verifier-challenge-sets") return;
+            beforePublication = null; fired = true;
+            if (race === "manifest") originalWrite({ repositoryPath, artifactRoot: copiedRoot,
+              missionId: supervisedCampaign.mission_id, waveId: "C0", kind: "maintenance-observations",
+              artifactId: "MO-CONCURRENT", payload: { note: "Concurrent fixture write." } });
+            if (race === "pause") originalWrite({ repositoryPath, artifactRoot: copiedRoot,
+              missionId: supervisedCampaign.mission_id, waveId: "C0", kind: "self-improvement-campaigns",
+              artifactId: supervisedCampaign.id, payload: { ...supervisedCampaign, status: "paused" },
+              createdAt: supervisedCampaign.created_at, overwrite: true });
+            if (race === "campaign-expiry") options.evaluatedAt = new Date(Date.parse(supervisedCampaign.created_at) +
+              supervisedCampaign.budgets.max_elapsed_minutes * 60000).toISOString();
+            if (race === "challenge-expiry") options.evaluatedAt = descriptor.payload.expires_at;
+            if (race === "clock-rollback") options.evaluatedAt = new Date(Date.parse(descriptor.payload.issued_at) - 1).toISOString();
+            if (race === "concurrent-issuer") superviseCampaign(options);
+          };
+          try {
+            assert.throws(() => superviseCampaign(options), /SUPERVISOR_(CHALLENGE_PUBLICATION|PUBLICATION_TIME)/);
+            assert(fired);
+            assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot: copiedRoot }).valid, true);
+            const manifest = JSON.parse(fs.readFileSync(path.join(copiedRoot, "repositories", supervisedRepository.key, "manifest.json")));
+            assert.strictEqual(manifest.artifacts.filter(entry => entry.kind === "verifier-challenge-sets").length,
+              race === "concurrent-issuer" ? 1 : 0);
+          } finally { beforePublication = null; }
+        });
+      }
+
+      for (const stage of ["prepared", "artifact_written", "history_created", "manifest_committed"]) {
+        run(`challenge ${stage} crash preserves one nonce set through recovery`, () => {
+          const copiedRoot = `${artifactRoot}-crash-${stage}`;
+          fs.cpSync(artifactRoot, copiedRoot, { recursive: true });
+          const options = { repositoryPath, artifactRoot: copiedRoot, campaignId: supervisedCampaign.id,
+            evaluatedAt: challengeIssuedAt, writeArtifact: true, challengeIssuerPrivateKeyPem: supervisorKey.privateKey };
+          let attemptedId;
+          beforePublication = descriptor => {
+            if (descriptor.kind !== "verifier-challenge-sets") return;
+            beforePublication = null; attemptedId = descriptor.artifactId; descriptor.faultInjectionStage = stage;
+          };
+          try {
+            assert.throws(() => superviseCampaign(options), /Injected artifact transaction failure/);
+            assert.throws(() => superviseCampaign(options), /Repository artifact verification failed/);
+            assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot: copiedRoot, recover: true }).valid, true);
+            const recovered = superviseCampaign(options);
+            assert.strictEqual(recovered.order.execution_authorized, false);
+            assert.strictEqual(recovered.history.challengeSets.length, 1);
+            assert.strictEqual(Boolean(recovered.issuedChallenge), stage === "prepared");
+            if (stage !== "prepared") assert.strictEqual(recovered.history.challengeSets[0].payload.id, attemptedId);
+            const again = superviseCampaign(options);
+            assert.strictEqual(again.issuedChallenge, null);
+            assert.strictEqual(again.writtenOrder.transaction_id, "none");
+          } finally { beforePublication = null; }
+        });
+      }
+
       const first = superviseCampaign({
         repositoryPath,
         artifactRoot,
@@ -535,6 +603,22 @@ function main() {
       assert.strictEqual(second.order.trust_policy_admission.challenge_assurance.satisfied, true);
       assert.strictEqual(validatePayload(second.order, "self-improvement-cycle-order").valid, true);
       supervisedReadyOrder = second.order;
+
+      run("ready order publication rechecks its selected challenge deadline", () => {
+        const options = { repositoryPath, artifactRoot, campaignId: supervisedCampaign.id,
+          evaluatedAt, writeArtifact: true };
+        const before = verifyRepositoryArtifacts({ repositoryPath, artifactRoot });
+        let fired = false;
+        beforePublication = descriptor => {
+          if (descriptor.kind !== "self-improvement-cycle-orders") return;
+          beforePublication = null; fired = true; options.evaluatedAt = issuedChallenge.expires_at;
+        };
+        try {
+          assert.throws(() => superviseCampaign(options), /SUPERVISOR_ORDER_PUBLICATION_CHANGED:blocked/);
+          assert(fired);
+          assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).manifest_revision, before.manifest_revision);
+        } finally { beforePublication = null; }
+      });
     });
 
     if (process.argv.includes("--write-samples")) {
@@ -546,6 +630,7 @@ function main() {
     }
     process.stdout.write(`${JSON.stringify({ valid: true, fixture_count: completed.length, fixtures: completed }, null, 2)}\n`);
   } finally {
+    beforePublication = null;
     fs.rmSync(directory, { recursive: true, force: true });
   }
 }

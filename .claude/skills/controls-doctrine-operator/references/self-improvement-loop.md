@@ -121,6 +121,15 @@ between the first check and publication, not only a stop before the command.
 Also test exact reuse and prepared/artifact-written/history-reserved/committed
 crash ordering. A generic store write without that integration is not admission.
 
+For supervisor issuance, use `campaign-supervisor.js --write-artifact` or the
+module's `writeArtifact: true` path for both challenges and orders. Read the
+guarded-publication section of `docs/bounded-self-improvement-operations.md`.
+A rejected order may follow a successfully retained challenge: inspect current
+history and recover valid pending journals before retrying. Reuse an existing
+eligible nonce set; never mint another merely because the command was interrupted
+or insert an order through the raw store. Exact order reuse still needs current
+admission. Preserve the stop or expiry result instead of backdating issuance.
+
 Read `docs/repository-artifact-isolation-policy.md` and the lifecycle document
 for covered publishers and residual cancellation/restart limits.
 

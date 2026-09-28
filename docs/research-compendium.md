@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Supervisor Publication-Time Admission (2026-09-28)
+
+Source inspection found challenge writes inside the supervisor and cycle-order
+writes in its CLI outside the existing publication guard. A current projection
+could become stale before storage. Both publications now share the supervisor's
+guarded path: reappraise history, clock and trust admission under the namespace
+lease, including exact order reuse. Signed challenges additionally require the
+unchanged observed manifest, live bootstrap eligibility and their exact deadline.
+
+The local campaign/challenge fixtures cover concurrent stops, expiry, rollback,
+competing issuance, a direct CLI race and all four journal interruption stages.
+A challenge and its blocked order remain separate writes; operators must inspect
+partial issuance and recover retained evidence before retrying. This is local
+engineering synthesis. It does not authenticate USER decisions, replace external
+containment, implement campaign restart, or create an atomic multi-artifact stop.
+
 ## Exact Gateway Reconciliation (2026-09-28)
 
 The [gateway settlement controller](gateway-effect-settlement.md) joins the
