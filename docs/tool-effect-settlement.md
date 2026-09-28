@@ -15,6 +15,11 @@ identity, runtime profile, exact signed execution evidence and receipt quorum ar
 checked. When v0.5, v0.6, or v0.7 is selected, the existing supervisor additionally
 requires fresh challenges, computed failure domains, and transparency evidence.
 Those stronger requirements are never downgraded by this controller.
+The shared `effect-settlement-proof.js` appraiser owns verifier, exact USER
+decision and historical-manifest proof checks. Review replay, gateway ownership
+exclusion, one-use consumption, publication and dispatch projection remain
+separate controller duties. Calling a common proof helper does not settle an
+effect or make a different ownership class eligible.
 
 ## Procedure
 

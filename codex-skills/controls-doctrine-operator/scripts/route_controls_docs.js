@@ -470,7 +470,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "tool-effect-review",
-    keywords: ["tool-effect", "effect-review-evidence"]
+    keywords: ["tool-effect", "effect-review-evidence", "effect-settlement-proof"]
   },
   {
     id: "skill-operations",

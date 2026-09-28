@@ -8,6 +8,9 @@ checker and ephemeral cryptography, but use synthetic USER/provider/isolation
 inputs. Exact historical replay and one-use settlement do not prove arbitrary
 effect completeness, authenticated USER identity, gateway cleanup, or production
 deployment. No new external military-source claim is introduced.
+`effect-settlement-proof.js` factors those existing cryptographic, USER-decision
+and historical-manifest checks without changing hook ownership or granting a
+gateway clearing operation.
 The reconciled-failure guard is a local regression repair: a schema-valid legacy
 success callback reproduced completion after effect settlement. The settlement
 fixtures now check same-agent lineage, explicit post-settlement revocation,

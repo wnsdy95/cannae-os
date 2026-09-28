@@ -108,6 +108,10 @@ completion/resume or wave publication must not be retried through a different
 session, callback or hand-written checkpoint. Re-read status, retain the failure,
 and obtain separately authorized successor scope. Gateway settlement remains
 excluded from the hook path.
+Shared proof appraisal is not shared settlement authority: when adding another
+ownership class, preserve its own subject/review replay, one-use consumption,
+boundary evidence and publication gates. Never enable it by adding a caller
+flag to the hook controller's gateway exclusion.
 
 When extending a positive publisher, perform expensive validation outside the
 namespace lease and repeat a short, synchronous, read-only authority predicate
