@@ -115,6 +115,12 @@ const RULES = [
     ]
   },
   {
+    id: "gateway-effect-review",
+    keywords: ["gateway effect", "gateway settlement", "gateway reconciliation", "gateway-effect", "orphan admission"],
+    docs: ["docs/gateway-effect-review.md", "docs/protected-tool-gateway-contract.md", "docs/enforced-dispatch-and-resume.md", "docs/approval-scope-policy.md", "docs/completion-backlog.md"],
+    commands: ["node run-gateway-effect-review-fixtures.js", "node run-protected-tool-gateway-fixtures.js", "node run-tool-effect-review-fixtures.js", "node run-tool-effect-settlement-fixtures.js"]
+  },
+  {
     id: "tool-effect-review",
     keywords: ["unknown tool effects", "effect reconciliation", "effect settlement", "effect scope", "tool effect review", "tool-effect", "unresolved effects"],
     docs: ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md", "docs/enforced-dispatch-and-resume.md", "docs/approval-scope-policy.md", "docs/completion-backlog.md"],
@@ -459,8 +465,12 @@ const EXCLUDED_DIRS = new Set([
 
 const ROUTE_HINTS = [
   {
+    id: "gateway-effect-review",
+    keywords: ["gateway-effect", "review_gateway_effects"]
+  },
+  {
     id: "tool-effect-review",
-    keywords: ["tool-effect"]
+    keywords: ["tool-effect", "effect-review-evidence"]
   },
   {
     id: "skill-operations",
@@ -800,6 +810,7 @@ function routeIdsForArtifact(file) {
   if (file === "repository-artifact-verify.js" || file === "repository-lease.js" || file === "run-repository-artifact-recovery-fixtures.js" || file === "run-repository-artifact-concurrency-fixtures.js") routeIds.push("repository-artifact-isolation", "runtime-validation");
   if (file === "dispatch-runtime-controller.js" || file === "dispatch-hook-adapter.js" || file === "install-dispatch-hooks.js" || file === "protected-tool-gateway.js" || file === "gateway-identity-adapter.js" || file === "gateway-identity-evidence.js" || file === "protected-process-executor.js" || file === "protected-execution-evidence.js" || file === "oci-linux-sandbox-provider.js" || file === "oci-linux-sandbox-evidence.js" || file === "oci-linux-sandbox-probe.go" || file === "run-dispatch-runtime-fixtures.js" || file === "run-protected-tool-gateway-fixtures.js" || file === "run-gateway-identity-adapter-fixtures.js" || file === "run-protected-process-executor-fixtures.js" || file === "run-oci-linux-sandbox-provider-fixtures.js") routeIds.push("enforced-dispatch", "runtime-validation");
 
+  if (file === "protected-gateway-fixture-support.js") routeIds.push("enforced-dispatch", "runtime-validation");
   return unique(routeIds);
 }
 

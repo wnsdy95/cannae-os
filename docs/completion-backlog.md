@@ -38,6 +38,11 @@ Gateway ownership and retained-obligation guards now reject direct hook
 completion/cancellation and preserve holds across legacy terminal leases, new
 waves, and report/closeout/termination publication. These guards do not resolve
 an executing transaction's unknown effects; gateway settlement remains open.
+The [gateway intake/review contract](gateway-effect-review.md) now classifies
+retained history, preserves orphan none references, and binds finite admission,
+effect, containment and coordination scopes to inspection evidence. It does not
+discharge admissions or clear holds. Exact USER/execution-bound gateway
+settlement, failed-agent revocation, and successor authority remain open.
 OCI cleanup now requires positive exact-target absence evidence, including on
 recovery replay. This repairs containment verification, not gateway transaction
 settlement, daemon identity attestation, or campaign restart.

@@ -5,7 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { unknownToolEffectCheckpointRefs, inputDigest } = require("./dispatch-runtime-controller");
-const { computeRepositoryState, receiptDigest } = require("./verification-runner");
+const { computeRepositoryState } = require("./verification-runner");
+const { appraiseEffectInspection } = require("./effect-review-evidence");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 
 function digest(value) {
@@ -21,11 +22,6 @@ function assertValid(payload, type) {
 function sameRef(left, right) {
   return Boolean(left && right && left.artifact_id === right.artifact_id &&
     left.relative_path === right.relative_path && left.sha256 === right.sha256);
-}
-
-function sameState(left, right) {
-  return Boolean(left && right && left.head_commit === right.head_commit &&
-    left.worktree_fingerprint === right.worktree_fingerprint);
 }
 
 function sameBinding(left, right) {
@@ -97,53 +93,11 @@ function inspectToolEffects(options, references, retainedSnapshot) {
   requireCondition(unknownToolEffectCheckpointRefs(current, scope.lease_ref).some(ref => sameRef(ref, scope.checkpoint_ref)),
     "TOOL_EFFECT_UNKNOWN_CHECKPOINT_NOT_CURRENT");
 
-  requireCondition(plan.mission_id === scope.mission_id && receipt.mission_id === scope.mission_id &&
-    plan.candidate_id === scope.id && receipt.candidate_id === scope.id &&
-    plan.candidate_revision === scopeSha256 && receipt.candidate_revision === scopeSha256,
-  "TOOL_EFFECT_VERIFICATION_SCOPE_MISMATCH");
-  requireCondition(receipt.plan_id === plan.id && receipt.plan_sha256 === digest(`${JSON.stringify(plan, null, 2)}\n`) &&
-    receipt.campaign_id === plan.campaign_id && receipt.cycle_number === plan.cycle_number &&
-    receipt.receipt_sha256 === receiptDigest(receipt), "TOOL_EFFECT_RECEIPT_BINDING_MISMATCH");
-  requireCondition(sameState(scope.expected_repository_state, plan.expected_repository_state) &&
-    sameState(plan.expected_repository_state, receipt.repository_state_before) &&
-    sameState(receipt.repository_state_before, receipt.repository_state_after) &&
-    sameState(receipt.repository_state_after, retainedSnapshot ? retainedSnapshot.repositoryState : computeRepositoryState(current.repository.root)) && receipt.repository_state_unchanged,
-  "TOOL_EFFECT_REPOSITORY_STATE_MISMATCH");
-  requireCondition(receipt.overall_status === "passed" && receipt.runner.shell_used === false &&
-    receipt.checks.every(check => check.status === "passed"), "TOOL_EFFECT_VERIFICATION_FAILED");
-  const times = [admittedCheckpoint.recorded_at, admission.decided_at, checkpoint.recorded_at, scope.created_at, plan.created_at, receipt.started_at, receipt.finished_at, at].map(Date.parse);
-  requireCondition(times.every((time, index) => Number.isFinite(time) && (!index || time >= times[index - 1])) &&
-    Date.parse(at) < Date.parse(scope.expires_at), "TOOL_EFFECT_EVIDENCE_TIME_INVALID");
-
-  const checks = new Map(plan.checks.map(check => [check.id, check]));
-  requireCondition(checks.size === plan.checks.length && new Set(receipt.checks.map(check => check.id)).size === receipt.checks.length &&
-    receipt.checks.length === plan.checks.length, "TOOL_EFFECT_CHECK_SET_MISMATCH");
-  for (const observed of receipt.checks) {
-    const expected = checks.get(observed.id);
-    requireCondition(Boolean(expected && inputDigest(observed.argv) === inputDigest([expected.executable, ...expected.args]) &&
-      observed.working_directory === expected.working_directory && inputDigest(observed.expected_exit_codes) === inputDigest(expected.expected_exit_codes) &&
-      expected.expected_exit_codes.includes(observed.exit_code) && !observed.signal), "TOOL_EFFECT_CHECK_RESULT_MISMATCH");
-  }
-  const usedChecks = new Set();
-  for (const resource of scope.resources) {
-    requireCondition(resource.disposition !== "unresolved", "TOOL_EFFECT_RESOURCE_UNRESOLVED");
-    for (const id of resource.check_ids) {
-      usedChecks.add(id);
-      const check = checks.get(id);
-      // Binding arguments make the exact scope available to the selected checker;
-      // they do not prove that its code inspected every external resource.
-      const hasPair = (flag, value) => check && check.args.filter(arg => arg === flag).length === 1 &&
-        check.args[check.args.indexOf(flag) + 1] === value;
-      requireCondition(Boolean(check && hasPair("--effect-scope", references.scope_ref.relative_path) &&
-        hasPair("--effect-scope-sha256", scopeSha256)), "TOOL_EFFECT_CHECK_SCOPE_NOT_BOUND");
-    }
-    for (const ref of resource.evidence_refs) {
-      const evidence = load(current, ref, "tool-effect-observations", null, scope);
-      requireCondition(Date.parse(evidence.entry.created_at) >= Date.parse(checkpoint.recorded_at) &&
-        Date.parse(evidence.entry.created_at) <= Date.parse(scope.created_at), "TOOL_EFFECT_OBSERVATION_TIME_INVALID");
-    }
-  }
-  requireCondition(usedChecks.size === checks.size && [...usedChecks].every(id => checks.has(id)), "TOOL_EFFECT_CHECK_SET_MISMATCH");
+  appraiseEffectInspection({ scope, scopeRef: references.scope_ref, plan, receipt, at,
+    repositoryState: retainedSnapshot ? retainedSnapshot.repositoryState : computeRepositoryState(current.repository.root),
+    predecessorTimes: [admittedCheckpoint.recorded_at, admission.decided_at, checkpoint.recorded_at],
+    observationSince: checkpoint.recorded_at,
+    loadObservation: ref => load(current, ref, "tool-effect-observations", null, scope), requireCondition });
 
   const report = {
     schema_version: "0.1", type: "ToolEffectReview",
@@ -200,4 +154,4 @@ function main() {
 
 if (require.main === module) main();
 // Snapshot replay is evidence appraisal only; it cannot publish or settle a review.
-module.exports = { reviewToolEffects, inspectToolEffects, loadEffectArtifact: load, sameEffectRef: sameRef };
+module.exports = { reviewToolEffects, inspectToolEffects, loadEffectArtifact: load, loadEffectView: view, sameEffectRef: sameRef };

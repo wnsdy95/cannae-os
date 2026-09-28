@@ -384,6 +384,11 @@ actual provider-result digest, status, execution time and repository state match
 
 ## 6. Provider Adapters
 
+Before preparing gateway inspection evidence, use
+[Gateway Effect Review](gateway-effect-review.md) to freeze the current subject
+and boundaries. New history invalidates that scope. Evidence-bound review does
+not discharge admissions or either unresolved-effect projection.
+
 ### 6.1 Codex
 
 Codex `PreToolUse` can deny Bash, `apply_patch`, MCP calls, and most local

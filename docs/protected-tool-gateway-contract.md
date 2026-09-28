@@ -209,6 +209,11 @@ containment verification; this guard does not implement that settlement workflow
 
 ## 6. Reference Operation
 
+For unresolved effects, start with [Gateway Effect Review](gateway-effect-review.md).
+Its intake distinguishes unstarted work, recovered unknown outcomes, committed
+unknown effects and orphan admissions. It prepares inspection evidence only;
+gateway settlement remains open and the hook settlement exclusion still applies.
+
 ### 6.1 Prepare
 
 Complete the normal mission lifecycle first:

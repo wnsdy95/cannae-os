@@ -210,8 +210,19 @@ Recommended validation order:
 130. `tool-effect-review.schema.json`
 131. `tool-effect-settlement-request.schema.json`
 132. `tool-effect-settlement.schema.json`
+133. `gateway-effect-subject.schema.json`
+134. `gateway-effect-scope.schema.json`
+135. `gateway-effect-review.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
+
+`GatewayEffectSubject` v0.1 identifies the exact retained transaction and lease
+history. `GatewayEffectScope` freezes that subject and its finite inspection
+boundaries; `GatewayEffectReview` checks evidence consistency only. Settlement,
+verifier identity, complete scope, provider containment, coordination, USER
+consent, execution and release stay false. Missing-input orphans retain exact
+none references rather than fabricated receipts.
+See [Gateway Effect Review](../docs/gateway-effect-review.md).
 
 `ToolEffectScope` v0.1 binds one unknown invocation to a finite resource scope,
 exact observations, check IDs, and repository state. `ToolEffectReview` v0.1

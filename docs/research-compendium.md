@@ -1,5 +1,22 @@
 # Research Compendium
 
+## 2026-09-28: Gateway Intake Before Settlement
+
+Local gateway histories differ from hook failures: recovery may leave a pending
+allow admission, or deny an orphan with no execution event or receipt. Reusing
+hook settlement would either fabricate missing history or leave an unresolved
+admission after clearing the hold. [Gateway Effect Review](gateway-effect-review.md)
+therefore reconstructs a typed subject first, freezes exact minimum inspection
+boundaries, and binds observations plus verification plan/receipt to that subject.
+Any new checkpoint or retained execution record invalidates the frozen scope.
+
+This is local engineering synthesis, not an external doctrine claim. Fixtures
+use real gateway transitions and an executed local checker, with explicitly
+synthetic observations. Evidence consistency does not authenticate the verifier
+or prove containment, scope completeness, production coordination, or USER
+consent. Review does not clear holds or revoke/renew authority. Dedicated gateway
+settlement and campaign restart remain open in [the backlog](completion-backlog.md).
+
 ## 2026-09-28: Gateway Ownership And Retained Obligations
 
 Local reproduction at `f61529c` showed that a direct successful provider callback

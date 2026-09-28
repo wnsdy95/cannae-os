@@ -944,6 +944,11 @@ fixture("container timeout is measured and committed as failed", async () => {
   assert.strictEqual(completed.process_result.termination_reason, "timeout");
   const probe = loadArtifact(completed.probe_observation_ref);
   assert.strictEqual(probe.child.timed_out, true);
+  const subject = require("./gateway-effect-review").gatewayEffectSubject(setup.gatewayOptions, setup.transactionId);
+  assert.strictEqual(subject.subject_class, "committed_unknown_effects");
+  assert.strictEqual(subject.execution_mode, "oci_linux_sandbox_reference");
+  assert.strictEqual(subject.retained_execution_refs.length, 4);
+  assert(subject.retained_execution_refs.some(item => item.sha256 === completed.probe_observation_ref.sha256));
 });
 
 fixture("post-create interruption removes the container and never reruns", async () => {
@@ -959,6 +964,10 @@ fixture("post-create interruption removes the container and never reruns", async
   assert.strictEqual(replay.state, "recovery_required");
   assert.strictEqual(replay.replayed, true);
   const envelope = loadArtifact(interrupted.execution_envelope_ref);
+  const subject = require("./gateway-effect-review").gatewayEffectSubject(setup.gatewayOptions, setup.transactionId);
+  assert.strictEqual(subject.next_action, "review");
+  assert(subject.required_targets.some(item => item.target === `oci-container-name:${envelope.launch.container_name}`));
+  assert.strictEqual(subject.effects_settled, false);
   const inspect = run(
     "docker",
     ["container", "inspect", envelope.launch.container_name],

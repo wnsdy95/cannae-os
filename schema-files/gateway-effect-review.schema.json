@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/gateway-effect-review.schema.json",
+  "title": "Gateway Effect Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "repository_binding",
+    "scope_ref",
+    "scope_sha256",
+    "subject_sha256",
+    "verification_plan_ref",
+    "verification_receipt_ref",
+    "status",
+    "reason_codes",
+    "reviewed_at",
+    "effects_settled",
+    "scope_completeness_verified",
+    "verifier_identity_verified",
+    "provider_containment_verified",
+    "production_coordination_verified",
+    "user_decision_verified",
+    "tool_execution_authorized",
+    "release_authorized"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "GatewayEffectReview"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier"
+    },
+    "agent_id": {
+      "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier"
+    },
+    "repository_binding": {
+      "$ref": "verification-plan.schema.json#/properties/repository_binding"
+    },
+    "scope_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "scope_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "subject_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "verification_plan_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "verification_receipt_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "status": {
+      "enum": [
+        "evidence_bound",
+        "blocked"
+      ]
+    },
+    "reason_codes": {
+      "$ref": "tool-effect-review.schema.json#/properties/reason_codes"
+    },
+    "reviewed_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "effects_settled": {
+      "const": false
+    },
+    "scope_completeness_verified": {
+      "const": false
+    },
+    "verifier_identity_verified": {
+      "const": false
+    },
+    "provider_containment_verified": {
+      "const": false
+    },
+    "production_coordination_verified": {
+      "const": false
+    },
+    "user_decision_verified": {
+      "const": false
+    },
+    "tool_execution_authorized": {
+      "const": false
+    },
+    "release_authorized": {
+      "const": false
+    }
+  }
+}

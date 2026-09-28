@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/gateway-effect-subject.schema.json",
+  "title": "Gateway Effect Subject",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "provider",
+    "repository_binding",
+    "transaction_id",
+    "idempotency_key",
+    "tool_input_sha256",
+    "execution_mode",
+    "transaction_state",
+    "lease_status",
+    "subject_class",
+    "next_action",
+    "references",
+    "retained_execution_refs",
+    "required_targets",
+    "observed_after",
+    "effects_settled",
+    "tool_execution_authorized",
+    "release_authorized"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "GatewayEffectSubject"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier"
+    },
+    "agent_id": {
+      "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier"
+    },
+    "provider": {
+      "enum": [
+        "codex",
+        "claude_code"
+      ]
+    },
+    "repository_binding": {
+      "$ref": "verification-plan.schema.json#/properties/repository_binding"
+    },
+    "transaction_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "idempotency_key": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "tool_input_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "execution_mode": {
+      "enum": [
+        "unknown",
+        "fixture",
+        "external_adapter",
+        "bounded_process_reference",
+        "oci_linux_sandbox_reference"
+      ]
+    },
+    "transaction_state": {
+      "enum": [
+        "request_persisted",
+        "received",
+        "authorized",
+        "executing",
+        "committed",
+        "aborted",
+        "denied",
+        "recovery_required"
+      ]
+    },
+    "lease_status": {
+      "enum": [
+        "active",
+        "interrupted",
+        "blocked",
+        "revoked",
+        "superseded",
+        "completed"
+      ]
+    },
+    "subject_class": {
+      "enum": [
+        "unstarted",
+        "unknown_execution",
+        "committed_unknown_effects",
+        "orphan_admission",
+        "settled"
+      ]
+    },
+    "next_action": {
+      "enum": [
+        "recover",
+        "review",
+        "none"
+      ]
+    },
+    "references": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "request_ref",
+        "decision_ref",
+        "admission_ref",
+        "lease_ref",
+        "checkpoint_ref",
+        "latest_event_ref",
+        "execution_event_ref",
+        "receipt_ref",
+        "production_sandbox_admission_ref"
+      ],
+      "properties": {
+        "request_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "decision_ref": {
+          "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none"
+        },
+        "admission_ref": {
+          "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none"
+        },
+        "lease_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "checkpoint_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "latest_event_ref": {
+          "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none"
+        },
+        "execution_event_ref": {
+          "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none"
+        },
+        "receipt_ref": {
+          "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none"
+        },
+        "production_sandbox_admission_ref": {
+          "$ref": "agent-execution-checkpoint.schema.json#/$defs/artifact_ref_or_none"
+        }
+      }
+    },
+    "retained_execution_refs": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "common.schema.json#/$defs/artifact_ref"
+      }
+    },
+    "required_targets": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "boundary",
+          "target"
+        ],
+        "properties": {
+          "boundary": {
+            "enum": [
+              "admission",
+              "external_effects",
+              "containment",
+              "coordination"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          }
+        }
+      }
+    },
+    "observed_after": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "effects_settled": {
+      "const": false
+    },
+    "tool_execution_authorized": {
+      "const": false
+    },
+    "release_authorized": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "boundary": {
+      "enum": [
+        "admission",
+        "external_effects",
+        "containment",
+        "coordination"
+      ]
+    }
+  }
+}
