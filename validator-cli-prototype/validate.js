@@ -131,6 +131,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "implementation-candidate-registry": "implementation-candidate-registry.schema.json",
   mission: "mission.schema.json",
   agent: "agent.schema.json",
   warno: "warno.schema.json",
@@ -861,6 +862,44 @@ function authorityAtLeast(actual, minimum) {
 
 function semanticRules(payload, type, options = {}) {
   const issues = [];
+
+  if (type === "implementation-candidate-registry") {
+    const fail = (code, location, message) => issues.push(issue("error", code, location, message));
+    const unique = (items, key, location) => {
+      const values = (Array.isArray(items) ? items : []).map(item => item?.[key]);
+      if (new Set(values).size !== values.length) fail("CANDIDATE_DUPLICATE_IDENTITY", location, `Duplicate ${key}.`);
+    };
+    unique(payload.sources, "document", "$.sources");
+    unique(payload.workstreams, "id", "$.workstreams");
+    unique(payload.entries, "id", "$.entries");
+    const sources = new Set((Array.isArray(payload.sources) ? payload.sources : []).map(item => item?.document));
+    const streams = new Set((Array.isArray(payload.workstreams) ? payload.workstreams : []).map(item => item?.id));
+    for (const [index, entry] of (Array.isArray(payload.entries) ? payload.entries : []).entries()) {
+      if (!entry || typeof entry !== "object") continue;
+      const location = `$.entries[${index}]`;
+      if (!sources.has(entry.source_document) || !streams.has(entry.workstream_id)) {
+        fail("CANDIDATE_REFERENCE_UNKNOWN", location, "Entry must reference a registered source and workstream.");
+      }
+      if (typeof entry.source_document === "string" && typeof entry.candidate_key === "string") {
+        const expected = `IC-${crypto.createHash("sha256").update(`${entry.source_document}\0${entry.candidate_key}`).digest("hex").slice(0, 16)}`;
+        if (entry.id !== expected) fail("CANDIDATE_ID_BINDING_MISMATCH", `${location}.id`, "ID must bind the exact source document and candidate key.");
+      }
+      unique(entry.acceptance_criteria, "id", `${location}.acceptance_criteria`);
+      const paths = Array.isArray(entry.implementation_paths) ? entry.implementation_paths : [];
+      const remaining = Array.isArray(entry.remaining_work) ? entry.remaining_work : [];
+      const criteria = Array.isArray(entry.acceptance_criteria) ? entry.acceptance_criteria : [];
+      if (entry.implementation_status === "implemented" && (!paths.length || remaining.length || !criteria.length ||
+          criteria.some(item => !Array.isArray(item?.validation_commands) || !item.validation_commands.length))) {
+        fail("CANDIDATE_COMPLETION_UNPROVEN", location, "Implemented requires mapped files, a check for every criterion, and no remaining work.");
+      }
+      if (["planned", "partial"].includes(entry.implementation_status) && !remaining.length) {
+        fail("CANDIDATE_REMAINING_WORK_REQUIRED", location, "Unfinished candidates must state remaining work.");
+      }
+      if (entry.implementation_status === "partial" && !paths.length) {
+        fail("CANDIDATE_PARTIAL_MAPPING_REQUIRED", location, "Partial implementation must identify existing related files.");
+      }
+    }
+  }
 
   if (type === "mission") {
     if (!payload.intent || !payload.intent.purpose) {

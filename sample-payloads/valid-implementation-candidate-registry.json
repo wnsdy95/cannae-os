@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.1",
+  "type": "ImplementationCandidateRegistry",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "release_authorized": false,
+    "execution_authorized": false
+  },
+  "sources": [
+    {
+      "document": "docs/b2c2wg-operating-model.md",
+      "section_sha256": "7f12a8f91530b2a7b7aedb8beb3731714757ad6d022bb28a9d44c7d0c7c55157"
+    }
+  ],
+  "workstreams": [
+    {
+      "id": "staff-coordination",
+      "title": "Staff and battle rhythm",
+      "owner_role": "COS",
+      "completion_criteria": [
+        "Integrate chair/quorum, packet completeness, deadlines, and human disposition without auto-execution."
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "id": "IC-6670a5ebbe7b1fa0",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "working-group.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/working-group.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the working-group.schema.json proposal and associated constraints in docs/b2c2wg-operating-model.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    }
+  ]
+}

@@ -151,6 +151,8 @@ Escalation invariant: the CoS escalates by preparing a packet, never by making t
 
 ## 11. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 Schema candidates:
 
 - `cos-charter.schema.json`

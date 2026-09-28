@@ -138,6 +138,8 @@ Rules:
 
 ## 9. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 - `schema-files/interop-release-packet.schema.json`
 - `schema-files/release-revocation-event.schema.json`
 - `release-packet-assembly-runner.js`

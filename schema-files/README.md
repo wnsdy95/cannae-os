@@ -2,6 +2,14 @@
 
 This directory contains JSON Schema contracts for the military-style LLM runtime.
 
+`implementation-candidate-registry.schema.json` defines the source-bound
+engineering inventory: unique candidate identities, reviewed implementation
+mappings, acceptance checks, and residual work. Its valid/invalid samples are
+contract examples, not full-corpus audit inputs. Audit the canonical
+`docs/implementation-candidate-registry.json` with
+`node implementation-candidate-registry.js audit`; validation never grants
+execution or release authority.
+
 The schemas are intentionally small and composable. They define the minimum state objects required to implement:
 
 - mission intake

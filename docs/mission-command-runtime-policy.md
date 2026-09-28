@@ -193,6 +193,8 @@ The runtime rule is condensed into a single sentence.
 
 ## 12. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 The following are candidates only; none of them exists yet.
 
 schema:

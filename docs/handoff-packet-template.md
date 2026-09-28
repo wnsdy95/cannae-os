@@ -148,6 +148,8 @@ Failure of any item returns the packet to the author. Repeated handoff failure i
 
 ## 9. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 schema:
 
 - `handoff-review-record.schema.json`

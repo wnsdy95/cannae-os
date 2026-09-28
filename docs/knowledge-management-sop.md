@@ -44,7 +44,7 @@ This SOP defines how the S6 Knowledge role and the CoS operate knowledge managem
 | Adaptive validation proof | verification receipt + signed verifier quorum + manifest history | checkpoint metric projection |
 | Privileged adaptive approval | approval scope + consumption event | checkpoint approval binding |
 | Multi-repository deliverables | repository artifact manifest | repository-scoped artifact files |
-| Next task queue | framework doc, research queue | compendium |
+| Next task queue | implementation-candidate registry, completion backlog, runtime roadmap | research queue, compendium |
 
 Conversation history is not a source of truth. Conversation is task instruction and transient context.
 
@@ -178,6 +178,7 @@ After a document change:
 - source-map entry if new military concept added.
 - compendium note if research interpretation added.
 - `node source-map-linter.js` after any doctrine, queue, README, source-map, or compendium change.
+- `node implementation-candidate-registry.js audit` after candidate-section or implementation-mapping changes; run its `verify` command before claiming executable completion. Keep wider roadmap and operational gaps in `completion-backlog.md`.
 
 Knowledge management failure conditions:
 
@@ -209,6 +210,8 @@ When work is finished, perform a KM check.
 ```
 
 ## 11. Implementation candidates
+
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
 
 Implemented schemas:
 

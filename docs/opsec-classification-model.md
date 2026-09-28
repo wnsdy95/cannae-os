@@ -160,6 +160,8 @@ Prohibited:
 
 ## 9. Implementation candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 Implemented schemas:
 
 - `classification-label.schema.json`: standalone label contract for sensitivity tier, EEFI class membership, releasability, and need-to-know roles.

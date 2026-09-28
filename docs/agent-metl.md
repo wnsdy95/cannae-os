@@ -240,6 +240,8 @@ Before acting, confirm role/task readiness.
 
 ## 8. Implementation candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 Implemented schemas:
 
 - `agent-metl.schema.json`: one role's mission-essential task list with conditions, measurable standards, and current proficiency.

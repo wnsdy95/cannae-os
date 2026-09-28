@@ -30,6 +30,14 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  for (const query of ["Audit implementation candidates and the completion backlog",
+    "Audit implementation-candidate-registry.js and completion-backlog.md"]) {
+    const registry = route(router, ["--actor=user"], query);
+    assertRoutes(registry, ["skill-operations"]);
+    assert.strictEqual(registry.capability_routing.status, "covered");
+    assert(registry.recommended_documents.some(item => item.path === "docs/implementation-candidate-registry.md"));
+    assert(registry.validation_commands.includes("node implementation-candidate-registry.js audit"));
+  }
   const termination = route(router, ["--actor=user"], "Reconcile expired wave termination and supersession");
   assertRoutes(termination, ["skill-operations"]);
   assert(termination.recommended_documents.some(item => item.path === "docs/skill-operational-mission-lifecycle.md"));
@@ -131,4 +139,4 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log("Document routing fixtures: 16/16 passed");
+console.log("Document routing fixtures: 20/20 passed");

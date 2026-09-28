@@ -1,5 +1,28 @@
 # Research Compendium
 
+## Implementation Traceability Audit (2026-09-28)
+
+**Reason:** filename-only searches and broad changelog closure language obscured
+unfinished requirements. A heading/list-aware scan found 125 requirements in
+21 candidate sections, including narrative UI items and directory proposals.
+Earlier counts from a narrower 16-document filename scan were not a full census.
+
+**Application:** `docs/implementation-candidate-registry.md` defines exact source
+IDs/digests, reviewed equivalent-path mappings, residual work, and separate
+audit versus executed-verification results. The initial registry declares 37
+implemented, 18 partial, and 70 planned requirements. Its fixtures reject
+omissions, source drift, unsupported completion, unsafe check paths, execution
+failure, and source mutation. `docs/completion-backlog.md` retains the broader
+request compiler, intent, COP, force lifecycle, actual UI/API, campaign control,
+dependency compatibility, and externally operated trust requirements.
+
+**Limit:** these are engineering interpretations grounded in local code, not
+additional military research. A mapped check cannot automatically establish
+semantic adequacy for a prose requirement. Reviewers must inspect the claimed
+mapping; implemented refers only to that candidate, not its whole doctrine.
+The registry's current-source audit does not execute tests, and passing a
+selected verification never grants authority or closes the overall program.
+
 ## 0. Purpose
 
 This document brings together, in one place, the military command-and-control, order-issuance, authority-delegation, reporting, verification, and after-action materials researched so far, along with their interpretation.

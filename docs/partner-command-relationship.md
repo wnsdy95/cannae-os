@@ -130,6 +130,8 @@ No external relationship, of any type, grants Red or Black authority.
 
 ## 8. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 - `schema-files/partner-relationship-declaration.schema.json`
 - `schema-files/partner-request-event.schema.json`
 - `partner-relationship-gate-runner.js`
