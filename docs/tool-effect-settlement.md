@@ -74,6 +74,30 @@ Those stronger requirements are never downgraded by this controller.
    obtain any successor wave/campaign scope separately. Settlement does not renew
    expired authority, close a campaign, report agent success, or resume work.
 
+### Reconciled Failure Is Not Success
+
+Dispatch status exposes `reconciled_failed_effects`, the exact
+`reconciled_effect_checkpoint_refs`, and `failed_effect_revocation_required`.
+These are independently verified settlement projections, not a rewrite of the
+latest lease status. A legacy `active`, `completed`, `interrupted`, `superseded`
+or `revoked` row cannot hide the failed invocation. Every lease of the same
+mission/wave/agent, including a legacy resumed descendant, inherits the failure.
+
+Run explicit `revoke` after reconciliation. The revocation checkpoint must be
+published after every applicable settlement and its timestamp must not precede
+them; a pre-existing revocation is insufficient even if timestamps are equal.
+For this repair path only, `revoke` accepts a legacy terminal lease that still
+requires post-settlement revocation. It does not reopen the lease or authorize
+tools. A new checkpoint is appended; original failure and terminal history remain.
+
+Until revocation, new wave publication, policy compilation/reuse, lease issuance,
+failed-agent reporting, and wave termination are blocked. Completion, resume and
+successful reporting remain prohibited for that failed agent even after
+revocation. Record its result as failed or blocked; any successor work needs its
+own authorized scope. Completion/resume and wave publication recheck the marker
+inside their publication guards, including a settlement arriving after initial
+validation. This is a cooperating-writer guard, not hostile-writer isolation.
+
 ## Integrity And Replay
 
 The request's canonical digest determines the settlement ID. The retained

@@ -22,6 +22,7 @@ const { certificateSha256, createVerifierIdentityEvidence } = require("./verifie
 const { createVerifierExecutionEvidence } = require("./verifier-execution-evidence");
 const { createVerificationAttestation } = require("./verification-attestation");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const lifecycle = require("./skill-mission-controller");
 
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), "cannae-effect-settlement-"));
 const repository = path.join(directory, "repository");
@@ -30,7 +31,7 @@ const options = { repository, artifactRoot };
 const sample = name => JSON.parse(fs.readFileSync(path.join(__dirname, "sample-payloads", `${name}.json`), "utf8"));
 const clone = value => JSON.parse(JSON.stringify(value));
 const now = () => new Date().toISOString();
-const horizon = new Date(Date.now() + 240000).toISOString();
+const horizon = new Date(Date.now() + 900000).toISOString();
 const future = () => horizon;
 const past = new Date(Date.now() - 10000).toISOString();
 let count = 0;
@@ -76,6 +77,22 @@ for (const resource of scope.resources) {
   var lease = sample("valid-agent-dispatch-lease");
   lease.repository_binding = binding;
   lease.initial_repository_state = runtime.runtimeRepositoryState(repository);
+  const wavePlan = sample("valid-mission-wave-plan");
+  Object.assign(wavePlan, { mission_id: lease.mission_id, wave_id: lease.wave_id, created_at: past, valid_until: future() });
+  wavePlan.adaptive_work.enabled = false;
+  wavePlan.agents = [{ ...wavePlan.agents[0], agent_id: lease.agent_id }];
+  const draft = sample("valid-dispatch-tool-policy");
+  draft.schema_version = "0.1"; delete draft.authorization;
+  draft.approved_at = past; draft.valid_until = future();
+  wavePlan.dispatch_control = { required: true, enforcement_level: "guardrail", gateway_exclusive: false,
+    policy_authorizations: [{ agent_id: lease.agent_id, provider: lease.provider, policy_id: draft.id, draft_sha256: runtime.inputDigest(draft) }] };
+  const opened = lifecycle.openWave(wavePlan, { ...options, doctrineRoot: __dirname });
+  assert.strictEqual(opened.status, "ready", JSON.stringify(opened));
+  lease.plan_ref = opened.plan_ref;
+  lease.routing_preflight_ref = opened.routing_preflight_ref;
+  lease.context_pack_ref = opened.context_packs[0].context_pack_ref;
+  lease.tool_policy_ref = runtime.authorizeDispatchPolicy(options, draft).policy_ref;
+  lease.not_before = past; lease.issued_at = past; lease.expires_at = future();
   const leaseRef = persist(lease, "agent-dispatch-leases", lease.issued_at);
   const baseline = sample("valid-agent-execution-checkpoint");
   baseline.lease_ref = leaseRef;
@@ -83,6 +100,7 @@ for (const resource of scope.resources) {
   const baselineRef = persist(baseline, "agent-execution-checkpoints", baseline.recorded_at);
   const admission = sample("valid-tool-admission-event");
   admission.lease_ref = leaseRef; admission.checkpoint_ref = baselineRef; admission.state_before = baseline.repository_state;
+  admission.tool_policy_ref = lease.tool_policy_ref;
   const admissionRef = persist(admission, "tool-admission-events", admission.decided_at);
   const failure = { ...clone(baseline), id: "AEC-SETTLEMENT-FAILURE", sequence: 1, checkpoint_kind: "post_tool",
     lease_status: "blocked", previous_checkpoint_ref: baselineRef, tool_admission_ref: admissionRef,
@@ -111,6 +129,7 @@ for (const resource of scope.resources) {
   const trust = sample("valid-verifier-trust-policy-v0.4");
   trust.repository_binding = binding; trust.created_at = past; trust.expires_at = future();
   trust.quorum.minimum_valid_attestations = 2; trust.quorum.minimum_independence_groups = 2;
+  trust.quorum.max_attestation_age_seconds = 900;
   trust.identity_assurance.trusted_x509_roots = [{ id: "ROOT-SETTLEMENT", trust_domain: "verification.example.test",
     certificate_pem: ca.certificate, certificate_sha256: certificateSha256(ca.certificate) }];
   trust.identity_assurance.trusted_transparency_logs = [{ id: "LOG-SETTLEMENT", origin: "settlement.example.test/log",
@@ -148,7 +167,7 @@ for (const resource of scope.resources) {
   Object.assign(campaign, { schema_version: "0.3", mission_id: scope.mission_id, created_at: past,
     repository_binding: { ...binding, baseline_revision: resolved.head_commit },
     attestation_policy: { required: true, trust_policy_ref: trustRef, minimum_valid_attestations: 2, minimum_independence_groups: 2,
-      require_distinct_key_ids: true, max_attestation_age_seconds: 300 } });
+      require_distinct_key_ids: true, max_attestation_age_seconds: 900 } });
   valid(campaign, "self-improvement-campaign");
   const campaignRef = persist(campaign, "self-improvement-campaigns", past);
   const order = superviseCampaign({ repositoryPath: repository, artifactRoot, campaignId: campaign.id }).order;
@@ -299,6 +318,54 @@ for (const resource of scope.resources) {
     try { assert.throws(() => settleToolEffects(options, request), /TOOL_EFFECT_REVIEW_PROJECTION_MISMATCH/); assert(fired); }
     finally { beforePublication = null; fs.writeFileSync(path.join(repository, "README.md"), "synthetic settlement fixture\n"); }
   });
+  function legacyCheckpoint(isolated, status, suffix, recordedAt = now()) {
+    const active = status === "active";
+    const legacy = { ...clone(failure), id: `AEC-LEGACY-${suffix}`, sequence: 2,
+      checkpoint_kind: active ? "post_tool" : { completed: "completion", superseded: "supersession", revoked: "revocation", interrupted: "interruption" }[status],
+      lease_status: status, previous_checkpoint_ref: failureRef,
+      tool_admission_ref: active ? admissionRef : clone(runtime.NONE_REF),
+      execution_result: active ? { status: "succeeded", provider_result_sha256: "b".repeat(64), external_effects: "none" }
+        : { status: "not_applicable", provider_result_sha256: "none", external_effects: "none" },
+      reason_codes: ["SYNTHETIC_LEGACY_HISTORY"], recorded_at: recordedAt };
+    valid(legacy, "agent-execution-checkpoint");
+    return persist(legacy, "agent-execution-checkpoints", legacy.recorded_at, isolated.artifactRoot);
+  }
+  check("legacy revocation before reconciliation does not satisfy post-settlement revocation", () => {
+    const isolated = forkStore("legacy-revoked-before-settlement");
+    const sameTime = now();
+    legacyCheckpoint(isolated, "revoked", "REVOKED-BEFORE", sameTime);
+    settleToolEffects({ ...isolated, now: sameTime }, request);
+    assert.strictEqual(runtime.dispatchStatus(isolated).leases[0].failed_effect_revocation_required, true);
+    assert.strictEqual(runtime.revokeLease(isolated, lease.id).status, "revoked");
+    assert.strictEqual(runtime.dispatchStatus(isolated).leases[0].failed_effect_revocation_required, false);
+  });
+  for (const status of ["active", "interrupted"]) check(`publication rejects reconciliation racing ${status === "active" ? "completion" : "resume"}`, () => {
+    const isolated = forkStore(`publication-race-${status}`);
+    const child = { ...clone(lease), id: `ADL-RACE-${status}`, previous_lease_ref: leaseRef, issuance_reason: "resume",
+      session_binding: { session_id: `race-${status}`, provider_agent_id: "main" } };
+    const childRef = persist(child, "agent-dispatch-leases", now(), isolated.artifactRoot);
+    const childBaseline = { ...clone(baseline), id: `AEC-RACE-BASE-${status}`, lease_ref: childRef,
+      session_binding: child.session_binding, recorded_at: now() };
+    const childBaselineRef = persist(childBaseline, "agent-execution-checkpoints", childBaseline.recorded_at, isolated.artifactRoot);
+    if (status === "interrupted") {
+      const interrupted = { ...clone(childBaseline), id: "AEC-RACE-INTERRUPTED", sequence: 1,
+        previous_checkpoint_ref: childBaselineRef, checkpoint_kind: "interruption", lease_status: "interrupted", recorded_at: now() };
+      valid(interrupted, "agent-execution-checkpoint");
+      persist(interrupted, "agent-execution-checkpoints", interrupted.recorded_at, isolated.artifactRoot);
+    }
+    let fired = false;
+    beforePublication = input => {
+      if (input.kind !== "agent-execution-checkpoints") return;
+      beforePublication = null; fired = true;
+      settleToolEffects(isolated, request);
+    };
+    try {
+      assert.throws(() => status === "active" ? runtime.completeLease(isolated, child.id)
+        : runtime.resumeLease(isolated, child.id, { sessionId: "race-resume", providerAgentId: "main" }), /RECONCILED_FAILED_AGENT/);
+      assert(fired, "must reach the publication boundary before injecting settlement");
+      assert.strictEqual(runtime.dispatchStatus(isolated).leases.find(item => item.lease_id === child.id).status, status);
+    } finally { beforePublication = null; }
+  });
   let settled;
   check("exact signed execution quorum and USER decision settle only the failed invocation", () => {
     settled = settleToolEffects(options, request);
@@ -312,10 +379,17 @@ for (const resource of scope.resources) {
     const status = runtime.dispatchStatus(options).leases[0];
     assert.strictEqual(status.unresolved_tool_effects, 0);
     assert.strictEqual(status.status, "blocked");
+    assert.strictEqual(status.reconciled_failed_effects, 1);
+    assert.deepStrictEqual(status.reconciled_effect_checkpoint_refs, [failureRef]);
+    assert.strictEqual(status.failed_effect_revocation_required, true);
   });
   check("exact settlement retry is idempotent", () => {
     const retry = settleToolEffects(options, request);
     assert.strictEqual(retry.reused, true); assert.deepStrictEqual(retry.settlement_ref, settled.settlement_ref);
+  });
+  check("post-settlement revocation cannot be backdated", () => {
+    assert.throws(() => runtime.revokeLease({ ...options, now: new Date(Date.parse(settled.settlement.settled_at) - 1).toISOString() }, lease.id),
+      /RECONCILED_FAILED_AGENT_REVOCATION_TIME_INVALID/);
   });
   for (const skill of ["codex-skills/controls-doctrine-operator", ".claude/skills/controls-doctrine-operator"]) {
     check(`${skill} wrapper resolves doctrine outside the target repository`, () => {
@@ -345,8 +419,97 @@ for (const resource of scope.resources) {
     assert.throws(() => settleToolEffects(isolated, request), /TOOL_EFFECT_SETTLEMENT_PUBLICATION_MISMATCH/);
     assert.throws(() => runtime.dispatchStatus(isolated), /TOOL_EFFECT_SETTLEMENT_PUBLICATION_MISMATCH/);
   });
+  function waveReport() {
+    const report = sample("valid-mission-wave-report");
+    Object.assign(report, { mission_id: lease.mission_id, wave_id: lease.wave_id, plan_ref: opened.plan_ref,
+      routing_preflight_ref: opened.routing_preflight_ref, recorded_at: now() });
+    report.agent_results = [{ ...report.agent_results[0], agent_id: lease.agent_id, context_pack_ref: lease.context_pack_ref,
+      evidence_refs: [observationRef] }];
+    valid(report, "mission-wave-report");
+    return report;
+  }
+  for (const status of ["active", "completed", "interrupted", "superseded"]) {
+    check(`legacy ${status} cannot conceal a reconciled failure or enable reuse`, () => {
+      const isolated = forkStore(`legacy-${status}-after-settlement`);
+      legacyCheckpoint(isolated, status, status.toUpperCase());
+      const projection = runtime.dispatchStatus(isolated).leases[0];
+      assert.strictEqual(projection.status, status);
+      assert.strictEqual(projection.reconciled_failed_effects, 1);
+      assert.strictEqual(projection.failed_effect_revocation_required, true);
+      assert.throws(() => runtime.completeLease(isolated, lease.id), /RECONCILED_FAILED_AGENT/);
+      assert.throws(() => runtime.resumeLease(isolated, lease.id, { sessionId: "forbidden-resume", providerAgentId: "main" }), /RECONCILED_FAILED_AGENT/);
+      assert.throws(() => runtime.authorizeDispatchPolicy(isolated, draft), /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+      assert.throws(() => runtime.issueLease(isolated, draft.id, { sessionId: "forbidden-new", providerAgentId: "main" }), /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+      assert.throws(() => lifecycle.openWave({ ...wavePlan, id: "MWP-SUCCESSOR", wave_id: "W2" }, { ...isolated, doctrineRoot: __dirname }),
+        /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+      assert.throws(() => lifecycle.recordWave(waveReport(), isolated), /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+      if (["active", "interrupted"].includes(status)) {
+        assert.strictEqual(runtime.activeLease(isolated, { missionId: lease.mission_id, waveId: lease.wave_id,
+          agentId: lease.agent_id, provider: lease.provider, sessionId: lease.session_binding.session_id,
+          providerAgentId: lease.session_binding.provider_agent_id }).code, "RECONCILED_FAILED_AGENT");
+      }
+      const revoked = runtime.revokeLease(isolated, lease.id);
+      assert.strictEqual(revoked.status, "revoked");
+      assert.strictEqual(runtime.dispatchStatus(isolated).leases[0].failed_effect_revocation_required, false);
+      assert.strictEqual(runtime.authorizeDispatchPolicy(isolated, draft).status, "existing");
+      assert.throws(() => lifecycle.recordWave(waveReport(), isolated), /RECONCILED_FAILED_AGENT/);
+      const failed = waveReport();
+      failed.wave_status = "failed";
+      failed.agent_results[0].status = "failed";
+      failed.agent_results[0].blockers = ["Original failed invocation remains a failure after reconciliation."];
+      assert.strictEqual(lifecycle.recordWave(failed, isolated).continuation_authorized, false);
+    });
+  }
+  check("a legacy resumed descendant inherits the same agent failure", () => {
+    const isolated = forkStore("legacy-resumed-descendant");
+    assert.strictEqual(runtime.revokeLease(isolated, lease.id).status, "revoked");
+    const child = { ...clone(lease), id: "ADL-LEGACY-CHILD", previous_lease_ref: leaseRef, issuance_reason: "resume",
+      session_binding: { session_id: "legacy-child", provider_agent_id: "main" } };
+    valid(child, "agent-dispatch-lease");
+    const childRef = persist(child, "agent-dispatch-leases", now(), isolated.artifactRoot);
+    const childBaseline = { ...clone(baseline), id: "AEC-LEGACY-CHILD", lease_ref: childRef,
+      session_binding: child.session_binding, recorded_at: now() };
+    valid(childBaseline, "agent-execution-checkpoint");
+    persist(childBaseline, "agent-execution-checkpoints", childBaseline.recorded_at, isolated.artifactRoot);
+    const identity = { missionId: lease.mission_id, waveId: lease.wave_id, agentId: lease.agent_id, provider: lease.provider,
+      sessionId: child.session_binding.session_id, providerAgentId: "main" };
+    assert.strictEqual(runtime.activeLease(isolated, identity).code, "RECONCILED_FAILED_AGENT");
+    assert.throws(() => runtime.completeLease(isolated, child.id), /RECONCILED_FAILED_AGENT/);
+    assert.throws(() => runtime.resumeLease(isolated, child.id, { sessionId: "again", providerAgentId: "main" }), /RECONCILED_FAILED_AGENT/);
+    assert.throws(() => runtime.assertReconciledFailureRevocations(isolated), /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+    assert.strictEqual(runtime.revokeLease(isolated, child.id).status, "revoked");
+    runtime.assertReconciledFailureRevocations(isolated);
+    assert(runtime.dispatchStatus(isolated).leases.every(item => item.reconciled_failed_effects === 1 && !item.failed_effect_revocation_required));
+  });
+  check("termination requires post-settlement revocation and rechecks exact retry", () => {
+    const isolated = forkStore("termination-after-reconciliation");
+    legacyCheckpoint(isolated, "completed", "TERMINATION");
+    const termination = { ...sample("valid-mission-wave-termination-request"), mission_id: lease.mission_id,
+      wave_id: lease.wave_id, plan_ref: opened.plan_ref };
+    const expired = { ...isolated, now: new Date(Date.parse(horizon) + 1000).toISOString() };
+    assert.throws(() => lifecycle.terminateWave(termination, expired), /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+    const revoked = runtime.revokeLease(isolated, lease.id);
+    assert.strictEqual(lifecycle.terminateWave(termination, expired).status, "expired");
+    assert.strictEqual(lifecycle.terminateWave(termination, expired).status, "expired");
+    const legacy = { ...clone(revoked.checkpoint), id: "AEC-POST-TERMINATION-LEGACY", sequence: revoked.checkpoint.sequence + 1,
+      previous_checkpoint_ref: revoked.checkpoint_ref, checkpoint_kind: "completion", lease_status: "completed", recorded_at: expired.now };
+    valid(legacy, "agent-execution-checkpoint");
+    persist(legacy, "agent-execution-checkpoints", legacy.recorded_at, isolated.artifactRoot);
+    assert.throws(() => lifecycle.terminateWave(termination, expired), /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+  });
+  check("closeout cannot reuse a legacy successful report after reconciliation", () => {
+    const isolated = forkStore("closeout-after-reconciliation");
+    legacyCheckpoint(isolated, "completed", "CLOSEOUT");
+    const report = waveReport();
+    persist(report, "mission-wave-reports", report.recorded_at, isolated.artifactRoot);
+    const aar = sample("valid-aar"); aar.mission_id = lease.mission_id;
+    assert.throws(() => lifecycle.closeWave(aar, { ...isolated, missionId: lease.mission_id, waveId: lease.wave_id }),
+      /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+    runtime.revokeLease(isolated, lease.id);
+    assert.throws(() => lifecycle.closeWave(aar, { ...isolated, missionId: lease.mission_id, waveId: lease.wave_id }), /RECONCILED_FAILED_AGENT/);
+  });
   check("settlement does not turn a failed agent into a successful agent", () => {
-    assert.throws(() => runtime.completeLease(options, lease.id), /blocked, not active/);
+    assert.throws(() => runtime.completeLease(options, lease.id), /RECONCILED_FAILED_AGENT/);
     const revoked = runtime.revokeLease(options, lease.id);
     assert.strictEqual(revoked.status, "revoked");
     assert.strictEqual(revoked.execution_authorized, false);

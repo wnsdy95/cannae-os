@@ -676,6 +676,7 @@ function wavePublicationGuard(plan, options, allowMissingCampaign = false) {
       throw new Error("Mission wave plan is expired or publication time is invalid.");
     }
     if (manifest) {
+      require("./dispatch-runtime-controller").assertReconciledFailureRevocations(options);
       assertWaveNotTerminated(options, plan.mission_id, plan.wave_id);
       assertAdaptiveCampaignMayContinue(plan, options, allowMissingCampaign);
     } else if (!allowMissingCampaign) {
@@ -689,6 +690,7 @@ function openWave(plan, options = {}) {
   assertValid(plan, "mission-wave-plan", "Mission wave plan");
   return withWaveLifecycle(options, plan.mission_id, plan.wave_id, locked => {
     assertWaveNotTerminated(locked, plan.mission_id, plan.wave_id);
+    require("./dispatch-runtime-controller").assertReconciledFailureRevocations(locked);
     assertAdaptiveCampaignMayContinue(plan, locked, true);
     return openWaveUnlocked(plan, locked);
   });
@@ -1016,6 +1018,12 @@ function validateDispatchCompletion(report, plan, options) {
     const leases = projection.leases.filter(item => item.agent_id === result.agent_id);
     if (leases.length === 0) {
       throw new Error(`Dispatch-controlled agent ${result.agent_id} has no lease lineage.`);
+    }
+    if (leases.some(item => item.failed_effect_revocation_required)) {
+      throw new Error(`RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED: agent ${result.agent_id} requires explicit revocation.`);
+    }
+    if (result.status === "complete" && leases.some(item => item.reconciled_failed_effects > 0)) {
+      throw new Error(`RECONCILED_FAILED_AGENT: agent ${result.agent_id} cannot be reported as successful after reconciliation.`);
     }
     if (leases.some(item => item.unresolved_gateway_transactions > 0)) {
       throw new Error(`UNRESOLVED_GATEWAY_TRANSACTIONS: agent ${result.agent_id} retains gateway obligations.`);
@@ -1419,6 +1427,8 @@ function terminateWave(request, options = {}) {
       if (previous) {
         assertValid(previous.payload, "mission-wave-termination", "Retained termination");
         if (previous.payload.request_sha256 !== requestSha256) throw new Error("Wave termination is immutable; request differs from retained termination.");
+        const current = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+        if (current.leases.some(lease => lease.failed_effect_revocation_required)) throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED");
         return terminationResult(previous.payload, previous.ref, locked);
       }
       const now = locked.now || new Date().toISOString();
@@ -1483,6 +1493,9 @@ function terminateWave(request, options = {}) {
         }
       }
       const dispatch = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+      if (dispatch.leases.some(lease => lease.failed_effect_revocation_required)) {
+        throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED: termination requires explicit post-settlement revocation.");
+      }
       if (dispatch.leases.some(lease => lease.unresolved_gateway_transactions > 0)) {
         throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: wave termination cannot settle gateway obligations.");
       }
@@ -1510,6 +1523,9 @@ function terminateWave(request, options = {}) {
         artifactId: termination.id, payload: termination, createdAt: now,
         publicationGuard: () => {
           const current = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+          if (current.leases.some(lease => lease.failed_effect_revocation_required)) {
+            throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED: reconciliation changed before termination publication.");
+          }
           if (current.leases.some(lease => lease.unresolved_gateway_transactions > 0)) {
             throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations block termination publication.");
           }

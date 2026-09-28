@@ -43,6 +43,10 @@ retained history, preserves orphan none references, and binds finite admission,
 effect, containment and coordination scopes to inspection evidence. It does not
 discharge admissions or clear holds. Exact USER/execution-bound gateway
 settlement, failed-agent revocation, and successor authority remain open.
+The hook path now preserves a reconciled-failure marker across legacy terminal
+states and resumed descendants, and requires post-settlement revocation before
+new authority or wave publication. Gateway settlement must integrate the same
+invariant; this prerequisite does not implement gateway discharge or restart.
 OCI cleanup now requires positive exact-target absence evidence, including on
 recovery replay. This repairs containment verification, not gateway transaction
 settlement, daemon identity attestation, or campaign restart.

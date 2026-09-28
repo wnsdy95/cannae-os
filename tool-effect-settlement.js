@@ -196,14 +196,14 @@ function verifyRecord(store, record) {
   return value;
 }
 
-function settledToolEffectRefs(runtimeView, leaseRef) {
-  if (!runtimeView.manifest.artifacts.some(entry => entry.kind === "tool-effect-settlements")) return [];
+function settledToolEffectState(runtimeView, leaseRef, latestCheckpointRef) {
+  const result = { checkpoint_refs: [], checkpoint_follows_settlement: true, latest_settled_at: null };
+  if (!runtimeView.manifest.artifacts.some(entry => entry.kind === "tool-effect-settlements")) return result;
   const store = loadVerifiedStore(runtimeView.repository.root, runtimeView.artifactRoot);
   requireTrue(manifestDigest(runtimeView.manifest) === store.verification.manifest_sha256, "TOOL_EFFECT_SETTLEMENT_STORE_CHANGED");
   const found = records(store);
   const seen = new Set();
   const consumed = new Set();
-  const checkpoints = [];
   for (const record of found) {
     const value = verifyRecord(store, record);
     const checkpoint = hash(value.checkpoint_ref);
@@ -211,9 +211,23 @@ function settledToolEffectRefs(runtimeView, leaseRef) {
     const order = hash(value.request.cycle_order_ref);
     requireTrue(!seen.has(checkpoint) && !consumed.has(decision) && !consumed.has(order), "TOOL_EFFECT_SETTLEMENT_CONFLICT");
     seen.add(checkpoint); consumed.add(decision); consumed.add(order);
-    if (sameRef(value.lease_ref, leaseRef)) checkpoints.push(value.checkpoint_ref);
+    if (sameRef(value.lease_ref, leaseRef)) {
+      result.checkpoint_refs.push(value.checkpoint_ref);
+      if (!result.latest_settled_at || Date.parse(value.settled_at) > Date.parse(result.latest_settled_at)) {
+        result.latest_settled_at = value.settled_at;
+      }
+      const before = historicalStore(store, value.observed_manifest.revision, value.observed_manifest.sha256);
+      // A legacy revocation retained before reconciliation is not its explicit follow-up.
+      if (!latestCheckpointRef || before.manifest.artifacts.some(entry => sameRef(entry, latestCheckpointRef))) {
+        result.checkpoint_follows_settlement = false;
+      }
+    }
   }
-  return checkpoints;
+  return result;
+}
+
+function settledToolEffectRefs(runtimeView, leaseRef) {
+  return settledToolEffectState(runtimeView, leaseRef).checkpoint_refs;
 }
 
 function settleToolEffects(options, input) {
@@ -273,4 +287,4 @@ function main() {
   } catch (error) { console.error(error.message); process.exitCode = 2; }
 }
 if (require.main === module) main();
-module.exports = { decisionOption, settleToolEffects, settledToolEffectRefs };
+module.exports = { decisionOption, settleToolEffects, settledToolEffectRefs, settledToolEffectState };

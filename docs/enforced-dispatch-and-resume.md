@@ -353,6 +353,13 @@ consistency result; it does not settle effects or verify USER consent, verifier
 identity, or completeness of the external effect scope. Keep the hold active
 until the separate settlement controller accepts it; then explicitly revoke the
 blocked lease. Settlement never turns a failed agent into a completed agent.
+After settlement, inspect `reconciled_failed_effects` and
+`failed_effect_revocation_required` separately from `unresolved_tool_effects`.
+The failure follows every lease of the same mission/wave/agent, including legacy
+resume lineages. Only a revocation published after settlement permits subsequent
+authority preparation; completion/resume/success reporting of that failed agent
+remain forbidden. A legacy terminal lease can be explicitly revoked for this
+purpose without modifying its earlier records. See the settlement procedure.
 
 ### 5.2 Gateway-Owned Obligations
 
