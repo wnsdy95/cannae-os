@@ -48,6 +48,35 @@ Read `docs/implementation-candidate-registry.md` for parsing, check execution,
 evidence, and trust limits. Never weaken a failing completion gate merely to
 remove an item from the queue.
 
+Regenerate retained audit snapshots through their source scanner after source
+changes. Their `as_of` must reflect the actual UTC execution date; never manually
+restamp an older result or treat its date as proof of current coverage.
+
+## Verifier Dependency Migrations
+
+Before editing a verifier or dependency lockfile, inspect the producer metadata
+in retained evidence. A lockfile-only update changes that identity too. Preserve
+original artifacts; never edit their hashes or version fields to fit new code.
+
+Run fresh and historical records through the current pinned verifier. Historical
+support must recognize exact source-audited producer tuples, not a version range
+or caller-supplied digest allowlist. It never authorizes loading an old runtime.
+Exercise unchanged historical records, unknown module/lockfile identities,
+schema/package mismatches, altered signed claims, and attempts to use the old
+package for new verification. Run monitor, checkpoint, publisher, workload
+identity, and full regression gates before integration.
+
+Keep policy baselines, trust roots, checkpoint lineage, and release authority
+unchanged unless a separate exact USER decision authorizes those operations.
+Read `docs/github-release-independent-verification.md` for the supported replay
+profiles and the distinction between source identity and execution attestation.
+
+When a live monitor fails, retain every independent blocking code. Credential
+renewal does not repair an unavailable predecessor checkpoint. Inspect the exact
+provider run and retained artifact availability separately; do not skip failed
+history, reuse initial bootstrap recovery, or reset an established lineage to
+turn a dependency or credential update green.
+
 ## Improvement Triggers
 
 Patch the corpus when one of these is true:

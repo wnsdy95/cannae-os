@@ -73,7 +73,9 @@ remain valid through the authorization expiry.
 
 ## 4. Bundle Contract
 
-`GitHubReleaseIndependentVerification` v0.1 records:
+Fresh `GitHubReleaseIndependentVerification` records use v0.2. Version v0.1
+remains readable only through the exact historical-producer replay path below.
+Both versions record:
 
 - pinned `@sigstore/verify` package version, verifier-module digest,
   dependency-lock digest, and Node minimum;
@@ -99,6 +101,41 @@ RFC 3161 timestamp threshold = 1
 Those thresholds describe GitHub's current release bundle and TUF target.
 They must not be generalized to other Sigstore profiles, where CT or Rekor
 verification may be required.
+
+### Producer Compatibility
+
+Fresh execution is pinned to `@sigstore/verify` 4.1.2. Schema v0.2 records that
+version; v0.1 records 4.1.0. A mismatched schema/package pair fails. The committed
+policy's `minimum_version: 4.1.0` remains the historical profile floor, not
+permission to run the old package for new verification. No policy baseline,
+checkpoint identity, trust root, or release authorization changes in this
+dependency migration.
+
+Retained evidence previously required byte-equivalent replay including current
+module and lockfile digests. Even a valid dependency update therefore broke
+historical replay. The runtime now recognizes three exact old producer tuples
+from source commits `786c38a`, `9635f8d`, and `d08420a`: package, package version,
+minimum version, Node minimum, module SHA-256, and lockfile SHA-256 must all match.
+Unknown tuples, extra metadata, and schema/version substitution remain errors.
+
+Historical compatibility never loads the old library. The currently pinned
+engine repeats TUF, certificate, timestamp, DSSE, signed-scope, and CLI cross-check
+verification. Only after that succeeds may comparison preserve the recognized
+original producer metadata and schema version. All other fields and the complete
+self-digest must still match. Original evidence is never rewritten. The monitor
+continues to require authenticated provider artifacts and checkpoint continuity.
+
+A recognized source tuple is not proof that the historical code executed in an
+isolated environment. That remains an execution-attestation concern. A standalone
+schema pass is not cryptographic replay or provider provenance. Newly encountered
+producer revisions require a reviewed compatibility change and adversarial tests;
+never admit arbitrary versions, ignore producer digests, or reset lineage to
+make a dependency update pass.
+
+Upstream context: the [checkpoint parsing fix](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
+and [log-entry counting fix](https://github.com/sigstore/sigstore-js/commit/adbe2535c5702364e9c958ae3d67fbdefe068edd)
+motivate running the hardened current engine, not maintaining an old execution
+fallback. GitHub's timestamp-only release profile is unchanged.
 
 ## 5. Runtime Integration
 

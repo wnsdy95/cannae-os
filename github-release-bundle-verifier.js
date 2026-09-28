@@ -24,6 +24,26 @@ const VERIFICATION_RESULT_MEDIA_TYPE =
   "application/vnd.dev.sigstore.verificationresult+json;version=0.1";
 const PAYLOAD_TYPE = "application/vnd.in-toto+json";
 const MINIMUM_SIGSTORE_VERIFY_VERSION = "4.1.0";
+const CURRENT_SIGSTORE_VERIFY_VERSION = "4.1.2";
+const CURRENT_EVIDENCE_VERSION = "0.2";
+
+// Exact historical source profiles, not an instruction to load old verifier code.
+const HISTORICAL_VERIFIER_PROFILES = Object.freeze([
+  Object.freeze({
+    commit: "786c38af6af6b79c185991c3e7e7374fc47a9eea",
+    dependency_lock_sha256: "04b2c2070d5d47024208687a539a8ec3683f529ca81c8108fbcf413330bc1e51"
+  }),
+  Object.freeze({
+    commit: "9635f8d176d14312c409536482e66a1f16806112",
+    dependency_lock_sha256: "38a4ec90c0706ae998d6c5b6b7bd9f49498c6360902028a93a4b747c8da49a8b"
+  }),
+  Object.freeze({
+    commit: "d08420a013d7b7df84750e87cbfe37be18fc26aa",
+    dependency_lock_sha256: "775ab784c7666398a6fd944b1690778dda9fc7063b3526f2f26ddf24c2eb4a1d"
+  })
+]);
+const HISTORICAL_VERIFIER_MODULE_SHA256 =
+  "7aecfcb348ec70af2efc4a3feaea09e20bbd7d7eb8d16beece24191713f0c5e2";
 
 class GitHubReleaseBundleVerificationError extends Error {
   constructor(code, message, details = {}) {
@@ -65,21 +85,6 @@ function packageVersion(packageName) {
     "GITHUB_RELEASE_INDEPENDENT_VERIFIER_VERSION_UNAVAILABLE",
     `Could not resolve ${packageName} package metadata.`
   );
-}
-
-function parseVersion(value) {
-  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(value || "");
-  return match ? match.slice(1).map(Number) : null;
-}
-
-function versionAtLeast(actual, minimum) {
-  const left = parseVersion(actual);
-  const right = parseVersion(minimum);
-  if (!left || !right) return false;
-  for (let index = 0; index < left.length; index += 1) {
-    if (left[index] !== right[index]) return left[index] > right[index];
-  }
-  return true;
 }
 
 function exactPattern(value) {
@@ -220,10 +225,10 @@ function certificateFromBundle(bundle) {
 
 function verifierImplementation() {
   const version = packageVersion("@sigstore/verify");
-  if (!versionAtLeast(version, MINIMUM_SIGSTORE_VERIFY_VERSION)) {
+  if (version !== CURRENT_SIGSTORE_VERIFY_VERSION) {
     throw new GitHubReleaseBundleVerificationError(
       "GITHUB_RELEASE_INDEPENDENT_VERIFIER_VERSION_UNSUPPORTED",
-      `@sigstore/verify ${MINIMUM_SIGSTORE_VERIFY_VERSION} or newer is required.`
+      `Fresh verification requires exactly @sigstore/verify ${CURRENT_SIGSTORE_VERIFY_VERSION}.`
     );
   }
   return {
@@ -238,7 +243,22 @@ function verifierImplementation() {
   };
 }
 
+function recognizedHistoricalVerifier(evidence) {
+  if (!evidence || evidence.schema_version !== "0.1") return false;
+  return HISTORICAL_VERIFIER_PROFILES.some(profile =>
+    canonicalJsonBytes(evidence.verifier || {}).equals(canonicalJsonBytes({
+      package: "@sigstore/verify",
+      version: "4.1.0",
+      minimum_version: MINIMUM_SIGSTORE_VERIFY_VERSION,
+      module_sha256: HISTORICAL_VERIFIER_MODULE_SHA256,
+      dependency_lock_sha256: profile.dependency_lock_sha256,
+      node_minimum_version: "22.22.2"
+    }))
+  );
+}
+
 function verifyGitHubReleaseBundle(options) {
+  const implementation = verifierImplementation();
   const rawVerification = options && options.rawVerification;
   const trustedRoot = options && options.trustedRoot;
   const expected = options && options.expected || {};
@@ -363,10 +383,9 @@ function verifyGitHubReleaseBundle(options) {
       "The independently verified bundle has no signing certificate."
     );
   }
-  const implementation = verifierImplementation();
   const bundleSha256 = sha256(canonicalJsonBytes(normalizedBundle));
   const evidence = {
-    schema_version: "0.1",
+    schema_version: CURRENT_EVIDENCE_VERSION,
     type: "GitHubReleaseIndependentVerification",
     id: `GRIV-${expected.tagName.replace(/[^A-Za-z0-9]/g, "_")}-${bundleSha256.slice(0, 12)}`,
     verified_at: new Date(Date.parse(verifiedAt)).toISOString(),
@@ -422,7 +441,7 @@ function validateIndependentVerificationEvidence(
   options = {}
 ) {
   const issues = [];
-  if (!evidence || evidence.schema_version !== "0.1" ||
+  if (!evidence || !["0.1", CURRENT_EVIDENCE_VERSION].includes(evidence.schema_version) ||
       evidence.type !== "GitHubReleaseIndependentVerification") {
     return [{
       code: "GITHUB_RELEASE_INDEPENDENT_EVIDENCE_MISSING",
@@ -447,6 +466,22 @@ function validateIndependentVerificationEvidence(
       maximumTrustedRootAgeSeconds:
         options.maximumTrustedRootAgeSeconds
     });
+    const currentProducer = evidence.schema_version === CURRENT_EVIDENCE_VERSION &&
+      canonicalJsonBytes(evidence.verifier || {}).equals(canonicalJsonBytes(replayed.verifier));
+    const historicalProducer = recognizedHistoricalVerifier(evidence);
+    if (!currentProducer && !historicalProducer) {
+      issues.push({
+        code: "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED",
+        path: "$.verifier",
+        message: "Producer metadata must match the current runtime or one exact recognized historical source profile."
+      });
+    }
+    if (historicalProducer) {
+      // Preserve original provenance only after current-code cryptographic replay.
+      replayed.schema_version = evidence.schema_version;
+      replayed.verifier = JSON.parse(JSON.stringify(evidence.verifier));
+      replayed.verification_sha256 = independentVerificationDigest(replayed);
+    }
     if (canonicalJsonBytes(replayed).toString("hex") !==
         canonicalJsonBytes(evidence).toString("hex")) {
       issues.push({
@@ -558,6 +593,10 @@ if (require.main === module) main();
 
 module.exports = {
   BUNDLE_MEDIA_TYPE,
+  CURRENT_EVIDENCE_VERSION,
+  CURRENT_SIGSTORE_VERIFY_VERSION,
+  HISTORICAL_VERIFIER_MODULE_SHA256,
+  HISTORICAL_VERIFIER_PROFILES,
   GitHubReleaseBundleVerificationError,
   MINIMUM_SIGSTORE_VERIFY_VERSION,
   PAYLOAD_TYPE,

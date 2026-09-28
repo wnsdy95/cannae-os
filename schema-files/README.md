@@ -2,6 +2,14 @@
 
 This directory contains JSON Schema contracts for the military-style LLM runtime.
 
+`GitHubReleaseIndependentVerification` v0.2 pairs with verifier 4.1.2; v0.1
+retains its exact 4.1.0 producer contract for historical reads. The schema rejects
+cross-version producer substitution. Full admission additionally requires a
+recognized exact producer tuple and current-engine cryptographic replay with
+the original raw bundle and retained trust root. The new current/legacy samples
+are test wrappers around public signed material, not release authority or proof
+that the historical runtime executed.
+
 `implementation-candidate-registry.schema.json` defines the source-bound
 engineering inventory: unique candidate identities, reviewed implementation
 mappings, acceptance checks, and residual work. Its valid/invalid samples are

@@ -332,7 +332,7 @@ independent durable archive or witness.
 Read these only when needed (bundled with this skill):
 
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
-- `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`: how to update source-map, compendium, fixtures, and this skill after learning.
+- `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`: corpus maintenance, completion audits, and verifier dependency migrations that preserve retained proof.
 
 ## Reading Rules
 

@@ -31,6 +31,12 @@ The fixture runner verifies:
 
 Run:
 
+Migration fixtures use the real signed bundle with synthetic wrappers carrying
+exact historical source profiles. They demonstrate current-engine replay and
+metadata substitution rejection, not historical production execution. Fresh
+evidence is v0.2 with verifier 4.1.2; recognized v0.1 wrappers remain unchanged.
+Old runtime execution is explicitly rejected even when old records are readable.
+
 ```bash
 node run-github-release-independent-verification-fixtures.js
 ```

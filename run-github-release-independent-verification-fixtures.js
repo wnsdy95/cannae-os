@@ -4,6 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const {
+  CURRENT_EVIDENCE_VERSION,
+  CURRENT_SIGSTORE_VERIFY_VERSION,
+  HISTORICAL_VERIFIER_MODULE_SHA256,
+  HISTORICAL_VERIFIER_PROFILES,
   independentVerificationDigest,
   validateIndependentVerificationEvidence,
   verifyGitHubReleaseBundle
@@ -217,6 +221,8 @@ function runFixtures() {
   results.push({
     name: "independent verifier validates the real GitHub release bundle",
     ok: evidence.cryptographic_verification_succeeded === true &&
+      evidence.schema_version === CURRENT_EVIDENCE_VERSION &&
+      evidence.verifier.version === CURRENT_SIGSTORE_VERIFY_VERSION &&
       evidence.statement.repository === EXPECTED.repository &&
       evidence.statement.tag_name === EXPECTED.tagName &&
       evidence.statement.commit_sha1 === EXPECTED.commitSha &&
@@ -242,6 +248,111 @@ function runFixtures() {
       EXPECTED
     ).length === 0
   });
+
+  function historicalEvidence(profile = HISTORICAL_VERIFIER_PROFILES[0]) {
+    const historical = clone(evidence);
+    historical.schema_version = "0.1";
+    historical.verifier.version = "4.1.0";
+    historical.verifier.module_sha256 = HISTORICAL_VERIFIER_MODULE_SHA256;
+    historical.verifier.dependency_lock_sha256 = profile.dependency_lock_sha256;
+    historical.verification_sha256 = independentVerificationDigest(historical);
+    return historical;
+  }
+
+  for (const profile of HISTORICAL_VERIFIER_PROFILES) {
+    const historical = historicalEvidence(profile);
+    const retainedBytes = JSON.stringify(historical);
+    results.push({
+      name: `current engine replays exact historical source profile ${profile.commit.slice(0, 7)} without rewriting it`,
+      ok: validatePayload(historical, "github-release-independent-verification").valid &&
+        validateIndependentVerificationEvidence(historical, rawVerification, trustedRoot, EXPECTED).length === 0 &&
+        JSON.stringify(historical) === retainedBytes
+    });
+  }
+
+  for (const [field, value] of [
+    ["module_sha256", "0".repeat(64)], ["dependency_lock_sha256", "0".repeat(64)],
+    ["version", "4.1.1"], ["minimum_version", "4.0.0"],
+    ["node_minimum_version", "18.0.0"], ["package", "unrecognized-verifier"], ["override", true]
+  ]) {
+    const attacked = historicalEvidence();
+    attacked.verifier[field] = value;
+    attacked.verification_sha256 = independentVerificationDigest(attacked);
+    results.push({
+      name: `historical producer substitution in ${field} is denied even with a valid bundle`,
+      ok: validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED)
+        .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED")
+    });
+  }
+
+  {
+    const attacked = historicalEvidence();
+    attacked.statement.commit_sha1 = "0".repeat(40);
+    attacked.verification_sha256 = independentVerificationDigest(attacked);
+    results.push({
+      name: "recognized historical metadata does not bless changed signed claims",
+      ok: validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED)
+        .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_EVIDENCE_REPLAY_MISMATCH")
+    });
+  }
+
+  {
+    const attacked = clone(rawVerification);
+    attacked.attestation.bundle.dsseEnvelope.payload = mutateEncodedJson(
+      attacked.attestation.bundle.dsseEnvelope.payload,
+      statement => { statement.predicate.repository = "attacker/repository"; }
+    );
+    results.push({
+      name: "historical replay must pass the current cryptographic engine",
+      ok: validateIndependentVerificationEvidence(historicalEvidence(), attacked, trustedRoot, EXPECTED)
+        .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_CRYPTOGRAPHIC_VERIFICATION_FAILED")
+    });
+  }
+
+  for (const [version, producer] of [["0.1", "4.1.2"], ["0.2", "4.1.0"]]) {
+    const attacked = clone(evidence);
+    attacked.schema_version = version;
+    attacked.verifier.version = producer;
+    attacked.verification_sha256 = independentVerificationDigest(attacked);
+    results.push({
+      name: `schema ${version} cannot claim producer ${producer}`,
+      ok: validatePayload(attacked, "github-release-independent-verification").issues
+        .some(item => item.code === "CONST_MISMATCH") &&
+        validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED).length > 0
+    });
+  }
+
+  {
+    const packagePath = path.resolve(path.dirname(require.resolve("@sigstore/verify")), "..", "package.json");
+    const readFileSync = fs.readFileSync;
+    const prototype = require("@sigstore/verify").Verifier.prototype;
+    const verify = prototype.verify;
+    let engineInvoked = false;
+    try {
+      prototype.verify = function() {
+        engineInvoked = true;
+        throw new Error("The version gate must run before cryptographic input processing.");
+      };
+      fs.readFileSync = function(file, ...args) {
+        const content = readFileSync.call(this, file, ...args);
+        if (typeof file === "string" && path.resolve(file) === packagePath) {
+          const manifest = JSON.parse(content);
+          manifest.version = "4.1.0";
+          return JSON.stringify(manifest);
+        }
+        return content;
+      };
+      const result = expectError(
+        "historical evidence support cannot make the old runtime eligible for fresh verification",
+        "GITHUB_RELEASE_INDEPENDENT_VERIFIER_VERSION_UNSUPPORTED",
+        () => verifyGitHubReleaseBundle({ rawVerification, trustedRoot, expected: EXPECTED, verifiedAt: VERIFIED_AT })
+      );
+      results.push({ ...result, ok: result.ok && !engineInvoked });
+    } finally {
+      fs.readFileSync = readFileSync;
+      prototype.verify = verify;
+    }
+  }
 
   {
     const attacked = clone(trustedRoot);

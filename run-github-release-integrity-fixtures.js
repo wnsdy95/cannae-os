@@ -17,6 +17,11 @@ const {
   validateRetainedFullObservationArtifact
 } = require("./github-release-integrity-monitor");
 const { ReleaseAuthorizationError } = require("./github-release-publisher");
+const {
+  HISTORICAL_VERIFIER_MODULE_SHA256,
+  HISTORICAL_VERIFIER_PROFILES,
+  independentVerificationDigest
+} = require("./github-release-bundle-verifier");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const {
   findRuntimeRoot: findCodexRuntimeRoot
@@ -556,6 +561,45 @@ function runFixtures() {
           retainedValidationOptions(fixture, true)
         ) === true
     });
+
+    // Synthetic old-producer wrappers around the real signed public bundle.
+    for (const profile of HISTORICAL_VERIFIER_PROFILES) {
+      const historical = JSON.parse(JSON.stringify(artifact));
+      const retainedObservation = historical.full_observation;
+      const evidence = retainedObservation.releases[1].attestation.independent_verification;
+      evidence.schema_version = "0.1";
+      evidence.verifier.version = "4.1.0";
+      evidence.verifier.module_sha256 = HISTORICAL_VERIFIER_MODULE_SHA256;
+      evidence.verifier.dependency_lock_sha256 = profile.dependency_lock_sha256;
+      evidence.verification_sha256 = independentVerificationDigest(evidence);
+      retainedObservation.observation_sha256 = observationDigest(retainedObservation);
+      const retainedBytes = JSON.stringify(historical);
+      results.push({
+        name: `full retained observation replays historical producer ${profile.commit.slice(0, 7)} without mutation`,
+        ok: validateRetainedFullObservationArtifact(
+          historical, retainedValidationOptions(fixture, true)
+        ) === true && JSON.stringify(historical) === retainedBytes
+      });
+
+      const unknown = JSON.parse(retainedBytes);
+      const unknownEvidence = unknown.full_observation.releases[1].attestation.independent_verification;
+      unknownEvidence.verifier.dependency_lock_sha256 = "0".repeat(64);
+      unknownEvidence.verification_sha256 = independentVerificationDigest(unknownEvidence);
+      unknown.full_observation.observation_sha256 = observationDigest(unknown.full_observation);
+      results.push(expectError(
+        `retained observation rejects an unknown historical lockfile for ${profile.commit.slice(0, 7)}`,
+        "GITHUB_RELEASE_INTEGRITY_SCHEMA_INVALID",
+        () => validateRetainedFullObservationArtifact(unknown, retainedValidationOptions(fixture, true))
+      ));
+
+      const wrongRun = JSON.parse(retainedBytes);
+      wrongRun.provenance.run_id = "99999";
+      results.push(expectError(
+        `historical producer compatibility preserves provider-run binding for ${profile.commit.slice(0, 7)}`,
+        "GITHUB_RELEASE_INTEGRITY_ARTIFACT_BINDING_INVALID",
+        () => validateRetainedFullObservationArtifact(wrongRun, retainedValidationOptions(fixture, true))
+      ));
+    }
 
     const missingObservation = JSON.parse(
       JSON.stringify(artifact)

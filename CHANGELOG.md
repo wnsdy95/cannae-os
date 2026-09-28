@@ -6,6 +6,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Corrected source-map coverage snapshots to record the actual UTC audit date, added date regression coverage, and regenerated the source inventory. Both skills now require generator-derived freshness instead of manually restamping old audit results.
+
+- Upgraded the pinned Sigstore verifier to 4.1.2 and protobuf-specs to 0.5.2. Fresh independent release evidence now uses v0.2; exact known v0.1 producer tuples are preserved while their complete cryptographic claims are replayed by the current engine. Unknown provenance, changed claims, version substitution, and old-runtime fresh execution remain blocked. Both skills now treat verifier and lockfile changes as evidence-compatibility migrations, without rewriting policy baselines or checkpoint lineage.
+
 - Added a source-bound implementation registry covering 125 requirements in 21 candidate sections, with reviewed mappings (37 implemented, 18 partial, 70 planned), actual check execution, source-drift/omission/false-completion gates, and CI integration. Both skills now audit existing work before proposing expansion, preserve equivalent implementation names, and distinguish verified subsets from whole-program completion. The completion backlog retains roadmap and external operational gaps; inventory coverage does not claim those gaps are closed.
 
 - Added evidence-preserving mission-wave expiration, USER-decision-bound abort/supersession, immutable terminal records, serialized lifecycle/lease issuance, and post-termination dispatch denial. Both operator skills now direct expired or abandoned work through settlement and termination instead of backdated reports or fabricated successful closeouts.

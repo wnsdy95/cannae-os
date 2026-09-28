@@ -1,5 +1,35 @@
 # Research Compendium
 
+## Sigstore Dependency Replay Migration (2026-09-28)
+
+**Primary evidence:** upstream [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
+hardens checkpoint parsing, and [adbe253](https://github.com/sigstore/sigstore-js/commit/adbe2535c5702364e9c958ae3d67fbdefe068edd)
+prevents repeated log entries from inflating a threshold count.
+
+**Local finding:** independent release records bind the verifier module and
+dependency lockfile, not only its package version. Comparing their entire
+replayed object to a new producer broke historical evidence after upgrades.
+Source history identifies three supported v0.1 tuples at `786c38a`, `9635f8d`,
+and `d08420a`; their module digest is identical, while lockfile digests differ.
+
+**Application:** fresh evidence is v0.2 from exactly verifier 4.1.2, with
+protobuf-specs 0.5.2. Historical recognition checks every producer field against
+an exact source profile; the latest engine still verifies all cryptographic
+claims. Comparison preserves original provenance only after that verification,
+and does not mutate the retained bytes. Tests cover all three old profiles,
+unknown producer fields, claim substitution, version pairs, and old-runtime
+denial. Monitor and checkpoint admission still validate provider lineage.
+
+**Rejected alternatives:** loading the old package to reproduce history,
+ignoring module/lockfile fields, broadly allowing any patch version, altering
+signed claims, rewriting the committed policy, or resetting checkpoints.
+
+**Limit:** the migration recognizes producer source identity, not protected
+historical execution. Synthetic migration wrappers around the retained public
+GitHub bundle are test cases, not production-run evidence. Later producer
+changes require explicit compatibility review. Credential repair, fresh live
+monitor acceptance, and independently operated storage remain separate work.
+
 ## Implementation Traceability Audit (2026-09-28)
 
 **Reason:** filename-only searches and broad changelog closure language obscured
