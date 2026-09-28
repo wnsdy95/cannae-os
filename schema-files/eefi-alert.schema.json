@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/eefi-alert.schema.json",
+  "title": "EEFI Alert",
+  "description": "Alert raised when EEFI exposure is detected. The alert carries only a sha256 digest of the exposed excerpt; the raw excerpt must never be stored in the alert.",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "eefi_item_id", "exposure_channel", "detector", "excerpt_sha256", "severity", "owner", "blocks_release", "required_response", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "EEFIAlert" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "eefi_item_id": { "$ref": "common.schema.json#/$defs/id" },
+    "exposure_channel": {
+      "type": "string",
+      "enum": ["final_output", "tool_transfer", "log", "handoff"]
+    },
+    "detector": { "type": "string", "minLength": 1 },
+    "excerpt_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "severity": {
+      "type": "string",
+      "enum": ["Info", "Watch", "Amber", "Red", "Black"]
+    },
+    "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "blocks_release": { "type": "boolean" },
+    "required_response": { "type": "string", "minLength": 1 },
+    "status": { "$ref": "common.schema.json#/$defs/status" }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1",
+  "type": "WARNO",
+  "id": "WARNO-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "created_by": "COMMANDER",
+  "classification": "internal",
+  "issued_at": "2026-06-18T11:05:00+09:00",
+  "anticipated_mission": {
+    "statement": "Build and validate an end-to-end runtime demo for the military-style LLM control framework.",
+    "purpose": "Prove that the framework is not only a writing style, but a machine-checkable control loop."
+  },
+  "commander_intent_summary": [
+    "Separate mission intent, authority, evidence, policy decision, and AAR into machine-checkable payloads.",
+    "Force Red actions through an explicit approval object."
+  ],
+  "known_constraints": [
+    "Use local files only.",
+    "Keep all high-risk actions behind approval.",
+    "Preserve evidence and AAR links to the mission."
+  ],
+  "preparation_tasks": [
+    "Inventory existing schemas, sample payloads, validator, and policy engine prototypes.",
+    "Confirm the validator CLI and policy engine run locally.",
+    "Stage runtime demo payload skeletons for mission, task order, and tool requests."
+  ],
+  "earliest_execution_at": "2026-06-18T11:30:00+09:00",
+  "following_opord": {
+    "expected_order_id": "OPORD-DEMO-001",
+    "expected_by": "2026-06-18T12:00:00+09:00"
+  }
+}

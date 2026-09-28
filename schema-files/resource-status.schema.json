@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/resource-status.schema.json",
+  "title": "Resource Status",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "owner", "resource_class", "unit", "capacity", "current_level", "threshold_bands", "trend", "measured_at"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ResourceStatus" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "owner": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "resource_class": {
+      "type": "string",
+      "enum": ["token_budget", "wall_clock", "api_quota", "tool_availability", "context_size"]
+    },
+    "unit": { "type": "string", "minLength": 1 },
+    "capacity": { "type": "number", "exclusiveMinimum": 0 },
+    "current_level": { "type": "number", "minimum": 0 },
+    "threshold_bands": {
+      "type": "object",
+      "required": ["green", "amber", "red"],
+      "additionalProperties": false,
+      "properties": {
+        "green": { "$ref": "#/$defs/band" },
+        "amber": { "$ref": "#/$defs/band" },
+        "red": { "$ref": "#/$defs/band" }
+      }
+    },
+    "trend": {
+      "type": "string",
+      "enum": ["improving", "stable", "degrading"]
+    },
+    "measured_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "gates_phases": { "$ref": "common.schema.json#/$defs/string_list" },
+    "notes": { "type": "string" }
+  },
+  "$defs": {
+    "band": {
+      "type": "object",
+      "required": ["min_remaining_ratio"],
+      "additionalProperties": false,
+      "properties": {
+        "min_remaining_ratio": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

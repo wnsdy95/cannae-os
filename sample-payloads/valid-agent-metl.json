@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1",
+  "type": "AgentMetl",
+  "id": "METL-DEMO-S2",
+  "role": "S2",
+  "mission_set": [
+    "Source-based research supporting mission planning and PIR answers.",
+    "Evidence production that keeps direct evidence separate from LLM interpretation."
+  ],
+  "essential_tasks": [
+    {
+      "task_id": "MET-DEMO-S2-001",
+      "task_statement": "Rate source reliability for every planned source before it is cited as evidence.",
+      "conditions": [
+        "Given a source-plan annex with planned sources and expected claims.",
+        "Given access to the source reliability rubric grades A through D."
+      ],
+      "standards": [
+        "100 percent of cited sources carry an A/B/C/D tier with a stated rationale.",
+        "Zero tier-X sources appear in a final output.",
+        "Recency uncertainty is flagged on every source older than its stability window."
+      ],
+      "supporting_fixtures": [
+        "valid-source-plan.json",
+        "invalid-source-plan-unusable-tier.json"
+      ],
+      "supporting_runners": [
+        "source-map-linter.js"
+      ],
+      "current_proficiency": "P",
+      "evaluation_evidence": [
+        "AAR ARU-AAR-20260618-001 classified source rating as sustain.",
+        "Source map lint passed on the last three missions."
+      ],
+      "review_cadence": "end_of_phase"
+    },
+    {
+      "task_id": "MET-DEMO-S2-002",
+      "task_statement": "Separate claim, inference, and open question in every research product.",
+      "conditions": [
+        "Given a PIR and a set of collected sources of mixed reliability."
+      ],
+      "standards": [
+        "Every claim links to at least one graded source.",
+        "Every inference is labeled as LLM interpretation.",
+        "Open questions are listed explicitly instead of being filled by guesses."
+      ],
+      "supporting_fixtures": [
+        "valid-readiness-event.json"
+      ],
+      "supporting_runners": [
+        "readiness-gate-prototype/run-readiness-fixtures.js"
+      ],
+      "current_proficiency": "T",
+      "evaluation_evidence": [
+        "Three consecutive research products passed Red Team review with no unsupported claims."
+      ],
+      "review_cadence": "mission_start"
+    }
+  ],
+  "updated_at": "2026-06-18T18:00:00+09:00"
+}

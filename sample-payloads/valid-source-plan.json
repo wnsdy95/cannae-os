@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1",
+  "type": "SourcePlan",
+  "id": "SP-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "owner": "S2",
+  "information_requirements": [
+    "PIR: Which official doctrine defines METL-based training and evaluation?",
+    "PIR: How do official staff-organization sources describe annex ownership?"
+  ],
+  "planned_sources": [
+    {
+      "source_id": "SRC-DEMO-001",
+      "tier": "A",
+      "access_method": "Fetch FM 7-0 from the official Army publishing portal and archive the PDF.",
+      "expected_claims": [
+        "METL designates mission-essential tasks with conditions and standards.",
+        "Proficiency is evaluated per task, not per unit as a whole."
+      ]
+    },
+    {
+      "source_id": "SRC-DEMO-002",
+      "tier": "B",
+      "access_method": "Retrieve the defense research institute commentary on training management.",
+      "expected_claims": [
+        "Analytical framing of how readiness reporting drives task assignment."
+      ]
+    },
+    {
+      "source_id": "SRC-DEMO-003",
+      "tier": "D",
+      "access_method": "Scan practitioner blog posts as search leads only.",
+      "expected_claims": [
+        "Hypotheses about field usage of crawl-walk-run progressions, to be confirmed against tier A."
+      ]
+    }
+  ],
+  "collection_sequence": [
+    {
+      "step": 1,
+      "source_id": "SRC-DEMO-001",
+      "action": "Extract the METL definition and evaluation standards from the primary text."
+    },
+    {
+      "step": 2,
+      "source_id": "SRC-DEMO-002",
+      "action": "Cross-check the primary claims against the research commentary."
+    },
+    {
+      "step": 3,
+      "source_id": "SRC-DEMO-003",
+      "action": "Harvest leads and mark every unconfirmed statement as a hypothesis."
+    }
+  ],
+  "verification_linkage": {
+    "verification_plan_id": "VP-DEMO-001",
+    "linked_check_ids": ["VCK-DEMO-001"]
+  },
+  "gaps": [
+    "No accessible primary source yet for ROK-specific doctrine detail; tracked as an open question."
+  ],
+  "created_at": "2026-06-18T14:00:00+09:00"
+}

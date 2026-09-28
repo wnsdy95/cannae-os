@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "type": "ResourceStatus",
+  "id": "RS-DEMO-TOKEN-001",
+  "mission_id": "M-DEMO-001",
+  "owner": "S4",
+  "classification": "internal",
+  "resource_class": "token_budget",
+  "unit": "tokens",
+  "capacity": 200000,
+  "current_level": 132000,
+  "threshold_bands": {
+    "green": { "min_remaining_ratio": 0.4 },
+    "amber": { "min_remaining_ratio": 0.15 },
+    "red": { "min_remaining_ratio": 0 }
+  },
+  "trend": "stable",
+  "measured_at": "2026-06-18T13:00:00+09:00",
+  "gates_phases": ["execute", "verify"],
+  "notes": "Token budget for the demo mission execution phase; measured by the S4 watch."
+}

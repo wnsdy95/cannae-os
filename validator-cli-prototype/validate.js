@@ -94,9 +94,59 @@ const {
 const ROOT = path.resolve(__dirname, "..");
 const SCHEMA_DIR = path.join(ROOT, "schema-files");
 
+function controlExecutionReceiptId({ reportId, reportInputSha256, commandSha256 }) {
+  const reportPart = String(reportId || "unknown").replace(/[^A-Za-z0-9_-]+/g, "_") || "unknown";
+  return `CER-${reportPart}-${String(reportInputSha256 || "").slice(0, 12)}-${String(commandSha256 || "").slice(0, 16)}`;
+}
+
+function controlExecutionDescriptor(command) {
+  if (typeof command !== "string" || command.trim() !== command || command.length === 0) {
+    throw new Error("Validation command must be one exact non-empty string without surrounding whitespace.");
+  }
+  if (/[;&|`<>\n\r]/.test(command)) {
+    throw new Error(`Validation command contains a forbidden shell operator: ${command}`);
+  }
+  if (/["'$\\]/.test(command)) {
+    throw new Error(`Node validation command contains unsupported quoting or expansion: ${command}`);
+  }
+  const tokens = command.split(/\s+/);
+  if (tokens[0] !== "node" || tokens.length < 2) {
+    throw new Error(`Validation command runner is not allowlisted: ${command}`);
+  }
+  const scriptPath = tokens[1];
+  if (!/^[A-Za-z0-9._/-]+\.js$/.test(scriptPath) || path.isAbsolute(scriptPath) || scriptPath.split("/").includes("..")) {
+    throw new Error(`Validation command script path is unsafe: ${scriptPath}`);
+  }
+  const commandSha256 = crypto.createHash("sha256").update(command).digest("hex");
+  return {
+    control_id: `CTRL-${commandSha256.slice(0, 16)}`,
+    command,
+    command_sha256: commandSha256,
+    runner: "node",
+    script_path: scriptPath,
+    argv: tokens.slice(2),
+    working_directory: "doctrine_root",
+    shell: false
+  };
+}
+
 const TYPE_TO_SCHEMA = {
   mission: "mission.schema.json",
   agent: "agent.schema.json",
+  warno: "warno.schema.json",
+  "board-decision": "board-decision.schema.json",
+  "battle-rhythm-event": "battle-rhythm-event.schema.json",
+  "battle-rhythm-scheduler": "battle-rhythm-scheduler.schema.json",
+  "agent-metl": "agent-metl.schema.json",
+  "readiness-event": "readiness-event.schema.json",
+  "source-plan": "source-plan.schema.json",
+  "context-release": "context-release.schema.json",
+  "resource-status": "resource-status.schema.json",
+  "decision-log": "decision-log.schema.json",
+  "source-record": "source-record.schema.json",
+  "classification-label": "classification-label.schema.json",
+  "releasability-review": "releasability-review.schema.json",
+  "eefi-alert": "eefi-alert.schema.json",
   opord: "opord.schema.json",
   "task-order": "task-order.schema.json",
   "tool-request": "tool-request.schema.json",
@@ -171,6 +221,7 @@ const TYPE_TO_SCHEMA = {
   "routing-receipt": "routing-receipt.schema.json",
   "mission-wave-plan": "mission-wave-plan.schema.json",
   "agent-context-pack": "agent-context-pack.schema.json",
+  "control-execution-receipt": "control-execution-receipt.schema.json",
   "mission-wave-report": "mission-wave-report.schema.json",
   "mission-wave-closeout": "mission-wave-closeout.schema.json",
   "model-force-assignment-plan": "model-force-assignment-plan.schema.json",
@@ -240,13 +291,15 @@ function resolveRef(ref, schemas, rootSchema) {
 }
 
 function typeMatches(value, expected) {
+  if (Array.isArray(expected)) return expected.some(type => typeMatches(value, type));
+  if (expected === "null") return value === null;
   if (expected === "array") return Array.isArray(value);
   if (expected === "object") return value !== null && typeof value === "object" && !Array.isArray(value);
   if (expected === "string") return typeof value === "string";
   if (expected === "boolean") return typeof value === "boolean";
   if (expected === "number") return typeof value === "number";
   if (expected === "integer") return Number.isInteger(value);
-  return true;
+  return false;
 }
 
 function hasSchemaErrors(issues) {
@@ -367,7 +420,7 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
   }
 
   if (schema.type && !typeMatches(value, schema.type)) {
-    issues.push(issue("error", "TYPE_MISMATCH", pointer, `Expected ${schema.type}.`));
+    issues.push(issue("error", "TYPE_MISMATCH", pointer, `Expected ${Array.isArray(schema.type) ? schema.type.join(" or ") : schema.type}.`));
     return issues;
   }
 
@@ -397,12 +450,18 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
     }
   }
 
-  if ((schema.type === "number" || schema.type === "integer") && typeof value === "number") {
+  if (typeof value === "number") {
     if (schema.minimum !== undefined && value < schema.minimum) {
       issues.push(issue("error", "MINIMUM", pointer, `Number must be >= ${schema.minimum}.`));
     }
     if (schema.maximum !== undefined && value > schema.maximum) {
       issues.push(issue("error", "MAXIMUM", pointer, `Number must be <= ${schema.maximum}.`));
+    }
+    if (typeof schema.exclusiveMinimum === "number" && value <= schema.exclusiveMinimum) {
+      issues.push(issue("error", "EXCLUSIVE_MINIMUM", pointer, `Number must be > ${schema.exclusiveMinimum}.`));
+    }
+    if (typeof schema.exclusiveMaximum === "number" && value >= schema.exclusiveMaximum) {
+      issues.push(issue("error", "EXCLUSIVE_MAXIMUM", pointer, `Number must be < ${schema.exclusiveMaximum}.`));
     }
   }
 
@@ -729,6 +788,286 @@ function semanticRules(payload, type, options = {}) {
     }
     if (payload.mission_statement && /well|properly|optimally|better/i.test(payload.mission_statement)) {
       issues.push(issue("warning", "VAGUE_MISSION", "$.mission_statement", "Mission statement appears vague.", "Use an observable end state."));
+    }
+  }
+
+  if (type === "warno") {
+    if (isEmptyArray(payload.preparation_tasks)) {
+      issues.push(issue("error", "WARNO_WITHOUT_PREPARATION_TASKS", "$.preparation_tasks", "WARNO must direct at least one preparation task."));
+    }
+    if (isValidDate(payload.issued_at) && isValidDate(payload.earliest_execution_at) &&
+        !isBefore(payload.issued_at, payload.earliest_execution_at)) {
+      issues.push(issue("error", "WARNO_EXECUTION_BEFORE_ISSUE", "$.earliest_execution_at", "WARNO earliest execution time must be after issue time."));
+    }
+  }
+
+  if (type === "readiness-event") {
+    const decisionByRating = {
+      X: { Green: "draft_only", Amber: "draft_only", Red: "approval_required", Black: "prohibit" },
+      U: { Green: "draft_only", Amber: "draft_only", Red: "approval_required", Black: "prohibit" },
+      P: { Green: "allow", Amber: "approval_required", Red: "approval_required", Black: "prohibit" },
+      T: { Green: "allow", Amber: "report_required", Red: "approval_required", Black: "prohibit" }
+    };
+    const previousRank = READINESS_RANK[payload.previous_rating];
+    const nextRank = READINESS_RANK[payload.new_rating];
+    const promotion = Number.isInteger(previousRank) && Number.isInteger(nextRank) && nextRank > previousRank;
+
+    if (payload.actor !== "EVALUATOR") {
+      issues.push(issue("critical", "READINESS_UNAUTHORIZED_ACTOR", "$.actor", "Only EVALUATOR may issue a readiness transition; an agent cannot rate itself."));
+    }
+    if (promotion && nextRank - previousRank !== 1) {
+      issues.push(issue("critical", "READINESS_PROMOTION_STAGE_JUMP", "$.new_rating", "Readiness promotion must advance exactly one stage."));
+    }
+    if (promotion && (!Array.isArray(payload.evidence) || payload.evidence.length < 3)) {
+      issues.push(issue("critical", "READINESS_PROMOTION_EVIDENCE_INSUFFICIENT", "$.evidence", "Readiness promotion requires at least three distinct evidence references."));
+    }
+
+    const effects = payload.authority_impact && Array.isArray(payload.authority_impact.roe_effects)
+      ? payload.authority_impact.roe_effects
+      : [];
+    const byClass = new Map();
+    effects.forEach((effect, index) => {
+      if (byClass.has(effect.roe_class)) {
+        issues.push(issue("critical", "READINESS_DUPLICATE_ROE_EFFECT", `$.authority_impact.roe_effects[${index}].roe_class`, "Each ROE class must appear exactly once."));
+      }
+      byClass.set(effect.roe_class, { effect, index });
+    });
+    for (const roeClass of ["Green", "Amber", "Red", "Black"]) {
+      const entry = byClass.get(roeClass);
+      if (!entry) {
+        issues.push(issue("critical", "READINESS_MISSING_ROE_EFFECT", "$.authority_impact.roe_effects", `Readiness transition must state the ${roeClass} authority effect.`));
+        continue;
+      }
+      const expectedPrevious = decisionByRating[payload.previous_rating] && decisionByRating[payload.previous_rating][roeClass];
+      const expectedNext = decisionByRating[payload.new_rating] && decisionByRating[payload.new_rating][roeClass];
+      if (expectedPrevious && entry.effect.previous_decision !== expectedPrevious) {
+        issues.push(issue("critical", "READINESS_PREVIOUS_AUTHORITY_MISMATCH", `$.authority_impact.roe_effects[${entry.index}].previous_decision`, `${roeClass} previous decision must be derived from rating ${payload.previous_rating}.`));
+      }
+      if (expectedNext && entry.effect.new_decision !== expectedNext) {
+        issues.push(issue("critical", "READINESS_AUTHORITY_ESCALATION", `$.authority_impact.roe_effects[${entry.index}].new_decision`, `${roeClass} new decision exceeds or conflicts with the ceiling for rating ${payload.new_rating}.`));
+      }
+    }
+  }
+
+  if (type === "board-decision") {
+    if (["approve", "approve_with_constraints"].includes(payload.decision) && !payload.selected_option) {
+      issues.push(issue("critical", "BOARD_DECISION_OPTION_REQUIRED", "$.selected_option", "An approving board decision must name the selected option."));
+    }
+    if (payload.decision === "approve_with_constraints" && !hasSubstantiveItems(payload.constraints)) {
+      issues.push(issue("critical", "BOARD_DECISION_CONSTRAINTS_REQUIRED", "$.constraints", "approve_with_constraints requires at least one substantive constraint."));
+    }
+    if (payload.decision !== "defer" && !hasSubstantiveItems(payload.evidence)) {
+      issues.push(issue("error", "BOARD_DECISION_EVIDENCE_REQUIRED", "$.evidence", "A disposition other than defer requires evidence."));
+    }
+  }
+
+  if (type === "battle-rhythm-event") {
+    const cadence = payload.cadence || {};
+    if (cadence.kind === "interval" && (!Number.isInteger(cadence.interval_minutes) || cadence.cron_expression !== undefined)) {
+      issues.push(issue("error", "BATTLE_RHYTHM_INTERVAL_CADENCE_INVALID", "$.cadence", "Interval cadence requires interval_minutes and must not carry cron_expression."));
+    }
+    if (cadence.kind === "cron" && (!cadence.cron_expression || cadence.interval_minutes !== undefined)) {
+      issues.push(issue("error", "BATTLE_RHYTHM_CRON_CADENCE_INVALID", "$.cadence", "Cron cadence requires cron_expression and must not carry interval_minutes."));
+    }
+    const participants = payload.participants || [];
+    const participantSet = new Set(participants);
+    if (participantSet.size !== participants.length) {
+      issues.push(issue("error", "BATTLE_RHYTHM_DUPLICATE_PARTICIPANT", "$.participants", "Battle rhythm participants must be unique."));
+    }
+    if (payload.chair && !participantSet.has(payload.chair)) {
+      issues.push(issue("critical", "BATTLE_RHYTHM_CHAIR_NOT_PARTICIPANT", "$.chair", "The event chair must be a participant."));
+    }
+    const requiredRoles = payload.quorum && payload.quorum.required_roles || [];
+    if (requiredRoles.some(role => !participantSet.has(role))) {
+      issues.push(issue("critical", "BATTLE_RHYTHM_QUORUM_ROLE_MISSING", "$.quorum.required_roles", "Every required quorum role must be an event participant."));
+    }
+    if (payload.quorum && payload.quorum.minimum_participants > participantSet.size) {
+      issues.push(issue("critical", "BATTLE_RHYTHM_QUORUM_IMPOSSIBLE", "$.quorum.minimum_participants", "Minimum quorum cannot exceed the unique participant count."));
+    }
+  }
+
+  if (type === "battle-rhythm-scheduler") {
+    const proposalById = new Map((payload.proposals || []).map(item => [item.event_id, item]));
+    for (const [index, proposal] of (payload.proposals || []).entries()) {
+      if (proposal.state === "proposed" &&
+          (proposal.proposed_occurrence === null || hasSubstantiveItems(proposal.inputs_missing) || hasSubstantiveItems(proposal.blocking_reasons))) {
+        issues.push(issue("critical", "SCHEDULER_PROPOSAL_STATE_INCONSISTENT", `$.proposals[${index}]`, "A proposed event requires an occurrence and no missing inputs or blockers."));
+      }
+      if (proposal.state === "blocked" && !hasSubstantiveItems(proposal.blocking_reasons)) {
+        issues.push(issue("error", "SCHEDULER_BLOCK_WITHOUT_REASON", `$.proposals[${index}].blocking_reasons`, "A blocked event requires a blocking reason."));
+      }
+    }
+    for (const [index, queued] of (payload.confirmation_queue || []).entries()) {
+      for (const eventId of queued.event_ids || []) {
+        const proposal = proposalById.get(eventId);
+        if (!proposal) {
+          issues.push(issue("error", "SCHEDULER_QUEUE_UNKNOWN_EVENT", `$.confirmation_queue[${index}].event_ids`, `Confirmation queue references unknown event ${eventId}.`));
+        } else if (queued.action === "confirm_schedule" && proposal.state !== "proposed") {
+          issues.push(issue("error", "SCHEDULER_CONFIRM_BLOCKED_EVENT", `$.confirmation_queue[${index}].action`, "Only proposed events may enter confirm_schedule."));
+        }
+      }
+    }
+  }
+
+  if (type === "agent-metl") {
+    const taskIds = (payload.essential_tasks || []).map(task => task.task_id);
+    if (new Set(taskIds).size !== taskIds.length) {
+      issues.push(issue("critical", "AGENT_METL_DUPLICATE_TASK", "$.essential_tasks", "METL task ids must be unique."));
+    }
+    for (const [index, task] of (payload.essential_tasks || []).entries()) {
+      if (!hasSubstantiveItems(task.supporting_fixtures) || !hasSubstantiveItems(task.supporting_runners)) {
+        issues.push(issue("error", "AGENT_METL_UNVERIFIABLE_TASK", `$.essential_tasks[${index}]`, "Every essential task requires at least one fixture and runner."));
+      }
+      if (["P", "T"].includes(task.current_proficiency) && !hasSubstantiveItems(task.evaluation_evidence)) {
+        issues.push(issue("critical", "AGENT_METL_RATING_WITHOUT_EVIDENCE", `$.essential_tasks[${index}].evaluation_evidence`, "P and T proficiency ratings require evaluation evidence."));
+      }
+    }
+  }
+
+  if (type === "source-plan") {
+    const sourceIds = (payload.planned_sources || []).map(source => source.source_id);
+    const sourceSet = new Set(sourceIds);
+    if (sourceSet.size !== sourceIds.length) {
+      issues.push(issue("error", "SOURCE_PLAN_DUPLICATE_SOURCE", "$.planned_sources", "Planned source ids must be unique."));
+    }
+    const sequence = payload.collection_sequence || [];
+    const steps = sequence.map(item => item.step);
+    if (!sameJson(steps, steps.map((unused, index) => index + 1))) {
+      issues.push(issue("error", "SOURCE_PLAN_SEQUENCE_NONCONTIGUOUS", "$.collection_sequence", "Collection steps must be unique and contiguous from 1 in listed order."));
+    }
+    for (const [index, item] of sequence.entries()) {
+      if (!sourceSet.has(item.source_id)) {
+        issues.push(issue("critical", "SOURCE_PLAN_UNKNOWN_SOURCE", `$.collection_sequence[${index}].source_id`, `Collection sequence references unplanned source ${item.source_id}.`));
+      }
+    }
+    const collectedIds = new Set(sequence.map(item => item.source_id));
+    if (sourceIds.some(sourceId => !collectedIds.has(sourceId))) {
+      issues.push(issue("error", "SOURCE_PLAN_UNSCHEDULED_SOURCE", "$.collection_sequence", "Every planned source must appear in the collection sequence."));
+    }
+  }
+
+  if (type === "resource-status") {
+    if (Number.isFinite(payload.capacity) && Number.isFinite(payload.current_level) && payload.current_level > payload.capacity) {
+      issues.push(issue("critical", "RESOURCE_LEVEL_EXCEEDS_CAPACITY", "$.current_level", "Resource current_level cannot exceed capacity."));
+    }
+    const bands = payload.threshold_bands || {};
+    const green = bands.green && bands.green.min_remaining_ratio;
+    const amber = bands.amber && bands.amber.min_remaining_ratio;
+    const red = bands.red && bands.red.min_remaining_ratio;
+    if ([green, amber, red].every(Number.isFinite) && !(green > amber && amber > red)) {
+      issues.push(issue("critical", "RESOURCE_THRESHOLD_ORDER_INVALID", "$.threshold_bands", "Resource thresholds must descend strictly from Green to Amber to Red."));
+    }
+  }
+
+  if (type === "decision-log") {
+    if (Array.isArray(payload.options_considered) && payload.chosen_option && !payload.options_considered.includes(payload.chosen_option)) {
+      issues.push(issue("critical", "DECISION_CHOICE_NOT_CONSIDERED", "$.chosen_option", "chosen_option must be one of options_considered."));
+    }
+    if (["risk_acceptance", "release"].includes(payload.decision_type) && !["USER", "COMMANDER"].includes(payload.decision_maker)) {
+      issues.push(issue("critical", "DECISION_RETAINED_AUTHORITY_REQUIRED", "$.decision_maker", "Risk acceptance and release decisions require USER or COMMANDER authority."));
+    }
+  }
+
+  if (type === "source-record") {
+    if (!hasSubstantiveItems(payload.linked_documents)) {
+      issues.push(issue("error", "SOURCE_RECORD_WITHOUT_DOCUMENT", "$.linked_documents", "A source record must link at least one doctrine or evidence document."));
+    }
+    if (!hasSubstantiveItems(payload.reliability_notes)) {
+      issues.push(issue("error", "SOURCE_RECORD_WITHOUT_RELIABILITY_NOTES", "$.reliability_notes", "A source record must explain its reliability assessment."));
+    }
+  }
+
+  if (type === "eefi-alert") {
+    if (["Red", "Black"].includes(payload.severity) && payload.blocks_release !== true) {
+      issues.push(issue("critical", "EEFI_SEVERE_ALERT_MUST_BLOCK_RELEASE", "$.blocks_release", "Red and Black EEFI alerts must block release."));
+    }
+    if (payload.blocks_release === true && payload.status !== "blocked") {
+      issues.push(issue("critical", "EEFI_RELEASE_BLOCK_STATUS_MISMATCH", "$.status", "An EEFI alert that blocks release must have blocked status."));
+    }
+  }
+
+  if (type === "classification-label") {
+    const labelingAuthorities = new Set(["USER", "COMMANDER", "COS", "S2", "S6"]);
+    if (!labelingAuthorities.has(payload.labeling_authority)) {
+      issues.push(issue("critical", "CLASSIFICATION_LABEL_UNAUTHORIZED_ACTOR", "$.labeling_authority", "Classification labels may be issued only by USER, COMMANDER, COS, S2, or S6."));
+    }
+    if (payload.classification === "restricted" && isEmptyArray(payload.need_to_know_roles)) {
+      issues.push(issue("error", "RESTRICTED_LABEL_WITHOUT_NEED_TO_KNOW", "$.need_to_know_roles", "Restricted labels must name at least one need-to-know role."));
+    }
+    if (options.evaluatedAt && isValidDate(payload.review_by) &&
+        Date.parse(payload.review_by) <= Date.parse(options.evaluatedAt)) {
+      issues.push(issue("critical", "CLASSIFICATION_LABEL_EXPIRED", "$.review_by", "Classification label review_by must be later than the evaluation time."));
+    }
+  }
+
+  if (type === "releasability-review") {
+    const externalAudience = payload.requested_audience === "public" || payload.requested_audience === "partner";
+    const blockingFindings = (payload.findings || []).filter(item => item.severity === "error" || item.severity === "critical");
+    const labels = payload.labels || [];
+    const outputForbidden = labels.some(item => item.eefi_class === "output_forbidden");
+    const restricted = labels.some(item => item.classification === "restricted");
+    const nonPublic = labels.some(item => item.classification !== "public");
+
+    if (!isValidDate(payload.reviewed_at) || !isValidDate(payload.expires_at) ||
+        !isBefore(payload.reviewed_at, payload.expires_at)) {
+      issues.push(issue("critical", "RELEASABILITY_REVIEW_INVALID_VALIDITY", "$.expires_at", "Releasability review expiry must be later than reviewed_at."));
+    }
+    if (options.evaluatedAt && isValidDate(options.evaluatedAt)) {
+      if (isValidDate(payload.reviewed_at) && Date.parse(payload.reviewed_at) > Date.parse(options.evaluatedAt)) {
+        issues.push(issue("critical", "RELEASABILITY_REVIEW_FUTURE_DATED", "$.reviewed_at", "Releasability review cannot be issued after the evaluation time."));
+      }
+      if (isValidDate(payload.expires_at) && Date.parse(payload.expires_at) <= Date.parse(options.evaluatedAt)) {
+        issues.push(issue("critical", "RELEASABILITY_REVIEW_EXPIRED", "$.expires_at", "Releasability review is expired at the evaluation time."));
+      }
+    }
+    if (externalAudience && payload.reviewer !== "USER" && payload.reviewer !== "COMMANDER") {
+      issues.push(issue("critical", "RELEASABILITY_REVIEW_EXTERNAL_AUTHORITY_REQUIRED", "$.reviewer", "Partner and public release require USER or COMMANDER review authority."));
+    }
+    if ((payload.decision === "release" || payload.decision === "redact") && !payload.release_review_id) {
+      issues.push(issue("critical", "RELEASABILITY_REVIEW_FINAL_REVIEW_MISSING", "$.release_review_id", "Release or redaction must bind the downstream ReleaseReview id."));
+    }
+    if ((payload.decision === "release" || payload.decision === "redact") && blockingFindings.length > 0) {
+      issues.push(issue("critical", "RELEASABILITY_REVIEW_BLOCKING_FINDINGS", "$.findings", "A review with error or critical findings cannot release or redact content for delivery."));
+    }
+    if (outputForbidden && payload.decision !== "deny" && payload.decision !== "escalate") {
+      issues.push(issue("critical", "RELEASABILITY_REVIEW_OUTPUT_FORBIDDEN", "$.decision", "Output-forbidden EEFI must be denied or escalated."));
+    }
+    if (externalAudience && restricted && payload.decision === "release") {
+      issues.push(issue("critical", "RELEASABILITY_REVIEW_RESTRICTED_EXTERNAL_RELEASE", "$.decision", "Restricted content cannot be released to a partner or public audience."));
+    }
+    if (payload.requested_audience === "public" && nonPublic && payload.decision === "release") {
+      issues.push(issue("critical", "RELEASABILITY_REVIEW_NON_PUBLIC_RAW_RELEASE", "$.decision", "Non-public content must be redacted or denied for public release."));
+    }
+  }
+
+  if (type === "context-release") {
+    const external = payload.recipient && payload.recipient.kind === "external_party";
+    const releaseRefs = [payload.classification_label_id, payload.releasability_review_id, payload.release_review_id];
+    if (!isValidDate(payload.released_at) || !isValidDate(payload.expires_at) ||
+        !isBefore(payload.released_at, payload.expires_at)) {
+      issues.push(issue("critical", "CONTEXT_RELEASE_INVALID_VALIDITY", "$.expires_at", "Context release expiry must be later than released_at."));
+    }
+    if (options.evaluatedAt && isValidDate(payload.expires_at) &&
+        Date.parse(payload.expires_at) <= Date.parse(options.evaluatedAt)) {
+      issues.push(issue("critical", "CONTEXT_RELEASE_EXPIRED", "$.expires_at", "Context release is expired at the evaluation time."));
+    }
+    if (external && payload.released_by !== "USER" && payload.released_by !== "COMMANDER") {
+      issues.push(issue("critical", "CONTEXT_RELEASE_EXTERNAL_AUTHORITY_REQUIRED", "$.released_by", "External context release requires USER or COMMANDER authority."));
+    }
+    if (external && payload.packet_form === "raw") {
+      issues.push(issue("critical", "CONTEXT_RELEASE_EXTERNAL_RAW_PROHIBITED", "$.packet_form", "External ContextRelease packets cannot carry raw context; use the final ReleaseReview path."));
+    }
+    if ((external || payload.packet_form === "raw") && releaseRefs.some(value => typeof value !== "string" || value.length === 0)) {
+      issues.push(issue("critical", "CONTEXT_RELEASE_REVIEW_BINDINGS_MISSING", "$", "External or raw context release must bind classification, releasability, and final release review ids."));
+    }
+    const revocation = payload.revocation || {};
+    if (revocation.revoked === true) {
+      if (!revocation.revoked_at || !revocation.revoked_by || !revocation.reason) {
+        issues.push(issue("critical", "CONTEXT_RELEASE_REVOCATION_INCOMPLETE", "$.revocation", "Revoked context release requires revoked_at, revoked_by, and reason."));
+      }
+      issues.push(issue("critical", "CONTEXT_RELEASE_REVOKED", "$.revocation.revoked", "A revoked context release cannot execute."));
+    } else if (revocation.revoked_at || revocation.revoked_by || revocation.reason) {
+      issues.push(issue("error", "CONTEXT_RELEASE_FALSE_REVOCATION_DETAILS", "$.revocation", "A non-revoked release cannot carry revocation details."));
     }
   }
 
@@ -2910,6 +3249,33 @@ function semanticRules(payload, type, options = {}) {
         issues.push(issue("critical", "AGENT_CONTEXT_MISSING_BASELINE", "$.documents", `Agent context must retain ${baseline}.`));
       }
     }
+    const validationCommands = payload.validation_commands || [];
+    const requiredControls = payload.required_controls || [];
+    const controlCommands = requiredControls.map(control => control.command);
+    const controlIds = requiredControls.map(control => control.control_id);
+    if (validationCommands.length !== requiredControls.length ||
+        validationCommands.some(command => !controlCommands.includes(command))) {
+      issues.push(issue("critical", "AGENT_CONTEXT_CONTROL_SET_MISMATCH", "$.required_controls", "Every routed validation command must compile to exactly one mandatory control."));
+    }
+    if (new Set(controlIds).size !== controlIds.length || new Set(controlCommands).size !== controlCommands.length) {
+      issues.push(issue("critical", "AGENT_CONTEXT_DUPLICATE_CONTROL", "$.required_controls", "Mandatory control ids and commands must be unique."));
+    }
+    for (const [index, control] of requiredControls.entries()) {
+      const pointer = `$.required_controls[${index}]`;
+      const digest = crypto.createHash("sha256").update(control.command || "").digest("hex");
+      if (control.command_sha256 !== digest) {
+        issues.push(issue("critical", "AGENT_CONTEXT_CONTROL_DIGEST_MISMATCH", `${pointer}.command_sha256`, "Mandatory control digest must bind the exact command string."));
+      }
+      if (control.runner === "node" &&
+          (!/^[A-Za-z0-9._/-]+\.js$/.test(control.script_path || "") ||
+           path.isAbsolute(control.script_path || "") ||
+           String(control.script_path || "").split("/").includes(".."))) {
+        issues.push(issue("critical", "AGENT_CONTEXT_UNSAFE_CONTROL_SCRIPT", `${pointer}.script_path`, "Node control script must be a safe repository-relative JavaScript path."));
+      }
+      if (/[;&|`<>\n\r]/.test(control.command || "")) {
+        issues.push(issue("critical", "AGENT_CONTEXT_UNSAFE_CONTROL_COMMAND", `${pointer}.command`, "Mandatory controls cannot contain shell operators."));
+      }
+    }
     const authority = payload.authority || {};
     const allowed = new Set(authority.allowed_actions || []);
     const prohibited = new Set(authority.prohibited_actions || []);
@@ -2928,12 +3294,61 @@ function semanticRules(payload, type, options = {}) {
     }
   }
 
+  if (type === "control-execution-receipt") {
+    const control = payload.control || {};
+    const commandDigest = crypto.createHash("sha256").update(control.command || "").digest("hex");
+    if (control.command_sha256 !== commandDigest) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_COMMAND_DIGEST_MISMATCH", "$.control.command_sha256", "Control receipt must bind the exact command string."));
+    }
+    const expectedReceiptId = controlExecutionReceiptId({
+      reportId: payload.report_id,
+      reportInputSha256: payload.report_input_sha256,
+      commandSha256: control.command_sha256
+    });
+    if (payload.id !== expectedReceiptId) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_ID_BINDING_MISMATCH", "$.id", "Control receipt ID must derive from the exact report-input and command digests."));
+    }
+    try {
+      if (!canonicalJsonBytes(controlExecutionDescriptor(control.command)).equals(canonicalJsonBytes(control))) {
+        issues.push(issue("critical", "CONTROL_RECEIPT_DESCRIPTOR_MISMATCH", "$.control", "Control descriptor must derive exactly from its shell-free command."));
+      }
+    } catch (error) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_DESCRIPTOR_MISMATCH", "$.control", "Control descriptor must derive exactly from one allowlisted shell-free command."));
+    }
+    if (!isValidDate(payload.started_at) || !isValidDate(payload.finished_at) ||
+        Date.parse(payload.finished_at) < Date.parse(payload.started_at)) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_INVALID_TIME", "$.finished_at", "Control receipt must finish at or after its start time."));
+    }
+    const agentIds = (payload.agent_bindings || []).map(item => item.agent_id);
+    if (new Set(agentIds).size !== agentIds.length) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_DUPLICATE_AGENT", "$.agent_bindings", "Control receipt agent bindings must be unique."));
+    }
+    const repositoryStatesMatch = payload.repository_state_before_sha256 === payload.repository_state_after_sha256;
+    const doctrineStatesMatch = payload.doctrine_state_before_sha256 === payload.doctrine_state_after_sha256;
+    if (payload.repository_unchanged !== repositoryStatesMatch || payload.doctrine_unchanged !== doctrineStatesMatch) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_STATE_BINDING_MISMATCH", "$.repository_unchanged", "Unchanged flags must equal the bound before/after state digests."));
+    }
+    const passed = payload.exit_code === 0 && repositoryStatesMatch && doctrineStatesMatch &&
+      payload.repository_unchanged === true && payload.doctrine_unchanged === true && !payload.failure_code;
+    if ((payload.status === "passed") !== passed) {
+      issues.push(issue("critical", "CONTROL_RECEIPT_STATUS_MISMATCH", "$.status", "Passed status requires exit zero, unchanged repository and doctrine state, and no failure code."));
+    }
+    if (payload.status === "failed" && !payload.failure_code) {
+      issues.push(issue("error", "CONTROL_RECEIPT_FAILURE_CODE_MISSING", "$.failure_code", "Failed control receipt must identify its failure class."));
+    }
+  }
+
   if (type === "mission-wave-report") {
     if (!isValidDate(payload.recorded_at)) {
       issues.push(issue("critical", "MISSION_WAVE_REPORT_INVALID_TIMESTAMP", "$.recorded_at", "Mission wave report requires a valid timestamp."));
     }
     const results = payload.agent_results || [];
     const agentIds = results.map(result => result.agent_id);
+    const controlRefs = payload.control_receipt_refs || [];
+    const controlRefKeys = controlRefs.map(ref => `${ref.artifact_id}:${ref.relative_path}:${ref.sha256}`);
+    if (new Set(controlRefKeys).size !== controlRefKeys.length) {
+      issues.push(issue("error", "MISSION_WAVE_DUPLICATE_CONTROL_RECEIPT", "$.control_receipt_refs", "Control receipt references must be unique."));
+    }
     if (new Set(agentIds).size !== agentIds.length) {
       issues.push(issue("critical", "MISSION_WAVE_REPORT_DUPLICATE_AGENT", "$.agent_results", "A mission wave report cannot contain duplicate agent results."));
     }
@@ -5383,4 +5798,9 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { validatePayload, validateSchemaPayload };
+module.exports = {
+  controlExecutionDescriptor,
+  controlExecutionReceiptId,
+  validatePayload,
+  validateSchemaPayload
+};

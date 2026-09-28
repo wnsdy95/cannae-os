@@ -50,11 +50,9 @@ for (const router of ROUTERS) {
   assert(adaptation.recommended_documents.some(item =>
     item.path === ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md"));
   assert(adaptation.validation_commands.some(command =>
-    command.includes("${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py") &&
-    command.endsWith("\" codex-skills/controls-doctrine-operator")));
+    command === "node validate-controls-skill.js codex-skills/controls-doctrine-operator"));
   assert(adaptation.validation_commands.some(command =>
-    command.includes("${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py") &&
-    command.endsWith("\" .claude/skills/controls-doctrine-operator")));
+    command === "node validate-controls-skill.js .claude/skills/controls-doctrine-operator"));
   assert(adaptation.validation_commands.every(command => !command.includes("/Users/work")));
 
   const ignoredStateDir = path.join(ROOT, ".cxt");
@@ -67,6 +65,7 @@ for (const router of ROUTERS) {
     ["--actor=user"],
     "Check ignored local state routing coverage"
   );
+  const ignoredStateDirExisted = fs.existsSync(ignoredStateDir);
   fs.mkdirSync(ignoredStateDir, { recursive: true });
   try {
     fs.writeFileSync(
@@ -88,6 +87,13 @@ for (const router of ROUTERS) {
     );
   } finally {
     fs.rmSync(ignoredStatePath, { force: true });
+    if (
+      !ignoredStateDirExisted &&
+      fs.existsSync(ignoredStateDir) &&
+      fs.readdirSync(ignoredStateDir).length === 0
+    ) {
+      fs.rmdirSync(ignoredStateDir);
+    }
   }
 }
 

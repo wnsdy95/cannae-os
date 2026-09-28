@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/source-record.schema.json",
+  "title": "Source Record",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "tier", "title", "publisher", "retrieved_at", "claims", "reliability_notes", "linked_documents"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "SourceRecord" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "tier": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D"]
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "publisher": { "type": "string", "minLength": 1 },
+    "url": { "type": "string", "pattern": "^https?://" },
+    "retrieved_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label", "statement"],
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string",
+            "enum": ["Claim", "Interpretation"]
+          },
+          "statement": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "reliability_notes": { "$ref": "common.schema.json#/$defs/string_list" },
+    "linked_documents": { "$ref": "common.schema.json#/$defs/string_list" }
+  }
+}

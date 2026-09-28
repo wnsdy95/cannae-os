@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "type": "BoardDecision",
+  "id": "BD-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "board_event_id": "BRE-DEMO-001",
+  "board_name": "Commander Decision Board",
+  "decision_packet_id": "DP-DEMO-001",
+  "deciding_authority": "COMMANDER",
+  "decided_at": "2026-06-18T12:12:00+09:00",
+  "decision": "approve",
+  "selected_option": "OPT-DEMO-002",
+  "constraints": [],
+  "follow_up_orders": [],
+  "evidence": [],
+  "classification": "internal",
+  "status": "complete"
+}

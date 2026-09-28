@@ -41,13 +41,9 @@ jobs:
         run: node validator-cli-prototype/run-fixtures.js
 
       - name: Runner fixtures
-        shell: bash
         env:
           CANNAE_REQUIRE_LIVE_OCI: "1"
-        run: |
-          for f in $(ls run-*.js | sort); do
-            node "$f" || exit 1
-          done
+        run: node run-all-fixtures.js
 
       - name: Source map linter
         run: node source-map-linter.js

@@ -156,17 +156,21 @@ The output is compressed into the packet the commander needs, not the entire int
 
 ## 9. Implementation Candidates
 
-Schema candidates:
+Implemented schemas:
 
 - `working-group.schema.json`
 - `decision-packet.schema.json`
-- `board-decision.schema.json`
-- `battle-rhythm-event.schema.json`
+- `board-decision.schema.json`: board decision record consuming one decision packet under a declared deciding authority.
+- `battle-rhythm-event.schema.json`: one recurring battle-rhythm event definition with cadence, inputs, outputs, chair, and quorum rule.
+- `battle-rhythm-scheduler.schema.json`: scheduler proposal derived from the event log; the scheduler proposes and the CoS confirms, never auto-executes.
 
-Prototype candidates:
+Implemented prototypes:
 
-- `battle-rhythm-scheduler.js`: reads the event log and proposes the next board/WG event.
+- `battle-rhythm-scheduler.js`: reads battle-rhythm event definitions plus an event log excerpt and emits a schema-valid scheduler proposal (verified by `run-battle-rhythm-scheduler-fixtures.js`).
 - `decision-packet-linter.js`: validates for missing options, risk, authority, and evidence.
+
+Remaining candidates:
+
 - Dashboard panel: active WGs, pending packets, next decision deadline.
 
 ## 10. Source Anchors

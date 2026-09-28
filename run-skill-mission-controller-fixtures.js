@@ -7,9 +7,11 @@ const { spawnSync } = require("child_process");
 const { analyzeRoutingPreflight } = require("./agent-routing-preflight-runner");
 const {
   closeWave,
+  executeValidationControl,
   missionStatus,
   openWave,
   recordWave,
+  reportInputDigest,
   sameRef
 } = require("./skill-mission-controller");
 const {
@@ -375,6 +377,71 @@ fixture("ready integrated model preflight binds each context pack to its billet"
   }
 });
 
+fixture("an unadmitted preinserted control receipt cannot satisfy report admission", () => {
+  const plan = wavePlan(basePlan, "WFORGED");
+  plan.id = "MWP-SKILL-FORGED-RECEIPT";
+  const forgedOpen = openWave(plan, {
+    repository: repositoryB,
+    artifactRoot,
+    doctrineRoot: ROOT,
+    now: FIXED_OPEN_TIME
+  });
+  const evidenceRefs = plan.agents.map((agent, index) => evidence(
+    repositoryB,
+    artifactRoot,
+    plan,
+    `OUT-FORGED-RECEIPT-${index + 1}`,
+    { agent_id: agent.agent_id, result: "verified" }
+  ));
+  const candidate = completeReport(plan, forgedOpen, evidenceRefs);
+  const contextByAgent = new Map(forgedOpen.context_packs.map(item => [
+    item.agent_id,
+    { ref: item.context_pack_ref, payload: loadArtifact(artifactRoot, item.context_pack_ref) }
+  ]));
+  const controls = new Map();
+  for (const result of candidate.agent_results) {
+    const context = contextByAgent.get(result.agent_id);
+    for (const control of context.payload.required_controls) {
+      if (!controls.has(control.command_sha256)) controls.set(control.command_sha256, { control, agentBindings: [] });
+      controls.get(control.command_sha256).agentBindings.push({
+        agent_id: result.agent_id,
+        context_pack_ref: context.ref
+      });
+    }
+  }
+  const first = [...controls.values()].sort((left, right) =>
+    left.control.command_sha256.localeCompare(right.control.command_sha256))[0];
+  first.agentBindings.sort((left, right) => left.agent_id.localeCompare(right.agent_id));
+  const reportDigest = reportInputDigest(candidate);
+  const receiptId = `CER-${candidate.id}-${reportDigest.slice(0, 12)}-${first.control.command_sha256.slice(0, 16)}`;
+  const receipt = executeValidationControl(first.control, first.agentBindings, {
+    doctrineRoot: ROOT,
+    repository: repositoryB,
+    now: FIXED_REPORT_TIME,
+    receiptId,
+    missionId: candidate.mission_id,
+    waveId: candidate.wave_id,
+    reportId: candidate.id,
+    reportInputSha256: reportDigest
+  });
+  assert(receipt.status === "passed", "preinsert fixture control did not produce a passing receipt");
+  writeRepositoryArtifact({
+    repositoryPath: repositoryB,
+    artifactRoot,
+    missionId: candidate.mission_id,
+    waveId: candidate.wave_id,
+    kind: "control-execution-receipts",
+    artifactId: receipt.id,
+    payload: receipt,
+    createdAt: receipt.finished_at
+  });
+  expectThrow(
+    () => recordWave(candidate, { repository: repositoryB, artifactRoot, doctrineRoot: ROOT, now: FIXED_REPORT_TIME }),
+    /not referenced by an admitted report/,
+    "unadmitted receipt preinsertion"
+  );
+});
+
 fixture("manifest-backed agent evidence produces a complete wave report", () => {
   const evidenceRefs = basePlan.agents.map((agent, index) => evidence(
     repositoryA,
@@ -405,6 +472,38 @@ fixture("manifest-backed agent evidence produces a complete wave report", () => 
   const result = recordWave(report, { repository: repositoryA, artifactRoot, now: FIXED_REPORT_TIME });
   assert(result.status === "complete" && result.continuation_authorized === true, "complete report should permit closeout");
   assert(result.release_authorized === false, "report must not authorize release");
+  const expectedReportDigest = reportInputDigest(report);
+  assert(result.control_receipt_refs.length > 0, "complete report did not persist mandatory control receipts");
+  for (const receiptRef of result.control_receipt_refs) {
+    const receipt = loadArtifact(artifactRoot, receiptRef);
+    assert(receipt.schema_version === "0.2", "mission lifecycle persisted a legacy control receipt");
+    assert(receipt.report_input_sha256 === expectedReportDigest, "control receipt did not bind the exact report input");
+    assert(receipt.id === `CER-${report.id}-${expectedReportDigest.slice(0, 12)}-${receipt.control.command_sha256.slice(0, 16)}`,
+      "control receipt ID did not derive from report and command digests");
+  }
+  const repeated = recordWave(report, { repository: repositoryA, artifactRoot, now: FIXED_REPORT_TIME });
+  assert(repeated.artifact_store.manifest_revision === result.artifact_store.manifest_revision,
+    "byte-equivalent report retry changed the artifact manifest");
+  assert(JSON.stringify(repeated.control_receipt_refs) === JSON.stringify(result.control_receipt_refs),
+    "byte-equivalent report retry replaced control receipts");
+});
+
+fixture("an admitted report is immutable and corrections require a new wave", () => {
+  const corrected = clone(report);
+  corrected.agent_results[0].summary = "Corrected result after admission.";
+  expectThrow(
+    () => recordWave(corrected, { repository: repositoryA, artifactRoot, now: FIXED_REPORT_TIME }),
+    /immutable after admission/,
+    "same-ID report correction"
+  );
+
+  const replacement = clone(report);
+  replacement.id = "MWR-SKILL-DEMO-W1-REPLACEMENT";
+  expectThrow(
+    () => recordWave(replacement, { repository: repositoryA, artifactRoot, now: FIXED_REPORT_TIME }),
+    /immutable after admission/,
+    "replacement report admission"
+  );
 });
 
 fixture("missing agents, unknown evidence, and control metadata evidence are rejected", () => {

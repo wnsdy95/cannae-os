@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "type": "READINESS_EVENT",
+  "id": "RE-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "metl_id": "METL-DEMO-S2",
+  "metl_task_id": "MET-DEMO-S2-002",
+  "agent_id": "S2",
+  "task": "claim, inference, and open question separation",
+  "actor": "S2",
+  "trigger": "decay",
+  "previous_rating": "T",
+  "new_rating": "T",
+  "evidence": [
+    "Self-reported: recent products remained clean."
+  ],
+  "authority_impact": {
+    "policy_source": "readiness-gate-prototype/readiness-gate.js",
+    "roe_effects": [
+      {
+        "roe_class": "Amber",
+        "previous_decision": "report_required",
+        "new_decision": "report_required"
+      }
+    ]
+  },
+  "effective_at": "2026-06-18T19:00:00+09:00",
+  "self_certified": true
+}

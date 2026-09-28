@@ -23,6 +23,7 @@
         "required": ["type", "item", "action"],
         "additionalProperties": false,
         "properties": {
+          "ccir_id": { "$ref": "common.schema.json#/$defs/id" },
           "type": { "$ref": "common.schema.json#/$defs/ccir_type" },
           "item": { "type": "string", "minLength": 1 },
           "action": { "type": "string", "minLength": 1 }

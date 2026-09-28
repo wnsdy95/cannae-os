@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1",
+  "type": "WARNO",
+  "id": "WARNO-20260618-001",
+  "mission_id": "M-20260618-001",
+  "created_by": "COMMANDER",
+  "classification": "public",
+  "issued_at": "2026-06-18T09:10:00+09:00",
+  "anticipated_mission": {
+    "statement": "Document and implement a military-style LLM operating framework as machine-checkable runtime contracts.",
+    "purpose": "Preserve user intent and control LLM agent execution through doctrine, SOP, authority, and assessment."
+  },
+  "commander_intent_summary": [
+    "Runtime contracts must be machine-checkable before execution begins.",
+    "High-risk tool actions stay behind explicit approval."
+  ],
+  "known_constraints": [
+    "Use public sources.",
+    "Do not provide real military operational advice."
+  ],
+  "preparation_tasks": [
+    "Inventory existing schema files and sample payloads.",
+    "Confirm the validator CLI runs locally.",
+    "Stage draft payload skeletons for the expected OPORD tasks."
+  ],
+  "earliest_execution_at": "2026-06-18T10:00:00+09:00",
+  "following_opord": {
+    "expected_order_id": "OPORD-20260618-001",
+    "expected_by": "2026-06-18T12:00:00+09:00"
+  }
+}

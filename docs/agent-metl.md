@@ -240,15 +240,15 @@ Before acting, confirm role/task readiness.
 
 ## 8. Implementation candidates
 
-schema:
+Implemented schemas:
 
-- `agent-metl.schema.json`
-- `readiness-event.schema.json`
+- `agent-metl.schema.json`: one role's mission-essential task list with conditions, measurable standards, and current proficiency.
+- `readiness-event.schema.json`: one readiness change event with previous/new rating, trigger, evidence, and authority impact.
 
-prototype:
+Implemented prototypes:
 
 - `readiness-gate-prototype/readiness-gate.js`: takes role/task/readiness/roe_class and determines allowed/report_required/approval_required/prohibit.
-- `aar-to-readiness.js`: converts AAR findings into readiness update recommendations.
+- `aar-to-readiness-update.js`: converts AAR findings into readiness update recommendations (implements the `aar-to-readiness.js` candidate under the AAR readiness update contract).
 
 ## 9. Source anchors
 

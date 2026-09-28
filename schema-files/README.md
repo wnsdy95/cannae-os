@@ -54,6 +54,11 @@ The schemas are intentionally small and composable. They define the minimum stat
 - operational mission wave plans, per-agent context packs, wave reports, and closeouts
 - deny-by-default dispatch tool policies, short-lived agent leases, tool admission events, and resumable execution checkpoints
 - protected tool gateway requests, decisions, execution receipts, append-only transaction events, authenticated gateway identity evidence, and production sandbox admission
+- WARNO warning orders and source-plan annexes
+- board decisions, battle-rhythm event definitions, and battle-rhythm scheduler proposals
+- agent METLs, readiness change events, and resource status watches
+- decision-log entries and knowledge source records
+- classification labels, releasability reviews, EEFI alerts, and context release decisions
 
 Recommended validation order:
 
@@ -168,6 +173,21 @@ Recommended validation order:
 109. `github-release-independent-verification.schema.json`
 110. `github-release-trust-checkpoint.schema.json`
 111. `github-release-bootstrap-recovery.schema.json`
+112. `warno.schema.json`
+113. `board-decision.schema.json`
+114. `battle-rhythm-event.schema.json`
+115. `battle-rhythm-scheduler.schema.json`
+116. `agent-metl.schema.json`
+117. `readiness-event.schema.json`
+118. `source-plan.schema.json`
+119. `context-release.schema.json`
+120. `resource-status.schema.json`
+121. `decision-log.schema.json`
+122. `source-record.schema.json`
+123. `classification-label.schema.json`
+124. `releasability-review.schema.json`
+125. `eefi-alert.schema.json`
+126. `control-execution-receipt.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -203,7 +223,7 @@ checkpoint reset and release false.
 
 `SelfImprovementCycleOrder` v0.4 extends supervisor-derived `trust_policy_admission` with provider-neutral authenticated workload evidence. v0.5 adds exact challenge-set and response-evidence references, responder counts, blocking codes and a validity boundary capped at challenge expiry. v0.6 adds deterministic failure-domain bindings and graph reconstruction. v0.7 adds exact transparency policy/state references, sequence, freshness, observer/incident counts, and a transparency-bounded validity window. Earlier orders remain readable.
 
-`MissionWavePlan` is the operational skill entry contract. It preserves USER final authority, requires routing and repository evidence on every wave, optionally binds a ready integrated model preflight, and can bind exact per-agent dispatch-policy draft digests before context issuance. `AgentContextPack`, `MissionWaveReport`, and `MissionWaveCloseout` carry exact manifest references through dispatch, execution evidence, AAR learning, and the next-wave queue without granting release.
+`MissionWavePlan` is the operational skill entry contract. It preserves USER final authority, requires routing and repository evidence on every wave, optionally binds a ready integrated model preflight, and can bind exact per-agent dispatch-policy draft digests before context issuance. `AgentContextPack` carries controller-compiled required controls. `ControlExecutionReceipt` v0.2 binds each shell-free execution to exact mission, wave, canonical report input, context, command, repository, and doctrine states while retaining only output digests and byte counts. `MissionWaveReport` cites controller-selected receipt references, and `MissionWaveCloseout` carries the verified chain through AAR learning and the next-wave queue without granting release.
 
 `GitHubReleaseAuthorization` is the only pre-action terminal contract allowed
 to carry `release_authorized: true`. It binds one explicit USER grant to the

@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1",
+  "type": "SourceRecord",
+  "id": "SR-DEMO-002",
+  "tier": "X",
+  "title": "Community forum thread on OPORD prompt formatting",
+  "publisher": "Unverified community forum",
+  "url": "https://example.com/forum/opord-prompt-formatting",
+  "retrieved_at": "2026-06-18T11:50:00+09:00",
+  "claims": [
+    {
+      "label": "Interpretation",
+      "statement": "Forum anecdotes suggest OPORD-style prompts reduce drift, but the claim could not be verified against doctrine."
+    }
+  ],
+  "reliability_notes": [
+    "Publishing entity is unclear and verification failed, so the source must not be recorded for use."
+  ],
+  "linked_documents": [
+    "docs/source-reliability-rubric.md"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "FRAGO-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "parent_order": "OPORD-DEMO-001",
+  "reason": "SITREP-DEMO-001 reports the Red production deploy remains blocked pending approval, so the demo must surface the approval queue through the local dashboard instead of a deployment.",
+  "unchanged_intent": [
+    "Prove that the framework is not only a writing style, but a machine-checkable control loop.",
+    "Keep all high-risk actions behind approval."
+  ],
+  "modified_tasks": [
+    "T-DEMO-001: additionally render the commander-facing dashboard state from event replay before closing the task."
+  ],
+  "new_constraints": [
+    "Dashboard state must be rebuilt from saved events, not from chat memory.",
+    "Production deployment stays blocked until approval request AR-DEMO-001 is decided."
+  ]
+}

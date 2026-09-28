@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "type": "EEFIAlert",
+  "id": "ALERT-EEFI-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "eefi_item_id": "EEFI-DEMO-001",
+  "exposure_channel": "final_output",
+  "detector": "opsec-linter",
+  "excerpt_sha256": "c70bd09a870d8bae4e94ec18f17fe1885e50b426097832909e1561c879d708bf",
+  "severity": "Black",
+  "owner": "S6",
+  "blocks_release": true,
+  "required_response": "Block the final output, rotate the exposed credential, and route a releasability review to the commander.",
+  "status": "blocked"
+}

@@ -104,7 +104,7 @@ function classifyPolicyInspectionFailure(detail, commandStatus) {
   const sanitizedDetail = String(detail || "");
   const httpMatch =
     /\bHTTP\s+([1-5]\d{2})\b/i.exec(sanitizedDetail) ||
-    /\b(401|403)\b/.exec(sanitizedDetail);
+    /\bstatus(?:\s+code)?\s*[:=]?\s*(401|403)\b/i.exec(sanitizedDetail);
   const httpStatus = httpMatch ? Number(httpMatch[1]) : null;
   const credentialFailure =
     httpStatus === 401 ||
