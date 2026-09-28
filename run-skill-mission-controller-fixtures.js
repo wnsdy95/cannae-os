@@ -3,6 +3,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { createHash } = require("crypto");
 const { spawnSync } = require("child_process");
 const { analyzeRoutingPreflight } = require("./agent-routing-preflight-runner");
 const {
@@ -188,6 +189,7 @@ const repositoryA = initRepository(temporaryRoot, "alpha");
 const repositoryB = initRepository(temporaryRoot, "bravo");
 const repositoryC = initRepository(temporaryRoot, "charlie");
 const repositoryGap = initRepository(temporaryRoot, "capability-gap");
+const repositoryRouting = initRepository(temporaryRoot, "routing-documents");
 const basePlan = readJson("sample-payloads/valid-mission-wave-plan.json");
 const fixtures = [];
 
@@ -269,6 +271,38 @@ fixture("context packs bind exact doctrine bytes, role, authority, and no releas
     assert(pack.documents.some(document => document.path === "docs/source-map.md"), "context pack should include source map");
     assert(pack.documents.every(document => /^[a-f0-9]{64}$/.test(document.sha256)), "documents must be digest-bound");
     assert(pack.authority.release_authorized === false && pack.authority.human_final_decision_authority === "USER", "context authority drifted");
+  }
+});
+
+fixture("task documents beyond the old routing cap reach digest-bound context packs", () => {
+  const plan = wavePlan(basePlan, "WROUTE");
+  plan.id = "MWP-ROUTING-DOCUMENTS";
+  plan.mission_id = "MIS-ROUTING-DOCUMENTS";
+  plan.objective = "effect settlement exact USER verification evidence";
+  plan.adaptive_work.campaign_id = "SIC-ROUTING-DOCUMENTS";
+  for (const agent of plan.agents) agent.task = plan.objective;
+  const result = openWave(plan, {
+    repository: repositoryRouting,
+    artifactRoot,
+    doctrineRoot: ROOT,
+    now: FIXED_OPEN_TIME
+  });
+  assert(result.status === "ready", "routing regression wave should open");
+  assert(result.tool_execution_authorized === false && result.release_authorized === false,
+    "more complete context must not expand authority");
+  for (const item of result.context_packs) {
+    const pack = loadArtifact(artifactRoot, item.context_pack_ref);
+    assert(validatePayload(pack, "agent-context-pack").valid, "routing context pack should validate");
+    assert(pack.documents.length > 16, "context pack must exercise the former truncation boundary");
+    for (const expected of ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md",
+      "docs/role-document-access-policy.md", "docs/approval-scope-policy.md"]) {
+      const document = pack.documents.find(row => row.path === expected);
+      const digest = createHash("sha256").update(fs.readFileSync(path.join(ROOT, expected))).digest("hex");
+      assert(document && document.sha256 === digest,
+        `context pack lost exact task or authority document bytes: ${expected}`);
+    }
+    assert(pack.required_controls.some(control => control.command === "node run-tool-effect-settlement-fixtures.js"),
+      "context pack lost the settlement control");
   }
 });
 
