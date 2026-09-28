@@ -75,7 +75,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 Read these only when needed:
 
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
-- `references/self-improvement-loop.md`: how to update source-map, compendium, fixtures, and this skill after learning.
+- `references/self-improvement-loop.md`: corpus maintenance, completion audits, and verifier dependency migrations that preserve retained proof.
 
 ## Workflows
 

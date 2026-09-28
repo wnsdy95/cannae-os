@@ -1,0 +1,148 @@
+{
+  "schema_version": "0.2",
+  "type": "GitHubReleaseIndependentVerification",
+  "id": "GRIV-v2_93_0-1dd2a4d458d8",
+  "verified_at": "2026-07-27T00:05:00.000Z",
+  "verifier": {
+    "package": "@sigstore/verify",
+    "version": "4.1.2",
+    "minimum_version": "4.1.0",
+    "module_sha256": "2698e8a65e83987e4a80675b194ea203ac1fa5b7e1ab4504b2ed7155ede9bba8",
+    "dependency_lock_sha256": "25179325095a514dd6908af3bca74580bc4e9057d70616a2bfe9d974677975d0",
+    "node_minimum_version": "22.22.2"
+  },
+  "trusted_root_ref": {
+    "artifact_id": "GRTR-10-8481a3ed2d43",
+    "artifact_sha256": "860e6d8a1053c5c787b28d1620aba25728669b61342a5438aee1dc5ae096d0d3",
+    "trusted_root_sha256": "8481a3ed2d435fbf6d421b6ad45734d268dfd15807ef8da26da57fb977766cf7",
+    "target_file_sha256": "484cdfe1a7c65479c5ba2a22193d1be90f0020db1997de696ab207434c62fbb7",
+    "fetched_at": "2026-07-27T00:00:00.000Z"
+  },
+  "profile": {
+    "bundle_media_type": "application/vnd.dev.sigstore.bundle.v0.3+json",
+    "payload_type": "application/vnd.in-toto+json",
+    "signer_identity": "https://dotcom.releases.github.com",
+    "ctlog_threshold": 0,
+    "tlog_threshold": 0,
+    "timestamp_threshold": 1
+  },
+  "bundle": {
+    "sha256": "1dd2a4d458d83a916d3e02fb0072444bdda2aa8981d71218ee524f5bd6a68ab6",
+    "dsse_payload_sha256": "b2f95e590a2042e74712d3e438a153fa76bdd8d1f9f1b471a69d53701b660297",
+    "signature_count": 1,
+    "tlog_entry_count": 0,
+    "rfc3161_timestamp_count": 1,
+    "certificate_sha256": "e29470352c5fcc37c6f947c25478f168ca119d77f8b0e63f9184154e6081b258"
+  },
+  "statement": {
+    "statement_type": "https://in-toto.io/Statement/v1",
+    "predicate_type": "https://in-toto.io/attestation/release/v0.2",
+    "repository": "cli/cli",
+    "tag_name": "v2.93.0",
+    "package_uri": "pkg:github/cli/cli@v2.93.0",
+    "commit_sha1": "f96972ce1c11fdb8eaa556257fde962a363dffde",
+    "asset_subjects": [
+      {
+        "name": "gh_2.93.0_checksums.txt",
+        "sha256": "f62a3bc9dedc88262c9c2b56eb653cb3ded6bde8076bdbb151f4cce9c8729da5"
+      },
+      {
+        "name": "gh_2.93.0_linux_386.deb",
+        "sha256": "fefde26e61ee867df870d1382795c2799da4e6d00aafadc517c1044f91433b4a"
+      },
+      {
+        "name": "gh_2.93.0_linux_386.rpm",
+        "sha256": "90851466eaedf45ca0e68e1ad0a49246df8dfc6c8024fc7d2f88958ac8c9b97f"
+      },
+      {
+        "name": "gh_2.93.0_linux_386.tar.gz",
+        "sha256": "701192266df5009821cd50047ae6227c3f7e4fc2353aa4ff6687a284c5d3a56e"
+      },
+      {
+        "name": "gh_2.93.0_linux_amd64.deb",
+        "sha256": "5371f77155e5dd81b6e897c379431f734949b99b99ae1f01c5e3ab6d3795cf4d"
+      },
+      {
+        "name": "gh_2.93.0_linux_amd64.rpm",
+        "sha256": "653321dc80ae8c6b70b35213c43f67050f787d08b9ca06e3dc1a33b88d2cf60b"
+      },
+      {
+        "name": "gh_2.93.0_linux_amd64.tar.gz",
+        "sha256": "02d1290eba130e0b896f3709ffff22e1c75a51475ddb70476a85abc6b5807af0"
+      },
+      {
+        "name": "gh_2.93.0_linux_arm64.deb",
+        "sha256": "ac30768545cc31bbef9ffef27d2f2218b2739375019883b8095acf2f734e7b7f"
+      },
+      {
+        "name": "gh_2.93.0_linux_arm64.rpm",
+        "sha256": "133d193f6db8983575c91cfa35b2f983f225f06930466854a945535bdbd5a1fa"
+      },
+      {
+        "name": "gh_2.93.0_linux_arm64.tar.gz",
+        "sha256": "c55feb33684abba57e9909737340d5b39282257c0363e1edde6785ac4a413be7"
+      },
+      {
+        "name": "gh_2.93.0_linux_armv6.deb",
+        "sha256": "9288a7f5a36036fd74bcf23312df1bac06ec71894304c746e9428f43e75392dc"
+      },
+      {
+        "name": "gh_2.93.0_linux_armv6.rpm",
+        "sha256": "ecd16ced768b29263029ebb4007924e5b45adea81addd3b66cffbc1e786a66f7"
+      },
+      {
+        "name": "gh_2.93.0_linux_armv6.tar.gz",
+        "sha256": "68eb59548d021fc20106c00e83812263cb52e560bf27e4b4eeb143758bafd430"
+      },
+      {
+        "name": "gh_2.93.0_macOS_amd64.zip",
+        "sha256": "009425b9d175c482037fe25181817fd6b1ea3ae1f51cfae0e18f29f33d3152ac"
+      },
+      {
+        "name": "gh_2.93.0_macOS_arm64.zip",
+        "sha256": "a86be4e0a86c26456cf71177d6572d6f1165cf1679e532b72f7f15918ee51fd2"
+      },
+      {
+        "name": "gh_2.93.0_macOS_universal.pkg",
+        "sha256": "29c391a42a6c2312df12412e6c1e27ffbdb51ad44c6a3d55cd7bec38bff7335a"
+      },
+      {
+        "name": "gh_2.93.0_windows_386.msi",
+        "sha256": "763f5f76654337c0cfb8f73715683e50b27a54fc31dd03af9ce25fa6514ecbcd"
+      },
+      {
+        "name": "gh_2.93.0_windows_386.zip",
+        "sha256": "c9181b02ad9448b592b1400a996402e4e5487e34a50a34d205c98db8f74695ca"
+      },
+      {
+        "name": "gh_2.93.0_windows_amd64.msi",
+        "sha256": "f6d13d271083201acb02ea728c4522e72d8f67caaf053a7d97508eba0c474993"
+      },
+      {
+        "name": "gh_2.93.0_windows_amd64.zip",
+        "sha256": "77aa01ed7317295ad550de0ad04f3f276b1ef0e9272e3d002ac28dd99853d211"
+      },
+      {
+        "name": "gh_2.93.0_windows_arm64.msi",
+        "sha256": "dbf73bd0a4ffe9815c186adcdef4be06243374cca2e35989a9b3cea55a35f741"
+      },
+      {
+        "name": "gh_2.93.0_windows_arm64.zip",
+        "sha256": "1d2ab9d48f01a86c7156dae3008428743d6cd716a51fc50410078d51dec3dea4"
+      }
+    ]
+  },
+  "cli_cross_check": {
+    "raw_verification_sha256": "45f7ef95bbdd6116aa05c3c439c82b3974eefd3be6ced8fa16dec39eaa34724d",
+    "statement_equal": true,
+    "signer_identity_equal": true
+  },
+  "cryptographic_verification_succeeded": true,
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "monitoring_only": true,
+    "release_authorized": false
+  },
+  "release_authorized": false,
+  "verification_sha256": "db6cf54a054a5d373295a14eee9fb39634b7d561482139c0fcaf74da84e5a7bd"
+}

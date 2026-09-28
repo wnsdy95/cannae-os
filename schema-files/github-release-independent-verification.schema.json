@@ -23,7 +23,7 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "0.1"
+      "enum": ["0.1", "0.2"]
     },
     "type": {
       "type": "string",
@@ -53,7 +53,7 @@
         },
         "version": {
           "type": "string",
-          "const": "4.1.0"
+          "enum": ["4.1.0", "4.1.2"]
         },
         "minimum_version": {
           "type": "string",
@@ -288,5 +288,12 @@
     "verification_sha256": {
       "$ref": "common.schema.json#/$defs/sha256"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.1" } } },
+      "then": { "properties": { "verifier": { "properties": { "version": { "const": "4.1.0" } } } } },
+      "else": { "properties": { "verifier": { "properties": { "version": { "const": "4.1.2" } } } } }
+    }
+  ]
 }

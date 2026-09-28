@@ -17,6 +17,9 @@ adapter. It performs no network mutation. It covers:
   retained root;
 - full-observation schema, replay, root/checkpoint, run, and release-readiness
   binding;
+- exact historical verifier-producer replay inside a full retained observation,
+  with original bytes preserved and unknown lockfiles or substituted provider
+  runs rejected;
 - missing predecessor artifact rejection without repository-bootstrap
   fallback;
 - retained trusted-root acquisition failure and fail-closed readiness;
@@ -36,3 +39,5 @@ adapter. It performs no network mutation. It covers:
 These fixtures validate the monitor and evidence contracts with retained
 public cryptographic material. They do not authorize repository-policy
 mutation, checkpoint reset, or a release.
+Historical producer wrappers and provider-artifact metadata are synthetic test
+inputs, not historical production-run or live GitHub artifact evidence.

@@ -3,7 +3,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { doctrineIndexAudit } = require("./source-map-linter");
+const { coverageReport, doctrineIndexAudit } = require("./source-map-linter");
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -60,7 +60,12 @@ function run() {
     assert(traversal.findings.some(item => item.code === "DOCTRINE_INDEX_PATH_INVALID"),
       "traversal doctrine path should fail");
 
-    process.stdout.write("PASS source-map doctrine index fixtures (4/4)\n");
+    const before = new Date().toISOString().slice(0, 10);
+    const report = coverageReport();
+    const after = new Date().toISOString().slice(0, 10);
+    assert([before, after].includes(report.as_of), "coverage snapshot must use the actual UTC audit date");
+
+    process.stdout.write("PASS source-map doctrine index fixtures (5/5)\n");
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

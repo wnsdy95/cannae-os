@@ -1,9 +1,10 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-07-28",
+  "as_of": "2026-09-28",
   "source_map": "docs/source-map.md",
   "valid": true,
   "checked_hosts": 55,
+  "indexed_doctrine_outputs": 17,
   "finding_count": 0,
   "covered_hosts": [
     {
@@ -20,12 +21,17 @@
         "docs/backbrief-and-rehearsal-sop.md",
         "docs/commander-handbook.md",
         "docs/decision-risk-assessment.md",
+        "docs/dry-run-approval-ui.md",
         "docs/force-structure-change-policy.md",
+        "docs/handoff-packet-template.md",
+        "docs/interop-release-packet.md",
         "docs/knowledge-management-sop.md",
+        "docs/liaison-agent-model.md",
         "docs/military-llm-framework-v0.1.md",
         "docs/military-operating-deep-research-queue.md",
         "docs/military-operating-system.md",
         "docs/orders-production-pipeline.md",
+        "docs/partner-command-relationship.md",
         "docs/personnel-continuity-model.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
@@ -40,24 +46,36 @@
         "docs/b2c2wg-operating-model.md",
         "docs/backbrief-and-rehearsal-sop.md",
         "docs/ccir-alerting-model.md",
+        "docs/chief-of-staff-agent.md",
         "docs/commander-handbook.md",
+        "docs/common-operational-picture-state.md",
         "docs/context-releasability-policy.md",
+        "docs/disciplined-initiative-rules.md",
+        "docs/dry-run-approval-ui.md",
         "docs/implementation-guide.md",
         "docs/information-to-operations-cycle.md",
         "docs/interdepartment-collaboration-policy.md",
+        "docs/liaison-agent-model.md",
         "docs/maintenance-readiness-model.md",
         "docs/military-llm-framework-v0.1.md",
         "docs/military-operating-deep-research-queue.md",
         "docs/military-operating-system.md",
+        "docs/mission-command-runtime-policy.md",
         "docs/model-force-assignment-policy.md",
         "docs/multinational-doctrine-consistency-review.md",
         "docs/opord-annex-model.md",
         "docs/opsec-classification-model.md",
         "docs/orders-production-pipeline.md",
         "docs/personnel-continuity-model.md",
+        "docs/readiness-to-authority-policy.md",
+        "docs/reporting-threshold-policy.md",
         "docs/research-compendium.md",
+        "docs/resource-priority-policy.md",
         "docs/risk-acceptance-authority.md",
-        "docs/source-map.md"
+        "docs/sensitive-output-filter.md",
+        "docs/source-map.md",
+        "docs/sustainment-agent-sop.md",
+        "docs/training-progression-model.md"
       ]
     },
     {
@@ -101,6 +119,7 @@
         "docs/protected-process-execution.md",
         "docs/protected-tool-gateway-contract.md",
         "docs/research-compendium.md",
+        "docs/sensitive-output-filter.md",
         "docs/source-map.md",
         "docs/verifier-independence-assurance.md"
       ]
@@ -397,17 +416,21 @@
         "docs/military-operating-deep-research-queue.md",
         "docs/military-operating-system.md",
         "docs/opsec-classification-model.md",
+        "docs/readiness-to-authority-policy.md",
         "docs/research-compendium.md",
         "docs/risk-acceptance-authority.md",
-        "docs/source-map.md"
+        "docs/source-map.md",
+        "docs/training-progression-model.md"
       ]
     },
     {
       "host": "www.gov.uk",
       "files": [
+        "docs/interop-release-packet.md",
         "docs/military-llm-framework-v0.1.md",
         "docs/military-operating-deep-research-queue.md",
         "docs/multinational-doctrine-consistency-review.md",
+        "docs/partner-command-relationship.md",
         "docs/source-map.md"
       ]
     },
@@ -418,22 +441,35 @@
         "docs/approval-scope-policy.md",
         "docs/b2c2wg-operating-model.md",
         "docs/ccir-alerting-model.md",
+        "docs/chief-of-staff-agent.md",
         "docs/commander-handbook.md",
+        "docs/common-operational-picture-state.md",
         "docs/context-releasability-policy.md",
         "docs/decision-risk-assessment.md",
+        "docs/disciplined-initiative-rules.md",
+        "docs/handoff-packet-template.md",
         "docs/information-to-operations-cycle.md",
         "docs/interdepartment-collaboration-policy.md",
+        "docs/interop-release-packet.md",
         "docs/knowledge-management-sop.md",
+        "docs/liaison-agent-model.md",
         "docs/maintenance-readiness-model.md",
         "docs/military-llm-framework-v0.1.md",
         "docs/military-operating-deep-research-queue.md",
         "docs/military-operating-system.md",
+        "docs/mission-command-runtime-policy.md",
         "docs/multinational-doctrine-consistency-review.md",
         "docs/opord-annex-model.md",
         "docs/opsec-classification-model.md",
+        "docs/partner-command-relationship.md",
+        "docs/readiness-to-authority-policy.md",
+        "docs/reporting-threshold-policy.md",
         "docs/research-compendium.md",
+        "docs/resource-priority-policy.md",
         "docs/risk-acceptance-authority.md",
-        "docs/source-map.md"
+        "docs/sensitive-output-filter.md",
+        "docs/source-map.md",
+        "docs/sustainment-agent-sop.md"
       ]
     },
     {
@@ -517,6 +553,7 @@
     {
       "host": "www.usfk.mil",
       "files": [
+        "docs/handoff-packet-template.md",
         "docs/knowledge-management-sop.md",
         "docs/research-compendium.md",
         "docs/source-map.md"

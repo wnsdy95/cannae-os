@@ -2,6 +2,12 @@
 
 ## Implementation Traceability
 
+Dependency replay design in `docs/github-release-independent-verification.md`
+uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
+(checkpoint parsing) and [adbe253](https://github.com/sigstore/sigstore-js/commit/adbe2535c5702364e9c958ae3d67fbdefe068edd)
+(duplicate log-entry counting). Local source-history hashes define recognized
+historical producer identities; they are not claims of protected execution.
+
 `docs/implementation-candidate-registry.md` and
 `docs/completion-backlog.md` apply the existing KM separation of source,
 interpretation, evidence, and action queue to engineering completion. Their

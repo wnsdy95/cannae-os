@@ -249,7 +249,7 @@ function coverageReport() {
 
   return {
     report_type: "source-map-url-coverage",
-    as_of: "2026-07-28",
+    as_of: new Date().toISOString().slice(0, 10),
     source_map: "docs/source-map.md",
     valid: findings.length === 0,
     checked_hosts: official.size,
