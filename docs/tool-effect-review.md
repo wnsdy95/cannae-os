@@ -11,7 +11,7 @@ approve a new wave, authenticate a USER, accept risk, or authorize release.
 It does **not** mean that the effects are known, harmless, complete, independently
 verified, or approved. The receipt's self-digest is a consistency check, not a
 signature. An authorized writer can manufacture consistent local claims. The
-future settlement gate must separately appraise authenticated verification,
+separate [settlement gate](tool-effect-settlement.md) must appraise authenticated verification,
 applicable trust-policy assurance, complete effect scope, and exact USER consent.
 Do not downgrade an existing workload-identity, execution-environment,
 challenge, independence, or transparency requirement to a static signature.
@@ -90,17 +90,15 @@ Every review fixes `effects_settled`, `scope_completeness_verified`,
 `tool_execution_authorized`, and `release_authorized` to false. An observation,
 receipt, review, chat approval, or clean Git status alone cannot clear the hold.
 
-## Remaining Settlement Work
+## Separate Settlement Gate
 
-The separate terminal contract must bind one exact USER decision to the scope,
-review and proof digests, independently verify all applicable verifier assurance,
-consume consent once, and append an immutable settlement record. Historical
-replay needs original-time appraisal without rewriting failed checkpoints.
-Gateway transaction/cleanup evidence, conflicting decisions, competing
-publications, and subsequent lease issuance require end-to-end fixtures. Scope
-judgement must not be described as mechanically proven absence of arbitrary
-external effects. Campaign stops, budgets, expiry, and release gates remain
-independent after any future settlement.
+The [hook settlement controller](tool-effect-settlement.md) binds one exact USER
+decision to the scope, review and proof digests, appraises applicable verifier
+assurance, consumes consent once and appends an immutable record. Historical
+replay uses original-time appraisal without rewriting failed checkpoints.
+Gateway transaction/cleanup settlement and full campaign restart remain open.
+Scope judgement is not mechanically proven absence of arbitrary external effects.
+Campaign stops, budgets, expiry, new execution and release remain independent.
 
 These are engineering conclusions from the local unknown-effect reproduction
 and existing authority contracts, not a new external military-source claim.

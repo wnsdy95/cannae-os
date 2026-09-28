@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
-const { dispatchStatus, inputDigest } = require("./dispatch-runtime-controller");
+const { unknownToolEffectCheckpointRefs, inputDigest } = require("./dispatch-runtime-controller");
 const { computeRepositoryState, receiptDigest } = require("./verification-runner");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 
@@ -63,11 +63,11 @@ function load(current, ref, kind, type, scope) {
   return { payload, entry };
 }
 
-function inspectToolEffects(options, references) {
+function inspectToolEffects(options, references, retainedSnapshot) {
   if (!references || Object.keys(references).sort().join(",") !== "scope_ref,verification_plan_ref,verification_receipt_ref") {
     throw new Error("TOOL_EFFECT_REVIEW_REFERENCES_INVALID");
   }
-  const current = view(options);
+  const current = retainedSnapshot || view(options);
   const scope = load(current, references.scope_ref, "tool-effect-scopes", "tool-effect-scope").payload;
   // Require the scope itself to occupy the mission/wave it claims.
   load(current, references.scope_ref, "tool-effect-scopes", "tool-effect-scope", scope);
@@ -94,9 +94,8 @@ function inspectToolEffects(options, references) {
     [checkpoint, admission].every(item => item.provider === lease.provider && inputDigest(item.session_binding) === inputDigest(lease.session_binding)) &&
     checkpoint.checkpoint_kind === "post_tool" && checkpoint.execution_result.external_effects === "unknown",
   "TOOL_EFFECT_INVOCATION_MISMATCH");
-  const status = dispatchStatus(options, { missionId: scope.mission_id, waveId: scope.wave_id, agentId: scope.agent_id });
-  requireCondition(status.leases.some(item => item.lease_id === lease.id &&
-    item.unresolved_effect_checkpoint_refs.some(ref => sameRef(ref, scope.checkpoint_ref))), "TOOL_EFFECT_UNKNOWN_CHECKPOINT_NOT_CURRENT");
+  requireCondition(unknownToolEffectCheckpointRefs(current, scope.lease_ref).some(ref => sameRef(ref, scope.checkpoint_ref)),
+    "TOOL_EFFECT_UNKNOWN_CHECKPOINT_NOT_CURRENT");
 
   requireCondition(plan.mission_id === scope.mission_id && receipt.mission_id === scope.mission_id &&
     plan.candidate_id === scope.id && receipt.candidate_id === scope.id &&
@@ -108,7 +107,7 @@ function inspectToolEffects(options, references) {
   requireCondition(sameState(scope.expected_repository_state, plan.expected_repository_state) &&
     sameState(plan.expected_repository_state, receipt.repository_state_before) &&
     sameState(receipt.repository_state_before, receipt.repository_state_after) &&
-    sameState(receipt.repository_state_after, computeRepositoryState(current.repository.root)) && receipt.repository_state_unchanged,
+    sameState(receipt.repository_state_after, retainedSnapshot ? retainedSnapshot.repositoryState : computeRepositoryState(current.repository.root)) && receipt.repository_state_unchanged,
   "TOOL_EFFECT_REPOSITORY_STATE_MISMATCH");
   requireCondition(receipt.overall_status === "passed" && receipt.runner.shell_used === false &&
     receipt.checks.every(check => check.status === "passed"), "TOOL_EFFECT_VERIFICATION_FAILED");
@@ -200,4 +199,5 @@ function main() {
 }
 
 if (require.main === module) main();
-module.exports = { reviewToolEffects };
+// Snapshot replay is evidence appraisal only; it cannot publish or settle a review.
+module.exports = { reviewToolEffects, inspectToolEffects, loadEffectArtifact: load, sameEffectRef: sameRef };

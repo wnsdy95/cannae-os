@@ -1,5 +1,23 @@
 # Research Compendium
 
+## 2026-09-28: Exact Hook Effect Settlement
+
+[Tool Effect Settlement](tool-effect-settlement.md) now joins the non-authorizing
+review to actual receipt attestations, execution evidence, historical pre-dispatch
+readiness, current policy admission and an exact retained USER scope decision.
+The checkpoint, decision and cycle order are single-use. Manifest publication
+reappraises expiry, repository state and proof; replay uses the original manifest
+and time so later edits do not rewrite the original failure or erase settlement.
+
+Tests execute a real local checker and ephemeral signatures, while USER decisions,
+provider/isolation claims and v0.4 independence groups remain synthetic. Passing
+fixtures do not prove complete external scope or production infrastructure.
+USER identity is not cryptographically authenticated by a local decision log.
+Gateway requests and decisions are explicitly excluded pending their own cleanup
+and transaction contract. Failed leases require explicit revocation after
+settlement; campaign restart and release remain independently controlled.
+This is local engineering synthesis from the existing contracts.
+
 ## 2026-09-28: Effect Evidence Is Not Effect Settlement
 
 The unknown-effect reproduction requires two separate gates: binding the

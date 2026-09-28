@@ -72,8 +72,8 @@ After a provider failure, inspect both pending requests and
 can be fully recorded while its external effects are still unknown. Never infer
 settlement from `revoked`, zero pending callbacks, clean Git status, or a newly
 authorized wave. Preserve the unknown-effect hold and gather effect evidence;
-until an exact USER reconciliation contract exists, neither chat approval nor
-manually inserted success records can clear it.
+only the exact hook settlement controller can clear a covered checkpoint.
+Neither chat approval nor manually inserted success records can clear it.
 
 Prepare a ToolEffectReview using the routed tool-effect-review procedure.
 Freeze the effect scope and observations before obtaining its verification plan
@@ -82,6 +82,19 @@ Do not translate `evidence_bound` into "effects verified": independently inspect
 checker adequacy, verifier authenticity, and external scope completeness, then
 seek the separately contracted exact USER decision. The review has no clearing
 operation and never gives the blocked agent inspection or compensation authority.
+
+For hook settlement, read `docs/tool-effect-settlement.md`. Retain a ready
+inspection campaign order before the checker runs, bind execution evidence to
+the exact scope digest and selected workload identity, then obtain the USER's
+exact scope/checker judgement after the review and attestations. Generate the
+decision option with `scripts/settle_tool_effects.js decision-option`; this is
+not consent. Changing any request content except its final decision reference
+invalidates that option. Run `settle` only with the actual retained USER decision,
+inspect status, and explicitly revoke the old blocked lease. Do not turn the
+failed agent into a success report or resume the stopped campaign under another
+ID. A gateway request without a decision is still a gateway obligation, not a
+hook-only outcome. Never weaken its cleanup or coordination requirements to
+make this narrower settlement pass.
 
 When extending a positive publisher, perform expensive validation outside the
 namespace lease and repeat a short, synchronous, read-only authority predicate

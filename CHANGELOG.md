@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added exact USER- and execution-evidence-bound hook effect settlement, historical proof replay, one-use decision/order consumption, and publication-time manifest/state/expiry checks. Failed checkpoints remain unchanged and lease revocation stays explicit. Both skills expose the settlement procedure and wrappers; gateway transactions, full campaign restart, user authentication and infrastructure operation are not claimed.
+
 - Added a non-authorizing tool-effect review packet with exact invocation, finite scope, observation, verification-plan/receipt, numeric-time, check-set, and repository-state bindings. Both skills now distinguish evidence consistency from authenticated proof, complete effect scope, and USER consent. Reviews do not execute inspection or clear the unknown-effect hold; terminal reconciliation remains open.
 
 - Preserved unknown tool effects across complete checkpoint history instead of equating a completed provider callback or revoked lease with settled effects. New repository authority, resume, completed-agent reporting, and terminal settlement fail closed, including legacy terminal lease rows. Both skills now inspect the separate unknown-effect projection and forbid new-wave/manual-history resets; the exact USER effect-reconciliation contract remains open.

@@ -341,16 +341,18 @@ effect. A new session, wave, or agent in the same repository is not a reset.
 
 Keep inspection, result recording, and exact cancellation available. Do not
 change an old checkpoint or submit a second success callback to erase the
-failure. This conservative hold currently has no effect-reconciliation release
-contract: a future exact USER decision and verified effect evidence must define
-that operation before the runtime can clear it. Generic scope approval, notes,
+failure. The [hook settlement contract](tool-effect-settlement.md) requires an
+exact USER decision and execution-bound verification evidence before the runtime
+can clear that checkpoint's hold. Gateway settlement remains open. Generic scope approval, notes,
 repo cleanliness, or a lease revocation are not that proof. This does not detect
 unreported side effects from tools that bypass the covered provider/gateway path.
 
 Use the [tool-effect reviewer](tool-effect-review.md) to prepare the exact
 invocation/scope/observation/verification packet. `evidence_bound` is only a
 consistency result; it does not settle effects or verify USER consent, verifier
-identity, or completeness of the external effect scope. Keep the hold active.
+identity, or completeness of the external effect scope. Keep the hold active
+until the separate settlement controller accepts it; then explicitly revoke the
+blocked lease. Settlement never turns a failed agent into a completed agent.
 
 ## 6. Provider Adapters
 

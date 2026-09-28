@@ -105,7 +105,7 @@ node .claude/skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.
 
 Project hooks are a deterministic guardrail for covered calls, not a non-bypassable security boundary. Use managed settings or an independently protected tool gateway when an operator must not be able to disable or replace enforcement.
 
-Read `docs/enforced-dispatch-and-resume.md` for dispatch policy and limits. For unknown outcomes, read `docs/tool-effect-review.md`: freeze scope before verification and never interpret an `evidence_bound` review as USER consent, complete effect knowledge, or permission to clear the hold.
+Read `docs/enforced-dispatch-and-resume.md` for dispatch policy and limits. For unknown outcomes, freeze scope before verification and read `docs/tool-effect-review.md` plus `docs/tool-effect-settlement.md`. Never treat `evidence_bound` as consent or clearance: obtain the exact USER decision after execution-bound proof, run `scripts/settle_tool_effects.js`, then explicitly revoke the blocked lease. Scope changes require fresh proof and consent; gateway outcomes remain excluded.
 
 ## Protected Tool Gateway
 

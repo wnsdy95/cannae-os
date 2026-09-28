@@ -4,6 +4,11 @@ Use this map after running `scripts/route_controls_docs.js`, or when a task is o
 
 ## Inventory Coverage
 
+For unknown tool outcomes, route `docs/tool-effect-review.md` and
+`docs/tool-effect-settlement.md`. Evidence preparation does not clear holds;
+settlement needs historical/current verifier admission and an exact USER
+decision. Both fixture suites are required when changing this boundary.
+
 For implementation-candidate audits and existing-program completion, route to
 `docs/implementation-candidate-registry.md` and `docs/completion-backlog.md`.
 Run `node implementation-candidate-registry.js audit`; use its source-bound

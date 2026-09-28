@@ -710,11 +710,23 @@ function completedAdmissionIds(checkpoints) {
     .map(item => item.payload.tool_admission_ref.artifact_id));
 }
 
-function unresolvedToolEffectRecords(view, leaseRecord) {
+function unknownToolEffectRecords(view, leaseRecord) {
   // A later revocation or baseline cannot settle an earlier unknown outcome.
   latestCheckpoint(view, leaseRecord);
   return checkpointRecords(view, leaseRecord.ref, leaseRecord.payload.mission_id, leaseRecord.payload.wave_id)
     .filter(item => item.payload.execution_result.external_effects === "unknown");
+}
+
+function unresolvedToolEffectRecords(view, leaseRecord) {
+  const unknown = unknownToolEffectRecords(view, leaseRecord);
+  if (!unknown.length) return unknown;
+  const settled = require("./tool-effect-settlement").settledToolEffectRefs(view, leaseRecord.ref);
+  return unknown.filter(item => !settled.some(ref => sameRef(ref, item.ref)));
+}
+
+function unknownToolEffectCheckpointRefs(view, leaseRef) {
+  const leaseRecord = loadArtifactRef(view, leaseRef, "agent-dispatch-lease");
+  return unknownToolEffectRecords(view, leaseRecord).map(item => clone(item.ref));
 }
 
 function pendingAdmissions(view, leaseRecord) {
@@ -1741,6 +1753,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  unknownToolEffectCheckpointRefs,
   withDispatchIssuanceLock,
   NONE_REF,
   activeLease,

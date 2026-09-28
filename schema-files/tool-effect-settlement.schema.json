@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/tool-effect-settlement.schema.json",
+  "title": "Tool Effect Settlement",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "request", "request_sha256", "scope_ref", "lease_ref", "checkpoint_ref", "admission_ref", "repository_state", "observed_manifest", "proof", "settled_at", "admission_valid_until", "effects_settled", "scope_completeness_basis", "user_identity_authenticated", "tool_execution_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "ToolEffectSettlement" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "request": { "$ref": "tool-effect-settlement-request.schema.json" },
+    "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "scope_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "admission_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "repository_state": { "$ref": "verification-plan.schema.json#/properties/expected_repository_state" },
+    "observed_manifest": {
+      "type": "object", "additionalProperties": false, "required": ["revision", "sha256"],
+      "properties": { "revision": { "type": "integer", "minimum": 1 }, "sha256": { "$ref": "common.schema.json#/$defs/sha256" } }
+    },
+    "proof": {
+      "type": "object", "additionalProperties": false,
+      "required": ["trust_policy_ref", "assurance_scope", "verifier_ids", "key_ids", "independence_groups"],
+      "properties": {
+        "trust_policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+        "assurance_scope": { "type": "string", "minLength": 1 },
+        "verifier_ids": { "$ref": "#/$defs/identities" }, "key_ids": { "$ref": "#/$defs/identities" }, "independence_groups": { "$ref": "#/$defs/identities" }
+      }
+    },
+    "settled_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "admission_valid_until": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "effects_settled": { "const": true },
+    "scope_completeness_basis": { "const": "exact_user_judgement" },
+    "user_identity_authenticated": { "const": false },
+    "tool_execution_authorized": { "const": false },
+    "release_authorized": { "const": false }
+  },
+  "$defs": { "identities": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } } }
+}
