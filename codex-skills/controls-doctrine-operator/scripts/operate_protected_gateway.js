@@ -30,6 +30,7 @@ function findRuntimeRoot() {
 function main() {
   try {
     const root = findRuntimeRoot();
+    // Gateway-owned completion and cancellation stay inside this controller, never hook APIs.
     const result = spawnSync(
       process.execPath,
       [path.join(root, "protected-tool-gateway.js"), ...process.argv.slice(2)],

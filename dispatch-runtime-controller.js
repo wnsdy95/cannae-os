@@ -468,7 +468,7 @@ function initialCheckpoint(lease, leaseRef, repositoryState, recordedAt) {
   };
 }
 
-function persistCheckpoint(options, checkpoint) {
+function persistCheckpoint(options, checkpoint, publicationGuard) {
   assertValid(checkpoint, "agent-execution-checkpoint", "Agent execution checkpoint");
   return writeJsonArtifact(options, {
     missionId: checkpoint.mission_id,
@@ -476,7 +476,8 @@ function persistCheckpoint(options, checkpoint) {
     kind: "agent-execution-checkpoints",
     artifactId: checkpoint.id,
     payload: checkpoint,
-    createdAt: checkpoint.recorded_at
+    createdAt: checkpoint.recorded_at,
+    publicationGuard
   });
 }
 
@@ -515,6 +516,9 @@ function createLeaseFromRecord(
     throw new Error("A dispatch lease lineage already exists for this mission agent and wave.");
   }
   const repositoryHistory = leaseRecords(bundle.view);
+  if (gatewayObligations(bundle.view).length) {
+    throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: settle gateway obligations before issuing new repository tool authority.");
+  }
   if (repositoryHistory.some(item => unresolvedToolEffectRecords(bundle.view, item).length > 0)) {
     throw new Error("UNRESOLVED_TOOL_EFFECTS: reconcile retained unknown effects before issuing new repository tool authority.");
   }
@@ -576,6 +580,9 @@ function createLeaseFromRecord(
     publicationGuard: () => {
       const current = contextBundle(options, policy);
       policyValidity(policy, current.context.payload, nowIso(options));
+      if (gatewayObligations(current.view).length) {
+        throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations block lease publication.");
+      }
       if (leaseRecords(current.view).some(item => unresolvedToolEffectRecords(current.view, item).length > 0)) {
         throw new Error("UNRESOLVED_TOOL_EFFECTS: unknown effects block lease publication.");
       }
@@ -724,6 +731,26 @@ function unresolvedToolEffectRecords(view, leaseRecord) {
   return unknown.filter(item => !settled.some(ref => sameRef(ref, item.ref)));
 }
 
+function gatewayObligations(view, options, allowCurrentOperation = false) {
+  return require("./protected-tool-gateway").gatewayDispatchObligations(view, options, allowCurrentOperation);
+}
+
+function gatewayDispatchCode(options, view, leaseRef, toolUseId, action) {
+  return require("./protected-tool-gateway").gatewayDispatchAccess(options, view, leaseRef, toolUseId, action);
+}
+
+function dispatchCompletionGuard(options, leaseRecord, previous, toolUseId, action) {
+  return () => {
+    const view = storeView(options);
+    const code = gatewayDispatchCode(options, view, leaseRecord.ref, toolUseId, action);
+    if (code) throw new Error(code);
+    if (!sameRef(latestCheckpoint(view, leaseRecord).ref, previous.ref)) {
+      throw new Error("DISPATCH_COMPLETION_CHECKPOINT_CHANGED");
+    }
+    return true;
+  };
+}
+
 function unknownToolEffectCheckpointRefs(view, leaseRef) {
   const leaseRecord = loadArtifactRef(view, leaseRef, "agent-dispatch-lease");
   return unknownToolEffectRecords(view, leaseRecord).map(item => clone(item.ref));
@@ -834,6 +861,9 @@ function activeLease(options, identity, at = nowIso(options)) {
     };
   }
   const selected = candidates[0];
+  if (gatewayObligations(view, options, true).length) {
+    return { code: "UNRESOLVED_GATEWAY_TRANSACTIONS", view, ...selected };
+  }
   if (leaseRecords(view).some(record => unresolvedToolEffectRecords(view, record).length > 0)) {
     return { code: "UNRESOLVED_TOOL_EFFECTS", view, ...selected };
   }
@@ -1109,6 +1139,8 @@ function admitToolRequest(options, identity, hookInput) {
     const refreshed = activeLease(options, identity, nowIso(options));
     if (refreshed.code !== "LEASE_ACTIVE") return inMemoryDenial(refreshed.code);
     const { checkpointRecord, leaseRecord, view } = refreshed;
+    const ownershipCode = gatewayDispatchCode(options, view, leaseRecord.ref, hookInput.tool_use_id, "admit");
+    if (ownershipCode) return inMemoryDenial(ownershipCode);
     const policyRecord = policyForLease(view, leaseRecord);
     contextForLease(view, leaseRecord);
     const now = nowIso(options);
@@ -1191,6 +1223,8 @@ function admitToolRequest(options, identity, hookInput) {
           !sameRef(current.checkpointRecord.ref, checkpointRecord.ref)) {
         throw new Error(`Dispatch publication no longer matches active authority: ${current.code}`);
       }
+      const code = gatewayDispatchCode(options, current.view, leaseRecord.ref, hookInput.tool_use_id, "admit");
+      if (code) throw new Error(code);
       policyValidity(policyRecord.payload, loadArtifactRef(current.view, leaseRecord.payload.context_pack_ref).payload, nowIso(options));
       return true;
     } : undefined);
@@ -1240,6 +1274,16 @@ function postToolCheckpoint(leaseRecord, previousCheckpoint, admissionRecord, re
   return checkpoint;
 }
 
+function toolCompletionResultDigest(hookInput) {
+  return sha256(canonicalBytes({
+    hook_event_name: hookInput.hook_event_name,
+    tool_use_id: hookInput.tool_use_id,
+    tool_name: hookInput.tool_name,
+    tool_input_sha256: inputDigest(hookInput.tool_input),
+    provider_result: hookInput.tool_response ?? hookInput.tool_output ?? hookInput.tool_result ?? null
+  }));
+}
+
 function completeToolRequest(options, identity, hookInput) {
   assertProvider(identity.provider);
   if (!hookInput || !["PostToolUse", "PostToolUseFailure"].includes(hookInput.hook_event_name)) {
@@ -1281,6 +1325,8 @@ function completeToolRequest(options, identity, hookInput) {
       return inMemoryDenial("TOOL_COMPLETION_AMBIGUOUS");
     }
     const admission = refreshedCandidates.unresolved[0].admission;
+    const ownershipCode = gatewayDispatchCode(options, refreshed, currentLease.ref, hookInput.tool_use_id, "complete");
+    if (ownershipCode) return inMemoryDenial(ownershipCode);
     const completionToolName = String(hookInput.tool_name || "");
     const completionInputSha256 = inputDigest(hookInput.tool_input);
     if (completionToolName !== admission.payload.tool_name ||
@@ -1311,16 +1357,7 @@ function completeToolRequest(options, identity, hookInput) {
       status = "blocked";
       reasons.push("PROVIDER_TOOL_FAILURE_REQUIRES_RECONCILIATION");
     }
-    const providerResultSha256 = sha256(canonicalBytes({
-      hook_event_name: hookInput.hook_event_name,
-      tool_use_id: hookInput.tool_use_id,
-      tool_name: hookInput.tool_name,
-      tool_input_sha256: completionInputSha256,
-      provider_result: hookInput.tool_response ??
-        hookInput.tool_output ??
-        hookInput.tool_result ??
-        null
-    }));
+    const providerResultSha256 = toolCompletionResultDigest(hookInput);
     const checkpoint = postToolCheckpoint(currentLease, previous, admission, state, {
       status,
       reasonCodes: reasons,
@@ -1336,7 +1373,8 @@ function completeToolRequest(options, identity, hookInput) {
       recordedAt: nowIso(options)
     });
     renewRepositoryLease(lock);
-    const checkpointRef = persistCheckpoint(options, checkpoint);
+    const checkpointRef = persistCheckpoint(options, checkpoint,
+      dispatchCompletionGuard(options, currentLease, previous, hookInput.tool_use_id, "complete"));
     return {
       status,
       execution_authorized: status === "active",
@@ -1387,6 +1425,8 @@ function cancelToolRequest(options, identity, descriptor) {
       return inMemoryDenial("TOOL_CANCELLATION_AMBIGUOUS");
     }
     const admission = candidates.unresolved[0].admission;
+    const ownershipCode = gatewayDispatchCode(options, refreshed, currentLease.ref, descriptor.toolUseId, "cancel");
+    if (ownershipCode) return inMemoryDenial(ownershipCode);
     const toolInputSha256 = inputDigest(descriptor.toolInput);
     if (descriptor.toolName !== admission.payload.tool_name ||
         toolInputSha256 !== admission.payload.tool_input_sha256) {
@@ -1424,7 +1464,8 @@ function cancelToolRequest(options, identity, descriptor) {
       recordedAt: nowIso(options)
     });
     renewRepositoryLease(lock);
-    const checkpointRef = persistCheckpoint(options, checkpoint);
+    const checkpointRef = persistCheckpoint(options, checkpoint,
+      dispatchCompletionGuard(options, currentLease, previous, descriptor.toolUseId, "cancel"));
     return {
       status: "cancelled",
       execution_authorized: false,
@@ -1502,6 +1543,10 @@ function transitionLease(options, leaseIdValue, descriptor) {
       status = "blocked";
       reasons.push("TOOL_IN_FLIGHT_AT_TRANSITION");
     }
+    if (gatewayObligations(refreshed.view).some(item => sameRef(item.lease_ref, refreshed.leaseRecord.ref))) {
+      status = "blocked";
+      reasons.push("UNRESOLVED_GATEWAY_TRANSACTIONS");
+    }
     if (unresolvedToolEffectRecords(refreshed.view, refreshed.leaseRecord).length > 0) {
       status = "blocked";
       reasons.push("UNRESOLVED_TOOL_EFFECTS");
@@ -1513,7 +1558,13 @@ function transitionLease(options, leaseIdValue, descriptor) {
       recordedAt: nowIso(options)
     });
     renewRepositoryLease(lock);
-    const ref = persistCheckpoint(options, checkpoint);
+    const ref = persistCheckpoint(options, checkpoint, TERMINAL_LEASE_STATUSES.has(status) ? () => {
+      const view = storeView(options);
+      if (gatewayObligations(view).some(item => sameRef(item.lease_ref, refreshed.leaseRecord.ref))) {
+        throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations block terminal lease publication.");
+      }
+      return true;
+    } : undefined);
     return {
       status,
       execution_authorized: false,
@@ -1570,6 +1621,9 @@ function resumeLease(options, leaseIdValue, bindings) {
     const refreshed = loadLeaseById(options, leaseIdValue);
     oldLease = refreshed.leaseRecord;
     const previous = latestCheckpoint(refreshed.view, oldLease);
+    if (gatewayObligations(refreshed.view).length) {
+      throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations cannot be cleared by resume.");
+    }
     if (unresolvedToolEffectRecords(refreshed.view, oldLease).length > 0) {
       throw new Error("UNRESOLVED_TOOL_EFFECTS: unknown effects cannot be cleared by resume.");
     }
@@ -1635,11 +1689,13 @@ function sessionStart(options, identity, hookInput) {
 
 function dispatchStatus(options, filters = {}) {
   const view = storeView(options);
+  const obligations = gatewayObligations(view);
   const records = leaseRecords(view, filters.missionId, filters.waveId)
     .filter(item => !filters.agentId || item.payload.agent_id === filters.agentId)
     .map(leaseRecord => {
       const checkpoint = latestCheckpoint(view, leaseRecord);
       const unknownEffects = unresolvedToolEffectRecords(view, leaseRecord);
+      const gatewayTransactions = obligations.filter(item => sameRef(item.lease_ref, leaseRecord.ref));
       return {
         lease_id: leaseRecord.payload.id,
         mission_id: leaseRecord.payload.mission_id,
@@ -1652,6 +1708,8 @@ function dispatchStatus(options, filters = {}) {
         pending_tool_requests: pendingAdmissions(view, leaseRecord).length,
         unresolved_tool_effects: unknownEffects.length,
         unresolved_effect_checkpoint_refs: unknownEffects.map(item => clone(item.ref)),
+        unresolved_gateway_transactions: gatewayTransactions.length,
+        gateway_obligations: gatewayTransactions,
         expires_at: leaseRecord.payload.expires_at,
         release_authorized: false
       };
@@ -1750,8 +1808,6 @@ function main() {
   }
 }
 
-if (require.main === module) main();
-
 module.exports = {
   unknownToolEffectCheckpointRefs,
   withDispatchIssuanceLock,
@@ -1771,5 +1827,8 @@ module.exports = {
   revokeLease,
   runtimeRepositoryState,
   sameRepositoryState,
-  sessionStart
+  sessionStart,
+  toolCompletionResultDigest
 };
+
+if (require.main === module) main();

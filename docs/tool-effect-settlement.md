@@ -95,6 +95,9 @@ erase a completed settlement. Corrupt or fabricated retained proof fails closed.
 Gateway decisions **and requests without a decision** are rejected. A gateway's
 cleanup, production coordinator, execution receipt and terminal transaction need
 a separate settlement contract; hook settlement cannot discharge those duties.
+Check `unresolved_gateway_transactions` independently: zero hook unknown effects
+and zero pending callbacks do not establish gateway settlement. Direct hook
+completion/cancellation is rejected for gateway-owned admissions.
 
 ## Limits And Verification
 

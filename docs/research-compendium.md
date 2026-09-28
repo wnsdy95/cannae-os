@@ -1,5 +1,29 @@
 # Research Compendium
 
+## 2026-09-28: Gateway Ownership And Retained Obligations
+
+Local reproduction at `f61529c` showed that a direct successful provider callback
+after gateway unknown-outcome recovery consumed the admission. Lease revocation
+and a new wave could then issue fresh authority, while the gateway still said
+`recovery_required`. Direct cancellation after begin similarly enabled another
+tool. These are temporary-repository synthetic callbacks, not executed external
+effects, and are distinct from the earlier hook-failure reproduction below.
+
+The repair restricts gateway-owned dispatch writes to the gateway's validated
+operation, reconstructs unsettled transactions independently of callback/lease
+history, and repeats publication checks for new authority and wave terminal
+records. Commit retry must match exact result/status/time/repository evidence.
+Adversarial fixtures cover legacy terminal histories, callback/cancellation
+attempts, caller flags, publication races, interrupted receipt publication and
+both provider wrappers. No new external doctrine claim is made.
+
+This is a cooperating-process guard, not hostile-writer isolation. It does not
+authorize compensation, gateway effect settlement, production deployment,
+campaign restart, or release. OCI cleanup and hook settlement remain separate.
+See [gateway contract](protected-tool-gateway-contract.md),
+[dispatch history](enforced-dispatch-and-resume.md#52-gateway-owned-obligations),
+and the [completion backlog](completion-backlog.md).
+
 ## 2026-09-28: Exact Hook Effect Settlement
 
 [Tool Effect Settlement](tool-effect-settlement.md) now joins the non-authorizing

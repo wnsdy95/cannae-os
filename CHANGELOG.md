@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Bound gateway admissions to validated gateway operations; direct hook completion/failure/cancellation and caller-declared bypass flags cannot settle them. Dispatch projects gateway obligations independently from callbacks and lease history, blocks new authority and mission closure, and rechecks publication boundaries. Commit retry requires the exact result/status/time/repository checkpoint. Both skills now distinguish gateway obligations from hook settlement and OCI cleanup; unknown gateway effect settlement and campaign restart remain open.
+
 - Replaced failed-inspect cleanup inference with positive all-states, exact-target Docker absence verification. Live regressions cover daemon unavailability, failed/signaled/malformed observations, remaining targets, similarly named containers, and post-execution cleanup failure. Both skills route cleanup faults and preserve nonzero recovery status after containment; same-daemon trust, gateway effect settlement, and campaign restart remain explicit limits.
 
 - Removed silent truncation of routed task documents behind delegated role/authority bundles. Both skills preserve the full selected recommendation set while limiting only supporting artifacts, distinguish inventory coverage from task-level context completeness, and test direct queries, receipts, and context-pack delivery without granting additional access or authority.

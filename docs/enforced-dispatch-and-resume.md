@@ -354,6 +354,34 @@ identity, or completeness of the external effect scope. Keep the hold active
 until the separate settlement controller accepts it; then explicitly revoke the
 blocked lease. Settlement never turns a failed agent into a completed agent.
 
+### 5.2 Gateway-Owned Obligations
+
+Gateway requests own their exact lease/tool-use admission. Direct provider
+completion, failure, and cancellation callbacks cannot settle that admission;
+only the gateway's validated operation may write its dispatch checkpoint. This
+is a process-local capability, not a caller-set flag or an OS isolation boundary.
+Ordinary hook-only requests retain their existing completion behavior.
+
+Dispatch status separately returns `unresolved_gateway_transactions` and
+`gateway_obligations` with exact request/event/receipt references. Reconstruction
+uses gateway history independently of pending callbacks, hook unknown-effect
+checkpoints, and the latest lease status. `received`, `authorized`, `executing`,
+and `recovery_required` all remain obligations until exact safe terminal proof
+exists. Even a retained request without its first event is visible.
+
+`UNRESOLVED_GATEWAY_TRANSACTIONS` blocks new repository lease/tool authority,
+resume, wave reports/closeouts, and termination. A lease transition may record
+`blocked`, but cannot erase the obligation. Publication guards repeat these
+checks after intervening writes. A gateway operation excludes only its own exact
+request while performing its validated transition, never another transaction.
+
+Use the [gateway recovery procedure](protected-tool-gateway-contract.md#6-reference-operation).
+An unstarted transaction may cancel exactly. An executing/unknown transaction
+must remain held; late success callbacks, historical terminal leases, OCI
+cleanup, hook settlement, or a new wave cannot clear it. Gateway-specific effect
+settlement remains open. Commit retry may reuse a checkpoint only when the
+actual provider-result digest, status, execution time and repository state match.
+
 ## 6. Provider Adapters
 
 ### 6.1 Codex
