@@ -6,6 +6,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added typed gateway effect intake, finite boundary scopes, and non-authorizing evidence review, with exact history/receipt bindings and publication drift checks. Both skills now classify the transaction before inspection and rebuild proof after history changes; pending admissions, gateway holds, future authority and full settlement remain separate.
+- Corrected JSON Schema fragment resolution to retain the owning document for nested local references; valid none sentinels and malformed mixed references now take the intended branches. Hook and gateway inspection share evidence-consistency appraisal without sharing settlement authority.
+
 - Bound gateway admissions to validated gateway operations; direct hook completion/failure/cancellation and caller-declared bypass flags cannot settle them. Dispatch projects gateway obligations independently from callbacks and lease history, blocks new authority and mission closure, and rechecks publication boundaries. Commit retry requires the exact result/status/time/repository checkpoint. Both skills now distinguish gateway obligations from hook settlement and OCI cleanup; unknown gateway effect settlement and campaign restart remain open.
 
 - Replaced failed-inspect cleanup inference with positive all-states, exact-target Docker absence verification. Live regressions cover daemon unavailability, failed/signaled/malformed observations, remaining targets, similarly named containers, and post-execution cleanup failure. Both skills route cleanup faults and preserve nonzero recovery status after containment; same-daemon trust, gateway effect settlement, and campaign restart remain explicit limits.

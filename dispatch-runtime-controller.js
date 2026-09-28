@@ -717,6 +717,21 @@ function completedAdmissionIds(checkpoints) {
     .map(item => item.payload.tool_admission_ref.artifact_id));
 }
 
+function dispatchLeaseHistory(view, leaseRef) {
+  const lease = loadArtifactRef(view, leaseRef, "agent-dispatch-lease");
+  const latest = latestCheckpoint(view, lease);
+  const checkpoints = checkpointRecords(view, leaseRef, lease.payload.mission_id, lease.payload.wave_id);
+  for (let index = 0; index < checkpoints.length; index += 1) {
+    const checkpoint = checkpoints[index].payload;
+    if (["mission_id", "wave_id", "agent_id", "provider"].some(key => checkpoint[key] !== lease.payload[key]) ||
+        inputDigest(checkpoint.session_binding) !== inputDigest(lease.payload.session_binding) ||
+        (index && Date.parse(checkpoint.recorded_at) < Date.parse(checkpoints[index - 1].payload.recorded_at))) {
+      throw new Error("DISPATCH_HISTORY_BINDING_MISMATCH");
+    }
+  }
+  return { lease, latest, checkpoints };
+}
+
 function unknownToolEffectRecords(view, leaseRecord) {
   // A later revocation or baseline cannot settle an earlier unknown outcome.
   latestCheckpoint(view, leaseRecord);
@@ -1820,6 +1835,7 @@ module.exports = {
   completeLease,
   completeToolRequest,
   dispatchStatus,
+  dispatchLeaseHistory,
   inputDigest,
   interruptLease,
   issueLease,

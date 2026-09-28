@@ -633,6 +633,11 @@ fixture("timeout is observed and committed as a failed process", async () => {
   assert.strictEqual(completed.process_result.termination_reason, "timeout");
   const observation = loadArtifact(completed.execution_observation_ref);
   assert.strictEqual(observation.process.timed_out, true);
+  const subject = require("./gateway-effect-review").gatewayEffectSubject(setup.gatewayOptions, setup.transactionId);
+  assert.strictEqual(subject.subject_class, "committed_unknown_effects");
+  assert.strictEqual(subject.execution_mode, "bounded_process_reference");
+  assert.strictEqual(subject.retained_execution_refs.length, 3);
+  assert(subject.required_targets.some(item => item.target === `process-envelope:${completed.execution_envelope_ref.sha256}`));
 });
 
 fixture("post-process interruption never reruns the claimed work", async () => {
@@ -652,6 +657,10 @@ fixture("post-process interruption never reruns the claimed work", async () => {
     faultInjectionStage: "after_process"
   });
   assert.strictEqual(interrupted.state, "recovery_required");
+  const subject = require("./gateway-effect-review").gatewayEffectSubject(setup.gatewayOptions, setup.transactionId);
+  assert.strictEqual(subject.next_action, "review");
+  assert.strictEqual(subject.execution_mode, "bounded_process_reference");
+  assert(subject.retained_execution_refs.some(item => item.sha256 === interrupted.execution_envelope_ref.sha256));
   assert.strictEqual(
     fs.readFileSync(path.join(setup.repository, "interrupted-count.txt"), "utf8"),
     "1"

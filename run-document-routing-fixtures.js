@@ -30,6 +30,13 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  for (const query of ["gateway effect review", "gateway settlement", "orphan admission"]) {
+    const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
+    assertRoutes(result, ["gateway-effect-review"]);
+    assert.strictEqual(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/gateway-effect-review.md"));
+    assert(result.validation_commands.includes("node run-gateway-effect-review-fixtures.js"));
+  }
   for (const query of ["gateway ownership", "gateway obligations", "late gateway callback"]) {
     const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
     assertRoutes(result, ["enforced-dispatch"]);
@@ -147,4 +154,4 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log("Document routing fixtures: 26/26 passed");
+console.log("Document routing fixtures: 32/32 passed");

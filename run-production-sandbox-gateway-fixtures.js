@@ -746,6 +746,13 @@ async function main() {
     assert.strictEqual(authorized.production_deployment_verified, false);
     assert.strictEqual(authorized.release_authorized, false);
 
+    const subject = require("./gateway-effect-review").gatewayEffectSubject(trusted, authorizedRequest.transaction_id);
+    assert.strictEqual(subject.next_action, "recover");
+    assert(subject.required_targets.some(item => item.boundary === "coordination" &&
+      item.target === `production-admission:${issuedAdmission.admission_ref.sha256}`));
+    assert.deepStrictEqual(subject.references.production_sandbox_admission_ref, issuedAdmission.admission_ref);
+    assert.strictEqual(subject.tool_execution_authorized, false);
+
     const recovered = recoverGatewayTransaction({
       ...trusted,
       now: at(13000)

@@ -10,6 +10,54 @@ const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
   {
+    name: "external schema fragments resolve local none refs from their owning document",
+    file: "sample-payloads/valid-gateway-effect-subject.json",
+    type: "gateway-effect-subject", exitCode: 1,
+    mutate(payload) { payload.references.production_sandbox_admission_ref.relative_path = "not-none"; },
+    requiredCodes: ["ONE_OF_MISMATCH"]
+  },
+  ...["subject", "scope", "review"].map(kind => ({
+    name: `valid non-authorizing gateway effect ${kind}`,
+    file: `sample-payloads/valid-gateway-effect-${kind}.json`,
+    type: `gateway-effect-${kind}`, exitCode: 0, requiredCodes: []
+  })),
+  {
+    name: "gateway subject digest cannot be reused for a different transaction",
+    file: "sample-payloads/invalid-gateway-effect-subject-digest.json",
+    type: "gateway-effect-subject", exitCode: 1, requiredCodes: ["GATEWAY_EFFECT_SUBJECT_DIGEST_MISMATCH"]
+  },
+  {
+    name: "gateway scope cannot substitute its subject agent",
+    file: "sample-payloads/invalid-gateway-effect-scope-subject.json",
+    type: "gateway-effect-scope", exitCode: 1, requiredCodes: ["GATEWAY_EFFECT_SCOPE_SUBJECT_MISMATCH"]
+  },
+  {
+    name: "gateway review cannot settle effects",
+    file: "sample-payloads/invalid-gateway-effect-review-authority.json",
+    type: "gateway-effect-review", exitCode: 1, requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "nested gateway subject digest is checked semantically",
+    file: "sample-payloads/valid-gateway-effect-scope.json",
+    type: "gateway-effect-scope", exitCode: 1,
+    mutate(payload) { payload.subject.transaction_id = "GTX-SUBSTITUTED"; },
+    requiredCodes: ["GATEWAY_EFFECT_SUBJECT_DIGEST_MISMATCH"]
+  },
+  {
+    name: "gateway scope cannot reverse expiry",
+    file: "sample-payloads/valid-gateway-effect-scope.json",
+    type: "gateway-effect-scope", exitCode: 1,
+    mutate(payload) { payload.expires_at = payload.created_at; },
+    requiredCodes: ["TOOL_EFFECT_SCOPE_TIME_INVALID"]
+  },
+  {
+    name: "gateway evidence-bound review cannot conceal blockers",
+    file: "sample-payloads/valid-gateway-effect-review.json",
+    type: "gateway-effect-review", exitCode: 1,
+    mutate(payload) { payload.reason_codes = ["GATEWAY_EFFECT_SUBJECT_CHANGED"]; },
+    requiredCodes: ["TOOL_EFFECT_REVIEW_STATUS_INVALID"]
+  },
+  {
     name: "valid exact tool effect settlement request",
     file: "sample-payloads/valid-tool-effect-settlement-request.json",
     type: "tool-effect-settlement-request", exitCode: 0, requiredCodes: []

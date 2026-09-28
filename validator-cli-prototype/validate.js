@@ -156,6 +156,9 @@ const TYPE_TO_SCHEMA = {
   "tool-admission-event": "tool-admission-event.schema.json",
   "agent-execution-checkpoint": "agent-execution-checkpoint.schema.json",
   "tool-effect-scope": "tool-effect-scope.schema.json",
+  "gateway-effect-subject": "gateway-effect-subject.schema.json",
+  "gateway-effect-scope": "gateway-effect-scope.schema.json",
+  "gateway-effect-review": "gateway-effect-review.schema.json",
   "tool-effect-review": "tool-effect-review.schema.json",
   "tool-effect-settlement-request": "tool-effect-settlement-request.schema.json",
   "tool-effect-settlement": "tool-effect-settlement.schema.json",
@@ -397,7 +400,7 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
   if (!schema || typeof schema !== "object") return issues;
 
   if (schema.$ref) {
-    const key = `${schema.$ref}@${pointer}`;
+    const key = `${rootSchema.$id || ""}:${schema.$ref}@${pointer}`;
     if (seen.has(key)) return issues;
     seen.add(key);
     const resolved = resolveRef(schema.$ref, schemas, rootSchema);
@@ -405,7 +408,9 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
       issues.push(issue("error", "UNRESOLVED_REF", pointer, `Cannot resolve schema ref ${schema.$ref}.`));
       return issues;
     }
-    return validateSchema(value, resolved, schemas, pointer, seen, schema.$ref.startsWith("#") ? rootSchema : resolved);
+    // A referenced fragment still resolves its local refs from the owning document.
+    const referencedRoot = schema.$ref.startsWith("#") ? rootSchema : schemas[schema.$ref.split("#")[0]];
+    return validateSchema(value, resolved, schemas, pointer, seen, referencedRoot);
   }
 
   if (Array.isArray(schema.allOf)) {
@@ -1363,7 +1368,7 @@ function semanticRules(payload, type, options = {}) {
     }
   }
 
-  if (type === "tool-effect-scope") {
+  if (type === "tool-effect-scope" || type === "gateway-effect-scope") {
     const created = Date.parse(payload.created_at);
     const expires = Date.parse(payload.expires_at);
     if (!Number.isFinite(created) || !Number.isFinite(expires) || expires <= created || expires - created > 3600000) {
@@ -1376,7 +1381,25 @@ function semanticRules(payload, type, options = {}) {
     }
   }
 
-  if (type === "tool-effect-review") {
+  if (type === "gateway-effect-subject") {
+    const digest = canonicalControlDigestWithout(payload, ["id"]);
+    if (payload.id !== `GESUB-${digest.slice(0, 32)}`) {
+      issues.push(issue("critical", "GATEWAY_EFFECT_SUBJECT_DIGEST_MISMATCH", "$.id", "Gateway effect subject identity must bind its exact canonical projection."));
+    }
+  }
+
+  if (type === "gateway-effect-scope" && payload.subject && typeof payload.subject === "object") {
+    for (const nested of validatePayload(payload.subject, "gateway-effect-subject").issues) {
+      issues.push({ ...nested, path: `$.subject${nested.path.slice(1)}` });
+    }
+    if (["mission_id", "wave_id", "agent_id"].some(key => payload[key] !== payload.subject[key]) ||
+        canonicalControlDigestWithout(payload.repository_binding || {}, []) !==
+          canonicalControlDigestWithout(payload.subject.repository_binding || {}, [])) {
+      issues.push(issue("critical", "GATEWAY_EFFECT_SCOPE_SUBJECT_MISMATCH", "$.subject", "An effect scope must preserve the exact gateway subject identity."));
+    }
+  }
+
+  if (type === "tool-effect-review" || type === "gateway-effect-review") {
     const codes = Array.isArray(payload.reason_codes) ? payload.reason_codes : [];
     if ((payload.status === "evidence_bound" && codes.length !== 0) || (payload.status === "blocked" && codes.length === 0)) {
       issues.push(issue("critical", "TOOL_EFFECT_REVIEW_STATUS_INVALID", "$", "Only a review with no blocking codes can be evidence_bound; neither status settles effects."));

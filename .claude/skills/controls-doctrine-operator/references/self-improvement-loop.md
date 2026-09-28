@@ -111,6 +111,17 @@ for covered publishers and residual cancellation/restart limits.
 
 ## Gateway Ownership And Recovery
 
+Before preparing a gateway inspection, run `scripts/review_gateway_effects.js
+subject` and read `docs/gateway-effect-review.md`. Follow its state-specific
+next action: recovery before review, and no review for already-safe transactions.
+An orphan with missing raw input must retain none execution/receipt references;
+never fill those gaps with synthetic completion records. Freeze the entire
+subject, minimum boundaries and additional affected resources before checks.
+Any new checkpoint, execution record, resource or check requires a new scope
+and proof. `evidence_bound`, verified container absence, and exit zero never
+discharge the pending admission or grant the blocked agent inspection authority.
+Gateway settlement remains open; do not bypass the hook controller's exclusion.
+
 Read dispatch status and gateway status together before reporting or resuming.
 Zero pending callbacks and zero hook unknown effects can coexist with an
 unresolved gateway transaction, including a request retained without a decision.

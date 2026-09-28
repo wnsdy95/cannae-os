@@ -572,6 +572,15 @@ function gatewayDispatchAccess(options, view, leaseRef, toolUseId, action) {
   return allowed ? null : "GATEWAY_DISPATCH_TRANSITION_INVALID";
 }
 
+function gatewayEffectHistory(view, transactionId) {
+  assertIdentifier(transactionId, "transaction_id");
+  const records = recordsForTransaction(view, transactionId);
+  if (!records.request) throw new Error("GATEWAY_EFFECT_REQUEST_NOT_FOUND");
+  const admission = admissionRecordForRequest(view, records.request.payload);
+  return { ...records, admission, completion: admission ? checkpointForAdmission(view, admission.ref) : null,
+    safe_terminal: gatewayDispatchSettled(view, records) };
+}
+
 function snapshotStatus(view, records) {
   if (!records.request) return null;
   const request = records.request.payload;
@@ -2131,6 +2140,7 @@ module.exports = {
   gatewayTransactionContext,
   gatewayDispatchAccess,
   gatewayDispatchObligations,
+  gatewayEffectHistory,
   gatewayStatus,
   recoverGatewayTransaction
 };
