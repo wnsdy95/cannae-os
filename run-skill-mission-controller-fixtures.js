@@ -356,6 +356,14 @@ fixture("duplicate agents and expired plans fail closed", () => {
     artifactRoot,
     doctrineRoot: ROOT,
     now: "2028-07-23T04:30:00+09:00"
+  }), /CAMPAIGN_CONTINUATION_BLOCKED/, "expired adaptive campaign rejection");
+  const nonAdaptive = clone(basePlan);
+  nonAdaptive.adaptive_work.enabled = false;
+  expectThrow(() => openWave(nonAdaptive, {
+    repository: repositoryA,
+    artifactRoot,
+    doctrineRoot: ROOT,
+    now: "2028-07-23T04:30:00+09:00"
   }), /expired/, "expired plan rejection");
   const overclassified = wavePlan(basePlan, "WCLASS");
   overclassified.mission_profile.classification = "public";
@@ -849,6 +857,13 @@ fixture("Codex and Claude wrappers resolve the same lifecycle runtime", () => {
 const noneRef = { artifact_id: "none", relative_path: "none", sha256: "none" };
 const terminationOptions = { repository: repositoryB, artifactRoot, doctrineRoot: ROOT, get now() { return new Date().toISOString(); } };
 const expiredTime = "2028-07-23T04:00:00+09:00";
+function terminationPlan(waveId) {
+  const plan = wavePlan(basePlan, waveId);
+  plan.adaptive_work.campaign_id = `SIC-${waveId}`;
+  plan.created_at = new Date(Date.now() - 60000).toISOString();
+  plan.valid_until = new Date(Date.now() + 3600000).toISOString();
+  return plan;
+}
 function terminationRequest(plan, openedWave, status = "expired", successor = noneRef) {
   return {
     schema_version: "0.1", type: "MissionWaveTerminationRequest", mission_id: plan.mission_id,
@@ -874,7 +889,7 @@ function terminationDecision(request, plan, overrides = {}) {
 }
 
 fixture("expired wave terminates without fabricated execution and retries immutably", () => {
-  const plan = wavePlan(basePlan, "TERM-EXPIRED");
+  const plan = terminationPlan("TERM-EXPIRED");
   const started = openWave(plan, terminationOptions);
   const request = terminationRequest(plan, started);
   expectThrow(() => terminateWave(request, terminationOptions), /before its plan expires/, "premature expiry");
@@ -934,7 +949,7 @@ fixture("termination cannot overwrite normal closeout or accept permissive schem
 });
 
 fixture("abort requires a fresh USER decision bound to the exact operation", () => {
-  const plan = wavePlan(basePlan, "TERM-ABORT");
+  const plan = terminationPlan("TERM-ABORT");
   const started = openWave(plan, terminationOptions);
   const request = terminationRequest(plan, started, "aborted");
   expectThrow(() => terminateWave(request, terminationOptions), /MISSION_TERMINATION_DECISION_REQUIRED/, "no decision");
@@ -948,8 +963,8 @@ fixture("abort requires a fresh USER decision bound to the exact operation", () 
 });
 
 fixture("supersession binds an opened successor and never transfers execution authority", () => {
-  const plan = wavePlan(basePlan, "TERM-OLD");
-  const nextPlan = wavePlan(basePlan, "TERM-NEXT");
+  const plan = terminationPlan("TERM-OLD");
+  const nextPlan = terminationPlan("TERM-NEXT");
   const started = openWave(plan, terminationOptions);
   const next = openWave(nextPlan, terminationOptions);
   const self = terminationDecision(terminationRequest(plan, started, "superseded", started.plan_ref), plan, { id: "DL-SELF" });
@@ -962,7 +977,7 @@ fixture("supersession binds an opened successor and never transfers execution au
 });
 
 fixture("expiration cannot hide active, interrupted, or unresolved dispatch execution", () => {
-  const plan = wavePlan(basePlan, "TERM-DISPATCH");
+  const plan = terminationPlan("TERM-DISPATCH");
   const drafts = plan.agents.map(agent => dispatchDraft(plan, agent, `DTP-TERM-${agent.agent_id}`));
   plan.dispatch_control = { required: true, enforcement_level: "guardrail", gateway_exclusive: false,
     policy_authorizations: drafts.map(draft => ({ agent_id: draft.agent_id, provider: draft.provider, policy_id: draft.id, draft_sha256: inputDigest(draft) })) };
@@ -993,7 +1008,7 @@ fixture("expiration cannot hide active, interrupted, or unresolved dispatch exec
 
 fixture("termination CLI rejects clock overrides and serializes with wave and issuance locks", () => {
   const { acquireRepositoryLease, releaseRepositoryLease } = require("./repository-lease");
-  const plan = wavePlan(basePlan, "TERM-LOCK");
+  const plan = terminationPlan("TERM-LOCK");
   const started = openWave(plan, terminationOptions);
   const request = terminationRequest(plan, started);
   const input = path.join(temporaryRoot, "termination-request.json");
