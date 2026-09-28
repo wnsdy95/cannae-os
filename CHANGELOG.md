@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Enforced campaign creation-based elapsed deadlines independently of reported progress. Idle campaigns, understated counters, and retained ready orders cannot extend admission; invalid or regressed evaluation clocks fail closed. Both skills now count idle time and forbid backdated continuation, while preserving historical evidence and already-admitted result settlement. Host-clock trust, hard process timeouts, and full cancellation/restart remain explicit limits.
+
 - Corrected source-map coverage snapshots to record the actual UTC audit date, added date regression coverage, and regenerated the source inventory. Both skills now require generator-derived freshness instead of manually restamping old audit results.
 
 - Upgraded the pinned Sigstore verifier to 4.1.2 and protobuf-specs to 0.5.2. Fresh independent release evidence now uses v0.2; exact known v0.1 producer tuples are preserved while their complete cryptographic claims are replayed by the current engine. Unknown provenance, changed claims, version substitution, and old-runtime fresh execution remain blocked. Both skills now treat verifier and lockfile changes as evidence-compatibility migrations, without rewriting policy baselines or checkpoint lineage.

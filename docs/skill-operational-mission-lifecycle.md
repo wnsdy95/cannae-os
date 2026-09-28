@@ -328,6 +328,13 @@ wave ID or provider session cannot clear that state. The report path checks agai
 after mandatory controls finish. This read-only gate does not create cycle orders
 or verifier challenges and does not grant independent execution authority.
 
+Time eligibility is checked from the campaign's immutable `created_at`, finite
+elapsed budget, and current evaluation time, as well as the reported cumulative
+counter. No checkpoint, low reported time, old ready order, or longer-lived lease
+can extend that deadline. See [campaign time budget](bounded-self-improvement-operations.md#29-campaign-time-budget)
+for exact boundaries, immutable snapshot semantics, and host-clock limitations.
+Omit replay/test clock overrides during live operations.
+
 Post-tool result settlement, evidence inspection, and lease revocation remain
 available. A retained lease checkpoint may still say `active` after settlement;
 the next admission independently rechecks the campaign and remains denied.

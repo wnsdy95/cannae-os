@@ -44,6 +44,24 @@ This is an admission repair, not a completed campaign cancellation/restart
 contract. Already admitted processes need reconciliation; atomic stop fencing and
 explicit USER-authorized successor lineage remain in `docs/completion-backlog.md`.
 
+## Campaign Elapsed-Time Admission Gap (2026-09-28)
+
+A new boundary regression reproduced `ready` at the exact deadline for a campaign
+without checkpoints. The supervisor previously consulted only reported progress,
+so idle time and an understated counter could leave admission open indefinitely.
+
+The repair compares the evaluation instant against immutable campaign creation
+plus the finite time budget, independently of the cumulative reported counter.
+It checks before reusing retained orders and rejects evaluation before known
+creation/history. Offset-aware boundary, low-counter, retained-ready, live CLI,
+and wave/lease settlement tests exercise the behavior. Existing reported budget
+snapshots and evidence bytes are preserved, not rewritten into stopwatch data.
+
+This implements an admission deadline, not trusted time or an OS timeout.
+Replay/test clock overrides are not live execution evidence. No pause discount,
+automatic reset, process termination, campaign-wide cancellation, or USER restart
+authority is inferred. These limits remain in the completion backlog.
+
 ## Implementation Traceability Audit (2026-09-28)
 
 **Reason:** filename-only searches and broad changelog closure language obscured

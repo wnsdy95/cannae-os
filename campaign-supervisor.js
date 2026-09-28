@@ -556,6 +556,8 @@ function orderId(campaignId, cycleNumber, attemptNumber, transition, status, adm
 }
 
 function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
+  const evaluatedTime = typeof evaluatedAt === "string" ? Date.parse(evaluatedAt) : NaN;
+  if (!Number.isFinite(evaluatedTime)) throw new Error("CAMPAIGN_EVALUATION_TIME_INVALID");
   const {
     campaign,
     campaignEntry,
@@ -580,6 +582,13 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
   }
   const pairs = buildPairs(campaign, checkpoints, decisions, repository, store.manifestHistory, blocks);
   validateLineage(campaign, pairs, blocks);
+  const startedAt = Date.parse(campaign.created_at);
+  if (evaluatedTime < startedAt) addBlock(blocks, "CAMPAIGN_EVALUATION_PRECEDES_CREATION");
+  if (checkpoints.some(item => Date.parse(item.payload.generated_at) > evaluatedTime) ||
+      decisions.some(item => Date.parse(item.payload.decided_at) > evaluatedTime) ||
+      existingOrders.some(item => Date.parse(item.payload.generated_at) > evaluatedTime)) {
+    addBlock(blocks, "CAMPAIGN_EVALUATION_PRECEDES_HISTORY");
+  }
 
   const latest = pairs.at(-1);
   let status = "ready";
@@ -637,7 +646,11 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     addBlock(blocks, "CAMPAIGN_FAILED_EXPERIMENT_BUDGET_EXHAUSTED");
   }
   if (status === "ready" && budget.consecutive_no_progress_cycles >= budget.max_no_progress_cycles) addBlock(blocks, "CAMPAIGN_NO_PROGRESS_LIMIT_REACHED");
-  if (status === "ready" && budget.elapsed_minutes >= budget.max_elapsed_minutes) addBlock(blocks, "CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED");
+  // Retained progress is evidence, not the clock for fresh admission.
+  const wallClockMinutes = (evaluatedTime - startedAt) / 60000;
+  if (status === "ready" && Math.max(budget.elapsed_minutes, wallClockMinutes) >= budget.max_elapsed_minutes) {
+    addBlock(blocks, "CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED");
+  }
 
   if (campaign.status !== "active") {
     if (campaign.status === "paused") {

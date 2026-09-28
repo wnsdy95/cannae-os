@@ -163,6 +163,17 @@ the unblock or successor decision to the USER. Do not open another wave or
 provider session to bypass the hold. A cancellation or restarted campaign must
 not be claimed until its separate terminal-settlement/USER-lineage contract exists.
 
+Count idle time against the campaign's creation-based elapsed budget. A zero
+reported counter, old ready order, or longer-lived lease does not extend it.
+Use the live clock for actual work; never pass replay/test clock overrides,
+restamp campaign creation, or edit retained counters to revive expired authority.
+Keep reporting evidence separate from fresh admission, settle already admitted
+effects, and return any successor budget/scope decision to the USER.
+
+In synthetic tests, align each newly created plan's finite window with its test
+clock. Do not disable the budget gate to reuse a historical sample timestamp;
+this fixture setup rule never permits restamping persisted operational artifacts.
+
 - Keep commits coherent: one concept, one validation story.
 - Do not stage ignored local files.
 - Mention any source family, schema, runner, or fixture added in the commit message if it is the core change.

@@ -70,7 +70,7 @@ function makeEnvironment(name, overrides = {}) {
     identity_fingerprint: repository.identity_fingerprint,
     baseline_revision: repository.head_commit
   };
-  campaign.created_at = "2026-07-21T09:00:00Z";
+  campaign.created_at = overrides.createdAt || "2026-07-21T09:00:00Z";
   Object.assign(campaign.budgets, overrides.budgets || {});
   if (overrides.status) campaign.status = overrides.status;
   let trustPolicy = null;
@@ -166,11 +166,11 @@ function checkpointFor(environment, cycle, attempt, options = {}) {
   checkpoint.metric_results.forEach(result => { result.evidence_receipt_ids = [checkpoint.verification_receipts[0].receipt_id]; });
   checkpoint.progress.failed_experiments = options.failedExperiments || 0;
   checkpoint.progress.consecutive_no_progress_cycles = options.noProgress || 0;
-  checkpoint.progress.elapsed_minutes = options.elapsedMinutes || cycle * 10 + attempt;
+  checkpoint.progress.elapsed_minutes = options.elapsedMinutes ?? cycle * 10 + attempt;
   checkpoint.progress.open_acceptance_criteria = options.openCriteria === undefined
     ? ["A completion checkpoint is recorded."]
     : options.openCriteria;
-  checkpoint.generated_at = new Date(Date.parse(environment.campaign.created_at) + (cycle * 60 + attempt) * 60000).toISOString();
+  checkpoint.generated_at = new Date(Date.parse(environment.campaign.created_at) + (cycle * 10 + attempt) * 60000).toISOString();
   return checkpoint;
 }
 
@@ -241,12 +241,13 @@ function persistPair(environment, checkpoint, decisionName, options = {}) {
   return record;
 }
 
-function supervise(environment) {
+function supervise(environment, evaluatedAt = new Date(Math.max(Date.parse(environment.campaign.created_at),
+  ...environment.decisions.map(item => Date.parse(item.decision.decided_at)))).toISOString()) {
   const result = superviseCampaign({
     repositoryPath: environment.repositoryPath,
     artifactRoot: environment.artifactRoot,
     campaignId: environment.campaign.id,
-    evaluatedAt: "2026-07-21T09:00:00Z"
+    evaluatedAt
   });
   const validation = validatePayload(result.order, "self-improvement-cycle-order");
   assert.strictEqual(validation.valid, true, JSON.stringify(validation, null, 2));
@@ -285,8 +286,87 @@ function waveOptions(environment) {
 }
 
 try {
+  run("campaign expires without a checkpoint at the exact wall-clock boundary", () => {
+    const environment = makeEnvironment("wall-clock-empty", { budgets: { max_elapsed_minutes: 5 } });
+    try {
+      const before = supervise(environment, "2026-07-21T18:04:59.999+09:00");
+      assert.strictEqual(before.status, "ready");
+      const expired = supervise(environment, "2026-07-21T09:05:00Z");
+      assert.strictEqual(expired.status, "blocked");
+      assert(expired.blocking_codes.includes("CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED"));
+      assert.strictEqual(expired.budget_snapshot.elapsed_minutes, 0, "reported progress must not be rewritten");
+      assert.strictEqual(expired.execution_authorized, false);
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
+  run("a low reported counter and retained ready order cannot extend a deadline", () => {
+    const environment = makeEnvironment("wall-clock-retained", { budgets: { max_elapsed_minutes: 15 } });
+    try {
+      persistPair(environment, checkpointFor(environment, 1, 1, { elapsedMinutes: 0 }), "revise_and_retry");
+      const ready = supervise(environment, "2026-07-21T09:12:00Z");
+      assert.strictEqual(ready.status, "ready");
+      const writeOrder = order => writeRepositoryArtifact({
+        repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+        missionId: order.mission_id, waveId: "C1", kind: "self-improvement-cycle-orders",
+        artifactId: order.id, payload: order, createdAt: order.generated_at
+      });
+      writeOrder(ready);
+      assert.deepStrictEqual(supervise(environment, "2026-07-21T09:13:00Z"), ready);
+      const expired = supervise(environment, "2026-07-21T09:15:00Z");
+      assert.strictEqual(expired.status, "blocked");
+      assert(expired.blocking_codes.includes("CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED"));
+      assert.notStrictEqual(expired.id, ready.id);
+      writeOrder(expired);
+      assert.deepStrictEqual(supervise(environment, "2026-07-21T09:16:00Z"), expired);
+      assert.throws(() => supervise(environment, "2026-07-21T09:14:00Z"), /conflicts with the reconstructed campaign state/);
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
+  run("reported elapsed budget remains a conservative admission floor", () => {
+    const environment = makeEnvironment("reported-time", { budgets: { max_elapsed_minutes: 15 } });
+    try {
+      persistPair(environment, checkpointFor(environment, 1, 1, { elapsedMinutes: 15 }), "revise_and_retry");
+      assert(supervise(environment).blocking_codes.includes("CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED"));
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
+  run("invalid, pre-creation, and pre-history evaluation clocks fail closed", () => {
+    const environment = makeEnvironment("invalid-clock");
+    try {
+      assert.throws(() => supervise(environment, "invalid"), /CAMPAIGN_EVALUATION_TIME_INVALID/);
+      assert.throws(() => supervise(environment, null), /CAMPAIGN_EVALUATION_TIME_INVALID/);
+      assert(supervise(environment, "2026-07-21T08:59:59Z").blocking_codes.includes("CAMPAIGN_EVALUATION_PRECEDES_CREATION"));
+      persistPair(environment, checkpointFor(environment, 1, 1), "revise_and_retry");
+      assert(supervise(environment, "2026-07-21T09:10:59Z").blocking_codes.includes("CAMPAIGN_EVALUATION_PRECEDES_HISTORY"));
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
+  run("the supervisor CLI uses the live clock for an idle expired campaign", () => {
+    const environment = makeEnvironment("live-clock-expired", {
+      createdAt: new Date(Date.now() - 300000).toISOString(), budgets: { max_elapsed_minutes: 1 }
+    });
+    try {
+      const result = spawnSync(process.execPath, ["campaign-supervisor.js", "--repository", environment.repositoryPath,
+        "--artifact-root", environment.artifactRoot, "--campaign", environment.campaign.id], { cwd: ROOT, encoding: "utf8" });
+      assert.strictEqual(result.status, 1, result.stderr || result.stdout);
+      const order = JSON.parse(result.stdout);
+      assert(order.blocking_codes.includes("CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED"));
+      assert.strictEqual(order.execution_authorized, false);
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
   for (const decisionName of ["escalate", "terminate", "complete"]) run(`${decisionName} cannot reopen, report, or close an adaptive wave`, () => {
-    const environment = makeEnvironment(`wave-after-${decisionName}`);
+    const environment = makeEnvironment(`wave-after-${decisionName}`, { createdAt: "2026-07-23T04:00:00+09:00" });
     try {
       const plan = waveFor(environment);
       const options = waveOptions(environment);
@@ -314,8 +394,10 @@ try {
     }
   });
 
-  run("campaign escalation blocks stale lease calls and resume but permits result settlement and revocation", () => {
-    const environment = makeEnvironment("live-dispatch-stop");
+  for (const reason of ["escalation", "expiry"]) run(`campaign ${reason} blocks stale lease calls and resume but permits result settlement and revocation`, () => {
+    const environment = makeEnvironment(`live-dispatch-${reason}`, {
+      createdAt: "2026-07-23T04:00:00+09:00", budgets: { max_elapsed_minutes: 16 }
+    });
     try {
       const plan = waveFor(environment);
       plan.agents = [plan.agents[0]];
@@ -346,7 +428,9 @@ try {
       const hook = { hook_event_name: "PreToolUse", tool_use_id: "before-stop", tool_name: "Bash", tool_input: input };
       const admitted = admitToolRequest(options, identity, hook);
       assert.strictEqual(admitted.decision, "allow");
-      persistPair(environment, checkpointFor(environment, 1, 1), "escalate");
+      if (reason === "escalation") persistPair(environment, checkpointFor(environment, 1, 1), "escalate");
+      else options.now = "2026-07-23T04:16:00+09:00";
+      assert.throws(() => openWave(plan, options), /CAMPAIGN_CONTINUATION_BLOCKED/);
       const denied = admitToolRequest(options, identity, { ...hook, tool_use_id: "after-stop" });
       assert.strictEqual(denied.decision, "deny");
       assert(denied.reason_codes.includes("CAMPAIGN_CONTINUATION_BLOCKED"));
@@ -369,7 +453,9 @@ try {
   });
 
   for (const condition of ["paused", "unpaired", "cross-mission"]) run(`${condition} campaign cannot open an adaptive wave`, () => {
-    const environment = makeEnvironment(`guard-${condition}`, condition === "paused" ? { status: "paused" } : {});
+    const environment = makeEnvironment(`guard-${condition}`, {
+      createdAt: "2026-07-23T04:00:00+09:00", ...(condition === "paused" ? { status: "paused" } : {})
+    });
     try {
       if (condition === "unpaired") persistCheckpoint(environment, checkpointFor(environment, 1, 1));
       const plan = waveFor(environment);
@@ -574,7 +660,7 @@ try {
   });
 
   run("persisted orders survive the complete campaign lifecycle", () => {
-    const environment = makeEnvironment("full-lifecycle");
+    const environment = makeEnvironment("full-lifecycle", { createdAt: new Date(Date.now() - 3600000).toISOString() });
     const start = persistSupervisor(environment);
     assert.strictEqual(start.transition, "start");
     const cycleOne = checkpointFor(environment, 1, 1, { openCriteria: [] });
@@ -601,7 +687,7 @@ try {
   });
 
   run("persisted order is idempotent across manifest growth", () => {
-    const environment = makeEnvironment("idempotent");
+    const environment = makeEnvironment("idempotent", { createdAt: new Date().toISOString() });
     const args = [
       "campaign-supervisor.js",
       "--repository", environment.repositoryPath,

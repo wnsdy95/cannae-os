@@ -184,6 +184,8 @@ function setupDispatch(repository, toolInput) {
   plan.id = "MWP-PRODUCTION-GATEWAY-W1";
   plan.mission_id = missionId;
   plan.wave_id = waveId;
+  plan.created_at = at(-60000);
+  plan.valid_until = at(3600000);
   plan.agents = plan.agents.filter(agent => agent.agent_id === "plans-agent");
   const draft = policyDraft(plan, toolInput);
   plan.dispatch_control = {

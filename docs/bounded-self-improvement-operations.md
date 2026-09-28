@@ -235,6 +235,37 @@ The supervisor rejects duplicate IDs, a checkpoint without exactly one decision,
 
 Cycle-order schema v0.3 records SPIFFE-specific `trust_policy_admission`; v0.4 records a provider-neutral identity projection; v0.5 adds the exact challenge set, responder evidence and challenge validity boundary; v0.6 adds the complete computed failure-domain graph; v0.7 adds continuous transparency state. The projection includes exact policy/root/evidence references, effective thresholds, eligible verifier/key/domain lists for each evidence purpose, provider and authority identities, transparency sequence/freshness/observer/incident state, evaluation time, conservative validity boundary, and blocking codes. An agent cannot satisfy this gate by reporting readiness; the supervisor derives it from policy, root, challenge, runtime profile, transparency history, and evidence bytes already verified by the repository manifest. Earlier orders remain readable. `SelfImprovementCycleOrder` never approves merge, push, release, policy, trust roots, log keys, or authority. Only `status: ready` with `execution_authorized: true`, satisfied identity, challenge, independence, and transparency admission where required, and an unexpired signed-campaign `valid_until` may be dispatched. Re-running the supervisor against the same reconstructed state and admission population returns the existing persisted order instead of creating another manifest revision.
 
+### 2.9 Campaign Time Budget
+
+The campaign admission window is half-open:
+`created_at <= evaluation_time < created_at + max_elapsed_minutes`.
+Idle time counts, even before the first checkpoint. The supervisor also checks
+the cumulative reported `progress.elapsed_minutes`; either limit reaching its
+boundary prevents new work. A larger reported counter cannot be reduced by a
+smaller wall-clock duration. Comparisons use parsed instants, including timezone
+offsets, without rounding away the exact expiry boundary.
+
+`budget_snapshot.elapsed_minutes` remains the last checkpoint's reported counter
+(zero without a checkpoint), not a live stopwatch. Retained orders and their
+snapshots are immutable. The supervisor recomputes time eligibility before
+idempotent order selection, so a previously ready order cannot outlive the
+deadline. An unchanged eligible or blocked state can still reuse its exact
+retained order; its `generated_at` remains the original issuance time.
+
+Invalid evaluation time is an error. Evaluation before campaign creation or a
+retained checkpoint, decision, or cycle order fails closed. A clock-related
+conflict with a previously persisted order is also an integrity stop, not
+permission to replace it. Historical completed decisions stay historical;
+expiration denies continuation but does not rewrite them as cancelled work.
+
+The supervisor CLI uses the host clock. Injected module clocks and lifecycle
+`--at` are deterministic replay/test facilities, not live authority. Normal
+operation must omit overrides. The reference runtime does not provide trusted
+time, detect every host-clock manipulation, terminate running processes at a
+deadline, or implement pause-adjusted budgets. Those require a managed runtime
+and separately defined stop/restart policy; never backdate work or restamp a
+campaign to extend it.
+
 ## 3. Required Battle Rhythm
 
 Adaptive wave and dispatch admission now reconstruct supervisor readiness from
