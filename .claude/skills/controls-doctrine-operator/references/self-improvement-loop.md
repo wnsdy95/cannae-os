@@ -159,6 +159,16 @@ validation and publication, not just before a controller starts.
 
 ## OCI Containment Verification
 
+Collect the signed `containment_observation_ref` before freezing a gateway
+effect scope; use `scripts/operate_oci_sandbox.js contain` for a fresh observation
+without rerunning the target. Require a v0.2 envelope with the original reported
+daemon ID, matching policy-pinned CLI/adapter and key, exact terminal-event
+binding, and an unexpired observation. A new observation changes the frozen
+subject and requires fresh inspection proof. Never infer containment from
+missing `provider_failure`, rewrite a legacy envelope to add identity, or use
+this reference observation as production coordinator/fencing evidence.
+Reported daemon identity is not independently attested host identity.
+
 An inspect error is not proof that a container is absent. Keep the original
 trusted Docker daemon/context and use the OCI wrapper's positive all-states,
 exact-target check. Do not switch to an empty daemon, prune unrelated resources,

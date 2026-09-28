@@ -1,0 +1,115 @@
+{
+  "schema_version": "0.2",
+  "type": "OciSandboxExecutionEnvelope",
+  "id": "OSE-d201ea52fbaae11847f4331a",
+  "transaction_id": "GTX-OCI-SANDBOX-SUCCESS",
+  "mission_id": "MIS-OCI-SANDBOX-SUCCESS",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "provider": "codex",
+  "request_ref": {
+    "artifact_id": "TGR-OCI-SANDBOX-SUCCESS",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-requests/TGR-OCI-SANDBOX-SUCCESS.json",
+    "sha256": "2f0eb6d9bed49b3d1681ce0491a3897b2ca3f64ff6404702dd12f785888b10df"
+  },
+  "decision_ref": {
+    "artifact_id": "TGD-79e1486288bf603546a432cb",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-decisions/TGD-79e1486288bf603546a432cb.json",
+    "sha256": "5d19d93169b5a8861d2c8d0a160270a99dc5a0b18408fa15955cafba63482d74"
+  },
+  "execution_event_ref": {
+    "artifact_id": "GTE-8691e1ffdae388a3c4bd8b78",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-transaction-events/GTE-8691e1ffdae388a3c4bd8b78.json",
+    "sha256": "aad569ea25bc5e8cf5f16d954a233a21bd023292edb70f89a2d830c2b1aae467"
+  },
+  "sandbox_policy_ref": {
+    "artifact_id": "OSP-SUCCESS",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/oci-linux-sandbox-policies/OSP-SUCCESS.json",
+    "sha256": "dd39bff197ec079116da7ce517cca0234f3c2095dfec86f3e27dced9bf564bb4"
+  },
+  "tool_input_sha256": "572707990228ac34e116db7c5b96d1abea5646e917833786ee9ade0541b77fe1",
+  "rule_id": "OSR-SUCCESS",
+  "image": {
+    "image_id": "sha256:8bbcb8041d601b35d3d6c67979415b51418d87a3e178f77735c7c952b2e679a6",
+    "operating_system": "linux",
+    "architecture": "arm64"
+  },
+  "launch": {
+    "container_name": "cannae-1337fd9195871f47b0addc15",
+    "probe_path": "/cannae-probe",
+    "entrypoint": [
+      "/cannae-probe"
+    ],
+    "command": [
+      "supervise",
+      "--target",
+      "/cannae-probe",
+      "--cwd",
+      "/workspace",
+      "--timeout-ms",
+      "2000",
+      "--max-stdout-bytes",
+      "4096",
+      "--max-stderr-bytes",
+      "4096",
+      "--",
+      "workload",
+      "success"
+    ],
+    "target_executable_path": "/cannae-probe",
+    "target_executable_sha256": "5a62852f444465f68b53e3806dba024b7261abaeaaf229243a0890078c12d524",
+    "target_argv": [
+      "workload",
+      "success"
+    ],
+    "cwd": "/workspace",
+    "timeout_ms": 2000,
+    "max_stdout_bytes": 4096,
+    "max_stderr_bytes": 4096,
+    "docker_create_argv_sha256": "f2dc3a4142bc12b61d4ca8280e40a3342ad062e2cfa3a508bd68eba20574d606"
+  },
+  "runtime": {
+    "docker_cli_sha256": "cd2bc434d320a47e104fe9241fe71c06fe343e863847baf82d944703514bf1cc",
+    "client_version": "29.5.2",
+    "server_version": "29.5.2",
+    "api_version": "1.54",
+    "runtime_name": "runc",
+    "runtime_version": "1.3.5",
+    "operating_system": "linux",
+    "architecture": "arm64",
+    "kernel_version": "6.12.76-linuxkit",
+    "cgroup_version": "2",
+    "security_options": [
+      "name=cgroupns",
+      "name=seccomp,profile=builtin"
+    ],
+    "rootless": false,
+    "userns_remap": false,
+    "daemon_id_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "sandbox_profile_sha256": "c123932ce100a77c3b55dd416adb2ee2e404e80642e7a67e6016dc0f2989b0df",
+  "network_policy_sha256": "c2de1bf095172db1a7310daef7a1dabc7788401dc1c662dbbde2731b7dd6f938",
+  "repository_binding": {
+    "repository_key": "success-4f6a2c9480b9",
+    "identity_fingerprint": "4f6a2c9480b9d08b2a8b8b58958ca48d855f5626774ccfc7b69d8d5089721490"
+  },
+  "repository_state_before": {
+    "head_commit": "f046eb5c71121be43ea5a9e6816a660e059080dc",
+    "worktree_fingerprint": "5fc4a8853ae9954b52d8e6e553a3c4764fc8231b3419ff966e52d51888321956",
+    "dirty": false
+  },
+  "issued_at": "2026-07-24T21:30:26.520Z",
+  "expires_at": "2026-07-24T21:30:43.520Z",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "production_execution_authorized": false,
+    "release_authorized": false
+  },
+  "signature": {
+    "key_id": "387cfbf6191f15beb344a58b42889895cff81779e319d787ce1ed7ed87fc7722",
+    "algorithm": "ed25519",
+    "signature_base64": "+fzas1/P+ftVKlz7xlIMeecqS5E4hWMgbiKcmsqz67ishO/RFPdas64Z8gO6FxN8fO3Lebj8ny7mZg/ecEaSAg=="
+  },
+  "envelope_sha256": "3ae3da71f44194855f534adfe15b12c9d0631b0511482f8ae14666d9ff3084b2"
+}

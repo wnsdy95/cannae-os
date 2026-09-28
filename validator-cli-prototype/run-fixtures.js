@@ -922,6 +922,48 @@ const fixtures = [
     ]
   },
   {
+    name: "daemon-bound OCI envelope",
+    file: "sample-payloads/valid-oci-sandbox-execution-envelope-v0.2.json",
+    type: "oci-sandbox-execution-envelope",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "v0.2 OCI envelope requires its daemon binding",
+    file: "sample-payloads/invalid-oci-sandbox-execution-envelope-v0.2-daemon.json",
+    type: "oci-sandbox-execution-envelope",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"]
+  },
+  {
+    name: "valid OCI containment observation",
+    file: "sample-payloads/valid-oci-sandbox-containment-observation.json",
+    type: "oci-sandbox-containment-observation",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "OCI gateway subject binds all containment reference history",
+    file: "sample-payloads/valid-gateway-effect-subject-v0.2.json",
+    type: "gateway-effect-subject",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "v0.2 gateway subject cannot omit containment history",
+    file: "sample-payloads/invalid-gateway-effect-subject-v0.2-history.json",
+    type: "gateway-effect-subject",
+    exitCode: 1,
+    requiredCodes: ["MISSING_REQUIRED"]
+  },
+  {
+    name: "OCI containment observation has bounded freshness",
+    file: "sample-payloads/invalid-oci-sandbox-containment-observation-expiry.json",
+    type: "oci-sandbox-containment-observation",
+    exitCode: 1,
+    requiredCodes: ["OCI_CONTAINMENT_TIME_INVALID"]
+  },
+  {
     name: "valid OCI sandbox probe observation",
     file: "sample-payloads/valid-oci-sandbox-probe-observation.json",
     type: "oci-sandbox-probe-observation",

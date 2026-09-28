@@ -213,11 +213,22 @@ Recommended validation order:
 133. `gateway-effect-subject.schema.json`
 134. `gateway-effect-scope.schema.json`
 135. `gateway-effect-review.schema.json`
+136. `oci-sandbox-containment-observation.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
+`OciSandboxExecutionEnvelope` v0.2 requires the observed daemon ID digest;
+v0.1 remains readable but cannot support new containment evidence.
+`OciSandboxContainmentObservation` binds the exact signed envelope and terminal
+gateway event to a same-daemon, exact-target absence observation with at most
+five-minute freshness. Schema validity is not signature verification or
+settlement. The observation preserves unknown effects and grants no authority.
+See [OCI Linux Sandbox Provider](../docs/oci-linux-sandbox-provider.md).
+
 `GatewayEffectSubject` v0.1 identifies the exact retained transaction and lease
-history. `GatewayEffectScope` freezes that subject and its finite inspection
+history; v0.2 additionally binds the complete OCI containment reference-history
+digest, count and latest reference without expanding the execution-chain list.
+`GatewayEffectScope` freezes that subject and its finite inspection
 boundaries; `GatewayEffectReview` checks evidence consistency only. Settlement,
 verifier identity, complete scope, provider containment, coordination, USER
 consent, execution and release stay false. Missing-input orphans retain exact

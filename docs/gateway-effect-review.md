@@ -1,5 +1,14 @@
 # Gateway Effect Intake And Review
 
+When OCI containment observations exist, `GatewayEffectSubject` v0.2 binds
+their complete path-sorted reference digest, count, and newest observation
+reference. All original records remain in the manifest; repeated collection
+does not overflow the separate execution-chain reference limit. Selection of
+the newest observation uses parsed timestamps with a deterministic path tie
+break. Any added record changes the subject digest, even when it is older than
+the selected observation. The subject does not verify containment signatures
+or clear effects; use the OCI evidence appraiser separately.
+
 ## Purpose
 
 Prepare an exact, non-authorizing review of a retained gateway transaction.

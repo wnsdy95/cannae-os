@@ -6,6 +6,7 @@ const path = require("path");
 const { spawn, spawnSync } = require("child_process");
 const {
   resolveRepository,
+  manifestDigest,
   verifyRepositoryArtifacts,
   writeRepositoryArtifact
 } = require("./repository-artifact-store");
@@ -28,10 +29,14 @@ const {
 const {
   dockerCreateArgv,
   expectedLaunch,
+  containmentAbsenceArgv,
   objectDigest,
   runtimeConfigDigest,
   signOciSandboxExecutionEnvelope,
   signOciSandboxExecutionObservation,
+  signOciSandboxContainmentObservation,
+  verifyOciSandboxContainmentSubject,
+  verifyOciSandboxContainmentObservation,
   verifyOciLinuxSandboxPolicy
 } = require("./oci-linux-sandbox-evidence");
 const { publicKeyId } = require("./verification-attestation");
@@ -43,7 +48,8 @@ const KINDS = Object.freeze({
   policy: "oci-linux-sandbox-policies",
   envelope: "oci-sandbox-execution-envelopes",
   probe: "oci-sandbox-probe-observations",
-  observation: "oci-sandbox-execution-observations"
+  observation: "oci-sandbox-execution-observations",
+  containment: "oci-sandbox-containment-observations"
 });
 
 function clone(value) {
@@ -202,7 +208,8 @@ function writeJsonArtifact(options, providerLease, descriptor) {
     kind: descriptor.kind,
     artifactId: descriptor.artifactId,
     payload: descriptor.payload,
-    createdAt: descriptor.createdAt
+    createdAt: descriptor.createdAt,
+    publicationGuard: descriptor.publicationGuard
   });
   return {
     result,
@@ -257,7 +264,8 @@ function runSync(executable, args, label, options = {}) {
   const result = spawnSync(executable, args, {
     encoding: "utf8",
     maxBuffer: options.maxBuffer || 16 * 1024 * 1024,
-    env: options.env || process.env
+    env: options.env || process.env,
+    timeout: options.timeoutMs || 10000
   });
   if (result.error) throw result.error;
   if (!options.allowFailure && result.status !== 0) {
@@ -270,6 +278,7 @@ function runSync(executable, args, label, options = {}) {
 
 function dockerJson(executable, args, label) {
   const result = runSync(executable, args, label);
+  if (result.stderr.trim()) throw new Error(`${label} returned diagnostics.`);
   try {
     return JSON.parse(result.stdout);
   } catch (error) {
@@ -301,6 +310,9 @@ function dockerRuntimeInfo(executable) {
     ["info", "--format", "{{json .}}"],
     "Docker daemon appraisal"
   );
+  if (typeof info.ID !== "string" || !info.ID.trim() || info.ID.length > 512) {
+    throw new Error("Docker daemon appraisal did not return a concrete daemon ID.");
+  }
   const server = version.Server || {};
   const client = version.Client || {};
   const components = Array.isArray(server.Components)
@@ -332,6 +344,7 @@ function dockerRuntimeInfo(executable) {
     );
   }
   return {
+    daemon_id_sha256: sha256(Buffer.from(info.ID)),
     docker_cli_sha256: fileSha256(executable),
     client_version: String(client.Version || "unknown"),
     server_version: String(server.Version || info.ServerVersion || "unknown"),
@@ -649,7 +662,7 @@ function buildEnvelope(
     `${context.request.transaction_id}:${context.latest_event_ref.sha256}`
   )).slice(0, 24)}`;
   return signOciSandboxExecutionEnvelope({
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "OciSandboxExecutionEnvelope",
     id: deterministicId(
       "OSE",
@@ -976,6 +989,7 @@ function assertContainerAbsent(executable, container) {
       throw new Error("Docker container still exists after cleanup.");
     }
   }
+  return { listing_sha256: sha256(Buffer.from(check.stdout)), listing_row_count: seenIds.size };
 }
 
 function removeContainer(executable, containerId) {
@@ -1101,14 +1115,116 @@ function bestEffortRemove(executable, container) {
   }
 }
 
-function retryEnvelopeCleanup(options, envelope) {
+function containmentInput(view, context, envelopeRecord) {
+  const envelope = envelopeRecord.payload;
+  const policyRecord = loadArtifactRef(view, envelope.sandbox_policy_ref, "oci-linux-sandbox-policy");
+  const execution = loadArtifactRef(view, envelope.execution_event_ref, "tool-gateway-transaction-event");
+  const receipt = loadArtifactRef(view, context.status.receipt_ref, "tool-execution-receipt");
+  assertRepositoryBinding(view.repository, context.request.repository_binding);
+  const { loadEffectArtifact } = require("./tool-effect-review");
+  for (const [reference, kind, type] of [
+    [context.request_ref, "tool-gateway-requests", "tool-gateway-request"],
+    [context.decision_ref, "tool-gateway-decisions", "tool-gateway-decision"],
+    [context.latest_event_ref, "tool-gateway-transaction-events", "tool-gateway-transaction-event"],
+    [policyRecord.ref, KINDS.policy, "oci-linux-sandbox-policy"],
+    [envelopeRecord.ref, KINDS.envelope, "oci-sandbox-execution-envelope"],
+    [execution.ref, "tool-gateway-transaction-events", "tool-gateway-transaction-event"],
+    [receipt.ref, "tool-execution-receipts", "tool-execution-receipt"]
+  ]) loadEffectArtifact(view, reference, kind, type, context.request);
+  return { policy: policyRecord.payload, policyRef: policyRecord.ref,
+    request: context.request, requestRef: context.request_ref,
+    decision: context.decision, decisionRef: context.decision_ref,
+    executionEvent: execution.payload, executionEventRef: execution.ref,
+    terminalEvent: context.latest_event, terminalEventRef: context.latest_event_ref,
+    receipt: receipt.payload, receiptRef: receipt.ref,
+    envelope, envelopeRef: envelopeRecord.ref, repositoryRoot: view.repository.root };
+}
+
+function assertOriginalDaemon(executable, envelope) {
+  if (fileSha256(executable) !== envelope.runtime.docker_cli_sha256) {
+    throw new Error("OCI_CONTAINMENT_RUNTIME_CHANGED");
+  }
+  const runtime = dockerRuntimeInfo(executable);
+  if (runtime.daemon_id_sha256 !== envelope.runtime.daemon_id_sha256) {
+    throw new Error("OCI_CONTAINMENT_DAEMON_CHANGED");
+  }
+  return runtime;
+}
+
+function retainContainment(options, lock, transactionId) {
+  const view = storeView(options);
+  const context = gatewayTransactionContext(gatewayOptions(options, nowIso()), transactionId);
+  // Reference cleanup evidence cannot stand in for external production fencing.
+  if (context.request.gateway.assurance_level === "managed_exclusive") {
+    throw new Error("OCI_CONTAINMENT_MANAGED_COORDINATION_REQUIRED");
+  }
+  if (options.gatewayBindingSha256 !== objectDigest(context.request.gateway) ||
+      (context.request.gateway.assurance_level === "contract_reference" &&
+       options.verifiedPrincipalSha256 !== objectDigest(context.request.authenticated_principal))) {
+    throw new Error("OCI_CONTAINMENT_TRUSTED_BINDING_REQUIRED");
+  }
+  const retained = existingExecution(view, transactionId);
+  if (!retained.envelope) throw new Error("OCI_CONTAINMENT_ENVELOPE_REQUIRED");
+  const input = containmentInput(view, context, retained.envelope);
+  const subject = verifyOciSandboxContainmentSubject(input);
+  if (!subject.valid) throw new Error(subject.codes.join(","));
+  assertAdapterPrivateKey(input.policy, options.adapterPrivateKeyPem);
+  if (input.policy.adapter_profile.adapter_sha256 !== fileSha256(__filename)) {
+    throw new Error("OCI_CONTAINMENT_ADAPTER_CHANGED");
+  }
+  const startedAt = nowIso();
+  const executable = dockerPath(options);
+  assertOriginalDaemon(executable, input.envelope);
+  renewRepositoryLease(lock);
+  runSync(executable, ["container", "rm", "--force", input.envelope.launch.container_name],
+    "Docker containment cleanup", { allowFailure: true });
+  const listing = assertContainerAbsent(executable, input.envelope.launch.container_name);
+  const runtime = assertOriginalDaemon(executable, input.envelope);
+  const observation = signOciSandboxContainmentObservation({
+    schema_version: "0.1", type: "OciSandboxContainmentObservation", id: `OCO-${crypto.randomUUID()}`,
+    transaction_id: transactionId, mission_id: context.request.mission_id, wave_id: context.request.wave_id,
+    agent_id: context.request.agent_id, provider: context.request.provider,
+    repository_binding: clone(context.request.repository_binding), request_ref: clone(input.requestRef),
+    decision_ref: clone(input.decisionRef), execution_event_ref: clone(input.executionEventRef),
+    terminal_event_ref: clone(input.terminalEventRef), sandbox_policy_ref: clone(input.policyRef),
+    execution_envelope_ref: clone(input.envelopeRef), tool_input_sha256: context.request.tool_call.tool_input_sha256,
+    container_name: input.envelope.launch.container_name, daemon_id_sha256: runtime.daemon_id_sha256,
+    docker_cli_sha256: runtime.docker_cli_sha256,
+    absence_argv_sha256: objectDigest(containmentAbsenceArgv(input.envelope.launch.container_name)), ...listing,
+    started_at: startedAt, observed_at: nowIso(), expires_at: new Date(Date.parse(startedAt) + 300000).toISOString(),
+    verification_method: "docker_all_states_exact_name", daemon_identity_assurance: "provider_observed_not_attested",
+    container_absent: true, effects_settled: false, tool_execution_authorized: false, release_authorized: false
+  }, options.adapterPrivateKeyPem);
+  const appraisal = verifyOciSandboxContainmentObservation({ ...input, observation, evaluatedAt: nowIso() });
+  if (!appraisal.valid) throw new Error(appraisal.codes.join(","));
+  const written = writeJsonArtifact(options, lock, { missionId: observation.mission_id, waveId: observation.wave_id,
+    kind: KINDS.containment, artifactId: observation.id, payload: observation, createdAt: observation.observed_at,
+    publicationGuard: snapshot => {
+      if (manifestDigest(snapshot.manifest) !== view.verification.manifest_sha256) {
+        throw new Error("OCI_CONTAINMENT_MANIFEST_CHANGED");
+      }
+      const result = verifyOciSandboxContainmentObservation({ ...input, observation, evaluatedAt: nowIso() });
+      if (!result.valid) throw new Error(result.codes.join(","));
+      return true;
+    } });
+  const refreshed = gatewayTransactionContext(gatewayOptions(options, nowIso()), transactionId);
+  return { ...refreshed.status, containment_observation: observation, containment_observation_ref: written.ref,
+    effects_settled: false, tool_execution_authorized: false, production_execution_authorized: false, release_authorized: false };
+}
+
+function observeOciSandboxContainment(options, descriptor) {
+  const lock = providerLock(options, 60000);
+  try { return retainContainment(options, lock, descriptor.transactionId); }
+  finally { releaseRepositoryLease(lock); }
+}
+
+function retryEnvelopeCleanup(options, transactionId, lock) {
   try {
-    return bestEffortRemove(
-      dockerPath(options),
-      envelope.launch.container_name
-    );
+    const result = lock ? retainContainment(options, lock, transactionId)
+      : observeOciSandboxContainment(options, { transactionId });
+    return { containment_observation_ref: result.containment_observation_ref, artifact_store: result.artifact_store };
   } catch (error) {
-    return `OCI_SANDBOX_CONTAINER_CLEANUP_ERROR: ${error.message}`;
+    return { provider_failure: `OCI_SANDBOX_CONTAINER_CLEANUP_ERROR: ${error.message}` };
   }
 }
 
@@ -1131,9 +1247,8 @@ async function executeOciLinuxSandbox(options, descriptor) {
   }
   const retained = existingExecution(view, descriptor.transactionId);
   if (context.status.terminal && retained.envelope) {
-    const cleanupFailure = context.status.state === "recovery_required"
-      ? retryEnvelopeCleanup(options, retained.envelope.payload)
-      : null;
+    const containment = context.status.state === "recovery_required"
+      ? retryEnvelopeCleanup(options, descriptor.transactionId) : {};
     return {
       ...context.status,
       replayed: true,
@@ -1141,7 +1256,7 @@ async function executeOciLinuxSandbox(options, descriptor) {
       execution_observation_ref: retained.observation
         ? clone(retained.observation.ref)
         : null,
-      ...(cleanupFailure ? { provider_failure: cleanupFailure } : {}),
+      ...containment,
       production_execution_authorized: false,
       release_authorized: false
     };
@@ -1197,10 +1312,9 @@ async function executeOciLinuxSandbox(options, descriptor) {
     const existing = existingExecution(view, descriptor.transactionId);
     if (existing.envelope) {
       envelopeRecord = existing.envelope;
-      const cleanupFailure = context.status.state === "committed"
-        ? null
-        : retryEnvelopeCleanup(options, existing.envelope.payload);
       if (context.status.terminal) {
+        const containment = context.status.state === "recovery_required"
+          ? retryEnvelopeCleanup(options, descriptor.transactionId, lock) : {};
         return {
           ...context.status,
           replayed: true,
@@ -1208,7 +1322,7 @@ async function executeOciLinuxSandbox(options, descriptor) {
           execution_observation_ref: existing.observation
             ? clone(existing.observation.ref)
             : null,
-          ...(cleanupFailure ? { provider_failure: cleanupFailure } : {}),
+          ...containment,
           production_execution_authorized: false,
           release_authorized: false
         };
@@ -1217,12 +1331,12 @@ async function executeOciLinuxSandbox(options, descriptor) {
         gatewayOptions(options, nowIso()),
         descriptor.transactionId
       );
+      const containment = retryEnvelopeCleanup(options, descriptor.transactionId, lock);
       return {
         ...recovered,
         replayed: true,
-        provider_failure: cleanupFailure
-          ? `OCI_SANDBOX_EXECUTION_ALREADY_CLAIMED ${cleanupFailure}`
-          : "OCI_SANDBOX_EXECUTION_ALREADY_CLAIMED",
+        ...containment,
+        provider_failure: ["OCI_SANDBOX_EXECUTION_ALREADY_CLAIMED", containment.provider_failure].filter(Boolean).join(" "),
         execution_envelope_ref: clone(existing.envelope.ref),
         execution_observation_ref: existing.observation
           ? clone(existing.observation.ref)
@@ -1401,7 +1515,9 @@ async function executeOciLinuxSandbox(options, descriptor) {
       throw new Error("Docker terminal state does not match docker wait.");
     }
     const result = processResult(probe, rule.success_exit_codes);
+    assertOriginalDaemon(executable, envelopeRecord.payload);
     removeContainer(executable, activeContainer);
+    assertOriginalDaemon(executable, envelopeRecord.payload);
     activeContainer = null;
     const repositoryStateAfter = runtimeRepositoryState(view.repository.root);
     const observation = buildObservation(
@@ -1481,25 +1597,32 @@ async function executeOciLinuxSandbox(options, descriptor) {
       release_authorized: false
     };
   } catch (error) {
-    const cleanupFailure = bestEffortRemove(executable, activeContainer);
     if (!envelopeRecord) throw error;
+    let cleanupFailure = null;
+    // Result-store failure must not prevent containment of this invocation.
+    if (executable && activeContainer) {
+      try {
+        assertOriginalDaemon(executable, envelopeRecord.payload);
+        cleanupFailure = bestEffortRemove(executable, activeContainer);
+      } catch (cleanupError) { cleanupFailure = cleanupError.message; }
+    }
     try {
       const recovered = recoverGatewayTransaction(
         gatewayOptions(options, nowIso()),
         descriptor.transactionId
       );
+      const containment = retryEnvelopeCleanup(options, descriptor.transactionId, lock);
       return {
         ...recovered,
-        provider_failure: cleanupFailure
-          ? `${error.message} ${cleanupFailure}`
-          : error.message,
+        ...containment,
+        provider_failure: [error.message, cleanupFailure, containment.provider_failure].filter(Boolean).join(" "),
         execution_envelope_ref: clone(envelopeRecord.ref),
         production_execution_authorized: false,
         release_authorized: false
       };
     } catch (recoveryError) {
       throw new Error(
-        `${error.message} Recovery also failed: ${recoveryError.message}`
+        `${error.message} ${cleanupFailure || ""} Recovery also failed: ${recoveryError.message}`
       );
     }
   } finally {
@@ -1573,7 +1696,14 @@ async function main() {
           missionId: required(parsed.options.mission, "--mission"),
           waveId: required(parsed.options.wave, "--wave")
         }, readJson(parsed.options.policy, "--policy"));
-      } else if (parsed.command === "execute") {
+      } else if (["execute", "contain"].includes(parsed.command)) {
+        if (parsed.command === "contain") {
+          result = observeOciSandboxContainment({ ...common,
+            adapterPrivateKeyPem: fs.readFileSync(path.resolve(required(parsed.options.privateKey, "--private-key")), "utf8"),
+            gatewayBindingSha256: required(parsed.options.gatewayBindingSha256, "--gateway-binding-sha256"),
+            verifiedPrincipalSha256: parsed.options.verifiedPrincipalSha256, dockerPath: parsed.options.docker
+          }, { transactionId: required(parsed.options.transaction, "--transaction") });
+        } else {
         result = await executeOciLinuxSandbox({
           ...common,
           adapterPrivateKeyPem: fs.readFileSync(
@@ -1597,15 +1727,16 @@ async function main() {
           ),
           toolInput: readJson(parsed.options.toolInput, "--tool-input")
         });
+        }
       } else {
         throw new Error(
           "Usage: node oci-linux-sandbox-provider.js " +
-          "<measurements|persist-policy|execute> --repository <repo> ..."
+          "<measurements|persist-policy|execute|contain> --repository <repo> ..."
         );
       }
     }
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
-    if (result.state === "recovery_required" ||
+    if (result.state === "recovery_required" || result.effects_settled === false ||
         result.process_status === "failed") {
       process.exitCode = 1;
     }
@@ -1620,6 +1751,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  observeOciSandboxContainment,
   executeOciLinuxSandbox,
   ociSandboxRuntimeMeasurements,
   persistOciLinuxSandboxPolicy

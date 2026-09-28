@@ -50,6 +50,10 @@ invariant; this prerequisite does not implement gateway discharge or restart.
 OCI cleanup now requires positive exact-target absence evidence, including on
 recovery replay. This repairs containment verification, not gateway transaction
 settlement, daemon identity attestation, or campaign restart.
+The v0.2 envelope and separate signed containment observation now retain
+reported-daemon and exact-target evidence for later review. Managed external
+coordination, legacy-envelope recovery and independent daemon attestation are
+not supplied by this reference contract; gateway discharge remains open.
 
 Orders 10-12 include external operator dependencies and can progress alongside
 repository work, but may not be reported complete without actual evidence.

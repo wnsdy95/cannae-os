@@ -524,6 +524,102 @@ function expectedSupervisorExitCode(child) {
   return 127;
 }
 
+function containmentAbsenceArgv(containerName) {
+  return ["container", "ls", "--all", "--no-trunc", "--filter", `name=${containerName}`, "--format", "{{json .}}"];
+}
+
+// Recovery may outlive execution authority; verify the old envelope at issuance,
+// but do not treat its historical validity as permission to execute again.
+function verifyOciSandboxContainmentSubject(options = {}) {
+  const { policy, policyRef, envelope, envelopeRef, request, requestRef, decision, decisionRef,
+    executionEvent, executionEventRef, terminalEvent, terminalEventRef, receipt, receiptRef, repositoryRoot } = options;
+  if (![policy, policyRef, envelope, envelopeRef, request, requestRef, decision, decisionRef,
+    executionEvent, executionEventRef, terminalEvent, terminalEventRef, receipt, receiptRef, repositoryRoot].every(Boolean)) {
+    return { valid: false, codes: ["OCI_CONTAINMENT_INPUT_INVALID"] };
+  }
+  const codes = [];
+  const check = (value, code) => { if (!value) addCode(codes, `OCI_CONTAINMENT_${code}`); };
+  for (const [value, type] of [[policy, "oci-linux-sandbox-policy"], [envelope, "oci-sandbox-execution-envelope"],
+    [request, "tool-gateway-request"], [decision, "tool-gateway-decision"], [receipt, "tool-execution-receipt"],
+    [executionEvent, "tool-gateway-transaction-event"], [terminalEvent, "tool-gateway-transaction-event"]]) {
+    check(!require("./validator-cli-prototype/validate").validatePayload(value, type).issues.some(item =>
+      ["error", "critical"].includes(item.severity)), "SCHEMA_INVALID");
+  }
+  if (codes.length) return { valid: false, codes };
+  check(envelope.schema_version === "0.2" && /^[a-f0-9]{64}$/.test(envelope.runtime.daemon_id_sha256), "DAEMON_BINDING_REQUIRED");
+  for (const code of verifyOciLinuxSandboxPolicy(policy, envelope.issued_at).codes) addCode(codes, code);
+  verifySignedArtifact(envelope, policy.adapter_profile.signing_public_key_pem, "envelope_sha256", codes, "OCI_SANDBOX_ENVELOPE");
+  check(policy.providers.includes(request.provider) && policy.gateway_binding_sha256 === objectDigest(request.gateway), "POLICY_BINDING_MISMATCH");
+  check([policy, envelope, executionEvent, terminalEvent].every(item =>
+    sameObject(item.repository_binding, request.repository_binding)), "REPOSITORY_BINDING_MISMATCH");
+  check([decision, receipt].every(item => item.gateway_binding_sha256 === objectDigest(request.gateway) &&
+    item.principal_binding_sha256 === objectDigest(request.authenticated_principal)), "PRINCIPAL_BINDING_MISMATCH");
+  for (const item of [envelope, decision, executionEvent, terminalEvent, receipt]) {
+    check(["transaction_id", "mission_id", "wave_id", "agent_id"].every(key => item[key] === request[key]), "TRANSACTION_BINDING_MISMATCH");
+  }
+  check([envelope, decision, receipt].every(item => item.provider === request.provider), "TRANSACTION_BINDING_MISMATCH");
+  check([[envelope.request_ref, requestRef], [envelope.decision_ref, decisionRef],
+    [envelope.execution_event_ref, executionEventRef], [envelope.sandbox_policy_ref, policyRef],
+    [executionEvent.request_ref, requestRef], [executionEvent.decision_ref, decisionRef],
+    [terminalEvent.request_ref, requestRef], [terminalEvent.decision_ref, decisionRef],
+    [terminalEvent.receipt_ref, receiptRef], [receipt.request_ref, requestRef], [receipt.decision_ref, decisionRef]]
+    .every(([a, b]) => sameRef(a, b)), "REFERENCE_MISMATCH");
+  check(executionEvent.state === "executing" && ["recovery_required", "committed"].includes(terminalEvent.state) &&
+    receipt.execution.transaction_state === terminalEvent.state && receipt.execution.external_effects === "unknown" &&
+    terminalEvent.sequence > executionEvent.sequence, "TERMINAL_UNKNOWN_REQUIRED");
+  const rules = policy.rules.filter(item => item.rule_id === envelope.rule_id);
+  check(rules.length === 1, "RULE_MISMATCH");
+  if (rules.length === 1) {
+    const rule = rules[0];
+    const toolInput = { schema_version: "0.1", type: "OciSandboxToolInput", sandbox_policy_ref: policyRef, rule_id: rule.rule_id };
+    check(inputDigest(toolInput) === request.tool_call.tool_input_sha256 &&
+      envelope.tool_input_sha256 === request.tool_call.tool_input_sha256 &&
+      rule.tool_name === request.tool_call.tool_name && rule.operation_class === request.tool_call.operation_class, "RULE_MISMATCH");
+    const name = `cannae-${sha256(Buffer.from(`${request.transaction_id}:${executionEventRef.sha256}`)).slice(0, 24)}`;
+    check(sameObject(envelope.launch, expectedLaunch(policy, rule, repositoryRoot, name)), "LAUNCH_MISMATCH");
+  }
+  check(sameObject(envelope.image, { image_id: policy.image.image_id, operating_system: policy.image.operating_system,
+    architecture: policy.image.architecture }) && envelope.runtime.docker_cli_sha256 === policy.adapter_profile.runtime_sha256 &&
+    envelope.sandbox_profile_sha256 === policy.sandbox_profile_sha256 &&
+    envelope.network_policy_sha256 === policy.network_controls.network_policy_sha256, "PROFILE_MISMATCH");
+  check(sameRepositoryState(envelope.repository_state_before, decision.repository_state_before), "REPOSITORY_STATE_MISMATCH");
+  const times = [executionEvent.recorded_at, envelope.issued_at, envelope.expires_at, terminalEvent.recorded_at].map(timestamp);
+  check(!times.includes(null) && times[0] <= times[1] && times[1] < times[2] && times[3] >= times[1] &&
+    times[2] <= timestamp(decision.valid_until) && times[2] <= timestamp(policy.expires_at), "SUBJECT_TIME_INVALID");
+  return { valid: codes.length === 0, codes: [...new Set(codes)].sort() };
+}
+
+function verifyOciSandboxContainmentObservation(options = {}) {
+  const subject = verifyOciSandboxContainmentSubject(options);
+  if (!subject.valid) return subject;
+  const { policy, policyRef, envelope, envelopeRef, request, requestRef, decisionRef,
+    executionEventRef, terminalEvent, terminalEventRef, observation, evaluatedAt } = options;
+  if (!observation) return { valid: false, codes: ["OCI_CONTAINMENT_OBSERVATION_REQUIRED"] };
+  const codes = [];
+  if (require("./validator-cli-prototype/validate").validatePayload(observation, "oci-sandbox-containment-observation")
+    .issues.some(item => ["error", "critical"].includes(item.severity))) {
+    return { valid: false, codes: ["OCI_CONTAINMENT_SCHEMA_INVALID"] };
+  }
+  const check = (value, code) => { if (!value) addCode(codes, `OCI_CONTAINMENT_${code}`); };
+  verifySignedArtifact(observation, policy.adapter_profile.signing_public_key_pem, "observation_sha256", codes, "OCI_CONTAINMENT");
+  check(["transaction_id", "mission_id", "wave_id", "agent_id", "provider"].every(key => observation[key] === request[key]) &&
+    sameObject(observation.repository_binding, request.repository_binding) &&
+    observation.tool_input_sha256 === request.tool_call.tool_input_sha256, "TRANSACTION_BINDING_MISMATCH");
+  check([[observation.request_ref, requestRef], [observation.decision_ref, decisionRef],
+    [observation.execution_event_ref, executionEventRef], [observation.terminal_event_ref, terminalEventRef],
+    [observation.sandbox_policy_ref, policyRef], [observation.execution_envelope_ref, envelopeRef]]
+    .every(([a, b]) => sameRef(a, b)), "REFERENCE_MISMATCH");
+  check(observation.container_name === envelope.launch.container_name &&
+    observation.daemon_id_sha256 === envelope.runtime.daemon_id_sha256 &&
+    observation.docker_cli_sha256 === envelope.runtime.docker_cli_sha256 &&
+    observation.absence_argv_sha256 === objectDigest(containmentAbsenceArgv(envelope.launch.container_name)), "TARGET_MISMATCH");
+  const now = timestamp(evaluatedAt);
+  check(now !== null && timestamp(observation.started_at) >= timestamp(terminalEvent.recorded_at) &&
+    now >= timestamp(observation.observed_at) && now < timestamp(observation.expires_at), "NOT_CURRENT");
+  return { valid: codes.length === 0, codes: [...new Set(codes)].sort(), valid_until: observation.expires_at,
+    effects_settled: false, tool_execution_authorized: false, release_authorized: false };
+}
+
 function verifyOciSandboxExecutionBundle(options) {
   const {
     policy,
@@ -770,6 +866,7 @@ function verifyOciSandboxExecutionBundle(options) {
 }
 
 module.exports = {
+  containmentAbsenceArgv,
   dockerCreateArgv,
   expectedLaunch,
   networkPolicyDigest,
@@ -780,6 +877,10 @@ module.exports = {
     signArtifact(payload, privateKeyPem, "envelope_sha256"),
   signOciSandboxExecutionObservation: (payload, privateKeyPem) =>
     signArtifact(payload, privateKeyPem, "observation_sha256"),
+  signOciSandboxContainmentObservation: (payload, privateKeyPem) =>
+    signArtifact(payload, privateKeyPem, "observation_sha256"),
+  verifyOciSandboxContainmentSubject,
+  verifyOciSandboxContainmentObservation,
   verifyOciLinuxSandboxPolicy,
   verifyOciSandboxExecutionBundle
 };

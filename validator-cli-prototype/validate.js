@@ -175,6 +175,7 @@ const TYPE_TO_SCHEMA = {
   "oci-sandbox-execution-envelope": "oci-sandbox-execution-envelope.schema.json",
   "oci-sandbox-probe-observation": "oci-sandbox-probe-observation.schema.json",
   "oci-sandbox-execution-observation": "oci-sandbox-execution-observation.schema.json",
+  "oci-sandbox-containment-observation": "oci-sandbox-containment-observation.schema.json",
   "gateway-identity-policy": "gateway-identity-policy.schema.json",
   "gateway-identity-challenge": "gateway-identity-challenge.schema.json",
   "gateway-principal-evidence": "gateway-principal-evidence.schema.json",
@@ -1386,6 +1387,11 @@ function semanticRules(payload, type, options = {}) {
     if (payload.id !== `GESUB-${digest.slice(0, 32)}`) {
       issues.push(issue("critical", "GATEWAY_EFFECT_SUBJECT_DIGEST_MISMATCH", "$.id", "Gateway effect subject identity must bind its exact canonical projection."));
     }
+    if (payload.containment_history && (payload.schema_version !== "0.2" ||
+        payload.execution_mode !== "oci_linux_sandbox_reference" ||
+        artifactRefKind(payload.containment_history.latest_ref) !== "concrete")) {
+      issues.push(issue("critical", "GATEWAY_EFFECT_CONTAINMENT_HISTORY_INVALID", "$.containment_history", "Containment history requires a v0.2 OCI subject and exact latest observation reference."));
+    }
   }
 
   if (type === "gateway-effect-scope" && payload.subject && typeof payload.subject === "object") {
@@ -2313,6 +2319,26 @@ function semanticRules(payload, type, options = {}) {
         !isValidDate(payload.collected_at) ||
         Date.parse(child.finished_at) > Date.parse(payload.collected_at)) {
       issues.push(issue("critical", "OCI_SANDBOX_PROBE_TIME_INVALID", "$.collected_at", "Probe collection must follow an ordered child execution interval."));
+    }
+  }
+
+  if (type === "oci-sandbox-containment-observation") {
+    for (const key of ["request_ref", "decision_ref", "execution_event_ref", "terminal_event_ref", "sandbox_policy_ref", "execution_envelope_ref"]) {
+      if (artifactRefKind(payload[key]) !== "concrete") {
+        issues.push(issue("critical", "OCI_CONTAINMENT_REF_UNBOUND", `$.${key}`, "Containment observation requires exact retained references."));
+      }
+    }
+    if (![payload.started_at, payload.observed_at, payload.expires_at].every(isValidDate) ||
+        Date.parse(payload.started_at) > Date.parse(payload.observed_at) ||
+        !isBefore(payload.observed_at, payload.expires_at) ||
+        Date.parse(payload.expires_at) - Date.parse(payload.started_at) > 300000) {
+      issues.push(issue("critical", "OCI_CONTAINMENT_TIME_INVALID", "$", "Containment observations require ordered timestamps within a five-minute window."));
+    }
+    if (!validEd25519Signature(payload.signature)) {
+      issues.push(issue("critical", "OCI_CONTAINMENT_SIGNATURE_MALFORMED", "$.signature", "Containment observation requires a canonical Ed25519 signature."));
+    }
+    if (canonicalObjectDigestWithout(payload, ["observation_sha256"]) !== payload.observation_sha256) {
+      issues.push(issue("critical", "OCI_CONTAINMENT_DIGEST_MISMATCH", "$.observation_sha256", "Digest must bind the signed containment observation."));
     }
   }
 

@@ -1,0 +1,96 @@
+{
+  "schema_version": "0.2",
+  "type": "GatewayEffectSubject",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "provider": "codex",
+  "repository_binding": {
+    "repository_key": "controls-example",
+    "identity_fingerprint": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "transaction_id": "GTX-EXAMPLE",
+  "idempotency_key": "8888888888888888888888888888888888888888888888888888888888888888",
+  "tool_input_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+  "execution_mode": "oci_linux_sandbox_reference",
+  "transaction_state": "recovery_required",
+  "lease_status": "blocked",
+  "subject_class": "unknown_execution",
+  "next_action": "review",
+  "references": {
+    "request_ref": {
+      "artifact_id": "TGR-EXAMPLE",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-gateway-requests/TGR-EXAMPLE.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "decision_ref": {
+      "artifact_id": "TGD-EXAMPLE",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-gateway-decisions/TGD-EXAMPLE.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "admission_ref": {
+      "artifact_id": "TAE-EXAMPLE",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-admission-events/TAE-EXAMPLE.json",
+      "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "lease_ref": {
+      "artifact_id": "ADL-EXAMPLE",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/agent-dispatch-leases/ADL-EXAMPLE.json",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "checkpoint_ref": {
+      "artifact_id": "AEC-EXAMPLE",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/agent-execution-checkpoints/AEC-EXAMPLE.json",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "latest_event_ref": {
+      "artifact_id": "TGE-RECOVERY",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-gateway-transaction-events/TGE-RECOVERY.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "execution_event_ref": {
+      "artifact_id": "TGE-EXECUTING",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-gateway-transaction-events/TGE-EXECUTING.json",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "receipt_ref": {
+      "artifact_id": "TER-RECOVERY",
+      "relative_path": "repositories/controls-example/missions/MIS-ENFORCED-DISPATCH/W1/tool-execution-receipts/TER-RECOVERY.json",
+      "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    },
+    "production_sandbox_admission_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    }
+  },
+  "retained_execution_refs": [],
+  "required_targets": [
+    {
+      "boundary": "admission",
+      "target": "admission:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    {
+      "boundary": "external_effects",
+      "target": "transaction:GTX-EXAMPLE"
+    },
+    {
+      "boundary": "containment",
+      "target": "gateway-execution:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  ],
+  "observed_after": "2026-09-28T08:59:00Z",
+  "effects_settled": false,
+  "tool_execution_authorized": false,
+  "release_authorized": false,
+  "containment_history": {
+    "count": 1,
+    "references_sha256": "a6497768d00f777a780d149a647b458dd2a421d78a0d429acf27bf29f185edae",
+    "latest_ref": {
+      "artifact_id": "OCO-SAMPLE",
+      "relative_path": "repositories/synthetic/missions/MIS-GATEWAY/W1/oci-sandbox-containment-observations/OCO-SAMPLE.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "id": "GESUB-1cabcf438147900b920bb4d0270a65a8"
+}

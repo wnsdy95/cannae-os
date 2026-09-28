@@ -14,7 +14,8 @@ const EXECUTION_KINDS = Object.freeze({
   "protected-execution-observations": "protected-execution-observation",
   "oci-sandbox-execution-envelopes": "oci-sandbox-execution-envelope",
   "oci-sandbox-execution-observations": "oci-sandbox-execution-observation",
-  "oci-sandbox-probe-observations": "oci-sandbox-probe-observation"
+  "oci-sandbox-probe-observations": "oci-sandbox-probe-observation",
+  "oci-sandbox-containment-observations": "oci-sandbox-containment-observation"
 });
 
 function assert(condition, code) { if (!condition) throw new Error(code); }
@@ -80,7 +81,7 @@ function executionRecords(current, history, execution) {
     const candidate = load(current, reference, entry.kind).payload;
     if (candidate.transaction_id !== request.transaction_id && !sameRef(candidate.request_ref, history.request.ref)) continue;
     const payload = load(current, reference, entry.kind, EXECUTION_KINDS[entry.kind], request).payload;
-    assert(!kinds.has(entry.kind), "GATEWAY_EFFECT_EXECUTION_HISTORY_AMBIGUOUS");
+    assert(entry.kind === "oci-sandbox-containment-observations" || !kinds.has(entry.kind), "GATEWAY_EFFECT_EXECUTION_HISTORY_AMBIGUOUS");
     kinds.add(entry.kind);
     assert(execution && payload.transaction_id === request.transaction_id, "GATEWAY_EFFECT_EXECUTION_BINDING_MISMATCH");
     if (entry.kind !== "oci-sandbox-probe-observations") {
@@ -88,6 +89,10 @@ function executionRecords(current, history, execution) {
         sameRef(payload.request_ref, history.request.ref) && history.decision && sameRef(payload.decision_ref, history.decision.ref) &&
         sameRef(payload.execution_event_ref, execution.ref) && payload.tool_input_sha256 === request.tool_call.tool_input_sha256 &&
         sameBinding(payload.repository_binding, request.repository_binding), "GATEWAY_EFFECT_EXECUTION_BINDING_MISMATCH");
+    }
+    if (entry.kind === "oci-sandbox-containment-observations") {
+      assert(history.events.some(item => sameRef(item.ref, payload.terminal_event_ref) &&
+        ["recovery_required", "committed"].includes(item.payload.state)), "GATEWAY_EFFECT_CONTAINMENT_EVENT_MISMATCH");
     }
     records.push({ entry, ref: reference, payload });
   }
@@ -140,6 +145,9 @@ function gatewayEffectSubject(options, transactionId, retainedSnapshot) {
   assert(executions.length <= 1, "GATEWAY_EFFECT_EXECUTION_HISTORY_AMBIGUOUS");
   const execution = executions[0];
   const retained = executionRecords(current, history, execution);
+  const containment = retained.filter(item => item.entry.kind === "oci-sandbox-containment-observations");
+  const latestContainment = [...containment].sort((a, b) => Date.parse(a.payload.observed_at) - Date.parse(b.payload.observed_at) ||
+    Date.parse(a.entry.created_at) - Date.parse(b.entry.created_at) || a.ref.relative_path.localeCompare(b.ref.relative_path)).at(-1);
   const declaredModes = [request.tool_call.execution_mode, history.receipt && history.receipt.payload.executor.execution_mode];
   for (const item of retained) declaredModes.push(item.entry.kind.startsWith("oci-") ? "oci_linux_sandbox_reference" : "bounded_process_reference");
   const modes = [...new Set(declaredModes.filter(value => value && value !== "none"))];
@@ -175,10 +183,10 @@ function gatewayEffectSubject(options, transactionId, retainedSnapshot) {
   const times = [request.requested_at, dispatch.latest.payload.recorded_at,
     ...history.events.map(item => item.payload.recorded_at),
     ...(history.receipt ? [history.receipt.payload.recorded_at] : []),
-    ...sourceRecords.flatMap(item => [item.entry.created_at, item.payload.decided_at, item.payload.issued_at, item.payload.finished_at,
+    ...sourceRecords.flatMap(item => [item.entry.created_at, item.payload.decided_at, item.payload.issued_at, item.payload.finished_at, item.payload.observed_at,
       item.payload.execution && item.payload.execution.finished_at].filter(value => value && value !== "none"))].map(Date.parse);
   assert(times.every(Number.isFinite), "GATEWAY_EFFECT_HISTORY_TIME_INVALID");
-  const body = { schema_version: "0.1", type: "GatewayEffectSubject", mission_id: request.mission_id,
+  const body = { schema_version: containment.length ? "0.2" : "0.1", type: "GatewayEffectSubject", mission_id: request.mission_id,
     wave_id: request.wave_id, agent_id: request.agent_id, provider: request.provider, repository_binding: binding,
     transaction_id: transactionId, idempotency_key: request.idempotency_key, tool_input_sha256: request.tool_call.tool_input_sha256,
     execution_mode: modes[0] || "unknown", transaction_state: state, lease_status: dispatch.latest.payload.lease_status,
@@ -188,7 +196,10 @@ function gatewayEffectSubject(options, transactionId, retainedSnapshot) {
       checkpoint_ref: dispatch.latest.ref, latest_event_ref: history.latest ? history.latest.ref : NONE_REF,
       execution_event_ref: execution ? execution.ref : NONE_REF, receipt_ref: history.receipt ? history.receipt.ref : NONE_REF,
       production_sandbox_admission_ref: productionRef },
-    retained_execution_refs: retained.map(item => item.ref), required_targets: targets,
+    retained_execution_refs: retained.filter(item => item.entry.kind !== "oci-sandbox-containment-observations").map(item => item.ref),
+    ...(containment.length ? { containment_history: { count: containment.length,
+      references_sha256: inputDigest(containment.map(item => item.ref)), latest_ref: latestContainment.ref } } : {}),
+    required_targets: targets,
     observed_after: new Date(Math.max(...times)).toISOString(),
     effects_settled: false, tool_execution_authorized: false, release_authorized: false };
   const subject = { ...body, id: `GESUB-${inputDigest(body).slice(0, 32)}` };

@@ -31,7 +31,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "enum": ["0.1", "0.2"]
     },
     "type": {
       "const": "GatewayEffectSubject"
@@ -165,6 +165,16 @@
         "$ref": "common.schema.json#/$defs/artifact_ref"
       }
     },
+    "containment_history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "references_sha256", "latest_ref"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "references_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "latest_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" }
+      }
+    },
     "required_targets": {
       "type": "array",
       "maxItems": 16,
@@ -206,6 +216,12 @@
       "const": false
     }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "then": { "required": ["containment_history"] }
+    }
+  ],
   "$defs": {
     "boundary": {
       "enum": [
