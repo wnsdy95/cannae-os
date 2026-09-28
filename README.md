@@ -111,6 +111,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Model Force Assignment Policy](docs/model-force-assignment-policy.md): mission-based allocation of deterministic, line, specialist, command, SOF, assurance, and reserve model capacity.
 - [Model Force v0.2 Operations](docs/model-force-v0.2-operations.md): registry-to-compiler-to-routing-preflight procedure for dispatching heterogeneous agent forces.
 - [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md): evidence-driven improvement of active work and control-plane candidates with finite budgets, rollback, escalation, and human release authority.
+- [Guarded Supervisor Publication](docs/bounded-self-improvement-operations.md#281-guarded-supervisor-publication): fresh admission at challenge/order storage, exact reuse, and partial-issuance recovery.
 - [Liaison Agent Model](docs/liaison-agent-model.md): bounded representation across external tools, teams, and agent frameworks.
 - [Partner Command Relationship](docs/partner-command-relationship.md): explicit external request, coordination, and authority relationships.
 

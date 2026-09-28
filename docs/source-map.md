@@ -7,6 +7,12 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+Supervisor publication guards in `campaign-supervisor.js` apply the existing
+repository-namespace predicate to challenge issuance and cycle-order storage,
+including exact reuse. Campaign and challenge fixtures exercise stop/expiry
+races, competing issuance, CLI integration and interrupted publication. This is
+local engineering evidence, not a new military-source or authentication claim.
+
 `docs/tool-effect-settlement.md` composes the existing review, USER decision,
 supervisor and verifier execution contracts. Its local fixtures execute an actual
 checker and ephemeral cryptography, but use synthetic USER/provider/isolation
