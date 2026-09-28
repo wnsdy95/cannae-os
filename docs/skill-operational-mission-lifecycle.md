@@ -348,8 +348,10 @@ later revocation and blocks completed-agent reporting and terminal settlement.
 Dispatch status exposes its exact checkpoint references. New repository leases
 and active tool admission also remain held; a fresh wave/session cannot clear
 the history. Read [unknown tool effects](enforced-dispatch-and-resume.md#51-unknown-tool-effects)
-before treating any lease status as proof of reconciliation. An exact effect
-reconciliation contract remains open; never manually erase the hold.
+before treating any lease status as proof of reconciliation. Use the separate
+[hook settlement controller](tool-effect-settlement.md) for exact USER- and
+execution-evidence-bound reconciliation, then explicitly revoke the old lease.
+Gateway settlement remains open; never manually erase the hold.
 
 The controllers repeat readiness checks inside the artifact namespace lease at
 plan/campaign/context/report/closeout, dispatch policy/lease/tool-allow, and

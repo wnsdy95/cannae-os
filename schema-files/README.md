@@ -208,6 +208,8 @@ Recommended validation order:
 128. `mission-wave-termination.schema.json`
 129. `tool-effect-scope.schema.json`
 130. `tool-effect-review.schema.json`
+131. `tool-effect-settlement-request.schema.json`
+132. `tool-effect-settlement.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 
@@ -216,6 +218,13 @@ exact observations, check IDs, and repository state. `ToolEffectReview` v0.1
 records evidence-binding checks, not settlement or approval. Its six authority
 and assurance booleans remain false, including when `status` is `evidence_bound`.
 See [Tool Effect Review](../docs/tool-effect-review.md) before using either.
+
+`ToolEffectSettlementRequest` v0.1 binds exact review, inspection campaign/order,
+attestations and USER decision. `ToolEffectSettlement` v0.1 binds that request's
+canonical digest, the consumed invocation, proof projection, historical manifest
+and admission window. It clears only that hook outcome; execution, release and
+cryptographic USER authentication remain false. Schema validity alone is not
+admission. Use the controller in [Tool Effect Settlement](../docs/tool-effect-settlement.md).
 
 `GitHubReleaseTrustedRoot` retains the complete pinned GitHub TUF
 root/metadata/target chain for offline replay. `GitHubReleaseIndependentVerification`

@@ -157,6 +157,8 @@ const TYPE_TO_SCHEMA = {
   "agent-execution-checkpoint": "agent-execution-checkpoint.schema.json",
   "tool-effect-scope": "tool-effect-scope.schema.json",
   "tool-effect-review": "tool-effect-review.schema.json",
+  "tool-effect-settlement-request": "tool-effect-settlement-request.schema.json",
+  "tool-effect-settlement": "tool-effect-settlement.schema.json",
   "tool-gateway-request": "tool-gateway-request.schema.json",
   "tool-gateway-decision": "tool-gateway-decision.schema.json",
   "tool-execution-receipt": "tool-execution-receipt.schema.json",
@@ -1378,6 +1380,19 @@ function semanticRules(payload, type, options = {}) {
     const codes = Array.isArray(payload.reason_codes) ? payload.reason_codes : [];
     if ((payload.status === "evidence_bound" && codes.length !== 0) || (payload.status === "blocked" && codes.length === 0)) {
       issues.push(issue("critical", "TOOL_EFFECT_REVIEW_STATUS_INVALID", "$", "Only a review with no blocking codes can be evidence_bound; neither status settles effects."));
+    }
+  }
+
+  if (type === "tool-effect-settlement") {
+    if (payload.request && typeof payload.request === "object") {
+      const digest = canonicalControlDigestWithout(payload.request, []);
+      if (payload.request_sha256 !== digest || payload.id !== `TESL-${digest.slice(0, 32)}`) {
+        issues.push(issue("critical", "TOOL_EFFECT_SETTLEMENT_REQUEST_BINDING_MISMATCH", "$.request_sha256", "Settlement identity must bind its exact canonical request."));
+      }
+    }
+    if (!isValidDate(payload.settled_at) || !isValidDate(payload.admission_valid_until) ||
+        Date.parse(payload.settled_at) >= Date.parse(payload.admission_valid_until)) {
+      issues.push(issue("critical", "TOOL_EFFECT_SETTLEMENT_TIME_INVALID", "$", "Settlement must occur inside its exact proof and decision admission window."));
     }
   }
 

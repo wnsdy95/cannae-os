@@ -10,6 +10,40 @@ const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
   {
+    name: "valid exact tool effect settlement request",
+    file: "sample-payloads/valid-tool-effect-settlement-request.json",
+    type: "tool-effect-settlement-request", exitCode: 0, requiredCodes: []
+  },
+  {
+    name: "effect scope requires explicit USER judgement",
+    file: "sample-payloads/invalid-tool-effect-settlement-request-unaccepted.json",
+    type: "tool-effect-settlement-request", exitCode: 1, requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "valid non-executing effect settlement",
+    file: "sample-payloads/valid-tool-effect-settlement.json",
+    type: "tool-effect-settlement", exitCode: 0, requiredCodes: []
+  },
+  {
+    name: "effect settlement cannot authorize tools",
+    file: "sample-payloads/invalid-tool-effect-settlement-authority.json",
+    type: "tool-effect-settlement", exitCode: 1, requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "effect settlement identity binds the canonical request",
+    file: "sample-payloads/valid-tool-effect-settlement.json",
+    type: "tool-effect-settlement", exitCode: 1,
+    mutate(payload) { payload.request.id = "TESR-OTHER"; },
+    requiredCodes: ["TOOL_EFFECT_SETTLEMENT_REQUEST_BINDING_MISMATCH"]
+  },
+  {
+    name: "effect settlement cannot be admitted at proof expiry",
+    file: "sample-payloads/valid-tool-effect-settlement.json",
+    type: "tool-effect-settlement", exitCode: 1,
+    mutate(payload) { payload.settled_at = payload.admission_valid_until; },
+    requiredCodes: ["TOOL_EFFECT_SETTLEMENT_TIME_INVALID"]
+  },
+  {
     name: "valid tool effect scope",
     file: "sample-payloads/valid-tool-effect-scope.json",
     type: "tool-effect-scope", exitCode: 0, requiredCodes: []

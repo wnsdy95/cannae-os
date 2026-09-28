@@ -535,9 +535,12 @@ the unchanged cooperating-writer/shared-filesystem trust boundary.
 
 Unknown post-tool effects are now projected from complete checkpoint history,
 including legacy terminal lease rows. They block new repository authority and
-wave termination instead of being erased by revocation. This is a conservative
-hold, not a completed reconciliation workflow; an exact USER/effect-evidence
-contract is still required to clear it.
+wave termination instead of being erased by revocation. The separate
+[hook settlement contract](tool-effect-settlement.md) now requires exact USER
+scope judgement, historical/current verifier readiness and execution-bound
+quorum before clearing one checkpoint. The failed lease still needs explicit
+revocation. Gateway cleanup/transaction settlement and full campaign restart
+remain open; this is not complete external-effect knowledge or USER authentication.
 
 ## 17. Phase 16: Enforced Dispatch And Resumable Orchestration
 

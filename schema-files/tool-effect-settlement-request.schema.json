@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/tool-effect-settlement-request.schema.json",
+  "title": "Tool Effect Settlement Request",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "review_ref", "campaign_ref", "cycle_order_ref", "attestation_refs", "decision_ref", "scope_coverage_accepted", "inspection_method_accepted"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "ToolEffectSettlementRequest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier" },
+    "review_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "campaign_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "cycle_order_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "attestation_refs": { "type": "array", "minItems": 1, "maxItems": 32, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/artifact_ref" } },
+    "decision_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "scope_coverage_accepted": { "const": true },
+    "inspection_method_accepted": { "const": true }
+  }
+}

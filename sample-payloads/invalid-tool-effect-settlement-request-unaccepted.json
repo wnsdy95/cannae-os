@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1",
+  "type": "ToolEffectSettlementRequest",
+  "id": "TESR-EXAMPLE",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "review_ref": {
+    "artifact_id": "TER-EXAMPLE",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/tool-effect-reviews/TER-EXAMPLE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "campaign_ref": {
+    "artifact_id": "SIC-INSPECT",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/self-improvement-campaigns/SIC-INSPECT.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "cycle_order_ref": {
+    "artifact_id": "SCO-INSPECT",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/self-improvement-cycle-orders/SCO-INSPECT.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "attestation_refs": [
+    {
+      "artifact_id": "VA-INSPECT",
+      "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/verification-attestations/VA-INSPECT.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "decision_ref": {
+    "artifact_id": "DL-SETTLE",
+    "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/decision-logs/DL-SETTLE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "scope_coverage_accepted": false,
+  "inspection_method_accepted": true
+}

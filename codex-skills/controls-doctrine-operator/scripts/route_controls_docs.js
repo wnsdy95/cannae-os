@@ -117,8 +117,8 @@ const RULES = [
   {
     id: "tool-effect-review",
     keywords: ["unknown tool effects", "effect reconciliation", "effect settlement", "effect scope", "tool effect review", "tool-effect", "unresolved effects"],
-    docs: ["docs/tool-effect-review.md", "docs/enforced-dispatch-and-resume.md", "docs/approval-scope-policy.md", "docs/completion-backlog.md"],
-    commands: ["node run-tool-effect-review-fixtures.js"]
+    docs: ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md", "docs/enforced-dispatch-and-resume.md", "docs/approval-scope-policy.md", "docs/completion-backlog.md"],
+    commands: ["node run-tool-effect-review-fixtures.js", "node run-tool-effect-settlement-fixtures.js"]
   },
   {
     id: "enforced-dispatch",
