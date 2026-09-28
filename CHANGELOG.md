@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added namespace-lease publication predicates and connected wave, dispatch, and gateway positive authority writes to current campaign/readiness checks. Exact reuse, competing stop writes, expired leases, and crash recovery fail closed without denying already-admitted result settlement. Both skills now reconcile partial artifacts after publication denial instead of replaying a cached ready result. Full campaign stop/restart and supervisor order/challenge integration remain open.
+
 - Enforced campaign creation-based elapsed deadlines independently of reported progress. Idle campaigns, understated counters, and retained ready orders cannot extend admission; invalid or regressed evaluation clocks fail closed. Both skills now count idle time and forbid backdated continuation, while preserving historical evidence and already-admitted result settlement. Host-clock trust, hard process timeouts, and full cancellation/restart remain explicit limits.
 
 - Corrected source-map coverage snapshots to record the actual UTC audit date, added date regression coverage, and regenerated the source inventory. Both skills now require generator-derived freshness instead of manually restamping old audit results.

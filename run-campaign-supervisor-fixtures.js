@@ -6,6 +6,13 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const artifactStore = require("./repository-artifact-store");
+const originalWrite = artifactStore.writeRepositoryArtifact;
+let beforePublication = null;
+artifactStore.writeRepositoryArtifact = options => {
+  if (beforePublication) beforePublication(options);
+  return originalWrite(options);
+};
 const { superviseCampaign } = require("./campaign-supervisor");
 const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
@@ -285,7 +292,103 @@ function waveOptions(environment) {
   };
 }
 
+function stopBeforePublication(environment, kind) {
+  let fired = false;
+  beforePublication = options => {
+    if (options.kind !== kind) return;
+    beforePublication = null;
+    fired = true;
+    persistPair(environment, checkpointFor(environment, 1, 1), "escalate");
+  };
+  return () => {
+    beforePublication = null;
+    assert(fired, `The ${kind} publication boundary was not reached.`);
+    const verification = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+    assert.strictEqual(verification.valid, true);
+    const manifest = JSON.parse(fs.readFileSync(path.join(environment.artifactRoot, "repositories", environment.repository.key, "manifest.json"), "utf8"));
+    assert(!manifest.artifacts.some(entry => entry.kind === kind), `Stopped publication retained ${kind}.`);
+  };
+}
+
 try {
+  for (const kind of ["mission-wave-plans", "agent-context-packs", "mission-wave-reports", "mission-wave-closeouts"]) {
+    run(`retained escalation at the ${kind} publication boundary denies the stale writer`, () => {
+      const environment = makeEnvironment(`publication-${kind}`, { createdAt: "2026-07-23T04:00:00+09:00" });
+      try {
+        const plan = waveFor(environment);
+        const options = waveOptions(environment);
+        if (["mission-wave-plans", "agent-context-packs"].includes(kind)) {
+          const verify = stopBeforePublication(environment, kind);
+          assert.throws(() => openWave(plan, options), /CAMPAIGN_CONTINUATION_BLOCKED/);
+          verify();
+        } else {
+          const opened = openWave(plan, options);
+          const report = {
+            schema_version: "0.1", type: "MissionWaveReport", id: "MWR-Publication", mission_id: plan.mission_id,
+            wave_id: plan.wave_id, plan_ref: opened.plan_ref, routing_preflight_ref: opened.routing_preflight_ref,
+            agent_results: opened.context_packs.map(item => ({
+              agent_id: item.agent_id, context_pack_ref: item.context_pack_ref, status: "blocked",
+              summary: "Awaiting a scope decision.", completed_actions: [], blockers: ["Scope is unresolved."],
+              evidence_refs: [], improvement_candidates: [], next_actions: ["Request a USER decision."]
+            })), wave_status: "blocked", human_decisions_required: ["Review scope."], release_requested: false,
+            recorded_at: options.now
+          };
+          if (kind === "mission-wave-reports") {
+            const verify = stopBeforePublication(environment, kind);
+            assert.throws(() => recordWave(report, options), /CAMPAIGN_CONTINUATION_BLOCKED/);
+            verify();
+          } else {
+            recordWave(report, options);
+            const aar = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-aar.json"), "utf8"));
+            aar.mission_id = plan.mission_id;
+            const verify = stopBeforePublication(environment, kind);
+            assert.throws(() => closeWave(aar, { ...options, missionId: plan.mission_id, waveId: plan.wave_id }), /CAMPAIGN_CONTINUATION_BLOCKED/);
+            verify();
+          }
+        }
+      } finally {
+        beforePublication = null;
+        fs.rmSync(environment.root, { recursive: true, force: true });
+      }
+    });
+  }
+
+  for (const kind of ["dispatch-tool-policies", "agent-dispatch-leases", "tool-admission-events"]) {
+    run(`retained escalation at the ${kind} publication boundary denies new authority`, () => {
+      const environment = makeEnvironment(`publication-${kind}`, { createdAt: "2026-07-23T04:00:00+09:00" });
+      try {
+        const plan = waveFor(environment);
+        plan.agents = [plan.agents[0]];
+        const options = waveOptions(environment);
+        const input = { command: "git status --short" };
+        const draft = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-dispatch-tool-policy.json"), "utf8"));
+        delete draft.authorization;
+        Object.assign(draft, { schema_version: "0.1", mission_id: plan.mission_id, agent_id: plan.agents[0].agent_id,
+          approved_at: plan.created_at, valid_until: plan.valid_until });
+        draft.tool_rules = [{ rule_id: "DTR-STATUS", mission_action: "Run deterministic validation.", tool_name: "Bash",
+          operation_class: "process_execute", input_match: { mode: "exact_sha256", allowed_sha256: [inputDigest(input)] }, max_uses: 1 }];
+        plan.dispatch_control = { required: true, enforcement_level: "guardrail", gateway_exclusive: false,
+          policy_authorizations: [{ agent_id: draft.agent_id, provider: draft.provider, policy_id: draft.id, draft_sha256: inputDigest(draft) }] };
+        openWave(plan, options);
+        if (kind !== "dispatch-tool-policies") authorizeDispatchPolicy(options, draft);
+        const binding = { sessionId: "publication", providerAgentId: "main" };
+        if (kind === "tool-admission-events") issueLease(options, draft.id, binding);
+        const verify = stopBeforePublication(environment, kind);
+        const action = kind === "dispatch-tool-policies" ? () => authorizeDispatchPolicy(options, draft)
+          : kind === "agent-dispatch-leases" ? () => issueLease(options, draft.id, binding)
+            : () => admitToolRequest(options, { ...binding, missionId: plan.mission_id, waveId: plan.wave_id,
+              agentId: draft.agent_id, provider: draft.provider }, {
+              hook_event_name: "PreToolUse", tool_use_id: "publication-request", tool_name: "Bash", tool_input: input
+            });
+        assert.throws(action, /CAMPAIGN_CONTINUATION_BLOCKED/);
+        verify();
+      } finally {
+        beforePublication = null;
+        fs.rmSync(environment.root, { recursive: true, force: true });
+      }
+    });
+  }
+
   run("campaign expires without a checkpoint at the exact wall-clock boundary", () => {
     const environment = makeEnvironment("wall-clock-empty", { budgets: { max_elapsed_minutes: 5 } });
     try {
@@ -296,7 +399,7 @@ try {
       assert(expired.blocking_codes.includes("CAMPAIGN_ELAPSED_TIME_BUDGET_EXHAUSTED"));
       assert.strictEqual(expired.budget_snapshot.elapsed_minutes, 0, "reported progress must not be rewritten");
       assert.strictEqual(expired.execution_authorized, false);
-    } finally {
+} finally {
       fs.rmSync(environment.root, { recursive: true, force: true });
     }
   });

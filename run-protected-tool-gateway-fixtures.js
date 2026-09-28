@@ -6,6 +6,13 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const artifactStore = require("./repository-artifact-store");
+const originalWrite = artifactStore.writeRepositoryArtifact;
+let beforePublication = null;
+artifactStore.writeRepositoryArtifact = options => {
+  if (beforePublication) beforePublication(options);
+  return originalWrite(options);
+};
 const {
   NONE_REF,
   activeLease,
@@ -613,6 +620,38 @@ fixture("executing transaction with unknown outcome blocks the lease and require
   }, setup.identity);
   assert.strictEqual(selected.code, "LEASE_BLOCKED");
 });
+
+for (const stage of ["decision", "authorized", "executing"]) {
+  fixture(`expiry at gateway ${stage} publication cannot retain new execution authority`, () => {
+    const setup = setupScenario(`PUBLICATION-${stage}`);
+    const request = gatewayRequest(setup, "001");
+    const options = trustedOptions(setup, request, "2026-07-24T01:00:10Z");
+    if (stage === "executing") assert.strictEqual(admitGatewayRequest(options, request, toolInput).state, "authorized");
+    let fired = false;
+    beforePublication = write => {
+      if (stage === "decision" ? write.kind !== "tool-gateway-decisions" :
+        write.kind !== "tool-gateway-transaction-events" || write.payload.state !== stage) return;
+      beforePublication = null;
+      fired = true;
+      options.now = "2026-07-24T01:30:00Z";
+    };
+    try {
+      expectThrow(() => stage === "executing" ? beginGatewayExecution(options, request.transaction_id)
+        : admitGatewayRequest(options, request, toolInput), /authorization expired before publication/);
+      assert(fired, `The ${stage} publication boundary was not reached.`);
+      const verification = artifactStore.verifyRepositoryArtifacts({ repositoryPath: setup.repository, artifactRoot });
+      assert.strictEqual(verification.valid, true);
+      const manifest = JSON.parse(fs.readFileSync(path.join(artifactRoot, "repositories", verification.repository.key, "manifest.json"), "utf8"));
+      const records = manifest.artifacts.filter(entry => entry.kind === (stage === "decision" ? "tool-gateway-decisions" : "tool-gateway-transaction-events"));
+      assert(!records.some(entry => {
+        const payload = JSON.parse(fs.readFileSync(path.join(artifactRoot, entry.relative_path), "utf8"));
+        return stage === "decision" ? payload.decision === "allow" : payload.state === stage;
+      }));
+    } finally {
+      beforePublication = null;
+    }
+  });
+}
 
 async function main() {
   let passed = 0;

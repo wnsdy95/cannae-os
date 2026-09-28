@@ -72,6 +72,43 @@ The lease is acquired through atomic directory creation and has a finite TTL. An
 
 `.manifest.lease/` is transient coordination state and may be absent while idle. `.fencing-token` is durable namespace state and must never be reset, copied backward, or edited by an agent.
 
+### 3.1 Publication-Time Appraisal
+
+Internal controllers may pass a synchronous `publicationGuard` to the JavaScript
+store API. It runs under the existing namespace lease, after pending transactions
+are recovered and integrity is verified, but before preparing the new journal.
+The predicate receives a deeply frozen copy of `{ repository, artifactRoot,
+manifest }`; `manifest` is null in a new namespace. It must return exactly `true`.
+Exceptions, false-like or truthy non-boolean results, asynchronous predicates,
+and a lease that expires during appraisal deny publication. Namespace writes or
+recovery from inside that predicate are rejected; ordinary read-only verification
+is allowed. Predicates must not perform external effects or long-running checks.
+
+`reuseExisting: true` permits an exact retained artifact to be returned without
+a new manifest revision, but only after the same guard succeeds. The result has
+`transaction_id: "none"`; the acquisition token is not a new committed revision.
+The generic CLI does not accept predicates or infer authority from artifact kind.
+
+Wave plan/campaign/context/report/closeout publication and new dispatch policy,
+lease, and tool-allow publication use this boundary to recheck campaign readiness.
+Gateway allow decisions and authorized/executing events also recheck current
+lease/checkpoint binding and authorization expiry. Already-admitted baseline and
+post-tool checkpoints, denial, cancellation, and recovery remain recordable.
+An artifact or ready projection is a historical observation, not durable immunity
+from a later stop; consumers must still reappraise current authority.
+
+Every cooperating writer first reconciles older journals. Thus a crashed allow
+whose bytes were written is recovered before a later stop record can commit;
+a prepared write without candidate bytes is rolled back. Recovery never moves
+that older transaction after a committed stop. The race and crash fixtures test
+both orderings, exact reuse, stale leases, and all four injection boundaries.
+
+This is a local publication primitive, not authenticated campaign cancellation,
+an atomic multi-artifact operation, or a protected execution environment. Raw
+store writers can omit a predicate, and the shared-filesystem limits in section 9
+still apply. USER stop/restart contracts, complete terminal settlement, supervisor
+order/challenge publication integration, and process cancellation remain separate.
+
 ## 4. Manifest
 
 Each repository namespace has one `RepositoryArtifactManifest` containing:

@@ -5,7 +5,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawn, spawnSync } = require("child_process");
-const { resolveRepository } = require("./repository-artifact-store");
+const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { acquireRepositoryLease, assertRepositoryLease, releaseRepositoryLease } = require("./repository-lease");
 
 const ROOT = __dirname;
@@ -40,6 +40,47 @@ function writeWithCli(repositoryPath, artifactRoot, artifactId, extraArgs = []) 
     child.on("close", status => resolve({ status, stdout, stderr }));
     child.stdin.end(`${JSON.stringify({ artifact_id: artifactId })}\n`);
   });
+}
+
+function publicationWorker(options, mode, markers) {
+  const code = `
+    const fs = require("fs");
+    const { writeRepositoryArtifact } = require(${JSON.stringify(path.join(ROOT, "repository-artifact-store.js"))});
+    const options = ${JSON.stringify(options)};
+    const markers = ${JSON.stringify(markers)};
+    if (${JSON.stringify(mode)} === "allow") {
+      options.publicationGuard = ({ manifest }) => {
+        if (manifest.artifacts.some(entry => entry.artifact_id === "OUT-Stop")) return false;
+        fs.writeFileSync(markers.entered, "entered");
+        const deadline = Date.now() + 10000;
+        while (!fs.existsSync(markers.attempted)) {
+          if (Date.now() > deadline) throw new Error("Stop writer did not attempt publication.");
+          Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10);
+        }
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 300);
+        if (fs.existsSync(markers.committed)) throw new Error("Stop crossed the publication lease.");
+        return true;
+      };
+    } else fs.writeFileSync(markers.attempted, "attempted");
+    writeRepositoryArtifact(options);
+    if (${JSON.stringify(mode)} === "stop") fs.writeFileSync(markers.committed, "committed");
+  `;
+  const child = spawn(process.execPath, ["-e", code], { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"] });
+  return new Promise((resolve, reject) => {
+    let output = "";
+    child.stdout.on("data", chunk => { output += chunk; });
+    child.stderr.on("data", chunk => { output += chunk; });
+    child.on("error", reject);
+    child.on("close", status => resolve({ status, output }));
+  });
+}
+
+async function waitForMarker(file) {
+  const deadline = Date.now() + 15000;
+  while (!fs.existsSync(file)) {
+    if (Date.now() > deadline) throw new Error("Publication worker did not enter its guard.");
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
 }
 
 async function main() {
@@ -125,13 +166,33 @@ async function main() {
     ], { cwd: ROOT, encoding: "utf8" });
     assert.strictEqual(validation.status, 0, validation.stdout || validation.stderr);
 
+    const options = { repositoryPath, artifactRoot, missionId: "MIS-Concurrent", waveId: "W2",
+      kind: "reports", payload: { synthetic: true }, leaseTimeoutMs: 15000 };
+    const markers = Object.fromEntries(["entered", "attempted", "committed"].map(name => [name, path.join(temporaryRoot, name)]));
+    const allow = publicationWorker({ ...options, artifactId: "OUT-Allow" }, "allow", markers);
+    await waitForMarker(markers.entered);
+    const stop = publicationWorker({ ...options, artifactId: "OUT-Stop" }, "stop", markers);
+    for (const result of await Promise.all([allow, stop])) assert.strictEqual(result.status, 0, result.output);
+    manifest = readJson(manifestPath);
+    const beforeStop = readJson(path.join(namespacePath, ".manifest-history", `manifest-r${String(manifest.manifest_revision - 1).padStart(8, "0")}.json`));
+    assert(beforeStop.artifacts.some(entry => entry.artifact_id === "OUT-Allow"));
+    assert(!beforeStop.artifacts.some(entry => entry.artifact_id === "OUT-Stop"));
+    assert(manifest.artifacts.some(entry => entry.artifact_id === "OUT-Stop"));
+    assert.throws(() => writeRepositoryArtifact({ ...options, artifactId: "OUT-Late-Allow",
+      publicationGuard: ({ manifest: current }) => !current.artifacts.some(entry => entry.artifact_id === "OUT-Stop")
+    }), /PUBLICATION_GUARD_REJECTED/);
+    assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).manifest_revision, manifest.manifest_revision);
+    assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath, artifactRoot }).valid, true);
+
     console.log(`PASS ${writerCount} concurrent writers preserve every manifest entry`);
     console.log("PASS manifest revisions and fencing tokens increase monotonically under contention");
     console.log("PASS expired foreign-host lease is recovered with a higher fencing token");
     console.log("PASS unexpired foreign-host lease is not stolen");
     console.log("PASS expired writer is fenced after a replacement lease is granted");
     console.log("PASS v0.4 lease and fencing manifest validates");
-    console.log("Repository artifact concurrency fixtures: 6/6 passed");
+    console.log("PASS a competing stop writer cannot cross an in-progress publication guard");
+    console.log("PASS a guard observes a preceding stop and publishes no later allow");
+    console.log("Repository artifact concurrency fixtures: 8/8 passed");
   } finally {
     fs.rmSync(temporaryRoot, { recursive: true, force: true });
   }
