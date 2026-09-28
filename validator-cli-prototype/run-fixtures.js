@@ -10,6 +10,42 @@ const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
   {
+    name: "valid tool effect scope",
+    file: "sample-payloads/valid-tool-effect-scope.json",
+    type: "tool-effect-scope", exitCode: 0, requiredCodes: []
+  },
+  {
+    name: "effect scope expiry cannot be reversed",
+    file: "sample-payloads/valid-tool-effect-scope.json",
+    type: "tool-effect-scope", exitCode: 1,
+    mutate(payload) { payload.expires_at = payload.created_at; },
+    requiredCodes: ["TOOL_EFFECT_SCOPE_TIME_INVALID"]
+  },
+  {
+    name: "effect scope resource identity cannot repeat",
+    file: "sample-payloads/valid-tool-effect-scope.json",
+    type: "tool-effect-scope", exitCode: 1,
+    mutate(payload) { payload.resources.push(JSON.parse(JSON.stringify(payload.resources[0]))); },
+    requiredCodes: ["TOOL_EFFECT_SCOPE_DUPLICATE_RESOURCE"]
+  },
+  {
+    name: "valid non-authorizing tool effect review",
+    file: "sample-payloads/valid-tool-effect-review.json",
+    type: "tool-effect-review", exitCode: 0, requiredCodes: []
+  },
+  {
+    name: "an effect review cannot settle unknown outcomes",
+    file: "sample-payloads/invalid-tool-effect-review-settled.json",
+    type: "tool-effect-review", exitCode: 1, requiredCodes: ["CONST_MISMATCH"]
+  },
+  {
+    name: "effect review evidence-bound status cannot conceal blockers",
+    file: "sample-payloads/valid-tool-effect-review.json",
+    type: "tool-effect-review", exitCode: 1,
+    mutate(payload) { payload.reason_codes = ["TOOL_EFFECT_RESOURCE_UNRESOLVED"]; },
+    requiredCodes: ["TOOL_EFFECT_REVIEW_STATUS_INVALID"]
+  },
+  {
     name: "current independent release evidence v0.2",
     file: "sample-payloads/valid-github-release-independent-verification-v0.2.json",
     type: "github-release-independent-verification",

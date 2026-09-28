@@ -122,7 +122,7 @@ node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js
 
 Project hooks are a deterministic guardrail for covered local calls, not a non-bypassable security boundary. Codex does not expose a unique subagent identity in the documented `PreToolUse` payload, so strict mission-agent isolation requires separate top-level sessions or an external gateway.
 
-Read `docs/enforced-dispatch-and-resume.md` for the policy contract, hook setup, provider limits, failure matrix, and production deployment levels.
+Read `docs/enforced-dispatch-and-resume.md` for dispatch policy and limits. For unknown outcomes, read `docs/tool-effect-review.md`: freeze scope before verification and never interpret an `evidence_bound` review as USER consent, complete effect knowledge, or permission to clear the hold.
 
 ### Operating The Protected Tool Gateway
 

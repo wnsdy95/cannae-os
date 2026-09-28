@@ -115,6 +115,12 @@ const RULES = [
     ]
   },
   {
+    id: "tool-effect-review",
+    keywords: ["unknown tool effects", "effect reconciliation", "effect settlement", "effect scope", "tool effect review", "tool-effect", "unresolved effects"],
+    docs: ["docs/tool-effect-review.md", "docs/enforced-dispatch-and-resume.md", "docs/approval-scope-policy.md", "docs/completion-backlog.md"],
+    commands: ["node run-tool-effect-review-fixtures.js"]
+  },
+  {
     id: "enforced-dispatch",
     keywords: ["dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency", "protected process", "bounded process", "process executor", "native executable", "shebang", "interpreter", "exact argv", "execution envelope", "execution observation", "oci linux sandbox", "oci sandbox", "linux sandbox", "sandbox provider", "immutable image", "seccomp profile", "no new privileges", "no_new_privs", "cap drop", "read only rootfs", "recursive read only", "cgroup v2", "network none", "kernel probe", "container cleanup", "production sandbox", "production admission", "rats", "eat", "slsa provenance", "managed exclusive", "appraiser quorum", "external coordinator", "storage fencing", "exclusive path"],
     docs: [
@@ -451,6 +457,10 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  {
+    id: "tool-effect-review",
+    keywords: ["tool-effect"]
+  },
   {
     id: "skill-operations",
     keywords: ["codex-skills", ".claude", "claude", "controls-doctrine-operator", "skill", "skills", "install-ai-cli-skills", "route_controls_docs", "operate_controls_mission", "skill-mission-controller", "mission-wave", "agent-context-pack", "wave-closeout", "operational-mission-lifecycle", "operator-skill", "openai.yaml", "implementation-candidate", "completion-backlog"]

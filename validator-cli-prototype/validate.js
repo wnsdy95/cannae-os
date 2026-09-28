@@ -155,6 +155,8 @@ const TYPE_TO_SCHEMA = {
   "agent-dispatch-lease": "agent-dispatch-lease.schema.json",
   "tool-admission-event": "tool-admission-event.schema.json",
   "agent-execution-checkpoint": "agent-execution-checkpoint.schema.json",
+  "tool-effect-scope": "tool-effect-scope.schema.json",
+  "tool-effect-review": "tool-effect-review.schema.json",
   "tool-gateway-request": "tool-gateway-request.schema.json",
   "tool-gateway-decision": "tool-gateway-decision.schema.json",
   "tool-execution-receipt": "tool-execution-receipt.schema.json",
@@ -1356,6 +1358,26 @@ function semanticRules(payload, type, options = {}) {
     }
     if (!isValidDate(payload.decided_at)) {
       issues.push(issue("critical", "TOOL_ADMISSION_INVALID_TIMESTAMP", "$.decided_at", "Tool admission requires a valid decision timestamp."));
+    }
+  }
+
+  if (type === "tool-effect-scope") {
+    const created = Date.parse(payload.created_at);
+    const expires = Date.parse(payload.expires_at);
+    if (!Number.isFinite(created) || !Number.isFinite(expires) || expires <= created || expires - created > 3600000) {
+      issues.push(issue("critical", "TOOL_EFFECT_SCOPE_TIME_INVALID", "$", "An effect scope must have a positive validity of at most one hour."));
+    }
+    const resources = Array.isArray(payload.resources) ? payload.resources : [];
+    if (new Set(resources.map(item => item && item.id)).size !== resources.length ||
+        new Set(resources.map(item => item && item.target)).size !== resources.length) {
+      issues.push(issue("critical", "TOOL_EFFECT_SCOPE_DUPLICATE_RESOURCE", "$.resources", "Resource identifiers and exact targets must be unique."));
+    }
+  }
+
+  if (type === "tool-effect-review") {
+    const codes = Array.isArray(payload.reason_codes) ? payload.reason_codes : [];
+    if ((payload.status === "evidence_bound" && codes.length !== 0) || (payload.status === "blocked" && codes.length === 0)) {
+      issues.push(issue("critical", "TOOL_EFFECT_REVIEW_STATUS_INVALID", "$", "Only a review with no blocking codes can be evidence_bound; neither status settles effects."));
     }
   }
 

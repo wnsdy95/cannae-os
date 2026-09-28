@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/tool-effect-scope.schema.json",
+  "title": "Tool Effect Scope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "agent_id", "repository_binding", "lease_ref", "checkpoint_ref", "admission_ref", "expected_repository_state", "coverage_statement", "resources", "created_at", "expires_at"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "ToolEffectScope" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "agent-execution-checkpoint.schema.json#/$defs/safe_identifier" },
+    "repository_binding": { "$ref": "verification-plan.schema.json#/properties/repository_binding" },
+    "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "admission_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "expected_repository_state": { "$ref": "verification-plan.schema.json#/properties/expected_repository_state" },
+    "coverage_statement": { "type": "string", "minLength": 20, "maxLength": 4096 },
+    "resources": {
+      "type": "array", "minItems": 1, "maxItems": 64,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "target", "disposition", "evidence_refs", "check_ids"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "target": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "disposition": { "enum": ["not_observed", "observed", "compensated", "unresolved"] },
+          "evidence_refs": { "type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/artifact_ref" } },
+          "check_ids": { "type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/id" } }
+        }
+      }
+    },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  }
+}
