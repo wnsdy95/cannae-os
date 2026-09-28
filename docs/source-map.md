@@ -8,6 +8,11 @@ uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/
 (duplicate log-entry counting). Local source-history hashes define recognized
 historical producer identities; they are not claims of protected execution.
 
+The campaign continuation gate in `docs/skill-operational-mission-lifecycle.md`
+and `docs/bounded-self-improvement-operations.md` is a local runtime integration
+finding, demonstrated by `run-campaign-supervisor-fixtures.js`. It does not add
+a military-source claim or claim atomic process cancellation.
+
 `docs/implementation-candidate-registry.md` and
 `docs/completion-backlog.md` apply the existing KM separation of source,
 interpretation, evidence, and action queue to engineering completion. Their

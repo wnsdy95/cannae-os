@@ -237,6 +237,14 @@ Cycle-order schema v0.3 records SPIFFE-specific `trust_policy_admission`; v0.4 r
 
 ## 3. Required Battle Rhythm
 
+Adaptive wave and dispatch admission now reconstruct supervisor readiness from
+the retained campaign history. A previous `active` campaign object or ready
+context pack cannot override a newer stop decision. See the
+[campaign continuation gate](skill-operational-mission-lifecycle.md#9-campaign-continuation-gate)
+for admission points, settlement behavior, and the remaining cancellation/restart
+limits. The guard does not create challenges or automatically authorize a new
+campaign after escalation.
+
 ### 3.1 Campaign start
 
 1. Route the mission for the declared AI role and create routing receipts.

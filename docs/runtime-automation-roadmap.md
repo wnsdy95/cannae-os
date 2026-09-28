@@ -515,7 +515,11 @@ termination without a fabricated report/AAR. Exact USER scope decisions bind
 early abort and replacement to retained plan digests. Settled dispatch and
 immutable terminal records prevent reopening the old wave. Campaign-level
 cancellation, automatic replacement planning, and external process termination
-remain separate work; a wave terminal record does not imply them.
+remain separate work; a wave terminal record does not imply them. Adaptive
+wave and dispatch admission now reconstruct supervisor readiness, so a terminal
+decision, pause, invalid lineage, exhausted budget, or unavailable trust admission
+cannot be ignored through a new wave/session. This read-only guard does not
+provide atomic campaign cancellation or USER-authorized restart.
 
 ## 17. Phase 16: Enforced Dispatch And Resumable Orchestration
 

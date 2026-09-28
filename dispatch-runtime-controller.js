@@ -246,6 +246,7 @@ function contextBundle(options, policy, settings = {}) {
     throw new Error("Dispatch policy does not match the context-pack identity.");
   }
   const plan = loadArtifactRef(view, context.payload.plan_ref, "mission-wave-plan");
+  require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
   const preflight = loadArtifactRef(view, context.payload.routing_preflight_ref);
   if (preflight.payload.type !== "AgentRoutingPreflightProjection" || preflight.payload.status !== "ready") {
     throw new Error("Routing preflight is not ready.");
@@ -793,6 +794,13 @@ function activeLease(options, identity, at = nowIso(options)) {
     };
   }
   const selected = candidates[0];
+  const plan = loadArtifactRef(view, selected.leaseRecord.payload.plan_ref, "mission-wave-plan");
+  try {
+    require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
+  } catch (error) {
+    if (error.code !== "CAMPAIGN_CONTINUATION_BLOCKED") throw error;
+    return { code: error.code, view, ...selected };
+  }
   const current = timestamp(at, "Admission time");
   if (current < timestamp(selected.leaseRecord.payload.not_before, "Lease not_before")) {
     return { code: "LEASE_NOT_YET_ACTIVE", view, ...selected };
@@ -1496,6 +1504,8 @@ function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED"
 function resumeLease(options, leaseIdValue, bindings) {
   const loaded = loadLeaseById(options, leaseIdValue);
   require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: loaded.view.artifactRoot }, loaded.leaseRecord.payload.mission_id, loaded.leaseRecord.payload.wave_id);
+  const plan = loadArtifactRef(loaded.view, loaded.leaseRecord.payload.plan_ref, "mission-wave-plan");
+  require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot });
   const lock = dispatchLock(loaded.view, leaseIdValue);
   let oldLease;
   let policy;
