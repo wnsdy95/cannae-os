@@ -237,6 +237,8 @@ const TYPE_TO_SCHEMA = {
   "mission-wave-closeout": "mission-wave-closeout.schema.json",
   "mission-wave-termination-request": "mission-wave-termination-request.schema.json",
   "mission-wave-termination": "mission-wave-termination.schema.json",
+  "campaign-stop-request": "campaign-stop-request.schema.json",
+  "campaign-stop-record": "campaign-stop-record.schema.json",
   "model-force-assignment-plan": "model-force-assignment-plan.schema.json",
   "model-registry": "model-registry.schema.json",
   "model-assignment-request": "model-assignment-request.schema.json",
@@ -3613,6 +3615,22 @@ function semanticRules(payload, type, options = {}) {
     }
     if (payload.wave_status === "complete" && hasSubstantiveItems(payload.human_decisions_required)) {
       issues.push(issue("critical", "MISSION_WAVE_REPORT_COMPLETE_PENDING_DECISION", "$.human_decisions_required", "A wave awaiting a human decision cannot be reported complete."));
+    }
+  }
+
+  if (["campaign-stop-request", "campaign-stop-record"].includes(type)) {
+    const request = type === "campaign-stop-record" ? payload.request || {} : payload;
+    if (artifactRefKind(request.campaign_ref) !== "concrete" ||
+        artifactRefKind(request.decision_ref) === "malformed" ||
+        (type === "campaign-stop-record" && artifactRefKind(request.decision_ref) !== "concrete")) {
+      issues.push(issue("critical", "CAMPAIGN_STOP_REFERENCE_INVALID", "$", "Stop requires an exact campaign; only a request draft may omit its USER decision."));
+    }
+    if (type === "campaign-stop-record") {
+      if (payload.request_sha256 !== canonicalControlDigestWithout(request, []) ||
+          payload.id !== `CSR-${canonicalControlDigestWithout(request.campaign_ref || {}, []).slice(0, 32)}` ||
+          payload.mission_id !== request.mission_id || payload.campaign_id !== request.campaign_ref?.artifact_id) {
+        issues.push(issue("critical", "CAMPAIGN_STOP_RECORD_BINDING_INVALID", "$", "A stop must preserve its canonical request and exact campaign/mission identity."));
+      }
     }
   }
 

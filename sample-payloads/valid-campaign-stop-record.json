@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "type": "CampaignStopRecord",
+  "id": "CSR-187a2591a1e9dfdbec584c15339385c5",
+  "mission_id": "MIS-STOP-DEMO",
+  "campaign_id": "SIC-STOP-DEMO",
+  "request": {
+    "schema_version": "0.1",
+    "type": "CampaignStopRequest",
+    "mission_id": "MIS-STOP-DEMO",
+    "campaign_ref": {
+      "artifact_id": "SIC-STOP-DEMO",
+      "relative_path": "repositories/demo/missions/MIS-STOP-DEMO/C0/self-improvement-campaigns/SIC-STOP-DEMO.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "decision_ref": {
+      "artifact_id": "DL-STOP-DEMO",
+      "relative_path": "repositories/demo/missions/MIS-STOP-DEMO/C0/decision-logs/DL-STOP-DEMO.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "reason": "Stop new mission work; retain and reconcile admitted results."
+  },
+  "request_sha256": "6cc52c85ea12fbde544d35c41164df9a58cdb2a0cd7bdbc4eac1f3d743306088",
+  "observed_manifest": {
+    "revision": 2,
+    "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "status": "stop_requested",
+  "recorded_at": "2026-09-29T01:00:00Z",
+  "settlement_complete": false,
+  "execution_completion_claimed": false,
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false
+}

@@ -10,6 +10,20 @@ const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
   ...["request", "record"].map(kind => ({
+    name: `valid campaign stop ${kind}`, file: `sample-payloads/valid-campaign-stop-${kind}.json`,
+    type: `campaign-stop-${kind}`, exitCode: 0, requiredCodes: []
+  })),
+  { name: "campaign stop rejects partial none", file: "sample-payloads/invalid-campaign-stop-request-reference.json",
+    type: "campaign-stop-request", exitCode: 1, requiredCodes: ["CAMPAIGN_STOP_REFERENCE_INVALID"] },
+  { name: "campaign stop never claims settlement", file: "sample-payloads/invalid-campaign-stop-record-settled.json",
+    type: "campaign-stop-record", exitCode: 1, requiredCodes: ["CONST_MISMATCH"] },
+  { name: "campaign stop preserves exact request digest", file: "sample-payloads/valid-campaign-stop-record.json",
+    type: "campaign-stop-record", exitCode: 1, requiredCodes: ["CAMPAIGN_STOP_RECORD_BINDING_INVALID"],
+    mutate: payload => { payload.request.reason = "Substituted reason"; } },
+  { name: "campaign stop records require a concrete USER decision", file: "sample-payloads/valid-campaign-stop-record.json",
+    type: "campaign-stop-record", exitCode: 1, requiredCodes: ["CAMPAIGN_STOP_REFERENCE_INVALID"],
+    mutate: payload => { payload.request.decision_ref = { artifact_id: "none", relative_path: "none", sha256: "none" }; } },
+  ...["request", "record"].map(kind => ({
     name: `valid gateway settlement ${kind}`,
     file: `sample-payloads/valid-gateway-effect-settlement${kind === "request" ? "-request" : ""}.json`,
     type: `gateway-effect-settlement${kind === "request" ? "-request" : ""}`, exitCode: 0, requiredCodes: []

@@ -296,6 +296,72 @@ deadline, or implement pause-adjusted budgets. Those require a managed runtime
 and separately defined stop/restart policy; never backdate work or restamp a
 campaign to extend it.
 
+### 2.10 Explicit USER Stop Intake
+
+`campaign-stop-controller.js` records a stop without fabricating a failed
+checkpoint, editing the campaign, or claiming that admitted work has settled.
+Use `CampaignStopRequest` with the exact retained campaign reference and reason.
+The initial request may use the exact none decision sentinel only to prepare
+the decision option:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/stop_controls_campaign.js \
+  decision-option --request <campaign-stop-request.json>
+```
+
+The result is not consent. Obtain and retain the USER's actual `DecisionLogEntry`
+in this mission, with `decision_type: scope`, `status: complete`, retained
+authority referencing the campaign ID, the exact returned chosen option in
+`options_considered`, and only the campaign's manifest path in `affected_artifacts`.
+The option binds the complete canonical request except its final decision
+reference. Changing the campaign, mission or reason requires a new decision.
+The decision must follow campaign retention and be no more than one hour old;
+a competing equally recent or newer USER scope disposition blocks admission.
+Fill in its exact decision reference, then run:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/stop_controls_campaign.js \
+  stop --request <campaign-stop-request.json> \
+  --repository <repo> --artifact-root <artifact-root>
+node codex-skills/controls-doctrine-operator/scripts/stop_controls_campaign.js \
+  status --mission <mission-id> --repository <repo> --artifact-root <artifact-root>
+```
+
+The Claude wrapper has identical arguments. `CampaignStopRecord` is immutable,
+bound to the exact pre-publication manifest, and stored under mission `C0`.
+Its effect is monotonic from publication onward: later decision logs and clock
+rollback do not clear it. Historical verification uses the recorded manifest
+revision, not path ordering or an event timestamp sort. An exact retry reuses the
+record without consuming a new revision or requiring the old grant to stay fresh.
+Concurrent manifest growth before the initial write rejects that attempt; inspect
+the new history and retry while the grant remains eligible. A pending artifact
+transaction blocks admission until explicit valid-journal recovery; recovery can
+retain an already-written stop, so inspect status before retrying.
+
+The stop fences this mission in this repository: supervisor orders/challenges,
+wave opening, policy compilation, leases, resume, and new tool admissions deny.
+Another campaign ID, wave, provider session, or `adaptive_work.enabled: false`
+under the same mission cannot bypass it. Campaign initialization also checks
+the fence at publication. Other mission namespaces are not inferred to be
+successors or automatically stopped. Moving stopped work to a new mission is
+not authorized by this contract; semantic task equivalence and hostile raw-store
+writers are outside the reference enforcement boundary.
+
+Already-admitted tool results, exact gateway recovery/effect settlement, lease
+revocation and the existing wave-termination procedure remain separate operations.
+Status exposes retained dispatch obligations but always leaves
+`settlement_complete`, `execution_completion_claimed`, `continuation_authorized`
+and `release_authorized` false, even with no leases. A stop is neither a process
+kill nor successful mission closure. Unknown effects, gateway obligations and
+post-settlement failed-agent revocations keep their original guards.
+
+Full campaign terminal reconciliation and exact USER-authorized successor
+activation are still separate, unfinished contracts. There is intentionally no
+`resume`, `clear`, or `restart` action in this stop controller. Do not simulate
+them by editing records, adding a generic approval, or fabricating an AAR.
+The local USER log and host clock are not authenticated USER identity or trusted
+time; deployment-level enforcement remains an external responsibility.
+
 ## 3. Required Battle Rhythm
 
 Adaptive wave and dispatch admission now reconstruct supervisor readiness from

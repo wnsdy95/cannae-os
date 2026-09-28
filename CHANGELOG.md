@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add exact USER-bound campaign stop requests and immutable, historically replayed stop records. Fence new authority across the same mission even after campaign renaming or disabling adaptation; preserve admitted-result settlement and revocation. Both skills now use the stop wrapper and distinguish a durable stop from terminal reconciliation or restart, which remain open.
+
 - Guard supervisor challenge and cycle-order publication, including exact reuse, with fresh history/time/trust appraisal under the artifact namespace lease. Reject stale stops, expiry, competing issuers and rollback; preserve crash recovery ordering. Both skills now inspect partial issuance and reuse retained eligible challenges instead of bypassing a denied write.
 
 - Add exact USER/execution-bound gateway settlement for orphan admissions and signed-containment OCI reference outcomes. Preserve original failure, require post-settlement revocation, and prevent decision/order reuse across hook and gateway controllers. Other containment and managed-coordination adapters remain open. Update both operator skills with the dedicated settlement and failed-agent reporting procedure.

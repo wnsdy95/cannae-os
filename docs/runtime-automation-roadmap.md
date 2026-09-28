@@ -530,8 +530,12 @@ checks under the artifact namespace lease after pending-journal recovery. This
 closes the covered check/write gap against a preceding retained stop and keeps
 settlement available. Supervisor exact order reuse is guarded too; signed
 challenge publication rejects snapshot drift, concurrent issuance and expiry.
-This does not close campaign stop/restart contracts or atomic multi-artifact
-settlement.
+Explicit [USER stop intake](bounded-self-improvement-operations.md#210-explicit-user-stop-intake)
+now persists a monotonic stop bound to its exact pre-publication manifest,
+campaign and USER decision. The same-mission fence applies even to a new campaign
+ID or non-adaptive wave; admitted results and revocation remain recordable.
+Campaign-wide terminal settlement, exact successor authorization and atomic
+multi-artifact settlement remain open.
 See `repository-artifact-isolation-policy.md` for exact recovery ordering and
 the unchanged cooperating-writer/shared-filesystem trust boundary.
 

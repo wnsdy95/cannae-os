@@ -216,6 +216,15 @@ Recommended validation order:
 136. `oci-sandbox-containment-observation.schema.json`
 137. `gateway-effect-settlement-request.schema.json`
 138. `gateway-effect-settlement.schema.json`
+139. `campaign-stop-request.schema.json`
+140. `campaign-stop-record.schema.json`
+
+Campaign stop requests prepare an exact USER scope decision; only the draft
+request may use a none decision reference. Immutable stop records bind the
+canonical request, campaign and observed manifest while leaving all settlement,
+completion and authority flags false. The controller appraises actual retained
+consent and history; schema validity alone is not admission. See
+[Explicit USER Stop Intake](../docs/bounded-self-improvement-operations.md#210-explicit-user-stop-intake).
 
 Gateway settlement contracts bind exact USER judgement, execution-bound proof,
 admission discharge and separate containment. They preserve original failure and

@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "type": "CampaignStopRequest",
+  "mission_id": "MIS-STOP-DEMO",
+  "campaign_ref": {
+    "artifact_id": "SIC-STOP-DEMO",
+    "relative_path": "repositories/demo/missions/MIS-STOP-DEMO/C0/self-improvement-campaigns/SIC-STOP-DEMO.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "decision_ref": {
+    "artifact_id": "DL-STOP-DEMO",
+    "relative_path": "repositories/demo/missions/MIS-STOP-DEMO/C0/decision-logs/DL-STOP-DEMO.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "reason": "Stop new mission work; retain and reconcile admitted results."
+}

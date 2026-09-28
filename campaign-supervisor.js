@@ -554,12 +554,13 @@ function budgetSnapshot(campaign, pairs, retryCount) {
   };
 }
 
-function orderId(campaignId, cycleNumber, attemptNumber, transition, status, admission) {
+function orderId(campaignId, cycleNumber, attemptNumber, transition, status, admission, blockingCodes = []) {
   const transitionToken = transition.replace(/_/g, "-").toUpperCase();
   const admissionIdentity = clone(admission);
   delete admissionIdentity.evaluated_at;
   const admissionToken = sha256(JSON.stringify(admissionIdentity)).slice(0, 12).toUpperCase();
-  return `SCO-${campaignId.replace(/^[A-Z]+-/, "")}-C${cycleNumber}-A${attemptNumber}-${transitionToken}-${status.toUpperCase()}-AD${admissionToken}`;
+  const stopToken = blockingCodes.includes("CAMPAIGN_STOP_REQUESTED") ? `-STOP${sha256(JSON.stringify(blockingCodes)).slice(0, 12)}` : "";
+  return `SCO-${campaignId.replace(/^[A-Z]+-/, "")}-C${cycleNumber}-A${attemptNumber}-${transitionToken}-${status.toUpperCase()}-AD${admissionToken}${stopToken}`;
 }
 
 function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
@@ -583,6 +584,9 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
   } = history;
   const repository = store.verification.repository;
   const blocks = [];
+  if (require("./campaign-stop-controller").missionStopRecords(store, campaign.mission_id).length) {
+    addBlock(blocks, "CAMPAIGN_STOP_REQUESTED");
+  }
   if (campaign.repository_binding.repository_key !== repository.key ||
       campaign.repository_binding.identity_fingerprint !== repository.identity_fingerprint) {
     addBlock(blocks, "CAMPAIGN_REPOSITORY_BINDING_MISMATCH");
@@ -728,7 +732,9 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
     transition = "hold";
     checkpointTrigger = "manual";
     humanDecisionRequired = true;
-    requiredHumanDecision = "Correct the manifest-backed campaign chain or revise the campaign budget before resumption.";
+    requiredHumanDecision = blocks.includes("CAMPAIGN_STOP_REQUESTED")
+      ? "Preserve the USER stop, reconcile retained obligations, and obtain separately contracted successor authority."
+      : "Correct the manifest-backed campaign chain or revise the campaign budget before resumption.";
     taskOrder = holdTaskOrder(campaign, requiredHumanDecision);
   }
 
@@ -738,7 +744,7 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
       ? trustPolicy.schema_version
       : trustPolicy && ["0.3", "0.4"].includes(trustPolicy.schema_version) ? "0.4" : "0.3",
     type: "SelfImprovementCycleOrder",
-    id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission),
+    id: orderId(campaign.id, cycleNumber, attemptNumber, transition, status, trustPolicyAdmission, blocks),
     campaign_id: campaign.id,
     mission_id: campaign.mission_id,
     repository_binding: {

@@ -258,7 +258,11 @@ function main() {
         kind: "self-improvement-campaigns",
         artifactId: campaign.id,
         payload: campaign,
-        createdAt: campaign.created_at
+        createdAt: campaign.created_at,
+        publicationGuard: snapshot => {
+          require("./campaign-stop-controller").assertMissionNotStopped(snapshot, campaign.mission_id);
+          return true;
+        }
       });
       console.error(`Artifact written: ${result.relative_path}`);
     }
