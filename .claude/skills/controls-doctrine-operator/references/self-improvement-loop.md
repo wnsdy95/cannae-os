@@ -109,6 +109,24 @@ crash ordering. A generic store write without that integration is not admission.
 Read `docs/repository-artifact-isolation-policy.md` and the lifecycle document
 for covered publishers and residual cancellation/restart limits.
 
+## OCI Containment Verification
+
+An inspect error is not proof that a container is absent. Keep the original
+trusted Docker daemon/context and use the OCI wrapper's positive all-states,
+exact-target check. Do not switch to an empty daemon, prune unrelated resources,
+or remove retained history to clear an error. Failed, signaled, diagnostic, or
+malformed observations leave cleanup unverified.
+
+A retry may clear `provider_failure` after containment, but it must still return
+`recovery_required` and a nonzero CLI exit without rerunning the target or
+creating a successful observation. Inspect gateway obligations separately;
+cleanup does not settle unknown effects or authorize campaign restart.
+
+When the provider changes, remeasure the adapter and obtain the exact new USER
+execution policy for future work. Preserve old policy/envelope/observation
+digests unchanged. Read `docs/oci-linux-sandbox-provider.md`; the local reference
+does not independently attest that the daemon identity stayed the same.
+
 ## Verifier Dependency Migrations
 
 Before editing a verifier or dependency lockfile, inspect the producer metadata

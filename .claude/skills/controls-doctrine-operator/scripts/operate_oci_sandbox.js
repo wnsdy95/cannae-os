@@ -45,6 +45,7 @@ function main() {
       { cwd: process.cwd(), stdio: "inherit" }
     );
     if (result.error) throw result.error;
+    // Verified containment still leaves recovery_required with a nonzero exit.
     process.exitCode = result.status === null ? 2 : result.status;
   } catch (error) {
     console.error(error.message);

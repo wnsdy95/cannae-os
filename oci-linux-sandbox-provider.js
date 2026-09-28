@@ -937,21 +937,54 @@ function processResult(probe, successExitCodes) {
   };
 }
 
+function assertContainerAbsent(executable, container) {
+  const byId = /^[a-f0-9]{64}$/.test(container);
+  if (!byId && !/^cannae-(?:appraise-)?[a-f0-9]{24}$/.test(container)) {
+    throw new Error("Docker cleanup target is not an exact provider container identifier.");
+  }
+  // A failed inspect cannot distinguish absence from an unavailable daemon.
+  const check = runSync(
+    executable,
+    ["container", "ls", "--all", "--no-trunc", "--filter",
+      `${byId ? "id" : "name"}=${container}`, "--format", "{{json .}}"],
+    "Docker cleanup absence verification"
+  );
+  if (check.stderr.trim()) {
+    throw new Error("Docker cleanup absence verification returned diagnostics.");
+  }
+  const seenIds = new Set();
+  for (const line of check.stdout.split(/\r?\n/).filter(value => value.trim())) {
+    let row;
+    try {
+      row = JSON.parse(line);
+    } catch (error) {
+      throw new Error("Docker cleanup absence verification returned invalid JSON.");
+    }
+    if (!row || Array.isArray(row) || typeof row.ID !== "string" || !/^[a-f0-9]{64}$/.test(row.ID) ||
+        typeof row.Names !== "string" || !row.Names.trim() || seenIds.has(row.ID)) {
+      throw new Error("Docker cleanup absence verification returned an invalid container row.");
+    }
+    seenIds.add(row.ID);
+    const names = row.Names.split(",").map(name => name.trim());
+    if (names.some(name => !/^[A-Za-z0-9][A-Za-z0-9_.-]*(?:\/[A-Za-z0-9][A-Za-z0-9_.-]*)*$/.test(name)) ||
+        (byId && row.ID !== container) ||
+        (!byId && !names.some(name => name.includes(container)))) {
+      throw new Error("Docker cleanup absence verification returned an ambiguous target.");
+    }
+    // Docker's name filter also returns substring matches, not only this name.
+    if (byId || names.includes(container)) {
+      throw new Error("Docker container still exists after cleanup.");
+    }
+  }
+}
+
 function removeContainer(executable, containerId) {
   runSync(
     executable,
     ["container", "rm", "--force", containerId],
     "Docker container cleanup"
   );
-  const check = runSync(
-    executable,
-    ["container", "inspect", containerId],
-    "Docker cleanup verification",
-    { allowFailure: true }
-  );
-  if (check.status === 0) {
-    throw new Error("Docker container still exists after cleanup.");
-  }
+  assertContainerAbsent(executable, containerId);
 }
 
 function buildObservation(
@@ -1061,15 +1094,8 @@ function bestEffortRemove(executable, container) {
       "Docker recovery cleanup",
       { allowFailure: true }
     );
-    const check = runSync(
-      executable,
-      ["container", "inspect", container],
-      "Docker recovery cleanup verification",
-      { allowFailure: true }
-    );
-    return check.status === 0
-      ? "OCI_SANDBOX_CONTAINER_CLEANUP_UNVERIFIED"
-      : null;
+    assertContainerAbsent(executable, container);
+    return null;
   } catch (error) {
     return `OCI_SANDBOX_CONTAINER_CLEANUP_ERROR: ${error.message}`;
   }
