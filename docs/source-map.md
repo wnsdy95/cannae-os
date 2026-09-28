@@ -35,7 +35,8 @@ synthetic local reproduction: a failed provider callback consumed its pending
 admission, then revocation permitted wave expiry despite unknown effects.
 Gateway fixtures now retain that history across current and legacy revocation
 and reject replacement/terminal authority. This is an engineering correction,
-not an external military claim or a completed human reconciliation contract.
+not an external military claim. Its separate hook reconciliation contract is
+indexed below; gateway reconciliation remains open.
 
 `docs/implementation-candidate-registry.md` and
 `docs/completion-backlog.md` apply the existing KM separation of source,

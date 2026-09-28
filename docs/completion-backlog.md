@@ -29,10 +29,11 @@ before an operation. No row grants approval or changes the USER's final authorit
 | 11 | Production trust infrastructure: provider admission contracts/reference adapters exist; externally operated infrastructure is not supplied by this repository. | Deploy and independently appraise real coordinator/fencing, hardened hosts, TPM/TEE or equivalent trust evidence, KMS/HSM, exclusive tool path, and durable storage; verify integrated execution and failure recovery. Fixture adapters cannot satisfy deployment proof. |
 | 12 | Long-term transparency/release operations: local checkpoint continuity exists; independent retention, liveness, rotation, and established-lineage incident reset need operations/design. | Independently operated append-only checkpoint store and witnesses, trusted time, short-lived credential rotation, failure/rollback exercises, and a separately USER-approved reset contract. Bootstrap recovery is not an established-lineage reset. |
 
-Row 2 now has a non-authorizing tool-effect review packet that checks the exact
-invocation, scope, observation, plan, receipt, and live repository bindings.
-It does not close USER settlement: proof authenticity, complete effect scope,
-exact decision consumption, gateway cleanup, and terminal replay remain open.
+Row 2 separates the non-authorizing review packet from the exact hook settlement
+controller. Hook settlement now consumes a USER scope decision and execution-bound
+proof, with historical replay and guarded publication. Effect completeness remains
+USER judgement, not a machine guarantee. Gateway cleanup/transaction settlement
+and full campaign stop/restart remain open; a local USER log is not authentication.
 
 Orders 10-12 include external operator dependencies and can progress alongside
 repository work, but may not be reported complete without actual evidence.
