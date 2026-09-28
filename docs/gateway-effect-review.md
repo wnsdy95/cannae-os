@@ -12,7 +12,8 @@ or clear effects; use the OCI evidence appraiser separately.
 ## Purpose
 
 Prepare an exact, non-authorizing review of a retained gateway transaction.
-This is a dependency of future gateway settlement, not the settlement itself.
+This is input to [gateway settlement](gateway-effect-settlement.md), not the
+settlement itself.
 It is an engineering synthesis of the existing
 [gateway](protected-tool-gateway-contract.md),
 [dispatch](enforced-dispatch-and-resume.md), and
@@ -109,12 +110,11 @@ not discharge a pending admission, mutate historical failures, clear gateway
 obligations, revoke a lease, permit resume/report/closeout, or authorize release.
 Do not feed this review into hook settlement or remove its gateway exclusion.
 
-A future gateway-specific controller must consume this exact scope, authenticated
-execution-bound proof, independent containment/coordination evidence where
-required, and a fresh exact USER decision. It must discharge only the exact
-admission, preserve the failed agent result, and separate revocation and future
-mission authority. These are open completion criteria in
-[the completion backlog](completion-backlog.md), not implemented capabilities.
+The separate [gateway settlement controller](gateway-effect-settlement.md)
+consumes the exact review, execution-bound proof and fresh USER judgement. It
+supports unstarted orphan admissions and OCI reference execution with separately
+verified signed containment. Other containment adapters, managed coordination
+and full campaign restart remain open in [the completion backlog](completion-backlog.md).
 
 ## Validation
 

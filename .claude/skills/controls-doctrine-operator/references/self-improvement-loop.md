@@ -135,7 +135,8 @@ subject, minimum boundaries and additional affected resources before checks.
 Any new checkpoint, execution record, resource or check requires a new scope
 and proof. `evidence_bound`, verified container absence, and exit zero never
 discharge the pending admission or grant the blocked agent inspection authority.
-Gateway settlement remains open; do not bypass the hook controller's exclusion.
+For supported subjects use the separate gateway settlement procedure below;
+never bypass the hook controller's exclusion.
 
 Read dispatch status and gateway status together before reporting or resuming.
 Zero pending callbacks and zero hook unknown effects can coexist with an
@@ -147,7 +148,7 @@ Only the validated gateway operation may complete or cancel its admission.
 Never supply internal-looking option flags, manually insert a checkpoint, or
 route it through hook-only settlement. Before execution, retry admission or
 recover with the exact input. After execution, preserve the unknown-outcome
-hold; gateway effect settlement remains a separate unimplemented contract.
+hold until the separate gateway settlement controller appraises exact proof.
 Read-only status returning exit zero means the query worked, not permission.
 
 If commit stopped after checkpoint publication, retry only the same verified
@@ -158,6 +159,18 @@ tests can miss CLI initialization defects. Also inject changed ownership between
 validation and publication, not just before a controller starts.
 
 ## OCI Containment Verification
+
+Read `docs/gateway-effect-settlement.md` before discharge. After collecting
+containment, freeze the subject, obtain execution-bound inspection quorum and
+the exact USER decision including the containment reference, then invoke
+`scripts/settle_gateway_effects.js`. Never create its record through the raw
+store CLI. Decisions and orders are one-use across hook and gateway families.
+Read `effects_reconciled` separately from the original gateway state: settlement
+does not rewrite a denied or failed invocation. Revoke affected leases after
+settlement and retain a failed/blocked report. A none effect checkpoint in an
+orphan record does not remove its failed-agent marker. Unsupported containment
+or managed coordination proof stays blocked; it is not a reason to change the
+execution mode, waive containment, or resume the original work.
 
 Collect the signed `containment_observation_ref` before freezing a gateway
 effect scope; use `scripts/operate_oci_sandbox.js contain` for a fresh observation

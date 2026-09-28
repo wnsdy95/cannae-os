@@ -234,7 +234,8 @@ function initRepository(name) {
   runGit(repository, ["config", "user.email", "fixtures@example.com"]);
   runGit(repository, ["config", "user.name", "OCI Sandbox Fixture"]);
   fs.writeFileSync(path.join(repository, "README.md"), "oci sandbox\n");
-  runGit(repository, ["add", "README.md", PROFILE_RELATIVE_PATH]);
+  require("./effect-settlement-fixture-support").installEffectSettlementFixtureChecker(repository);
+  runGit(repository, ["add", "README.md", "check-effects.js", PROFILE_RELATIVE_PATH]);
   runGit(repository, ["commit", "-qm", "initial"]);
   return fs.realpathSync(repository);
 }
@@ -1050,6 +1051,39 @@ fixture("post-create interruption removes the container and never reruns", async
     { allowFailure: true }
   );
   assert.notStrictEqual(inspect.status, 0);
+});
+
+for (const mode of ["recovered", "committed-failure"]) fixture(`${mode} OCI invocation settles exact evidence and retains the failed agent`, async () => {
+  const setup = setupScenario(`SETTLEMENT-${mode}`, sandboxRule(`SETTLEMENT-${mode}`,
+    mode === "recovered" ? ["workload", "success"] : ["workload", "sleep"], { timeout_ms: 120 }));
+  const result = await execute(setup, mode === "recovered" ? { faultInjectionStage: "after_create" } : {});
+  assert.strictEqual(result.state, mode === "recovered" ? "recovery_required" : "committed", result.provider_failure);
+  const contained = observeOciSandboxContainment({ ...setup.gatewayOptions, adapterPrivateKeyPem: setup.keys.privateKeyPem },
+    { transactionId: setup.transactionId });
+  assert(contained.containment_observation_ref);
+  const proof = require("./effect-settlement-fixture-support").createGatewaySettlementFixture(setup.gatewayOptions,
+    setup.transactionId, path.join(temporaryRoot, `proof-${mode}`));
+  const { settleGatewayEffects } = require("./gateway-effect-settlement");
+  const runtime = require("./dispatch-runtime-controller");
+  const before = runtime.dispatchStatus(setup.gatewayOptions).leases[0];
+  assert.strictEqual(before.unresolved_gateway_transactions, 1);
+  assert.throws(() => settleGatewayEffects({ ...setup.gatewayOptions,
+    now: loadArtifact(contained.containment_observation_ref).expires_at }, proof.request), /GATEWAY_SETTLEMENT_CONTAINMENT_INVALID:OCI_CONTAINMENT_NOT_CURRENT/);
+  const settled = settleGatewayEffects(setup.gatewayOptions, proof.request);
+  assert.strictEqual(settled.settlement.containment_verified, true);
+  assert.strictEqual(settled.settlement.tool_execution_authorized, false);
+  const after = runtime.dispatchStatus(setup.gatewayOptions).leases[0];
+  assert.strictEqual(after.unresolved_gateway_transactions, 0);
+  assert.strictEqual(after.pending_tool_requests, 0);
+  assert.strictEqual(after.unresolved_tool_effects, 0);
+  assert.strictEqual(after.reconciled_failed_effects, 1);
+  assert.strictEqual(after.failed_effect_revocation_required, true);
+  assert.throws(() => runtime.completeLease(setup.gatewayOptions, after.lease_id), /RECONCILED_FAILED_AGENT/);
+  runtime.revokeLease(setup.gatewayOptions, after.lease_id);
+  assert.strictEqual(runtime.dispatchStatus(setup.gatewayOptions).leases[0].failed_effect_revocation_required, false);
+  assert.strictEqual(transactionStatus(setup).state, result.state);
+  assert.deepStrictEqual(transactionStatus(setup).receipt_ref, result.receipt_ref);
+  assert.strictEqual(settleGatewayEffects(setup.gatewayOptions, proof.request).reused, true);
 });
 
 fixture("recovery replay reports cleanup failure and retries containment", async () => {

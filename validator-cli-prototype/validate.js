@@ -159,6 +159,8 @@ const TYPE_TO_SCHEMA = {
   "gateway-effect-subject": "gateway-effect-subject.schema.json",
   "gateway-effect-scope": "gateway-effect-scope.schema.json",
   "gateway-effect-review": "gateway-effect-review.schema.json",
+  "gateway-effect-settlement-request": "gateway-effect-settlement-request.schema.json",
+  "gateway-effect-settlement": "gateway-effect-settlement.schema.json",
   "tool-effect-review": "tool-effect-review.schema.json",
   "tool-effect-settlement-request": "tool-effect-settlement-request.schema.json",
   "tool-effect-settlement": "tool-effect-settlement.schema.json",
@@ -1412,16 +1414,39 @@ function semanticRules(payload, type, options = {}) {
     }
   }
 
-  if (type === "tool-effect-settlement") {
+  if (type === "tool-effect-settlement" || type === "gateway-effect-settlement") {
     if (payload.request && typeof payload.request === "object") {
       const digest = canonicalControlDigestWithout(payload.request, []);
-      if (payload.request_sha256 !== digest || payload.id !== `TESL-${digest.slice(0, 32)}`) {
+      const prefix = type === "gateway-effect-settlement" ? "GESL" : "TESL";
+      if (payload.request_sha256 !== digest || payload.id !== `${prefix}-${digest.slice(0, 32)}`) {
         issues.push(issue("critical", "TOOL_EFFECT_SETTLEMENT_REQUEST_BINDING_MISMATCH", "$.request_sha256", "Settlement identity must bind its exact canonical request."));
       }
     }
     if (!isValidDate(payload.settled_at) || !isValidDate(payload.admission_valid_until) ||
         Date.parse(payload.settled_at) >= Date.parse(payload.admission_valid_until)) {
       issues.push(issue("critical", "TOOL_EFFECT_SETTLEMENT_TIME_INVALID", "$", "Settlement must occur inside its exact proof and decision admission window."));
+    }
+  }
+
+  if (type === "gateway-effect-settlement-request" || type === "gateway-effect-settlement") {
+    const request = type === "gateway-effect-settlement" ? payload.request || {} : payload;
+    for (const reference of [request.review_ref, request.campaign_ref, request.cycle_order_ref, request.decision_ref,
+      ...(Array.isArray(request.attestation_refs) ? request.attestation_refs : [])]) {
+      if (artifactRefKind(reference) !== "concrete") issues.push(issue("critical", "GATEWAY_SETTLEMENT_REFERENCE_INVALID", "$", "Settlement proof references must be concrete."));
+    }
+    if (artifactRefKind(request.containment_observation_ref) === "malformed") {
+      issues.push(issue("critical", "GATEWAY_SETTLEMENT_CONTAINMENT_INVALID", "$", "Containment must use a concrete reference or the exact none sentinel."));
+    }
+    if (type === "gateway-effect-settlement") {
+      for (const key of ["gateway_request_ref", "scope_ref", "lease_ref", "checkpoint_ref", "admission_ref"]) {
+        if (artifactRefKind(payload[key]) !== "concrete") issues.push(issue("critical", "GATEWAY_SETTLEMENT_REFERENCE_INVALID", `$.${key}`, "Settlement discharge requires an exact reference."));
+      }
+      if (artifactRefKind(payload.effect_checkpoint_ref) === "malformed" ||
+          payload.containment_required !== payload.containment_verified ||
+          (payload.containment_required ? artifactRefKind(request.containment_observation_ref) !== "concrete"
+            : artifactRefKind(request.containment_observation_ref) !== "none")) {
+        issues.push(issue("critical", "GATEWAY_SETTLEMENT_CONTAINMENT_INVALID", "$", "A required containment boundary must be verified, never omitted or inferred from a none reference."));
+      }
     }
   }
 

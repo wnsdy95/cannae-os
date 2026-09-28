@@ -212,7 +212,9 @@ containment verification; this guard does not implement that settlement workflow
 For unresolved effects, start with [Gateway Effect Review](gateway-effect-review.md).
 Its intake distinguishes unstarted work, recovered unknown outcomes, committed
 unknown effects and orphan admissions. It prepares inspection evidence only;
-gateway settlement remains open and the hook settlement exclusion still applies.
+the separate [gateway settlement controller](gateway-effect-settlement.md) is
+required for exact orphan/OCI-reference reconciliation. Other containment and
+managed-coordination adapters remain open; hook settlement still excludes gateways.
 
 ### 6.1 Prepare
 

@@ -117,8 +117,8 @@ const RULES = [
   {
     id: "gateway-effect-review",
     keywords: ["gateway effect", "gateway settlement", "gateway reconciliation", "gateway-effect", "orphan admission"],
-    docs: ["docs/gateway-effect-review.md", "docs/protected-tool-gateway-contract.md", "docs/enforced-dispatch-and-resume.md", "docs/approval-scope-policy.md", "docs/completion-backlog.md"],
-    commands: ["node run-gateway-effect-review-fixtures.js", "node run-protected-tool-gateway-fixtures.js", "node run-tool-effect-review-fixtures.js", "node run-tool-effect-settlement-fixtures.js"]
+    docs: ["docs/gateway-effect-review.md", "docs/gateway-effect-settlement.md", "docs/protected-tool-gateway-contract.md", "docs/enforced-dispatch-and-resume.md", "docs/approval-scope-policy.md", "docs/completion-backlog.md"],
+    commands: ["node run-gateway-effect-review-fixtures.js", "node run-gateway-effect-settlement-fixtures.js", "node run-oci-linux-sandbox-provider-fixtures.js", "node run-protected-tool-gateway-fixtures.js", "node run-tool-effect-review-fixtures.js", "node run-tool-effect-settlement-fixtures.js"]
   },
   {
     id: "tool-effect-review",
@@ -466,7 +466,7 @@ const EXCLUDED_DIRS = new Set([
 const ROUTE_HINTS = [
   {
     id: "gateway-effect-review",
-    keywords: ["gateway-effect", "review_gateway_effects"]
+    keywords: ["gateway-effect", "review_gateway_effects", "settle_gateway_effects", "effect-settlement-fixture-support"]
   },
   {
     id: "tool-effect-review",
