@@ -34,6 +34,10 @@ controller. Hook settlement now consumes a USER scope decision and execution-bou
 proof, with historical replay and guarded publication. Effect completeness remains
 USER judgement, not a machine guarantee. Gateway cleanup/transaction settlement
 and full campaign stop/restart remain open; a local USER log is not authentication.
+Gateway ownership and retained-obligation guards now reject direct hook
+completion/cancellation and preserve holds across legacy terminal leases, new
+waves, and report/closeout/termination publication. These guards do not resolve
+an executing transaction's unknown effects; gateway settlement remains open.
 OCI cleanup now requires positive exact-target absence evidence, including on
 recovery replay. This repairs containment verification, not gateway transaction
 settlement, daemon identity attestation, or campaign restart.

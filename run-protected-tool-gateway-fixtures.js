@@ -65,7 +65,7 @@ function initRepository(name) {
   fs.writeFileSync(path.join(repository, "README.md"), "protected gateway fixture\n");
   runGit(repository, ["add", "README.md"]);
   runGit(repository, ["commit", "-qm", "initial"]);
-  return repository;
+  return fs.realpathSync(repository);
 }
 
 function expectThrow(fn, pattern) {
@@ -249,58 +249,23 @@ function loadArtifact(ref) {
   return JSON.parse(fs.readFileSync(path.join(artifactRoot, ref.relative_path), "utf8"));
 }
 
-function persistReceivedRequest(setup, request) {
-  const requestWrite = writeRepositoryArtifact({
-    repositoryPath: setup.repository,
-    artifactRoot,
-    missionId: request.mission_id,
-    waveId: request.wave_id,
-    kind: "tool-gateway-requests",
-    artifactId: request.id,
-    payload: request,
-    createdAt: request.requested_at
-  });
-  const requestRef = {
-    artifact_id: request.id,
-    relative_path: requestWrite.relative_path,
-    sha256: requestWrite.sha256
+function interruptBeforeGatewayDecision(setup, request) {
+  let interrupted = false;
+  beforePublication = write => {
+    if (write.repositoryPath !== setup.repository || write.kind !== "tool-gateway-decisions") return;
+    beforePublication = null;
+    interrupted = true;
+    throw new Error("SYNTHETIC_GATEWAY_DECISION_CRASH");
   };
-  const event = {
-    schema_version: "0.2",
-    type: "ToolGatewayTransactionEvent",
-    id: `GTE-${request.id.replace(/^TGR-/, "")}-received`,
-    transaction_id: request.transaction_id,
-    mission_id: request.mission_id,
-    wave_id: request.wave_id,
-    agent_id: request.agent_id,
-    sequence: 1,
-    previous_event_ref: clone(NONE_REF),
-    state: "received",
-    request_ref: requestRef,
-    decision_ref: clone(NONE_REF),
-    receipt_ref: clone(NONE_REF),
-    admission_ref: clone(NONE_REF),
-    checkpoint_ref: clone(request.checkpoint_ref),
-    identity_policy_ref: clone(request.identity_policy_ref),
-    identity_challenge_ref: clone(request.identity_challenge_ref),
-    principal_evidence_ref: clone(request.principal_evidence_ref),
-    repository_binding: clone(request.repository_binding),
-    idempotency_key: request.idempotency_key,
-    tool_input_sha256: request.tool_call.tool_input_sha256,
-    reason_codes: ["GATEWAY_REQUEST_RECEIVED"],
-    recorded_at: request.requested_at,
-    authority: clone(request.authority)
-  };
-  writeRepositoryArtifact({
-    repositoryPath: setup.repository,
-    artifactRoot,
-    missionId: request.mission_id,
-    waveId: request.wave_id,
-    kind: "tool-gateway-transaction-events",
-    artifactId: event.id,
-    payload: event,
-    createdAt: event.recorded_at
-  });
+  try {
+    expectThrow(() => admitGatewayRequest(trustedOptions(setup, request, "2026-07-24T01:00:11Z"),
+      request, toolInput), /SYNTHETIC_GATEWAY_DECISION_CRASH/);
+    assert(interrupted);
+    assert.strictEqual(gatewayStatus({ repository: setup.repository, artifactRoot },
+      { transactionId: request.transaction_id }).transactions[0].state, "received");
+  } finally {
+    beforePublication = null;
+  }
 }
 
 function fixtureExecutor() {
@@ -322,6 +287,277 @@ const fixtures = [];
 
 function fixture(name, fn) {
   fixtures.push({ name, fn });
+}
+
+function retainLegacyCompletion(setup, request, result = { stdout: "legacy result" }) {
+  const runtime = require("./dispatch-runtime-controller");
+  const selected = activeLease(trustedOptions(setup, request, "2026-07-24T01:00:40Z"), setup.identity);
+  const decision = loadArtifact(gatewayStatus({ repository: setup.repository, artifactRoot },
+    { transactionId: request.transaction_id }).transactions[0].decision_ref);
+  const checkpoint = {
+    ...clone(selected.checkpointRecord.payload), id: `AEC-${setup.plan.mission_id}-LEGACY-CALLBACK`,
+    sequence: selected.checkpointRecord.payload.sequence + 1, checkpoint_kind: "post_tool",
+    previous_checkpoint_ref: clone(selected.checkpointRecord.ref), tool_admission_ref: clone(decision.admission_ref),
+    execution_result: { status: "succeeded", external_effects: "repository_state_recorded",
+      provider_result_sha256: runtime.toolCompletionResultDigest({ hook_event_name: "PostToolUse",
+        tool_use_id: request.tool_call.tool_use_id, tool_name: request.tool_call.tool_name,
+        tool_input: toolInput, tool_response: result }) },
+    reason_codes: ["LEGACY_GATEWAY_CALLBACK"], recorded_at: "2026-07-24T01:00:40Z"
+  };
+  const written = writeRepositoryArtifact({ repositoryPath: setup.repository, artifactRoot,
+    missionId: checkpoint.mission_id, waveId: checkpoint.wave_id, kind: "agent-execution-checkpoints",
+    artifactId: checkpoint.id, payload: checkpoint, createdAt: checkpoint.recorded_at });
+  return { payload: checkpoint, ref: { artifact_id: checkpoint.id, relative_path: written.relative_path, sha256: written.sha256 } };
+}
+
+fixture("gateway-owned requests reject direct hooks, cancellation and caller-declared bypass flags", () => {
+  const setup = setupScenario("OWNERSHIP");
+  const request = gatewayRequest(setup, "001");
+  const runtime = require("./dispatch-runtime-controller");
+  const options = trustedOptions(setup, request, "2026-07-24T01:00:10Z");
+  assert.strictEqual(admitGatewayRequest(options, request, toolInput).state, "authorized");
+  for (const state of ["authorized", "executing", "recovery_required"]) {
+    if (state === "executing") {
+      options.now = "2026-07-24T01:00:20Z";
+      assert.strictEqual(beginGatewayExecution(options, request.transaction_id).state, state);
+    }
+    if (state === "recovery_required") {
+      options.now = "2026-07-24T01:00:30Z";
+      assert.strictEqual(recoverGatewayTransaction(options, request.transaction_id).state, state);
+    }
+    const revision = gatewayStatus(options).artifact_store.manifest_revision;
+    const forged = { ...options, gatewayDispatchScope: true, gatewayTransactionId: request.transaction_id,
+      allowCurrentOperation: true, skipGateway: true };
+    for (const hook_event_name of ["PostToolUse", "PostToolUseFailure"]) {
+      const result = runtime.completeToolRequest(forged, setup.identity, {
+        hook_event_name, tool_use_id: request.tool_call.tool_use_id,
+        tool_name: request.tool_call.tool_name, tool_input: toolInput, tool_response: { synthetic: true }
+      });
+      assert(result.reason_codes.includes("GATEWAY_DISPATCH_OWNERSHIP_REQUIRED"), state);
+      assert.strictEqual(result.execution_authorized, false);
+    }
+    const cancelled = runtime.cancelToolRequest(forged, setup.identity, {
+      toolUseId: request.tool_call.tool_use_id, toolName: request.tool_call.tool_name, toolInput
+    });
+    assert(cancelled.reason_codes.includes("GATEWAY_DISPATCH_OWNERSHIP_REQUIRED"), state);
+    const next = admitToolRequest(forged, setup.identity, { hook_event_name: "PreToolUse",
+      tool_use_id: `next-${state}`, tool_name: "Bash", tool_input: toolInput });
+    assert(next.reason_codes.includes("UNRESOLVED_GATEWAY_TRANSACTIONS"), state);
+    assert.strictEqual(gatewayStatus(options).artifact_store.manifest_revision, revision,
+      "direct denied operations must not write a completion or admission");
+    const projection = runtime.dispatchStatus(options).leases[0];
+    assert.strictEqual(projection.unresolved_gateway_transactions, 1);
+    assert.strictEqual(projection.gateway_obligations[0].state, state);
+  }
+});
+
+for (const status of ["revoked", "completed", "superseded", "interrupted"]) {
+  fixture(`gateway recovery survives legacy callback and ${status} lease history`, () => {
+    const setup = setupScenario(`LEGACY-GATEWAY-${status}`);
+    const request = gatewayRequest(setup, "001");
+    const runtime = require("./dispatch-runtime-controller");
+    const options = trustedOptions(setup, request, "2026-07-24T01:00:10Z");
+    admitGatewayRequest(options, request, toolInput);
+    beginGatewayExecution({ ...options, now: "2026-07-24T01:00:20Z" }, request.transaction_id);
+    recoverGatewayTransaction({ ...options, now: "2026-07-24T01:00:30Z" }, request.transaction_id);
+    const completion = retainLegacyCompletion(setup, request);
+    const terminal = { ...clone(completion.payload), id: `AEC-${setup.plan.mission_id}-LEGACY-TERMINAL`,
+      sequence: completion.payload.sequence + 1, previous_checkpoint_ref: completion.ref,
+      checkpoint_kind: { revoked: "revocation", completed: "completion", superseded: "supersession", interrupted: "interruption" }[status],
+      lease_status: status, tool_admission_ref: clone(NONE_REF),
+      execution_result: { status: "not_applicable", external_effects: "none", provider_result_sha256: "none" },
+      recorded_at: "2026-07-24T01:00:45Z" };
+    writeRepositoryArtifact({ repositoryPath: setup.repository, artifactRoot, missionId: request.mission_id,
+      waveId: request.wave_id, kind: "agent-execution-checkpoints", artifactId: terminal.id,
+      payload: terminal, createdAt: terminal.recorded_at });
+    options.now = "2026-07-24T01:00:50Z";
+    const projection = runtime.dispatchStatus(options).leases[0];
+    assert.strictEqual(projection.pending_tool_requests, 0);
+    assert.strictEqual(projection.unresolved_tool_effects, 0);
+    assert.strictEqual(projection.unresolved_gateway_transactions, 1);
+    assert.strictEqual(projection.gateway_obligations[0].state, "recovery_required");
+    expectThrow(() => runtime.resumeLease(options, setup.issued.lease.id,
+      { sessionId: "legacy-replacement", providerAgentId: "main" }), /UNRESOLVED_GATEWAY_TRANSACTIONS/);
+    expectThrow(() => require("./skill-mission-controller").terminateWave({
+      schema_version: "0.1", type: "MissionWaveTerminationRequest", mission_id: setup.plan.mission_id,
+      wave_id: setup.plan.wave_id, status: "expired", reason: "Gateway obligations remain unresolved.",
+      plan_ref: setup.issued.lease.plan_ref, successor_plan_ref: clone(NONE_REF), decision_ref: clone(NONE_REF)
+    }, { ...options, now: new Date(Date.parse(setup.plan.valid_until) + 1000).toISOString() }), /UNRESOLVED_GATEWAY_TRANSACTIONS/);
+    if (status === "completed") {
+      const evidence = writeRepositoryArtifact({ repositoryPath: setup.repository, artifactRoot,
+        missionId: request.mission_id, waveId: request.wave_id, kind: "deliverables", artifactId: "OUT-GatewayPartial",
+        payload: { synthetic: true }, createdAt: options.now });
+      expectThrow(() => require("./skill-mission-controller").recordWave({
+        schema_version: "0.1", type: "MissionWaveReport", id: "MWR-GatewayUnknown", mission_id: request.mission_id,
+        wave_id: request.wave_id, plan_ref: setup.issued.lease.plan_ref,
+        routing_preflight_ref: setup.issued.lease.routing_preflight_ref,
+        agent_results: [{ agent_id: "plans-agent", context_pack_ref: setup.issued.lease.context_pack_ref,
+          status: "complete", summary: "Synthetic legacy completion.", completed_actions: ["Record partial work."],
+          blockers: [], evidence_refs: [{ artifact_id: "OUT-GatewayPartial", relative_path: evidence.relative_path, sha256: evidence.sha256 }],
+          improvement_candidates: [], next_actions: ["Reconcile gateway state."] }], wave_status: "complete",
+        human_decisions_required: [], release_requested: false, recorded_at: options.now
+      }, { ...options, doctrineRoot: ROOT }), /UNRESOLVED_GATEWAY_TRANSACTIONS/);
+      for (const tree of ["codex-skills", ".claude/skills"]) {
+        const result = spawnSync(process.execPath, [path.join(ROOT, tree,
+          "controls-doctrine-operator/scripts/operate_dispatch_runtime.js"), "status",
+          "--repository", setup.repository, "--artifact-root", artifactRoot], { cwd: os.tmpdir(), encoding: "utf8" });
+        assert.strictEqual(result.status, 0, result.stderr);
+        assert.strictEqual(JSON.parse(result.stdout).leases[0].unresolved_gateway_transactions, 1);
+      }
+    }
+    const nextPlan = clone(setup.plan);
+    nextPlan.id += "-NEXT";
+    nextPlan.wave_id = "W2";
+    const draft = policyDraft(nextPlan, `NEXT-GATEWAY-${status}`);
+    nextPlan.dispatch_control.policy_authorizations = [{ agent_id: draft.agent_id, provider: draft.provider,
+      policy_id: draft.id, draft_sha256: inputDigest(draft) }];
+    openWave(nextPlan, { ...options, doctrineRoot: ROOT });
+    authorizeDispatchPolicy(options, draft);
+    expectThrow(() => issueLease(options, draft.id, { sessionId: "next-wave", providerAgentId: "main" }), /UNRESOLVED_GATEWAY_TRANSACTIONS/);
+    assert.strictEqual(gatewayStatus(options, { transactionId: request.transaction_id }).transactions[0].state, "recovery_required");
+  });
+}
+
+fixture("gateway commit rejects a conflicting legacy provider-result checkpoint", () => {
+  const setup = setupScenario("LEGACY-RESULT");
+  const request = gatewayRequest(setup, "001");
+  const options = trustedOptions(setup, request, "2026-07-24T01:00:10Z");
+  admitGatewayRequest(options, request, toolInput);
+  const begun = beginGatewayExecution({ ...options, now: "2026-07-24T01:00:20Z" }, request.transaction_id);
+  retainLegacyCompletion(setup, request, { stdout: "different result" });
+  expectThrow(() => commitGatewayExecution({ ...options, now: "2026-07-24T01:00:50Z" }, request.transaction_id, {
+    executionEventRef: begun.execution_event_ref, toolInput, result: { stdout: "actual result" },
+    executor: fixtureExecutor(), status: "succeeded", startedAt: "2026-07-24T01:00:20Z",
+    finishedAt: "2026-07-24T01:00:30Z", exitCode: 0
+  }), /GATEWAY_COMPLETION_CHECKPOINT_MISMATCH/);
+  const status = gatewayStatus(options, { transactionId: request.transaction_id }).transactions[0];
+  assert.strictEqual(status.state, "executing");
+  assert.deepStrictEqual(status.receipt_ref, NONE_REF);
+});
+
+fixture("gateway commit resumes its exact checkpoint after receipt publication interruption", () => {
+  const setup = setupScenario("COMMIT-RETRY");
+  const request = gatewayRequest(setup, "001");
+  const options = trustedOptions(setup, request, "2026-07-24T01:00:10Z");
+  admitGatewayRequest(options, request, toolInput);
+  let begun;
+  for (const tree of ["codex-skills", ".claude/skills"]) {
+    const result = spawnSync(process.execPath, [path.join(ROOT, tree,
+      "controls-doctrine-operator/scripts/operate_protected_gateway.js"), "begin",
+      "--repository", setup.repository, "--artifact-root", artifactRoot,
+      "--transaction", request.transaction_id, "--at", "2026-07-24T01:00:20Z",
+      "--verified-principal-sha256", options.verifiedPrincipalSha256,
+      "--gateway-binding-sha256", options.gatewayBindingSha256], { cwd: os.tmpdir(), encoding: "utf8" });
+    assert.strictEqual(result.status, 0, result.stderr);
+    const current = JSON.parse(result.stdout);
+    assert.strictEqual(current.state, "executing");
+    if (begun) assert.deepStrictEqual(current.execution_event_ref, begun.execution_event_ref);
+    begun = current;
+  }
+  const descriptor = { executionEventRef: begun.execution_event_ref, toolInput, result: { stdout: "exact result" },
+    executor: fixtureExecutor(), status: "succeeded", startedAt: "2026-07-24T01:00:20Z",
+    finishedAt: "2026-07-24T01:00:30Z", exitCode: 0 };
+  options.now = "2026-07-24T01:00:40Z";
+  let interrupted = false;
+  beforePublication = write => {
+    if (write.repositoryPath !== setup.repository || write.kind !== "tool-execution-receipts") return;
+    beforePublication = null;
+    interrupted = true;
+    throw new Error("SYNTHETIC_GATEWAY_RECEIPT_CRASH");
+  };
+  try {
+    expectThrow(() => commitGatewayExecution(options, request.transaction_id, descriptor), /SYNTHETIC_GATEWAY_RECEIPT_CRASH/);
+    assert(interrupted);
+  } finally {
+    beforePublication = null;
+  }
+  const runtime = require("./dispatch-runtime-controller");
+  assert.strictEqual(runtime.dispatchStatus(options).leases[0].unresolved_gateway_transactions, 1);
+  options.now = "2026-07-24T01:00:50Z";
+  assert.strictEqual(commitGatewayExecution(options, request.transaction_id, descriptor).state, "committed");
+  assert.strictEqual(runtime.dispatchStatus(options).leases[0].unresolved_gateway_transactions, 0);
+  assert.strictEqual(activeLease(options, setup.identity).code, "LEASE_ACTIVE");
+});
+
+for (const operation of ["complete", "cancel", "revoke", "issue", "report", "close", "terminate"]) {
+  fixture(`gateway obligation appearing at ${operation} publication blocks the stale operation`, () => {
+    const setup = setupScenario(`PUBLISH-${operation}`);
+    const request = gatewayRequest(setup, "001");
+    const options = trustedOptions(setup, request, "2026-07-24T01:00:20Z");
+    const runtime = require("./dispatch-runtime-controller");
+    const mission = require("./skill-mission-controller");
+    const report = { schema_version: "0.1", type: "MissionWaveReport", id: `MWR-PUBLISH-${operation}`,
+      mission_id: request.mission_id, wave_id: request.wave_id, plan_ref: setup.issued.lease.plan_ref,
+      routing_preflight_ref: setup.issued.lease.routing_preflight_ref,
+      agent_results: [{ agent_id: "plans-agent", context_pack_ref: setup.issued.lease.context_pack_ref,
+        status: "blocked", summary: "No execution claimed.", completed_actions: [], blockers: ["Work stopped."],
+        evidence_refs: [], improvement_candidates: [], next_actions: ["Inspect the retained state."] }],
+      wave_status: "blocked", human_decisions_required: [], release_requested: false, recorded_at: options.now };
+    let run;
+    let kind = "agent-execution-checkpoints";
+    if (["complete", "cancel"].includes(operation)) {
+      assert.strictEqual(admitToolRequest(options, setup.identity, { hook_event_name: "PreToolUse",
+        tool_use_id: request.tool_call.tool_use_id, tool_name: "Bash", tool_input: toolInput }).decision, "allow");
+      run = operation === "complete"
+        ? () => runtime.completeToolRequest(options, setup.identity, { hook_event_name: "PostToolUse",
+          tool_use_id: request.tool_call.tool_use_id, tool_name: "Bash", tool_input: toolInput, tool_response: {} })
+        : () => runtime.cancelToolRequest(options, setup.identity, { toolUseId: request.tool_call.tool_use_id,
+          toolName: "Bash", toolInput });
+    } else if (operation === "revoke") {
+      run = () => runtime.revokeLease(options, setup.issued.lease.id);
+    } else {
+      assert.strictEqual(runtime.revokeLease(options, setup.issued.lease.id).status, "revoked");
+      if (operation === "issue") {
+        const plan = clone(setup.plan);
+        plan.id += "-NEXT";
+        plan.wave_id = "W2";
+        const draft = policyDraft(plan, "PUBLICATION-NEXT");
+        plan.dispatch_control.policy_authorizations = [{ agent_id: draft.agent_id, provider: draft.provider,
+          policy_id: draft.id, draft_sha256: inputDigest(draft) }];
+        openWave(plan, { ...options, doctrineRoot: ROOT });
+        authorizeDispatchPolicy(options, draft);
+        kind = "agent-dispatch-leases";
+        run = () => issueLease(options, draft.id, { sessionId: "next-session", providerAgentId: "main" });
+      } else if (operation === "report") {
+        kind = "mission-wave-reports";
+        run = () => mission.recordWave(report, { ...options, doctrineRoot: ROOT });
+      } else if (operation === "close") {
+        mission.recordWave(report, { ...options, doctrineRoot: ROOT });
+        kind = "mission-wave-closeouts";
+        const aar = { id: "AAR-GATEWAY-PUBLICATION", mission_id: request.mission_id,
+          expected: ["Retain stopped work."], actual: ["No execution claimed."], delta: [], causes: [],
+          sustain: ["Preserve evidence."], improve: [], sop_updates: [] };
+        run = () => mission.closeWave(aar, { ...options, missionId: request.mission_id, waveId: request.wave_id });
+      } else {
+        kind = "mission-wave-terminations";
+        run = () => mission.terminateWave({ schema_version: "0.1", type: "MissionWaveTerminationRequest",
+          mission_id: request.mission_id, wave_id: request.wave_id, status: "expired", reason: "No execution claimed.",
+          plan_ref: setup.issued.lease.plan_ref,
+          successor_plan_ref: clone(NONE_REF), decision_ref: clone(NONE_REF) },
+        { ...options, now: new Date(Date.parse(setup.plan.valid_until) + 1000).toISOString() });
+      }
+    }
+    let injected = false;
+    let deniedId;
+    beforePublication = write => {
+      if (write.repositoryPath !== setup.repository || write.kind !== kind) return;
+      beforePublication = null;
+      injected = true;
+      deniedId = write.artifactId;
+      originalWrite({ repositoryPath: setup.repository, artifactRoot, missionId: request.mission_id,
+        waveId: request.wave_id, kind: "tool-gateway-requests", artifactId: request.id,
+        payload: request, createdAt: request.requested_at });
+    };
+    try {
+      expectThrow(run, /GATEWAY_DISPATCH_OWNERSHIP_REQUIRED|UNRESOLVED_GATEWAY_TRANSACTIONS/);
+      assert(injected, `${operation} did not reach publication`);
+      const manifest = activeLease(options, setup.identity).view.manifest;
+      assert(!manifest.artifacts.some(entry => entry.kind === kind && entry.artifact_id === deniedId));
+      assert.strictEqual(runtime.dispatchStatus(options, { waveId: request.wave_id }).leases[0].unresolved_gateway_transactions, 1);
+    } finally {
+      beforePublication = null;
+    }
+  });
 }
 
 fixture("exact request authorizes, begins, commits, and replays idempotently", () => {
@@ -418,6 +654,8 @@ fixture("exact request authorizes, begins, commits, and replays idempotently", (
   });
   assert.strictEqual(projection.transactions.length, 1);
   assert.strictEqual(projection.transactions[0].state, "committed");
+  assert.strictEqual(require("./dispatch-runtime-controller").dispatchStatus(admitOptions).leases[0].unresolved_gateway_transactions, 0);
+  assert.strictEqual(activeLease(admitOptions, setup.identity).code, "LEASE_ACTIVE");
 });
 
 fixture("trusted principal mismatch denies before dispatch admission", () => {
@@ -535,18 +773,7 @@ fixture("authorized but unstarted transaction recovers by exact cancellation", (
 fixture("received transaction revokes an orphan dispatch admission during recovery", () => {
   const setup = setupScenario("ORPHAN");
   const request = gatewayRequest(setup, "001");
-  persistReceivedRequest(setup, request);
-  const admission = admitToolRequest({
-    repository: setup.repository,
-    artifactRoot,
-    now: "2026-07-24T01:00:11Z"
-  }, setup.identity, {
-    hook_event_name: "PreToolUse",
-    tool_use_id: request.tool_call.tool_use_id,
-    tool_name: request.tool_call.tool_name,
-    tool_input: toolInput
-  });
-  assert.strictEqual(admission.decision, "allow");
+  interruptBeforeGatewayDecision(setup, request);
 
   const recovered = recoverGatewayTransaction(
     trustedOptions(setup, request, "2026-07-24T01:00:20Z"),
@@ -560,24 +787,13 @@ fixture("received transaction revokes an orphan dispatch admission during recove
     artifactRoot,
     now: "2026-07-24T01:00:30Z"
   }, setup.identity);
-  assert.strictEqual(selected.code, "LEASE_BLOCKED");
+  assert.strictEqual(selected.code, "UNRESOLVED_GATEWAY_TRANSACTIONS");
 });
 
 fixture("received transaction exactly cancels an orphan admission when input is available", () => {
   const setup = setupScenario("ORPHAN-CANCEL");
   const request = gatewayRequest(setup, "001");
-  persistReceivedRequest(setup, request);
-  const admission = admitToolRequest({
-    repository: setup.repository,
-    artifactRoot,
-    now: "2026-07-24T01:00:11Z"
-  }, setup.identity, {
-    hook_event_name: "PreToolUse",
-    tool_use_id: request.tool_call.tool_use_id,
-    tool_name: request.tool_call.tool_name,
-    tool_input: toolInput
-  });
-  assert.strictEqual(admission.decision, "allow");
+  interruptBeforeGatewayDecision(setup, request);
 
   const recovered = recoverGatewayTransaction(
     trustedOptions(setup, request, "2026-07-24T01:00:20Z"),
@@ -618,7 +834,7 @@ fixture("executing transaction with unknown outcome blocks the lease and require
     artifactRoot,
     now: "2026-07-24T01:00:40Z"
   }, setup.identity);
-  assert.strictEqual(selected.code, "LEASE_BLOCKED");
+  assert.strictEqual(selected.code, "UNRESOLVED_GATEWAY_TRANSACTIONS");
 });
 
 for (const history of ["current", "legacy-revoked", "legacy-completed", "legacy-superseded", "legacy-interrupted"]) {

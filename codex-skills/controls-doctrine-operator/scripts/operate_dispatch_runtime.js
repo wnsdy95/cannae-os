@@ -30,6 +30,7 @@ function findRuntimeRoot() {
 function main() {
   try {
     const root = findRuntimeRoot();
+    // Preserve gateway obligation fields; a successful status query is not tool authority.
     const result = spawnSync(process.execPath, [path.join(root, "dispatch-runtime-controller.js"), ...process.argv.slice(2)], {
       cwd: process.cwd(),
       stdio: "inherit"

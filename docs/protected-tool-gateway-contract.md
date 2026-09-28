@@ -187,6 +187,26 @@ Rules:
 7. Terminal states are immutable. Retrying the same request returns the
    retained projection instead of creating another execution.
 
+The gateway owns its exact dispatch admission. Direct hook completion/failure
+and cancellation APIs cannot stand in for `commit` or `recover`, including after
+recovery has blocked the lease. Internal access is process-local; request fields,
+CLI flags and serialized options cannot grant it. This does not protect mutable
+runtime code or the artifact store from a hostile local writer.
+
+Read dispatch `unresolved_gateway_transactions` alongside pending callbacks and
+hook unknown effects. The gateway obligation survives legacy success callbacks
+and completed/revoked/superseded lease records. Only exact safe terminal proof
+removes it from that projection; a failed committed receipt with unknown effects
+is still held. New repository tool authority, resume, report, closeout and wave
+termination recheck this independent history. A request retained before its
+first event is also held. See [dispatch obligations](enforced-dispatch-and-resume.md#52-gateway-owned-obligations).
+
+A commit retry after checkpoint publication must match the independently checked
+result digest/status, execution authorization time and current repository state.
+It cannot reuse an unrelated legacy success checkpoint to publish a receipt.
+Gateway effect settlement remains separate from hook effect settlement and OCI
+containment verification; this guard does not implement that settlement workflow.
+
 ## 6. Reference Operation
 
 ### 6.1 Prepare

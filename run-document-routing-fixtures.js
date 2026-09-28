@@ -30,6 +30,14 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  for (const query of ["gateway ownership", "gateway obligations", "late gateway callback"]) {
+    const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
+    assertRoutes(result, ["enforced-dispatch"]);
+    assert.strictEqual(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/protected-tool-gateway-contract.md"));
+    assert(result.recommended_documents.some(item => item.path === "docs/enforced-dispatch-and-resume.md"));
+    assert(result.validation_commands.includes("node run-protected-tool-gateway-fixtures.js"));
+  }
   for (const query of ["Audit implementation candidates and the completion backlog",
     "Audit implementation-candidate-registry.js and completion-backlog.md"]) {
     const registry = route(router, ["--actor=user"], query);
@@ -139,4 +147,4 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log("Document routing fixtures: 20/20 passed");
+console.log("Document routing fixtures: 26/26 passed");

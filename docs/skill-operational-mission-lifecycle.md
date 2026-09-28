@@ -351,7 +351,12 @@ the history. Read [unknown tool effects](enforced-dispatch-and-resume.md#51-unkn
 before treating any lease status as proof of reconciliation. Use the separate
 [hook settlement controller](tool-effect-settlement.md) for exact USER- and
 execution-evidence-bound reconciliation, then explicitly revoke the old lease.
-Gateway settlement remains open; never manually erase the hold.
+Gateway settlement remains open; never manually erase the hold. Dispatch also
+projects `unresolved_gateway_transactions` from gateway records independently
+of hook callbacks. A legacy success callback or terminal lease cannot clear it.
+Reports (including blocked reports), closeouts and termination reject remaining
+gateway obligations, with a fresh check at publication. Direct hook cancellation
+is not gateway cancellation; use gateway recovery only within its state rules.
 
 The controllers repeat readiness checks inside the artifact namespace lease at
 plan/campaign/context/report/closeout, dispatch policy/lease/tool-allow, and

@@ -109,6 +109,28 @@ crash ordering. A generic store write without that integration is not admission.
 Read `docs/repository-artifact-isolation-policy.md` and the lifecycle document
 for covered publishers and residual cancellation/restart limits.
 
+## Gateway Ownership And Recovery
+
+Read dispatch status and gateway status together before reporting or resuming.
+Zero pending callbacks and zero hook unknown effects can coexist with an
+unresolved gateway transaction, including a request retained without a decision.
+Follow its exact request/event/receipt references; do not infer settlement from
+a legacy success callback, a terminal lease, a new wave, or container removal.
+
+Only the validated gateway operation may complete or cancel its admission.
+Never supply internal-looking option flags, manually insert a checkpoint, or
+route it through hook-only settlement. Before execution, retry admission or
+recover with the exact input. After execution, preserve the unknown-outcome
+hold; gateway effect settlement remains a separate unimplemented contract.
+Read-only status returning exit zero means the query worked, not permission.
+
+If commit stopped after checkpoint publication, retry only the same verified
+descriptor and input; result/status/time/repository mismatch must stop. A receipt
+or checkpoint that merely says success is not interchangeable with that proof.
+Test both installed CLI paths from outside the doctrine repository: module-only
+tests can miss CLI initialization defects. Also inject changed ownership between
+validation and publication, not just before a controller starts.
+
 ## OCI Containment Verification
 
 An inspect error is not proof that a container is absent. Keep the original

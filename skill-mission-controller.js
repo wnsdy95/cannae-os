@@ -1017,6 +1017,9 @@ function validateDispatchCompletion(report, plan, options) {
     if (leases.length === 0) {
       throw new Error(`Dispatch-controlled agent ${result.agent_id} has no lease lineage.`);
     }
+    if (leases.some(item => item.unresolved_gateway_transactions > 0)) {
+      throw new Error(`UNRESOLVED_GATEWAY_TRANSACTIONS: agent ${result.agent_id} retains gateway obligations.`);
+    }
     if (leases.some(item => item.pending_tool_requests > 0)) {
       throw new Error(`Dispatch-controlled agent ${result.agent_id} has an unresolved tool request.`);
     }
@@ -1118,7 +1121,11 @@ function recordWaveUnlocked(report, options = {}) {
     artifactId: report.id,
     payload: recordedReport,
     createdAt: report.recorded_at,
-    publicationGuard: wavePublicationGuard(planArtifact.payload, operationOptions)
+    publicationGuard: snapshot => {
+      wavePublicationGuard(planArtifact.payload, operationOptions)(snapshot);
+      validateDispatchCompletion(report, planArtifact.payload, operationOptions);
+      return true;
+    }
   });
   const completed = report.agent_results.filter(result => result.status === "complete").map(result => `${result.agent_id}: ${result.summary}`);
   const blocked = report.agent_results.filter(result => result.status !== "complete")
@@ -1253,6 +1260,7 @@ function closeWaveUnlocked(aar, options = {}) {
   const planArtifact = requiredWaveArtifact(operationOptions, options.missionId, options.waveId, "mission-wave-plans");
   assertAdaptiveCampaignMayContinue(planArtifact.payload, operationOptions);
   const reportArtifact = requiredWaveArtifact(operationOptions, options.missionId, options.waveId, "mission-wave-reports");
+  validateDispatchCompletion(reportArtifact.payload, planArtifact.payload, operationOptions);
   const closeoutId = `MWC-${safeIdPart(options.waveId)}`;
   const priorCloseout = optionalArtifact(operationOptions, {
     missionId: options.missionId,
@@ -1364,7 +1372,11 @@ function closeWaveUnlocked(aar, options = {}) {
     artifactId: closeout.id,
     payload: closeout,
     createdAt: closedAt,
-    publicationGuard: wavePublicationGuard(planArtifact.payload, operationOptions)
+    publicationGuard: snapshot => {
+      wavePublicationGuard(planArtifact.payload, operationOptions)(snapshot);
+      validateDispatchCompletion(reportArtifact.payload, planArtifact.payload, operationOptions);
+      return true;
+    }
   });
   const verification = verifyRepositoryArtifacts({ repositoryPath: repository.root, artifactRoot: artifactRootPath(operationOptions) });
   if (!verification.valid) throw new Error(`Post-close artifact verification failed: ${verification.issues.map(item => item.code).join(", ")}`);
@@ -1471,6 +1483,9 @@ function terminateWave(request, options = {}) {
         }
       }
       const dispatch = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+      if (dispatch.leases.some(lease => lease.unresolved_gateway_transactions > 0)) {
+        throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: wave termination cannot settle gateway obligations.");
+      }
       if (dispatch.leases.some(lease => lease.unresolved_tool_effects > 0)) {
         throw new Error("UNRESOLVED_TOOL_EFFECTS: wave termination cannot settle unknown effects by revocation or expiry.");
       }
@@ -1492,7 +1507,14 @@ function terminateWave(request, options = {}) {
       renewRepositoryLease(issuanceLock);
       const ref = persistJson(locked, {
         missionId: request.mission_id, waveId: request.wave_id, kind: "mission-wave-terminations",
-        artifactId: termination.id, payload: termination, createdAt: now
+        artifactId: termination.id, payload: termination, createdAt: now,
+        publicationGuard: () => {
+          const current = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+          if (current.leases.some(lease => lease.unresolved_gateway_transactions > 0)) {
+            throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations block termination publication.");
+          }
+          return true;
+        }
       });
       return terminationResult(termination, ref, locked);
     });

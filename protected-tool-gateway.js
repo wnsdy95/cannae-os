@@ -23,7 +23,8 @@ const {
   inputDigest,
   interruptLease,
   runtimeRepositoryState,
-  sameRepositoryState
+  sameRepositoryState,
+  toolCompletionResultDigest
 } = require("./dispatch-runtime-controller");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const {
@@ -51,6 +52,18 @@ const TRANSITIONS = Object.freeze({
   authorized: new Set(["executing", "aborted", "recovery_required"]),
   executing: new Set(["committed", "recovery_required"])
 });
+const dispatchScopes = new WeakMap();
+
+function withGatewayDispatchScope(options, request, operation, run) {
+  // The scope is process-local and never accepted from JSON, hooks, or CLI flags.
+  const scoped = new Proxy(options, {});
+  dispatchScopes.set(scoped, { request: clone(request), operation });
+  try {
+    return run(scoped);
+  } finally {
+    dispatchScopes.delete(scoped);
+  }
+}
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -450,6 +463,113 @@ function recordsForTransaction(view, transactionId) {
     events,
     latest: events.at(-1) || null
   };
+}
+
+function dispatchGatewayRecords(view) {
+  const requests = listArtifacts(view, { kind: KINDS.request });
+  const transactionIds = new Set(requests.map(item => item.payload.transaction_id));
+  const keys = new Set();
+  for (const entry of view.manifest.artifacts.filter(item => Object.values(KINDS).includes(item.kind))) {
+    const value = loadEntry(view, entry);
+    if (!transactionIds.has(value.transaction_id) || value.mission_id !== entry.mission_id || value.wave_id !== entry.wave_id) {
+      throw new Error("GATEWAY_DISPATCH_HISTORY_MISMATCH");
+    }
+  }
+  return requests.map(request => {
+    if (keys.has(request.payload.idempotency_key)) throw new Error("GATEWAY_DISPATCH_IDEMPOTENCY_CONFLICT");
+    keys.add(request.payload.idempotency_key);
+    return recordsForTransaction(view, request.payload.transaction_id);
+  });
+}
+
+function gatewayDispatchSettled(view, records) {
+  const request = records.request.payload;
+  const decision = records.decision && records.decision.payload;
+  const receipt = records.receipt && records.receipt.payload;
+  const latest = records.latest && records.latest.payload;
+  if (!latest || !decision) return false;
+  const digests = bindingDigests(request);
+  for (const value of [decision, receipt].filter(Boolean)) {
+    if (["mission_id", "wave_id", "agent_id", "provider", "idempotency_key"].some(key => value[key] !== request[key]) ||
+        inputDigest(value.tool_call) !== inputDigest(request.tool_call) ||
+        value.gateway_binding_sha256 !== digests.gateway || value.principal_binding_sha256 !== digests.principal) {
+      throw new Error("GATEWAY_DISPATCH_RECORD_BINDING_MISMATCH");
+    }
+  }
+  if (!sameRef(decision.lease_ref, request.lease_ref) || !sameRef(decision.tool_policy_ref, request.tool_policy_ref)) {
+    throw new Error("GATEWAY_DISPATCH_LEASE_BINDING_MISMATCH");
+  }
+  const admission = admissionRecordForRequest(view, request);
+  if (!isNoneRef(decision.admission_ref) && (!admission || !sameRef(admission.ref, decision.admission_ref))) {
+    throw new Error("GATEWAY_DISPATCH_ADMISSION_BINDING_MISMATCH");
+  }
+  if (latest.state === "denied" && decision.decision === "deny" &&
+      (!admission || admission.payload.decision === "deny")) return true;
+  if (!admission || admission.payload.decision !== "allow") return false;
+  const checkpoint = checkpointForAdmission(view, admission.ref);
+  if (!checkpoint) return false;
+  const completion = checkpoint.payload;
+  assertValid(completion, "agent-execution-checkpoint", "Gateway dispatch completion");
+  if (!sameRef(completion.lease_ref, request.lease_ref) ||
+      ["mission_id", "wave_id", "agent_id", "provider"].some(key => completion[key] !== request[key]) ||
+      completion.session_binding.session_id !== request.authenticated_principal.session_id ||
+      completion.session_binding.provider_agent_id !== request.authenticated_principal.provider_agent_id) {
+    throw new Error("GATEWAY_DISPATCH_CHECKPOINT_BINDING_MISMATCH");
+  }
+  if (latest.state === "denied" && decision.decision === "deny") {
+    return !records.events.some(item => item.payload.state === "executing") &&
+      sameRef(decision.checkpoint_ref, checkpoint.ref) &&
+      completion.execution_result.status === "cancelled" && completion.execution_result.external_effects === "none";
+  }
+  if (!receipt || !["committed", "aborted"].includes(latest.state) ||
+      !sameRef(latest.receipt_ref, records.receipt.ref)) return false;
+  if (!sameRef(receipt.admission_ref, admission.ref) || !sameRef(receipt.checkpoint_ref, checkpoint.ref) ||
+      receipt.execution.transaction_state !== latest.state ||
+      !sameRepositoryState(receipt.repository_state_after, completion.repository_state)) {
+    throw new Error("GATEWAY_DISPATCH_RECEIPT_BINDING_MISMATCH");
+  }
+  if (latest.state === "aborted") {
+    return !records.events.some(item => item.payload.state === "executing") &&
+      receipt.execution.status === "not_executed" && receipt.execution.external_effects === "none" &&
+      completion.execution_result.status === "cancelled" && completion.execution_result.external_effects === "none";
+  }
+  return receipt.execution.status === completion.execution_result.status &&
+    receipt.execution.result_sha256 === completion.execution_result.provider_result_sha256 &&
+    receipt.execution.external_effects === completion.execution_result.external_effects &&
+    receipt.execution.external_effects !== "unknown";
+}
+
+function gatewayDispatchObligations(view, options = {}, allowCurrentOperation = false) {
+  const scope = allowCurrentOperation && dispatchScopes.get(options);
+  return dispatchGatewayRecords(view).filter(records => {
+    if (gatewayDispatchSettled(view, records)) return false;
+    return !(scope && inputDigest(scope.request) === inputDigest(records.request.payload));
+  }).map(records => ({
+    transaction_id: records.request.payload.transaction_id,
+    state: records.latest ? records.latest.payload.state : "request_persisted",
+    lease_ref: clone(records.request.payload.lease_ref),
+    request_ref: clone(records.request.ref),
+    latest_event_ref: records.latest ? clone(records.latest.ref) : clone(NONE_REF),
+    receipt_ref: records.receipt ? clone(records.receipt.ref) : clone(NONE_REF)
+  }));
+}
+
+function gatewayDispatchAccess(options, view, leaseRef, toolUseId, action) {
+  const owners = dispatchGatewayRecords(view).filter(records =>
+    sameRef(records.request.payload.lease_ref, leaseRef) && records.request.payload.tool_call.tool_use_id === toolUseId);
+  if (!owners.length) return null;
+  const scope = dispatchScopes.get(options);
+  if (owners.length !== 1 || !scope || inputDigest(scope.request) !== inputDigest(owners[0].request.payload)) {
+    return "GATEWAY_DISPATCH_OWNERSHIP_REQUIRED";
+  }
+  const records = owners[0];
+  const state = records.latest ? records.latest.payload.state : "request_persisted";
+  const allowed = action === "admit" ? scope.operation === "admit" && state === "received"
+    : action === "complete" ? scope.operation === "commit" && state === "executing"
+      : action === "cancel" && ["admit", "recover"].includes(scope.operation) &&
+        ["request_persisted", "received", "authorized"].includes(state) &&
+        !records.events.some(item => item.payload.state === "executing");
+  return allowed ? null : "GATEWAY_DISPATCH_TRANSITION_INVALID";
 }
 
 function snapshotStatus(view, records) {
@@ -903,6 +1023,11 @@ function requestByIdempotency(view, idempotencyKey) {
 }
 
 function admitGatewayRequest(options, request, toolInput) {
+  return withGatewayDispatchScope(options, request, "admit",
+    scoped => admitGatewayRequestScoped(scoped, request, toolInput));
+}
+
+function admitGatewayRequestScoped(options, request, toolInput) {
   assertValid(request, "tool-gateway-request", "Tool gateway request");
   const gatewayLease = gatewayLock(options, request);
   try {
@@ -1112,6 +1237,12 @@ function gatewayTransactionContext(options, transactionId) {
 }
 
 function beginGatewayExecution(options, transactionId) {
+  const { records } = loadTransaction(options, transactionId);
+  return withGatewayDispatchScope(options, records.request.payload, "begin",
+    scoped => beginGatewayExecutionScoped(scoped, transactionId));
+}
+
+function beginGatewayExecutionScoped(options, transactionId) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
   const gatewayLease = gatewayLock(options, initial.records.request.payload);
@@ -1489,6 +1620,12 @@ function verifyOciSandboxExecution(options, view, records, descriptor) {
 }
 
 function commitGatewayExecution(options, transactionId, descriptor) {
+  const { records } = loadTransaction(options, transactionId);
+  return withGatewayDispatchScope(options, records.request.payload, "commit",
+    scoped => commitGatewayExecutionScoped(scoped, transactionId, descriptor));
+}
+
+function commitGatewayExecutionScoped(options, transactionId, descriptor) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
   const gatewayLease = gatewayLock(options, initial.records.request.payload);
@@ -1550,20 +1687,19 @@ function commitGatewayExecution(options, transactionId, descriptor) {
     verifyOciSandboxExecution(options, view, records, descriptor);
 
     const admissionRef = records.decision.payload.admission_ref;
+    const completionInput = {
+      hook_event_name: descriptor.status === "succeeded" ? "PostToolUse" : "PostToolUseFailure",
+      tool_use_id: records.request.payload.tool_call.tool_use_id,
+      tool_name: records.request.payload.tool_call.tool_name,
+      tool_input: descriptor.toolInput,
+      tool_response: descriptor.result
+    };
     let completionCheckpoint = checkpointForAdmission(storeView(options), admissionRef);
     if (!completionCheckpoint) {
       const completed = completeToolRequest(
         options,
         identityFromRequest(records.request.payload),
-        {
-          hook_event_name: descriptor.status === "succeeded"
-            ? "PostToolUse"
-            : "PostToolUseFailure",
-          tool_use_id: records.request.payload.tool_call.tool_use_id,
-          tool_name: records.request.payload.tool_call.tool_name,
-          tool_input: descriptor.toolInput,
-          tool_response: descriptor.result
-        }
+        completionInput
       );
       if (completed.checkpoint_ref) {
         completionCheckpoint = {
@@ -1600,6 +1736,12 @@ function commitGatewayExecution(options, transactionId, descriptor) {
 
     if (completionCheckpoint.payload.execution_result.status === "cancelled") {
       throw new Error("A cancelled dispatch admission cannot be committed as executed.");
+    }
+    if (completionCheckpoint.payload.execution_result.status !== descriptor.status ||
+        completionCheckpoint.payload.execution_result.provider_result_sha256 !== toolCompletionResultDigest(completionInput) ||
+        timestamp(completionCheckpoint.payload.recorded_at, "completion checkpoint time") < authorizedAt ||
+        !sameRepositoryState(completionCheckpoint.payload.repository_state, runtimeRepositoryState(view.repository.root))) {
+      throw new Error("GATEWAY_COMPLETION_CHECKPOINT_MISMATCH");
     }
     persistReceipt(
       options,
@@ -1705,6 +1847,12 @@ function settleOrphanAdmission(options, gatewayLease, records, admission, toolIn
 }
 
 function recoverGatewayTransaction(options, transactionId, descriptor = {}) {
+  const { records } = loadTransaction(options, transactionId);
+  return withGatewayDispatchScope(options, records.request.payload, "recover",
+    scoped => recoverGatewayTransactionScoped(scoped, transactionId, descriptor));
+}
+
+function recoverGatewayTransactionScoped(options, transactionId, descriptor) {
   assertIdentifier(transactionId, "transaction_id");
   const initial = loadTransaction(options, transactionId);
   const gatewayLease = gatewayLock(options, initial.records.request.payload);
@@ -1975,14 +2123,16 @@ function main() {
   }
 }
 
-if (require.main === module) main();
-
 module.exports = {
   admitGatewayRequest,
   beginGatewayExecution,
   bindingDigests,
   commitGatewayExecution,
   gatewayTransactionContext,
+  gatewayDispatchAccess,
+  gatewayDispatchObligations,
   gatewayStatus,
   recoverGatewayTransaction
 };
+
+if (require.main === module) main();
