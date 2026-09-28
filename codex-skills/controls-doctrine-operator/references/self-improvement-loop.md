@@ -67,6 +67,14 @@ new authority does not establish process termination or settle old effects.
 If the campaign is stopped, do not resume with a new session or campaign ID
 without separately authorized successor scope and reconciled predecessor state.
 
+After a provider failure, inspect both pending requests and
+`unresolved_tool_effects`, including its exact checkpoint references. A callback
+can be fully recorded while its external effects are still unknown. Never infer
+settlement from `revoked`, zero pending callbacks, clean Git status, or a newly
+authorized wave. Preserve the unknown-effect hold and gather effect evidence;
+until an exact USER reconciliation contract exists, neither chat approval nor
+manually inserted success records can clear it.
+
 When extending a positive publisher, perform expensive validation outside the
 namespace lease and repeat a short, synchronous, read-only authority predicate
 inside the store's publication guard. Never write, recover, spawn a validator,

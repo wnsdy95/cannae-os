@@ -533,6 +533,12 @@ supervisor order/challenge publication, or atomic multi-artifact settlement.
 See `repository-artifact-isolation-policy.md` for exact recovery ordering and
 the unchanged cooperating-writer/shared-filesystem trust boundary.
 
+Unknown post-tool effects are now projected from complete checkpoint history,
+including legacy terminal lease rows. They block new repository authority and
+wave termination instead of being erased by revocation. This is a conservative
+hold, not a completed reconciliation workflow; an exact USER/effect-evidence
+contract is still required to clear it.
+
 ## 17. Phase 16: Enforced Dispatch And Resumable Orchestration
 
 Status: implemented as a provider-neutral, manifest-backed local admission

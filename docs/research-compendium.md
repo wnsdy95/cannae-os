@@ -1,5 +1,26 @@
 # Research Compendium
 
+## Unknown Effects Versus Completed Callbacks (2026-09-28)
+
+**Reproduction:** at both main `e502101` and publication-fence head `fbfb495`,
+a matching synthetic `PostToolUseFailure` left a blocked checkpoint with unknown
+external effects, but consumed the pending callback. Revocation then produced
+`revoked` and wave expiry returned a terminal record. The different gateway
+executing/unknown-recovery path without a matching completion was already blocked
+by its pending admission; do not conflate that path with the reproduced gap.
+
+**Repair:** project unknown-effect checkpoint references independently from
+pending callbacks and latest lease status. Recheck full retained history before
+new repository lease/tool authority, resume, completed-agent reporting, and wave
+termination. Revocation is still recorded but cannot settle the unknown outcome.
+Legacy terminal rows do not clear it; evidence remains immutable.
+
+**Limit:** a conservative hold is not an effect-reconciliation workflow. A future
+exact USER decision and independently retained effect evidence must define how
+it can be cleared. Generic scope approval, clean files, a replacement wave, or
+manually supplied success claims cannot perform that operation. The fixture
+uses temporary repositories and hook events, not actual external side effects.
+
 ## Campaign Publication Appraisal (2026-09-28)
 
 **Local finding:** entry-time readiness checks left a gap before durable wave,

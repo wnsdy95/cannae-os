@@ -621,6 +621,73 @@ fixture("executing transaction with unknown outcome blocks the lease and require
   assert.strictEqual(selected.code, "LEASE_BLOCKED");
 });
 
+for (const history of ["current", "legacy-revoked", "legacy-completed", "legacy-superseded", "legacy-interrupted"]) {
+  fixture(`${history} failed-tool effects survive revocation and block terminal or replacement authority`, () => {
+    const setup = setupScenario(`UNKNOWN-${history}`);
+    const runtime = require("./dispatch-runtime-controller");
+    const options = { repository: setup.repository, artifactRoot, now: "2026-07-24T01:00:10Z" };
+    const hook = { hook_event_name: "PreToolUse", tool_use_id: "unknown-tool", tool_name: "Bash", tool_input: toolInput };
+    assert.strictEqual(admitToolRequest(options, setup.identity, hook).decision, "allow");
+    const failure = runtime.completeToolRequest({ ...options, now: "2026-07-24T01:00:20Z" }, setup.identity,
+      { ...hook, hook_event_name: "PostToolUseFailure", tool_response: { error: "synthetic provider disconnect" } });
+    assert.strictEqual(failure.checkpoint.execution_result.external_effects, "unknown");
+    assert.strictEqual(failure.status, "blocked");
+    if (history === "current") {
+      const revoked = runtime.revokeLease({ ...options, now: "2026-07-24T01:00:30Z" }, setup.issued.lease.id, "OPERATOR_STOP");
+      assert.strictEqual(revoked.status, "blocked");
+      assert(revoked.checkpoint.reason_codes.includes("UNRESOLVED_TOOL_EFFECTS"));
+      assert.strictEqual(runtime.activeLease({ ...options, now: "2026-07-24T01:00:40Z" }, setup.identity).code, "UNRESOLVED_TOOL_EFFECTS");
+    } else {
+      const status = history.slice("legacy-".length);
+      const kind = { revoked: "revocation", completed: "completion", superseded: "supersession", interrupted: "interruption" }[status];
+      const legacy = { ...clone(failure.checkpoint), id: `AEC-${history}`, sequence: failure.checkpoint.sequence + 1,
+        checkpoint_kind: kind, lease_status: status, previous_checkpoint_ref: clone(failure.checkpoint_ref),
+        tool_admission_ref: clone(NONE_REF), execution_result: { status: "not_applicable", provider_result_sha256: "none", external_effects: "none" },
+        reason_codes: ["LEGACY_OPERATOR_STOP"], recorded_at: "2026-07-24T01:00:30Z" };
+      writeRepositoryArtifact({ repositoryPath: setup.repository, artifactRoot, missionId: setup.plan.mission_id,
+        waveId: setup.plan.wave_id, kind: "agent-execution-checkpoints", artifactId: legacy.id, payload: legacy,
+        createdAt: legacy.recorded_at });
+    }
+    options.now = "2026-07-24T01:00:40Z";
+    const projection = runtime.dispatchStatus(options, { missionId: setup.plan.mission_id, waveId: setup.plan.wave_id });
+    assert.strictEqual(projection.leases[0].pending_tool_requests, 0);
+    assert.strictEqual(projection.leases[0].unresolved_tool_effects, 1);
+    assert.deepStrictEqual(projection.leases[0].unresolved_effect_checkpoint_refs, [failure.checkpoint_ref]);
+    if (history === "legacy-completed") {
+      const evidence = writeRepositoryArtifact({ repositoryPath: setup.repository, artifactRoot,
+        missionId: setup.plan.mission_id, waveId: setup.plan.wave_id, kind: "deliverables", artifactId: "OUT-Partial",
+        payload: { synthetic: true }, createdAt: "2026-07-24T01:00:30Z" });
+      expectThrow(() => require("./skill-mission-controller").recordWave({
+        schema_version: "0.1", type: "MissionWaveReport", id: "MWR-Unknown", mission_id: setup.plan.mission_id,
+        wave_id: setup.plan.wave_id, plan_ref: setup.issued.lease.plan_ref,
+        routing_preflight_ref: setup.issued.lease.routing_preflight_ref,
+        agent_results: [{ agent_id: setup.plan.agents[0].agent_id, context_pack_ref: setup.issued.lease.context_pack_ref,
+          status: "complete", summary: "Synthetic completion claim.", completed_actions: ["Record partial work."],
+          blockers: [], evidence_refs: [{ artifact_id: "OUT-Partial", relative_path: evidence.relative_path, sha256: evidence.sha256 }],
+          improvement_candidates: [], next_actions: ["Review the unknown result."] }],
+        wave_status: "complete", human_decisions_required: [], release_requested: false, recorded_at: options.now
+      }, { ...options, doctrineRoot: ROOT }), /UNRESOLVED_TOOL_EFFECTS/);
+    }
+    expectThrow(() => require("./skill-mission-controller").terminateWave({
+      schema_version: "0.1", type: "MissionWaveTerminationRequest", mission_id: setup.plan.mission_id,
+      wave_id: setup.plan.wave_id, status: "expired", reason: "Synthetic unresolved-effect regression.",
+      plan_ref: setup.issued.lease.plan_ref, successor_plan_ref: clone(NONE_REF), decision_ref: clone(NONE_REF)
+    }, { ...options, now: new Date(Date.parse(setup.plan.valid_until) + 1000).toISOString() }), /UNRESOLVED_TOOL_EFFECTS/);
+    expectThrow(() => runtime.resumeLease(options, setup.issued.lease.id, { sessionId: "replacement", providerAgentId: "main" }), /UNRESOLVED_TOOL_EFFECTS/);
+
+    const nextPlan = clone(setup.plan);
+    nextPlan.id += "-NEXT";
+    nextPlan.wave_id = "W2";
+    const draft = policyDraft(nextPlan, `NEXT-${history}`);
+    nextPlan.dispatch_control.policy_authorizations = [{ agent_id: draft.agent_id, provider: draft.provider,
+      policy_id: draft.id, draft_sha256: inputDigest(draft) }];
+    openWave(nextPlan, { ...options, doctrineRoot: ROOT });
+    authorizeDispatchPolicy(options, draft);
+    expectThrow(() => issueLease(options, draft.id, { sessionId: "next-wave", providerAgentId: "main" }), /UNRESOLVED_TOOL_EFFECTS/);
+    assert.strictEqual(artifactStore.verifyRepositoryArtifacts({ repositoryPath: setup.repository, artifactRoot }).valid, true);
+  });
+}
+
 for (const stage of ["decision", "authorized", "executing"]) {
   fixture(`expiry at gateway ${stage} publication cannot retain new execution authority`, () => {
     const setup = setupScenario(`PUBLICATION-${stage}`);
