@@ -520,6 +520,10 @@ wave and dispatch admission now reconstruct supervisor readiness, so a terminal
 decision, pause, invalid lineage, exhausted budget, or unavailable trust admission
 cannot be ignored through a new wave/session. This read-only guard does not
 provide atomic campaign cancellation or USER-authorized restart.
+The same guard checks the creation-based wall-clock deadline independently of
+reported progress, including idle campaigns and retained ready orders. Trusted
+time, hard process deadlines, and pause-adjusted budgets remain external or
+separately designed lifecycle work.
 
 ## 17. Phase 16: Enforced Dispatch And Resumable Orchestration
 

@@ -11,7 +11,10 @@ historical producer identities; they are not claims of protected execution.
 The campaign continuation gate in `docs/skill-operational-mission-lifecycle.md`
 and `docs/bounded-self-improvement-operations.md` is a local runtime integration
 finding, demonstrated by `run-campaign-supervisor-fixtures.js`. It does not add
-a military-source claim or claim atomic process cancellation.
+a military-source claim or claim atomic process cancellation. Its creation-based
+elapsed deadline is likewise a local runtime correction: fixtures cover idle
+expiry, exact offset-aware boundaries, retained orders, clock rollback, and
+continued settlement after admission is denied. This does not prove trusted time.
 
 `docs/implementation-candidate-registry.md` and
 `docs/completion-backlog.md` apply the existing KM separation of source,
