@@ -342,6 +342,15 @@ Preserve the stop decision and reconcile the old execution before proposing
 separately authorized successor work. Never edit retained campaign bytes or
 fabricate a retry to clear an escalation.
 
+Zero pending callback IDs does not establish settled effects. A retained failed
+post-tool checkpoint with `external_effects: unknown` remains visible through
+later revocation and blocks completed-agent reporting and terminal settlement.
+Dispatch status exposes its exact checkpoint references. New repository leases
+and active tool admission also remain held; a fresh wave/session cannot clear
+the history. Read [unknown tool effects](enforced-dispatch-and-resume.md#51-unknown-tool-effects)
+before treating any lease status as proof of reconciliation. An exact effect
+reconciliation contract remains open; never manually erase the hold.
+
 The controllers repeat readiness checks inside the artifact namespace lease at
 plan/campaign/context/report/closeout, dispatch policy/lease/tool-allow, and
 gateway allow/authorized/executing publication. A stop retained after the earlier

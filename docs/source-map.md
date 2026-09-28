@@ -23,6 +23,13 @@ exercise stop/check/write races, expiry, exact reuse, and crash ordering.
 Only covered controller publications are guarded; this is not complete campaign
 cancellation, distributed consensus, or authentication of arbitrary store writes.
 
+The unknown-effect hold in `docs/enforced-dispatch-and-resume.md` comes from a
+synthetic local reproduction: a failed provider callback consumed its pending
+admission, then revocation permitted wave expiry despite unknown effects.
+Gateway fixtures now retain that history across current and legacy revocation
+and reject replacement/terminal authority. This is an engineering correction,
+not an external military claim or a completed human reconciliation contract.
+
 `docs/implementation-candidate-registry.md` and
 `docs/completion-backlog.md` apply the existing KM separation of source,
 interpretation, evidence, and action queue to engineering completion. Their

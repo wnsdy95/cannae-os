@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Preserved unknown tool effects across complete checkpoint history instead of equating a completed provider callback or revoked lease with settled effects. New repository authority, resume, completed-agent reporting, and terminal settlement fail closed, including legacy terminal lease rows. Both skills now inspect the separate unknown-effect projection and forbid new-wave/manual-history resets; the exact USER effect-reconciliation contract remains open.
+
 - Added namespace-lease publication predicates and connected wave, dispatch, and gateway positive authority writes to current campaign/readiness checks. Exact reuse, competing stop writes, expired leases, and crash recovery fail closed without denying already-admitted result settlement. Both skills now reconcile partial artifacts after publication denial instead of replaying a cached ready result. Full campaign stop/restart and supervisor order/challenge integration remain open.
 
 - Enforced campaign creation-based elapsed deadlines independently of reported progress. Idle campaigns, understated counters, and retained ready orders cannot extend admission; invalid or regressed evaluation clocks fail closed. Both skills now count idle time and forbid backdated continuation, while preserving historical evidence and already-admitted result settlement. Host-clock trust, hard process timeouts, and full cancellation/restart remain explicit limits.

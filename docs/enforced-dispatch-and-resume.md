@@ -321,8 +321,31 @@ For `resume`, `clear`, or `fork` lifecycle starts:
 
 Any post-checkpoint drift blocks resume. A fork requires an explicit new
 provider-session or provider-agent binding. Revoking or blocking a lease with
-unresolved work does not permit a replacement initial lease; the work must be
-reconciled or a new human-authorized wave must be created.
+unresolved work does not permit a replacement initial lease. A new
+human-authorized wave does not by itself reconcile the predecessor's effects.
+
+### 5.1 Unknown Tool Effects
+
+A matching `PostToolUseFailure` records completion of the provider callback but
+leaves `external_effects: unknown`. Therefore zero `pending_tool_requests` is
+not proof of settled effects. Dispatch status separately projects
+`unresolved_tool_effects` and exact `unresolved_effect_checkpoint_refs` from the
+complete retained checkpoint history, not just the latest status row.
+
+Unknown outcomes hold repository-wide new lease issuance and active tool
+admission, explicit resume, completed-agent report admission, and wave terminal
+settlement. Revocation remains recordable but leaves the lease blocked with
+`UNRESOLVED_TOOL_EFFECTS`; it does not claim the tool stopped or rolled back.
+Historical revoked/superseded/complete records cannot hide an earlier unknown
+effect. A new session, wave, or agent in the same repository is not a reset.
+
+Keep inspection, result recording, and exact cancellation available. Do not
+change an old checkpoint or submit a second success callback to erase the
+failure. This conservative hold currently has no effect-reconciliation release
+contract: a future exact USER decision and verified effect evidence must define
+that operation before the runtime can clear it. Generic scope approval, notes,
+repo cleanliness, or a lease revocation are not that proof. This does not detect
+unreported side effects from tools that bypass the covered provider/gateway path.
 
 ## 6. Provider Adapters
 

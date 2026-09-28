@@ -1025,6 +1025,9 @@ function validateDispatchCompletion(report, plan, options) {
       throw new Error(`Dispatch-controlled agent ${result.agent_id} does not have one unambiguous lease head.`);
     }
     const head = lineageHeads[0];
+    if (result.status === "complete" && leases.some(item => item.unresolved_tool_effects > 0)) {
+      throw new Error(`UNRESOLVED_TOOL_EFFECTS: completed agent ${result.agent_id} retains unknown tool effects.`);
+    }
     if (result.status === "complete" && head.status !== "completed") {
       throw new Error(`Completed agent ${result.agent_id} must close its dispatch lease as completed.`);
     }
@@ -1468,6 +1471,9 @@ function terminateWave(request, options = {}) {
         }
       }
       const dispatch = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+      if (dispatch.leases.some(lease => lease.unresolved_tool_effects > 0)) {
+        throw new Error("UNRESOLVED_TOOL_EFFECTS: wave termination cannot settle unknown effects by revocation or expiry.");
+      }
       if (dispatch.leases.some(lease => !["completed", "revoked", "superseded"].includes(lease.status) || lease.pending_tool_requests !== 0)) {
         throw new Error("Termination requires settled dispatch leases and no unresolved tool requests; expiry does not settle unknown effects.");
       }

@@ -515,6 +515,9 @@ function createLeaseFromRecord(
     throw new Error("A dispatch lease lineage already exists for this mission agent and wave.");
   }
   const repositoryHistory = leaseRecords(bundle.view);
+  if (repositoryHistory.some(item => unresolvedToolEffectRecords(bundle.view, item).length > 0)) {
+    throw new Error("UNRESOLVED_TOOL_EFFECTS: reconcile retained unknown effects before issuing new repository tool authority.");
+  }
   const nonterminal = repositoryHistory.map(item => ({
     item,
     checkpoint: latestCheckpoint(bundle.view, item)
@@ -573,6 +576,9 @@ function createLeaseFromRecord(
     publicationGuard: () => {
       const current = contextBundle(options, policy);
       policyValidity(policy, current.context.payload, nowIso(options));
+      if (leaseRecords(current.view).some(item => unresolvedToolEffectRecords(current.view, item).length > 0)) {
+        throw new Error("UNRESOLVED_TOOL_EFFECTS: unknown effects block lease publication.");
+      }
       if (!sameRef(current.context.ref, lease.context_pack_ref) ||
           timestamp(nowIso(options), "Lease publication time") >= timestamp(lease.expires_at, "Lease expires_at")) {
         throw new Error("Dispatch lease publication no longer matches live authority.");
@@ -704,6 +710,13 @@ function completedAdmissionIds(checkpoints) {
     .map(item => item.payload.tool_admission_ref.artifact_id));
 }
 
+function unresolvedToolEffectRecords(view, leaseRecord) {
+  // A later revocation or baseline cannot settle an earlier unknown outcome.
+  latestCheckpoint(view, leaseRecord);
+  return checkpointRecords(view, leaseRecord.ref, leaseRecord.payload.mission_id, leaseRecord.payload.wave_id)
+    .filter(item => item.payload.execution_result.external_effects === "unknown");
+}
+
 function pendingAdmissions(view, leaseRecord) {
   const checkpoints = checkpointRecords(
     view,
@@ -809,6 +822,9 @@ function activeLease(options, identity, at = nowIso(options)) {
     };
   }
   const selected = candidates[0];
+  if (leaseRecords(view).some(record => unresolvedToolEffectRecords(view, record).length > 0)) {
+    return { code: "UNRESOLVED_TOOL_EFFECTS", view, ...selected };
+  }
   const plan = loadArtifactRef(view, selected.leaseRecord.payload.plan_ref, "mission-wave-plan");
   try {
     require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
@@ -1474,6 +1490,10 @@ function transitionLease(options, leaseIdValue, descriptor) {
       status = "blocked";
       reasons.push("TOOL_IN_FLIGHT_AT_TRANSITION");
     }
+    if (unresolvedToolEffectRecords(refreshed.view, refreshed.leaseRecord).length > 0) {
+      status = "blocked";
+      reasons.push("UNRESOLVED_TOOL_EFFECTS");
+    }
     const checkpoint = transitionCheckpoint(refreshed.leaseRecord, previous, state, {
       kind: descriptor.kind,
       status,
@@ -1538,6 +1558,9 @@ function resumeLease(options, leaseIdValue, bindings) {
     const refreshed = loadLeaseById(options, leaseIdValue);
     oldLease = refreshed.leaseRecord;
     const previous = latestCheckpoint(refreshed.view, oldLease);
+    if (unresolvedToolEffectRecords(refreshed.view, oldLease).length > 0) {
+      throw new Error("UNRESOLVED_TOOL_EFFECTS: unknown effects cannot be cleared by resume.");
+    }
     if (previous.payload.lease_status !== "interrupted") {
       throw new Error("Only an interrupted lease can be resumed.");
     }
@@ -1604,6 +1627,7 @@ function dispatchStatus(options, filters = {}) {
     .filter(item => !filters.agentId || item.payload.agent_id === filters.agentId)
     .map(leaseRecord => {
       const checkpoint = latestCheckpoint(view, leaseRecord);
+      const unknownEffects = unresolvedToolEffectRecords(view, leaseRecord);
       return {
         lease_id: leaseRecord.payload.id,
         mission_id: leaseRecord.payload.mission_id,
@@ -1614,6 +1638,8 @@ function dispatchStatus(options, filters = {}) {
         status: checkpoint.payload.lease_status,
         checkpoint_sequence: checkpoint.payload.sequence,
         pending_tool_requests: pendingAdmissions(view, leaseRecord).length,
+        unresolved_tool_effects: unknownEffects.length,
+        unresolved_effect_checkpoint_refs: unknownEffects.map(item => clone(item.ref)),
         expires_at: leaseRecord.payload.expires_at,
         release_authorized: false
       };
