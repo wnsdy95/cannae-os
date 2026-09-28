@@ -10,6 +10,11 @@ const { superviseCampaign } = require("./campaign-supervisor");
 const { resolveRepository, verifyRepositoryArtifacts, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const { publicKeyId } = require("./verification-attestation");
+const { openWave, recordWave, closeWave } = require("./skill-mission-controller");
+const {
+  admitToolRequest, authorizeDispatchPolicy, completeToolRequest,
+  inputDigest, issueLease, revokeLease, resumeLease, sessionStart
+} = require("./dispatch-runtime-controller");
 
 const ROOT = __dirname;
 const CAMPAIGN_SAMPLE = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-self-improvement-campaign.json"), "utf8"));
@@ -265,7 +270,118 @@ function run(name, test) {
   completed.push(name);
 }
 
+function waveFor(environment) {
+  const plan = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-mission-wave-plan.json"), "utf8"));
+  plan.mission_id = environment.campaign.mission_id;
+  plan.adaptive_work.campaign_id = environment.campaign.id;
+  return plan;
+}
+
+function waveOptions(environment) {
+  return {
+    repository: environment.repositoryPath, artifactRoot: environment.artifactRoot,
+    doctrineRoot: ROOT, now: "2026-07-23T04:15:00+09:00"
+  };
+}
+
 try {
+  for (const decisionName of ["escalate", "terminate", "complete"]) run(`${decisionName} cannot reopen, report, or close an adaptive wave`, () => {
+    const environment = makeEnvironment(`wave-after-${decisionName}`);
+    try {
+      const plan = waveFor(environment);
+      const options = waveOptions(environment);
+      openWave(plan, options);
+      const checkpoint = checkpointFor(environment, 1, 1,
+        decisionName === "complete" ? { trigger: "before_completion", openCriteria: [] } : {});
+      if (decisionName === "complete") checkpoint.candidate.disposition = "no_change";
+      persistPair(environment, checkpoint, decisionName);
+      const before = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+      assert.throws(() => openWave(plan, options), /CAMPAIGN_CONTINUATION_BLOCKED/);
+      const next = clone(plan);
+      next.id += "-NEXT";
+      next.wave_id = "W2";
+      assert.throws(() => openWave(next, options), /CAMPAIGN_CONTINUATION_BLOCKED/);
+      const report = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-mission-wave-report.json"), "utf8"));
+      report.mission_id = plan.mission_id;
+      assert.throws(() => recordWave(report, options), /CAMPAIGN_CONTINUATION_BLOCKED/);
+      const aar = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-aar.json"), "utf8"));
+      aar.mission_id = plan.mission_id;
+      assert.throws(() => closeWave(aar, { ...options, missionId: plan.mission_id, waveId: plan.wave_id }), /CAMPAIGN_CONTINUATION_BLOCKED/);
+      const after = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+      assert.strictEqual(after.manifest_revision, before.manifest_revision, "denial must not persist a new wave or report");
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
+  run("campaign escalation blocks stale lease calls and resume but permits result settlement and revocation", () => {
+    const environment = makeEnvironment("live-dispatch-stop");
+    try {
+      const plan = waveFor(environment);
+      plan.agents = [plan.agents[0]];
+      const options = waveOptions(environment);
+      const input = { command: "git status --short" };
+      const draft = JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", "valid-dispatch-tool-policy.json"), "utf8"));
+      delete draft.authorization;
+      draft.schema_version = "0.1";
+      draft.mission_id = plan.mission_id;
+      draft.agent_id = plan.agents[0].agent_id;
+      draft.approved_at = plan.created_at;
+      draft.valid_until = plan.valid_until;
+      draft.tool_rules = [{
+        rule_id: "DTR-STATUS", mission_action: "Run deterministic validation.", tool_name: "Bash",
+        operation_class: "process_execute", input_match: { mode: "exact_sha256", allowed_sha256: [inputDigest(input)] }, max_uses: 2
+      }];
+      plan.dispatch_control = {
+        required: true, enforcement_level: "guardrail", gateway_exclusive: false,
+        policy_authorizations: [{ agent_id: draft.agent_id, provider: draft.provider, policy_id: draft.id, draft_sha256: inputDigest(draft) }]
+      };
+      openWave(plan, options);
+      authorizeDispatchPolicy(options, draft);
+      const lease = issueLease(options, draft.id, { sessionId: "campaign-stop", providerAgentId: "main" });
+      const identity = {
+        missionId: plan.mission_id, waveId: plan.wave_id, agentId: draft.agent_id,
+        provider: draft.provider, sessionId: "campaign-stop", providerAgentId: "main"
+      };
+      const hook = { hook_event_name: "PreToolUse", tool_use_id: "before-stop", tool_name: "Bash", tool_input: input };
+      const admitted = admitToolRequest(options, identity, hook);
+      assert.strictEqual(admitted.decision, "allow");
+      persistPair(environment, checkpointFor(environment, 1, 1), "escalate");
+      const denied = admitToolRequest(options, identity, { ...hook, tool_use_id: "after-stop" });
+      assert.strictEqual(denied.decision, "deny");
+      assert(denied.reason_codes.includes("CAMPAIGN_CONTINUATION_BLOCKED"));
+      assert.throws(() => issueLease(options, draft.id, { sessionId: "new-session", providerAgentId: "main" }), /CAMPAIGN_CONTINUATION_BLOCKED/);
+      const settled = completeToolRequest(options, identity, { ...hook, hook_event_name: "PostToolUse", tool_response: { exit_code: 0 } });
+      assert.strictEqual(settled.status, "active");
+      assert(admitToolRequest(options, identity, { ...hook, tool_use_id: "after-settlement" })
+        .reason_codes.includes("CAMPAIGN_CONTINUATION_BLOCKED"));
+      assert.strictEqual(sessionStart(options, identity, { source: "resume" }).status, "interrupted");
+      const beforeResume = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+      assert.throws(() => resumeLease(options, lease.lease.id, {
+        sessionId: "resume-stop", providerAgentId: "main"
+      }), /CAMPAIGN_CONTINUATION_BLOCKED/);
+      assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot }).manifest_revision,
+        beforeResume.manifest_revision, "denied resume must preserve the interrupted lineage");
+      assert.strictEqual(revokeLease(options, lease.lease.id, "CAMPAIGN_STOP").status, "revoked");
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
+  for (const condition of ["paused", "unpaired", "cross-mission"]) run(`${condition} campaign cannot open an adaptive wave`, () => {
+    const environment = makeEnvironment(`guard-${condition}`, condition === "paused" ? { status: "paused" } : {});
+    try {
+      if (condition === "unpaired") persistCheckpoint(environment, checkpointFor(environment, 1, 1));
+      const plan = waveFor(environment);
+      if (condition === "cross-mission") plan.mission_id = "MIS-OTHER";
+      const before = verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot });
+      assert.throws(() => openWave(plan, waveOptions(environment)), /CAMPAIGN_CONTINUATION_BLOCKED/);
+      assert.strictEqual(verifyRepositoryArtifacts({ repositoryPath: environment.repositoryPath, artifactRoot: environment.artifactRoot }).manifest_revision, before.manifest_revision);
+    } finally {
+      fs.rmSync(environment.root, { recursive: true, force: true });
+    }
+  });
+
   run("v0.4 start order carries receipt and comparative signature requirements", () => {
     const environment = makeEnvironment("v04-start", { schemaVersion: "0.4" });
     const order = supervise(environment);

@@ -313,12 +313,40 @@ The default installer uses symlinks, so both skill wrappers resolve the live rep
 
 `--copy` installations receive a local `.cannae-os-root` runtime marker. `CANNAE_OS_HOME` is the explicit override when the doctrine repository moves.
 
-## 9. Regression Gate
+## 9. Campaign Continuation Gate
+
+An adaptive plan's retained campaign must reconstruct a `ready` supervisor
+order before opening or reopening a wave, admitting a report, closing a wave,
+authorizing a dispatch policy, issuing or resuming a lease, or admitting a
+covered tool call. The controller reuses the real supervisor's lineage, budget,
+status, and trust-readiness logic. The immutable campaign's original `active`
+field alone is insufficient after a terminal decision has been retained.
+
+`complete`, `terminate`, `escalate`, paused campaigns, invalid checkpoint pairs,
+exhausted budgets, and unavailable trust admission block continuation. A different
+wave ID or provider session cannot clear that state. The report path checks again
+after mandatory controls finish. This read-only gate does not create cycle orders
+or verifier challenges and does not grant independent execution authority.
+
+Post-tool result settlement, evidence inspection, and lease revocation remain
+available. A retained lease checkpoint may still say `active` after settlement;
+the next admission independently rechecks the campaign and remains denied.
+Preserve the stop decision and reconcile the old execution before proposing
+separately authorized successor work. Never edit retained campaign bytes or
+fabricate a retry to clear an escalation.
+
+This is an admission guard, not a complete campaign cancellation/restart protocol
+or an operating-system process kill. A call already admitted when a stop arrives
+still needs result reconciliation. Atomic stop/publication fencing, explicit
+USER restart contracts, and campaign-wide terminal settlement remain open.
+
+## 10. Regression Gate
 
 ```bash
 node run-skill-mission-controller-fixtures.js
 node run-skill-control-enforcement-fixtures.js
 node run-dispatch-runtime-fixtures.js
+node run-campaign-supervisor-fixtures.js
 node validator-cli-prototype/run-fixtures.js
 node validate-controls-skill.js codex-skills/controls-doctrine-operator
 node validate-controls-skill.js .claude/skills/controls-doctrine-operator
@@ -328,7 +356,7 @@ node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --
 
 The E2E suite uses independent temporary Git repositories and covers mandatory routing, controller-executed controls, unadmitted preinserted receipt rejection, immutable report admission, failure/timeout/state-drift blocking, digest-bound context, finite campaign scope, idempotence, plan expiry, model-preflight admission, exact and time-bounded evidence, blocked closeout, per-wave rerouting, repository isolation, and both installed-skill wrappers.
 
-## 10. Operational Limits
+## 11. Operational Limits
 
 - The mission controller is a local lifecycle command, not a persistent scheduler. The separate dispatch runtime and provider hooks intercept covered local calls, but repository-local hooks remain a bypassable guardrail. Stronger deployments must protect the hook/runtime outside the agent's writable boundary or expose side effects only through an independent gateway.
 - The local controller and artifact store are tamper-evident workflow controls, not an independent trust anchor against a principal that can rewrite the runtime, artifacts, manifest, and sidecar under the same OS identity. Production assurance requires write separation plus signed external provenance or an independently protected gateway/store.
@@ -337,7 +365,7 @@ The E2E suite uses independent temporary Git repositories and covers mandatory r
 - The artifact coordinator assumes coherent shared-filesystem semantics. Distributed or partition-prone deployments need an external linearizable coordinator and storage-side fencing.
 - The lifecycle never grants commit, push, merge, risk acceptance, policy change, authority change, or release permission.
 
-## 11. Related Sources Of Truth
+## 12. Related Sources Of Truth
 
 - `role-document-access-policy.md`
 - `agent-roles-and-authority.md`

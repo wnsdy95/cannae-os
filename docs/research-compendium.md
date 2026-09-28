@@ -30,6 +30,20 @@ GitHub bundle are test cases, not production-run evidence. Later producer
 changes require explicit compatibility review. Credential repair, fresh live
 monitor acceptance, and independently operated storage remain separate work.
 
+## Campaign Stop Admission Gap (2026-09-28)
+
+Local reproduction showed that a retained `escalate` decision stopped supervisor
+cycle orders but did not stop `openWave` from reusing the immutable campaign's
+original `active` field. A regression test failed with a missing expected
+exception before the repair. The wave and dispatch runtimes now call the actual
+read-only supervisor before admission instead of duplicating its state rules.
+Tests cover terminal decisions, stale leases, result settlement, revocation,
+resume denial, pauses, incomplete history, and cross-mission campaign reuse.
+
+This is an admission repair, not a completed campaign cancellation/restart
+contract. Already admitted processes need reconciliation; atomic stop fencing and
+explicit USER-authorized successor lineage remain in `docs/completion-backlog.md`.
+
 ## Implementation Traceability Audit (2026-09-28)
 
 **Reason:** filename-only searches and broad changelog closure language obscured

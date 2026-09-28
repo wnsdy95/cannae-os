@@ -155,6 +155,14 @@ Start targeted, then broaden:
 
 ## Commit Discipline
 
+Before continuing adaptive work, reconstruct current supervisor state. An old
+`active` campaign, ready context, or unexpired lease does not override a newer
+stop decision. On `CAMPAIGN_CONTINUATION_BLOCKED`, preserve the campaign and
+decision bytes, settle admitted tool results, revoke unused authority, and return
+the unblock or successor decision to the USER. Do not open another wave or
+provider session to bypass the hold. A cancellation or restarted campaign must
+not be claimed until its separate terminal-settlement/USER-lineage contract exists.
+
 - Keep commits coherent: one concept, one validation story.
 - Do not stage ignored local files.
 - Mention any source family, schema, runner, or fixture added in the commit message if it is the core change.

@@ -555,6 +555,33 @@ function modelAssignments(plan, options) {
   return assignments;
 }
 
+function assertAdaptiveCampaignMayContinue(plan, options, allowMissing = false) {
+  if (!plan.adaptive_work.enabled) return;
+  try {
+    const existing = optionalArtifact(options, {
+      kind: "self-improvement-campaigns",
+      artifactId: plan.adaptive_work.campaign_id
+    });
+    if (!existing && allowMissing) return;
+    if (!existing) throw new Error("The adaptive campaign is not retained.");
+    if (existing.entry.mission_id !== plan.mission_id) throw new Error("The adaptive campaign belongs to another mission.");
+    const { superviseCampaign } = require("./campaign-supervisor");
+    const result = superviseCampaign({
+      repositoryPath: options.repository, artifactRoot: artifactRootPath(options),
+      campaignId: plan.adaptive_work.campaign_id,
+      evaluatedAt: options.now || new Date().toISOString()
+    });
+    if (result.order.mission_id !== plan.mission_id || !sameRef(result.order.campaign_ref, existing.ref) ||
+        result.order.status !== "ready" || result.order.execution_authorized !== true) {
+      throw new Error(`Supervisor state ${result.order.status}: ${result.order.blocking_codes.join(", ")}`);
+    }
+  } catch (cause) {
+    const error = new Error(`CAMPAIGN_CONTINUATION_BLOCKED: ${cause.message}`);
+    error.code = "CAMPAIGN_CONTINUATION_BLOCKED";
+    throw error;
+  }
+}
+
 function campaignReference(plan, options) {
   if (!plan.adaptive_work.enabled) return { ...NONE_REF };
   const existing = optionalArtifact(options, {
@@ -563,6 +590,7 @@ function campaignReference(plan, options) {
     artifactId: plan.adaptive_work.campaign_id
   });
   if (existing) {
+    assertAdaptiveCampaignMayContinue(plan, options);
     assertValid(existing.payload, "self-improvement-campaign", "Bounded improvement campaign");
     if (existing.payload.status !== "active") {
       throw new Error("Existing improvement campaign is not active.");
@@ -642,6 +670,7 @@ function openWave(plan, options = {}) {
   assertValid(plan, "mission-wave-plan", "Mission wave plan");
   return withWaveLifecycle(options, plan.mission_id, plan.wave_id, locked => {
     assertWaveNotTerminated(locked, plan.mission_id, plan.wave_id);
+    assertAdaptiveCampaignMayContinue(plan, locked, true);
     return openWaveUnlocked(plan, locked);
   });
 }
@@ -718,6 +747,7 @@ function openWaveUnlocked(plan, options = {}) {
 
   const assignments = modelAssignments(plan, operationOptions);
   const campaignRef = campaignReference(plan, operationOptions);
+  assertAdaptiveCampaignMayContinue(plan, operationOptions);
   const doctrineState = {
     revision: runGit(doctrineRoot, ["rev-parse", "HEAD"]),
     router_sha256: sha256(fs.readFileSync(routerPath(doctrineRoot))),
@@ -1004,6 +1034,7 @@ function recordWaveUnlocked(report, options = {}) {
   const repository = resolveRepository(options.repository);
   const operationOptions = { ...options, repository: repository.root };
   const planArtifact = requiredWaveArtifact(operationOptions, report.mission_id, report.wave_id, "mission-wave-plans");
+  assertAdaptiveCampaignMayContinue(planArtifact.payload, operationOptions);
   const preflightArtifact = requiredWaveArtifact(operationOptions, report.mission_id, report.wave_id, "routing-preflights");
   const contexts = artifactEntries(operationOptions, {
     missionId: report.mission_id,
@@ -1055,6 +1086,7 @@ function recordWaveUnlocked(report, options = {}) {
   }
   const recordedReport = { ...report, control_receipt_refs: controlReceiptRefs };
   assertValid(recordedReport, "mission-wave-report", "Controller-bound mission wave report");
+  assertAdaptiveCampaignMayContinue(planArtifact.payload, operationOptions);
   const reportRef = persistJson(operationOptions, {
     missionId: report.mission_id,
     waveId: report.wave_id,
@@ -1194,6 +1226,7 @@ function closeWaveUnlocked(aar, options = {}) {
   const repository = resolveRepository(options.repository);
   const operationOptions = { ...options, repository: repository.root };
   const planArtifact = requiredWaveArtifact(operationOptions, options.missionId, options.waveId, "mission-wave-plans");
+  assertAdaptiveCampaignMayContinue(planArtifact.payload, operationOptions);
   const reportArtifact = requiredWaveArtifact(operationOptions, options.missionId, options.waveId, "mission-wave-reports");
   const closeoutId = `MWC-${safeIdPart(options.waveId)}`;
   const priorCloseout = optionalArtifact(operationOptions, {
@@ -1573,6 +1606,7 @@ if (require.main === module) main();
 module.exports = {
   NONE_REF,
   artifactRootPath,
+  assertAdaptiveCampaignMayContinue,
   assertWaveNotTerminated,
   buildRequiredControls,
   closeWave,
