@@ -7,6 +7,44 @@
 | `sample-payloads/valid-mission.json` | `mission` | pass |
 | `sample-payloads/invalid-mission-missing-intent.json` | `mission` | fail with `MISSING_REQUIRED` and `MISSING_INTENT` |
 | `sample-payloads/invalid-mission-extra-field.json` | `mission` | fail with `ADDITIONAL_PROPERTY` and `can_execute: false` |
+| `sample-payloads/valid-warno.json` | `warno` | pass |
+| `sample-payloads/invalid-warno-execution-before-issue.json` | `warno` | fail with `WARNO_WITHOUT_PREPARATION_TASKS` and `WARNO_EXECUTION_BEFORE_ISSUE` |
+| `sample-payloads/valid-board-decision.json` | `board-decision` | pass |
+| `sample-payloads/invalid-board-decision-no-rationale.json` | `board-decision` | fail with `MISSING_REQUIRED` |
+| `sample-payloads/valid-battle-rhythm-event.json` | `battle-rhythm-event` | pass |
+| `sample-payloads/invalid-battle-rhythm-event-unknown-class.json` | `battle-rhythm-event` | fail with `ENUM_MISMATCH` |
+| `sample-payloads/valid-battle-rhythm-scheduler.json` | `battle-rhythm-scheduler` | pass |
+| `sample-payloads/invalid-battle-rhythm-scheduler-object-occurrence.json` | `battle-rhythm-scheduler` | fail with `ANY_OF_MISMATCH` |
+| `sample-payloads/invalid-battle-rhythm-scheduler-auto-executed.json` | `battle-rhythm-scheduler` | fail with `CONST_MISMATCH` and `ENUM_MISMATCH` |
+| `sample-payloads/valid-agent-metl.json` | `agent-metl` | pass |
+| `sample-payloads/invalid-agent-metl-missing-standards.json` | `agent-metl` | fail with `MISSING_REQUIRED` |
+| `sample-payloads/valid-readiness-event.json` | `readiness-event` | pass |
+| `sample-payloads/invalid-readiness-event-extra-field.json` | `readiness-event` | fail with `ADDITIONAL_PROPERTY` |
+| `sample-payloads/invalid-readiness-event-self-promotion.json` | `readiness-event` | fail unauthorized actor, stage jump, insufficient evidence, and authority escalation checks |
+| `sample-payloads/valid-source-plan.json` | `source-plan` | pass |
+| `sample-payloads/invalid-source-plan-unusable-tier.json` | `source-plan` | fail with `ENUM_MISMATCH` |
+| `sample-payloads/valid-context-release.json` | `context-release` | pass |
+| `sample-payloads/invalid-context-release-external-raw-no-expiry.json` | `context-release` | fail with `MISSING_REQUIRED` |
+| `sample-payloads/invalid-context-release-external-raw-executor.json` | `context-release` | fail authority, validity, review-binding, revocation, and raw-external-release checks |
+| `sample-payloads/valid-resource-status.json` | `resource-status` | pass |
+| `sample-payloads/invalid-resource-status-negative-capacity.json` | `resource-status` | fail with `EXCLUSIVE_MINIMUM` |
+| `sample-payloads/invalid-resource-status-missing-thresholds.json` | `resource-status` | fail with `MISSING_REQUIRED` |
+| `sample-payloads/valid-decision-log.json` | `decision-log` | pass |
+| `sample-payloads/invalid-decision-log-no-authority-basis.json` | `decision-log` | fail with `MISSING_REQUIRED` |
+| `sample-payloads/valid-source-record.json` | `source-record` | pass |
+| `sample-payloads/invalid-source-record-bad-tier.json` | `source-record` | fail with `ENUM_MISMATCH` |
+| `sample-payloads/valid-classification-label.json` | `classification-label` | pass |
+| `sample-payloads/invalid-classification-label-unknown-eefi-class.json` | `classification-label` | fail with `ENUM_MISMATCH` |
+| `sample-payloads/valid-releasability-review.json` | `releasability-review` | pass |
+| `sample-payloads/invalid-releasability-review-unknown-decision.json` | `releasability-review` | fail with `ENUM_MISMATCH` |
+| `sample-payloads/invalid-releasability-review-forbidden-release.json` | `releasability-review` | fail expiry, reviewer-authority, blocking-finding, and output-forbidden checks |
+| `sample-payloads/valid-eefi-alert.json` | `eefi-alert` | pass |
+| `sample-payloads/invalid-eefi-alert-raw-excerpt.json` | `eefi-alert` | fail with `PATTERN_MISMATCH` |
+| `sample-payloads/valid-control-execution-receipt.json` | `control-execution-receipt` | pass |
+| `sample-payloads/invalid-control-execution-receipt-false-pass.json` | `control-execution-receipt` | fail with `CONTROL_RECEIPT_STATUS_MISMATCH` |
+| mutated `sample-payloads/valid-control-execution-receipt.json` report digest | `control-execution-receipt` | fail with `CONTROL_RECEIPT_ID_BINDING_MISMATCH` |
+| mutated `sample-payloads/valid-control-execution-receipt.json` command descriptor | `control-execution-receipt` | fail with `CONTROL_RECEIPT_DESCRIPTOR_MISMATCH` |
+| mutated `sample-payloads/valid-control-execution-receipt.json` state digest | `control-execution-receipt` | fail with `CONTROL_RECEIPT_STATE_BINDING_MISMATCH` |
 | `sample-payloads/valid-tool-request-green.json` | `tool-request` | pass |
 | `sample-payloads/invalid-tool-request-red-without-approval.json` | `tool-request` | fail with `RED_WITHOUT_APPROVAL` |
 | `sample-payloads/valid-approval-request.json` | `approval-request` | pass |

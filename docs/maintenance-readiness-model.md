@@ -155,10 +155,10 @@ Confirm maintenance readiness before execution.
 
 ## 12. Implementation status and candidates
 
-schema:
+Implemented schemas:
 
 - `maintenance-readiness.schema.json`
-- `resource-status.schema.json`
+- `resource-status.schema.json`: point-in-time resource status with capacity, threshold bands, and trend for the S4 watch.
 
 implemented prototype:
 
@@ -167,10 +167,8 @@ implemented prototype:
 - `run-maintenance-dashboard-fixtures.js`: regression-verifies the ready, degraded, and unavailable sustainment projections.
 - `dashboard-ui-prototype/maintenance-readiness-dashboard-state.json`: sustainment readiness projection state that can be fed into the dashboard.
 
-prototype candidates:
-
-- `resource-budget-checker.js`: converts token/time/quota thresholds into a SITREP/CCIR.
-- `tool-fallback-planner.js`: proposes a manual/degraded fallback for a failed tool.
+- `resource-budget-checker.js`: converts token/time/quota thresholds into watch items and blocking FFIR alert candidates (verified by `run-resource-budget-checker-fixtures.js`).
+- `tool-fallback-planner.js`: proposes a manual/degraded fallback chain for a failed tool, escalating high-criticality data-loss cases to a commander decision (verified by `run-tool-fallback-planner-fixtures.js`).
 
 ## 13. Source anchors
 

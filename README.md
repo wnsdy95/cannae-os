@@ -81,6 +81,11 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Agent Roles and Authority](docs/agent-roles-and-authority.md): role responsibilities, approval scope, reporting scope, autonomous action, and post-action controls.
 - [Commander Handbook](docs/commander-handbook.md): how a human final decision-maker should issue intent, approve work, and manage risk.
 - [Functional Domains](docs/functional-domains.md): mapping military functional domains to AI work functions.
+- [Mission Command Runtime Policy](docs/mission-command-runtime-policy.md): a machine-checkable commander's intent that survives delegation across agent echelons.
+- [Disciplined Initiative Rules](docs/disciplined-initiative-rules.md): bounded initiative, drift classes, and mandatory stop or escalation behavior.
+- [Chief of Staff Agent](docs/chief-of-staff-agent.md): staff integration, battle-rhythm ownership, and the authorities a CoS agent never owns.
+- [Common Operational Picture State](docs/common-operational-picture-state.md): an event-derived mission projection with staleness and need-to-know rules.
+- [Reporting Threshold Policy](docs/reporting-threshold-policy.md): exception-first must-report, may-stay-silent, and must-not-report rules.
 
 ### Orders, Handoffs, And Execution Control
 
@@ -89,6 +94,8 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Backbrief and Rehearsal SOP](docs/backbrief-and-rehearsal-sop.md): confirmation steps that reduce instruction distortion before execution.
 - [OPORD Annex Model](docs/opord-annex-model.md): separation between command intent and specialist annexes.
 - [Personnel Continuity Model](docs/personnel-continuity-model.md): succession, rotation, degraded mode, handoff, and vital records.
+- [Dry-Run Approval UI](docs/dry-run-approval-ui.md): commander dispositions and evidence requirements after rehearsal or dry run.
+- [Handoff Packet Template](docs/handoff-packet-template.md): mandatory transfer fields, triggers, and acceptance checks for continuity.
 
 ### Multi-Agent Organization
 
@@ -101,6 +108,8 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Model Force Assignment Policy](docs/model-force-assignment-policy.md): mission-based allocation of deterministic, line, specialist, command, SOF, assurance, and reserve model capacity.
 - [Model Force v0.2 Operations](docs/model-force-v0.2-operations.md): registry-to-compiler-to-routing-preflight procedure for dispatching heterogeneous agent forces.
 - [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md): evidence-driven improvement of active work and control-plane candidates with finite budgets, rollback, escalation, and human release authority.
+- [Liaison Agent Model](docs/liaison-agent-model.md): bounded representation across external tools, teams, and agent frameworks.
+- [Partner Command Relationship](docs/partner-command-relationship.md): explicit external request, coordination, and authority relationships.
 
 ### Authority, Risk, Release, And Security
 
@@ -115,6 +124,15 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): monotonic prior-state comparison, stable run/attempt artifact lineage, rerun-fork rejection, and fail-closed rollback/equivocation detection.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
 - [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.
+- [Sensitive Output Filter](docs/sensitive-output-filter.md): digest-only detection, redaction, blocking, and escalation at output and tool boundaries.
+- [Interop Release Packet](docs/interop-release-packet.md): the only approved boundary-crossing package for partner-facing information.
+
+### Training, Readiness, And Sustainment
+
+- [Training Progression Model](docs/training-progression-model.md): crawl-walk-run progression and evidence-based promotion per METL task.
+- [Readiness-to-Authority Policy](docs/readiness-to-authority-policy.md): readiness ceilings that never create approval, risk, or release authority.
+- [Sustainment Agent SOP](docs/sustainment-agent-sop.md): resource watches, endurance drills, and tool-outage response for the S4 agent.
+- [Resource Priority Policy](docs/resource-priority-policy.md): priority of support, preemption, starvation prevention, and FRAGO-controlled changes.
 
 ### Research And Source Discipline
 
@@ -132,7 +150,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
-- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan and mandatory routing through report, AAR, and bounded improvement.
+- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan, mandatory routing, and controller-run control receipts through report, AAR, and bounded improvement.
 - [Enforced Dispatch And Resumable Execution](docs/enforced-dispatch-and-resume.md): per-agent session leases, fail-closed tool admission, checkpoints, interruption, revocation, and explicit resume.
 - [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md): identity-bound, idempotent tool transactions with exact begin/commit correlation, cancellation, receipts, and fail-closed recovery.
 - [Gateway Identity Admission](docs/gateway-identity-admission.md): TLS 1.3 mTLS, SPIFFE X.509, signed one-use challenge, exporter-bound principal evidence, and replay-safe authenticated-reference admission.

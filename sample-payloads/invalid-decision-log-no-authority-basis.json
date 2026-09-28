@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "type": "DecisionLogEntry",
+  "id": "DL-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "decided_at": "2026-06-18T12:25:00+09:00",
+  "decision_maker": "COS",
+  "decision_type": "priority",
+  "question": "Should the alert router prototype be prioritized ahead of the readiness gate prototype?",
+  "options_considered": [
+    "Alert router first.",
+    "Readiness gate first."
+  ],
+  "chosen_option": "Alert router first.",
+  "rationale": "The alert router unblocks CCIR routing for the runtime demo.",
+  "affected_artifacts": [
+    "OPORD-DEMO-001"
+  ],
+  "review_trigger": "Review at the next battle-rhythm sync if the readiness gate slips.",
+  "status": "complete"
+}

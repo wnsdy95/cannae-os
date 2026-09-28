@@ -1,0 +1,10 @@
+[
+  {
+    "eefi_id": "EEFI-DEMO-001",
+    "pattern": "prod\\.command-post-dashboard"
+  },
+  {
+    "eefi_id": "EEFI-DEMO-002",
+    "pattern": "credential[_ -]?path"
+  }
+]

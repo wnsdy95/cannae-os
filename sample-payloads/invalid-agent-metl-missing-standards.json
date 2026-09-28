@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1",
+  "type": "AgentMetl",
+  "id": "METL-DEMO-S3",
+  "role": "S3",
+  "mission_set": [
+    "Task order drafting and local execution planning."
+  ],
+  "essential_tasks": [
+    {
+      "task_id": "MET-DEMO-S3-001",
+      "task_statement": "Draft task orders linked to commander intent.",
+      "conditions": [
+        "Given an approved OPORD body and annex set."
+      ],
+      "supporting_fixtures": [
+        "valid-task-order.json"
+      ],
+      "supporting_runners": [
+        "readiness-gate-prototype/run-readiness-fixtures.js"
+      ],
+      "current_proficiency": "P",
+      "evaluation_evidence": [
+        "Task orders accepted without rework on the last two missions."
+      ],
+      "review_cadence": "end_of_phase"
+    }
+  ],
+  "updated_at": "2026-06-18T18:00:00+09:00"
+}

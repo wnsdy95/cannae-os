@@ -2882,6 +2882,28 @@ Implemented artifacts:
 - `run-transparency-operations-fixtures.js` and `run-transparency-supervisor-fixtures.js`
 - valid and adversarial policy, observation, rotation, incident, state, trust-policy and cycle-order samples
 
+### 8.64 Deep-Research Queue Doctrine Synthesis
+
+This tranche converted fifteen previously queued operating concepts into doctrine artifacts. Each artifact separates the military-source claim from the framework interpretation and names the runtime boundary it is intended to control. Their presence here, in `README.md`, and in `docs/source-map.md` is a mandatory knowledge-management closeout condition.
+
+| Artifact | Research conclusion | LLM application | Current limit |
+| --- | --- | --- | --- |
+| `docs/mission-command-runtime-policy.md` | Commander's intent must preserve purpose, key tasks, end state, failure conditions, and authority boundaries through delegation. | Compile intent into constraints checked at context issuance, tool admission, reporting, and reassessment. | Semantic compliance still requires backbrief and evaluator judgment. |
+| `docs/disciplined-initiative-rules.md` | Initiative is legitimate only inside intent, authority, risk, and reporting boundaries. | Classify drift and force continue, report, stop, or seek approval responses. | It does not make ambiguous intent mechanically decidable. |
+| `docs/dry-run-approval-ui.md` | Rehearsal exists to expose decisions before effects occur. | Present evidence-bound approve, revise, rehearse again, and abort dispositions. | A UI cannot replace an authenticated approval and consumption record. |
+| `docs/chief-of-staff-agent.md` | A chief of staff integrates staff work but is not a second commander. | Own routing, battle rhythm, packet quality, and unresolved-conflict escalation. | It never receives retained USER authority. |
+| `docs/common-operational-picture-state.md` | Shared understanding should be projected from authoritative events, not conversational memory. | Derive role-filtered mission state with provenance and staleness indicators. | Projection quality is bounded by event completeness and timestamp integrity. |
+| `docs/reporting-threshold-policy.md` | Reports should serve decisions and exceptions rather than narrate routine progress. | Route must-report, may-stay-silent, and prohibited disclosure classes by threshold. | Novel events may still need human classification. |
+| `docs/handoff-packet-template.md` | Relief in place requires an accepted transfer of authority, state, evidence, and pending decisions. | Gate resume and successor activation on a complete, verified packet. | A packet proves recorded state, not the successor's understanding. |
+| `docs/training-progression-model.md` | Proficiency is task-specific, progressive, evidenced, and perishable. | Use crawl-walk-run evidence and regression triggers per METL task. | Model and tool drift require locally chosen reassessment intervals. |
+| `docs/readiness-to-authority-policy.md` | Readiness is necessary but never sufficient for authority. | Compute a ceiling combined with mission, matrix, approval, risk, and expiry gates. | Readiness can never unlock Red/Black or release authority. |
+| `docs/sustainment-agent-sop.md` | Operational endurance depends on continuous visibility of consumable and repairable resources. | Monitor budget, quota, tool, time, and context thresholds and run bounded outage drills. | External provider recovery remains outside local enforcement. |
+| `docs/resource-priority-policy.md` | Scarce resources follow declared priority of support, not request order. | Allocate to the main effort, define preemption, and prevent starvation. | Priority changes still require a valid FRAGO or commander decision. |
+| `docs/sensitive-output-filter.md` | Disclosure controls must exist at both final-output and tool-transfer boundaries. | Detect EEFI, redact or block, and retain digest-only audit evidence. | Pattern detection cannot prove that every semantic secret was found. |
+| `docs/liaison-agent-model.md` | Liaison preserves mutual understanding without assuming either organization's command authority. | Translate terminology, route requests, and maintain boundary records. | It cannot resolve policy or authority conflicts itself. |
+| `docs/interop-release-packet.md` | Boundary crossing needs one reviewed, purpose-bound package rather than ad hoc context sharing. | Bind audience, subject, mission, labels, reviews, expiry, and released bytes. | Partner-side handling after release requires a separate agreement and control plane. |
+| `docs/partner-command-relationship.md` | External relationships must declare what may be directed, coordinated, requested, or denied. | Enforce request classes and escalation without importing partner authority. | It does not establish legal authority between real organizations. |
+
 ## 9. Research Questions to Dig Into Further
 
 1. How should the military document hierarchy be implemented as an LLM context hierarchy?

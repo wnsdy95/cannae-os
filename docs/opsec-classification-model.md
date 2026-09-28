@@ -160,17 +160,17 @@ Prohibited:
 
 ## 9. Implementation candidates
 
-schema:
+Implemented schemas:
 
-- `classification-label.schema.json`
-- `releasability-review.schema.json`
-- `eefi-alert.schema.json`
+- `classification-label.schema.json`: standalone label contract for sensitivity tier, EEFI class membership, releasability, and need-to-know roles.
+- `releasability-review.schema.json`: per-artifact label review feeding the final release review.
+- `eefi-alert.schema.json`: EEFI exposure alert carrying an excerpt digest, never the raw excerpt.
 
-prototype:
+Implemented prototypes:
 
-- `opsec-linter.js`: Detects secret patterns and restricted terms in output/tool targets.
-- `context-filter.js`: Reduces the context packet according to per-role releasability.
-- `evidence-redactor.js`: Converts evidence records into a final-output-safe form.
+- `opsec-linter.js`: detects secret patterns and restricted terms in output/tool targets, reporting sha256 digests only (verified by `run-opsec-linter-fixtures.js`).
+- `context-filter-prototype/`: reduces the context packet according to per-role releasability (implements the `context-filter.js` candidate).
+- `evidence-redactor.js`: converts evidence records into a final-output-safe form (verified by `run-evidence-redactor-fixtures.js`).
 
 ## 10. Source anchors
 

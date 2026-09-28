@@ -1,0 +1,8 @@
+{
+  "id": "SITREP-DEMO-012",
+  "mission_id": "M-DEMO-001",
+  "summary": "The final output draft names the prod.command-post-dashboard deployment target.",
+  "next_steps": [
+    "Route the draft to releasability review before release."
+  ]
+}

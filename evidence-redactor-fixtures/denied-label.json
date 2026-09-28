@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1",
+  "type": "ClassificationLabel",
+  "id": "CL-DEMO-012",
+  "mission_id": "M-DEMO-001",
+  "subject_id": "E-DEMO-012",
+  "classification": "restricted",
+  "eefi_class": "output_forbidden",
+  "releasability": "internal",
+  "need_to_know_roles": ["COMMANDER", "S6"],
+  "labeling_authority": "S2",
+  "review_by": "2026-09-30T00:00:00+09:00",
+  "rationale": "The evidence captured a runtime secret; any final output exposure is prohibited."
+}

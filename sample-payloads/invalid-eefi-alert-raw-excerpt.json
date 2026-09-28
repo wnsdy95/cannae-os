@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "type": "EEFIAlert",
+  "id": "ALERT-EEFI-DEMO-002",
+  "mission_id": "M-DEMO-001",
+  "eefi_item_id": "EEFI-DEMO-001",
+  "exposure_channel": "log",
+  "detector": "opsec-linter",
+  "excerpt_sha256": "raw excerpt text is forbidden here; only a sha256 digest is allowed",
+  "severity": "Black",
+  "owner": "S6",
+  "blocks_release": true,
+  "required_response": "Invalid: excerpt_sha256 must be a 64-character hex digest, never the raw excerpt.",
+  "status": "blocked"
+}

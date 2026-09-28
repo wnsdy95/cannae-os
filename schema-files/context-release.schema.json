@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/context-release.schema.json",
+  "title": "Context Release",
+  "type": "object",
+  "required": ["schema_version", "type", "id", "mission_id", "context_item_id", "recipient", "packet_form", "justification", "need_to_know", "released_by", "released_at", "expires_at", "revocation"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.1" },
+    "type": { "type": "string", "const": "ContextRelease" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "context_item_id": { "$ref": "common.schema.json#/$defs/id" },
+    "recipient": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["role", "external_party"]
+        },
+        "role": { "$ref": "common.schema.json#/$defs/role_id" },
+        "external_party": { "type": "string", "minLength": 1 }
+      },
+      "oneOf": [
+        {
+          "properties": { "kind": { "const": "role" } },
+          "required": ["kind", "role"],
+          "not": { "required": ["external_party"] }
+        },
+        {
+          "properties": { "kind": { "const": "external_party" } },
+          "required": ["kind", "external_party"],
+          "not": { "required": ["role"] }
+        }
+      ]
+    },
+    "packet_form": {
+      "type": "string",
+      "enum": ["raw", "summary", "redacted", "reference_only", "denied"]
+    },
+    "justification": { "type": "string", "minLength": 1 },
+    "need_to_know": { "type": "string", "minLength": 1 },
+    "classification_label_id": { "$ref": "common.schema.json#/$defs/id" },
+    "releasability_review_id": { "$ref": "common.schema.json#/$defs/id" },
+    "release_review_id": { "$ref": "common.schema.json#/$defs/id" },
+    "released_by": {
+      "type": "string",
+      "enum": ["USER", "COMMANDER", "COS", "S2", "S6"]
+    },
+    "released_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "revocation": {
+      "type": "object",
+      "required": ["revoked"],
+      "additionalProperties": false,
+      "properties": {
+        "revoked": { "type": "boolean" },
+        "revoked_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "revoked_by": { "$ref": "common.schema.json#/$defs/role_id" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

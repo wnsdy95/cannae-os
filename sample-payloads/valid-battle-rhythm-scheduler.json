@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "type": "BattleRhythmSchedulerProposal",
+  "id": "BRS-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "generated_at": "2026-06-18T03:15:00.000Z",
+  "generated_by": "COS",
+  "event_log_refs": [
+    "EVT-WG-001",
+    "EVT-WG-002",
+    "EVT-WG-005"
+  ],
+  "proposals": [
+    {
+      "event_id": "BRE-DEMO-001",
+      "event_name": "Commander Decision Board",
+      "event_class": "board",
+      "proposed_occurrence": "2026-06-25T03:00:00.000Z",
+      "state": "proposed",
+      "inputs_ready": [
+        "SITREP-DEMO-001",
+        "DP-DEMO-001"
+      ],
+      "inputs_missing": [],
+      "blocking_reasons": [],
+      "proposed_agenda": [
+        "Decide on decision packet DP-DEMO-001.",
+        "Produce: Board decision record for each pending decision packet.",
+        "Produce: FRAGO if mission scope or priority changes."
+      ]
+    }
+  ],
+  "conflicts": [],
+  "confirmation_queue": [
+    {
+      "action": "confirm_schedule",
+      "authority": "COS",
+      "event_ids": [
+        "BRE-DEMO-001"
+      ],
+      "note": "Confirm next occurrence of Commander Decision Board before it is placed on the battle rhythm."
+    }
+  ],
+  "auto_execution": false,
+  "classification": "internal",
+  "status": "pending"
+}

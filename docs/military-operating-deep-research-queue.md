@@ -35,7 +35,7 @@ Documentation rules:
 
 | Area | Current output | Remaining gap |
 | --- | --- | --- |
-| Mission command | `agent-roles-and-authority.md`, `military-operating-system.md` | Model disciplined initiative more rigorously as runtime policy |
+| Mission command | `agent-roles-and-authority.md`, `military-operating-system.md`, `mission-command-runtime-policy.md`, `disciplined-initiative-rules.md` | Wire the disciplined-initiative rule IDs into policy-engine runtime enforcement |
 | OPORD/WARNO/FRAGO/SITREP/AAR | `prompt-templates.md`, `prompt-dsl.md`, `schema-files/`, `orders-production-pipeline.md`, `opord-annex-model.md`, `schema-files/annex.schema.json`, `schema-files/frago-scope-change.schema.json`, `rehearsal-to-ccir-router.js`, `information-to-operations-router.js` | Awaiting new priority assignment |
 | CCIR/PIR/FFIR/EEFI | `decision-risk-assessment.md`, `agent-battle-rhythm.md`, `information-to-operations-cycle.md`, `schema-files/information-report.schema.json`, `schema-files/intelligence-assessment.schema.json`, `information-to-operations-router.js` | Integrate dashboard projection with the actual UI queue |
 | Authority/approval | `tool-use-roe.md`, `approval-ui-patterns.md`, `policy-engine-prototype/`, `approval-scope-policy.md`, `risk-acceptance-authority.md`, `schema-files/approval-scope.schema.json`, `schema-files/approval-consumption-event.schema.json`, `schema-files/approval-revocation-event.schema.json`, `schema-files/approval-renewal-event.schema.json`, `schema-files/approval-delegation-event.schema.json`, `schema-files/approval-delegation-revocation-event.schema.json`, `schema-files/release-gate-decision-event.schema.json`, `schema-files/risk-acceptance.schema.json`, `policy-engine-authority-integration.js`, `policy-engine-release-integration.js`, `release-gate-dashboard-runner.js`, `authority-delegation-projection-runner.js`, `maintenance-dashboard-runner.js`, `aar-to-readiness-update.js`, `rehearsal-to-ccir-router.js`, `dashboard-ui-prototype/release-gate-dashboard-state.json`, `dashboard-ui-prototype/authority-delegation-projection-state.json`, `dashboard-ui-prototype/maintenance-readiness-dashboard-state.json` | Awaiting new priority assignment |
@@ -77,6 +77,12 @@ Output artifacts:
 - `mission-command-runtime-policy.md`
 - `disciplined-initiative-rules.md`
 
+Current implementation:
+
+- `commander-handbook.md`
+- `mission-command-runtime-policy.md`
+- `disciplined-initiative-rules.md`
+
 ### 3.2 OPORD, annex, orders production
 
 Research questions:
@@ -108,6 +114,9 @@ Current implementation:
 
 - `orders-production-pipeline.md`
 - `opord-annex-model.md`
+- `schema-files/warno.schema.json`
+- `runtime-demo-payloads/warno.json`
+- `runtime-demo-payloads/frago.json`
 - `runtime-demo-payloads/backbrief.json`
 - `runtime-demo-payloads/rehearsal.json`
 - `orders-dissemination-runner.js`
@@ -141,10 +150,13 @@ Output artifacts:
 Current implementation:
 
 - `backbrief-and-rehearsal-sop.md`
+- `dry-run-approval-ui.md`
 - `schema-files/backbrief.schema.json`
 - `schema-files/rehearsal.schema.json`
 - `sample-payloads/valid-backbrief.json`
 - `sample-payloads/valid-rehearsal.json`
+- `event-fixtures/rehearsal-event-fixtures.json`
+- `run-rehearsal-event-fixtures.js`
 
 ### 3.4 Staff integration, COS, B2C2WG
 
@@ -173,6 +185,16 @@ Output artifacts:
 - `chief-of-staff-agent.md`
 - `battle-rhythm-scheduler-schema.json`
 
+Current implementation:
+
+- `b2c2wg-operating-model.md`
+- `chief-of-staff-agent.md`
+- `schema-files/battle-rhythm-scheduler.schema.json`
+- `schema-files/battle-rhythm-event.schema.json`
+- `schema-files/board-decision.schema.json`
+- `battle-rhythm-scheduler.js`
+- `run-battle-rhythm-scheduler-fixtures.js`
+
 ### 3.5 CCIR, COP, reporting system
 
 Research questions:
@@ -198,6 +220,14 @@ Output artifacts:
 - `ccir-alerting-model.md`
 - `common-operational-picture-state.md`
 - `reporting-threshold-policy.md`
+
+Current implementation:
+
+- `ccir-alerting-model.md`
+- `common-operational-picture-state.md`
+- `reporting-threshold-policy.md`
+- `ccir-linter.js`
+- `run-ccir-linter-fixtures.js`
 
 ### 3.6 Authority, approval, retained authority
 
@@ -288,6 +318,15 @@ Output artifacts:
 - `decision-log-schema.json`
 - `handoff-packet-template.md`
 
+Current implementation:
+
+- `knowledge-management-sop.md`
+- `handoff-packet-template.md`
+- `schema-files/decision-log.schema.json`
+- `schema-files/source-record.schema.json`
+- `km-review-runner.js`
+- `run-km-review-fixtures.js`
+
 ### 3.8 Training, METL, readiness
 
 Research questions:
@@ -313,6 +352,14 @@ Output artifacts:
 - `agent-metl.md`
 - `training-progression-model.md`
 - `readiness-to-authority-policy.md`
+
+Current implementation:
+
+- `agent-metl.md`
+- `training-progression-model.md`
+- `readiness-to-authority-policy.md`
+- `schema-files/agent-metl.schema.json`
+- `schema-files/readiness-event.schema.json`
 
 ### 3.9 Sustainment, logistics, maintenance
 
@@ -340,6 +387,17 @@ Output artifacts:
 - `sustainment-agent-sop.md`
 - `resource-priority-policy.md`
 
+Current implementation:
+
+- `maintenance-readiness-model.md`
+- `sustainment-agent-sop.md`
+- `resource-priority-policy.md`
+- `schema-files/resource-status.schema.json`
+- `resource-budget-checker.js`
+- `tool-fallback-planner.js`
+- `run-resource-budget-checker-fixtures.js`
+- `run-tool-fallback-planner-fixtures.js`
+
 ### 3.10 Protection, OPSEC, classification
 
 Research questions:
@@ -366,6 +424,22 @@ Output artifacts:
 - `context-releasability-policy.md`
 - `sensitive-output-filter.md`
 
+Current implementation:
+
+- `opsec-classification-model.md`
+- `context-releasability-policy.md`
+- `sensitive-output-filter.md`
+- `schema-files/classification-label.schema.json`
+- `schema-files/releasability-review.schema.json`
+- `schema-files/eefi-alert.schema.json`
+- `schema-files/context-release.schema.json`
+- `opsec-linter.js`
+- `evidence-redactor.js`
+- `eefi-detector.js`
+- `run-opsec-linter-fixtures.js`
+- `run-evidence-redactor-fixtures.js`
+- `run-eefi-detector-fixtures.js`
+
 ### 3.11 Interoperability, liaison, multinational/interorganizational work
 
 Research questions:
@@ -388,6 +462,12 @@ LLM mapping:
 - Partner-facing output must be an approved release packet, not internal reasoning.
 
 Output artifacts:
+
+- `liaison-agent-model.md`
+- `interop-release-packet.md`
+- `partner-command-relationship.md`
+
+Current implementation:
 
 - `liaison-agent-model.md`
 - `interop-release-packet.md`
@@ -516,12 +596,40 @@ Completed:
 - `schema-files/doctrine-consistency-review.schema.json`: Contract for source family coverage, policy finding, and resolution control.
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
+<!-- doctrine-index:start -->
+- `mission-command-runtime-policy.md`: Commander's intent as a five-field machine-checkable constraint object surviving delegation across agent echelons.
+- `disciplined-initiative-rules.md`: Enumerated DI-1 to DI-10 boundary rules, drift classes, and degeneration patterns with mandatory runtime responses.
+- `dry-run-approval-ui.md`: Approval-surface spec for rehearsal/dry-run results with the four commander dispositions as UI actions and events.
+- `chief-of-staff-agent.md`: CoS agent duty description as staff integration layer with owned functions and never-owned authorities.
+- `common-operational-picture-state.md`: The COP as the single event-log-derived projection of mission truth with staleness and need-to-know view rules.
+- `reporting-threshold-policy.md`: Must-report/may-stay-silent/must-not-report obligations with exception-first precedence and anti-noise routing.
+- `handoff-packet-template.md`: Authoring template and quality gate over the handoff packet schema with mandatory triggers and acceptance checklist.
+- `training-progression-model.md`: Crawl-walk-run progression per METL task with promotion evidence classes and regression triggers.
+- `readiness-to-authority-policy.md`: Readiness bands mapped to authority ceilings that never unlock Red/Black and revoke on readiness drop.
+- `sustainment-agent-sop.md`: S4 resource watch cycle, endurance drills, and two-lane tool-outage handling.
+- `resource-priority-policy.md`: Priority of support, preemption order, starvation prevention, and FRAGO-only priority changes.
+- `sensitive-output-filter.md`: Two-stage EEFI filter spec (output-forbidden and tool-transfer-forbidden) with digest-only audit events.
+- `liaison-agent-model.md`: Liaison agent duties, placement, and failure modes for external tools, teams, and agent frameworks.
+- `interop-release-packet.md`: The release packet as the only boundary-crossing artifact with its production pipeline and prohibited contents.
+- `partner-command-relationship.md`: Declared partner authority relationships enforced by the policy engine, never granting Red/Black authority.
+<!-- doctrine-index:end -->
+- `schema-files/warno.schema.json`: WARNO contract preceding the OPORD, with `runtime-demo-payloads/warno.json` and `runtime-demo-payloads/frago.json` wired into the demo runner.
+- `event-fixtures/rehearsal-event-fixtures.json`: Execute-path and revise-path rehearsal event streams verified by `run-rehearsal-event-fixtures.js` against the real rehearsal-to-CCIR router.
+- `schema-files/board-decision.schema.json`, `schema-files/battle-rhythm-event.schema.json`, `schema-files/battle-rhythm-scheduler.schema.json`: Battle-rhythm contracts with `battle-rhythm-scheduler.js` and fixtures.
+- `ccir-linter.js`: Fails blocked SITREP items lacking CCIR classification, with `run-ccir-linter-fixtures.js`.
+- `schema-files/classification-label.schema.json`, `schema-files/releasability-review.schema.json`, `schema-files/eefi-alert.schema.json`: OPSEC label, review, and alert contracts with `opsec-linter.js`, `evidence-redactor.js`, and fixtures.
+- `schema-files/context-release.schema.json` and `eefi-detector.js`: Context release decision record and the digest-only EEFI pattern guard, with fixtures.
+- `schema-files/decision-log.schema.json`, `schema-files/source-record.schema.json`, `km-review-runner.js`: Knowledge-management contracts and integrated review, with fixtures.
+- `schema-files/agent-metl.schema.json`, `schema-files/readiness-event.schema.json`: METL and readiness-event contracts with samples.
+- `schema-files/source-plan.schema.json`: Source-plan annex sibling to the verification plan.
+- `schema-files/resource-status.schema.json`, `resource-budget-checker.js`, `tool-fallback-planner.js`: Sustainment resource contracts and planners, with fixtures.
 
 Next:
 
-1. The current deep research/documentation/runtime contract queue is left in a completed state.
-2. Once access to the official Australian ADF doctrine site is secured, review adding a multinational source family.
-3. The next expansion is opened as a separate queue once the user assigns a new priority.
+1. The output-artifact backlog in sections 3.1 through 3.11 is closed out; every named output artifact now has a current implementation.
+2. Remaining gaps are the dashboard/UI integrations listed in section 2 and policy-engine enforcement of the disciplined-initiative rule IDs.
+3. Once access to the official Australian ADF doctrine site is secured, review adding a multinational source family.
+4. The next expansion is opened as a separate queue once the user assigns a new priority.
 
 ## 6. Research Operating SOP
 

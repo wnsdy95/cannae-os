@@ -80,7 +80,7 @@ Read these only when needed:
 6. Before any covered tool call, run `authorize-policy` on the exact preauthorized draft, then issue one short-lived `AgentDispatchLease` from its persisted `--policy-id` for this exact provider session and mission agent. Enable the provider hook adapter. A ready context pack is necessary but is not tool authority.
 7. Store every work product and verification result through `repository-artifact-store.js`. A completion claim, plan, receipt, preflight, context pack, policy, or lease is not work evidence.
 8. Run `complete --lease <lease-id>` for each successful dispatch-controlled agent before reporting. Blocked or failed agents must have no active lease or unresolved tool request.
-9. Create a `MissionWaveReport` with the exact plan, preflight, context, and work-evidence references. Run `scripts/operate_controls_mission.js report`; a blocked or failed result returns nonzero and stops continuation.
+9. Finalize and freeze a `MissionWaveReport` with the exact plan, preflight, context, and work-evidence references before running `scripts/operate_controls_mission.js report`. The controller must compile and execute every routed `required_control` with `shell: false`, bind each digest-only `ControlExecutionReceipt` to the canonical report input, and reject failed controls, report substitution, unadmitted receipts, or repository/doctrine drift. After a failed or interrupted admission leaves receipts without a persisted report, assign a fresh report ID, keep old receipt references out, and invoke `report` again so every required control reruns. A successfully persisted report is immutable, so later changes require a new wave. Agent-supplied validation claims or receipt references never satisfy this gate.
 10. Create an AAR and run `scripts/operate_controls_mission.js close --mission <id> --wave <id>`. Follow its next-wave trigger. Ordinary findings enter the bounded campaign; retained decisions return to the user.
 11. Run `status` for handoff and `verify` before consuming evidence or declaring wave completion. Conversation history is not mission state.
 12. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from `open`, `report`, `close`, a context pack, a dispatch lease, or a queued improvement.
@@ -430,50 +430,15 @@ Use the smallest relevant set, then broaden:
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node .github/scripts/check-english-only.js
-node run-agent-routing-preflight-fixtures.js
+node run-skill-control-enforcement-fixtures.js
 node run-skill-mission-controller-fixtures.js
-node run-dispatch-runtime-fixtures.js
-node run-protected-tool-gateway-fixtures.js
-node run-gateway-identity-adapter-fixtures.js
-node run-protected-process-executor-fixtures.js
-node run-oci-linux-sandbox-provider-fixtures.js
-node run-github-release-immutability-fixtures.js
-node run-github-release-integrity-fixtures.js
-node run-github-release-independent-verification-fixtures.js
-node run-github-release-trust-checkpoint-fixtures.js
-node run-github-release-publisher-fixtures.js
-node run-document-routing-fixtures.js
-node run-model-force-assignment-fixtures.js
-node run-model-force-v0.2-fixtures.js
-node run-repository-artifact-isolation-fixtures.js
-node run-repository-artifact-concurrency-fixtures.js
-node run-repository-artifact-recovery-fixtures.js
-node run-verification-runner-fixtures.js
-node run-verifier-execution-evidence-fixtures.js
-node run-github-actions-oidc-fixtures.js
-node run-gitlab-ci-oidc-fixtures.js
-node run-verifier-challenge-fixtures.js
-node run-verifier-independence-fixtures.js
-node run-transparency-operations-fixtures.js
-node run-transparency-supervisor-fixtures.js
-node run-verification-attestation-fixtures.js
-node run-comparative-evaluation-fixtures.js
-node run-comparative-evaluation-attestation-fixtures.js
-node run-self-improvement-fixtures.js
-node run-signed-self-improvement-fixtures.js
-node run-campaign-supervisor-fixtures.js
-node run-verifier-trust-readiness-fixtures.js
-node run-verifier-identity-evidence-fixtures.js
-node run-sigstore-verifier-identity-fixtures.js
-node run-workload-identity-admission-fixtures.js
-node run-cycle-order-admission-fixtures.js
 node validator-cli-prototype/run-fixtures.js
-for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
+node run-all-fixtures.js
 node source-map-linter.js
 git diff --check
 ```
 
-For doc-only changes, also check Markdown links and JSON parsing when indexes or samples changed.
+Use routed targeted runners before the aggregate. `run-all-fixtures.js` is the shell-free repository-wide gate; the controller executes only the routed set and records exact receipts.
 
 ## Guardrails
 

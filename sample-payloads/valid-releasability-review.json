@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1",
+  "type": "ReleasabilityReview",
+  "id": "RREV-DEMO-001",
+  "mission_id": "M-DEMO-001",
+  "artifact": {
+    "artifact_id": "ART-DEMO-001",
+    "relative_path": "runtime-demo-payloads/evidence.json",
+    "sha256": "ed51908e4a0c4307462251483ae859f45757e310f21ee17840c40a10591e89dd"
+  },
+  "labels": [
+    {
+      "label_id": "CL-DEMO-010",
+      "classification": "internal",
+      "eefi_class": "none"
+    }
+  ],
+  "requested_audience": "public",
+  "findings": [
+    {
+      "severity": "warning",
+      "code": "INTERNAL_CONTENT_FOR_PUBLIC_AUDIENCE",
+      "detail": "The evidence claim is internal; summarize it before public release."
+    }
+  ],
+  "decision": "redact",
+  "release_review_id": "RR-DEMO-001",
+  "reviewer": "COMMANDER",
+  "reviewed_at": "2026-07-18T10:00:00+09:00",
+  "expires_at": "2099-07-18T12:00:00+09:00"
+}

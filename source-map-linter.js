@@ -3,6 +3,13 @@
 const fs = require("fs");
 const path = require("path");
 
+const DOCTRINE_QUEUE = "docs/military-operating-deep-research-queue.md";
+const DOCTRINE_INDEX_TARGETS = [
+  "README.md",
+  "docs/source-map.md",
+  "docs/research-compendium.md"
+];
+
 const OFFICIAL_HOST_PATTERNS = [
   /army\.mil$/,
   /armypubs\.army\.mil$/,
@@ -74,6 +81,103 @@ function officialHost(url) {
   }
 }
 
+function doctrineIndexAudit(rootPath = process.cwd()) {
+  const findings = [];
+  const queuePath = path.join(rootPath, DOCTRINE_QUEUE);
+  if (!fs.existsSync(queuePath)) {
+    return {
+      doctrine_outputs: [],
+      findings: [{
+        severity: "error",
+        code: "DOCTRINE_INDEX_QUEUE_MISSING",
+        path: DOCTRINE_QUEUE
+      }]
+    };
+  }
+
+  const queue = fs.readFileSync(queuePath, "utf8");
+  const match = queue.match(/<!-- doctrine-index:start -->([\s\S]*?)<!-- doctrine-index:end -->/);
+  if (!match) {
+    return {
+      doctrine_outputs: [],
+      findings: [{
+        severity: "error",
+        code: "DOCTRINE_INDEX_MARKERS_MISSING",
+        path: DOCTRINE_QUEUE
+      }]
+    };
+  }
+
+  const doctrineOutputs = [];
+  for (const item of match[1].matchAll(/`([^`]+\.md)`/g)) {
+    const relativePath = item[1].startsWith("docs/") ? item[1].slice(5) : item[1];
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]*\.md$/.test(relativePath)) {
+      findings.push({
+        severity: "error",
+        code: "DOCTRINE_INDEX_PATH_INVALID",
+        path: item[1]
+      });
+      continue;
+    }
+    doctrineOutputs.push(`docs/${relativePath}`);
+  }
+  const uniqueOutputs = [...new Set(doctrineOutputs)].sort();
+  if (uniqueOutputs.length === 0) {
+    findings.push({
+      severity: "error",
+      code: "DOCTRINE_INDEX_EMPTY",
+      path: DOCTRINE_QUEUE
+    });
+  }
+
+  const targetTexts = new Map();
+  for (const target of DOCTRINE_INDEX_TARGETS) {
+    const targetPath = path.join(rootPath, target);
+    if (!fs.existsSync(targetPath)) {
+      findings.push({
+        severity: "error",
+        code: "DOCTRINE_INDEX_TARGET_MISSING",
+        path: target
+      });
+      continue;
+    }
+    targetTexts.set(target, fs.readFileSync(targetPath, "utf8"));
+  }
+
+  for (const output of uniqueOutputs) {
+    const outputPath = path.join(rootPath, output);
+    let outputExists = false;
+    try {
+      outputExists = fs.statSync(outputPath).isFile() && !fs.lstatSync(outputPath).isSymbolicLink();
+    } catch {
+      outputExists = false;
+    }
+    if (!outputExists) {
+      findings.push({
+        severity: "error",
+        code: "DOCTRINE_OUTPUT_MISSING",
+        path: output
+      });
+    }
+
+    for (const [target, targetText] of targetTexts.entries()) {
+      const indexed = target === "README.md"
+        ? targetText.includes(`](${output})`)
+        : targetText.includes(`\`${output}\``);
+      if (!indexed) {
+        findings.push({
+          severity: "error",
+          code: "DOCTRINE_OUTPUT_NOT_INDEXED",
+          path: output,
+          index: target
+        });
+      }
+    }
+  }
+
+  return { doctrine_outputs: uniqueOutputs, findings };
+}
+
 function lint() {
   const sourceMap = fs.readFileSync("docs/source-map.md", "utf8");
   const files = ["README.md", ...markdownFiles("docs")];
@@ -101,9 +205,13 @@ function lint() {
     }
   }
 
+  const doctrineAudit = doctrineIndexAudit();
+  findings.push(...doctrineAudit.findings);
+
   return {
     valid: findings.length === 0,
     checked_hosts: official.size,
+    indexed_doctrine_outputs: doctrineAudit.doctrine_outputs.length,
     finding_count: findings.length,
     findings
   };
@@ -136,12 +244,16 @@ function coverageReport() {
     }
   }
 
+  const doctrineAudit = doctrineIndexAudit();
+  findings.push(...doctrineAudit.findings);
+
   return {
     report_type: "source-map-url-coverage",
     as_of: "2026-07-28",
     source_map: "docs/source-map.md",
     valid: findings.length === 0,
     checked_hosts: official.size,
+    indexed_doctrine_outputs: doctrineAudit.doctrine_outputs.length,
     finding_count: findings.length,
     covered_hosts: [...official.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
@@ -167,4 +279,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { coverageReport, lint };
+module.exports = { coverageReport, doctrineIndexAudit, lint };

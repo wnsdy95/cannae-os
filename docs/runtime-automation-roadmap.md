@@ -1397,6 +1397,7 @@ See `github-release-trust-checkpoint-continuity.md`.
 | G14 | Trust-policy v0.4 attestation enters quorum only with valid dual-signed execution evidence matching the exact runtime policy, repository state and verification target |
 | G15 | Trust-policy v0.5 dispatch has one exact active supervisor challenge and enough fresh dual-signed nonce responses to satisfy every required purpose quorum without ambiguity or replay |
 | G16 | Trust-policy v0.6 dispatch and post-execution quorum use computed failure domains instead of declared group labels |
+| G17 | Trust-policy v0.7 dispatch has a current, contiguous, reconstructable and manifest-backed transparency state with valid consistency, observer, root, incident and revocation status |
 | G18 | Runtime-policy v0.3 GitHub evidence has a valid manifest-pinned JWKS, strict OIDC signature/claim appraisal, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G19 | Runtime-policy v0.3 GitLab evidence has a valid manifest-pinned GitLab.com JWKS, strict OIDC signature/claim appraisal, stable source/job identity, protected same-project config, conservative failure-domain projection, clean exact commit, and execution-evidence v0.3 binding |
 | G20 | A delegated skill wave has one generated CoS receipt, every expected S3 receipt, ready routing/model admission, digest-bound context packs, repository-manifest evidence, report/AAR closeout, bounded next-wave disposition, and no AI release authority |

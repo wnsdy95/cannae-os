@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "type": "ResourceStatus",
+  "id": "RS-DEMO-QUOTA-001",
+  "mission_id": "M-DEMO-001",
+  "owner": "S4",
+  "classification": "internal",
+  "resource_class": "api_quota",
+  "unit": "requests_per_hour",
+  "capacity": 1000,
+  "current_level": 120,
+  "trend": "degrading",
+  "measured_at": "2026-06-18T13:00:00+09:00",
+  "gates_phases": ["execute"],
+  "notes": "Schema violation: threshold_bands is required; the S4 watch cannot classify a resource without green/amber/red bands."
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/control-execution-receipt.schema.json",
+  "title": "Mandatory Control Execution Receipt",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "report_id",
+    "report_input_sha256",
+    "control",
+    "agent_bindings",
+    "repository_identity_fingerprint",
+    "repository_state_before_sha256",
+    "repository_state_after_sha256",
+    "doctrine_revision",
+    "doctrine_state_before_sha256",
+    "doctrine_state_after_sha256",
+    "started_at",
+    "finished_at",
+    "exit_code",
+    "stdout_sha256",
+    "stdout_bytes",
+    "stderr_sha256",
+    "stderr_bytes",
+    "repository_unchanged",
+    "doctrine_unchanged",
+    "status",
+    "release_authorized"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "const": "0.2" },
+    "type": { "type": "string", "const": "ControlExecutionReceipt" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "minLength": 1 },
+    "report_id": { "$ref": "common.schema.json#/$defs/id" },
+    "report_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "control": {
+      "type": "object",
+      "required": ["control_id", "command", "command_sha256", "runner", "script_path", "argv", "working_directory", "shell"],
+      "additionalProperties": false,
+      "properties": {
+        "control_id": { "$ref": "common.schema.json#/$defs/id" },
+        "command": { "type": "string", "minLength": 1 },
+        "command_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "runner": { "type": "string", "const": "node" },
+        "script_path": { "type": "string", "minLength": 1 },
+        "argv": { "$ref": "common.schema.json#/$defs/string_list" },
+        "working_directory": { "type": "string", "const": "doctrine_root" },
+        "shell": { "type": "boolean", "const": false }
+      }
+    },
+    "agent_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["agent_id", "context_pack_ref"],
+        "additionalProperties": false,
+        "properties": {
+          "agent_id": { "type": "string", "minLength": 1 },
+          "context_pack_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" }
+        }
+      }
+    },
+    "repository_identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" },
+    "repository_state_before_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "repository_state_after_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "doctrine_revision": { "type": "string", "minLength": 1 },
+    "doctrine_state_before_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "doctrine_state_after_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "exit_code": { "type": "integer", "minimum": -1 },
+    "stdout_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "stdout_bytes": { "type": "integer", "minimum": 0 },
+    "stderr_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "stderr_bytes": { "type": "integer", "minimum": 0 },
+    "repository_unchanged": { "type": "boolean" },
+    "doctrine_unchanged": { "type": "boolean" },
+    "failure_code": {
+      "type": "string",
+      "enum": ["PROCESS_FAILED", "PROCESS_TIMEOUT", "REPOSITORY_DRIFT", "DOCTRINE_DRIFT"]
+    },
+    "status": { "type": "string", "enum": ["passed", "failed"] },
+    "release_authorized": { "type": "boolean", "const": false }
+  }
+}

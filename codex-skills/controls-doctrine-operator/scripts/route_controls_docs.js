@@ -250,8 +250,7 @@ const RULES = [
       "validator-cli-prototype/README.md"
     ],
     commands: [
-      "node validator-cli-prototype/run-fixtures.js",
-      "for f in $(ls run-*.js | sort); do node \"$f\" || exit 1; done"
+      "node validator-cli-prototype/run-fixtures.js"
     ]
   },
   {
@@ -297,9 +296,9 @@ const RULES = [
     ],
     commands: [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
-      "node run-skill-mission-controller-fixtures.js",
-      "python3 \"${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py\" codex-skills/controls-doctrine-operator",
-      "python3 \"${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py\" .claude/skills/controls-doctrine-operator"
+      "node run-skill-control-enforcement-fixtures.js",
+      "node validate-controls-skill.js codex-skills/controls-doctrine-operator",
+      "node validate-controls-skill.js .claude/skills/controls-doctrine-operator"
     ]
   }
 ];
@@ -385,7 +384,24 @@ const AUTHORITY_DOCS = [
 ];
 
 const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".go", ".sh", ".svg", ".yaml", ".yml"]);
-const EXCLUDED_DIRS = new Set([".cannae", ".git", "node_modules"]);
+const EXCLUDED_DIRS = new Set([
+  ".cache",
+  ".cannae",
+  ".cxt",
+  ".git",
+  ".idea",
+  ".npm",
+  ".nyc_output",
+  ".pnpm-store",
+  ".tmp",
+  ".vscode",
+  "build",
+  "coverage",
+  "dist",
+  "node_modules",
+  "temp",
+  "tmp"
+]);
 
 const ROUTE_HINTS = [
   {
@@ -398,15 +414,15 @@ const ROUTE_HINTS = [
   },
   {
     id: "orders",
-    keywords: ["opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "orders", "task-order", "runtime-demo", "information-to-operations", "decision-packet", "ccir-alert", "alert-router", "prompt", "prompt-dsl", "prompt-templates"]
+    keywords: ["opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "orders", "task-order", "runtime-demo", "information-to-operations", "decision-packet", "ccir-alert", "ccir-linter", "alert-router", "reporting-threshold", "prompt", "prompt-dsl", "prompt-templates"]
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "release-immutability", "release-integrity", "release-attestation", "trusted-root", "bundle-verifier", "independent-verification", "operate-github-release", "operate-github-release-immutability", "operate-github-release-integrity", "operate-github-release-verification", "decision-packet"]
+    keywords: ["authority", "authority-gates", "approval", "risk", "roe", "release", "security", "policy-engine", "decision-risk", "disciplined-initiative", "mission-command", "readiness-to-authority", "tool-use", "approval-", "risk-acceptance", "release-gate", "release-review", "github-release", "release-immutability", "release-integrity", "release-attestation", "trusted-root", "bundle-verifier", "independent-verification", "operate-github-release", "operate-github-release-immutability", "operate-github-release-integrity", "operate-github-release-verification", "decision-packet"]
   },
   {
     id: "multi-agent-organization",
-    keywords: ["agent", "routing-preflight", "department", "collaboration", "b2c2wg", "working-group", "liaison", "metl", "battle-rhythm", "llm-agent-org-chart", "functional-domains"]
+    keywords: ["agent", "routing-preflight", "department", "collaboration", "b2c2wg", "working-group", "liaison", "partner-command", "interop", "chief-of-staff", "metl", "battle-rhythm", "board-decision", "llm-agent-org-chart", "functional-domains"]
   },
   {
     id: "force-structure",
@@ -414,7 +430,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "model-force-assignment",
-    keywords: ["model-force-assignment", "model-profile", "model-allocation", "model-routing", "capability-band", "model-force", "model-registry", "model-assignment-compiler", "integrated-mission-preflight", "model-usage-event", "model-force-v0.2"]
+    keywords: ["model-force-assignment", "model-profile", "model-allocation", "model-routing", "capability-band", "model-force", "model-registry", "model-assignment-compiler", "integrated-mission-preflight", "model-usage-event", "model-force-v0.2", "training-progression", "readiness-event"]
   },
   {
     id: "repository-artifact-isolation",
@@ -438,7 +454,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "document-access-context",
-    keywords: ["document-access", "context", "classification", "opsec", "eefi", "releasability", "context-filter", "handoff-packet"]
+    keywords: ["document-access", "context", "classification", "opsec", "eefi", "releasability", "sensitive-output", "evidence-redactor", "context-filter", "handoff-packet"]
   },
   {
     id: "runtime-validation",
@@ -446,11 +462,11 @@ const ROUTE_HINTS = [
   },
   {
     id: "runtime-architecture-dashboard",
-    keywords: ["architecture", "dashboard", "event", "projection", "ui", "database", "maintenance", "readiness", "data-model", "runtime", "event-replay"]
+    keywords: ["architecture", "dashboard", "event", "projection", "ui", "database", "maintenance", "readiness", "data-model", "runtime", "event-replay", "common-operational-picture", "dry-run-approval", "resource-status", "resource-budget", "tool-fallback"]
   },
   {
     id: "continuity-handoff",
-    keywords: ["continuity", "handoff", "rotation", "succession", "knowledge-management", "personnel-continuity"]
+    keywords: ["continuity", "handoff", "rotation", "succession", "knowledge-management", "km-review", "decision-log", "source-record", "personnel-continuity"]
   }
 ];
 
@@ -517,9 +533,15 @@ function walkRoutableFiles(repoRoot) {
       })
       .filter(file =>
         !file.startsWith(".claude/") ||
-        file === ".claude/skills" ||
         file.startsWith(".claude/skills/"))
       .sort((left, right) => left.localeCompare(right));
+  }
+
+  if (!walkRoutableFiles.warnedFallback) {
+    walkRoutableFiles.warnedFallback = true;
+    process.stderr.write(
+      "route_controls_docs: git file listing unavailable; falling back to a directory walk that only excludes known local-state directories.\n"
+    );
   }
 
   const files = [];
