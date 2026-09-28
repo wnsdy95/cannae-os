@@ -27,6 +27,23 @@ For delegated AI routing, declare as much context as available:
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --actor=ai --role=S3 --department=operations --authority=scoped-execution "<mission request>" .
 ```
 
+## Capability Gap Routing
+
+The router assesses doctrine capability from the request text only; role,
+department, and authority options affect access and control documents but do
+not prove that the corpus owns the requested domain. For manual wave/agent
+receipts, pass the same mission objective through `--capability-query` on every
+call and use the positional query for the narrower task.
+
+When `capability_routing.status` is `gap_detected`:
+
+1. Do not return "outside the corpus" and continue as general, unowned work.
+2. Task-organize the returned mission-scoped capability cell for analysis and reversible drafting under existing authority.
+3. Preserve its deterministic `CELL-*` ID and the paired `DEPT-*` standing-department candidate across CoS, agent receipts, and context packs.
+4. Run `run-force-structure-change-fixtures.js` as a mandatory control and assess DOTMLPF-P alternatives.
+5. Keep authority expansion and standing activation false. Only the USER can decide whether a validated `ForceStructureChangeOrder` should activate the candidate.
+6. Disband the provisional cell at mission handoff unless the standing change is approved.
+
 For delegated execution, routing must create a receipt and pass preflight before any agent starts work:
 
 ```bash
@@ -97,10 +114,11 @@ restored conversational context never restores authority.
 | Chief of staff and battle rhythm | `docs/chief-of-staff-agent.md`, `docs/b2c2wg-operating-model.md`, `docs/agent-battle-rhythm.md` | `schema-files/board-decision.schema.json`, `schema-files/battle-rhythm-event.schema.json`, `schema-files/battle-rhythm-scheduler.schema.json`, `battle-rhythm-scheduler.js`, `run-battle-rhythm-scheduler-fixtures.js` |
 | Liaison and partner interop | `docs/liaison-agent-model.md`, `docs/interop-release-packet.md`, `docs/partner-command-relationship.md` | `schema-files/context-release.schema.json`, `release-review-runner.js`, `release-gate-decision-runner.js` |
 | Agent routing preflight | `docs/role-document-access-policy.md`, `docs/agent-roles-and-authority.md`, this routing reference | `schema-files/routing-receipt.schema.json`, `agent-routing-preflight-runner.js`, `run-agent-routing-preflight-fixtures.js` |
-| Operational mission lifecycle | `docs/skill-operational-mission-lifecycle.md`, `docs/agent-battle-rhythm.md`, `docs/knowledge-management-sop.md` | `skill-mission-controller.js`, mission-wave/context/report/closeout schemas, `scripts/operate_controls_mission.js`, `run-skill-mission-controller-fixtures.js` |
+| Operational mission lifecycle, expiry, abort, and supersession | `docs/skill-operational-mission-lifecycle.md`, `docs/agent-battle-rhythm.md`, `docs/knowledge-management-sop.md` | `skill-mission-controller.js`, mission-wave/context/report/closeout/termination schemas, `scripts/operate_controls_mission.js`, `run-skill-mission-controller-fixtures.js` |
 | One lease lineage per delegated mission agent | `docs/enforced-dispatch-and-resume.md`, `docs/repository-artifact-isolation-policy.md` | `dispatch-runtime-controller.js`, `scripts/operate_dispatch_runtime.js`, `scripts/enforce_controls_dispatch.js`, `scripts/install_dispatch_hooks.js`, `run-dispatch-runtime-fixtures.js` |
 | SOF / high-risk TF | `docs/ai-special-operations-tf.md` | `schema-files/sof-tf-charter.schema.json`, `sof-tf-activation-runner.js` |
 | Force structure changes | `docs/force-structure-change-policy.md` | `schema-files/force-structure-change-order.schema.json`, `force-structure-change-runner.js` |
+| Unmatched mission capability | `docs/force-structure-change-policy.md`, `docs/interdepartment-collaboration-policy.md`, `docs/b2c2wg-operating-model.md` | routing receipt/context-pack v0.2 `capability_routing`, `run-force-structure-change-fixtures.js`, `skill-mission-controller.js` |
 | Mission-based model allocation and dispatch | `docs/model-force-assignment-policy.md`, `docs/model-force-v0.2-operations.md`, `docs/agent-metl.md`, `docs/agent-readiness-ledger.md` | `schema-files/model-registry.schema.json`, `schema-files/model-assignment-request.schema.json`, `model-assignment-compiler.js`, `integrated-mission-preflight-runner.js`, `run-model-force-v0.2-fixtures.js` |
 | Continuity and handoff | `docs/personnel-continuity-model.md`, `docs/knowledge-management-sop.md`, `docs/handoff-packet-template.md` | `schema-files/continuity-plan.schema.json`, `handoff-generator.js`, `continuity-drill-runner.js` |
 

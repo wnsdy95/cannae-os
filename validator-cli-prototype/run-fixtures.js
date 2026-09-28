@@ -955,6 +955,13 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "capability-gap routing omits force-structure controls",
+    file: "sample-payloads/invalid-routing-receipt-capability-gap-bypass.json",
+    type: "routing-receipt",
+    exitCode: 1,
+    requiredCodes: ["CAPABILITY_GAP_WITHOUT_FORCE_STRUCTURE_CONTROL"]
+  },
+  {
     name: "manual routing receipt without router proof",
     file: "sample-payloads/invalid-routing-receipt-manual.json",
     type: "routing-receipt",
@@ -1070,6 +1077,34 @@ const fixtures = [
     type: "mission-wave-closeout",
     exitCode: 0,
     requiredCodes: []
+  },
+  {
+    name: "valid mission wave expiration request",
+    file: "sample-payloads/valid-mission-wave-termination-request.json",
+    type: "mission-wave-termination-request",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid mission wave expiration record",
+    file: "sample-payloads/valid-mission-wave-termination.json",
+    type: "mission-wave-termination",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "aborting a mission requires a retained decision",
+    file: "sample-payloads/invalid-mission-wave-termination-request-unapproved.json",
+    type: "mission-wave-termination-request",
+    exitCode: 1,
+    requiredCodes: ["MISSION_TERMINATION_DECISION_REQUIRED"]
+  },
+  {
+    name: "mission expiration cannot be backdated",
+    file: "sample-payloads/invalid-mission-wave-termination-premature.json",
+    type: "mission-wave-termination",
+    exitCode: 1,
+    requiredCodes: ["MISSION_TERMINATION_INVALID_TIME"]
   },
   {
     name: "mission wave closeout claims self-release",

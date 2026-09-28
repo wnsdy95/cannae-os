@@ -17,8 +17,10 @@
     "authority_scope",
     "routing_mode",
     "router_query",
+    "capability_query",
     "router_command",
     "matched_routes",
+    "capability_routing",
     "recommended_documents",
     "route_inventory",
     "validation_commands",
@@ -26,7 +28,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "const": "0.2" },
     "type": { "type": "string", "const": "RoutingReceipt" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -73,6 +75,7 @@
     },
     "routing_mode": { "type": "string", "const": "delegated_ai_role_department_authority" },
     "router_query": { "type": "string", "minLength": 1 },
+    "capability_query": { "type": "string", "minLength": 1 },
     "router_command": { "type": "string", "minLength": 1 },
     "matched_routes": {
       "type": "array",
@@ -86,6 +89,7 @@
         }
       }
     },
+    "capability_routing": { "$ref": "common.schema.json#/$defs/capability_routing" },
     "recommended_documents": {
       "type": "array",
       "items": {

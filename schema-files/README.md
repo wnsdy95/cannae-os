@@ -188,6 +188,8 @@ Recommended validation order:
 124. `releasability-review.schema.json`
 125. `eefi-alert.schema.json`
 126. `control-execution-receipt.schema.json`
+127. `mission-wave-termination-request.schema.json`
+128. `mission-wave-termination.schema.json`
 
 All schemas target JSON Schema draft 2020-12.
 

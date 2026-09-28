@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
@@ -283,7 +284,7 @@ const RULES = [
   },
   {
     id: "skill-operations",
-    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "skill adaptation", "skill improvement", "mandatory skill improvement", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill"],
+    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "skill adaptation", "skill improvement", "mandatory skill improvement", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill", "termination", "supersession", "expired wave", "abort wave"],
     docs: [
       ".claude/skills/controls-doctrine-operator/SKILL.md",
       ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md",
@@ -302,6 +303,49 @@ const RULES = [
     ]
   }
 ];
+
+const CAPABILITY_GAP_DOCS = [
+  "docs/force-structure-change-policy.md",
+  "docs/interdepartment-collaboration-policy.md",
+  "docs/b2c2wg-operating-model.md",
+  "docs/agent-roles-and-authority.md",
+  "schema-files/force-structure-change-order.schema.json"
+];
+
+const CAPABILITY_GAP_COMMANDS = [
+  "node run-force-structure-change-fixtures.js",
+  "node validator-cli-prototype/validate.js sample-payloads/valid-force-structure-change-order.json force-structure-change-order"
+];
+
+const GENERIC_ROUTE_KEYWORDS = new Set([
+  "agent",
+  "approval",
+  "artifact",
+  "artifacts",
+  "assistant",
+  "authority",
+  "branch",
+  "command",
+  "context",
+  "department",
+  "framework",
+  "incident",
+  "model",
+  "models",
+  "output",
+  "outputs",
+  "research",
+  "risk",
+  "role",
+  "scope",
+  "source",
+  "special",
+  "staff",
+  "teamwork",
+  "tf",
+  "unit",
+  "use"
+]);
 
 const ROLE_DOCS = {
   COMMANDER: [
@@ -471,7 +515,7 @@ const ROUTE_HINTS = [
 ];
 
 function usage() {
-  console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--all] [--limit=N] <query> [repo-root]");
+  console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=MISSION_OBJECTIVE] [--all] [--limit=N] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE [--write-artifact --target-repository=PATH] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
   process.exit(2);
@@ -497,8 +541,113 @@ function countMatches(text, keywords) {
   const lower = text.toLowerCase();
   return keywords.reduce((score, keyword) => {
     const needle = String(keyword).toLowerCase();
-    return score + (lower.includes(needle) ? 1 : 0);
+    return score + (keywordMatches(lower, needle) ? 1 : 0);
   }, 0);
+}
+
+function countSpecificMatches(text, keywords) {
+  return keywords.reduce((score, keyword) => {
+    const needle = String(keyword).toLowerCase();
+    return score + (!GENERIC_ROUTE_KEYWORDS.has(needle) && keywordMatches(text.toLowerCase(), needle) ? 1 : 0);
+  }, 0);
+}
+
+function keywordMatches(text, keyword) {
+  if (!keyword) return false;
+  if (!/^[a-z0-9]+$/.test(keyword)) return text.includes(keyword);
+  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
+}
+
+function isCorpusOrientationRequest(query, scoredRules) {
+  const orientationMatched = scoredRules.some(rule => rule.id === "orientation");
+  if (!orientationMatched) return false;
+  const text = String(query || "").toLowerCase().replace(/\s+/g, " ").trim();
+  const corpus = "(?:cannae(?: os)?|controls (?:doctrine|framework)|(?:this|the) (?:doctrine|framework|repository|corpus)|(?:the )?operator skill)";
+  return [
+    new RegExp(`\\b(?:give|provide|show)(?: me)? (?:an? )?overview of ${corpus}\\b`),
+    new RegExp(`\\b(?:explain|describe|introduce|summarize) ${corpus}\\b`),
+    new RegExp(`\\bwhat is ${corpus}\\b`),
+    new RegExp(`\\bhow (?:does|do) ${corpus} work\\b`),
+    new RegExp(`\\bhow (?:can|should|do) i (?:start|begin|use) (?:with )?${corpus}\\b`),
+    /\bwhere (?:can|should|do) i (?:start|begin)(?: with (?:cannae(?: os)?|controls (?:doctrine|framework)|(?:this|the) (?:doctrine|framework|repository|corpus)))?\b/,
+    /\b(?:read|review|summarize) (?:the )?readme\b/
+  ].some(pattern => pattern.test(text));
+}
+
+function capabilityRouting(query, scoredRules, missionId) {
+  const capabilityRules = scoredRules.filter(rule =>
+    rule.id !== "orientation" && rule.specific_score > 0);
+  if (capabilityRules.length === 0 && isCorpusOrientationRequest(query, scoredRules)) {
+    capabilityRules.push(scoredRules.find(rule => rule.id === "orientation"));
+  }
+
+  if (capabilityRules.length > 0) {
+    return {
+      status: "covered",
+      reason_code: capabilityRules[0].id === "orientation"
+        ? "CORPUS_ORIENTATION_REQUEST"
+        : "MATCHED_DOCTRINE_ROUTE",
+      capability_scope: String(query),
+      matched_capability_routes: capabilityRules.map(rule => rule.id),
+      provisional_organization: {
+        required: false,
+        organization_type: "existing_doctrine_route",
+        organization_id: "none",
+        name: "Existing doctrine route",
+        task_organization_status: "not_required",
+        authority_scope: "Use the declared operator mode and existing role, department, and authority boundaries.",
+        authority_expansion_authorized: false,
+        standing_department_activation_authorized: false,
+        disband_condition: "Not applicable; no provisional organization was created."
+      },
+      force_structure_review: {
+        required: false,
+        change_type: "none",
+        target_kind: "none",
+        status: "not_required",
+        candidate_department_id: "none",
+        candidate_department_name: "none",
+        final_decision_authority: "USER",
+        formal_approving_role: "COMMANDER"
+      },
+      operator_directive: "Use the matched doctrine routes and remain inside the declared authority boundary."
+    };
+  }
+
+  const digest = crypto.createHash("sha256")
+    .update(String(missionId || query || "unscoped-capability-gap"))
+    .digest("hex")
+    .slice(0, 12)
+    .toUpperCase();
+  return {
+    status: "gap_detected",
+    reason_code: "NO_CAPABILITY_ROUTE",
+    capability_scope: String(query),
+    matched_capability_routes: [],
+    provisional_organization: {
+      required: true,
+      organization_type: "mission_scoped_capability_cell",
+      organization_id: `CELL-${digest}`,
+      name: "Mission-scoped capability cell",
+      task_organization_status: "task_organized",
+      authority_scope: "Perform analysis and reversible drafting for the original request under existing delegated authority only.",
+      authority_expansion_authorized: false,
+      standing_department_activation_authorized: false,
+      disband_condition: "Disband at mission handoff unless the USER approves a validated force-structure change order."
+    },
+    force_structure_review: {
+      required: true,
+      change_type: "create",
+      target_kind: "department",
+      status: "analysis_required",
+      candidate_department_id: `DEPT-${digest}`,
+      candidate_department_name: "Mission capability department candidate",
+      final_decision_authority: "USER",
+      formal_approving_role: "COMMANDER"
+    },
+    operator_directive: "Do not stop as outside the corpus or continue as unowned general work. Use the provisional capability cell now, preserve all existing authority limits, and evaluate a standing department through the force-structure process."
+  };
 }
 
 function unique(items) {
@@ -688,7 +837,7 @@ function collectKeywordDocs(value, rules) {
 
   const docs = [];
   for (const rule of rules) {
-    if (rule.keywords.some(keyword => text.includes(String(keyword).toLowerCase()))) {
+    if (rule.keywords.some(keyword => keywordMatches(text, String(keyword).toLowerCase()))) {
       docs.push(...rule.docs);
     }
   }
@@ -701,6 +850,7 @@ function parseArgs(argv) {
     role: null,
     department: null,
     authority: null,
+    capabilityQuery: null,
     receipt: false,
     scope: null,
     mission: null,
@@ -715,7 +865,7 @@ function parseArgs(argv) {
     limit: 40
   };
   const queryParts = [];
-  const valueOptionNames = new Set(["actor", "role", "department", "authority", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
+  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
   const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact"]);
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -804,6 +954,7 @@ function operatorMode(options) {
     .filter(field => !options[field]);
   const escalationRequiredWhen = [
     "Requested action exceeds delegated role, department, or authority.",
+    "A provisional capability cell is proposed as a standing department or requests broader authority.",
     "Release target is external, final, or cross-boundary.",
     "Risk level requires acceptance authority above the AI delegate.",
     "Need-to-know cannot justify reading or sharing extra documents."
@@ -830,18 +981,42 @@ function operatorMode(options) {
 
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
-  const scoringText = [query, mode.role, mode.department, mode.authority].filter(Boolean).join(" ");
   const inventory = buildArtifactInventory(repoRoot);
   const scoredRules = RULES.map(rule => ({
     ...rule,
-    score: countMatches(scoringText, rule.keywords)
+    score: countMatches(query, rule.keywords),
+    specific_score: countSpecificMatches(query, rule.keywords)
   })).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
 
-  const selectedRules = scoredRules.length > 0 ? scoredRules : [RULES[0]];
+  const capabilityQuery = options.capabilityQuery || query;
+  const capabilityScoredRules = RULES.map(rule => ({
+    ...rule,
+    score: countMatches(capabilityQuery, rule.keywords),
+    specific_score: countSpecificMatches(capabilityQuery, rule.keywords)
+  })).filter(rule => rule.score > 0)
+    .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
+  const capability = capabilityRouting(capabilityQuery, capabilityScoredRules, options.mission);
+  const forceStructureRule = RULES.find(rule => rule.id === "force-structure");
+  const selectedById = new Map(scoredRules.map(rule => [rule.id, rule]));
+  for (const routeId of capability.matched_capability_routes) {
+    if (!selectedById.has(routeId)) {
+      selectedById.set(routeId, capabilityScoredRules.find(rule => rule.id === routeId));
+    }
+  }
+  const selectedRules = [...selectedById.values()].filter(Boolean)
+    .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
+  if (capability.status === "gap_detected" &&
+      !selectedRules.some(rule => rule.id === "force-structure")) {
+    selectedRules.unshift({ ...forceStructureRule, score: 0 });
+  }
   const docs = ["README.md", "docs/source-map.md"];
   const commands = [];
 
+  if (capability.status === "gap_detected") {
+    docs.push(...CAPABILITY_GAP_DOCS);
+    commands.push(...CAPABILITY_GAP_COMMANDS);
+  }
   docs.push(...mode.mode_documents);
   for (const rule of selectedRules.slice(0, 4)) {
     docs.push(...rule.docs);
@@ -882,9 +1057,11 @@ function route(query, repoRoot, options) {
 
   return {
     query,
+    capability_query: capabilityQuery,
     repo_root: repoRoot,
     operating_mode: mode,
     matched_routes: selectedRules.map(rule => ({ id: rule.id, score: rule.score })),
+    capability_routing: capability,
     recommended_documents: recommended,
     supporting_artifacts: visibleSupportingArtifacts,
     supporting_artifact_count: supportingArtifacts.length,
@@ -955,7 +1132,7 @@ function routingReceipt(routeResult, options) {
   }
 
   return {
-    schema_version: "0.1",
+    schema_version: "0.2",
     type: "RoutingReceipt",
     id: `RR-${sanitizeIdPart(options.wave)}-${sanitizeIdPart(options.agent)}`,
     mission_id: options.mission,
@@ -968,8 +1145,10 @@ function routingReceipt(routeResult, options) {
     authority_scope: String(routeResult.operating_mode.authority || options.authority).toLowerCase(),
     routing_mode: routeResult.operating_mode.mode,
     router_query: routeResult.query,
+    capability_query: routeResult.capability_query,
     router_command: commandString(),
     matched_routes: routeResult.matched_routes,
+    capability_routing: routeResult.capability_routing,
     recommended_documents: routeResult.recommended_documents,
     supporting_artifacts: routeResult.supporting_artifacts,
     supporting_artifact_count: routeResult.supporting_artifact_count,

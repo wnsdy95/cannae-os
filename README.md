@@ -150,7 +150,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
-- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan, mandatory routing, and controller-run control receipts through report, AAR, and bounded improvement.
+- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan, mandatory routing, and controller-run control receipts through report, AAR, bounded improvement, and evidence-preserving expiration, abort, or supersession.
 - [Enforced Dispatch And Resumable Execution](docs/enforced-dispatch-and-resume.md): per-agent session leases, fail-closed tool admission, checkpoints, interruption, revocation, and explicit resume.
 - [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md): identity-bound, idempotent tool transactions with exact begin/commit correlation, cancellation, receipts, and fail-closed recovery.
 - [Gateway Identity Admission](docs/gateway-identity-admission.md): TLS 1.3 mTLS, SPIFFE X.509, signed one-use challenge, exporter-bound principal evidence, and replay-safe authenticated-reference admission.
@@ -215,8 +215,18 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   --role=S3 \
   --department=operations \
   --authority=scoped-execution \
+  --capability-query="Define and validate the target mission capability" \
   "plans-agent W2 execution planning" .
 ```
+
+Routing receipts distinguish document relevance from mission capability
+coverage. If the mission objective has no specific corpus capability route,
+the router returns `capability_routing.status: gap_detected`, assigns one
+mission-scoped provisional capability cell, and opens a standing-department
+candidate under the force-structure controls. The cell may analyze and draft
+within the agent's existing authority; it cannot expand authority or activate
+the standing department. Those decisions remain with the human USER through a
+validated `ForceStructureChangeOrder`.
 
 Preflight:
 

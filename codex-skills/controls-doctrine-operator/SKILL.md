@@ -33,6 +33,15 @@ For delegated AI work, pass the role, department, and authority when known:
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --actor=ai --role=S3 --department=operations --authority=scoped-execution "<mission request>" .
 ```
 
+Treat `capability_routing.status` as executable routing state. When it is
+`gap_detected`, never answer that the request is outside the corpus and then
+continue as unowned general work. Accept the original request through the
+returned mission-scoped capability cell, keep the existing role and authority
+limits, run the routed force-structure controls, and evaluate the returned
+standing-department candidate. The provisional cell is active only for the
+mission; authority expansion and standing activation remain false until the
+USER decides on a validated `ForceStructureChangeOrder`.
+
 For delegated AI waves, use the operational lifecycle controller. It generates the CoS and every expected S3 receipt, runs preflight, binds optional model assignment, and issues context packs only when ready:
 
 ```bash
@@ -42,11 +51,11 @@ node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js
   --artifact-root .cannae/artifacts
 ```
 
-The manual receipt commands below are for diagnosis or lower-level integration, not the default dispatch path:
+The manual receipt commands below are for diagnosis or lower-level integration, not the default dispatch path. Use the same mission objective as `--capability-query` on the wave and every agent receipt; use the final positional query for that receipt's narrower task:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking "<wave mission>" .
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution "<agent task>" .
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking --capability-query="<mission objective>" "<wave task>" .
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution --capability-query="<mission objective>" "<agent task>" .
 node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
 ```
 
@@ -82,7 +91,7 @@ Read these only when needed:
 8. Run `complete --lease <lease-id>` for each successful dispatch-controlled agent before reporting. Blocked or failed agents must have no active lease or unresolved tool request.
 9. Finalize and freeze a `MissionWaveReport` with the exact plan, preflight, context, and work-evidence references before running `scripts/operate_controls_mission.js report`. The controller must compile and execute every routed `required_control` with `shell: false`, bind each digest-only `ControlExecutionReceipt` to the canonical report input, and reject failed controls, report substitution, unadmitted receipts, or repository/doctrine drift. After a failed or interrupted admission leaves receipts without a persisted report, assign a fresh report ID, keep old receipt references out, and invoke `report` again so every required control reruns. A successfully persisted report is immutable, so later changes require a new wave. Agent-supplied validation claims or receipt references never satisfy this gate.
 10. Create an AAR and run `scripts/operate_controls_mission.js close --mission <id> --wave <id>`. Follow its next-wave trigger. Ordinary findings enter the bounded campaign; retained decisions return to the user.
-11. Run `status` for handoff and `verify` before consuming evidence or declaring wave completion. Conversation history is not mission state.
+11. Run `status` for handoff and `verify` before consuming evidence or declaring wave completion. For an expired or abandoned wave, settle leases and unresolved tool effects, then use `terminate` with its exact plan reference. Never backdate a report, fabricate an AAR, or reopen a terminated wave. Abort/supersession needs a fresh manifest-backed USER scope decision bound to the exact plan and successor digests; expiry does not claim completion. Read the lifecycle document's termination procedure before acting. Conversation history is not mission state.
 12. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from `open`, `report`, `close`, a context pack, a dispatch lease, or a queued improvement.
 
 Read `docs/skill-operational-mission-lifecycle.md` for commands, exact contracts, model binding, failure behavior, and operational limits.
@@ -390,10 +399,12 @@ Read `docs/bounded-self-improvement-operations.md` for the full state machine an
 
 Use the existing force-structure rule:
 
-1. Identify the capability gap.
-2. Check whether SOP, schema, tooling, training, or authority changes solve it before adding a new unit/role/runner.
-3. If a new artifact is justified, add source-map, README, schema/sample/runner references.
-4. Add a fixture that fails for the unsafe or under-specified case.
+1. Bind the exact mission objective through `capability_query`; do not let role, department, authority, or a narrow subtask suppress a mission-level gap.
+2. On `gap_detected`, accept the task through the returned mission-scoped capability cell. Do not return `out of scope`, silently fall back to generic discipline, or invent a different cell per agent.
+3. Preserve the returned cell and department-candidate IDs in every routing receipt and context pack. The cell may analyze and draft reversibly inside existing authority; it cannot expand authority or activate the standing candidate.
+4. Run force-structure doctrine and controls, then check whether SOP, schema, tooling, training, or authority changes solve the gap before recommending a standing department.
+5. Draft a schema-valid `ForceStructureChangeOrder` when recurring evidence justifies standing capability. USER decision and formal COMMANDER approval remain required for activation.
+6. At handoff, disband the provisional cell unless the standing change was approved. Record the result in AAR/readiness and add source-map, README, schema/sample/runner references only when durable artifacts are justified.
 
 ### Mandatory Skill Adaptation For Every Improvement
 

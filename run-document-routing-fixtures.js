@@ -30,6 +30,40 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  const termination = route(router, ["--actor=user"], "Reconcile expired wave termination and supersession");
+  assertRoutes(termination, ["skill-operations"]);
+  assert(termination.recommended_documents.some(item => item.path === "docs/skill-operational-mission-lifecycle.md"));
+  const capabilityGapQuery = "Research ICP and sales targeting using the canonical track view";
+  const capabilityGap = route(router, ["--actor=ai", "--role=COS", "--department=coordination", "--authority=tasking"],
+    capabilityGapQuery);
+  assertRoutes(capabilityGap, ["force-structure", "sources-research"]);
+  assert.strictEqual(capabilityGap.capability_query, capabilityGapQuery);
+  assert.strictEqual(capabilityGap.capability_routing.status, "gap_detected");
+  assert.strictEqual(capabilityGap.capability_routing.reason_code, "NO_CAPABILITY_ROUTE");
+  assert.strictEqual(capabilityGap.capability_routing.capability_scope, capabilityGapQuery);
+  assert.strictEqual(capabilityGap.capability_routing.provisional_organization.required, true);
+  assert.strictEqual(capabilityGap.capability_routing.provisional_organization.task_organization_status, "task_organized");
+  assert.strictEqual(capabilityGap.capability_routing.provisional_organization.authority_expansion_authorized, false);
+  assert.strictEqual(capabilityGap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+  assert.strictEqual(capabilityGap.capability_routing.force_structure_review.required, true);
+  assert.strictEqual(capabilityGap.capability_routing.force_structure_review.status, "analysis_required");
+  assert.strictEqual(capabilityGap.capability_routing.force_structure_review.final_decision_authority, "USER");
+  assert(capabilityGap.recommended_documents.some(item =>
+    item.path === "docs/force-structure-change-policy.md"));
+  assert(capabilityGap.validation_commands.includes("node run-force-structure-change-fixtures.js"));
+
+  const orientation = route(router, ["--actor=user"],
+    "Give me an overview of this framework");
+  assertRoutes(orientation, ["orientation"]);
+  assert.strictEqual(orientation.capability_routing.status, "covered");
+  assert.strictEqual(orientation.capability_routing.reason_code, "CORPUS_ORIENTATION_REQUEST");
+
+  const corpusAsTool = route(router, ["--actor=user"],
+    "Use this repository to analyze ICP and rank sales targets");
+  assertRoutes(corpusAsTool, ["force-structure"]);
+  assert.strictEqual(corpusAsTool.capability_routing.status, "gap_detected");
+  assert.strictEqual(corpusAsTool.capability_routing.reason_code, "NO_CAPABILITY_ROUTE");
+
   const comparison = route(router, ["--actor=user"],
     "Compare a runtime-control candidate against an accepted baseline before promotion");
   assert.strictEqual(comparison.operating_mode.mode, "human_final_decision_authority");
@@ -97,4 +131,4 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log("Document routing fixtures: 8/8 passed");
+console.log("Document routing fixtures: 16/16 passed");

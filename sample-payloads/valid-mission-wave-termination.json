@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1",
+  "type": "MissionWaveTermination",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "status": "expired",
+  "reason": "Plan validity elapsed without an admitted completion report; preserve all evidence.",
+  "plan_ref": {
+    "artifact_id": "MWP-SKILL-DEMO-W1",
+    "relative_path": "repositories/example/missions/MIS-SKILL-DEMO/waves/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "successor_plan_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "decision_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "id": "MWT-W1",
+  "request_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "plan_valid_until": "2026-07-30T00:00:00Z",
+  "retained_artifact_refs": [
+    {
+      "artifact_id": "MWP-SKILL-DEMO-W1",
+      "relative_path": "repositories/example/missions/MIS-SKILL-DEMO/waves/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "dispatch_settled": true,
+  "execution_completion_claimed": false,
+  "continuation_authorized": false,
+  "release_authorized": false,
+  "terminated_at": "2026-09-28T05:00:00Z"
+}

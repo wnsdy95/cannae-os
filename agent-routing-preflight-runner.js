@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
@@ -17,6 +18,72 @@ function hasRecommendedDocs(receipt) {
 
 function validInventory(receipt) {
   return receipt.route_inventory && receipt.route_inventory.unrouted_artifact_count === 0;
+}
+
+function renderedCommandArgument(value) {
+  const arg = String(value);
+  if (/^[A-Za-z0-9_./:=@-]+$/.test(arg)) return arg;
+  return `"${arg.replace(/(["\\$`])/g, "\\$1")}"`;
+}
+
+function validCapabilityRouting(receipt) {
+  const capability = receipt.capability_routing;
+  if (!capability || !["covered", "gap_detected"].includes(capability.status)) return false;
+  const provisional = capability.provisional_organization || {};
+  const forceStructure = capability.force_structure_review || {};
+  const routes = new Set((receipt.matched_routes || []).map(route => route.id));
+  if (provisional.authority_expansion_authorized !== false ||
+      provisional.standing_department_activation_authorized !== false ||
+      forceStructure.final_decision_authority !== "USER" ||
+      forceStructure.formal_approving_role !== "COMMANDER") {
+    return false;
+  }
+  if (capability.capability_scope !== receipt.capability_query) return false;
+  if (capability.status === "gap_detected") {
+    const expectedSuffix = crypto.createHash("sha256")
+      .update(String(receipt.mission_id || ""))
+      .digest("hex")
+      .slice(0, 12)
+      .toUpperCase();
+    const documents = new Set((receipt.recommended_documents || []).map(document => document.path));
+    const commands = new Set(receipt.validation_commands || []);
+    return capability.reason_code === "NO_CAPABILITY_ROUTE" &&
+      provisional.required === true &&
+      provisional.organization_type === "mission_scoped_capability_cell" &&
+      provisional.task_organization_status === "task_organized" &&
+      forceStructure.required === true &&
+      forceStructure.change_type === "create" &&
+      forceStructure.target_kind === "department" &&
+      forceStructure.status === "analysis_required" &&
+      /^DEPT-[A-F0-9]{12}$/.test(forceStructure.candidate_department_id || "") &&
+      forceStructure.candidate_department_id.slice(5) === provisional.organization_id.slice(5) &&
+      provisional.organization_id === `CELL-${expectedSuffix}` &&
+      forceStructure.candidate_department_id === `DEPT-${expectedSuffix}` &&
+      routes.has("force-structure") &&
+      documents.has("docs/force-structure-change-policy.md") &&
+      commands.has("node run-force-structure-change-fixtures.js");
+  }
+  return capability.matched_capability_routes.length > 0 &&
+    capability.matched_capability_routes.every(routeId => routes.has(routeId)) &&
+    provisional.required === false &&
+    forceStructure.required === false &&
+    forceStructure.candidate_department_id === "none" &&
+    forceStructure.candidate_department_name === "none";
+}
+
+function capabilityRoutingIdentity(receipt) {
+  const capability = receipt.capability_routing || {};
+  const provisional = capability.provisional_organization || {};
+  const forceStructure = capability.force_structure_review || {};
+  return JSON.stringify({
+    capability_query: receipt.capability_query,
+    status: capability.status,
+    reason_code: capability.reason_code,
+    capability_scope: capability.capability_scope,
+    matched_capability_routes: [...(capability.matched_capability_routes || [])].sort(),
+    organization_id: provisional.organization_id,
+    candidate_department_id: forceStructure.candidate_department_id
+  });
 }
 
 function checkCommonReceipt(receipt, bundle, preflightBlocks) {
@@ -40,6 +107,10 @@ function checkCommonReceipt(receipt, bundle, preflightBlocks) {
   if (!/--actor(?:=|\s+)ai\b/.test(receipt.router_command || "")) {
     preflightBlocks.push(`${label}: router command must include --actor=ai.`);
   }
+  const capabilityArgument = renderedCommandArgument(`--capability-query=${receipt.capability_query}`);
+  if (!String(receipt.router_command || "").includes(capabilityArgument)) {
+    preflightBlocks.push(`${label}: router command must include the separate capability query.`);
+  }
   if (!hasRoutes(receipt)) {
     preflightBlocks.push(`${label}: matched_routes is empty.`);
   }
@@ -48,6 +119,9 @@ function checkCommonReceipt(receipt, bundle, preflightBlocks) {
   }
   if (!validInventory(receipt)) {
     preflightBlocks.push(`${label}: route inventory has unrouted artifacts.`);
+  }
+  if (!validCapabilityRouting(receipt)) {
+    preflightBlocks.push(`${label}: capability routing is missing, inconsistent, or bypasses force-structure review.`);
   }
 }
 
@@ -133,15 +207,31 @@ function analyzeRoutingPreflight(bundle) {
     }
   }
 
+  if (receipts.length > 0 && new Set(receipts.map(capabilityRoutingIdentity)).size !== 1) {
+    preflight_blocks.push("Wave and agent receipts must share one mission capability query and routing decision.");
+  }
+
+  const capabilityGaps = receipts.filter(receipt =>
+    receipt.capability_routing && receipt.capability_routing.status === "gap_detected");
+  if (capabilityGaps.length > 0) {
+    const organizationIds = new Set(capabilityGaps.map(receipt =>
+      receipt.capability_routing.provisional_organization.organization_id));
+    if (capabilityGaps.length !== receipts.length || organizationIds.size !== 1) {
+      preflight_blocks.push("Capability-gap routing must apply one mission-scoped provisional organization to the wave and every expected agent.");
+    }
+  }
+
   for (const receipt of receipts) {
-    if (receipt.type === "RoutingReceipt" && receipt.mission_id === bundle.mission_id && receipt.wave_id === bundle.wave_id && validInventory(receipt) && hasRoutes(receipt)) {
+    if (receipt.type === "RoutingReceipt" && receipt.mission_id === bundle.mission_id && receipt.wave_id === bundle.wave_id && validInventory(receipt) && hasRoutes(receipt) && validCapabilityRouting(receipt)) {
       accepted_receipts.push({
         id: receipt.id,
         agent_id: receipt.agent_id,
         wave_scope: receipt.wave_scope,
         agent_role: receipt.agent_role,
         department: receipt.department,
-        authority_scope: receipt.authority_scope
+        authority_scope: receipt.authority_scope,
+        capability_status: receipt.capability_routing.status,
+        provisional_organization_id: receipt.capability_routing.provisional_organization.organization_id
       });
     }
   }

@@ -61,6 +61,94 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "capability_routing": {
+      "type": "object",
+      "required": [
+        "status",
+        "reason_code",
+        "capability_scope",
+        "matched_capability_routes",
+        "provisional_organization",
+        "force_structure_review",
+        "operator_directive"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["covered", "gap_detected"]
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": ["MATCHED_DOCTRINE_ROUTE", "CORPUS_ORIENTATION_REQUEST", "NO_CAPABILITY_ROUTE"]
+        },
+        "capability_scope": { "type": "string", "minLength": 1 },
+        "matched_capability_routes": { "$ref": "common.schema.json#/$defs/string_list" },
+        "provisional_organization": {
+          "type": "object",
+          "required": [
+            "required",
+            "organization_type",
+            "organization_id",
+            "name",
+            "task_organization_status",
+            "authority_scope",
+            "authority_expansion_authorized",
+            "standing_department_activation_authorized",
+            "disband_condition"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "required": { "type": "boolean" },
+            "organization_type": {
+              "type": "string",
+              "enum": ["existing_doctrine_route", "mission_scoped_capability_cell"]
+            },
+            "organization_id": {
+              "type": "string",
+              "pattern": "^(none|CELL-[A-F0-9]{12})$"
+            },
+            "name": { "type": "string", "minLength": 1 },
+            "task_organization_status": {
+              "type": "string",
+              "enum": ["not_required", "task_organized"]
+            },
+            "authority_scope": { "type": "string", "minLength": 1 },
+            "authority_expansion_authorized": { "type": "boolean", "const": false },
+            "standing_department_activation_authorized": { "type": "boolean", "const": false },
+            "disband_condition": { "type": "string", "minLength": 1 }
+          }
+        },
+        "force_structure_review": {
+          "type": "object",
+          "required": [
+            "required",
+            "change_type",
+            "target_kind",
+            "status",
+            "candidate_department_id",
+            "candidate_department_name",
+            "final_decision_authority",
+            "formal_approving_role"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "required": { "type": "boolean" },
+            "change_type": { "type": "string", "enum": ["none", "create"] },
+            "target_kind": { "type": "string", "enum": ["none", "department"] },
+            "status": { "type": "string", "enum": ["not_required", "analysis_required"] },
+            "candidate_department_id": {
+              "type": "string",
+              "pattern": "^(none|DEPT-[A-F0-9]{12})$"
+            },
+            "candidate_department_name": { "type": "string", "minLength": 1 },
+            "final_decision_authority": { "type": "string", "const": "USER" },
+            "formal_approving_role": { "type": "string", "const": "COMMANDER" }
+          }
+        },
+        "operator_directive": { "type": "string", "minLength": 1 }
+      }
     }
   }
 }

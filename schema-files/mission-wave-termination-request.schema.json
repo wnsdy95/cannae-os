@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/mission-wave-termination-request.schema.json",
+  "title": "Mission Wave Termination Request",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "mission_id",
+    "wave_id",
+    "status",
+    "reason",
+    "plan_ref",
+    "successor_plan_ref",
+    "decision_ref"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "MissionWaveTerminationRequest"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "expired",
+        "aborted",
+        "superseded"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "plan_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "successor_plan_ref": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "const": "none"
+            },
+            "relative_path": {
+              "const": "none"
+            },
+            "sha256": {
+              "const": "none"
+            }
+          }
+        }
+      ]
+    },
+    "decision_ref": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        {
+          "type": "object",
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "artifact_id": {
+              "const": "none"
+            },
+            "relative_path": {
+              "const": "none"
+            },
+            "sha256": {
+              "const": "none"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -2152,6 +2152,8 @@ An LLM agent can gather information, generate alternatives, build plans, and rev
 
    LLM Application:
    - A new agent, department, unit, TF, runner, or dashboard panel is not created out of naming convenience. Evidence is required that the capability gap cannot be resolved by adjusting an existing SOP/schema/training/tool.
+   - A router-detected gap is never treated as permission to continue as unowned general work. The mission immediately receives one deterministic provisional capability cell for bounded analysis and drafting, while a paired standing-department candidate enters the force-structure review path.
+   - The provisional cell inherits the requesting agent's existing authority and expires with the mission. It cannot activate a standing department or expand authority; those actions require a validated `ForceStructureChangeOrder` and the human USER's decision.
    - Creating or expanding an organization requires Commander approval, retained release/risk/scope authority, a maintainer, validation fixtures, readiness evidence, a source-of-truth, and a sunset condition.
    - Disestablishing or reducing an organization is not complete without function transfer, handoff, data migration, authority withdrawal, documentation update, and an AAR/readiness update.
    - The force structure runner projects an order into a preflight block, commander queue, transition task, documentation queue, readiness requirement, and sunset watch.
@@ -3353,6 +3355,7 @@ Synthesis from the existing doctrine and runtime:
 6. A completion statement is not evidence. Complete agent results cite exact manifest-backed work artifacts, while control metadata such as plans, receipts, and context packs is excluded as proof of task performance.
 7. AAR learning should create a next-wave queue, not a claim that future improvement has already executed. Ordinary findings enter an existing finite campaign; approval, release, policy, authority, risk, push, and merge effects return to the human user.
 8. One controller used by both Codex and Claude reduces procedural drift. The wrappers resolve one repository runtime while retaining separate native skill installations.
+9. Expiration is not completion. A wave with no admitted report cannot truthfully enter the normal report/AAR closeout path after expiry. Append a separate immutable `MissionWaveTermination`, preserve every historical artifact (including older routing schemas), and keep readiness, continuation, and release ungranted. Abort/supersession requires a fresh, exact USER decision; an unresolved tool result requires reconciliation, not administrative erasure. This is an engineering synthesis of the local lifecycle, not a new external military-doctrine claim.
 
 Implemented surfaces:
 
@@ -3362,6 +3365,8 @@ Implemented surfaces:
 - `schema-files/agent-context-pack.schema.json`
 - `schema-files/mission-wave-report.schema.json`
 - `schema-files/mission-wave-closeout.schema.json`
+- `schema-files/mission-wave-termination-request.schema.json`
+- `schema-files/mission-wave-termination.schema.json`
 - `run-skill-mission-controller-fixtures.js`
 - Codex and Claude `operate_controls_mission.js` wrappers
 
