@@ -12,6 +12,7 @@ const {
   writeRepositoryArtifact
 } = require("./repository-artifact-store");
 const { buildCampaign } = require("./self-improvement-campaign-init");
+const { acquireRepositoryLease, releaseRepositoryLease, renewRepositoryLease } = require("./repository-lease");
 const {
   controlExecutionDescriptor,
   controlExecutionReceiptId,
@@ -28,6 +29,8 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "mission-wave-closeouts",
   "mission-wave-plans",
   "mission-wave-reports",
+  "mission-wave-terminations",
+  "decision-logs",
   "routing-preflight-bundles",
   "routing-preflights",
   "routing-receipts",
@@ -211,6 +214,7 @@ function requiredArtifactRef(options, ref, expected = {}) {
 }
 
 function persistJson(options, descriptor) {
+  if (options.lifecycleLock) renewRepositoryLease(options.lifecycleLock);
   const existing = optionalArtifact(options, {
     missionId: descriptor.missionId,
     waveId: descriptor.waveId,
@@ -608,7 +612,41 @@ function summarizeVerification(verification) {
   };
 }
 
+function withWaveLifecycle(options, missionId, waveId, operation) {
+  if (!missionId || !waveId) throw new Error("Mission and wave identifiers are required.");
+  const repository = resolveRepository(options.repository);
+  const artifactRoot = artifactRootPath(options);
+  const lockPath = path.join(artifactRoot, ".mission-lifecycle", repository.key, sha256(`${missionId}\0${waveId}`));
+  fs.mkdirSync(artifactRoot, { recursive: true });
+  let existing = lockPath;
+  while (!fs.existsSync(existing)) existing = path.dirname(existing);
+  const realRoot = fs.realpathSync(artifactRoot);
+  const realExisting = fs.realpathSync(existing);
+  if (realExisting !== realRoot && !realExisting.startsWith(`${realRoot}${path.sep}`)) {
+    throw new Error("Mission lifecycle lock escapes the artifact root.");
+  }
+  const lock = acquireRepositoryLease(lockPath, { leaseTimeoutMs: 5000, leaseTtlMs: 1800000 });
+  try {
+    return operation({ ...options, repository: repository.root, artifactRoot, lifecycleLock: lock });
+  } finally {
+    releaseRepositoryLease(lock);
+  }
+}
+
+function assertWaveNotTerminated(options, missionId, waveId) {
+  const store = artifactEntries(options, { missionId, waveId, kind: "mission-wave-terminations" }, true);
+  if (store.entries.length) throw new Error("MISSION_WAVE_TERMINATED: use a new authorized wave; terminal history cannot be reopened.");
+}
+
 function openWave(plan, options = {}) {
+  assertValid(plan, "mission-wave-plan", "Mission wave plan");
+  return withWaveLifecycle(options, plan.mission_id, plan.wave_id, locked => {
+    assertWaveNotTerminated(locked, plan.mission_id, plan.wave_id);
+    return openWaveUnlocked(plan, locked);
+  });
+}
+
+function openWaveUnlocked(plan, options = {}) {
   assertValid(plan, "mission-wave-plan", "Mission wave plan");
   const now = Date.parse(options.now || new Date().toISOString());
   if (Number.isNaN(now) || Date.parse(plan.valid_until) <= now) throw new Error("Mission wave plan is expired.");
@@ -955,6 +993,14 @@ function validateDispatchCompletion(report, plan, options) {
 
 function recordWave(report, options = {}) {
   assertValid(report, "mission-wave-report", "Mission wave report");
+  return withWaveLifecycle(options, report.mission_id, report.wave_id, locked => {
+    assertWaveNotTerminated(locked, report.mission_id, report.wave_id);
+    return recordWaveUnlocked(report, locked);
+  });
+}
+
+function recordWaveUnlocked(report, options = {}) {
+  assertValid(report, "mission-wave-report", "Mission wave report");
   const repository = resolveRepository(options.repository);
   const operationOptions = { ...options, repository: repository.root };
   const planArtifact = requiredWaveArtifact(operationOptions, report.mission_id, report.wave_id, "mission-wave-plans");
@@ -1135,6 +1181,13 @@ function existingCloseResult(aar, planArtifact, reportArtifact, closeoutArtifact
 }
 
 function closeWave(aar, options = {}) {
+  return withWaveLifecycle(options, options.missionId, options.waveId, locked => {
+    assertWaveNotTerminated(locked, options.missionId, options.waveId);
+    return closeWaveUnlocked(aar, locked);
+  });
+}
+
+function closeWaveUnlocked(aar, options = {}) {
   assertValid(aar, "aar", "Wave AAR");
   if (!options.missionId || !options.waveId) throw new Error("close requires missionId and waveId.");
   if (aar.mission_id !== options.missionId) throw new Error("AAR mission_id does not match the requested closeout mission.");
@@ -1272,6 +1325,129 @@ function closeWave(aar, options = {}) {
   };
 }
 
+function terminationDecisionOption(request) {
+  return `terminate:${request.status}:${request.plan_ref.sha256}:${request.successor_plan_ref.sha256}`;
+}
+
+function terminateWave(request, options = {}) {
+  assertValid(request, "mission-wave-termination-request", "Mission termination request");
+  return withWaveLifecycle(options, request.mission_id, request.wave_id, locked => {
+    // Share issuance fencing so no new lease can appear between settlement and termination.
+    const { withDispatchIssuanceLock, dispatchStatus } = require("./dispatch-runtime-controller");
+    return withDispatchIssuanceLock(locked, issuanceLock => {
+      const plan = requiredWaveArtifact(locked, request.mission_id, request.wave_id, "mission-wave-plans");
+      if (!sameRef(plan.ref, request.plan_ref)) throw new Error("Termination plan reference does not match the retained wave.");
+      assertValid(plan.payload, "mission-wave-plan", "Termination plan");
+      if (plan.payload.mission_id !== request.mission_id || plan.payload.wave_id !== request.wave_id || plan.payload.id !== plan.entry.artifact_id) {
+        throw new Error("Termination plan identity does not match its manifest scope.");
+      }
+      const previous = optionalArtifact(locked, {
+        missionId: request.mission_id, waveId: request.wave_id, kind: "mission-wave-terminations"
+      });
+      const requestSha256 = sha256(JSON.stringify(canonicalValue(request)));
+      if (previous) {
+        assertValid(previous.payload, "mission-wave-termination", "Retained termination");
+        if (previous.payload.request_sha256 !== requestSha256) throw new Error("Wave termination is immutable; request differs from retained termination.");
+        return terminationResult(previous.payload, previous.ref, locked);
+      }
+      const now = locked.now || new Date().toISOString();
+      const nowMs = Date.parse(now);
+      const waveStore = artifactEntries(locked, { missionId: request.mission_id, waveId: request.wave_id });
+      if (!Number.isFinite(nowMs) || waveStore.entries.some(entry =>
+        !Number.isFinite(Date.parse(entry.created_at)) || Date.parse(entry.created_at) > nowMs)) {
+        throw new Error("Termination time must follow all retained wave artifacts.");
+      }
+      const closeout = optionalArtifact(locked, {
+        missionId: request.mission_id, waveId: request.wave_id, kind: "mission-wave-closeouts"
+      });
+      if (closeout) throw new Error("Wave already has a closeout; preserve it and create a new wave.");
+      if (request.status === "expired" && nowMs < Date.parse(plan.payload.valid_until)) {
+        throw new Error("Cannot expire a wave before its plan expires.");
+      }
+      let successor = null;
+      if (request.status === "superseded") {
+        successor = requiredArtifactRef(locked, request.successor_plan_ref, { kind: "mission-wave-plans" });
+        assertValid(successor.payload, "mission-wave-plan", "Successor plan");
+        if (successor.payload.mission_id !== successor.entry.mission_id || successor.payload.wave_id !== successor.entry.wave_id ||
+            successor.payload.id !== successor.entry.artifact_id) throw new Error("Successor plan identity does not match its manifest scope.");
+        if (successor.entry.mission_id === request.mission_id && successor.entry.wave_id === request.wave_id) {
+          throw new Error("A wave cannot supersede itself.");
+        }
+        if (Date.parse(successor.payload.created_at) > nowMs || Date.parse(successor.payload.valid_until) <= nowMs) {
+          throw new Error("Successor plan is not currently valid.");
+        }
+        assertWaveNotTerminated(locked, successor.entry.mission_id, successor.entry.wave_id);
+        if (optionalArtifact(locked, { missionId: successor.entry.mission_id, waveId: successor.entry.wave_id, kind: "mission-wave-closeouts" })) {
+          throw new Error("Successor wave is already closed.");
+        }
+        const preflight = requiredWaveArtifact(locked, successor.entry.mission_id, successor.entry.wave_id, "routing-preflights");
+        const contexts = artifactEntries(locked, { missionId: successor.entry.mission_id, waveId: successor.entry.wave_id, kind: "agent-context-packs" });
+        if (preflight.payload.status !== "ready" || contexts.entries.length !== successor.payload.agents.length) {
+          throw new Error("Successor wave must finish routing and context preparation before supersession.");
+        }
+        for (const agent of successor.payload.agents) {
+          const packs = contexts.entries.map(entry => readEntryPayload(contexts, entry)).filter(pack => pack.agent_id === agent.agent_id);
+          if (packs.length !== 1) throw new Error("Successor requires exactly one context pack per agent.");
+          assertValid(packs[0], "agent-context-pack", "Successor context pack");
+          if (packs[0].status !== "ready" || !sameRef(packs[0].plan_ref, successor.ref) ||
+              !sameRef(packs[0].routing_preflight_ref, preflight.ref)) throw new Error("Successor context is not bound to its ready plan and preflight.");
+        }
+      }
+      if (request.status !== "expired") {
+        const decision = requiredArtifactRef(locked, request.decision_ref, {
+          missionId: request.mission_id, waveId: request.wave_id, kind: "decision-logs"
+        });
+        assertValid(decision.payload, "decision-log", "Termination decision");
+        const value = decision.payload;
+        const decidedAt = Date.parse(value.decided_at);
+        if (value.mission_id !== request.mission_id || value.decision_maker !== "USER" ||
+            value.decision_type !== "scope" || value.status !== "complete" ||
+            value.authority_basis.basis_type !== "retained_authority" || value.authority_basis.reference !== plan.payload.id ||
+            value.chosen_option !== terminationDecisionOption(request) ||
+            !value.options_considered.includes(value.chosen_option) ||
+            !value.affected_artifacts.includes(plan.ref.relative_path) ||
+            (successor && !value.affected_artifacts.includes(successor.ref.relative_path)) ||
+            decidedAt < Date.parse(plan.payload.created_at) || decidedAt > nowMs || nowMs - decidedAt > 3600000) {
+          throw new Error("Termination requires a fresh, exact USER scope decision over the plan and successor digests.");
+        }
+      }
+      const dispatch = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+      if (dispatch.leases.some(lease => !["completed", "revoked", "superseded"].includes(lease.status) || lease.pending_tool_requests !== 0)) {
+        throw new Error("Termination requires settled dispatch leases and no unresolved tool requests; expiry does not settle unknown effects.");
+      }
+      const termination = {
+        schema_version: "0.1", type: "MissionWaveTermination", id: `MWT-${safeIdPart(request.wave_id)}`,
+        mission_id: request.mission_id, wave_id: request.wave_id, status: request.status,
+        reason: request.reason, request_sha256: requestSha256,
+        plan_ref: plan.ref, plan_valid_until: plan.payload.valid_until,
+        successor_plan_ref: request.successor_plan_ref, decision_ref: request.decision_ref,
+        retained_artifact_refs: waveStore.entries.map(entryRef),
+        dispatch_settled: true, execution_completion_claimed: false,
+        continuation_authorized: false, release_authorized: false,
+        terminated_at: now
+      };
+      assertValid(termination, "mission-wave-termination", "Mission wave termination");
+      renewRepositoryLease(issuanceLock);
+      const ref = persistJson(locked, {
+        missionId: request.mission_id, waveId: request.wave_id, kind: "mission-wave-terminations",
+        artifactId: termination.id, payload: termination, createdAt: now
+      });
+      return terminationResult(termination, ref, locked);
+    });
+  });
+}
+
+function terminationResult(termination, ref, options) {
+  const verification = verifyRepositoryArtifacts({ repositoryPath: options.repository, artifactRoot: artifactRootPath(options) });
+  if (!verification.valid) throw new Error("Terminated wave artifact verification failed.");
+  return {
+    type: "MissionWaveTerminationResult", status: termination.status,
+    mission_id: termination.mission_id, wave_id: termination.wave_id,
+    termination_ref: ref, continuation_authorized: false, release_authorized: false,
+    artifact_store: summarizeVerification(verification)
+  };
+}
+
 function missionStatus(options = {}) {
   if (!options.missionId) throw new Error("status requires missionId.");
   const store = artifactEntries(options, { missionId: options.missionId });
@@ -1290,10 +1466,22 @@ function missionStatus(options = {}) {
     release_authorized: false,
     dispatch,
     artifact_store: summarizeVerification(store.verification),
-    waves: [...byWave.entries()].sort(([left], [right]) => left.localeCompare(right)).map(([wave_id, artifacts]) => ({
-      wave_id,
-      artifacts: artifacts.sort((left, right) => left.kind.localeCompare(right.kind))
-    }))
+    waves: [...byWave.entries()].sort(([left], [right]) => left.localeCompare(right)).map(([wave_id, artifacts]) => {
+      const termination = optionalArtifact(options, { missionId: options.missionId, waveId: wave_id, kind: "mission-wave-terminations" });
+      const plan = optionalArtifact(options, { missionId: options.missionId, waveId: wave_id, kind: "mission-wave-plans" });
+      const closeout = optionalArtifact(options, { missionId: options.missionId, waveId: wave_id, kind: "mission-wave-closeouts" });
+      const now = Date.parse(options.now || new Date().toISOString());
+      if (!Number.isFinite(now)) throw new Error("Status evaluation timestamp is invalid.");
+      if (termination) assertValid(termination.payload, "mission-wave-termination", "Retained termination");
+      return {
+        wave_id,
+        lifecycle_status: termination ? termination.payload.status : closeout ? closeout.payload.status
+          : plan && Date.parse(plan.payload.valid_until) <= now ? "expired_pending_termination"
+            : plan ? "open" : "records_only",
+        termination_ref: termination ? termination.ref : { ...NONE_REF },
+        artifacts: artifacts.sort((left, right) => left.kind.localeCompare(right.kind))
+      };
+    })
   };
 }
 
@@ -1323,6 +1511,7 @@ function usage() {
     "  node skill-mission-controller.js open <mission-wave-plan.json> --repository <repo> [--artifact-root <dir>] [--doctrine-root <dir>] [--at <timestamp>]",
     "  node skill-mission-controller.js report <mission-wave-report.json> --repository <repo> [--artifact-root <dir>] [--at <timestamp>]",
     "  node skill-mission-controller.js close <aar.json> --repository <repo> --mission <id> --wave <id> [--artifact-root <dir>] [--at <timestamp>]",
+    "  node skill-mission-controller.js terminate <mission-wave-termination-request.json> --repository <repo> [--artifact-root <dir>]",
     "  node skill-mission-controller.js status --repository <repo> --mission <id> [--artifact-root <dir>]",
     "  node skill-mission-controller.js verify --repository <repo> [--artifact-root <dir>]"
   ].join("\n");
@@ -1355,6 +1544,10 @@ function main() {
     } else if (command === "close") {
       if (!inputPath) throw new Error("close requires an AAR JSON file.");
       output = closeWave(readJson(path.resolve(inputPath)), options);
+    } else if (command === "terminate") {
+      if (!inputPath) throw new Error("terminate requires a mission wave termination request JSON file.");
+      if (options.now) throw new Error("terminate uses the live controller clock; --at is not accepted.");
+      output = terminateWave(readJson(path.resolve(inputPath)), options);
     } else if (command === "status") {
       output = missionStatus(options);
     } else if (command === "verify") {
@@ -1380,6 +1573,7 @@ if (require.main === module) main();
 module.exports = {
   NONE_REF,
   artifactRootPath,
+  assertWaveNotTerminated,
   buildRequiredControls,
   closeWave,
   compileValidationCommand,
@@ -1392,5 +1586,7 @@ module.exports = {
   reportInputDigest,
   repositoryStateDigest,
   resolveDoctrineRoot,
-  sameRef
+  sameRef,
+  terminateWave,
+  terminationDecisionOption
 };

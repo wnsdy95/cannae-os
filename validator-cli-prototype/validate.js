@@ -224,6 +224,8 @@ const TYPE_TO_SCHEMA = {
   "control-execution-receipt": "control-execution-receipt.schema.json",
   "mission-wave-report": "mission-wave-report.schema.json",
   "mission-wave-closeout": "mission-wave-closeout.schema.json",
+  "mission-wave-termination-request": "mission-wave-termination-request.schema.json",
+  "mission-wave-termination": "mission-wave-termination.schema.json",
   "model-force-assignment-plan": "model-force-assignment-plan.schema.json",
   "model-registry": "model-registry.schema.json",
   "model-assignment-request": "model-assignment-request.schema.json",
@@ -3461,6 +3463,26 @@ function semanticRules(payload, type, options = {}) {
     }
     if (payload.wave_status === "complete" && hasSubstantiveItems(payload.human_decisions_required)) {
       issues.push(issue("critical", "MISSION_WAVE_REPORT_COMPLETE_PENDING_DECISION", "$.human_decisions_required", "A wave awaiting a human decision cannot be reported complete."));
+    }
+  }
+
+  if (["mission-wave-termination", "mission-wave-termination-request"].includes(type)) {
+    const successor = !isNoneArtifactRef(payload.successor_plan_ref);
+    const decision = !isNoneArtifactRef(payload.decision_ref);
+    if (successor !== (payload.status === "superseded")) {
+      issues.push(issue("critical", "MISSION_TERMINATION_SUCCESSOR_MISMATCH", "$.successor_plan_ref", "Only supersession requires a concrete successor plan reference."));
+    }
+    if (decision !== (payload.status !== "expired")) {
+      issues.push(issue("critical", "MISSION_TERMINATION_DECISION_REQUIRED", "$.decision_ref", "Abort and supersession require an exact USER decision; expiry derives only from plan validity."));
+    }
+    if (type === "mission-wave-termination") {
+      if (!isValidDate(payload.terminated_at) || !isValidDate(payload.plan_valid_until) ||
+          (payload.status === "expired" && Date.parse(payload.terminated_at) < Date.parse(payload.plan_valid_until))) {
+        issues.push(issue("critical", "MISSION_TERMINATION_INVALID_TIME", "$.terminated_at", "Expiration cannot precede the retained plan expiry."));
+      }
+      if (!(payload.retained_artifact_refs || []).some(ref => sameJson(ref, payload.plan_ref))) {
+        issues.push(issue("critical", "MISSION_TERMINATION_PLAN_NOT_RETAINED", "$.retained_artifact_refs", "Termination must preserve its exact plan reference."));
+      }
     }
   }
 

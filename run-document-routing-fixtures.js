@@ -30,6 +30,9 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  const termination = route(router, ["--actor=user"], "Reconcile expired wave termination and supersession");
+  assertRoutes(termination, ["skill-operations"]);
+  assert(termination.recommended_documents.some(item => item.path === "docs/skill-operational-mission-lifecycle.md"));
   const capabilityGapQuery = "Research ICP and sales targeting using the canonical track view";
   const capabilityGap = route(router, ["--actor=ai", "--role=COS", "--department=coordination", "--authority=tasking"],
     capabilityGapQuery);
@@ -128,4 +131,4 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log("Document routing fixtures: 14/14 passed");
+console.log("Document routing fixtures: 16/16 passed");

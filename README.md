@@ -150,7 +150,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
-- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan, mandatory routing, and controller-run control receipts through report, AAR, and bounded improvement.
+- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): the executable Codex/Claude wave lifecycle from plan, mandatory routing, and controller-run control receipts through report, AAR, bounded improvement, and evidence-preserving expiration, abort, or supersession.
 - [Enforced Dispatch And Resumable Execution](docs/enforced-dispatch-and-resume.md): per-agent session leases, fail-closed tool admission, checkpoints, interruption, revocation, and explicit resume.
 - [Protected Tool Gateway Contract](docs/protected-tool-gateway-contract.md): identity-bound, idempotent tool transactions with exact begin/commit correlation, cancellation, receipts, and fail-closed recovery.
 - [Gateway Identity Admission](docs/gateway-identity-admission.md): TLS 1.3 mTLS, SPIFFE X.509, signed one-use challenge, exporter-bound principal evidence, and replay-safe authenticated-reference admission.

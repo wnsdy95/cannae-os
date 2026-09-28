@@ -284,7 +284,7 @@ const RULES = [
   },
   {
     id: "skill-operations",
-    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "skill adaptation", "skill improvement", "mandatory skill improvement", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill"],
+    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "skill adaptation", "skill improvement", "mandatory skill improvement", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill", "termination", "supersession", "expired wave", "abort wave"],
     docs: [
       ".claude/skills/controls-doctrine-operator/SKILL.md",
       ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md",

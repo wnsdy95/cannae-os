@@ -228,6 +228,7 @@ function writeJsonArtifact(options, descriptor) {
 
 function contextBundle(options, policy, settings = {}) {
   const view = storeView(options);
+  require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: view.artifactRoot }, policy.mission_id, policy.wave_id);
   const contexts = listArtifacts(view, {
     missionId: policy.mission_id,
     waveId: policy.wave_id,
@@ -769,6 +770,9 @@ function bindingMatches(lease, identity) {
 
 function activeLease(options, identity, at = nowIso(options)) {
   const view = storeView(options);
+  if (listArtifacts(view, { missionId: identity.missionId, waveId: identity.waveId, kind: "mission-wave-terminations" }).length) {
+    return { code: "MISSION_WAVE_TERMINATED", view, leaseRecord: null, checkpointRecord: null };
+  }
   const records = leaseRecords(view, identity.missionId, identity.waveId)
     .filter(item => item.payload.agent_id === identity.agentId && item.payload.provider === identity.provider);
   const exact = records.filter(item => bindingMatches(item.payload, identity));
@@ -822,6 +826,17 @@ function dispatchAgentLock(view, missionId, waveId, agentId) {
 function dispatchIssuanceLock(view) {
   const lockRoot = path.join(view.namespacePath, ".dispatch-runtime", "issuance");
   return acquireRepositoryLease(lockRoot, { leaseTimeoutMs: 5000, leaseTtlMs: 30000 });
+}
+
+function withDispatchIssuanceLock(options, operation) {
+  const lock = dispatchIssuanceLock(storeView(options));
+  try {
+    const result = operation(lock);
+    renewRepositoryLease(lock);
+    return result;
+  } finally {
+    releaseRepositoryLease(lock);
+  }
 }
 
 function normalizeRelativePath(value) {
@@ -1480,6 +1495,7 @@ function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED"
 
 function resumeLease(options, leaseIdValue, bindings) {
   const loaded = loadLeaseById(options, leaseIdValue);
+  require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: loaded.view.artifactRoot }, loaded.leaseRecord.payload.mission_id, loaded.leaseRecord.payload.wave_id);
   const lock = dispatchLock(loaded.view, leaseIdValue);
   let oldLease;
   let policy;
@@ -1665,6 +1681,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  withDispatchIssuanceLock,
   NONE_REF,
   activeLease,
   admitToolRequest,

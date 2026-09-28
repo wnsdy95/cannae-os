@@ -6,6 +6,7 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added evidence-preserving mission-wave expiration, USER-decision-bound abort/supersession, immutable terminal records, serialized lifecycle/lease issuance, and post-termination dispatch denial. Both operator skills now direct expired or abandoned work through settlement and termination instead of backdated reports or fabricated successful closeouts.
 - Added fail-closed capability-gap routing: router queries are separated from mission capability queries, uncovered requests automatically task-organize one mission-scoped cell and one standing-department candidate, routing receipt/context-pack v0.2 preserve the assignment and force-structure controls across every agent, and USER approval remains required for standing activation.
 - Bound mandatory control receipts to canonical report-input digests, centralized command-descriptor and receipt-ID derivation, required exact mission/wave/repository/doctrine and admitted-report bindings for reuse, documented report freeze and rerun behavior in both operator skills, and rejected unadmitted receipts and validation scripts that escape the doctrine root through intermediate symlinks.
 - Closed the adversarial review findings across release binding, mandatory skill-control execution, credential detection, KM reference validation, fallback authority, readiness promotion, CCIR completeness, schema semantics, and scheduler/resource projection integrity; added attack fixtures for every repaired boundary.

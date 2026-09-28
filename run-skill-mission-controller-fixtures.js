@@ -12,7 +12,9 @@ const {
   openWave,
   recordWave,
   reportInputDigest,
-  sameRef
+  sameRef,
+  terminateWave,
+  terminationDecisionOption
 } = require("./skill-mission-controller");
 const {
   resolveRepository,
@@ -23,9 +25,15 @@ const {
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const {
   authorizeDispatchPolicy,
+  admitToolRequest,
+  cancelToolRequest,
+  interruptLease,
+  revokeLease,
+  resumeLease,
   completeLease,
   inputDigest,
-  issueLease
+  issueLease,
+  withDispatchIssuanceLock
 } = require("./dispatch-runtime-controller");
 
 const ROOT = __dirname;
@@ -834,7 +842,177 @@ fixture("Codex and Claude wrappers resolve the same lifecycle runtime", () => {
     const result = spawnSync(process.execPath, [path.join(ROOT, wrapper), "--help"], { encoding: "utf8" });
     assert(result.status === 0, `${wrapper} failed: ${result.stderr}`);
     assert(result.stdout.includes("skill-mission-controller.js open"), `${wrapper} did not resolve lifecycle runtime`);
+    assert(result.stdout.includes("skill-mission-controller.js terminate"), `${wrapper} omitted termination`);
   }
+});
+
+const noneRef = { artifact_id: "none", relative_path: "none", sha256: "none" };
+const terminationOptions = { repository: repositoryB, artifactRoot, doctrineRoot: ROOT, get now() { return new Date().toISOString(); } };
+const expiredTime = "2028-07-23T04:00:00+09:00";
+function terminationRequest(plan, openedWave, status = "expired", successor = noneRef) {
+  return {
+    schema_version: "0.1", type: "MissionWaveTerminationRequest", mission_id: plan.mission_id,
+    wave_id: plan.wave_id, status, reason: "Stop this wave without claiming execution completion.",
+    plan_ref: openedWave.plan_ref, successor_plan_ref: successor, decision_ref: clone(noneRef)
+  };
+}
+function terminationDecision(request, plan, overrides = {}) {
+  const option = terminationDecisionOption(request);
+  const decision = {
+    schema_version: "0.1", type: "DecisionLogEntry", id: `DL-${plan.wave_id}-${overrides.decision_maker || "USER"}`,
+    mission_id: plan.mission_id, decided_at: new Date().toISOString(), decision_maker: "USER",
+    decision_type: "scope", question: "Terminate this exact wave?", options_considered: [option, "continue"],
+    chosen_option: option, rationale: "User-directed lifecycle reconciliation.",
+    authority_basis: { basis_type: "retained_authority", reference: plan.id, summary: "Fixture USER scope decision." },
+    affected_artifacts: [request.plan_ref.relative_path, request.successor_plan_ref.relative_path],
+    review_trigger: "A changed plan or successor needs a fresh decision.", status: "complete", ...overrides
+  };
+  const saved = writeRepositoryArtifact({ repositoryPath: repositoryB, artifactRoot,
+    missionId: plan.mission_id, waveId: plan.wave_id, kind: "decision-logs", artifactId: decision.id,
+    payload: decision, createdAt: decision.decided_at });
+  return { ...request, decision_ref: { artifact_id: decision.id, relative_path: saved.relative_path, sha256: saved.sha256 } };
+}
+
+fixture("expired wave terminates without fabricated execution and retries immutably", () => {
+  const plan = wavePlan(basePlan, "TERM-EXPIRED");
+  const started = openWave(plan, terminationOptions);
+  const request = terminationRequest(plan, started);
+  expectThrow(() => terminateWave(request, terminationOptions), /before its plan expires/, "premature expiry");
+  const wrong = clone(request);
+  wrong.plan_ref.sha256 = "0".repeat(64);
+  expectThrow(() => terminateWave(wrong, { ...terminationOptions, now: expiredTime }), /plan reference/, "wrong plan");
+  const before = verifyRepositoryArtifacts({ repositoryPath: repositoryB, artifactRoot });
+  const result = terminateWave(request, { ...terminationOptions, now: expiredTime });
+  const record = loadArtifact(artifactRoot, result.termination_ref);
+  assert(result.status === "expired" && record.execution_completion_claimed === false, "expiry claimed completion");
+  assert(!record.retained_artifact_refs.some(ref => ref.relative_path.includes("/mission-wave-reports/")), "report fabricated");
+  assert(result.artifact_store.artifact_count === before.artifact_count + 1, "termination must add exactly one artifact");
+  const retry = terminateWave(request, { ...terminationOptions, now: "2029-01-01T00:00:00Z" });
+  assert(retry.artifact_store.manifest_revision === result.artifact_store.manifest_revision, "retry rewrote history");
+  expectThrow(() => terminateWave({ ...request, reason: "replacement reason" }, { ...terminationOptions, now: expiredTime }), /immutable/, "different retry");
+  const status = missionStatus({ ...terminationOptions, missionId: plan.mission_id, now: expiredTime });
+  assert(status.waves.find(item => item.wave_id === plan.wave_id).lifecycle_status === "expired", "status omitted termination");
+  expectThrow(() => openWave(plan, terminationOptions), /MISSION_WAVE_TERMINATED/, "backdated reopen");
+  const candidate = completeReport(plan, started, plan.agents.map(() => started.plan_ref));
+  expectThrow(() => recordWave(candidate, terminationOptions), /MISSION_WAVE_TERMINATED/, "post-terminal report");
+  expectThrow(() => closeWave({}, { ...terminationOptions, missionId: plan.mission_id, waveId: plan.wave_id }), /MISSION_WAVE_TERMINATED/, "post-terminal close");
+  const admission = admitToolRequest(terminationOptions, {
+    missionId: plan.mission_id, waveId: plan.wave_id, agentId: plan.agents[0].agent_id, provider: "codex", sessionId: "terminal"
+  }, { hook_event_name: "PreToolUse", tool_use_id: "terminal", tool_name: "Bash" });
+  assert(admission.decision === "deny" && admission.reason_codes.includes("MISSION_WAVE_TERMINATED"), "terminal admission not denied");
+});
+
+fixture("termination preserves legacy routing evidence without reinterpreting its schema", () => {
+  const plan = wavePlan(basePlan, "TERM-LEGACY");
+  const saved = writeRepositoryArtifact({ repositoryPath: repositoryB, artifactRoot,
+    missionId: plan.mission_id, waveId: plan.wave_id, kind: "mission-wave-plans", artifactId: plan.id,
+    payload: plan, createdAt: plan.created_at });
+  const legacy = readJson("sample-payloads/valid-agent-context-pack.json");
+  legacy.schema_version = "0.1";
+  delete legacy.capability_query;
+  delete legacy.capability_routing;
+  const retained = writeRepositoryArtifact({ repositoryPath: repositoryB, artifactRoot,
+    missionId: plan.mission_id, waveId: plan.wave_id, kind: "agent-context-packs", artifactId: "ACP-LEGACY",
+    payload: legacy, createdAt: plan.created_at });
+  const request = terminationRequest(plan, { plan_ref: { artifact_id: plan.id, relative_path: saved.relative_path, sha256: saved.sha256 } });
+  const result = terminateWave(request, { ...terminationOptions, now: expiredTime });
+  const record = loadArtifact(artifactRoot, result.termination_ref);
+  assert(record.retained_artifact_refs.some(ref => ref.sha256 === retained.sha256), "legacy evidence lost");
+});
+
+fixture("termination cannot overwrite normal closeout or accept permissive schema fields", () => {
+  const request = terminationRequest(basePlan, opened);
+  expectThrow(() => terminateWave(request, { ...terminationOptions, repository: repositoryA, now: expiredTime }), /already has a closeout/, "normal closeout preservation");
+  const sample = readJson("sample-payloads/valid-mission-wave-termination.json");
+  for (const changes of [
+    { status: "complete" }, { release_authorized: true }, { continuation_authorized: true },
+    { execution_completion_claimed: true }, { dispatch_settled: false },
+    { successor_plan_ref: { ...noneRef, sha256: "a".repeat(64) } }
+  ]) {
+    assert(!validatePayload({ ...sample, ...changes }, "mission-wave-termination").valid, "unsafe termination schema accepted");
+  }
+});
+
+fixture("abort requires a fresh USER decision bound to the exact operation", () => {
+  const plan = wavePlan(basePlan, "TERM-ABORT");
+  const started = openWave(plan, terminationOptions);
+  const request = terminationRequest(plan, started, "aborted");
+  expectThrow(() => terminateWave(request, terminationOptions), /MISSION_TERMINATION_DECISION_REQUIRED/, "no decision");
+  const ai = terminationDecision(request, plan, { decision_maker: "S3" });
+  expectThrow(() => terminateWave(ai, terminationOptions), /fresh, exact USER/, "AI self approval");
+  const authorized = terminationDecision(request, plan);
+  expectThrow(() => terminateWave(authorized, { ...terminationOptions, now: new Date(Date.now() + 7200000).toISOString() }), /fresh, exact USER/, "stale decision");
+  const substituted = { ...authorized, status: "superseded", successor_plan_ref: opened.plan_ref };
+  expectThrow(() => terminateWave(substituted, terminationOptions), /Manifest does not contain exact/, "cross repository successor");
+  assert(terminateWave(authorized, terminationOptions).status === "aborted", "valid abort rejected");
+});
+
+fixture("supersession binds an opened successor and never transfers execution authority", () => {
+  const plan = wavePlan(basePlan, "TERM-OLD");
+  const nextPlan = wavePlan(basePlan, "TERM-NEXT");
+  const started = openWave(plan, terminationOptions);
+  const next = openWave(nextPlan, terminationOptions);
+  const self = terminationDecision(terminationRequest(plan, started, "superseded", started.plan_ref), plan, { id: "DL-SELF" });
+  expectThrow(() => terminateWave(self, terminationOptions), /cannot supersede itself/, "self successor");
+  const request = terminationDecision(terminationRequest(plan, started, "superseded", next.plan_ref), plan);
+  const result = terminateWave(request, terminationOptions);
+  assert(result.status === "superseded" && result.continuation_authorized === false && result.release_authorized === false, "supersession expanded authority");
+  const cycle = terminationDecision(terminationRequest(nextPlan, next, "superseded", started.plan_ref), nextPlan);
+  expectThrow(() => terminateWave(cycle, terminationOptions), /MISSION_WAVE_TERMINATED/, "supersession cycle");
+});
+
+fixture("expiration cannot hide active, interrupted, or unresolved dispatch execution", () => {
+  const plan = wavePlan(basePlan, "TERM-DISPATCH");
+  const drafts = plan.agents.map(agent => dispatchDraft(plan, agent, `DTP-TERM-${agent.agent_id}`));
+  plan.dispatch_control = { required: true, enforcement_level: "guardrail", gateway_exclusive: false,
+    policy_authorizations: drafts.map(draft => ({ agent_id: draft.agent_id, provider: draft.provider, policy_id: draft.id, draft_sha256: inputDigest(draft) })) };
+  const started = openWave(plan, terminationOptions);
+  const request = terminationRequest(plan, started);
+  authorizeDispatchPolicy(terminationOptions, drafts[0]);
+  const lease = issueLease(terminationOptions, drafts[0].id, { sessionId: "termination-session", providerAgentId: "main" });
+  expectThrow(() => terminateWave(request, { ...terminationOptions, now: expiredTime }), /settled dispatch/, "active lease");
+  const identity = { provider: "codex", missionId: plan.mission_id, waveId: plan.wave_id,
+    agentId: plan.agents[0].agent_id, sessionId: "termination-session", providerAgentId: "main" };
+  const admitted = admitToolRequest(terminationOptions, identity, {
+    hook_event_name: "PreToolUse", tool_use_id: "term-pending", tool_name: "Bash", tool_input: { command: "true" }
+  });
+  assert(admitted.decision === "allow", "fixture request was not admitted");
+  expectThrow(() => terminateWave(request, { ...terminationOptions, now: expiredTime }), /settled dispatch/, "unresolved tool request");
+  const cancelled = cancelToolRequest(terminationOptions, identity, {
+    toolUseId: "term-pending", toolName: "Bash", toolInput: { command: "true" }
+  });
+  assert(cancelled.status === "cancelled", "unstarted fixture request was not settled");
+  interruptLease(terminationOptions, lease.lease.id);
+  expectThrow(() => terminateWave(request, { ...terminationOptions, now: expiredTime }), /settled dispatch/, "interrupted lease");
+  revokeLease(terminationOptions, lease.lease.id);
+  terminateWave(request, { ...terminationOptions, now: expiredTime });
+  expectThrow(() => issueLease(terminationOptions, drafts[0].id, { sessionId: "new" }), /MISSION_WAVE_TERMINATED/, "post-terminal issue");
+  expectThrow(() => authorizeDispatchPolicy(terminationOptions, drafts[1]), /MISSION_WAVE_TERMINATED/, "post-terminal policy");
+  expectThrow(() => resumeLease(terminationOptions, lease.lease.id, { sessionId: "new" }), /MISSION_WAVE_TERMINATED/, "post-terminal resume");
+});
+
+fixture("termination CLI rejects clock overrides and serializes with wave and issuance locks", () => {
+  const { acquireRepositoryLease, releaseRepositoryLease } = require("./repository-lease");
+  const plan = wavePlan(basePlan, "TERM-LOCK");
+  const started = openWave(plan, terminationOptions);
+  const request = terminationRequest(plan, started);
+  const input = path.join(temporaryRoot, "termination-request.json");
+  fs.writeFileSync(input, JSON.stringify(request));
+  const argv = [path.join(ROOT, "skill-mission-controller.js"), "terminate", input,
+    "--repository", repositoryB, "--artifact-root", artifactRoot];
+  const clock = spawnSync(process.execPath, [...argv, "--at", expiredTime], { encoding: "utf8" });
+  assert(clock.status === 2 && clock.stderr.includes("live controller clock"), "CLI allowed synthetic expiry time");
+  const contend = () => {
+    const result = spawnSync(process.execPath, argv, { encoding: "utf8", timeout: 15000 });
+    assert(result.status === 2 && result.stderr.includes("Timed out waiting"), "termination bypassed coordination lock");
+  };
+  withDispatchIssuanceLock(terminationOptions, contend);
+  const key = resolveRepository(repositoryB).key;
+  const waveKey = require("crypto").createHash("sha256").update(`${plan.mission_id}\0${plan.wave_id}`).digest("hex");
+  const lock = acquireRepositoryLease(path.join(artifactRoot, ".mission-lifecycle", key, waveKey));
+  try { contend(); } finally { releaseRepositoryLease(lock); }
+  const status = missionStatus({ ...terminationOptions, missionId: plan.mission_id });
+  assert(status.waves.find(item => item.wave_id === plan.wave_id).termination_ref.artifact_id === "none", "blocked call persisted termination");
 });
 
 let passed = 0;

@@ -2,6 +2,15 @@
 
 This directory contains valid and invalid runtime payload fixtures.
 
+`valid-mission-wave-termination-request.json` and
+`valid-mission-wave-termination.json` show evidence-preserving expiry, not
+successful execution. The unapproved-request and premature-termination invalid
+samples enforce the decision and time boundaries. Replace sample references
+with exact manifest entries before operation; the sample request and record
+are independent structural examples, not an admitted history. Lifecycle
+fixtures also exercise USER-bound abort/supersession, settled dispatch,
+terminal retries, legacy evidence preservation, and denied reopening.
+
 Use these examples to test:
 
 - JSON Schema validation

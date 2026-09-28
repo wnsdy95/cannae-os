@@ -510,6 +510,13 @@ Completion criteria:
 
 See `skill-operational-mission-lifecycle.md` for operator commands, contracts, failure behavior, and limitations.
 
+Lifecycle reconciliation now supports expired, aborted, and superseded wave
+termination without a fabricated report/AAR. Exact USER scope decisions bind
+early abort and replacement to retained plan digests. Settled dispatch and
+immutable terminal records prevent reopening the old wave. Campaign-level
+cancellation, automatic replacement planning, and external process termination
+remain separate work; a wave terminal record does not imply them.
+
 ## 17. Phase 16: Enforced Dispatch And Resumable Orchestration
 
 Status: implemented as a provider-neutral, manifest-backed local admission

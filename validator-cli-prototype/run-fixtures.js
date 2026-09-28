@@ -1079,6 +1079,34 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "valid mission wave expiration request",
+    file: "sample-payloads/valid-mission-wave-termination-request.json",
+    type: "mission-wave-termination-request",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "valid mission wave expiration record",
+    file: "sample-payloads/valid-mission-wave-termination.json",
+    type: "mission-wave-termination",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "aborting a mission requires a retained decision",
+    file: "sample-payloads/invalid-mission-wave-termination-request-unapproved.json",
+    type: "mission-wave-termination-request",
+    exitCode: 1,
+    requiredCodes: ["MISSION_TERMINATION_DECISION_REQUIRED"]
+  },
+  {
+    name: "mission expiration cannot be backdated",
+    file: "sample-payloads/invalid-mission-wave-termination-premature.json",
+    type: "mission-wave-termination",
+    exitCode: 1,
+    requiredCodes: ["MISSION_TERMINATION_INVALID_TIME"]
+  },
+  {
     name: "mission wave closeout claims self-release",
     file: "sample-payloads/invalid-mission-wave-closeout-self-release.json",
     type: "mission-wave-closeout",

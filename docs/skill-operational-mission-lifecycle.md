@@ -33,6 +33,7 @@ The human user remains final decision authority throughout this sequence.
 | `ControlExecutionReceipt` | Proves that the controller ran one allowlisted, shell-free control for the exact canonical report input, repository, and doctrine states; stores only output digests and byte counts. |
 | `MissionWaveReport` | Records one result per expected agent and requires exact context-pack, control-receipt, and manifest-backed work-evidence references. |
 | `MissionWaveCloseout` | Binds plan, report, AAR, readiness update, campaign, next-wave decision, verified artifact state, and a permanently false release grant. |
+| `MissionWaveTerminationRequest` / `MissionWaveTermination` | Ends an expired, aborted, or superseded wave without manufacturing a report, AAR, readiness promotion, or execution-success claim. Preserves exact historical references and blocks reuse. |
 
 Schemas, valid examples, invalid authority/release examples, semantic validation, and E2E fixtures cover every contract.
 
@@ -195,6 +196,66 @@ The controller rejects:
   for a completed agent.
 
 A valid report creates a manifest-backed report and SITREP. Work evidence may be a JSON artifact or a regular file artifact such as source code, Markdown, or a test log. Lifecycle control records cannot substitute for work evidence. A blocked or failed report is recorded but returns a nonzero CLI status so automation cannot silently continue. Omit `--at` in normal operation; it exists for deterministic replay and testing.
+
+## 4A. Terminate Without Claiming Success
+
+An expired plan cannot accept a late report, and normal closeout still requires
+an admitted report and AAR. Do not backdate those records or extend a retained
+plan to force closeout. Inspect `status`, settle dispatch first, and use:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
+  terminate termination-request.json \
+  --repository ../target-repository --artifact-root .cannae/artifacts
+```
+
+The Claude wrapper accepts the same command. Start from
+`sample-payloads/valid-mission-wave-termination-request.json`, replacing its
+sample identifiers and plan reference with the exact verified manifest entry.
+The terminating CLI uses its live clock and rejects `--at`; module-level clock
+injection is reserved for trusted deterministic fixtures, not agent authority.
+
+- `expired`: controller time must be at or after the retained plan's expiry.
+  Both decision and successor references use the exact three-field `none`
+  sentinel. Expiry is a time observation, not a claim that work succeeded.
+- `aborted`: requires a manifest-backed `DecisionLogEntry` in this wave's
+  `decision-logs`, made by `USER`, with `decision_type: scope`, `status:
+  complete`, and a `retained_authority` basis referencing this plan ID.
+- `superseded`: requires the same decision plus the exact successor plan in
+  the same repository store. The successor must be currently valid, not closed
+  or terminated, and already have ready routing and all bound context packs.
+  Linking it does not dispatch it or transfer authority or evidence.
+
+For abort/supersession, the decision must be no more than 60 minutes old and
+not in the future. Its `chosen_option` and one `options_considered` entry must
+equal `terminate:<status>:<plan-sha256>:<successor-sha256-or-none>`; its
+`affected_artifacts` must contain the exact plan path and any successor path.
+The request's `decision_ref` must identify that exact persisted record.
+The assistant must not manufacture a USER decision. This is a local record
+binding, not cryptographic proof of the human's identity; protect the decision
+store and entry point in managed deployments.
+
+Termination requires every dispatch lineage to be `completed`, `revoked`, or
+`superseded`, with zero unresolved tool admissions. An expired, interrupted,
+or blocked lease is not settlement. Reconcile actual effects first; do not
+cancel an already executed tool merely to clear the gate. Termination itself
+does not revoke leases, kill processes, settle external effects, or delete
+campaigns or artifacts. Existing normal closeouts remain immutable.
+
+The controller appends one terminal record containing the exact plan, request
+digest, retained wave references, and terminal time. An exact retry returns
+that same record; a changed request fails. Historical v0.1 routing/context
+artifacts remain preserved bytes, not silently migrated or treated as current
+execution authority. `open`, `report`, `close`, policy authorization, lease
+issuance/resume, and covered pre-tool admission reject the terminated wave,
+including attempts to backdate a command. Cleanup checkpoints remain available.
+Lifecycle writes are serialized per wave, and termination shares the dispatch
+issuance lock so it cannot race a new lease into an apparently settled wave.
+
+`status` distinguishes `expired_pending_termination` from a persisted
+`expired`, `aborted`, or `superseded` record. This operation ends only one wave,
+not its entire campaign. A replacement mission requires fresh authorization,
+routing, policy, and leases. Release and continuation remain false.
 
 ## 5. Close A Wave
 
