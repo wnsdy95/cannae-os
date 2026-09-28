@@ -135,6 +135,8 @@ function setupDispatch(repository, baseTime) {
   const plan = readJson("sample-payloads/valid-mission-wave-plan.json");
   plan.id = "MWP-GATEWAY-IDENTITY-W1";
   plan.mission_id = "MIS-GATEWAY-IDENTITY";
+  plan.created_at = iso(baseTime - 60000);
+  plan.valid_until = iso(baseTime + 3600000);
   plan.agents = plan.agents.filter(agent => agent.agent_id === "plans-agent");
   const draft = policyDraft(plan, baseTime);
   plan.dispatch_control = {

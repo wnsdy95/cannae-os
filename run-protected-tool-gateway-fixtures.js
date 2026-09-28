@@ -114,6 +114,7 @@ function scenarioPlan(scenario) {
   const plan = readJson("sample-payloads/valid-mission-wave-plan.json");
   plan.id = `MWP-GATEWAY-${scenario}`;
   plan.mission_id = `MIS-GATEWAY-${scenario}`;
+  plan.created_at = "2026-07-24T01:00:00Z";
   plan.agents = plan.agents.filter(agent => agent.agent_id === "plans-agent");
   return plan;
 }
