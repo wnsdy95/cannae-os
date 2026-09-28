@@ -116,6 +116,8 @@ Resource priority check before reallocating anything.
 
 ## 9. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 schema:
 
 - `priority-of-support.schema.json`

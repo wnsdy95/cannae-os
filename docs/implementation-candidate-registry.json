@@ -1,0 +1,2785 @@
+{
+  "schema_version": "0.1",
+  "type": "ImplementationCandidateRegistry",
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "release_authorized": false,
+    "execution_authorized": false
+  },
+  "sources": [
+    {
+      "document": "docs/agent-metl.md",
+      "section_sha256": "e877521f1d36176184424524161eef5e21f2512ae41dd0e1d987c3af1ef5332d"
+    },
+    {
+      "document": "docs/b2c2wg-operating-model.md",
+      "section_sha256": "7f12a8f91530b2a7b7aedb8beb3731714757ad6d022bb28a9d44c7d0c7c55157"
+    },
+    {
+      "document": "docs/ccir-alerting-model.md",
+      "section_sha256": "ca02208f3ffc0715089498cf436f7a0ca1de60c43b509c6d12afda3a85a67ce6"
+    },
+    {
+      "document": "docs/chief-of-staff-agent.md",
+      "section_sha256": "bdda1b429015893f82ccd5ccd2049eeb60ec5dfc4cb565f67d34dc168b926d63"
+    },
+    {
+      "document": "docs/common-operational-picture-state.md",
+      "section_sha256": "eec5abaa143f236a67639833b758cb2ff12ea6da3cfd49ba58ebbbbf1bef8a85"
+    },
+    {
+      "document": "docs/context-releasability-policy.md",
+      "section_sha256": "bb5b38009c68379dc547feab2a5945731a471ee649b9b622af71b024786c3079"
+    },
+    {
+      "document": "docs/disciplined-initiative-rules.md",
+      "section_sha256": "696dab870d3feb040d536429736c148264afc9ca2cb0183cabf95dfe034338f1"
+    },
+    {
+      "document": "docs/dry-run-approval-ui.md",
+      "section_sha256": "b24ec46fa1f0455aaed035ff2e3b3550f5e20489a6352095abdab2b320bb9984"
+    },
+    {
+      "document": "docs/handoff-packet-template.md",
+      "section_sha256": "d5ded63d53eb435028a2273e2663f6cd0a590fe68f9a8e37a864dfbea7d475e4"
+    },
+    {
+      "document": "docs/interop-release-packet.md",
+      "section_sha256": "fb5b12595b85391ec309881a82f85f985d9f8e1910ddff1b695cee34ad98bbed"
+    },
+    {
+      "document": "docs/knowledge-management-sop.md",
+      "section_sha256": "c86dd34e831eca05f7655286690e8dabd1b382001840f539ece03db1a2d75070"
+    },
+    {
+      "document": "docs/liaison-agent-model.md",
+      "section_sha256": "266649170a678399e8eead24b6ff57930320584f435f7f049c11a2e0608e479a"
+    },
+    {
+      "document": "docs/mission-command-runtime-policy.md",
+      "section_sha256": "bd8ac88a5035c9d41552bc83f01ea9c05738659087fb5f060a779b187fe02a67"
+    },
+    {
+      "document": "docs/opsec-classification-model.md",
+      "section_sha256": "ddae05c2479b13eae6c0dd7f8a9dae721427d65abdcc21174f86a9b068ecfda5"
+    },
+    {
+      "document": "docs/partner-command-relationship.md",
+      "section_sha256": "ed0403e863b3cdcdcf7dafa3a1e2818eab9171668751b505d8af0683de8a7e2f"
+    },
+    {
+      "document": "docs/readiness-to-authority-policy.md",
+      "section_sha256": "d0205bccbda4859493f91087eae800f1ce5d023978c4741947966e04435294bd"
+    },
+    {
+      "document": "docs/reporting-threshold-policy.md",
+      "section_sha256": "ca6a4344e7138ee993326e64c7b7d8cd278df4234558455e1298ec001ac628d4"
+    },
+    {
+      "document": "docs/resource-priority-policy.md",
+      "section_sha256": "4da7deaa2d40e32e2c8b2c2db70397a9f10b99f4a53ab2560b78e201ad5e82a4"
+    },
+    {
+      "document": "docs/sensitive-output-filter.md",
+      "section_sha256": "e0e28a32d5eed493a03248bac8bbe4fa1065f7fcfedb07a1a04c4a302bd7f930"
+    },
+    {
+      "document": "docs/sustainment-agent-sop.md",
+      "section_sha256": "bb580d2ba7e11d94d9df86facf9b4e403d4f766cdb089fe40f6b5b5ad7e80a96"
+    },
+    {
+      "document": "docs/training-progression-model.md",
+      "section_sha256": "65373cb67df9513361fae390cee4ec2ef3e608fe37b5523090f5af722619c4f8"
+    }
+  ],
+  "workstreams": [
+    {
+      "id": "staff-coordination",
+      "title": "Staff and battle rhythm",
+      "owner_role": "COS",
+      "completion_criteria": [
+        "Integrate chair/quorum, packet completeness, deadlines, and human disposition without auto-execution."
+      ]
+    },
+    {
+      "id": "cop-reporting",
+      "title": "COP and reporting",
+      "owner_role": "S3",
+      "completion_criteria": [
+        "Project current mission state with freshness and role filtering; preserve critical reporting while limiting noise."
+      ]
+    },
+    {
+      "id": "intent-initiative",
+      "title": "Intent and disciplined initiative",
+      "owner_role": "S3",
+      "completion_criteria": [
+        "Preserve parent intent, tasks, and authority bounds across delegation and method deviations."
+      ]
+    },
+    {
+      "id": "force-readiness",
+      "title": "Force, readiness, and partner boundaries",
+      "owner_role": "S1",
+      "completion_criteria": [
+        "Reconcile task organization, training/readiness changes, authority ceilings, and partner/liaison boundaries."
+      ]
+    },
+    {
+      "id": "sustainment",
+      "title": "Resource and sustainment operations",
+      "owner_role": "S4",
+      "completion_criteria": [
+        "Validate resource priority, starvation handling, checkpoints, and recovery with retained approval for changed risk."
+      ]
+    },
+    {
+      "id": "boundary-output",
+      "title": "Controlled context and release outputs",
+      "owner_role": "S6",
+      "completion_criteria": [
+        "Validate classification, exceptions, audience, approvals, expiry, and revocation before boundary crossing."
+      ]
+    },
+    {
+      "id": "knowledge-handoff",
+      "title": "Knowledge and handoff",
+      "owner_role": "S6",
+      "completion_criteria": [
+        "Resolve authoritative records, verify handoff triggers and acceptance, and maintain source-bound indexes."
+      ]
+    },
+    {
+      "id": "approval-ui",
+      "title": "Dry-run approval UI",
+      "owner_role": "COS",
+      "completion_criteria": [
+        "Present real bounded decision dispositions and consume approvals with stale/conflict protection."
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "id": "IC-25be5cec5d97d424",
+      "source_document": "docs/agent-metl.md",
+      "candidate_key": "agent-metl.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/agent-metl.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`agent-metl.schema.json`: one role's mission-essential task list with conditions, measurable standards, and current proficiency.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-98f2f27dceaf1021",
+      "source_document": "docs/agent-metl.md",
+      "candidate_key": "readiness-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/readiness-event.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`readiness-event.schema.json`: one readiness change event with previous/new rating, trigger, evidence, and authority impact.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-00b033e95c2f748d",
+      "source_document": "docs/agent-metl.md",
+      "candidate_key": "readiness-gate-prototype/readiness-gate.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "readiness-gate-prototype/readiness-gate.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`readiness-gate-prototype/readiness-gate.js`: takes role/task/readiness/roe_class and determines allowed/report_required/approval_required/prohibit.",
+          "validation_commands": [
+            "node readiness-gate-prototype/run-readiness-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-aeb3880d2f1b58b3",
+      "source_document": "docs/agent-metl.md",
+      "candidate_key": "aar-to-readiness-update.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "aar-to-readiness-update.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`aar-to-readiness-update.js`: converts AAR findings into readiness update recommendations (implements the `aar-to-readiness.js` candidate under the AAR readiness update contract).",
+          "validation_commands": [
+            "node run-aar-readiness-update-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-6670a5ebbe7b1fa0",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "working-group.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/working-group.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the working-group.schema.json proposal and associated constraints in docs/b2c2wg-operating-model.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-29ca738cded623db",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "decision-packet.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/decision-packet.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the decision-packet.schema.json proposal and associated constraints in docs/b2c2wg-operating-model.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-98fff5c86098014a",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "board-decision.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/board-decision.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`board-decision.schema.json`: board decision record consuming one decision packet under a declared deciding authority.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-17333ec127cbd4d8",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "battle-rhythm-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/battle-rhythm-event.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`battle-rhythm-event.schema.json`: one recurring battle-rhythm event definition with cadence, inputs, outputs, chair, and quorum rule.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-e4b05c676475cee4",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "battle-rhythm-scheduler.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/battle-rhythm-scheduler.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`battle-rhythm-scheduler.schema.json`: scheduler proposal derived from the event log; the scheduler proposes and the CoS confirms, never auto-executes.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-83476a330da2c1c4",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "battle-rhythm-scheduler.js",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "battle-rhythm-scheduler.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`battle-rhythm-scheduler.js`: reads battle-rhythm event definitions plus an event log excerpt and emits a schema-valid scheduler proposal (verified by `run-battle-rhythm-scheduler-fixtures.js`).",
+          "validation_commands": [
+            "node run-battle-rhythm-scheduler-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-2df528111932589d",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "decision-packet-linter.js",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "decision-packet-linter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`decision-packet-linter.js`: validates for missing options, risk, authority, and evidence.",
+          "validation_commands": [
+            "node run-decision-packet-linter-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [
+        "Add focused CLI regression cases for missing risk, required authority, and evidence before claiming every boundary in this candidate is covered."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-2c23e32b18ea8cff",
+      "source_document": "docs/b2c2wg-operating-model.md",
+      "candidate_key": "Dashboard panel: active WGs, pending packets, next decision deadline.",
+      "kind": "capability",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "dashboard-ui-prototype/render-state.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Dashboard panel: active WGs, pending packets, next decision deadline.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Add real current working-group/packet/deadline queries and rendered operator flows; existing static state is not completion."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-e7846d5ee5d6ab0e",
+      "source_document": "docs/ccir-alerting-model.md",
+      "candidate_key": "ccir-alert.schema.json",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/ccir-alert.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the ccir-alert.schema.json proposal and associated constraints in docs/ccir-alerting-model.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-963645a2d36e0a7b",
+      "source_document": "docs/ccir-alerting-model.md",
+      "candidate_key": "decision-packet.schema.json",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/decision-packet.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the decision-packet.schema.json proposal and associated constraints in docs/ccir-alerting-model.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-a703935b6ddb27c9",
+      "source_document": "docs/ccir-alerting-model.md",
+      "candidate_key": "alert-router-prototype/route-alerts.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "alert-router-prototype/route-alerts.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`alert-router-prototype/route-alerts.js`: reads the event log and policy decisions to generate the alert projection (implements the `alert-router.js` candidate).",
+          "validation_commands": [
+            "node alert-router-prototype/run-alert-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-bfdaffbccb70a72c",
+      "source_document": "docs/ccir-alerting-model.md",
+      "candidate_key": "ccir-linter.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "ccir-linter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`ccir-linter.js`: fails any blocked item in a SITREP that lacks a CCIR classification or references an unknown CCIR id (verified by `run-ccir-linter-fixtures.js`).",
+          "validation_commands": [
+            "node run-ccir-linter-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-690db4acd60a3b94",
+      "source_document": "docs/ccir-alerting-model.md",
+      "candidate_key": "Replace the dashboard `ccir_alerts` panel with event-derived alerts.",
+      "kind": "capability",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "dashboard-ui-prototype/render-state.js",
+        "alert-router-prototype/route-alerts.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Replace the dashboard `ccir_alerts` panel with event-derived alerts.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Verify the real rendered panel consumes fresh event-derived alerts instead of static/demo state, including critical-alert priority and stale-data display."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-8ba5737a3384b237",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "cos-charter.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the cos-charter.schema.json proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for cos-charter.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-21cefd788b64f9cc",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "staff-synchronization-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the staff-synchronization-event.schema.json proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for staff-synchronization-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-6914195e390c0075",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "battle-rhythm-scheduler-schema.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/battle-rhythm-scheduler.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the battle-rhythm-scheduler-schema.json proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "Historical proposal spelling maps to the existing battle-rhythm-scheduler.schema.json contract. Do not create a duplicate schema."
+    },
+    {
+      "id": "IC-818e605a97021924",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "cos-packet-gate-runner.js",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "decision-packet-linter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the cos-packet-gate-runner.js proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Add CoS integration checks for synchronized staff inputs, conflicting recommendations, required specialists, and retained decision authority."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-8e139523380a21dd",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "run-cos-packet-gate-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-cos-packet-gate-fixtures.js proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-cos-packet-gate-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-c5c540f8b30fd279",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "battle-rhythm-scheduler.js",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "battle-rhythm-scheduler.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the battle-rhythm-scheduler.js proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": [
+            "node run-battle-rhythm-scheduler-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-0face515941b5d6a",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "cos-sitrep-compression-runner.js",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the cos-sitrep-compression-runner.js proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for cos-sitrep-compression-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-b67b3f2f4163255b",
+      "source_document": "docs/chief-of-staff-agent.md",
+      "candidate_key": "dashboard-ui-prototype/cos-integration-state.json",
+      "kind": "artifact",
+      "workstream_id": "staff-coordination",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dashboard-ui-prototype/cos-integration-state.json proposal and associated constraints in docs/chief-of-staff-agent.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dashboard-ui-prototype/cos-integration-state.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-793d23137d65bb1c",
+      "source_document": "docs/common-operational-picture-state.md",
+      "candidate_key": "schema-files/cop-state.schema.json",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/cop-state.schema.json proposal and associated constraints in docs/common-operational-picture-state.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/cop-state.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-333acc21d9f88c52",
+      "source_document": "docs/common-operational-picture-state.md",
+      "candidate_key": "cop-projection-runner.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "event-replay-prototype/replay.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the cop-projection-runner.js proposal and associated constraints in docs/common-operational-picture-state.md.",
+          "validation_commands": [
+            "node event-replay-prototype/run-event-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [
+        "Add unified COP contract, source completeness, version/freshness validation, and lifecycle integration; raw replay is only the base projection."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-7abadf2f502c9c1e",
+      "source_document": "docs/common-operational-picture-state.md",
+      "candidate_key": "run-cop-projection-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-cop-projection-fixtures.js proposal and associated constraints in docs/common-operational-picture-state.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-cop-projection-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-79788f888bceac32",
+      "source_document": "docs/common-operational-picture-state.md",
+      "candidate_key": "cop-view-filter.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "context-filter-prototype/context-filter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the cop-view-filter.js proposal and associated constraints in docs/common-operational-picture-state.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Bind COP fields and source classifications to actor role/need-to-know with stale or unlabelled data denied."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-3474d8ead5992b93",
+      "source_document": "docs/common-operational-picture-state.md",
+      "candidate_key": "dashboard-ui-prototype/cop-state.json",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dashboard-ui-prototype/cop-state.json proposal and associated constraints in docs/common-operational-picture-state.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dashboard-ui-prototype/cop-state.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-2e7dd5ebf54ffa53",
+      "source_document": "docs/common-operational-picture-state.md",
+      "candidate_key": "cop-staleness-gate.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the cop-staleness-gate.js proposal and associated constraints in docs/common-operational-picture-state.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for cop-staleness-gate.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-fad6c9b0d69476b3",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "context-item.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/context-item.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the context-item.schema.json proposal and associated constraints in docs/context-releasability-policy.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-32d71d8dde69bc90",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "document-access-manifest.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/document-access-manifest.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the document-access-manifest.schema.json proposal and associated constraints in docs/context-releasability-policy.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-9125a8e5265765ad",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "context-release.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/context-release.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the context-release.schema.json proposal and associated constraints in docs/context-releasability-policy.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-b944a9c3070ec771",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "release-review.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/release-review.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the release-review.schema.json proposal and associated constraints in docs/context-releasability-policy.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-3d6c3273f0efebf2",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "document-access-runner.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "document-access-runner.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`document-access-runner.js`: role, duty, authority and manifest -> allowed/denied document list.",
+          "validation_commands": [
+            "node run-document-access-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-b60e9f1b61ecb5a1",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "context-filter-prototype/",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "context-filter-prototype/context-filter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`context-filter-prototype/`: role and context items -> filtered packet (implements the `context-filter.js` candidate).",
+          "validation_commands": [
+            "node context-filter-prototype/run-context-filter-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The directory proposal is implemented by the context-filter prototype and its role-filter fixtures; no hosted service or general release authority is implied."
+    },
+    {
+      "id": "IC-c1398b0f071890b3",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "release-review-runner.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "release-review-runner.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`release-review-runner.js`: final output packet safety check.",
+          "validation_commands": [
+            "node run-release-review-fixtures.js",
+            "node run-release-integration-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-14ba6874f32d9a3f",
+      "source_document": "docs/context-releasability-policy.md",
+      "candidate_key": "eefi-detector.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "eefi-detector.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`eefi-detector.js`: secret/private pattern and classification guard reporting digests only, with distinct output-forbidden and tool-transfer-forbidden classes (verified by `run-eefi-detector-fixtures.js`).",
+          "validation_commands": [
+            "node run-eefi-detector-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-d98694dab75bbeb5",
+      "source_document": "docs/disciplined-initiative-rules.md",
+      "candidate_key": "schema-files/disciplined-initiative-ruleset.schema.json",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`schema-files/disciplined-initiative-ruleset.schema.json`: rule IDs, triggers, and required responses as a machine-readable policy object.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/disciplined-initiative-ruleset.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-0e843000fa5e8a8a",
+      "source_document": "docs/disciplined-initiative-rules.md",
+      "candidate_key": "schema-files/initiative-deviation-report.schema.json",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`schema-files/initiative-deviation-report.schema.json`: report-before/report-after deviation record linked to backbrief and SITREP ids.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/initiative-deviation-report.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-e82ec43e0d32c9cc",
+      "source_document": "docs/disciplined-initiative-rules.md",
+      "candidate_key": "schema-files/degeneration-incident-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`schema-files/degeneration-incident-event.schema.json`: detected pattern, evidence events, and executed response (block/escalate/revoke).",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/degeneration-incident-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-f3aab6d1c0ce0e11",
+      "source_document": "docs/disciplined-initiative-rules.md",
+      "candidate_key": "initiative-drift-detector.js",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`initiative-drift-detector.js`: compares the event log against the accepted backbrief and emits drift-class alerts.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for initiative-drift-detector.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-942385079f3a008f",
+      "source_document": "docs/disciplined-initiative-rules.md",
+      "candidate_key": "degeneration-response-runner.js",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`degeneration-response-runner.js`: maps a detected pattern to its mandatory response and verifies the response actually occurred.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for degeneration-response-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-e7818cb43b37343e",
+      "source_document": "docs/disciplined-initiative-rules.md",
+      "candidate_key": "run-disciplined-initiative-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`run-disciplined-initiative-fixtures.js`: disciplined Green deviation, unreported deviation, approval stretching, and self-delegation fixtures.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-disciplined-initiative-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-7d3c179981077bc6",
+      "source_document": "docs/dry-run-approval-ui.md",
+      "candidate_key": "rehearsal-disposition-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "approval-ui",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the rehearsal-disposition-event.schema.json proposal and associated constraints in docs/dry-run-approval-ui.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for rehearsal-disposition-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-006deffb8c8a67c2",
+      "source_document": "docs/dry-run-approval-ui.md",
+      "candidate_key": "dry-run-result.schema.json",
+      "kind": "artifact",
+      "workstream_id": "approval-ui",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dry-run-result.schema.json proposal and associated constraints in docs/dry-run-approval-ui.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dry-run-result.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-ea212bf800bc0195",
+      "source_document": "docs/dry-run-approval-ui.md",
+      "candidate_key": "dry-run-approval-runner.js",
+      "kind": "artifact",
+      "workstream_id": "approval-ui",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dry-run-approval-runner.js proposal and associated constraints in docs/dry-run-approval-ui.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dry-run-approval-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-321f301427fc26ca",
+      "source_document": "docs/dry-run-approval-ui.md",
+      "candidate_key": "run-dry-run-approval-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "approval-ui",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-dry-run-approval-fixtures.js proposal and associated constraints in docs/dry-run-approval-ui.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-dry-run-approval-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-53a22603016a5894",
+      "source_document": "docs/dry-run-approval-ui.md",
+      "candidate_key": "dry-run-approval-projection-runner.js",
+      "kind": "artifact",
+      "workstream_id": "approval-ui",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dry-run-approval-projection-runner.js proposal and associated constraints in docs/dry-run-approval-ui.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dry-run-approval-projection-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-2964eb115e03822a",
+      "source_document": "docs/dry-run-approval-ui.md",
+      "candidate_key": "dashboard-ui-prototype/dry-run-approval-state.json",
+      "kind": "artifact",
+      "workstream_id": "approval-ui",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dashboard-ui-prototype/dry-run-approval-state.json proposal and associated constraints in docs/dry-run-approval-ui.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dashboard-ui-prototype/dry-run-approval-state.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-2d067857434e335b",
+      "source_document": "docs/handoff-packet-template.md",
+      "candidate_key": "handoff-review-record.schema.json",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the handoff-review-record.schema.json proposal and associated constraints in docs/handoff-packet-template.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for handoff-review-record.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-8db984a12c10bc91",
+      "source_document": "docs/handoff-packet-template.md",
+      "candidate_key": "handoff-packet-linter.js",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "schema-files/handoff-packet.schema.json",
+        "km-review-runner.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the handoff-packet-linter.js proposal and associated constraints in docs/handoff-packet-template.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Validate the complete handoff acceptance checklist, mandatory triggers, identity/freshness, unresolved actions, and receiving-role acceptance."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-00f8e2d3592f448b",
+      "source_document": "docs/handoff-packet-template.md",
+      "candidate_key": "run-handoff-packet-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-handoff-packet-fixtures.js proposal and associated constraints in docs/handoff-packet-template.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-handoff-packet-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-277c326ee3d259e5",
+      "source_document": "docs/handoff-packet-template.md",
+      "candidate_key": "handoff-trigger-watcher.js",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the handoff-trigger-watcher.js proposal and associated constraints in docs/handoff-packet-template.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for handoff-trigger-watcher.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-15e2d8d01cdc1e9e",
+      "source_document": "docs/interop-release-packet.md",
+      "candidate_key": "schema-files/interop-release-packet.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/interop-release-packet.schema.json proposal and associated constraints in docs/interop-release-packet.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/interop-release-packet.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-8015518f75229bff",
+      "source_document": "docs/interop-release-packet.md",
+      "candidate_key": "schema-files/release-revocation-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/release-revocation-event.schema.json proposal and associated constraints in docs/interop-release-packet.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/release-revocation-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-d03c7e7938d73174",
+      "source_document": "docs/interop-release-packet.md",
+      "candidate_key": "release-packet-assembly-runner.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "release-review-runner.js",
+        "evidence-redactor.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the release-packet-assembly-runner.js proposal and associated constraints in docs/interop-release-packet.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Assemble an exact partner-specific minimized packet, bind review/label/destination/evidence, and propagate revocation before boundary crossing."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-3ec3a61e50abe7ef",
+      "source_document": "docs/interop-release-packet.md",
+      "candidate_key": "run-release-packet-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-release-packet-fixtures.js proposal and associated constraints in docs/interop-release-packet.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-release-packet-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-0a5622f65d5ed565",
+      "source_document": "docs/interop-release-packet.md",
+      "candidate_key": "dashboard-ui-prototype/partner-release-queue-state.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dashboard-ui-prototype/partner-release-queue-state.json proposal and associated constraints in docs/interop-release-packet.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dashboard-ui-prototype/partner-release-queue-state.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-5b20f55d93c5abd1",
+      "source_document": "docs/knowledge-management-sop.md",
+      "candidate_key": "decision-log.schema.json",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/decision-log.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`decision-log.schema.json`: one decision log entry with a required authority basis and review trigger.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-f39c679ca99170a2",
+      "source_document": "docs/knowledge-management-sop.md",
+      "candidate_key": "handoff-packet.schema.json",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/handoff-packet.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the handoff-packet.schema.json proposal and associated constraints in docs/knowledge-management-sop.md.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-1ca2652117625279",
+      "source_document": "docs/knowledge-management-sop.md",
+      "candidate_key": "source-record.schema.json",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/source-record.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`source-record.schema.json`: one knowledge source record with tier, claims, and linked documents.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-a5b47956ca99f292",
+      "source_document": "docs/knowledge-management-sop.md",
+      "candidate_key": "handoff-generator.js",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "handoff-generator.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`handoff-generator.js`: combines event projection with the README queue to generate a packet.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Replace demo IDs, timestamp, source paths, and static next actions with exact mission inputs and the canonical queue; verify generated packet admission and missing-input failures."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-507ff4843bf190b9",
+      "source_document": "docs/knowledge-management-sop.md",
+      "candidate_key": "source-map-linter.js",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "source-map-linter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`source-map-linter.js`: fails when an official source host is absent from the source map or a doctrine output in the queue's audited index is missing from the README, source map, compendium, or filesystem (verified by `run-source-map-linter-fixtures.js`).",
+          "validation_commands": [
+            "node run-source-map-linter-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-4d30c68ed403600a",
+      "source_document": "docs/knowledge-management-sop.md",
+      "candidate_key": "km-review-runner.js",
+      "kind": "artifact",
+      "workstream_id": "knowledge-handoff",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "km-review-runner.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`km-review-runner.js`: validates decision-log, source-record, optional handoff, and authority artifacts against their schemas; resolves authority and document references; and reviews stale unresolved decisions. Supply authority evidence with `--authority-artifacts` and constrain local document references with `--repository-root` (verified by `run-km-review-fixtures.js`).",
+          "validation_commands": [
+            "node run-km-review-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-8f7cafb3149a56b6",
+      "source_document": "docs/liaison-agent-model.md",
+      "candidate_key": "schema-files/liaison-charter.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/liaison-charter.schema.json proposal and associated constraints in docs/liaison-agent-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/liaison-charter.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-37e80ee344f887ba",
+      "source_document": "docs/liaison-agent-model.md",
+      "candidate_key": "schema-files/liaison-relay-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/liaison-relay-event.schema.json proposal and associated constraints in docs/liaison-agent-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/liaison-relay-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-264630ee7e2006ab",
+      "source_document": "docs/liaison-agent-model.md",
+      "candidate_key": "liaison-boundary-runner.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the liaison-boundary-runner.js proposal and associated constraints in docs/liaison-agent-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for liaison-boundary-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-c57ef4e7dd75fc63",
+      "source_document": "docs/liaison-agent-model.md",
+      "candidate_key": "run-liaison-boundary-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-liaison-boundary-fixtures.js proposal and associated constraints in docs/liaison-agent-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-liaison-boundary-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-2ff8109113fff9c2",
+      "source_document": "docs/liaison-agent-model.md",
+      "candidate_key": "dashboard-ui-prototype/liaison-boundary-state.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dashboard-ui-prototype/liaison-boundary-state.json proposal and associated constraints in docs/liaison-agent-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dashboard-ui-prototype/liaison-boundary-state.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-f516ab2a5330331b",
+      "source_document": "docs/mission-command-runtime-policy.md",
+      "candidate_key": "schema-files/commander-intent.schema.json",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`schema-files/commander-intent.schema.json`: the five-field intent block with parent lineage and boundary object.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/commander-intent.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-4b107f7a59f2b067",
+      "source_document": "docs/mission-command-runtime-policy.md",
+      "candidate_key": "schema-files/intent-delegation-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`schema-files/intent-delegation-event.schema.json`: echelon crossing event pairing an intent block with a delegated approval scope.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/intent-delegation-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-f7ca1232ec987f27",
+      "source_document": "docs/mission-command-runtime-policy.md",
+      "candidate_key": "schema-files/method-deviation-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`schema-files/method-deviation-event.schema.json`: recorded deviation with intent check results and reporting obligation status.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/method-deviation-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-ef2daf4a8eb10fd1",
+      "source_document": "docs/mission-command-runtime-policy.md",
+      "candidate_key": "intent-continuity-runner.js",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`intent-continuity-runner.js`: walks the intent lineage and fails any child block that widens its parent boundary or drops a key task.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for intent-continuity-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-c01857f06b4dbc5f",
+      "source_document": "docs/mission-command-runtime-policy.md",
+      "candidate_key": "method-deviation-gate.js",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`method-deviation-gate.js`: implements the section 5 gate against a backbrief and a proposed plan change.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for method-deviation-gate.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-650668451151e814",
+      "source_document": "docs/mission-command-runtime-policy.md",
+      "candidate_key": "run-intent-continuity-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "intent-initiative",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`run-intent-continuity-fixtures.js`: valid nested intent, widened-boundary child, and dropped-key-task fixtures.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-intent-continuity-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-6acc856aa00a9074",
+      "source_document": "docs/opsec-classification-model.md",
+      "candidate_key": "classification-label.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/classification-label.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`classification-label.schema.json`: standalone label contract for sensitivity tier, EEFI class membership, releasability, and need-to-know roles.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-9547daa1bd338035",
+      "source_document": "docs/opsec-classification-model.md",
+      "candidate_key": "releasability-review.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/releasability-review.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`releasability-review.schema.json`: per-artifact label review feeding the final release review.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-9bdbcbd28f5721c2",
+      "source_document": "docs/opsec-classification-model.md",
+      "candidate_key": "eefi-alert.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "schema-files/eefi-alert.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`eefi-alert.schema.json`: EEFI exposure alert carrying an excerpt digest, never the raw excerpt.",
+          "validation_commands": [
+            "node validator-cli-prototype/run-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named contract and its valid/invalid validator fixtures exist. This status covers the contract only, not all downstream policy or UI integration."
+    },
+    {
+      "id": "IC-a503994ff8a6175f",
+      "source_document": "docs/opsec-classification-model.md",
+      "candidate_key": "opsec-linter.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "opsec-linter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`opsec-linter.js`: detects secret patterns and restricted terms in output/tool targets, reporting sha256 digests only (verified by `run-opsec-linter-fixtures.js`).",
+          "validation_commands": [
+            "node run-opsec-linter-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-4f3a80615ccb3529",
+      "source_document": "docs/opsec-classification-model.md",
+      "candidate_key": "context-filter-prototype/",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "context-filter-prototype/context-filter.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`context-filter-prototype/`: reduces the context packet according to per-role releasability (implements the `context-filter.js` candidate).",
+          "validation_commands": [
+            "node context-filter-prototype/run-context-filter-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The directory proposal is implemented by the context-filter prototype and its role-filter fixtures; no hosted service or general release authority is implied."
+    },
+    {
+      "id": "IC-f85a8f12fe541755",
+      "source_document": "docs/opsec-classification-model.md",
+      "candidate_key": "evidence-redactor.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "evidence-redactor.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "`evidence-redactor.js`: converts evidence records into a final-output-safe form (verified by `run-evidence-redactor-fixtures.js`).",
+          "validation_commands": [
+            "node run-evidence-redactor-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-610734d433bd0ff0",
+      "source_document": "docs/partner-command-relationship.md",
+      "candidate_key": "schema-files/partner-relationship-declaration.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/partner-relationship-declaration.schema.json proposal and associated constraints in docs/partner-command-relationship.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/partner-relationship-declaration.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-511f4e464668e5b2",
+      "source_document": "docs/partner-command-relationship.md",
+      "candidate_key": "schema-files/partner-request-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/partner-request-event.schema.json proposal and associated constraints in docs/partner-command-relationship.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/partner-request-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-67bb87d7587a6a42",
+      "source_document": "docs/partner-command-relationship.md",
+      "candidate_key": "partner-relationship-gate-runner.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the partner-relationship-gate-runner.js proposal and associated constraints in docs/partner-command-relationship.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for partner-relationship-gate-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-6249b2bb202d4723",
+      "source_document": "docs/partner-command-relationship.md",
+      "candidate_key": "run-partner-relationship-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-partner-relationship-fixtures.js proposal and associated constraints in docs/partner-command-relationship.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-partner-relationship-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-85b7318d51b3dda2",
+      "source_document": "docs/partner-command-relationship.md",
+      "candidate_key": "dashboard-ui-prototype/partner-relationship-state.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the dashboard-ui-prototype/partner-relationship-state.json proposal and associated constraints in docs/partner-command-relationship.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for dashboard-ui-prototype/partner-relationship-state.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-3afc5ed4ab82b4bf",
+      "source_document": "docs/readiness-to-authority-policy.md",
+      "candidate_key": "readiness-band-policy.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the readiness-band-policy.schema.json proposal and associated constraints in docs/readiness-to-authority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for readiness-band-policy.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-4ad63b91e2f25061",
+      "source_document": "docs/readiness-to-authority-policy.md",
+      "candidate_key": "readiness-revocation-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the readiness-revocation-event.schema.json proposal and associated constraints in docs/readiness-to-authority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for readiness-revocation-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-4b10f9489e6370a8",
+      "source_document": "docs/readiness-to-authority-policy.md",
+      "candidate_key": "readiness-authority-ceiling-runner.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "readiness-gate-prototype/readiness-gate.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the readiness-authority-ceiling-runner.js proposal and associated constraints in docs/readiness-to-authority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement the declared readiness-band ceiling contract and integrate automatic narrowing with active grants without allowing self-promotion."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-1b2c9c3c5e7939fb",
+      "source_document": "docs/readiness-to-authority-policy.md",
+      "candidate_key": "run-readiness-ceiling-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-readiness-ceiling-fixtures.js proposal and associated constraints in docs/readiness-to-authority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-readiness-ceiling-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-4d852996a7c4e813",
+      "source_document": "docs/readiness-to-authority-policy.md",
+      "candidate_key": "readiness-drop-revocation-runner.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "approval-delegation-revocation-runner.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the readiness-drop-revocation-runner.js proposal and associated constraints in docs/readiness-to-authority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Connect a validated readiness drop to exact active delegation/lease revocation; test pending and already-consumed approvals."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-faa691cb84a04510",
+      "source_document": "docs/reporting-threshold-policy.md",
+      "candidate_key": "schema-files/reporting-threshold.schema.json",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the schema-files/reporting-threshold.schema.json proposal and associated constraints in docs/reporting-threshold-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for schema-files/reporting-threshold.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-cd1fd4816e81304f",
+      "source_document": "docs/reporting-threshold-policy.md",
+      "candidate_key": "reporting-threshold-gate.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the reporting-threshold-gate.js proposal and associated constraints in docs/reporting-threshold-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for reporting-threshold-gate.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-b688b5b633a4d13c",
+      "source_document": "docs/reporting-threshold-policy.md",
+      "candidate_key": "run-reporting-threshold-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-reporting-threshold-fixtures.js proposal and associated constraints in docs/reporting-threshold-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-reporting-threshold-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-01259ef6692d6c6b",
+      "source_document": "docs/reporting-threshold-policy.md",
+      "candidate_key": "completion-report-suppressor.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the completion-report-suppressor.js proposal and associated constraints in docs/reporting-threshold-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for completion-report-suppressor.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-dbda23f6d419f0ab",
+      "source_document": "docs/reporting-threshold-policy.md",
+      "candidate_key": "periodic-report-waiver-runner.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the periodic-report-waiver-runner.js proposal and associated constraints in docs/reporting-threshold-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for periodic-report-waiver-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-e6e72ffbd2f868e9",
+      "source_document": "docs/reporting-threshold-policy.md",
+      "candidate_key": "commander-queue-noise-report.js",
+      "kind": "artifact",
+      "workstream_id": "cop-reporting",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the commander-queue-noise-report.js proposal and associated constraints in docs/reporting-threshold-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for commander-queue-noise-report.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-47c4a7e9b2b42382",
+      "source_document": "docs/resource-priority-policy.md",
+      "candidate_key": "priority-of-support.schema.json",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the priority-of-support.schema.json proposal and associated constraints in docs/resource-priority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for priority-of-support.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-c347fd14cf0b855e",
+      "source_document": "docs/resource-priority-policy.md",
+      "candidate_key": "resource-allocation-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the resource-allocation-event.schema.json proposal and associated constraints in docs/resource-priority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for resource-allocation-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-9591f2579cbb246f",
+      "source_document": "docs/resource-priority-policy.md",
+      "candidate_key": "preemption-decision-packet.schema.json",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the preemption-decision-packet.schema.json proposal and associated constraints in docs/resource-priority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for preemption-decision-packet.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-2d1d643dacc31499",
+      "source_document": "docs/resource-priority-policy.md",
+      "candidate_key": "resource-priority-runner.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the resource-priority-runner.js proposal and associated constraints in docs/resource-priority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for resource-priority-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-0155f1457420a36e",
+      "source_document": "docs/resource-priority-policy.md",
+      "candidate_key": "preemption-router.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the preemption-router.js proposal and associated constraints in docs/resource-priority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for preemption-router.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-2ab46f4c3d36b8c9",
+      "source_document": "docs/resource-priority-policy.md",
+      "candidate_key": "starvation-aging-projector.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the starvation-aging-projector.js proposal and associated constraints in docs/resource-priority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for starvation-aging-projector.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-d7b7c333818b48fd",
+      "source_document": "docs/resource-priority-policy.md",
+      "candidate_key": "run-resource-priority-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-resource-priority-fixtures.js proposal and associated constraints in docs/resource-priority-policy.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-resource-priority-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-0342e1c1adbe9c0f",
+      "source_document": "docs/sensitive-output-filter.md",
+      "candidate_key": "eefi-list.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "eefi-detector.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the eefi-list.schema.json proposal and associated constraints in docs/sensitive-output-filter.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Promote compileEefiItems input checks into a versioned EEFI-list contract with valid/invalid producer and consumer fixtures."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-8301c6f1ae09da01",
+      "source_document": "docs/sensitive-output-filter.md",
+      "candidate_key": "output-filter-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the output-filter-event.schema.json proposal and associated constraints in docs/sensitive-output-filter.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for output-filter-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-766bfb6c5b2505af",
+      "source_document": "docs/sensitive-output-filter.md",
+      "candidate_key": "filter-exception-grant.schema.json",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the filter-exception-grant.schema.json proposal and associated constraints in docs/sensitive-output-filter.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for filter-exception-grant.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-2a47a9d1881c65ad",
+      "source_document": "docs/sensitive-output-filter.md",
+      "candidate_key": "sensitive-output-filter.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "eefi-detector.js",
+        "evidence-redactor.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the sensitive-output-filter.js proposal and associated constraints in docs/sensitive-output-filter.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Compose both EEFI lanes with exact classification, destination, exception, review, expiry, and revocation checks before dispatch/release."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-3b0394530b5e4e0e",
+      "source_document": "docs/sensitive-output-filter.md",
+      "candidate_key": "eefi-detector.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "eefi-detector.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the eefi-detector.js proposal and associated constraints in docs/sensitive-output-filter.md.",
+          "validation_commands": [
+            "node run-eefi-detector-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-a6424156b14d8a50",
+      "source_document": "docs/sensitive-output-filter.md",
+      "candidate_key": "filter-exception-runner.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the filter-exception-runner.js proposal and associated constraints in docs/sensitive-output-filter.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for filter-exception-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-c5fd422e2a4a5fe5",
+      "source_document": "docs/sensitive-output-filter.md",
+      "candidate_key": "run-output-filter-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "boundary-output",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-output-filter-fixtures.js proposal and associated constraints in docs/sensitive-output-filter.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-output-filter-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-e7450f7e4f87de83",
+      "source_document": "docs/sustainment-agent-sop.md",
+      "candidate_key": "resource-watch-report.schema.json",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "resource-budget-checker.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the resource-watch-report.schema.json proposal and associated constraints in docs/sustainment-agent-sop.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Formalize or explicitly map the ResourceBudgetWatch projection to the requested watch-report contract and validate producer/consumer compatibility."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-890fdedd707eafd4",
+      "source_document": "docs/sustainment-agent-sop.md",
+      "candidate_key": "sustainment-incident-sitrep.schema.json",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the sustainment-incident-sitrep.schema.json proposal and associated constraints in docs/sustainment-agent-sop.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for sustainment-incident-sitrep.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-6619171cb1dacea5",
+      "source_document": "docs/sustainment-agent-sop.md",
+      "candidate_key": "checkpoint-manifest.schema.json",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "schema-files/agent-execution-checkpoint.schema.json"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the checkpoint-manifest.schema.json proposal and associated constraints in docs/sustainment-agent-sop.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Cover sustainment checkpoints, restore inputs, artifact completeness, and endurance recovery; dispatch checkpoints alone do not satisfy the drill."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-037c58147c8837cb",
+      "source_document": "docs/sustainment-agent-sop.md",
+      "candidate_key": "resource-budget-checker.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "implemented",
+      "implementation_paths": [
+        "resource-budget-checker.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the resource-budget-checker.js proposal and associated constraints in docs/sustainment-agent-sop.md.",
+          "validation_commands": [
+            "node run-resource-budget-checker-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [],
+      "rationale": "The named local runner and dedicated positive/negative fixtures implement this candidate. This is not a claim of production deployment or completion of the source doctrine."
+    },
+    {
+      "id": "IC-384866c4d3e705c3",
+      "source_document": "docs/sustainment-agent-sop.md",
+      "candidate_key": "checkpoint-drill-runner.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the checkpoint-drill-runner.js proposal and associated constraints in docs/sustainment-agent-sop.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for checkpoint-drill-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-d25684bf3ab25623",
+      "source_document": "docs/sustainment-agent-sop.md",
+      "candidate_key": "tool-outage-router.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "tool-fallback-planner.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the tool-outage-router.js proposal and associated constraints in docs/sustainment-agent-sop.md.",
+          "validation_commands": [
+            "node run-tool-fallback-planner-fixtures.js"
+          ]
+        }
+      ],
+      "remaining_work": [
+        "Bind outages to actual tool state, checkpoint/recovery paths, and approval-required risk changes; a fallback proposal is not recovery execution."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-ff1bfd1af87c7e23",
+      "source_document": "docs/sustainment-agent-sop.md",
+      "candidate_key": "run-sustainment-sop-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "sustainment",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-sustainment-sop-fixtures.js proposal and associated constraints in docs/sustainment-agent-sop.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for run-sustainment-sop-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-ea8d58af20a64e48",
+      "source_document": "docs/training-progression-model.md",
+      "candidate_key": "training-progression.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the training-progression.schema.json proposal and associated constraints in docs/training-progression-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for training-progression.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-969c86ce571c5c84",
+      "source_document": "docs/training-progression-model.md",
+      "candidate_key": "progression-transition-event.schema.json",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the progression-transition-event.schema.json proposal and associated constraints in docs/training-progression-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for progression-transition-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    },
+    {
+      "id": "IC-ab2e7cf0811d10e4",
+      "source_document": "docs/training-progression-model.md",
+      "candidate_key": "progression-gate-runner.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "aar-to-readiness-update.js",
+        "readiness-gate-prototype/readiness-gate.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the progression-gate-runner.js proposal and associated constraints in docs/training-progression-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Validate crawl/walk/run task-specific evidence, stage transition constraints, and regression/staleness triggers without self-promotion."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-d3b595e30458946b",
+      "source_document": "docs/training-progression-model.md",
+      "candidate_key": "run-progression-fixtures.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "run-aar-readiness-update-fixtures.js"
+      ],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the run-progression-fixtures.js proposal and associated constraints in docs/training-progression-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Add progression-specific stage transition, stale evidence, and regression cases against the progression gate."
+      ],
+      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+    },
+    {
+      "id": "IC-636ae92116e7e582",
+      "source_document": "docs/training-progression-model.md",
+      "candidate_key": "stale-readiness-report.js",
+      "kind": "artifact",
+      "workstream_id": "force-readiness",
+      "implementation_status": "planned",
+      "implementation_paths": [],
+      "acceptance_criteria": [
+        {
+          "id": "AC-1",
+          "requirement": "Satisfy the stale-readiness-report.js proposal and associated constraints in docs/training-progression-model.md.",
+          "validation_commands": []
+        }
+      ],
+      "remaining_work": [
+        "Implement or demonstrate equivalent behavior for stale-readiness-report.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+      ],
+      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+    }
+  ]
+}

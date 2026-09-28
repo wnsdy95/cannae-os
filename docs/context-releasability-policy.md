@@ -210,6 +210,8 @@ Before sending context to an agent:
 
 ## 12. Implementation candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 schema:
 
 - `context-item.schema.json`

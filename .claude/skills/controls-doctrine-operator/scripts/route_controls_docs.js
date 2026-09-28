@@ -284,9 +284,11 @@ const RULES = [
   },
   {
     id: "skill-operations",
-    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "skill adaptation", "skill improvement", "mandatory skill improvement", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill", "termination", "supersession", "expired wave", "abort wave"],
+    keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "skill adaptation", "skill improvement", "mandatory skill improvement", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill", "termination", "supersession", "expired wave", "abort wave", "implementation candidate", "completion backlog", "completion audit", "corpus maintenance"],
     docs: [
       ".claude/skills/controls-doctrine-operator/SKILL.md",
+      "docs/implementation-candidate-registry.md",
+      "docs/completion-backlog.md",
       ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md",
       "install-ai-cli-skills.sh",
       "codex-skills/controls-doctrine-operator/SKILL.md",
@@ -298,6 +300,7 @@ const RULES = [
     commands: [
       "node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
       "node run-skill-control-enforcement-fixtures.js",
+      "node implementation-candidate-registry.js audit",
       "node validate-controls-skill.js .claude/skills/controls-doctrine-operator",
       "node validate-controls-skill.js codex-skills/controls-doctrine-operator"
     ]
@@ -450,7 +453,7 @@ const EXCLUDED_DIRS = new Set([
 const ROUTE_HINTS = [
   {
     id: "skill-operations",
-    keywords: ["codex-skills", ".claude", "claude", "controls-doctrine-operator", "skill", "skills", "install-ai-cli-skills", "route_controls_docs", "operate_controls_mission", "skill-mission-controller", "mission-wave", "agent-context-pack", "wave-closeout", "operational-mission-lifecycle", "operator-skill", "openai.yaml"]
+    keywords: ["codex-skills", ".claude", "claude", "controls-doctrine-operator", "skill", "skills", "install-ai-cli-skills", "route_controls_docs", "operate_controls_mission", "skill-mission-controller", "mission-wave", "agent-context-pack", "wave-closeout", "operational-mission-lifecycle", "operator-skill", "openai.yaml", "implementation-candidate", "completion-backlog"]
   },
   {
     id: "orientation",

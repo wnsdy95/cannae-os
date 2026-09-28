@@ -63,7 +63,7 @@ If the skill is loaded from `~/.codex/skills`, run the bundled script from that 
 
 3. Read only the recommended documents plus any directly referenced schema/runner/sample.
 4. If a claim depends on external military doctrine, use `docs/source-map.md` first. Browse only when the source is missing, stale, or explicitly current-date-sensitive.
-5. For edits, update the document, the index, and the executable validation surface together.
+5. Update the document, index, and executable validation surface together. Before choosing remaining work or claiming candidate completion, audit `docs/implementation-candidate-registry.json`, verify the selected checks, and reconcile `docs/completion-backlog.md`; filenames or passing subset tests never prove overall completion. Read the completion-audit procedure in `references/self-improvement-loop.md`.
 6. After adding, renaming, or deleting a document, schema, sample, runner, fixture, or skill file, verify inventory coverage:
 
 ```bash

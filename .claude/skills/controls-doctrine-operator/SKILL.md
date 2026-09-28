@@ -348,7 +348,7 @@ Read these only when needed (bundled with this skill):
 
 When editing the corpus:
 
-- Update the target document and its index/source-map entry together.
+- Update the document, index, and executable validation surface together. Before choosing remaining work or claiming candidate completion, audit `docs/implementation-candidate-registry.json`, verify the selected checks, and reconcile `docs/completion-backlog.md`; filenames or passing subset tests never prove overall completion. Read the completion-audit procedure in `references/self-improvement-loop.md`.
 - If changing a runtime contract, update schema, valid sample, invalid sample, runner/fixture, and docs. Protected-gateway or executor changes also update both CLI skill wrappers, both routing tables, and transaction/execution/recovery guidance.
 - When the custom validator is affected, add a regression for every used
   combinator or keyword whose enforcement changed. Nested

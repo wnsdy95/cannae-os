@@ -76,6 +76,9 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
+- [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
+- [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.
+
 - [Military LLM Framework](docs/military-llm-framework-v0.1.md): the core command, authority, reporting, and AAR model.
 - [Military Operating System](docs/military-operating-system.md): the layered operating system view of doctrine, SOP, intent, planning, orders, risk, liaison, assessment, and learning.
 - [Agent Roles and Authority](docs/agent-roles-and-authority.md): role responsibilities, approval scope, reporting scope, autonomous action, and post-action controls.

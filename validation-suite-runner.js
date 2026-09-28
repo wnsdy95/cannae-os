@@ -32,6 +32,7 @@ function runSuite() {
   const completed = [];
   completed.push(runNode("routing coverage", "codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js", ["--coverage", "."]));
   completed.push(runNode("JSON parsing", ".github/scripts/check-json.js"));
+  completed.push(runNode("implementation candidate audit", "implementation-candidate-registry.js", ["audit"]));
   completed.push(runNode("English-only corpus", ".github/scripts/check-english-only.js"));
   completed.push(runNode("Markdown links", ".github/scripts/check-markdown-links.js"));
   completed.push(runNode("validator fixtures", "validator-cli-prototype/run-fixtures.js"));

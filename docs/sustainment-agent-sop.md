@@ -143,6 +143,8 @@ S4 sustainment check before continuing execution.
 
 ## 9. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 schema:
 
 - `resource-watch-report.schema.json`

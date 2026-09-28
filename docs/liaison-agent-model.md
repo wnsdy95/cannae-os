@@ -110,6 +110,8 @@ Rules:
 
 ## 9. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 - `schema-files/liaison-charter.schema.json`
 - `schema-files/liaison-relay-event.schema.json`
 - `liaison-boundary-runner.js`

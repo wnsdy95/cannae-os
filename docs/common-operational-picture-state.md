@@ -151,6 +151,8 @@ The COP is kept decision-shaped by excluding the following, permanently:
 
 ## 8. Implementation Candidates
 
+The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
+
 - `schema-files/cop-state.schema.json`
 - `cop-projection-runner.js`
 - `run-cop-projection-fixtures.js`

@@ -1,5 +1,17 @@
 # Source Map
 
+## Implementation Traceability
+
+`docs/implementation-candidate-registry.md` and
+`docs/completion-backlog.md` apply the existing KM separation of source,
+interpretation, evidence, and action queue to engineering completion. Their
+evidence is the local corpus and repository checks, not a new external military
+claim. The canonical `docs/implementation-candidate-registry.json` maps exact
+source requirements to implementation paths and test commands; audit with
+`implementation-candidate-registry.js` and regress with
+`run-implementation-candidate-registry-fixtures.js`. File presence and schema
+validation alone never prove operational completion.
+
 ## 0. Purpose
 
 This document is an evidentiary map that connects military doctrine, command-and-control documents, and training/sustainment/targeting/assessment materials to the concepts of the LLM operating framework.

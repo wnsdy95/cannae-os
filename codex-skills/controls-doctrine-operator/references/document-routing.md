@@ -4,6 +4,12 @@ Use this map after running `scripts/route_controls_docs.js`, or when a task is o
 
 ## Inventory Coverage
 
+For implementation-candidate audits and existing-program completion, route to
+`docs/implementation-candidate-registry.md` and `docs/completion-backlog.md`.
+Run `node implementation-candidate-registry.js audit`; use its source-bound
+entries rather than regex filename counts or a changelog's closure wording.
+Execute selected mapped checks with `verify` before declaring implementation.
+
 The router scans tracked and unignored candidate corpus artifacts, including Markdown/HTML docs, JSON schemas, sample payloads, runtime payloads, fixtures, runner scripts, prototype scripts, dashboard state, and skill metadata. Git-ignored local state such as `.cxt` and `.cannae`, plus `.git` and `node_modules`, is not doctrine inventory. A non-Git fallback retains the explicit directory exclusions. Every routable corpus artifact must have at least one route category.
 
 Run coverage after adding, renaming, deleting, or moving any corpus artifact:

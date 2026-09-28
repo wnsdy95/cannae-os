@@ -10,6 +10,20 @@ const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
   {
+    name: "valid implementation candidate registry",
+    file: "sample-payloads/valid-implementation-candidate-registry.json",
+    type: "implementation-candidate-registry",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
+    name: "candidate completion without checks and with unfinished work",
+    file: "sample-payloads/invalid-implementation-candidate-registry-unproven.json",
+    type: "implementation-candidate-registry",
+    exitCode: 1,
+    requiredCodes: ["CANDIDATE_COMPLETION_UNPROVEN"]
+  },
+  {
     name: "valid mission",
     file: "sample-payloads/valid-mission.json",
     type: "mission",

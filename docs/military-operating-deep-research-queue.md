@@ -597,6 +597,8 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
+- `implementation-candidate-registry.md`: Source-bound requirements, mapped implementations, executable checks, and explicit remaining work.
+- `completion-backlog.md`: Cross-cutting roadmap and operational closure criteria, including external dependencies.
 - `mission-command-runtime-policy.md`: Commander's intent as a five-field machine-checkable constraint object surviving delegation across agent echelons.
 - `disciplined-initiative-rules.md`: Enumerated DI-1 to DI-10 boundary rules, drift classes, and degeneration patterns with mandatory runtime responses.
 - `dry-run-approval-ui.md`: Approval-surface spec for rehearsal/dry-run results with the four commander dispositions as UI actions and events.
@@ -626,10 +628,10 @@ Completed:
 
 Next:
 
-1. The output-artifact backlog in sections 3.1 through 3.11 is closed out; every named output artifact now has a current implementation.
-2. Remaining gaps are the dashboard/UI integrations listed in section 2 and policy-engine enforcement of the disciplined-initiative rule IDs.
+1. The named research outputs in sections 3.1 through 3.11 exist, but that does not close their runtime implementation candidates. Use `implementation-candidate-registry.json` and its live audit for exact mappings and residual work.
+2. Use `completion-backlog.md` for the full remaining program, including request compilation, intent continuity, COP/reporting, force reconciliation, actual UI/API integration, and external trust operations.
 3. Once access to the official Australian ADF doctrine site is secured, review adding a multinational source family.
-4. The next expansion is opened as a separate queue once the user assigns a new priority.
+4. Reconcile existing candidates and roadmap gaps before opening unrelated expansion. New policy or external deployment scope still needs an explicit USER decision.
 
 ## 6. Research Operating SOP
 

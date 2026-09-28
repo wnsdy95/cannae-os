@@ -25,6 +25,29 @@ Mechanical wording churn is not a skill adaptation. If the operator cannot name
 a reusable behavior that should change for the next run, the work is maintenance
 or an incomplete improvement, not a completed improvement.
 
+## Completion Audits
+
+For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
+the next dependency-ready item from `docs/completion-backlog.md`, then inspect
+its registered source requirements and existing implementation mappings.
+Keep out-of-corpus capability routing for genuinely uncovered domains, not
+ordinary corpus maintenance.
+
+After changing a candidate section, compare `scan` with the committed registry,
+review its exact source digest and mappings, and update both in the same change.
+Do not automatically promote status from file presence. Preserve proposed names
+and map equivalent existing paths instead of creating duplicate implementations.
+For `implemented`, require no remaining work and checks for every acceptance
+criterion; run `verify --workstream <id>` against a stable source tree and retain
+the digest-bound result as evidence when operating a mission. An audit-only pass
+does not execute checks. A verified subset does not close the full registry,
+roadmap, campaign, provider operations, or the user's overall goal. Keep blocked
+external dependencies visible and continue independent in-scope work.
+
+Read `docs/implementation-candidate-registry.md` for parsing, check execution,
+evidence, and trust limits. Never weaken a failing completion gate merely to
+remove an item from the queue.
+
 ## Improvement Triggers
 
 Patch the corpus when one of these is true:
