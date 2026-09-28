@@ -23,13 +23,17 @@ const {
 } = require("./protected-tool-gateway");
 const {
   executeOciLinuxSandbox,
+  observeOciSandboxContainment,
   ociSandboxRuntimeMeasurements,
   persistOciLinuxSandboxPolicy
 } = require("./oci-linux-sandbox-provider");
 const {
   networkPolicyDigest,
   objectDigest,
-  sandboxProfileDigest
+  sandboxProfileDigest,
+  signOciSandboxExecutionEnvelope,
+  signOciSandboxContainmentObservation,
+  verifyOciSandboxContainmentObservation
 } = require("./oci-linux-sandbox-evidence");
 const { resolveRepository } = require("./repository-artifact-store");
 const { openWave } = require("./skill-mission-controller");
@@ -658,12 +662,16 @@ function dockerFailureProxy(name, config) {
   const executable = path.join(temporaryRoot, `docker-${name}.js`);
   const trace = `${executable}.trace`;
   const marker = `${executable}.removed`;
+  const enabled = `${executable}.enabled`;
+  const responseFile = `${executable}.response`;
   fs.writeFileSync(executable, `#!${process.execPath}
 const fs = require("fs");
 const { spawnSync } = require("child_process");
 const config = ${JSON.stringify(config)};
 const trace = ${JSON.stringify(trace)};
 const marker = ${JSON.stringify(marker)};
+const enabled = ${JSON.stringify(enabled)};
+const responseFile = ${JSON.stringify(responseFile)};
 const args = process.argv.slice(2);
 fs.appendFileSync(trace, JSON.stringify(args) + "\\n");
 function docker(argv) {
@@ -675,6 +683,13 @@ function emit(result) {
   if (result.stdout) process.stdout.write(result.stdout);
   if (result.stderr) process.stderr.write(result.stderr);
   process.exit(result.status === null ? 2 : result.status);
+}
+if (config.manual && !fs.existsSync(enabled)) emit(docker(args));
+if (config.daemonId && args[0] === "info" && (!config.afterListing || fs.existsSync(marker))) {
+  const result = docker(args);
+  const info = JSON.parse(result.stdout);
+  info.ID = config.daemonId;
+  emit({ status: 0, stdout: JSON.stringify(info) });
 }
 const removing = args[0] === "container" && args[1] === "rm";
 const inspecting = args[0] === "container" && args[1] === "inspect";
@@ -696,12 +711,27 @@ const inject = !config.afterWorkloadRemoval || (removed && args.some(arg =>
 if (!config.afterWorkloadRemoval && removing) emit({ status: 0 });
 if (inject && inspecting) emit({ status: 1, stderr: "synthetic lookup failure\\n" });
 if (inject && listing) {
-  if (config.signal) process.kill(process.pid, "SIGTERM");
-  else emit(config.response);
+  if (config.afterListing) fs.writeFileSync(marker, "{}");
+  const failure = fs.existsSync(responseFile) ? JSON.parse(fs.readFileSync(responseFile, "utf8")) : config;
+  if (failure.signal) process.kill(process.pid, "SIGTERM");
+  else emit({ ...failure.response, stdout: failure.response.stdout && failure.response.stdout.split("PLACEHOLDER").join(
+    config.manual ? fs.readFileSync(enabled, "utf8") : "PLACEHOLDER") });
 } else emit(docker(args));
 `);
   fs.chmodSync(executable, 0o755);
-  return { executable, trace };
+  return { executable, trace, enabled, responseFile };
+}
+
+function containmentBundle(setup, observationRef) {
+  const observation = loadArtifact(observationRef);
+  const context = require("./protected-tool-gateway").gatewayTransactionContext(setup.gatewayOptions, setup.transactionId);
+  return { observation, policy: loadArtifact(observation.sandbox_policy_ref), policyRef: observation.sandbox_policy_ref,
+    envelope: loadArtifact(observation.execution_envelope_ref), envelopeRef: observation.execution_envelope_ref,
+    request: context.request, requestRef: context.request_ref, decision: context.decision, decisionRef: context.decision_ref,
+    executionEvent: loadArtifact(observation.execution_event_ref), executionEventRef: observation.execution_event_ref,
+    terminalEvent: context.latest_event, terminalEventRef: context.latest_event_ref,
+    receipt: loadArtifact(context.status.receipt_ref), receiptRef: context.status.receipt_ref,
+    repositoryRoot: setup.repository, evaluatedAt: new Date().toISOString() };
 }
 
 const fixtures = [];
@@ -732,7 +762,7 @@ fixture(
         require(path.join(ROOT, wrapper)).findRuntimeRoot(),
         ROOT
       );
-      for (const query of ["cleanup failure", "daemon unavailable", "container absence"]) {
+      for (const query of ["cleanup failure", "daemon unavailable", "container absence", "containment observation", "daemon substitution"]) {
         const routed = spawnSync(process.execPath, [
           path.join(ROOT, path.dirname(wrapper), "route_controls_docs.js"),
           "--actor=user", query, ROOT
@@ -949,6 +979,11 @@ fixture("container timeout is measured and committed as failed", async () => {
   assert.strictEqual(subject.execution_mode, "oci_linux_sandbox_reference");
   assert.strictEqual(subject.retained_execution_refs.length, 4);
   assert(subject.retained_execution_refs.some(item => item.sha256 === completed.probe_observation_ref.sha256));
+  const contained = observeOciSandboxContainment({ ...setup.gatewayOptions,
+    adapterPrivateKeyPem: setup.keys.privateKeyPem }, { transactionId: setup.transactionId });
+  assert.strictEqual(contained.state, "committed");
+  assert.strictEqual(contained.effects_settled, false);
+  assert.strictEqual(verifyOciSandboxContainmentObservation(containmentBundle(setup, contained.containment_observation_ref)).valid, true);
 });
 
 fixture("post-create interruption removes the container and never reruns", async () => {
@@ -963,11 +998,52 @@ fixture("post-create interruption removes the container and never reruns", async
   const replay = await execute(setup);
   assert.strictEqual(replay.state, "recovery_required");
   assert.strictEqual(replay.replayed, true);
+  assert(interrupted.containment_observation_ref, interrupted.provider_failure);
+  assert(replay.containment_observation_ref, replay.provider_failure);
+  assert.notStrictEqual(interrupted.containment_observation_ref.sha256, replay.containment_observation_ref.sha256);
+  const bundle = containmentBundle(setup, replay.containment_observation_ref);
+  assert.strictEqual(verifyOciSandboxContainmentObservation(bundle).valid, true);
+  for (const [label, change, expected] of [
+    ["daemon", value => { value.daemon_id_sha256 = "a".repeat(64); }, "OCI_CONTAINMENT_TARGET_MISMATCH"],
+    ["target", value => { value.container_name = `cannae-${"a".repeat(24)}`; }, "OCI_CONTAINMENT_TARGET_MISMATCH"],
+    ["runtime", value => { value.docker_cli_sha256 = "b".repeat(64); }, "OCI_CONTAINMENT_TARGET_MISMATCH"],
+    ["terminal", value => { value.terminal_event_ref.sha256 = "c".repeat(64); }, "OCI_CONTAINMENT_REFERENCE_MISMATCH"],
+    ["foreign", value => { value.transaction_id = "TGX-FOREIGN"; }, "OCI_CONTAINMENT_TRANSACTION_BINDING_MISMATCH"],
+    ["authority", value => { value.effects_settled = true; }, "OCI_CONTAINMENT_SCHEMA_INVALID"]
+  ]) {
+    const altered = clone(bundle.observation);
+    change(altered);
+    const result = verifyOciSandboxContainmentObservation({ ...bundle,
+      observation: signOciSandboxContainmentObservation(altered, setup.keys.privateKeyPem) });
+    assert(result.codes.includes(expected), `${label}: ${JSON.stringify(result)}`);
+  }
+  const wrongKey = verifyOciSandboxContainmentObservation({ ...bundle,
+    observation: signOciSandboxContainmentObservation(bundle.observation, keyMaterial().privateKeyPem) });
+  assert(wrongKey.codes.includes("OCI_CONTAINMENT_SIGNATURE_INVALID"));
+  assert(verifyOciSandboxContainmentObservation({ ...bundle, evaluatedAt: bundle.observation.expires_at })
+    .codes.includes("OCI_CONTAINMENT_NOT_CURRENT"));
+  const legacy = clone(bundle.envelope);
+  legacy.schema_version = "0.1";
+  delete legacy.runtime.daemon_id_sha256;
+  assert(verifyOciSandboxContainmentObservation({ ...bundle,
+    envelope: signOciSandboxExecutionEnvelope(legacy, setup.keys.privateKeyPem) })
+    .codes.includes("OCI_CONTAINMENT_DAEMON_BINDING_REQUIRED"));
   const envelope = loadArtifact(interrupted.execution_envelope_ref);
   const subject = require("./gateway-effect-review").gatewayEffectSubject(setup.gatewayOptions, setup.transactionId);
   assert.strictEqual(subject.next_action, "review");
   assert(subject.required_targets.some(item => item.target === `oci-container-name:${envelope.launch.container_name}`));
   assert.strictEqual(subject.effects_settled, false);
+  assert.strictEqual(subject.containment_history.latest_ref.sha256, replay.containment_observation_ref.sha256);
+  const initialCount = subject.containment_history.count;
+  for (let index = 0; index < 17; index += 1) {
+    observeOciSandboxContainment({ ...setup.gatewayOptions, adapterPrivateKeyPem: setup.keys.privateKeyPem }, { transactionId: setup.transactionId });
+  }
+  const many = require("./gateway-effect-review").gatewayEffectSubject(setup.gatewayOptions, setup.transactionId);
+  assert.strictEqual(many.schema_version, "0.2");
+  assert.strictEqual(many.containment_history.count, initialCount + 17);
+  assert.notStrictEqual(many.containment_history.references_sha256, subject.containment_history.references_sha256);
+  assert.notStrictEqual(many.id, subject.id);
+  assert.deepStrictEqual(many.retained_execution_refs, subject.retained_execution_refs);
   const inspect = run(
     "docker",
     ["container", "inspect", envelope.launch.container_name],
@@ -1077,65 +1153,171 @@ fixture("an unavailable daemon cannot turn recovery cleanup into verified absenc
 });
 
 fixture("recovery rejects failed, signaled, malformed and still-present cleanup observations", async () => {
-  const setup = setupScenario("CLEANUP-OBSERVATIONS", sandboxRule("CLEANUP-OBSERVATIONS", ["workload", "success"]));
-  const interrupted = await execute(setup, { faultInjectionStage: "after_create" });
-  assert.strictEqual(interrupted.state, "recovery_required");
-  const container = loadArtifact(interrupted.execution_envelope_ref).launch.container_name;
-  const id = run("docker", ["container", "create", "--name", container,
-    "--pull", "never", liveRuntime.imageId, "workload", "sleep"]).stdout.trim();
-  const row = { ID: id, Names: container };
+  const row = { ID: "a".repeat(64), Names: "PLACEHOLDER" };
   const cases = [
     ["permission", { status: 1, stderr: "permission denied\n" }],
     ["diagnostic", { status: 0, stderr: "incomplete listing\n" }],
     ["invalid-json", { status: 0, stdout: "not JSON\n" }],
     ["array", { status: 0, stdout: "[]\n" }],
     ["missing-fields", { status: 0, stdout: "{}\n" }],
-    ["invalid-id-type", { status: 0, stdout: JSON.stringify({ ...row, ID: [id], Names: `${container}-other` }) }],
-    ["truncated-id", { status: 0, stdout: JSON.stringify({ ...row, ID: id.slice(0, 12) }) }],
-    ["invalid-names", { status: 0, stdout: JSON.stringify({ ...row, Names: `/${container}` }) }],
+    ["invalid-id-type", { status: 0, stdout: JSON.stringify({ ...row, ID: [row.ID], Names: "PLACEHOLDER-other" }) }],
+    ["truncated-id", { status: 0, stdout: JSON.stringify({ ...row, ID: row.ID.slice(0, 12) }) }],
+    ["invalid-names", { status: 0, stdout: JSON.stringify({ ...row, Names: "/PLACEHOLDER" }) }],
     ["unbound-row", { status: 0, stdout: JSON.stringify({ ...row, Names: "another-container" }) }],
-    ["duplicate-row", { status: 0, stdout: Array(2).fill(JSON.stringify({ ...row, Names: `${container}-other` })).join("\n") }],
+    ["duplicate-row", { status: 0, stdout: Array(2).fill(JSON.stringify({ ...row, Names: "PLACEHOLDER-other" })).join("\n") }],
     ["present", { status: 0, stdout: JSON.stringify(row) }],
     ["signaled", { status: 0 }]
   ];
+  const proxy = dockerFailureProxy("malformed-listing", { manual: true });
+  const setup = setupScenario("CLEANUP-OBSERVATIONS", sandboxRule("CLEANUP-OBSERVATIONS", ["workload", "success"]),
+    { dockerPath: proxy.executable });
+  const interrupted = await execute(setup, { dockerPath: proxy.executable, faultInjectionStage: "after_create" });
+  assert(interrupted.containment_observation_ref, interrupted.provider_failure);
+  const container = loadArtifact(interrupted.execution_envelope_ref).launch.container_name;
+  const id = run("docker", ["container", "create", "--name", container,
+    "--pull", "never", liveRuntime.imageId, "workload", "sleep"]).stdout.trim();
+  const revision = transactionStatus(setup).artifact_store.manifest_revision;
+  fs.writeFileSync(proxy.enabled, container);
   try {
     for (const [name, response] of cases) {
-      const proxy = dockerFailureProxy(name, { response, signal: name === "signaled" });
+      fs.writeFileSync(proxy.responseFile, JSON.stringify({ response, signal: name === "signaled" }));
+      fs.writeFileSync(proxy.trace, "");
       const result = await execute(setup, { dockerPath: proxy.executable });
       assert.strictEqual(result.state, "recovery_required", name);
       assert.strictEqual(result.replayed, true, name);
       assert.match(result.provider_failure || "", /OCI_SANDBOX_CONTAINER_CLEANUP_ERROR/, name);
       assert.deepStrictEqual(result.execution_envelope_ref, interrupted.execution_envelope_ref, name);
       assert.strictEqual(result.execution_observation_ref, null, name);
+      assert.strictEqual(result.containment_observation_ref, undefined, name);
+      assert.strictEqual(transactionStatus(setup).artifact_store.manifest_revision, revision, name);
       const calls = fs.readFileSync(proxy.trace, "utf8").trim().split("\n").map(line => JSON.parse(line));
-      assert(calls.every(args => args[0] === "container" && ["rm", "ls"].includes(args[1])),
-        `${name}: recovery invoked a non-cleanup operation`);
+      assert(calls.every(args => ["version", "info"].includes(args[0]) ||
+        (args[0] === "container" && ["rm", "ls"].includes(args[1]))),
+      `${name}: recovery invoked a non-cleanup operation`);
       assert.deepStrictEqual(calls.find(args => args[1] === "ls"),
         ["container", "ls", "--all", "--no-trunc", "--filter", `name=${container}`, "--format", "{{json .}}"]);
     }
     assert.strictEqual(run("docker", ["container", "inspect", id]).status, 0);
-    const retry = await execute(setup);
+    fs.unlinkSync(proxy.enabled);
+    const retry = await execute(setup, { dockerPath: proxy.executable });
     assert.strictEqual(retry.state, "recovery_required");
     assert.strictEqual(retry.provider_failure, undefined);
+    assert(retry.containment_observation_ref);
     const privateKey = path.join(temporaryRoot, "cleanup-wrapper-key.pem");
     fs.writeFileSync(privateKey, setup.keys.privateKeyPem, { mode: 0o600 });
     const input = path.join(temporaryRoot, "cleanup-wrapper-input.json");
     fs.writeFileSync(input, JSON.stringify(setup.toolInput));
     for (const root of ["codex-skills/controls-doctrine-operator", ".claude/skills/controls-doctrine-operator"]) {
-      const result = run(process.execPath, [path.join(ROOT, root, "scripts/operate_oci_sandbox.js"), "execute",
-        "--repository", setup.repository, "--artifact-root", artifactRoot, "--transaction", setup.transactionId,
-        "--tool-input", input, "--private-key", privateKey, "--probe", liveRuntime.probePath,
-        "--gateway-binding-sha256", setup.gatewayOptions.gatewayBindingSha256,
-        "--verified-principal-sha256", setup.gatewayOptions.verifiedPrincipalSha256], { allowFailure: true });
-      assert.strictEqual(result.status, 1, "verified cleanup must not turn recovery into CLI success");
-      const output = JSON.parse(result.stdout);
-      assert.strictEqual(output.state, "recovery_required");
-      assert.strictEqual(output.provider_failure, undefined);
-      assert.strictEqual(output.release_authorized, false);
+      for (const command of ["execute", "contain"]) {
+        const result = run(process.execPath, [path.join(ROOT, root, "scripts/operate_oci_sandbox.js"), command,
+          "--repository", setup.repository, "--artifact-root", artifactRoot, "--transaction", setup.transactionId,
+          "--private-key", privateKey, "--docker", proxy.executable,
+          "--gateway-binding-sha256", setup.gatewayOptions.gatewayBindingSha256,
+          "--verified-principal-sha256", setup.gatewayOptions.verifiedPrincipalSha256,
+          ...(command === "execute" ? ["--tool-input", input, "--probe", liveRuntime.probePath] : [])], { allowFailure: true });
+        assert.strictEqual(result.status, 1, "verified cleanup must not turn recovery into CLI success");
+        const output = JSON.parse(result.stdout);
+        assert.strictEqual(output.state, "recovery_required");
+        assert.strictEqual(output.provider_failure, undefined);
+        assert(output.containment_observation_ref);
+        assert.strictEqual(output.release_authorized, false);
+      }
     }
   } finally {
     run("docker", ["container", "rm", "--force", id], { allowFailure: true });
   }
+});
+
+fixture("recovery rejects substituted daemon identity before cleanup and after listing", async () => {
+  for (const afterListing of [false, true]) {
+    const suffix = afterListing ? "AFTER" : "BEFORE";
+    const proxy = dockerFailureProxy(`daemon-${suffix}`, { manual: true, daemonId: "different-live-daemon",
+      afterListing, response: { status: 0, stdout: "" } });
+    const setup = setupScenario(`DAEMON-${suffix}`, sandboxRule(`DAEMON-${suffix}`, ["workload", "success"]),
+      { dockerPath: proxy.executable });
+    const interrupted = await execute(setup, { dockerPath: proxy.executable, faultInjectionStage: "after_create" });
+    assert(interrupted.containment_observation_ref, interrupted.provider_failure);
+    const before = transactionStatus(setup);
+    fs.writeFileSync(proxy.enabled, "enabled");
+    fs.writeFileSync(proxy.trace, "");
+    try {
+      const refused = await execute(setup, { dockerPath: proxy.executable });
+      assert.match(refused.provider_failure, /OCI_CONTAINMENT_DAEMON_CHANGED/);
+      assert.strictEqual(refused.containment_observation_ref, undefined);
+      assert.strictEqual(transactionStatus(setup).artifact_store.manifest_revision, before.artifact_store.manifest_revision);
+      const calls = fs.readFileSync(proxy.trace, "utf8").trim().split("\n").map(line => JSON.parse(line));
+      assert(!calls.some(args => ["create", "start"].includes(args[1])));
+      if (!afterListing) assert(!calls.some(args => args[1] === "rm" || args[1] === "ls"));
+    } finally { fs.unlinkSync(proxy.enabled); }
+    const retry = await execute(setup, { dockerPath: proxy.executable });
+    assert(retry.containment_observation_ref, retry.provider_failure);
+  }
+});
+
+fixture("containment rejects wrong keys and concurrent manifest publication without clearing holds", async () => {
+  const setup = setupScenario("CONTAINMENT-PUBLISH", sandboxRule("CONTAINMENT-PUBLISH", ["workload", "success"]));
+  const interrupted = await execute(setup, { faultInjectionStage: "after_create" });
+  assert(interrupted.containment_observation_ref, interrupted.provider_failure);
+  const before = transactionStatus(setup);
+  assert.throws(() => observeOciSandboxContainment({ ...setup.gatewayOptions,
+    adapterPrivateKeyPem: keyMaterial().privateKeyPem }, { transactionId: setup.transactionId }), /private key does not match/);
+  assert.strictEqual(transactionStatus(setup).artifact_store.manifest_revision, before.artifact_store.manifest_revision);
+  const store = require("./repository-artifact-store");
+  const original = store.writeRepositoryArtifact;
+  const modulePath = require.resolve("./oci-linux-sandbox-provider");
+  let injected = false;
+  store.writeRepositoryArtifact = options => {
+    if (options.kind === "oci-sandbox-containment-observations" && !injected) {
+      injected = true;
+      original({ repositoryPath: setup.repository, artifactRoot, missionId: setup.plan.mission_id, waveId: setup.plan.wave_id,
+        kind: "fixture-observations", artifactId: "OBS-CONCURRENT-CONTAINMENT", payload: { id: "OBS-CONCURRENT-CONTAINMENT", synthetic: true } });
+    }
+    return original(options);
+  };
+  delete require.cache[modulePath];
+  try {
+    assert.throws(() => require("./oci-linux-sandbox-provider").observeOciSandboxContainment({ ...setup.gatewayOptions,
+      adapterPrivateKeyPem: setup.keys.privateKeyPem }, { transactionId: setup.transactionId }), /OCI_CONTAINMENT_MANIFEST_CHANGED/);
+    assert(injected);
+  } finally {
+    store.writeRepositoryArtifact = original;
+    delete require.cache[modulePath];
+  }
+  const status = transactionStatus(setup);
+  assert.strictEqual(status.state, "recovery_required");
+  assert.deepStrictEqual(status.receipt_ref, before.receipt_ref);
+  assert.strictEqual(status.artifact_store.manifest_revision, before.artifact_store.manifest_revision + 1);
+});
+
+fixture("gateway recovery failure still contains the started invocation without publishing proof", async () => {
+  const setup = setupScenario("RECOVERY-STORE-FAILURE", sandboxRule("RECOVERY-STORE-FAILURE", ["workload", "success"]));
+  const gateway = require("./protected-tool-gateway");
+  const original = gateway.recoverGatewayTransaction;
+  const modulePath = require.resolve("./oci-linux-sandbox-provider");
+  gateway.recoverGatewayTransaction = () => { throw new Error("SYNTHETIC_RECOVERY_STORE_FAILURE"); };
+  delete require.cache[modulePath];
+  try {
+    await assert.rejects(() => require("./oci-linux-sandbox-provider").executeOciLinuxSandbox({
+      ...setup.gatewayOptions, adapterPrivateKeyPem: setup.keys.privateKeyPem, probePath: liveRuntime.probePath,
+      faultInjectionStage: "after_create"
+    }, { transactionId: setup.transactionId, toolInput: setup.toolInput }), /SYNTHETIC_RECOVERY_STORE_FAILURE/);
+  } finally {
+    gateway.recoverGatewayTransaction = original;
+    delete require.cache[modulePath];
+  }
+  const repository = resolveRepository(setup.repository);
+  const manifest = JSON.parse(fs.readFileSync(path.join(artifactRoot, "repositories", repository.key, "manifest.json"), "utf8"));
+  assert(!manifest.artifacts.some(item => item.kind === "oci-sandbox-containment-observations"));
+  const entry = manifest.artifacts.find(item => item.kind === "oci-sandbox-execution-envelopes");
+  const envelope = loadArtifact(entry);
+  assert.strictEqual(run("docker", ["container", "ls", "--all", "--filter", `name=${envelope.launch.container_name}`,
+    "--format", "{{.Names}}"]).stdout.trim(), "");
+  assert.strictEqual(transactionStatus(setup).state, "executing");
+  original(setup.gatewayOptions, setup.transactionId);
+  const contained = observeOciSandboxContainment({ ...setup.gatewayOptions, adapterPrivateKeyPem: setup.keys.privateKeyPem },
+    { transactionId: setup.transactionId });
+  assert.strictEqual(contained.state, "recovery_required");
+  assert.strictEqual(contained.effects_settled, false);
 });
 
 fixture("cleanup failure after real target execution cannot produce a committed observation", async () => {
@@ -1153,7 +1335,7 @@ fixture("cleanup failure after real target execution cannot produce a committed 
   assert.strictEqual(status.state, "recovery_required");
   const retry = await execute(setup);
   assert.strictEqual(retry.state, "recovery_required");
-  assert.strictEqual(retry.provider_failure, undefined);
+  assert.match(retry.provider_failure, /OCI_CONTAINMENT_RUNTIME_CHANGED/);
   assert.strictEqual(retry.execution_observation_ref, null);
   const calls = fs.readFileSync(proxy.trace, "utf8").trim().split("\n").map(line => JSON.parse(line));
   assert.strictEqual(calls.filter(args => args[0] === "container" && args[1] === "start").length, 1);

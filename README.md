@@ -346,6 +346,10 @@ the corresponding `/proc`, mount, cgroup, address, route, and connection state.
 Cleanup requires a successful all-states listing excluding the exact container;
 a failed inspect or unavailable daemon is not evidence of absence. A containment
 retry never reruns the target or converts `recovery_required` into success.
+The v0.2 envelope also binds the observed daemon ID. Recovery retains a separate
+signed, fresh containment observation after checking the original daemon and
+CLI on both sides of cleanup. This is reference evidence, not independent host
+attestation, gateway settlement, or managed coordination proof.
 
 Phase 17B2B alone remains reference execution and keeps production execution
 false. Phase 17B2C1 raises `production_execution_authorized` only for a

@@ -1,5 +1,24 @@
 # Research Compendium
 
+## Retained Containment Before Gateway Settlement (2026-09-28)
+
+Local source inspection found that recovery returned cleanup success without
+retaining a signed cleanup artifact, and its envelope did not bind the original
+daemon ID. A later reviewer therefore could not distinguish a checked target
+from a claim about a different daemon. The [OCI provider](oci-linux-sandbox-provider.md)
+now records that binding in envelope v0.2 and produces a separate signed
+`OciSandboxContainmentObservation`, with exact transaction/event/envelope refs,
+CLI/daemon checks before and after cleanup, finite freshness and manifest-bound
+publication. Gateway intake includes these records, invalidating older frozen
+subjects when new observations arrive. They do not replace failed execution
+records, complete-effect inspection or USER judgement.
+
+This is an engineering result, not external doctrine or proof of an honest
+host. A reported daemon ID is not attestation. Legacy envelopes without the
+binding and managed deployments without retained external fencing evidence
+cannot use this reference path. The gateway settlement controller, production
+coordination evidence and full campaign restart remain unfinished.
+
 ## Reconciled Failure And Authority (2026-09-28)
 
 Local regression finding: after valid hook settlement, a schema-valid legacy

@@ -1,0 +1,66 @@
+{
+  "schema_version": "0.1",
+  "type": "OciSandboxContainmentObservation",
+  "id": "OCO-SAMPLE",
+  "transaction_id": "GTX-OCI-SANDBOX-SUCCESS",
+  "mission_id": "MIS-OCI-SANDBOX-SUCCESS",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "provider": "codex",
+  "repository_binding": {
+    "repository_key": "success-4f6a2c9480b9",
+    "identity_fingerprint": "4f6a2c9480b9d08b2a8b8b58958ca48d855f5626774ccfc7b69d8d5089721490"
+  },
+  "request_ref": {
+    "artifact_id": "TGR-OCI-SANDBOX-SUCCESS",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-requests/TGR-OCI-SANDBOX-SUCCESS.json",
+    "sha256": "2f0eb6d9bed49b3d1681ce0491a3897b2ca3f64ff6404702dd12f785888b10df"
+  },
+  "decision_ref": {
+    "artifact_id": "TGD-79e1486288bf603546a432cb",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-decisions/TGD-79e1486288bf603546a432cb.json",
+    "sha256": "5d19d93169b5a8861d2c8d0a160270a99dc5a0b18408fa15955cafba63482d74"
+  },
+  "execution_event_ref": {
+    "artifact_id": "GTE-8691e1ffdae388a3c4bd8b78",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-transaction-events/GTE-8691e1ffdae388a3c4bd8b78.json",
+    "sha256": "aad569ea25bc5e8cf5f16d954a233a21bd023292edb70f89a2d830c2b1aae467"
+  },
+  "terminal_event_ref": {
+    "artifact_id": "TGE-CONTAINMENT",
+    "relative_path": "repositories/synthetic/missions/MIS-OCI-SANDBOX-SUCCESS/W1/tool-gateway-transaction-events/TGE-CONTAINMENT.json",
+    "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "sandbox_policy_ref": {
+    "artifact_id": "OSP-SUCCESS",
+    "relative_path": "repositories/success-4f6a2c9480b9/missions/MIS-OCI-SANDBOX-SUCCESS/W1/oci-linux-sandbox-policies/OSP-SUCCESS.json",
+    "sha256": "dd39bff197ec079116da7ce517cca0234f3c2095dfec86f3e27dced9bf564bb4"
+  },
+  "execution_envelope_ref": {
+    "artifact_id": "OSE-d201ea52fbaae11847f4331a",
+    "relative_path": "repositories/synthetic/missions/MIS-OCI-SANDBOX-SUCCESS/W1/oci-sandbox-execution-envelopes/OSE-d201ea52fbaae11847f4331a.json",
+    "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "tool_input_sha256": "572707990228ac34e116db7c5b96d1abea5646e917833786ee9ade0541b77fe1",
+  "container_name": "cannae-1337fd9195871f47b0addc15",
+  "daemon_id_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "docker_cli_sha256": "cd2bc434d320a47e104fe9241fe71c06fe343e863847baf82d944703514bf1cc",
+  "absence_argv_sha256": "5ad504ed36426ead7639abe3aa29a54a0c4883acb6710c981f6fc57448bfbb1a",
+  "listing_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "listing_row_count": 0,
+  "started_at": "2026-09-28T00:00:00Z",
+  "observed_at": "2026-09-28T00:00:01Z",
+  "expires_at": "2026-09-28T00:06:00Z",
+  "verification_method": "docker_all_states_exact_name",
+  "daemon_identity_assurance": "provider_observed_not_attested",
+  "container_absent": true,
+  "effects_settled": false,
+  "tool_execution_authorized": false,
+  "release_authorized": false,
+  "signature": {
+    "key_id": "387cfbf6191f15beb344a58b42889895cff81779e319d787ce1ed7ed87fc7722",
+    "algorithm": "ed25519",
+    "signature_base64": "tPCucU3kfa31KyBUI0vOdyHmx0RsCMWhRrFIVR0VYivBGDIgL7f/24AFiK+n7gQTbznj/y6z2vXCMEPi4XKTCg=="
+  },
+  "observation_sha256": "3e021471616109b310d3cc10c869888633e6e730ad048755103df2e812d8b63e"
+}

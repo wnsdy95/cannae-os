@@ -6,6 +6,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Added daemon-bound OCI envelopes and separate signed containment observations for recovered and committed-unknown reference transactions. Original CLI/daemon, exact target, finite freshness and manifest publication checks preserve unknown-effect holds. Both skills collect the observation before freezing gateway review scope; legacy unbound envelopes and managed coordination remain unsupported, with no settlement or authority grant.
+- Extracted shared effect-settlement proof appraisal without sharing hook/gateway ownership or publication authority. Both skills distinguish reusable verification from transaction discharge.
+
 - Preserved reconciled hook failures across legacy active/terminal checkpoints and same-agent resume lineages. Explicit post-settlement revocation gates new authority and wave publication; failed agents cannot complete, resume, or report success, including publication races. Both skills now inspect reconciled-failure markers separately from unresolved effects. This is a prerequisite for gateway settlement, not gateway discharge or campaign restart.
 
 - Added typed gateway effect intake, finite boundary scopes, and non-authorizing evidence review, with exact history/receipt bindings and publication drift checks. Both skills now classify the transaction before inspection and rebuild proof after history changes; pending admissions, gateway holds, future authority and full settlement remain separate.

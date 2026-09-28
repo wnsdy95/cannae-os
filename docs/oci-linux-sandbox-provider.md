@@ -51,9 +51,10 @@ container. The gateway requires both and verifies their exact relationship.
 | --- | --- | --- |
 | `OciLinuxSandboxPolicy` v0.1 | USER-controlled execution policy | repository, gateway, adapter, Docker CLI, probe, image ID, seccomp profile, controls, rule, validity |
 | `OciSandboxToolInput` v0.1 | Complete runtime input | one concrete policy reference and one rule ID |
-| `OciSandboxExecutionEnvelope` v0.1 | Signed intent before container create | transaction, executing event, policy, image, probe command, target, limits, Docker argv digest, runtime, repository state |
+| `OciSandboxExecutionEnvelope` v0.2 | Signed intent before container create; v0.1 remains a historical read contract | transaction, executing event, policy, image, probe command, target, limits, Docker argv digest, runtime including observed daemon ID digest, repository state |
 | `OciSandboxProbeObservation` v0.1 | Kernel-side measurement | UID/GID, capabilities, `NoNewPrivs`, seccomp, namespace handles, mounts, cgroup, network, write tests, child result |
 | `OciSandboxExecutionObservation` v0.1 | Signed terminal observation | envelope, probe artifact, Docker inspect projection, terminal state, cleanup, result, repository state |
+| `OciSandboxContainmentObservation` v0.1 | Separate signed cleanup evidence after an unknown outcome | exact envelope and terminal event, original daemon and CLI digests, exact-name all-states query, listing digest, five-minute freshness; no settlement or authority |
 | `ToolExecutionReceipt` v0.4 | Gateway terminal disposition | three concrete OCI evidence references and exact probe digest for `oci_linux_sandbox_reference` |
 
 The receipt still exposes only three execution references. The signed
@@ -99,6 +100,7 @@ environment and an absolute path.
 Before the signed envelope, the provider measures:
 
 - Docker CLI digest;
+- hash of the nonempty daemon-reported ID;
 - client, server, and API versions;
 - runtime name and version;
 - daemon operating system, architecture, and kernel;
@@ -203,6 +205,21 @@ node codex-skills/controls-doctrine-operator/scripts/operate_oci_sandbox.js \
 Claude Code uses the equivalent wrapper under
 `.claude/skills/controls-doctrine-operator/scripts/`.
 
+Retain fresh containment evidence for a recovered or committed-unknown
+reference transaction without rerunning its target or requiring its raw input:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_oci_sandbox.js \
+  contain --repository <repo> --artifact-root <artifact-root> \
+  --transaction <transaction-id> --private-key <adapter-ed25519-private-key.pem> \
+  --gateway-binding-sha256 <trusted-gateway-digest> \
+  --verified-principal-sha256 <trusted-principal-digest>
+```
+
+Successful observation still exits nonzero because effects remain unsettled.
+Read `containment_observation_ref`; do not infer proof from missing error text.
+Recovery through `execute` also retains this distinct artifact when possible.
+
 ## 8. Failure And Recovery
 
 | Failure point | Required disposition |
@@ -231,10 +248,34 @@ unavailable. This is the provider's fail-closed policy, not a Docker exit-code
 guarantee.
 
 Keep the same trusted Docker daemon/context during execution and containment.
-The reference provider does not independently attest daemon identity; switching
-to an empty daemon is not reconciliation. After a valid cleanup retry,
+The v0.2 envelope pins the reported daemon ID digest. Recovery verifies the
+signed envelope, policy, transaction, executing/terminal events and receipt,
+then compares the pinned CLI and observed daemon before removal and after the
+all-states listing. A different live daemon, changed CLI, wrong signing key,
+missing binding, malformed listing, or concurrent manifest change cannot
+produce containment proof. The observation is signed by the original policy
+key, bound to the exact target and historical envelope, and expires no later
+than five minutes after collection starts. Each retry appends fresh evidence;
+it never overwrites an earlier observation or execution record. Collect before
+freezing a gateway review scope: a later observation changes that subject.
+Gateway subject v0.2 binds the complete sorted reference-history digest and
+count plus the newest reference, keeping repeated collection out of the bounded
+execution-chain list. If gateway recovery storage fails, the provider still
+attempts exact original-daemon cleanup, but cannot issue this terminal-event-bound
+observation until the gateway recovery itself is retained.
+
+Daemon-reported identity is not independently attested identity. A dishonest
+daemon, forged report, or a host that swaps endpoints during individual Docker
+calls remains outside this local reference's assurance. Managed-exclusive
+containment is rejected here until external coordination/fencing evidence has
+its own retained contract; do not substitute this reference proof for it.
+Legacy v0.1 envelopes cannot supply the missing daemon binding and are not
+rewritten. Recovery checks historical policy validity at envelope issuance,
+without renewing expired execution authority, and requires the current adapter
+and CLI to match that policy. After a valid cleanup retry,
 `provider_failure` may clear, but `recovery_required`, the original envelope,
-and the CLI's nonzero exit remain. No new execution observation is synthesized.
+and the CLI's nonzero exit remain. No new execution observation is synthesized;
+the separate containment observation proves neither complete effects nor success.
 Gateway effect settlement and campaign restart remain separate work.
 
 Adapter changes alter the measured adapter digest. Remeasure it and obtain a

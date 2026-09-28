@@ -33,7 +33,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "type": { "type": "string", "const": "OciSandboxExecutionEnvelope" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "transaction_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -68,6 +68,12 @@
     "envelope_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
     "authority": { "$ref": "#/$defs/authority" }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "then": { "properties": { "runtime": { "required": ["daemon_id_sha256"] } } }
+    }
+  ],
   "$defs": {
     "safe_identifier": {
       "type": "string",
@@ -184,6 +190,7 @@
       ],
       "additionalProperties": false,
       "properties": {
+        "daemon_id_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "docker_cli_sha256": {
           "$ref": "common.schema.json#/$defs/sha256"
         },

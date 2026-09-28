@@ -108,6 +108,10 @@ completion/resume or wave publication must not be retried through a different
 session, callback or hand-written checkpoint. Re-read status, retain the failure,
 and obtain separately authorized successor scope. Gateway settlement remains
 excluded from the hook path.
+Shared proof appraisal is not shared settlement authority: when adding another
+ownership class, preserve its own subject/review replay, one-use consumption,
+boundary evidence and publication gates. Never enable it by adding a caller
+flag to the hook controller's gateway exclusion.
 
 When extending a positive publisher, perform expensive validation outside the
 namespace lease and repeat a short, synchronous, read-only authority predicate
@@ -154,6 +158,16 @@ tests can miss CLI initialization defects. Also inject changed ownership between
 validation and publication, not just before a controller starts.
 
 ## OCI Containment Verification
+
+Collect the signed `containment_observation_ref` before freezing a gateway
+effect scope; use `scripts/operate_oci_sandbox.js contain` for a fresh observation
+without rerunning the target. Require a v0.2 envelope with the original reported
+daemon ID, matching policy-pinned CLI/adapter and key, exact terminal-event
+binding, and an unexpired observation. A new observation changes the frozen
+subject and requires fresh inspection proof. Never infer containment from
+missing `provider_failure`, rewrite a legacy envelope to add identity, or use
+this reference observation as production coordinator/fencing evidence.
+Reported daemon identity is not independently attested host identity.
 
 An inspect error is not proof that a container is absent. Keep the original
 trusted Docker daemon/context and use the OCI wrapper's positive all-states,
