@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Removed silent truncation of routed task documents behind delegated role/authority bundles. Both skills preserve the full selected recommendation set while limiting only supporting artifacts, distinguish inventory coverage from task-level context completeness, and test direct queries, receipts, and context-pack delivery without granting additional access or authority.
+
 - Added exact USER- and execution-evidence-bound hook effect settlement, historical proof replay, one-use decision/order consumption, and publication-time manifest/state/expiry checks. Failed checkpoints remain unchanged and lease revocation stays explicit. Both skills expose the settlement procedure and wrappers; gateway transactions, full campaign restart, user authentication and infrastructure operation are not claimed.
 
 - Added a non-authorizing tool-effect review packet with exact invocation, finite scope, observation, verification-plan/receipt, numeric-time, check-set, and repository-state bindings. Both skills now distinguish evidence consistency from authenticated proof, complete effect scope, and USER consent. Reviews do not execute inspection or clear the unknown-effect hold; use the separately implemented hook settlement contract above.

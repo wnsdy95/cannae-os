@@ -306,6 +306,7 @@ const RULES = [
     commands: [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
       "node run-skill-control-enforcement-fixtures.js",
+      "node run-agent-routing-preflight-fixtures.js",
       "node implementation-candidate-registry.js audit",
       "node validate-controls-skill.js codex-skills/controls-doctrine-operator",
       "node validate-controls-skill.js .claude/skills/controls-doctrine-operator"
@@ -1036,9 +1037,9 @@ function route(query, repoRoot, options) {
     commands.push(...rule.commands);
   }
 
+  // Bound scope by selected routes, not by dropping task docs behind role docs.
   const recommended = unique(docs)
     .filter(file => fs.existsSync(path.join(repoRoot, file)))
-    .slice(0, 16)
     .map(file => ({
       path: file,
       exists: true

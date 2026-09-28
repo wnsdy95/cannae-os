@@ -25,6 +25,18 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 
 The report must return `valid: true` and `unrouted_artifact_count: 0`. If it does not, update `ROUTE_HINTS`, `RULES`, or the artifact naming so the item has a clear route.
 
+Inventory coverage does not prove that a specific task received its documents.
+The recommendation bundle preserves orientation, role/authority, capability-gap,
+and all documents from the top four selected task routes, without a 16-document
+cutoff. `--limit` and `--all` affect only supporting artifacts. Check the exact
+task paths in `recommended_documents` and the resulting context pack; a matched
+route or validation command alone is not enough. Do not manually truncate a
+receipt or context pack. Narrow an overly broad request before creating a fresh
+wave, preserve existing evidence, and retain the document-access manifest's
+delivery restrictions: a routing recommendation never grants raw-data access.
+Run `node run-agent-routing-preflight-fixtures.js` for task-level routing
+regressions in both provider skill trees, in addition to inventory coverage.
+
 ## Operator Mode
 
 | Mode | Trigger | Routing Rule | Escalation |
