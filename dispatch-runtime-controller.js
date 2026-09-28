@@ -229,6 +229,7 @@ function writeJsonArtifact(options, descriptor) {
 
 function contextBundle(options, policy, settings = {}) {
   const view = storeView(options);
+  assertReconciledFailuresRevoked(view);
   require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: view.artifactRoot }, policy.mission_id, policy.wave_id);
   const contexts = listArtifacts(view, {
     missionId: policy.mission_id,
@@ -746,6 +747,45 @@ function unresolvedToolEffectRecords(view, leaseRecord) {
   return unknown.filter(item => !settled.some(ref => sameRef(ref, item.ref)));
 }
 
+function reconciledFailureState(view, leaseRecord) {
+  if (!view.manifest.artifacts.some(entry => entry.kind === "tool-effect-settlements")) {
+    return { checkpoint_refs: [], latest_settled_at: null, revocation_required: false };
+  }
+  const checkpoint = latestCheckpoint(view, leaseRecord);
+  const related = leaseRecords(view, leaseRecord.payload.mission_id, leaseRecord.payload.wave_id)
+    .filter(record => record.payload.agent_id === leaseRecord.payload.agent_id);
+  const settlements = related.map(record =>
+    require("./tool-effect-settlement").settledToolEffectState(view, record.ref, checkpoint.ref));
+  const refs = settlements.flatMap(settled => settled.checkpoint_refs);
+  return {
+    checkpoint_refs: refs,
+    latest_settled_at: refs.length ? new Date(Math.max(...settlements.filter(item => item.latest_settled_at)
+      .map(item => Date.parse(item.latest_settled_at)))).toISOString() : null,
+    revocation_required: refs.length > 0 &&
+      !(checkpoint.payload.checkpoint_kind === "revocation" && checkpoint.payload.lease_status === "revoked" &&
+        settlements.every(settled => !settled.checkpoint_refs.length || (settled.checkpoint_follows_settlement &&
+          Date.parse(checkpoint.payload.recorded_at) >= Date.parse(settled.latest_settled_at))))
+  };
+}
+
+function hasReconciledFailureAwaitingRevocation(view) {
+  return view.manifest.artifacts.some(entry => entry.kind === "tool-effect-settlements") &&
+    leaseRecords(view).some(record => reconciledFailureState(view, record).revocation_required);
+}
+
+function assertReconciledFailuresRevoked(view) {
+  if (hasReconciledFailureAwaitingRevocation(view)) {
+    throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED: explicitly revoke the reconciled failed lease before new authority or wave publication.");
+  }
+}
+
+function assertReconciledFailureRevocations(options) {
+  const repository = resolveRepository(options.repository);
+  const root = path.resolve(options.artifactRoot || path.join(repository.root, ".cannae", "artifacts"));
+  if (!fs.existsSync(path.join(root, "repositories", repository.key))) return;
+  assertReconciledFailuresRevoked(storeView(options));
+}
+
 function gatewayObligations(view, options, allowCurrentOperation = false) {
   return require("./protected-tool-gateway").gatewayDispatchObligations(view, options, allowCurrentOperation);
 }
@@ -876,6 +916,12 @@ function activeLease(options, identity, at = nowIso(options)) {
     };
   }
   const selected = candidates[0];
+  if (reconciledFailureState(view, selected.leaseRecord).checkpoint_refs.length) {
+    return { code: "RECONCILED_FAILED_AGENT", view, ...selected };
+  }
+  if (hasReconciledFailureAwaitingRevocation(view)) {
+    return { code: "RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED", view, ...selected };
+  }
   if (gatewayObligations(view, options, true).length) {
     return { code: "UNRESOLVED_GATEWAY_TRANSACTIONS", view, ...selected };
   }
@@ -1543,7 +1589,16 @@ function transitionLease(options, leaseIdValue, descriptor) {
   try {
     const refreshed = loadLeaseById(options, leaseIdValue);
     const previous = latestCheckpoint(refreshed.view, refreshed.leaseRecord);
-    if (descriptor.expectedStatuses && !descriptor.expectedStatuses.includes(previous.payload.lease_status)) {
+    const reconciled = reconciledFailureState(refreshed.view, refreshed.leaseRecord);
+    if (reconciled.checkpoint_refs.length && descriptor.kind !== "revocation") {
+      throw new Error("RECONCILED_FAILED_AGENT: reconciliation requires revocation, never completion or interruption for later resume.");
+    }
+    if (reconciled.checkpoint_refs.length && Date.parse(nowIso(options)) < Date.parse(reconciled.latest_settled_at)) {
+      throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_TIME_INVALID");
+    }
+    const historicalTerminalRevocation = descriptor.kind === "revocation" && reconciled.revocation_required &&
+      ["completed", "superseded", "revoked"].includes(previous.payload.lease_status);
+    if (descriptor.expectedStatuses && !descriptor.expectedStatuses.includes(previous.payload.lease_status) && !historicalTerminalRevocation) {
       throw new Error(`Lease ${leaseIdValue} is ${previous.payload.lease_status}, not ${descriptor.expectedStatuses.join(" or ")}.`);
     }
     const state = runtimeRepositoryState(refreshed.view.repository.root);
@@ -1575,6 +1630,14 @@ function transitionLease(options, leaseIdValue, descriptor) {
     renewRepositoryLease(lock);
     const ref = persistCheckpoint(options, checkpoint, TERMINAL_LEASE_STATUSES.has(status) ? () => {
       const view = storeView(options);
+      const currentFailure = reconciledFailureState(view, refreshed.leaseRecord);
+      if (descriptor.kind !== "revocation" && currentFailure.checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
+      if (currentFailure.checkpoint_refs.length && Date.parse(checkpoint.recorded_at) < Date.parse(currentFailure.latest_settled_at)) {
+        throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_TIME_INVALID");
+      }
+      if (!sameRef(latestCheckpoint(view, refreshed.leaseRecord).ref, previous.ref)) {
+        throw new Error("DISPATCH_TRANSITION_CHECKPOINT_CHANGED");
+      }
       if (gatewayObligations(view).some(item => sameRef(item.lease_ref, refreshed.leaseRecord.ref))) {
         throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations block terminal lease publication.");
       }
@@ -1625,6 +1688,7 @@ function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED"
 
 function resumeLease(options, leaseIdValue, bindings) {
   const loaded = loadLeaseById(options, leaseIdValue);
+  if (reconciledFailureState(loaded.view, loaded.leaseRecord).checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
   require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: loaded.view.artifactRoot }, loaded.leaseRecord.payload.mission_id, loaded.leaseRecord.payload.wave_id);
   const plan = loadArtifactRef(loaded.view, loaded.leaseRecord.payload.plan_ref, "mission-wave-plan");
   require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot });
@@ -1636,6 +1700,7 @@ function resumeLease(options, leaseIdValue, bindings) {
     const refreshed = loadLeaseById(options, leaseIdValue);
     oldLease = refreshed.leaseRecord;
     const previous = latestCheckpoint(refreshed.view, oldLease);
+    if (reconciledFailureState(refreshed.view, oldLease).checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
     if (gatewayObligations(refreshed.view).length) {
       throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations cannot be cleared by resume.");
     }
@@ -1662,7 +1727,12 @@ function resumeLease(options, leaseIdValue, bindings) {
       recordedAt: nowIso(options)
     });
     renewRepositoryLease(lock);
-    persistCheckpoint(options, superseded);
+    persistCheckpoint(options, superseded, () => {
+      const view = storeView(options);
+      if (reconciledFailureState(view, oldLease).checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
+      if (!sameRef(latestCheckpoint(view, oldLease).ref, previous.ref)) throw new Error("DISPATCH_TRANSITION_CHECKPOINT_CHANGED");
+      return true;
+    });
     oldLeaseRef = oldLease.ref;
   } finally {
     releaseRepositoryLease(lock);
@@ -1710,6 +1780,7 @@ function dispatchStatus(options, filters = {}) {
     .map(leaseRecord => {
       const checkpoint = latestCheckpoint(view, leaseRecord);
       const unknownEffects = unresolvedToolEffectRecords(view, leaseRecord);
+      const reconciled = reconciledFailureState(view, leaseRecord);
       const gatewayTransactions = obligations.filter(item => sameRef(item.lease_ref, leaseRecord.ref));
       return {
         lease_id: leaseRecord.payload.id,
@@ -1723,6 +1794,9 @@ function dispatchStatus(options, filters = {}) {
         pending_tool_requests: pendingAdmissions(view, leaseRecord).length,
         unresolved_tool_effects: unknownEffects.length,
         unresolved_effect_checkpoint_refs: unknownEffects.map(item => clone(item.ref)),
+        reconciled_failed_effects: reconciled.checkpoint_refs.length,
+        reconciled_effect_checkpoint_refs: reconciled.checkpoint_refs.map(item => clone(item)),
+        failed_effect_revocation_required: reconciled.revocation_required,
         unresolved_gateway_transactions: gatewayTransactions.length,
         gateway_obligations: gatewayTransactions,
         expires_at: leaseRecord.payload.expires_at,
@@ -1824,6 +1898,7 @@ function main() {
 }
 
 module.exports = {
+  assertReconciledFailureRevocations,
   unknownToolEffectCheckpointRefs,
   withDispatchIssuanceLock,
   NONE_REF,

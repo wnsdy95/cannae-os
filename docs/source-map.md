@@ -8,6 +8,11 @@ checker and ephemeral cryptography, but use synthetic USER/provider/isolation
 inputs. Exact historical replay and one-use settlement do not prove arbitrary
 effect completeness, authenticated USER identity, gateway cleanup, or production
 deployment. No new external military-source claim is introduced.
+The reconciled-failure guard is a local regression repair: a schema-valid legacy
+success callback reproduced completion after effect settlement. The settlement
+fixtures now check same-agent lineage, explicit post-settlement revocation,
+report/termination admission and publication races. This does not extend USER
+consent, permit campaign restart, or implement gateway settlement.
 
 Dependency replay design in `docs/github-release-independent-verification.md`
 uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)

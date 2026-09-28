@@ -30,6 +30,14 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  for (const query of ["reconciled failure", "reconciled_failed_effects", "post-settlement revocation"]) {
+    const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
+    assertRoutes(result, ["tool-effect-review"]);
+    assert.strictEqual(result.capability_routing.status, "covered");
+    assert.strictEqual(result.operating_mode.decision_authority, "bounded_ai_delegate");
+    assert(result.recommended_documents.some(item => item.path === "docs/tool-effect-settlement.md"));
+    assert(result.validation_commands.includes("node run-tool-effect-settlement-fixtures.js"));
+  }
   for (const query of ["gateway effect review", "gateway settlement", "orphan admission"]) {
     const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
     assertRoutes(result, ["gateway-effect-review"]);
@@ -154,4 +162,4 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log("Document routing fixtures: 32/32 passed");
+console.log("Document routing fixtures: 38/38 passed");

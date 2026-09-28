@@ -98,6 +98,17 @@ ID. A gateway request without a decision is still a gateway obligation, not a
 hook-only outcome. Never weaken its cleanup or coordination requirements to
 make this narrower settlement pass.
 
+After settlement, inspect `reconciled_failed_effects`,
+`reconciled_effect_checkpoint_refs`, and `failed_effect_revocation_required`.
+Zero unresolved effects does not restore the failed agent. Explicitly revoke
+every affected same-wave agent lease, including legacy terminal or resumed
+lineages; an earlier revocation does not acknowledge a later settlement.
+Keep the original result failed or blocked even after revocation. A denied
+completion/resume or wave publication must not be retried through a different
+session, callback or hand-written checkpoint. Re-read status, retain the failure,
+and obtain separately authorized successor scope. Gateway settlement remains
+excluded from the hook path.
+
 When extending a positive publisher, perform expensive validation outside the
 namespace lease and repeat a short, synchronous, read-only authority predicate
 inside the store's publication guard. Never write, recover, spawn a validator,

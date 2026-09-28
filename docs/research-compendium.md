@@ -1,5 +1,20 @@
 # Research Compendium
 
+## Reconciled Failure And Authority (2026-09-28)
+
+Local regression finding: after valid hook settlement, a schema-valid legacy
+success checkpoint could make `complete` accept the original failed lease.
+Effect resolution and mission success must therefore be projected separately.
+The [settlement runtime](tool-effect-settlement.md) now retains an independently
+verified failed-agent marker across lease status and same-agent resume lineage.
+Explicit revocation must follow settlement in manifest order and timestamp;
+completion, resume and success reporting remain prohibited afterward. New
+authority, wave publication and termination fail closed until revocation, with
+publication-time checks for concurrent reconciliation. The fixtures execute
+real checkers and signatures against synthetic USER/provider inputs. This is
+engineering synthesis, not a new military-source or production-isolation claim.
+Gateway effect settlement and complete campaign restart remain open.
+
 ## 2026-09-28: Gateway Intake Before Settlement
 
 Local gateway histories differ from hook failures: recovery may leave a pending

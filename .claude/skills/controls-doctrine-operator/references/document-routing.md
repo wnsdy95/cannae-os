@@ -8,6 +8,9 @@ For unknown tool outcomes, route `docs/tool-effect-review.md` and
 `docs/tool-effect-settlement.md`. Evidence preparation does not clear holds;
 settlement needs historical/current verifier admission and an exact USER
 decision. Both fixture suites are required when changing this boundary.
+For a reconciled failure or legacy resumed/terminal lease, inspect the separate
+failed-agent marker and require explicit post-settlement revocation. Do not
+translate zero unresolved effects into successful completion or renewed tools.
 
 For implementation-candidate audits and existing-program completion, route to
 `docs/implementation-candidate-registry.md` and `docs/completion-backlog.md`.
