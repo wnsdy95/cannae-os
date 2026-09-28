@@ -643,9 +643,14 @@ fixture("AAR closes the completed wave and queues bounded improvement", () => {
     repository: repositoryA,
     artifactRoot,
     missionId: basePlan.mission_id,
-    waveId: basePlan.wave_id
+    waveId: basePlan.wave_id,
+    now: "2026-07-23T05:31:00+09:00"
   });
   assert(sameRef(repeated.closeout_ref, result.closeout_ref), "idempotent close changed the closeout reference");
+  expectThrow(() => closeWave(aar, {
+    repository: repositoryA, artifactRoot, missionId: basePlan.mission_id, waveId: basePlan.wave_id,
+    now: "2026-07-23T08:00:00+09:00"
+  }), /CAMPAIGN_CONTINUATION_BLOCKED/, "retained closeout cannot renew an expired campaign");
 });
 
 fixture("a blocked report produces a blocked closeout and mandatory next wave", () => {
