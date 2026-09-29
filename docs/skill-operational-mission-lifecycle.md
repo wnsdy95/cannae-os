@@ -373,8 +373,11 @@ instead of fabricating an evaluation checkpoint. It fences the same mission,
 including renamed campaigns and non-adaptive waves, and supervisor order/challenge
 publication now reappraises that stop. The separate
 [campaign terminal controller](campaign-terminal-reconciliation.md) replays all
-registered waves and known dispatch obligations; USER-authorized successor
-activation remains open. Raw store writes and mutable runtime code are not an
+registered waves and known dispatch obligations. The separate
+[successor admission controller](campaign-successor-admission.md) binds fresh
+USER consent to an exact candidate, holds partial publication and preserves
+later stops. Its admission does not replace ordinary supervisor or dispatch
+readiness. Raw store writes and mutable runtime code are not an
 independently protected authority service.
 
 ## 10. Regression Gate

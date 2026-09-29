@@ -278,8 +278,11 @@ try {
     const terminalRequest = { schema_version: "0.1", type: "CampaignTerminalRequest", mission_id: request.mission_id,
       campaign_ref: proof.campaignRef, stop_ref: stopped.record_ref };
     const terminal = require("./campaign-terminal-controller");
-    assert.strictEqual(terminal.reconcileCampaignTerminal(terminalRequest, local).record.settlement_complete, true);
+    const terminalResult = terminal.reconcileCampaignTerminal(terminalRequest, local);
+    assert.strictEqual(terminalResult.record.settlement_complete, true);
     assert.strictEqual(terminal.campaignTerminalStatus(terminalRequest, local).settlement_complete, true);
+    const successor = require("./campaign-successor-fixture-support").admitFixtureSuccessor(local, proof.campaign, terminalResult.record_ref);
+    assert.strictEqual(successor.result.stop_fence_satisfied, true);
     assert.strictEqual(state(local).reconciled_failed_effects, 1);
   });
   for (const stage of ["recovered", "committed"]) check(`${stage} fixture execution cannot substitute inspection for containment`, () => {

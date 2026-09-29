@@ -80,7 +80,26 @@ causes `CAMPAIGN_TERMINAL_STATUS_CHANGED`, inspect and retry the read rather tha
 using its older result. Never
 use read-only historical dispatch status as current tool authority, rerun an
 old control merely to make its report appear fresh, or interpret a terminal
-record as permission to activate a successor. That activation is not implemented.
+record as permission to activate a successor. Use the separate exact admission
+procedure below.
+
+For an approved restart, read `docs/campaign-successor-admission.md` and use
+`scripts/activate_controls_successor.js`. Freeze the complete candidate and
+repository fingerprint before presenting the proposal and terminal to USER.
+Use `repository-state` and keep request/output files outside tracked target state
+before capture. For pending cancellation, retain the USER's superseding scope
+decision to block that ceremony; after admission use the exact successor's stop.
+Do not treat `decision-option` output as consent. After the real exact scope
+decision, `activate` must retain both the byte-identical candidate and its
+admission. On interruption, verify/recover and inspect `status`: `candidate_held`
+must not be dispatched, even through ordinary init or disabled adaptation.
+Unexpected history, changed bytes or expiry require renewed terminal/proposal/
+consent; never update candidate time or budget under an old decision. An exact
+retry can report historical admission while `stop_fence_satisfied` is false
+after a new stop. Check the normal supervisor, trust, routing and tool gates
+separately even when that flag is true. Preserve the old campaign's stop and
+use the latest admitted predecessor for any subsequent successor. No status
+or admission result itself grants execution, continuation or release authority.
 
 A ready result from before a stop is not reusable authority. When a controller
 denies at its publication boundary, inspect status and verify the current

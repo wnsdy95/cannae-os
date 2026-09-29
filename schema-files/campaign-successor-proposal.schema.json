@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-successor-proposal.schema.json",
+  "title": "Campaign Successor Proposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "request", "request_sha256", "observed_manifest", "recorded_at", "expires_at", "execution_authorized", "continuation_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignSuccessorProposal" },
+    "id": { "type": "string", "pattern": "^CSP-[a-f0-9]{32}$" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "request": { "$ref": "campaign-successor-proposal-request.schema.json" },
+    "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "observed_manifest": { "$ref": "campaign-terminal-record.schema.json#/properties/observed_manifest" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false },
+    "continuation_authorized": { "const": false },
+    "release_authorized": { "const": false }
+  }
+}

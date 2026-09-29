@@ -1,5 +1,11 @@
 # Schema Files
 
+The four `campaign-successor-*.schema.json` contracts bind full proposals,
+activation requests and immutable admission records. A schema-valid object is
+not consent or runtime admission; use [the successor controller](../docs/campaign-successor-admission.md)
+and `run-campaign-successor-fixtures.js`. Every result retains execution,
+continuation and release authorization false.
+
 This directory contains JSON Schema contracts for the military-style LLM runtime.
 
 `campaign-terminal-request.schema.json` and `campaign-terminal-record.schema.json`

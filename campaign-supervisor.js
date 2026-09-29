@@ -584,7 +584,8 @@ function deriveOrder(store, history, evaluatedAt = new Date().toISOString()) {
   } = history;
   const repository = store.verification.repository;
   const blocks = [];
-  if (require("./campaign-stop-controller").missionStopRecords(store, campaign.mission_id).length) {
+  if (require("./campaign-stop-controller").missionStopRecords(store, campaign.mission_id).length &&
+      !require("./campaign-successor-controller").successorStopFenceSatisfied(store, campaign.mission_id, artifactRef(campaignEntry))) {
     addBlock(blocks, "CAMPAIGN_STOP_REQUESTED");
   }
   if (campaign.repository_binding.repository_key !== repository.key ||

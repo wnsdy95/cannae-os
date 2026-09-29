@@ -1,5 +1,12 @@
 # Document Routing
 
+For exact successor activation, read `docs/campaign-successor-admission.md`,
+its four request/proposal/admission schemas, `campaign-successor-controller.js`
+and `run-campaign-successor-fixtures.js`. Use
+`scripts/activate_controls_successor.js` for propose/decision-option/activate/status.
+A held candidate is not an admission, and admission is not ordinary dispatch.
+Use its non-authorizing `repository-state` command before freezing the proposal.
+
 For campaign terminal reconciliation or successor-activation prerequisites,
 read `docs/campaign-terminal-reconciliation.md`, its request/record schemas,
 `campaign-terminal-controller.js` and `run-campaign-terminal-fixtures.js`.

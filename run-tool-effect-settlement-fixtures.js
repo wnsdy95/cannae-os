@@ -529,8 +529,15 @@ for (const resource of scope.resources) {
     const stopped = stop.stopCampaign(stopRequest, expired);
     const terminalRequest = { schema_version: "0.1", type: "CampaignTerminalRequest", mission_id: lease.mission_id,
       campaign_ref: campaignRef, stop_ref: stopped.record_ref };
-    assert.strictEqual(terminal.reconcileCampaignTerminal(terminalRequest, expired).record.settlement_complete, true);
+    const terminalResult = terminal.reconcileCampaignTerminal(terminalRequest, expired);
+    assert.strictEqual(terminalResult.record.settlement_complete, true);
     assert.strictEqual(terminal.campaignTerminalStatus(terminalRequest, expired).settlement_complete, true);
+    const successor = require("./campaign-successor-fixture-support").admitFixtureSuccessor(expired, campaign, terminalResult.record_ref);
+    assert.strictEqual(successor.result.stop_fence_satisfied, true);
+    const order = superviseCampaign({ repositoryPath: repository, artifactRoot: isolated.artifactRoot,
+      campaignId: successor.campaign.id, evaluatedAt: expired.now }).order;
+    assert.strictEqual(order.execution_authorized, false, "Admission must not renew expired verifier trust.");
+    assert(!order.blocking_codes.includes("CAMPAIGN_STOP_REQUESTED"));
     const legacy = { ...clone(revoked.checkpoint), id: "AEC-POST-TERMINATION-LEGACY", sequence: revoked.checkpoint.sequence + 1,
       previous_checkpoint_ref: revoked.checkpoint_ref, checkpoint_kind: "completion", lease_status: "completed", recorded_at: expired.now };
     valid(legacy, "agent-execution-checkpoint");

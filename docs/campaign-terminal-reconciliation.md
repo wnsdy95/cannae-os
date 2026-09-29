@@ -91,11 +91,12 @@ lasting clearance; any consumer must reappraise at its own publication boundary.
 
 ## Boundaries And Remaining Work
 
-The same-mission stop remains enforced after terminal reconciliation. There is
-no successor activation endpoint yet. A fresh exact USER decision, a bound
-successor proposal, renewed budgets/trust/routing and crash-safe two-stage
-publication remain separate work. A generic approval, another campaign ID,
-another mission namespace or a terminal record is not restart authority.
+The same-mission stop remains enforced after terminal reconciliation. The
+separate [successor admission controller](campaign-successor-admission.md)
+requires a bound full proposal, fresh exact USER decision, unchanged repository
+and crash-safe candidate/admission publication. Normal budget/trust/routing
+gates still apply. A generic approval, another campaign ID, another mission
+namespace or a terminal record is not restart authority.
 
 This appraises retained local records; it does not authenticate the person who
 created a USER log, independently attest historic controller execution, prove
