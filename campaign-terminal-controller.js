@@ -138,9 +138,17 @@ function verifyTermination(store, plan, ending) {
         return packs.length === 1 && packs[0].payload.status === "ready" && same(packs[0].payload.plan_ref, successor.ref) &&
           same(packs[0].payload.routing_preflight_ref, preflight.ref);
       }), "CAMPAIGN_TERMINAL_SUCCESSOR_CONTEXT_MISMATCH");
+      for (const context of contexts) verifyOrderContextHistory(before, successor, context);
     }
   }
   requireTrue(dispatchSettled(dispatch(before, scope)), "CAMPAIGN_TERMINAL_PREMATURE_WAVE_TERMINATION");
+}
+
+function verifyOrderContextHistory(store, plan, context) {
+  const before = prefixBeforeEntry(store, context.entry);
+  require("./order-adoption-controller").assertContextAssignment(context.payload, plan.payload, {
+    repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now: context.entry.created_at
+  }, before);
 }
 
 function verifyReport(store, plan, report) {
@@ -158,10 +166,11 @@ function verifyReport(store, plan, report) {
     const context = reference(store, agent.context_pack_ref, "agent-context-packs", "agent-context-pack", scope);
     requireTrue(context.payload.agent_id === agent.agent_id && context.payload.status === "ready" &&
       same(context.payload.plan_ref, plan.ref) && same(context.payload.routing_preflight_ref, preflight.ref), "CAMPAIGN_TERMINAL_CONTEXT_MISMATCH");
+    verifyOrderContextHistory(store, plan, context);
     for (const evidenceRef of agent.evidence_refs) {
       const entry = store.manifest.artifacts.find(item => same(ref(item), evidenceRef));
       requireTrue(entry && entry.mission_id === scope.mission_id && entry.wave_id === scope.wave_id &&
-        !WAVE_KINDS.has(entry.kind) && !["aars", "aar-readiness-updates", "decision-logs", "self-improvement-campaigns", "sitreps"].includes(entry.kind) &&
+        !WAVE_KINDS.has(entry.kind) && !require("./skill-mission-controller").CONTROL_EVIDENCE_KINDS.has(entry.kind) &&
         at(entry.created_at) >= at(plan.payload.created_at) && at(entry.created_at) <= at(value.recorded_at) + 300000,
       "CAMPAIGN_TERMINAL_WORK_EVIDENCE_INVALID");
     }

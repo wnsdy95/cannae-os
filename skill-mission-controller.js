@@ -8,6 +8,7 @@ const { analyzeRoutingPreflight } = require("./agent-routing-preflight-runner");
 const { buildUpdate } = require("./aar-to-readiness-update");
 const {
   resolveRepository,
+  manifestDigest,
   verifyRepositoryArtifacts,
   writeRepositoryArtifact
 } = require("./repository-artifact-store");
@@ -31,6 +32,12 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "mission-wave-reports",
   "mission-wave-terminations",
   "decision-logs",
+  "mission-requests",
+  "order-drafts",
+  "order-adoption-proposals",
+  "order-backbriefs",
+  "order-rehearsals",
+  "order-adoption-records",
   "routing-preflight-bundles",
   "routing-preflights",
   "routing-receipts",
@@ -148,6 +155,7 @@ function loadStore(options, allowMissing = false) {
   const artifactRoot = fs.realpathSync(artifactRootPath(options));
   const manifestPath = path.join(artifactRoot, "repositories", repository.key, "manifest.json");
   const manifest = readJson(manifestPath);
+  if (manifestDigest(manifest) !== verification.manifest_sha256) throw new Error("Repository artifact manifest changed during verification.");
   return { repository, verification, manifest, artifactRoot };
 }
 
@@ -558,8 +566,16 @@ function modelAssignments(plan, options) {
 }
 
 function assertAdaptiveCampaignMayContinue(plan, options, allowMissing = false) {
+  const store = loadStore(options, true);
+  try {
+    require("./order-adoption-controller").orderForPlan(plan, options, store);
+  } catch (cause) {
+    const error = new Error(`CAMPAIGN_CONTINUATION_BLOCKED: ${cause.message}`);
+    error.code = "CAMPAIGN_CONTINUATION_BLOCKED";
+    throw error;
+  }
   if (!plan.adaptive_work.enabled) {
-    require("./campaign-stop-controller").assertMissionNotStopped(loadStore(options, true), plan.mission_id);
+    require("./campaign-stop-controller").assertMissionNotStopped(store, plan.mission_id);
     return;
   }
   try {
@@ -774,6 +790,8 @@ function openWaveUnlocked(plan, options = {}) {
   }
 
   const assignments = modelAssignments(plan, operationOptions);
+  const { orderForPlan, contextAssignment } = require("./order-adoption-controller");
+  const adopted = orderForPlan(plan, operationOptions, loadStore(operationOptions));
   const campaignRef = campaignReference(plan, operationOptions);
   assertAdaptiveCampaignMayContinue(plan, operationOptions);
   const doctrineState = {
@@ -785,10 +803,15 @@ function openWaveUnlocked(plan, options = {}) {
   for (const [index, agent] of plan.agents.entries()) {
     const routed = agentReceipts[index];
     const validationCommands = unique(routed.receipt.validation_commands || []);
+    const contextId = `ACP-${safeIdPart(plan.wave_id)}-${safeIdPart(agent.agent_id)}`;
+    const existingContext = adopted && optionalArtifact(operationOptions, {
+      missionId: plan.mission_id, waveId: plan.wave_id, kind: "agent-context-packs", artifactId: contextId
+    });
     const contextPack = {
-      schema_version: "0.2",
+      schema_version: adopted ? "0.3" : "0.2",
+      ...(adopted ? { order_assignment: contextAssignment(adopted, agent.agent_id) } : {}),
       type: "AgentContextPack",
-      id: `ACP-${safeIdPart(plan.wave_id)}-${safeIdPart(agent.agent_id)}`,
+      id: contextId,
       mission_id: plan.mission_id,
       wave_id: plan.wave_id,
       agent_id: agent.agent_id,
@@ -821,10 +844,11 @@ function openWaveUnlocked(plan, options = {}) {
         ...agent.approval_required.map(action => `Approval required before: ${action}`)
       ]),
       status: "ready",
-      created_at: plan.created_at,
-      valid_until: plan.valid_until
+      created_at: adopted ? existingContext?.payload.created_at || operationOptions.now || new Date().toISOString() : plan.created_at,
+      valid_until: adopted ? adopted.payload.expires_at : plan.valid_until
     };
     assertValid(contextPack, "agent-context-pack", `Context pack ${agent.agent_id}`);
+    if (adopted) require("./order-adoption-controller").assertContextAssignment(contextPack, plan, operationOptions);
     const ref = persistJson(operationOptions, {
       missionId: plan.mission_id,
       waveId: plan.wave_id,
@@ -989,6 +1013,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
     if (!context || !sameRef(result.context_pack_ref, context.ref)) {
       throw new Error(`Wave report does not cite the exact context pack for ${result.agent_id}.`);
     }
+    require("./order-adoption-controller").assertContextAssignment(context.payload, planArtifact.payload, options);
     for (const evidenceRef of result.evidence_refs) {
       const evidence = requiredArtifactRef(options, evidenceRef, {
         missionId: report.mission_id,
@@ -1674,6 +1699,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  CONTROL_EVIDENCE_KINDS,
   waveCloseoutDisposition,
   NONE_REF,
   artifactRootPath,

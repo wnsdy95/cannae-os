@@ -4,6 +4,7 @@ const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");
 const { DRAFT_TYPES, intakeIssues } = require("../order-intake-contract");
+const { ADOPTION_TYPES, adoptionIssues } = require("../order-adoption-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -132,6 +133,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  ...Object.fromEntries([...ADOPTION_TYPES].map(type => [type, `${type}.schema.json`])),
   "mission-request": "mission-request.schema.json",
   "mission-order-analysis": "mission-order-analysis.schema.json",
   "order-draft": "order-draft.schema.json",
@@ -6089,11 +6091,14 @@ function maxSeverity(issues) {
   return issues.reduce((max, item) => order.indexOf(item.severity) > order.indexOf(max) ? item.severity : max, "info");
 }
 
-function validationResult(issues, type) {
+function validationResult(issues, type, payload) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-    can_execute: !DRAFT_TYPES.has(type) && !issues.some(item => item.severity === "error" || item.severity === "critical"),
+    can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) &&
+      !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
+      !(type === "agent-context-pack" && payload?.schema_version === "0.3") &&
+      !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
     issues
@@ -6106,7 +6111,7 @@ function validateSchemaPayload(payload, type) {
   const schema = schemas[TYPE_TO_SCHEMA[type]];
   return validationResult(
     validateSchema(payload, schema, schemas)
-      .map(item => ({ ...item, layer: "schema" })), type
+      .map(item => ({ ...item, layer: "schema" })), type, payload
   );
 }
 
@@ -6116,9 +6121,22 @@ function validatePayload(payload, type, options = {}) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? intakeIssues(payload, type).map(item => ({ ...item, layer: "semantic" })) : [])
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type)]
+      .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
-  return validationResult(issues, type);
+  const nested = {
+    "order-adoption-proposal-request": ["plan", "mission-wave-plan"],
+    "order-adoption-proposal": ["request", "order-adoption-proposal-request"],
+    "order-backbrief": ["backbrief", "backbrief"],
+    "order-rehearsal": ["rehearsal", "rehearsal"],
+    "order-adoption-record": ["request", "order-adoption-decision-request"]
+  }[type];
+  if (schemaResult.valid && nested) {
+    const [field, nestedType] = nested;
+    issues.push(...validatePayload(payload[field], nestedType, options).issues
+      .map(item => ({ ...item, path: `$.${field}${item.path.slice(1)}` })));
+  }
+  return validationResult(issues, type, payload);
 }
 
 function main() {

@@ -1,5 +1,15 @@
 # Schema Files
 
+`OrderAdoptionProposalRequest`, `OrderAdoptionProposal`, `OrderBackbrief`,
+`OrderRehearsal`, `OrderAdoptionDecisionRequest` and `OrderAdoptionRecord` v0.1
+bind one exact USER review to a complete `MissionWavePlan` v0.2 and per-agent
+`AgentContextPack` v0.3. Common adoption definitions bind task assignments and
+retained references. All six contracts and both bound versions report
+`can_execute: false` even when schema-valid; the runtime must replay retained
+adoption and its other gates. Legacy plan v0.1/context v0.2 cannot contain these
+bindings or bypass captured intake in the same wave. See
+[exact adoption](../docs/order-adoption-and-plan-binding.md).
+
 `mission-request.schema.json`, `mission-order-analysis.schema.json` and
 `order-draft.schema.json` separate captured text, proposed interpretation and
 non-executable order drafts. These contracts return `can_execute: false` even

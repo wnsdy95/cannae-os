@@ -251,6 +251,7 @@ function contextBundle(options, policy, settings = {}) {
   }
   const plan = loadArtifactRef(view, context.payload.plan_ref, "mission-wave-plan");
   require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
+  require("./order-adoption-controller").assertContextAssignment(context.payload, plan.payload, { ...options, artifactRoot: view.artifactRoot });
   const preflight = loadArtifactRef(view, context.payload.routing_preflight_ref);
   if (preflight.payload.type !== "AgentRoutingPreflightProjection" || preflight.payload.status !== "ready") {
     throw new Error("Routing preflight is not ready.");

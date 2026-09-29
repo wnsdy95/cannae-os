@@ -9,6 +9,45 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["order-adoption-proposal-request", "order-adoption-proposal", "order-backbrief", "order-rehearsal",
+    "order-adoption-decision-request", "order-adoption-record", "mission-wave-plan-adopted", "agent-context-pack-adopted"].map(name => ({
+    name: `valid non-executable ${name}`, file: `sample-payloads/valid-${name}.json`, type: name.replace(/-adopted$/, ""),
+    exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  })),
+  ...[
+    ["order-adoption-proposal-request", "MISSION_WAVE_RETAINED_ACTION_DELEGATED"],
+    ["order-adoption-proposal", "ORDER_PROPOSAL_BINDING_MISMATCH"], ["order-backbrief", "BACKBRIEF_WITHOUT_RISK_CONTROLS"],
+    ["order-rehearsal", "EXECUTE_WITH_UNRESOLVED_CHANGES"], ["order-adoption-decision-request", "ORDER_ADOPTION_REHEARSAL_REQUIRED"],
+    ["order-adoption-record", "CONST_MISMATCH"], ["mission-wave-plan-adopted", "MISSING_REQUIRED"],
+    ["agent-context-pack-adopted", "ORDER_CONTEXT_TASK_MISMATCH"]
+  ].map(([name, code]) => ({ name: `invalid ${name}`, file: `sample-payloads/invalid-${name}.json`,
+    type: name.replace(/-adopted$/, ""), exitCode: 1, expectedCanExecute: false, requiredCodes: [code] })),
+  ...["missing-binding", "legacy-binding", "duplicate-agent", "extra-field"].map(mutation => ({
+    name: `adopted plan rejects ${mutation}`, file: "sample-payloads/valid-mission-wave-plan-adopted.json", type: "mission-wave-plan",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: [{ "missing-binding": "MISSING_REQUIRED", "legacy-binding": "NOT_SCHEMA_MATCH",
+      "duplicate-agent": "ORDER_PLAN_ASSIGNMENT_MISMATCH", "extra-field": "ADDITIONAL_PROPERTY" }[mutation]],
+    mutate: value => {
+      if (mutation === "missing-binding") delete value.order_binding;
+      if (mutation === "legacy-binding") value.schema_version = "0.1";
+      if (mutation === "duplicate-agent") value.order_binding.task_assignments[0].agent_id = value.order_binding.task_assignments[1].agent_id;
+      if (mutation === "extra-field") value.order_binding.task_assignments[0].approved = true;
+    }
+  })),
+  ...["missing-assignment", "legacy-assignment", "extra-field"].map(mutation => ({
+    name: `adopted context rejects ${mutation}`, file: "sample-payloads/valid-agent-context-pack-adopted.json", type: "agent-context-pack",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: [{ "missing-assignment": "MISSING_REQUIRED",
+      "legacy-assignment": "NOT_SCHEMA_MATCH", "extra-field": "ADDITIONAL_PROPERTY" }[mutation]],
+    mutate: value => {
+      if (mutation === "missing-assignment") delete value.order_assignment;
+      if (mutation === "legacy-assignment") value.schema_version = "0.2";
+      if (mutation === "extra-field") value.order_assignment.adoption_ref.approved = true;
+    }
+  })),
+  { name: "adoption record requires concrete USER reference", file: "sample-payloads/valid-order-adoption-record.json", type: "order-adoption-record",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["ORDER_ADOPTION_BINDING_MISMATCH"],
+    mutate: value => { value.request.decision_ref = { artifact_id: "none", relative_path: "none", sha256: "none" }; } },
+  { name: "adoption rejects partial none", file: "sample-payloads/valid-order-adoption-decision-request.json", type: "order-adoption-decision-request",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["ONE_OF_MISMATCH"], mutate: value => { value.decision_ref.sha256 = "none"; } },
   ...["mission-request", "mission-order-analysis", "order-draft"].map(type => ({
     name: `valid non-executable ${type}`, file: `sample-payloads/valid-${type}.json`, type,
     exitCode: 0, expectedCanExecute: false, requiredCodes: []

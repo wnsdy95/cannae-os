@@ -6,7 +6,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
-- Add repository-bound request capture, typed mission analysis and deterministic OPORD/task drafts with quote provenance, inherited constraints, finite validity and no execution authority. Both skills expose capture/template/compile/inspect and preserve unknowns rather than invent facts. Make the dissemination CLI validate supplied files instead of silently using demo inputs. Exact USER review/adoption and issued-order-to-plan integration remain open.
+- Bind complete mission plans, individual agent backbriefs and rehearsal to exact one-use USER order adoption. Add versioned plan/context assignments and current adoption checks across lifecycle and dispatch admission while preserving result settlement, stop, model, supervisor and release boundaries. Both skills now use a dedicated adoption wrapper and require new review after draft/plan edits. This does not authenticate USER identity or complete the whole prompt-compiler roadmap.
+
+- Add repository-bound request capture, typed mission analysis and deterministic OPORD/task drafts with quote provenance, inherited constraints, finite validity and no execution authority. Both skills expose capture/template/compile/inspect and preserve unknowns rather than invent facts. Make the dissemination CLI validate supplied files instead of silently using demo inputs. Exact review and plan binding are supplied by the later adoption change above.
 
 - Update transitive `ip-address` to 10.7.2 and preserve the exact former v0.2 verifier producer across the lockfile/module change. Pin an unchanged prior sample separately from fresh current evidence; reject unknown, hybrid and schema-substituted identities. Add NAT64 dependency regressions and equivalent Codex/Claude migration routing and sample-preservation guidance. Release policy, credentials and checkpoint lineage remain unchanged.
 

@@ -1,0 +1,166 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderAdoptionProposal",
+  "id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "request": {
+    "schema_version": "0.1",
+    "type": "OrderAdoptionProposalRequest",
+    "id": "OAPR-ADOPTION",
+    "mission_id": "MIS-ADOPTION",
+    "wave_id": "W1",
+    "plan": {
+      "schema_version": "0.2",
+      "type": "MissionWavePlan",
+      "id": "MWP-ADOPTION",
+      "mission_id": "MIS-ADOPTION",
+      "wave_id": "W1",
+      "title": "Operationalize a repository skill",
+      "objective": "Request quote: Prepare an internal comparison of two onboarding options.",
+      "success_conditions": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ],
+      "failure_conditions": [
+        "Proposal: Do not treat missing evidence as a fact."
+      ],
+      "constraints": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "mission_profile": {
+        "classification": "internal",
+        "risk_level": "medium",
+        "roe_class": "Amber",
+        "release_target": "internal_handoff"
+      },
+      "agents": [
+        {
+          "agent_id": "agent-S2",
+          "operational_role": "S2",
+          "department": "operations",
+          "task": "Proposal: Extract evidence for each option without editing source records.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        },
+        {
+          "agent_id": "agent-S3",
+          "operational_role": "S3",
+          "department": "operations",
+          "task": "Proposal: Compare the two options and prepare a draft recommendation.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        }
+      ],
+      "model_assignment": {
+        "required": false,
+        "integrated_preflight_ref": {
+          "artifact_id": "none",
+          "relative_path": "none",
+          "sha256": "none"
+        }
+      },
+      "authority": {
+        "human_final_decision_authority": "USER",
+        "routing_required_every_wave": true,
+        "repository_artifacts_required": true,
+        "approval_required_for_scope_change": true,
+        "approval_required_for_commit": true,
+        "approval_required_for_push": true,
+        "approval_required_for_merge": true,
+        "approval_required_for_release": true,
+        "self_approval_prohibited": true
+      },
+      "adaptive_work": {
+        "enabled": false,
+        "campaign_id": "SIC-SKILL-DEMO",
+        "target_type": "skill",
+        "acceptance_criteria": [
+          "Routing coverage remains complete.",
+          "Baseline behavior does not regress."
+        ],
+        "non_goals": [
+          "Changing approval authority.",
+          "Publishing or releasing without the user."
+        ],
+        "max_cycles": 4,
+        "max_changed_files": 20,
+        "max_elapsed_minutes": 240
+      },
+      "created_at": "2026-09-29T16:00:10.000Z",
+      "valid_until": "2026-09-29T17:00:00.000Z",
+      "order_binding": {
+        "draft_ref": {
+          "artifact_id": "OD-838eece7b985c6755798993debc6daf4",
+          "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-drafts/OD-838eece7b985c6755798993debc6daf4.json",
+          "sha256": "be784f9f09e2ce194bdf992a478c02365019c4d786d03113c095d95a6edcbe8b"
+        },
+        "task_assignments": [
+          {
+            "task_order_id": "TASK-S2",
+            "agent_id": "agent-S2"
+          },
+          {
+            "task_order_id": "TASK-S3",
+            "agent_id": "agent-S3"
+          }
+        ]
+      },
+      "dispatch_control": {
+        "required": true,
+        "enforcement_level": "guardrail",
+        "gateway_exclusive": false,
+        "policy_authorizations": [
+          {
+            "agent_id": "agent-S2",
+            "provider": "codex",
+            "policy_id": "DTP-agent-S2",
+            "draft_sha256": "c8e0472f58f8b152a8aab9133267652917c9a4fd5a612b35460ccdff8c9a3737"
+          },
+          {
+            "agent_id": "agent-S3",
+            "provider": "codex",
+            "policy_id": "DTP-agent-S3",
+            "draft_sha256": "0d25c30fe4814f27af8a520efbea0b65e5d6cb4e8a2ecb2b843551a74dbce95f"
+          }
+        ]
+      }
+    },
+    "execution_authorized": false,
+    "release_authorized": false,
+    "human_final_decision_authority": "USER",
+    "continuation_authorized": false
+  },
+  "request_sha256": "8d888f08230f89ec3338aff5b4d65ad98342b473f7fce9627461dd43ba488276",
+  "plan_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "observed_manifest": {
+    "revision": 2,
+    "sha256": "1383e944c2afaa2a026e7c94307a0abeeb32fc2befbac10a7184a7118d6dd753"
+  },
+  "recorded_at": "2026-09-29T16:00:20.000Z",
+  "expires_at": "2026-09-29T17:00:00.000Z",
+  "classification": "internal",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "continuation_authorized": false
+}
