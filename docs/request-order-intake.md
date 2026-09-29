@@ -100,8 +100,8 @@ Pass the same `--artifact-root` everywhere when overriding the default
 5. Compile and inspect the retained request, analysis, clarifications and inherited
    task boundaries. Compilation returns a reference, not executable tasking.
 6. Edit analysis and compile again. Changed content produces a new digest-bound
-   draft. Earlier review cannot cover it; review-consumption and issued-order
-   adoption are not provided in this release.
+   draft. Earlier review cannot cover it; use [exact adoption](order-adoption-and-plan-binding.md)
+   to bind a complete plan, every agent's backbrief, rehearsal and a fresh USER decision.
 7. Capture a new request after expiry or request changes. Historical `inspect`
    replays proof but reports `freshness: expired`. CLI clock overrides fail.
    After a clock rollback, wait for valid time or investigate the clock; do not
@@ -123,8 +123,8 @@ testing that demo. Its consistency result is not dispatch authority.
 
 Do not strip markers or hand-convert drafts into legacy orders. Types and hashes
 are not an unforgeable boundary against someone who can rewrite code or contracts.
-Exact USER review/adoption, an issued-order registry and plan binding remain future
-integration. Supervisor, stop, successor, trust, lease and release gates remain
+The [adoption controller](order-adoption-and-plan-binding.md) now binds an issued
+scope identity to an exact versioned plan. Supervisor, stop, successor, trust, lease and release gates remain
 unchanged; drafts cannot discharge their obligations.
 
 ## Verification And Limits

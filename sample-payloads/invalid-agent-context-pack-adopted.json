@@ -1,0 +1,207 @@
+{
+  "schema_version": "0.3",
+  "type": "AgentContextPack",
+  "id": "ACP-W1-agent-S2",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "agent_id": "agent-S2",
+  "operational_role": "S2",
+  "department": "operations",
+  "task": "Proposal: Extract evidence for each option without editing source records.",
+  "classification": "internal",
+  "plan_ref": {
+    "artifact_id": "MWP-ADOPTION",
+    "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
+    "sha256": "5ec2352262065805d3fe5e4745bd68b804c210abbd8d9e3254c7ff088f2b0743"
+  },
+  "routing_receipt_ref": {
+    "artifact_id": "RR-W1-plans-agent",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-receipts/RR-W1-plans-agent.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "routing_preflight_ref": {
+    "artifact_id": "ARP-W1",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
+    "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "capability_query": "Request quote: Prepare an internal comparison of two onboarding options.",
+  "capability_routing": {
+    "status": "covered",
+    "reason_code": "MATCHED_DOCTRINE_ROUTE",
+    "capability_scope": "Request quote: Prepare an internal comparison of two onboarding options.",
+    "matched_capability_routes": [
+      "skill-operations"
+    ],
+    "provisional_organization": {
+      "required": false,
+      "organization_type": "existing_doctrine_route",
+      "organization_id": "none",
+      "name": "Existing doctrine route",
+      "task_organization_status": "not_required",
+      "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+      "authority_expansion_authorized": false,
+      "standing_department_activation_authorized": false,
+      "disband_condition": "Not applicable; no provisional organization was created."
+    },
+    "force_structure_review": {
+      "required": false,
+      "change_type": "none",
+      "target_kind": "none",
+      "status": "not_required",
+      "candidate_department_id": "none",
+      "candidate_department_name": "none",
+      "final_decision_authority": "USER",
+      "formal_approving_role": "COMMANDER"
+    },
+    "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+  },
+  "doctrine_state": {
+    "revision": "0123456789abcdef0123456789abcdef01234567",
+    "router_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "controller_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "documents": [
+    {
+      "path": "README.md",
+      "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    },
+    {
+      "path": "docs/source-map.md",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "path": "docs/agent-roles-and-authority.md",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  ],
+  "validation_commands": [
+    "node run-document-routing-fixtures.js"
+  ],
+  "required_controls": [
+    {
+      "control_id": "CTRL-6a29130c7d6dd8ed",
+      "command": "node run-document-routing-fixtures.js",
+      "command_sha256": "6a29130c7d6dd8ed39c3076f1a27d620e6f2628a42d46ba3ec45e548a7c98959",
+      "runner": "node",
+      "script_path": "run-document-routing-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    }
+  ],
+  "model_assignment": {
+    "required": false,
+    "integrated_preflight_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "billet_id": "not_required",
+    "model_profile_id": "not_required",
+    "model_family": "not_required",
+    "model_version": "not_required",
+    "harness_version": "not_required"
+  },
+  "authority": {
+    "delegated_authority": "scoped-execution",
+    "allowed_actions": [
+      "Request quote: Prepare an internal comparison of two onboarding options."
+    ],
+    "approval_required": [
+      "Request quote: The user decides the target segment and any budget change."
+    ],
+    "prohibited_actions": [
+      "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+    ],
+    "human_final_decision_authority": "USER",
+    "release_authorized": false,
+    "self_approval_prohibited": true
+  },
+  "escalation_conditions": [
+    "Requested action exceeds delegated authority."
+  ],
+  "status": "ready",
+  "created_at": "2026-09-29T16:01:10.000Z",
+  "valid_until": "2026-09-29T17:00:00.000Z",
+  "order_assignment": {
+    "adoption_ref": {
+      "artifact_id": "OAR-f4627130aa19b05826a8874df1dfad3a",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-records/OAR-f4627130aa19b05826a8874df1dfad3a.json",
+      "sha256": "326826195d5936bc618cefd727d48a5fc1bffb1184cbbb2141f23fe840cf03ad"
+    },
+    "proposal_ref": {
+      "artifact_id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json",
+      "sha256": "0a784f089d2ed8a7c377a455980d65e378a10e14f361f0171230bad5a32fb493"
+    },
+    "draft_ref": {
+      "artifact_id": "OD-838eece7b985c6755798993debc6daf4",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-drafts/OD-838eece7b985c6755798993debc6daf4.json",
+      "sha256": "be784f9f09e2ce194bdf992a478c02365019c4d786d03113c095d95a6edcbe8b"
+    },
+    "backbrief_ref": {
+      "artifact_id": "OBB-agent-S2",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+      "sha256": "39a26fdb3cff53c9399a24ee392bc27a9e647637fb5f164ffd0adece30083b84"
+    },
+    "rehearsal_ref": {
+      "artifact_id": "ORH-ADOPTION",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-rehearsals/ORH-ADOPTION.json",
+      "sha256": "5222ae658e981ed393a0657f28d5a33a56d4b8ffe33cb74bfa345f0e83124309"
+    },
+    "plan_sha256": "2009e6eb2f19b6c6c8484e32ffb27992cc05cfa5144dbbd87f0adde206c453c2",
+    "task_order": {
+      "type": "TASK_ORDER_DRAFT",
+      "id": "TASK-S2",
+      "mission_id": "MIS-ADOPTION",
+      "assigned_to": "S2",
+      "task": "Different task",
+      "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+      "deliverables": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ],
+      "verification": [
+        "Proposal: Every factual claim cites an exact retained source quote."
+      ],
+      "ccir": [
+        "Proposal: Request clarification when evidence cannot support comparison."
+      ],
+      "status": "draft",
+      "inherited_constraints": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "retained_user_decisions": [
+        "Request quote: The user decides the target segment and any budget change."
+      ],
+      "draft_binding_sha256": "838eece7b985c6755798993debc6daf4e185810e6caeccb0e76eba004e33763f",
+      "execution_authorized": false
+    },
+    "commander_intent": {
+      "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+      "key_tasks": [
+        "Proposal: Extract evidence for each option without editing source records.",
+        "Proposal: Compare the two options and prepare a draft recommendation."
+      ],
+      "failure_to_avoid": [
+        "Proposal: Do not treat missing evidence as a fact."
+      ]
+    },
+    "mission_end_state": [
+      "Request quote: Return a recommendation with explicit uncertainties."
+    ],
+    "constraints": [
+      "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+    ],
+    "assessment": {
+      "mop": [
+        "Proposal: Two alternatives are compared."
+      ],
+      "moe": [
+        "Proposal: USER can inspect the evidence and uncertainty behind the recommendation."
+      ],
+      "verification": [
+        "Proposal: Every factual claim cites an exact retained source quote."
+      ]
+    }
+  }
+}

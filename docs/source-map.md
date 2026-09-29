@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [exact order adoption path](order-adoption-and-plan-binding.md) is local
+engineering synthesis of orders production, backbrief/rehearsal and retained USER
+scope authority. `order-adoption-contract.js`, `order-adoption-controller.js`, six
+contracts plus common definitions, samples, fixtures and both skill wrappers bind
+one full plan and every agent acknowledgement. Versioned plan/context consumers
+recheck retained scope without claiming authenticated identity, semantic completeness
+or tool/release permission. No external-source claim is added.
+
 The [request-to-draft path](request-order-intake.md) is local engineering synthesis
 of orders production, typed source discipline and repository artifact isolation.
 `request-order-compiler.js`, `order-intake-contract.js`, three schemas, samples,

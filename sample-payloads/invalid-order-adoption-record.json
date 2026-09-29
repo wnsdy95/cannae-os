@@ -1,0 +1,61 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderAdoptionRecord",
+  "id": "OAR-f4627130aa19b05826a8874df1dfad3a",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "request": {
+    "schema_version": "0.1",
+    "type": "OrderAdoptionDecisionRequest",
+    "id": "OADR-ADOPTION",
+    "mission_id": "MIS-ADOPTION",
+    "wave_id": "W1",
+    "proposal_ref": {
+      "artifact_id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json",
+      "sha256": "0a784f089d2ed8a7c377a455980d65e378a10e14f361f0171230bad5a32fb493"
+    },
+    "backbrief_refs": [
+      {
+        "artifact_id": "OBB-agent-S2",
+        "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+        "sha256": "39a26fdb3cff53c9399a24ee392bc27a9e647637fb5f164ffd0adece30083b84"
+      },
+      {
+        "artifact_id": "OBB-agent-S3",
+        "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S3.json",
+        "sha256": "01e08ab5be9aeff451839e92e564a5deed12e05138a7aafb6539322845d0a4fe"
+      }
+    ],
+    "rehearsal_ref": {
+      "artifact_id": "ORH-ADOPTION",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-rehearsals/ORH-ADOPTION.json",
+      "sha256": "5222ae658e981ed393a0657f28d5a33a56d4b8ffe33cb74bfa345f0e83124309"
+    },
+    "disposition": "approve",
+    "decision_ref": {
+      "artifact_id": "DL-ADOPTION",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/decision-logs/DL-ADOPTION.json",
+      "sha256": "9f95b806a455bf12f17d23162a7d3032467e0eadd7b56eef112ea50995280416"
+    },
+    "execution_authorized": false,
+    "release_authorized": false,
+    "human_final_decision_authority": "USER",
+    "continuation_authorized": false
+  },
+  "request_sha256": "f4627130aa19b05826a8874df1dfad3a9ea2af9988158623575f5f9fc97eb5d8",
+  "plan_sha256": "2009e6eb2f19b6c6c8484e32ffb27992cc05cfa5144dbbd87f0adde206c453c2",
+  "status": "adopted",
+  "issued_order_id": "IO-f4627130aa19b05826a8874df1dfad3a",
+  "observed_manifest": {
+    "revision": 7,
+    "sha256": "a6e1e9da0c742c3b956de2086cf27adec6e73a411b7a0ef2621d4fb12a82cd6e"
+  },
+  "recorded_at": "2026-09-29T16:01:00.000Z",
+  "expires_at": "2026-09-29T17:00:00.000Z",
+  "classification": "internal",
+  "execution_authorized": true,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "continuation_authorized": false
+}

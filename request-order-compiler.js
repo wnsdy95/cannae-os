@@ -214,4 +214,4 @@ function main(argv = process.argv.slice(2)) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { captureRequest, analysisTemplate, compileOrder, inspectDraft, main };
+module.exports = { captureRequest, analysisTemplate, compileOrder, inspectDraft, replayDraft, readRequest, main };
