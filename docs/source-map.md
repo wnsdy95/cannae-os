@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [exact successor admission contract](campaign-successor-admission.md) is
+local engineering synthesis of USER stop, terminal reconciliation, repository
+fingerprints and guarded publication. `campaign-successor-controller.js`, four
+schemas, valid/invalid samples, successor/settlement fixtures and both skill
+wrappers bind one full candidate to a finite USER decision. The predecessor
+stays stopped, partial publication stays held, and normal trust/dispatch gates
+remain independent. No new external-source or authenticated-USER claim is made.
+
 The [campaign terminal contract](campaign-terminal-reconciliation.md) is local
 engineering synthesis of the existing stop, wave, dispatch and effect-settlement
 contracts. `campaign-terminal-controller.js`, its schema/sample pair, terminal

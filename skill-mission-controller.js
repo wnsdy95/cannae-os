@@ -558,13 +558,18 @@ function modelAssignments(plan, options) {
 }
 
 function assertAdaptiveCampaignMayContinue(plan, options, allowMissing = false) {
-  require("./campaign-stop-controller").assertMissionNotStopped(loadStore(options, true), plan.mission_id);
-  if (!plan.adaptive_work.enabled) return;
+  if (!plan.adaptive_work.enabled) {
+    require("./campaign-stop-controller").assertMissionNotStopped(loadStore(options, true), plan.mission_id);
+    return;
+  }
   try {
     const existing = optionalArtifact(options, {
       kind: "self-improvement-campaigns",
       artifactId: plan.adaptive_work.campaign_id
     });
+    const fenceStore = existing ? require("./campaign-supervisor").loadVerifiedStore(options.repository, artifactRootPath(options))
+      : loadStore(options, true);
+    require("./campaign-stop-controller").assertMissionNotStopped(fenceStore, plan.mission_id, existing?.ref);
     if (!existing && allowMissing) return;
     if (!existing) throw new Error("The adaptive campaign is not retained.");
     if (existing.entry.mission_id !== plan.mission_id) throw new Error("The adaptive campaign belongs to another mission.");

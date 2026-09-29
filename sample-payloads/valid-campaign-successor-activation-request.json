@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "type": "CampaignSuccessorActivationRequest",
+  "mission_id": "MIS-Cannae-001",
+  "proposal_ref": {
+    "artifact_id": "CSP-3aafade6f5778c3772606928ab782320",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/campaign-successor-proposals/CSP-3aafade6f5778c3772606928ab782320.json",
+    "sha256": "b39038803272ace40335c14c09c19d61f1cc19302e59723935a1451df19e038d"
+  },
+  "decision_ref": {
+    "artifact_id": "DL-Cannae-Successor",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/decision-logs/DL-Cannae-Successor.json",
+    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  }
+}

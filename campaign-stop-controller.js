@@ -100,8 +100,9 @@ function missionStopRecords(store, missionId) {
   });
 }
 
-function assertMissionNotStopped(store, missionId) {
-  if (missionStopRecords(store, missionId).length) {
+function assertMissionNotStopped(store, missionId, campaignRef) {
+  if (missionStopRecords(store, missionId).length && !(campaignRef &&
+      require("./campaign-successor-controller").successorStopFenceSatisfied(store, missionId, campaignRef))) {
     const error = new Error("CAMPAIGN_CONTINUATION_BLOCKED: CAMPAIGN_STOP_REQUESTED; settle retained obligations and obtain separately contracted successor authority.");
     error.code = "CAMPAIGN_CONTINUATION_BLOCKED";
     throw error;

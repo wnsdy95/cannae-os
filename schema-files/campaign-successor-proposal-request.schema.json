@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-successor-proposal-request.schema.json",
+  "title": "Campaign Successor Proposal Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "mission_id", "terminal_ref", "successor_campaign", "repository_state"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignSuccessorProposalRequest" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "terminal_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "successor_campaign": { "$ref": "self-improvement-campaign.schema.json" },
+    "repository_state": { "$ref": "verification-receipt.schema.json#/$defs/repository_state" }
+  }
+}

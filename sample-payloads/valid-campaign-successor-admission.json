@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1",
+  "type": "CampaignSuccessorAdmission",
+  "id": "CSA-b069d455127f717190b11edaecaa0090",
+  "mission_id": "MIS-Cannae-001",
+  "request": {
+    "schema_version": "0.1",
+    "type": "CampaignSuccessorActivationRequest",
+    "mission_id": "MIS-Cannae-001",
+    "proposal_ref": {
+      "artifact_id": "CSP-3aafade6f5778c3772606928ab782320",
+      "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/campaign-successor-proposals/CSP-3aafade6f5778c3772606928ab782320.json",
+      "sha256": "b39038803272ace40335c14c09c19d61f1cc19302e59723935a1451df19e038d"
+    },
+    "decision_ref": {
+      "artifact_id": "DL-Cannae-Successor",
+      "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/decision-logs/DL-Cannae-Successor.json",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  },
+  "request_sha256": "b069d455127f717190b11edaecaa0090f7b0c1bed6df48f3ab1ad29f517fa14b",
+  "observed_manifest": {
+    "revision": 13,
+    "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "successor_campaign_ref": {
+    "artifact_id": "SIC-Cannae-Successor",
+    "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/self-improvement-campaigns/SIC-Cannae-Successor.json",
+    "sha256": "5d880b3917bbb5ec4f3bced9e1ac4d955e09c2cc5dd730fc23d398161b386eb4"
+  },
+  "covered_stop_refs": [
+    {
+      "artifact_id": "CSR-ffffffffffffffffffffffffffffffff",
+      "relative_path": "repositories/cannae-os-aaaaaaaaaaaa/missions/MIS-Cannae-001/C0/campaign-stop-records/CSR-ffffffffffffffffffffffffffffffff.json",
+      "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    }
+  ],
+  "admitted_at": "2026-07-21T18:00:00+09:00",
+  "successor_admitted": true,
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false
+}

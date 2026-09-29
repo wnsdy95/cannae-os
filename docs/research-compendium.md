@@ -1,5 +1,25 @@
 # Research Compendium
 
+## Exact Successor Admission (2026-09-29)
+
+Local integration review found a digest cycle in naive restart designs: the
+proposal and USER decision themselves change the terminal inventory they cite.
+The [successor contract](campaign-successor-admission.md) instead freezes one
+terminal publication prefix and accepts only the exact proposal, exact decision
+and byte-identical partial candidate added during that ceremony. Generic artifact
+kind exclusions would permit unreviewed history and are not used.
+
+Publication is candidate first, admission second. Only the separately appraised
+admission satisfies the original mission fence for the selected successor;
+ordinary supervisor/trust/routing/dispatch remain independent. A later stop wins,
+one stop set cannot activate competing successors, and subsequent admission must
+follow the latest admitted predecessor. Historical replay stays inside decreasing
+manifest prefixes so retained settlement proof cannot import future authority.
+Both skills now distinguish held candidates, immutable historical admission and
+current stop-fence status, and require fresh consent after drift or expiry.
+This is local engineering synthesis, not authentication, trusted time, hard
+process cancellation or complete production operation.
+
 ## Campaign Terminal Reconciliation (2026-09-29)
 
 Local inspection found that live-only settlement reloads could not appraise an
@@ -12,7 +32,8 @@ Orphans, partial waves and concurrent history growth cannot become an empty
 success projection. A terminal record keeps failed work failed and the stop
 in force. Both skills now use the dedicated wrapper and recheck current inventory
 after history changes. This completes local known-obligation terminal recording,
-not successor activation, authenticated USER identity or production containment.
+not successor activation itself, authenticated USER identity or production containment.
+The separate successor follow-up above now supplies exact local admission.
 
 ## Explicit Campaign Stop Intake (2026-09-29)
 
@@ -26,8 +47,9 @@ cannot silently erase a stop, and same-mission campaign renaming or disabled
 adaptation cannot bypass it. Already-admitted results and explicit revocation
 remain available. Synthetic USER fixtures do not authenticate a real person.
 This closes stop intake only; the terminal follow-up above is a separate contract.
-Exact successor activation remains open, as do managed process cancellation and trusted
-time. No new external military-source assertion is introduced.
+The separate successor follow-up above now supplies exact local admission;
+managed process cancellation and trusted time remain open. No new external
+military-source assertion is introduced.
 
 ## Supervisor Publication-Time Admission (2026-09-28)
 
