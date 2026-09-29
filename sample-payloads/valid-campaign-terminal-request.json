@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "type": "CampaignTerminalRequest",
+  "mission_id": "MIS-TERMINAL",
+  "campaign_ref": {
+    "artifact_id": "SIC-TERMINAL",
+    "relative_path": "repositories/demo/missions/MIS-TERMINAL/C0/self-improvement-campaigns/SIC-TERMINAL.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "stop_ref": {
+    "artifact_id": "CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "relative_path": "repositories/demo/missions/MIS-TERMINAL/C0/campaign-stop-records/CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  }
+}

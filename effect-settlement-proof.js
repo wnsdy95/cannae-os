@@ -158,7 +158,29 @@ function historicalStore(store, revision, sha256) {
   return { ...store, manifest, verification: { ...store.verification, manifest_revision: revision, manifest_sha256: sha256 } };
 }
 
+const historicalRuntimeViews = new WeakMap();
+function historicalRuntimeView(store) {
+  const view = { ...store, repository: store.verification.repository,
+    verification: { ...store.verification, artifact_count: store.manifest.artifacts.length } };
+  historicalRuntimeViews.set(view, manifestDigest(store.manifest));
+  return view;
+}
+
+function verifiedRuntimeSnapshot(view) {
+  const store = require("./campaign-supervisor").loadVerifiedStore(view.repository.root, view.artifactRoot);
+  requireTrue(store.verification.repository.key === view.repository.key &&
+    store.verification.repository.identity_fingerprint === view.repository.identity_fingerprint,
+  "EFFECT_SETTLEMENT_REPOSITORY_MISMATCH");
+  const sha256 = manifestDigest(view.manifest);
+  if (sha256 === store.verification.manifest_sha256) return store;
+  requireTrue(historicalRuntimeViews.get(view) === sha256, "EFFECT_SETTLEMENT_STORE_CHANGED");
+  // Only an exact prefix of the currently verified chain may be replayed.
+  return historicalStore(store, view.manifest.manifest_revision, sha256);
+}
+
 module.exports = {
+  historicalRuntimeView,
+  verifiedRuntimeSnapshot,
   assertEffectSettlementInputsAvailable,
   assertEffectSettlementConsumptionUnique,
   appraiseEffectSettlementProof,

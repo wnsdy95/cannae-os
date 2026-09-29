@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-terminal-record.schema.json",
+  "title": "Campaign Terminal Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "campaign_id", "request", "request_sha256", "observed_manifest", "inventory", "inventory_sha256", "recorded_at", "status", "settlement_complete", "execution_completion_claimed", "execution_authorized", "continuation_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignTerminalRecord" },
+    "id": { "type": "string", "pattern": "^CTR-[a-f0-9]{32}$" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_id": { "$ref": "common.schema.json#/$defs/id" },
+    "request": { "$ref": "campaign-terminal-request.schema.json" },
+    "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "observed_manifest": {
+      "type": "object", "additionalProperties": false, "required": ["revision", "sha256"],
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "inventory": {
+      "type": "object", "additionalProperties": false, "required": ["stop_refs", "waves", "retained_artifact_refs"],
+      "properties": {
+        "stop_refs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/artifact_ref" } },
+        "retained_artifact_refs": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/artifact_ref" } },
+        "waves": {
+          "type": "array", "uniqueItems": true,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["wave_id", "plan_ref", "disposition_ref", "status"],
+            "properties": {
+              "wave_id": { "type": "string", "minLength": 1 },
+              "plan_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+              "disposition_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+              "status": { "enum": ["complete", "blocked_pending_execution", "blocked_pending_human_decision", "expired", "aborted", "superseded"] }
+            }
+          }
+        }
+      }
+    },
+    "inventory_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "status": { "const": "known_obligations_settled" },
+    "settlement_complete": { "const": true },
+    "execution_completion_claimed": { "const": false },
+    "execution_authorized": { "const": false },
+    "continuation_authorized": { "const": false },
+    "release_authorized": { "const": false }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "type": "CampaignTerminalRecord",
+  "id": "CTR-746b2d404774165c1564ea1d015adde6",
+  "mission_id": "MIS-TERMINAL",
+  "campaign_id": "SIC-TERMINAL",
+  "request": {
+    "schema_version": "0.1",
+    "type": "CampaignTerminalRequest",
+    "mission_id": "MIS-TERMINAL",
+    "campaign_ref": {
+      "artifact_id": "SIC-TERMINAL",
+      "relative_path": "repositories/demo/missions/MIS-TERMINAL/C0/self-improvement-campaigns/SIC-TERMINAL.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "stop_ref": {
+      "artifact_id": "CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "relative_path": "repositories/demo/missions/MIS-TERMINAL/C0/campaign-stop-records/CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  },
+  "request_sha256": "f9a043045172d2e896dad5cc9b12766ffbbf712237157449c4e1a0d9bd8b3289",
+  "observed_manifest": {
+    "revision": 7,
+    "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "inventory": {
+    "stop_refs": [
+      {
+        "artifact_id": "CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "relative_path": "repositories/demo/missions/MIS-TERMINAL/C0/campaign-stop-records/CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    ],
+    "waves": [],
+    "retained_artifact_refs": [
+      {
+        "artifact_id": "SIC-TERMINAL",
+        "relative_path": "repositories/demo/missions/MIS-TERMINAL/C0/self-improvement-campaigns/SIC-TERMINAL.json",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "artifact_id": "CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "relative_path": "repositories/demo/missions/MIS-TERMINAL/C0/campaign-stop-records/CSR-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.json",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    ]
+  },
+  "inventory_sha256": "1909a1af1437fab801c29c803a66b5c4cde640dbdc3c41eb47ed323c84955ada",
+  "recorded_at": "2026-09-28T21:00:00Z",
+  "status": "known_obligations_settled",
+  "settlement_complete": true,
+  "execution_completion_claimed": false,
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false
+}

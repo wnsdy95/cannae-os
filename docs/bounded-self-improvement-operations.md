@@ -355,8 +355,10 @@ and `release_authorized` false, even with no leases. A stop is neither a process
 kill nor successful mission closure. Unknown effects, gateway obligations and
 post-settlement failed-agent revocations keep their original guards.
 
-Full campaign terminal reconciliation and exact USER-authorized successor
-activation are still separate, unfinished contracts. There is intentionally no
+Use the separate [terminal reconciliation controller](campaign-terminal-reconciliation.md)
+to record known-obligation closure after all waves and dispatch effects settle.
+It does not clear the stop. Exact USER-authorized successor activation remains
+an unfinished contract. There is intentionally no
 `resume`, `clear`, or `restart` action in this stop controller. Do not simulate
 them by editing records, adding a generic approval, or fabricating an AAR.
 The local USER log and host clock are not authenticated USER identity or trusted

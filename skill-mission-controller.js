@@ -1253,6 +1253,18 @@ function existingCloseResult(aar, planArtifact, reportArtifact, closeoutArtifact
   };
 }
 
+function waveCloseoutDisposition(aar, report, readiness, campaignRef) {
+  const actions = improvementActions(aar, report, readiness, campaignRef);
+  const humanDecision = readiness.commander_decision_required || report.human_decisions_required.length > 0 ||
+    actions.some(action => action.disposition === "requires_human_decision");
+  const status = report.wave_status !== "complete" ? "blocked_pending_execution"
+    : humanDecision ? "blocked_pending_human_decision" : "complete";
+  const nextWaveRequired = status !== "complete" || actions.some(action => action.disposition !== "record_only");
+  const trigger = status === "blocked_pending_human_decision" ? "human_decision"
+    : status === "blocked_pending_execution" ? "blocked_work" : nextWaveRequired ? "improvement_candidate" : "none";
+  return { actions, status, nextWaveRequired, trigger };
+}
+
 function closeWave(aar, options = {}) {
   return withWaveLifecycle(options, options.missionId, options.waveId, locked => {
     assertWaveNotTerminated(locked, options.missionId, options.waveId);
@@ -1319,22 +1331,7 @@ function closeWaveUnlocked(aar, options = {}) {
     throw new Error("Adaptive wave closeout requires an active bounded improvement campaign.");
   }
   const campaignRef = campaign ? campaign.ref : { ...NONE_REF };
-  const actions = improvementActions(aar, reportArtifact.payload, readiness, campaignRef);
-  const humanDecision = readiness.commander_decision_required || reportArtifact.payload.human_decisions_required.length > 0 ||
-    actions.some(action => action.disposition === "requires_human_decision");
-  const status = reportArtifact.payload.wave_status !== "complete"
-    ? "blocked_pending_execution"
-    : humanDecision
-      ? "blocked_pending_human_decision"
-      : "complete";
-  const nextWaveRequired = status !== "complete" || actions.some(action => action.disposition !== "record_only");
-  const trigger = status === "blocked_pending_human_decision"
-    ? "human_decision"
-    : status === "blocked_pending_execution"
-      ? "blocked_work"
-      : nextWaveRequired
-        ? "improvement_candidate"
-        : "none";
+  const { actions, status, nextWaveRequired, trigger } = waveCloseoutDisposition(aar, reportArtifact.payload, readiness, campaignRef);
   const preCloseVerification = verifyRepositoryArtifacts({ repositoryPath: repository.root, artifactRoot: artifactRootPath(operationOptions) });
   if (!preCloseVerification.valid) {
     throw new Error(`Pre-close artifact verification failed: ${preCloseVerification.issues.map(item => item.code).join(", ")}`);
@@ -1672,6 +1669,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  waveCloseoutDisposition,
   NONE_REF,
   artifactRootPath,
   assertAdaptiveCampaignMayContinue,

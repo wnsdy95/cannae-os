@@ -2,6 +2,12 @@
 
 This directory contains JSON Schema contracts for the military-style LLM runtime.
 
+`campaign-terminal-request.schema.json` and `campaign-terminal-record.schema.json`
+bind an exact stopped campaign to its replayed manifest and derived wave/evidence
+inventory. The record settles known obligations only, never execution success or
+continuation authority. See [terminal reconciliation](../docs/campaign-terminal-reconciliation.md)
+and `run-campaign-terminal-fixtures.js`; schema validity alone is not replay proof.
+
 `GitHubReleaseIndependentVerification` v0.2 pairs with verifier 4.1.2; v0.1
 retains its exact 4.1.0 producer contract for historical reads. The schema rejects
 cross-version producer substitution. Full admission additionally requires a

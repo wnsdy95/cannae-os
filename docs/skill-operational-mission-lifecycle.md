@@ -371,8 +371,10 @@ still needs result reconciliation. Use the separate
 [explicit USER stop intake](bounded-self-improvement-operations.md#210-explicit-user-stop-intake)
 instead of fabricating an evaluation checkpoint. It fences the same mission,
 including renamed campaigns and non-adaptive waves, and supervisor order/challenge
-publication now reappraises that stop. Campaign-wide terminal settlement and
-USER-authorized successor activation remain open. Raw store writes and mutable runtime code are not an
+publication now reappraises that stop. The separate
+[campaign terminal controller](campaign-terminal-reconciliation.md) replays all
+registered waves and known dispatch obligations; USER-authorized successor
+activation remains open. Raw store writes and mutable runtime code are not an
 independently protected authority service.
 
 ## 10. Regression Gate

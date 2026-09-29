@@ -239,6 +239,8 @@ const TYPE_TO_SCHEMA = {
   "mission-wave-termination": "mission-wave-termination.schema.json",
   "campaign-stop-request": "campaign-stop-request.schema.json",
   "campaign-stop-record": "campaign-stop-record.schema.json",
+  "campaign-terminal-request": "campaign-terminal-request.schema.json",
+  "campaign-terminal-record": "campaign-terminal-record.schema.json",
   "model-force-assignment-plan": "model-force-assignment-plan.schema.json",
   "model-registry": "model-registry.schema.json",
   "model-assignment-request": "model-assignment-request.schema.json",
@@ -3615,6 +3617,28 @@ function semanticRules(payload, type, options = {}) {
     }
     if (payload.wave_status === "complete" && hasSubstantiveItems(payload.human_decisions_required)) {
       issues.push(issue("critical", "MISSION_WAVE_REPORT_COMPLETE_PENDING_DECISION", "$.human_decisions_required", "A wave awaiting a human decision cannot be reported complete."));
+    }
+  }
+
+  if (["campaign-terminal-request", "campaign-terminal-record"].includes(type)) {
+    const request = type === "campaign-terminal-record" ? payload.request || {} : payload;
+    if ([request.campaign_ref, request.stop_ref].some(ref => artifactRefKind(ref) !== "concrete")) {
+      issues.push(issue("critical", "CAMPAIGN_TERMINAL_REFERENCE_INVALID", "$", "Terminal reconciliation requires exact campaign and USER stop references."));
+    }
+    if (type === "campaign-terminal-record") {
+      const digest = value => canonicalControlDigestWithout(value || {}, []);
+      const inventory = payload.inventory || {};
+      const retained = inventory.retained_artifact_refs || [];
+      const waves = inventory.waves || [];
+      const expectedId = `CTR-${digest({ request, observed_manifest: payload.observed_manifest }).slice(0, 32)}`;
+      if (payload.request_sha256 !== digest(request) || payload.inventory_sha256 !== digest(inventory) || payload.id !== expectedId ||
+          payload.mission_id !== request.mission_id || payload.campaign_id !== request.campaign_ref?.artifact_id ||
+          !(inventory.stop_refs || []).some(ref => sameJson(ref, request.stop_ref)) ||
+          [request.campaign_ref, ...(inventory.stop_refs || []), ...waves.flatMap(wave => [wave.plan_ref, wave.disposition_ref])]
+            .some(ref => !retained.some(item => sameJson(ref, item))) ||
+          new Set(waves.map(wave => wave.wave_id)).size !== waves.length) {
+        issues.push(issue("critical", "CAMPAIGN_TERMINAL_RECORD_BINDING_INVALID", "$", "Terminal records bind the exact request, observed history and complete unique wave/reference inventory."));
+      }
     }
   }
 

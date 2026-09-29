@@ -6,6 +6,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const {
   resolveRepository,
+  manifestDigest,
   verifyRepositoryArtifacts,
   writeRepositoryArtifact
 } = require("./repository-artifact-store");
@@ -154,6 +155,7 @@ function storeView(options) {
   const namespacePath = path.join(artifactRoot, "repositories", repository.key);
   const manifestPath = path.join(namespacePath, "manifest.json");
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  if (manifestDigest(manifest) !== verification.manifest_sha256) throw new Error("DISPATCH_MANIFEST_CHANGED_AFTER_VERIFICATION");
   return {
     artifactRoot,
     manifest,
@@ -1779,7 +1781,26 @@ function sessionStart(options, identity, hookInput) {
 
 function dispatchStatus(options, filters = {}) {
   const view = storeView(options);
+  return projectDispatchStatus(view, filters);
+}
+
+// Read-only replay. No admission/issuance path accepts an earlier manifest.
+function historicalDispatchStatus(options, snapshot, filters = {}) {
+  const { loadVerifiedStore } = require("./campaign-supervisor");
+  const { historicalSettlementStore, historicalRuntimeView } = require("./effect-settlement-proof");
+  const store = loadVerifiedStore(options.repository, options.artifactRoot || path.join(options.repository, ".cannae", "artifacts"));
+  const current = snapshot.revision === store.manifest.manifest_revision && snapshot.sha256 === store.verification.manifest_sha256;
+  const selected = current ? store : historicalSettlementStore(store, snapshot.revision, snapshot.sha256);
+  return projectDispatchStatus(historicalRuntimeView(selected), filters);
+}
+
+function projectDispatchStatus(view, filters) {
   const obligations = gatewayObligations(view);
+  const scopedObligations = obligations.filter(item => {
+    const request = loadArtifactRef(view, item.request_ref, "tool-gateway-request").payload;
+    return (!filters.missionId || request.mission_id === filters.missionId) &&
+      (!filters.waveId || request.wave_id === filters.waveId) && (!filters.agentId || request.agent_id === filters.agentId);
+  });
   const records = leaseRecords(view, filters.missionId, filters.waveId)
     .filter(item => !filters.agentId || item.payload.agent_id === filters.agentId)
     .map(leaseRecord => {
@@ -1817,6 +1838,7 @@ function dispatchStatus(options, filters = {}) {
       head_commit: view.repository.head_commit
     },
     leases: records,
+    unresolved_gateway_obligations: scopedObligations,
     artifact_store: view.verification,
     release_authorized: false
   };
@@ -1903,6 +1925,7 @@ function main() {
 }
 
 module.exports = {
+  historicalDispatchStatus,
   assertReconciledFailureRevocations,
   unknownToolEffectCheckpointRefs,
   withDispatchIssuanceLock,

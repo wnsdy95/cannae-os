@@ -88,8 +88,7 @@ function verifyRecord(store, record) {
 function settledToolEffectState(runtimeView, leaseRef, latestCheckpointRef) {
   const result = { checkpoint_refs: [], checkpoint_follows_settlement: true, latest_settled_at: null };
   if (!runtimeView.manifest.artifacts.some(entry => entry.kind === "tool-effect-settlements")) return result;
-  const store = loadVerifiedStore(runtimeView.repository.root, runtimeView.artifactRoot);
-  requireTrue(manifestDigest(runtimeView.manifest) === store.verification.manifest_sha256, "TOOL_EFFECT_SETTLEMENT_STORE_CHANGED");
+  const store = require("./effect-settlement-proof").verifiedRuntimeSnapshot(runtimeView);
   const found = records(store);
   const seen = new Set();
   const consumed = new Set();
