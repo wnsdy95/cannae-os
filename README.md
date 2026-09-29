@@ -127,7 +127,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Exact GitHub Release Authorization](docs/github-release-authorization.md): one short-lived USER grant bound to the exact repository, tag, commit, main CI, notes, latest non-genesis monitor artifact, and verified receipt.
 - [GitHub Release Immutability](docs/github-release-immutability.md): separately authorized repository policy activation and prospective immutable-state enforcement for future releases.
 - [GitHub Release Integrity Monitoring](docs/github-release-integrity-monitoring.md): continuous policy-drift and GitHub-signed release-attestation verification without mutation or release authority.
-- [Independent GitHub Release Verification](docs/github-release-independent-verification.md): pinned TUF-chain replay, current-engine bundle verification, and exact historical-producer compatibility without rewriting evidence.
+- [Independent GitHub Release Verification](docs/github-release-independent-verification.md): pinned TUF-chain replay, current-engine bundle verification, and exact historical v0.1/v0.2 producer compatibility across dependency updates without rewriting evidence.
 - [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): monotonic prior-state comparison, stable run/attempt artifact lineage, rerun-fork rejection, and fail-closed rollback/equivocation detection.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
 - [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.

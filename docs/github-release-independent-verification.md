@@ -113,9 +113,10 @@ dependency migration.
 
 Retained evidence previously required byte-equivalent replay including current
 module and lockfile digests. Even a valid dependency update therefore broke
-historical replay. The runtime now recognizes three exact old producer tuples
-from source commits `786c38a`, `9635f8d`, and `d08420a`: package, package version,
-minimum version, Node minimum, module SHA-256, and lockfile SHA-256 must all match.
+historical replay. The runtime recognizes exact v0.1/4.1.0 producer tuples from
+source commits `786c38a`, `9635f8d`, and `d08420a`, plus the former v0.2/4.1.2
+producer from `4bad6dd`. Evidence schema, package, package version, minimum
+version, Node minimum, module SHA-256, and lockfile SHA-256 must all match.
 Unknown tuples, extra metadata, and schema/version substitution remain errors.
 
 Historical compatibility never loads the old library. The currently pinned
@@ -131,6 +132,29 @@ schema pass is not cryptographic replay or provider provenance. Newly encountere
 producer revisions require a reviewed compatibility change and adversarial tests;
 never admit arbitrary versions, ignore producer digests, or reset lineage to
 make a dependency update pass.
+
+The `ip-address` 10.7.2 lockfile migration preserves that former v0.2 profile even
+though the evidence schema and Sigstore package version are unchanged. Its module
+digest is `2698e8a65e83987e4a80675b194ea203ac1fa5b7e1ab4504b2ed7155ede9bba8`
+and lock digest is `25179325095a514dd6908af3bca74580bc4e9057d70616a2bfe9d974677975d0`.
+The committed `valid-github-release-independent-verification-prior-v0.2.json`
+is byte-identical to the former current sample in that source commit. Fixtures
+pin its file hash and replay it unchanged, independently of the separately
+regenerated current sample. Hybrid old-module/new-lock identities stay rejected.
+
+Before future migrations, capture the exact baseline producer and an unchanged
+evidence sample. After installation, test both prior replay and exact equality
+between the current sample and a fresh result. Merely generating a new sample or
+keeping the same schema/version does not prove backward compatibility.
+
+The upstream [NAT64 classification advisory](https://github.com/beaugunderson/ip-address/security/advisories/GHSA-2vr4-cq9g-pvrc)
+affects 10.4.0; 10.5.1 first fixes the local-use range. The selected
+[10.7.2 release](https://github.com/beaugunderson/ip-address/releases/tag/v10.7.2)
+includes that correction. Local dependency fixtures test private/non-global
+classification at both range ends and a public-address control. This establishes
+the patched library behavior, not complete SSRF protection or an exploitable
+network path in this application. Monitor credentials and checkpoint continuity
+are separate operational obligations and are not reset by this migration.
 
 Upstream context: the [checkpoint parsing fix](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
 and [log-entry counting fix](https://github.com/sigstore/sigstore-js/commit/adbe2535c5702364e9c958ae3d67fbdefe068edd)

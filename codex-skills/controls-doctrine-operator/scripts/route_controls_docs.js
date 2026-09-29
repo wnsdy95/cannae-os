@@ -35,7 +35,7 @@ const RULES = [
   },
   {
     id: "authority-risk-release",
-    keywords: ["authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment", "immutability", "attestation", "integrity", "drift", "tuf", "trusted-root", "bundle", "sigstore", "offline verification"],
+    keywords: ["dependency migration", "verifier dependency", "producer compatibility", "lockfile update", "ip-address", "authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment", "immutability", "attestation", "integrity", "drift", "tuf", "trusted-root", "bundle", "sigstore", "offline verification"],
     docs: [
       "docs/agent-roles-and-authority.md",
       "docs/tool-use-roe.md",

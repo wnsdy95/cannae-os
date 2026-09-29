@@ -7,8 +7,8 @@
     "package": "@sigstore/verify",
     "version": "4.1.2",
     "minimum_version": "4.1.0",
-    "module_sha256": "67b232fe4858c23311f7d88336c0918ccd0a342ee07a3d73e9449e05a53f670e",
-    "dependency_lock_sha256": "d6b31db81d84c809cf0b7d009c2f17a33419d44af3df8efd290b38a99b51cfd5",
+    "module_sha256": "2698e8a65e83987e4a80675b194ea203ac1fa5b7e1ab4504b2ed7155ede9bba8",
+    "dependency_lock_sha256": "25179325095a514dd6908af3bca74580bc4e9057d70616a2bfe9d974677975d0",
     "node_minimum_version": "22.22.2"
   },
   "trusted_root_ref": {
@@ -144,5 +144,5 @@
     "release_authorized": false
   },
   "release_authorized": false,
-  "verification_sha256": "3a2c57e51d8e0e1108460d865eecf87f39e2716437bd0afc9974c02c11fb0ddc"
+  "verification_sha256": "db6cf54a054a5d373295a14eee9fb39634b7d561482139c0fcaf74da84e5a7bd"
 }

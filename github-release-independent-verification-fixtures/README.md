@@ -37,6 +37,14 @@ metadata substitution rejection, not historical production execution. Fresh
 evidence is v0.2 with verifier 4.1.2; recognized v0.1 wrappers remain unchanged.
 Old runtime execution is explicitly rejected even when old records are readable.
 
+The frozen `sample-payloads/valid-github-release-independent-verification-prior-v0.2.json`
+preserves the former `4bad6dd` producer byte-for-byte. Its file digest is checked;
+the current sample must independently match a new execution. Both schema versions
+receive module/lock/version substitution, signed-claim and cryptographic tampering
+tests. An old module combined with the new lock is not an approved producer.
+Installed `ip-address` checks cover NAT64 local-use boundaries and a public IPv6
+control; they are dependency regressions, not a complete SSRF defense.
+
 ```bash
 node run-github-release-independent-verification-fixtures.js
 ```
