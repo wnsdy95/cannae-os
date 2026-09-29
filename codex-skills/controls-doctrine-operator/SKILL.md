@@ -75,21 +75,10 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 Read these only when needed:
 
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
+- `docs/request-order-intake.md`: use `scripts/compile_controls_order.js` to capture original bytes and compile review-only drafts; never strip draft markers or treat quotes as verified truth.
 - `references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
 
 ## Workflows
-
-### Compiling A General Request
-
-Read `docs/request-order-intake.md` and use `scripts/compile_controls_order.js`
-to capture the exact original request, prepare typed analysis, compile and inspect
-a non-executable draft. Preserve quotations, assumptions, unknowns, constraints
-and retained USER decisions separately. A quote proves source bytes, not truth;
-`ready_for_review` and validator success never mean issued order or tool authority.
-Do not strip draft markers to enter a legacy OPORD/task consumer. Changed analysis
-requires a new digest-bound draft; expired input requires a new captured request.
-After a clock rollback, wait for valid time or investigate the clock; do not edit
-retained timestamps to make an existing draft current.
 
 ### Operating A Delegated Mission
 

@@ -4,6 +4,7 @@ const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const { validateSkill } = require("./validate-controls-skill");
 
 const ROOT = __dirname;
 const ROUTERS = [
@@ -30,6 +31,7 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  validateSkill(path.posix.dirname(path.posix.dirname(router)));
   for (const query of ["request intake", "mission analysis", "request-order-compiler.js", "compile_controls_order.js", "order-intake-contract.js", "mission-order-analysis", "order-draft"]) {
     const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
     assertRoutes(result, ["orders"]);

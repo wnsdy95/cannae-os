@@ -104,6 +104,8 @@ Pass the same `--artifact-root` everywhere when overriding the default
    adoption are not provided in this release.
 7. Capture a new request after expiry or request changes. Historical `inspect`
    replays proof but reports `freshness: expired`. CLI clock overrides fail.
+   After a clock rollback, wait for valid time or investigate the clock; do not
+   edit retained timestamps to make a draft current.
 
 Exact compilation retry reuses the immutable draft while the request is current
 and the retained compilation is not later than the current clock.

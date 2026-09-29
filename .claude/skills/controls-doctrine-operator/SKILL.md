@@ -62,18 +62,6 @@ If role, department, or authority is missing in delegated AI mode, start with le
 
 The router and references are bundled under this skill folder and do not depend on `codex-skills/`. The lifecycle wrapper resolves the shared Cannae OS runtime through the live symlink, the copy-install marker, or `CANNAE_OS_HOME`.
 
-## Compiling A General Request
-
-Read `docs/request-order-intake.md` and use `scripts/compile_controls_order.js`
-to capture the exact original request, prepare typed analysis, compile and inspect
-a non-executable draft. Preserve quotations, assumptions, unknowns, constraints
-and retained USER decisions separately. A quote proves source bytes, not truth;
-`ready_for_review` and validator success never mean issued order or tool authority.
-Do not strip draft markers to enter a legacy OPORD/task consumer. Changed analysis
-requires a new digest-bound draft; expired input requires a new captured request.
-After a clock rollback, wait for valid time or investigate the clock; do not edit
-retained timestamps to make an existing draft current.
-
 ## Operational Mission Lifecycle
 
 1. Create a schema-valid `MissionWavePlan` from `sample-payloads/valid-mission-wave-plan.json`. Preserve `USER` final authority, give each AI a non-command operational role, state allowed/approval-required/prohibited actions, and set finite validity and adaptive budgets.
@@ -344,6 +332,7 @@ independent durable archive or witness.
 Read these only when needed (bundled with this skill):
 
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
+- `docs/request-order-intake.md`: use `scripts/compile_controls_order.js` to capture original bytes and compile review-only drafts; never strip draft markers or treat quotes as verified truth.
 - `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
 
 ## Reading Rules
