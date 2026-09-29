@@ -241,6 +241,10 @@ const TYPE_TO_SCHEMA = {
   "campaign-stop-record": "campaign-stop-record.schema.json",
   "campaign-terminal-request": "campaign-terminal-request.schema.json",
   "campaign-terminal-record": "campaign-terminal-record.schema.json",
+  "campaign-successor-proposal-request": "campaign-successor-proposal-request.schema.json",
+  "campaign-successor-proposal": "campaign-successor-proposal.schema.json",
+  "campaign-successor-activation-request": "campaign-successor-activation-request.schema.json",
+  "campaign-successor-admission": "campaign-successor-admission.schema.json",
   "model-force-assignment-plan": "model-force-assignment-plan.schema.json",
   "model-registry": "model-registry.schema.json",
   "model-assignment-request": "model-assignment-request.schema.json",
@@ -3617,6 +3621,40 @@ function semanticRules(payload, type, options = {}) {
     }
     if (payload.wave_status === "complete" && hasSubstantiveItems(payload.human_decisions_required)) {
       issues.push(issue("critical", "MISSION_WAVE_REPORT_COMPLETE_PENDING_DECISION", "$.human_decisions_required", "A wave awaiting a human decision cannot be reported complete."));
+    }
+  }
+
+  if (["campaign-successor-proposal-request", "campaign-successor-proposal", "campaign-successor-activation-request", "campaign-successor-admission"].includes(type)) {
+    const proposal = type.startsWith("campaign-successor-proposal");
+    const record = ["campaign-successor-proposal", "campaign-successor-admission"].includes(type);
+    const request = record ? payload.request || {} : payload;
+    const refs = proposal ? [request.terminal_ref] : [request.proposal_ref];
+    if (!proposal && (record || artifactRefKind(request.decision_ref) !== "none")) refs.push(request.decision_ref);
+    if (!proposal && record) refs.push(payload.successor_campaign_ref, ...(payload.covered_stop_refs || []));
+    if (refs.some(ref => artifactRefKind(ref) !== "concrete")) {
+      issues.push(issue("critical", "CAMPAIGN_SUCCESSOR_REFERENCE_INVALID", "$", "Successor admission requires exact terminal/proposal/candidate/stop references and a real decision; only an activation draft may use a none decision."));
+    }
+    const digest = value => canonicalControlDigestWithout(value || {}, []);
+    if (record && (payload.request_sha256 !== digest(request) || payload.mission_id !== request.mission_id ||
+        payload.id !== `${proposal ? "CSP" : "CSA"}-${digest(request).slice(0, 32)}`)) {
+      issues.push(issue("critical", "CAMPAIGN_SUCCESSOR_BINDING_INVALID", "$", "Successor records bind the canonical request and exact mission identity."));
+    }
+    if (proposal) {
+      const campaign = request.successor_campaign || {};
+      const nested = validatePayload(campaign, "self-improvement-campaign");
+      if (!nested.valid || campaign.status !== "active" || campaign.mission_id !== request.mission_id ||
+          campaign.repository_binding?.baseline_revision !== request.repository_state?.head_commit) {
+        issues.push(issue("critical", "CAMPAIGN_SUCCESSOR_CANDIDATE_INVALID", "$", "The exact active candidate must satisfy campaign semantics and bind the mission and proposed repository baseline."));
+      }
+      if (record) {
+        const end = Date.parse(campaign.created_at) + (campaign.budgets?.max_elapsed_minutes || 0) * 60000;
+        const recorded = Date.parse(payload.recorded_at);
+        const expires = Date.parse(payload.expires_at);
+        if (![end, recorded, expires].every(Number.isFinite) || recorded < Date.parse(campaign.created_at) ||
+            expires <= recorded || expires !== Math.min(recorded + 3600000, end)) {
+          issues.push(issue("critical", "CAMPAIGN_SUCCESSOR_VALIDITY_INVALID", "$", "Proposal validity cannot renew candidate time or exceed its finite campaign budget and one-hour consent ceremony."));
+        }
+      }
     }
   }
 

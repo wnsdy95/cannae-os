@@ -357,8 +357,10 @@ post-settlement failed-agent revocations keep their original guards.
 
 Use the separate [terminal reconciliation controller](campaign-terminal-reconciliation.md)
 to record known-obligation closure after all waves and dispatch effects settle.
-It does not clear the stop. Exact USER-authorized successor activation remains
-an unfinished contract. There is intentionally no
+It does not clear the stop. The separate
+[exact USER-authorized successor contract](campaign-successor-admission.md)
+admits only a fully bound candidate after fresh consent and reappraisal; normal
+supervisor and dispatch checks still apply. There is intentionally no
 `resume`, `clear`, or `restart` action in this stop controller. Do not simulate
 them by editing records, adding a generic approval, or fabricating an AAR.
 The local USER log and host clock are not authenticated USER identity or trusted

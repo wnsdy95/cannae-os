@@ -298,17 +298,20 @@ function payloadFor(store, request, inventory, evaluatedAt) {
     settlement_complete: true, execution_completion_claimed: false, execution_authorized: false,
     continuation_authorized: false, release_authorized: false };
 }
+function terminalRecordProof(store, terminalRef) {
+  const item = reference(store, terminalRef, KIND, "campaign-terminal-record");
+  const { entry, payload: record } = item;
+  const before = historicalSettlementStore(store, record.observed_manifest.revision, record.observed_manifest.sha256);
+  const published = prefixBeforeEntry(store, entry);
+  requireTrue(manifestDigest(published.manifest) === record.observed_manifest.sha256 &&
+    at(entry.created_at) === at(record.recorded_at) &&
+    same(record, payloadFor(before, record.request, appraise(before, record.request, record.recorded_at), record.recorded_at)),
+  "CAMPAIGN_TERMINAL_RECORD_REPLAY_MISMATCH");
+  return { record, ref: ref(entry), entry };
+}
 function records(store, request) {
-  return store.manifest.artifacts.filter(item => item.kind === KIND && item.mission_id === request.mission_id).map(entry => {
-    const record = reference(store, ref(entry), KIND, "campaign-terminal-record", request).payload;
-    const before = historicalSettlementStore(store, record.observed_manifest.revision, record.observed_manifest.sha256);
-    const published = prefixBeforeEntry(store, entry);
-    requireTrue(manifestDigest(published.manifest) === record.observed_manifest.sha256 &&
-      at(entry.created_at) === at(record.recorded_at) &&
-      same(record, payloadFor(before, record.request, appraise(before, record.request, record.recorded_at), record.recorded_at)),
-    "CAMPAIGN_TERMINAL_RECORD_REPLAY_MISMATCH");
-    return { record, ref: ref(entry) };
-  });
+  return store.manifest.artifacts.filter(item => item.kind === KIND && item.mission_id === request.mission_id)
+    .map(entry => terminalRecordProof(store, ref(entry)));
 }
 
 function campaignTerminalStatus(request, options = {}) {
@@ -367,4 +370,5 @@ function main(argv = process.argv.slice(2)) {
   } catch (error) { console.error(error.message); return 2; }
 }
 if (require.main === module) process.exitCode = main();
-module.exports = { campaignTerminalStatus, reconcileCampaignTerminal, main };
+module.exports = { campaignTerminalStatus, reconcileCampaignTerminal, terminalRecordProof,
+  appraiseTerminalInventory: appraise, prefixBeforeEntry, main };

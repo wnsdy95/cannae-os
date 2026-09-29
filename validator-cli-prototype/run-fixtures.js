@@ -9,6 +9,35 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["proposal-request", "proposal", "activation-request", "admission"].map(kind => ({
+    name: `valid campaign successor ${kind}`, file: `sample-payloads/valid-campaign-successor-${kind}.json`,
+    type: `campaign-successor-${kind}`, exitCode: 0, requiredCodes: []
+  })),
+  ...[
+    ["proposal-request-scope", "proposal-request", "CAMPAIGN_SUCCESSOR_CANDIDATE_INVALID"],
+    ["proposal-expiry", "proposal", "CAMPAIGN_SUCCESSOR_VALIDITY_INVALID"],
+    ["activation-request-decision", "activation-request", "CAMPAIGN_SUCCESSOR_REFERENCE_INVALID"],
+    ["admission-authority", "admission", "CONST_MISMATCH"]
+  ].map(([file, type, code]) => ({ name: `invalid successor ${file}`,
+    file: `sample-payloads/invalid-campaign-successor-${file}.json`, type: `campaign-successor-${type}`, exitCode: 1, requiredCodes: [code] })),
+  ...["proposal", "admission"].flatMap(kind => ["id", "mission", "request"].map(mutation => ({
+    name: `successor ${kind} binds ${mutation}`, file: `sample-payloads/valid-campaign-successor-${kind}.json`,
+    type: `campaign-successor-${kind}`, exitCode: 1, requiredCodes: ["CAMPAIGN_SUCCESSOR_BINDING_INVALID"],
+    mutate: payload => {
+      if (mutation === "id") payload.id = `${kind === "proposal" ? "CSP" : "CSA"}-${"e".repeat(32)}`;
+      else if (mutation === "mission") payload.mission_id = "MIS-Other";
+      else payload.request.mission_id = "MIS-Other";
+    }
+  }))),
+  { name: "successor option draft may omit consent", file: "sample-payloads/valid-campaign-successor-activation-request.json",
+    type: "campaign-successor-activation-request", exitCode: 0, requiredCodes: [],
+    mutate: payload => { payload.decision_ref = { artifact_id: "none", relative_path: "none", sha256: "none" }; } },
+  { name: "successor admission requires concrete consent", file: "sample-payloads/valid-campaign-successor-admission.json",
+    type: "campaign-successor-admission", exitCode: 1, requiredCodes: ["CAMPAIGN_SUCCESSOR_REFERENCE_INVALID"],
+    mutate: payload => { payload.request.decision_ref = { artifact_id: "none", relative_path: "none", sha256: "none" }; } },
+  { name: "successor embeds campaign semantic gates", file: "sample-payloads/valid-campaign-successor-proposal-request.json",
+    type: "campaign-successor-proposal-request", exitCode: 1, requiredCodes: ["CAMPAIGN_SUCCESSOR_CANDIDATE_INVALID"],
+    mutate: payload => { payload.successor_campaign.quality_model.dimensions[0].weight = 0; } },
   ...["request", "record"].map(kind => ({
     name: `valid campaign terminal ${kind}`, file: `sample-payloads/valid-campaign-terminal-${kind}.json`,
     type: `campaign-terminal-${kind}`, exitCode: 0, requiredCodes: []

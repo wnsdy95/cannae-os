@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-successor-activation-request.schema.json",
+  "title": "Campaign Successor Activation Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "mission_id", "proposal_ref", "decision_ref"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignSuccessorActivationRequest" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "proposal_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "decision_ref": { "oneOf": [{ "$ref": "common.schema.json#/$defs/artifact_ref" }, { "$ref": "campaign-stop-request.schema.json#/$defs/none" }] }
+  }
+}

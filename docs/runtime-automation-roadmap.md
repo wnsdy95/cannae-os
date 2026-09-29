@@ -4,9 +4,12 @@
 
 Campaign [known-obligation terminal reconciliation](campaign-terminal-reconciliation.md)
 now follows explicit USER stop intake. Historical snapshot replay, wave/report
-proof, orphan rejection and guarded publication preserve the stop. Exact
-USER-authorized successor proposal/admission remains unfinished; this milestone
-does not supply restart, trusted time or external containment infrastructure.
+proof, orphan rejection and guarded publication preserve the stop. The separate
+[exact successor contract](campaign-successor-admission.md) now binds the complete
+candidate, repository state and fresh USER decision through held candidate then
+admission publication. It satisfies only the selected successor's stop fence;
+normal trust/budget/dispatch gates, trusted time and external containment remain
+independent obligations.
 
 This document is a roadmap for evolving the current document-based framework into an actual tool-gated LLM runtime.
 
@@ -519,13 +522,14 @@ See `skill-operational-mission-lifecycle.md` for operator commands, contracts, f
 Lifecycle reconciliation now supports expired, aborted, and superseded wave
 termination without a fabricated report/AAR. Exact USER scope decisions bind
 early abort and replacement to retained plan digests. Settled dispatch and
-immutable terminal records prevent reopening the old wave. Campaign-level
-cancellation, automatic replacement planning, and external process termination
-remain separate work; a wave terminal record does not imply them. Adaptive
+immutable terminal records prevent reopening the old wave. Campaign-level stop,
+terminal reconciliation and exact successor admission use separate contracts;
+automatic replacement planning and external process termination remain open.
+A wave terminal record does not imply them. Adaptive
 wave and dispatch admission now reconstruct supervisor readiness, so a terminal
 decision, pause, invalid lineage, exhausted budget, or unavailable trust admission
 cannot be ignored through a new wave/session. This read-only guard does not
-provide atomic campaign cancellation or USER-authorized restart.
+provide atomic campaign cancellation or replace the exact USER successor ceremony.
 The same guard checks the creation-based wall-clock deadline independently of
 reported progress, including idle campaigns and retained ready orders. Trusted
 time, hard process deadlines, and pause-adjusted budgets remain external or
@@ -541,8 +545,11 @@ now persists a monotonic stop bound to its exact pre-publication manifest,
 campaign and USER decision. The same-mission fence applies even to a new campaign
 ID or non-adaptive wave; admitted results and revocation remain recordable.
 The [terminal controller](campaign-terminal-reconciliation.md) records known-obligation
-closure using exact historical replay and current inventory. Exact successor
-authorization and atomic multi-artifact settlement remain open.
+closure using exact historical replay and current inventory. The separate
+[successor controller](campaign-successor-admission.md) now binds exact USER
+consent, immutable partial publication, one-use stop sets and later-stop holds.
+It never grants tool or release authority. Atomic multi-artifact settlement,
+authenticated USER identity and external containment remain open.
 See `repository-artifact-isolation-policy.md` for exact recovery ordering and
 the unchanged cooperating-writer/shared-filesystem trust boundary.
 

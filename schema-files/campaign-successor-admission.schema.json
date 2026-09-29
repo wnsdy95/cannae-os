@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-successor-admission.schema.json",
+  "title": "Campaign Successor Admission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "request", "request_sha256", "observed_manifest", "successor_campaign_ref", "covered_stop_refs", "admitted_at", "successor_admitted", "execution_authorized", "continuation_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignSuccessorAdmission" },
+    "id": { "type": "string", "pattern": "^CSA-[a-f0-9]{32}$" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "request": { "$ref": "campaign-successor-activation-request.schema.json" },
+    "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "observed_manifest": { "$ref": "campaign-terminal-record.schema.json#/properties/observed_manifest" },
+    "successor_campaign_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "covered_stop_refs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "common.schema.json#/$defs/artifact_ref" } },
+    "admitted_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "successor_admitted": { "const": true },
+    "execution_authorized": { "const": false },
+    "continuation_authorized": { "const": false },
+    "release_authorized": { "const": false }
+  }
+}
