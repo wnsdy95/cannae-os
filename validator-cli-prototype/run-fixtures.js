@@ -9,6 +9,41 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["mission-request", "mission-order-analysis", "order-draft"].map(type => ({
+    name: `valid non-executable ${type}`, file: `sample-payloads/valid-${type}.json`, type,
+    exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  })),
+  ...[
+    ["mission-request-text", "mission-request", "ORDER_REQUEST_TEXT_BINDING_INVALID"],
+    ["mission-order-analysis-fact", "mission-order-analysis", "ORDER_ANALYSIS_UNSUPPORTED_FACT"],
+    ["order-draft-constraints", "order-draft", "ORDER_DRAFT_BINDING_INVALID"]
+  ].map(([file, type, code]) => ({ name: `reject ${file}`, file: `sample-payloads/invalid-${file}.json`, type,
+    exitCode: 1, expectedCanExecute: false, requiredCodes: [code] })),
+  ...["extra-field", "duplicate-quote", "missing-reference", "invalid-span"].map(mutation => ({
+    name: `analysis rejects ${mutation}`, file: "sample-payloads/valid-mission-order-analysis.json", type: "mission-order-analysis",
+    exitCode: 1, expectedCanExecute: false,
+    requiredCodes: [{ "extra-field": "ONE_OF_MISMATCH", "duplicate-quote": "ORDER_ANALYSIS_DUPLICATE_ID",
+      "missing-reference": "ORDER_ANALYSIS_REFERENCE_MISSING", "invalid-span": "ORDER_ANALYSIS_SPAN_INVALID" }[mutation]],
+    mutate: value => {
+      if (mutation === "extra-field") value.statements[0].source.approved = true;
+      if (mutation === "duplicate-quote") value.statements.push(JSON.parse(JSON.stringify(value.statements[0])));
+      if (mutation === "missing-reference") value.sections["mission.statement"] = ["ST-ABSENT"];
+      if (mutation === "invalid-span") {
+        value.statements[0].source.start_byte = 1;
+        value.statements[0].source.end_byte = 1;
+      }
+    }
+  })),
+  ...["authority", "expiry", "nested-task-extra"].map(mutation => ({
+    name: `draft rejects ${mutation}`, file: "sample-payloads/valid-order-draft.json", type: "order-draft",
+    exitCode: 1, expectedCanExecute: false,
+    requiredCodes: [{ authority: "CONST_MISMATCH", expiry: "ORDER_DRAFT_VALIDITY_INVALID", "nested-task-extra": "ADDITIONAL_PROPERTY" }[mutation]],
+    mutate: value => {
+      if (mutation === "authority") value.execution_authorized = true;
+      if (mutation === "expiry") value.expires_at = value.compiled_at;
+      if (mutation === "nested-task-extra") value.opord.execution.tasks[0].approved = true;
+    }
+  })),
   ...["proposal-request", "proposal", "activation-request", "admission"].map(kind => ({
     name: `valid campaign successor ${kind}`, file: `sample-payloads/valid-campaign-successor-${kind}.json`,
     type: `campaign-successor-${kind}`, exitCode: 0, requiredCodes: []
@@ -2612,13 +2647,15 @@ function runFixture(fixture) {
 
   const issueCodes = new Set((parsed.issues || []).map(issue => issue.code));
   const missingCodes = fixture.requiredCodes.filter(code => !issueCodes.has(code));
-  const ok = result.status === fixture.exitCode && missingCodes.length === 0;
+  const executionMatches = fixture.expectedCanExecute === undefined || parsed.can_execute === fixture.expectedCanExecute;
+  const ok = result.status === fixture.exitCode && missingCodes.length === 0 && executionMatches;
 
   return {
     ok,
     fixture,
     exitCode: result.status,
     expectedExitCode: fixture.exitCode,
+    executionMatches,
     missingCodes,
     maxSeverity: parsed.max_severity,
     issueCount: parsed.issue_count
@@ -2633,6 +2670,7 @@ for (const result of results) {
   console.log(`${status} ${result.fixture.name} (${result.fixture.file})`);
   if (!result.ok) {
     console.log(`  expected exit: ${result.expectedExitCode}, actual: ${result.exitCode}`);
+    if (result.executionMatches === false) console.log("  can_execute does not match the contract");
     if (result.missingCodes && result.missingCodes.length) {
       console.log(`  missing issue codes: ${result.missingCodes.join(", ")}`);
     }

@@ -4,6 +4,7 @@ const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const { validateSkill } = require("./validate-controls-skill");
 
 const ROOT = __dirname;
 const ROUTERS = [
@@ -30,6 +31,14 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["request intake", "mission analysis", "request-order-compiler.js", "compile_controls_order.js", "order-intake-contract.js", "mission-order-analysis", "order-draft"]) {
+    const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
+    assertRoutes(result, ["orders"]);
+    assert(result.recommended_documents.some(item => item.path === "docs/request-order-intake.md"));
+    assert(result.validation_commands.includes("node run-request-order-compiler-fixtures.js"));
+    assert(!result.validation_commands.some(command => command.includes("sample-payloads/valid-backbrief.json")));
+  }
   for (const query of ["dependency migration retained verifier evidence ip-address security update",
     "verifier dependency", "producer compatibility", "lockfile update", "ip-address"]) {
     const result = route(router, ["--actor=user"], query);

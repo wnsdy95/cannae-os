@@ -25,6 +25,13 @@ Mechanical wording churn is not a skill adaptation. If the operator cannot name
 a reusable behavior that should change for the next run, the work is maintenance
 or an incomplete improvement, not a completed improvement.
 
+When editing a skill entrypoint, run `validate-controls-skill.js` for both provider
+trees before the full aggregate, in addition to the general skill validator.
+The repository-specific check enforces the 500-line progressive-disclosure limit.
+Move procedure detail into the linked reference or doctrine document; do not raise
+the limit or omit the routed control. Routing fixtures execute this check so a
+valid route cannot conceal an invalid entrypoint.
+
 ## Completion Audits
 
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select

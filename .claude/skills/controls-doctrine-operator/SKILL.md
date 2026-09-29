@@ -332,6 +332,7 @@ independent durable archive or witness.
 Read these only when needed (bundled with this skill):
 
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
+- `docs/request-order-intake.md`: use `scripts/compile_controls_order.js` to capture original bytes and compile review-only drafts; never strip draft markers or treat quotes as verified truth.
 - `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
 
 ## Reading Rules

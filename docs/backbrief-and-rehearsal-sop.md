@@ -157,6 +157,11 @@ node orders-dissemination-runner.js
 node rehearsal-to-ccir-router.js runtime-demo-payloads/rehearsal.json
 ```
 
+The dissemination runner accepts exactly three explicit files: OPORD, backbrief
+and rehearsal. Missing/extra arguments and `OPORD_DRAFT` input fail rather than
+falling back to its no-argument demo. The result checks consistency, not dispatch
+authority. See [request intake](request-order-intake.md) for the draft-only path.
+
 This gate confirms the following links:
 
 - Does the backbrief reference the current OPORD?

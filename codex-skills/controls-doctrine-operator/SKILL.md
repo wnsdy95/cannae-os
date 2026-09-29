@@ -75,6 +75,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 Read these only when needed:
 
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
+- `docs/request-order-intake.md`: use `scripts/compile_controls_order.js` to capture original bytes and compile review-only drafts; never strip draft markers or treat quotes as verified truth.
 - `references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
 
 ## Workflows

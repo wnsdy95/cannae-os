@@ -75,7 +75,11 @@ Completion criteria:
 
 ## 3. Phase 2: Prompt Compiler
 
-Status: partially implemented through structured payloads, routers, and order-dissemination runners; general request-to-OPORD compilation remains open.
+Status: partially implemented. [Request intake](request-order-intake.md) now retains
+original bytes and typed model/operator analysis, appraises exact source quotes,
+and compiles non-executable OPORD/task drafts. The deterministic compiler does not
+perform semantic extraction itself. Exact USER review/adoption, approved-edit
+consumption and issued-order-to-mission-plan binding remain open.
 
 Goal:
 

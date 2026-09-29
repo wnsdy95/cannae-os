@@ -3,6 +3,7 @@
 const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");
+const { DRAFT_TYPES, intakeIssues } = require("../order-intake-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -131,6 +132,9 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "mission-request": "mission-request.schema.json",
+  "mission-order-analysis": "mission-order-analysis.schema.json",
+  "order-draft": "order-draft.schema.json",
   "implementation-candidate-registry": "implementation-candidate-registry.schema.json",
   mission: "mission.schema.json",
   agent: "agent.schema.json",
@@ -6085,11 +6089,11 @@ function maxSeverity(issues) {
   return issues.reduce((max, item) => order.indexOf(item.severity) > order.indexOf(max) ? item.severity : max, "info");
 }
 
-function validationResult(issues) {
+function validationResult(issues, type) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-    can_execute: !issues.some(item => item.severity === "error" || item.severity === "critical"),
+    can_execute: !DRAFT_TYPES.has(type) && !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
     issues
@@ -6102,7 +6106,7 @@ function validateSchemaPayload(payload, type) {
   const schema = schemas[TYPE_TO_SCHEMA[type]];
   return validationResult(
     validateSchema(payload, schema, schemas)
-      .map(item => ({ ...item, layer: "schema" }))
+      .map(item => ({ ...item, layer: "schema" })), type
   );
 }
 
@@ -6111,9 +6115,10 @@ function validatePayload(payload, type, options = {}) {
   const issues = [
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
-      .map(item => ({ ...item, layer: "semantic" }))
+      .map(item => ({ ...item, layer: "semantic" })),
+    ...(schemaResult.valid ? intakeIssues(payload, type).map(item => ({ ...item, layer: "semantic" })) : [])
   ];
-  return validationResult(issues);
+  return validationResult(issues, type);
 }
 
 function main() {

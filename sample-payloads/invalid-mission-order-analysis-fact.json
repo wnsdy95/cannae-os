@@ -1,0 +1,256 @@
+{
+  "schema_version": "0.1",
+  "type": "MissionOrderAnalysis",
+  "id": "MOA-INTAKE",
+  "mission_id": "MIS-INTAKE",
+  "wave_id": "W1",
+  "request_ref": {
+    "artifact_id": "MR-INTAKE",
+    "relative_path": "repositories/fixture-repository/missions/MIS-INTAKE/W1/mission-requests/MR-INTAKE.json",
+    "sha256": "8033f28e34fae81dede711c490124955d8e1e76945e08e6ff349cb5974537967"
+  },
+  "statements": [
+    {
+      "id": "ST-REQUEST",
+      "kind": "request_quote",
+      "text": "Prepare an internal comparison of two onboarding options.",
+      "blocking": false,
+      "source": {
+        "kind": "request",
+        "start_byte": 0,
+        "end_byte": 57
+      }
+    },
+    {
+      "id": "ST-CONSTRAINT",
+      "kind": "request_quote",
+      "text": "Use only the supplied repository evidence. Do not publish or modify customer data.",
+      "blocking": false,
+      "source": {
+        "kind": "request",
+        "start_byte": 58,
+        "end_byte": 140
+      }
+    },
+    {
+      "id": "ST-DECISION",
+      "kind": "request_quote",
+      "text": "The user decides the target segment and any budget change.",
+      "blocking": false,
+      "source": {
+        "kind": "request",
+        "start_byte": 141,
+        "end_byte": 199
+      }
+    },
+    {
+      "id": "ST-OUTCOME",
+      "kind": "request_quote",
+      "text": "Return a recommendation with explicit uncertainties.",
+      "blocking": false,
+      "source": {
+        "kind": "request",
+        "start_byte": 200,
+        "end_byte": 252
+      }
+    },
+    {
+      "id": "ST-PURPOSE",
+      "kind": "proposal",
+      "text": "Help USER compare onboarding options using traceable repository evidence.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-TASK-S2",
+      "kind": "proposal",
+      "text": "Extract evidence for each option without editing source records.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-TASK-S3",
+      "kind": "proposal",
+      "text": "Compare the two options and prepare a draft recommendation.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-FAILURE",
+      "kind": "proposal",
+      "text": "Do not treat missing evidence as a fact.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-FALLBACK",
+      "kind": "proposal",
+      "text": "Request clarification when evidence cannot support comparison.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-TOOLS",
+      "kind": "proposal",
+      "text": "Read repository-local evidence files.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-VERIFY",
+      "kind": "proposal",
+      "text": "Every factual claim cites an exact retained source quote.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-MOP",
+      "kind": "proposal",
+      "text": "Two alternatives are compared.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-MOE",
+      "kind": "proposal",
+      "text": "USER can inspect the evidence and uncertainty behind the recommendation.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    },
+    {
+      "id": "ST-ASSUME",
+      "kind": "assumption",
+      "text": "The supplied evidence covers current onboarding.",
+      "blocking": false,
+      "source": {
+        "kind": "none"
+      }
+    }
+  ],
+  "sections": {
+    "mission.statement": [
+      "ST-REQUEST"
+    ],
+    "mission.target_end_state": [
+      "ST-OUTCOME"
+    ],
+    "intent.purpose": [
+      "ST-PURPOSE"
+    ],
+    "intent.key_tasks": [
+      "ST-TASK-S2",
+      "ST-TASK-S3"
+    ],
+    "intent.failure_to_avoid": [
+      "ST-FAILURE"
+    ],
+    "situation.known_facts": [
+      "ST-ASSUME"
+    ],
+    "situation.assumptions": [
+      "ST-ASSUME"
+    ],
+    "situation.constraints": [
+      "ST-CONSTRAINT"
+    ],
+    "execution.concept": [
+      "ST-TASK-S2",
+      "ST-TASK-S3"
+    ],
+    "execution.coordinating_instructions": [
+      "ST-CONSTRAINT"
+    ],
+    "sustainment.tools": [
+      "ST-TOOLS"
+    ],
+    "sustainment.fallback": [
+      "ST-FALLBACK"
+    ],
+    "command_and_signal.authority.requested": [
+      "ST-REQUEST"
+    ],
+    "command_and_signal.authority.approval_required": [
+      "ST-DECISION"
+    ],
+    "command_and_signal.authority.prohibited": [
+      "ST-CONSTRAINT"
+    ],
+    "command_and_signal.ccir.pir": [
+      "ST-FALLBACK"
+    ],
+    "command_and_signal.ccir.ffir": [
+      "ST-FAILURE"
+    ],
+    "command_and_signal.ccir.eefi": [
+      "ST-CONSTRAINT"
+    ],
+    "command_and_signal.reports.sitrep_trigger": [
+      "ST-FALLBACK"
+    ],
+    "assessment.mop": [
+      "ST-MOP"
+    ],
+    "assessment.moe": [
+      "ST-MOE"
+    ],
+    "assessment.verification": [
+      "ST-VERIFY"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "TASK-S2",
+      "assigned_to": "S2",
+      "task": "ST-TASK-S2",
+      "purpose": "ST-PURPOSE",
+      "deliverables": [
+        "ST-OUTCOME"
+      ],
+      "verification": [
+        "ST-VERIFY"
+      ],
+      "ccir": [
+        "ST-FALLBACK"
+      ]
+    },
+    {
+      "id": "TASK-S3",
+      "assigned_to": "S3",
+      "task": "ST-TASK-S3",
+      "purpose": "ST-PURPOSE",
+      "deliverables": [
+        "ST-OUTCOME"
+      ],
+      "verification": [
+        "ST-VERIFY"
+      ],
+      "ccir": [
+        "ST-FALLBACK"
+      ]
+    }
+  ],
+  "retained_user_decisions": [
+    "ST-DECISION"
+  ],
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER"
+}

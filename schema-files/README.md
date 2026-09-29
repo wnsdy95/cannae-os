@@ -1,5 +1,11 @@
 # Schema Files
 
+`mission-request.schema.json`, `mission-order-analysis.schema.json` and
+`order-draft.schema.json` separate captured text, proposed interpretation and
+non-executable order drafts. These contracts return `can_execute: false` even
+when valid. Use [request intake](../docs/request-order-intake.md) for exact
+source replay; a schema pass is neither evidence truth nor USER adoption.
+
 The four `campaign-successor-*.schema.json` contracts bind full proposals,
 activation requests and immutable admission records. A schema-valid object is
 not consent or runtime admission; use [the successor controller](../docs/campaign-successor-admission.md)

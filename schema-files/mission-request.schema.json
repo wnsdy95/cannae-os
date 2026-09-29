@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/mission-request.schema.json",
+  "title": "Captured Mission Request",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "repository_binding",
+    "classification",
+    "recorded_at",
+    "expires_at",
+    "text",
+    "text_sha256",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "MissionRequest"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": [
+        "repository_key",
+        "identity_fingerprint"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identity_fingerprint": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "classification": {
+      "$ref": "common.schema.json#/$defs/classification"
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 131072
+    },
+    "text_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    }
+  }
+}

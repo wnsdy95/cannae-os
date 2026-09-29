@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "type": "MissionRequest",
+  "id": "MR-INTAKE",
+  "mission_id": "MIS-INTAKE",
+  "wave_id": "W1",
+  "repository_binding": {
+    "repository_key": "fixture-repository",
+    "identity_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "classification": "internal",
+  "recorded_at": "2026-09-29T14:00:00.000Z",
+  "expires_at": "2026-09-29T15:00:00.000Z",
+  "text": "Prepare an internal comparison of two onboarding options.\nUse only the supplied repository evidence. Do not publish or modify customer data.\nThe user decides the target segment and any budget change.\nReturn a recommendation with explicit uncertainties.\nAltered",
+  "text_sha256": "fad82a878f3a06904e28ec8e95cd24224c4b3e9b97bafa0023d2d2ed4d1127bc",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER"
+}

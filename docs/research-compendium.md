@@ -1,5 +1,25 @@
 # Research Compendium
 
+## General Request Intake And Draft Provenance (2026-09-29)
+
+The [request intake implementation](request-order-intake.md) closes a concrete
+input gap: the previous order contracts did not retain a general request and its
+typed interpretation. Captured UTF-8 bytes, exact source spans, repository/mission
+scope and complete analysis digests now bind non-executable OPORD/task drafts.
+Constraints and retained USER decisions propagate to every proposed task.
+
+Inspection also found that `orders-dissemination-runner.js` ignored CLI paths and
+always read its demo. It now validates caller input, rejects drafts and fails on
+unsupported argument counts. Fixtures cover source substitution, unsupported
+facts, unknowns, expiry, scope crossing and both provider wrappers. Both skills
+use the new procedure.
+
+This is engineering evidence, not proof of truth, complete interpretation,
+authenticated USER decisions or issued-order adoption. Phase 2 remains partial:
+exact review consumption, approved edits and draft-to-issued-plan binding are
+still needed. Distinct types block accidental unchanged extraction, not hostile
+rewriting of local contracts or code.
+
 ## Dependency Security And Retained Proof (2026-09-29)
 
 The upstream [ip-address advisory](https://github.com/beaugunderson/ip-address/security/advisories/GHSA-2vr4-cq9g-pvrc)
