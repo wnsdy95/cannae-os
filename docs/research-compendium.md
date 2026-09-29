@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Dependency Security And Retained Proof (2026-09-29)
+
+The upstream [ip-address advisory](https://github.com/beaugunderson/ip-address/security/advisories/GHSA-2vr4-cq9g-pvrc)
+identified missing private classification for the NAT64 local-use range in the
+retained 10.4.0 dependency. Updating to 10.7.2 also changes producer lock identity.
+An actual installed-dependency replay reproduced rejection of unchanged v0.2
+evidence even though the Sigstore package version stayed 4.1.2.
+
+The [producer compatibility procedure](github-release-independent-verification.md#producer-compatibility)
+now preserves the source-audited `4bad6dd` tuple and its byte-identical sample.
+Fresh results must match a separate current sample; historical records must
+pass current cryptographic verification before retaining original metadata.
+Unknown or mixed module/lock identities are not admitted. Both CLI skills now
+route dependency/lockfile requests here and require the two-sample migration
+check. Dependency classification tests do not prove application-wide SSRF
+protection, authenticated historical execution or repaired monitor continuity.
+
 ## Exact Successor Admission (2026-09-29)
 
 Local integration review found a digest cycle in naive restart designs: the

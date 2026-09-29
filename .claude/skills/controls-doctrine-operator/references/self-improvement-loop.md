@@ -260,6 +260,19 @@ Before editing a verifier or dependency lockfile, inspect the producer metadata
 in retained evidence. A lockfile-only update changes that identity too. Preserve
 original artifacts; never edit their hashes or version fields to fit new code.
 
+Equal schema and package versions do not establish equal producer identity.
+Before replacing a transitive dependency, freeze a byte-identical former-producer
+sample from the reviewed baseline and record its source commit and file hash.
+Keep it separate from the regenerated current sample. Require both unchanged
+historical replay and exact current-sample equality with a fresh installed-engine
+result; a test that synthesizes every historical record from today's output can
+miss migration regressions. Audit every consumer of the historical-profile list;
+integration fixtures must use each profile's schema, package and module identity,
+not hardcode the first generation across newer records.
+Confirm the patched dependency's actual behavior as
+well as its installed version. An audit with no known vulnerabilities is neither
+proof of compatibility nor a complete network-security assessment.
+
 Run fresh and historical records through the current pinned verifier. Historical
 support must recognize exact source-audited producer tuples, not a version range
 or caller-supplied digest allowlist. It never authorizes loading an old runtime.

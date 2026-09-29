@@ -18,7 +18,6 @@ const {
 } = require("./github-release-integrity-monitor");
 const { ReleaseAuthorizationError } = require("./github-release-publisher");
 const {
-  HISTORICAL_VERIFIER_MODULE_SHA256,
   HISTORICAL_VERIFIER_PROFILES,
   independentVerificationDigest
 } = require("./github-release-bundle-verifier");
@@ -567,9 +566,9 @@ function runFixtures() {
       const historical = JSON.parse(JSON.stringify(artifact));
       const retainedObservation = historical.full_observation;
       const evidence = retainedObservation.releases[1].attestation.independent_verification;
-      evidence.schema_version = "0.1";
-      evidence.verifier.version = "4.1.0";
-      evidence.verifier.module_sha256 = HISTORICAL_VERIFIER_MODULE_SHA256;
+      evidence.schema_version = profile.schema_version;
+      evidence.verifier.version = profile.version;
+      evidence.verifier.module_sha256 = profile.module_sha256;
       evidence.verifier.dependency_lock_sha256 = profile.dependency_lock_sha256;
       evidence.verification_sha256 = independentVerificationDigest(evidence);
       retainedObservation.observation_sha256 = observationDigest(retainedObservation);

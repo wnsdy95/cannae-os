@@ -52,6 +52,14 @@ report/termination admission and publication races. The guard alone does not
 extend USER consent, permit campaign restart, or discharge gateway obligations.
 
 Dependency replay design in `docs/github-release-independent-verification.md`
+also uses the upstream [ip-address advisory](https://github.com/beaugunderson/ip-address/security/advisories/GHSA-2vr4-cq9g-pvrc),
+[fix commit](https://github.com/beaugunderson/ip-address/commit/ab3dc88bcf5374344168a2ba075ca7ac4ff257f8)
+and [10.7.2 release](https://github.com/beaugunderson/ip-address/releases/tag/v10.7.2).
+The patched library's NAT64 classification is tested locally; exact former
+v0.2 producer replay is our compatibility design, not an upstream trust claim.
+Neither proves complete network security or historical protected execution.
+
+The earlier dependency replay design
 uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
 (checkpoint parsing) and [adbe253](https://github.com/sigstore/sigstore-js/commit/adbe2535c5702364e9c958ae3d67fbdefe068edd)
 (duplicate log-entry counting). Local source-history hashes define recognized

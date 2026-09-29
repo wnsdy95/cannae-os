@@ -152,6 +152,13 @@ restored conversational context never restores authority.
 | GitHub immutable-policy drift, release-attestation monitoring, trust-checkpoint continuity, or initial bootstrap recovery | `docs/github-release-integrity-monitoring.md`, `docs/github-release-independent-verification.md`, `docs/github-release-trust-checkpoint-continuity.md`, `docs/github-release-immutability.md`, `docs/github-release-authorization.md` | `.github/release-integrity-policy.json`, `github-release-integrity-monitor.js`, `github-release-trusted-root.js`, `github-release-trust-checkpoint.js`, `github-release-checkpoint-store.js`, `github-release-bootstrap-recovery.js`, `github-release-bootstrap-recovery-operator.js`, `github-release-bundle-verifier.js`, integrity/trust/recovery schemas and fixtures, `scripts/operate_github_release_integrity.js`, `scripts/operate_github_release_verification.js`, `.github/workflows/release-integrity.yml` |
 | Exact GitHub tag/release authorization and publication | `docs/github-release-authorization.md`, `docs/github-release-independent-verification.md`, `docs/github-release-trust-checkpoint-continuity.md`, exact tracked release notes | `github-release-publisher.js`, trusted-root, trust-checkpoint, and independent-verification runtimes, authorization/receipt/trust schemas, `scripts/operate_github_release.js`, `scripts/operate_github_release_verification.js`, publisher, checkpoint, and independent-verification fixtures |
 
+For verifier dependency migration, lockfile updates or `ip-address` maintenance,
+read `docs/github-release-independent-verification.md#producer-compatibility`
+and the dependency procedure in `references/self-improvement-loop.md`.
+Run `run-github-release-independent-verification-fixtures.js` before the monitor,
+checkpoint, publisher and full aggregate gates. Preserve the prior-producer
+sample bytes; regenerate only the separately named current sample.
+
 ## Multi-Agent Organization
 
 | Task | Primary Docs | Executable Surface |

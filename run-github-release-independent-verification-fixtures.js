@@ -6,7 +6,6 @@ const { spawnSync } = require("child_process");
 const {
   CURRENT_EVIDENCE_VERSION,
   CURRENT_SIGSTORE_VERIFY_VERSION,
-  HISTORICAL_VERIFIER_MODULE_SHA256,
   HISTORICAL_VERIFIER_PROFILES,
   independentVerificationDigest,
   validateIndependentVerificationEvidence,
@@ -85,6 +84,15 @@ function mutateEncodedJson(encoded, callback) {
 
 function runFixtures() {
   const results = [];
+  const { Address6 } = require("ip-address");
+  for (const address of ["64:ff9b:1::", "64:ff9b:1:7f00:0:100::", "64:ff9b:1::7f00:1", "64:ff9b:1:ffff:ffff:ffff:ffff:ffff"]) {
+    const parsed = new Address6(address);
+    results.push({ name: `patched dependency classifies NAT64 local-use ${address} as private`,
+      ok: parsed.isPrivate() === true && parsed.isGlobal() === false });
+  }
+  results.push({ name: "NAT64 regression does not misclassify an ordinary public IPv6 address",
+    ok: new Address6("2001:4860:4860::8888").isPrivate() === false &&
+      new Address6("2001:4860:4860::8888").isGlobal() === true });
   const rawBytes = fs.readFileSync(RAW_VERIFICATION_PATH);
   const rootBytes = fs.readFileSync(TRUSTED_ROOT_PATH);
   const rawVerification = JSON.parse(rawBytes.toString("utf8"));
@@ -248,12 +256,15 @@ function runFixtures() {
       EXPECTED
     ).length === 0
   });
+  results.push({ name: "the current v0.2 sample matches the installed producer and complete fresh replay",
+    ok: JSON.stringify(JSON.parse(fs.readFileSync(path.join(__dirname,
+      "sample-payloads/valid-github-release-independent-verification-v0.2.json"), "utf8"))) === JSON.stringify(evidence) });
 
   function historicalEvidence(profile = HISTORICAL_VERIFIER_PROFILES[0]) {
     const historical = clone(evidence);
-    historical.schema_version = "0.1";
-    historical.verifier.version = "4.1.0";
-    historical.verifier.module_sha256 = HISTORICAL_VERIFIER_MODULE_SHA256;
+    historical.schema_version = profile.schema_version;
+    historical.verifier.version = profile.version;
+    historical.verifier.module_sha256 = profile.module_sha256;
     historical.verifier.dependency_lock_sha256 = profile.dependency_lock_sha256;
     historical.verification_sha256 = independentVerificationDigest(historical);
     return historical;
@@ -270,43 +281,72 @@ function runFixtures() {
     });
   }
 
-  for (const [field, value] of [
-    ["module_sha256", "0".repeat(64)], ["dependency_lock_sha256", "0".repeat(64)],
-    ["version", "4.1.1"], ["minimum_version", "4.0.0"],
-    ["node_minimum_version", "18.0.0"], ["package", "unrecognized-verifier"], ["override", true]
-  ]) {
-    const attacked = historicalEvidence();
-    attacked.verifier[field] = value;
-    attacked.verification_sha256 = independentVerificationDigest(attacked);
-    results.push({
-      name: `historical producer substitution in ${field} is denied even with a valid bundle`,
-      ok: validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED)
-        .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED")
-    });
+  const priorBytes = fs.readFileSync(path.join(__dirname,
+    "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json"));
+  const prior = JSON.parse(priorBytes);
+  results.push({ name: "unchanged retained v0.2 sample survives the dependency and verifier-module migration",
+    ok: sha256(priorBytes) === "0ff6f52dc6667d7db3ad2ecfbbb7f8fa2d6aa9cafe200bed47ca5c6448a4ad68" &&
+      prior.schema_version === "0.2" && prior.verifier.module_sha256 !== evidence.verifier.module_sha256 &&
+      prior.verifier.dependency_lock_sha256 !== evidence.verifier.dependency_lock_sha256 &&
+      validateIndependentVerificationEvidence(prior, rawVerification, trustedRoot, EXPECTED).length === 0 &&
+      fs.readFileSync(path.join(__dirname, "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json")).equals(priorBytes) });
+
+  for (const profile of HISTORICAL_VERIFIER_PROFILES) {
+    for (const [field, value] of [
+      ["module_sha256", "0".repeat(64)], ["dependency_lock_sha256", "0".repeat(64)],
+      ["version", "4.1.1"], ["minimum_version", "4.0.0"],
+      ["node_minimum_version", "18.0.0"], ["package", "unrecognized-verifier"], ["override", true]
+    ]) {
+      const attacked = historicalEvidence(profile);
+      attacked.verifier[field] = value;
+      attacked.verification_sha256 = independentVerificationDigest(attacked);
+      results.push({
+        name: `historical ${profile.commit.slice(0, 7)} producer substitution in ${field} is denied even with a valid bundle`,
+        ok: validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED)
+          .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED")
+      });
+    }
   }
 
-  {
-    const attacked = historicalEvidence();
+  for (const profile of HISTORICAL_VERIFIER_PROFILES) {
+    const attacked = historicalEvidence(profile);
     attacked.statement.commit_sha1 = "0".repeat(40);
     attacked.verification_sha256 = independentVerificationDigest(attacked);
     results.push({
-      name: "recognized historical metadata does not bless changed signed claims",
+      name: `recognized historical ${profile.commit.slice(0, 7)} metadata does not bless changed signed claims`,
       ok: validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED)
         .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_EVIDENCE_REPLAY_MISMATCH")
     });
   }
 
-  {
+  for (const profile of HISTORICAL_VERIFIER_PROFILES) {
     const attacked = clone(rawVerification);
     attacked.attestation.bundle.dsseEnvelope.payload = mutateEncodedJson(
       attacked.attestation.bundle.dsseEnvelope.payload,
       statement => { statement.predicate.repository = "attacker/repository"; }
     );
     results.push({
-      name: "historical replay must pass the current cryptographic engine",
-      ok: validateIndependentVerificationEvidence(historicalEvidence(), attacked, trustedRoot, EXPECTED)
+      name: `historical ${profile.commit.slice(0, 7)} replay must pass the current cryptographic engine`,
+      ok: validateIndependentVerificationEvidence(historicalEvidence(profile), attacked, trustedRoot, EXPECTED)
         .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_CRYPTOGRAPHIC_VERIFICATION_FAILED")
     });
+  }
+
+  for (const profile of HISTORICAL_VERIFIER_PROFILES) {
+    const attacked = historicalEvidence(profile);
+    attacked.schema_version = profile.schema_version === "0.1" ? "0.2" : "0.1";
+    attacked.verification_sha256 = independentVerificationDigest(attacked);
+    results.push({ name: `historical ${profile.commit.slice(0, 7)} identity cannot change its evidence schema`,
+      ok: validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED)
+        .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED") });
+  }
+  {
+    const attacked = clone(prior);
+    attacked.verifier.dependency_lock_sha256 = evidence.verifier.dependency_lock_sha256;
+    attacked.verification_sha256 = independentVerificationDigest(attacked);
+    results.push({ name: "a former module and current lockfile are not an approved hybrid producer",
+      ok: validateIndependentVerificationEvidence(attacked, rawVerification, trustedRoot, EXPECTED)
+        .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED") });
   }
 
   for (const [version, producer] of [["0.1", "4.1.2"], ["0.2", "4.1.0"]]) {

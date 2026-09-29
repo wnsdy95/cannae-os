@@ -30,6 +30,14 @@ function assertRoutes(result, expectedRoutes) {
 }
 
 for (const router of ROUTERS) {
+  for (const query of ["dependency migration retained verifier evidence ip-address security update",
+    "verifier dependency", "producer compatibility", "lockfile update", "ip-address"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["authority-risk-release"]);
+    assert.strictEqual(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/github-release-independent-verification.md"));
+    assert(result.validation_commands.includes("node run-github-release-independent-verification-fixtures.js"));
+  }
   for (const query of ["reconciled failure", "reconciled_failed_effects", "post-settlement revocation"]) {
     const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
     assertRoutes(result, ["tool-effect-review"]);

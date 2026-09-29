@@ -26,24 +26,40 @@ const PAYLOAD_TYPE = "application/vnd.in-toto+json";
 const MINIMUM_SIGSTORE_VERIFY_VERSION = "4.1.0";
 const CURRENT_SIGSTORE_VERIFY_VERSION = "4.1.2";
 const CURRENT_EVIDENCE_VERSION = "0.2";
+const HISTORICAL_VERIFIER_MODULE_SHA256 =
+  "7aecfcb348ec70af2efc4a3feaea09e20bbd7d7eb8d16beece24191713f0c5e2";
 
 // Exact historical source profiles, not an instruction to load old verifier code.
 const HISTORICAL_VERIFIER_PROFILES = Object.freeze([
   Object.freeze({
     commit: "786c38af6af6b79c185991c3e7e7374fc47a9eea",
+    schema_version: "0.1",
+    version: "4.1.0",
+    module_sha256: HISTORICAL_VERIFIER_MODULE_SHA256,
     dependency_lock_sha256: "04b2c2070d5d47024208687a539a8ec3683f529ca81c8108fbcf413330bc1e51"
   }),
   Object.freeze({
     commit: "9635f8d176d14312c409536482e66a1f16806112",
+    schema_version: "0.1",
+    version: "4.1.0",
+    module_sha256: HISTORICAL_VERIFIER_MODULE_SHA256,
     dependency_lock_sha256: "38a4ec90c0706ae998d6c5b6b7bd9f49498c6360902028a93a4b747c8da49a8b"
   }),
   Object.freeze({
     commit: "d08420a013d7b7df84750e87cbfe37be18fc26aa",
+    schema_version: "0.1",
+    version: "4.1.0",
+    module_sha256: HISTORICAL_VERIFIER_MODULE_SHA256,
     dependency_lock_sha256: "775ab784c7666398a6fd944b1690778dda9fc7063b3526f2f26ddf24c2eb4a1d"
+  }),
+  Object.freeze({
+    commit: "4bad6dda28aa0b325ac3f1b30fbd769b23f021e0",
+    schema_version: "0.2",
+    version: "4.1.2",
+    module_sha256: "2698e8a65e83987e4a80675b194ea203ac1fa5b7e1ab4504b2ed7155ede9bba8",
+    dependency_lock_sha256: "25179325095a514dd6908af3bca74580bc4e9057d70616a2bfe9d974677975d0"
   })
 ]);
-const HISTORICAL_VERIFIER_MODULE_SHA256 =
-  "7aecfcb348ec70af2efc4a3feaea09e20bbd7d7eb8d16beece24191713f0c5e2";
 
 class GitHubReleaseBundleVerificationError extends Error {
   constructor(code, message, details = {}) {
@@ -244,13 +260,14 @@ function verifierImplementation() {
 }
 
 function recognizedHistoricalVerifier(evidence) {
-  if (!evidence || evidence.schema_version !== "0.1") return false;
+  if (!evidence) return false;
   return HISTORICAL_VERIFIER_PROFILES.some(profile =>
+    evidence.schema_version === profile.schema_version &&
     canonicalJsonBytes(evidence.verifier || {}).equals(canonicalJsonBytes({
       package: "@sigstore/verify",
-      version: "4.1.0",
+      version: profile.version,
       minimum_version: MINIMUM_SIGSTORE_VERIFY_VERSION,
-      module_sha256: HISTORICAL_VERIFIER_MODULE_SHA256,
+      module_sha256: profile.module_sha256,
       dependency_lock_sha256: profile.dependency_lock_sha256,
       node_minimum_version: "22.22.2"
     }))

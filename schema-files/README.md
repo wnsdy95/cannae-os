@@ -18,9 +18,10 @@ and `run-campaign-terminal-fixtures.js`; schema validity alone is not replay pro
 retains its exact 4.1.0 producer contract for historical reads. The schema rejects
 cross-version producer substitution. Full admission additionally requires a
 recognized exact producer tuple and current-engine cryptographic replay with
-the original raw bundle and retained trust root. The new current/legacy samples
+the original raw bundle and retained trust root. Current, frozen prior-v0.2 and legacy samples
 are test wrappers around public signed material, not release authority or proof
-that the historical runtime executed.
+that the historical runtime executed. Equal schema/package versions do not admit
+an unrecognized module/lockfile pair; use the full replay fixtures for migration.
 
 `implementation-candidate-registry.schema.json` defines the source-bound
 engineering inventory: unique candidate identities, reviewed implementation
