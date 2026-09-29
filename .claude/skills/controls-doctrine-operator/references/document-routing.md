@@ -1,5 +1,11 @@
 # Document Routing
 
+For campaign terminal reconciliation or successor-activation prerequisites,
+read `docs/campaign-terminal-reconciliation.md`, its request/record schemas,
+`campaign-terminal-controller.js` and `run-campaign-terminal-fixtures.js`.
+Use `scripts/reconcile_controls_campaign.js`; also run hook/gateway settlement
+fixtures after historical replay changes. Terminal status never clears a stop.
+
 For campaign stop, cancellation intake, or a denied restart, route to
 `docs/bounded-self-improvement-operations.md#210-explicit-user-stop-intake`,
 `campaign-stop-controller.js`, its request/record schemas and

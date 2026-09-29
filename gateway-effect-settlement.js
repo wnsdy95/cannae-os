@@ -145,8 +145,7 @@ function verifiedRecords(store) {
 // Replay uses only raw gateway/lease history, never this settlement-aware projection.
 function settledGatewayEffects(view) {
   if (!view.manifest.artifacts.some(entry => entry.kind === KIND)) return [];
-  const store = loadVerifiedStore(view.repository.root, view.artifactRoot);
-  requireTrue(manifestDigest(view.manifest) === store.verification.manifest_sha256, "GATEWAY_SETTLEMENT_STORE_CHANGED");
+  const store = require("./effect-settlement-proof").verifiedRuntimeSnapshot(view);
   return verifiedRecords(store).map(record => ({ ...record.payload, settlement_ref: ref(record.entry) }));
 }
 

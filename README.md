@@ -113,6 +113,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Bounded Self-Improvement Operations](docs/bounded-self-improvement-operations.md): evidence-driven improvement of active work and control-plane candidates with finite budgets, rollback, escalation, and human release authority.
 - [Guarded Supervisor Publication](docs/bounded-self-improvement-operations.md#281-guarded-supervisor-publication): fresh admission at challenge/order storage, exact reuse, and partial-issuance recovery.
 - [Explicit Campaign Stop](docs/bounded-self-improvement-operations.md#210-explicit-user-stop-intake): exact USER stop intake, immutable mission fencing, admitted-result retention, and explicit settlement/restart limits.
+- [Campaign Terminal Reconciliation](docs/campaign-terminal-reconciliation.md): historical wave/dispatch/settlement replay and a current non-authorizing terminal inventory. Successor activation remains separate and unimplemented.
 - [Liaison Agent Model](docs/liaison-agent-model.md): bounded representation across external tools, teams, and agent frameworks.
 - [Partner Command Relationship](docs/partner-command-relationship.md): explicit external request, coordination, and authority relationships.
 
@@ -155,7 +156,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
-- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): mandatory routing, control receipts, report/AAR handling, evidence-preserving termination, publication-time campaign checks, and retained unknown-effect holds. Gateway reconciliation and full campaign cancellation/restart remain open.
+- [Skill Operational Mission Lifecycle](docs/skill-operational-mission-lifecycle.md): mandatory routing, control receipts, report/AAR handling, evidence-preserving termination, publication-time campaign checks, and retained unknown-effect holds. Known-obligation terminal reconciliation is available; unsupported gateway containment and campaign restart remain open.
 - [Tool Effect Review](docs/tool-effect-review.md): binds an unknown invocation, declared effect scope, observations, verification plan, and receipt into a non-authorizing packet. Evidence consistency is not USER consent or settled effects.
 - [Gateway Effect Review](docs/gateway-effect-review.md): classifies exact retained gateway history, preserves missing-input orphans, and binds admission/effect/containment/coordination inspection scope. It neither clears a hold nor grants execution authority.
 - [Gateway Effect Settlement](docs/gateway-effect-settlement.md): reconciles an exact orphan admission or signed-containment OCI reference outcome using execution-bound quorum and fresh USER judgement. Preserves original failure, consumes proof inputs once across settlement families, and requires separate post-settlement revocation. Other containment adapters and managed coordination remain open.

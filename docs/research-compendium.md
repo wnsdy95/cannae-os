@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Campaign Terminal Reconciliation (2026-09-29)
+
+Local inspection found that live-only settlement reloads could not appraise an
+older terminal snapshot: later evidence and old dispatch history must not mix.
+The [terminal contract](campaign-terminal-reconciliation.md) uses an exact,
+verified read-only manifest prefix while live authority paths still reject
+stale views. It replays wave disposition, report-bound controls, all dispatch
+lineages, supported effect settlement and explicit failed-agent revocation.
+Orphans, partial waves and concurrent history growth cannot become an empty
+success projection. A terminal record keeps failed work failed and the stop
+in force. Both skills now use the dedicated wrapper and recheck current inventory
+after history changes. This completes local known-obligation terminal recording,
+not successor activation, authenticated USER identity or production containment.
+
 ## Explicit Campaign Stop Intake (2026-09-29)
 
 Local inspection found that retained evaluator escalation stopped execution,
@@ -11,8 +25,8 @@ path-sorted artifact arrays are not chronological event logs. Later decisions
 cannot silently erase a stop, and same-mission campaign renaming or disabled
 adaptation cannot bypass it. Already-admitted results and explicit revocation
 remain available. Synthetic USER fixtures do not authenticate a real person.
-This closes stop intake only; campaign-wide terminal reconciliation and exact
-successor activation remain open, as do managed process cancellation and trusted
+This closes stop intake only; the terminal follow-up above is a separate contract.
+Exact successor activation remains open, as do managed process cancellation and trusted
 time. No new external military-source assertion is introduced.
 
 ## Supervisor Publication-Time Admission (2026-09-28)

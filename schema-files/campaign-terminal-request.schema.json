@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/campaign-terminal-request.schema.json",
+  "title": "Campaign Terminal Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "mission_id", "campaign_ref", "stop_ref"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "CampaignTerminalRequest" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "campaign_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "stop_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" }
+  }
+}

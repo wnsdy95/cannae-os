@@ -387,6 +387,19 @@ for (const resource of scope.resources) {
     const retry = settleToolEffects(options, request);
     assert.strictEqual(retry.reused, true); assert.deepStrictEqual(retry.settlement_ref, settled.settlement_ref);
   });
+  check("historical hook projection replays its own settlement prefix without permitting stale live views", () => {
+    const isolated = forkStore("historical-dispatch");
+    const verified = require("./campaign-supervisor").loadVerifiedStore(repository, isolated.artifactRoot);
+    const observed = { revision: verified.manifest.manifest_revision, sha256: verified.verification.manifest_sha256 };
+    const staleView = { ...verified, repository: verified.verification.repository };
+    persist({ id: "NOTE-Historical", note: "Later evidence is not earlier settlement." }, "notes", now(), isolated.artifactRoot);
+    const before = runtime.historicalDispatchStatus(isolated, settled.settlement.observed_manifest).leases[0];
+    const after = runtime.historicalDispatchStatus(isolated, observed).leases[0];
+    assert.strictEqual(before.unresolved_tool_effects, 1);
+    assert.strictEqual(after.unresolved_tool_effects, 0);
+    assert.strictEqual(after.failed_effect_revocation_required, true);
+    assert.throws(() => require("./tool-effect-settlement").settledToolEffectState(staleView, failure.lease_ref), /EFFECT_SETTLEMENT_STORE_CHANGED/);
+  });
   check("post-settlement revocation cannot be backdated", () => {
     assert.throws(() => runtime.revokeLease({ ...options, now: new Date(Date.parse(settled.settlement.settled_at) - 1).toISOString() }, lease.id),
       /RECONCILED_FAILED_AGENT_REVOCATION_TIME_INVALID/);
@@ -502,11 +515,28 @@ for (const resource of scope.resources) {
     const revoked = runtime.revokeLease(isolated, lease.id);
     assert.strictEqual(lifecycle.terminateWave(termination, expired).status, "expired");
     assert.strictEqual(lifecycle.terminateWave(termination, expired).status, "expired");
+    const stop = require("./campaign-stop-controller");
+    const terminal = require("./campaign-terminal-controller");
+    const stopRequest = { schema_version: "0.1", type: "CampaignStopRequest", mission_id: lease.mission_id,
+      campaign_ref: campaignRef, decision_ref: runtime.NONE_REF, reason: "Synthetic terminal reconciliation fixture." };
+    const stopDecision = sample("valid-decision-log");
+    Object.assign(stopDecision, { id: "DL-Terminal-Stop", mission_id: lease.mission_id, decided_at: expired.now, decision_maker: "USER",
+      decision_type: "scope", status: "complete", chosen_option: stop.stopDecisionOption(stopRequest),
+      authority_basis: { basis_type: "retained_authority", reference: campaign.id, summary: "Synthetic exact stop grant." },
+      affected_artifacts: [campaignRef.relative_path] });
+    stopDecision.options_considered = [stopDecision.chosen_option];
+    stopRequest.decision_ref = persist(stopDecision, "decision-logs", expired.now, isolated.artifactRoot);
+    const stopped = stop.stopCampaign(stopRequest, expired);
+    const terminalRequest = { schema_version: "0.1", type: "CampaignTerminalRequest", mission_id: lease.mission_id,
+      campaign_ref: campaignRef, stop_ref: stopped.record_ref };
+    assert.strictEqual(terminal.reconcileCampaignTerminal(terminalRequest, expired).record.settlement_complete, true);
+    assert.strictEqual(terminal.campaignTerminalStatus(terminalRequest, expired).settlement_complete, true);
     const legacy = { ...clone(revoked.checkpoint), id: "AEC-POST-TERMINATION-LEGACY", sequence: revoked.checkpoint.sequence + 1,
       previous_checkpoint_ref: revoked.checkpoint_ref, checkpoint_kind: "completion", lease_status: "completed", recorded_at: expired.now };
     valid(legacy, "agent-execution-checkpoint");
     persist(legacy, "agent-execution-checkpoints", legacy.recorded_at, isolated.artifactRoot);
     assert.throws(() => lifecycle.terminateWave(termination, expired), /RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED/);
+    assert.throws(() => terminal.campaignTerminalStatus(terminalRequest, expired), /CAMPAIGN_TERMINAL_DISPATCH_NOT_SETTLED/);
   });
   check("closeout cannot reuse a legacy successful report after reconciliation", () => {
     const isolated = forkStore("closeout-after-reconciliation");

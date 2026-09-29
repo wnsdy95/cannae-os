@@ -168,6 +168,22 @@ try {
     assert.strictEqual(retry.reused, true);
     assert.deepStrictEqual(retry.settlement_ref, settled.settlement_ref);
   });
+  check("historical gateway projection preserves pending admissions before settlement and rejects stale live views", () => {
+    const local = fork("historical-dispatch");
+    const verified = require("./campaign-supervisor").loadVerifiedStore(options.repository, local.artifactRoot);
+    const observed = { revision: verified.manifest.manifest_revision, sha256: verified.verification.manifest_sha256 };
+    const staleView = { ...verified, repository: verified.verification.repository };
+    write({ repositoryPath: options.repository, artifactRoot: local.artifactRoot, missionId: request.mission_id,
+      waveId: request.wave_id, kind: "notes", artifactId: "NOTE-Historical", payload: { note: "Later retained evidence." } });
+    const before = runtime.historicalDispatchStatus(local, settled.settlement.observed_manifest);
+    const after = runtime.historicalDispatchStatus(local, observed);
+    assert.strictEqual(before.leases[0].pending_tool_requests, 1);
+    assert.strictEqual(before.unresolved_gateway_obligations.length, 1);
+    assert.strictEqual(after.leases[0].pending_tool_requests, 0);
+    assert.strictEqual(after.leases[0].failed_effect_revocation_required, true);
+    assert.strictEqual(after.unresolved_gateway_obligations.length, 0);
+    assert.throws(() => require("./gateway-effect-settlement").settledGatewayEffects(staleView), /EFFECT_SETTLEMENT_STORE_CHANGED/);
+  });
   check("changed request cannot reuse the discharged admission", () => assert.throws(() => settleGatewayEffects(options,
     { ...request, id: "GESR-REUSE" }), /GATEWAY_SETTLEMENT_ALREADY_CONSUMED/));
   check("forged retained settlement cannot hide behind status or exact retry", () => {
@@ -242,6 +258,29 @@ try {
     assert.strictEqual(projection.unresolved_gateway_transactions, 0);
     assert.strictEqual(projection.pending_tool_requests, 0);
     assert.strictEqual(projection.reconciled_failed_effects, 1);
+  });
+  check("campaign terminal replay preserves settled gateway proof after wave expiry and USER stop", () => {
+    const local = fork("campaign-terminal");
+    local.now = new Date(Math.max(Date.now(), Date.parse(setup.plan.valid_until)) + 1000).toISOString();
+    require("./skill-mission-controller").terminateWave({ ...sample("valid-mission-wave-termination-request"),
+      mission_id: setup.plan.mission_id, wave_id: setup.plan.wave_id, plan_ref: setup.issued.lease.plan_ref }, local);
+    const stop = require("./campaign-stop-controller");
+    const stopRequest = { schema_version: "0.1", type: "CampaignStopRequest", mission_id: request.mission_id,
+      campaign_ref: proof.campaignRef, decision_ref: runtime.NONE_REF, reason: "Synthetic gateway terminal reconciliation fixture." };
+    const grant = sample("valid-decision-log");
+    Object.assign(grant, { id: "DL-Terminal-Stop", mission_id: request.mission_id, decided_at: local.now,
+      decision_maker: "USER", decision_type: "scope", status: "complete", chosen_option: stop.stopDecisionOption(stopRequest),
+      authority_basis: { basis_type: "retained_authority", reference: proof.campaign.id, summary: "Synthetic exact stop grant." },
+      affected_artifacts: [proof.campaignRef.relative_path] });
+    grant.options_considered = [grant.chosen_option];
+    stopRequest.decision_ref = persist(grant, "decision-logs", local.now, local.artifactRoot);
+    const stopped = stop.stopCampaign(stopRequest, local);
+    const terminalRequest = { schema_version: "0.1", type: "CampaignTerminalRequest", mission_id: request.mission_id,
+      campaign_ref: proof.campaignRef, stop_ref: stopped.record_ref };
+    const terminal = require("./campaign-terminal-controller");
+    assert.strictEqual(terminal.reconcileCampaignTerminal(terminalRequest, local).record.settlement_complete, true);
+    assert.strictEqual(terminal.campaignTerminalStatus(terminalRequest, local).settlement_complete, true);
+    assert.strictEqual(state(local).reconciled_failed_effects, 1);
   });
   for (const stage of ["recovered", "committed"]) check(`${stage} fixture execution cannot substitute inspection for containment`, () => {
     const other = setupScenario(`UNSUPPORTED-${stage}`);

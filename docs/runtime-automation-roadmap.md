@@ -2,6 +2,12 @@
 
 ## 0. Purpose
 
+Campaign [known-obligation terminal reconciliation](campaign-terminal-reconciliation.md)
+now follows explicit USER stop intake. Historical snapshot replay, wave/report
+proof, orphan rejection and guarded publication preserve the stop. Exact
+USER-authorized successor proposal/admission remains unfinished; this milestone
+does not supply restart, trusted time or external containment infrastructure.
+
 This document is a roadmap for evolving the current document-based framework into an actual tool-gated LLM runtime.
 
 Target state:
@@ -534,8 +540,9 @@ Explicit [USER stop intake](bounded-self-improvement-operations.md#210-explicit-
 now persists a monotonic stop bound to its exact pre-publication manifest,
 campaign and USER decision. The same-mission fence applies even to a new campaign
 ID or non-adaptive wave; admitted results and revocation remain recordable.
-Campaign-wide terminal settlement, exact successor authorization and atomic
-multi-artifact settlement remain open.
+The [terminal controller](campaign-terminal-reconciliation.md) records known-obligation
+closure using exact historical replay and current inventory. Exact successor
+authorization and atomic multi-artifact settlement remain open.
 See `repository-artifact-isolation-policy.md` for exact recovery ordering and
 the unchanged cooperating-writer/shared-filesystem trust boundary.
 

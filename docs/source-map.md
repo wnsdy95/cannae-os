@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [campaign terminal contract](campaign-terminal-reconciliation.md) is local
+engineering synthesis of the existing stop, wave, dispatch and effect-settlement
+contracts. `campaign-terminal-controller.js`, its schema/sample pair, terminal
+fixtures, historical hook/gateway regressions and both skill wrappers bind
+known-obligation closure to a replayed manifest without granting successor
+authority or making new external-source claims.
+
 The [explicit campaign stop](bounded-self-improvement-operations.md#210-explicit-user-stop-intake)
 is local engineering synthesis of retained USER decisions, manifest custody and
 the existing continuation gate. `campaign-stop-controller.js`, its request/record

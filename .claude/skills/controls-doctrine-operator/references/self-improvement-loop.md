@@ -68,6 +68,20 @@ does not clear the mission hold. Do not move the same stopped work to another
 mission to evade it. Terminal reconciliation and successor activation remain
 separate contracts, not operations provided by this stop wrapper.
 
+For known-obligation closure, read `docs/campaign-terminal-reconciliation.md`
+and use `scripts/reconcile_controls_campaign.js` with the exact campaign/stop
+references. Resolve every missing wave disposition, pending admission, unknown
+effect and post-settlement revocation before retrying. A blocked closeout is
+not successful work, but its disposition must remain in the inventory. Recheck
+`status` after any retained mission history changes: an older terminal record
+can remain valid historical evidence without covering today's inventory. Never
+cache a positive result beyond its returned manifest. If a concurrent writer
+causes `CAMPAIGN_TERMINAL_STATUS_CHANGED`, inspect and retry the read rather than
+using its older result. Never
+use read-only historical dispatch status as current tool authority, rerun an
+old control merely to make its report appear fresh, or interpret a terminal
+record as permission to activate a successor. That activation is not implemented.
+
 A ready result from before a stop is not reusable authority. When a controller
 denies at its publication boundary, inspect status and verify the current
 manifest before retrying. Earlier plan, routing, control, admission, or gateway

@@ -17,7 +17,7 @@ before an operation. No row grants approval or changes the USER's final authorit
 | Order | Workstream and current state | Concrete completion evidence |
 | --- | --- | --- |
 | 1 | Dependency compatibility: `ip-address` and `brace-expansion` fixes merged; verifier 4.1.2/protobuf 0.5.2, exact historical-producer replay, and fresh v0.2 evidence merged in PR #51 after complete CI. | Actual lockfile and version contracts updated; local 73/73 suites and 280/280 validator fixtures passed, followed by successful exact-head PR CI. Future producer changes still need explicit compatibility review. Live monitor operation remains separate in row 10. |
-| 2 | Mission lifecycle: wave termination, supervisor/deadline admission, guarded publication, exact USER stop intake, retained unknown-effect holds, hook settlement and exact orphan/OCI-reference gateway settlement are implemented. Other containment adapters, managed coordination and full campaign terminal settlement/restart remain open. | Persist exact terminal scope, reconcile all agents/tool effects, forbid stale continuations, and test USER-authorized cancellation/resumption through campaign and wave integration. Stop intake fences same-mission successor IDs and disabled adaptation but does not terminate processes or settle obligations. Each ownership class requires its own review and discharge, shared one-use USER/execution proof, separate containment/coordination evidence and post-settlement failed-agent revocation. Publication tests must retain crash ordering and block stop/check/write races without blocking result settlement. Wave termination or a local admission guard alone does not close the campaign; trusted time and hard process deadlines are not provided by the reference runtime. |
+| 2 | Mission lifecycle: wave termination, supervisor/deadline admission, guarded publication, exact USER stop intake, retained unknown-effect holds, hook settlement and exact orphan/OCI-reference gateway settlement are implemented. Known-obligation campaign terminal reconciliation now replays registered waves, reports, controls, dispatch and settlement history. Other containment adapters, managed coordination and exact USER-authorized successor activation remain open. | Persist exact terminal scope, reconcile all agents/tool effects, forbid stale continuations, and test USER-authorized cancellation/resumption through campaign and wave integration. Stop intake fences same-mission successor IDs and disabled adaptation but does not terminate processes or settle obligations. Each ownership class requires its own review and discharge, shared one-use USER/execution proof, separate containment/coordination evidence and post-settlement failed-agent revocation. Publication tests must retain crash ordering and block stop/check/write races without blocking result settlement. The terminal record does not clear the stop or activate a successor; trusted time and hard process deadlines are not provided by the reference runtime. |
 | 3 | Implementation inventory: source-bound registry and CI audit merged in PR #50; 125 requirements accounted for, 37 implemented, 18 partial, 70 planned. | Every current candidate accounted for, mapped aliases reviewed, unfinished behavior explicit, drift/omission/false-completion tests, CI audit, and both skill entrypoints updated. This closes inventory coverage, not all candidates. |
 | 4 | General request-to-OPORD compiler: structured order runners exist, general request intake remains open. | Preserve original request and evidence references; distinguish facts, assumptions, unknowns, and retained USER decisions; produce schema-valid draft intent/OPORD/task orders and backbrief requirements; reject unsupported authority or invented facts. No automatic execution from a draft. |
 | 5 | Intent lineage and disciplined initiative: written policies, incomplete runtime. | Parent-child boundary subset checks, mandatory key-task continuity, bounded method deviation, correct before/after reporting, and stop/escalate/revoke regression tests wired into dispatch/report admission. |
@@ -33,7 +33,7 @@ Row 2 separates the non-authorizing review packet from the exact hook settlement
 controller. Hook settlement now consumes a USER scope decision and execution-bound
 proof, with historical replay and guarded publication. Effect completeness remains
 USER judgement, not a machine guarantee. Unsupported gateway containment and
-coordination, and full campaign terminal settlement/restart remain open; a local USER log is not
+coordination, and exact successor activation remain open; a local USER log is not
 authentication.
 Gateway ownership and retained-obligation guards now reject direct hook
 completion/cancellation and preserve holds across legacy terminal leases, new
@@ -48,7 +48,9 @@ USER/execution-bound proof for orphan admissions and OCI reference execution,
 clears only bound obligations, and requires post-settlement failed-agent revocation.
 Successor authority is not inferred. Standalone USER stop intake now records a
 monotonic mission fence without an artificial evaluation checkpoint. It does not
-provide a terminal settlement or restart operation; renaming the same stopped
+provide a terminal settlement or restart operation itself. The separate
+[terminal controller](campaign-terminal-reconciliation.md) now retains known-obligation
+closure while keeping continuation false; renaming the same stopped
 work into another mission is not authorized by the absence of a cross-mission
 semantic-equivalence detector.
 The hook path now preserves a reconciled-failure marker across legacy terminal

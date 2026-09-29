@@ -10,6 +10,24 @@ const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
   ...["request", "record"].map(kind => ({
+    name: `valid campaign terminal ${kind}`, file: `sample-payloads/valid-campaign-terminal-${kind}.json`,
+    type: `campaign-terminal-${kind}`, exitCode: 0, requiredCodes: []
+  })),
+  { name: "campaign terminal requires an exact stop", file: "sample-payloads/invalid-campaign-terminal-request-stop.json",
+    type: "campaign-terminal-request", exitCode: 1, requiredCodes: ["CAMPAIGN_TERMINAL_REFERENCE_INVALID"] },
+  { name: "campaign terminal never grants continuation", file: "sample-payloads/invalid-campaign-terminal-record-authority.json",
+    type: "campaign-terminal-record", exitCode: 1, requiredCodes: ["CONST_MISMATCH"] },
+  ...["request", "inventory", "identity", "missing-reference"].map(mutation => ({
+    name: `campaign terminal binds ${mutation}`, file: "sample-payloads/valid-campaign-terminal-record.json",
+    type: "campaign-terminal-record", exitCode: 1, requiredCodes: ["CAMPAIGN_TERMINAL_RECORD_BINDING_INVALID"],
+    mutate: payload => {
+      if (mutation === "request") payload.request.campaign_ref.sha256 = "f".repeat(64);
+      else if (mutation === "inventory") payload.inventory_sha256 = "f".repeat(64);
+      else if (mutation === "identity") payload.mission_id = "MIS-Substituted";
+      else payload.inventory.retained_artifact_refs.pop();
+    }
+  })),
+  ...["request", "record"].map(kind => ({
     name: `valid campaign stop ${kind}`, file: `sample-payloads/valid-campaign-stop-${kind}.json`,
     type: `campaign-stop-${kind}`, exitCode: 0, requiredCodes: []
   })),
