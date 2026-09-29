@@ -275,6 +275,22 @@ function contextAssignment(adopted, agentId) {
     task_order: assignedTask(plan, draft, agentId), commander_intent: draft.opord.intent,
     mission_end_state: plan.success_conditions, constraints: plan.constraints, assessment: draft.opord.assessment };
 }
+function expectedModelAssignment(plan, agent, options, knownStore) {
+  if (!plan.model_assignment.required) return { required: false, integrated_preflight_ref: { ...NONE },
+    billet_id: "not_required", model_profile_id: "not_required", model_family: "not_required",
+    model_version: "not_required", harness_version: "not_required" };
+  const store = knownStore?.manifestHistory ? knownStore : load(options);
+  const preflight = loadSettlementArtifact(store, plan.model_assignment.integrated_preflight_ref, "integrated-mission-preflights", null, plan);
+  requireTrue(preflight.type === "IntegratedMissionPreflightProjection" && preflight.status === "ready" &&
+    preflight.mission_id === plan.mission_id && preflight.wave_id === plan.wave_id && Array.isArray(preflight.dispatch_manifest),
+    "ORDER_CONTEXT_MODEL_PREFLIGHT_INVALID");
+  const matches = preflight.dispatch_manifest.filter(item => item.agent_id === agent.agent_id && item.billet_id === agent.model_billet_id);
+  requireTrue(matches.length === 1, "ORDER_CONTEXT_MODEL_AGENT_MISMATCH");
+  const entry = matches[0];
+  return { required: true, integrated_preflight_ref: plan.model_assignment.integrated_preflight_ref,
+    billet_id: entry.billet_id, model_profile_id: entry.model_profile_id, model_family: entry.model_family,
+    model_version: entry.model_version, harness_version: entry.harness_version };
+}
 function assertContextAssignment(context, plan, options, knownStore) {
   const adopted = orderForPlan(plan, options, knownStore);
   if (!adopted) {
@@ -283,6 +299,15 @@ function assertContextAssignment(context, plan, options, knownStore) {
   }
   requireTrue(context.schema_version === "0.3" && same(context.order_assignment, contextAssignment(adopted, context.agent_id)),
     "ORDER_CONTEXT_ASSIGNMENT_MISMATCH");
+  const agent = plan.agents.find(item => item.agent_id === context.agent_id);
+  const authority = { delegated_authority: agent.delegated_authority, allowed_actions: agent.allowed_actions,
+    approval_required: agent.approval_required, prohibited_actions: agent.prohibited_actions,
+    human_final_decision_authority: "USER", release_authorized: false, self_approval_prohibited: true };
+  requireTrue(context.mission_id === plan.mission_id && context.wave_id === plan.wave_id && context.plan_ref.artifact_id === plan.id &&
+    context.operational_role === agent.operational_role && context.department === agent.department && context.task === agent.task &&
+    context.classification === agent.context_scope && context.capability_query === plan.objective && same(context.authority, authority),
+    "ORDER_CONTEXT_SCOPE_MISMATCH");
+  requireTrue(same(context.model_assignment, expectedModelAssignment(plan, agent, options, knownStore)), "ORDER_CONTEXT_MODEL_BINDING_MISMATCH");
   requireTrue(at(context.created_at) >= at(adopted.payload.recorded_at) && at(context.created_at) <= at(clock(options)) &&
     at(context.created_at) < at(context.valid_until) && at(context.valid_until) === at(adopted.payload.expires_at),
     "ORDER_CONTEXT_VALIDITY_MISMATCH");

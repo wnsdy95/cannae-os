@@ -113,6 +113,12 @@ assignment, not just its ID. Schema validity alone reports `can_execute: false`
 for adoption artifacts and bound plan/context versions. Intake/adoption metadata
 cannot stand in for execution evidence in a wave report.
 
+The separately rendered context role, department, task, handling level, capability
+query and complete authority boundary must also match the adopted plan. A matching
+adoption reference does not excuse contradictory `allowed_actions`. Model fields
+must equal the exact agent/billet row of the plan's retained ready integrated
+preflight; a profile name cannot be substituted or treated as authority.
+
 Expiry denies new work, not retention of an already admitted tool result.
 Containment, result settlement, revocation and historical inspection remain
 separate. Exact decision retry can return an expired historical record without

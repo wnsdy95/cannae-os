@@ -1,7 +1,7 @@
 {
   "schema_version": "0.3",
   "type": "AgentContextPack",
-  "id": "ACP-W1-plans-agent",
+  "id": "ACP-W1-agent-S2",
   "mission_id": "MIS-ADOPTION",
   "wave_id": "W1",
   "agent_id": "agent-S2",
@@ -10,9 +10,9 @@
   "task": "Proposal: Extract evidence for each option without editing source records.",
   "classification": "internal",
   "plan_ref": {
-    "artifact_id": "MWP-SKILL-DEMO-W1",
-    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
-    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    "artifact_id": "MWP-ADOPTION",
+    "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
+    "sha256": "5ec2352262065805d3fe5e4745bd68b804c210abbd8d9e3254c7ff088f2b0743"
   },
   "routing_receipt_ref": {
     "artifact_id": "RR-W1-plans-agent",
@@ -24,11 +24,11 @@
     "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
     "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   },
-  "capability_query": "Implement the bounded skill change and its fixtures.",
+  "capability_query": "Request quote: Prepare an internal comparison of two onboarding options.",
   "capability_routing": {
     "status": "covered",
     "reason_code": "MATCHED_DOCTRINE_ROUTE",
-    "capability_scope": "Implement the bounded skill change and its fixtures.",
+    "capability_scope": "Request quote: Prepare an internal comparison of two onboarding options.",
     "matched_capability_routes": [
       "skill-operations"
     ],
@@ -105,13 +105,13 @@
   "authority": {
     "delegated_authority": "scoped-execution",
     "allowed_actions": [
-      "Edit the assigned skill and test surfaces."
+      "Request quote: Prepare an internal comparison of two onboarding options."
     ],
     "approval_required": [
-      "Any scope change."
+      "Request quote: The user decides the target segment and any budget change."
     ],
     "prohibited_actions": [
-      "External release."
+      "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
     ],
     "human_final_decision_authority": "USER",
     "release_authorized": false,

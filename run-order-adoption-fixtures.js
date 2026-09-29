@@ -57,6 +57,15 @@ try {
       const entry = store.manifest.artifacts.find(value => value.relative_path === item.context_pack_ref.relative_path);
       const before = require("./campaign-terminal-controller").prefixBeforeEntry(store, entry);
       assertContextAssignment(context, env.plan, { ...env.options, now: entry.created_at }, before);
+      for (const mutate of [value => { value.authority.allowed_actions.push("Delete customer records"); },
+        value => { value.authority.approval_required = []; }, value => { value.authority.prohibited_actions = []; },
+        value => { value.authority.delegated_authority = "risk-review"; }, value => { value.department = "finance"; },
+        value => { value.classification = "public"; }, value => { value.capability_query = "Different scope"; }]) {
+        const changed = clone(context); mutate(changed);
+        assert.throws(() => assertContextAssignment(changed, env.plan, optionsAt(env, 70)), /ORDER_CONTEXT_SCOPE_MISMATCH/);
+      }
+      const changedModel = clone(context); changedModel.model_assignment.model_profile_id = "PROFILE-OTHER";
+      assert.throws(() => assertContextAssignment(changedModel, env.plan, optionsAt(env, 70)), /ORDER_CONTEXT_MODEL_BINDING_MISMATCH/);
       context.order_assignment.task_order.deliverables = ["Substituted deliverable"];
       assert.throws(() => assertContextAssignment(context, env.plan, optionsAt(env, 70)), /ORDER_CONTEXT_ASSIGNMENT_MISMATCH/);
     }
@@ -199,6 +208,22 @@ try {
       assert.throws(() => assertContextAssignment(altered, env.plan, optionsAt(env, 70)), /ORDER_CONTEXT_VALIDITY_MISMATCH/);
     }
     assert.throws(() => openWave(env.plan, optionsAt(env, 69)), /ORDER_CONTEXT_VALIDITY_MISMATCH/);
+  });
+  check("bound contexts preserve the exact ready model projection instead of substituting a model or billet", () => {
+    const env = setup();
+    env.plan.agents.forEach(agent => { agent.model_billet_id = `BILLET-${agent.agent_id}`; });
+    const preflight = { id: "IMPF-ADOPTION", type: "IntegratedMissionPreflightProjection", status: "ready",
+      mission_id: env.plan.mission_id, wave_id: env.plan.wave_id,
+      dispatch_manifest: env.plan.agents.map(agent => ({ agent_id: agent.agent_id, billet_id: agent.model_billet_id,
+        model_profile_id: `PROFILE-${agent.agent_id}`, model_family: "synthetic-fixture", model_version: "1", harness_version: "fixture-1" })) };
+    env.plan.model_assignment = { required: true, integrated_preflight_ref: persist(env, "integrated-mission-preflights", preflight, 15) };
+    adopt(env);
+    const opened = openWave(env.plan, optionsAt(env, 70)), context = read(env, opened.context_packs[0].context_pack_ref);
+    assertContextAssignment(context, env.plan, optionsAt(env, 70));
+    for (const key of ["model_profile_id", "model_family", "model_version", "harness_version", "billet_id"]) {
+      const altered = clone(context); altered.model_assignment[key] = "substituted";
+      assert.throws(() => assertContextAssignment(altered, env.plan, optionsAt(env, 70)), /ORDER_CONTEXT_MODEL_BINDING_MISMATCH/);
+    }
   });
   check("dispatch still requires exact policy and lease, and expiry denies new work without discarding an admitted result", () => {
     const env = setup(); adopt(env); openWave(env.plan, optionsAt(env, 70));
