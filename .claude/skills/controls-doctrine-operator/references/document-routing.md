@@ -124,6 +124,7 @@ restored conversational context never restores authority.
 | Task | Primary Docs | Executable Surface |
 | --- | --- | --- |
 | OPORD/WARNO/FRAGO/SITREP/AAR prompting | `docs/prompt-templates.md`, `docs/orders-production-pipeline.md` | `schema-files/opord.schema.json`, `schema-files/warno.schema.json`, `schema-files/frago.schema.json`, `schema-files/sitrep.schema.json`, `schema-files/aar.schema.json` |
+| General request intake and draft compilation | `docs/request-order-intake.md`, `docs/orders-production-pipeline.md` | `scripts/compile_controls_order.js`, `request-order-compiler.js`, `order-intake-contract.js`, three intake schemas and `run-request-order-compiler-fixtures.js` |
 | Commander's intent and disciplined initiative | `docs/mission-command-runtime-policy.md`, `docs/disciplined-initiative-rules.md`, `docs/commander-handbook.md` | `schema-files/authority-matrix.schema.json`, `policy-engine-prototype/` |
 | Source-plan annex | `docs/opord-annex-model.md` | `schema-files/source-plan.schema.json`, `schema-files/verification-plan.schema.json` |
 | Annex vs FRAGO change | `docs/opord-annex-model.md` | `schema-files/annex.schema.json`, `schema-files/frago-scope-change.schema.json`, `run-rehearsal-to-ccir-fixtures.js` |

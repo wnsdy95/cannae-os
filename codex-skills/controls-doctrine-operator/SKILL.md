@@ -79,6 +79,16 @@ Read these only when needed:
 
 ## Workflows
 
+### Compiling A General Request
+
+Read `docs/request-order-intake.md` and use `scripts/compile_controls_order.js`
+to capture the exact original request, prepare typed analysis, compile and inspect
+a non-executable draft. Preserve quotations, assumptions, unknowns, constraints
+and retained USER decisions separately. A quote proves source bytes, not truth;
+`ready_for_review` and validator success never mean issued order or tool authority.
+Do not strip draft markers to enter a legacy OPORD/task consumer. Changed analysis
+requires a new digest-bound draft; expired input requires a new captured request.
+
 ### Operating A Delegated Mission
 
 1. Create a schema-valid `MissionWavePlan` from `sample-payloads/valid-mission-wave-plan.json`. Preserve `USER` final authority, give each AI a non-command operational role, state allowed/approval-required/prohibited actions, and set finite validity and adaptive budgets.

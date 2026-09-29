@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add repository-bound request capture, typed mission analysis and deterministic OPORD/task drafts with quote provenance, inherited constraints, finite validity and no execution authority. Both skills expose capture/template/compile/inspect and preserve unknowns rather than invent facts. Make the dissemination CLI validate supplied files instead of silently using demo inputs. Exact USER review/adoption and issued-order-to-plan integration remain open.
+
 - Update transitive `ip-address` to 10.7.2 and preserve the exact former v0.2 verifier producer across the lockfile/module change. Pin an unchanged prior sample separately from fresh current evidence; reject unknown, hybrid and schema-substituted identities. Add NAT64 dependency regressions and equivalent Codex/Claude migration routing and sample-preservation guidance. Release policy, credentials and checkpoint lineage remain unchanged.
 
 - Add exact USER-authorized successor proposals and two-stage candidate/admission publication after terminal reconciliation. Bind complete candidate bytes and repository state, consume one decision and stop set, preserve latest-predecessor lineage, and keep partial candidates or later stops held. Normal supervisor, trust, routing and dispatch gates still apply. Both skills now use the dedicated successor wrapper and distinguish immutable historical admission from current stop-fence status.

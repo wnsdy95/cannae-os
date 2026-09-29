@@ -1,0 +1,431 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderDraft",
+  "id": "OD-18fee3d154a348452acd2b6defcae5df",
+  "mission_id": "MIS-INTAKE",
+  "wave_id": "W1",
+  "repository_binding": {
+    "repository_key": "fixture-repository",
+    "identity_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "request_ref": {
+    "artifact_id": "MR-INTAKE",
+    "relative_path": "repositories/fixture-repository/missions/MIS-INTAKE/W1/mission-requests/MR-INTAKE.json",
+    "sha256": "8033f28e34fae81dede711c490124955d8e1e76945e08e6ff349cb5974537967"
+  },
+  "request_text_sha256": "fad82a878f3a06904e28ec8e95cd24224c4b3e9b97bafa0023d2d2ed4d1127bc",
+  "analysis": {
+    "schema_version": "0.1",
+    "type": "MissionOrderAnalysis",
+    "id": "MOA-INTAKE",
+    "mission_id": "MIS-INTAKE",
+    "wave_id": "W1",
+    "request_ref": {
+      "artifact_id": "MR-INTAKE",
+      "relative_path": "repositories/fixture-repository/missions/MIS-INTAKE/W1/mission-requests/MR-INTAKE.json",
+      "sha256": "8033f28e34fae81dede711c490124955d8e1e76945e08e6ff349cb5974537967"
+    },
+    "statements": [
+      {
+        "id": "ST-REQUEST",
+        "kind": "request_quote",
+        "text": "Prepare an internal comparison of two onboarding options.",
+        "blocking": false,
+        "source": {
+          "kind": "request",
+          "start_byte": 0,
+          "end_byte": 57
+        }
+      },
+      {
+        "id": "ST-CONSTRAINT",
+        "kind": "request_quote",
+        "text": "Use only the supplied repository evidence. Do not publish or modify customer data.",
+        "blocking": false,
+        "source": {
+          "kind": "request",
+          "start_byte": 58,
+          "end_byte": 140
+        }
+      },
+      {
+        "id": "ST-DECISION",
+        "kind": "request_quote",
+        "text": "The user decides the target segment and any budget change.",
+        "blocking": false,
+        "source": {
+          "kind": "request",
+          "start_byte": 141,
+          "end_byte": 199
+        }
+      },
+      {
+        "id": "ST-OUTCOME",
+        "kind": "request_quote",
+        "text": "Return a recommendation with explicit uncertainties.",
+        "blocking": false,
+        "source": {
+          "kind": "request",
+          "start_byte": 200,
+          "end_byte": 252
+        }
+      },
+      {
+        "id": "ST-PURPOSE",
+        "kind": "proposal",
+        "text": "Help USER compare onboarding options using traceable repository evidence.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-TASK-S2",
+        "kind": "proposal",
+        "text": "Extract evidence for each option without editing source records.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-TASK-S3",
+        "kind": "proposal",
+        "text": "Compare the two options and prepare a draft recommendation.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-FAILURE",
+        "kind": "proposal",
+        "text": "Do not treat missing evidence as a fact.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-FALLBACK",
+        "kind": "proposal",
+        "text": "Request clarification when evidence cannot support comparison.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-TOOLS",
+        "kind": "proposal",
+        "text": "Read repository-local evidence files.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-VERIFY",
+        "kind": "proposal",
+        "text": "Every factual claim cites an exact retained source quote.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-MOP",
+        "kind": "proposal",
+        "text": "Two alternatives are compared.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-MOE",
+        "kind": "proposal",
+        "text": "USER can inspect the evidence and uncertainty behind the recommendation.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      },
+      {
+        "id": "ST-ASSUME",
+        "kind": "assumption",
+        "text": "The supplied evidence covers current onboarding.",
+        "blocking": false,
+        "source": {
+          "kind": "none"
+        }
+      }
+    ],
+    "sections": {
+      "mission.statement": [
+        "ST-REQUEST"
+      ],
+      "mission.target_end_state": [
+        "ST-OUTCOME"
+      ],
+      "intent.purpose": [
+        "ST-PURPOSE"
+      ],
+      "intent.key_tasks": [
+        "ST-TASK-S2",
+        "ST-TASK-S3"
+      ],
+      "intent.failure_to_avoid": [
+        "ST-FAILURE"
+      ],
+      "situation.known_facts": [
+        "ST-REQUEST"
+      ],
+      "situation.assumptions": [
+        "ST-ASSUME"
+      ],
+      "situation.constraints": [
+        "ST-CONSTRAINT"
+      ],
+      "execution.concept": [
+        "ST-TASK-S2",
+        "ST-TASK-S3"
+      ],
+      "execution.coordinating_instructions": [
+        "ST-CONSTRAINT"
+      ],
+      "sustainment.tools": [
+        "ST-TOOLS"
+      ],
+      "sustainment.fallback": [
+        "ST-FALLBACK"
+      ],
+      "command_and_signal.authority.requested": [
+        "ST-REQUEST"
+      ],
+      "command_and_signal.authority.approval_required": [
+        "ST-DECISION"
+      ],
+      "command_and_signal.authority.prohibited": [
+        "ST-CONSTRAINT"
+      ],
+      "command_and_signal.ccir.pir": [
+        "ST-FALLBACK"
+      ],
+      "command_and_signal.ccir.ffir": [
+        "ST-FAILURE"
+      ],
+      "command_and_signal.ccir.eefi": [
+        "ST-CONSTRAINT"
+      ],
+      "command_and_signal.reports.sitrep_trigger": [
+        "ST-FALLBACK"
+      ],
+      "assessment.mop": [
+        "ST-MOP"
+      ],
+      "assessment.moe": [
+        "ST-MOE"
+      ],
+      "assessment.verification": [
+        "ST-VERIFY"
+      ]
+    },
+    "tasks": [
+      {
+        "id": "TASK-S2",
+        "assigned_to": "S2",
+        "task": "ST-TASK-S2",
+        "purpose": "ST-PURPOSE",
+        "deliverables": [
+          "ST-OUTCOME"
+        ],
+        "verification": [
+          "ST-VERIFY"
+        ],
+        "ccir": [
+          "ST-FALLBACK"
+        ]
+      },
+      {
+        "id": "TASK-S3",
+        "assigned_to": "S3",
+        "task": "ST-TASK-S3",
+        "purpose": "ST-PURPOSE",
+        "deliverables": [
+          "ST-OUTCOME"
+        ],
+        "verification": [
+          "ST-VERIFY"
+        ],
+        "ccir": [
+          "ST-FALLBACK"
+        ]
+      }
+    ],
+    "retained_user_decisions": [
+      "ST-DECISION"
+    ],
+    "execution_authorized": false,
+    "release_authorized": false,
+    "human_final_decision_authority": "USER"
+  },
+  "analysis_sha256": "1678d443da12d2d6ccce886b12f3cc60175a747b78c6a20ef7bb05c5e61e8d25",
+  "draft_binding_sha256": "18fee3d154a348452acd2b6defcae5dff0cd8f3e61aa052051e8497d2e6cf139",
+  "compiled_at": "2026-09-29T14:01:00.000Z",
+  "expires_at": "2026-09-29T15:00:00.000Z",
+  "opord": {
+    "schema_version": "0.1",
+    "type": "OPORD_DRAFT",
+    "id": "DOPORD-18fee3d154a348452acd2b6defcae5df",
+    "mission_id": "MIS-INTAKE",
+    "created_by": "S3",
+    "classification": "internal",
+    "mission": {
+      "statement": "Request quote: Prepare an internal comparison of two onboarding options.",
+      "target_end_state": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ]
+    },
+    "intent": {
+      "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+      "key_tasks": [
+        "Proposal: Extract evidence for each option without editing source records.",
+        "Proposal: Compare the two options and prepare a draft recommendation."
+      ],
+      "failure_to_avoid": [
+        "Proposal: Do not treat missing evidence as a fact."
+      ]
+    },
+    "situation": {
+      "known_facts": [
+        "Request quote: Prepare an internal comparison of two onboarding options."
+      ],
+      "assumptions": [
+        "Assumption: The supplied evidence covers current onboarding."
+      ],
+      "constraints": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ]
+    },
+    "execution": {
+      "concept": [
+        "Proposal: Extract evidence for each option without editing source records.",
+        "Proposal: Compare the two options and prepare a draft recommendation."
+      ],
+      "coordinating_instructions": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "tasks": [
+        {
+          "type": "TASK_ORDER_DRAFT",
+          "id": "TASK-S2",
+          "mission_id": "MIS-INTAKE",
+          "assigned_to": "S2",
+          "task": "Proposal: Extract evidence for each option without editing source records.",
+          "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+          "deliverables": [
+            "Request quote: Return a recommendation with explicit uncertainties."
+          ],
+          "verification": [
+            "Proposal: Every factual claim cites an exact retained source quote."
+          ],
+          "ccir": [
+            "Proposal: Request clarification when evidence cannot support comparison."
+          ],
+          "status": "draft",
+          "inherited_constraints": [],
+          "retained_user_decisions": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "draft_binding_sha256": "18fee3d154a348452acd2b6defcae5dff0cd8f3e61aa052051e8497d2e6cf139",
+          "execution_authorized": false
+        },
+        {
+          "type": "TASK_ORDER_DRAFT",
+          "id": "TASK-S3",
+          "mission_id": "MIS-INTAKE",
+          "assigned_to": "S3",
+          "task": "Proposal: Compare the two options and prepare a draft recommendation.",
+          "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+          "deliverables": [
+            "Request quote: Return a recommendation with explicit uncertainties."
+          ],
+          "verification": [
+            "Proposal: Every factual claim cites an exact retained source quote."
+          ],
+          "ccir": [
+            "Proposal: Request clarification when evidence cannot support comparison."
+          ],
+          "status": "draft",
+          "inherited_constraints": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "retained_user_decisions": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "draft_binding_sha256": "18fee3d154a348452acd2b6defcae5dff0cd8f3e61aa052051e8497d2e6cf139",
+          "execution_authorized": false
+        }
+      ]
+    },
+    "sustainment": {
+      "tools": [
+        "Proposal: Read repository-local evidence files."
+      ],
+      "fallback": [
+        "Proposal: Request clarification when evidence cannot support comparison."
+      ]
+    },
+    "command_and_signal": {
+      "authority": {
+        "requested": [
+          "Request quote: Prepare an internal comparison of two onboarding options."
+        ],
+        "approval_required": [
+          "Request quote: The user decides the target segment and any budget change."
+        ],
+        "prohibited": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ]
+      },
+      "ccir": {
+        "pir": [
+          "Proposal: Request clarification when evidence cannot support comparison."
+        ],
+        "ffir": [
+          "Proposal: Do not treat missing evidence as a fact."
+        ],
+        "eefi": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ]
+      },
+      "reports": {
+        "sitrep_trigger": [
+          "Proposal: Request clarification when evidence cannot support comparison."
+        ]
+      }
+    },
+    "assessment": {
+      "mop": [
+        "Proposal: Two alternatives are compared."
+      ],
+      "moe": [
+        "Proposal: USER can inspect the evidence and uncertainty behind the recommendation."
+      ],
+      "verification": [
+        "Proposal: Every factual claim cites an exact retained source quote."
+      ]
+    },
+    "draft_binding_sha256": "18fee3d154a348452acd2b6defcae5dff0cd8f3e61aa052051e8497d2e6cf139",
+    "execution_authorized": false
+  },
+  "clarifications": [],
+  "status": "ready_for_review",
+  "classification": "internal",
+  "review_required": true,
+  "source_claims_verified": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER"
+}

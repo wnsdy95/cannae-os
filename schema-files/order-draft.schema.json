@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/order-draft.schema.json",
+  "title": "Non-Executable Order Draft",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "repository_binding",
+    "request_ref",
+    "request_text_sha256",
+    "analysis",
+    "analysis_sha256",
+    "draft_binding_sha256",
+    "compiled_at",
+    "expires_at",
+    "status",
+    "classification",
+    "clarifications",
+    "opord",
+    "review_required",
+    "source_claims_verified",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "OrderDraft"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "repository_binding": {
+      "type": "object",
+      "required": [
+        "repository_key",
+        "identity_fingerprint"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "repository_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identity_fingerprint": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        }
+      }
+    },
+    "request_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "request_text_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "analysis": {
+      "$ref": "mission-order-analysis.schema.json"
+    },
+    "analysis_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "draft_binding_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "compiled_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "status": {
+      "enum": [
+        "needs_clarification",
+        "ready_for_review"
+      ]
+    },
+    "classification": {
+      "$ref": "common.schema.json#/$defs/classification"
+    },
+    "clarifications": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "opord": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "type",
+        "id",
+        "mission_id",
+        "created_by",
+        "classification",
+        "situation",
+        "mission",
+        "intent",
+        "execution",
+        "sustainment",
+        "command_and_signal",
+        "assessment",
+        "draft_binding_sha256",
+        "execution_authorized"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "0.1"
+        },
+        "type": {
+          "const": "OPORD_DRAFT"
+        },
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "mission_id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "created_by": {
+          "const": "S3"
+        },
+        "classification": {
+          "$ref": "common.schema.json#/$defs/classification"
+        },
+        "situation": {
+          "$ref": "opord.schema.json#/properties/situation"
+        },
+        "mission": {
+          "$ref": "opord.schema.json#/properties/mission"
+        },
+        "intent": {
+          "$ref": "opord.schema.json#/properties/intent"
+        },
+        "execution": {
+          "type": "object",
+          "required": [
+            "concept",
+            "tasks",
+            "coordinating_instructions"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "concept": {
+              "$ref": "common.schema.json#/$defs/string_list"
+            },
+            "tasks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "id",
+                  "mission_id",
+                  "assigned_to",
+                  "task",
+                  "purpose",
+                  "deliverables",
+                  "verification",
+                  "ccir",
+                  "status",
+                  "inherited_constraints",
+                  "retained_user_decisions",
+                  "draft_binding_sha256",
+                  "execution_authorized"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "const": "TASK_ORDER_DRAFT"
+                  },
+                  "id": {
+                    "$ref": "common.schema.json#/$defs/id"
+                  },
+                  "mission_id": {
+                    "$ref": "common.schema.json#/$defs/id"
+                  },
+                  "assigned_to": {
+                    "type": "string",
+                    "enum": [
+                      "COS",
+                      "S2",
+                      "S3",
+                      "S4",
+                      "S6",
+                      "RED_TEAM",
+                      "EVALUATOR",
+                      "EXECUTOR",
+                      "RECORDER"
+                    ]
+                  },
+                  "task": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "deliverables": {
+                    "$ref": "common.schema.json#/$defs/string_list"
+                  },
+                  "verification": {
+                    "$ref": "common.schema.json#/$defs/string_list"
+                  },
+                  "ccir": {
+                    "$ref": "common.schema.json#/$defs/string_list"
+                  },
+                  "status": {
+                    "const": "draft"
+                  },
+                  "inherited_constraints": {
+                    "$ref": "common.schema.json#/$defs/string_list"
+                  },
+                  "retained_user_decisions": {
+                    "$ref": "common.schema.json#/$defs/string_list"
+                  },
+                  "draft_binding_sha256": {
+                    "$ref": "common.schema.json#/$defs/sha256"
+                  },
+                  "execution_authorized": {
+                    "const": false
+                  }
+                }
+              }
+            },
+            "coordinating_instructions": {
+              "$ref": "common.schema.json#/$defs/string_list"
+            }
+          }
+        },
+        "sustainment": {
+          "$ref": "opord.schema.json#/properties/sustainment"
+        },
+        "command_and_signal": {
+          "type": "object",
+          "required": [
+            "authority",
+            "ccir",
+            "reports"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "authority": {
+              "type": "object",
+              "required": [
+                "requested",
+                "approval_required",
+                "prohibited"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "requested": {
+                  "$ref": "common.schema.json#/$defs/string_list"
+                },
+                "approval_required": {
+                  "$ref": "common.schema.json#/$defs/string_list"
+                },
+                "prohibited": {
+                  "$ref": "common.schema.json#/$defs/string_list"
+                }
+              }
+            },
+            "ccir": {
+              "$ref": "opord.schema.json#/properties/command_and_signal/properties/ccir"
+            },
+            "reports": {
+              "$ref": "opord.schema.json#/properties/command_and_signal/properties/reports"
+            }
+          }
+        },
+        "assessment": {
+          "$ref": "opord.schema.json#/properties/assessment"
+        },
+        "draft_binding_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "execution_authorized": {
+          "const": false
+        }
+      }
+    },
+    "review_required": {
+      "const": true
+    },
+    "source_claims_verified": {
+      "const": false
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    }
+  }
+}

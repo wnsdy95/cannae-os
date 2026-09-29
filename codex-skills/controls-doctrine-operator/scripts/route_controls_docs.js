@@ -20,17 +20,19 @@ const RULES = [
   },
   {
     id: "orders",
-    keywords: ["opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "prompt", "orders", "command", "issuance", "prompting", "dry-run"],
+    keywords: ["request intake", "mission analysis", "request-order-compiler", "compile_controls_order", "order-intake", "order-draft", "mission-request", "mission-order-analysis", "opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "prompt", "orders", "command", "issuance", "prompting", "dry-run"],
     docs: [
       "docs/prompt-templates.md",
       "docs/orders-production-pipeline.md",
+      "docs/request-order-intake.md",
       "docs/opord-annex-model.md",
       "docs/backbrief-and-rehearsal-sop.md",
       "docs/information-to-operations-cycle.md"
     ],
     commands: [
       "node runtime-demo-runner.js",
-      "node orders-dissemination-runner.js runtime-demo-payloads/opord.json runtime-demo-payloads/task-order.json sample-payloads/valid-backbrief.json sample-payloads/valid-rehearsal.json"
+      "node orders-dissemination-runner.js runtime-demo-payloads/opord.json runtime-demo-payloads/backbrief.json runtime-demo-payloads/rehearsal.json",
+      "node run-request-order-compiler-fixtures.js"
     ]
   },
   {
@@ -486,7 +488,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "orders",
-    keywords: ["opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "orders", "task-order", "runtime-demo", "information-to-operations", "decision-packet", "ccir-alert", "ccir-linter", "alert-router", "reporting-threshold", "prompt", "prompt-dsl", "prompt-templates"]
+    keywords: ["request-order", "order-intake", "order-draft", "mission-request", "mission-order-analysis", "compile_controls_order", "opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "orders", "task-order", "runtime-demo", "information-to-operations", "decision-packet", "ccir-alert", "ccir-linter", "alert-router", "reporting-threshold", "prompt", "prompt-dsl", "prompt-templates"]
   },
   {
     id: "authority-risk-release",

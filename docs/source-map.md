@@ -7,6 +7,15 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [request-to-draft path](request-order-intake.md) is local engineering synthesis
+of orders production, typed source discipline and repository artifact isolation.
+`request-order-compiler.js`, `order-intake-contract.js`, three schemas, samples,
+fixtures and both skill wrappers preserve original bytes and non-executable
+projections. Exact quote matching does not prove semantic truth or complete intent
+extraction. The dissemination runner now checks caller inputs; its successful
+consistency check is not adoption or dispatch authority. No new external military
+source or authenticated-USER claim is introduced.
+
 The [exact successor admission contract](campaign-successor-admission.md) is
 local engineering synthesis of USER stop, terminal reconciliation, repository
 fingerprints and guarded publication. `campaign-successor-controller.js`, four
