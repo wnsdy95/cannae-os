@@ -71,6 +71,8 @@ and retained USER decisions separately. A quote proves source bytes, not truth;
 `ready_for_review` and validator success never mean issued order or tool authority.
 Do not strip draft markers to enter a legacy OPORD/task consumer. Changed analysis
 requires a new digest-bound draft; expired input requires a new captured request.
+After a clock rollback, wait for valid time or investigate the clock; do not edit
+retained timestamps to make an existing draft current.
 
 ## Operational Mission Lifecycle
 

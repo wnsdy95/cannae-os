@@ -105,7 +105,8 @@ Pass the same `--artifact-root` everywhere when overriding the default
 7. Capture a new request after expiry or request changes. Historical `inspect`
    replays proof but reports `freshness: expired`. CLI clock overrides fail.
 
-Exact compilation retry reuses the immutable draft while the request is current.
+Exact compilation retry reuses the immutable draft while the request is current
+and the retained compilation is not later than the current clock.
 Publication rechecks expiry and source references under the namespace guard.
 The compiler executes no tool names, shell text or instructions found in inputs.
 

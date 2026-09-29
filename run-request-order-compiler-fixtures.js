@@ -220,6 +220,12 @@ try {
     try { assert.throws(() => compileOrder(env.analysis, options), /EXPIRED_OR_FUTURE/); } finally { beforeWrite = null; }
     assert.equal(store.verifyRepositoryArtifacts({ repositoryPath: options.repository, artifactRoot: options.artifactRoot }).artifact_count, 1);
   });
+  check("exact retry rejects a draft whose compilation is later than the current clock", () => {
+    const env = environment();
+    const draft = compileOrder(env.analysis, { ...env.options, now: "2026-09-29T14:02:00.000Z" });
+    assert.throws(() => compile(env), /DRAFT_FROM_FUTURE/);
+    assert.throws(() => inspectDraft({ ...env.options, draftId: draft.id, now: "2026-09-29T14:01:00.000Z" }), /DRAFT_FROM_FUTURE/);
+  });
   check("draft envelope and extracted orders cannot enter legacy order or mission consumers", () => {
     const env = environment(), draft = read(env, compile(env).artifact_ref);
     assert.equal(validatePayload(draft, "opord").can_execute, false);

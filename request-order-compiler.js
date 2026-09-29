@@ -159,7 +159,11 @@ function compileOrder(analysis, options) {
   const draft = buildDraft(request, analysis.request_ref, analysis, now);
   valid(draft, "order-draft");
   const existing = find(store, draft.id, DRAFTS);
-  if (existing) return summary(replayDraft(store, existing), reference(existing), true);
+  if (existing) {
+    const retained = replayDraft(store, existing);
+    requireTrue(Date.parse(retained.compiled_at) <= Date.parse(now), "ORDER_INTAKE_DRAFT_FROM_FUTURE");
+    return summary(retained, reference(existing), true);
+  }
   const refs = [analysis.request_ref, ...analysis.statements.filter(item => item.kind === "evidence_quote").map(item => item.source.artifact_ref)];
   const written = writeRepositoryArtifact({ repositoryPath: store.verification.repository.root, artifactRoot: store.artifactRoot,
     missionId: draft.mission_id, waveId: draft.wave_id, kind: DRAFTS, artifactId: draft.id, payload: draft, createdAt: now, reuseExisting: true,
