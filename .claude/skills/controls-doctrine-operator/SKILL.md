@@ -354,7 +354,7 @@ When editing the corpus:
 - When the custom validator is affected, add a regression for every used
   combinator or keyword whose enforcement changed. Nested
   `additionalProperties`, `allOf`/`oneOf`, conditional requirements,
-  positional items, and contained items must fail closed.
+  positional items, and contained items must fail closed. Include parsed-JSON prototype-name and inherited-required API regressions.
 - If adding, renaming, moving, or deleting any corpus artifact, run coverage:
 
 ```bash

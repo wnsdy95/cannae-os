@@ -144,6 +144,11 @@ never treats an artifact's own retrieval or record time as the current clock.
   `allOf`, `anyOf`, `oneOf`, `not`, and `if`/`then`/`else`.
 - Structural violations, including nested additional fields and lightweight
   HTTP(S) URI or parseable date-time format failures, are blocking errors.
+- Declared fields, required values, and registered type names use own-property
+  membership. Undeclared `__proto__`, `constructor`, and `toString` JSON keys
+  are additional fields, not schema entries; inherited API values cannot
+  satisfy `required`. Unknown prototype-named types fail CLI usage and API
+  lookup instead of selecting an absent schema.
 - The exported `validateSchemaPayload` path performs structural-only
   preflight where time-based semantic errors need separate policy codes.
 - This remains a repository-specific subset, not a complete JSON Schema

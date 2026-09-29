@@ -599,13 +599,13 @@ function validateSchema(value, schema, schemas, pointer = "$", seen = new Set(),
       ));
     }
     for (const required of schema.required || []) {
-      if (!(required in value)) {
+      if (!Object.hasOwn(value, required)) {
         issues.push(issue("error", "MISSING_REQUIRED", `${pointer}.${required}`, `Missing required field ${required}.`));
       }
     }
     const props = schema.properties || {};
     for (const [key, child] of Object.entries(value)) {
-      if (props[key]) {
+      if (Object.hasOwn(props, key)) {
         issues.push(...validateSchema(child, props[key], schemas, `${pointer}.${key}`, new Set(seen), rootSchema));
       } else if (schema.additionalProperties === false) {
         issues.push(issue("error", "ADDITIONAL_PROPERTY", `${pointer}.${key}`, `Unexpected field ${key}.`));
@@ -6106,7 +6106,7 @@ function validationResult(issues, type, payload) {
 }
 
 function validateSchemaPayload(payload, type) {
-  if (!TYPE_TO_SCHEMA[type]) throw new Error(`Unknown payload type: ${type}`);
+  if (!Object.hasOwn(TYPE_TO_SCHEMA, type)) throw new Error(`Unknown payload type: ${type}`);
   const schemas = loadSchemas();
   const schema = schemas[TYPE_TO_SCHEMA[type]];
   return validationResult(
@@ -6141,7 +6141,7 @@ function validatePayload(payload, type, options = {}) {
 
 function main() {
   const [, , payloadArg, typeArg, ...optionArgs] = process.argv;
-  if (!payloadArg || !typeArg || !TYPE_TO_SCHEMA[typeArg]) {
+  if (!payloadArg || !typeArg || !Object.hasOwn(TYPE_TO_SCHEMA, typeArg)) {
     console.error(`Usage: node validator-cli-prototype/validate.js <payload.json> <${Object.keys(TYPE_TO_SCHEMA).join("|")}> [--evaluated-at <timestamp>]`);
     process.exit(2);
   }

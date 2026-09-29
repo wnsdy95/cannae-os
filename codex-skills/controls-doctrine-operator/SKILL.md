@@ -391,7 +391,7 @@ Read `docs/bounded-self-improvement-operations.md` for the full state machine an
    When the custom validator is affected, add a regression for each used
    combinator or keyword whose enforcement changed; nested
    `additionalProperties`, `allOf`/`oneOf`, conditional requirements,
-   positional items, and contained items must fail closed.
+   positional items, and contained items must fail closed. Include parsed-JSON prototype-name and inherited-required API regressions.
 3. If adding official sources, update `docs/source-map.md`, `docs/research-compendium.md`, and `source-map-url-coverage-report.json`.
 4. Run targeted validation first, then the relevant `run-*.js` fixture.
 5. Commit coherent changes when the repo is clean except ignored files.
