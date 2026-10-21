@@ -1,14 +1,108 @@
 #!/usr/bin/env node
 
 const { spawnSync } = require("child_process");
+const assert = require("assert/strict");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { validatePayload, validateSchemaPayload } = require("./validate");
 
 const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["mission", "mission-wave-plan", "order-adoption-proposal-request"].flatMap(type =>
+    ["root", "nested"].flatMap(location => ["__proto__", "constructor", "toString"].map(key => ({
+      name: `${type} rejects undeclared ${location} ${key} in parsed JSON`,
+      file: `sample-payloads/valid-${type}.json`, type, exitCode: 1,
+      expectedCanExecute: false, requiredCodes: ["ADDITIONAL_PROPERTY"],
+      mutate(payload) {
+        const target = location === "root" ? payload : type === "mission" ? payload.intent :
+          type === "mission-wave-plan" ? payload.agents[0] : payload.plan.order_binding.draft_ref;
+        Object.defineProperty(target, key, { value: { execution_authorized: true }, enumerable: true });
+      }
+    })))),
+  ...[
+    ["mission", "id", value => value],
+    ["mission", "purpose", value => value.intent],
+    ["mission-wave-plan", "agent_id", value => value.agents[0]],
+    ["order-adoption-proposal-request", "artifact_id", value => value.plan.order_binding.draft_ref]
+  ].map(([type, key, select]) => ({
+    name: `${type} cannot inherit required ${key}`, file: `sample-payloads/valid-${type}.json`,
+    check() {
+      const payload = JSON.parse(fs.readFileSync(path.join(ROOT, this.file), "utf8"));
+      const target = select(payload);
+      const inherited = { [key]: target[key] };
+      delete target[key];
+      Object.setPrototypeOf(target, inherited);
+      for (const validate of [validateSchemaPayload, validatePayload]) {
+        const result = validate(payload, type);
+        assert.equal(result.valid, false);
+        assert.equal(result.can_execute, false);
+        assert(result.issues.some(item => item.code === "MISSING_REQUIRED" && item.path.endsWith(`.${key}`)));
+      }
+    }
+  })),
+  ...["__proto__", "constructor", "toString"].map(type => ({
+    name: `prototype name ${type} is not a registered payload type`, file: "sample-payloads/valid-mission.json",
+    check() {
+      const payload = JSON.parse(fs.readFileSync(path.join(ROOT, this.file), "utf8"));
+      for (const validate of [validateSchemaPayload, validatePayload]) {
+        assert.throws(() => validate(payload, type), /Unknown payload type/);
+      }
+      const result = spawnSync(process.execPath, [VALIDATOR, this.file, type], { cwd: ROOT, encoding: "utf8" });
+      assert.equal(result.status, 2);
+      assert.equal(result.stdout, "");
+      assert.match(result.stderr, /Usage:/);
+    }
+  })),
+  ...["mission", "mission-wave-plan", "order-adoption-proposal-request"].map(type => ({
+    name: `${type} accepts own properties without a prototype`, file: `sample-payloads/valid-${type}.json`,
+    check() {
+      const payload = JSON.parse(fs.readFileSync(path.join(ROOT, this.file), "utf8"));
+      Object.setPrototypeOf(payload, null);
+      for (const validate of [validateSchemaPayload, validatePayload]) assert.equal(validate(payload, type).valid, true);
+    }
+  })),
+  ...["order-adoption-proposal-request", "order-adoption-proposal", "order-backbrief", "order-rehearsal",
+    "order-adoption-decision-request", "order-adoption-record", "mission-wave-plan-adopted", "agent-context-pack-adopted"].map(name => ({
+    name: `valid non-executable ${name}`, file: `sample-payloads/valid-${name}.json`, type: name.replace(/-adopted$/, ""),
+    exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  })),
+  ...[
+    ["order-adoption-proposal-request", "MISSION_WAVE_RETAINED_ACTION_DELEGATED"],
+    ["order-adoption-proposal", "ORDER_PROPOSAL_BINDING_MISMATCH"], ["order-backbrief", "BACKBRIEF_WITHOUT_RISK_CONTROLS"],
+    ["order-rehearsal", "EXECUTE_WITH_UNRESOLVED_CHANGES"], ["order-adoption-decision-request", "ORDER_ADOPTION_REHEARSAL_REQUIRED"],
+    ["order-adoption-record", "CONST_MISMATCH"], ["mission-wave-plan-adopted", "MISSING_REQUIRED"],
+    ["agent-context-pack-adopted", "ORDER_CONTEXT_TASK_MISMATCH"]
+  ].map(([name, code]) => ({ name: `invalid ${name}`, file: `sample-payloads/invalid-${name}.json`,
+    type: name.replace(/-adopted$/, ""), exitCode: 1, expectedCanExecute: false, requiredCodes: [code] })),
+  ...["missing-binding", "legacy-binding", "duplicate-agent", "extra-field"].map(mutation => ({
+    name: `adopted plan rejects ${mutation}`, file: "sample-payloads/valid-mission-wave-plan-adopted.json", type: "mission-wave-plan",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: [{ "missing-binding": "MISSING_REQUIRED", "legacy-binding": "NOT_SCHEMA_MATCH",
+      "duplicate-agent": "ORDER_PLAN_ASSIGNMENT_MISMATCH", "extra-field": "ADDITIONAL_PROPERTY" }[mutation]],
+    mutate: value => {
+      if (mutation === "missing-binding") delete value.order_binding;
+      if (mutation === "legacy-binding") value.schema_version = "0.1";
+      if (mutation === "duplicate-agent") value.order_binding.task_assignments[0].agent_id = value.order_binding.task_assignments[1].agent_id;
+      if (mutation === "extra-field") value.order_binding.task_assignments[0].approved = true;
+    }
+  })),
+  ...["missing-assignment", "legacy-assignment", "extra-field"].map(mutation => ({
+    name: `adopted context rejects ${mutation}`, file: "sample-payloads/valid-agent-context-pack-adopted.json", type: "agent-context-pack",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: [{ "missing-assignment": "MISSING_REQUIRED",
+      "legacy-assignment": "NOT_SCHEMA_MATCH", "extra-field": "ADDITIONAL_PROPERTY" }[mutation]],
+    mutate: value => {
+      if (mutation === "missing-assignment") delete value.order_assignment;
+      if (mutation === "legacy-assignment") value.schema_version = "0.2";
+      if (mutation === "extra-field") value.order_assignment.adoption_ref.approved = true;
+    }
+  })),
+  { name: "adoption record requires concrete USER reference", file: "sample-payloads/valid-order-adoption-record.json", type: "order-adoption-record",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["ORDER_ADOPTION_BINDING_MISMATCH"],
+    mutate: value => { value.request.decision_ref = { artifact_id: "none", relative_path: "none", sha256: "none" }; } },
+  { name: "adoption rejects partial none", file: "sample-payloads/valid-order-adoption-decision-request.json", type: "order-adoption-decision-request",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["ONE_OF_MISMATCH"], mutate: value => { value.decision_ref.sha256 = "none"; } },
   ...["mission-request", "mission-order-analysis", "order-draft"].map(type => ({
     name: `valid non-executable ${type}`, file: `sample-payloads/valid-${type}.json`, type,
     exitCode: 0, expectedCanExecute: false, requiredCodes: []
@@ -2592,6 +2686,14 @@ const fixtures = [
 ];
 
 function runFixture(fixture) {
+  if (fixture.check) {
+    try {
+      fixture.check();
+      return { ok: true, fixture };
+    } catch (error) {
+      return { ok: false, fixture, reason: error.message };
+    }
+  }
   let temporaryDirectory = null;
   let fixturePath = fixture.file;
   if (fixture.mutate) {

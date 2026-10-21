@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Exact Order Adoption And Downstream Binding (2026-09-30)
+
+The [adoption contract](order-adoption-and-plan-binding.md) addresses the remaining
+handoff between review-only drafts and executable mission plans: adoption freezes
+the entire plan, unique task-to-agent assignments, per-agent backbriefs, rehearsal
+and one exact USER scope decision. Historical manifest replay and publication
+guards reject substitution, stale inputs and consumed decisions. Lifecycle and
+dispatch consumers require current adoption; admitted-result retention remains
+separate from permission to start another tool call.
+
+Both skills now require complete-plan review before opening a captured-intake
+wave and prohibit stripping bindings or renaming scope to bypass review. This is
+local implementation synthesis, not proof of authenticated human identity,
+complete semantic interpretation or protected execution. Phase 2 remains partial:
+approved changes to an opened wave still require the existing FRAGO/new-wave path,
+and a renamed mission cannot be recognized semantically by exact identifiers.
+
 ## General Request Intake And Draft Provenance (2026-09-29)
 
 The [request intake implementation](request-order-intake.md) closes a concrete
@@ -15,9 +32,9 @@ facts, unknowns, expiry, scope crossing and both provider wrappers. Both skills
 use the new procedure.
 
 This is engineering evidence, not proof of truth, complete interpretation,
-authenticated USER decisions or issued-order adoption. Phase 2 remains partial:
-exact review consumption, approved edits and draft-to-issued-plan binding are
-still needed. Distinct types block accidental unchanged extraction, not hostile
+authenticated USER decisions. The later adoption contract above supplies exact
+review consumption and draft-to-plan binding; Phase 2 remains partial for broader
+approved-edit integration and semantic completeness. Distinct types block accidental unchanged extraction, not hostile
 rewriting of local contracts or code.
 
 ## Dependency Security And Retained Proof (2026-09-29)

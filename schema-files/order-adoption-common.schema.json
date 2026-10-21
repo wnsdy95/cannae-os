@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/order-adoption-common.schema.json",
+  "$defs": {
+    "plan_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "draft_ref",
+        "task_assignments"
+      ],
+      "properties": {
+        "draft_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "task_assignments": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "task_order_id",
+              "agent_id"
+            ],
+            "properties": {
+              "task_order_id": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "agent_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "context_assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "adoption_ref",
+        "proposal_ref",
+        "draft_ref",
+        "backbrief_ref",
+        "rehearsal_ref",
+        "plan_sha256",
+        "task_order",
+        "commander_intent",
+        "mission_end_state",
+        "constraints",
+        "assessment"
+      ],
+      "properties": {
+        "adoption_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "proposal_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "draft_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "backbrief_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "rehearsal_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        "plan_sha256": {
+          "$ref": "common.schema.json#/$defs/sha256"
+        },
+        "task_order": {
+          "$ref": "order-draft.schema.json#/properties/opord/properties/execution/properties/tasks/items"
+        },
+        "commander_intent": {
+          "$ref": "opord.schema.json#/properties/intent"
+        },
+        "mission_end_state": {
+          "$ref": "common.schema.json#/$defs/string_list"
+        },
+        "constraints": {
+          "$ref": "common.schema.json#/$defs/string_list"
+        },
+        "assessment": {
+          "$ref": "opord.schema.json#/properties/assessment"
+        }
+      }
+    },
+    "optional_ref": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
+        {
+          "$ref": "campaign-stop-request.schema.json#/$defs/none"
+        }
+      ]
+    }
+  }
+}

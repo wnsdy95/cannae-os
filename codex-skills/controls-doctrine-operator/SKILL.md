@@ -75,17 +75,17 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 Read these only when needed:
 
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
-- `docs/request-order-intake.md`: use `scripts/compile_controls_order.js` to capture original bytes and compile review-only drafts; never strip draft markers or treat quotes as verified truth.
+- `docs/request-order-intake.md` and `docs/order-adoption-and-plan-binding.md`: capture exact input, then use `scripts/adopt_controls_order.js` for complete-plan USER review, every agent's backbrief and rehearsal before opening a bound wave. Changed drafts/plans need new review; never strip bindings, rename scope to bypass adoption, or treat quotes as truth.
 - `references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
 
 ## Workflows
 
 ### Operating A Delegated Mission
 
-1. Create a schema-valid `MissionWavePlan` from `sample-payloads/valid-mission-wave-plan.json`. Preserve `USER` final authority, give each AI a non-command operational role, state allowed/approval-required/prohibited actions, and set finite validity and adaptive budgets.
+1. Prepare a complete `MissionWavePlan` preserving `USER` final authority, non-command AI roles, explicit action boundaries and finite validity/budgets. For captured intake, use v0.2 and the exact adoption procedure before opening; legacy v0.1 is only for waves without intake. A schema-valid plan is not proof of USER consent.
 2. For a dispatch-controlled wave, create one deny-by-default policy draft per agent, hash each exact draft with `scripts/operate_dispatch_runtime.js hash-input`, and put each digest plus its exact agent, provider, and policy ID in the USER-authorized `MissionWavePlan.dispatch_control.policy_authorizations`.
 3. Run `scripts/operate_controls_mission.js open`. Do not dispatch from manually assembled chat claims. Require `status: ready`, `context_dispatch_authorized: true`, `tool_execution_authorized: false`, `dispatch_authorized: false`, one context pack per expected agent, and a valid artifact store.
-4. Give each agent only its exact `AgentContextPack`. The S3 receipt is its mandatory control-plane route; `operational_role`, `department`, `task`, and `delegated_authority` remain its actual mission assignment.
+4. Give each agent only its exact `AgentContextPack`. The S3 receipt is its mandatory control-plane route; rendered role, department, task, authority and model fields must match retained adoption and preflight. A correct adoption reference alone cannot excuse contradictory permissions or a substituted model.
 5. If `model_assignment.required` is true, first persist a ready integrated mission preflight and cite its exact manifest reference and per-agent billet. A missing or mismatched model binding blocks `open`.
 6. Before any covered tool call, run `authorize-policy` on the exact preauthorized draft, then issue one short-lived `AgentDispatchLease` from its persisted `--policy-id` for this exact provider session and mission agent. Enable the provider hook adapter. A ready context pack is necessary but is not tool authority.
 7. Store every work product and verification result through `repository-artifact-store.js`. A completion claim, plan, receipt, preflight, context pack, policy, or lease is not work evidence.
@@ -391,7 +391,7 @@ Read `docs/bounded-self-improvement-operations.md` for the full state machine an
    When the custom validator is affected, add a regression for each used
    combinator or keyword whose enforcement changed; nested
    `additionalProperties`, `allOf`/`oneOf`, conditional requirements,
-   positional items, and contained items must fail closed.
+   positional items, and contained items must fail closed. Include parsed-JSON prototype-name and inherited-required API regressions.
 3. If adding official sources, update `docs/source-map.md`, `docs/research-compendium.md`, and `source-map-url-coverage-report.json`.
 4. Run targeted validation first, then the relevant `run-*.js` fixture.
 5. Commit coherent changes when the repo is clean except ignored files.

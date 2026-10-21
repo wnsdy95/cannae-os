@@ -320,6 +320,15 @@ Use these signals to choose which skill surface to improve:
 
 ## Update Surfaces
 
+For structural-validator changes, test prototype-named keys at root and nested
+closed objects through the real JSON CLI. Create `__proto__` as an own
+enumerable property before serialization; an object-literal prototype setter
+does not reproduce that input. Also test inherited required fields and unknown
+prototype-named document types through both exported validation APIs. Keep a
+valid own-property/null-prototype control. Require the precise error code or
+usage failure, not merely an unrelated semantic rejection. Passing these cases
+does not establish complete JSON Schema support or authenticate decision data.
+
 | Change | Required Updates |
 | --- | --- |
 | New official source | `docs/source-map.md`, `docs/research-compendium.md`, `source-map-url-coverage-report.json` |

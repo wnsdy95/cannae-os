@@ -31,8 +31,16 @@
     "valid_until"
   ],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.3" } }, "required": ["schema_version"] },
+      "then": { "required": ["order_assignment"] },
+      "else": { "not": { "required": ["order_assignment"] } }
+    }
+  ],
   "properties": {
-    "schema_version": { "type": "string", "const": "0.2" },
+    "schema_version": { "type": "string", "enum": ["0.2", "0.3"] },
+    "order_assignment": { "$ref": "order-adoption-common.schema.json#/$defs/context_assignment" },
     "type": { "type": "string", "const": "AgentContextPack" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },

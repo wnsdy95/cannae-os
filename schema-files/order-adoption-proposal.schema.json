@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/order-adoption-proposal.schema.json",
+  "title": "OrderAdoptionProposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "mission_id",
+    "wave_id",
+    "type",
+    "request",
+    "request_sha256",
+    "plan_sha256",
+    "observed_manifest",
+    "recorded_at",
+    "expires_at",
+    "classification",
+    "execution_authorized",
+    "continuation_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "type": {
+      "const": "OrderAdoptionProposal"
+    },
+    "request": {
+      "$ref": "order-adoption-proposal-request.schema.json"
+    },
+    "request_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "plan_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "observed_manifest": {
+      "$ref": "campaign-terminal-record.schema.json#/properties/observed_manifest"
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "classification": {
+      "$ref": "common.schema.json#/$defs/classification"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "continuation_authorized": {
+      "const": false
+    },
+    "release_authorized": {
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "const": "USER"
+    }
+  }
+}

@@ -13,6 +13,12 @@ JSON Schema validation
 
 JSON Schema catches missing required fields and type errors. Semantic validation catches the omissions that matter more in military-style LLM operation: absence of intent, absence of authority, absence of CCIR, MOP/MOE imbalance, and high-risk actions taken without approval.
 
+The implemented subset checks own-property membership for declared fields,
+required values, and registered document types. Prototype-named JSON keys do
+not bypass closed objects, and inherited JavaScript API values do not satisfy
+required fields. See [the CLI contract](../validator-cli-prototype/README.md)
+for the supported subset and current limits.
+
 ## 1. Input and Output
 
 ### Input

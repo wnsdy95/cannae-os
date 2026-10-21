@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderAdoptionDecisionRequest",
+  "id": "OADR-ADOPTION",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "proposal_ref": {
+    "artifact_id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+    "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json",
+    "sha256": "0a784f089d2ed8a7c377a455980d65e378a10e14f361f0171230bad5a32fb493"
+  },
+  "backbrief_refs": [
+    {
+      "artifact_id": "OBB-agent-S2",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+      "sha256": "39a26fdb3cff53c9399a24ee392bc27a9e647637fb5f164ffd0adece30083b84"
+    },
+    {
+      "artifact_id": "OBB-agent-S3",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S3.json",
+      "sha256": "01e08ab5be9aeff451839e92e564a5deed12e05138a7aafb6539322845d0a4fe"
+    }
+  ],
+  "rehearsal_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "disposition": "approve",
+  "decision_ref": {
+    "artifact_id": "DL-ADOPTION",
+    "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/decision-logs/DL-ADOPTION.json",
+    "sha256": "9f95b806a455bf12f17d23162a7d3032467e0eadd7b56eef112ea50995280416"
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "continuation_authorized": false
+}

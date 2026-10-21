@@ -1,0 +1,90 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderBackbrief",
+  "id": "OBB-agent-S2",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "proposal_ref": {
+    "artifact_id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+    "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json",
+    "sha256": "0a784f089d2ed8a7c377a455980d65e378a10e14f361f0171230bad5a32fb493"
+  },
+  "agent_id": "agent-S2",
+  "backbrief": {
+    "schema_version": "0.1",
+    "type": "BACKBRIEF",
+    "id": "BB-agent-S2",
+    "mission_id": "MIS-ADOPTION",
+    "parent_order": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+    "task_order": "TASK-S2",
+    "actor": "S2",
+    "classification": "internal",
+    "understanding": {
+      "commander_intent": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+      "assigned_task": "Proposal: Extract evidence for each option without editing source records.",
+      "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+      "end_state": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ],
+      "constraints": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ]
+    },
+    "planned_actions": [
+      "Request quote: Prepare an internal comparison of two onboarding options."
+    ],
+    "risk_controls": [
+      "Stop on validator failure.",
+      "Escalate policy disagreement as FFIR.",
+      "Use event replay output as the diagnostic source if dashboard projection fails."
+    ],
+    "stop_conditions": [
+      "Proposal: Do not treat missing evidence as a fact."
+    ],
+    "approval_awareness": {
+      "approval_required_actions": [
+        "Request quote: The user decides the target segment and any budget change."
+      ],
+      "prohibited_actions": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "commander_decision_needed": false
+    },
+    "assumptions": [
+      "Assumption: The supplied evidence covers current onboarding."
+    ],
+    "requested_clarifications": [],
+    "confidence": "high",
+    "created_at": "2026-09-29T16:00:30.000Z"
+  },
+  "task_acknowledgement": {
+    "type": "TASK_ORDER_DRAFT",
+    "id": "TASK-S2",
+    "mission_id": "MIS-ADOPTION",
+    "assigned_to": "S2",
+    "task": "Proposal: Extract evidence for each option without editing source records.",
+    "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+    "deliverables": [
+      "Request quote: Return a recommendation with explicit uncertainties."
+    ],
+    "verification": [
+      "Proposal: Every factual claim cites an exact retained source quote."
+    ],
+    "ccir": [
+      "Proposal: Request clarification when evidence cannot support comparison."
+    ],
+    "status": "draft",
+    "inherited_constraints": [
+      "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+    ],
+    "retained_user_decisions": [
+      "Request quote: The user decides the target segment and any budget change."
+    ],
+    "draft_binding_sha256": "838eece7b985c6755798993debc6daf4e185810e6caeccb0e76eba004e33763f",
+    "execution_authorized": false
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "continuation_authorized": false
+}

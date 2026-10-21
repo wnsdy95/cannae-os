@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderRehearsal",
+  "id": "ORH-ADOPTION",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "proposal_ref": {
+    "artifact_id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+    "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json",
+    "sha256": "0a784f089d2ed8a7c377a455980d65e378a10e14f361f0171230bad5a32fb493"
+  },
+  "backbrief_refs": [
+    {
+      "artifact_id": "OBB-agent-S2",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+      "sha256": "39a26fdb3cff53c9399a24ee392bc27a9e647637fb5f164ffd0adece30083b84"
+    },
+    {
+      "artifact_id": "OBB-agent-S3",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S3.json",
+      "sha256": "01e08ab5be9aeff451839e92e564a5deed12e05138a7aafb6539322845d0a4fe"
+    }
+  ],
+  "agent_sequence": [
+    "agent-S2",
+    "agent-S3"
+  ],
+  "rehearsal": {
+    "schema_version": "0.1",
+    "type": "REHEARSAL",
+    "id": "RH-ADOPTION",
+    "mission_id": "MIS-ADOPTION",
+    "parent_order": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+    "backbriefs": [
+      "BB-agent-S2",
+      "BB-agent-S3"
+    ],
+    "facilitator": "COS",
+    "classification": "internal",
+    "rehearsal_type": "dry_run",
+    "sequence": [
+      {
+        "step": 1,
+        "actor": "S2",
+        "action": "Proposal: Extract evidence for each option without editing source records.",
+        "expected_result": "Request quote: Return a recommendation with explicit uncertainties.",
+        "evidence_required": [
+          "Proposal: Every factual claim cites an exact retained source quote."
+        ]
+      },
+      {
+        "step": 2,
+        "actor": "S3",
+        "action": "Proposal: Compare the two options and prepare a draft recommendation.",
+        "expected_result": "Request quote: Return a recommendation with explicit uncertainties.",
+        "evidence_required": [
+          "Proposal: Every factual claim cites an exact retained source quote."
+        ]
+      }
+    ],
+    "friction_points": [],
+    "decision_points": [],
+    "required_changes": [
+      "Resolve pending scope"
+    ],
+    "disposition": "execute",
+    "created_at": "2026-09-29T16:00:40.000Z"
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "continuation_authorized": false
+}
