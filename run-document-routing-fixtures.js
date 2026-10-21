@@ -11,6 +11,7 @@ const ROUTERS = [
   "codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js",
   ".claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js"
 ];
+let routedQueries = 0;
 
 function route(router, args, query) {
   const result = spawnSync(process.execPath, [path.join(ROOT, router), ...args, query, ROOT], {
@@ -19,6 +20,7 @@ function route(router, args, query) {
     maxBuffer: 8 * 1024 * 1024
   });
   assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+  routedQueries++;
   return JSON.parse(result.stdout);
 }
 
@@ -32,6 +34,12 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["order revision", "order-revision-controller.js", "revise_controls_order.js", "order replay", "FRAGO"]) {
+    const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
+    assertRoutes(result, ["orders"]);
+    assert(result.recommended_documents.some(item => item.path === "docs/order-revision-and-supersession.md"));
+    assert(result.validation_commands.includes("node run-order-revision-fixtures.js"));
+  }
   for (const query of ["order adoption", "order-adoption-controller.js", "adopt_controls_order.js", "order-backbrief", "order-rehearsal"]) {
     const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
     assertRoutes(result, ["orders"]);
@@ -185,4 +193,4 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log("Document routing fixtures: 38/38 passed");
+console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers.`);

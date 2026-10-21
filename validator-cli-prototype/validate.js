@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const path = require("path");
 const { DRAFT_TYPES, intakeIssues } = require("../order-intake-contract");
 const { ADOPTION_TYPES, adoptionIssues } = require("../order-adoption-contract");
+const { REVISION_TYPES, revisionIssues } = require("../order-revision-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -133,6 +134,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  ...Object.fromEntries([...REVISION_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...ADOPTION_TYPES].map(type => [type, `${type}.schema.json`])),
   "mission-request": "mission-request.schema.json",
   "mission-order-analysis": "mission-order-analysis.schema.json",
@@ -6095,7 +6097,8 @@ function validationResult(issues, type, payload) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-    can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) &&
+    can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) &&
+      !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       !(type === "agent-context-pack" && payload?.schema_version === "0.3") &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
@@ -6105,9 +6108,11 @@ function validationResult(issues, type, payload) {
   };
 }
 
+let activeSchemaSnapshot = null;
+
 function validateSchemaPayload(payload, type) {
   if (!Object.hasOwn(TYPE_TO_SCHEMA, type)) throw new Error(`Unknown payload type: ${type}`);
-  const schemas = loadSchemas();
+  const schemas = activeSchemaSnapshot || loadSchemas();
   const schema = schemas[TYPE_TO_SCHEMA[type]];
   return validationResult(
     validateSchema(payload, schema, schemas)
@@ -6116,15 +6121,24 @@ function validateSchemaPayload(payload, type) {
 }
 
 function validatePayload(payload, type, options = {}) {
+  const previous = activeSchemaSnapshot;
+  activeSchemaSnapshot = previous || loadSchemas();
+  try { return validatePayloadInSnapshot(payload, type, options); }
+  finally { activeSchemaSnapshot = previous; }
+}
+
+function validatePayloadInSnapshot(payload, type, options) {
   const schemaResult = validateSchemaPayload(payload, type);
   const issues = [
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {
+    "order-revision-request": ["successor_plan", "mission-wave-plan"],
+    "order-revision-proposal": ["request", "order-revision-request"],
     "order-adoption-proposal-request": ["plan", "mission-wave-plan"],
     "order-adoption-proposal": ["request", "order-adoption-proposal-request"],
     "order-backbrief": ["backbrief", "backbrief"],

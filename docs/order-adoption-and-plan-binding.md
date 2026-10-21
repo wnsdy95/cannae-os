@@ -72,7 +72,8 @@ CLI operations use the live clock and reject clock overrides.
    adoption or exceed the current clock. Retrying open preserves retained time.
 10. Keep the adopted scope immutable. Changed analysis requires a new draft;
     changed plan requires a new proposal and USER decision. After wave opening,
-    use the existing stop, FRAGO, termination and new-wave procedures. Do not
+    use [linked revision](order-revision-and-supersession.md), settlement,
+    termination and new-wave procedures. Do not
     strip `order_binding` or change IDs to escape review.
 
 ```bash
@@ -144,4 +145,4 @@ This is engineering synthesis of [orders production](orders-production-pipeline.
 [backbrief and rehearsal](backbrief-and-rehearsal-sop.md) and the existing
 [mission lifecycle](skill-operational-mission-lifecycle.md), not a new military
 source claim. Phase 2 remains partial pending semantic-completeness evaluation and
-broader approved-edit/FRAGO integration.
+broader initiative integration beyond the linked same-mission revision path.

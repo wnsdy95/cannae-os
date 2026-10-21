@@ -332,7 +332,7 @@ independent durable archive or witness.
 Read these only when needed (bundled with this skill):
 
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
-- `docs/request-order-intake.md` and `docs/order-adoption-and-plan-binding.md`: capture exact input, then use `scripts/adopt_controls_order.js` for complete-plan USER review, every agent's backbrief and rehearsal before opening a bound wave. Changed drafts/plans need new review; never strip bindings, rename scope to bypass adoption, or treat quotes as truth.
+- `docs/request-order-intake.md` and `docs/order-adoption-and-plan-binding.md`: capture exact input and use `scripts/adopt_controls_order.js` for full-plan review, backbriefs and rehearsal. For an opened scope change, read `docs/order-revision-and-supersession.md` and use `scripts/revise_controls_order.js`: prepare the reviewed successor, settle old results, then supersede before tool dispatch. New adoption holds old calls; never strip bindings, reuse approval or backdate cleanup.
 - `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
 
 ## Reading Rules
@@ -477,23 +477,9 @@ unrelated documents were needed, or a validation failure exposed a missing
 instruction. Update the smallest skill surface that makes the next operator
 perform the improved procedure by default.
 
-This Claude skill is self-contained. Its bundled files are:
-
-- `.claude/skills/controls-doctrine-operator/SKILL.md`
-- `.claude/skills/controls-doctrine-operator/references/document-routing.md`
-- `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`
-- `.claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js`
-- `.claude/skills/controls-doctrine-operator/scripts/enforce_controls_dispatch.js`
-- `.claude/skills/controls-doctrine-operator/scripts/install_dispatch_hooks.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_protected_gateway.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_gateway_identity.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_protected_executor.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_oci_sandbox.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_production_sandbox.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_github_release.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_github_release_immutability.js`
-- `.claude/skills/controls-doctrine-operator/scripts/operate_github_release_integrity.js`
+This Claude provider tree bundles the router, references and CLI wrappers in
+`.claude/skills/controls-doctrine-operator/`. The wrappers locate the Controls
+repository runtime; they do not bundle an independent runtime. Use the linked
+workflow references above to select the required script from `scripts/`.
 
 The Codex copy under `codex-skills/controls-doctrine-operator/` is the parallel skill for Codex (`~/.codex/skills`). When the router script or a reference changes, update both copies so they do not drift.

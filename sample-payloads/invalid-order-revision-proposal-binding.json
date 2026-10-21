@@ -1,0 +1,602 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderRevisionProposal",
+  "id": "ORP-a12c5c809201a5f03becf9f4eb8c7de4",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W2",
+  "request": {
+    "schema_version": "0.1",
+    "type": "OrderRevisionRequest",
+    "id": "ORR-W2",
+    "mission_id": "MIS-ADOPTION",
+    "wave_id": "W2",
+    "parent_plan_ref": {
+      "artifact_id": "MWP-ADOPTION",
+      "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
+      "sha256": "b508a4d0edb381757e177c4fc74861cb41f77238ff513ce3837b139374ef9deb"
+    },
+    "parent_adoption_ref": {
+      "artifact_id": "OAR-134869b80af7a76805d84e7281eb632e",
+      "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W1/order-adoption-records/OAR-134869b80af7a76805d84e7281eb632e.json",
+      "sha256": "077844f3eb48dfd21c3fac3886e448906a63d6d72604edb2b8380d0be91290f2"
+    },
+    "change_request_ref": {
+      "artifact_id": "MR-REVISION-W2",
+      "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W2/mission-requests/MR-REVISION-W2.json",
+      "sha256": "95e68f0743ac7e8f53bf9d85e16af8e4883eda8a2155012cab25d7764cd66f55"
+    },
+    "successor_plan": {
+      "schema_version": "0.2",
+      "type": "MissionWavePlan",
+      "id": "MWP-REVISION-W2",
+      "mission_id": "MIS-ADOPTION",
+      "wave_id": "W2",
+      "title": "Revised comparison W2",
+      "objective": "Request quote: Prepare an internal comparison of two onboarding options.",
+      "success_conditions": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ],
+      "failure_conditions": [
+        "Proposal: Do not treat missing evidence as a fact."
+      ],
+      "constraints": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "mission_profile": {
+        "classification": "internal",
+        "risk_level": "medium",
+        "roe_class": "Amber",
+        "release_target": "internal_handoff"
+      },
+      "agents": [
+        {
+          "agent_id": "agent-S2-W2",
+          "operational_role": "S2",
+          "department": "operations",
+          "task": "Proposal: Extract evidence for each option without editing source records.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        },
+        {
+          "agent_id": "agent-S3-W2",
+          "operational_role": "S3",
+          "department": "operations",
+          "task": "Request quote: Include migration effort in the comparison.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        }
+      ],
+      "model_assignment": {
+        "required": false,
+        "integrated_preflight_ref": {
+          "artifact_id": "none",
+          "relative_path": "none",
+          "sha256": "none"
+        }
+      },
+      "authority": {
+        "human_final_decision_authority": "USER",
+        "routing_required_every_wave": true,
+        "repository_artifacts_required": true,
+        "approval_required_for_scope_change": true,
+        "approval_required_for_commit": true,
+        "approval_required_for_push": true,
+        "approval_required_for_merge": true,
+        "approval_required_for_release": true,
+        "self_approval_prohibited": true
+      },
+      "adaptive_work": {
+        "enabled": false,
+        "campaign_id": "SIC-SKILL-DEMO",
+        "target_type": "skill",
+        "acceptance_criteria": [
+          "Routing coverage remains complete.",
+          "Baseline behavior does not regress."
+        ],
+        "non_goals": [
+          "Changing approval authority.",
+          "Publishing or releasing without the user."
+        ],
+        "max_cycles": 4,
+        "max_changed_files": 20,
+        "max_elapsed_minutes": 240
+      },
+      "created_at": "2026-10-21T13:27:54.140Z",
+      "valid_until": "2026-10-21T15:27:44.140Z",
+      "order_binding": {
+        "draft_ref": {
+          "artifact_id": "OD-e23f85ac15408288fa8ecf16e6059b7b",
+          "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W2/order-drafts/OD-e23f85ac15408288fa8ecf16e6059b7b.json",
+          "sha256": "c9c534745318f1cf67551118b2f7602891800c194d95a879e9582b2dcf2b5255"
+        },
+        "task_assignments": [
+          {
+            "task_order_id": "TASK-S2",
+            "agent_id": "agent-S2-W2"
+          },
+          {
+            "task_order_id": "TASK-S3",
+            "agent_id": "agent-S3-W2"
+          }
+        ]
+      },
+      "dispatch_control": {
+        "required": true,
+        "enforcement_level": "guardrail",
+        "gateway_exclusive": false,
+        "policy_authorizations": [
+          {
+            "agent_id": "agent-S2-W2",
+            "provider": "codex",
+            "policy_id": "DTP-agent-S2-W2",
+            "draft_sha256": "bdc8da5d4790bb4b02f85963904a377a74e324212dd7c508fd0cbe5ac4e4dc33"
+          },
+          {
+            "agent_id": "agent-S3-W2",
+            "provider": "codex",
+            "policy_id": "DTP-agent-S3-W2",
+            "draft_sha256": "e0a281349fd11a2f548d729bddedf49b198bb44b9510a006d15d9762c10bbc86"
+          }
+        ]
+      }
+    },
+    "execution_authorized": false,
+    "release_authorized": false,
+    "human_final_decision_authority": "USER",
+    "continuation_authorized": false
+  },
+  "request_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "parent_plan_sha256": "59f727938bd6c5f4eb63b35f83351e40573e4278fc7d2d33fd2811be5f3ddea0",
+  "successor_plan_sha256": "1ba36390af98696d7285cb5d0560247c7dc1a686397b50d60c72331f06cdc46c",
+  "classification": "internal",
+  "changes": [
+    {
+      "path": "/adaptive_work/acceptance_criteria",
+      "change": "retained",
+      "before": [
+        "Routing coverage remains complete.",
+        "Baseline behavior does not regress."
+      ],
+      "after": [
+        "Routing coverage remains complete.",
+        "Baseline behavior does not regress."
+      ]
+    },
+    {
+      "path": "/adaptive_work/campaign_id",
+      "change": "retained",
+      "before": "SIC-SKILL-DEMO",
+      "after": "SIC-SKILL-DEMO"
+    },
+    {
+      "path": "/adaptive_work/enabled",
+      "change": "retained",
+      "before": false,
+      "after": false
+    },
+    {
+      "path": "/adaptive_work/max_changed_files",
+      "change": "retained",
+      "before": 20,
+      "after": 20
+    },
+    {
+      "path": "/adaptive_work/max_cycles",
+      "change": "retained",
+      "before": 4,
+      "after": 4
+    },
+    {
+      "path": "/adaptive_work/max_elapsed_minutes",
+      "change": "retained",
+      "before": 240,
+      "after": 240
+    },
+    {
+      "path": "/adaptive_work/non_goals",
+      "change": "retained",
+      "before": [
+        "Changing approval authority.",
+        "Publishing or releasing without the user."
+      ],
+      "after": [
+        "Changing approval authority.",
+        "Publishing or releasing without the user."
+      ]
+    },
+    {
+      "path": "/adaptive_work/target_type",
+      "change": "retained",
+      "before": "skill",
+      "after": "skill"
+    },
+    {
+      "path": "/agents",
+      "change": "changed",
+      "before": [
+        {
+          "agent_id": "agent-S2",
+          "operational_role": "S2",
+          "department": "operations",
+          "task": "Proposal: Extract evidence for each option without editing source records.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        },
+        {
+          "agent_id": "agent-S3",
+          "operational_role": "S3",
+          "department": "operations",
+          "task": "Proposal: Compare the two options and prepare a draft recommendation.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        }
+      ],
+      "after": [
+        {
+          "agent_id": "agent-S2-W2",
+          "operational_role": "S2",
+          "department": "operations",
+          "task": "Proposal: Extract evidence for each option without editing source records.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        },
+        {
+          "agent_id": "agent-S3-W2",
+          "operational_role": "S3",
+          "department": "operations",
+          "task": "Request quote: Include migration effort in the comparison.",
+          "model_billet_id": "not_required",
+          "delegated_authority": "scoped-execution",
+          "allowed_actions": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "approval_required": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "prohibited_actions": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ],
+          "context_scope": "internal"
+        }
+      ]
+    },
+    {
+      "path": "/authority/approval_required_for_commit",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/authority/approval_required_for_merge",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/authority/approval_required_for_push",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/authority/approval_required_for_release",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/authority/approval_required_for_scope_change",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/authority/human_final_decision_authority",
+      "change": "retained",
+      "before": "USER",
+      "after": "USER"
+    },
+    {
+      "path": "/authority/repository_artifacts_required",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/authority/routing_required_every_wave",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/authority/self_approval_prohibited",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/constraints",
+      "change": "retained",
+      "before": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "after": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ]
+    },
+    {
+      "path": "/created_at",
+      "change": "changed",
+      "before": "2026-10-21T13:24:34.140Z",
+      "after": "2026-10-21T13:27:54.140Z"
+    },
+    {
+      "path": "/dispatch_control/enforcement_level",
+      "change": "retained",
+      "before": "guardrail",
+      "after": "guardrail"
+    },
+    {
+      "path": "/dispatch_control/gateway_exclusive",
+      "change": "retained",
+      "before": false,
+      "after": false
+    },
+    {
+      "path": "/dispatch_control/policy_authorizations",
+      "change": "changed",
+      "before": [
+        {
+          "agent_id": "agent-S2",
+          "provider": "codex",
+          "policy_id": "DTP-agent-S2",
+          "draft_sha256": "01dcc3f4c29ef4300b8f86f0516525ea6ed17ad7dc31a09b78edd3a4a82aefd1"
+        },
+        {
+          "agent_id": "agent-S3",
+          "provider": "codex",
+          "policy_id": "DTP-agent-S3",
+          "draft_sha256": "a3bdec4db4b4db203815146d489d3d96bb1b22b7e17c89f6125ed333d07c3422"
+        }
+      ],
+      "after": [
+        {
+          "agent_id": "agent-S2-W2",
+          "provider": "codex",
+          "policy_id": "DTP-agent-S2-W2",
+          "draft_sha256": "bdc8da5d4790bb4b02f85963904a377a74e324212dd7c508fd0cbe5ac4e4dc33"
+        },
+        {
+          "agent_id": "agent-S3-W2",
+          "provider": "codex",
+          "policy_id": "DTP-agent-S3-W2",
+          "draft_sha256": "e0a281349fd11a2f548d729bddedf49b198bb44b9510a006d15d9762c10bbc86"
+        }
+      ]
+    },
+    {
+      "path": "/dispatch_control/required",
+      "change": "retained",
+      "before": true,
+      "after": true
+    },
+    {
+      "path": "/failure_conditions",
+      "change": "retained",
+      "before": [
+        "Proposal: Do not treat missing evidence as a fact."
+      ],
+      "after": [
+        "Proposal: Do not treat missing evidence as a fact."
+      ]
+    },
+    {
+      "path": "/id",
+      "change": "changed",
+      "before": "MWP-ADOPTION",
+      "after": "MWP-REVISION-W2"
+    },
+    {
+      "path": "/mission_id",
+      "change": "retained",
+      "before": "MIS-ADOPTION",
+      "after": "MIS-ADOPTION"
+    },
+    {
+      "path": "/mission_profile/classification",
+      "change": "retained",
+      "before": "internal",
+      "after": "internal"
+    },
+    {
+      "path": "/mission_profile/release_target",
+      "change": "retained",
+      "before": "internal_handoff",
+      "after": "internal_handoff"
+    },
+    {
+      "path": "/mission_profile/risk_level",
+      "change": "retained",
+      "before": "medium",
+      "after": "medium"
+    },
+    {
+      "path": "/mission_profile/roe_class",
+      "change": "retained",
+      "before": "Amber",
+      "after": "Amber"
+    },
+    {
+      "path": "/model_assignment/integrated_preflight_ref/artifact_id",
+      "change": "retained",
+      "before": "none",
+      "after": "none"
+    },
+    {
+      "path": "/model_assignment/integrated_preflight_ref/relative_path",
+      "change": "retained",
+      "before": "none",
+      "after": "none"
+    },
+    {
+      "path": "/model_assignment/integrated_preflight_ref/sha256",
+      "change": "retained",
+      "before": "none",
+      "after": "none"
+    },
+    {
+      "path": "/model_assignment/required",
+      "change": "retained",
+      "before": false,
+      "after": false
+    },
+    {
+      "path": "/objective",
+      "change": "retained",
+      "before": "Request quote: Prepare an internal comparison of two onboarding options.",
+      "after": "Request quote: Prepare an internal comparison of two onboarding options."
+    },
+    {
+      "path": "/order_binding/draft_ref/artifact_id",
+      "change": "changed",
+      "before": "OD-c74b1c88ccc4d2143f46c707ca4df18e",
+      "after": "OD-e23f85ac15408288fa8ecf16e6059b7b"
+    },
+    {
+      "path": "/order_binding/draft_ref/relative_path",
+      "change": "changed",
+      "before": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W1/order-drafts/OD-c74b1c88ccc4d2143f46c707ca4df18e.json",
+      "after": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W2/order-drafts/OD-e23f85ac15408288fa8ecf16e6059b7b.json"
+    },
+    {
+      "path": "/order_binding/draft_ref/sha256",
+      "change": "changed",
+      "before": "042730be630616663af1c8c6fcf54bcf91582087cc954f3929e8b652bd10dd10",
+      "after": "c9c534745318f1cf67551118b2f7602891800c194d95a879e9582b2dcf2b5255"
+    },
+    {
+      "path": "/order_binding/task_assignments",
+      "change": "changed",
+      "before": [
+        {
+          "task_order_id": "TASK-S2",
+          "agent_id": "agent-S2"
+        },
+        {
+          "task_order_id": "TASK-S3",
+          "agent_id": "agent-S3"
+        }
+      ],
+      "after": [
+        {
+          "task_order_id": "TASK-S2",
+          "agent_id": "agent-S2-W2"
+        },
+        {
+          "task_order_id": "TASK-S3",
+          "agent_id": "agent-S3-W2"
+        }
+      ]
+    },
+    {
+      "path": "/schema_version",
+      "change": "retained",
+      "before": "0.2",
+      "after": "0.2"
+    },
+    {
+      "path": "/success_conditions",
+      "change": "retained",
+      "before": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ],
+      "after": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ]
+    },
+    {
+      "path": "/title",
+      "change": "changed",
+      "before": "Operationalize a repository skill",
+      "after": "Revised comparison W2"
+    },
+    {
+      "path": "/type",
+      "change": "retained",
+      "before": "MissionWavePlan",
+      "after": "MissionWavePlan"
+    },
+    {
+      "path": "/valid_until",
+      "change": "changed",
+      "before": "2026-10-21T14:24:24.140Z",
+      "after": "2026-10-21T15:27:44.140Z"
+    },
+    {
+      "path": "/wave_id",
+      "change": "changed",
+      "before": "W1",
+      "after": "W2"
+    }
+  ],
+  "observed_manifest": {
+    "revision": 18,
+    "sha256": "3afc46d23d675f5e15d774e3f3c353e4307e339563c1eadcbb9e7ece3801ca8b"
+  },
+  "recorded_at": "2026-10-21T13:27:59.140Z",
+  "expires_at": "2026-10-21T14:27:59.140Z",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "continuation_authorized": false
+}

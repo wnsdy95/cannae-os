@@ -17,6 +17,7 @@ const {
 } = require("./repository-lease");
 const { computeRepositoryState } = require("./verification-runner");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const { withinOrderReplay } = require("./order-replay-context");
 
 const NONE_REF = Object.freeze({
   artifact_id: "none",
@@ -230,6 +231,9 @@ function writeJsonArtifact(options, descriptor) {
 }
 
 function contextBundle(options, policy, settings = {}) {
+  return withinOrderReplay(() => contextBundleInReplay(options, policy, settings));
+}
+function contextBundleInReplay(options, policy, settings) {
   const view = storeView(options);
   assertReconciledFailuresRevoked(view);
   require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: view.artifactRoot }, policy.mission_id, policy.wave_id);
@@ -252,6 +256,7 @@ function contextBundle(options, policy, settings = {}) {
   const plan = loadArtifactRef(view, context.payload.plan_ref, "mission-wave-plan");
   require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
   require("./order-adoption-controller").assertContextAssignment(context.payload, plan.payload, { ...options, artifactRoot: view.artifactRoot });
+  require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: view.artifactRoot }, view);
   const preflight = loadArtifactRef(view, context.payload.routing_preflight_ref);
   if (preflight.payload.type !== "AgentRoutingPreflightProjection" || preflight.payload.status !== "ready") {
     throw new Error("Routing preflight is not ready.");
@@ -900,6 +905,9 @@ function bindingMatches(lease, identity) {
 }
 
 function activeLease(options, identity, at = nowIso(options)) {
+  return withinOrderReplay(() => activeLeaseInReplay(options, identity, at));
+}
+function activeLeaseInReplay(options, identity, at) {
   const view = storeView(options);
   if (listArtifacts(view, { missionId: identity.missionId, waveId: identity.waveId, kind: "mission-wave-terminations" }).length) {
     return { code: "MISSION_WAVE_TERMINATED", view, leaseRecord: null, checkpointRecord: null };
@@ -939,7 +947,9 @@ function activeLease(options, identity, at = nowIso(options)) {
   const plan = loadArtifactRef(view, selected.leaseRecord.payload.plan_ref, "mission-wave-plan");
   try {
     require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
+    require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: view.artifactRoot }, view);
   } catch (error) {
+    if (error.message.startsWith("ORDER_REVISION_")) return { code: error.message, view, ...selected };
     if (error.code !== "CAMPAIGN_CONTINUATION_BLOCKED") throw error;
     return { code: error.code, view, ...selected };
   }
@@ -1444,9 +1454,14 @@ function completeToolRequest(options, identity, hookInput) {
     renewRepositoryLease(lock);
     const checkpointRef = persistCheckpoint(options, checkpoint,
       dispatchCompletionGuard(options, currentLease, previous, hookInput.tool_use_id, "complete"));
+    let executionAuthorized = status === "active";
+    if (executionAuthorized) {
+      try { executionAuthorized = activeLease(options, identity, nowIso(options)).code === "LEASE_ACTIVE"; }
+      catch { executionAuthorized = false; }
+    }
     return {
       status,
-      execution_authorized: status === "active",
+      execution_authorized: executionAuthorized,
       release_authorized: false,
       checkpoint,
       checkpoint_ref: checkpointRef,
@@ -1700,6 +1715,7 @@ function resumeLease(options, leaseIdValue, bindings) {
   require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: loaded.view.artifactRoot }, loaded.leaseRecord.payload.mission_id, loaded.leaseRecord.payload.wave_id);
   const plan = loadArtifactRef(loaded.view, loaded.leaseRecord.payload.plan_ref, "mission-wave-plan");
   require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot });
+  require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot }, loaded.view);
   const lock = dispatchLock(loaded.view, leaseIdValue);
   let oldLease;
   let policy;

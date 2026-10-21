@@ -38,6 +38,7 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "order-backbriefs",
   "order-rehearsals",
   "order-adoption-records",
+  "order-revision-proposals",
   "routing-preflight-bundles",
   "routing-preflights",
   "routing-receipts",
@@ -1533,6 +1534,7 @@ function terminateWave(request, options = {}) {
       if (dispatch.leases.some(lease => !["completed", "revoked", "superseded"].includes(lease.status) || lease.pending_tool_requests !== 0)) {
         throw new Error("Termination requires settled dispatch leases and no unresolved tool requests; expiry does not settle unknown effects.");
       }
+      require("./order-revision-controller").assertRevisionSupersession(request, locked, loadStore(locked));
       const termination = {
         schema_version: "0.1", type: "MissionWaveTermination", id: `MWT-${safeIdPart(request.wave_id)}`,
         mission_id: request.mission_id, wave_id: request.wave_id, status: request.status,
@@ -1550,6 +1552,7 @@ function terminateWave(request, options = {}) {
         missionId: request.mission_id, waveId: request.wave_id, kind: "mission-wave-terminations",
         artifactId: termination.id, payload: termination, createdAt: now,
         publicationGuard: () => {
+          require("./order-revision-controller").assertRevisionSupersession(request, locked, loadStore(locked));
           const current = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
           if (current.leases.some(lease => lease.failed_effect_revocation_required)) {
             throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED: reconciliation changed before termination publication.");

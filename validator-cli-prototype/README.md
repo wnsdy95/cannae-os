@@ -151,6 +151,9 @@ never treats an artifact's own retrieval or record time as the current clock.
   lookup instead of selecting an absent schema.
 - The exported `validateSchemaPayload` path performs structural-only
   preflight where time-based semantic errors need separate policy codes.
+- Each synchronous `validatePayload` invocation uses one schema snapshot for
+  its nested checks. The snapshot is discarded on return or exception; the next
+  invocation reads current schema files again.
 - This remains a repository-specific subset, not a complete JSON Schema
   draft 2020-12 implementation.
 - Does not yet resolve recursive or remote refs.

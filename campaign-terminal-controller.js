@@ -380,4 +380,4 @@ function main(argv = process.argv.slice(2)) {
 }
 if (require.main === module) process.exitCode = main();
 module.exports = { campaignTerminalStatus, reconcileCampaignTerminal, terminalRecordProof,
-  appraiseTerminalInventory: appraise, prefixBeforeEntry, main };
+  appraiseTerminalInventory: appraise, prefixBeforeEntry, verifyTermination, main };

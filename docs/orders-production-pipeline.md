@@ -5,7 +5,10 @@
 The [request intake compiler](request-order-intake.md) retains the original
 request and typed model analysis, then produces distinct non-executable OPORD
 and task drafts. It does not supply the later USER review/adoption or issued-order
-integration stages below. Draft validation is not execution authority.
+integration itself. [Exact adoption](order-adoption-and-plan-binding.md) supplies
+the later review/assignment stage; [linked revision](order-revision-and-supersession.md)
+connects full changed scope to predecessor settlement and supersession. Draft
+validation is not execution authority.
 
 This document converts the military's order-production procedure into a prompt/order pipeline for LLM single-agent and multi-agent runtimes.
 

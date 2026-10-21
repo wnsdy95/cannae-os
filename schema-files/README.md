@@ -1,5 +1,12 @@
 # Schema Files
 
+`OrderRevisionRequest` and `OrderRevisionProposal` v0.1 retain exact parent scope,
+change-request provenance, a full successor plan and field-level differences.
+Both remain non-executable. Optional `order_binding.revision_ref` on a bound plan
+must resolve to its replayed proposal, and a captured revision cannot strip it.
+Use [revision and supersession](../docs/order-revision-and-supersession.md) for
+complete USER adoption, preparation, settlement and dispatch ordering.
+
 `OrderAdoptionProposalRequest`, `OrderAdoptionProposal`, `OrderBackbrief`,
 `OrderRehearsal`, `OrderAdoptionDecisionRequest` and `OrderAdoptionRecord` v0.1
 bind one exact USER review to a complete `MissionWavePlan` v0.2 and per-agent
