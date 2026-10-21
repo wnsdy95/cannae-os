@@ -20,12 +20,13 @@ const RULES = [
   },
   {
     id: "orders",
-    keywords: ["order adoption", "order-adoption", "order-backbrief", "order-rehearsal", "adopt_controls_order", "request intake", "mission analysis", "request-order-compiler", "compile_controls_order", "order-intake", "order-draft", "mission-request", "mission-order-analysis", "opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "prompt", "orders", "command", "issuance", "prompting", "dry-run"],
+    keywords: ["order replay", "order-replay", "order revision", "order-revision", "revise_controls_order", "order adoption", "order-adoption", "order-backbrief", "order-rehearsal", "adopt_controls_order", "request intake", "mission analysis", "request-order-compiler", "compile_controls_order", "order-intake", "order-draft", "mission-request", "mission-order-analysis", "opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "prompt", "orders", "command", "issuance", "prompting", "dry-run"],
     docs: [
       "docs/prompt-templates.md",
       "docs/orders-production-pipeline.md",
       "docs/request-order-intake.md",
       "docs/order-adoption-and-plan-binding.md",
+      "docs/order-revision-and-supersession.md",
       "docs/opord-annex-model.md",
       "docs/backbrief-and-rehearsal-sop.md",
       "docs/information-to-operations-cycle.md"
@@ -34,7 +35,8 @@ const RULES = [
       "node runtime-demo-runner.js",
       "node orders-dissemination-runner.js runtime-demo-payloads/opord.json runtime-demo-payloads/backbrief.json runtime-demo-payloads/rehearsal.json",
       "node run-request-order-compiler-fixtures.js",
-      "node run-order-adoption-fixtures.js"
+      "node run-order-adoption-fixtures.js",
+      "node run-order-revision-fixtures.js"
     ]
   },
   {
@@ -490,7 +492,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "orders",
-    keywords: ["order-adoption", "order-backbrief", "order-rehearsal", "adopt_controls_order", "request-order", "order-intake", "order-draft", "mission-request", "mission-order-analysis", "compile_controls_order", "opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "orders", "task-order", "runtime-demo", "information-to-operations", "decision-packet", "ccir-alert", "ccir-linter", "alert-router", "reporting-threshold", "prompt", "prompt-dsl", "prompt-templates"]
+    keywords: ["order-revision", "revise_controls_order", "order-adoption", "order-backbrief", "order-rehearsal", "adopt_controls_order", "request-order", "order-intake", "order-draft", "mission-request", "mission-order-analysis", "compile_controls_order", "opord", "warno", "frago", "sitrep", "aar", "backbrief", "rehearsal", "orders", "task-order", "runtime-demo", "information-to-operations", "decision-packet", "ccir-alert", "ccir-linter", "alert-router", "reporting-threshold", "prompt", "prompt-dsl", "prompt-templates"]
   },
   {
     id: "authority-risk-release",
@@ -802,6 +804,7 @@ function routeIdsForArtifact(file) {
   if (file === "package.json" || file === "package-lock.json") routeIds.push("bounded-self-improvement", "runtime-validation");
   if (file === "source-map-linter.js" || file === "source-map-url-coverage-report.json") routeIds.push("sources-research");
   if (file === "orders-dissemination-runner.js") routeIds.push("orders");
+  if (file === "order-replay-context.js") routeIds.push("orders");
   if (file === "handoff-generator.js") routeIds.push("continuity-handoff");
   if (file === "maintenance-readiness-runner.js") routeIds.push("runtime-architecture-dashboard");
   if (file === "maintenance-dashboard-runner.js") routeIds.push("runtime-architecture-dashboard");

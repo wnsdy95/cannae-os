@@ -9,6 +9,7 @@ const { prefixBeforeEntry } = require("./campaign-terminal-controller");
 const { replayDraft, readRequest } = require("./request-order-compiler");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const { digest, same } = require("./order-intake-contract");
+const { withinOrderReplay, retainedOrderReplay } = require("./order-replay-context");
 const { NONE, ADOPTION_AUTHORITY, decisionOption, proposalPayload, recordPayload, assignedTask,
   planDraftIssues, backbriefIssues } = require("./order-adoption-contract");
 
@@ -66,6 +67,8 @@ function appraiseProposal(store, request, now) {
     "ORDER_ADOPTION_DRAFT_EXPIRED_OR_FUTURE");
   const issues = planDraftIssues(request.plan, draft);
   requireTrue(issues.length === 0, issues.map(item => item.code).join(","));
+  require("./order-revision-controller").assertRevisionPreparation(request.plan,
+    { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
   noOpenedWave(store, request);
   requireTrue(!entries(store, request, RECORDS).some(entry => read(store, ref(entry), RECORDS, "order-adoption-record", request).payload.status === "adopted"),
     "ORDER_ADOPTION_WAVE_ALREADY_ADOPTED");
@@ -154,6 +157,8 @@ function appraiseDecision(store, request, now) {
   const briefs = request.backbrief_refs.map(reference => briefProof(store, reference, proposal));
   const rehearsal = same(request.rehearsal_ref, NONE) ? null : rehearsalProof(store, request.rehearsal_ref, proposal);
   if (request.disposition === "approve") {
+    require("./order-revision-controller").assertRevisionPreparation(proposal.payload.request.plan,
+      { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
     requireTrue(rehearsal && same(rehearsal.payload.backbrief_refs, request.backbrief_refs), "ORDER_ADOPTION_REHEARSAL_REQUIRED");
     appraiseRehearsal(store, rehearsal.payload, now);
   }
@@ -180,6 +185,10 @@ function appraiseDecision(store, request, now) {
 }
 function recordProof(store, reference) {
   const item = read(store, reference, RECORDS, "order-adoption-record");
+  const key = JSON.stringify(item.ref);
+  return clone(retainedOrderReplay(store, `adoption:${key}`, () => computeRecordProof(store, item)));
+}
+function computeRecordProof(store, item) {
   const before = prefixBeforeEntry(store, item.entry);
   requireTrue(same(snapshot(before), item.payload.observed_manifest) && at(item.entry.created_at) === at(item.payload.recorded_at),
     "ORDER_ADOPTION_RECORD_HISTORY_INVALID");
@@ -191,14 +200,14 @@ function recordProof(store, reference) {
 function publish(options, store, payload, kind, now, appraise) {
   const result = writeRepositoryArtifact({ repositoryPath: store.verification.repository.root, artifactRoot: store.artifactRoot,
     missionId: payload.mission_id, waveId: payload.wave_id, kind, artifactId: payload.id, payload, createdAt: now, reuseExisting: true,
-    publicationGuard: ({ manifest }) => {
+    publicationGuard: ({ manifest }) => withinOrderReplay(() => {
       const current = load(options), time = clock(options);
       requireTrue(at(time) >= at(now), "ORDER_ADOPTION_CLOCK_ROLLBACK");
       requireTrue(manifestDigest(manifest) === store.verification.manifest_sha256 &&
         current.verification.manifest_sha256 === store.verification.manifest_sha256, "ORDER_ADOPTION_SNAPSHOT_CHANGED");
       appraise(current, time);
       return true;
-    } });
+    }, true) });
   return { artifact_id: payload.id, relative_path: result.relative_path, sha256: result.sha256 };
 }
 function proposeOrder(input, options) {
@@ -263,6 +272,7 @@ function orderForPlan(plan, options, knownStore) {
   fresh(record.payload, now);
   assertDecisionCurrent(store, record.proposal, record.decision);
   requireTrue(same(record.proposal.payload.request.plan, plan) && record.payload.plan_sha256 === digest(plan), "ORDER_ADOPTION_PLAN_SUBSTITUTED");
+  require("./order-revision-controller").assertRevisionPreparation(plan, options, store);
   return record;
 }
 function contextAssignment(adopted, agentId) {
@@ -350,8 +360,10 @@ function main(argv = process.argv.slice(2)) {
   console.log(JSON.stringify(result, null, 2));
 }
 
+const scoped = fn => (...args) => withinOrderReplay(() => fn(...args));
+module.exports = { proposeOrder: scoped(proposeOrder), retainOrderEvidence: scoped(retainOrderEvidence), decideOrder: scoped(decideOrder),
+  inspectOrder: scoped(inspectOrder), orderForPlan: scoped(orderForPlan), contextAssignment,
+  assertContextAssignment: scoped(assertContextAssignment), proposalProof: scoped(proposalProof), recordProof: scoped(recordProof), main: scoped(main) };
 if (require.main === module) {
-  try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
+  try { withinOrderReplay(() => main()); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { proposeOrder, retainOrderEvidence, decideOrder, inspectOrder, orderForPlan, contextAssignment,
-  assertContextAssignment, proposalProof, recordProof, main };

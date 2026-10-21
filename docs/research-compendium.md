@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Linked Order Revision And Supersession (2026-10-21)
+
+The [revision contract](order-revision-and-supersession.md) links an opened adopted
+plan to an exact change request and full successor scope. Deterministic comparison
+retains changed and unchanged fields; the existing USER adoption ceremony reviews
+the complete returned plan. Successor context preparation precedes supersession,
+while policy/lease/tool admission waits for the exact prior termination and settled
+effects. Selecting the successor also holds new predecessor tool calls without
+blocking already-admitted result retention.
+
+Both skills now use the dedicated revision wrapper, distinguish preparation from
+tool eligibility and require fresh scope review after expiry during cleanup. This
+is local runtime integration, not authenticated consent, semantic-completeness
+evaluation, automatic replanning, cross-mission equivalence detection or the full
+disciplined-initiative workflow. The wider roadmap remains partial.
+
 ## Exact Order Adoption And Downstream Binding (2026-09-30)
 
 The [adoption contract](order-adoption-and-plan-binding.md) addresses the remaining
@@ -14,7 +30,7 @@ Both skills now require complete-plan review before opening a captured-intake
 wave and prohibit stripping bindings or renaming scope to bypass review. This is
 local implementation synthesis, not proof of authenticated human identity,
 complete semantic interpretation or protected execution. Phase 2 remains partial:
-approved changes to an opened wave still require the existing FRAGO/new-wave path,
+approved changes to an opened wave now use the linked revision/new-wave path,
 and a renamed mission cannot be recognized semantically by exact identifiers.
 
 ## General Request Intake And Draft Provenance (2026-09-29)

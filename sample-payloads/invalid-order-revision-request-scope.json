@@ -1,0 +1,161 @@
+{
+  "schema_version": "0.1",
+  "type": "OrderRevisionRequest",
+  "id": "ORR-W2",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W3",
+  "parent_plan_ref": {
+    "artifact_id": "MWP-ADOPTION",
+    "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
+    "sha256": "b508a4d0edb381757e177c4fc74861cb41f77238ff513ce3837b139374ef9deb"
+  },
+  "parent_adoption_ref": {
+    "artifact_id": "OAR-134869b80af7a76805d84e7281eb632e",
+    "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W1/order-adoption-records/OAR-134869b80af7a76805d84e7281eb632e.json",
+    "sha256": "077844f3eb48dfd21c3fac3886e448906a63d6d72604edb2b8380d0be91290f2"
+  },
+  "change_request_ref": {
+    "artifact_id": "MR-REVISION-W2",
+    "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W2/mission-requests/MR-REVISION-W2.json",
+    "sha256": "95e68f0743ac7e8f53bf9d85e16af8e4883eda8a2155012cab25d7764cd66f55"
+  },
+  "successor_plan": {
+    "schema_version": "0.2",
+    "type": "MissionWavePlan",
+    "id": "MWP-REVISION-W2",
+    "mission_id": "MIS-ADOPTION",
+    "wave_id": "W2",
+    "title": "Revised comparison W2",
+    "objective": "Request quote: Prepare an internal comparison of two onboarding options.",
+    "success_conditions": [
+      "Request quote: Return a recommendation with explicit uncertainties."
+    ],
+    "failure_conditions": [
+      "Proposal: Do not treat missing evidence as a fact."
+    ],
+    "constraints": [
+      "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+    ],
+    "mission_profile": {
+      "classification": "internal",
+      "risk_level": "medium",
+      "roe_class": "Amber",
+      "release_target": "internal_handoff"
+    },
+    "agents": [
+      {
+        "agent_id": "agent-S2-W2",
+        "operational_role": "S2",
+        "department": "operations",
+        "task": "Proposal: Extract evidence for each option without editing source records.",
+        "model_billet_id": "not_required",
+        "delegated_authority": "scoped-execution",
+        "allowed_actions": [
+          "Request quote: Prepare an internal comparison of two onboarding options."
+        ],
+        "approval_required": [
+          "Request quote: The user decides the target segment and any budget change."
+        ],
+        "prohibited_actions": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ],
+        "context_scope": "internal"
+      },
+      {
+        "agent_id": "agent-S3-W2",
+        "operational_role": "S3",
+        "department": "operations",
+        "task": "Request quote: Include migration effort in the comparison.",
+        "model_billet_id": "not_required",
+        "delegated_authority": "scoped-execution",
+        "allowed_actions": [
+          "Request quote: Prepare an internal comparison of two onboarding options."
+        ],
+        "approval_required": [
+          "Request quote: The user decides the target segment and any budget change."
+        ],
+        "prohibited_actions": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ],
+        "context_scope": "internal"
+      }
+    ],
+    "model_assignment": {
+      "required": false,
+      "integrated_preflight_ref": {
+        "artifact_id": "none",
+        "relative_path": "none",
+        "sha256": "none"
+      }
+    },
+    "authority": {
+      "human_final_decision_authority": "USER",
+      "routing_required_every_wave": true,
+      "repository_artifacts_required": true,
+      "approval_required_for_scope_change": true,
+      "approval_required_for_commit": true,
+      "approval_required_for_push": true,
+      "approval_required_for_merge": true,
+      "approval_required_for_release": true,
+      "self_approval_prohibited": true
+    },
+    "adaptive_work": {
+      "enabled": false,
+      "campaign_id": "SIC-SKILL-DEMO",
+      "target_type": "skill",
+      "acceptance_criteria": [
+        "Routing coverage remains complete.",
+        "Baseline behavior does not regress."
+      ],
+      "non_goals": [
+        "Changing approval authority.",
+        "Publishing or releasing without the user."
+      ],
+      "max_cycles": 4,
+      "max_changed_files": 20,
+      "max_elapsed_minutes": 240
+    },
+    "created_at": "2026-10-21T13:27:54.140Z",
+    "valid_until": "2026-10-21T15:27:44.140Z",
+    "order_binding": {
+      "draft_ref": {
+        "artifact_id": "OD-e23f85ac15408288fa8ecf16e6059b7b",
+        "relative_path": "repositories/repo-088a091588d7/missions/MIS-ADOPTION/W2/order-drafts/OD-e23f85ac15408288fa8ecf16e6059b7b.json",
+        "sha256": "c9c534745318f1cf67551118b2f7602891800c194d95a879e9582b2dcf2b5255"
+      },
+      "task_assignments": [
+        {
+          "task_order_id": "TASK-S2",
+          "agent_id": "agent-S2-W2"
+        },
+        {
+          "task_order_id": "TASK-S3",
+          "agent_id": "agent-S3-W2"
+        }
+      ]
+    },
+    "dispatch_control": {
+      "required": true,
+      "enforcement_level": "guardrail",
+      "gateway_exclusive": false,
+      "policy_authorizations": [
+        {
+          "agent_id": "agent-S2-W2",
+          "provider": "codex",
+          "policy_id": "DTP-agent-S2-W2",
+          "draft_sha256": "bdc8da5d4790bb4b02f85963904a377a74e324212dd7c508fd0cbe5ac4e4dc33"
+        },
+        {
+          "agent_id": "agent-S3-W2",
+          "provider": "codex",
+          "policy_id": "DTP-agent-S3-W2",
+          "draft_sha256": "e0a281349fd11a2f548d729bddedf49b198bb44b9510a006d15d9762c10bbc86"
+        }
+      ]
+    }
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "continuation_authorized": false
+}

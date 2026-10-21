@@ -11,6 +11,69 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  { name: "descriptive FRAGO is not execution authority", file: "runtime-demo-payloads/frago.json", type: "frago",
+    exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  { name: "scope-change metadata cannot replace reviewed revision", file: "sample-payloads/valid-frago-scope-change.json", type: "frago-scope-change",
+    exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  ...[
+    ["valid-order-revision-request", "order-revision-request", 0, []],
+    ["valid-order-revision-proposal", "order-revision-proposal", 0, []],
+    ["valid-mission-wave-plan-revision", "mission-wave-plan", 0, []],
+    ["invalid-order-revision-request-scope", "order-revision-request", 1, ["ORDER_REVISION_PLAN_SCOPE_INVALID"]],
+    ["invalid-order-revision-proposal-binding", "order-revision-proposal", 1, ["ORDER_REVISION_BINDING_INVALID"]],
+    ["invalid-mission-wave-plan-revision-extra", "mission-wave-plan", 1, ["ADDITIONAL_PROPERTY"]]
+  ].map(([name, type, exitCode, requiredCodes]) => ({ name, file: `sample-payloads/${name}.json`, type, exitCode, requiredCodes, expectedCanExecute: false })),
+  ...["extra", "removed-after", "added-without-after", "retained-without-before", "expiry", "authority", "classification", "prototype-ref"].map(mutation => ({
+    name: `revision rejects ${mutation}`, file: "sample-payloads/valid-order-revision-proposal.json", type: "order-revision-proposal",
+    exitCode: 1, expectedCanExecute: false,
+    requiredCodes: [{ extra: "ADDITIONAL_PROPERTY", "removed-after": "NOT_SCHEMA_MATCH", "added-without-after": "MISSING_REQUIRED",
+      "retained-without-before": "MISSING_REQUIRED", expiry: "ORDER_REVISION_VALIDITY_INVALID", authority: "MISSION_WAVE_RETAINED_ACTION_DELEGATED",
+      classification: "ORDER_REVISION_CLASSIFICATION_INVALID", "prototype-ref": "ADDITIONAL_PROPERTY" }[mutation]],
+    mutate(payload) {
+      const row = payload.changes[0];
+      if (mutation === "extra") row.approved = true;
+      if (mutation === "removed-after") row.change = "removed";
+      if (mutation === "added-without-after") { row.change = "added"; delete row.after; }
+      if (mutation === "retained-without-before") { row.change = "retained"; delete row.before; }
+      if (mutation === "expiry") payload.expires_at = payload.recorded_at;
+      if (mutation === "authority") payload.request.successor_plan.agents[0].allowed_actions = ["Push to production"];
+      if (mutation === "classification") payload.classification = "public";
+      if (mutation === "prototype-ref") Object.defineProperty(payload.request.parent_plan_ref, "__proto__", { value: { approved: true }, enumerable: true });
+    }
+  })),
+  { name: "nested validation reads one schema snapshot", file: "sample-payloads/valid-order-adoption-proposal.json",
+    check() {
+      const payload = JSON.parse(fs.readFileSync(path.join(ROOT, this.file), "utf8"));
+      const original = fs.readFileSync, reads = new Map(), schemaRoot = path.join(ROOT, "schema-files") + path.sep;
+      try {
+        fs.readFileSync = function(file, ...args) {
+          if (typeof file === "string" && file.startsWith(schemaRoot) && file.endsWith(".json")) reads.set(file, (reads.get(file) || 0) + 1);
+          return original.call(this, file, ...args);
+        };
+        assert.equal(validatePayload(payload, "order-adoption-proposal").valid, true);
+        assert(reads.size > 0); assert([...reads.values()].every(count => count === 1));
+      } finally { fs.readFileSync = original; }
+    } },
+  { name: "schema snapshot refreshes after return and exceptional validation", file: "sample-payloads/valid-mission.json",
+    check() {
+      const payload = JSON.parse(fs.readFileSync(path.join(ROOT, this.file), "utf8"));
+      assert.equal(validatePayload(payload, "mission").valid, true);
+      assert.throws(() => validatePayload(payload, "__proto__"), /Unknown payload type/);
+      const original = fs.readFileSync, target = path.join(ROOT, "schema-files/mission.schema.json");
+      try {
+        fs.readFileSync = function(file, ...args) {
+          const value = original.call(this, file, ...args);
+          if (file !== target) return value;
+          const schema = JSON.parse(value); schema.required.push("fresh_snapshot_marker");
+          return JSON.stringify(schema);
+        };
+        for (const validate of [validatePayload, validateSchemaPayload]) {
+          const result = validate(payload, "mission");
+          assert.equal(result.valid, false); assert(result.issues.some(item => item.code === "MISSING_REQUIRED" && item.path === "$.fresh_snapshot_marker"));
+        }
+      } finally { fs.readFileSync = original; }
+      assert.equal(validatePayload(payload, "mission").valid, true);
+    } },
   ...["mission", "mission-wave-plan", "order-adoption-proposal-request"].flatMap(type =>
     ["root", "nested"].flatMap(location => ["__proto__", "constructor", "toString"].map(key => ({
       name: `${type} rejects undeclared ${location} ${key} in parsed JSON`,

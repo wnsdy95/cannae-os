@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/order-revision-proposal.schema.json",
+  "title": "OrderRevisionProposal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "request", "request_sha256", "parent_plan_sha256", "successor_plan_sha256", "classification", "changes", "observed_manifest", "recorded_at", "expires_at", "execution_authorized", "continuation_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "OrderRevisionProposal" },
+    "id": { "type": "string", "pattern": "^ORP-[a-f0-9]{32}$" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+    "request": { "$ref": "order-revision-request.schema.json" },
+    "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "parent_plan_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "successor_plan_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" },
+    "changes": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["path", "change"],
+        "properties": {
+          "path": { "type": "string", "pattern": "^/" },
+          "change": { "enum": ["retained", "changed", "added", "removed"] },
+          "before": {}, "after": {}
+        },
+        "allOf": [
+          { "if": { "properties": { "change": { "const": "added" } } }, "then": { "required": ["after"], "not": { "required": ["before"] } } },
+          { "if": { "properties": { "change": { "const": "removed" } } }, "then": { "required": ["before"], "not": { "required": ["after"] } } },
+          { "if": { "properties": { "change": { "enum": ["retained", "changed"] } } }, "then": { "required": ["before", "after"] } }
+        ]
+      }
+    },
+    "observed_manifest": { "$ref": "order-adoption-proposal.schema.json#/properties/observed_manifest" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false },
+    "continuation_authorized": { "const": false },
+    "release_authorized": { "const": false },
+    "human_final_decision_authority": { "const": "USER" }
+  }
+}

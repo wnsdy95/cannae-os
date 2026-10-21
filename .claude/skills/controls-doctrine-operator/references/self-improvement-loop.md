@@ -320,6 +320,20 @@ Use these signals to choose which skill surface to improve:
 
 ## Update Surfaces
 
+For opened-scope revisions, verify both directions: selection must hold new old-agent
+calls, while preparation alone cannot admit successor tools. Inspect tool-result
+checkpoints independently from lease status, and require explicit settlement and
+revocation. If cleanup outlives approval, retain results and review a fresh plan.
+Revision expiry never restores the predecessor's tool authority. Keep the
+historical adoption fence while obtaining a fresh successor review.
+When optimizing replay, keep cached facts inside one synchronous appraisal, hash
+retained inputs, and start fresh verification at publication. A later call or a
+schema edit must not inherit an earlier ready result.
+
+If a CLI replays through its own module, publish its exports before invoking
+`main`. Exercise the actual wrapper outside the checkout; in-process fixture
+calls do not cover entrypoint initialization or runtime discovery.
+
 For structural-validator changes, test prototype-named keys at root and nested
 closed objects through the real JSON CLI. Create `__proto__` as an own
 enumerable property before serialization; an object-literal prototype setter

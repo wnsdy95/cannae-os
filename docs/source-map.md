@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [revision path](order-revision-and-supersession.md) integrates retained request
+capture, exact plan adoption and existing wave supersession. The revision contract,
+controller, schema pair, samples, fixtures and both skill wrappers retain complete
+plan differences and fence tool authority around predecessor settlement. Historical
+termination checks reuse the campaign terminal verifier. This is local engineering
+synthesis; no new external source or authenticated-USER claim is added.
+
 The [exact order adoption path](order-adoption-and-plan-binding.md) is local
 engineering synthesis of orders production, backbrief/rehearsal and retained USER
 scope authority. `order-adoption-contract.js`, `order-adoption-controller.js`, six

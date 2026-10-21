@@ -80,8 +80,10 @@ original bytes and typed model/operator analysis, appraises exact source quotes,
 and compiles non-executable OPORD/task drafts. The deterministic compiler does not
 perform semantic extraction itself. [Exact adoption](order-adoption-and-plan-binding.md)
 now binds a complete plan, individual backbriefs, rehearsal and one USER scope
-decision through lifecycle/dispatch consumption. Semantic-completeness evaluation,
-authenticated consent and broader approved-edit/FRAGO integration remain open.
+decision through lifecycle/dispatch consumption. [Linked revision](order-revision-and-supersession.md)
+adds full-plan comparison and predecessor-settlement fences for same-mission
+supersession. Semantic-completeness evaluation, authenticated consent, automatic
+replanning and broader cross-mission/initiative integration remain open.
 
 Goal:
 
