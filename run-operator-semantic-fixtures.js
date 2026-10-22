@@ -121,12 +121,13 @@ async function main() {
     await env.owner.post("/api/model-evaluations/preview", env.previewInput, 409);
     assert.equal(fs.readdirSync(path.join(env.configuration.stateDir, "model-evaluations")).length, 1);
   }, { model: "fixture-timeout" });
-  await check("a failed provider response is held and never becomes an approval or retry", async env => {
+  for (const model of ["fixture-invalid", "fixture-null", "fixture-invalid-utf8"]) await check(`${model} remains held without crashing the owning service or retrying`, async env => {
     const p = await preview(env); await env.owner.post("/api/model-evaluations/commit", commitInput(p), 202);
     const result = await terminal(env, p.challenge_id); assert.equal(result.state, "held"); assert.equal(result.result_verified, true);
     assert.equal(result.result.response, null); assert.equal(result.execution_authorized, false); assert.equal(result.release_authorized, false);
+    assert.equal(result.result.collection.process_exit_confirmed, true); assert.equal(result.result.collection.process_group_absent, true);
     await env.owner.post("/api/model-evaluations/preview", env.previewInput, 409);
-  }, { model: "fixture-invalid" });
+  }, { model });
   await check("edited private result fails pinned signature verification and fences another transfer", async env => {
     const p = await preview(env); await env.owner.post("/api/model-evaluations/commit", commitInput(p), 202); await terminal(env, p.challenge_id);
     const row = env.service.auth.db.prepare("SELECT result FROM operator_model_actions WHERE id=?").get(p.challenge_id), changed = JSON.parse(row.result);

@@ -175,7 +175,8 @@ async function main() {
       assert.equal(retained.invocation_sha256, input.invocation_sha256);
     });
     for (const [model, reason] of [["fixture-timeout", "SEMANTIC_TIMEOUT"], ["fixture-output", "SEMANTIC_OUTPUT_LIMIT"],
-      ["fixture-malformed", "SEMANTIC_EVENT_JSON_INVALID"], ["fixture-tool", "SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC"],
+      ["fixture-malformed", "SEMANTIC_EVENT_JSON_INVALID"], ["fixture-null", "SEMANTIC_EVENT_JSON_INVALID"],
+      ["fixture-invalid-utf8", "SEMANTIC_EVENT_UTF8_INVALID"], ["fixture-tool", "SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC"],
       ["fixture-unknown", "SEMANTIC_EVENT_UNKNOWN"], ["fixture-invalid", "SEMANTIC_RESPONSE_SCHEMA_INVALID"],
       ["fixture-workspace", "SEMANTIC_WORKSPACE_CHANGED"], ["fixture-two-turns", "SEMANTIC_MULTIPLE_TURNS"],
       ["fixture-diagnostic", "SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC"], ["fixture-missing-turn", "SEMANTIC_RESPONSE_UNAVAILABLE"],

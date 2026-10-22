@@ -15,6 +15,8 @@ process.stdin.on("end", () => {
   if (model === "fixture-timeout") { setInterval(() => {}, 1000); return; }
   if (model === "fixture-output") { process.stdout.write("X".repeat(32768)); setInterval(() => {}, 1000); return; }
   if (model === "fixture-malformed") { console.log("not JSON"); return; }
+  if (model === "fixture-null") { console.log("null"); setInterval(() => {}, 1000); return; }
+  if (model === "fixture-invalid-utf8") { process.stdout.write(Buffer.from([0xc3, 0x28, 0x0a])); setInterval(() => {}, 1000); return; }
   if (model === "fixture-tool") { emit({ type: "item.started", item: { type: "command_execution", command: "not executed" } }); return; }
   if (model === "fixture-unknown") { emit({ type: "new_unknown_event" }); return; }
   if (model === "fixture-diagnostic") { emit({ type: "item.completed", item: { type: "error", message: "Unexpected diagnostic" } }); return; }

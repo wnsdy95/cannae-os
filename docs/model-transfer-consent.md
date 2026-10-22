@@ -70,6 +70,8 @@ the actual stored session, not a cached user object, and aborts its collection.
 Graceful shutdown waits for observed child close and independent process-group
 absence before releasing service ownership or closing SQLite. Signal errors and
 private diagnostic/final-journal write failures remain failed results.
+Malformed/non-object JSONL and invalid UTF-8 are rejected inside the collector;
+they cannot throw an uncaught stream callback in the owning HTTP service.
 Unconfirmed exit retains the shutdown fence. SIGKILL/host failure is not a hard
 provider deadline or guaranteed orphan containment; external supervision remains
 open. An exit request or clean Git status never proves termination.

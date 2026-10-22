@@ -18,6 +18,8 @@ previews, transfer consents or evaluation results as task outputs, even in text
 or binary form. Native process exit does not prove upstream billing cancellation.
 Reject any response changed between collection and signing; do not bless the new
 bytes with a fresh signature or rerun the model to hide the original mismatch.
+Treat null/non-object JSONL and invalid UTF-8 as failed collection, not a reason
+to restart the HTTP service or replay consent. Confirm its actual child exit.
 After a timeout or lost result, keep the consumed reservation and inspect it;
 never retry the model automatically. Treat `complete` as advisory until held-out
 calibration and mandatory consumers exist; fake-process passes are not calibration.
