@@ -28,7 +28,8 @@
     <div class="workspace-grid">
       <nav aria-label="Workspace">
         <div id="repository" class="repository"></div>
-        <button data-tab="evidence" aria-current="page"><img src="/icons/folder-search.svg" alt="">Evidence</button>
+        <button data-tab="operations" aria-current="page"><img src="/icons/activity.svg" alt="">Operations</button>
+        <button data-tab="evidence"><img src="/icons/folder-search.svg" alt="">Evidence</button>
         <button data-tab="proposals"><img src="/icons/clipboard-list.svg" alt="">Order Proposals</button>
         <button data-tab="decisions" data-owner><img src="/icons/clipboard-check.svg" alt="">Decisions</button>
         <button data-tab="access" data-owner><img src="/icons/users.svg" alt="">Access</button>
@@ -39,6 +40,18 @@
         <div class="section-heading"><div><p class="eyebrow">OPERATOR WORKSPACE</p><h1 id="view-title">Evidence</h1></div>
           <button id="refresh" class="icon" title="Refresh" aria-label="Refresh"><img src="/icons/refresh-cw.svg" alt=""></button></div>
         <p id="workspace-error" class="error" role="alert"></p>
+        <section id="operations-view" hidden>
+          <div class="cop-status"><strong id="operations-state" role="status">Loading snapshot</strong><span>Recorded state / liveness unverified</span></div>
+          <div class="table-summary"><span id="operations-asof"></span><span id="operations-manifest"></span></div>
+          <section class="cop-attention" aria-labelledby="attention-title"><h2 id="attention-title">Attention / All Permitted Missions</h2><p id="operations-alert-count"></p><ul id="operations-alerts"></ul></section>
+          <form id="operations-filters" class="filters">
+            <label>Mission<input name="mission" placeholder="All permitted missions" maxlength="128" pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}"></label>
+            <label>Staff role<select name="role"><option value="">All staff roles</option></select></label>
+            <button type="submit">Apply</button>
+          </form>
+          <div class="table-summary"><span id="operations-count"></span><span>Restricted / Read-only</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Mission / Wave</th><th>Recorded State</th><th>Assignments</th><th>Control Activity</th><th>Evidence</th></tr></thead><tbody id="operations-waves"></tbody></table></div>
+        </section>
         <section id="evidence-view">
           <form id="filters" class="filters"><label>Mission<input id="mission-filter" name="mission" placeholder="All permitted missions" maxlength="128"></label>
             <label>Kind<input id="kind-filter" name="kind" placeholder="All kinds" maxlength="128"></label><button type="submit">Apply</button></form>

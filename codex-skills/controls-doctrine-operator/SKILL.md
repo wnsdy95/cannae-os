@@ -72,7 +72,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 
 ## Routing References
 
-Read these only when needed:
+- For live Operations reads, use `docs/operational-cop.md` and the COP procedure in `references/document-routing.md`; display filters never remove critical reporting or create execution authority.
 
 - For local owner login, evidence or decisions, read `docs/local-operator-console.md`, `docs/operator-consent-and-adoption.md` and, for exact hold discharge, `docs/operator-terminal-reconciliation.md`; use `scripts/serve_controls_operator.js`. Leave real setup/password decisions to the human. Inspect first, then require fresh terminal consent; never replay an old nonce, delete a hold or regenerate missing decisions. Preserve failure/expiry; terminal records are not tool/release authority or campaign/gateway settlement.
 

@@ -1,5 +1,14 @@
 # Document Routing
 
+For an operational situation read, use `docs/operational-cop.md` and the
+authenticated Operations view; run `node run-operational-cop-fixtures.js` when
+maintaining it. Read attention across the entire permitted scope even when
+mission/staff filters return no rows. Refresh expired snapshots and reselect
+evidence after manifest drift. A recorded active lease, zero alerts or a fresh
+snapshot never proves worker liveness, task completion or tool eligibility.
+Never clear a hold by editing the view or recovering issuance during a read;
+follow its owning controller. COP JSON is control metadata, not work evidence.
+
 At lease issuance, inspect repository-wide gateway and unknown-effect holds,
 including other waves. A new session/wave cannot clear them. Publication must
 retain the specific hold before a generic manifest conflict. Use the exact
@@ -13,6 +22,12 @@ Do not read private setup links into chat, seed fake operational records, or
 interpret login, viewer invitations or proposal inspection as scope approval.
 Grant explicit restricted mission access only after owner reauthentication.
 After a stale manifest/cursor error, refresh the list and reselect the evidence.
+After logout, account replacement or a changed filter/selection, discard earlier
+responses and obtain a fresh principal-bound read; hidden old tables and dialogs
+must remain cleared. Run `operator-console-fixtures/session-browser-check.js`
+with the existing browser/API suites. A discarded approval response is not a
+cancelled decision: inspect its exact retained outcome, never replay its write.
+Keep authentication throttles active and obey an observed retry interval.
 
 For actual owner plan decisions, read `docs/operator-consent-and-adoption.md`
 and run `node run-operator-consent-fixtures.js` with the adoption/console suites.

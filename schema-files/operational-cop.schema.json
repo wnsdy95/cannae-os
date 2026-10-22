@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "operational-cop.schema.json",
+  "title": "Operational COP Snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "as_of", "snapshot_valid_until", "audience", "classification", "approval_authorized", "tool_execution_authorized", "release_authorized", "worker_liveness_verified", "alerts_cover_visible_scope", "manifest_sha256", "manifest_revision", "visible_wave_count", "matching_wave_count", "waves", "alerts", "roles", "critical_count", "next_boundary_at"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "OperationalCopSnapshot" },
+    "as_of": { "$ref": "#/$defs/time" },
+    "snapshot_valid_until": { "$ref": "#/$defs/time" },
+    "audience": {
+      "type": "object", "additionalProperties": false,
+      "required": ["account_role", "mission_filter", "role_filter", "role_filter_is_authority"],
+      "properties": {
+        "account_role": { "enum": ["owner", "viewer"] },
+        "mission_filter": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "role_filter": { "anyOf": [{ "$ref": "#/$defs/role" }, { "type": "null" }] },
+        "role_filter_is_authority": { "const": false }
+      }
+    },
+    "classification": { "const": "restricted" },
+    "approval_authorized": { "const": false },
+    "tool_execution_authorized": { "const": false },
+    "release_authorized": { "const": false },
+    "worker_liveness_verified": { "const": false },
+    "alerts_cover_visible_scope": { "const": true },
+    "manifest_sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" },
+    "manifest_revision": { "type": "integer", "minimum": 0 },
+    "visible_wave_count": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "matching_wave_count": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "critical_count": { "type": "integer", "minimum": 0, "maximum": 2000 },
+    "next_boundary_at": { "$ref": "#/$defs/nullableTime" },
+    "roles": { "type": "array", "maxItems": 11, "uniqueItems": true, "items": { "$ref": "#/$defs/role" } },
+    "waves": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/wave" } },
+    "alerts": { "type": "array", "maxItems": 2000, "items": { "$ref": "#/$defs/alert" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "time": { "type": "string", "format": "date-time" },
+    "nullableTime": { "anyOf": [{ "$ref": "#/$defs/time" }, { "type": "null" }] },
+    "role": { "enum": ["USER", "COMMANDER", "COS", "S2", "S3", "S4", "S6", "RED_TEAM", "EVALUATOR", "EXECUTOR", "RECORDER"] },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "artifact_id", "kind", "sha256"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "artifact_id": { "$ref": "#/$defs/id" },
+        "kind": { "$ref": "#/$defs/id" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "agent": {
+      "type": "object", "additionalProperties": false,
+      "required": ["agent_id", "role", "department", "task_excerpt", "task_truncated", "recorded_lease_status", "result_pending", "lease_valid_until"],
+      "properties": {
+        "agent_id": { "$ref": "#/$defs/id" },
+        "role": { "$ref": "#/$defs/role" },
+        "department": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "task_excerpt": { "type": "string", "maxLength": 400 },
+        "task_truncated": { "type": "boolean" },
+        "recorded_lease_status": { "enum": ["none", "active", "interrupted", "completed", "revoked", "superseded", "expired"] },
+        "result_pending": { "type": "boolean" },
+        "lease_valid_until": { "$ref": "#/$defs/nullableTime" }
+      }
+    },
+    "wave": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mission_id", "wave_id", "title", "title_truncated", "objective_excerpt", "objective_truncated", "state", "recorded_at", "freshness", "age_seconds", "plan", "ending", "valid_until", "agents", "attention_codes"],
+      "properties": {
+        "mission_id": { "$ref": "#/$defs/id" }, "wave_id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "maxLength": 400 }, "title_truncated": { "type": "boolean" },
+        "objective_excerpt": { "type": "string", "maxLength": 400 }, "objective_truncated": { "type": "boolean" },
+        "state": { "enum": ["history_unverified", "context_recorded", "closed_complete", "closed_blocked_pending_execution", "closed_blocked_pending_human_decision", "terminated_expired", "terminated_aborted", "terminated_superseded", "execution_held", "result_pending", "stop_recorded", "expired_pending_termination", "terminal_with_obligations"] },
+        "recorded_at": { "$ref": "#/$defs/time" }, "freshness": { "enum": ["fresh", "stale", "future"] },
+        "age_seconds": { "type": "integer", "minimum": 0 }, "plan": { "$ref": "#/$defs/evidence" },
+        "ending": { "anyOf": [{ "$ref": "#/$defs/evidence" }, { "type": "null" }] },
+        "valid_until": { "$ref": "#/$defs/nullableTime" },
+        "agents": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/agent" } },
+        "attention_codes": { "type": "array", "maxItems": 2000, "uniqueItems": true, "items": { "$ref": "#/$defs/code" } }
+      }
+    },
+    "code": { "type": "string", "pattern": "^[A-Z][A-Z_]{0,99}$" },
+    "alert": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "mission_id", "wave_id", "code", "severity", "agent_ids", "evidence", "evidence_truncated"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "mission_id": { "$ref": "#/$defs/id" }, "wave_id": { "$ref": "#/$defs/id" },
+        "code": { "$ref": "#/$defs/code" }, "severity": { "enum": ["critical", "warning"] },
+        "agent_ids": { "type": "array", "maxItems": 1000, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "evidence": { "type": "array", "maxItems": 8, "items": { "$ref": "#/$defs/evidence" } },
+        "evidence_truncated": { "type": "boolean" }
+      }
+    }
+  }
+}

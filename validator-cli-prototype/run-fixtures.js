@@ -11,6 +11,12 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} read-only operational COP`, file: `sample-payloads/${prefix}-operational-cop.json`,
+    type: "operational-cop", exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"] })),
+  { name: "COP snapshot cannot invert display validity", file: "sample-payloads/valid-operational-cop.json", type: "operational-cop",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.snapshot_valid_until = value.as_of; }, requiredCodes: ["COP_SNAPSHOT_VALIDITY_INVALID"] },
+  { name: "COP snapshot counts cannot silently omit rows", file: "sample-payloads/valid-operational-cop.json", type: "operational-cop",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.matching_wave_count = 1; }, requiredCodes: ["COP_SNAPSHOT_COUNTS_INVALID"] },
   ...[["method-control-channel-policy", "MISSING_REQUIRED"], ["method-control-launch-slot", "MISSING_REQUIRED"],
     ["method-control-session-observation", "ENUM_MISMATCH"]].flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({
       name: `${prefix} non-authorizing continuation ${type}`, file: `sample-payloads/${prefix}-${type}-continuation.json`, type,

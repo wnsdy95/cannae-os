@@ -58,6 +58,14 @@ try {
         /control metadata as execution evidence/);
     }
   });
+  check("a COP snapshot is control metadata even without a retained counterpart", () => {
+    const payload = sample("operational-cop");
+    for (const extension of ["txt", "bin", "json"]) {
+      const ref = env.fileArtifact(`DATA-COP-${extension}`, Object.fromEntries(Object.entries(payload).reverse()), extension);
+      assert.throws(() => recordWave(env.report(`MWR-COP-${extension}`, ref), { ...env.options, now: env.at(30) }),
+        /control metadata as execution evidence/);
+    }
+  });
   check("ordinary JSON work is admitted only after every actually routed control executes", () => {
     const work = env.fileArtifact("DATA-NOTE-SUMMARY", { source_line: fs.readFileSync(path.join(env.options.repository, "README.md"), "utf8"),
       summary: "The supplied local note is explicitly synthetic." });

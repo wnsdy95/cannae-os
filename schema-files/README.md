@@ -1,5 +1,11 @@
 # Schema Files
 
+`operational-cop.schema.json` describes a restricted read-only snapshot of
+verified wave history, display filters, freshness and authorized-scope alerts.
+The validator never returns execution permission. Schema validity alone cannot
+prove session access, actual history, liveness or current repository state;
+the [COP query](../docs/operational-cop.md) independently replays those inputs.
+
 `dispatch-lease-issuance-request.schema.json` freezes one exact planned lease,
 observed manifest and predecessor/channel evidence before publication.
 `dispatch-lease-issuance-resolution.schema.json` records actual commit or

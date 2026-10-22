@@ -331,6 +331,8 @@ independent durable archive or witness.
 
 ## References
 
+- For live Operations reads, use `docs/operational-cop.md` and the COP procedure in `references/document-routing.md`; display filters never remove critical reporting or create execution authority.
+
 Read these only when needed (bundled with this skill):
 
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
