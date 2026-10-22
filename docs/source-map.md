@@ -413,6 +413,14 @@ production enforcement. Its user-managed deployment
 target remains deferred. No military-source authority is inferred from these
 implementation primitives.
 
+`operator-consent-outcome.js` adds read-only inspection using those private-state
+and signature primitives plus existing historical proposal/adoption replay.
+`run-operator-consent-outcome-fixtures.js` and browser flows exercise actual
+publication boundaries and preserved holds. The shared `decisionForAction`
+template preserves the original decision payload rather than inventing a
+replacement approval during inspection. These are local engineering artifacts,
+not new military-source claims or implemented terminal reconciliation.
+
 | Source / artifact | Military concept | Extracted principle | LLM application | Local documents |
 | --- | --- | --- | --- | --- |
 | OPORD/WARNO/FRAGO doctrine | Standard order format | Orders must be structured to be verifiable | Converted into a machine-readable prompt DSL | `prompt-dsl.md` |

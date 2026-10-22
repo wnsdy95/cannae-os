@@ -1,5 +1,13 @@
 # Authenticated Owner Order Fixtures
 
+`support.js` shares synthetic owner/session/proposal setup between the consent
+and outcome suites; it never provisions an actual owner's account.
+`run-operator-consent-outcome-fixtures.js` replays historical effects without
+writes or hold discharge, including missing/partial publications, old expiry,
+untrusted projections and concurrent manifest/key/repository drift. Browser
+checks include owner-only Inspect Outcome on desktop and mobile. These checks
+do not provide terminal reconciliation, cancellation or renewed authority.
+
 `node run-operator-consent-fixtures.js` creates temporary repositories and real
 synthetic owner/viewer accounts, not actual user consent. It verifies signed
 scope, exact controller and lifecycle consumption, nonce/session/account/race

@@ -64,7 +64,7 @@ The router and references are bundled under this skill folder and do not depend 
 
 ## Operational Mission Lifecycle
 
-For local operator login, evidence or owner order decisions, read `docs/local-operator-console.md` and `docs/operator-consent-and-adoption.md`; use `scripts/serve_controls_operator.js`. Leave real owner setup and decisions to the human. Never retain setup/invite/nonce secrets or replay an interrupted decision: inspect Decisions and preserve holds. Timeout is not worker exit; worker exit is not effect reconciliation. Adoption is not tool or release authority.
+For local operator login, evidence or owner decisions, read `docs/local-operator-console.md` and `docs/operator-consent-and-adoption.md`; use `scripts/serve_controls_operator.js`. Leave real setup and decisions to the human; never retain tokens or replay an interrupted approval. Use Decisions > Inspect Outcome for exact historical replay; preserve holds and expiry even if `applied`. Timeout is not exit, and inspection is not reconciliation or tool/release authority.
 
 1. Prepare a complete `MissionWavePlan` preserving `USER` final authority, non-command AI roles, explicit action boundaries and finite validity/budgets. For captured intake, use v0.2 and the exact adoption procedure before opening; legacy v0.1 is only for waves without intake. A schema-valid plan is not proof of USER consent.
 2. For a dispatch-controlled wave, create one deny-by-default policy draft per agent, hash each exact draft with `scripts/operate_dispatch_runtime.js hash-input`, and put each digest plus its exact agent, provider, and policy ID in the USER-authorized `MissionWavePlan.dispatch_control.policy_authorizations`.

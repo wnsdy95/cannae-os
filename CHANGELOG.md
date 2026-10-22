@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add owner-only read-only inspection of exact signed consent, deterministic decision and replayed adoption history, including partial publication and lost-projection outcomes. Preserve holds and original expiry; expose no retry, repair or discharge operation. Reuse one pure decision template and shared synthetic test support, add outcome and desktop/mobile browser checks, and teach both skills to distinguish historical recorded outcomes from current authority. Fresh terminal consent/cancellation/receipts remain open.
+
 - Hold operator-console responses, next-worker admission and shutdown ownership until the active worker's exit is observed. Keep termination failures fenced, cancel unstarted jobs on shutdown and reject provisional success after a worker error. Add real-thread and controlled lifecycle regressions; both skills now distinguish worker termination from decision-effect reconciliation. Interrupted-action hold discharge remains open and no authority, dependency, key or release policy is changed.
 
 - Connect password-reauthenticated owner previews to actual one-use order adoption, rejection and revision. Bind finite consent to the exact session, account, source/repository state, manifest, complete plan, backbriefs and rehearsal; retain signed non-authorizing consent before guarded decision/adoption publication. Preserve unknown-outcome holds and never auto-resume interrupted writes. Add actual Decisions history and both skill procedures; tool/release approval, hold discharge and production protection remain open.

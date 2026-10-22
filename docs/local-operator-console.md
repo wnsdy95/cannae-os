@@ -88,6 +88,7 @@ and credential rotation are not implemented in this increment.
 | `POST /api/invites`, `/api/users/deactivate` | Owner password reauthentication, exact scope and immutable owner role; no execution or approval rights. |
 | `POST /api/order-decisions/preview`, `/api/order-decisions/commit` | Owner-only exact plan/evidence preview and short-lived one-use, session-bound password-reauthenticated decision. Calls the real adoption controller; no execution or release grant. |
 | `GET /api/order-decisions`, `/api/order-decisions/:id`, `/api/operator-key` | Owner-only bounded action history, exact interrupted outcome and public consent-verification key. No private key, password or raw nonce. |
+| `POST /api/order-decisions/:id/inspect` | Owner-only, CSRF-protected, empty-body read-only outcome replay against actual retained consent/decision/adoption history. Preserves action state and holds; never retries or discharges an approval. |
 
 An entry ID binds mission, wave, kind, artifact ID, relative path and digest.
 It is not a caller-provided path. Unknown or unauthorized entries return no
