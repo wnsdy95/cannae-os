@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Existing-CLI Semantic Collector Foundation (2026-10-23)
+
+Literal source fidelity does not prove that compiled orders preserve prohibitions,
+approval conditions or bounds. The [collector foundation](semantic-omission-evaluation.md)
+therefore excludes unused analysis from its candidate and checks actual order and
+receiver projections. Exact UTF-8 spans and candidate pointers establish quoted
+provenance, not the truth of a model's coverage judgement.
+
+The existing local CLI login avoids new credential provisioning; it does not
+authorize private request transmission. A distinct pinned-key purpose binds one
+exact preview/profile and a durable reservation prevents automatic replay.
+No operational owner-transfer ceremony is available yet. Fake processes test
+failure behavior, never model quality; actual native probes must remain separately
+identified. Model snapshots, full native context/tool inventory, billing cancellation,
+held-out calibration and mandatory planning/adoption consumers remain unproven.
+
 ## Browser Response Scope (2026-10-23)
 
 A real local browser counterexample retained an owner-authorized Evidence list,

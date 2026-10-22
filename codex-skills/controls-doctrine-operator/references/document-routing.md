@@ -1,5 +1,20 @@
 # Document Routing
 
+For semantic omission evaluation, read `docs/semantic-omission-evaluation.md`
+and run `node run-semantic-evaluation-fixtures.js`. `prepare` transmits nothing.
+Use bundled `scripts/evaluate_controls_request.js prepare --repository <repo>
+--draft-id <id>` outside the checkout; it exposes no model-execution command.
+Inspect actual compiled order/receiver projections, not unused analysis quotes.
+Existing CLI login and order consent never approve model transfer. Do not mint
+operational consent with fixture keys or expose private previews in agent chat.
+After a timeout or lost result, keep the consumed reservation and inspect it;
+never retry the model automatically. Treat `complete` as advisory until held-out
+calibration and mandatory consumers exist; fake-process passes are not calibration.
+Unexpected startup diagnostics stay private and failed. Inspect their quarantined
+file; never broaden the diagnostic allowlist just to make the run pass.
+After a signal failure, preserve that failure and require actual child close
+plus group absence; a termination request or clean working tree proves neither.
+
 For an operational situation read, use `docs/operational-cop.md` and the
 authenticated Operations view; run `node run-operational-cop-fixtures.js` when
 maintaining it. Read attention across the entire permitted scope even when
