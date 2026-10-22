@@ -52,6 +52,12 @@ const RULES = [
     commands: ["node run-intent-continuity-fixtures.js", "node run-method-deviation-contract-fixtures.js"]
   },
   {
+    id: "method-control-channel",
+    keywords: ["method control channel", "method-control", "method broker", "MCP method", "operate_controls_channel", "serve_controls_methods"],
+    docs: ["docs/method-control-channel.md", "docs/method-deviation-runtime.md", "docs/enforced-dispatch-and-resume.md"],
+    commands: ["node run-method-control-contract-fixtures.js"]
+  },
+  {
     id: "authority-risk-release",
     keywords: ["dependency migration", "verifier dependency", "producer compatibility", "lockfile update", "ip-address", "authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment", "immutability", "attestation", "integrity", "drift", "tuf", "trusted-root", "bundle", "sigstore", "offline verification"],
     docs: [
@@ -486,6 +492,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
   { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "method-control-baseline", "method-deviation", "initiative-deviation", "degeneration-incident", "check_controls_intent"] },
   {

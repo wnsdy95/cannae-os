@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [local method channel](method-control-channel.md) applies the official SDK,
+Codex hooks/MCP and Claude hook-provenance interfaces listed below to existing
+method/dispatch contracts. Its strict schemas, synthetic sample pairs, actual
+SDK transports, synthetic native callbacks and both skills distinguish dormant
+startup, exact enrollment and response delivery. These are local reference
+checks, not native agent-client startup attestation, semantic mission completion
+or protected production execution. No new military-source claim is made.
+
 The [method runtime](method-deviation-runtime.md) is local engineering synthesis
 of the existing mission-command, disciplined-initiative, intent, adoption,
 dispatch, SITREP and revocation contracts. Its optional reviewed baseline,
@@ -328,8 +336,9 @@ Usage:
 | UK official publications, www.gov.uk | UK and NATO doctrine publications | official national/allied doctrine pages provide non-US terminology and doctrine comparison anchors | multinational doctrine consistency review and alias map | `multinational-doctrine-consistency-review.md` |
 | UK official assets, assets.publishing.service.gov.uk | doctrine PDFs | PDF source documents carry the underlying doctrine text and supplements | source verification and source-map URL coverage | `multinational-doctrine-consistency-review.md`, `source-map-linter.js` |
 | Government of Canada, www.canada.ca | CAF/DND official public pages | non-US military organization, ethos, and governance context must be checked before adaptation | role authority, culture, and information governance localization | `multinational-doctrine-consistency-review.md` |
-| OpenAI Learn, learn.chatgpt.com | Codex hook lifecycle and enforcement boundary | `PreToolUse` can deny or rewrite covered local tool calls, match all supported tools, and expose stable event/tool/input fields, while project hooks require trust and do not cover every hosted or specialized execution path | Use Codex hooks as a local adapter for a plan-digest-authorized policy and result-bound lease state machine; require explicit lineage continuation after resume and retain an external or managed gateway as the stronger deployment boundary | `docs/enforced-dispatch-and-resume.md`, `dispatch-runtime-controller.js`, `dispatch-hook-adapter.js`, `install-dispatch-hooks.js`, `skill-mission-controller.js` |
+| OpenAI Learn, learn.chatgpt.com | Codex hook lifecycle and enforcement boundary | `PreToolUse` can deny or rewrite covered local tool calls; `SessionStart.source` distinguishes startup from resume/fork/clear. Project hooks require trust and do not cover every execution path | Bind exact policy and result history; the local method channel observes startup before lease enrollment without treating the parent session ID as independent subagent identity | `docs/enforced-dispatch-and-resume.md`, `docs/method-control-channel.md`, `dispatch-runtime-controller.js`, `dispatch-hook-adapter.js`, `install-dispatch-hooks.js`, `skill-mission-controller.js` |
 | Anthropic Claude Code docs, code.claude.com | Claude Code hooks, settings precedence, and subagent identity | `PreToolUse` can deny covered calls and exposes an `agent_id` for subagents, but client-side project settings and non-hooked paths are not a complete authority boundary | Bind provider agent identity when available, require exact pre/post tool correlation, interrupt authority on session start/resume, and use managed settings or an external gateway for stronger enforcement | `docs/enforced-dispatch-and-resume.md`, `dispatch-runtime-controller.js`, `dispatch-hook-adapter.js`, `install-dispatch-hooks.js`, `skill-mission-controller.js` |
+| MCP official TypeScript SDK, ts.sdk.modelcontextprotocol.io | Stdio serving, strict registered tools and protocol negotiation | The pinned SDK supports legacy and 2026-07-28 modern eras; automatic stdio negotiation may probe a disposable sibling. Protocol discovery and client metadata are not task authority | Keep startup dormant, strictly bind three own-agent operations and test actual transports separately from synthetic native hook payloads. Claude additionally requires exact `mcp_server` source, not a trusted-name prefix | `docs/method-control-channel.md`, `method-control-server.js`, `method-control-broker.js`, `run-method-control-channel-fixtures.js` |
 
 ## 15. Cryptographic Attestation and Coordination Sources
 

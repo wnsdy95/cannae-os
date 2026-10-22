@@ -1,5 +1,18 @@
 # Sample Payloads
 
+The eight `method-control-channel-policy`, `method-control-launch-slot`,
+`method-control-session-observation`, `method-control-enrollment`,
+`method-control-request`, `method-control-receipt`, `method-control-delivery`
+and `method-control-response` pairs are synthetic structural examples, not
+actual native-provider execution, USER consent or work outputs. Regenerate
+them explicitly with `node method-control-fixtures/write-samples.js` after
+reviewing runtime/lock changes; never rewrite retained operational evidence.
+
+`valid-github-release-independent-verification-pre-mcp-v0.2.json` preserves the
+exact accepted `18b6e21` producer before the MCP dependency migration. Its bytes
+and historical tuple remain unchanged; only the separately current sample is
+regenerated through the pinned verification engine.
+
 The method-control-baseline, method-deviation-event, initiative-deviation-report,
 degeneration-incident-event, mission-wave-plan-methods and agent-context-pack-methods pairs are synthetic
 non-authorizing examples. They bind exact task/method metadata and before/after

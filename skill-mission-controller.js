@@ -23,6 +23,8 @@ const {
 const NONE_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const CONTROL_EVIDENCE_KINDS = new Set([
   "method-deviation-events", "initiative-deviation-reports", "degeneration-incidents",
+  "method-control-enrollments", "method-control-requests", "method-control-receipts", "method-control-deliveries",
+  "method-control-launch-slots", "method-control-session-observations",
   "commander-intents", "intent-delegations", "intent-continuity-projections",
   "aar-readiness-updates",
   "aars",
@@ -814,7 +816,9 @@ function openWaveUnlocked(plan, options = {}) {
     const routed = agentReceipts[index];
     const methodContract = require("./method-deviation-contract");
     const methodAssignment = methodContract.methodAssignment(plan, agent.agent_id);
-    const validationCommands = unique([...(routed.receipt.validation_commands || []), ...(methodAssignment ? [methodContract.METHOD_CHECK] : [])]);
+    const channel = require("./method-control-contract");
+    const validationCommands = unique([...(routed.receipt.validation_commands || []), ...(methodAssignment ? [methodContract.METHOD_CHECK] : []),
+      ...(methodAssignment?.broker ? [channel.CHECK] : [])]);
     const contextId = `ACP-${safeIdPart(plan.wave_id)}-${safeIdPart(agent.agent_id)}`;
     const existingContext = optionalArtifact(operationOptions, {
       missionId: plan.mission_id, waveId: plan.wave_id, kind: "agent-context-packs", artifactId: contextId
@@ -842,7 +846,8 @@ function openWaveUnlocked(plan, options = {}) {
       capability_query: routed.receipt.capability_query,
       capability_routing: routed.receipt.capability_routing,
       doctrine_state: doctrineState,
-      documents: unique([...routed.receipt.recommended_documents.map(document => document.path), ...(methodAssignment ? [methodContract.METHOD_DOCUMENT] : [])])
+      documents: unique([...routed.receipt.recommended_documents.map(document => document.path), ...(methodAssignment ? [methodContract.METHOD_DOCUMENT] : []),
+        ...(methodAssignment?.broker ? [channel.DOCUMENT] : [])])
         .map(relativePath => safeDoctrineDocument(doctrineRoot, relativePath)),
       validation_commands: validationCommands,
       required_controls: buildRequiredControls(validationCommands, doctrineRoot),
@@ -1069,7 +1074,8 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
       catch (error) {
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
-      const typedControl = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
+      const typedControl = require("./method-control-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
+        require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
         ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack",
           "DispatchToolPolicy", "AgentDispatchLease", "ToolAdmissionEvent", "AgentExecutionCheckpoint"].includes(evidencePayload?.type);
       if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || typedControl ||

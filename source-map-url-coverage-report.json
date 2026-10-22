@@ -3,7 +3,7 @@
   "as_of": "2026-10-22",
   "source_map": "docs/source-map.md",
   "valid": true,
-  "checked_hosts": 55,
+  "checked_hosts": 56,
   "indexed_doctrine_outputs": 17,
   "finding_count": 0,
   "covered_hosts": [
@@ -101,6 +101,7 @@
       "host": "code.claude.com",
       "files": [
         "docs/enforced-dispatch-and-resume.md",
+        "docs/method-control-channel.md",
         "docs/research-compendium.md"
       ]
     },
@@ -287,6 +288,7 @@
       "host": "learn.chatgpt.com",
       "files": [
         "docs/enforced-dispatch-and-resume.md",
+        "docs/method-control-channel.md",
         "docs/research-compendium.md"
       ]
     },
@@ -345,6 +347,13 @@
       "files": [
         "docs/research-compendium.md",
         "docs/source-map.md"
+      ]
+    },
+    {
+      "host": "ts.sdk.modelcontextprotocol.io",
+      "files": [
+        "docs/method-control-channel.md",
+        "docs/research-compendium.md"
       ]
     },
     {

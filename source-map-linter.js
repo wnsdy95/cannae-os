@@ -50,6 +50,7 @@ const OFFICIAL_HOST_PATTERNS = [
   /sre\.google$/,
   /learn\.chatgpt\.com$/,
   /code\.claude\.com$/,
+  /^ts\.sdk\.modelcontextprotocol\.io$/,
   /developers\.openai\.com$/,
   /docs\.docker\.com$/,
   /nodejs\.org$/,

@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-control-delivery.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "type",
+    "enrollment_ref",
+    "request_ref",
+    "receipt_ref",
+    "tool_use_id",
+    "provider_response_sha256",
+    "via",
+    "recorded_at",
+    "execution_authorized",
+    "continuation_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "agent_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "type": {
+      "const": "MethodControlDelivery"
+    },
+    "enrollment_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "request_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "receipt_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "tool_use_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "provider_response_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "via": {
+      "enum": [
+        "native_callback",
+        "operator_reconcile"
+      ]
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "continuation_authorized": {
+      "const": false
+    },
+    "release_authorized": {
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "const": "USER"
+    }
+  }
+}

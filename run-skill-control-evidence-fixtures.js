@@ -87,6 +87,17 @@ try {
       }
     }
   });
+  check("method-channel records and outer responses remain metadata after MIME or key-order changes", () => {
+    const value = environment();
+    for (const [type, payload] of Object.entries(require("./method-control-fixtures/contracts").samples())) {
+      assert.equal(validatePayload(payload, type).valid, true);
+      for (const extension of ["txt", "bin", "json"]) {
+        const ref = value.fileArtifact(`DATA-CHANNEL-${type}-${extension}`, Object.fromEntries(Object.entries(payload).reverse()), extension);
+        assert.throws(() => recordWave(value.report(`MWR-CHANNEL-${type}-${extension}`, ref), { ...value.options, now: value.at(30) }),
+          /control metadata as execution evidence/);
+      }
+    }
+  });
   check("report publication reappraises newly retained control aliases and fresh-ID retry reruns controls", () => {
     const value = environment(), alias = value.fileArtifact("DATA-FUTURE-CONTROL", Object.fromEntries(Object.entries(value.sitrep).reverse()), "txt");
     beforeWrite = descriptor => {

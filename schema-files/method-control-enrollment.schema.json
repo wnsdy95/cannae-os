@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-control-enrollment.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "type",
+    "launch_slot_ref",
+    "session_observation_ref",
+    "provider",
+    "session_binding",
+    "plan_ref",
+    "context_ref",
+    "policy_ref",
+    "lease_ref",
+    "repository_key",
+    "repository_identity_fingerprint",
+    "server_name",
+    "runtime_sha256",
+    "launch_descriptor_sha256",
+    "credential_sha256",
+    "identity_assurance",
+    "provider_startup_verified",
+    "recorded_at",
+    "expires_at",
+    "execution_authorized",
+    "continuation_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "agent_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "type": {
+      "const": "MethodControlEnrollment"
+    },
+    "launch_slot_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "session_observation_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "provider": {
+      "$ref": "agent-dispatch-lease.schema.json#/properties/provider"
+    },
+    "session_binding": {
+      "$ref": "agent-dispatch-lease.schema.json#/properties/session_binding"
+    },
+    "plan_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "context_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "policy_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "lease_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "repository_key": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "repository_identity_fingerprint": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "server_name": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "runtime_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "launch_descriptor_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "credential_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "identity_assurance": {
+      "const": "local_operator_enrollment_reference"
+    },
+    "provider_startup_verified": {
+      "const": false
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "continuation_authorized": {
+      "const": false
+    },
+    "release_authorized": {
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "const": "USER"
+    }
+  }
+}

@@ -59,8 +59,11 @@ the retained reference, and only then allows the agent to request ordinary tool
 admission. A Green choice does not need a new approval, but it still needs this
 retained control record. A Read-only agent must not invoke Bash, gain metadata
 write privileges or edit its policy to run the wrapper. Automated provider
-message/broker delivery and CoS integration remain open; this reference CLI
-does not silently supply that transport.
+message delivery is separate from this CLI. The optional newly reviewed v0.2
+[local method channel](method-control-channel.md) supplies three bounded MCP
+operations after dormant bootstrap and exact session enrollment. It does not
+automatically retrofit v0.1 plans, attest native client startup, supply broader
+CoS integration or grant task, shell, approval or release authority.
 
 The trusted operator uses the wrapper in either provider skill:
 

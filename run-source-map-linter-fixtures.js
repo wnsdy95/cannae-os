@@ -64,8 +64,10 @@ function run() {
     const report = coverageReport();
     const after = new Date().toISOString().slice(0, 10);
     assert([before, after].includes(report.as_of), "coverage snapshot must use the actual UTC audit date");
+    assert(report.covered_hosts.some(item => item.host === "ts.sdk.modelcontextprotocol.io" &&
+      item.files.includes("docs/method-control-channel.md")), "the official SDK source must be checked, not silently ignored");
 
-    process.stdout.write("PASS source-map doctrine index fixtures (5/5)\n");
+    process.stdout.write("PASS source-map doctrine index fixtures (6/6)\n");
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

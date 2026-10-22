@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1",
+  "type": "MethodControlRequest",
+  "mission_id": "MIS-FIXTURE",
+  "wave_id": "W1",
+  "agent_id": "fixture-agent",
+  "enrollment_ref": {
+    "artifact_id": "MCTL-672dbdd43a6e1841f2368a7abd38c5654715b3b5",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-672dbdd43a6e1841f2368a7abd38c5654715b3b5.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-FIXTURE",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/AEC-FIXTURE.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "operation": "method_propose",
+  "arguments": {
+    "request_id": "fixture-request",
+    "step_id": "inspect",
+    "method_id": "short_read",
+    "rationale": "Synthetic schema fixture; no real agent or USER decision."
+  },
+  "input_sha256": "4c7144efb6c1c7015580e0a2457f566435fe509091c05375969853e44015dc05",
+  "tool_use_id": "fixture-tool",
+  "recorded_at": "2026-10-22T00:00:01.000Z",
+  "expires_at": "2026-10-22T00:00:31.000Z",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": true,
+  "human_final_decision_authority": "USER",
+  "id": "MCTL-4ff07b1f2e4ae967c0c6e3da9bed341e3dada2fc"
+}

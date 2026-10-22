@@ -11,6 +11,11 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["method-control-channel-policy", "method-control-launch-slot", "method-control-session-observation", "method-control-enrollment",
+    "method-control-request", "method-control-receipt", "method-control-delivery", "method-control-response"]
+    .flatMap(type => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+      requiredCodes: prefix === "valid" ? [] : [type === "method-control-channel-policy" ? "ADDITIONAL_PROPERTY" : "CONST_MISMATCH"] }))),
   ...["valid", "invalid"].map(prefix => ({ name: `${prefix} method-governed full mission plan`,
     file: `sample-payloads/${prefix}-mission-wave-plan-methods.json`, type: "mission-wave-plan", exitCode: prefix === "valid" ? 0 : 1,
     expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["METHOD_AGENT_COVERAGE"] })),

@@ -17,7 +17,9 @@ function methods(step) { return [{ method_id: "planned", ...step.planned }, ...s
 function methodAssignment(plan, agentId) {
   if (!plan.method_control) return null;
   const value = baseline(plan, agentId); if (!value) throw new Error("METHOD_AGENT_NOT_ASSIGNED");
-  return { schema_version: "0.1", type: "AgentMethodAssignment", control_channel: "trusted_operator_control_plane",
+  const broker = require("./method-control-contract").pocket(plan, agentId);
+  return { schema_version: broker ? "0.2" : "0.1", type: "AgentMethodAssignment",
+    control_channel: broker ? "enrolled_mcp_stdio_reference" : "trusted_operator_control_plane", ...(broker ? { broker } : {}),
     plan_sha256: digest(plan), baseline_sha256: digest(value),
     baseline: clone(value), after_report_due: plan.method_control.after_report_due,
     max_deviation_age_seconds: plan.method_control.max_deviation_age_seconds };
@@ -29,6 +31,11 @@ function assertMethodContext(context, plan) {
   }
   if (expected && (!context.documents.some(item => item.path === METHOD_DOCUMENT) || !context.validation_commands.includes(METHOD_CHECK) ||
       !context.required_controls.some(item => item.command === METHOD_CHECK))) throw new Error("METHOD_CONTEXT_PROCEDURE_MISSING");
+  if (expected?.broker) {
+    const { DOCUMENT, CHECK } = require("./method-control-contract");
+    if (!context.documents.some(item => item.path === DOCUMENT) || !context.validation_commands.includes(CHECK) ||
+        !context.required_controls.some(item => item.command === CHECK)) throw new Error("METHOD_CONTROL_CONTEXT_PROCEDURE_MISSING");
+  }
 }
 function baselineIssues(value) {
   const issues = [];

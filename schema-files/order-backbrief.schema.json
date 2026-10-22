@@ -21,6 +21,7 @@
   ],
   "properties": {
     "method_acknowledgement": { "$ref": "method-control-baseline.schema.json#/properties/agents/items" },
+    "method_channel_acknowledgement": { "$ref": "method-control-baseline.schema.json#/$defs/broker_assignment" },
     "schema_version": {
       "const": "0.1"
     },

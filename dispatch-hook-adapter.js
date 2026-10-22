@@ -126,15 +126,28 @@ function handle(provider, input) {
   if (!actor.sessionId) throw new Error("Hook input does not include session_id.");
 
   if (input.hook_event_name === "PreToolUse") {
+    if (process.env.CANNAE_METHOD_CONTROL_ENROLLMENT && require("./method-control-broker").preflight(
+      process.env.CANNAE_METHOD_CONTROL_ENROLLMENT, options, actor, input)) return null;
     const result = admitToolRequest(options, actor, input);
     return result.decision === "allow" ? null : denyPayload(provider, result.reason_codes || ["ADMISSION_FAILED"]);
   }
   if (input.hook_event_name === "PostToolUse" || input.hook_event_name === "PostToolUseFailure") {
+    if (process.env.CANNAE_METHOD_CONTROL_ENROLLMENT && require("./method-control-broker").postflight(
+      process.env.CANNAE_METHOD_CONTROL_ENROLLMENT, options, actor, input)) return null;
     const result = completeToolRequest(options, actor, input);
     return result.status === "active" ? null : postFailurePayload(provider, result.reason_codes || [result.status]);
   }
   if (input.hook_event_name === "SessionStart") {
-    return sessionPayload(provider, sessionStart(options, actor, input));
+    const observation = process.env.CANNAE_METHOD_CONTROL_ENROLLMENT && require("./method-control-broker").observeSession(
+      process.env.CANNAE_METHOD_CONTROL_ENROLLMENT, options, actor, input);
+    const result = sessionStart(options, actor, input);
+    if (observation) {
+      result.execution_authorized = false;
+      result.reason_codes = [...(result.reason_codes || []), "METHOD_CONTROL_ENROLLMENT_REQUIRED"];
+    }
+    const output = sessionPayload(provider, result);
+    if (observation) output.hookSpecificOutput.additionalContext += ` Method control session observation: ${observation.session_observation_ref.artifact_id}. Await trusted operator enrollment; no authority is granted.`;
+    return output;
   }
   throw new Error(`Unsupported hook event: ${input.hook_event_name || "missing"}`);
 }

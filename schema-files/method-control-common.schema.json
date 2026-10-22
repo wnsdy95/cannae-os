@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-control-common.schema.json",
+  "$defs": {
+    "arguments": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "request_id"
+          ],
+          "properties": {
+            "request_id": {
+              "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "request_id",
+            "step_id",
+            "method_id",
+            "rationale"
+          ],
+          "properties": {
+            "request_id": {
+              "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+            },
+            "step_id": {
+              "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+            },
+            "method_id": {
+              "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "request_id",
+            "deviation_ref"
+          ],
+          "properties": {
+            "request_id": {
+              "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+            },
+            "deviation_ref": {
+              "$ref": "common.schema.json#/$defs/artifact_ref"
+            }
+          }
+        }
+      ]
+    },
+    "result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "assignment",
+            "completed_steps",
+            "pending_report_refs",
+            "next_step",
+            "drift_detected"
+          ],
+          "properties": {
+            "kind": {
+              "const": "status"
+            },
+            "assignment": {
+              "$ref": "method-control-baseline.schema.json#/$defs/assignment"
+            },
+            "completed_steps": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "maxItems": 64
+            },
+            "pending_report_refs": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/artifact_ref"
+              },
+              "maxItems": 64
+            },
+            "next_step": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "method-control-baseline.schema.json#/$defs/step"
+                }
+              ]
+            },
+            "drift_detected": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "deviation_ref"
+          ],
+          "properties": {
+            "kind": {
+              "const": "proposal"
+            },
+            "deviation_ref": {
+              "$ref": "common.schema.json#/$defs/artifact_ref"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "report_ref",
+            "sitrep_ref"
+          ],
+          "properties": {
+            "kind": {
+              "const": "after_report"
+            },
+            "report_ref": {
+              "$ref": "common.schema.json#/$defs/artifact_ref"
+            },
+            "sitrep_ref": {
+              "$ref": "common.schema.json#/$defs/artifact_ref"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
