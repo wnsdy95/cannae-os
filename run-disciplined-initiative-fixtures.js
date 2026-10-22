@@ -218,18 +218,34 @@ try {
   });
   check("method control records cannot become work evidence through kind, copy or MIME changes", () => {
     const env = setup(), deviation = proposeAfter(env);
-    const file = path.join(env.root, "reformatted.txt"); fs.writeFileSync(file, JSON.stringify(deviation.event));
-    const copied = store.writeRepositoryFileArtifact({ repositoryPath: env.options.repository, artifactRoot: env.options.artifactRoot,
-      missionId: env.plan.mission_id, waveId: env.plan.wave_id, kind: "deliverables", artifactId: "DATA-METHOD-COPY", sourcePath: file,
-      createdAt: optionsAt(env, 99).now });
-    const copyRef = { artifact_id: "DATA-METHOD-COPY", relative_path: copied.relative_path, sha256: copied.sha256 };
-    for (const evidenceRef of [deviation.artifact_ref, copyRef]) {
+    admit(env, inputs.after, "metadata-result"); complete(env, inputs.after, "metadata-result");
+    const reported = gate.reportMethod(optionsAt(env, 105), { deviationRef: deviation.artifact_ref, phase: "after" });
+    const evidenceRefs = [deviation.artifact_ref, reported.artifact_ref, reported.sitrep_ref];
+    for (const [index, payload] of [deviation.event, reported.report, read(env, reported.sitrep_ref)].entries()) {
+      for (const extension of ["txt", "bin"]) {
+        const file = path.join(env.root, `reformatted-${index}.${extension}`);
+        fs.writeFileSync(file, JSON.stringify(Object.fromEntries(Object.entries(payload).reverse())));
+        const artifactId = `DATA-METHOD-COPY-${index}-${extension}`;
+        const copied = store.writeRepositoryFileArtifact({ repositoryPath: env.options.repository, artifactRoot: env.options.artifactRoot,
+          missionId: env.plan.mission_id, waveId: env.plan.wave_id, kind: "deliverables", artifactId, sourcePath: file,
+          createdAt: optionsAt(env, 106).now });
+        evidenceRefs.push({ artifact_id: artifactId, relative_path: copied.relative_path, sha256: copied.sha256 });
+      }
+    }
+    const reportFor = evidenceRef => {
       const report = { ...sample("mission-wave-report"), id: "MWR-METHOD-METADATA", mission_id: env.plan.mission_id, wave_id: env.plan.wave_id,
         plan_ref: env.opened.plan_ref, routing_preflight_ref: env.opened.routing_preflight_ref, recorded_at: optionsAt(env, 130).now,
         agent_results: env.opened.context_packs.map(item => ({ ...sample("mission-wave-report").agent_results[0],
           agent_id: item.agent_id, context_pack_ref: item.context_pack_ref, evidence_refs: [evidenceRef] })) };
-      assert.throws(() => recordWave(report, optionsAt(env, 130)), /control metadata as execution evidence/);
-    }
+      return report;
+    };
+    for (const evidenceRef of evidenceRefs) assert.throws(() => recordWave(reportFor(evidenceRef), optionsAt(env, 130)), /control metadata as execution evidence/);
+    const workFile = path.join(env.root, "ordinary-work.txt"); fs.writeFileSync(workFile, "Synthetic task output, not a control record.\n");
+    const work = store.writeRepositoryFileArtifact({ repositoryPath: env.options.repository, artifactRoot: env.options.artifactRoot,
+      missionId: env.plan.mission_id, waveId: env.plan.wave_id, kind: "deliverables", artifactId: "DATA-REAL-WORK", sourcePath: workFile,
+      createdAt: optionsAt(env, 106).now });
+    assert.throws(() => recordWave(reportFor({ artifact_id: "DATA-REAL-WORK", relative_path: work.relative_path, sha256: work.sha256 }), optionsAt(env, 130)),
+      /METHOD_WAVE_NOT_COMPLETE/, "Ordinary work must reach the independent completion gate.");
   });
   check("drift-denial publication reappraises a concurrently completed report", () => {
     const env = setup(), deviation = proposeAfter(env); admit(env, inputs.after, "race"); complete(env, inputs.after, "race");

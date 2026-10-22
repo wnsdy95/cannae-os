@@ -98,9 +98,9 @@
   "valid_until": "2026-09-29T17:00:00.000Z",
   "order_binding": {
     "draft_ref": {
-      "artifact_id": "OD-8cc5bcc1ab29fe8757eaecd9de24284f",
-      "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/order-drafts/OD-8cc5bcc1ab29fe8757eaecd9de24284f.json",
-      "sha256": "54a4057b37bcadbf2895382480c08bd66d1f155a40885f96f774510d5b0ad7a8"
+      "artifact_id": "OD-0c6dd10283b6f07f7f3fe05105333086",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-drafts/OD-0c6dd10283b6f07f7f3fe05105333086.json",
+      "sha256": "0a82e0770f7c846cb1a50d82a09ff1fdb23bbbacba34a3204a0bf074656d6f26"
     },
     "task_assignments": [
       {

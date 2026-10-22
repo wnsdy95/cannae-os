@@ -5,19 +5,19 @@
   "wave_id": "W1",
   "agent_id": "agent-S2",
   "deny_ref": {
-    "artifact_id": "TAE-62eed4818236b619c6b52804",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/tool-admission-events/TAE-62eed4818236b619c6b52804.json",
-    "sha256": "fe07299696196a445f2aeef59f6b3983fbe11e951fa5688b3e9df17529f2a5e0"
+    "artifact_id": "TAE-cae5a7b51990350b82617280",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/tool-admission-events/TAE-cae5a7b51990350b82617280.json",
+    "sha256": "eaec8ed505c1fcff2516a6fd853773cb36c178f56dbd8a69161f8fdbdf5d47cc"
   },
   "lease_ref": {
-    "artifact_id": "ADL-d943fa6d-a51a-4647-b8cb-0151c2279b8b",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/agent-dispatch-leases/ADL-d943fa6d-a51a-4647-b8cb-0151c2279b8b.json",
-    "sha256": "b440791c700387de40df258ba510a2bebd9b6e01d67b72c5bd1ff65c1421cf62"
+    "artifact_id": "ADL-c7568865-7d99-4103-92d3-e5759f4c6893",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/agent-dispatch-leases/ADL-c7568865-7d99-4103-92d3-e5759f4c6893.json",
+    "sha256": "e6a34fb51c4eecab0ca4e555610f92d1f03b7af0be97f4150e92c6504e2a5656"
   },
   "response_checkpoint_ref": {
-    "artifact_id": "AEC-09723780b5afd829cad9a50d",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/agent-execution-checkpoints/AEC-09723780b5afd829cad9a50d.json",
-    "sha256": "11ccaba660f5f98e16f6cada630ff46a7fc5cee50e43d01cc7690e6ed10da400"
+    "artifact_id": "AEC-ee7ec74a3599f11861012179",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/agent-execution-checkpoints/AEC-ee7ec74a3599f11861012179.json",
+    "sha256": "eb360a431aca28850dd8e4d21bc0f8f054d9107a7c543cad680cba92ab37d475"
   },
   "required_response": "revoke",
   "response_status": "revoked",
@@ -29,5 +29,5 @@
   "continuation_authorized": false,
   "release_authorized": false,
   "human_final_decision_authority": "USER",
-  "id": "DIE-802ee29c7059aaa2f15cbf42b53adcc7"
+  "id": "DIE-48269846acb84a52f89f0087b4cfaa48"
 }

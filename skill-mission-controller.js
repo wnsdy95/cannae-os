@@ -1012,6 +1012,29 @@ function executeRequiredControls(report, contextArtifacts, options) {
   return refs;
 }
 
+function copiesControlEvidence(store, entry, payload, snapshots) {
+  const snapshot = store.verification.manifest_sha256;
+  let index = snapshots.get(snapshot);
+  if (!index) {
+    const controls = store.manifest.artifacts.filter(item => CONTROL_EVIDENCE_KINDS.has(item.kind));
+    index = { controls, bytes: new Set(controls.map(item => item.sha256)), payloads: null };
+    snapshots.set(snapshot, index);
+  }
+  if (index.bytes.has(entry.sha256)) return true;
+  if (!payload || typeof payload !== "object") return false;
+  if (!index.payloads) {
+    index.payloads = new Set();
+    // Legacy controls such as SITREPs have no type tag; compare the complete JSON value.
+    for (const control of index.controls) {
+      let value;
+      try { value = readEntryPayload(store, control); }
+      catch (error) { if (error instanceof SyntaxError) continue; throw error; }
+      if (value && typeof value === "object") index.payloads.add(sha256(JSON.stringify(canonicalValue(value))));
+    }
+  }
+  return index.payloads.has(sha256(JSON.stringify(canonicalValue(payload))));
+}
+
 function validateReportBindings(report, planArtifact, preflightArtifact, contextArtifacts, options) {
   if (!sameRef(report.plan_ref, planArtifact.ref)) throw new Error("Wave report does not cite the exact mission wave plan.");
   if (!sameRef(report.routing_preflight_ref, preflightArtifact.ref)) throw new Error("Wave report does not cite the exact routing preflight.");
@@ -1022,6 +1045,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
     throw new Error("Wave report agent set does not exactly match the opened wave.");
   }
   const contextByAgent = new Map(contextArtifacts.map(item => [item.payload.agent_id, item]));
+  const controlSnapshots = new Map();
   for (const result of report.agent_results) {
     const context = contextByAgent.get(result.agent_id);
     if (!context || !sameRef(result.context_pack_ref, context.ref)) {
@@ -1035,18 +1059,16 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         waveId: report.wave_id,
         loadPayload: false
       });
-      const consentCopy = evidence.store.manifest.artifacts.some(entry => ["operator-consent-records", "operator-reconciliation-authorizations", "operator-reconciliation-records",
-        "method-deviation-events", "initiative-deviation-reports", "degeneration-incidents"]
-        .includes(entry.kind) && entry.sha256 === evidence.entry.sha256);
       // MIME is caller-declared; whole JSON control records remain metadata in text or binary files.
       let evidencePayload;
       try { evidencePayload = readEntryPayload(evidence.store, evidence.entry); }
       catch (error) {
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
-      const consentPayload = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
+      const typedControl = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
         ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack"].includes(evidencePayload?.type);
-      if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || consentCopy || consentPayload) {
+      if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || typedControl ||
+          copiesControlEvidence(evidence.store, evidence.entry, evidencePayload, controlSnapshots)) {
         throw new Error(`${result.agent_id} cites control metadata as execution evidence: ${evidence.entry.kind}.`);
       }
       const evidenceTime = Date.parse(evidence.entry.created_at);
@@ -1189,6 +1211,7 @@ function recordWaveUnlocked(report, options = {}) {
     createdAt: report.recorded_at,
     publicationGuard: snapshot => {
       wavePublicationGuard(planArtifact.payload, operationOptions)(snapshot);
+      validateReportBindings(report, planArtifact, preflightArtifact, contextArtifacts, operationOptions);
       validateDispatchCompletion(report, planArtifact.payload, operationOptions);
       return true;
     }

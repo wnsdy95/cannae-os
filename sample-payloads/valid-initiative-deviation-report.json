@@ -5,32 +5,32 @@
   "wave_id": "W1",
   "agent_id": "agent-S2",
   "deviation_ref": {
-    "artifact_id": "MDEV-35e187ed00bec049d32b1250cca43c7d",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/method-deviation-events/MDEV-35e187ed00bec049d32b1250cca43c7d.json",
-    "sha256": "edf5bab93ff9429a8b295caeecda724fe667ffef1b3269687cb1d9edb86641e4"
+    "artifact_id": "MDEV-50d13ba0633e95edbfa7cf9d72109cb9",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/method-deviation-events/MDEV-50d13ba0633e95edbfa7cf9d72109cb9.json",
+    "sha256": "a4313893d096dbc9c4c4ba5bee47798c691f4054a23f624fd977937c79b7d388"
   },
   "phase": "after",
   "decision_ref": null,
   "admission_ref": {
-    "artifact_id": "TAE-ddca73098d00faf016c221f1",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/tool-admission-events/TAE-ddca73098d00faf016c221f1.json",
-    "sha256": "732692f3e875353dddc07b84298e4268b14946661af5881cbfc4ec08596bfba2"
+    "artifact_id": "TAE-9ba93cd3755c33a0a0f03098",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/tool-admission-events/TAE-9ba93cd3755c33a0a0f03098.json",
+    "sha256": "2feccc686414cb9f7eceb5192e90dc3f458035a7a2d931f07d361c72d359682b"
   },
   "result_checkpoint_ref": {
-    "artifact_id": "AEC-f9891054770b3c8385c87914",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/agent-execution-checkpoints/AEC-f9891054770b3c8385c87914.json",
-    "sha256": "dce59e187485dad752127ddd6cb65884f0b30ece3a263488d051cc5674666d0f"
+    "artifact_id": "AEC-ba5aa573f07ef6e5990a402b",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/agent-execution-checkpoints/AEC-ba5aa573f07ef6e5990a402b.json",
+    "sha256": "766db953c4efbdd8d0d1f075437c7167c87ec8fbc69d8a0bfcfc473163949e43"
   },
   "result_sha256": "9e19885efc90e8a44d2c08b78e81ea5d75ce3eec500e255fdaf585429d039fb9",
   "sitrep_ref": {
-    "artifact_id": "SITREP-56186cdf5630c1d99984b5c4d4462402",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/sitreps/SITREP-56186cdf5630c1d99984b5c4d4462402.json",
-    "sha256": "f3c92a519dd3ea81b2bf11f66a93ba4fb404893ec9d34c8263d334dd17efa0a9"
+    "artifact_id": "SITREP-5a05421efbf36901b3c703d3bb257ac0",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/sitreps/SITREP-5a05421efbf36901b3c703d3bb257ac0.json",
+    "sha256": "10a401a457cb675145a2ccdd515bfd0678695e7b62da962622a268bd028a3020"
   },
   "recorded_at": "2026-09-29T16:01:45.000Z",
   "execution_authorized": false,
   "continuation_authorized": false,
   "release_authorized": false,
   "human_final_decision_authority": "USER",
-  "id": "IDR-16a875915b3bd8b93627877a039a8dfa"
+  "id": "IDR-e0ff32857ac06cd282cf452844935466"
 }

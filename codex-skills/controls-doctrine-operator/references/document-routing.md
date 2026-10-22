@@ -207,6 +207,15 @@ tests, and legacy workflows do not gain the new guarantee retroactively.
 Use the reviewed baseline's shorter validity, never the schema-wide ceiling,
 as the operational deadline; after expiry only actual-result reporting remains.
 
+Keep actual task outputs separate from derived SITREPs and other control records.
+Whole-record JSON copies remain metadata even without a type tag or after MIME,
+whitespace or key-order changes. The report publisher reappraises current retained
+control content after its required controls run. A denied publication needs a
+fresh report ID and freshly executed controls, not recycled receipts. Run
+`node run-skill-control-evidence-fixtures.js` after changing this boundary; it
+exercises actual report admission, ordinary JSON work and publication races in
+legacy data-only waves, not method dispatch or semantic truth of arbitrary prose.
+
 ## Authority, Release, Risk
 
 | Task | Primary Docs | Executable Surface |

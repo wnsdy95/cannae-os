@@ -146,10 +146,18 @@ Completion and successful wave report publication recheck mandatory steps,
 actual result records, all required reports and drift state. The new records,
 their byte copies and whole-JSON MIME-disguised copies are control metadata,
 not work evidence.
+This includes derived legacy SITREPs without a `type` tag: the report consumer
+compares complete canonical JSON content against retained control records, not
+only byte hashes or MIME/type labels. Its cache belongs to one verified manifest
+and one binding appraisal. Publication performs a fresh appraisal after required
+controls, so a newly introduced metadata alias cannot cross the final write.
+Actual outputs must be retained separately. Whole-record equality does not prove
+the semantic authenticity of arbitrary prose, wrappers or modified data.
 
 ## Validation And Limits
 
-Run `node run-disciplined-initiative-fixtures.js`, generic validator fixtures,
+Run `node run-disciplined-initiative-fixtures.js`,
+`node run-skill-control-evidence-fixtures.js`, generic validator fixtures,
 dispatch, adoption/revision, lifecycle, routing, registry and both skill checks
 against a frozen source tree before integration. Preserve failed exploratory
 attempts and distinguish them from exact-head proof.

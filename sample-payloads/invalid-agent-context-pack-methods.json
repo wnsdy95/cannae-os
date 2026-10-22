@@ -4,7 +4,7 @@
     "schema_version": "0.1",
     "type": "AgentIntentAssignment",
     "agent_id": "agent-S2",
-    "plan_sha256": "3745d77c003a8fa60a7a7c1212a8fb45ceed9267f10d86ae97715a7df109b07f",
+    "plan_sha256": "a00fb734cd81e364bdf1c3276aa5fcd781bb4fa1d66fc502fc1fe3929c455088",
     "tree_sha256": "8b42fd3de4cb317958f4589267030a3e109dc026f34794308d5d00d6df7a5365",
     "root_intent_id": "INT-d068c23cd2f40aa0671820c7d18f8abd",
     "lineage": [
@@ -137,7 +137,7 @@
     "schema_version": "0.1",
     "type": "AgentMethodAssignment",
     "control_channel": "trusted_operator_control_plane",
-    "plan_sha256": "3745d77c003a8fa60a7a7c1212a8fb45ceed9267f10d86ae97715a7df109b07f",
+    "plan_sha256": "a00fb734cd81e364bdf1c3276aa5fcd781bb4fa1d66fc502fc1fe3929c455088",
     "baseline_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
     "baseline": {
       "agent_id": "agent-S2",
@@ -192,31 +192,31 @@
   },
   "order_assignment": {
     "adoption_ref": {
-      "artifact_id": "OAR-e0f5ec31bfe228ee17f891d33e22d0bf",
-      "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/order-adoption-records/OAR-e0f5ec31bfe228ee17f891d33e22d0bf.json",
-      "sha256": "92859d1476d7663089004f5c5b3f337e7a5fc4c36c585293d99dbadc6ab8bdf4"
+      "artifact_id": "OAR-ce76b49867ebaa96b11f44e9a144088b",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-adoption-records/OAR-ce76b49867ebaa96b11f44e9a144088b.json",
+      "sha256": "66de04b1e42d3bf00703243a279902701b460e450e740751f23a1db3942e04d6"
     },
     "proposal_ref": {
-      "artifact_id": "OAP-ff6badc58558dab9cf90d4acf0accca6",
-      "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-ff6badc58558dab9cf90d4acf0accca6.json",
-      "sha256": "b65172a097f9924c008004d90ea05671f311efc656aa0b4863bb8aaceb36b6dd"
+      "artifact_id": "OAP-a3a8c2d0b0aaab6c86f3fab4102babe2",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-a3a8c2d0b0aaab6c86f3fab4102babe2.json",
+      "sha256": "752aecbc923d9ddb0d7af221d319072fbdda39ccf1f0d3f3891283d19be9bb61"
     },
     "draft_ref": {
-      "artifact_id": "OD-8cc5bcc1ab29fe8757eaecd9de24284f",
-      "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/order-drafts/OD-8cc5bcc1ab29fe8757eaecd9de24284f.json",
-      "sha256": "54a4057b37bcadbf2895382480c08bd66d1f155a40885f96f774510d5b0ad7a8"
+      "artifact_id": "OD-0c6dd10283b6f07f7f3fe05105333086",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-drafts/OD-0c6dd10283b6f07f7f3fe05105333086.json",
+      "sha256": "0a82e0770f7c846cb1a50d82a09ff1fdb23bbbacba34a3204a0bf074656d6f26"
     },
     "backbrief_ref": {
       "artifact_id": "OBB-agent-S2",
-      "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
-      "sha256": "80f24800d166f7d35bc4a293f35a7493afbfa63f948adf08459a4449e058b053"
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+      "sha256": "3e0f2d795c4fce32099969bb4757e08c078d934b2fce5388c4ebc2a47db60315"
     },
     "rehearsal_ref": {
       "artifact_id": "ORH-ADOPTION",
-      "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/order-rehearsals/ORH-ADOPTION.json",
-      "sha256": "898cf671b5390a2a170308feb1f5d6c5261cdb023fee52c7a66560043ea39f14"
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-rehearsals/ORH-ADOPTION.json",
+      "sha256": "3f6de8284244439f7b002480748fba6f3421df8e9f81c3295816bdca5905f8a4"
     },
-    "plan_sha256": "3745d77c003a8fa60a7a7c1212a8fb45ceed9267f10d86ae97715a7df109b07f",
+    "plan_sha256": "a00fb734cd81e364bdf1c3276aa5fcd781bb4fa1d66fc502fc1fe3929c455088",
     "task_order": {
       "type": "TASK_ORDER_DRAFT",
       "id": "TASK-S2",
@@ -240,7 +240,7 @@
       "retained_user_decisions": [
         "Request quote: The user decides the target segment and any budget change."
       ],
-      "draft_binding_sha256": "8cc5bcc1ab29fe8757eaecd9de24284f3b4d65c642722551c161099659ae5dfd",
+      "draft_binding_sha256": "0c6dd10283b6f07f7f3fe0510533308617eebc7595fca724844ff1723c5a7d76",
       "execution_authorized": false
     },
     "commander_intent": {
@@ -282,17 +282,17 @@
   "classification": "internal",
   "plan_ref": {
     "artifact_id": "MWP-ADOPTION",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
-    "sha256": "b712c9676395777eb8de408712462e4bad7d798f6117a4a3847f43ce8bff65f0"
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
+    "sha256": "6e9d2f90a9f2f05e1444412065d6fa0a9717b1a1ab30997fe65235fcab26031a"
   },
   "routing_receipt_ref": {
     "artifact_id": "RR-W1-agent-S2",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/routing-receipts/RR-W1-agent-S2.json",
-    "sha256": "5aa54811d7d79bf93c0b45a277db0edf11651e2fa501f1eef1ae1f2f27d7b45f"
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/routing-receipts/RR-W1-agent-S2.json",
+    "sha256": "2e948a4d02a1f90affd373fa3e94d5d6bb060d0e7f885a86e6c80f6b2a146bc5"
   },
   "routing_preflight_ref": {
     "artifact_id": "ARP-W1",
-    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/routing-preflights/ARP-W1.json",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/routing-preflights/ARP-W1.json",
     "sha256": "2a9487315b50bc984353cd8638f33357e8fb8867a7b2e022944ef5200ea834b9"
   },
   "capability_query": "Request quote: Prepare an internal comparison of two onboarding options.",
@@ -327,18 +327,18 @@
     "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
   },
   "doctrine_state": {
-    "revision": "c6a8c351eeda79c60f26e5fd44ff713696b87aa8",
+    "revision": "67734b1258d0ca4523b4dd917b601fb2fc0c672a",
     "router_sha256": "4d191a1e8b4bc9e4a4f71ffa0c2032e885652218fa6381f108a1c272a8524181",
-    "controller_sha256": "4c430c8634312e5f1484c7c08a598a046aeb49b98062062915ea0fec7645468e"
+    "controller_sha256": "018a2ee5be00898ac2920403421a8603dee18dc69a352155dec244b1720dc06e"
   },
   "documents": [
     {
       "path": "README.md",
-      "sha256": "07dbbe4913488ca56c0b131a4f9273f8428e71d1bf4b4f7ca19e078387075599"
+      "sha256": "5f55d9343d8023723d7951a430ae612d248be5c1eb588397350cd7ae9759fb09"
     },
     {
       "path": "docs/source-map.md",
-      "sha256": "23b779e5e4774bc01f7b1c8770d2df857abe56d4a99a421cb4cfd1ed1dd139c9"
+      "sha256": "e7624698a989572f0c947883f9ff386af411a7f66644255911bfbe7f4c02eab2"
     },
     {
       "path": "docs/role-document-access-policy.md",
@@ -454,7 +454,7 @@
     },
     {
       "path": "docs/research-compendium.md",
-      "sha256": "801fe9faf7ba42013367f5fe839ad4c02f74e47117735c7d6adfb6d3576cdcad"
+      "sha256": "b94632d34fe407a9009143b9af514ac5d5a3ee2fb897c8513077050d5ba24eb3"
     },
     {
       "path": "docs/source-reliability-rubric.md",
@@ -474,7 +474,7 @@
     },
     {
       "path": "docs/method-deviation-runtime.md",
-      "sha256": "070f7276b3e1ac1b6c11fa48e90fccd79a25a0219ddb5625fc68bc12d99c9d72"
+      "sha256": "4f3c0e258ff897dc24bf1e7505664e18809271de5c07703b7e2236571c223f8f"
     }
   ],
   "validation_commands": [

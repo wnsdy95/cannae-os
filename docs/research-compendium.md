@@ -18,6 +18,15 @@ metadata and whole-JSON MIME-disguised control records as work evidence. Both
 skills now require result-bound reports before the next covered call and verify
 the actual response checkpoint instead of trusting an incident label.
 
+A subsequent probe found that an untyped derived SITREP, reformatted as a text
+deliverable, crossed the metadata filter and reached a later completion denial.
+It did not demonstrate acceptance of the whole report. The filter now compares
+complete canonical JSON against all retained control kinds, uses snapshot-local
+caches and reappraises bindings immediately before publication. Dedicated actual
+report tests preserve ordinary JSON work and verify fresh-ID retry executes new
+controls after a publication race. This is whole-record identity, not a semantic
+classifier for arbitrary claimed work.
+
 This is a partial local reference, not completion of goal 2. The full DI ruleset,
 novel method equivalence, insertion/reordering, semantic drift, all degeneration
 patterns, reviewed recovery/readiness, universal baseline rollout and protected

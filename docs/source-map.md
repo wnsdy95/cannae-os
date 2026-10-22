@@ -15,6 +15,12 @@ finite exact-input substitution and response history, not semantic effect
 equivalence, the complete DI catalog, universal rollout or production isolation.
 Verified manifest introduction history, not sorted inventory position, proves
 causal order. No new external military-source or authenticated-USER claim is made.
+Its report boundary now uses the existing verified manifest and complete
+canonical control content to reject untyped SITREP copies and reappraise before
+publication. `run-skill-control-evidence-fixtures.js` verifies real report/control
+consumption in isolated legacy data-only waves, separately from method dispatch.
+This remains local engineering synthesis, not semantic authenticity or production
+proof.
 
 The [intent continuity runtime](intent-continuity-runtime.md) implements mechanical
 plan/task/delegation preservation over the existing mission-command policy.
