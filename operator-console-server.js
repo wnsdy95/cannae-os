@@ -140,6 +140,24 @@ async function createConsole(options) {
     const result = await query(principal, { action: "inspect-decision", challenge_id: request.params.id });
     owner(request); return result;
   });
+  app.post("/api/order-decisions/:id/reconciliation/preview", { onRequest: guard,
+    schema: { params: plain({ id: uuid }), body: plain({ manifest: { type: "string", pattern: "^[a-f0-9]{64}$" } }) } }, async request => {
+    const principal = owner(request);
+    const review = await query(principal, { action: "prepare-reconciliation", action_id: request.params.id, manifest: request.body.manifest });
+    owner(request); return consent.reconciliation.prepare(request.session, review);
+  });
+  app.post("/api/reconciliations/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    reconciliation_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000)
+  }) } }, async request => {
+    const principal = owner(request);
+    const id = await consent.reconciliation.reserve(request.session, request.body);
+    try {
+      const result = await query(principal, { action: "execute-reconciliation", reconciliation_id: id });
+      owner(request); return result;
+    } catch (error) { consent.reconciliation.fail(id, error.message); throw error; }
+  });
+  app.get("/api/order-decisions/:id/reconciliations", { schema: { params: plain({ id: uuid }) } }, async request =>
+    ({ entries: consent.reconciliation.list(request.session, request.params.id), ...readOnly }));
   app.get("/api/operator-key", async request => { owner(request); return { public_key_pem: consent.publicKey(), ...readOnly }; });
   app.post("/api/invites", { onRequest: guard, config: authLimit, schema: { body: plain({ password: text(128),
     missions: { type: "array", minItems: 1, maxItems: 100, uniqueItems: true, items: { type: "string", pattern: "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" } } }) } },

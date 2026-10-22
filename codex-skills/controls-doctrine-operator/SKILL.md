@@ -74,7 +74,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 
 Read these only when needed:
 
-- For local operator login, evidence or owner decisions, read `docs/local-operator-console.md` and `docs/operator-consent-and-adoption.md`; use `scripts/serve_controls_operator.js`. Leave real setup and decisions to the human; never retain tokens or replay an interrupted approval. Use Decisions > Inspect Outcome for exact historical replay; preserve holds and expiry even if `applied`. Timeout is not exit, and inspection is not reconciliation or tool/release authority.
+- For local owner login, evidence or decisions, read `docs/local-operator-console.md`, `docs/operator-consent-and-adoption.md` and, for exact hold discharge, `docs/operator-terminal-reconciliation.md`; use `scripts/serve_controls_operator.js`. Leave real setup/password decisions to the human. Inspect first, then require fresh terminal consent; never replay an old nonce, delete a hold or regenerate missing decisions. Preserve failure/expiry; terminal records are not tool/release authority or campaign/gateway settlement.
 
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
 - `docs/intent-continuity-runtime.md`: require context v0.4 and exact root/task/delegation commitments before tool authority. Legacy contexts remain historical; settle their admitted results and prepare a newly reviewed wave instead of rewriting them.

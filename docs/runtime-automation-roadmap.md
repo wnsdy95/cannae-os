@@ -139,8 +139,10 @@ controller consumption. The local worker queue now confirms actual exit before
 response, next-job admission or shutdown ownership release, but does not infer
 durable effects from that exit. Owner-only outcome inspection now replays the
 exact retained consent/decision/controller chain without writes or hold
-discharge. Broader tool-action approval, interrupted-action
-reconciliation and protected production operation remain open.
+discharge. The separate [local terminal ceremony](operator-terminal-reconciliation.md)
+requires fresh owner consent, old-decision cancellation or recorded-result
+acknowledgment, signed receipts and guarded projection repair. Broader
+tool-action approval, operational COP and protected production operation remain open.
 
 Goal:
 

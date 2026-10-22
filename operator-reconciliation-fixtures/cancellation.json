@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1",
+  "type": "DecisionLogEntry",
+  "id": "DL-OPERATOR-CANCEL-cf270d3a-654e-4f01-9e79-bd491085a07f",
+  "mission_id": "MIS-ADOPTION",
+  "decided_at": "2026-10-22T01:00:00.000Z",
+  "decision_maker": "USER",
+  "decision_type": "scope",
+  "question": "Cancel preexisting unconsumed decisions for order OAP-8d888f08230f89ec3338aff5b4d65ad9",
+  "options_considered": [
+    "cancel-interrupted-order:0ec311d1e7ad057be9e17f8ae0a81d3db14f962ada989ce2e068240f34b3e18d"
+  ],
+  "chosen_option": "cancel-interrupted-order:0ec311d1e7ad057be9e17f8ae0a81d3db14f962ada989ce2e068240f34b3e18d",
+  "rationale": "Synthetic terminal cancellation fixture; not actual USER consent.",
+  "authority_basis": {
+    "basis_type": "retained_authority",
+    "reference": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+    "summary": "Authenticated local owner 57c15826-c87b-4eb9-a600-935c9b82cdd2; terminal consent ORA-cf270d3a-654e-4f01-9e79-bd491085a07f."
+  },
+  "affected_artifacts": [
+    "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json"
+  ],
+  "review_trigger": "Any future order requires new exact review; original consent is not renewed.",
+  "status": "complete"
+}

@@ -1,5 +1,12 @@
 # Sample Payloads
 
+The valid/invalid `operator-reconciliation-authorization` and
+`operator-reconciliation-record` pairs are synthetic non-authorizing terminal
+audit metadata. `operator-reconciliation-fixtures/` holds their public key and
+exact cancellation payload, never a private key. They illustrate cleanup after
+old consent expiry without renewing it. They are not an admitted artifact
+history, actual USER consent, tool permission or a hold-discharge command.
+
 The valid/invalid `operator-consent-record` samples cover local authenticated
 order-decision audit metadata, not real USER consent. The public fixture key and
 matching decision payload are in `operator-consent-fixtures/`; no private signing

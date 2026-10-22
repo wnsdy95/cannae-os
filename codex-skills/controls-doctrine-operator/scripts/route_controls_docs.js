@@ -8,9 +8,9 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "local-operator-console",
-    keywords: ["operator consent", "operator-consent", "decision outcome", "inspect outcome", "authenticated order review", "operator console", "local-operator-console", "operator worker", "worker exit", "interrupted owner decision", "evidence api", "viewer invitation", "serve_controls_operator"],
-    docs: ["docs/local-operator-console.md", "docs/operator-consent-and-adoption.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
-    commands: ["node run-operator-console-fixtures.js", "node run-operator-consent-fixtures.js", "node run-operator-console-worker-fixtures.js", "node run-operator-consent-outcome-fixtures.js"]
+    keywords: ["operator consent", "operator-consent", "operator-reconciliation", "operator terminal", "terminal order reconciliation", "terminal review", "review terminal outcome", "cancel interrupted order", "decision outcome", "inspect outcome", "authenticated order review", "operator console", "local-operator-console", "operator worker", "worker exit", "interrupted owner decision", "evidence api", "viewer invitation", "serve_controls_operator"],
+    docs: ["docs/local-operator-console.md", "docs/operator-consent-and-adoption.md", "docs/operator-terminal-reconciliation.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
+    commands: ["node run-operator-console-fixtures.js", "node run-operator-consent-fixtures.js", "node run-operator-console-worker-fixtures.js", "node run-operator-consent-outcome-fixtures.js", "node run-operator-reconciliation-fixtures.js"]
   },
   {
     id: "orientation",
@@ -486,7 +486,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
-  { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "serve_controls_operator"] },
+  { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "check_controls_intent"] },
   {
     id: "gateway-effect-review",

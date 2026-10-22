@@ -1,7 +1,7 @@
 "use strict";
 const $ = selector => document.querySelector(selector);
 let session, csrf, authMode = "login", tab = "evidence", snapshot, cursor, selectedUser;
-let selectedProposal, decisionPreview, selectedAction;
+let selectedProposal, decisionPreview, selectedAction, inspectedOutcome, terminalPreview;
 let previewGeneration = 0;
 const fragment = new URLSearchParams(location.hash.slice(1));
 const suppliedToken = fragment.get("setup") || fragment.get("invite");
@@ -116,10 +116,22 @@ function clearDecision() {
   previewGeneration++;
   decisionPreview = null; selectedProposal = null;
   selectedAction = null; $("#inspect-outcome").hidden = true;
+  inspectedOutcome = null; $("#review-terminal").hidden = true; resetTerminal();
   $("#decision-preview-form").hidden = true; $("#decision-preview-form").reset();
   $("#rehearsal-select").replaceChildren(new Option("None", "none"));
   $("#decision-confirmation").hidden = true; $("#decision-commit-form").reset();
   $("#consent-content").textContent = ""; $("#decision-status").textContent = "";
+}
+function resetTerminal() {
+  terminalPreview = null; $("#terminal-confirmation").hidden = true; $("#terminal-commit-form").reset(); $("#terminal-content").textContent = "";
+}
+function outcomeMetadata(outcome) {
+  $("#detail-meta").replaceChildren();
+  for (const [label, value] of [["Action state", outcome.action_state], ["Hold", outcome.hold_preserved ? "Active" : "None"],
+    ["Original consent", outcome.original_consent_freshness], ["Consent expiry", displayTime(outcome.original_consent_expires_at)],
+    ["Manifest", String(outcome.observed_manifest.revision)]]) {
+    const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = label; dd.textContent = value; $("#detail-meta").append(dt, dd);
+  }
 }
 async function loadDecisions() {
   const data = await api("/api/order-decisions"), body = $("#decisions"); body.replaceChildren();
@@ -130,30 +142,82 @@ async function loadDecisions() {
       clearDecision(); const generation = previewGeneration;
       try {
         const current = await api(`/api/order-decisions/${entry.id}`);
+        const reviews = await api(`/api/order-decisions/${entry.id}/reconciliations`);
         if (previewGeneration !== generation || tab !== "decisions" || session?.user?.role !== "owner") return;
         error("#detail-error");
         selectedAction = entry.id; $("#inspect-outcome").hidden = false;
         $("#detail-title").textContent = current.state; $("#detail-meta").replaceChildren();
-        $("#detail-content").textContent = JSON.stringify(current, null, 2); $("#detail").showModal();
+        $("#detail-content").textContent = JSON.stringify({ ...current, terminal_reviews: reviews.entries }, null, 2); $("#detail").showModal();
       } catch (failure) { error("#workspace-error", failure); }
     }; name.append(button);
     cell(row, entry.proposal_id); cell(row, entry.disposition); cell(row, entry.state); cell(row, displayTime(entry.created_at));
   }
 }
 $("#inspect-outcome").onclick = async () => {
-  const action = selectedAction, generation = previewGeneration, button = $("#inspect-outcome");
+  const action = selectedAction, generation = ++previewGeneration, button = $("#inspect-outcome");
   if (!action) return;
+  resetTerminal(); inspectedOutcome = null; $("#review-terminal").hidden = true;
+  $("#decision-status").textContent = ""; $("#detail-title").textContent = "Inspecting Outcome";
+  $("#detail-content").textContent = ""; $("#detail-meta").replaceChildren();
   button.disabled = true; error("#detail-error");
   try {
     const outcome = await api(`/api/order-decisions/${action}/inspect`, {});
     if (selectedAction !== action || previewGeneration !== generation) return;
     $("#detail-title").textContent = { applied: "Recorded Outcome", not_submitted: "Not Submitted", execution_unconfirmed: "Execution Unconfirmed",
       unconsumed_decision: "Decision Not Consumed", partial_consent: "Partial Consent", no_adoption_recorded: "No Adoption Recorded",
-      conflicting: "Conflicting Records", unverifiable: "Outcome Unverifiable" }[outcome.outcome] || "Outcome Unverifiable";
+      conflicting: "Conflicting Records", unverifiable: "Outcome Unverifiable", cancelled: "Original Decision Cancelled" }[outcome.outcome] || "Outcome Unverifiable";
     $("#detail-content").textContent = JSON.stringify(outcome, null, 2);
+    outcomeMetadata(outcome); inspectedOutcome = outcome;
+    $("#review-terminal").hidden = !outcome.hold_preserved || !["applied", "unconsumed_decision", "partial_consent", "no_adoption_recorded"].includes(outcome.outcome);
   } catch (failure) {
-    if (selectedAction === action && previewGeneration === generation) error("#detail-error", failure);
+    if (selectedAction === action && previewGeneration === generation) { $("#detail-title").textContent = "Outcome Unavailable"; error("#detail-error", failure); }
   } finally { button.disabled = false; }
+};
+$("#review-terminal").onclick = async () => {
+  const action = selectedAction, outcome = inspectedOutcome, generation = ++previewGeneration, button = $("#review-terminal");
+  if (!action || !outcome) return;
+  resetTerminal(); button.disabled = true; error("#detail-error");
+  try {
+    const prepared = await api(`/api/order-decisions/${action}/reconciliation/preview`, { manifest: outcome.observed_manifest.sha256 });
+    if (selectedAction !== action || previewGeneration !== generation) return;
+    terminalPreview = prepared;
+    const title = { acknowledge_recorded: "Acknowledge Recorded Result", cancel_unconsumed: "Cancel Unconsumed Order",
+      acknowledge_prior_cancellation: "Acknowledge Prior Cancellation" }[prepared.review.resolution];
+    $("#terminal-title").textContent = title; $("#commit-terminal").textContent = title;
+    $("#terminal-content").textContent = JSON.stringify(prepared.review, null, 2);
+    $("#terminal-expiry").textContent = `Review expires ${displayTime(prepared.expires_at)}`;
+    $("#terminal-confirmation").hidden = false;
+    $("#detail").scrollTop = $("#terminal-confirmation").offsetTop - $("#detail header").offsetHeight - 20;
+  } catch (failure) { if (selectedAction === action && previewGeneration === generation) error("#detail-error", failure); }
+  finally { button.disabled = false; }
+};
+$("#terminal-commit-form").onsubmit = event => {
+  event.preventDefault(); const form = event.currentTarget;
+  void busy(form, async () => {
+    const action = selectedAction, generation = previewGeneration, prepared = terminalPreview;
+    if (!prepared || !action) throw new Error("CONSOLE_RECONCILIATION_PREVIEW_REQUIRED");
+    terminalPreview = null;
+    $("#inspect-outcome").disabled = true; $("#review-terminal").disabled = true;
+    try {
+      const result = await api("/api/reconciliations/commit", { reconciliation_id: prepared.reconciliation_id, nonce: prepared.nonce,
+        password: form.elements.password.value, rationale: form.elements.rationale.value });
+      if (selectedAction !== action || previewGeneration !== generation) return;
+      clearDecision(); selectedAction = action; $("#inspect-outcome").hidden = false;
+      $("#detail-title").textContent = result.terminal_state === "cancelled" ? "Original Decision Cancelled" : "Recorded Outcome Acknowledged";
+      $("#decision-status").textContent = result.terminal_state;
+      $("#detail-content").textContent = JSON.stringify(result, null, 2); $("#detail-meta").replaceChildren(); $("#detail").scrollTop = 0;
+      if (tab === "decisions") await loadDecisions();
+    } catch (failure) {
+      if (selectedAction === action && previewGeneration === generation) {
+        resetTerminal(); const current = await api(`/api/order-decisions/${action}`);
+        if (selectedAction === action && previewGeneration === generation) $("#decision-status").textContent = current.state;
+        throw failure;
+      }
+    } finally {
+      form.elements.password.value = ""; form.elements.rationale.value = "";
+      $("#inspect-outcome").disabled = false; $("#review-terminal").disabled = false;
+    }
+  }, "#detail-error");
 };
 async function loadUsers() {
   const data = await api("/api/users"), body = $("#users"); body.replaceChildren();

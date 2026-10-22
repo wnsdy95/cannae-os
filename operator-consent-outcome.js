@@ -35,6 +35,7 @@ function inspectDecisionOutcome(configuration, id) {
       proposal_ref: preview.request.proposal_ref, observed_manifest: observed, inspected_at: now,
       action_row_sha256: digest(row), source_state_sha256: configuration.sourceSha256, repository_state_sha256: repositoryState,
       outcome: "unverifiable", reasons: [], consent_ref: { ...NONE }, decision_ref: { ...NONE }, adoption_ref: { ...NONE },
+      cancellation_ref: { ...NONE }, reconciliation_ref: { ...NONE },
       adoption_status: "none", original_consent_expires_at: new Date(row.expires).toISOString(),
       original_consent_freshness: row.expires > Date.now() ? "current" : "expired", hold_preserved: ["executing", "reconciliation_required"].includes(row.state),
       inspection_only: true, mutation_authorized: false, execution_authorized: false, continuation_authorized: false, release_authorized: false };
@@ -85,20 +86,35 @@ function inspectDecisionOutcome(configuration, id) {
         if (same(retained.payload.request.proposal_ref, preview.request.proposal_ref) || retained.payload.status === "adopted") related.push(retained);
       }
       const exact = related.filter(item => decisionEntry && same(item.payload.request, { ...preview.request, decision_ref: reference(decisionEntry) }));
-      if (related.length) {
+      if (row.state === "cancelled") {
+        requireThat(exact.length === 0, "CONSOLE_RECONCILIATION_PROJECTION_INVALID", 409);
+        result.outcome = "cancelled";
+      } else if (related.length) {
         if (related.length !== 1 || exact.length !== 1) {
-          result.outcome = "conflicting"; result.reasons = ["CONSOLE_OUTCOME_OTHER_ORDER_RECORDED"];
+          result.outcome = "conflicting"; result.hold_preserved = true; result.reasons = ["CONSOLE_OUTCOME_OTHER_ORDER_RECORDED"];
         } else {
           requireThat(consent && decision, "CONSOLE_OUTCOME_INCOMPLETE_AUDIT_CHAIN", 409);
           result.outcome = "applied"; result.adoption_status = exact[0].payload.status; result.adoption_ref = exact[0].ref;
         }
       } else {
-        requireThat(!["applied", "cancelled"].includes(row.state), "CONSOLE_OUTCOME_PROJECTION_WITHOUT_RECORD", 409);
+        requireThat(row.state !== "applied", "CONSOLE_OUTCOME_PROJECTION_WITHOUT_RECORD", 409);
         result.outcome = row.state === "executing" ? "execution_unconfirmed" : decision ? "unconsumed_decision" :
           consent ? "partial_consent" : ["pending", "invalidated"].includes(row.state) ? "not_submitted" : "no_adoption_recorded";
       }
+      if (row.state === "cancelled" || JSON.parse(row.result || "null")?.reconciliation_ref) {
+        const proof = require("./operator-reconciliation-proof").terminalProjectionProof(store, row, db,
+          crypto.createPublicKey(signingKey).export({ type: "spki", format: "pem" }));
+        requireThat((row.state === "cancelled" && result.outcome === "cancelled") || (row.state === "applied" && result.outcome === "applied"),
+          "CONSOLE_RECONCILIATION_PROJECTION_INVALID", 409);
+        for (const field of ["consent_ref", "decision_ref", "adoption_ref"]) {
+          requireThat(same(proof.payload.authorization.subject[field], NONE) || same(proof.payload.authorization.subject[field], result[field]),
+            "CONSOLE_RECONCILIATION_PROJECTION_INVALID", 409);
+        }
+        result.cancellation_ref = proof.payload.cancellation_ref; result.reconciliation_ref = proof.ref;
+      }
     } catch (error) {
       result.outcome = "unverifiable";
+      result.hold_preserved = true;
       result.reasons = [...new Set(error.message.match(/\b(?:CONSOLE|ORDER|OPERATOR)_[A-Z_]+\b/g) || [])].slice(0, 8);
       if (!result.reasons.length) result.reasons = ["CONSOLE_OUTCOME_UNVERIFIABLE"];
     }

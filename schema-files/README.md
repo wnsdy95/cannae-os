@@ -1,5 +1,13 @@
 # Schema Files
 
+`operator-reconciliation-authorization.schema.json` binds one fresh owner
+terminal ceremony to an exact held action and verified history. The separate
+`operator-reconciliation-record.schema.json` binds its signed cancellation or
+recorded-result acknowledgment. Both are non-authorizing metadata, including
+nested authorizations; schema validity cannot clear a hold. Follow the
+[terminal protocol](../docs/operator-terminal-reconciliation.md) and verify
+signatures, private reservation and actual history separately.
+
 `operator-consent-record.schema.json` is signed non-authorizing local owner
 consent for one exact order decision. Validate its structure and bindings with
 the generic validator; verify its signature with a separately pinned public

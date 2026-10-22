@@ -26,16 +26,21 @@ function consentIssues(value, type) {
 function verifyConsent(record, trustedPublicKey, decision) {
   const validation = require("./validator-cli-prototype/validate").validatePayload(record, "operator-consent-record");
   if (!validation.valid) throw new Error("OPERATOR_CONSENT_SCHEMA_INVALID");
-  const publicKey = crypto.createPublicKey(trustedPublicKey);
-  const signature = strictBase64(record.signature.value);
-  if (publicKey.asymmetricKeyType !== "ed25519" || record.signature.key_sha256 !== keyDigest(publicKey) ||
-      !signature || signature.length !== 64 || !crypto.verify(null, canonicalJsonBytes(unsigned(record)), publicKey, signature)) {
+  if (!validOperatorSignature(record, trustedPublicKey)) {
     throw new Error("OPERATOR_CONSENT_SIGNATURE_INVALID");
   }
   if (decision && (decision.id !== record.decision_log_id || digest(decision) !== record.decision_payload_sha256)) {
     throw new Error("OPERATOR_CONSENT_DECISION_SUBSTITUTED");
   }
   return { valid: true, human_final_decision_authority: "USER", execution_authorized: false, release_authorized: false };
+}
+function validOperatorSignature(record, trustedPublicKey) {
+  try {
+    const publicKey = crypto.createPublicKey(trustedPublicKey), signature = strictBase64(record.signature.value);
+    return publicKey.asymmetricKeyType === "ed25519" && record.signature.algorithm === "Ed25519" &&
+      record.signature.key_sha256 === keyDigest(publicKey) && !!signature && signature.length === 64 &&
+      crypto.verify(null, canonicalJsonBytes(unsigned(record)), publicKey, signature);
+  } catch { return false; }
 }
 function decisionForAction(row, preview, now) {
   return { schema_version: "0.1", type: "DecisionLogEntry", id: `DL-OPERATOR-${row.id}`, mission_id: preview.request.mission_id,
@@ -47,4 +52,4 @@ function decisionForAction(row, preview, now) {
       ...(preview.request.rehearsal_ref.artifact_id === "none" ? [] : [preview.request.rehearsal_ref])].map(item => item.relative_path),
     review_trigger: "Any changed plan, evidence or scope requires a new authenticated review.", status: "complete" };
 }
-module.exports = { consentIssues, digest, keyDigest, signConsent, verifyConsent, decisionForAction };
+module.exports = { consentIssues, digest, keyDigest, signConsent, signOperatorRecord: signConsent, validOperatorSignature, verifyConsent, decisionForAction };
