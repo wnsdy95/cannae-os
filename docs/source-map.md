@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The local console's shared browser response fencing is local engineering
+synthesis. `operator-console/app.js` and
+`operator-console-fixtures/session-browser-check.js` bind rendering to current
+session/principal/view/request state and test delayed real authenticated bodies.
+They do not strengthen provider identity or replace server RBAC/consent. The
+existing login rate limit remains active during browser tests.
+
 The [operational COP](operational-cop.md) is local engineering synthesis over
 the verified manifest, historical routing/context/terminal replay, dispatch and
 existing authenticated evidence APIs. Its snapshot schema, negative samples,

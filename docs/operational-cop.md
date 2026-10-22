@@ -1,5 +1,12 @@
 # Operational COP
 
+The shared console also fences delayed evidence/account/activity/decision and
+invitation responses by session, principal, view and request generation. See
+[browser response isolation](local-operator-console.md#accounts-and-sessions) and
+the [session browser checks](../operator-console-fixtures/session-browser-check.js).
+Discarded UI responses are not cancelled controller work; inspect their owning
+decision record and never replay a write to reconstruct the view.
+
 ## Scope
 
 The authenticated console's Operations view derives a restricted, read-only

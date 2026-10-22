@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Fence delayed console reads and mutation responses by session, principal, view and request generation. Clear hidden evidence, account/activity/decision rows, previews and invitation links on identity changes; ignore old-session 401 and reversed selections. Reproduce the owner-to-viewer stale-list counterexample and add nine real-browser response-order regressions without disabling authentication throttles. Both skills require fresh principal-bound reads and forbid replaying discarded approval writes. Previously copied data, broader approvals and protected operation remain outside this boundary.
+
 - Add a local authenticated Operations candidate over actual verified wave/context/terminal and dispatch history. Preserve mission-bounded access, role display filters without hidden critical alerts, finite snapshots, stale/future activity, pending results/issuance and execution obligations. Reads never recover or grant authority, and COP copies remain metadata rather than work. Both skills require full permitted attention and fresh manifest inspection. Complete reporting thresholds, CoS decisions, broader COP blocks and all eight outcomes remain open.
 
 - Reappraise repository-wide gateway and unknown-effect holds before the generic issuance publication conflict, including obligations arriving in another wave. Preserve the existing exact denial/no-grant regression. An optional exact gateway fixture filter rejects unknown/empty selections; filtered checks are not full-suite acceptance. Both skills require cross-wave hold inspection.

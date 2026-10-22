@@ -69,6 +69,22 @@ existing sessions. Long evidence reads recheck the account before response.
 Logout destroys the session. Rate limits, strict JSON bodies, exact Host/Origin,
 session-bound CSRF, SameSite/HttpOnly cookies and restrictive CSP are mandatory.
 
+Browser responses also bind the current session epoch, authenticated principal,
+view and per-surface request sequence. Logout/session replacement clears hidden
+tables, details, approval previews and invitation links before further display.
+Late reads, old-session 401 errors and obsolete mutation responses cannot paint
+the new workspace; reversed filter/detail responses cannot replace a newer
+selection. Form completion and Operations refresh state belong to their exact
+request. New authentication waits for a fresh session CSRF value. These local
+display guards neither revoke previously copied information nor replace server
+authorization, nonce checks or retained unknown-outcome holds. Never replay a
+mutation because its old response was intentionally discarded.
+
+Run the [session browser regressions](../operator-console-fixtures/session-browser-check.js)
+with the existing browser, consent/reconciliation, HTTP and worker suites. The
+tests use temporary users and real authenticated response bodies; they wait for
+the unchanged login throttle rather than bypassing it.
+
 Authentication state uses a private owner-UID directory and single-link private
 SQLite files. Symlink traversal and repository-contained state are denied.
 The store is bound to the exact repository identity and configured artifact

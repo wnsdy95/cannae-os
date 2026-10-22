@@ -59,14 +59,15 @@ async function main() {
     await page.getByRole("button", { name: "Close", exact: true }).click();
     results.push("390px mobile navigation, scoped board and evidence dialog fit the viewport");
     const retained = await page.evaluate(async () => (await fetch("/api/operations")).json());
-    let entered, release;
-    const intercepted = new Promise(resolve => { entered = resolve; }), paused = new Promise(resolve => { release = resolve; });
+    let entered, release, finished;
+    const intercepted = new Promise(resolve => { entered = resolve; }), paused = new Promise(resolve => { release = resolve; }), fulfilled = new Promise(resolve => { finished = resolve; });
     await page.route("**/api/operations?*", async route => {
-      entered(); await paused; await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(retained) });
+      entered(); await paused; await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(retained) }); finished();
     });
     await page.getByRole("button", { name: "Refresh", exact: true }).click(); await intercepted;
     await page.getByRole("button", { name: "Sign out", exact: true }).click(); await page.locator("#auth").waitFor({ state: "visible" });
     release();
+    await fulfilled;
     await page.waitForFunction(() => !operationsPending);
     await page.unroute("**/api/operations?*");
     await page.waitForFunction(() => document.querySelector("#operations-alerts").children.length === 0 && document.querySelector("#operations-waves").children.length === 0);
