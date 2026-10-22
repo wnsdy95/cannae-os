@@ -230,6 +230,11 @@ already-admitted results and explicitly revoke unused authority; never renew
 bindings or replay work to hide the denial.
 Diagnose dispatch denials by their exact reason code; changed prose is not a
 different authority state or permission to retry with new bindings.
+Require full supervisor, gateway, intent, channel and lifecycle regressions
+after changing issuance. Preserve specific stop/failure reasons and legacy
+result settlement separately from new authority. When a stricter guard rejects
+earlier, prove its exact denial and absence of publications; do not weaken the
+guard or broaden an expected-error regex to simulate the old unsafe sequence.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

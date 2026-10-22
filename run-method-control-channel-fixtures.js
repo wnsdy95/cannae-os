@@ -129,24 +129,17 @@ async function main() {
 
   const late = s.environment({ enroll: false });
   try {
+    assert.throws(() => s.dispatch.issueLease(late.options, late.policy.id,
+      { sessionId: late.actor.sessionId, providerAgentId: late.actor.providerAgentId }), /DISPATCH_ISSUANCE_CHANNEL_OBSERVATION_REQUIRED/);
+    assert.equal(count(late, "dispatch-lease-issuance-requests"), 0);
+    assert.equal(count(late, "agent-dispatch-leases"), 0);
+    s.broker.observeSession(late.privateFile, late.options, late.actor, { source: "startup" });
     late.issued = s.dispatch.issueLease(late.options, late.policy.id,
       { sessionId: late.actor.sessionId, providerAgentId: late.actor.providerAgentId });
     late.leaseId = late.issued.lease_ref.artifact_id;
-    const observation = s.broker.observeSession(late.privateFile, late.options, late.actor, { source: "startup" });
-    assert.throws(() => s.broker.enroll(late.options, late.leaseId, late.privateFile), /METHOD_CONTROL_OBSERVED_SESSION_REQUIRED/);
-    const slot = s.broker.inspectLaunch(late.privateFile).slot;
-    const { schema_version, type, id, ...body } = slot.payload;
-    const forged = s.contract.identified("MethodControlEnrollment", { ...body, launch_slot_ref: slot.ref,
-      session_observation_ref: observation.session_observation_ref, lease_ref: late.issued.lease_ref,
-      session_binding: { session_id: late.actor.sessionId, provider_agent_id: late.actor.providerAgentId }, recorded_at: new Date().toISOString() });
-    assert.equal(require("./validator-cli-prototype/validate").validatePayload(forged, "method-control-enrollment").valid, true);
-    originalWrite({ repositoryPath: late.options.repository, artifactRoot: late.options.artifactRoot,
-      missionId: late.actor.missionId, waveId: late.actor.waveId, kind: "method-control-enrollments", artifactId: forged.id,
-      payload: forged, createdAt: forged.recorded_at });
-    assert.throws(() => s.dispatch.admitToolRequest(late.options, late.actor, { hook_event_name: "PreToolUse", tool_name: "Read",
-      tool_use_id: "forged-lineage", tool_input: s.inputs.planned }), /METHOD_CONTROL_SESSION_BINDING_INVALID/);
+    s.broker.enroll(late.options, late.leaseId, late.privateFile);
     assert.equal(late.readCount, 0); assert.equal(count(late, "tool-admission-events"), 0);
-    pass("a schema-valid raw enrollment with retrospective startup cannot bypass the actual task gate");
+    pass("unobserved startup cannot freeze a lease, while a later fresh observed issuance can enroll without executing work");
   } finally { await s.cleanup(late); }
   console.log(JSON.stringify({ total: passed, passed, failed: 0,
     scope: "Actual official SDK stdio legacy/modern transport and dispatch consumers with synthetic Codex/Claude native hook envelopes. No native agent-client/model execution, provider startup attestation, semantic mission completion or production claim." }, null, 2));

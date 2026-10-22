@@ -5,8 +5,8 @@
   "wave_id": "W1",
   "agent_id": "runtime-agent",
   "request_ref": {
-    "artifact_id": "DLI-1685577267644a117aa44399b4210187a68232e7",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-1685577267644a117aa44399b4210187a68232e7.json",
+    "artifact_id": "DLI-5ef545d17aa28ec14fcd03a54b31067f8a84bf31",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-5ef545d17aa28ec14fcd03a54b31067f8a84bf31.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
   "outcome": "committed",
@@ -31,5 +31,5 @@
   "continuation_authorized": false,
   "release_authorized": false,
   "human_final_decision_authority": "USER",
-  "id": "DLI-456af440b8866953eada9073d114b567533f1651"
+  "id": "DLI-8dac8838652846bc298095642fbc10db72f8509e"
 }

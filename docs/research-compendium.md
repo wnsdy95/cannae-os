@@ -2,6 +2,14 @@
 
 ## Local Issuance Transactions (2026-10-23)
 
+Full consumer integration distinguishes historical replay from current grants:
+mandatory new-context rules must not prevent neutral settlement of an already
+admitted legacy result. Resume/publication retain specific terminal, stop and
+reconciled-failure holds before generic conflicts. Stronger early rejection of
+unobserved startup or unknown effects is tested for no partial publications,
+not relaxed to reproduce an obsolete unsafe sequence. These checks supplement,
+not replace, full exact-source CI and the wider unfinished program.
+
 A reproduced core resume failure could retain predecessor supersession without
 its successor. Work stayed denied, but the original input was not retained for
 exact recovery. The [issuance protocol](dispatch-issuance-recovery.md) now freezes
