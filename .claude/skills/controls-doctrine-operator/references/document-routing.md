@@ -200,6 +200,10 @@ not a prefix-wide MCP allowlist. Keep private state outside the target and model
 context. A lost response holds work; only actual retained metadata may be
 reconciled. Never renew authority or rerun a task to repair delivery. SDK and
 synthetic-hook tests do not attest actual native client startup.
+Keep raw private-file/parser diagnostics on the trusted operator side; agents
+receive fixed non-secret error codes, never private contents or paths. In-place
+broker re-enrollment after resume is not implemented: settle/revoke the old
+lineage and obtain a newly reviewed successor wave instead of reusing its file.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

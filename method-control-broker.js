@@ -38,7 +38,12 @@ function descriptor(privateFile, provider, serverName, source) {
     provider_startup_verified: false };
 }
 function inspectLaunch(privateFile, optionsOverride = {}, allowExpired = false) {
-  const secret = privateState.read(privateFile);
+  let secret;
+  try { secret = privateState.read(privateFile); }
+  catch (error) {
+    if (/^METHOD_CONTROL_[A-Z_]+$/.test(error.message)) throw error;
+    throw new Error("METHOD_CONTROL_PRIVATE_UNAVAILABLE");
+  }
   const options = { repository: secret.repository, artifactRoot: secret.artifact_root, ...optionsOverride };
   need(fs.realpathSync(options.repository) === fs.realpathSync(secret.repository) &&
     path.resolve(options.artifactRoot) === path.resolve(secret.artifact_root), "METHOD_CONTROL_REPOSITORY_MISMATCH");

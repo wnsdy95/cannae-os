@@ -75,6 +75,10 @@ expiry. A manually issued lease or a control-tool prefix does not replace that
 chain. Do not invent the provider session ID before startup, share a slot across
 agents, or replay `SessionStart` with a new identity. Resume/fork/clear are not
 initial enrollment and do not rotate, renew or rebind it automatically.
+In-place re-enrollment of a resumed broker-enabled lease is not yet implemented.
+Settle delivery/results and revoke or otherwise terminate the prior lineage,
+then obtain a newly reviewed successor wave; do not issue a resumed lease and
+treat the old enrollment as authority for it.
 
 No global client configuration is silently modified. Codex and Claude maintain
 different configuration formats; a launch descriptor is not evidence that a
@@ -135,6 +139,10 @@ the lost callback. This is not a USER approval or completion of a failed task.
 An absent receipt, expired request, substituted state or unknown partial outcome
 remains a hold, not an invented success. Existing admitted task callbacks and revocation
 remain available; the metadata channel must not prevent recording real effects.
+Private-file and parser failures return fixed non-secret codes to the agent.
+Inspect private state only through the trusted operator; never paste a raw
+parse/filesystem exception or private contents into the agent's context to debug
+an outage.
 
 ## Evidence And Limits
 

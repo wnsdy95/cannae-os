@@ -7,7 +7,9 @@ These examples are structural, not manifest-backed native execution evidence.
 
 `run-method-control-private-fixtures.js` checks exclusive owner-only external
 state, one-way binding, no-create reads, link rejection and strict operator flags
-on a disposable POSIX directory. It does not prove protected key custody.
+on a disposable POSIX directory. Actual hook subprocesses also reject missing
+and malformed private state without returning its path or synthetic sentinel.
+This does not prove protected key custody.
 
 `run-method-control-channel-fixtures.js` uses the actual pinned official SDK
 client and child server over legacy and pinned-modern stdio. Synthetic native
