@@ -1,5 +1,11 @@
 # Validator CLI Prototype
 
+Intent continuity validates complete plan/task/delegation bindings and context
+v0.4 assignments through the shared contract. Commander intent, delegation,
+projection and all context versions are non-authorizing metadata. The actual
+lifecycle and dispatch consumers additionally replay exact retained scope; see
+[intent continuity](../docs/intent-continuity-runtime.md).
+
 This is a dependency-free Node.js prototype for validating the military-style LLM runtime payloads.
 
 It performs two layers of checks:

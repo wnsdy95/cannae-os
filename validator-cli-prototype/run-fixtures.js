@@ -11,6 +11,45 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...[
+    ["commander-intent", "commander-intent", "INTENT_LOCAL_IDENTITY_INVALID"],
+    ["intent-delegation-event", "intent-delegation-event", "INTENT_DELEGATION_BINDING_INVALID"],
+    ["mission-wave-plan-intent", "mission-wave-plan", "INTENT_INHERITANCE_LOST"],
+    ["agent-context-pack-intent", "agent-context-pack", "MISSING_REQUIRED"],
+    ["intent-continuity-projection", "intent-continuity-projection", "CONST_MISMATCH"]
+  ].flatMap(([name, type, invalidCode]) => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} ${name}`, file: `sample-payloads/${prefix}-${name}.json`, type,
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: prefix === "valid" && type === "mission-wave-plan",
+    requiredCodes: prefix === "valid" ? [] : [invalidCode]
+  }))),
+  { name: "legacy context metadata is not execution authority", file: "sample-payloads/valid-agent-context-pack.json", type: "agent-context-pack",
+    exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  ...["missing-intent", "missing-edge", "partial-edge", "changed-task", "changed-parent", "null-object", "extra-boundary", "contradictory-projection"].map(mutation => ({
+    name: `intent rejects ${mutation}`, file: mutation === "contradictory-projection"
+      ? "sample-payloads/valid-intent-continuity-projection.json" : "sample-payloads/valid-agent-context-pack-intent.json",
+    type: mutation === "contradictory-projection" ? "intent-continuity-projection" : "agent-context-pack",
+    exitCode: 1, expectedCanExecute: false,
+    requiredCodes: [{ "missing-intent": "MISSING_REQUIRED", "missing-edge": "MIN_ITEMS", "partial-edge": "INTENT_CONTEXT_INHERITANCE_INVALID", "changed-task": "INTENT_CONTEXT_LINEAGE_INVALID",
+      "changed-parent": "INTENT_CONTEXT_INHERITANCE_INVALID", "null-object": "ONE_OF_MISMATCH", "extra-boundary": "ADDITIONAL_PROPERTY",
+      "contradictory-projection": "INTENT_PROJECTION_STATUS_INVALID" }[mutation]],
+    mutate(value) {
+      if (mutation === "contradictory-projection") { value.status = "blocked"; return; }
+      if (mutation === "partial-edge") {
+        const support = require("../intent-continuity-fixtures/support");
+        const plan = support.nested(support.fixturePlan());
+        Object.assign(value, support.context(plan, plan.agents.at(-1)));
+        value.intent_assignment.delegations.pop();
+        return;
+      }
+      const assignment = value.intent_assignment;
+      if (mutation === "missing-intent") delete value.intent_assignment;
+      if (mutation === "missing-edge") assignment.delegations = [];
+      if (mutation === "changed-task") value.task = "Substituted task";
+      if (mutation === "changed-parent") assignment.lineage.at(-1).parent_intent_id = "INT-OTHER";
+      if (mutation === "null-object") assignment.lineage[0].parent_intent_id = {};
+      if (mutation === "extra-boundary") assignment.lineage[0].authority_boundary.user_approved = true;
+    }
+  })),
   { name: "descriptive FRAGO is not execution authority", file: "runtime-demo-payloads/frago.json", type: "frago",
     exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
   { name: "scope-change metadata cannot replace reviewed revision", file: "sample-payloads/valid-frago-scope-change.json", type: "frago-scope-change",

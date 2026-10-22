@@ -82,6 +82,7 @@ function computeParentProof(store, request) {
   for (const entry of contexts) {
     const context = read(store, ref(entry), "agent-context-packs", "agent-context-pack").payload;
     requireTrue(same(context.plan_ref, parent.ref), "ORDER_REVISION_PARENT_CONTEXT_INVALID");
+    if (context.schema_version === "0.4") require("./intent-continuity-contract").assertIntentContext(context, parent.payload);
     require("./order-adoption-controller").assertContextAssignment(context, parent.payload,
       { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now: entry.created_at }, prefixBeforeEntry(store, entry));
   }

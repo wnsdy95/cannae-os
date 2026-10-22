@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1",
+  "type": "IntentContinuityProjection",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "status": "ready",
+  "checked_agents": [
+    "plans-agent",
+    "verification-agent"
+  ],
+  "plan_sha256": "ab30cdd778846616f32b10d1c534ca3a955a832830eac08fd64d20d47c9294b2",
+  "tree_sha256": "ffeef83aff09b4a09fcbe313bd83b7c56b4099a509775dc1a9d5caa2d47e67ea",
+  "issues": [],
+  "execution_authorized": false,
+  "release_authorized": false
+}

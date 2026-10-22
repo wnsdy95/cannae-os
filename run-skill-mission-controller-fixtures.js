@@ -342,7 +342,7 @@ fixture("unmatched mission capability creates one bounded cell across every agen
     const context = loadArtifact(artifactRoot, item.context_pack_ref);
     assert(validatePayload(context, "agent-context-pack").valid,
       "capability-gap context pack should validate");
-    assert(context.schema_version === "0.2" && context.capability_query === plan.objective,
+    assert(context.schema_version === "0.4" && context.capability_query === plan.objective,
       "context pack must retain the v0.2 mission capability contract");
     assert(context.capability_routing.provisional_organization.organization_id === [...organizationIds][0],
       "context pack changed the provisional organization");

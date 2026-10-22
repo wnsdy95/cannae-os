@@ -85,6 +85,12 @@ adds full-plan comparison and predecessor-settlement fences for same-mission
 supersession. Semantic-completeness evaluation, authenticated consent, automatic
 replanning and broader cross-mission/initiative integration remain open.
 
+[Mandatory intent continuity](intent-continuity-runtime.md) now preserves the
+plan's declared purpose, complete task commitments and narrowed parent scopes in
+context v0.4 and actual dispatch/report consumers. Literal commitment preservation
+does not supply semantic omission evaluation, approval-bearing delegation or the
+separate method-deviation/reporting/drift workflow.
+
 Goal:
 
 - Convert a user request into an OPORD draft.

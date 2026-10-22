@@ -29,7 +29,7 @@ The human user remains final decision authority throughout this sequence.
 | --- | --- |
 | `MissionWavePlan` | Defines intent, success/failure conditions, agent tasks, operational roles, delegated authority, model-preflight requirement, finite adaptive budget, and retained USER authorities. |
 | `RoutingReceipt` v0.2 | Separates the narrow router query from the common mission capability query; records existing coverage or one deterministic provisional cell and standing-department candidate. |
-| `AgentContextPack` v0.2 | Gives one agent its task, mission capability state, provisional organization when required, role, authority, digest-bound doctrine documents, compiled required controls, model identity, escalation conditions, and exact control references. |
+| `AgentContextPack` v0.4 | Gives one agent its exact intent/task/delegation commitments, mission capability state, provisional organization when required, role, authority, digest-bound doctrine documents, compiled controls, model identity and references. Legacy v0.2/v0.3 is historical and cannot receive new covered-tool authority; preserve admitted-result settlement and migrate through a newly reviewed wave. |
 | `ControlExecutionReceipt` | Proves that the controller ran one allowlisted, shell-free control for the exact canonical report input, repository, and doctrine states; stores only output digests and byte counts. |
 | `MissionWaveReport` | Records one result per expected agent and requires exact context-pack, control-receipt, and manifest-backed work-evidence references. |
 | `MissionWaveCloseout` | Binds plan, report, AAR, readiness update, campaign, next-wave decision, verified artifact state, and a permanently false release grant. |

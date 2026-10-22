@@ -126,7 +126,7 @@ function adoptionIssues(payload, type) {
       issues.push(problem("ORDER_PLAN_ASSIGNMENT_MISMATCH", "$.order_binding", "Each agent must have exactly one distinct task assignment."));
     }
   }
-  if (type === "agent-context-pack" && payload.schema_version === "0.3") {
+  if (type === "agent-context-pack" && ["0.3", "0.4"].includes(payload.schema_version) && payload.order_assignment) {
     const task = payload.order_assignment.task_order;
     if (task.mission_id !== payload.mission_id || task.assigned_to !== payload.operational_role || task.task !== payload.task) {
       issues.push(problem("ORDER_CONTEXT_TASK_MISMATCH", "$.order_assignment", "Context and assigned task must retain the exact mission, role and text."));

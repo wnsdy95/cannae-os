@@ -6,6 +6,7 @@ const path = require("path");
 const { DRAFT_TYPES, intakeIssues } = require("../order-intake-contract");
 const { ADOPTION_TYPES, adoptionIssues } = require("../order-adoption-contract");
 const { REVISION_TYPES, revisionIssues } = require("../order-revision-contract");
+const { TYPES: INTENT_TYPES, intentIssues } = require("../intent-continuity-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -134,6 +135,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  ...Object.fromEntries([...INTENT_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...REVISION_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...ADOPTION_TYPES].map(type => [type, `${type}.schema.json`])),
   "mission-request": "mission-request.schema.json",
@@ -6097,10 +6099,10 @@ function validationResult(issues, type, payload) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-    can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) &&
+    can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) &&
       !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      !(type === "agent-context-pack" && payload?.schema_version === "0.3") &&
+      type !== "agent-context-pack" &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6133,7 +6135,7 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {

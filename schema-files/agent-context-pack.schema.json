@@ -35,11 +35,20 @@
     {
       "if": { "properties": { "schema_version": { "const": "0.3" } }, "required": ["schema_version"] },
       "then": { "required": ["order_assignment"] },
-      "else": { "not": { "required": ["order_assignment"] } }
+      "else": {
+        "if": { "properties": { "schema_version": { "const": "0.2" } }, "required": ["schema_version"] },
+        "then": { "not": { "required": ["order_assignment"] } }
+      }
+    },
+    {
+      "if": { "properties": { "schema_version": { "const": "0.4" } }, "required": ["schema_version"] },
+      "then": { "required": ["intent_assignment"] },
+      "else": { "not": { "required": ["intent_assignment"] } }
     }
   ],
   "properties": {
-    "schema_version": { "type": "string", "enum": ["0.2", "0.3"] },
+    "schema_version": { "type": "string", "enum": ["0.2", "0.3", "0.4"] },
+    "intent_assignment": { "$ref": "intent-continuity-common.schema.json#/$defs/assignment" },
     "order_assignment": { "$ref": "order-adoption-common.schema.json#/$defs/context_assignment" },
     "type": { "type": "string", "const": "AgentContextPack" },
     "id": { "$ref": "common.schema.json#/$defs/id" },

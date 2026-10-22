@@ -81,6 +81,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Request Intake And Order Drafts](docs/request-order-intake.md): retain exact requests, separate quotes from assumptions and proposals, and compile non-executable OPORD/task drafts with inherited constraints.
 - [Exact Order Adoption And Plan Binding](docs/order-adoption-and-plan-binding.md): bind the complete plan, each agent's backbrief and rehearsal to one finite USER scope decision; recheck it at lifecycle and dispatch admission without granting release or bypassing other gates.
 - [Order Revision And Supersession](docs/order-revision-and-supersession.md): review a full changed plan against its exact predecessor, prepare successor contexts, settle old execution and supersede before new tool authority.
+- [Mandatory Intent Continuity](docs/intent-continuity-runtime.md): bind every new context to the plan's complete task commitments and USER-rooted delegation chain; deny missing tasks, widened child authority and legacy-context tool reuse while preserving admitted-result settlement.
 
 - [Military LLM Framework](docs/military-llm-framework-v0.1.md): the core command, authority, reporting, and AAR model.
 - [Military Operating System](docs/military-operating-system.md): the layered operating system view of doctrine, SOP, intent, planning, orders, risk, liaison, assessment, and learning.
@@ -690,6 +691,8 @@ codex-skills/                 Codex Controls Doctrine Operator skill
 Cannae OS is currently a doctrine and prototype repository.
 
 Working today:
+
+- mandatory plan-bound intent commitments and multi-echelon boundary checks in context generation, report admission, policy compilation, leases and covered-tool admission; legacy contexts remain historical rather than silently upgraded;
 
 - structured doctrine and policy documents;
 - schema contracts and sample payloads;

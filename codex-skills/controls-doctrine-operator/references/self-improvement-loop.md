@@ -59,6 +59,13 @@ Regenerate retained audit snapshots through their source scanner after source
 changes. Their `as_of` must reflect the actual UTC execution date; never manually
 restamp an older result or treat its date as proof of current coverage.
 
+Freeze source, doctrine, skill files and HEAD while lifecycle/report or registry
+verification runs. Editing a document during those checks is repository drift,
+not a reason to relax the gate. Finish the edit, retain the failed run, then rerun
+from one fixed tree. After an early-stop failure, distinguish tests actually run
+from the unexecuted remainder; neither the old pass count nor an aggregate's
+remaining-failure count proves the final tree.
+
 ## Publication Denial And Partial State
 
 For an explicit USER stop, read the stop-intake section of
@@ -319,6 +326,14 @@ Use these signals to choose which skill surface to improve:
 - The self-improvement rules caused unnecessary work or missed a real gap.
 
 ## Update Surfaces
+
+For intent changes, check the primary recommended documents, not only inventory
+coverage or a supporting-artifact match. Review every echelon against the exact
+root, task commitments and parent boundary. Never relabel a legacy context as
+v0.4 or reuse its lease to claim migration; preserve already-admitted result
+settlement, then use a newly reviewed wave. A diagnostic ready projection is
+neither USER consent nor execution authority, and literal inheritance does not
+prove semantic completeness or authorize method deviations.
 
 For opened-scope revisions, verify both directions: selection must hold new old-agent
 calls, while preparation alone cannot admit successor tools. Inspect tool-result

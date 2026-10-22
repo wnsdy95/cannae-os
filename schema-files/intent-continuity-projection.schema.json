@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/intent-continuity-projection.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "mission_id", "wave_id", "status", "checked_agents", "plan_sha256", "tree_sha256", "issues", "execution_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "IntentContinuityProjection" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" }, "wave_id": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["ready", "blocked"] }, "checked_agents": { "$ref": "common.schema.json#/$defs/string_list" },
+    "plan_sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" },
+    "tree_sha256": { "type": "string", "pattern": "^(none|[a-f0-9]{64})$" },
+    "issues": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false, "required": ["severity", "code", "path", "message"],
+        "properties": {
+          "severity": { "enum": ["info", "warning", "error", "critical"] }, "code": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 }, "message": { "type": "string", "minLength": 1 },
+          "layer": { "enum": ["schema", "semantic"] }
+        }
+      }
+    },
+    "execution_authorized": { "const": false }, "release_authorized": { "const": false }
+  }
+}

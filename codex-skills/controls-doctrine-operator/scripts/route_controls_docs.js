@@ -40,6 +40,12 @@ const RULES = [
     ]
   },
   {
+    id: "intent-initiative",
+    keywords: ["commander intent", "commander's intent", "mission command", "mission-command", "intent continuity", "intent-continuity", "intent lineage", "task conservation", "disciplined initiative", "disciplined-initiative", "method deviation", "check_controls_intent"],
+    docs: ["docs/mission-command-runtime-policy.md", "docs/disciplined-initiative-rules.md", "docs/intent-continuity-runtime.md", "docs/commander-handbook.md"],
+    commands: ["node run-intent-continuity-fixtures.js"]
+  },
+  {
     id: "authority-risk-release",
     keywords: ["dependency migration", "verifier dependency", "producer compatibility", "lockfile update", "ip-address", "authority", "approval", "risk", "roe", "release", "scope", "delegation", "sign-off", "authorization", "hazard", "disclosure", "publish", "entrustment", "immutability", "attestation", "integrity", "drift", "tuf", "trusted-root", "bundle", "sigstore", "offline verification"],
     docs: [
@@ -474,6 +480,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "check_controls_intent"] },
   {
     id: "gateway-effect-review",
     keywords: ["gateway-effect", "review_gateway_effects", "settle_gateway_effects", "effect-settlement-fixture-support"]

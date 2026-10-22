@@ -13,7 +13,7 @@ Ready draft + complete MissionWavePlan v0.2 -> OrderAdoptionProposal
 Each assigned agent -> OrderBackbrief (full task acknowledgement)
 All agents + exact backbriefs -> OrderRehearsal
 Exact proposal + briefs + rehearsal + USER scope decision -> OrderAdoptionRecord
-Current adopted plan + existing lifecycle gates -> AgentContextPack v0.3
+Current adopted plan + existing lifecycle/intent gates -> AgentContextPack v0.4
 Exact policy + lease + current adoption + other admission gates -> covered tool call
 ```
 
@@ -102,9 +102,12 @@ history. Store identity, hashes, mission/wave scope and finite timestamps are
 checked separately from schema shape. Publication holds the namespace guard and
 requires the same verified manifest and a non-rollback, unexpired clock.
 
-`MissionWavePlan` v0.1 and context v0.2 remain available for legacy waves without
-intake. A captured request, proposal or adoption record in the same mission/wave
-fences that downgrade. Bound plans require a unique current adopted record whose
+`MissionWavePlan` v0.1 remains available for waves without intake. Every newly
+generated context is v0.4 with mandatory intent continuity. Historical context
+v0.2/v0.3 remains readable for appraisal and result settlement, but cannot receive
+new covered-tool authority; prepare a newly reviewed wave instead of relabeling
+retained contexts. A captured request, proposal or adoption record in the same
+mission/wave fences an unbound-plan downgrade. Bound plans require a unique current adopted record whose
 complete plan hash matches. A later conflicting USER scope disposition blocks
 new work, including a disposition inserted later with an older timestamp.
 

@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1",
+  "type": "IntentDelegationEvent",
+  "id": "IDE-fa133ae474867be54a5077e74f499b7c",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "parent_intent_id": "INT-d69e7c3ee9b367e5af9dbcc0a976f44a",
+  "child_intent_id": "INT-5d49dd9b38051c9272f1a23704c7aa86",
+  "delegator_agent_id": "USER",
+  "delegate_agent_id": "USER",
+  "delegated_boundary": {
+    "green": [
+      "Inspect supplied evidence",
+      "Prepare an internal draft"
+    ],
+    "amber": [],
+    "red": [
+      "Change mission scope",
+      "Publish externally"
+    ],
+    "black": [
+      "Expose credentials"
+    ]
+  },
+  "approval_scope_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  }
+}

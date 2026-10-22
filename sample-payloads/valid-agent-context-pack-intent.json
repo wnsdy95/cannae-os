@@ -1,0 +1,273 @@
+{
+  "schema_version": "0.4",
+  "type": "AgentContextPack",
+  "id": "ACP-W1-plans-agent",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "agent_id": "plans-agent",
+  "operational_role": "S3",
+  "department": "operations",
+  "task": "Implement the bounded skill change and its fixtures.",
+  "classification": "internal",
+  "plan_ref": {
+    "artifact_id": "MWP-SKILL-DEMO-W1",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
+    "sha256": "ab30cdd778846616f32b10d1c534ca3a955a832830eac08fd64d20d47c9294b2"
+  },
+  "routing_receipt_ref": {
+    "artifact_id": "RR-W1-plans-agent",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-receipts/RR-W1-plans-agent.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "routing_preflight_ref": {
+    "artifact_id": "ARP-W1",
+    "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
+    "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "capability_query": "Produce and verify a repository-scoped skill improvement without bypassing routing or human authority.",
+  "capability_routing": {
+    "status": "covered",
+    "reason_code": "MATCHED_DOCTRINE_ROUTE",
+    "capability_scope": "Produce and verify a repository-scoped skill improvement without bypassing routing or human authority.",
+    "matched_capability_routes": [
+      "skill-operations"
+    ],
+    "provisional_organization": {
+      "required": false,
+      "organization_type": "existing_doctrine_route",
+      "organization_id": "none",
+      "name": "Existing doctrine route",
+      "task_organization_status": "not_required",
+      "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+      "authority_expansion_authorized": false,
+      "standing_department_activation_authorized": false,
+      "disband_condition": "Not applicable; no provisional organization was created."
+    },
+    "force_structure_review": {
+      "required": false,
+      "change_type": "none",
+      "target_kind": "none",
+      "status": "not_required",
+      "candidate_department_id": "none",
+      "candidate_department_name": "none",
+      "final_decision_authority": "USER",
+      "formal_approving_role": "COMMANDER"
+    },
+    "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+  },
+  "doctrine_state": {
+    "revision": "0123456789abcdef0123456789abcdef01234567",
+    "router_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "controller_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "documents": [
+    {
+      "path": "README.md",
+      "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    },
+    {
+      "path": "docs/source-map.md",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "path": "docs/agent-roles-and-authority.md",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  ],
+  "validation_commands": [
+    "node run-document-routing-fixtures.js"
+  ],
+  "required_controls": [
+    {
+      "control_id": "CTRL-6a29130c7d6dd8ed",
+      "command": "node run-document-routing-fixtures.js",
+      "command_sha256": "6a29130c7d6dd8ed39c3076f1a27d620e6f2628a42d46ba3ec45e548a7c98959",
+      "runner": "node",
+      "script_path": "run-document-routing-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    }
+  ],
+  "model_assignment": {
+    "required": false,
+    "integrated_preflight_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "billet_id": "not_required",
+    "model_profile_id": "not_required",
+    "model_family": "not_required",
+    "model_version": "not_required",
+    "harness_version": "not_required"
+  },
+  "authority": {
+    "delegated_authority": "scoped-execution",
+    "allowed_actions": [
+      "Inspect supplied evidence",
+      "Prepare an internal draft"
+    ],
+    "approval_required": [
+      "Change mission scope",
+      "Publish externally"
+    ],
+    "prohibited_actions": [
+      "Expose credentials"
+    ],
+    "human_final_decision_authority": "USER",
+    "release_authorized": false,
+    "self_approval_prohibited": true
+  },
+  "escalation_conditions": [
+    "Requested action exceeds delegated authority."
+  ],
+  "status": "ready",
+  "created_at": "2026-07-23T04:00:00+09:00",
+  "valid_until": "2027-07-23T04:00:00+09:00",
+  "intent_assignment": {
+    "schema_version": "0.1",
+    "type": "AgentIntentAssignment",
+    "agent_id": "plans-agent",
+    "plan_sha256": "ab30cdd778846616f32b10d1c534ca3a955a832830eac08fd64d20d47c9294b2",
+    "tree_sha256": "ffeef83aff09b4a09fcbe313bd83b7c56b4099a509775dc1a9d5caa2d47e67ea",
+    "root_intent_id": "INT-d69e7c3ee9b367e5af9dbcc0a976f44a",
+    "lineage": [
+      {
+        "schema_version": "0.1",
+        "type": "CommanderIntent",
+        "id": "INT-d69e7c3ee9b367e5af9dbcc0a976f44a",
+        "mission_id": "MIS-SKILL-DEMO",
+        "wave_id": "W1",
+        "plan_id": "MWP-SKILL-DEMO-W1",
+        "agent_id": "USER",
+        "parent_intent_id": null,
+        "purpose": "Produce and verify a repository-scoped skill improvement without bypassing routing or human authority.",
+        "key_tasks": [
+          {
+            "task_id": "TASK-8ae2d538b90c1dd2cd7f279f53546852",
+            "task_sha256": "f6d1651a257687a0bc87873b3dfad77f6a4dbb2cb400f367634d9090fa996d7e",
+            "owner_agent_id": "plans-agent"
+          },
+          {
+            "task_id": "TASK-f1e74c7944ebca524b061c79794aa932",
+            "task_sha256": "ceca46a9b22b3aef10fe5ffc7bc9e71f0f90e20f153382e25d77bd8a785f0b22",
+            "owner_agent_id": "verification-agent"
+          }
+        ],
+        "end_state": [
+          "Every expected agent receives a manifest-backed context pack.",
+          "The changed skill passes deterministic validation."
+        ],
+        "failure_to_avoid": [
+          "Any expected agent starts without a routing receipt.",
+          "An AI agent claims approval or release authority."
+        ],
+        "constraints": [
+          "Operate only inside the target repository.",
+          "Persist durable evidence through the repository artifact store."
+        ],
+        "authority_boundary": {
+          "green": [
+            "Inspect supplied evidence",
+            "Prepare an internal draft"
+          ],
+          "amber": [],
+          "red": [
+            "Change mission scope",
+            "Publish externally"
+          ],
+          "black": [
+            "Expose credentials"
+          ]
+        }
+      },
+      {
+        "schema_version": "0.1",
+        "type": "CommanderIntent",
+        "id": "INT-5d49dd9b38051c9272f1a23704c7aa86",
+        "mission_id": "MIS-SKILL-DEMO",
+        "wave_id": "W1",
+        "plan_id": "MWP-SKILL-DEMO-W1",
+        "agent_id": "plans-agent",
+        "parent_intent_id": "INT-d69e7c3ee9b367e5af9dbcc0a976f44a",
+        "purpose": "Produce and verify a repository-scoped skill improvement without bypassing routing or human authority.",
+        "key_tasks": [
+          {
+            "task_id": "TASK-8ae2d538b90c1dd2cd7f279f53546852",
+            "task_sha256": "f6d1651a257687a0bc87873b3dfad77f6a4dbb2cb400f367634d9090fa996d7e",
+            "owner_agent_id": "plans-agent"
+          },
+          {
+            "task_id": "TASK-f1e74c7944ebca524b061c79794aa932",
+            "task_sha256": "ceca46a9b22b3aef10fe5ffc7bc9e71f0f90e20f153382e25d77bd8a785f0b22",
+            "owner_agent_id": "verification-agent"
+          }
+        ],
+        "end_state": [
+          "Every expected agent receives a manifest-backed context pack.",
+          "The changed skill passes deterministic validation."
+        ],
+        "failure_to_avoid": [
+          "Any expected agent starts without a routing receipt.",
+          "An AI agent claims approval or release authority."
+        ],
+        "constraints": [
+          "Operate only inside the target repository.",
+          "Persist durable evidence through the repository artifact store."
+        ],
+        "authority_boundary": {
+          "green": [
+            "Inspect supplied evidence",
+            "Prepare an internal draft"
+          ],
+          "amber": [],
+          "red": [
+            "Change mission scope",
+            "Publish externally"
+          ],
+          "black": [
+            "Expose credentials"
+          ]
+        }
+      }
+    ],
+    "delegations": [
+      {
+        "schema_version": "0.1",
+        "type": "IntentDelegationEvent",
+        "id": "IDE-fa133ae474867be54a5077e74f499b7c",
+        "mission_id": "MIS-SKILL-DEMO",
+        "wave_id": "W1",
+        "parent_intent_id": "INT-d69e7c3ee9b367e5af9dbcc0a976f44a",
+        "child_intent_id": "INT-5d49dd9b38051c9272f1a23704c7aa86",
+        "delegator_agent_id": "USER",
+        "delegate_agent_id": "plans-agent",
+        "delegated_boundary": {
+          "green": [
+            "Inspect supplied evidence",
+            "Prepare an internal draft"
+          ],
+          "amber": [],
+          "red": [
+            "Change mission scope",
+            "Publish externally"
+          ],
+          "black": [
+            "Expose credentials"
+          ]
+        },
+        "approval_scope_ref": {
+          "artifact_id": "none",
+          "relative_path": "none",
+          "sha256": "none"
+        }
+      }
+    ],
+    "assigned_task": {
+      "task_id": "TASK-8ae2d538b90c1dd2cd7f279f53546852",
+      "task_sha256": "f6d1651a257687a0bc87873b3dfad77f6a4dbb2cb400f367634d9090fa996d7e",
+      "owner_agent_id": "plans-agent"
+    }
+  }
+}

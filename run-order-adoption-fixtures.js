@@ -51,7 +51,7 @@ try {
     for (const item of opened.context_packs) {
       const context = read(env, item.context_pack_ref);
       assert.equal(context.created_at, optionsAt(env, 70).now);
-      assert.equal(context.schema_version, "0.3"); assert.equal(validatePayload(context, "agent-context-pack").can_execute, false);
+      assert.equal(context.schema_version, "0.4"); assert.equal(validatePayload(context, "agent-context-pack").can_execute, false);
       assertContextAssignment(context, env.plan, optionsAt(env, 70));
       const store = require("./campaign-supervisor").loadVerifiedStore(env.options.repository, env.options.artifactRoot);
       const entry = store.manifest.artifacts.find(value => value.relative_path === item.context_pack_ref.relative_path);
