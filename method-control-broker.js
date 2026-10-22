@@ -9,6 +9,7 @@ const now = options => options.now || new Date().toISOString();
 const at = value => { const parsed = Date.parse(value); need(Number.isFinite(parsed), "METHOD_CONTROL_TIME_INVALID"); return parsed; };
 const sameRef = (left, right) => Boolean(left && right && same(left, right));
 const scope = value => ({ mission_id: value.mission_id, wave_id: value.wave_id, agent_id: value.agent_id });
+const continuationSources = new Set(["resume", "clear", "fork"]);
 const typeFor = kind => Object.keys(contract.RECORDS).find(type => contract.RECORDS[type] === kind).replace(/[A-Z]/g, (letter, index) => (index ? "-" : "") + letter.toLowerCase());
 function records(store, kind, subject) {
   return store.manifest.artifacts.filter(entry => entry.kind === kind && entry.mission_id === subject.mission_id &&
@@ -30,6 +31,41 @@ function publish(options, payload, guard) {
 function identity(value) {
   return { missionId: value.mission_id, waveId: value.wave_id, agentId: value.agent_id, provider: value.provider,
     sessionId: value.session_binding.session_id, providerAgentId: value.session_binding.provider_agent_id };
+}
+function slotFamily(store, slot, pocket) {
+  const slots = records(store, "method-control-launch-slots", slot.payload).filter(item => sameRef(item.payload.context_ref, slot.payload.context_ref));
+  const roots = slots.filter(item => item.payload.schema_version === "0.1");
+  need(roots.length === 1, "METHOD_CONTROL_ROOT_AMBIGUOUS");
+  const root = roots[0], continuations = slots.filter(item => item.payload.schema_version === "0.2").sort((a, b) => a.payload.continuation_index - b.payload.continuation_index);
+  need(!continuations.length || (pocket.schema_version === "0.2" && continuations.length <= pocket.continuation.max_handoffs), "METHOD_CONTROL_CONTINUATION_NOT_REVIEWED");
+  const family = [root, ...continuations];
+  for (const [index, item] of continuations.entries()) {
+    const value = item.payload, predecessor = gate.read(store, value.predecessor_enrollment_ref, "method-control-enrollments", "method-control-enrollment", value);
+    need(value.continuation_index === index + 1 && sameRef(value.root_launch_slot_ref, root.ref) &&
+      sameRef(predecessor.payload.launch_slot_ref, family[index].ref) && precedes(store, predecessor, item) &&
+      ["plan_ref", "context_ref", "policy_ref"].every(key => sameRef(value[key], root.payload[key])) &&
+      ["provider", "repository_key", "repository_identity_fingerprint", "server_name", "runtime_sha256", "expires_at"].every(key => value[key] === root.payload[key]),
+    "METHOD_CONTROL_CONTINUATION_CHAIN_INVALID");
+  }
+  return family;
+}
+function assertCurrentChannel(bundle) {
+  need(sameRef(bundle.family.at(-1).ref, bundle.slot.ref), "METHOD_CONTROL_CHANNEL_SUPERSEDED");
+}
+function continuationPredecessor(store, slot, pocket, options, depth) {
+  need(depth <= 16 && pocket.schema_version === "0.2" && pocket.continuation, "METHOD_CONTROL_CONTINUATION_NOT_REVIEWED");
+  const value = slot.payload, prior = gate.read(store, value.predecessor_enrollment_ref, "method-control-enrollments", "method-control-enrollment", value);
+  const previous = appraiseEnrollment(store, prior, options, true, depth + 1);
+  const before = prefixBeforeEntry(store, slot.entry), history = require("./dispatch-runtime-controller").inspectDispatchHistory(before, previous.bundle.lease.ref);
+  const interrupted = gate.read(before, value.interruption_checkpoint_ref, "agent-execution-checkpoints", "agent-execution-checkpoint", value);
+  need(sameRef(history.latest.ref, interrupted.ref) && interrupted.payload.checkpoint_kind === "interruption" &&
+    interrupted.payload.lease_status === "interrupted" && sameRef(interrupted.payload.lease_ref, previous.bundle.lease.ref) &&
+    same(interrupted.payload.session_binding, prior.payload.session_binding) &&
+    history.pending_tool_requests === 0 && history.unresolved_tool_effects === 0 && history.unresolved_gateway_transactions === 0 &&
+    precedes(store, prior, interrupted) && precedes(store, interrupted, slot), "METHOD_CONTROL_INTERRUPTION_REQUIRED");
+  assertSettledStore(before, previous.bundle.lease.payload);
+  need(gate.methodState(before, previous.bundle.plan, value.agent_id).pending_reports.length === 0, "METHOD_CONTROL_REPORT_PENDING");
+  return { enrollment: prior, ...previous, interrupted };
 }
 function descriptor(privateFile, provider, serverName, source) {
   return { provider, server_name: serverName, command: process.execPath,
@@ -77,7 +113,7 @@ function load(privateFile, optionsOverride = {}, allowExpired = false) {
     value.launch_descriptor_sha256 === digest(secret.launch_descriptor), "METHOD_CONTROL_ENROLLMENT_BINDING_INVALID");
   return { secret, options, store, enrollment, ...publicScope };
 }
-function appraiseEnrollment(store, enrollment, options, allowExpired = false) {
+function appraiseEnrollment(store, enrollment, options, allowExpired = false, depth = 0) {
   const value = enrollment.payload;
   const bundle = gate.scopeForLease(store, value.lease_ref), pocket = bundle.context.payload.method_assignment?.broker;
   const repository = store.verification.repository;
@@ -90,6 +126,7 @@ function appraiseEnrollment(store, enrollment, options, allowExpired = false) {
   "METHOD_CONTROL_ENROLLMENT_BINDING_INVALID");
   const slot = gate.read(store, value.launch_slot_ref, "method-control-launch-slots", "method-control-launch-slot", value);
   const observation = gate.read(store, value.session_observation_ref, "method-control-session-observations", "method-control-session-observation", value);
+  const family = slotFamily(store, slot, pocket);
   need(sameRef(slot.payload.plan_ref, bundle.plan.ref) && sameRef(slot.payload.context_ref, bundle.context.ref) &&
     sameRef(slot.payload.policy_ref, bundle.policy.ref) && slot.payload.provider === value.provider &&
     slot.payload.repository_key === value.repository_key && slot.payload.repository_identity_fingerprint === value.repository_identity_fingerprint &&
@@ -104,8 +141,20 @@ function appraiseEnrollment(store, enrollment, options, allowExpired = false) {
     at(value.expires_at) <= at(slot.payload.expires_at) && precedes(store, bundle.context, slot) && precedes(store, bundle.policy, slot) &&
     precedes(store, slot, observation) &&
     precedes(store, observation, bundle.lease) && precedes(store, bundle.lease, enrollment), "METHOD_CONTROL_SESSION_BINDING_INVALID");
+  if (slot.payload.schema_version === "0.2") {
+    const previous = continuationPredecessor(store, slot, pocket, options, depth);
+    const history = require("./dispatch-runtime-controller").inspectDispatchHistory(store, previous.bundle.lease.ref);
+    const supersession = history.checkpoints.find(item => item.payload.checkpoint_kind === "supersession" &&
+      item.payload.lease_status === "superseded" && sameRef(item.payload.previous_checkpoint_ref, previous.interrupted.ref));
+    need(observation.payload.schema_version === "0.2" && observation.payload.source === slot.payload.expected_source &&
+      bundle.lease.payload.issuance_reason === "resume" && sameRef(bundle.lease.payload.previous_lease_ref, previous.bundle.lease.ref) &&
+      supersession && precedes(store, supersession, bundle.lease), "METHOD_CONTROL_RESUME_BINDING_INVALID");
+  } else {
+    need(observation.payload.schema_version === "0.1" && observation.payload.source === "startup" &&
+      bundle.lease.payload.issuance_reason === "initial" && bundle.lease.payload.previous_lease_ref.artifact_id === "none", "METHOD_CONTROL_INITIAL_LEASE_REQUIRED");
+  }
   need(at(value.recorded_at) <= at(now(options)) && (allowExpired || at(now(options)) < at(value.expires_at)), "METHOD_CONTROL_ENROLLMENT_EXPIRED");
-  return { bundle, pocket, slot, observation };
+  return { bundle, pocket, slot, observation, family, rootSlot: family[0] };
 }
 function prepare(options, policyId, privateFile, expectedMcpSource = "project") {
   options = { ...options, repository: fs.realpathSync(options.repository), artifactRoot: path.resolve(options.artifactRoot || path.join(options.repository, ".cannae", "artifacts")) };
@@ -134,7 +183,9 @@ function prepare(options, policyId, privateFile, expectedMcpSource = "project") 
 }
 function observeSession(privateFile, options, actor, input) {
   const launch = inspectLaunch(privateFile, options);
-  if (launch.secret.enrollment_id !== "pending" || input.source !== "startup") return null;
+  const expectedSource = launch.slot.payload.schema_version === "0.2" ? launch.slot.payload.expected_source : "startup";
+  if (launch.secret.enrollment_id !== "pending") return null;
+  need(input.source === expectedSource, "METHOD_CONTROL_START_SOURCE_MISMATCH");
   const value = launch.slot.payload;
   need(actor.missionId === value.mission_id && actor.waveId === value.wave_id && actor.agentId === value.agent_id && actor.provider === value.provider,
     "METHOD_CONTROL_ACTOR_MISMATCH");
@@ -144,14 +195,53 @@ function observeSession(privateFile, options, actor, input) {
     need(previous.length === 1 && same(previous[0].payload.session_binding, session), "METHOD_CONTROL_SESSION_ALREADY_OBSERVED");
     return { session_observation_ref: previous[0].ref, ...contract.AUTHORITY };
   }
-  const observation = contract.identified("MethodControlSessionObservation", { ...scope(value), launch_slot_ref: launch.slot.ref,
-    provider: actor.provider, session_binding: session, source: "startup", provider_startup_verified: false, recorded_at: now(launch.options) });
+  if (value.schema_version === "0.2") continuationPredecessor(launch.store, launch.slot, launch.pocket, launch.options, 0);
+  const observation = contract.identified("MethodControlSessionObservation", { schema_version: value.schema_version, ...scope(value), launch_slot_ref: launch.slot.ref,
+    provider: actor.provider, session_binding: session, source: expectedSource, provider_startup_verified: false, recorded_at: now(launch.options) });
   const observationRef = publish(launch.options, observation, () => {
     const current = inspectLaunch(privateFile, options);
     need(current.secret.enrollment_id === "pending" && !records(current.store, "method-control-session-observations", value)
       .some(item => sameRef(item.payload.launch_slot_ref, launch.slot.ref)), "METHOD_CONTROL_SESSION_ALREADY_OBSERVED");
+    if (value.schema_version === "0.2") continuationPredecessor(current.store, current.slot, current.pocket, current.options, 0);
   });
   return { session_observation_ref: observationRef, ...contract.AUTHORITY };
+}
+function prepareContinuation(previousFile, checkpointRef, privateFile, source, options = {}) {
+  need(continuationSources.has(source) && path.isAbsolute(privateFile) && privateFile === path.resolve(privateFile), "METHOD_CONTROL_CONTINUATION_ARGUMENT_INVALID");
+  const initial = load(previousFile, options);
+  need(initial.pocket.schema_version === "0.2" && initial.pocket.continuation, "METHOD_CONTROL_CONTINUATION_NOT_REVIEWED");
+  return require("./dispatch-runtime-controller").withDispatchControlLock(initial.options, initial.bundle.lease.payload.id, (_current, renew) => {
+    const prior = load(previousFile, options), subject = prior.enrollment.payload;
+    const check = () => {
+      renew(); const current = load(previousFile, options); assertCurrentChannel(current);
+      const selected = require("./dispatch-runtime-controller").activeLease(current.options, identity(subject), now(current.options));
+      need(selected.code === "LEASE_INTERRUPTED" && sameRef(selected.leaseRecord?.ref, prior.bundle.lease.ref) &&
+        sameRef(selected.checkpointRecord?.ref, checkpointRef), "METHOD_CONTROL_INTERRUPTION_REQUIRED");
+      const history = require("./dispatch-runtime-controller").inspectDispatchHistory(current.store, prior.bundle.lease.ref);
+      need(history.pending_tool_requests === 0 && history.unresolved_tool_effects === 0 && history.unresolved_gateway_transactions === 0,
+        "METHOD_CONTROL_INTERRUPTION_REQUIRED");
+      assertSettledStore(current.store, prior.bundle.lease.payload);
+      need(gate.methodState(current.store, current.bundle.plan, subject.agent_id).pending_reports.length === 0, "METHOD_CONTROL_REPORT_PENDING");
+      return current;
+    };
+    check();
+    const index = prior.family.length;
+    need(index <= prior.pocket.continuation.max_handoffs, "METHOD_CONTROL_CONTINUATION_BUDGET_EXHAUSTED");
+    const launch = descriptor(privateFile, subject.provider, subject.server_name, prior.secret.launch_descriptor.expected_mcp_source);
+    const credential = crypto.randomBytes(32).toString("hex"), started = now(prior.options);
+    const value = contract.identified("MethodControlLaunchSlot", { schema_version: "0.2", ...scope(subject), provider: subject.provider,
+      plan_ref: subject.plan_ref, context_ref: subject.context_ref, policy_ref: subject.policy_ref,
+      repository_key: subject.repository_key, repository_identity_fingerprint: subject.repository_identity_fingerprint,
+      server_name: subject.server_name, runtime_sha256: subject.runtime_sha256, launch_descriptor_sha256: digest(launch), credential_sha256: digest(credential),
+      identity_assurance: "local_operator_enrollment_reference", provider_startup_verified: false,
+      root_launch_slot_ref: prior.rootSlot.ref, predecessor_enrollment_ref: prior.enrollment.ref, interruption_checkpoint_ref: checkpointRef,
+      continuation_index: index, expected_source: source, recorded_at: started, expires_at: prior.rootSlot.payload.expires_at });
+    privateState.create(privateFile, { schema_version: "0.1", launch_slot_id: value.id, enrollment_id: "pending", credential,
+      repository: prior.secret.repository, artifact_root: prior.secret.artifact_root, launch_descriptor: launch }, prior.secret.repository);
+    const slotRef = publish(prior.options, value, check);
+    return { launch_slot_ref: slotRef, server_name: subject.server_name, private_enrollment_file: privateFile, launch_descriptor: launch,
+      root_launch_slot_ref: prior.rootSlot.ref, continuation_index: index, expires_at: value.expires_at, provider_startup_verified: false, ...contract.AUTHORITY };
+  });
 }
 function enroll(options, leaseId, privateFile) {
   options = { ...options, repository: fs.realpathSync(options.repository), artifactRoot: path.resolve(options.artifactRoot || path.join(options.repository, ".cannae", "artifacts")) };
@@ -168,7 +258,7 @@ function enroll(options, leaseId, privateFile) {
     const pocket = bundle.context.payload.method_assignment?.broker, lease = bundle.lease.payload;
     need(pocket && pocket.runtime_sha256 === contract.runtimeDigest(), "METHOD_CONTROL_REVIEW_REQUIRED");
     const active = require("./dispatch-runtime-controller").activeLease(options, identity(lease), now(options));
-    need(active.code === "LEASE_ACTIVE", "METHOD_CONTROL_ACTIVE_LEASE_REQUIRED");
+    need(active.code === "LEASE_ACTIVE" && sameRef(active.leaseRecord?.ref, bundle.lease.ref), "METHOD_CONTROL_ACTIVE_LEASE_REQUIRED");
     need(records(store, "method-control-enrollments", lease).every(item => !sameRef(item.payload.lease_ref, bundle.lease.ref)), "METHOD_CONTROL_ALREADY_ENROLLED");
     const slot = prepared.slot, observations = records(store, "method-control-session-observations", lease)
       .filter(item => sameRef(item.payload.launch_slot_ref, slot.ref));
@@ -176,6 +266,10 @@ function enroll(options, leaseId, privateFile) {
       sameRef(slot.payload.policy_ref, bundle.policy.ref) && slot.payload.provider === lease.provider && observations.length === 1 &&
       observations[0].payload.provider === lease.provider && same(observations[0].payload.session_binding, lease.session_binding) &&
       precedes(store, slot, observations[0]) && precedes(store, observations[0], bundle.lease), "METHOD_CONTROL_OBSERVED_SESSION_REQUIRED");
+    if (slot.payload.schema_version === "0.2") {
+      const previous = continuationPredecessor(store, slot, pocket, options, 0);
+      need(lease.issuance_reason === "resume" && sameRef(lease.previous_lease_ref, previous.bundle.lease.ref), "METHOD_CONTROL_RESUME_BINDING_INVALID");
+    } else need(lease.issuance_reason === "initial", "METHOD_CONTROL_INITIAL_LEASE_REQUIRED");
     const repository = resolveRepository(options.repository), credential = prepared.secret.credential;
     const launch = prepared.secret.launch_descriptor, started = now(options);
     const value = contract.identified("MethodControlEnrollment", { ...scope(lease), provider: lease.provider, session_binding: lease.session_binding,
@@ -189,7 +283,8 @@ function enroll(options, leaseId, privateFile) {
     const enrollmentRef = publish(options, value, () => {
       renew(); need(contract.runtimeDigest() === pocket.runtime_sha256, "METHOD_CONTROL_RUNTIME_CHANGED");
       need(inspectLaunch(privateFile, options).secret.enrollment_id === value.id, "METHOD_CONTROL_PRIVATE_CHANGED");
-      need(require("./dispatch-runtime-controller").activeLease(options, identity(lease), now(options)).code === "LEASE_ACTIVE", "METHOD_CONTROL_ACTIVE_LEASE_REQUIRED");
+      const selected = require("./dispatch-runtime-controller").activeLease(options, identity(lease), now(options));
+      need(selected.code === "LEASE_ACTIVE" && sameRef(selected.leaseRecord?.ref, bundle.lease.ref), "METHOD_CONTROL_ACTIVE_LEASE_REQUIRED");
     });
     return { enrollment_ref: enrollmentRef, server_name: pocket.server_name, private_enrollment_file: privateFile,
       launch_descriptor: launch, ...contract.AUTHORITY, provider_startup_verified: false };
@@ -254,7 +349,9 @@ function statusResult(bundle, store) {
 function assertSettled(options, lease, view) {
   const entries = view?.manifest.artifacts || [];
   if (view && !entries.some(entry => entry.kind === "method-control-requests" && entry.mission_id === lease.mission_id && entry.wave_id === lease.wave_id)) return;
-  const store = gate.load(options);
+  assertSettledStore(gate.load(options), lease);
+}
+function assertSettledStore(store, lease) {
   for (const request of records(store, "method-control-requests", lease)) {
     const receipt = receiptFor(store, request), deliveries = deliveriesFor(store, request);
     const expected = receipt && { schema_version: "0.1", type: "MethodControlResponse", enrollment_ref: request.payload.enrollment_ref,
@@ -270,7 +367,7 @@ function assertWorkReady(options, leaseRef, view) {
     const store = gate.load(options), values = records(store, "method-control-enrollments", bundle.lease.payload)
       .filter(item => sameRef(item.payload.lease_ref, leaseRef));
     need(values.length === 1, "METHOD_CONTROL_ENROLLMENT_REQUIRED");
-    appraiseEnrollment(store, values[0], options);
+    assertCurrentChannel({ ...appraiseEnrollment(store, values[0], options) });
   }
   assertSettled(options, bundle.lease.payload, view);
 }
@@ -283,11 +380,18 @@ function preflight(privateFile, options, actor, input) {
   need(typeof input.tool_use_id === "string" && input.tool_use_id.length > 0 && input.tool_use_id.length <= 512, "METHOD_CONTROL_TOOL_ID_REQUIRED");
   return require("./dispatch-runtime-controller").withDispatchControlLock(initial.options, initial.enrollment.payload.lease_ref.artifact_id, (current, renew) => {
     const bundle = load(privateFile, options), subject = bundle.enrollment.payload;
+    assertCurrentChannel(bundle);
     assertSettled(bundle.options, bundle.bundle.lease.payload, current.view);
-    const requests = records(bundle.store, "method-control-requests", subject).filter(item => sameRef(item.payload.enrollment_ref, bundle.enrollment.ref));
+    const requests = records(bundle.store, "method-control-requests", subject).filter(item => {
+      const enrollment = gate.read(bundle.store, item.payload.enrollment_ref, "method-control-enrollments", "method-control-enrollment", subject);
+      return sameRef(enrollment.payload.context_ref, subject.context_ref);
+    });
     need(requests.length < bundle.pocket.max_requests, "METHOD_CONTROL_BUDGET_EXHAUSTED");
     need(!requests.some(item => item.payload.tool_use_id === input.tool_use_id || item.payload.arguments.request_id === input.tool_input.request_id), "METHOD_CONTROL_REQUEST_REPLAY");
-    if (operation !== "method_report_after") need(require("./dispatch-runtime-controller").activeLease(bundle.options, identity(subject), now(bundle.options)).code === "LEASE_ACTIVE", "METHOD_CONTROL_ACTIVE_LEASE_REQUIRED");
+    if (operation !== "method_report_after") {
+      const selected = require("./dispatch-runtime-controller").activeLease(bundle.options, identity(subject), now(bundle.options));
+      need(selected.code === "LEASE_ACTIVE" && sameRef(selected.leaseRecord?.ref, bundle.bundle.lease.ref), "METHOD_CONTROL_ACTIVE_LEASE_REQUIRED");
+    }
     const recordedAt = now(bundle.options);
     const value = contract.identified("MethodControlRequest", { ...scope(subject), enrollment_ref: bundle.enrollment.ref,
       checkpoint_ref: current.checkpointRecord.ref, operation, arguments: input.tool_input, input_sha256: digest(input.tool_input), tool_use_id: input.tool_use_id,
@@ -393,4 +497,4 @@ function reconcile(privateFile, requestRef, options = {}) {
     return { delivery_ref: previous[0]?.ref || acknowledge(privateFile, options, request, receipt, "operator_reconcile", renew), ...contract.AUTHORITY };
   });
 }
-module.exports = { prepare, observeSession, inspectLaunch, enroll, load, appraiseEnrollment, preflight, postflight, execute, reconcile, assertSettled, assertWorkReady, operationFor };
+module.exports = { prepare, prepareContinuation, observeSession, inspectLaunch, enroll, load, appraiseEnrollment, preflight, postflight, execute, reconcile, assertSettled, assertWorkReady, operationFor };

@@ -201,9 +201,14 @@ context. A lost response holds work; only actual retained metadata may be
 reconciled. Never renew authority or rerun a task to repair delivery. SDK and
 synthetic-hook tests do not attest actual native client startup.
 Keep raw private-file/parser diagnostics on the trusted operator side; agents
-receive fixed non-secret error codes, never private contents or paths. In-place
-broker re-enrollment after resume is not implemented: settle/revoke the old
-lineage and obtain a newly reviewed successor wave instead of reusing its file.
+receive fixed non-secret error codes, never private contents or paths. Same-wave
+continuation needs a newly reviewed channel policy v0.2. Settle callbacks,
+actual after-reports and metadata delivery, then interrupt and inspect its exact
+checkpoint. Use `prepare-continuation` for a fresh private file; configure it,
+observe the exact native start, explicitly `resume`, then `enroll` that lease.
+Never reuse the old file or reset root deadlines, request IDs, metadata/task
+budgets or rule counters. Initial-only v0.1 needs a newly reviewed wave instead.
+Preserve unknown partial resume issuance; this channel does not repair it.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

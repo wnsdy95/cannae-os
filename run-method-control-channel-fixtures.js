@@ -30,6 +30,9 @@ async function main() {
     pass("legacy and pinned-modern SDK discovery work before native startup without enrollment, writes or authority");
     s.activate(env);
     const current = s.broker.load(env.privateFile);
+    const unreviewed = require("node:path").join(env.root, "unreviewed", "enrollment.json");
+    assert.throws(() => s.broker.prepareContinuation(env.privateFile, env.issued.checkpoint_ref, unreviewed, "resume"), /METHOD_CONTROL_CONTINUATION_NOT_REVIEWED/);
+    assert.equal(fs.existsSync(require("node:path").dirname(unreviewed)), false);
     assert.equal(current.observation.payload.session_binding.session_id, env.actor.sessionId);
     assert.equal(current.enrollment.payload.provider_startup_verified, false);
     const bound = fs.readFileSync(env.privateFile);

@@ -14,6 +14,10 @@ SDK transports, synthetic native callbacks and both skills distinguish dormant
 startup, exact enrollment and response delivery. These are local reference
 checks, not native agent-client startup attestation, semantic mission completion
 or protected production execution. No new military-source claim is made.
+Its optional channel policy v0.2 adds a finite observed-session continuation
+chain over existing dispatch interruption/supersession records. Shared counters
+and root expiry are reappraised by actual consumers; the SDK/synthetic-provider
+fixtures are not independent process or complete resume-recovery evidence.
 
 The [method runtime](method-deviation-runtime.md) is local engineering synthesis
 of the existing mission-command, disciplined-initiative, intent, adoption,

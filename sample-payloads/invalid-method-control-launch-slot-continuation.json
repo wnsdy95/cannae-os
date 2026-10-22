@@ -1,0 +1,50 @@
+{
+  "schema_version": "0.2",
+  "type": "MethodControlLaunchSlot",
+  "mission_id": "MIS-FIXTURE",
+  "wave_id": "W1",
+  "agent_id": "fixture-agent",
+  "provider": "codex",
+  "plan_ref": {
+    "artifact_id": "MWP-FIXTURE",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MWP-FIXTURE.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "context_ref": {
+    "artifact_id": "ACP-FIXTURE",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/ACP-FIXTURE.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "policy_ref": {
+    "artifact_id": "DTP-FIXTURE",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DTP-FIXTURE.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "repository_key": "fixture",
+  "repository_identity_fingerprint": "2222222222222222222222222222222222222222222222222222222222222222",
+  "server_name": "cannae_method_fixture",
+  "runtime_sha256": "4c3f801b326379d54e692cb22a9607088da768c83c7c0d55d424186e5b9dd838",
+  "launch_descriptor_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "credential_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+  "identity_assurance": "local_operator_enrollment_reference",
+  "provider_startup_verified": false,
+  "recorded_at": "2026-10-22T00:00:10.000Z",
+  "expires_at": "2026-10-22T00:10:00.000Z",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "id": "MCTL-9baf4b5237340111eb0b756fd2b2dda960c98c99",
+  "root_launch_slot_ref": {
+    "artifact_id": "MCTL-c30dc662ea7e750e98d13e8edb4ec942cdadd19e",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-c30dc662ea7e750e98d13e8edb4ec942cdadd19e.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "predecessor_enrollment_ref": {
+    "artifact_id": "MCTL-01fc2b77007e64390f938442f875615716adc733",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-01fc2b77007e64390f938442f875615716adc733.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "continuation_index": 1,
+  "expected_source": "resume"
+}

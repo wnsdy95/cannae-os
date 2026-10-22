@@ -2,6 +2,16 @@
 
 ## Local Method Metadata Transport (2026-10-23)
 
+The subsequent reviewed channel policy v0.2 permits finite same-wave handoffs
+without rebinding an old private file. A new slot binds the exact interruption,
+predecessor enrollment and immutable root deadline; startup observation must
+precede an actual resumed lease. Root request IDs/budgets and task-policy/rule
+counters survive the session change. Missing actual reports or delivery and
+unknown effects block preparation, while schema-valid branching or extended
+deadlines block work. This is local engineering synthesis over the existing
+contracts, not new military authority or native startup attestation. Partial
+dispatch-resume transaction recovery remains a separate gap.
+
 The [local method channel](method-control-channel.md) uses the official pinned
 MCP SDK rather than treating a tool prefix or discovery message as authority.
 Official [protocol-era guidance](https://ts.sdk.modelcontextprotocol.io/v2/migration/support-2026-07-28)

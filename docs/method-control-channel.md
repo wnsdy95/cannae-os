@@ -75,10 +75,59 @@ expiry. A manually issued lease or a control-tool prefix does not replace that
 chain. Do not invent the provider session ID before startup, share a slot across
 agents, or replay `SessionStart` with a new identity. Resume/fork/clear are not
 initial enrollment and do not rotate, renew or rebind it automatically.
-In-place re-enrollment of a resumed broker-enabled lease is not yet implemented.
-Settle delivery/results and revoke or otherwise terminate the prior lineage,
-then obtain a newly reviewed successor wave; do not issue a resumed lease and
-treat the old enrollment as authority for it.
+An initial-only channel policy v0.1 cannot be reused for a resumed lease.
+Only a newly reviewed channel policy v0.2 may enable the separate continuation
+procedure below. The old private file is never rebound.
+
+## Reviewed Same-Wave Continuation
+
+Before full-plan adoption, a channel policy v0.2 must contain
+`continuation: { "mode": "observed_session_lineage", "max_handoffs": N }`,
+where `N` is 1 through 16. Every receiver acknowledges that exact pocket.
+The policy's root deadline and metadata request count survive all handoffs.
+For this explicit profile, task-policy total admissions and per-rule uses are
+also counted over the same plan/context/policy lineage, not reset per lease.
+Legacy channel policy v0.1 retains its initial-only semantics.
+
+The trusted operator first finishes all admitted callbacks, actual after-reports
+and metadata delivery, then explicitly interrupts the old lease. Unknown tool
+effects, gateway obligations, drift, scope changes, pending work or missing
+reports cannot become a continuation. Inspect the exact interruption checkpoint
+and retain its reference JSON outside captured repository state.
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_controls_channel.js \
+  prepare-continuation --previous-file /absolute/private-old/enrollment.json \
+  --checkpoint-ref /absolute/review/interruption-ref.json \
+  --private-file /absolute/private-next/enrollment.json --source resume
+```
+
+The result creates one dormant slot and a fresh owner-only file without issuing
+or resuming task authority. Sources are exactly `resume`, `clear` or `fork`.
+Configure the returned server descriptor and new hook enrollment path before
+the new native start; never give those configuration operations to the agent.
+After its actual start, use `describe --private-file ...` to inspect the exact
+own-slot observation and session binding. Do not invent its session ID.
+
+Run the ordinary dispatch `resume` against the predecessor lease using that
+observed binding, then `enroll` the new file against the exact resulting lease.
+The work gate requires its real supersession chain, original plan/context/
+policy and reviewed method progress before another task. It rejects branch
+slots, retrospective observations and extended deadlines even when individually
+schema-valid. Old control files cannot admit new requests, including when a
+provider reuses the same session identifier. Neutral delivery of old retained
+results remains possible. No method, role, tool or release scope expands.
+
+An exhausted control budget prevents new metadata calls; an exhausted task
+budget blocks task admission without pretending that the intended action is
+scope drift. Neither budget can be reset by another channel, session or nonce.
+Use a newly reviewed wave if new resources or scope are needed.
+
+Preserve partial private/public publications and inspect real retained state
+before recovery. This metadata path does not repair the dispatch controller's
+separate partial-resume transaction if it superseded the old lease but failed
+before producing a complete new lease/checkpoint. Do not replay that unknown
+issuance, invent checkpoints or overwrite a bound file to clear it.
 
 No global client configuration is silently modified. Codex and Claude maintain
 different configuration formats; a launch descriptor is not evidence that a

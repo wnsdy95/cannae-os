@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.2",
+  "type": "MethodControlSessionObservation",
+  "mission_id": "MIS-FIXTURE",
+  "wave_id": "W1",
+  "agent_id": "fixture-agent",
+  "launch_slot_ref": {
+    "artifact_id": "MCTL-fd5e3bdc45540fdd967de6cd77a7c9b822f6f4e3",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-fd5e3bdc45540fdd967de6cd77a7c9b822f6f4e3.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "provider": "codex",
+  "session_binding": {
+    "session_id": "fixture-session",
+    "provider_agent_id": "main"
+  },
+  "source": "startup",
+  "provider_startup_verified": false,
+  "recorded_at": "2026-10-22T00:00:11.000Z",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "id": "MCTL-9fee0e6c105b298faf5f43b2966a481504491976"
+}

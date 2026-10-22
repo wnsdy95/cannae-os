@@ -23,7 +23,7 @@
   "repository_key": "fixture",
   "repository_identity_fingerprint": "2222222222222222222222222222222222222222222222222222222222222222",
   "server_name": "cannae_method_fixture",
-  "runtime_sha256": "dc82f880020a48ec904276078db5ee9a2e26314c8257f81c3911fc13264ca787",
+  "runtime_sha256": "4c3f801b326379d54e692cb22a9607088da768c83c7c0d55d424186e5b9dd838",
   "launch_descriptor_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
   "credential_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
   "identity_assurance": "local_operator_enrollment_reference",
@@ -34,5 +34,5 @@
   "continuation_authorized": false,
   "release_authorized": true,
   "human_final_decision_authority": "USER",
-  "id": "MCTL-85865522a00a78e81327633696426499195b4563"
+  "id": "MCTL-36bdcfe99c9f549b7ea04b34436d46b21fe60b26"
 }

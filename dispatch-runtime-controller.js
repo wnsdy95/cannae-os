@@ -714,6 +714,17 @@ function admissionRecords(view, leaseRef, missionId, waveId) {
     .sort((left, right) => left.payload.sequence - right.payload.sequence);
 }
 
+function admissionBudgetHistory(view, lease, context, policy) {
+  if (context.payload.method_assignment?.broker?.schema_version !== "0.2") {
+    return admissionRecords(view, lease.ref, lease.payload.mission_id, lease.payload.wave_id);
+  }
+  return leaseRecords(view, lease.payload.mission_id, lease.payload.wave_id)
+    .filter(item => item.payload.agent_id === lease.payload.agent_id && item.payload.provider === lease.payload.provider &&
+      sameRef(item.payload.plan_ref, lease.payload.plan_ref) && sameRef(item.payload.context_pack_ref, context.ref) &&
+      sameRef(item.payload.tool_policy_ref, policy.ref))
+    .flatMap(item => admissionRecords(view, item.ref, item.payload.mission_id, item.payload.wave_id));
+}
+
 function latestCheckpoint(view, leaseRecord) {
   const checkpoints = checkpointRecords(
     view,
@@ -752,6 +763,13 @@ function dispatchLeaseHistory(view, leaseRef) {
     }
   }
   return { lease, latest, checkpoints };
+}
+
+function inspectDispatchHistory(store, leaseRef) {
+  const view = require("./effect-settlement-proof").historicalRuntimeView(store), history = dispatchLeaseHistory(view, leaseRef);
+  return { ...history, pending_tool_requests: pendingAdmissions(view, history.lease).length,
+    unresolved_tool_effects: leaseRecords(view).reduce((total, lease) => total + unresolvedToolEffectRecords(view, lease).length, 0),
+    unresolved_gateway_transactions: gatewayObligations(view).length };
 }
 
 function unknownToolEffectRecords(view, leaseRecord) {
@@ -1254,7 +1272,7 @@ function admitToolRequest(options, identity, hookInput) {
     const ownershipCode = gatewayDispatchCode(options, view, leaseRecord.ref, hookInput.tool_use_id, "admit");
     if (ownershipCode) return inMemoryDenial(ownershipCode);
     const policyRecord = policyForLease(view, leaseRecord);
-    contextForLease(view, leaseRecord);
+    const contextRecord = contextForLease(view, leaseRecord);
     const now = nowIso(options);
     policyValidity(policyRecord.payload, loadArtifactRef(view, leaseRecord.payload.context_pack_ref).payload, now);
     if (leaseRecord.payload.repository_binding.repository_key !== view.repository.key ||
@@ -1306,7 +1324,8 @@ function admitToolRequest(options, identity, hookInput) {
         state.head_commit !== leaseRecord.payload.initial_repository_state.head_commit) {
       return inMemoryDenial("REPOSITORY_HEAD_DRIFT");
     }
-    const allowedCount = admissions.filter(item => item.payload.decision === "allow").length;
+    const budgetHistory = admissionBudgetHistory(view, leaseRecord, contextRecord, policyRecord);
+    const allowedCount = budgetHistory.filter(item => item.payload.decision === "allow").length;
     if (allowedCount >= leaseRecord.payload.request_budget ||
         allowedCount >= policyRecord.payload.max_total_admissions) {
       return inMemoryDenial("LEASE_REQUEST_BUDGET_EXHAUSTED");
@@ -1316,8 +1335,11 @@ function admitToolRequest(options, identity, hookInput) {
       hookInput.tool_name,
       hookInput.tool_input,
       view.repository.root,
-      admissions
+      budgetHistory
     );
+    if (contextRecord.payload.method_assignment?.broker?.schema_version === "0.2" && selection.code === "TOOL_RULE_BUDGET_EXHAUSTED") {
+      return inMemoryDenial(selection.code);
+    }
     const method = require("./method-deviation-gate").assessMethodRequest(options, leaseRecord, checkpointRecord, selection.rule, hookInput, view);
     const decision = selection.rule && !method.code ? "allow" : "deny";
     const event = admissionEvent(leaseRecord, checkpointRecord, policyRecord, identity, hookInput, {
@@ -1998,6 +2020,7 @@ function main() {
 }
 
 module.exports = {
+  inspectDispatchHistory,
   compiledPolicyContext,
   withDispatchControlLock,
   historicalDispatchStatus,

@@ -34,6 +34,14 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["method channel continuation", "Review and validate bounded same-wave method channel continuation preserving budgets, reports, and interruption lineage"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["method-control-channel"]);
+    assert.strictEqual(result.capability_routing.status, "covered");
+    assert.strictEqual(result.capability_routing.provisional_organization.required, false);
+    assert(result.recommended_documents.some(item => item.path === "docs/method-control-channel.md"));
+    assert(result.validation_commands.includes("node run-method-control-contract-fixtures.js"));
+  }
   for (const query of ["operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["local-operator-console"]);

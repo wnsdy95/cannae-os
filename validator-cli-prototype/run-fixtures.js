@@ -11,6 +11,14 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...[["method-control-channel-policy", "MISSING_REQUIRED"], ["method-control-launch-slot", "MISSING_REQUIRED"],
+    ["method-control-session-observation", "ENUM_MISMATCH"]].flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({
+      name: `${prefix} non-authorizing continuation ${type}`, file: `sample-payloads/${prefix}-${type}-continuation.json`, type,
+      exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code]
+    }))),
+  { name: "initial-only policy cannot carry a continuation capability", file: "sample-payloads/valid-method-control-channel-policy-continuation.json",
+    type: "method-control-channel-policy", exitCode: 1, expectedCanExecute: false,
+    mutate(value) { value.schema_version = "0.1"; }, requiredCodes: ["NOT_SCHEMA_MATCH"] },
   ...["method-control-channel-policy", "method-control-launch-slot", "method-control-session-observation", "method-control-enrollment",
     "method-control-request", "method-control-receipt", "method-control-delivery", "method-control-response"]
     .flatMap(type => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,

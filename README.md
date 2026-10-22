@@ -126,7 +126,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 ### Authority, Risk, Release, And Security
 
 - [Disciplined Method Runtime](docs/method-deviation-runtime.md): reviewed exact-input alternatives, before/after SITREPs, canonical event order, actual drift fences/revocation and guarded completion/report consumers. Whole control-record copies are not task outputs. Novel methods, recovery and universal rollout remain open.
-- [Local Method Control Channel](docs/method-control-channel.md): newly reviewed v0.2 method policies, dormant stdio startup, exact session/lease enrollment and three bounded agent metadata tools. Lost responses hold work; local enrollment is not native startup attestation or production isolation.
+- [Local Method Control Channel](docs/method-control-channel.md): reviewed method/channel policies, dormant stdio startup, exact initial and continuation enrollment, shared root budgets/deadline and three bounded agent metadata tools. Lost responses hold work; local enrollment is not native startup attestation or production isolation.
 - [Tool Use ROE](docs/tool-use-roe.md): Green, Amber, Red, and Black tool-use boundaries.
 - [Approval Scope Policy](docs/approval-scope-policy.md): single-use approvals, expiry, rollback, evidence, renewal, revocation, and delegation.
 - [Risk Acceptance Authority](docs/risk-acceptance-authority.md): residual risk acceptance and commander-retained authority.

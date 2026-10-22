@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const assert = require("node:assert/strict");
 const { validatePayload } = require("./validator-cli-prototype/validate");
-const contract = require("./method-control-contract"), { samples, clone, rekey, policy } = require("./method-control-fixtures/contracts");
+const contract = require("./method-control-contract"), { samples, continuationSamples, continuationPolicy, clone, rekey, policy } = require("./method-control-fixtures/contracts");
 let passed = 0;
 const check = (name, fn) => { fn(); passed++; console.log(`PASS ${name}`); };
 const values = samples();
@@ -58,5 +58,33 @@ check("an empty rationale, unknown operation and oversized input are denied", ()
   assert.throws(() => contract.assertArguments("method_propose", { request_id: "a", step_id: "b", method_id: "c", rationale: " " }), /METHOD_CONTROL_ARGUMENTS_INVALID/);
   assert.throws(() => contract.assertArguments("release", { request_id: "a" }), /METHOD_CONTROL_ARGUMENTS_INVALID/);
   assert.throws(() => contract.assertArguments("method_propose", { request_id: "a", step_id: "b", method_id: "c", rationale: "x".repeat(2049) }), /METHOD_CONTROL_ARGUMENTS_INVALID/);
+});
+for (const [type, value] of Object.entries(continuationSamples())) check(`${type} has an explicit non-authorizing continuation version`, () => {
+  const result = validatePayload(value, type); assert.equal(result.valid, true, JSON.stringify(result.issues)); assert.equal(result.can_execute, false);
+});
+check("old channel policies cannot gain continuation and new policies cannot omit it", () => {
+  const value = continuationPolicy(); value.schema_version = "0.1";
+  assert.equal(validatePayload(value, "method-control-channel-policy").valid, false);
+  delete value.continuation; value.schema_version = "0.2";
+  assert.equal(validatePayload(value, "method-control-channel-policy").valid, false);
+});
+check("handoff count and mode cannot expand beyond the reviewed finite policy", () => {
+  for (const mutate of [value => { value.continuation.max_handoffs = 0; }, value => { value.continuation.max_handoffs = 17; },
+    value => { value.continuation.mode = "renew_unlimited"; }, value => { value.continuation.extra_budget = 100; }]) {
+    const value = continuationPolicy(); mutate(value); assert.equal(validatePayload(value, "method-control-channel-policy").valid, false);
+  }
+});
+check("continuation slots require all lineage fields and legacy slots reject every such field", () => {
+  const value = continuationSamples()["method-control-launch-slot"];
+  for (const field of ["root_launch_slot_ref", "predecessor_enrollment_ref", "interruption_checkpoint_ref", "continuation_index", "expected_source"]) {
+    const missing = clone(value); delete missing[field]; assert.equal(validatePayload(rekey(missing), "method-control-launch-slot").valid, false);
+    const legacy = { ...samples()["method-control-launch-slot"], [field]: value[field] };
+    assert.equal(validatePayload(rekey(legacy), "method-control-launch-slot").valid, false);
+  }
+});
+check("session sources cannot downgrade a continuation observation to initial startup", () => {
+  const value = continuationSamples()["method-control-session-observation"];
+  assert.equal(validatePayload(rekey({ ...value, source: "startup" }), "method-control-session-observation").valid, false);
+  assert.equal(validatePayload(rekey({ ...value, schema_version: "0.1" }), "method-control-session-observation").valid, false);
 });
 console.log(JSON.stringify({ total: passed, passed, failed: 0, scope: "Pure contract checks only; these do not establish live broker, native provider identity or task execution." }, null, 2));
