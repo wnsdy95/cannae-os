@@ -23,6 +23,19 @@ blocks, CoS decision consumption and complete goal 4 remain unfinished.
 
 ## Local Issuance Transactions (2026-10-23)
 
+Full consumer integration distinguishes historical replay from current grants:
+mandatory new-context rules must not prevent neutral settlement of an already
+admitted legacy result. Resume/publication retain specific terminal, stop and
+reconciled-failure holds before generic conflicts. Reappraisal of
+repository-wide gateway/effect obligations also applies at actual publication,
+including a different wave's obligation arriving after initial appraisal.
+The existing publication-race regression retains its specific denial assertion;
+an exact case filter diagnoses it without silently accepting an empty selection.
+Stronger early rejection of
+unobserved startup or unknown effects is tested for no partial publications,
+not relaxed to reproduce an obsolete unsafe sequence. These checks supplement,
+not replace, full exact-source CI and the wider unfinished program.
+
 A reproduced core resume failure could retain predecessor supersession without
 its successor. Work stayed denied, but the original input was not retained for
 exact recovery. The [issuance protocol](dispatch-issuance-recovery.md) now freezes

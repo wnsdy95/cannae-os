@@ -25,6 +25,13 @@ after generic final-resolution journal recovery. Copied-runtime fixtures retain
 the denial without discarding admitted results or valid unchanged recovery.
 This is local engineering synthesis, not a new military-source claim,
 authenticated USER ceremony or protected execution attestation.
+Historical legacy result settlement remains distinct from live context
+eligibility. Full supervisor, gateway/effect, intent, channel and lifecycle
+consumers verify specific hold precedence and pre-issuance no-write rejection;
+issuance-only fixtures cannot establish their compatibility.
+Actual lease-publication races also reappraise repository-wide gateway/effect
+holds, not only the issuing wave. Exact fixture selection rejects an unknown
+case; a filtered pass is not the complete gateway suite.
 
 The [local method channel](method-control-channel.md) applies the official SDK,
 Codex hooks/MCP and Claude hook-provenance interfaces listed below to existing

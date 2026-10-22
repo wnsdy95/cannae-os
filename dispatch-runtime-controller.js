@@ -704,7 +704,8 @@ function issuanceProgress(view, request, resolutions) {
       Math.min(policyValidity(policy.payload, context.payload, planned.issued_at), timestamp(planned.issued_at, "Frozen issuance") + policy.payload.lease_ttl_seconds * 1000),
   "DISPATCH_ISSUANCE_SCOPE_INVALID");
   assertPolicyAuthorization(policy.payload, { context, plan, agent });
-  require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
+  // Historical legacy contexts remain result-settleable; live consumers require v0.4.
+  if (context.payload.schema_version === "0.4") require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
   require("./method-deviation-contract").assertMethodPolicy(plan.payload, policy.payload);
   const observed = observedChannelBinding(before, planned, value.interruption_checkpoint_ref);
   issuanceNeed(sameRef(value.channel_observation_ref, observed?.observation.ref || NONE_REF) &&
@@ -809,6 +810,17 @@ function issuancePublicationGuard(options, request, view, locks, cancellation = 
   const expected = manifestDigest(view.manifest), value = request.payload || request;
   return snapshot => {
     locks.forEach(assertRepositoryLease);
+    if (!cancellation) {
+      const live = storeView(options), previousRef = value.planned_lease.previous_lease_ref;
+      if (!isNoneRef(previousRef)) {
+        const previous = leaseRecords(live).find(item => sameRef(item.ref, previousRef));
+        issuanceNeed(previous, "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
+        issuanceNeed(!reconciledFailureState(live, previous).checkpoint_refs.length, "RECONCILED_FAILED_AGENT");
+      }
+      contextBundle(options, loadArtifactRef(live, value.planned_lease.tool_policy_ref, "dispatch-tool-policy").payload);
+      issuanceNeed(!gatewayObligations(live).length, "UNRESOLVED_GATEWAY_TRANSACTIONS");
+      issuanceNeed(!leaseRecords(live).some(item => unresolvedToolEffectRecords(live, item).length), "UNRESOLVED_TOOL_EFFECTS");
+    }
     issuanceNeed(snapshot.manifest && manifestDigest(snapshot.manifest) === expected, "DISPATCH_ISSUANCE_STATE_CHANGED");
     const current = timestamp(nowIso(options), "Issuance publication time");
     issuanceNeed(current >= timestamp(value.recorded_at, "Issuance request time"), "DISPATCH_ISSUANCE_CLOCK_ROLLBACK");
@@ -825,10 +837,20 @@ function interruptedForIssuance(options, view, previousRef) {
   const previous = leaseRecords(view).find(item => sameRef(item.ref, previousRef));
   issuanceNeed(previous, "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
   const checkpoint = latestCheckpoint(view, previous);
+  issuanceNeed(!reconciledFailureState(view, previous).checkpoint_refs.length, "RECONCILED_FAILED_AGENT");
+  const operationOptions = { ...options, artifactRoot: view.artifactRoot }, policy = policyForLease(view, previous).payload;
+  require("./skill-mission-controller").assertWaveNotTerminated(operationOptions, previous.payload.mission_id, previous.payload.wave_id);
+  const plan = loadArtifactRef(view, previous.payload.plan_ref, "mission-wave-plan");
+  require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, operationOptions);
+  require("./order-revision-controller").assertRevisionDispatch(plan.payload, operationOptions, view);
+  const intent = require("./intent-continuity-contract").assertIntentContext(contextForLease(view, previous).payload, plan.payload);
+  require("./intent-continuity-contract").assertIntentPolicy(policy, intent);
+  require("./method-deviation-gate").assertNoMethodDrift(options, previous.payload.mission_id, view);
+  require("./method-control-broker").assertSettled(options, previous.payload, view);
+  issuanceNeed(!gatewayObligations(view).length, "UNRESOLVED_GATEWAY_TRANSACTIONS");
+  issuanceNeed(!unresolvedToolEffectRecords(view, previous).length, "UNRESOLVED_TOOL_EFFECTS");
   if (checkpoint.payload.lease_status !== "interrupted") throw new Error("Only an interrupted lease can be resumed.");
   issuanceNeed(pendingAdmissions(view, previous).length === 0, "DISPATCH_ISSUANCE_PENDING_TOOL_REQUEST");
-  issuanceNeed(!reconciledFailureState(view, previous).checkpoint_refs.length, "RECONCILED_FAILED_AGENT");
-  require("./method-control-broker").assertSettled(options, previous.payload, view);
   const bundle = require("./method-deviation-gate").scopeForLease(view, previous.ref);
   if (bundle.agent) issuanceNeed(require("./method-deviation-gate").methodState(view, bundle.plan, previous.payload.agent_id).pending_reports.length === 0,
     "DISPATCH_ISSUANCE_METHOD_REPORT_PENDING");

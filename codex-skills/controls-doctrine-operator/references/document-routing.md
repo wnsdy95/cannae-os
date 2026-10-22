@@ -9,6 +9,12 @@ snapshot never proves worker liveness, task completion or tool eligibility.
 Never clear a hold by editing the view or recovering issuance during a read;
 follow its owning controller. COP JSON is control metadata, not work evidence.
 
+At lease issuance, inspect repository-wide gateway and unknown-effect holds,
+including other waves. A new session/wave cannot clear them. Publication must
+retain the specific hold before a generic manifest conflict. Use the exact
+gateway regression filter for diagnosis only; unknown filters must fail and a
+filtered pass never replaces the full consuming suites.
+
 For a real local evidence workspace, route to `docs/local-operator-console.md`
 and `scripts/serve_controls_operator.js`; validate with
 `node run-operator-console-fixtures.js`. The human creates the owner account.
@@ -239,6 +245,11 @@ already-admitted results and explicitly revoke unused authority; never renew
 bindings or replay work to hide the denial.
 Diagnose dispatch denials by their exact reason code; changed prose is not a
 different authority state or permission to retry with new bindings.
+Require full supervisor, gateway, intent, channel and lifecycle regressions
+after changing issuance. Preserve specific stop/failure reasons and legacy
+result settlement separately from new authority. When a stricter guard rejects
+earlier, prove its exact denial and absence of publications; do not weaken the
+guard or broaden an expected-error regex to simulate the old unsafe sequence.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report
