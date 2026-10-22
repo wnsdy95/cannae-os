@@ -111,7 +111,9 @@ without choosing an external provider or claiming goal 8 complete. A production
 deployment still needs protected identity/key custody, TLS, OS/process
 isolation, exclusive gateway paths, external coordination/fencing, independent
 monitoring and recovery evidence. Exact authenticated one-use order decisions
-now reach the controller; goal 7 still needs broader tool approvals, explicit
+now reach the controller. The worker queue confirms actual exit before response,
+next-job admission or private-service shutdown; timeout alone cannot release it.
+This is not decision-effect reconciliation; goal 7 still needs broader tool approvals, explicit
 interrupted-decision reconciliation, integrated COP and complete workflows.
 
 ## Validation And Sources

@@ -54,6 +54,22 @@ state directory. A publication attempt with an unknown outcome holds the exact
 proposal against another local decision. Completed records are not undone by
 logout, and login never renews their validity.
 
+The console's bounded worker queue holds both its response and the next job
+until it observes the current worker's actual `exit` event. A success message
+is provisional until then; a worker error can still invalidate it. Timeout,
+`terminate()` invocation, a failed termination request or an unconfirmed promise
+never proves stopped. Termination failure retains queue capacity and the
+shutdown fence, rather than opening a parallel decision path. Shutdown rejects
+unstarted jobs and waits for the active worker's exit before releasing the
+private decision-service ownership or closing its database. No hard wall-clock
+exit bound is claimed when the runtime cannot confirm termination.
+
+Worker exit proves only that this local worker no longer runs. It does not
+establish which consent, decision or adoption publications became durable,
+settle external effects, clear a reconciliation hold or renew approval. A
+timeout after publication can coexist with a retained `applied` action; inspect
+its actual state and history rather than infer failure or replay the decision.
+
 This increment exposes those holds but does not yet supply an administrative
 discharge operation. Inspect the real manifest and controller outcome; do not
 edit the database, clear the hold, replay a retained nonce or infer nonexecution
@@ -79,6 +95,17 @@ and browser flows. Exercise actual controller/lifecycle consumption, unselected
 or mismatched rehearsal, stale source/repository/manifest, wrong owner/session,
 expired or replayed nonce, reauthentication, simultaneous submission and partial
 publication. Do not create a real owner's account or decide real work in tests.
+
+Run `node run-operator-console-worker-fixtures.js` for real-thread exit and
+timeout checks plus controlled message/error/exit ordering, termination
+failure, capacity and shutdown tests. Controlled promises intentionally model
+misleading termination results; the console's real workers use Node's `Worker`
+and release only from its observed exit event, not the fixture's assertions.
+
+The underlying lifecycle behavior is documented in the versioned
+[Node.js worker API](https://nodejs.org/download/release/v22.22.3/docs/api/worker_threads.html#workerterminate).
+The queue's stricter observed-exit and hold rules are this project's engineering
+policy, not a guarantee of process isolation or protected custody from Node.
 
 This is an integration of [order adoption](order-adoption-and-plan-binding.md)
 and the [local console](local-operator-console.md), using the existing native

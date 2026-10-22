@@ -8,9 +8,9 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "local-operator-console",
-    keywords: ["operator consent", "operator-consent", "authenticated order review", "operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"],
+    keywords: ["operator consent", "operator-consent", "authenticated order review", "operator console", "local-operator-console", "operator worker", "worker exit", "interrupted owner decision", "evidence api", "viewer invitation", "serve_controls_operator"],
     docs: ["docs/local-operator-console.md", "docs/operator-consent-and-adoption.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
-    commands: ["node run-operator-console-fixtures.js", "node run-operator-consent-fixtures.js"]
+    commands: ["node run-operator-console-fixtures.js", "node run-operator-consent-fixtures.js", "node run-operator-console-worker-fixtures.js"]
   },
   {
     id: "orientation",

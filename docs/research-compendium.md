@@ -5653,3 +5653,12 @@ metadata, excluded even when copied or reformatted as an agent output.
 Interrupted publications retain a reconciliation-required hold; neither service
 restart nor a lost HTTP response automatically retries an approval. Broader
 tool approvals and explicit hold discharge remain separate work.
+
+The local worker queue now distinguishes a provisional message or termination
+request from an observed worker exit. It serializes the next job and defers
+response/shutdown ownership release until exit, retaining the fence if
+termination cannot be confirmed. Real-thread and controlled lifecycle tests
+cover that ordering. This is a local execution-liveness prerequisite, not
+proof of durable decision effects or an implemented reconciliation procedure;
+unknown outcomes remain held. Node's versioned worker documentation is indexed
+in the source map; these additional hold rules are project policy.

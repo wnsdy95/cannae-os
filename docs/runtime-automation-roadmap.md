@@ -135,7 +135,9 @@ Completion criteria:
 
 Status: partially implemented for authenticated local full-plan order adoption,
 rejection and revision with one-use password-reauthenticated consent and guarded
-controller consumption. Broader tool-action approval, interrupted-action
+controller consumption. The local worker queue now confirms actual exit before
+response, next-job admission or shutdown ownership release, but does not infer
+durable effects from that exit. Broader tool-action approval, interrupted-action
 reconciliation and protected production operation remain open.
 
 Goal:
