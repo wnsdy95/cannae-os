@@ -5,7 +5,12 @@
 Full consumer integration distinguishes historical replay from current grants:
 mandatory new-context rules must not prevent neutral settlement of an already
 admitted legacy result. Resume/publication retain specific terminal, stop and
-reconciled-failure holds before generic conflicts. Stronger early rejection of
+reconciled-failure holds before generic conflicts. Reappraisal of
+repository-wide gateway/effect obligations also applies at actual publication,
+including a different wave's obligation arriving after initial appraisal.
+The existing publication-race regression retains its specific denial assertion;
+an exact case filter diagnoses it without silently accepting an empty selection.
+Stronger early rejection of
 unobserved startup or unknown effects is tested for no partial publications,
 not relaxed to reproduce an obsolete unsafe sequence. These checks supplement,
 not replace, full exact-source CI and the wider unfinished program.

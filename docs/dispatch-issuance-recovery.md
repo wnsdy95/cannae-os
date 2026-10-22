@@ -26,8 +26,11 @@ scope, unknown effects and gateway obligations cannot be repaired by choosing
 another session or nonce. The actual tool gate still performs its own checks.
 
 Resume and publication preserve specific stop, terminated-wave, reconciled
-failure and gateway/effect holds before generic state conflicts. Historical
-legacy contexts can still settle already-admitted results and be revoked;
+failure and gateway/effect holds before generic state conflicts. The
+gateway/effect checks are repository-wide, including obligations introduced in
+another wave immediately before publishing a new lease. A new wave or session
+does not discharge those obligations; a denied publication retains no grant.
+Historical legacy contexts can still settle already-admitted results and be revoked;
 they never bypass the current mandatory-context guard for new calls or resume.
 Unobserved startup and known unknown effects deny before a successor is frozen.
 Tests must prove that early denial publishes nothing, not force an unsafe old

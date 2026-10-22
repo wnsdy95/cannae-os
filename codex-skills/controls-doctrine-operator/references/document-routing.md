@@ -1,5 +1,11 @@
 # Document Routing
 
+At lease issuance, inspect repository-wide gateway and unknown-effect holds,
+including other waves. A new session/wave cannot clear them. Publication must
+retain the specific hold before a generic manifest conflict. Use the exact
+gateway regression filter for diagnosis only; unknown filters must fail and a
+filtered pass never replaces the full consuming suites.
+
 For a real local evidence workspace, route to `docs/local-operator-console.md`
 and `scripts/serve_controls_operator.js`; validate with
 `node run-operator-console-fixtures.js`. The human creates the owner account.

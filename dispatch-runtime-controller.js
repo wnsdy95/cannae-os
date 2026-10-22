@@ -818,6 +818,8 @@ function issuancePublicationGuard(options, request, view, locks, cancellation = 
         issuanceNeed(!reconciledFailureState(live, previous).checkpoint_refs.length, "RECONCILED_FAILED_AGENT");
       }
       contextBundle(options, loadArtifactRef(live, value.planned_lease.tool_policy_ref, "dispatch-tool-policy").payload);
+      issuanceNeed(!gatewayObligations(live).length, "UNRESOLVED_GATEWAY_TRANSACTIONS");
+      issuanceNeed(!leaseRecords(live).some(item => unresolvedToolEffectRecords(live, item).length), "UNRESOLVED_TOOL_EFFECTS");
     }
     issuanceNeed(snapshot.manifest && manifestDigest(snapshot.manifest) === expected, "DISPATCH_ISSUANCE_STATE_CHANGED");
     const current = timestamp(nowIso(options), "Issuance publication time");

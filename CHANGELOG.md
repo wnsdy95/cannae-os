@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reappraise repository-wide gateway and unknown-effect holds before the generic issuance publication conflict, including obligations arriving in another wave. Preserve the existing exact denial/no-grant regression. An optional exact gateway fixture filter rejects unknown/empty selections; filtered checks are not full-suite acceptance. Both skills require cross-wave hold inspection.
+
 - Preserve supervisor/terminal/settlement denial reasons through journaled resume and publication guards; retain neutral legacy-context result settlement without enabling new calls. Verify stronger pre-issuance rejection of unobserved startup and unknown effects without partial publications. Both skills require the complete consuming regression families, not only issuance-specific fixtures; full acceptance remains separate.
 
 - Reappraise the issuance source-entry binding at actual new-call admission and its final allow-publication guard. Generic store recovery can restore final commit history but cannot authorize changed-source work. Preserve already-admitted results and explicit revocation, and verify unchanged final-resolution recovery with original nonce/expiry and no repeated task. Both skills distinguish historical commit recovery from current execution eligibility; this is not isolated execution attestation.
