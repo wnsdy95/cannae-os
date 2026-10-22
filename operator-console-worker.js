@@ -10,6 +10,12 @@ try {
   } else if (request.action === "inspect-decision") {
     if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
     result = require("./operator-consent-outcome").inspectDecisionOutcome(configuration, request.challenge_id);
+  } else if (request.action === "prepare-reconciliation") {
+    if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
+    result = require("./operator-reconciliation-executor").prepareReconciliation(configuration, request.action_id, request.manifest);
+  } else if (request.action === "execute-reconciliation") {
+    if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
+    result = require("./operator-reconciliation-executor").executeReconciliation(configuration, request.reconciliation_id);
   } else result = require("./operator-console-evidence").queryEvidence(configuration, user, request);
   parentPort.postMessage({ result });
 } catch (error) {

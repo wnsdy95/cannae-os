@@ -1,5 +1,6 @@
 const crypto = require("node:crypto");
-const { requireThat } = require("./operator-console-auth");
+const { requireThat, assertSafeRationale } = require("./operator-console-auth");
+const { openReconciliationService } = require("./operator-reconciliation-service");
 
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
 function openConsentService(auth, configuration) {
@@ -9,7 +10,12 @@ function openConsentService(auth, configuration) {
     session_hash TEXT NOT NULL, preview TEXT NOT NULL, proposal_key TEXT NOT NULL,
     created INTEGER NOT NULL, expires INTEGER NOT NULL, state TEXT NOT NULL, result TEXT);
     CREATE UNIQUE INDEX IF NOT EXISTS one_unresolved_operator_proposal ON operator_actions(proposal_key)
-      WHERE state IN ('executing','reconciliation_required');`);
+      WHERE state IN ('executing','reconciliation_required');
+    CREATE TABLE IF NOT EXISTS operator_reconciliations (
+      id TEXT PRIMARY KEY, action_id TEXT NOT NULL, nonce_hash TEXT NOT NULL, principal_id TEXT NOT NULL,
+      epoch INTEGER NOT NULL, session_hash TEXT NOT NULL, preview TEXT NOT NULL, created INTEGER NOT NULL,
+      expires INTEGER NOT NULL, state TEXT NOT NULL, authorization TEXT, original_row TEXT, result TEXT);
+    CREATE UNIQUE INDEX IF NOT EXISTS one_executing_operator_reconciliation ON operator_reconciliations(action_id) WHERE state='executing';`);
   const meta = key => db.prepare("SELECT value FROM meta WHERE key=?").get(key)?.value;
   const setMeta = (key, value) => db.prepare("INSERT OR REPLACE INTO meta VALUES (?,?)").run(key, value);
   function transaction(fn) {
@@ -27,6 +33,8 @@ function openConsentService(auth, configuration) {
     }
     db.prepare("UPDATE operator_actions SET state='reconciliation_required' WHERE state='executing'").run();
     db.prepare("UPDATE operator_actions SET state='invalidated' WHERE state='pending'").run();
+    db.prepare("UPDATE operator_reconciliations SET state='reconciliation_required' WHERE state='executing'").run();
+    db.prepare("UPDATE operator_reconciliations SET state='invalidated' WHERE state='pending'").run();
     if (!meta("operator-signing-key")) {
       const pair = crypto.generateKeyPairSync("ed25519");
       setMeta("operator-signing-key", pair.privateKey.export({ type: "pkcs8", format: "pem" }));
@@ -46,6 +54,7 @@ function openConsentService(auth, configuration) {
       result: row.result ? JSON.parse(row.result) : null, execution_authorized: false, release_authorized: false }; };
   return {
     instance,
+    reconciliation: openReconciliationService({ auth, configuration, owner, transaction, audit, hash }),
     publicKey() { return crypto.createPublicKey(meta("operator-signing-key")).export({ type: "spki", format: "pem" }); },
     prepare(session, preview) {
       const current = owner(session), id = preview.request.id.slice("OADR-".length), raw = crypto.randomBytes(32).toString("base64url");
@@ -67,8 +76,7 @@ function openConsentService(auth, configuration) {
     async reserve(session, input) {
       const current = owner(session);
       await auth.reauthenticate(session, input.password);
-      requireThat(![input.password, input.nonce, session.sessionId].some(secret => secret && input.rationale.includes(secret)),
-        "CONSOLE_RATIONALE_CONTAINS_SECRET");
+      assertSafeRationale(input, session);
       return transaction(() => {
         owner(session);
         const row = db.prepare("SELECT * FROM operator_actions WHERE id=?").get(input.challenge_id);
@@ -95,6 +103,8 @@ function openConsentService(auth, configuration) {
     list(session) { owner(session); return db.prepare("SELECT * FROM operator_actions ORDER BY created DESC LIMIT 100").all().map(view); },
     close() { transaction(() => { if (meta("operator-service-instance") === instance) {
       db.prepare("UPDATE operator_actions SET state='reconciliation_required' WHERE state='executing'").run();
+      db.prepare("UPDATE operator_reconciliations SET state='reconciliation_required' WHERE state='executing'").run();
+      db.prepare("UPDATE operator_reconciliations SET state='invalidated' WHERE state='pending'").run();
       setMeta("operator-service-pid", "0"); setMeta("operator-service-instance", "none");
     } }); },
     workerConfiguration: { ...configuration, stateDir: auth.root, serviceInstance: instance }

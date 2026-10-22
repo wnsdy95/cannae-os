@@ -431,7 +431,11 @@ and signature primitives plus existing historical proposal/adoption replay.
 publication boundaries and preserved holds. The shared `decisionForAction`
 template preserves the original decision payload rather than inventing a
 replacement approval during inspection. These are local engineering artifacts,
-not new military-source claims or implemented terminal reconciliation.
+not new military-source claims. `operator-terminal-reconciliation.md`, its two
+typed contracts and `operator-reconciliation-*` runtime add fresh authenticated
+local terminal consent, signed cancellation/acknowledgment evidence and guarded
+projection repair. The same local key is not independent signer quorum or
+protected runtime/custody evidence; production enforcement remains unproven.
 
 | Source / artifact | Military concept | Extracted principle | LLM application | Local documents |
 | --- | --- | --- | --- | --- |

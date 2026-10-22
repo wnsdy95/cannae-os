@@ -89,6 +89,8 @@ and credential rotation are not implemented in this increment.
 | `POST /api/order-decisions/preview`, `/api/order-decisions/commit` | Owner-only exact plan/evidence preview and short-lived one-use, session-bound password-reauthenticated decision. Calls the real adoption controller; no execution or release grant. |
 | `GET /api/order-decisions`, `/api/order-decisions/:id`, `/api/operator-key` | Owner-only bounded action history, exact interrupted outcome and public consent-verification key. No private key, password or raw nonce. |
 | `POST /api/order-decisions/:id/inspect` | Owner-only, CSRF-protected, empty-body read-only outcome replay against actual retained consent/decision/adoption history. Preserves action state and holds; never retries or discharges an approval. |
+| `POST /api/order-decisions/:id/reconciliation/preview`, `POST /api/reconciliations/commit` | Fresh owner/session-bound password-reauthenticated terminal review; guarded cancellation/receipt/private projection. Never replays original adoption. See [terminal reconciliation](operator-terminal-reconciliation.md). |
+| `GET /api/order-decisions/:id/reconciliations` | Owner-only terminal-attempt history with preserved original failure codes; no raw nonce, password, session or private key. |
 
 An entry ID binds mission, wave, kind, artifact ID, relative path and digest.
 It is not a caller-provided path. Unknown or unauthorized entries return no
@@ -114,8 +116,9 @@ isolation, exclusive gateway paths, external coordination/fencing, independent
 monitoring and recovery evidence. Exact authenticated one-use order decisions
 now reach the controller. The worker queue confirms actual exit before response,
 next-job admission or private-service shutdown; timeout alone cannot release it.
-This is not decision-effect reconciliation; goal 7 still needs broader tool approvals, explicit
-interrupted-decision reconciliation, integrated COP and complete workflows.
+This exit fence is separate from the [local order terminal ceremony](operator-terminal-reconciliation.md),
+which now requires fresh owner consent and signed cancellation/acknowledgment evidence.
+Goal 7 still needs broader tool approvals, integrated COP and complete workflows.
 
 ## Validation And Sources
 

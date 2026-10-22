@@ -11,6 +11,24 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...[["authorization", "CONST_MISMATCH"], ["record", "OPERATOR_RECONCILIATION_RECORD_SCOPE_INVALID"]]
+    .flatMap(([suffix, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing operator reconciliation ${suffix}`,
+      file: `sample-payloads/${prefix}-operator-reconciliation-${suffix}.json`, type: `operator-reconciliation-${suffix}`,
+      exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
+  { name: "terminal consent cannot invert its own validity", file: "sample-payloads/valid-operator-reconciliation-authorization.json", type: "operator-reconciliation-authorization",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.expires_at = value.created_at; }, requiredCodes: ["OPERATOR_RECONCILIATION_VALIDITY_INVALID"] },
+  { name: "terminal consent cannot substitute its original action", file: "sample-payloads/valid-operator-reconciliation-authorization.json", type: "operator-reconciliation-authorization",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.action_id = "0".repeat(8) + "-0000-0000-0000-000000000000"; }, requiredCodes: ["OPERATOR_RECONCILIATION_SCOPE_INVALID"] },
+  { name: "terminal cancellation cannot omit its exact decision", file: "sample-payloads/valid-operator-reconciliation-record.json", type: "operator-reconciliation-record",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.authorization.cancellation_decision = null; }, requiredCodes: ["OPERATOR_RECONCILIATION_CANCELLATION_INVALID"] },
+  { name: "nested terminal authorization cannot expand release authority", file: "sample-payloads/valid-operator-reconciliation-record.json", type: "operator-reconciliation-record",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.authorization.release_authorized = true; }, requiredCodes: ["CONST_MISMATCH"] },
+  { name: "terminal outcome cannot claim adoption with no record", file: "sample-payloads/valid-operator-reconciliation-authorization.json", type: "operator-reconciliation-authorization",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.subject.recorded_outcome = "applied"; }, requiredCodes: ["OPERATOR_RECONCILIATION_OUTCOME_INVALID"] },
+  { name: "prior cancellation acknowledgement requires its signed predecessor", file: "sample-payloads/valid-operator-reconciliation-record.json", type: "operator-reconciliation-record",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.authorization.resolution = "acknowledge_prior_cancellation"; }, requiredCodes: ["OPERATOR_RECONCILIATION_PRIOR_CANCELLATION_INVALID"] },
+  { name: "terminal receipt cannot be recorded after fresh consent expires", file: "sample-payloads/valid-operator-reconciliation-record.json", type: "operator-reconciliation-record",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.recorded_at = value.authorization.expires_at; }, requiredCodes: ["OPERATOR_RECONCILIATION_RECORD_TIME_INVALID"] },
   { name: "operator consent metadata cannot authorize execution", file: "sample-payloads/valid-operator-consent-record.json", type: "operator-consent-record", exitCode: 0, requiredCodes: [] },
   { name: "operator consent execution expansion is rejected", file: "sample-payloads/invalid-operator-consent-record.json", type: "operator-consent-record", exitCode: 1, requiredCodes: ["CONST_MISMATCH"] },
   { name: "operator consent cannot substitute its mission", file: "sample-payloads/valid-operator-consent-record.json", type: "operator-consent-record", exitCode: 1,

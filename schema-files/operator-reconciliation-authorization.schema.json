@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/operator-reconciliation-authorization.schema.json",
+  "title": "OperatorReconciliationAuthorization",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "reconciliation_id", "action_id", "mission_id", "wave_id", "created_at", "expires_at", "repository_binding", "principal_id", "principal_epoch", "authentication_method", "session_sha256", "nonce_sha256", "subject", "resolution", "rationale", "previous_result_sha256", "cancellation_decision", "signature", "human_final_decision_authority", "execution_authorized", "continuation_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "OperatorReconciliationAuthorization" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "reconciliation_id": { "type": "string", "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" },
+    "action_id": { "$ref": "#/properties/reconciliation_id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" }, "wave_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }, "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "repository_binding": { "$ref": "operator-consent-record.schema.json#/properties/repository_binding" },
+    "principal_id": { "$ref": "#/properties/reconciliation_id" }, "principal_epoch": { "type": "integer", "minimum": 1 },
+    "authentication_method": { "const": "local_owner_password_reauthentication" },
+    "session_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "nonce_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "subject": { "$ref": "#/$defs/subject" },
+    "resolution": { "enum": ["acknowledge_recorded", "cancel_unconsumed", "acknowledge_prior_cancellation"] },
+    "rationale": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "previous_result_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "cancellation_decision": { "oneOf": [{ "type": "null" }, { "$ref": "decision-log.schema.json" }] },
+    "signature": { "$ref": "operator-consent-record.schema.json#/properties/signature" },
+    "human_final_decision_authority": { "const": "USER" },
+    "execution_authorized": { "const": false }, "continuation_authorized": { "const": false }, "release_authorized": { "const": false }
+  },
+  "$defs": {
+    "subject": {
+      "type": "object", "additionalProperties": false,
+      "required": ["original_action_sha256", "request", "observed_manifest", "recorded_outcome", "consent_ref", "decision_ref", "adoption_ref", "adoption_status", "original_consent_expires_at", "source_state_sha256", "repository_state_sha256", "trusted_key_sha256", "attempts_sha256", "prior_cancellation_ref"],
+      "properties": {
+        "original_action_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "request": { "$ref": "order-adoption-decision-request.schema.json" },
+        "observed_manifest": { "$ref": "operator-consent-record.schema.json#/properties/observed_manifest" },
+        "recorded_outcome": { "enum": ["applied", "unconsumed_decision", "partial_consent", "no_adoption_recorded"] },
+        "consent_ref": { "$ref": "order-adoption-common.schema.json#/$defs/optional_ref" },
+        "decision_ref": { "$ref": "order-adoption-common.schema.json#/$defs/optional_ref" },
+        "adoption_ref": { "$ref": "order-adoption-common.schema.json#/$defs/optional_ref" },
+        "adoption_status": { "enum": ["none", "adopted", "rejected", "revision_required"] },
+        "original_consent_expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "source_state_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "repository_state_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "trusted_key_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "attempts_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "prior_cancellation_ref": { "$ref": "order-adoption-common.schema.json#/$defs/optional_ref" }
+      }
+    }
+  }
+}
