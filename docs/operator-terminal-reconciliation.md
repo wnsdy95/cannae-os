@@ -106,8 +106,11 @@ execution or discharge a hold. The live service separately verifies history and
 its private authenticated reservation. Generic schema validity also never
 verifies a signature or grants execution.
 
-Both new contracts are non-authorizing audit metadata. Reject them as agent
-work evidence even if copied under another artifact kind or reformatted. Keep
+Both new contracts are non-authorizing audit metadata. Reject whole JSON records
+as agent work evidence even if copied under another artifact kind, reformatted,
+or labeled as plain text/binary. The MIME label is not a trusted type assertion.
+Ordinary non-JSON work still reaches the independent report/tool gates; this
+does not prove arbitrary text's truth or detect every semantic disguise. Keep
 passwords, raw session IDs and nonces out of records; reject the supplied known
 secrets if repeated in the rationale. This check is not a general third-party
 secret detector. Evidence remains restricted under the configured repository's

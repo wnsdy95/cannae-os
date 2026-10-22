@@ -1033,8 +1033,13 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
       });
       const consentCopy = evidence.store.manifest.artifacts.some(entry => ["operator-consent-records", "operator-reconciliation-authorizations", "operator-reconciliation-records"]
         .includes(entry.kind) && entry.sha256 === evidence.entry.sha256);
-      const consentPayload = evidence.entry.content_type === "application/json" &&
-        require("./operator-reconciliation-contract").AUDIT_TYPES.has(readEntryPayload(evidence.store, evidence.entry)?.type);
+      // MIME is caller-declared; whole JSON control records remain metadata in text or binary files.
+      let evidencePayload;
+      try { evidencePayload = readEntryPayload(evidence.store, evidence.entry); }
+      catch (error) {
+        if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
+      }
+      const consentPayload = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type);
       if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || consentCopy || consentPayload) {
         throw new Error(`${result.agent_id} cites control metadata as execution evidence: ${evidence.entry.kind}.`);
       }

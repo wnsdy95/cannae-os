@@ -10,6 +10,11 @@ their invalid variants and the exact cancellation payload. Do not regenerate
 the older operator-consent or verifier samples as part of this change.
 Fixture signatures do not establish production issuer trust.
 
+The report boundary rejects whole JSON audit records even after reserialization
+into plain-text or binary-labeled file artifacts. A normal non-JSON text output
+must still reach the ordinary dispatch/report gates instead of being classified
+as control metadata. MIME and filenames are not evidence of work provenance.
+
 For actual local UI flows, make the externally installed Playwright module
 resolvable with `NODE_PATH`, then run:
 

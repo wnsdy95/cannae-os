@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reject whole JSON operator audit records as work evidence after MIME relabeling or file reserialization; ordinary non-JSON work still reaches the independent report gates. Cover plain-text/binary aliases and align both skill procedures. This does not claim semantic authenticity of arbitrary prose evidence.
+
 - Add a separate fresh owner-authenticated terminal ceremony for interrupted local order decisions. Preserve original failure/expiry, durably sign the exact private authorization, cancel unconsumed decisions or acknowledge an actual recorded result, retain a signed receipt, then update the private projection. Never replay adoption or reuse old terminal nonces; verify earlier cancellations/receipts after interruption. Add typed non-authorizing contracts, public-key audit CLI, UI/history and failure/race/browser fixtures; both skills distinguish this path from campaign/gateway settlement and new tool authority. Protected production operation and broader approvals remain open.
 
 - Add owner-only read-only inspection of exact signed consent, deterministic decision and replayed adoption history, including partial publication and lost-projection outcomes. Preserve holds and original expiry; expose no retry, repair or discharge operation. Reuse one pure decision template and shared synthetic test support, add outcome and desktop/mobile browser checks, and teach both skills to distinguish historical recorded outcomes from current authority. Fresh terminal consent/cancellation/receipts remain open.

@@ -11,6 +11,7 @@ const { createConsole } = require("./operator-console-server");
 const { DatabaseSync } = require("node:sqlite");
 const { openWave, recordWave } = require("./skill-mission-controller");
 const { decideOrder } = require("./order-adoption-controller");
+const { writeRepositoryFileArtifact } = require("./repository-artifact-store");
 const { environment, preview, commitInput, store, count, password, client } = require("./operator-consent-fixtures/support");
 const results = [];
 const { action, terminalPreview, terminalInput } = shared;
@@ -269,14 +270,23 @@ async function main() {
     const result = await env.owner.post("/api/reconciliations/commit", terminalInput(t));
     const record = JSON.parse(fs.readFileSync(path.join(env.options.artifactRoot, result.reconciliation_ref.relative_path))), opened = openWave(env.plan, env.options);
     const sample = require("./order-adoption-fixtures/support").sample("mission-wave-report");
-    for (const [index, payload] of [record, record.authorization, Object.fromEntries(Object.entries(record).reverse())].entries()) {
-      const id = `OUT-TERMINAL-METADATA-${index}`, stored = originalWrite({ repositoryPath: env.options.repository, artifactRoot: env.options.artifactRoot,
-        missionId: env.plan.mission_id, waveId: env.plan.wave_id, kind: "agent-outputs", artifactId: id, payload });
+    const variants = [{ payload: record }, { payload: record.authorization }, { payload: Object.fromEntries(Object.entries(record).reverse()) },
+      { payload: record, mime: "text/plain" }, { payload: record.authorization, mime: "application/octet-stream" },
+      { text: "Synthetic plain-text work output.\n", mime: "text/plain" }];
+    for (const [index, variant] of variants.entries()) {
+      const id = `OUT-TERMINAL-METADATA-${index}`, options = { repositoryPath: env.options.repository, artifactRoot: env.options.artifactRoot,
+        missionId: env.plan.mission_id, waveId: env.plan.wave_id, kind: "agent-outputs", artifactId: id };
+      let stored;
+      if (variant.mime) {
+        const sourcePath = path.join(env.root, `metadata-copy-${index}.txt`);
+        fs.writeFileSync(sourcePath, variant.text || JSON.stringify(variant.payload, null, 4) + "\n");
+        stored = writeRepositoryFileArtifact({ ...options, sourcePath, contentType: variant.mime });
+      } else stored = originalWrite({ ...options, payload: variant.payload });
       const report = { ...sample, id: `MWR-TERMINAL-METADATA-${index}`, mission_id: env.plan.mission_id, wave_id: env.plan.wave_id,
         plan_ref: opened.plan_ref, routing_preflight_ref: opened.routing_preflight_ref, recorded_at: new Date().toISOString(),
         agent_results: opened.context_packs.map(item => ({ ...sample.agent_results[0], agent_id: item.agent_id,
           context_pack_ref: item.context_pack_ref, evidence_refs: [{ artifact_id: id, relative_path: stored.relative_path, sha256: stored.sha256 }] })) };
-      assert.throws(() => recordWave(report, env.options), /control metadata as execution evidence/);
+      assert.throws(() => recordWave(report, env.options), variant.text ? /has no lease lineage/ : /control metadata as execution evidence/);
     }
   });
   console.log(JSON.stringify({ total: results.length, passed: results.filter(r => r.ok).length,

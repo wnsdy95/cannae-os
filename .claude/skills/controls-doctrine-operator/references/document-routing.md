@@ -48,6 +48,9 @@ Run `node run-operator-reconciliation-fixtures.js` plus the terminal browser
 flows and existing consent/adoption suites. The offline signature CLI explicitly
 does not verify artifact history or clear state. These contracts cannot settle
 campaign/gateway obligations, replace work evidence or grant new tools/release.
+Do not trust an evidence file's MIME or extension to distinguish work from
+control records: whole JSON audit metadata stays forbidden after plain-text or
+binary relabeling. This is not a semantic guarantee for arbitrary prose.
 
 For exact successor activation, read `docs/campaign-successor-admission.md`,
 its four request/proposal/admission schemas, `campaign-successor-controller.js`
