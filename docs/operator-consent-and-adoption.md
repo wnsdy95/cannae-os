@@ -70,11 +70,11 @@ settle external effects, clear a reconciliation hold or renew approval. A
 timeout after publication can coexist with a retained `applied` action; inspect
 its actual state and history rather than infer failure or replay the decision.
 
-This increment exposes those holds but does not yet supply an administrative
-discharge operation. Inspect the real manifest and controller outcome; do not
-edit the database, clear the hold, replay a retained nonce or infer nonexecution
-from a missing HTTP response. A later reconciliation contract must distinguish
-an already retained adoption from a decision never consumed.
+Outcome inspection never discharges those holds. For an exact interrupted local
+order decision, use the separate [authenticated terminal ceremony](operator-terminal-reconciliation.md).
+Do not edit the database, replay a retained nonce or infer nonexecution from a
+missing HTTP response. The terminal ceremony distinguishes an already retained
+adoption from an unconsumed decision and preserves both original failure and expiry.
 
 ### Inspect Actual Outcomes
 
@@ -105,8 +105,8 @@ This is historical outcome inspection, not current tool/adoption admission:
 expired consent remains expired, later scope changes are not overridden, and
 every execution, continuation, release and mutation flag stays false. A replayed
 `applied` outcome can coexist with `reconciliation_required` in private state.
-Fresh authenticated terminal reconciliation, safe old-decision cancellation,
-durable receipts and crash-safe hold discharge remain required next work.
+Fresh terminal reconciliation, exact cancellation, durable receipts and private
+hold discharge are provided by the separate terminal contract, not this read path.
 
 The service is still a local reference boundary. The same OS user can replace
 code or database contents and legacy filesystem/CLI paths remain available.

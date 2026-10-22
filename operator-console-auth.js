@@ -14,6 +14,11 @@ function deny(code, statusCode = 400) {
   throw error;
 }
 function requireThat(value, code, statusCode) { if (!value) deny(code, statusCode); }
+function assertSafeRationale(input, session) {
+  requireThat(typeof input.rationale === "string" && input.rationale.trim() && input.rationale.length <= 2000, "CONSOLE_RATIONALE_REQUIRED");
+  requireThat(![input.password, input.nonce, session.sessionId].some(secret => secret && input.rationale.includes(secret)),
+    "CONSOLE_RATIONALE_CONTAINS_SECRET");
+}
 function privateFile(file) {
   const stat = fs.lstatSync(file);
   requireThat(stat.isFile() && stat.nlink === 1 && stat.uid === process.getuid() &&
@@ -224,4 +229,4 @@ async function openAuthStore(directory, binding) {
   };
 }
 
-module.exports = { openAuthStore, privateDirectory, privateFile, requireThat, SESSION_MS };
+module.exports = { openAuthStore, privateDirectory, privateFile, requireThat, assertSafeRationale, SESSION_MS };

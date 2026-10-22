@@ -8,6 +8,7 @@ const { ADOPTION_TYPES, adoptionIssues } = require("../order-adoption-contract")
 const { REVISION_TYPES, revisionIssues } = require("../order-revision-contract");
 const { TYPES: INTENT_TYPES, intentIssues } = require("../intent-continuity-contract");
 const { consentIssues } = require("../operator-consent-contract");
+const { reconciliationIssues, TYPES: RECONCILIATION_TYPES } = require("../operator-reconciliation-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -137,6 +138,8 @@ function controlExecutionDescriptor(command) {
 
 const TYPE_TO_SCHEMA = {
   "operator-consent-record": "operator-consent-record.schema.json",
+  "operator-reconciliation-authorization": "operator-reconciliation-authorization.schema.json",
+  "operator-reconciliation-record": "operator-reconciliation-record.schema.json",
   ...Object.fromEntries([...INTENT_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...REVISION_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...ADOPTION_TYPES].map(type => [type, `${type}.schema.json`])),
@@ -6104,7 +6107,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) &&
       !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "operator-consent-record" &&
+      type !== "agent-context-pack" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6137,7 +6140,7 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...consentIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {
@@ -6154,6 +6157,16 @@ function validatePayloadInSnapshot(payload, type, options) {
     const [field, nestedType] = nested;
     issues.push(...validatePayload(payload[field], nestedType, options).issues
       .map(item => ({ ...item, path: `$.${field}${item.path.slice(1)}` })));
+  }
+  if (schemaResult.valid && type === "operator-reconciliation-authorization") {
+    issues.push(...validatePayload(payload.subject.request, "order-adoption-decision-request", options).issues
+      .map(item => ({ ...item, path: `$.subject.request${item.path.slice(1)}` })));
+  }
+  if (schemaResult.valid && type === "operator-reconciliation-record") {
+    for (const field of ["authorization", ...(payload.prior_authorization ? ["prior_authorization"] : [])]) {
+      issues.push(...validatePayload(payload[field], "operator-reconciliation-authorization", options).issues
+        .map(item => ({ ...item, path: `$.${field}${item.path.slice(1)}` })));
+    }
   }
   return validationResult(issues, type, payload);
 }

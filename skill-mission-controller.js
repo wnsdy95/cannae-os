@@ -40,6 +40,8 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "order-rehearsals",
   "order-adoption-records",
   "operator-consent-records",
+  "operator-reconciliation-authorizations",
+  "operator-reconciliation-records",
   "order-revision-proposals",
   "routing-preflight-bundles",
   "routing-preflights",
@@ -1029,8 +1031,10 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         waveId: report.wave_id,
         loadPayload: false
       });
-      const consentCopy = evidence.store.manifest.artifacts.some(entry => entry.kind === "operator-consent-records" && entry.sha256 === evidence.entry.sha256);
-      const consentPayload = evidence.entry.content_type === "application/json" && readEntryPayload(evidence.store, evidence.entry)?.type === "OperatorConsentRecord";
+      const consentCopy = evidence.store.manifest.artifacts.some(entry => ["operator-consent-records", "operator-reconciliation-authorizations", "operator-reconciliation-records"]
+        .includes(entry.kind) && entry.sha256 === evidence.entry.sha256);
+      const consentPayload = evidence.entry.content_type === "application/json" &&
+        require("./operator-reconciliation-contract").AUDIT_TYPES.has(readEntryPayload(evidence.store, evidence.entry)?.type);
       if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || consentCopy || consentPayload) {
         throw new Error(`${result.agent_id} cites control metadata as execution evidence: ${evidence.entry.kind}.`);
       }

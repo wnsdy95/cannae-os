@@ -2,6 +2,16 @@
 
 ## Authenticated Local Owner Decisions (2026-10-22)
 
+[Local terminal reconciliation](operator-terminal-reconciliation.md) adds fresh
+owner consent over exact original/terminal history, a signed private outbox,
+scope cancellation when adoption did not occur, then a signed receipt before
+private hold discharge. Retained cancellations are acknowledged rather than
+repeated after interruption; original failure and expiry are preserved. This is
+a local engineering contract, not new military-source authority or independently
+protected production identity/execution evidence. Same-key signatures do not
+form an independent quorum. Broader tool approvals, COP and production operation
+remain required.
+
 [Exact local owner consent](operator-consent-and-adoption.md) now reaches real
 plan adoption, rejection and revision through the existing controller. The
 finite one-use browser-session challenge, password reauthentication and guarded
@@ -11,7 +21,7 @@ separately pinned issuer keys are required for offline verification.
 
 Publication interruption preserves a durable hold, never automatic approval on
 restart. Login and viewer access do not grant decision authority. Legacy CLI
-USER logs remain unauthenticated; broader tool approvals, exact hold discharge,
+USER logs remain unauthenticated; broader tool approvals,
 operational COP and protected production infrastructure remain open.
 
 ## Mandatory Intent Continuity (2026-10-22)
@@ -5669,6 +5679,7 @@ partial consent, an unconsumed decision and a recorded disposition even when
 the private action is still held after interruption. Owner-only read-only
 SQLite and snapshot/key/source checks prevent inspection from mutating the
 decision. An expired historical consent is not renewed. This makes the actual
-outcome inspectable but does not yet implement fresh human terminal consent,
-old-decision cancellation, receipts or crash-safe hold discharge; those remain
-the next reconciliation requirements.
+outcome inspectable; fresh terminal consent, old-decision cancellation, receipts
+and guarded hold discharge belong to the separate
+[terminal ceremony](operator-terminal-reconciliation.md), not the read-only
+inspector. General tool/gateway/campaign holds are not interchangeable.

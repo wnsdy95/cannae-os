@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.1",
+  "type": "OperatorReconciliationAuthorization",
+  "id": "ORA-cf270d3a-654e-4f01-9e79-bd491085a07f",
+  "reconciliation_id": "cf270d3a-654e-4f01-9e79-bd491085a07f",
+  "action_id": "db9eb844-f984-4579-8a64-53c818302db9",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "created_at": "2026-10-22T01:00:00.000Z",
+  "expires_at": "2026-10-22T01:02:00.000Z",
+  "repository_binding": {
+    "repository_key": "synthetic-fixture-repo",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "principal_id": "57c15826-c87b-4eb9-a600-935c9b82cdd2",
+  "principal_epoch": 1,
+  "authentication_method": "local_owner_password_reauthentication",
+  "session_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "nonce_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "subject": {
+    "original_action_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "request": {
+      "schema_version": "0.1",
+      "type": "OrderAdoptionDecisionRequest",
+      "id": "OADR-db9eb844-f984-4579-8a64-53c818302db9",
+      "mission_id": "MIS-ADOPTION",
+      "wave_id": "W1",
+      "proposal_ref": {
+        "artifact_id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+        "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json",
+        "sha256": "0a784f089d2ed8a7c377a455980d65e378a10e14f361f0171230bad5a32fb493"
+      },
+      "backbrief_refs": [
+        {
+          "artifact_id": "OBB-agent-S2",
+          "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+          "sha256": "39a26fdb3cff53c9399a24ee392bc27a9e647637fb5f164ffd0adece30083b84"
+        },
+        {
+          "artifact_id": "OBB-agent-S3",
+          "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S3.json",
+          "sha256": "01e08ab5be9aeff451839e92e564a5deed12e05138a7aafb6539322845d0a4fe"
+        }
+      ],
+      "rehearsal_ref": {
+        "artifact_id": "ORH-ADOPTION",
+        "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-rehearsals/ORH-ADOPTION.json",
+        "sha256": "5222ae658e981ed393a0657f28d5a33a56d4b8ffe33cb74bfa345f0e83124309"
+      },
+      "disposition": "approve",
+      "decision_ref": {
+        "artifact_id": "none",
+        "relative_path": "none",
+        "sha256": "none"
+      },
+      "execution_authorized": false,
+      "release_authorized": false,
+      "human_final_decision_authority": "USER",
+      "continuation_authorized": false
+    },
+    "observed_manifest": {
+      "revision": 7,
+      "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    },
+    "recorded_outcome": "unconsumed_decision",
+    "consent_ref": {
+      "artifact_id": "OCR-db9eb844-f984-4579-8a64-53c818302db9",
+      "relative_path": "repositories/synthetic-fixture-repo/missions/MIS-ADOPTION/W1/operator-consent-records/OCR-db9eb844-f984-4579-8a64-53c818302db9.json",
+      "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    },
+    "decision_ref": {
+      "artifact_id": "DL-OPERATOR-db9eb844-f984-4579-8a64-53c818302db9",
+      "relative_path": "repositories/synthetic-fixture-repo/missions/MIS-ADOPTION/W1/decision-logs/DL-OPERATOR-db9eb844-f984-4579-8a64-53c818302db9.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "adoption_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "adoption_status": "none",
+    "original_consent_expires_at": "2026-10-22T00:02:00.000Z",
+    "source_state_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "repository_state_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "trusted_key_sha256": "c670bef2f64dc18e6c4e8fae44eb2076735d222f69795be5d3c3abbfc4a5aac7",
+    "attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "prior_cancellation_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    }
+  },
+  "resolution": "cancel_unconsumed",
+  "rationale": "Synthetic terminal cancellation fixture; not actual USER consent.",
+  "previous_result_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "cancellation_decision": {
+    "schema_version": "0.1",
+    "type": "DecisionLogEntry",
+    "id": "DL-OPERATOR-CANCEL-cf270d3a-654e-4f01-9e79-bd491085a07f",
+    "mission_id": "MIS-ADOPTION",
+    "decided_at": "2026-10-22T01:00:00.000Z",
+    "decision_maker": "USER",
+    "decision_type": "scope",
+    "question": "Cancel preexisting unconsumed decisions for order OAP-8d888f08230f89ec3338aff5b4d65ad9",
+    "options_considered": [
+      "cancel-interrupted-order:0ec311d1e7ad057be9e17f8ae0a81d3db14f962ada989ce2e068240f34b3e18d"
+    ],
+    "chosen_option": "cancel-interrupted-order:0ec311d1e7ad057be9e17f8ae0a81d3db14f962ada989ce2e068240f34b3e18d",
+    "rationale": "Synthetic terminal cancellation fixture; not actual USER consent.",
+    "authority_basis": {
+      "basis_type": "retained_authority",
+      "reference": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+      "summary": "Authenticated local owner 57c15826-c87b-4eb9-a600-935c9b82cdd2; terminal consent ORA-cf270d3a-654e-4f01-9e79-bd491085a07f."
+    },
+    "affected_artifacts": [
+      "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json"
+    ],
+    "review_trigger": "Any future order requires new exact review; original consent is not renewed.",
+    "status": "complete"
+  },
+  "human_final_decision_authority": "USER",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false,
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "c670bef2f64dc18e6c4e8fae44eb2076735d222f69795be5d3c3abbfc4a5aac7",
+    "value": "Ok4yS7Jk1Os8rgThtNUqNW8mnI0VBHydAQN14bmv5kb/y3aMo2kNs4YwUIiIAuoLbkrZSXhExxCaZFNmjLcZBg=="
+  }
+}

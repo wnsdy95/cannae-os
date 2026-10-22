@@ -22,9 +22,9 @@ For a timed-out or interrupted local owner decision, run
 Do not clear the SQLite hold, replace the service ownership or launch another
 writer while worker exit is unconfirmed. An observed exit only stops that
 worker; inspect the actual action and retained manifest to determine effects.
-Preserve reconciliation-required state even after shutdown; there is no
-administrative discharge command in this increment. A lost response is never
-permission to replay the nonce or create a second approval.
+Preserve reconciliation-required state even after shutdown. A lost response
+is never permission to replay the nonce or create a second approval. The exact
+local order terminal ceremony below is separate from worker termination.
 
 Use Decisions > Inspect Outcome to compare that exact action with the pinned-key
 signed consent, expected decision payload and historical adoption replay.
@@ -32,7 +32,22 @@ An `applied` inspection does not clear a private hold or restore expired/current
 authority. `unconsumed_decision` needs a later explicit cancellation fence, not
 a database edit. Keep `conflicting`/`unverifiable` visible; do not regenerate
 missing records. Run `node run-operator-consent-outcome-fixtures.js` and the
-browser checks when changing this path. Terminal discharge is not implemented.
+browser checks when changing this read path; it never performs terminal discharge.
+
+For one exact interrupted local owner order, read
+`docs/operator-terminal-reconciliation.md` and use the authenticated console's
+Review Terminal Outcome after inspection. Require the human's fresh password
+and one-use terminal nonce; do not script a real owner's consent. Confirm the
+retained cancellation or original controller result, signed receipt and archived
+failure before accepting a cleared local hold. After another interruption,
+keep conflicting or unverifiable projections held even if their private state
+claims completion. Do not repair that disagreement by editing the database;
+inspect again and obtain fresh terminal consent; reuse only the service-verified
+old cancellation reference, never its nonce or original adoption mutation.
+Run `node run-operator-reconciliation-fixtures.js` plus the terminal browser
+flows and existing consent/adoption suites. The offline signature CLI explicitly
+does not verify artifact history or clear state. These contracts cannot settle
+campaign/gateway obligations, replace work evidence or grant new tools/release.
 
 For exact successor activation, read `docs/campaign-successor-admission.md`,
 its four request/proposal/admission schemas, `campaign-successor-controller.js`
