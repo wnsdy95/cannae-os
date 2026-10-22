@@ -145,7 +145,10 @@ effect settlement, revocation and failed reporting remain available.
 Completion and successful wave report publication recheck mandatory steps,
 actual result records, all required reports and drift state. The new records,
 their byte copies and whole-JSON MIME-disguised copies are control metadata,
-not work evidence.
+not work evidence. Native dispatch policies, leases, admission events and execution
+checkpoints are also control records, whether cited directly, copied byte-for-byte,
+or reformatted as JSON/text/binary deliverables. A checkpoint's recorded result
+binding cannot replace the task's separately retained output.
 This includes derived legacy SITREPs without a `type` tag: the report consumer
 compares complete canonical JSON content against retained control records, not
 only byte hashes or MIME/type labels. Its cache belongs to one verified manifest

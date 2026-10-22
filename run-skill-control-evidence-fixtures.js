@@ -5,6 +5,7 @@ const store = require("./repository-artifact-store"), write = store.writeReposit
 let beforeWrite;
 store.writeRepositoryArtifact = descriptor => { if (beforeWrite) beforeWrite(descriptor); return write(descriptor); };
 const { openWave, recordWave } = require("./skill-mission-controller");
+const { validatePayload } = require("./validator-cli-prototype/validate");
 const clone = value => JSON.parse(JSON.stringify(value));
 const sample = name => clone(require(`./sample-payloads/valid-${name}.json`));
 const roots = []; let passed = 0;
@@ -65,6 +66,26 @@ try {
     const context = env.read(env.opened.context_packs[0].context_pack_ref);
     assert.equal(result.control_receipt_refs.length, context.required_controls.length);
     for (const ref of result.control_receipt_refs) assert.equal(env.read(ref).status, "passed");
+  });
+  check("native dispatch controls cannot complete even a data-only wave via direct or renamed evidence", () => {
+    const value = environment();
+    for (const [schema, kind] of [["dispatch-tool-policy", "dispatch-tool-policies"],
+      ["agent-dispatch-lease", "agent-dispatch-leases"], ["tool-admission-event", "tool-admission-events"],
+      ["agent-execution-checkpoint", "agent-execution-checkpoints"]]) {
+      const payload = sample(schema);
+      assert.equal(validatePayload(payload, schema).valid, true);
+      const refs = [value.persist(kind, payload, 20)];
+      for (const extension of ["txt", "bin", "json"]) {
+        refs.push(value.fileArtifact(`DATA-NATIVE-${schema}-${extension}`,
+          Object.fromEntries(Object.entries(payload).reverse()), extension));
+      }
+      // No retained control has this whole value; the typed-record guard must still deny it.
+      refs.push(value.fileArtifact(`DATA-UNRETAINED-${schema}`, { ...payload, id: `UNRETAINED-${payload.id}` }, "txt"));
+      for (const [index, ref] of refs.entries()) {
+        assert.throws(() => recordWave(value.report(`MWR-NATIVE-${schema}-${index}`, ref), { ...value.options, now: value.at(30) }),
+          /control metadata as execution evidence/);
+      }
+    }
   });
   check("report publication reappraises newly retained control aliases and fresh-ID retry reruns controls", () => {
     const value = environment(), alias = value.fileArtifact("DATA-FUTURE-CONTROL", Object.fromEntries(Object.entries(value.sitrep).reverse()), "txt");

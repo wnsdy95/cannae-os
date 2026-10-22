@@ -27,6 +27,10 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "aar-readiness-updates",
   "aars",
   "agent-context-packs",
+  "dispatch-tool-policies",
+  "agent-dispatch-leases",
+  "tool-admission-events",
+  "agent-execution-checkpoints",
   "control-execution-receipts",
   "integrated-mission-preflights",
   "mission-wave-closeouts",
@@ -1066,7 +1070,8 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
       const typedControl = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
-        ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack"].includes(evidencePayload?.type);
+        ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack",
+          "DispatchToolPolicy", "AgentDispatchLease", "ToolAdmissionEvent", "AgentExecutionCheckpoint"].includes(evidencePayload?.type);
       if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || typedControl ||
           copiesControlEvidence(evidence.store, evidence.entry, evidencePayload, controlSnapshots)) {
         throw new Error(`${result.agent_id} cites control metadata as execution evidence: ${evidence.entry.kind}.`);

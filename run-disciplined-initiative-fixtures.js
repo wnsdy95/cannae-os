@@ -218,10 +218,12 @@ try {
   });
   check("method control records cannot become work evidence through kind, copy or MIME changes", () => {
     const env = setup(), deviation = proposeAfter(env);
-    admit(env, inputs.after, "metadata-result"); complete(env, inputs.after, "metadata-result");
+    const admission = admit(env, inputs.after, "metadata-result"), completion = complete(env, inputs.after, "metadata-result");
     const reported = gate.reportMethod(optionsAt(env, 105), { deviationRef: deviation.artifact_ref, phase: "after" });
-    const evidenceRefs = [deviation.artifact_ref, reported.artifact_ref, reported.sitrep_ref];
-    for (const [index, payload] of [deviation.event, reported.report, read(env, reported.sitrep_ref)].entries()) {
+    const lease = read(env, env.issued.lease_ref);
+    const evidenceRefs = [deviation.artifact_ref, reported.artifact_ref, reported.sitrep_ref,
+      lease.tool_policy_ref, env.issued.lease_ref, admission.admission_ref, completion.checkpoint_ref];
+    for (const [index, payload] of evidenceRefs.map(ref => read(env, ref)).entries()) {
       for (const extension of ["txt", "bin"]) {
         const file = path.join(env.root, `reformatted-${index}.${extension}`);
         fs.writeFileSync(file, JSON.stringify(Object.fromEntries(Object.entries(payload).reverse())));
