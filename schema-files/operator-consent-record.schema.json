@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/operator-consent-record.schema.json",
+  "title": "OperatorConsentRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "challenge_id", "mission_id", "wave_id", "created_at", "expires_at", "repository_binding", "principal_id", "principal_epoch", "authentication_method", "session_sha256", "nonce_sha256", "source_state_sha256", "repository_state_sha256", "observed_manifest", "plan_sha256", "request", "decision_log_id", "decision_payload_sha256", "signature", "human_final_decision_authority", "execution_authorized", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "OperatorConsentRecord" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "challenge_id": { "type": "string", "pattern": "^[a-f0-9-]{36}$" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "pattern": "^[A-Za-z0-9_-]+$" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "repository_binding": {
+      "type": "object", "additionalProperties": false, "required": ["repository_key", "identity_fingerprint"],
+      "properties": { "repository_key": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]+$" }, "identity_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+    },
+    "principal_id": { "type": "string", "pattern": "^[a-f0-9-]{36}$" },
+    "principal_epoch": { "type": "integer", "minimum": 1 },
+    "authentication_method": { "const": "local_owner_password_reauthentication" },
+    "session_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "nonce_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source_state_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "repository_state_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "plan_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "observed_manifest": {
+      "type": "object", "additionalProperties": false, "required": ["sha256", "revision"],
+      "properties": { "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "revision": { "type": "integer", "minimum": 1 } }
+    },
+    "request": { "$ref": "order-adoption-decision-request.schema.json" },
+    "decision_log_id": { "$ref": "common.schema.json#/$defs/id" },
+    "decision_payload_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "signature": {
+      "type": "object", "additionalProperties": false, "required": ["algorithm", "key_sha256", "value"],
+      "properties": { "algorithm": { "const": "Ed25519" }, "key_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "value": { "type": "string", "pattern": "^[A-Za-z0-9+/]{86}==$" } }
+    },
+    "human_final_decision_authority": { "const": "USER" },
+    "execution_authorized": { "const": false },
+    "release_authorized": { "const": false }
+  }
+}

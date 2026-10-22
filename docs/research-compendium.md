@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Authenticated Local Owner Decisions (2026-10-22)
+
+[Exact local owner consent](operator-consent-and-adoption.md) now reaches real
+plan adoption, rejection and revision through the existing controller. The
+finite one-use browser-session challenge, password reauthentication and guarded
+source/repository/manifest comparison preserve the selected subject. Native
+Ed25519 evidence is non-authorizing metadata; canonical signature encoding and
+separately pinned issuer keys are required for offline verification.
+
+Publication interruption preserves a durable hold, never automatic approval on
+restart. Login and viewer access do not grant decision authority. Legacy CLI
+USER logs remain unauthenticated; broader tool approvals, exact hold discharge,
+operational COP and protected production infrastructure remain open.
+
 ## Mandatory Intent Continuity (2026-10-22)
 
 The [intent runtime](intent-continuity-runtime.md) binds every newly generated
@@ -5629,3 +5643,13 @@ independent retention cannot be inferred from this local product increment.
 The USER deferred the deployment target on 2026-10-22; local progress does not
 remove the protected-production goal. Primary implementation sources and their
 claim limits are indexed in [the source map](source-map.md).
+
+The later [authenticated order integration](operator-consent-and-adoption.md)
+now carries exact owner decisions through the real adoption controller rather
+than merely recording a UI status. Password reauthentication, one-use
+session-bound finite challenges and per-publication source/repository/manifest
+checks preserve the reviewed subject. Signed consent is non-authorizing
+metadata, excluded even when copied or reformatted as an agent output.
+Interrupted publications retain a reconciliation-required hold; neither service
+restart nor a lost HTTP response automatically retries an approval. Broader
+tool approvals and explicit hold discharge remain separate work.

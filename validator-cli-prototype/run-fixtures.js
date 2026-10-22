@@ -11,6 +11,12 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  { name: "operator consent metadata cannot authorize execution", file: "sample-payloads/valid-operator-consent-record.json", type: "operator-consent-record", exitCode: 0, requiredCodes: [] },
+  { name: "operator consent execution expansion is rejected", file: "sample-payloads/invalid-operator-consent-record.json", type: "operator-consent-record", exitCode: 1, requiredCodes: ["CONST_MISMATCH"] },
+  { name: "operator consent cannot substitute its mission", file: "sample-payloads/valid-operator-consent-record.json", type: "operator-consent-record", exitCode: 1,
+    mutate(value) { value.mission_id = "MIS-OTHER"; }, requiredCodes: ["OPERATOR_CONSENT_SCOPE_BINDING_INVALID"] },
+  { name: "operator consent cannot invert its validity", file: "sample-payloads/valid-operator-consent-record.json", type: "operator-consent-record", exitCode: 1,
+    mutate(value) { value.expires_at = value.created_at; }, requiredCodes: ["OPERATOR_CONSENT_VALIDITY_INVALID"] },
   ...[
     ["commander-intent", "commander-intent", "INTENT_LOCAL_IDENTITY_INVALID"],
     ["intent-delegation-event", "intent-delegation-event", "INTENT_DELEGATION_BINDING_INVALID"],

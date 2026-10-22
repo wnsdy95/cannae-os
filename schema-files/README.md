@@ -1,5 +1,10 @@
 # Schema Files
 
+`operator-consent-record.schema.json` is signed non-authorizing local owner
+consent for one exact order decision. Validate its structure and bindings with
+the generic validator; verify its signature with a separately pinned public
+key. It never grants tool/release authority or replaces agent work evidence.
+
 `CommanderIntent`, `IntentDelegationEvent` and `IntentContinuityProjection` are
 non-authorizing contracts. `intent-continuity-common.schema.json` defines graded
 boundaries, task commitments, complete trees and per-agent assignments. Every new

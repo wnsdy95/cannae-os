@@ -7,6 +7,7 @@ const { DRAFT_TYPES, intakeIssues } = require("../order-intake-contract");
 const { ADOPTION_TYPES, adoptionIssues } = require("../order-adoption-contract");
 const { REVISION_TYPES, revisionIssues } = require("../order-revision-contract");
 const { TYPES: INTENT_TYPES, intentIssues } = require("../intent-continuity-contract");
+const { consentIssues } = require("../operator-consent-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -135,6 +136,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "operator-consent-record": "operator-consent-record.schema.json",
   ...Object.fromEntries([...INTENT_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...REVISION_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...ADOPTION_TYPES].map(type => [type, `${type}.schema.json`])),
@@ -6102,7 +6104,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) &&
       !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" &&
+      type !== "agent-context-pack" && type !== "operator-consent-record" &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6135,10 +6137,11 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...consentIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {
+    "operator-consent-record": ["request", "order-adoption-decision-request"],
     "order-revision-request": ["successor_plan", "mission-wave-plan"],
     "order-revision-proposal": ["request", "order-revision-request"],
     "order-adoption-proposal-request": ["plan", "mission-wave-plan"],

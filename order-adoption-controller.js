@@ -149,7 +149,7 @@ function assertDecisionCurrent(store, proposal, decision) {
     }
   }
 }
-function appraiseDecision(store, request, now) {
+function appraiseDisposition(store, request, now) {
   valid(request, "order-adoption-decision-request");
   const proposal = proposalProof(store, request.proposal_ref, request);
   fresh(proposal.payload, now);
@@ -162,6 +162,10 @@ function appraiseDecision(store, request, now) {
     requireTrue(rehearsal && same(rehearsal.payload.backbrief_refs, request.backbrief_refs), "ORDER_ADOPTION_REHEARSAL_REQUIRED");
     appraiseRehearsal(store, rehearsal.payload, now);
   }
+  return { proposal, briefs, rehearsal };
+}
+function appraiseDecision(store, request, now) {
+  const { proposal, briefs, rehearsal } = appraiseDisposition(store, request, now);
   const decision = read(store, request.decision_ref, "decision-logs", "decision-log");
   const value = decision.payload;
   const affected = [proposal.ref, ...request.backbrief_refs, ...(rehearsal ? [rehearsal.ref] : [])];
@@ -206,9 +210,24 @@ function publish(options, store, payload, kind, now, appraise) {
       requireTrue(manifestDigest(manifest) === store.verification.manifest_sha256 &&
         current.verification.manifest_sha256 === store.verification.manifest_sha256, "ORDER_ADOPTION_SNAPSHOT_CHANGED");
       appraise(current, time);
+      if (options.orderDecisionGuard) requireTrue(options.orderDecisionGuard() === true, "ORDER_ADOPTION_EXTERNAL_GUARD_DENIED");
       return true;
     }, true) });
   return { artifact_id: payload.id, relative_path: result.relative_path, sha256: result.sha256 };
+}
+function inspectOrderDecision(input, options) {
+  const request = clone(input), store = load(options), now = clock(options);
+  requireTrue(same(request.decision_ref, NONE), "ORDER_ADOPTION_PREVIEW_DECISION_MUST_BE_NONE");
+  const appraisal = appraiseDisposition(store, request, now);
+  for (const entry of store.manifest.artifacts.filter(item => item.kind === RECORDS)) {
+    const previous = read(store, ref(entry), RECORDS, "order-adoption-record").payload;
+    requireTrue(!same(previous.request.proposal_ref, request.proposal_ref) &&
+      !(previous.status === "adopted" && previous.mission_id === request.mission_id && previous.wave_id === request.wave_id),
+      "ORDER_ADOPTION_DECISION_ALREADY_CONSUMED");
+  }
+  return { request, proposal: appraisal.proposal.payload, draft: appraisal.proposal.draft,
+    backbriefs: appraisal.briefs.map(item => item.payload), rehearsal: appraisal.rehearsal?.payload || null,
+    observed_manifest: snapshot(store), checked_at: now, ...ADOPTION_AUTHORITY };
 }
 function proposeOrder(input, options) {
   const request = clone(input), store = load(options), now = clock(options);
@@ -362,7 +381,7 @@ function main(argv = process.argv.slice(2)) {
 
 const scoped = fn => (...args) => withinOrderReplay(() => fn(...args));
 module.exports = { proposeOrder: scoped(proposeOrder), retainOrderEvidence: scoped(retainOrderEvidence), decideOrder: scoped(decideOrder),
-  inspectOrder: scoped(inspectOrder), orderForPlan: scoped(orderForPlan), contextAssignment,
+  inspectOrder: scoped(inspectOrder), inspectOrderDecision: scoped(inspectOrderDecision), orderForPlan: scoped(orderForPlan), contextAssignment,
   assertContextAssignment: scoped(assertContextAssignment), proposalProof: scoped(proposalProof), recordProof: scoped(recordProof), main: scoped(main) };
 if (require.main === module) {
   try { withinOrderReplay(() => main()); } catch (error) { console.error(error.message); process.exitCode = 1; }

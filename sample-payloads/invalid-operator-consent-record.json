@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.1",
+  "type": "OperatorConsentRecord",
+  "id": "OCR-613054dc-eae7-4c70-b190-dbd3beb44c39",
+  "challenge_id": "613054dc-eae7-4c70-b190-dbd3beb44c39",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "created_at": "2026-10-22T00:00:00.000Z",
+  "expires_at": "2026-10-22T00:02:00.000Z",
+  "repository_binding": {
+    "repository_key": "synthetic-fixture-repo",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "principal_id": "3bd086b5-b99a-45eb-9830-ac0a49e99e6e",
+  "principal_epoch": 1,
+  "authentication_method": "local_owner_password_reauthentication",
+  "session_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "nonce_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "source_state_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "repository_state_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "observed_manifest": {
+    "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "revision": 7
+  },
+  "plan_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "request": {
+    "schema_version": "0.1",
+    "type": "OrderAdoptionDecisionRequest",
+    "id": "OADR-613054dc-eae7-4c70-b190-dbd3beb44c39",
+    "mission_id": "MIS-ADOPTION",
+    "wave_id": "W1",
+    "proposal_ref": {
+      "artifact_id": "OAP-8d888f08230f89ec3338aff5b4d65ad9",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-8d888f08230f89ec3338aff5b4d65ad9.json",
+      "sha256": "0a784f089d2ed8a7c377a455980d65e378a10e14f361f0171230bad5a32fb493"
+    },
+    "backbrief_refs": [
+      {
+        "artifact_id": "OBB-agent-S2",
+        "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+        "sha256": "39a26fdb3cff53c9399a24ee392bc27a9e647637fb5f164ffd0adece30083b84"
+      },
+      {
+        "artifact_id": "OBB-agent-S3",
+        "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S3.json",
+        "sha256": "01e08ab5be9aeff451839e92e564a5deed12e05138a7aafb6539322845d0a4fe"
+      }
+    ],
+    "rehearsal_ref": {
+      "artifact_id": "ORH-ADOPTION",
+      "relative_path": "repositories/repo-644d667b32ba/missions/MIS-ADOPTION/W1/order-rehearsals/ORH-ADOPTION.json",
+      "sha256": "5222ae658e981ed393a0657f28d5a33a56d4b8ffe33cb74bfa345f0e83124309"
+    },
+    "disposition": "approve",
+    "decision_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "execution_authorized": false,
+    "release_authorized": false,
+    "human_final_decision_authority": "USER",
+    "continuation_authorized": false
+  },
+  "decision_log_id": "DL-OPERATOR-613054dc-eae7-4c70-b190-dbd3beb44c39",
+  "decision_payload_sha256": "b2ab01dc86454a46a1808e84f8881c982b050fb76bee4893670b5755058b94e5",
+  "human_final_decision_authority": "USER",
+  "execution_authorized": true,
+  "release_authorized": false,
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "b7e7ca2376dee6d6175828fa46d3094aa82e77fc79f67a55d7ae9e1fad6c99ee",
+    "value": "3fmSy5OGWkw1zC2jFgWVT3n03DfevtT7pPMTCoQAbYE6DV9XU1EOw2Y8gRpJTxg841vmUJ1ufH9IVAcEhTLlCA=="
+  }
+}

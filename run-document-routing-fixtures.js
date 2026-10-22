@@ -41,6 +41,12 @@ for (const router of ROUTERS) {
     assert(result.validation_commands.includes("node run-operator-console-fixtures.js"));
     assert.equal(result.capability_routing.status, "covered");
   }
+  for (const query of ["operator consent", "operator-consent", "authenticated order review"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["local-operator-console"]);
+    assert(result.recommended_documents.some(item => item.path === "docs/operator-consent-and-adoption.md"));
+    assert(result.validation_commands.includes("node run-operator-consent-fixtures.js"));
+  }
   for (const query of ["order revision", "order-revision-controller.js", "revise_controls_order.js", "order replay", "FRAGO"]) {
     const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
     assertRoutes(result, ["orders"]);

@@ -1,5 +1,10 @@
 # Sample Payloads
 
+The valid/invalid `operator-consent-record` samples cover local authenticated
+order-decision audit metadata, not real USER consent. The public fixture key and
+matching decision payload are in `operator-consent-fixtures/`; no private signing
+key is committed. Verify cryptography separately from schema validity.
+
 The byte-identical `valid-github-release-independent-verification-pre-console-v0.2.json`
 preserves producer `ad14016` before the local-console lockfile migration. Do not
 rewrite it to match current hashes. The separately regenerated current sample

@@ -8,9 +8,9 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "local-operator-console",
-    keywords: ["operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"],
-    docs: ["docs/local-operator-console.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
-    commands: ["node run-operator-console-fixtures.js"]
+    keywords: ["operator consent", "operator-consent", "authenticated order review", "operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"],
+    docs: ["docs/local-operator-console.md", "docs/operator-consent-and-adoption.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
+    commands: ["node run-operator-console-fixtures.js", "node run-operator-consent-fixtures.js"]
   },
   {
     id: "orientation",
@@ -486,7 +486,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
-  { id: "local-operator-console", keywords: ["operator-console", "serve_controls_operator"] },
+  { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "check_controls_intent"] },
   {
     id: "gateway-effect-review",

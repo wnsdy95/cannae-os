@@ -74,7 +74,7 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 
 Read these only when needed:
 
-- For local operator login, evidence API or viewer access, read `docs/local-operator-console.md` and use `scripts/serve_controls_operator.js`. Leave real owner setup to the human; keep setup/invite secrets out of chat and artifacts. Viewer mission grants expose restricted evidence, not approval; stale snapshots require refresh, not bypass.
+- For local operator login, evidence or owner order decisions, read `docs/local-operator-console.md` and `docs/operator-consent-and-adoption.md`; use `scripts/serve_controls_operator.js`. Leave real owner setup and decisions to the human. Never retain setup/invite/nonce secrets or replay an interrupted decision: inspect Decisions, preserve reconciliation holds and preview changed subjects again. Adoption is not tool or release authority.
 
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
 - `docs/intent-continuity-runtime.md`: require context v0.4 and exact root/task/delegation commitments before tool authority. Legacy contexts remain historical; settle their admitted results and prepare a newly reviewed wave instead of rewriting them.

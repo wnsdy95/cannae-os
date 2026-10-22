@@ -77,10 +77,12 @@ function queryEvidence(configuration, user, request) {
     requireThat(manifestDigest(loadVerifiedStore(options.repositoryPath, options.artifactRoot).manifest) === digest,
       "CONSOLE_EVIDENCE_SNAPSHOT_STALE", 409);
     return { ...entryMetadata(entry), manifest_sha256: digest, review,
+      rehearsals: store.manifest.artifacts.filter(item => item.kind === "order-rehearsals" && item.mission_id === entry.mission_id && item.wave_id === entry.wave_id)
+        .filter(item => JSON.parse(readEntry(store, item)).proposal_ref?.sha256 === entry.sha256).map(entryMetadata),
       approval_authorized: false, release_authorized: false };
   }
   requireThat(request.action === "read", "CONSOLE_EVIDENCE_ACTION_INVALID");
   return { ...entryMetadata(entry), manifest_sha256: digest, content, approval_authorized: false, release_authorized: false };
 }
 
-module.exports = { queryEvidence, entryId };
+module.exports = { queryEvidence, entryId, readEntry };

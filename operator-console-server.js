@@ -8,6 +8,8 @@ const { spawnSync } = require("node:child_process");
 const fastify = require("fastify");
 const { resolveRepository } = require("./repository-artifact-store");
 const { openAuthStore, privateFile, requireThat, SESSION_MS } = require("./operator-console-auth");
+const { openConsentService } = require("./operator-consent-service");
+const { repositoryStateDigest } = require("./skill-mission-controller");
 
 const ROOT = __dirname;
 const plain = (properties, required = Object.keys(properties)) => ({ type: "object", additionalProperties: false, properties, required });
@@ -31,14 +33,17 @@ async function createConsole(options) {
   const app = fastify({ logger: false, trustProxy: false, bodyLimit: 4096,
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false, useDefaults: false } } });
   const configuration = { repository: repository.root, repositoryKey: repository.key,
-    artifactRoot, identity: repository.identity_fingerprint };
+    artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT) };
+  let consent;
+  try { consent = openConsentService(auth, configuration); }
+  catch (error) { auth.close(); throw error; }
   const workers = new Set();
   let queued = 0, tail = Promise.resolve();
   function query(user, request) {
     requireThat(queued < 8, "CONSOLE_QUERY_BUSY", 429);
     queued++;
     const result = tail.then(() => new Promise((resolve, reject) => {
-      const worker = new Worker(path.join(ROOT, "operator-console-worker.js"), { workerData: { configuration, user, request } });
+      const worker = new Worker(path.join(ROOT, "operator-console-worker.js"), { workerData: { configuration: consent.workerConfiguration, user, request } });
       workers.add(worker);
       let settled = false;
       const finish = (error, value) => {
@@ -48,7 +53,7 @@ async function createConsole(options) {
         if (error) reject(error); else resolve(value);
       };
       const timer = setTimeout(() => finish(Object.assign(new Error("CONSOLE_QUERY_TIMEOUT"), { statusCode: 503 })), 120000);
-      worker.once("message", message => finish(message.error ? Object.assign(new Error(message.error), { statusCode: message.statusCode }) : null, message.result));
+      worker.once("message", message => finish(message.error ? Object.assign(new Error(message.error), { statusCode: message.statusCode, reason_codes: message.reason_codes }) : null, message.result));
       worker.once("error", () => finish(new Error("CONSOLE_QUERY_FAILED")));
       worker.once("exit", () => { if (!settled) finish(new Error("CONSOLE_QUERY_FAILED")); });
     })).finally(() => { queued--; });
@@ -80,7 +85,7 @@ async function createConsole(options) {
     const code = /^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message :
       error.validation ? "CONSOLE_INPUT_INVALID" : status === 429 ? "CONSOLE_RATE_LIMIT" :
         error.code?.startsWith("FST_CSRF") ? "CONSOLE_CSRF_DENIED" : "CONSOLE_REQUEST_FAILED";
-    reply.code(status).send({ error: code, ...readOnly });
+    reply.code(status).send({ error: code, ...(error.reason_codes ? { reason_codes: error.reason_codes } : {}), ...readOnly });
   });
   app.setNotFoundHandler((request, reply) => reply.code(404).send({ error: "CONSOLE_NOT_FOUND", ...readOnly }));
   const user = request => auth.authenticate(request.session);
@@ -105,7 +110,7 @@ async function createConsole(options) {
       }
     }
     return { initialized: auth.hasOwner(), user: current, csrf_token: await reply.generateCsrf(),
-      repository: current ? { key: repository.key, label: repository.label } : null, ...readOnly };
+      repository: current ? { key: repository.key, label: repository.label } : null, order_review_available: current?.role === "owner", ...readOnly };
   });
   for (const [name, handler] of [["setup", input => auth.createOwner(input)], ["login", input => auth.login(input)],
     ["register", input => auth.redeem(input)]]) {
@@ -125,6 +130,30 @@ async function createConsole(options) {
   });
   app.get("/api/users", async request => ({ users: auth.users(owner(request).id), ...readOnly }));
   app.get("/api/activity", async request => ({ entries: auth.activity(owner(request).id), ...readOnly }));
+  const uuid = { type: "string", pattern: "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" };
+  app.post("/api/order-decisions/preview", { onRequest: guard, schema: { body: plain({
+    entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" },
+    rehearsal_id: { type: "string", pattern: "^(none|[a-f0-9]{64})$" }, disposition: { type: "string", enum: ["approve", "reject", "revise"] }
+  }) } }, async request => {
+    const principal = owner(request);
+    const preview = await query(principal, { action: "prepare-decision", ...request.body, challenge_id: crypto.randomUUID() });
+    owner(request);
+    return consent.prepare(request.session, preview);
+  });
+  app.post("/api/order-decisions/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    challenge_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000)
+  }) } }, async request => {
+    const principal = owner(request);
+    requireThat(request.body.rationale.trim(), "CONSOLE_RATIONALE_REQUIRED");
+    const id = await consent.reserve(request.session, request.body);
+    try {
+      const result = await query(principal, { action: "execute-decision", challenge_id: id });
+      auth.authenticate(request.session); return result;
+    } catch (error) { consent.fail(id, error.message); throw error; }
+  });
+  app.get("/api/order-decisions", async request => ({ entries: consent.list(request.session), ...readOnly }));
+  app.get("/api/order-decisions/:id", { schema: { params: plain({ id: uuid }) } }, async request => consent.inspect(request.session, request.params.id));
+  app.get("/api/operator-key", async request => { owner(request); return { public_key_pem: consent.publicKey(), ...readOnly }; });
   app.post("/api/invites", { onRequest: guard, config: authLimit, schema: { body: plain({ password: text(128),
     missions: { type: "array", minItems: 1, maxItems: 100, uniqueItems: true, items: { type: "string", pattern: "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" } } }) } },
   async request => ({ token: await auth.invite(owner(request).id, request.body), expires_in_seconds: 1800, ...readOnly }));
@@ -150,15 +179,15 @@ async function createConsole(options) {
   const assets = { "/": ["operator-console/index.html", "text/html"],
     "/app.js": ["operator-console/app.js", "text/javascript"], "/app.css": ["operator-console/app.css", "text/css"],
     "/licenses/lucide.txt": ["node_modules/lucide-static/LICENSE", "text/plain"] };
-  for (const icon of ["shield-check", "folder-search", "clipboard-list", "users", "activity", "log-out", "refresh-cw", "x", "arrow-right", "copy"]) {
+  for (const icon of ["shield-check", "folder-search", "clipboard-list", "clipboard-check", "users", "activity", "log-out", "refresh-cw", "x", "arrow-right", "copy"]) {
     assets[`/icons/${icon}.svg`] = [`node_modules/lucide-static/icons/${icon}.svg`, "image/svg+xml"];
   }
   for (const [url, [relative, type]] of Object.entries(assets)) {
     const bytes = fs.readFileSync(path.join(ROOT, relative));
     app.get(url, async (request, reply) => reply.type(type).send(bytes));
   }
-  app.addHook("onClose", async () => { for (const worker of workers) await worker.terminate(); await tail; auth.close(); });
-  return { app, auth, origin, repository, configuration, readOnly };
+  app.addHook("onClose", async () => { for (const worker of workers) await worker.terminate(); await tail; consent.close(); auth.close(); });
+  return { app, auth, consent, origin, repository, configuration: consent.workerConfiguration, readOnly };
 }
 
 async function main(argv = process.argv.slice(2)) {
@@ -183,7 +212,7 @@ async function main(argv = process.argv.slice(2)) {
       console.log(`Owner setup link (private local file, expires in 30 minutes): ${link}`);
     }
     console.log(`Controls Operator: ${consoleApp.origin()}/`);
-    console.log("Evidence access only. Approval, tool execution and release remain disabled.");
+    console.log("Owner order review available. Tool execution and release remain disabled.");
     for (const signal of ["SIGINT", "SIGTERM"]) process.once(signal, () => { void consoleApp.app.close(); });
   } catch (error) { await consoleApp.app.close(); throw error; }
 }
