@@ -22,6 +22,7 @@ const {
 
 const NONE_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const CONTROL_EVIDENCE_KINDS = new Set([
+  "method-deviation-events", "initiative-deviation-reports", "degeneration-incidents",
   "commander-intents", "intent-delegations", "intent-continuity-projections",
   "aar-readiness-updates",
   "aars",
@@ -807,7 +808,9 @@ function openWaveUnlocked(plan, options = {}) {
   const contextPacks = [];
   for (const [index, agent] of plan.agents.entries()) {
     const routed = agentReceipts[index];
-    const validationCommands = unique(routed.receipt.validation_commands || []);
+    const methodContract = require("./method-deviation-contract");
+    const methodAssignment = methodContract.methodAssignment(plan, agent.agent_id);
+    const validationCommands = unique([...(routed.receipt.validation_commands || []), ...(methodAssignment ? [methodContract.METHOD_CHECK] : [])]);
     const contextId = `ACP-${safeIdPart(plan.wave_id)}-${safeIdPart(agent.agent_id)}`;
     const existingContext = optionalArtifact(operationOptions, {
       missionId: plan.mission_id, waveId: plan.wave_id, kind: "agent-context-packs", artifactId: contextId
@@ -818,6 +821,7 @@ function openWaveUnlocked(plan, options = {}) {
     const contextPack = {
       schema_version: "0.4",
       intent_assignment: require("./intent-continuity-contract").assignmentForPlan(plan, agent.agent_id),
+      ...(methodAssignment ? { method_assignment: methodAssignment } : {}),
       ...(adopted ? { order_assignment: contextAssignment(adopted, agent.agent_id) } : {}),
       type: "AgentContextPack",
       id: contextId,
@@ -834,7 +838,7 @@ function openWaveUnlocked(plan, options = {}) {
       capability_query: routed.receipt.capability_query,
       capability_routing: routed.receipt.capability_routing,
       doctrine_state: doctrineState,
-      documents: unique(routed.receipt.recommended_documents.map(document => document.path))
+      documents: unique([...routed.receipt.recommended_documents.map(document => document.path), ...(methodAssignment ? [methodContract.METHOD_DOCUMENT] : [])])
         .map(relativePath => safeDoctrineDocument(doctrineRoot, relativePath)),
       validation_commands: validationCommands,
       required_controls: buildRequiredControls(validationCommands, doctrineRoot),
@@ -1031,7 +1035,8 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         waveId: report.wave_id,
         loadPayload: false
       });
-      const consentCopy = evidence.store.manifest.artifacts.some(entry => ["operator-consent-records", "operator-reconciliation-authorizations", "operator-reconciliation-records"]
+      const consentCopy = evidence.store.manifest.artifacts.some(entry => ["operator-consent-records", "operator-reconciliation-authorizations", "operator-reconciliation-records",
+        "method-deviation-events", "initiative-deviation-reports", "degeneration-incidents"]
         .includes(entry.kind) && entry.sha256 === evidence.entry.sha256);
       // MIME is caller-declared; whole JSON control records remain metadata in text or binary files.
       let evidencePayload;
@@ -1039,7 +1044,8 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
       catch (error) {
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
-      const consentPayload = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type);
+      const consentPayload = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
+        ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack"].includes(evidencePayload?.type);
       if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || consentCopy || consentPayload) {
         throw new Error(`${result.agent_id} cites control metadata as execution evidence: ${evidence.entry.kind}.`);
       }
@@ -1053,6 +1059,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
 }
 
 function validateDispatchCompletion(report, plan, options) {
+  require("./method-deviation-gate").assertMethodWaveReport(options, plan, report);
   if (!plan.dispatch_control || plan.dispatch_control.required !== true) {
     return {
       required: false,

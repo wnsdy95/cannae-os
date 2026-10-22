@@ -334,7 +334,7 @@ independent durable archive or witness.
 Read these only when needed (bundled with this skill):
 
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
-- `docs/intent-continuity-runtime.md`: require context v0.4 and exact root/task/delegation commitments before tool authority. Legacy contexts remain historical; settle their admitted results and prepare a newly reviewed wave instead of rewriting them.
+- `docs/intent-continuity-runtime.md`: require context v0.4 and exact root/task/delegation commitments. For reviewed methods, deliver only the agent's `method_assignment` and read `docs/method-deviation-runtime.md`. Send structured choice/report requests to the trusted operator running `scripts/operate_controls_methods.js`; never grant agent shell/write access for metadata. Report actual results before the next call. Preserve legacy results; a late report is not recovery.
 - `docs/request-order-intake.md` and `docs/order-adoption-and-plan-binding.md`: capture exact input and use `scripts/adopt_controls_order.js` for full-plan review, backbriefs and rehearsal. For an opened scope change, read `docs/order-revision-and-supersession.md` and use `scripts/revise_controls_order.js`: prepare the reviewed successor, settle old results, then supersede before tool dispatch. New adoption holds old calls; never strip bindings, reuse approval or backdate cleanup.
 - `.claude/skills/controls-doctrine-operator/references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
 

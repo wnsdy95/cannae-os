@@ -144,6 +144,7 @@ function assertIntentContext(context, plan) {
       !same(context.authority.approval_required, agent.approval_required) || !same(context.authority.prohibited_actions, agent.prohibited_actions)) {
     throw new Error("INTENT_CONTEXT_AUTHORITY_MISMATCH");
   }
+  require("./method-deviation-contract").assertMethodContext(context, plan);
   return context.intent_assignment;
 }
 function assertIntentPolicy(policy, assignment) {

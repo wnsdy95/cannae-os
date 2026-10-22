@@ -179,12 +179,33 @@ restored conversational context never restores authority.
 | General request intake and draft compilation | `docs/request-order-intake.md`, `docs/orders-production-pipeline.md` | `scripts/compile_controls_order.js`, `request-order-compiler.js`, `order-intake-contract.js`, three intake schemas and `run-request-order-compiler-fixtures.js` |
 | Exact USER order adoption and plan-bound agent tasking | `docs/order-adoption-and-plan-binding.md`, `docs/skill-operational-mission-lifecycle.md` | `scripts/adopt_controls_order.js`, `order-adoption-controller.js`, six adoption contracts, plan v0.2/context v0.3 and `run-order-adoption-fixtures.js`; changed plans need new review and legacy downgrade cannot discharge intake |
 | Opened-plan revision and predecessor handoff | `docs/order-revision-and-supersession.md`, `docs/order-adoption-and-plan-binding.md` | `scripts/revise_controls_order.js`, revision contracts/controller and `run-order-revision-fixtures.js`; prepare the successor, settle old results, supersede exact scope, then request normal tool admission |
-| Commander's intent and disciplined initiative | `docs/mission-command-runtime-policy.md`, `docs/disciplined-initiative-rules.md`, `docs/intent-continuity-runtime.md`, `docs/commander-handbook.md` | `intent-continuity-runner.js`, `run-intent-continuity-fixtures.js`, `scripts/check_controls_intent.js`, intent schemas and samples |
+| Commander's intent and disciplined initiative | `docs/mission-command-runtime-policy.md`, `docs/disciplined-initiative-rules.md`, `docs/intent-continuity-runtime.md`, `docs/method-deviation-runtime.md`, `docs/commander-handbook.md` | `intent-continuity-runner.js`, `method-deviation-runner.js`, `run-intent-continuity-fixtures.js`, `run-method-deviation-contract-fixtures.js`, `run-disciplined-initiative-fixtures.js`, `scripts/check_controls_intent.js`, `scripts/operate_controls_methods.js`, bound schemas and samples |
 | Source-plan annex | `docs/opord-annex-model.md` | `schema-files/source-plan.schema.json`, `schema-files/verification-plan.schema.json` |
 | Annex vs FRAGO change | `docs/opord-annex-model.md` | `schema-files/annex.schema.json`, `schema-files/frago-scope-change.schema.json`, `run-rehearsal-to-ccir-fixtures.js` |
 | Backbrief/rehearsal | `docs/backbrief-and-rehearsal-sop.md`, `docs/dry-run-approval-ui.md` | `schema-files/backbrief.schema.json`, `schema-files/rehearsal.schema.json`, `orders-dissemination-runner.js`, `event-fixtures/rehearsal-event-fixtures.json`, `run-rehearsal-event-fixtures.js` |
 | CCIR reporting thresholds and COP | `docs/reporting-threshold-policy.md`, `docs/common-operational-picture-state.md`, `docs/ccir-alerting-model.md` | `ccir-linter.js`, `run-ccir-linter-fixtures.js`, `alert-router-prototype/` |
 | Information to operations | `docs/information-to-operations-cycle.md` | `information-to-operations-router.js`, `run-information-to-operations-fixtures.js` |
+
+For an enrolled method baseline, deliver only the receiver's `method_assignment`
+with its exact task/plan binding and usable instructions. Keep the routed query
+unchanged; adding this control cannot cover an unrelated capability gap. Send
+structured requests to the trusted CoS/operator host running the method wrapper
+outside the agent's scoped session. Do not grant shell or metadata-write access
+to a Read-only agent just to submit its reports. This CLI does not implement an
+automatic provider-message transport.
+
+Propose the exact reviewed alternative before calling its tool. Obtain an exact
+USER acknowledgment when required, then report
+the actual admission/result through the method wrapper before another call or
+completion. A generic SITREP, schema pass, tool output in chat or later report
+cannot repair a missed boundary or restore a stopped mission. Inspect the real
+revocation checkpoint; blocked revocation preserves containment/effect holds.
+Use verified manifest introduction history for causality, never array order or
+lexicographic timestamps. Keep caches inside one verified snapshot and reappraise
+at publication. The routed pure checks do not substitute for full integration
+tests, and legacy workflows do not gain the new guarantee retroactively.
+Use the reviewed baseline's shorter validity, never the schema-wide ceiling,
+as the operational deadline; after expiry only actual-result reporting remains.
 
 ## Authority, Release, Risk
 

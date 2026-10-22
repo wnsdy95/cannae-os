@@ -92,6 +92,13 @@ context v0.4 and actual dispatch/report consumers. Literal commitment preservati
 does not supply semantic omission evaluation, approval-bearing delegation or the
 separate method-deviation/reporting/drift workflow.
 
+The [reviewed method runtime](method-deviation-runtime.md) supplies the first
+optional exact-input path: full-plan/backbrief baseline, actual tool/result-bound
+before/after reports, canonical history order, mandatory-step completion and
+durable drift denial plus actual revocation. It does not complete phase 2 or
+goal 2: novel methods, reordering/insertion, semantic checks, all degeneration
+responses, reviewed readiness/recovery and universal rollout remain open.
+
 Goal:
 
 - Convert a user request into an OPORD draft.

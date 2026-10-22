@@ -258,6 +258,8 @@ function contextBundleInReplay(options, policy, settings) {
   require("./order-adoption-controller").assertContextAssignment(context.payload, plan.payload, { ...options, artifactRoot: view.artifactRoot });
   const intent = require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
   require("./intent-continuity-contract").assertIntentPolicy(policy, intent);
+  require("./method-deviation-contract").assertMethodPolicy(plan.payload, policy);
+  require("./method-deviation-gate").assertNoMethodDrift(options, policy.mission_id, view);
   require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: view.artifactRoot }, view);
   const preflight = loadArtifactRef(view, context.payload.routing_preflight_ref);
   if (preflight.payload.type !== "AgentRoutingPreflightProjection" || preflight.payload.status !== "ready") {
@@ -951,8 +953,9 @@ function activeLeaseInReplay(options, identity, at) {
     const context = loadArtifactRef(view, selected.leaseRecord.payload.context_pack_ref, "agent-context-pack");
     const intent = require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
     require("./intent-continuity-contract").assertIntentPolicy(policyForLease(view, selected.leaseRecord).payload, intent);
+    require("./method-deviation-gate").assertNoMethodDrift(options, identity.missionId, view);
   } catch (error) {
-    if (!error.message.startsWith("INTENT_")) throw error;
+    if (!error.message.startsWith("INTENT_") && !error.message.startsWith("METHOD_")) throw error;
     return { code: error.message, view, ...selected };
   }
   try {
@@ -1175,6 +1178,7 @@ function admissionEvent(leaseRecord, checkpointRecord, policyRecord, identity, h
     operation_class: descriptor.operationClass || "observe",
     rule_id: descriptor.ruleId || "none",
     tool_input_sha256: toolInputSha256,
+    ...(descriptor.methodBinding ? { method_binding: clone(descriptor.methodBinding) } : {}),
     request_sha256: requestDigest,
     sequence: descriptor.sequence,
     state_before: clone(descriptor.stateBefore),
@@ -1224,6 +1228,7 @@ function admitToolRequest(options, identity, hookInput) {
   const selected = activeLease(options, identity, nowIso(options));
   if (selected.code !== "LEASE_ACTIVE") return inMemoryDenial(selected.code);
   const lock = dispatchLock(selected.view, selected.leaseRecord.payload.id);
+  let methodDriftDenial = null;
   try {
     const refreshed = activeLease(options, identity, nowIso(options));
     if (refreshed.code !== "LEASE_ACTIVE") return inMemoryDenial(refreshed.code);
@@ -1295,10 +1300,12 @@ function admitToolRequest(options, identity, hookInput) {
       view.repository.root,
       admissions
     );
-    const decision = selection.rule ? "allow" : "deny";
+    const method = require("./method-deviation-gate").assessMethodRequest(options, leaseRecord, checkpointRecord, selection.rule, hookInput, view);
+    const decision = selection.rule && !method.code ? "allow" : "deny";
     const event = admissionEvent(leaseRecord, checkpointRecord, policyRecord, identity, hookInput, {
       decision,
-      reasonCodes: [selection.rule ? "DISPATCH_TOOL_ADMITTED" : selection.code],
+      reasonCodes: [method.code || (selection.rule ? "DISPATCH_TOOL_ADMITTED" : selection.code)],
+      methodBinding: decision === "allow" ? method.binding : undefined,
       ruleId: selection.rule && selection.rule.rule_id,
       operationClass: selection.rule && selection.rule.operation_class,
       sequence: Math.max(0, ...admissions.map(item => item.payload.sequence)) + 1,
@@ -1306,7 +1313,7 @@ function admitToolRequest(options, identity, hookInput) {
       decidedAt: now
     });
     renewRepositoryLease(lock);
-    const ref = persistAdmission(options, event, decision === "allow" ? () => {
+    const ref = persistAdmission(options, event, decision === "allow" || method.drift ? () => {
       const current = activeLease(options, identity, nowIso(options));
       if (current.code !== "LEASE_ACTIVE" || !sameRef(current.leaseRecord.ref, leaseRecord.ref) ||
           !sameRef(current.checkpointRecord.ref, checkpointRecord.ref)) {
@@ -1314,9 +1321,14 @@ function admitToolRequest(options, identity, hookInput) {
       }
       const code = gatewayDispatchCode(options, current.view, leaseRecord.ref, hookInput.tool_use_id, "admit");
       if (code) throw new Error(code);
+      const methodNow = require("./method-deviation-gate").assessMethodRequest(options, current.leaseRecord, current.checkpointRecord, selection.rule, hookInput, current.view);
+      if (decision === "allow" ? (methodNow.code || inputDigest(methodNow.binding || null) !== inputDigest(method.binding || null)) :
+        (!methodNow.drift || methodNow.code !== method.code)) throw new Error("METHOD_PUBLICATION_CHANGED");
+      if (method.configured && !sameRepositoryState(runtimeRepositoryState(current.view.repository.root), state)) throw new Error("METHOD_REPOSITORY_STATE_CHANGED");
       policyValidity(policyRecord.payload, loadArtifactRef(current.view, leaseRecord.payload.context_pack_ref).payload, nowIso(options));
       return true;
     } : undefined);
+    if (method.drift) methodDriftDenial = ref;
     return {
       status: decision === "allow" ? "admitted" : "denied",
       decision,
@@ -1329,6 +1341,7 @@ function admitToolRequest(options, identity, hookInput) {
     };
   } finally {
     releaseRepositoryLease(lock);
+    if (methodDriftDenial) require("./method-deviation-gate").respondToDrift(options, methodDriftDenial);
   }
 }
 
@@ -1621,6 +1634,7 @@ function transitionLease(options, leaseIdValue, descriptor) {
   const lock = dispatchLock(loaded.view, leaseIdValue);
   try {
     const refreshed = loadLeaseById(options, leaseIdValue);
+    if (descriptor.kind === "completion") require("./method-deviation-gate").assertMethodComplete(options, refreshed.leaseRecord.ref, refreshed.view);
     const previous = latestCheckpoint(refreshed.view, refreshed.leaseRecord);
     const reconciled = reconciledFailureState(refreshed.view, refreshed.leaseRecord);
     if (reconciled.checkpoint_refs.length && descriptor.kind !== "revocation") {
@@ -1663,6 +1677,7 @@ function transitionLease(options, leaseIdValue, descriptor) {
     renewRepositoryLease(lock);
     const ref = persistCheckpoint(options, checkpoint, TERMINAL_LEASE_STATUSES.has(status) ? () => {
       const view = storeView(options);
+      if (descriptor.kind === "completion") require("./method-deviation-gate").assertMethodComplete(options, refreshed.leaseRecord.ref, view);
       const currentFailure = reconciledFailureState(view, refreshed.leaseRecord);
       if (descriptor.kind !== "revocation" && currentFailure.checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
       if (currentFailure.checkpoint_refs.length && Date.parse(checkpoint.recorded_at) < Date.parse(currentFailure.latest_settled_at)) {
@@ -1710,6 +1725,8 @@ function revokeLease(options, leaseIdValue, reasonCode = "LEASE_REVOKED") {
 }
 
 function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED") {
+  const loaded = loadLeaseById(options, leaseIdValue);
+  require("./method-deviation-gate").assertMethodComplete(options, loaded.leaseRecord.ref, loaded.view);
   return transitionLease(options, leaseIdValue, {
     kind: "completion",
     status: "completed",
@@ -1728,6 +1745,7 @@ function resumeLease(options, leaseIdValue, bindings) {
   require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot }, loaded.view);
   const intent = require("./intent-continuity-contract").assertIntentContext(contextForLease(loaded.view, loaded.leaseRecord).payload, plan.payload);
   require("./intent-continuity-contract").assertIntentPolicy(policyForLease(loaded.view, loaded.leaseRecord).payload, intent);
+  require("./method-deviation-gate").assertNoMethodDrift(options, loaded.leaseRecord.payload.mission_id, loaded.view);
   const lock = dispatchLock(loaded.view, leaseIdValue);
   let oldLease;
   let policy;

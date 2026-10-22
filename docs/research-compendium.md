@@ -1,5 +1,29 @@
 # Research Compendium
 
+## Exact Reviewed Method Execution (2026-10-22)
+
+The [method runtime](method-deviation-runtime.md) connects a complete USER-reviewed
+baseline and individual backbrief acknowledgments to actual local tool admission.
+Every finite alternative already belongs to the exact Green policy; neither a
+deviation nor a before acknowledgment broadens that policy. Derived SITREPs bind
+actual admission/result references. Missing after reports and safeguards block
+completion, while observed drift persists a denial before actual revocation.
+An interrupted response cannot erase that mission hold; admitted callbacks and
+unknown-effect settlement remain available.
+
+Early integration exposed an inventory-order mistake: artifact arrays are sorted,
+not append-order logs. Causal replay now uses verified introduction history and
+per-snapshot caches. It also rejects retrospective report repair, forged result
+metadata and whole-JSON MIME-disguised control records as work evidence. Both
+skills now require result-bound reports before the next covered call and verify
+the actual response checkpoint instead of trusting an incident label.
+
+This is a partial local reference, not completion of goal 2. The full DI ruleset,
+novel method equivalence, insertion/reordering, semantic drift, all degeneration
+patterns, reviewed recovery/readiness, universal baseline rollout and protected
+production operation remain required. It does not change the other seven goals
+or select the deployment environment deferred by the USER.
+
 ## Authenticated Local Owner Decisions (2026-10-22)
 
 [Local terminal reconciliation](operator-terminal-reconciliation.md) adds fresh

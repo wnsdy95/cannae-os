@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/initiative-deviation-report.schema.json",
+  "title": "Result-Bound Initiative SITREP",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "agent_id", "deviation_ref", "phase", "decision_ref", "admission_ref", "result_checkpoint_ref", "result_sha256", "sitrep_ref", "recorded_at", "execution_authorized", "continuation_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "InitiativeDeviationReport" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+    "deviation_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "phase": { "enum": ["before", "after"] },
+    "decision_ref": { "$ref": "method-deviation-common.schema.json#/$defs/nullable_ref" },
+    "admission_ref": { "$ref": "method-deviation-common.schema.json#/$defs/nullable_ref" },
+    "result_checkpoint_ref": { "$ref": "method-deviation-common.schema.json#/$defs/nullable_ref" },
+    "result_sha256": { "anyOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/sha256" }] },
+    "sitrep_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false }, "continuation_authorized": { "const": false },
+    "release_authorized": { "const": false }, "human_final_decision_authority": { "const": "USER" }
+  }
+}

@@ -158,7 +158,11 @@ The ruleset is condensed into a single sentence.
 
 The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
 
-The following are candidates only; none of them exists yet.
+The [method runtime](method-deviation-runtime.md) implements a partial exact-input
+deviation/reporting/drift/revocation path and maps its actual files in the registry.
+The full rule catalog, broader degeneration coverage, novel-method interpretation,
+recovery and mandatory rollout remain open. Original proposed identities below
+are preserved; a filename alone never proves completion.
 
 schema:
 

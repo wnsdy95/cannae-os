@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1",
+  "type": "InitiativeDeviationReport",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "agent_id": "agent-S2",
+  "deviation_ref": {
+    "artifact_id": "MDEV-35e187ed00bec049d32b1250cca43c7d",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/method-deviation-events/MDEV-35e187ed00bec049d32b1250cca43c7d.json",
+    "sha256": "edf5bab93ff9429a8b295caeecda724fe667ffef1b3269687cb1d9edb86641e4"
+  },
+  "phase": "after",
+  "decision_ref": null,
+  "admission_ref": {
+    "artifact_id": "TAE-ddca73098d00faf016c221f1",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/tool-admission-events/TAE-ddca73098d00faf016c221f1.json",
+    "sha256": "732692f3e875353dddc07b84298e4268b14946661af5881cbfc4ec08596bfba2"
+  },
+  "result_checkpoint_ref": {
+    "artifact_id": "AEC-f9891054770b3c8385c87914",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/agent-execution-checkpoints/AEC-f9891054770b3c8385c87914.json",
+    "sha256": "dce59e187485dad752127ddd6cb65884f0b30ece3a263488d051cc5674666d0f"
+  },
+  "result_sha256": "9e19885efc90e8a44d2c08b78e81ea5d75ce3eec500e255fdaf585429d039fb9",
+  "sitrep_ref": {
+    "artifact_id": "SITREP-56186cdf5630c1d99984b5c4d4462402",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/sitreps/SITREP-56186cdf5630c1d99984b5c4d4462402.json",
+    "sha256": "f3c92a519dd3ea81b2bf11f66a93ba4fb404893ec9d34c8263d334dd17efa0a9"
+  },
+  "recorded_at": "2026-09-29T16:01:45.000Z",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "id": "IDR-16a875915b3bd8b93627877a039a8dfa"
+}

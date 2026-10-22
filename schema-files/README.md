@@ -1,5 +1,16 @@
 # Schema Files
 
+`method-control-baseline.schema.json` binds every reviewed agent/task and finite
+mandatory method step, usable instructions and receiver-only context assignment.
+The assignment names the trusted operator control-plane channel, not new agent
+tool/write authority. `method-deviation-event.schema.json`,
+`initiative-deviation-report.schema.json` and `degeneration-incident-event.schema.json`
+bind non-authorizing deviations, actual result/SITREP reports and real revocation
+responses. Schema validity alone proves none of the retained execution history.
+The separate full disciplined-initiative ruleset remains planned. See the
+[method runtime](../docs/method-deviation-runtime.md) and its explicit rollout,
+novel-method, semantic, recovery and production limitations.
+
 `operator-reconciliation-authorization.schema.json` binds one fresh owner
 terminal ceremony to an exact held action and verified history. The separate
 `operator-reconciliation-record.schema.json` binds its signed cancellation or

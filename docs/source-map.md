@@ -7,6 +7,15 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [method runtime](method-deviation-runtime.md) is local engineering synthesis
+of the existing mission-command, disciplined-initiative, intent, adoption,
+dispatch, SITREP and revocation contracts. Its optional reviewed baseline,
+contract quartet, actual consumers, fixtures and both skill wrappers implement
+finite exact-input substitution and response history, not semantic effect
+equivalence, the complete DI catalog, universal rollout or production isolation.
+Verified manifest introduction history, not sorted inventory position, proves
+causal order. No new external military-source or authenticated-USER claim is made.
+
 The [intent continuity runtime](intent-continuity-runtime.md) implements mechanical
 plan/task/delegation preservation over the existing mission-command policy.
 Its schemas, contract, projection, fixtures, context v0.4 consumers and both skill

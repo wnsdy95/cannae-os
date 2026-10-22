@@ -20,6 +20,7 @@
     "human_final_decision_authority"
   ],
   "properties": {
+    "method_acknowledgement": { "$ref": "method-control-baseline.schema.json#/properties/agents/items" },
     "schema_version": {
       "const": "0.1"
     },

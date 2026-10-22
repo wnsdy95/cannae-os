@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1",
+  "type": "MethodDeviationEvent",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "agent_id": "agent-S2",
+  "plan_ref": {
+    "artifact_id": "MWP-ADOPTION",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
+    "sha256": "b712c9676395777eb8de408712462e4bad7d798f6117a4a3847f43ce8bff65f0"
+  },
+  "context_ref": {
+    "artifact_id": "ACP-W1-agent-S2",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/agent-context-packs/ACP-W1-agent-S2.json",
+    "sha256": "4787237d53c60dbfc96de5e21e7019313b7923536e95ccdb6250fec37f75d59c"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-d943fa6d-a51a-4647-b8cb-0151c2279b8b",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/agent-dispatch-leases/ADL-d943fa6d-a51a-4647-b8cb-0151c2279b8b.json",
+    "sha256": "b440791c700387de40df258ba510a2bebd9b6e01d67b72c5bd1ff65c1421cf62"
+  },
+  "policy_ref": {
+    "artifact_id": "DTP-agent-S2",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/dispatch-tool-policies/DTP-agent-S2.json",
+    "sha256": "2066ff2d44c0eef538d8f1ca8fbe8066f91746b5014d1dc5af3ccde9b5353bd6"
+  },
+  "checkpoint_ref": {
+    "artifact_id": "AEC-e3f7f0119cd05d44a6c7badc",
+    "relative_path": "repositories/repo-83ea2baa6c87/missions/MIS-ADOPTION/W1/agent-execution-checkpoints/AEC-e3f7f0119cd05d44a6c7badc.json",
+    "sha256": "b143d514429f926ba87c36b74174db77f9f1d560697d9f69b603fbf740aabaa5"
+  },
+  "baseline_sha256": "cce332f8cec5e70a4019f8a99391c0253cf119939d50727e54e407c546b38d6d",
+  "intent_sha256": "e81ffe1a4f14b2a967d2d3db484ade6cb949e47bf93181361c31ea639d19e25f",
+  "step_id": "inspect",
+  "method_id": "short_read",
+  "tool_name": "Read",
+  "rule_id": "DTR-READ",
+  "input_sha256": "1f23fbf6bfe6746458629cabe4c17f743792abb87d20a6049bdcfbb1fd6c038f",
+  "report_timing": "after",
+  "rationale": "Synthetic example: use the reviewed bounded first-line read.",
+  "recorded_at": "2026-09-29T16:01:30.000Z",
+  "expires_at": "2026-09-29T16:01:30.000Z",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "id": "MDEV-f03fd4744d9fcff8679a7a60ab59cd1a"
+}

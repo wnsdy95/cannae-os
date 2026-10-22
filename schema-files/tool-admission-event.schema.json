@@ -30,6 +30,7 @@
   ],
   "additionalProperties": false,
   "properties": {
+    "method_binding": { "$ref": "method-deviation-common.schema.json#/$defs/binding" },
     "schema_version": { "type": "string", "const": "0.1" },
     "type": { "type": "string", "const": "ToolAdmissionEvent" },
     "id": { "$ref": "common.schema.json#/$defs/id" },

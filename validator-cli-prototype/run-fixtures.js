@@ -11,6 +11,17 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} method-governed full mission plan`,
+    file: `sample-payloads/${prefix}-mission-wave-plan-methods.json`, type: "mission-wave-plan", exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["METHOD_AGENT_COVERAGE"] })),
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} receiver-scoped method context`,
+    file: `sample-payloads/${prefix}-agent-context-pack-methods.json`, type: "agent-context-pack", exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["METHOD_CONTEXT_BINDING_INVALID"] })),
+  ...[["method-control-baseline", "METHOD_DUPLICATE_STEP"], ["method-deviation-event", "METHOD_DEVIATION_VALIDITY_INVALID"],
+    ["initiative-deviation-report", "METHOD_REPORT_PHASE_BINDING_INVALID"], ["degeneration-incident-event", "CONST_MISMATCH"]]
+    .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
   ...[["authorization", "CONST_MISMATCH"], ["record", "OPERATOR_RECONCILIATION_RECORD_SCOPE_INVALID"]]
     .flatMap(([suffix, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing operator reconciliation ${suffix}`,
       file: `sample-payloads/${prefix}-operator-reconciliation-${suffix}.json`, type: `operator-reconciliation-${suffix}`,
