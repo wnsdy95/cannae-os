@@ -64,6 +64,8 @@ The router and references are bundled under this skill folder and do not depend 
 
 ## Operational Mission Lifecycle
 
+For local operator login, evidence API or viewer access, read `docs/local-operator-console.md` and use `scripts/serve_controls_operator.js`. Leave real owner setup to the human; keep setup/invite secrets out of chat and artifacts. Viewer mission grants expose restricted evidence, not approval; stale snapshots require refresh, not bypass.
+
 1. Prepare a complete `MissionWavePlan` preserving `USER` final authority, non-command AI roles, explicit action boundaries and finite validity/budgets. For captured intake, use v0.2 and the exact adoption procedure before opening; legacy v0.1 is only for waves without intake. A schema-valid plan is not proof of USER consent.
 2. For a dispatch-controlled wave, create one deny-by-default policy draft per agent, hash each exact draft with `scripts/operate_dispatch_runtime.js hash-input`, and put each digest plus its exact agent, provider, and policy ID in the USER-authorized `MissionWavePlan.dispatch_control.policy_authorizations`.
 3. Run `scripts/operate_controls_mission.js open`. Require `status: ready`, `context_dispatch_authorized: true`, `tool_execution_authorized: false`, `dispatch_authorized: false`, one context pack per expected agent, and a valid artifact store. Do not dispatch from manually assembled chat claims.

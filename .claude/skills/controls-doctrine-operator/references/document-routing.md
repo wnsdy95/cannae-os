@@ -1,5 +1,13 @@
 # Document Routing
 
+For a real local evidence workspace, route to `docs/local-operator-console.md`
+and `scripts/serve_controls_operator.js`; validate with
+`node run-operator-console-fixtures.js`. The human creates the owner account.
+Do not read private setup links into chat, seed fake operational records, or
+interpret login, viewer invitations or proposal inspection as scope approval.
+Grant explicit restricted mission access only after owner reauthentication.
+After a stale manifest/cursor error, refresh the list and reselect the evidence.
+
 For exact successor activation, read `docs/campaign-successor-admission.md`,
 its four request/proposal/admission schemas, `campaign-successor-controller.js`
 and `run-campaign-successor-fixtures.js`. Use

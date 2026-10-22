@@ -5611,3 +5611,21 @@ permission or repository selection.
 - add independent liveness witnesses and trusted time; and
 - design a separate incident-reset contract for established lineage. Phase
   19E must never be generalized into that reset path.
+
+## Local Operator Authentication And Evidence Queries
+
+The [local operator console](local-operator-console.md) replaces static sample
+data only for its evidence and proposal-inspection surfaces. Actual owner login,
+one-use viewer invitations, explicit restricted mission access, current-account
+checks and repository-manifest verification are implemented. Login is not order
+adoption; the authenticated one-use decision and controller-consumption adapter
+remains a separate completion condition.
+
+The engineering boundary is deliberately narrow: application authentication can
+separate owner and viewer requests without proving that the same OS user cannot
+read the private database or replace the service. Loopback cookies are not
+port-isolated; remote deployment, protected keys, non-bypassable execution and
+independent retention cannot be inferred from this local product increment.
+The USER deferred the deployment target on 2026-10-22; local progress does not
+remove the protected-production goal. Primary implementation sources and their
+claim limits are indexed in [the source map](source-map.md).

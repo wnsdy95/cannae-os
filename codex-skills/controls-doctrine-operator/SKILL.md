@@ -74,6 +74,8 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 
 Read these only when needed:
 
+- For local operator login, evidence API or viewer access, read `docs/local-operator-console.md` and use `scripts/serve_controls_operator.js`. Leave real owner setup to the human; keep setup/invite secrets out of chat and artifacts. Viewer mission grants expose restricted evidence, not approval; stale snapshots require refresh, not bypass.
+
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
 - `docs/intent-continuity-runtime.md`: require context v0.4 and exact root/task/delegation commitments before tool authority. Legacy contexts remain historical; settle their admitted results and prepare a newly reviewed wave instead of rewriting them.
 - `docs/request-order-intake.md` and `docs/order-adoption-and-plan-binding.md`: capture exact input and use `scripts/adopt_controls_order.js` for full-plan review, backbriefs and rehearsal. For an opened scope change, read `docs/order-revision-and-supersession.md` and use `scripts/revise_controls_order.js`: prepare the reviewed successor, settle old results, then supersede before tool dispatch. New adoption holds old calls; never strip bindings, reuse approval or backdate cleanup.

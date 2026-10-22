@@ -1,5 +1,11 @@
 # Sample Payloads
 
+The byte-identical `valid-github-release-independent-verification-pre-console-v0.2.json`
+preserves producer `ad14016` before the local-console lockfile migration. Do not
+rewrite it to match current hashes. The separately regenerated current sample
+must match a fresh pinned-engine replay; the historical sample must replay
+unchanged through that engine.
+
 This directory contains valid and invalid runtime payload fixtures.
 
 The commander-intent, intent-delegation-event, intent-continuity-projection,

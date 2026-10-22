@@ -115,7 +115,7 @@ Retained evidence previously required byte-equivalent replay including current
 module and lockfile digests. Even a valid dependency update therefore broke
 historical replay. The runtime recognizes exact v0.1/4.1.0 producer tuples from
 source commits `786c38a`, `9635f8d`, and `d08420a`, plus the former v0.2/4.1.2
-producer from `4bad6dd`. Evidence schema, package, package version, minimum
+producers from `4bad6dd` and `ad14016`. Evidence schema, package, package version, minimum
 version, Node minimum, module SHA-256, and lockfile SHA-256 must all match.
 Unknown tuples, extra metadata, and schema/version substitution remain errors.
 
@@ -141,6 +141,14 @@ The committed `valid-github-release-independent-verification-prior-v0.2.json`
 is byte-identical to the former current sample in that source commit. Fixtures
 pin its file hash and replay it unchanged, independently of the separately
 regenerated current sample. Hybrid old-module/new-lock identities stay rejected.
+
+The local-console dependency migration freezes the byte-identical current sample
+from `ad14016ff4ad051beec3ace8fda88fabd11d5eab` as
+`valid-github-release-independent-verification-pre-console-v0.2.json`, with file
+SHA-256 `0b3689ca33ac2741aa75fc136739ab1d5a919ee1a0bb645ee012d622340637f8`.
+Its exact module/lock producer pair is separately recognized; the current sample
+is regenerated using the installed pinned verifier. Same-version hybrid producer
+pairs and unknown metadata remain rejected. No historical artifact is rewritten.
 
 Before future migrations, capture the exact baseline producer and an unchanged
 evidence sample. After installation, test both prior replay and exact equality
