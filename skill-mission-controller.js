@@ -22,6 +22,7 @@ const {
 
 const NONE_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const CONTROL_EVIDENCE_KINDS = new Set([
+  "commander-intents", "intent-delegations", "intent-continuity-projections",
   "aar-readiness-updates",
   "aars",
   "agent-context-packs",
@@ -805,11 +806,15 @@ function openWaveUnlocked(plan, options = {}) {
     const routed = agentReceipts[index];
     const validationCommands = unique(routed.receipt.validation_commands || []);
     const contextId = `ACP-${safeIdPart(plan.wave_id)}-${safeIdPart(agent.agent_id)}`;
-    const existingContext = adopted && optionalArtifact(operationOptions, {
+    const existingContext = optionalArtifact(operationOptions, {
       missionId: plan.mission_id, waveId: plan.wave_id, kind: "agent-context-packs", artifactId: contextId
     });
+    if (existingContext && existingContext.payload.schema_version !== "0.4") {
+      throw new Error("INTENT_CONTEXT_UPGRADE_REQUIRED: preserve legacy context history and prepare a newly reviewed wave.");
+    }
     const contextPack = {
-      schema_version: adopted ? "0.3" : "0.2",
+      schema_version: "0.4",
+      intent_assignment: require("./intent-continuity-contract").assignmentForPlan(plan, agent.agent_id),
       ...(adopted ? { order_assignment: contextAssignment(adopted, agent.agent_id) } : {}),
       type: "AgentContextPack",
       id: contextId,
@@ -849,6 +854,7 @@ function openWaveUnlocked(plan, options = {}) {
       valid_until: adopted ? adopted.payload.expires_at : plan.valid_until
     };
     assertValid(contextPack, "agent-context-pack", `Context pack ${agent.agent_id}`);
+    require("./intent-continuity-contract").assertIntentContext(contextPack, plan);
     if (adopted) require("./order-adoption-controller").assertContextAssignment(contextPack, plan, operationOptions);
     const ref = persistJson(operationOptions, {
       missionId: plan.mission_id,
@@ -1015,6 +1021,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
       throw new Error(`Wave report does not cite the exact context pack for ${result.agent_id}.`);
     }
     require("./order-adoption-controller").assertContextAssignment(context.payload, planArtifact.payload, options);
+    require("./intent-continuity-contract").assertIntentContext(context.payload, planArtifact.payload);
     for (const evidenceRef of result.evidence_refs) {
       const evidence = requiredArtifactRef(options, evidenceRef, {
         missionId: report.mission_id,
@@ -1499,6 +1506,7 @@ function terminateWave(request, options = {}) {
           const packs = contexts.entries.map(entry => readEntryPayload(contexts, entry)).filter(pack => pack.agent_id === agent.agent_id);
           if (packs.length !== 1) throw new Error("Successor requires exactly one context pack per agent.");
           assertValid(packs[0], "agent-context-pack", "Successor context pack");
+          require("./intent-continuity-contract").assertIntentContext(packs[0], successor.payload);
           if (packs[0].status !== "ready" || !sameRef(packs[0].plan_ref, successor.ref) ||
               !sameRef(packs[0].routing_preflight_ref, preflight.ref)) throw new Error("Successor context is not bound to its ready plan and preflight.");
         }

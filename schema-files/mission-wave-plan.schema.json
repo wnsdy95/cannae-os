@@ -31,6 +31,7 @@
     }
   ],
   "properties": {
+    "intent_continuity": { "$ref": "intent-continuity-common.schema.json#/$defs/tree" },
     "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "order_binding": { "$ref": "order-adoption-common.schema.json#/$defs/plan_binding" },
     "type": { "type": "string", "const": "MissionWavePlan" },

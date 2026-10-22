@@ -145,6 +145,7 @@ function verifyTermination(store, plan, ending) {
 }
 
 function verifyOrderContextHistory(store, plan, context) {
+  if (context.payload.schema_version === "0.4") require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
   const before = prefixBeforeEntry(store, context.entry);
   require("./order-adoption-controller").assertContextAssignment(context.payload, plan.payload, {
     repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now: context.entry.created_at

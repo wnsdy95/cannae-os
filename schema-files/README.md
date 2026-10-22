@@ -1,5 +1,13 @@
 # Schema Files
 
+`CommanderIntent`, `IntentDelegationEvent` and `IntentContinuityProjection` are
+non-authorizing contracts. `intent-continuity-common.schema.json` defines graded
+boundaries, task commitments, complete trees and per-agent assignments. Every new
+context uses v0.4 with an exact intent assignment, including legacy-plan workflows.
+Context v0.2/v0.3 stays readable but cannot receive new covered-tool authority;
+all context schema versions report `can_execute: false`. See
+[mandatory intent continuity](../docs/intent-continuity-runtime.md).
+
 `OrderRevisionRequest` and `OrderRevisionProposal` v0.1 retain exact parent scope,
 change-request provenance, a full successor plan and field-level differences.
 Both remain non-executable. Optional `order_binding.revision_ref` on a bound plan
@@ -10,8 +18,9 @@ complete USER adoption, preparation, settlement and dispatch ordering.
 `OrderAdoptionProposalRequest`, `OrderAdoptionProposal`, `OrderBackbrief`,
 `OrderRehearsal`, `OrderAdoptionDecisionRequest` and `OrderAdoptionRecord` v0.1
 bind one exact USER review to a complete `MissionWavePlan` v0.2 and per-agent
-`AgentContextPack` v0.3. Common adoption definitions bind task assignments and
-retained references. All six contracts and both bound versions report
+`AgentContextPack` v0.3 historically and v0.4 for newly generated contexts.
+Common adoption definitions bind task assignments and retained references.
+All six adoption contracts, bound plans and every context version report
 `can_execute: false` even when schema-valid; the runtime must replay retained
 adoption and its other gates. Legacy plan v0.1/context v0.2 cannot contain these
 bindings or bypass captured intake in the same wave. See

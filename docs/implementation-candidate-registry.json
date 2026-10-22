@@ -57,7 +57,7 @@
     },
     {
       "document": "docs/mission-command-runtime-policy.md",
-      "section_sha256": "bd8ac88a5035c9d41552bc83f01ea9c05738659087fb5f060a779b187fe02a67"
+      "section_sha256": "28c46c2e60f74706ae06f464cd237767e35c98fc9f77ef5481df815fe5e33d8d"
     },
     {
       "document": "docs/opsec-classification-model.md",
@@ -1669,19 +1669,17 @@
       "candidate_key": "schema-files/commander-intent.schema.json",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "implemented",
+      "implementation_paths": ["schema-files/commander-intent.schema.json", "intent-continuity-contract.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`schema-files/commander-intent.schema.json`: the five-field intent block with parent lineage and boundary object.",
-          "validation_commands": []
+          "validation_commands": ["node run-intent-continuity-fixtures.js"]
         }
       ],
-      "remaining_work": [
-        "Implement or demonstrate equivalent behavior for schema-files/commander-intent.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
-      ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "remaining_work": [],
+      "rationale": "Versioned plan-bound intent preserves purpose, task commitments, end state, failures, constraints and graded parent boundaries; positive, adversarial and actual context/dispatch consumers are exercised. This declaration does not cover semantic intent interpretation."
     },
     {
       "id": "IC-4b107f7a59f2b067",
@@ -1689,19 +1687,19 @@
       "candidate_key": "schema-files/intent-delegation-event.schema.json",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["schema-files/intent-delegation-event.schema.json", "intent-continuity-contract.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`schema-files/intent-delegation-event.schema.json`: echelon crossing event pairing an intent block with a delegated approval scope.",
-          "validation_commands": []
+          "validation_commands": ["node run-intent-continuity-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for schema-files/intent-delegation-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Bind concrete manifest-backed approval scopes and their exact delegation/consumption history. The current adapter accepts only none references and never grants approval-bearing or retained authority."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "Exact parent/child scopes and narrowing-only Green delegation are implemented, but an executable approval-bearing scope adapter is deliberately not claimed."
     },
     {
       "id": "IC-f7ca1232ec987f27",
@@ -1729,19 +1727,17 @@
       "candidate_key": "intent-continuity-runner.js",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "implemented",
+      "implementation_paths": ["intent-continuity-runner.js", "intent-continuity-contract.js", "skill-mission-controller.js", "dispatch-runtime-controller.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`intent-continuity-runner.js`: walks the intent lineage and fails any child block that widens its parent boundary or drops a key task.",
-          "validation_commands": []
+          "validation_commands": ["node run-intent-continuity-fixtures.js"]
         }
       ],
-      "remaining_work": [
-        "Implement or demonstrate equivalent behavior for intent-continuity-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
-      ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "remaining_work": [],
+      "rationale": "Complete rostered lineages are checked for root reachability, task loss, changed purpose, widened boundaries, cycles and context substitution at diagnostic and actual lifecycle/dispatch/report consumers."
     },
     {
       "id": "IC-c01857f06b4dbc5f",
@@ -1769,19 +1765,17 @@
       "candidate_key": "run-intent-continuity-fixtures.js",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "implemented",
+      "implementation_paths": ["run-intent-continuity-fixtures.js", "intent-continuity-fixtures/support.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`run-intent-continuity-fixtures.js`: valid nested intent, widened-boundary child, and dropped-key-task fixtures.",
-          "validation_commands": []
+          "validation_commands": ["node run-intent-continuity-fixtures.js"]
         }
       ],
-      "remaining_work": [
-        "Implement or demonstrate equivalent behavior for run-intent-continuity-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
-      ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "remaining_work": [],
+      "rationale": "Dedicated positive/negative hierarchy tests include missing tasks, broader authority, malformed roots/delegations, actual tool admission, legacy upgrade holds, late-result settlement and both provider wrappers."
     },
     {
       "id": "IC-6acc856aa00a9074",

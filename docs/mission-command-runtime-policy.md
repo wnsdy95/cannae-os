@@ -4,7 +4,12 @@
 
 Mission command lets a large organization act coherently without the senior commander directing every step. The commander fixes why the operation exists and what done looks like; subordinates choose how within explicit boundaries.
 
-`docs/commander-handbook.md` already tells the human commander what inputs to provide, and `docs/agent-roles-and-authority.md` already assigns approval tiers to roles. What is still missing is the runtime layer between them: how a stated intent becomes a machine-checkable constraint set, how that constraint set survives delegation through echelons of agents, and how the runtime decides whether a method change by an agent is disciplined initiative or the start of unauthorized action.
+`docs/commander-handbook.md` tells the human commander what inputs to provide, and
+`docs/agent-roles-and-authority.md` assigns approval tiers to roles. The
+[intent continuity runtime](intent-continuity-runtime.md) now carries mechanical
+plan commitments through agent echelons and covered execution gates. Semantic
+intent interpretation, concrete approval-bearing delegation and the decision
+whether a method change is disciplined initiative remain incomplete.
 
 This document defines that runtime policy. The enumerated boundary rules that enforce it are split out into `docs/disciplined-initiative-rules.md`.
 
@@ -195,7 +200,11 @@ The runtime rule is condensed into a single sentence.
 
 The [implementation registry](implementation-candidate-registry.md) tracks these requirements, equivalent paths, checks, and remaining work. A proposed filename is not proof of completion.
 
-The following are candidates only; none of them exists yet.
+The [intent runtime](intent-continuity-runtime.md) now implements the commander
+intent contract, complete mechanical lineage checks and their dedicated fixtures.
+Delegation events are partial until a concrete approval-bearing scope adapter is
+reviewed. Method deviation and semantic intent interpretation remain open. The
+list retains original proposal identities; the registry owns current mappings.
 
 schema:
 

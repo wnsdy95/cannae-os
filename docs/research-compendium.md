@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Mandatory Intent Continuity (2026-10-22)
+
+The [intent runtime](intent-continuity-runtime.md) binds every newly generated
+context to an exact plan and complete task commitments without copying sibling
+task text. Default flat scopes and explicitly nested rostered scopes share one
+root-reachability, inheritance and narrowing-only boundary appraiser. Lifecycle,
+policy/lease, covered-tool, resume and report consumers reject substituted or
+legacy contexts while old admitted results remain retainable.
+
+Both skill routers now recommend the intent doctrine directly instead of leaving
+it in supporting artifacts or returning a false capability gap. Both wrappers
+offer non-authorizing diagnostics, and both skills require a newly reviewed wave
+rather than relabeling old context history. This is local engineering synthesis
+of existing doctrine, not new military research or a claim of semantic completeness,
+authenticated USER consent, approval-bearing delegation, disciplined method
+deviation or completion of the full eight-part program.
+
 ## Linked Order Revision And Supersession (2026-10-21)
 
 The [revision contract](order-revision-and-supersession.md) links an opened adopted

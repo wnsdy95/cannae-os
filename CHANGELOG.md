@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Require plan-bound intent lineage in every newly generated context v0.4 and recheck root/task commitments and narrowing-only child scopes at policy, lease, tool, resume and report boundaries. Preserve schema-readable legacy context history and already-admitted result settlement without granting new authority. Both skills now prioritize intent doctrine, provide a diagnostic wrapper and teach reviewed-wave migration instead of context relabeling. Semantic omission, approval-bearing delegation, method-deviation governance and the remaining eight-part program stay open.
+
 - Link complete successor plans to exact change requests and parent adoption through replayed revision proposals. Reuse USER adoption and termination verification; prepare contexts before handoff, hold new predecessor calls after selection and admit successor tools only after exact supersession and settled effects. Both skills expose the revision wrapper and teach expiry/review and preparation/execution ordering. Broader initiative, authenticated consent and automatic replanning remain open.
 
 - Enforce own-property membership for schema fields, required values and registered document types. Reject prototype-named undeclared JSON fields and inherited required values; both skills now require real serialized adversarial keys, API checks and positive controls when changing structural validation. This closes a strict-schema bypass without claiming complete JSON Schema support or demonstrated privilege escalation.

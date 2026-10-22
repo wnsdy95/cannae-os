@@ -304,10 +304,10 @@ function expectedModelAssignment(plan, agent, options, knownStore) {
 function assertContextAssignment(context, plan, options, knownStore) {
   const adopted = orderForPlan(plan, options, knownStore);
   if (!adopted) {
-    requireTrue(context.schema_version === "0.2" && !context.order_assignment, "ORDER_CONTEXT_LEGACY_MISMATCH");
+    requireTrue(["0.2", "0.4"].includes(context.schema_version) && !context.order_assignment, "ORDER_CONTEXT_LEGACY_MISMATCH");
     return;
   }
-  requireTrue(context.schema_version === "0.3" && same(context.order_assignment, contextAssignment(adopted, context.agent_id)),
+  requireTrue(["0.3", "0.4"].includes(context.schema_version) && same(context.order_assignment, contextAssignment(adopted, context.agent_id)),
     "ORDER_CONTEXT_ASSIGNMENT_MISMATCH");
   const agent = plan.agents.find(item => item.agent_id === context.agent_id);
   const authority = { delegated_authority: agent.delegated_authority, allowed_actions: agent.allowed_actions,

@@ -256,6 +256,8 @@ function contextBundleInReplay(options, policy, settings) {
   const plan = loadArtifactRef(view, context.payload.plan_ref, "mission-wave-plan");
   require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
   require("./order-adoption-controller").assertContextAssignment(context.payload, plan.payload, { ...options, artifactRoot: view.artifactRoot });
+  const intent = require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
+  require("./intent-continuity-contract").assertIntentPolicy(policy, intent);
   require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: view.artifactRoot }, view);
   const preflight = loadArtifactRef(view, context.payload.routing_preflight_ref);
   if (preflight.payload.type !== "AgentRoutingPreflightProjection" || preflight.payload.status !== "ready") {
@@ -945,6 +947,14 @@ function activeLeaseInReplay(options, identity, at) {
     return { code: "UNRESOLVED_TOOL_EFFECTS", view, ...selected };
   }
   const plan = loadArtifactRef(view, selected.leaseRecord.payload.plan_ref, "mission-wave-plan");
+  try {
+    const context = loadArtifactRef(view, selected.leaseRecord.payload.context_pack_ref, "agent-context-pack");
+    const intent = require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
+    require("./intent-continuity-contract").assertIntentPolicy(policyForLease(view, selected.leaseRecord).payload, intent);
+  } catch (error) {
+    if (!error.message.startsWith("INTENT_")) throw error;
+    return { code: error.message, view, ...selected };
+  }
   try {
     require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
     require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: view.artifactRoot }, view);
@@ -1716,6 +1726,8 @@ function resumeLease(options, leaseIdValue, bindings) {
   const plan = loadArtifactRef(loaded.view, loaded.leaseRecord.payload.plan_ref, "mission-wave-plan");
   require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot });
   require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot }, loaded.view);
+  const intent = require("./intent-continuity-contract").assertIntentContext(contextForLease(loaded.view, loaded.leaseRecord).payload, plan.payload);
+  require("./intent-continuity-contract").assertIntentPolicy(policyForLease(loaded.view, loaded.leaseRecord).payload, intent);
   const lock = dispatchLock(loaded.view, leaseIdValue);
   let oldLease;
   let policy;
@@ -1743,6 +1755,9 @@ function resumeLease(options, leaseIdValue, bindings) {
     }
     policy = policyForLease(refreshed.view, oldLease).payload;
     const context = contextForLease(refreshed.view, oldLease).payload;
+    const currentPlan = loadArtifactRef(refreshed.view, oldLease.payload.plan_ref, "mission-wave-plan");
+    require("./intent-continuity-contract").assertIntentPolicy(policy,
+      require("./intent-continuity-contract").assertIntentContext(context, currentPlan.payload));
     policyValidity(policy, context, nowIso(options));
     const superseded = transitionCheckpoint(oldLease, previous, state, {
       kind: "supersession",

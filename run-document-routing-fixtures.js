@@ -93,6 +93,16 @@ for (const router of ROUTERS) {
     assert(registry.validation_commands.includes("node implementation-candidate-registry.js audit"));
   }
   const termination = route(router, ["--actor=user"], "Reconcile expired wave termination and supersession");
+  for (const query of ["commander intent autonomy boundaries drift FRAGO", "intent continuity and task conservation",
+    "mission command and disciplined initiative", "check_controls_intent context upgrade"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["intent-initiative"]);
+    assert.strictEqual(result.capability_routing.status, "covered");
+    for (const document of ["docs/mission-command-runtime-policy.md", "docs/disciplined-initiative-rules.md", "docs/intent-continuity-runtime.md"]) {
+      assert(result.recommended_documents.some(item => item.path === document), `${query}: ${document} must be a primary recommendation`);
+    }
+    assert(result.validation_commands.includes("node run-intent-continuity-fixtures.js"));
+  }
   assertRoutes(termination, ["skill-operations"]);
   assert(termination.recommended_documents.some(item => item.path === "docs/skill-operational-mission-lifecycle.md"));
   const capabilityGapQuery = "Research ICP and sales targeting using the canonical track view";

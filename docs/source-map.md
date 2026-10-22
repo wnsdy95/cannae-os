@@ -7,6 +7,12 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [intent continuity runtime](intent-continuity-runtime.md) implements mechanical
+plan/task/delegation preservation over the existing mission-command policy.
+Its schemas, contract, projection, fixtures, context v0.4 consumers and both skill
+wrappers distinguish structural inheritance from semantic interpretation, human
+authentication and approval-bearing scope. No new external-source claim is added.
+
 The [revision path](order-revision-and-supersession.md) integrates retained request
 capture, exact plan adoption and existing wave supersession. The revision contract,
 controller, schema pair, samples, fixtures and both skill wrappers retain complete

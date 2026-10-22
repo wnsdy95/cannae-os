@@ -2,6 +2,12 @@
 
 This directory contains valid and invalid runtime payload fixtures.
 
+The commander-intent, intent-delegation-event, intent-continuity-projection,
+mission-wave-plan-intent and agent-context-pack-intent pairs demonstrate mandatory
+task commitments and narrowing-only hierarchy. They are synthetic wire examples,
+not retained USER consent or tool authority. See the
+[intent continuity procedure](../docs/intent-continuity-runtime.md).
+
 `valid-mission-wave-termination-request.json` and
 `valid-mission-wave-termination.json` show evidence-preserving expiry, not
 successful execution. The unapproved-request and premature-termination invalid

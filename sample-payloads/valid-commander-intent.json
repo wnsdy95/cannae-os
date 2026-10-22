@@ -1,0 +1,49 @@
+{
+  "schema_version": "0.1",
+  "type": "CommanderIntent",
+  "id": "INT-d69e7c3ee9b367e5af9dbcc0a976f44a",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "plan_id": "MWP-SKILL-DEMO-W1",
+  "agent_id": "USER",
+  "parent_intent_id": null,
+  "purpose": "Produce and verify a repository-scoped skill improvement without bypassing routing or human authority.",
+  "key_tasks": [
+    {
+      "task_id": "TASK-8ae2d538b90c1dd2cd7f279f53546852",
+      "task_sha256": "f6d1651a257687a0bc87873b3dfad77f6a4dbb2cb400f367634d9090fa996d7e",
+      "owner_agent_id": "plans-agent"
+    },
+    {
+      "task_id": "TASK-f1e74c7944ebca524b061c79794aa932",
+      "task_sha256": "ceca46a9b22b3aef10fe5ffc7bc9e71f0f90e20f153382e25d77bd8a785f0b22",
+      "owner_agent_id": "verification-agent"
+    }
+  ],
+  "end_state": [
+    "Every expected agent receives a manifest-backed context pack.",
+    "The changed skill passes deterministic validation."
+  ],
+  "failure_to_avoid": [
+    "Any expected agent starts without a routing receipt.",
+    "An AI agent claims approval or release authority."
+  ],
+  "constraints": [
+    "Operate only inside the target repository.",
+    "Persist durable evidence through the repository artifact store."
+  ],
+  "authority_boundary": {
+    "green": [
+      "Inspect supplied evidence",
+      "Prepare an internal draft"
+    ],
+    "amber": [],
+    "red": [
+      "Change mission scope",
+      "Publish externally"
+    ],
+    "black": [
+      "Expose credentials"
+    ]
+  }
+}
