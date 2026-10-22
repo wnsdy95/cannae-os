@@ -32,6 +32,9 @@ another wave immediately before publishing a new lease. A new wave or session
 does not discharge those obligations; a denied publication retains no grant.
 Historical legacy contexts can still settle already-admitted results and be revoked;
 they never bypass the current mandatory-context guard for new calls or resume.
+An active/interrupted legacy lease with a reconciled failure still reports that
+specific failure and required revocation before the generic result-only guard.
+Result-only migration status never conceals or clears retained failure markers.
 Unobserved startup and known unknown effects deny before a successor is frozen.
 Tests must prove that early denial publishes nothing, not force an unsafe old
 sequence merely to reach its former downstream guard.

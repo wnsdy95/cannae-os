@@ -251,6 +251,9 @@ already-admitted results and explicitly revoke unused authority; never renew
 bindings or replay work to hide the denial.
 Diagnose dispatch denials by their exact reason code; changed prose is not a
 different authority state or permission to retry with new bindings.
+For legacy result-only leases, inspect reconciled failure and revocation markers
+separately. Preserve their specific hold; a generic migration denial is not
+clearance or permission to skip post-settlement revocation of a failed agent.
 Require full supervisor, gateway, intent, channel and lifecycle regressions
 after changing issuance. Preserve specific stop/failure reasons and legacy
 result settlement separately from new authority. When a stricter guard rejects

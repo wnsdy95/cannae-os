@@ -1270,18 +1270,18 @@ function activeLeaseInReplay(options, identity, at) {
     };
   }
   const selected = candidates[0];
+  if (reconciledFailureState(view, selected.leaseRecord).checkpoint_refs.length) {
+    return { code: "RECONCILED_FAILED_AGENT", view, ...selected };
+  }
+  if (hasReconciledFailureAwaitingRevocation(view)) {
+    return { code: "RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED", view, ...selected };
+  }
   if (selected.leaseRecord.payload.schema_version === "0.1") {
     return { code: "LEGACY_LEASE_RESULT_ONLY", view, ...selected };
   }
   const issued = loadArtifactRef(view, selected.leaseRecord.payload.issuance_ref, "dispatch-lease-issuance-request");
   if (issued.payload.runtime_sha256 !== issuance.runtimeDigest()) {
     return { code: "DISPATCH_ISSUANCE_RUNTIME_CHANGED", view, ...selected };
-  }
-  if (reconciledFailureState(view, selected.leaseRecord).checkpoint_refs.length) {
-    return { code: "RECONCILED_FAILED_AGENT", view, ...selected };
-  }
-  if (hasReconciledFailureAwaitingRevocation(view)) {
-    return { code: "RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED", view, ...selected };
   }
   if (gatewayObligations(view, options, true).length) {
     return { code: "UNRESOLVED_GATEWAY_TRANSACTIONS", view, ...selected };

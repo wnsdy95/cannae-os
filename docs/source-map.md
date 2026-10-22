@@ -36,6 +36,9 @@ Historical legacy result settlement remains distinct from live context
 eligibility. Full supervisor, gateway/effect, intent, channel and lifecycle
 consumers verify specific hold precedence and pre-issuance no-write rejection;
 issuance-only fixtures cannot establish their compatibility.
+Existing hook-settlement fixtures also check specific reconciled-failure codes
+for active/interrupted legacy leases and resumed descendants. Generic result-only
+migration cannot conceal the failure or required post-settlement revocation.
 Actual lease-publication races also reappraise repository-wide gateway/effect
 holds, not only the issuing wave. Exact fixture selection rejects an unknown
 case; a filtered pass is not the complete gateway suite.
