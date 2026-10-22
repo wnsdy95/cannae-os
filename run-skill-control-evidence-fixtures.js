@@ -89,8 +89,10 @@ try {
   });
   check("method-channel records and outer responses remain metadata after MIME or key-order changes", () => {
     const value = environment();
-    for (const [type, payload] of Object.entries(require("./method-control-fixtures/contracts").samples())) {
-      assert.equal(validatePayload(payload, type).valid, true);
+    const contracts = require("./method-control-fixtures/contracts");
+    const examples = [...Object.entries(contracts.samples()), ...Object.entries(contracts.continuationSamples()).map(([type, value]) => [type + "-continuation", value])];
+    for (const [type, payload] of examples) {
+      assert.equal(validatePayload(payload, type.replace(/-continuation$/, "")).valid, true);
       for (const extension of ["txt", "bin", "json"]) {
         const ref = value.fileArtifact(`DATA-CHANNEL-${type}-${extension}`, Object.fromEntries(Object.entries(payload).reverse()), extension);
         assert.throws(() => recordWave(value.report(`MWR-CHANNEL-${type}-${extension}`, ref), { ...value.options, now: value.at(30) }),

@@ -7,6 +7,9 @@ and `method-control-response` pairs are synthetic structural examples, not
 actual native-provider execution, USER consent or work outputs. Regenerate
 them explicitly with `node method-control-fixtures/write-samples.js` after
 reviewing runtime/lock changes; never rewrite retained operational evidence.
+The additional three `*-continuation.json` pairs demonstrate policy v0.2,
+versioned continuation slots and observed resume sources. Their synthetic
+references are structural examples, not actual task or resume authorization.
 
 `valid-github-release-independent-verification-pre-mcp-v0.2.json` preserves the
 exact accepted `18b6e21` producer before the MCP dependency migration. Its bytes

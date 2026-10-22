@@ -45,16 +45,18 @@
       "type": "object", "additionalProperties": false,
       "required": ["schema_version", "type", "transport", "identity_assurance", "runtime_sha256", "max_requests", "max_validity_seconds", "request_validity_seconds", "output_max_bytes", "server_name", "operations"],
       "properties": {
-        "schema_version": { "const": "0.1" }, "type": { "const": "MethodControlChannelPolicy" },
+        "schema_version": { "$ref": "method-control-channel-policy.schema.json#/properties/schema_version" }, "type": { "const": "MethodControlChannelPolicy" },
         "transport": { "const": "mcp_stdio_reference" }, "identity_assurance": { "const": "local_operator_enrollment_reference" },
         "runtime_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
         "max_requests": { "type": "integer", "minimum": 1, "maximum": 128 },
         "max_validity_seconds": { "type": "integer", "minimum": 1, "maximum": 3600 },
         "request_validity_seconds": { "type": "integer", "minimum": 1, "maximum": 60 },
         "output_max_bytes": { "type": "integer", "minimum": 4096, "maximum": 262144 },
+        "continuation": { "$ref": "method-control-channel-policy.schema.json#/properties/continuation" },
         "server_name": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
         "operations": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "enum": ["method_status", "method_propose", "method_report_after"] } }
-      }
+      },
+      "allOf": [{ "$ref": "method-control-channel-policy.schema.json#/allOf/0" }]
     },
     "method": {
       "type": "object", "additionalProperties": false,
