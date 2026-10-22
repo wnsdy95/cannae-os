@@ -17,6 +17,15 @@ the stored action outcome and preserve any reconciliation-required hold.
 An adopted plan still needs ordinary lifecycle/lease/gateway checks; signed
 consent cannot replace work evidence or authorize tool execution or release.
 
+For a timed-out or interrupted local owner decision, run
+`node run-operator-console-worker-fixtures.js` when maintaining the runtime.
+Do not clear the SQLite hold, replace the service ownership or launch another
+writer while worker exit is unconfirmed. An observed exit only stops that
+worker; inspect the actual action and retained manifest to determine effects.
+Preserve reconciliation-required state even after shutdown; there is no
+administrative discharge command in this increment. A lost response is never
+permission to replay the nonce or create a second approval.
+
 For exact successor activation, read `docs/campaign-successor-admission.md`,
 its four request/proposal/admission schemas, `campaign-successor-controller.js`
 and `run-campaign-successor-fixtures.js`. Use

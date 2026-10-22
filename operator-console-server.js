@@ -3,12 +3,12 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { Worker } = require("node:worker_threads");
 const { spawnSync } = require("node:child_process");
 const fastify = require("fastify");
 const { resolveRepository } = require("./repository-artifact-store");
 const { openAuthStore, privateFile, requireThat, SESSION_MS } = require("./operator-console-auth");
 const { openConsentService } = require("./operator-consent-service");
+const { createWorkerQueue } = require("./operator-console-jobs");
 const { repositoryStateDigest } = require("./skill-mission-controller");
 
 const ROOT = __dirname;
@@ -37,28 +37,9 @@ async function createConsole(options) {
   let consent;
   try { consent = openConsentService(auth, configuration); }
   catch (error) { auth.close(); throw error; }
-  const workers = new Set();
-  let queued = 0, tail = Promise.resolve();
+  const jobs = createWorkerQueue(path.join(ROOT, "operator-console-worker.js"));
   function query(user, request) {
-    requireThat(queued < 8, "CONSOLE_QUERY_BUSY", 429);
-    queued++;
-    const result = tail.then(() => new Promise((resolve, reject) => {
-      const worker = new Worker(path.join(ROOT, "operator-console-worker.js"), { workerData: { configuration: consent.workerConfiguration, user, request } });
-      workers.add(worker);
-      let settled = false;
-      const finish = (error, value) => {
-        if (settled) return;
-        settled = true; clearTimeout(timer); workers.delete(worker);
-        void worker.terminate();
-        if (error) reject(error); else resolve(value);
-      };
-      const timer = setTimeout(() => finish(Object.assign(new Error("CONSOLE_QUERY_TIMEOUT"), { statusCode: 503 })), 120000);
-      worker.once("message", message => finish(message.error ? Object.assign(new Error(message.error), { statusCode: message.statusCode, reason_codes: message.reason_codes }) : null, message.result));
-      worker.once("error", () => finish(new Error("CONSOLE_QUERY_FAILED")));
-      worker.once("exit", () => { if (!settled) finish(new Error("CONSOLE_QUERY_FAILED")); });
-    })).finally(() => { queued--; });
-    tail = result.catch(() => {});
-    return result;
+    return jobs.submit({ configuration: consent.workerConfiguration, user, request });
   }
   const origin = () => `http://127.0.0.1:${app.server.address()?.port || options.port || 0}`;
   app.addHook("onRequest", async (request, reply) => {
@@ -186,7 +167,8 @@ async function createConsole(options) {
     const bytes = fs.readFileSync(path.join(ROOT, relative));
     app.get(url, async (request, reply) => reply.type(type).send(bytes));
   }
-  app.addHook("onClose", async () => { for (const worker of workers) await worker.terminate(); await tail; consent.close(); auth.close(); });
+  app.addHook("preClose", async () => { await jobs.close(); });
+  app.addHook("onClose", async () => { await jobs.close(); consent.close(); auth.close(); });
   return { app, auth, consent, origin, repository, configuration: consent.workerConfiguration, readOnly };
 }
 
