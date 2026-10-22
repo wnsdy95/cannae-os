@@ -137,7 +137,9 @@ Status: partially implemented for authenticated local full-plan order adoption,
 rejection and revision with one-use password-reauthenticated consent and guarded
 controller consumption. The local worker queue now confirms actual exit before
 response, next-job admission or shutdown ownership release, but does not infer
-durable effects from that exit. Broader tool-action approval, interrupted-action
+durable effects from that exit. Owner-only outcome inspection now replays the
+exact retained consent/decision/controller chain without writes or hold
+discharge. Broader tool-action approval, interrupted-action
 reconciliation and protected production operation remain open.
 
 Goal:

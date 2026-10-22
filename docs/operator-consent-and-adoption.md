@@ -76,6 +76,38 @@ edit the database, clear the hold, replay a retained nonce or infer nonexecution
 from a missing HTTP response. A later reconciliation contract must distinguish
 an already retained adoption from a decision never consumed.
 
+### Inspect Actual Outcomes
+
+Owners can select a stored action in Decisions and use **Inspect Outcome**.
+`POST /api/order-decisions/:id/inspect` accepts only an empty body under the
+normal owner session and CSRF checks. The serialized worker opens the private
+database read-only, checks its current repository/service binding and replays
+the exact retained proposal, pinned-key signed consent, deterministic decision
+payload and adoption-controller history. It does not call `decideOrder`, repair
+a journal or write a decision, artifact, action state or reconciliation receipt.
+
+| Outcome | What was actually established | Required handling |
+| --- | --- | --- |
+| `not_submitted` | An unconsumed or restart-invalidated preview has no matching retained consent/decision/adoption | A new actual decision still requires normal fresh review. |
+| `execution_unconfirmed` | The private action is still reserved without a replayed adoption | Preserve its hold; absence of a response or record is not proof of nonexecution. |
+| `partial_consent` | The exact signed consent exists, but its bound decision is absent | Preserve the hold; never publish the missing decision automatically. |
+| `unconsumed_decision` | Exact consent and USER decision exist, but no matching adoption was replayed | Preserve the hold; future discharge must fence the old decision, not merely clear SQLite. |
+| `no_adoption_recorded` | No matching adoption, consent or decision was found at this verified snapshot | This is an absence observation, not a universal proof of no effects or permission to retry. |
+| `applied` | The exact historical consent/decision/controller chain replays, including after a response/projection interruption | Report the recorded disposition; do not replay it or automatically repair the private action. |
+| `conflicting` / `unverifiable` | Other recorded order history or an invalid/ambiguous binding prevents an exact conclusion | Keep uncertainty and holds visible; never select a convenient success. |
+
+The response binds an action-row digest, source/repository state and verified
+manifest snapshot. It rechecks all of them, private key pin and service ownership
+before returning. Concurrent drift denies the inspection instead of returning
+an earlier positive. Viewer access cannot inspect private action history.
+
+This is historical outcome inspection, not current tool/adoption admission:
+expired consent remains expired, later scope changes are not overridden, and
+every execution, continuation, release and mutation flag stays false. A replayed
+`applied` outcome can coexist with `reconciliation_required` in private state.
+Fresh authenticated terminal reconciliation, safe old-decision cancellation,
+durable receipts and crash-safe hold discharge remain required next work.
+
 The service is still a local reference boundary. The same OS user can replace
 code or database contents and legacy filesystem/CLI paths remain available.
 Private local key storage is not protected production custody or independently
@@ -95,6 +127,11 @@ and browser flows. Exercise actual controller/lifecycle consumption, unselected
 or mismatched rehearsal, stale source/repository/manifest, wrong owner/session,
 expired or replayed nonce, reauthentication, simultaneous submission and partial
 publication. Do not create a real owner's account or decide real work in tests.
+Use `node run-operator-consent-outcome-fixtures.js` for no-write outcome replay,
+all three recorded dispositions, every original publication boundary, invalid
+key/preview bindings, viewer denial and source drift. The shared pure decision
+template must preserve byte-equivalent original consent bindings. Browser
+fixtures also inspect desktop/mobile recorded outcomes without growing history.
 
 Run `node run-operator-console-worker-fixtures.js` for real-thread exit and
 timeout checks plus controlled message/error/exit ordering, termination

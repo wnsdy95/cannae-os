@@ -5662,3 +5662,13 @@ cover that ordering. This is a local execution-liveness prerequisite, not
 proof of durable decision effects or an implemented reconciliation procedure;
 unknown outcomes remain held. Node's versioned worker documentation is indexed
 in the source map; these additional hold rules are project policy.
+
+The later outcome inspector replays the exact signed consent, USER decision
+and adoption record through current verified history. It distinguishes a
+partial consent, an unconsumed decision and a recorded disposition even when
+the private action is still held after interruption. Owner-only read-only
+SQLite and snapshot/key/source checks prevent inspection from mutating the
+decision. An expired historical consent is not renewed. This makes the actual
+outcome inspectable but does not yet implement fresh human terminal consent,
+old-decision cancellation, receipts or crash-safe hold discharge; those remain
+the next reconciliation requirements.

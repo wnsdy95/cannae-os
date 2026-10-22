@@ -52,9 +52,18 @@ async function main() {
         await page.getByRole("button", { name: "Decisions", exact: true }).click();
         await page.getByRole("cell", { name: "applied", exact: true }).waitFor();
         await page.screenshot({ path: path.join(output, `${name}-history.png`), fullPage: true });
+        const retainedCount = require("../campaign-supervisor").loadVerifiedStore(env.options.repository, env.options.artifactRoot).manifest.artifacts.length;
+        await page.locator("#decisions .artifact-button").first().click();
+        await page.getByRole("button", { name: "Inspect Outcome", exact: true }).click();
+        await page.locator("#detail-title").filter({ hasText: "Recorded Outcome" }).waitFor({ timeout: 45000 });
+        const inspected = JSON.parse(await page.locator("#detail-content").textContent());
+        assert.equal(inspected.outcome, "applied"); assert.deepEqual(inspected.adoption_ref, result.adoption_ref);
+        assert.equal(inspected.mutation_authorized, false); assert.equal(inspected.execution_authorized, false);
+        assert.equal(require("../campaign-supervisor").loadVerifiedStore(env.options.repository, env.options.artifactRoot).manifest.artifacts.length, retainedCount);
+        await page.screenshot({ path: path.join(output, `${name}-inspected.png`), fullPage: true });
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         assert.equal(await page.locator("#detail-error").textContent(), "");
-        results.push(`${name}: real authenticated ${disposition} preview, controller result and action history`);
+        results.push(`${name}: real authenticated ${disposition} preview, controller result, action history and read-only outcome replay`);
       } finally {
         if (context) await context.close(); if (service) await service.app.close(); fs.rmSync(env.root, { force: true, recursive: true });
       }

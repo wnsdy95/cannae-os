@@ -134,6 +134,12 @@ async function createConsole(options) {
   });
   app.get("/api/order-decisions", async request => ({ entries: consent.list(request.session), ...readOnly }));
   app.get("/api/order-decisions/:id", { schema: { params: plain({ id: uuid }) } }, async request => consent.inspect(request.session, request.params.id));
+  app.post("/api/order-decisions/:id/inspect", { onRequest: guard,
+    schema: { params: plain({ id: uuid }), body: plain({}) } }, async request => {
+    const principal = owner(request);
+    const result = await query(principal, { action: "inspect-decision", challenge_id: request.params.id });
+    owner(request); return result;
+  });
   app.get("/api/operator-key", async request => { owner(request); return { public_key_pem: consent.publicKey(), ...readOnly }; });
   app.post("/api/invites", { onRequest: guard, config: authLimit, schema: { body: plain({ password: text(128),
     missions: { type: "array", minItems: 1, maxItems: 100, uniqueItems: true, items: { type: "string", pattern: "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" } } }) } },

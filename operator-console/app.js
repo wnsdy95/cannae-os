@@ -1,7 +1,7 @@
 "use strict";
 const $ = selector => document.querySelector(selector);
 let session, csrf, authMode = "login", tab = "evidence", snapshot, cursor, selectedUser;
-let selectedProposal, decisionPreview;
+let selectedProposal, decisionPreview, selectedAction;
 let previewGeneration = 0;
 const fragment = new URLSearchParams(location.hash.slice(1));
 const suppliedToken = fragment.get("setup") || fragment.get("invite");
@@ -115,6 +115,7 @@ async function inspect(item, manifest) {
 function clearDecision() {
   previewGeneration++;
   decisionPreview = null; selectedProposal = null;
+  selectedAction = null; $("#inspect-outcome").hidden = true;
   $("#decision-preview-form").hidden = true; $("#decision-preview-form").reset();
   $("#rehearsal-select").replaceChildren(new Option("None", "none"));
   $("#decision-confirmation").hidden = true; $("#decision-commit-form").reset();
@@ -126,8 +127,12 @@ async function loadDecisions() {
   for (const entry of data.entries) {
     const row = body.insertRow(), name = cell(row, ""), button = document.createElement("button");
     button.className = "artifact-button"; button.textContent = entry.id; button.onclick = async () => {
+      clearDecision(); const generation = previewGeneration;
       try {
-        const current = await api(`/api/order-decisions/${entry.id}`); clearDecision(); error("#detail-error");
+        const current = await api(`/api/order-decisions/${entry.id}`);
+        if (previewGeneration !== generation || tab !== "decisions" || session?.user?.role !== "owner") return;
+        error("#detail-error");
+        selectedAction = entry.id; $("#inspect-outcome").hidden = false;
         $("#detail-title").textContent = current.state; $("#detail-meta").replaceChildren();
         $("#detail-content").textContent = JSON.stringify(current, null, 2); $("#detail").showModal();
       } catch (failure) { error("#workspace-error", failure); }
@@ -135,6 +140,21 @@ async function loadDecisions() {
     cell(row, entry.proposal_id); cell(row, entry.disposition); cell(row, entry.state); cell(row, displayTime(entry.created_at));
   }
 }
+$("#inspect-outcome").onclick = async () => {
+  const action = selectedAction, generation = previewGeneration, button = $("#inspect-outcome");
+  if (!action) return;
+  button.disabled = true; error("#detail-error");
+  try {
+    const outcome = await api(`/api/order-decisions/${action}/inspect`, {});
+    if (selectedAction !== action || previewGeneration !== generation) return;
+    $("#detail-title").textContent = { applied: "Recorded Outcome", not_submitted: "Not Submitted", execution_unconfirmed: "Execution Unconfirmed",
+      unconsumed_decision: "Decision Not Consumed", partial_consent: "Partial Consent", no_adoption_recorded: "No Adoption Recorded",
+      conflicting: "Conflicting Records", unverifiable: "Outcome Unverifiable" }[outcome.outcome] || "Outcome Unverifiable";
+    $("#detail-content").textContent = JSON.stringify(outcome, null, 2);
+  } catch (failure) {
+    if (selectedAction === action && previewGeneration === generation) error("#detail-error", failure);
+  } finally { button.disabled = false; }
+};
 async function loadUsers() {
   const data = await api("/api/users"), body = $("#users"); body.replaceChildren();
   for (const account of data.users) {

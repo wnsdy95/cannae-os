@@ -26,6 +26,14 @@ Preserve reconciliation-required state even after shutdown; there is no
 administrative discharge command in this increment. A lost response is never
 permission to replay the nonce or create a second approval.
 
+Use Decisions > Inspect Outcome to compare that exact action with the pinned-key
+signed consent, expected decision payload and historical adoption replay.
+An `applied` inspection does not clear a private hold or restore expired/current
+authority. `unconsumed_decision` needs a later explicit cancellation fence, not
+a database edit. Keep `conflicting`/`unverifiable` visible; do not regenerate
+missing records. Run `node run-operator-consent-outcome-fixtures.js` and the
+browser checks when changing this path. Terminal discharge is not implemented.
+
 For exact successor activation, read `docs/campaign-successor-admission.md`,
 its four request/proposal/admission schemas, `campaign-successor-controller.js`
 and `run-campaign-successor-fixtures.js`. Use

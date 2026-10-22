@@ -1,6 +1,6 @@
 const crypto = require("node:crypto");
 const { canonicalJsonBytes } = require("./verifier-identity-evidence");
-const { NONE } = require("./order-adoption-contract");
+const { NONE, decisionOption } = require("./order-adoption-contract");
 const { strictBase64 } = require("./verification-attestation");
 const digest = value => crypto.createHash("sha256").update(canonicalJsonBytes(value)).digest("hex");
 function unsigned(record) { const value = { ...record }; delete value.signature; return value; }
@@ -37,4 +37,14 @@ function verifyConsent(record, trustedPublicKey, decision) {
   }
   return { valid: true, human_final_decision_authority: "USER", execution_authorized: false, release_authorized: false };
 }
-module.exports = { consentIssues, digest, keyDigest, signConsent, verifyConsent };
+function decisionForAction(row, preview, now) {
+  return { schema_version: "0.1", type: "DecisionLogEntry", id: `DL-OPERATOR-${row.id}`, mission_id: preview.request.mission_id,
+    decided_at: now, decision_maker: "USER", decision_type: "scope", question: `Review exact order ${preview.proposal.id}`,
+    options_considered: [decisionOption(preview.request)], chosen_option: decisionOption(preview.request), rationale: preview.rationale,
+    authority_basis: { basis_type: "retained_authority", reference: preview.proposal.id,
+      summary: `Authenticated local owner ${row.principal_id}; consent OCR-${row.id}.` },
+    affected_artifacts: [preview.request.proposal_ref, ...preview.request.backbrief_refs,
+      ...(preview.request.rehearsal_ref.artifact_id === "none" ? [] : [preview.request.rehearsal_ref])].map(item => item.relative_path),
+    review_trigger: "Any changed plan, evidence or scope requires a new authenticated review.", status: "complete" };
+}
+module.exports = { consentIssues, digest, keyDigest, signConsent, verifyConsent, decisionForAction };

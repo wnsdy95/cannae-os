@@ -6,11 +6,11 @@ const { loadVerifiedStore } = require("./campaign-supervisor");
 const { resolveRepository, manifestDigest, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { repositoryStateDigest } = require("./skill-mission-controller");
 const { inspectOrderDecision, decideOrder } = require("./order-adoption-controller");
-const { ADOPTION_AUTHORITY, NONE, decisionOption } = require("./order-adoption-contract");
+const { ADOPTION_AUTHORITY, NONE } = require("./order-adoption-contract");
 const { entryId, readEntry } = require("./operator-console-evidence");
 const { requireThat, privateFile, SESSION_MS } = require("./operator-console-auth");
 const { hash } = require("./operator-consent-service");
-const { digest, signConsent, verifyConsent } = require("./operator-consent-contract");
+const { digest, signConsent, verifyConsent, decisionForAction } = require("./operator-consent-contract");
 
 const reference = entry => ({ artifact_id: entry.artifact_id, relative_path: entry.relative_path, sha256: entry.sha256 });
 const snapshot = store => ({ revision: store.manifest.manifest_revision, sha256: manifestDigest(store.manifest) });
@@ -86,15 +86,7 @@ function executeOrderDecision(configuration, id) {
       return true;
     };
     guard();
-    const now = new Date().toISOString(), decision = {
-      schema_version: "0.1", type: "DecisionLogEntry", id: `DL-OPERATOR-${id}`, mission_id: preview.request.mission_id,
-      decided_at: now, decision_maker: "USER", decision_type: "scope", question: `Review exact order ${preview.proposal.id}`,
-      options_considered: [decisionOption(preview.request)], chosen_option: decisionOption(preview.request), rationale: preview.rationale,
-      authority_basis: { basis_type: "retained_authority", reference: preview.proposal.id,
-        summary: `Authenticated local owner ${row.principal_id}; consent OCR-${id}.` },
-      affected_artifacts: [preview.request.proposal_ref, ...preview.request.backbrief_refs,
-        ...(preview.request.rehearsal_ref.artifact_id === "none" ? [] : [preview.request.rehearsal_ref])].map(item => item.relative_path),
-      review_trigger: "Any changed plan, evidence or scope requires a new authenticated review.", status: "complete" };
+    const now = new Date().toISOString(), decision = decisionForAction(row, preview, now);
     const consent = signConsent({ schema_version: "0.1", type: "OperatorConsentRecord", id: `OCR-${id}`, challenge_id: id,
       mission_id: preview.request.mission_id, wave_id: preview.request.wave_id, created_at: now, expires_at: new Date(row.expires).toISOString(),
       repository_binding: { repository_key: configuration.repositoryKey, identity_fingerprint: configuration.identity },

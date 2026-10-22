@@ -7,6 +7,9 @@ try {
     result = require("./operator-consent-executor").prepareOrderDecision(configuration, request);
   } else if (request.action === "execute-decision") {
     result = require("./operator-consent-executor").executeOrderDecision(configuration, request.challenge_id);
+  } else if (request.action === "inspect-decision") {
+    if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
+    result = require("./operator-consent-outcome").inspectDecisionOutcome(configuration, request.challenge_id);
   } else result = require("./operator-console-evidence").queryEvidence(configuration, user, request);
   parentPort.postMessage({ result });
 } catch (error) {
