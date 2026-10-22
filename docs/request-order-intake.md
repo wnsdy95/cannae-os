@@ -6,6 +6,11 @@ Turn a general request and typed model analysis into a traceable OPORD draft and
 role-task drafts. The LLM/operator interprets the request; the deterministic
 compiler does not claim to understand prose or prove complete interpretation.
 
+The [semantic collector foundation](semantic-omission-evaluation.md) can prepare
+exact downstream comparisons for a separately authorized existing-CLI evaluation.
+It is not an enabled admission gate; `ready_for_review` still does not prove
+semantic completeness, and no automatic planner or transfer approval is implied.
+
 ```text
 Original UTF-8 request -> retained MissionRequest
                     + -> proposed MissionOrderAnalysis

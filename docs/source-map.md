@@ -7,6 +7,15 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [semantic omission collector](semantic-omission-evaluation.md) uses the
+official [Codex non-interactive interface](https://developers.openai.com/codex/noninteractive)
+for saved local authentication, JSONL, ephemeral runs and structured output.
+The exact pinned profile is additionally checked against local CLI 0.162.1.
+Source/preview binding, separate transfer-consent purpose, private one-use
+journal and conservative no-authority result handling are local engineering
+synthesis. Neither documentation nor fake-process tests prove native isolation,
+semantic completeness, hard cost cancellation or an authenticated owner ceremony.
+
 The local console's shared browser response fencing is local engineering
 synthesis. `operator-console/app.js` and
 `operator-console-fixtures/session-browser-check.js` bind rendering to current

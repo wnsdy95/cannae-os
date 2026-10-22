@@ -76,6 +76,13 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [semantic collector foundation](semantic-omission-evaluation.md) implements
+source/profile-bound preparation, one-use transfer-signature checking, bounded
+existing-CLI collection and strict downstream quote appraisal. It does not close
+row 4 or goal 3: real owner model-transfer consent, held-out calibration, mandatory
+adoption/receiver/dispatch consumers and bounded planning/replanning are still
+required. Its fake-provider regressions execute zero actual model calls.
+
 ### Active Eight-Part Goal
 
 The user's full goal remains the following eight outcomes. A completed schema,
