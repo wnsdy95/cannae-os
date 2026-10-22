@@ -287,6 +287,15 @@ Confirm the patched dependency's actual behavior as
 well as its installed version. An audit with no known vulnerabilities is neither
 proof of compatibility nor a complete network-security assessment.
 
+Run parser denial-of-service regressions in bounded child processes, retain
+timeouts as failures, and assert ordinary-input semantics as well as survival.
+For a disputed advisory, record the maintainer's response and the scanner's
+current state separately. A newer version may fix a different defect; inspect
+the specific changed branch before claiming remediation. Never turn a dispute,
+an unexercised call path or a successful unrelated patch into permission to
+dismiss the alert or accept risk. Keep the baseline sample before installing,
+including lockfile-only migrations where the direct verifier version is equal.
+
 Run fresh and historical records through the current pinned verifier. Historical
 support must recognize exact source-audited producer tuples, not a version range
 or caller-supplied digest allowlist. It never authorizes loading an old runtime.

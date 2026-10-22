@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Update only transitive `brace-expansion` to 5.0.12, exercise actual comma/array/nesting/rewrite limits in bounded child processes and retain normal-pattern controls. Preserve the byte-identical accepted pre-brace sample and exact historical producer while regenerating current evidence; reject every old-module/current-lock hybrid. Both skills now distinguish bounded parser tests, disputed advisories and actual remediation. The separate HTTP-cache alert, monitor credentials/continuity and production infrastructure remain unresolved; no trust, policy or release authority changes.
+
 - Add owner-only read-only inspection of exact signed consent, deterministic decision and replayed adoption history, including partial publication and lost-projection outcomes. Preserve holds and original expiry; expose no retry, repair or discharge operation. Reuse one pure decision template and shared synthetic test support, add outcome and desktop/mobile browser checks, and teach both skills to distinguish historical recorded outcomes from current authority. Fresh terminal consent/cancellation/receipts remain open.
 
 - Hold operator-console responses, next-worker admission and shutdown ownership until the active worker's exit is observed. Keep termination failures fenced, cancel unstarted jobs on shutdown and reject provisional success after a worker error. Add real-thread and controlled lifecycle regressions; both skills now distinguish worker termination from decision-effect reconciliation. Interrupted-action hold discharge remains open and no authority, dependency, key or release policy is changed.

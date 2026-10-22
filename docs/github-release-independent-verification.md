@@ -115,7 +115,7 @@ Retained evidence previously required byte-equivalent replay including current
 module and lockfile digests. Even a valid dependency update therefore broke
 historical replay. The runtime recognizes exact v0.1/4.1.0 producer tuples from
 source commits `786c38a`, `9635f8d`, and `d08420a`, plus the former v0.2/4.1.2
-producers from `4bad6dd` and `ad14016`. Evidence schema, package, package version, minimum
+producers from `4bad6dd`, `ad14016` and `1b51ef6`. Evidence schema, package, package version, minimum
 version, Node minimum, module SHA-256, and lockfile SHA-256 must all match.
 Unknown tuples, extra metadata, and schema/version substitution remain errors.
 
@@ -154,6 +154,39 @@ Before future migrations, capture the exact baseline producer and an unchanged
 evidence sample. After installation, test both prior replay and exact equality
 between the current sample and a fresh result. Merely generating a new sample or
 keeping the same schema/version does not prove backward compatibility.
+
+The `brace-expansion` migration pins 5.0.12 through the existing minimatch
+dependency range; no direct package or other transitive version changes. The
+[upstream changes](https://github.com/juliangruber/brace-expansion/compare/v5.0.9...v5.0.12)
+replace recursive comma parsing, bound nesting, and bound the malformed-group
+rewrite loop. Child-process fixtures exercise both stack-overflow shapes, large
+comma arrays, the 128 KB rewrite payload, and ordinary expansion/minimatch
+controls. They use the installed package, finite timeouts and exact behavior
+assertions; merely reading a patched version string is not the regression test.
+
+The unchanged baseline sample is
+`valid-github-release-independent-verification-pre-brace-v0.2.json`, captured
+from accepted commit `1b51ef6002ef649d5722a98bde4fd032a4b1717d`, file SHA-256
+`860ab0f98826f58d8ea44d42d4fd3fab03d87cc689f32190ef4c8fa70e20939a`.
+Its exact producer has module SHA-256
+`485cdefe3640bde3365c30bc7c4d3fe35ccd29020429cae3a4078bf909ef3055`
+and lock SHA-256
+`024545143f72f7007f2ce54ae5b19f8fa5748bf6df07016224e94ab92ebf30dd`.
+That record and all earlier profiles replay under the newly installed engine;
+fresh evidence separately binds today's exact module and lockfile. Every
+historical module paired with the current lock is rejected as an unknown hybrid.
+
+The separate `http-cache-semantics` alert is not repaired or accepted by this
+migration. Its [maintainer discussion](https://github.com/kornelski/http-cache-semantics/issues/56)
+disputes the `max-stale` report; the reviewed advisory still lists no patched
+release. Version 4.3.0 changes Vary handling, not that reported branch. Retain the
+alert and the dispute, inspect real callers/cache configuration, and do not infer
+either exploitation or safety from a scanner/version alone. Do not disable the
+monitor, suppress the alert or reset trust/checkpoint history to pass this gate.
+The post-migration npm audit still exits nonzero with one high HTTP-cache
+finding and `fixAvailable: true`; that range-based suggestion is not evidence
+that the disputed branch was changed. The brace findings are absent. Keep the
+complete audit result and assess any further cache migration separately.
 
 The upstream [NAT64 classification advisory](https://github.com/beaugunderson/ip-address/security/advisories/GHSA-2vr4-cq9g-pvrc)
 affects 10.4.0; 10.5.1 first fixes the local-use range. The selected

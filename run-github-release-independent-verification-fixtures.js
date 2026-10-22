@@ -82,8 +82,61 @@ function mutateEncodedJson(encoded, callback) {
   return Buffer.from(JSON.stringify(document), "utf8").toString("base64");
 }
 
+function braceDependencyRegressions() {
+  // Keep hostile parser inputs outside the fixture runner's own event loop.
+  const cases = [
+    ["deep comma groups do not exhaust the parser stack", `
+      const input = "{" + "{a},".repeat(10000) + "b}";
+      const result = expand(input);
+      assert.equal(result.length, 10001);
+      assert.equal(result[0], "{a}");
+      assert.equal(result.at(-1), "b");
+      expand(input, { max: 1, maxLength: 1 });
+    `],
+    ["large comma arrays do not overflow argument spreading", `
+      const result = expand("{{x}," + "a,".repeat(200000) + "b}");
+      assert.equal(result.length, 100000);
+      assert.equal(result[0], "{x}");
+      assert.equal(result.at(-1), "a");
+    `],
+    ["both nested-set paths stop before stack exhaustion", `
+      for (const input of [
+        "{a,".repeat(10000) + "z" + "}".repeat(10000),
+        "{".repeat(10000) + "a,b" + "}".repeat(10000)
+      ]) assert.ok(expand(input).length > 0);
+      assert.deepEqual(expand("{a,{b,c}}", { maxDepth: 0 }), ["a", "{b,c}"]);
+      assert.deepEqual(expand("x{{a,b}}y", { maxDepth: 0 }), ["x{{a,b}}y"]);
+    `],
+    ["rewrite budget prevents the quadratic rescan payload", `
+      assert.deepEqual(expand("{a},b}", { maxRewrites: 0 }), ["{a},b}"]);
+      const result = expand("{a}" + "}".repeat(128000) + ",z}");
+      assert.equal(result.length, 1);
+      assert.ok(result[0].startsWith("{a}"));
+      expand("{a}" + "}".repeat(128000) + ",z}", { max: 1, maxLength: 1 });
+    `],
+    ["ordinary glob and expansion semantics remain unchanged", `
+      assert.deepEqual(expand("src/{a,{b,c}}.{js,ts}"), [
+        "src/a.js", "src/a.ts", "src/b.js", "src/b.ts", "src/c.js", "src/c.ts"
+      ]);
+      assert.deepEqual(expand("{a},b}"), ["a}", "b"]);
+      const { minimatch } = require("minimatch");
+      assert.equal(minimatch("src/b.ts", "src/{a,{b,c}}.{js,ts}"), true);
+      assert.equal(minimatch("src/d.ts", "src/{a,{b,c}}.{js,ts}"), false);
+    `]
+  ];
+  return cases.map(([name, program]) => {
+    const child = spawnSync(process.execPath, ["-e", `
+      const assert = require("node:assert/strict");
+      const { expand } = require("brace-expansion");
+      ${program}
+    `], { cwd: __dirname, encoding: "utf8", timeout: 15000, maxBuffer: 65536 });
+    return { name: `patched brace dependency: ${name}`, ok: child.status === 0 && !child.error,
+      detail: child.error ? child.error.code : child.stderr.trim() };
+  });
+}
+
 function runFixtures() {
-  const results = [];
+  const results = braceDependencyRegressions();
   const { Address6 } = require("ip-address");
   for (const address of ["64:ff9b:1::", "64:ff9b:1:7f00:0:100::", "64:ff9b:1::7f00:1", "64:ff9b:1:ffff:ffff:ffff:ffff:ffff"]) {
     const parsed = new Address6(address);
@@ -288,6 +341,18 @@ function runFixtures() {
       validateIndependentVerificationEvidence(JSON.parse(preConsoleBytes), rawVerification, trustedRoot, EXPECTED).length === 0 &&
       fs.readFileSync(preConsolePath).equals(preConsoleBytes) });
 
+  const preBracePath = path.join(__dirname,
+    "sample-payloads/valid-github-release-independent-verification-pre-brace-v0.2.json");
+  const preBraceBytes = fs.readFileSync(preBracePath);
+  const preBrace = JSON.parse(preBraceBytes);
+  results.push({ name: "byte-identical accepted pre-brace producer replays without rewriting historical evidence",
+    ok: sha256(preBraceBytes) === "860ab0f98826f58d8ea44d42d4fd3fab03d87cc689f32190ef4c8fa70e20939a" &&
+      preBrace.verifier.module_sha256 === "485cdefe3640bde3365c30bc7c4d3fe35ccd29020429cae3a4078bf909ef3055" &&
+      preBrace.verifier.dependency_lock_sha256 === "024545143f72f7007f2ce54ae5b19f8fa5748bf6df07016224e94ab92ebf30dd" &&
+      validatePayload(preBrace, "github-release-independent-verification").valid === true &&
+      validateIndependentVerificationEvidence(preBrace, rawVerification, trustedRoot, EXPECTED).length === 0 &&
+      fs.readFileSync(preBracePath).equals(preBraceBytes) });
+
   const priorBytes = fs.readFileSync(path.join(__dirname,
     "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json"));
   const prior = JSON.parse(priorBytes);
@@ -313,6 +378,12 @@ function runFixtures() {
           .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED")
       });
     }
+    const hybrid = historicalEvidence(profile);
+    hybrid.verifier.dependency_lock_sha256 = evidence.verifier.dependency_lock_sha256;
+    hybrid.verification_sha256 = independentVerificationDigest(hybrid);
+    results.push({ name: `historical ${profile.commit.slice(0, 7)} module cannot adopt the current lockfile identity`,
+      ok: validateIndependentVerificationEvidence(hybrid, rawVerification, trustedRoot, EXPECTED)
+        .some(item => item.code === "GITHUB_RELEASE_INDEPENDENT_PRODUCER_UNRECOGNIZED") });
   }
 
   for (const profile of HISTORICAL_VERIFIER_PROFILES) {
