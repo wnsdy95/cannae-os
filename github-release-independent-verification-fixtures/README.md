@@ -45,6 +45,16 @@ tests. An old module combined with the new lock is not an approved producer.
 Installed `ip-address` checks cover NAT64 local-use boundaries and a public IPv6
 control; they are dependency regressions, not a complete SSRF defense.
 
+The byte-identical `valid-github-release-independent-verification-pre-brace-v0.2.json`
+freezes accepted producer `1b51ef6` before the 5.0.12 brace dependency migration.
+Its original file hash and exact module/lock metadata are checked separately
+from freshly generated current evidence. Every historical profile rejects a
+hybrid with the current lock. Bounded child processes exercise comma-chain,
+large-array, both nested-set and quadratic-rewrite payloads against the installed
+package, plus normal expansion/minimatch controls. A child timeout is a failed
+test, not proof that the parser completed safely. These cases do not resolve the
+separate disputed HTTP-cache advisory or prove an application-wide security claim.
+
 ```bash
 node run-github-release-independent-verification-fixtures.js
 ```

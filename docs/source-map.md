@@ -89,6 +89,18 @@ The patched library's NAT64 classification is tested locally; exact former
 v0.2 producer replay is our compatibility design, not an upstream trust claim.
 Neither proves complete network security or historical protected execution.
 
+The subsequent brace dependency migration uses the primary
+[5.0.9-to-5.0.12 changes](https://github.com/juliangruber/brace-expansion/compare/v5.0.9...v5.0.12)
+and maintainer advisories for
+[comma parser recursion](https://github.com/juliangruber/brace-expansion/security/advisories/GHSA-6j4f-fj2g-mc7p),
+[nested group recursion](https://github.com/juliangruber/brace-expansion/security/advisories/GHSA-qhr7-859c-m2p7)
+and [quadratic rewriting](https://github.com/juliangruber/brace-expansion/security/advisories/GHSA-q2hr-2g5m-vwhr).
+Installed-package behavior and exact former-producer replay are local checks,
+not historical protected-execution or application-wide reachability claims.
+The separate [HTTP-cache maintainer discussion](https://github.com/kornelski/http-cache-semantics/issues/56)
+disputes the reported max-stale advisory. Preserve that disagreement alongside
+the still-open provider alert; neither dismiss it nor call this patch its fix.
+
 The earlier dependency replay design
 uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
 (checkpoint parsing) and [adbe253](https://github.com/sigstore/sigstore-js/commit/adbe2535c5702364e9c958ae3d67fbdefe068edd)

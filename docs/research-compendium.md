@@ -96,6 +96,27 @@ rewriting of local contracts or code.
 
 ## Dependency Security And Retained Proof (2026-09-29)
 
+The 2026-10-22 follow-up updates only transitive `brace-expansion` 5.0.9 to
+5.0.12. The [maintainer's changes](https://github.com/juliangruber/brace-expansion/compare/v5.0.9...v5.0.12)
+address comma parsing, nested-set stack exhaustion and quadratic rescanning.
+Actual installed-package regressions run hostile inputs in finite child
+processes and check normal expansion/minimatch behavior. This does not establish
+that arbitrary hostile patterns are safe or reachable in this application.
+
+Accepted producer `1b51ef6` and its byte-identical pre-brace sample are retained
+separately from the regenerated current sample. All original evidence still
+passes current cryptographic verification, and every recognized old module
+paired with today's lock remains an unknown producer. Both skills now require
+bounded hostile-input probes, ordinary-input controls and explicit disputed
+advisory handling before claiming a migration complete.
+
+The [HTTP-cache issue and maintainer response](https://github.com/kornelski/http-cache-semantics/issues/56)
+disagree about the reported cross-user max-stale behavior. The provider alert
+remains a separate unresolved operational item: a newer 4.3.0 package fixes Vary
+matching, not this specific report. Neither an advisory nor the dispute alone
+proves application reachability or absence of risk. No alert dismissal, risk
+acceptance, credential repair, checkpoint reset or release is performed here.
+
 The upstream [ip-address advisory](https://github.com/beaugunderson/ip-address/security/advisories/GHSA-2vr4-cq9g-pvrc)
 identified missing private classification for the NAT64 local-use range in the
 retained 10.4.0 dependency. Updating to 10.7.2 also changes producer lock identity.

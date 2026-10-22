@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Update only transitive `brace-expansion` to 5.0.12, exercise actual comma/array/nesting/rewrite limits in bounded child processes and retain normal-pattern controls. Preserve the byte-identical accepted pre-brace sample and exact historical producer while regenerating current evidence; reject every old-module/current-lock hybrid. Both skills now distinguish bounded parser tests, disputed advisories and actual remediation. The separate HTTP-cache alert, monitor credentials/continuity and production infrastructure remain unresolved; no trust, policy or release authority changes.
+
 - Reject whole JSON operator audit records as work evidence after MIME relabeling or file reserialization; ordinary non-JSON work still reaches the independent report gates. Cover plain-text/binary aliases and align both skill procedures. This does not claim semantic authenticity of arbitrary prose evidence.
 
 - Add a separate fresh owner-authenticated terminal ceremony for interrupted local order decisions. Preserve original failure/expiry, durably sign the exact private authorization, cancel unconsumed decisions or acknowledge an actual recorded result, retain a signed receipt, then update the private projection. Never replay adoption or reuse old terminal nonces; verify earlier cancellations/receipts after interruption. Add typed non-authorizing contracts, public-key audit CLI, UI/history and failure/race/browser fixtures; both skills distinguish this path from campaign/gateway settlement and new tool authority. Protected production operation and broader approvals remain open.
