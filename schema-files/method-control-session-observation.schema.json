@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-control-session-observation.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "type",
+    "launch_slot_ref",
+    "provider",
+    "session_binding",
+    "source",
+    "provider_startup_verified",
+    "recorded_at",
+    "execution_authorized",
+    "continuation_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "agent_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "type": {
+      "const": "MethodControlSessionObservation"
+    },
+    "launch_slot_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "provider": {
+      "$ref": "agent-dispatch-lease.schema.json#/properties/provider"
+    },
+    "session_binding": {
+      "$ref": "agent-dispatch-lease.schema.json#/properties/session_binding"
+    },
+    "source": {
+      "const": "startup"
+    },
+    "provider_startup_verified": {
+      "const": false
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "continuation_authorized": {
+      "const": false
+    },
+    "release_authorized": {
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "const": "USER"
+    }
+  }
+}

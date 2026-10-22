@@ -38,6 +38,7 @@ const PROTECTED_PATHS = [
   ".git",
   ".cannae",
   ".codex",
+  ".mcp.json",
   ".claude/settings.json",
   ".claude/settings.local.json"
 ];
@@ -363,6 +364,14 @@ function policyRecords(view, missionId, waveId) {
     assertValid(item.payload, "dispatch-tool-policy", `Dispatch policy ${item.payload.id || "unknown"}`);
     return item;
   });
+}
+
+function compiledPolicyContext(options, policyId) {
+  const view = storeView(options);
+  const policies = listArtifacts(view, { kind: "dispatch-tool-policies" }).filter(item => item.payload.id === policyId);
+  if (policies.length !== 1) throw new Error("Expected one exact compiled dispatch policy.");
+  const policyRecord = policies[0]; assertValid(policyRecord.payload, "dispatch-tool-policy", "Compiled dispatch policy");
+  return { policyRecord, ...contextBundle(options, policyRecord.payload) };
 }
 
 function authorizeDispatchPolicy(options, draft) {
@@ -984,6 +993,14 @@ function dispatchLock(view, leaseIdValue) {
   return acquireRepositoryLease(lockRoot, { leaseTimeoutMs: 5000, leaseTtlMs: 30000 });
 }
 
+function withDispatchControlLock(options, leaseIdValue, callback) {
+  const loaded = loadLeaseById(options, leaseIdValue), lock = dispatchLock(loaded.view, leaseIdValue);
+  try {
+    const current = loadLeaseById(options, leaseIdValue);
+    return callback({ ...current, checkpointRecord: latestCheckpoint(current.view, current.leaseRecord) }, () => renewRepositoryLease(lock));
+  } finally { releaseRepositoryLease(lock); }
+}
+
 function dispatchAgentLock(view, missionId, waveId, agentId) {
   const lockRoot = path.join(
     view.namespacePath,
@@ -1233,6 +1250,7 @@ function admitToolRequest(options, identity, hookInput) {
     const refreshed = activeLease(options, identity, nowIso(options));
     if (refreshed.code !== "LEASE_ACTIVE") return inMemoryDenial(refreshed.code);
     const { checkpointRecord, leaseRecord, view } = refreshed;
+    require("./method-control-broker").assertWorkReady(options, leaseRecord.ref, view);
     const ownershipCode = gatewayDispatchCode(options, view, leaseRecord.ref, hookInput.tool_use_id, "admit");
     if (ownershipCode) return inMemoryDenial(ownershipCode);
     const policyRecord = policyForLease(view, leaseRecord);
@@ -1634,7 +1652,10 @@ function transitionLease(options, leaseIdValue, descriptor) {
   const lock = dispatchLock(loaded.view, leaseIdValue);
   try {
     const refreshed = loadLeaseById(options, leaseIdValue);
-    if (descriptor.kind === "completion") require("./method-deviation-gate").assertMethodComplete(options, refreshed.leaseRecord.ref, refreshed.view);
+    if (descriptor.kind === "completion") {
+      require("./method-control-broker").assertSettled(options, refreshed.leaseRecord.payload, refreshed.view);
+      require("./method-deviation-gate").assertMethodComplete(options, refreshed.leaseRecord.ref, refreshed.view);
+    }
     const previous = latestCheckpoint(refreshed.view, refreshed.leaseRecord);
     const reconciled = reconciledFailureState(refreshed.view, refreshed.leaseRecord);
     if (reconciled.checkpoint_refs.length && descriptor.kind !== "revocation") {
@@ -1726,6 +1747,7 @@ function revokeLease(options, leaseIdValue, reasonCode = "LEASE_REVOKED") {
 
 function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED") {
   const loaded = loadLeaseById(options, leaseIdValue);
+  require("./method-control-broker").assertSettled(options, loaded.leaseRecord.payload, loaded.view);
   require("./method-deviation-gate").assertMethodComplete(options, loaded.leaseRecord.ref, loaded.view);
   return transitionLease(options, leaseIdValue, {
     kind: "completion",
@@ -1753,6 +1775,7 @@ function resumeLease(options, leaseIdValue, bindings) {
   try {
     const refreshed = loadLeaseById(options, leaseIdValue);
     oldLease = refreshed.leaseRecord;
+    require("./method-control-broker").assertSettled(options, oldLease.payload, refreshed.view);
     const previous = latestCheckpoint(refreshed.view, oldLease);
     if (reconciledFailureState(refreshed.view, oldLease).checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
     if (gatewayObligations(refreshed.view).length) {
@@ -1975,6 +1998,8 @@ function main() {
 }
 
 module.exports = {
+  compiledPolicyContext,
+  withDispatchControlLock,
   historicalDispatchStatus,
   assertReconciledFailureRevocations,
   unknownToolEffectCheckpointRefs,

@@ -102,6 +102,10 @@ function backbriefIssues(payload, proposal, draft) {
       require("./method-deviation-contract").baseline(plan, payload.agent_id)))) {
     issues.push(problem("ORDER_BACKBRIEF_METHOD_MISMATCH", "$.method_acknowledgement", "A method-governed backbrief acknowledges its complete exact reviewed baseline."));
   }
+  const channel = require("./method-control-contract").pocket(plan, payload.agent_id);
+  if (channel ? !same(payload.method_channel_acknowledgement, channel) : Object.hasOwn(payload, "method_channel_acknowledgement")) {
+    issues.push(problem("ORDER_BACKBRIEF_METHOD_CHANNEL_MISMATCH", "$.method_channel_acknowledgement", "A receiver must acknowledge its exact reviewed channel, limits and permitted operations."));
+  }
   if (brief.parent_order !== proposal.id || brief.task_order !== task.id || brief.actor !== agent.operational_role ||
       brief.mission_id !== plan.mission_id || brief.classification !== draft.classification ||
       brief.understanding.commander_intent !== order.intent.purpose || brief.understanding.assigned_task !== task.task ||

@@ -1,5 +1,29 @@
 # Research Compendium
 
+## Local Method Metadata Transport (2026-10-23)
+
+The [local method channel](method-control-channel.md) uses the official pinned
+MCP SDK rather than treating a tool prefix or discovery message as authority.
+Official [protocol-era guidance](https://ts.sdk.modelcontextprotocol.io/v2/migration/support-2026-07-28)
+explains disposable stdio probes; our design inference is to keep discovery
+read-only and separate it from enrollment and request budgets.
+[Codex startup sources](https://learn.chatgpt.com/docs/hooks#sessionstart) and
+[Claude MCP provenance](https://code.claude.com/docs/en/hooks#pretooluse-input)
+inform exact session observation and source checks, not independent identity
+attestation. The native configuration and same-UID operator remain trusted.
+
+A reviewed baseline v0.2 and every receiver's backbrief bind exact operations,
+source-entry/lock digest and finite limits. A prepared server stays dormant
+until startup observation precedes the exact lease and enrollment. Requests,
+real result receipts and delivery acknowledgments remain control metadata;
+missing delivery holds actual work/completion without blocking admitted-result
+callbacks. Neutral reconciliation cannot renew task or release authority.
+
+Actual SDK pipes plus synthetic provider hook payloads test this local design;
+they do not prove an actual native agent client, semantic mission completion,
+protected hosts/keys or non-bypassable deployment. Full DI/CoS/recovery and all
+eight required outcomes remain open, and deployment selection remains deferred.
+
 ## Exact Reviewed Method Execution (2026-10-22)
 
 The [method runtime](method-deviation-runtime.md) connects a complete USER-reviewed

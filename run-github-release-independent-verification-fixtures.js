@@ -353,6 +353,13 @@ function runFixtures() {
       validateIndependentVerificationEvidence(preBrace, rawVerification, trustedRoot, EXPECTED).length === 0 &&
       fs.readFileSync(preBracePath).equals(preBraceBytes) });
 
+  const preMcpPath = path.join(__dirname, "sample-payloads/valid-github-release-independent-verification-pre-mcp-v0.2.json");
+  const preMcpBytes = fs.readFileSync(preMcpPath);
+  results.push({ name: "byte-identical accepted pre-MCP producer replays after the transport dependency migration",
+    ok: sha256(preMcpBytes) === "e2c7bd72279cd6af7d3423cb1595402c655049a61624ab74b847cf178720cf0e" &&
+      validateIndependentVerificationEvidence(JSON.parse(preMcpBytes), rawVerification, trustedRoot, EXPECTED).length === 0 &&
+      fs.readFileSync(preMcpPath).equals(preMcpBytes) });
+
   const priorBytes = fs.readFileSync(path.join(__dirname,
     "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json"));
   const prior = JSON.parse(priorBytes);

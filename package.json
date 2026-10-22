@@ -13,6 +13,8 @@
     "@fastify/helmet": "13.2.0",
     "@fastify/rate-limit": "11.2.1",
     "@fastify/session": "11.1.5",
+    "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/server": "2.3.1",
     "@sigstore/bundle": "5.0.0",
     "@sigstore/protobuf-specs": "0.5.2",
     "@sigstore/tuf": "5.0.0",
@@ -21,6 +23,7 @@
     "@tufjs/models": "5.0.0",
     "fastify": "5.12.7",
     "lucide-static": "1.61.0",
-    "sigstore": "5.0.0"
+    "sigstore": "5.0.0",
+    "zod": "4.6.7"
   }
 }

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-control-request.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "mission_id",
+    "wave_id",
+    "agent_id",
+    "type",
+    "enrollment_ref",
+    "checkpoint_ref",
+    "operation",
+    "arguments",
+    "input_sha256",
+    "tool_use_id",
+    "recorded_at",
+    "expires_at",
+    "execution_authorized",
+    "continuation_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "mission_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "wave_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "agent_id": {
+      "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier"
+    },
+    "type": {
+      "const": "MethodControlRequest"
+    },
+    "enrollment_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "checkpoint_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
+    },
+    "operation": {
+      "enum": [
+        "method_status",
+        "method_propose",
+        "method_report_after"
+      ]
+    },
+    "arguments": {
+      "$ref": "method-control-common.schema.json#/$defs/arguments"
+    },
+    "input_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "tool_use_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "recorded_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "expires_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "execution_authorized": {
+      "const": false
+    },
+    "continuation_authorized": {
+      "const": false
+    },
+    "release_authorized": {
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "const": "USER"
+    }
+  }
+}

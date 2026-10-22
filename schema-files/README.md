@@ -1,5 +1,14 @@
 # Schema Files
 
+`MethodControlChannelPolicy`, `MethodControlLaunchSlot`,
+`MethodControlSessionObservation`, `MethodControlEnrollment`,
+`MethodControlRequest`, `MethodControlReceipt`, `MethodControlDelivery` and
+`MethodControlResponse` are strict non-authorizing local metadata contracts.
+Only a newly reviewed baseline v0.2 and exact receiver backbrief may select the
+channel. Schema validity cannot prove startup, introduction order, actual result
+or delivery; the [broker and work gate](../docs/method-control-channel.md)
+independently replay those bindings. Baseline v0.1 keeps its operator CLI.
+
 `method-control-baseline.schema.json` binds every reviewed agent/task and finite
 mandatory method step, usable instructions and receiver-only context assignment.
 The assignment names the trusted operator control-plane channel, not new agent

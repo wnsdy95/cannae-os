@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-control-response.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "enrollment_ref", "request_ref", "receipt_ref", "result", "execution_authorized", "continuation_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "MethodControlResponse" },
+    "enrollment_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "request_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "receipt_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "result": { "$ref": "method-control-common.schema.json#/$defs/result" },
+    "execution_authorized": { "const": false }, "continuation_authorized": { "const": false }, "release_authorized": { "const": false },
+    "human_final_decision_authority": { "const": "USER" }
+  }
+}

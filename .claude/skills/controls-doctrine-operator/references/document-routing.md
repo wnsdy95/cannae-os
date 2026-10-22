@@ -191,8 +191,19 @@ with its exact task/plan binding and usable instructions. Keep the routed query
 unchanged; adding this control cannot cover an unrelated capability gap. Send
 structured requests to the trusted CoS/operator host running the method wrapper
 outside the agent's scoped session. Do not grant shell or metadata-write access
-to a Read-only agent just to submit its reports. This CLI does not implement an
-automatic provider-message transport.
+to a Read-only agent just to submit its reports. The v0.1 CLI does not implement
+automatic provider-message transport. For a newly reviewed v0.2 channel, read
+`docs/method-control-channel.md` and use `scripts/operate_controls_channel.js`:
+prepare before startup, observe the exact native session, issue its lease, then
+enroll. Configure the exact returned server descriptor,
+not a prefix-wide MCP allowlist. Keep private state outside the target and model
+context. A lost response holds work; only actual retained metadata may be
+reconciled. Never renew authority or rerun a task to repair delivery. SDK and
+synthetic-hook tests do not attest actual native client startup.
+Keep raw private-file/parser diagnostics on the trusted operator side; agents
+receive fixed non-secret error codes, never private contents or paths. In-place
+broker re-enrollment after resume is not implemented: settle/revoke the old
+lineage and obtain a newly reviewed successor wave instead of reusing its file.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

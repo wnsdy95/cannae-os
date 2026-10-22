@@ -227,6 +227,8 @@ function assertMethodWaveReport(options, plan, report) {
   if (!plan.method_control) return;
   const store = load(options);
   for (const result of report.agent_results.filter(item => item.status === "complete")) {
+    if (plan.method_control.broker) require("./method-control-broker").assertSettled(options,
+      { mission_id: plan.mission_id, wave_id: plan.wave_id, agent_id: result.agent_id }, store);
     const planEntry = store.manifest.artifacts.find(entry => entry.kind === "mission-wave-plans" && entry.artifact_id === plan.id &&
       entry.mission_id === plan.mission_id && entry.wave_id === plan.wave_id);
     requireTrue(planEntry, "METHOD_PLAN_NOT_RETAINED");
@@ -242,7 +244,10 @@ function publish(options, payload, kind, appraise) {
   const result = writeRepositoryArtifact({ repositoryPath: options.repository, artifactRoot: options.artifactRoot,
     missionId: payload.mission_id, waveId: options.waveId || payload.wave_id, kind, artifactId: payload.id,
     payload, createdAt: payload.recorded_at || payload.timestamp, reuseExisting: true,
-    publicationGuard: () => { appraise(load(options), now(options)); return true; } });
+    publicationGuard: () => {
+      if (options.controlPublicationGuard) options.controlPublicationGuard();
+      appraise(load(options), now(options)); return true;
+    } });
   return { artifact_id: payload.id, relative_path: result.relative_path, sha256: result.sha256 };
 }
 function activeBundle(options, leaseId) {
@@ -377,5 +382,5 @@ function respondToDrift(options, denyRef) {
   return { payload: value, ref };
 }
 
-module.exports = { DEVIATIONS, REPORTS, INCIDENTS, assertNoMethodDrift, assertMethodComplete, assertMethodWaveReport,
+module.exports = { DEVIATIONS, REPORTS, INCIDENTS, deviationProof, reportProof, assertNoMethodDrift, assertMethodComplete, assertMethodWaveReport,
   assessMethodRequest, methodState, proposeMethod, reportMethod, respondToDrift, load, read, reference, scopeForLease, driftDenials };
