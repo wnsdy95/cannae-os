@@ -101,6 +101,9 @@ timeout checks plus controlled message/error/exit ordering, termination
 failure, capacity and shutdown tests. Controlled promises intentionally model
 misleading termination results; the console's real workers use Node's `Worker`
 and release only from its observed exit event, not the fixture's assertions.
+The fixture runner has a separate completion watchdog: an unfinished async test
+must exit nonzero, not silently pass because its remaining promise is unresolved.
+This test-only watchdog is not a production termination or reconciliation claim.
 
 The underlying lifecycle behavior is documented in the versioned
 [Node.js worker API](https://nodejs.org/download/release/v22.22.3/docs/api/worker_threads.html#workerterminate).

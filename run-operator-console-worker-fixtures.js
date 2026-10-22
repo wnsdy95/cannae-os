@@ -189,4 +189,11 @@ async function main() {
     failed: results.filter(r => !r.ok).length, results }, null, 2));
   if (results.some(r => !r.ok)) process.exitCode = 1;
 }
-if (require.main === module) main().catch(error => { console.error(error.stack); process.exitCode = 1; });
+if (require.main === module) {
+  const watchdog = setTimeout(() => {
+    console.error("CONSOLE_WORKER_FIXTURE_DID_NOT_FINISH"); process.exit(1);
+  }, 60000);
+  main().then(() => { clearTimeout(watchdog); }, error => {
+    clearTimeout(watchdog); console.error(error.stack); process.exitCode = 1;
+  });
+}
