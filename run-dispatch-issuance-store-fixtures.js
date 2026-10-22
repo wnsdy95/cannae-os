@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 const assert = require("node:assert/strict"), fs = require("node:fs"), os = require("node:os"), path = require("node:path");
-const { execFileSync, spawnSync } = require("node:child_process");
+const { execFileSync } = require("node:child_process");
 const store = require("./repository-artifact-store"), dispatch = require("./dispatch-runtime-controller");
+const { runCopiedRuntime } = require("./dispatch-issuance-fixtures/source-runtime");
 const root = fs.mkdtempSync(path.join(os.tmpdir(), "cannae-issuance-store-")), repository = path.join(root, "repo");
 fs.mkdirSync(repository);
 let passed = 0;
@@ -48,50 +49,15 @@ try {
     assert.throws(() => dispatch.assertNoPendingIssuance(options), /Repository artifact verification failed/);
     assert.equal(store.verifyRepositoryArtifacts(verificationOptions).valid, false);
   });
-  check("a changed covered runtime entry blocks exact recovery without replaying work", () => {
-    const runtime = path.join(root, "runtime-copy"); fs.mkdirSync(runtime);
-    const files = execFileSync("git", ["ls-files", "-z", "--cached", "--others", "--exclude-standard"],
-      { cwd: __dirname, encoding: "utf8" }).split("\0").filter(Boolean);
-    for (const file of new Set(files)) {
-      const target = path.join(runtime, file); fs.mkdirSync(path.dirname(target), { recursive: true });
-      fs.copyFileSync(path.join(__dirname, file), target);
-    }
-    fs.appendFileSync(path.join(runtime, ".gitignore"), "\nnode_modules\n");
-    execFileSync("git", ["-C", runtime, "init", "-q"]);
-    execFileSync("git", ["-C", runtime, "add", "--all"]);
-    execFileSync("git", ["-C", runtime, "-c", "user.name=Fixture", "-c", "user.email=fixture@example.com", "commit", "-qm", "synthetic runtime copy"]);
-    fs.symlinkSync(path.join(__dirname, "node_modules"), path.join(runtime, "node_modules"), "dir");
-    // Change only the disposable copy; the tested worktree stays frozen.
-    const code = `const assert = require("node:assert/strict"), fs = require("node:fs"), path = require("node:path");
-      const root = process.argv[1], store = require(path.join(root, "repository-artifact-store")), write = store.writeRepositoryArtifact;
-      let interrupt = false;
-      store.writeRepositoryArtifact = options => {
-        if (interrupt && options.kind === "agent-dispatch-leases") { interrupt = false; throw new Error("Synthetic issuance interruption"); }
-        return write(options);
-      };
-      const s = require(path.join(root, "disciplined-initiative-fixtures/support")), env = s.environment();
-      try {
-        s.start(env); assert.equal(s.admit(env, s.inputs.planned, "actual-read", 100).decision, "allow");
-        s.complete(env, s.inputs.planned, "actual-read", 101); s.dispatch.interruptLease(s.optionsAt(env, 110), env.leaseId);
-        interrupt = true;
-        assert.throws(() => s.dispatch.resumeLease(s.optionsAt(env, 120), env.leaseId,
-          { sessionId: "observed-next-session", providerAgentId: "main" }), /Synthetic issuance interruption/);
-        const pending = s.dispatch.dispatchStatus(env.options).unresolved_issuances;
-        assert.equal(pending.length, 1); const id = pending[0].issuance_ref.artifact_id;
-        const contract = require(path.join(root, "dispatch-issuance-contract")), before = contract.runtimeDigest();
-        fs.appendFileSync(path.join(root, "dispatch-runtime-controller.js"), "\\n// Synthetic covered source change.\\n");
-        assert.notEqual(contract.runtimeDigest(), before);
-        assert.throws(() => s.dispatch.recoverDispatchIssuance(s.optionsAt(env, 122), id), /DISPATCH_ISSUANCE_RUNTIME_CHANGED/);
-        const after = s.dispatch.dispatchStatus(env.options); assert.equal(after.unresolved_issuances.length, 1);
-        assert.equal(after.unresolved_issuances[0].lease_published, false);
-        assert.equal(s.dispatch.cancelDispatchIssuance(s.optionsAt(env, 123), id, "Preserve source drift; cancel unused authority.").execution_authorized, false);
-        assert.equal(s.dispatch.dispatchStatus(env.options).leases[0].status, "superseded"); assert.equal(env.readCount, 1);
-        console.log(JSON.stringify({ source_change_observed: true, recovery_denied: true, actual_task_reads: env.readCount }));
-      } finally { fs.rmSync(env.root, { recursive: true, force: true }); }`;
-    const child = spawnSync(process.execPath, ["-e", code, runtime], { cwd: root, encoding: "utf8", shell: false,
-      maxBuffer: 8 * 1024 * 1024 });
-    assert.equal(child.status, 0, child.stderr || child.stdout);
-    assert.deepEqual(JSON.parse(child.stdout), { source_change_observed: true, recovery_denied: true, actual_task_reads: 1 });
+  for (const [scenario, name] of [
+    ["pending-source", "covered source drift denies exact pending recovery without replay"],
+    ["resolution-unchanged", "final-resolution journal recovery preserves an unchanged grant and only the remaining task"],
+    ["resolution-source", "recovered commit history cannot admit changed-source work or reactivate a revoked lease"],
+    ["admitted-result", "source drift preserves already-admitted result settlement but denies the next task"],
+    ["allow-publication", "a source change immediately before allow publication cannot persist new authority"]
+  ]) check(name, () => {
+    const result = runCopiedRuntime(__dirname, scenario);
+    assert.equal(result.actual_task_reads, scenario === "resolution-unchanged" ? 2 : 1);
   });
   console.log(JSON.stringify({ total: passed, passed, failed: 0,
     scope: "Actual local store and copied-runtime regressions; synthetic authority only, no native client or protected deployment proof." }, null, 2));

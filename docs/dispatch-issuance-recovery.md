@@ -53,8 +53,9 @@ node repository-artifact-verify.js --repository /absolute/target \
 
 Require `valid: true` before inspecting dispatch status and recovering the exact
 issuance ID. A prepared journal without candidate bytes can roll back; a valid
-candidate can finish publication. Neither outcome commits the whole issuance or
-replays a task. Conflicting bytes, history or locks require operator review;
+candidate can finish publication. Recovery of the final resolution can restore
+a committed issuance record; that historical state is not current execution
+eligibility and never replays a task. Conflicting bytes, history or locks require operator review;
 never delete the journal, invent a missing artifact or bypass verification.
 A genuinely missing namespace may be initialized by an ordinary first wave;
 an existing invalid or journaled store is not an empty namespace. Never seed
@@ -66,6 +67,16 @@ same frozen bytes and finishes only missing publications. Already committed or
 cancelled records are reported historically; they do not reactivate expired,
 completed, revoked, superseded or otherwise blocked authority. Task execution
 is never replayed. Check current lease status and ordinary tool gates separately.
+
+Every actual new-call gate and its final allow-publication guard compares the
+lease's retained runtime source-entry digest with current bytes, including after
+generic journal recovery. `runtime_source_current` in issuance status is only
+one eligibility condition, never a grant. Changed source returns
+`DISPATCH_ISSUANCE_RUNTIME_CHANGED`; retain the diagnostic, settle already
+admitted results and explicitly revoke unused authority before a newly reviewed
+runtime/wave. This current-source denial is not an automatic persistent
+revocation or isolated execution attestation. Restoring bytes cannot clear
+recorded revocation, stop, expiry or other retained holds.
 
 An active method channel still needs its exact enrollment. The issuance
 transaction does not rebind its private file or attest native startup. Follow

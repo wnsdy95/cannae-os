@@ -5,8 +5,8 @@
   "wave_id": "W1",
   "agent_id": "fixture-agent",
   "enrollment_ref": {
-    "artifact_id": "MCTL-bc66841573fd2e387d7c74d2b03995f46481a55d",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-bc66841573fd2e387d7c74d2b03995f46481a55d.json",
+    "artifact_id": "MCTL-1507a9935d4e045be5e41edd6b5397f3288670bd",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-1507a9935d4e045be5e41edd6b5397f3288670bd.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
   "checkpoint_ref": {
@@ -29,5 +29,5 @@
   "continuation_authorized": false,
   "release_authorized": true,
   "human_final_decision_authority": "USER",
-  "id": "MCTL-00f59659e89832a7d113b0a7ab49fbdb4b460b63"
+  "id": "MCTL-0a2069a18619a917dd8fb706d463006298621fd0"
 }

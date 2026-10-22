@@ -10,6 +10,13 @@ baseline and terminal resolution. Recovery reuses identity, nonce and expiry;
 cancellation never restores the predecessor or replays a task. Pending issuance
 is a visible obligation even when no usable successor exists.
 
+Generic store-journal recovery can restore a final committed resolution. That
+historical fact is not current execution eligibility: actual new-call admission
+and final allow publication also compare the retained runtime source entry with
+current bytes. Copied-runtime cases distinguish valid unchanged recovery from
+source drift, preserve already-admitted results and explicit revocation, and
+ensure restored source bytes cannot clear an actual revoked checkpoint.
+
 This local design uses the repository's existing verified introduction history
 and guarded publication. It does not reconstruct unknown legacy inputs, attest
 native clients, authenticate a human from a role string or provide production

@@ -1251,6 +1251,10 @@ function activeLeaseInReplay(options, identity, at) {
   if (selected.leaseRecord.payload.schema_version === "0.1") {
     return { code: "LEGACY_LEASE_RESULT_ONLY", view, ...selected };
   }
+  const issued = loadArtifactRef(view, selected.leaseRecord.payload.issuance_ref, "dispatch-lease-issuance-request");
+  if (issued.payload.runtime_sha256 !== issuance.runtimeDigest()) {
+    return { code: "DISPATCH_ISSUANCE_RUNTIME_CHANGED", view, ...selected };
+  }
   if (reconciledFailureState(view, selected.leaseRecord).checkpoint_refs.length) {
     return { code: "RECONCILED_FAILED_AGENT", view, ...selected };
   }
@@ -2126,11 +2130,13 @@ function historicalDispatchStatus(options, snapshot, filters = {}) {
 }
 
 function projectDispatchStatus(view, filters) {
+  const runtime = issuance.runtimeDigest();
   const operations = issuanceProgresses(view).filter(item => (!filters.missionId || item.planned.mission_id === filters.missionId) &&
     (!filters.waveId || item.planned.wave_id === filters.waveId) && (!filters.agentId || item.planned.agent_id === filters.agentId))
     .map(item => ({ issuance_ref: item.request.ref, resolution_ref: item.resolution?.ref || clone(NONE_REF), status: item.status,
       lease_ref: item.lease?.ref || clone(NONE_REF), baseline_ref: item.baseline?.ref || clone(NONE_REF),
       supersession_ref: item.supersession?.ref || clone(NONE_REF),
+      runtime_source_current: item.request.payload.runtime_sha256 === runtime,
       planned_lease_id: item.planned.id, previous_lease_ref: item.planned.previous_lease_ref,
       mission_id: item.planned.mission_id, wave_id: item.planned.wave_id, agent_id: item.planned.agent_id,
       provider: item.planned.provider, session_binding: item.planned.session_binding, expires_at: item.planned.expires_at,

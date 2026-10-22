@@ -223,6 +223,11 @@ Keep issuance/recovery/cancellation commands on the trusted operator side;
 listing their shell digest as an ordinary task does not delegate control-plane
 authority. A valid lease JSON and a historical commit result are not current
 tool permission. Inspect unresolved issuance before reporting settled work.
+Store recovery may finish the final commit record. Still require the live
+source-binding and ordinary tool gates; committed history or
+`runtime_source_current` alone grants nothing. On source drift, preserve
+already-admitted results and explicitly revoke unused authority; never renew
+bindings or replay work to hide the denial.
 Diagnose dispatch denials by their exact reason code; changed prose is not a
 different authority state or permission to retry with new bindings.
 

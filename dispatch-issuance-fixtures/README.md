@@ -15,10 +15,12 @@ substitution attacks and two actual concurrent CLI issuers have separate cases.
 `run-dispatch-issuance-store-fixtures.js` distinguishes an uninitialized first
 wave from valid, journaled and corrupt stores. The inspection guard never
 initializes synthetic history, silently recovers a journal or hides corruption.
-It also modifies a covered source entry in a disposable runtime copy and proves
-exact recovery stays denied while one actual task read and terminal history
-remain preserved. That is source-entry drift coverage, not protected execution
-attestation.
+`source-runtime.js` and its worker modify only a disposable copied Git runtime.
+They distinguish pending recovery from final-resolution journal recovery,
+require the actual next-call and final-publication source checks, preserve
+already-admitted results and explicit revocation, and prove an unchanged
+recovered grant executes only its remaining task with the original nonce and
+expiry. That is source-entry drift coverage, not protected execution attestation.
 
 The optional `--case=<name>` selects one diagnostic case; the aggregate runs all
 cases with no filter. Temporary fixture state is not actual USER consent or

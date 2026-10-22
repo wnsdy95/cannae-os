@@ -12,6 +12,9 @@ verified manifest, dispatch, stop, intent and lifecycle contracts. It freezes
 one planned lease before supersession and requires actual stage references at
 the consuming gate. Fault-injection fixtures and both skills distinguish exact
 recovery, unused cancellation, legacy result settlement and new authority.
+Actual call and allow-publication gates also reappraise the frozen source entry
+after generic final-resolution journal recovery. Copied-runtime fixtures retain
+the denial without discarding admitted results or valid unchanged recovery.
 This is local engineering synthesis, not a new military-source claim,
 authenticated USER ceremony or protected execution attestation.
 
