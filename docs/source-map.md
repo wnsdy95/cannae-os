@@ -39,6 +39,8 @@ issuance-only fixtures cannot establish their compatibility.
 Existing hook-settlement fixtures also check specific reconciled-failure codes
 for active/interrupted legacy leases and resumed descendants. Generic result-only
 migration cannot conceal the failure or required post-settlement revocation.
+The issuance stop-publication fixture additionally checks exact stop precedence
+and denied admission from the unfinished successor, without changing runtime code.
 Actual lease-publication races also reappraise repository-wide gateway/effect
 holds, not only the issuing wave. Exact fixture selection rejects an unknown
 case; a filtered pass is not the complete gateway suite.

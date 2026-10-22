@@ -10,6 +10,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 - Add a local authenticated Operations candidate over actual verified wave/context/terminal and dispatch history. Preserve mission-bounded access, role display filters without hidden critical alerts, finite snapshots, stale/future activity, pending results/issuance and execution obligations. Reads never recover or grant authority, and COP copies remain metadata rather than work. Both skills require full permitted attention and fresh manifest inspection. Complete reporting thresholds, CoS decisions, broader COP blocks and all eight outcomes remain open.
 
+- Strengthen the issuance stop-publication fixture to require the exact campaign-blocked code, retained stop reason and a denied successor tool admission. This test/documentation-only alignment preserves the unchanged stricter runtime instead of accepting a broad error union or reverting to generic CAS. Both skills teach the exact assertion and non-authorizing pending state.
+
 - Preserve specific reconciled-failure and required-revocation denials before generic legacy/source eligibility in the actual active-lease projection. Keep exact existing active/interrupted/resumed-descendant assertions and result-only migration; both skills inspect failure and migration as separate non-authorizing conditions.
 
 - Reappraise repository-wide gateway and unknown-effect holds before the generic issuance publication conflict, including obligations arriving in another wave. Preserve the existing exact denial/no-grant regression. An optional exact gateway fixture filter rejects unknown/empty selections; filtered checks are not full-suite acceptance. Both skills require cross-wave hold inspection.

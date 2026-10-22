@@ -242,9 +242,18 @@ try {
       if (options.kind !== contract.RESOLUTIONS || options.payload.outcome !== "committed") return;
       beforeWrite = null; stop.stopCampaign(request, s.optionsAt(env, 121));
     };
+    // The retained stop is more specific than the manifest conflict it also causes.
     assert.throws(() => s.dispatch.resumeLease(s.optionsAt(env, 120), env.leaseId,
-      { sessionId: "observed-next-session", providerAgentId: "main" }), /DISPATCH_ISSUANCE_STATE_CHANGED/);
-    const state = pending(env); assert.equal(state.row.baseline_published, true);
+      { sessionId: "observed-next-session", providerAgentId: "main" }), error => {
+      assert.equal(error.code, "CAMPAIGN_CONTINUATION_BLOCKED");
+      assert.match(error.message, /\bCAMPAIGN_STOP_REQUESTED\b/); return true;
+    });
+    const state = pending(env); assert.equal(state.row.baseline_published, true); assert.equal(state.row.status, "pending");
+    assert.equal(state.row.execution_authorized, false);
+    const nextActor = { ...env.actor, sessionId: "observed-next-session" };
+    const denied = s.dispatch.admitToolRequest(s.optionsAt(env, 122), nextActor,
+      { ...s.hook(env, s.inputs.safeguard, "stopped-uncommitted-call"), session_id: nextActor.sessionId });
+    assert.equal(denied.decision, "deny"); assert(denied.reason_codes.includes("DISPATCH_ISSUANCE_PENDING"));
     assert.throws(() => s.dispatch.recoverDispatchIssuance(s.optionsAt(env, 122), state.row.issuance_ref.artifact_id), /CAMPAIGN_CONTINUATION_BLOCKED/);
     assert.equal(s.dispatch.cancelDispatchIssuance(s.optionsAt(env, 123), state.row.issuance_ref.artifact_id, "Preserve the real stop and cancel unused issuance.").execution_authorized, false);
     assert.equal(stop.campaignStopStatus(env.options, env.plan.mission_id).status, "stop_requested"); assert.equal(env.readCount, 1);
