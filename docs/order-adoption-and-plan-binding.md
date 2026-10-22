@@ -130,6 +130,11 @@ renewing it; inspect is historical evidence, not current dispatch admission.
 
 ## Limits And Verification
 
+The [authenticated local console](operator-consent-and-adoption.md) now supplies
+one exact owner/session-bound, password-reauthenticated adoption path over this
+controller. Its signed non-authorizing consent and per-publication guards do
+not make legacy CLI USER logs authenticated or supply production isolation.
+
 This is a local reference guardrail. A `USER` field does not authenticate the
 human; filesystem writers can modify code or construct other contracts. The
 runtime cannot recognize a semantically identical task renamed into a different

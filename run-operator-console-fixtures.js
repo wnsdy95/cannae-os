@@ -147,7 +147,7 @@ async function main() {
       await viewer.get(`/api/evidence?cursor=${old.manifest_sha256}.1`, 409);
       await viewer.get("/api/evidence?cursor=not-valid", 409);
     });
-    await check("metadata injection never enables approval and no decision endpoint exists", async () => {
+    await check("unknown approval endpoints cannot bypass exact owner review", async () => {
       const result = await owner.post("/api/approve", { actor: "USER", decision: "approve" }, 404);
       assert.equal(result.json().approval_authorized, false);
       const session = await owner.session(); assert.equal(session.tool_execution_authorized, false);

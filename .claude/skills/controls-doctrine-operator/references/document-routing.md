@@ -8,6 +8,15 @@ interpret login, viewer invitations or proposal inspection as scope approval.
 Grant explicit restricted mission access only after owner reauthentication.
 After a stale manifest/cursor error, refresh the list and reselect the evidence.
 
+For actual owner plan decisions, read `docs/operator-consent-and-adoption.md`
+and run `node run-operator-consent-fixtures.js` with the adoption/console suites.
+Keep full-plan preview, selected rehearsal/backbriefs and password
+reauthentication together. Never script an actual owner's approval, copy a
+nonce to an artifact or retry a write because the response was lost. Inspect
+the stored action outcome and preserve any reconciliation-required hold.
+An adopted plan still needs ordinary lifecycle/lease/gateway checks; signed
+consent cannot replace work evidence or authorize tool execution or release.
+
 For exact successor activation, read `docs/campaign-successor-admission.md`,
 its four request/proposal/admission schemas, `campaign-successor-controller.js`
 and `run-campaign-successor-fixtures.js`. Use

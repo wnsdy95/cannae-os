@@ -114,6 +114,12 @@ async function openAuthStore(directory, binding) {
   }
   function owner(id) { const row = liveUser(id); requireThat(row.role === "owner", "CONSOLE_OWNER_REQUIRED", 403); return row; }
   function hasOwner() { return !!db.prepare("SELECT id FROM users WHERE role='owner'").get(); }
+  function authenticate(session) {
+    requireThat(session?.userId && Number.isFinite(session.startedAt) && session.startedAt + SESSION_MS > Date.now(), "CONSOLE_AUTH_REQUIRED", 401);
+    const row = liveUser(session.userId);
+    requireThat(row.epoch === session.epoch, "CONSOLE_SESSION_REVOKED", 401);
+    return publicUser(row);
+  }
   return {
     root, db, secret: metadata("session-secret"), hasOwner,
     createBootstrap() {
@@ -144,11 +150,11 @@ async function openAuthStore(directory, binding) {
       audit(row.id, "login");
       return publicUser(row);
     },
-    authenticate(session) {
-      requireThat(session?.userId && Number.isFinite(session.startedAt) && session.startedAt + SESSION_MS > Date.now(), "CONSOLE_AUTH_REQUIRED", 401);
-      const row = liveUser(session.userId);
-      requireThat(row.epoch === session.epoch, "CONSOLE_SESSION_REVOKED", 401);
-      return publicUser(row);
+    authenticate,
+    async reauthenticate(session, value) {
+      const current = authenticate(session), row = owner(current.id);
+      requireThat(await matches(value, row.credential), "CONSOLE_REAUTH_DENIED", 403);
+      return authenticate(session);
     },
     async invite(actor, input) {
       const row = owner(actor), scope = missions(input.missions);

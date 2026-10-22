@@ -82,8 +82,9 @@ perform semantic extraction itself. [Exact adoption](order-adoption-and-plan-bin
 now binds a complete plan, individual backbriefs, rehearsal and one USER scope
 decision through lifecycle/dispatch consumption. [Linked revision](order-revision-and-supersession.md)
 adds full-plan comparison and predecessor-settlement fences for same-mission
-supersession. Semantic-completeness evaluation, authenticated consent, automatic
-replanning and broader cross-mission/initiative integration remain open.
+supersession. [Authenticated local owner decisions](operator-consent-and-adoption.md)
+now reach exact adoption. Semantic completeness, broader authenticated control
+transport, automatic replanning and cross-mission/initiative integration remain open.
 
 [Mandatory intent continuity](intent-continuity-runtime.md) now preserves the
 plan's declared purpose, complete task commitments and narrowed parent scopes in
@@ -132,7 +133,10 @@ Completion criteria:
 
 ## 5. Phase 4: Approval UI
 
-Status: static/projection prototype only.
+Status: partially implemented for authenticated local full-plan order adoption,
+rejection and revision with one-use password-reauthenticated consent and guarded
+controller consumption. Broader tool-action approval, interrupted-action
+reconciliation and protected production operation remain open.
 
 Goal:
 
@@ -177,8 +181,9 @@ Completion criteria:
 ## 7. Phase 6: Command Post Dashboard
 
 Status: static operational projections plus a working local authenticated
-evidence/proposal-inspection console. Fresh operational COP, real authenticated
-approval consumption and integrated command decisions remain open.
+evidence/proposal console with actual authenticated owner order decisions.
+Fresh operational COP, broader tool approval consumption and integrated staff
+decisions remain open.
 
 Goal:
 

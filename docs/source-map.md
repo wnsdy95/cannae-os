@@ -402,8 +402,12 @@ Usage:
 | OWASP password storage: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html | Password derivation | Native scrypt is an alternative when Argon2id is unavailable; one recommended parameter set is N=2^17, r=8, p=1 | Bound expensive hash concurrency, use separate random salts and never retain plaintext passwords | `local-operator-console.md`, `operator-console-auth.js` |
 | Node.js 22.22.3 SQLite source documentation: https://github.com/nodejs/node/blob/v22.22.3/doc/api/sqlite.md | Local state | DatabaseSync supports prepared statements and local transactional persistence | Private repository-bound authentication state; experimental runtime, not external protected custody | `local-operator-console.md`, `operator-console-auth.js` |
 
-The local console supplies actual scoped read access, not authenticated order
-adoption or non-bypassable production enforcement. Its user-managed deployment
+The local console supplies scoped read access and authenticated exact order
+adoption through `operator-consent-and-adoption.md`, `operator-consent-service.js`,
+`operator-consent-executor.js`, `operator-consent-contract.js` and its schema,
+samples and fixtures. Its per-publication guards and native Ed25519 consent
+integration do not supply universal CLI authentication or non-bypassable
+production enforcement. Its user-managed deployment
 target remains deferred. No military-source authority is inferred from these
 implementation primitives.
 

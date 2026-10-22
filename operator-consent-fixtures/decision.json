@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "type": "DecisionLogEntry",
+  "id": "DL-OPERATOR-613054dc-eae7-4c70-b190-dbd3beb44c39",
+  "mission_id": "MIS-ADOPTION",
+  "decided_at": "2026-06-18T12:20:00+09:00",
+  "decision_maker": "USER",
+  "decision_type": "scope",
+  "question": "Should the blocked production deployment request TR-DEMO-002 be approved?",
+  "options_considered": [
+    "review-order:7fe4625c6cdf1391d665a3b570f9eeb76b3133b653074ad68a846994323eb3ec"
+  ],
+  "chosen_option": "review-order:7fe4625c6cdf1391d665a3b570f9eeb76b3133b653074ad68a846994323eb3ec",
+  "rationale": "Synthetic fixture only; not real human consent.",
+  "authority_basis": {
+    "basis_type": "board_decision",
+    "reference": "BD-DEMO-001",
+    "summary": "Commander disposition BD-DEMO-001 of decision packet DP-DEMO-001 at the demo decision board."
+  },
+  "affected_artifacts": [
+    "OPORD-DEMO-001",
+    "TR-DEMO-002",
+    "sample-payloads/valid-decision-packet.json"
+  ],
+  "review_trigger": "Review at the next AAR or when a FRAGO changes the local-only constraint.",
+  "status": "complete"
+}
