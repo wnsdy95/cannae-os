@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Local Issuance Transactions (2026-10-23)
+
+A reproduced core resume failure could retain predecessor supersession without
+its successor. Work stayed denied, but the original input was not retained for
+exact recovery. The [issuance protocol](dispatch-issuance-recovery.md) now freezes
+that input before any transition and requires the actual request, lease,
+baseline and terminal resolution. Recovery reuses identity, nonce and expiry;
+cancellation never restores the predecessor or replays a task. Pending issuance
+is a visible obligation even when no usable successor exists.
+
+This local design uses the repository's existing verified introduction history
+and guarded publication. It does not reconstruct unknown legacy inputs, attest
+native clients, authenticate a human from a role string or provide production
+infrastructure. Broader semantic planning, staff/readiness/sustainment workflows,
+authenticated approvals and externally protected operation remain open.
+
 ## Local Method Metadata Transport (2026-10-23)
 
 The subsequent reviewed channel policy v0.2 permits finite same-wave handoffs

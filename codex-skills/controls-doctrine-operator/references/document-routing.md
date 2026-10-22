@@ -208,7 +208,21 @@ checkpoint. Use `prepare-continuation` for a fresh private file; configure it,
 observe the exact native start, explicitly `resume`, then `enroll` that lease.
 Never reuse the old file or reset root deadlines, request IDs, metadata/task
 budgets or rule counters. Initial-only v0.1 needs a newly reviewed wave instead.
-Preserve unknown partial resume issuance; this channel does not repair it.
+For interrupted core issuance, read `docs/dispatch-issuance-recovery.md` and
+inspect `status` before retrying. Use only the retained issuance ID with
+`recover-issuance`; bindings, nonce and expiry are frozen. An unused request may
+be explicitly cancelled, never converted into a completed task. Missing legacy
+requests cannot be reconstructed. If verification reports `PENDING_TRANSACTION`,
+pause dispatch and inspect/recover the actual store journal before issuance
+status; require a valid store, then recover only the retained issuance ID.
+Store recovery is not issuance approval or task replay. An ordinary first wave
+can initialize a genuinely missing namespace; never seed invented evidence or
+treat an existing corrupt store as empty. Preserve admitted results; do not hot-swap
+runtime code, reuse the old private file or replay a task to repair issuance.
+Keep issuance/recovery/cancellation commands on the trusted operator side;
+listing their shell digest as an ordinary task does not delegate control-plane
+authority. A valid lease JSON and a historical commit result are not current
+tool permission. Inspect unresolved issuance before reporting settled work.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [issuance transaction](dispatch-issuance-recovery.md) extends the existing
+verified manifest, dispatch, stop, intent and lifecycle contracts. It freezes
+one planned lease before supersession and requires actual stage references at
+the consuming gate. Fault-injection fixtures and both skills distinguish exact
+recovery, unused cancellation, legacy result settlement and new authority.
+This is local engineering synthesis, not a new military-source claim,
+authenticated USER ceremony or protected execution attestation.
+
 The [local method channel](method-control-channel.md) applies the official SDK,
 Codex hooks/MCP and Claude hook-provenance interfaces listed below to existing
 method/dispatch contracts. Its strict schemas, synthetic sample pairs, actual

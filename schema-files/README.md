@@ -1,5 +1,14 @@
 # Schema Files
 
+`dispatch-lease-issuance-request.schema.json` freezes one exact planned lease,
+observed manifest and predecessor/channel evidence before publication.
+`dispatch-lease-issuance-resolution.schema.json` records actual commit or
+cancellation references without granting authority. New `AgentDispatchLease`
+v0.2 requires an exact issuance reference; v0.1 remains result-only at runtime.
+Both lease versions and issuance metadata return `can_execute: false` from
+schema validation. Only the [live issuance and task consumers](../docs/dispatch-issuance-recovery.md)
+can appraise the complete graph and current scope.
+
 `MethodControlChannelPolicy`, `MethodControlLaunchSlot`,
 `MethodControlSessionObservation`, `MethodControlEnrollment`,
 `MethodControlRequest`, `MethodControlReceipt`, `MethodControlDelivery` and

@@ -151,6 +151,12 @@ const RULES = [
     commands: ["node run-tool-effect-review-fixtures.js", "node run-tool-effect-settlement-fixtures.js"]
   },
   {
+    id: "dispatch-issuance-recovery",
+    keywords: ["dispatch-issuance", "dispatch-lease-issuance", "issuance recovery", "partial issuance", "recover-issuance", "cancel-issuance"],
+    docs: ["docs/dispatch-issuance-recovery.md", "docs/enforced-dispatch-and-resume.md", "docs/method-control-channel.md"],
+    commands: ["node run-dispatch-issuance-contract-fixtures.js"]
+  },
+  {
     id: "enforced-dispatch",
     keywords: ["gateway ownership", "gateway obligations", "late gateway callback", "dispatch lease", "agent lease", "tool admission", "pretooluse", "posttooluse", "sessionstart", "resume session", "resumable execution", "execution checkpoint", "dispatch policy", "hook enforcement", "interrupt agent", "revoke lease", "tool replay", "runtime gate", "protected tool gateway", "tool gateway", "gateway transaction", "gateway recovery", "gateway identity", "authenticated reference", "mtls gateway", "tls exporter", "execution receipt", "idempotency", "protected process", "bounded process", "process executor", "native executable", "shebang", "interpreter", "exact argv", "execution envelope", "execution observation", "oci linux sandbox", "oci sandbox", "linux sandbox", "sandbox provider", "immutable image", "seccomp profile", "no new privileges", "no_new_privs", "cap drop", "read only rootfs", "recursive read only", "cgroup v2", "network none", "kernel probe", "container cleanup", "cleanup failure", "daemon unavailable", "container absence", "containment observation", "daemon substitution", "production sandbox", "production admission", "rats", "eat", "slsa provenance", "managed exclusive", "appraiser quorum", "external coordinator", "storage fencing", "exclusive path"],
     docs: [
@@ -537,7 +543,7 @@ const ROUTE_HINTS = [
   },
   {
     id: "enforced-dispatch",
-    keywords: ["enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction", "protected-process", "protected-executor", "bounded-process", "native-executable", "shebang", "interpreter", "execution-envelope", "execution-observation", "operate_protected_executor", "exact-argv", "oci-linux-sandbox", "oci-sandbox", "sandbox-provider", "operate_oci_sandbox", "production-sandbox", "production-admission", "operate_production_sandbox", "rats", "eat", "slsa-provenance", "managed-exclusive", "appraiser-quorum", "external-coordinator", "storage-fencing", "exclusive-path", "seccomp", "no-new-privileges", "cgroup", "network-none", "kernel-probe", "container-cleanup"]
+    keywords: ["dispatch-issuance", "dispatch-lease-issuance", "enforced-dispatch", "dispatch-runtime", "dispatch-hook", "dispatch-tool-policy", "agent-dispatch-lease", "tool-admission-event", "agent-execution-checkpoint", "operate-dispatch-runtime", "enforce-controls-dispatch", "install-dispatch-hooks", "dispatch-hook-installer", "pretooluse", "posttooluse", "sessionstart", "resumable-execution", "protected-tool-gateway", "operate_protected_gateway", "gateway-identity", "authenticated-reference", "mtls", "tls-exporter", "tool-gateway", "tool-execution-receipt", "gateway-transaction", "protected-process", "protected-executor", "bounded-process", "native-executable", "shebang", "interpreter", "execution-envelope", "execution-observation", "operate_protected_executor", "exact-argv", "oci-linux-sandbox", "oci-sandbox", "sandbox-provider", "operate_oci_sandbox", "production-sandbox", "production-admission", "operate_production_sandbox", "rats", "eat", "slsa-provenance", "managed-exclusive", "appraiser-quorum", "external-coordinator", "storage-fencing", "exclusive-path", "seccomp", "no-new-privileges", "cgroup", "network-none", "kernel-probe", "container-cleanup"]
   },
   {
     id: "bounded-self-improvement",

@@ -87,6 +87,19 @@ try {
       }
     }
   });
+  check("issuance requests, resolutions and v0.2 leases are never work after MIME or key-order changes", () => {
+    const value = environment();
+    for (const [name, payload] of Object.entries(require("./dispatch-issuance-fixtures/contracts").samples())) {
+      const type = name === "agent-dispatch-lease-issuance" ? "agent-dispatch-lease" : name;
+      assert.equal(validatePayload(payload, type).valid, true);
+      const refs = [value.persist("control-examples", payload, 20)];
+      for (const extension of ["txt", "bin", "json"]) refs.push(value.fileArtifact(`DATA-ISSUANCE-${name}-${extension}`,
+        Object.fromEntries(Object.entries(payload).reverse()), extension));
+      refs.push(value.fileArtifact(`DATA-ISSUANCE-UNRETAINED-${name}`, { ...payload, id: `UNRETAINED-${payload.id}` }, "txt"));
+      for (const [index, ref] of refs.entries()) assert.throws(() => recordWave(value.report(`MWR-ISSUANCE-${name}-${index}`, ref),
+        { ...value.options, now: value.at(30) }), /control metadata as execution evidence/);
+    }
+  });
   check("method-channel records and outer responses remain metadata after MIME or key-order changes", () => {
     const value = environment();
     const contracts = require("./method-control-fixtures/contracts");

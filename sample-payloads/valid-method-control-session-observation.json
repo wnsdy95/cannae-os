@@ -5,8 +5,8 @@
   "wave_id": "W1",
   "agent_id": "fixture-agent",
   "launch_slot_ref": {
-    "artifact_id": "MCTL-c30dc662ea7e750e98d13e8edb4ec942cdadd19e",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-c30dc662ea7e750e98d13e8edb4ec942cdadd19e.json",
+    "artifact_id": "MCTL-2d1ad9892b04947c4d662b48a526b2182fad03e4",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-2d1ad9892b04947c4d662b48a526b2182fad03e4.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
   "provider": "codex",
@@ -21,5 +21,5 @@
   "continuation_authorized": false,
   "release_authorized": false,
   "human_final_decision_authority": "USER",
-  "id": "MCTL-a6d7b350a6ab8e05d1bc50cac2c0254d9c178378"
+  "id": "MCTL-7a59729eee1566c30b1d9d825091b965dfd6df9f"
 }

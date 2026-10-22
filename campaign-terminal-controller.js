@@ -60,7 +60,7 @@ function dispatch(store, scope) {
     { missionId: scope.mission_id, waveId: scope.wave_id });
 }
 function dispatchSettled(projection) {
-  return projection.unresolved_gateway_obligations.length === 0 && projection.leases.every(lease =>
+  return projection.unresolved_issuances.length === 0 && projection.unresolved_gateway_obligations.length === 0 && projection.leases.every(lease =>
     ["completed", "revoked", "superseded"].includes(lease.status) && lease.pending_tool_requests === 0 &&
     lease.unresolved_tool_effects === 0 && lease.unresolved_gateway_transactions === 0 && !lease.failed_effect_revocation_required);
 }

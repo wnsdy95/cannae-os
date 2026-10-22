@@ -1,5 +1,12 @@
 # Sample Payloads
 
+The `dispatch-lease-issuance-request`, `dispatch-lease-issuance-resolution` and
+`agent-dispatch-lease-issuance` pairs are synthetic structural examples for the
+frozen transaction and lease v0.2. Their references do not identify a real
+retained graph, native agent or USER approval. Regenerate only these samples
+with `node dispatch-issuance-fixtures/write-samples.js`; never rewrite retained
+operational evidence or treat a valid lease JSON as execution permission.
+
 The eight `method-control-channel-policy`, `method-control-launch-slot`,
 `method-control-session-observation`, `method-control-enrollment`,
 `method-control-request`, `method-control-receipt`, `method-control-delivery`

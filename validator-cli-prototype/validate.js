@@ -9,6 +9,7 @@ const { REVISION_TYPES, revisionIssues } = require("../order-revision-contract")
 const { TYPES: INTENT_TYPES, intentIssues } = require("../intent-continuity-contract");
 const { TYPES: METHOD_TYPES, methodIssues } = require("../method-deviation-contract");
 const { TYPES: METHOD_CONTROL_TYPES, issues: methodControlIssues } = require("../method-control-contract");
+const { TYPES: ISSUANCE_TYPES, issues: issuanceIssues } = require("../dispatch-issuance-contract");
 const { consentIssues } = require("../operator-consent-contract");
 const { reconciliationIssues, TYPES: RECONCILIATION_TYPES } = require("../operator-reconciliation-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
@@ -145,6 +146,7 @@ const TYPE_TO_SCHEMA = {
   ...Object.fromEntries([...INTENT_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...METHOD_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...METHOD_CONTROL_TYPES].map(type => [type, `${type}.schema.json`])),
+  ...Object.fromEntries([...ISSUANCE_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...REVISION_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...ADOPTION_TYPES].map(type => [type, `${type}.schema.json`])),
   "mission-request": "mission-request.schema.json",
@@ -6108,10 +6110,10 @@ function validationResult(issues, type, payload) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-    can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) &&
+    can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
       !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
+      type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6144,7 +6146,7 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {

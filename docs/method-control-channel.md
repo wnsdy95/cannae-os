@@ -124,10 +124,12 @@ scope drift. Neither budget can be reset by another channel, session or nonce.
 Use a newly reviewed wave if new resources or scope are needed.
 
 Preserve partial private/public publications and inspect real retained state
-before recovery. This metadata path does not repair the dispatch controller's
-separate partial-resume transaction if it superseded the old lease but failed
-before producing a complete new lease/checkpoint. Do not replay that unknown
-issuance, invent checkpoints or overwrite a bound file to clear it.
+before recovery. New lease v0.2 uses the separate [issuance transaction](dispatch-issuance-recovery.md):
+the trusted operator may finish only the exact retained request, without
+renewing its identity, nonce or expiry. This metadata transport has no issuance
+or recovery tool. If an older core resume retained no request, its unknown
+successor cannot be reconstructed. Never invent a checkpoint, replay a task or
+overwrite a bound file to clear that state.
 
 No global client configuration is silently modified. Codex and Claude maintain
 different configuration formats; a launch descriptor is not evidence that a

@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["issuance recovery", "recover-issuance", "cancel-issuance"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["dispatch-issuance-recovery"]);
+    assert.strictEqual(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/dispatch-issuance-recovery.md"));
+    assert(result.validation_commands.includes("node run-dispatch-issuance-contract-fixtures.js"));
+  }
   for (const query of ["method channel continuation", "Review and validate bounded same-wave method channel continuation preserving budgets, reports, and interruption lineage"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["method-control-channel"]);
