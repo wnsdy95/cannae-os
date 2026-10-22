@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [operational COP](operational-cop.md) is local engineering synthesis over
+the verified manifest, historical routing/context/terminal replay, dispatch and
+existing authenticated evidence APIs. Its snapshot schema, negative samples,
+actual-controller/HTTP fixtures and both skill routes distinguish recorded
+state, display filters, restricted mission access and execution authority.
+This does not add a military-source claim, trusted worker heartbeat or the
+remaining readiness, configurable reporting and CoS decision workflow.
+
 The [issuance transaction](dispatch-issuance-recovery.md) extends the existing
 verified manifest, dispatch, stop, intent and lifecycle contracts. It freezes
 one planned lease before supersession and requires actual stage references at

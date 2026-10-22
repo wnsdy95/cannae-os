@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+const assert = require("node:assert/strict"), fs = require("node:fs"), path = require("node:path");
+const { chromium } = require("playwright"), { createConsole } = require("../operator-console-server");
+const s = require("../disciplined-initiative-fixtures/support");
+async function main() {
+  assert.equal(process.argv[2], "--output"); assert(process.argv[3]);
+  const output = path.resolve(process.argv[3]); fs.mkdirSync(output, { recursive: true });
+  const env = s.environment(Date.now() - 900000), errors = [], results = [], password = "synthetic-cop-browser-password-2026";
+  let service, browser;
+  try {
+    s.start(env);
+    service = await createConsole({ ...env.options, stateDir: path.join(fs.realpathSync(env.root), "private"), port: 0 });
+    await service.app.listen({ host: "127.0.0.1", port: 0 });
+    browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } }), page = await context.newPage();
+    page.on("pageerror", error => errors.push(error.message));
+    await page.goto(`${service.origin()}/#setup=${service.auth.createBootstrap()}`);
+    await page.locator("#auth-form input[name=username]").fill("copbrowserowner");
+    await page.locator("#auth-form input[name=password]").fill(password);
+    await page.locator("#auth-form button[type=submit]").click();
+    await page.locator("#operations-waves").filter({ hasText: env.plan.mission_id }).waitFor();
+    await page.locator("#operations-alerts").filter({ hasText: "LEASE EXPIRED" }).waitFor();
+    assert.match(await page.locator("#operations-waves").textContent(), /execution held/);
+    await page.screenshot({ path: path.join(output, "operations-desktop.png"), fullPage: true });
+    results.push("authenticated default Operations screen uses actual expired lease history");
+    await page.locator("#operations-filters select").selectOption("S3");
+    await page.locator("#operations-filters button").click();
+    await page.waitForFunction(() => document.querySelector("#operations-waves").textContent.includes("agent-S3") && !document.querySelector("#operations-waves").textContent.includes("agent-S2"));
+    assert.match(await page.locator("#operations-alerts").textContent(), /LEASE EXPIRED/);
+    await page.locator("#operations-filters input").fill("MIS-ABSENT");
+    await page.locator("#operations-filters button").click();
+    await page.getByRole("cell", { name: "No matching waves", exact: true }).waitFor();
+    assert.match(await page.locator("#operations-alerts").textContent(), /LEASE EXPIRED/);
+    results.push("role and zero-row mission views retain critical alerts across permitted scope");
+    await page.locator("#operations-alerts button").first().click();
+    await page.locator("#detail-content").filter({ hasText: "AgentDispatchLease" }).waitFor();
+    await page.getByRole("button", { name: "Close", exact: true }).click();
+    results.push("attention evidence opens through the authenticated exact-manifest API");
+    await page.route("**/api/operations?*", route => route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "CONSOLE_COP_CAPACITY" }) }));
+    await page.getByRole("button", { name: "Refresh", exact: true }).click();
+    await page.locator("#operations-state").filter({ hasText: "Refresh failed" }).waitFor();
+    assert.match(await page.locator("#operations-alerts").textContent(), /LEASE EXPIRED/);
+    await page.unroute("**/api/operations?*");
+    await page.getByRole("button", { name: "Refresh", exact: true }).click();
+    await page.locator("#operations-state").filter({ hasText: "Snapshot current" }).waitFor();
+    await page.evaluate(() => { const actualNow = Date.now; Date.now = () => actualNow() + 61000; });
+    await page.locator("#operations-state").filter({ hasText: "Snapshot expired" }).waitFor();
+    assert.match(await page.locator("#operations-alerts").textContent(), /LEASE EXPIRED/);
+    results.push("refresh failure and local expiry cannot erase retained critical attention");
+    await page.reload(); await page.locator("#operations-state").filter({ hasText: "Snapshot current" }).waitFor();
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: path.join(output, "operations-mobile.png"), fullPage: true });
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    assert(await page.evaluate(() => document.querySelector("nav").getBoundingClientRect().height < 70));
+    await page.locator("#operations-alerts button").first().click();
+    await page.locator("#detail-content").filter({ hasText: "AgentDispatchLease" }).waitFor();
+    assert(await page.evaluate(() => { const rect = document.querySelector("#detail").getBoundingClientRect(); return rect.left >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight; }));
+    await page.screenshot({ path: path.join(output, "operations-evidence-mobile.png"), fullPage: true });
+    await page.getByRole("button", { name: "Close", exact: true }).click();
+    results.push("390px mobile navigation, scoped board and evidence dialog fit the viewport");
+    const retained = await page.evaluate(async () => (await fetch("/api/operations")).json());
+    let entered, release;
+    const intercepted = new Promise(resolve => { entered = resolve; }), paused = new Promise(resolve => { release = resolve; });
+    await page.route("**/api/operations?*", async route => {
+      entered(); await paused; await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(retained) });
+    });
+    await page.getByRole("button", { name: "Refresh", exact: true }).click(); await intercepted;
+    await page.getByRole("button", { name: "Sign out", exact: true }).click(); await page.locator("#auth").waitFor({ state: "visible" });
+    release();
+    await page.waitForFunction(() => !operationsPending);
+    await page.unroute("**/api/operations?*");
+    await page.waitForFunction(() => document.querySelector("#operations-alerts").children.length === 0 && document.querySelector("#operations-waves").children.length === 0);
+    assert.equal(await page.locator("#workspace").isVisible(), false);
+    results.push("late privileged snapshot after logout cannot repopulate cleared Operations data");
+    assert.deepEqual(errors, []);
+    const summary = { passed: results.length, failed: 0, results, page_errors: errors, release_authorized: false, all_eight_goals_completed: false };
+    fs.writeFileSync(path.join(output, "browser-results.json"), JSON.stringify(summary, null, 2) + "\n");
+    console.log(JSON.stringify(summary, null, 2));
+  } finally {
+    if (browser) await browser.close(); if (service) await service.app.close(); fs.rmSync(env.root, { recursive: true, force: true });
+  }
+}
+main().catch(error => { console.error(error.stack); process.exitCode = 1; });

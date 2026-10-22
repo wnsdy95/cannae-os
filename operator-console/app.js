@@ -1,8 +1,9 @@
 "use strict";
 const $ = selector => document.querySelector(selector);
-let session, csrf, authMode = "login", tab = "evidence", snapshot, cursor, selectedUser;
+let session, csrf, authMode = "login", tab = "operations", snapshot, cursor, selectedUser;
 let selectedProposal, decisionPreview, selectedAction, inspectedOutcome, terminalPreview;
 let previewGeneration = 0;
+let operationsData, operationsTimer, operationsPending = false, operationsGeneration = 0, operationsFailed = false, operationsReadAt = 0;
 const fragment = new URLSearchParams(location.hash.slice(1));
 const suppliedToken = fragment.get("setup") || fragment.get("invite");
 history.replaceState(null, "", "/");
@@ -39,6 +40,7 @@ function renderAuth() {
   $("#register-mode").hidden = authMode === "setup";
 }
 async function loadSession() {
+  clearOperations();
   session = await api("/api/session"); csrf = session.csrf_token;
   if (!session.initialized) authMode = "setup";
   renderAuth();
@@ -48,23 +50,105 @@ async function loadSession() {
   $("#review-mode").textContent = session.user.role === "owner" ? "Order review: owner" : "Order review: disabled";
   $("#repository").textContent = session.repository.label;
   document.querySelectorAll("[data-owner]").forEach(element => { element.hidden = session.user.role !== "owner"; });
-  if (session.user.role !== "owner" && ["access", "activity", "decisions"].includes(tab)) tab = "evidence";
+  if (session.user.role !== "owner" && ["access", "activity", "decisions"].includes(tab)) tab = "operations";
   await showTab(tab);
 }
 async function showTab(next) {
+  operationsGeneration++; clearInterval(operationsTimer);
   tab = next; error("#workspace-error");
   document.querySelectorAll("[data-tab]").forEach(button => { button.setAttribute("aria-current", button.dataset.tab === tab ? "page" : "false"); });
-  $("#view-title").textContent = { evidence: "Evidence", proposals: "Order Proposals", access: "Access", activity: "Activity", decisions: "Decisions" }[tab];
+  $("#view-title").textContent = { operations: "Operations", evidence: "Evidence", proposals: "Order Proposals", access: "Access", activity: "Activity", decisions: "Decisions" }[tab];
+  $("#operations-view").hidden = tab !== "operations";
   $("#evidence-view").hidden = !["evidence", "proposals"].includes(tab);
   $("#access-view").hidden = tab !== "access"; $("#activity-view").hidden = tab !== "activity";
   $("#decisions-view").hidden = tab !== "decisions";
   $("#kind-filter").disabled = tab === "proposals";
   $("#kind-filter").value = tab === "proposals" ? "order-adoption-proposals" : "";
   $("#invitation").hidden = true; $("#invitation-link").value = "";
-  if (tab === "access") await loadUsers();
+  if (tab === "operations") {
+    operationsTimer = setInterval(() => {
+      operationsFreshness();
+      if (Date.now() - operationsReadAt >= 15000) void loadOperations();
+    }, 1000);
+    await loadOperations();
+  }
+  else if (tab === "access") await loadUsers();
   else if (tab === "decisions") await loadDecisions();
   else if (tab === "activity") await loadActivity();
   else await loadEvidence(false);
+}
+function clearOperations() {
+  operationsGeneration++; clearInterval(operationsTimer); operationsData = null; operationsFailed = false; operationsReadAt = 0;
+  for (const selector of ["#operations-alerts", "#operations-waves"]) $(selector).replaceChildren();
+  for (const selector of ["#operations-asof", "#operations-manifest", "#operations-alert-count", "#operations-count"]) $(selector).textContent = "";
+  $("#operations-state").textContent = "Loading snapshot";
+  $("#operations-filters").reset();
+  $("#operations-filters").elements.role.replaceChildren(new Option("All staff roles", ""));
+}
+function operationsFreshness() {
+  if (!operationsData) { $("#operations-state").textContent = operationsFailed ? "Snapshot unavailable" : "Loading snapshot"; return; }
+  const boundary = Math.min(Date.parse(operationsData.snapshot_valid_until), operationsData.next_boundary_at ? Date.parse(operationsData.next_boundary_at) : Infinity);
+  const expired = Date.now() >= boundary;
+  $(".cop-status").dataset.stale = String(operationsFailed || expired);
+  $("#operations-state").textContent = operationsFailed ? "Refresh failed / Last retained snapshot" : expired ? "Snapshot expired / Refresh required" : "Snapshot current";
+}
+function copEvidence(container, item, scope, manifest) {
+  const button = document.createElement("button"); button.className = "artifact-button"; button.textContent = item.artifact_id;
+  button.title = `Inspect ${item.artifact_id}`;
+  button.onclick = () => inspect({ ...item, mission_id: scope.mission_id, wave_id: scope.wave_id }, manifest);
+  container.append(button);
+}
+async function loadOperations() {
+  if (operationsPending || !session?.user || tab !== "operations") return;
+  operationsPending = true; const generation = operationsGeneration, principal = session.user.id;
+  const params = new URLSearchParams(), form = $("#operations-filters");
+  if (form.elements.mission.value.trim()) params.set("mission", form.elements.mission.value.trim());
+  if (form.elements.role.value) params.set("role", form.elements.role.value);
+  try {
+    const data = await api(`/api/operations?${params}`);
+    if (generation !== operationsGeneration || principal !== session?.user?.id || tab !== "operations") return;
+    operationsData = data; operationsFailed = false; error("#workspace-error");
+    $("#operations-asof").textContent = `As of ${displayTime(data.as_of)}`;
+    $("#operations-manifest").textContent = `Manifest revision ${data.manifest_revision} / ${data.manifest_sha256.slice(0, 12)}`;
+    $("#operations-count").textContent = `${data.matching_wave_count} matching / ${data.visible_wave_count} permitted waves`;
+    $("#operations-alert-count").textContent = `${data.critical_count} critical / ${data.alerts.length} retained alerts`;
+    const selectedRole = form.elements.role.value;
+    form.elements.role.replaceChildren(new Option("All staff roles", ""), ...[...new Set([...data.roles, ...(selectedRole ? [selectedRole] : [])])].sort().map(value => new Option(value, value)));
+    form.elements.role.value = selectedRole;
+    const alerts = $("#operations-alerts"); alerts.replaceChildren();
+    for (const item of data.alerts) {
+      const row = document.createElement("li"), label = document.createElement("strong"); row.dataset.severity = item.severity;
+      label.textContent = `${item.severity.toUpperCase()} / ${item.mission_id} / ${item.wave_id} / ${item.code.replaceAll("_", " ")}`;
+      row.append(label);
+      if (item.agent_ids.length) { const agents = document.createElement("span"); agents.className = "muted"; agents.textContent = item.agent_ids.join(", "); row.append(agents); }
+      const sources = document.createElement("div");
+      for (const source of item.evidence) copEvidence(sources, source, item, data.manifest_sha256);
+      if (item.evidence_truncated) sources.append(document.createTextNode("Additional sources retained"));
+      row.append(sources); alerts.append(row);
+    }
+    const body = $("#operations-waves"); body.replaceChildren();
+    if (!data.waves.length) empty(body, 5, data.visible_wave_count ? "No matching waves" : "No retained wave plans");
+    for (const wave of data.waves) {
+      const row = body.insertRow(), scope = cell(row, `${wave.mission_id} / ${wave.wave_id}`);
+      const title = document.createElement("span"); title.className = "muted"; title.textContent = wave.title + (wave.title_truncated ? " [excerpt]" : ""); scope.append(title);
+      cell(row, wave.state.replaceAll("_", " "));
+      const assignments = cell(row, "");
+      for (const agent of wave.agents) {
+        const block = document.createElement("div"), name = document.createElement("strong"), task = document.createElement("span"), lease = document.createElement("span");
+        block.className = "cop-assignment"; name.textContent = `${agent.role} / ${agent.agent_id}`;
+        task.className = lease.className = "muted"; task.textContent = agent.task_excerpt + (agent.task_truncated ? " [excerpt]" : "");
+        lease.textContent = `Lease recorded: ${agent.recorded_lease_status}${agent.result_pending ? " / Result pending" : ""}`;
+        block.append(name, task, lease); assignments.append(block);
+      }
+      const activity = cell(row, wave.freshness), recorded = document.createElement("span"); recorded.className = "muted"; recorded.textContent = displayTime(wave.recorded_at); activity.append(recorded);
+      const sources = cell(row, ""); copEvidence(sources, wave.plan, wave, data.manifest_sha256);
+      if (wave.ending) copEvidence(sources, wave.ending, wave, data.manifest_sha256);
+    }
+  } catch (failure) {
+    if (generation === operationsGeneration && principal === session?.user?.id && tab === "operations") {
+      operationsFailed = true; error("#workspace-error", failure);
+    }
+  } finally { operationsPending = false; operationsReadAt = Date.now(); operationsFreshness(); }
 }
 async function loadEvidence(append) {
   const params = new URLSearchParams();
@@ -253,6 +337,7 @@ $("#auth-form").addEventListener("submit", event => {
 });
 $("#register-mode").onclick = () => { authMode = authMode === "register" ? "login" : "register"; error("#auth-error"); renderAuth(); };
 $("#logout").onclick = async () => {
+  clearOperations();
   try { await api("/api/logout", {}); $("#detail").close(); $("#deactivate").close();
     $("#detail-content").textContent = ""; $("#artifacts").replaceChildren(); $("#invitation-link").value = ""; authMode = "login"; await loadSession();
   } catch (failure) { error("#workspace-error", failure); }
@@ -260,6 +345,7 @@ $("#logout").onclick = async () => {
 document.querySelectorAll("[data-tab]").forEach(button => { button.onclick = () => { void showTab(button.dataset.tab).catch(failure => error("#workspace-error", failure)); }; });
 $("#refresh").onclick = () => { void showTab(tab).catch(failure => error("#workspace-error", failure)); };
 $("#filters").onsubmit = event => { event.preventDefault(); void loadEvidence(false).catch(failure => error("#workspace-error", failure)); };
+$("#operations-filters").onsubmit = event => { event.preventDefault(); operationsGeneration++; operationsReadAt = 0; void loadOperations(); };
 $("#more").onclick = () => { void loadEvidence(true).catch(failure => error("#workspace-error", failure)); };
 $("#close-detail").onclick = () => { $("#detail").close(); $("#detail-content").textContent = ""; clearDecision(); };
 $("#detail").addEventListener("cancel", clearDecision);

@@ -7,7 +7,7 @@ const AUTHORITY = Object.freeze({ execution_authorized: false, continuation_auth
   human_final_decision_authority: "USER" });
 const CODE = ["dispatch-runtime-controller.js", "dispatch-issuance-contract.js", "repository-artifact-store.js", "repository-lease.js",
   "intent-continuity-contract.js", "method-deviation-gate.js", "method-control-broker.js", "order-adoption-controller.js",
-  "order-revision-controller.js", "skill-mission-controller.js", "validator-cli-prototype/validate.js", "package-lock.json",
+  "order-revision-controller.js", "skill-mission-controller.js", "validator-cli-prototype/validate.js", "operational-cop-contract.js", "schema-files/operational-cop.schema.json", "package-lock.json",
   "schema-files/agent-dispatch-lease.schema.json", "schema-files/dispatch-lease-issuance-request.schema.json",
   "schema-files/dispatch-lease-issuance-resolution.schema.json"];
 const none = value => value?.artifact_id === "none" && value.relative_path === "none" && value.sha256 === "none";

@@ -16,8 +16,10 @@ Evidence and viewer access remain read-only. `approval_authorized`,
 do not grant blanket tool or release authority. Exact order decisions instead
 report `decision_recorded` and the controller's `adoption_status`.
 Login, opening a proposal or assigning viewer access never creates a decision.
-General tool approval consumption, operational COP and automatic replanning
-remain open. A legacy CLI document containing `USER` is not authenticated consent.
+The [Operations read product](operational-cop.md) now replays real wave/control
+history with scoped views, exact evidence and explicit freshness. Complete COP,
+CoS integration, general tool approvals and automatic replanning remain open.
+A legacy CLI document containing `USER` is not authenticated consent.
 
 ## Start And Initialize
 
@@ -79,6 +81,7 @@ and credential rotation are not implemented in this increment.
 
 | Method and path | Contract |
 | --- | --- |
+| `GET /api/operations` | Authenticated read-only verified wave/control snapshot; optional mission/staff display filters never hide alerts elsewhere in the permitted scope. |
 | `GET /api/session` | Setup state, current principal, CSRF token; repository identity only after authentication. |
 | `POST /api/setup`, `/api/login`, `/api/register`, `/api/logout` | Strict JSON and exact Origin plus session CSRF. Setup/register tokens are never evidence. |
 | `GET /api/evidence` | Verified, repository-isolated manifest; at most 50 permitted entries per page. Optional exact mission/kind filters. Missing namespace is empty, not demo data. |

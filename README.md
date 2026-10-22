@@ -76,6 +76,8 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
+- [Operational COP](docs/operational-cop.md): authenticated, read-only Operations views replay actual wave/control history with freshness, exact evidence links and mission-bounded accounts. Display filters cannot hide authorized critical alerts. This is not worker liveness, tool authority or the complete reporting/CoS workflow.
+
 - [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
 - [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.
 - [Request Intake And Order Drafts](docs/request-order-intake.md): retain exact requests, separate quotes from assumptions and proposals, and compile non-executable OPORD/task drafts with inherited constraints.

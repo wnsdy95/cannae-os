@@ -2,7 +2,9 @@ const { parentPort, workerData } = require("node:worker_threads");
 try {
   const { configuration, user, request } = workerData;
   let result;
-  if (request.action === "prepare-decision") {
+  if (request.action === "operations") {
+    result = require("./operational-cop").queryOperationalCop(configuration, user, request);
+  } else if (request.action === "prepare-decision") {
     if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
     result = require("./operator-consent-executor").prepareOrderDecision(configuration, request);
   } else if (request.action === "execute-decision") {

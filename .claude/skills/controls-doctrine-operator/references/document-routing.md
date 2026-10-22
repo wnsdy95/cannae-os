@@ -1,5 +1,14 @@
 # Document Routing
 
+For an operational situation read, use `docs/operational-cop.md` and the
+authenticated Operations view; run `node run-operational-cop-fixtures.js` when
+maintaining it. Read attention across the entire permitted scope even when
+mission/staff filters return no rows. Refresh expired snapshots and reselect
+evidence after manifest drift. A recorded active lease, zero alerts or a fresh
+snapshot never proves worker liveness, task completion or tool eligibility.
+Never clear a hold by editing the view or recovering issuance during a read;
+follow its owning controller. COP JSON is control metadata, not work evidence.
+
 For a real local evidence workspace, route to `docs/local-operator-console.md`
 and `scripts/serve_controls_operator.js`; validate with
 `node run-operator-console-fixtures.js`. The human creates the owner account.

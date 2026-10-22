@@ -166,6 +166,15 @@ async function createConsole(options) {
     schema: { body: plain({ userId: text(36), password: text(128) }) } }, async request => {
     await auth.deactivate(owner(request).id, request.body); return { deactivated: true, ...readOnly };
   });
+  app.get("/api/operations", { schema: { querystring: plain({
+    mission: { type: "string", pattern: "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    role: { type: "string", enum: require("./operational-cop-contract").ROLES }
+  }, []) } }, async request => {
+    const result = await query(user(request), { action: "operations", ...request.query });
+    auth.authenticate(request.session);
+    requireThat(Date.now() < Date.parse(result.snapshot_valid_until), "CONSOLE_COP_SNAPSHOT_EXPIRED", 409);
+    return result;
+  });
   app.get("/api/evidence", { schema: { querystring: plain({ mission: text(128), kind: text(128), cursor: text(80) }, []) } },
     async request => {
       const principal = user(request), result = await query(principal, { action: "list", ...request.query });

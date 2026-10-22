@@ -1,5 +1,26 @@
 # Research Compendium
 
+## Operational Read Product (2026-10-23)
+
+The [local operational COP](operational-cop.md) derives an authenticated,
+restricted read product from actual manifest-backed wave/control history,
+not supplied demo events. Replaying terminal dependencies is necessary:
+a plausible closeout JSON is not proof that its report, controls, evidence,
+AAR/readiness derivation and dispatch settlement were admitted.
+
+Lease discovery is also not complete call admission. Owner-side projection
+separately compares the latest settled checkpoint with current repository
+state; it never calls admission or writes a denial to render the board.
+Pending tools remain pending while their actual result may change the tree.
+Staff display filters cannot suppress critical alerts elsewhere in permitted
+scope, and viewer scope cannot disclose foreign missions. Snapshot validity,
+record freshness and worker liveness are distinct. Both skills teach refreshing
+the manifest and never converting a current-looking view into execution consent.
+
+The fixed 300-second activity threshold is a local conservative display rule,
+not the planned configurable CCIR/reporting policy. Readiness/risk/resource
+blocks, CoS decision consumption and complete goal 4 remain unfinished.
+
 ## Local Issuance Transactions (2026-10-23)
 
 A reproduced core resume failure could retain predecessor supersession without

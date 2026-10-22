@@ -10,6 +10,7 @@ const { TYPES: INTENT_TYPES, intentIssues } = require("../intent-continuity-cont
 const { TYPES: METHOD_TYPES, methodIssues } = require("../method-deviation-contract");
 const { TYPES: METHOD_CONTROL_TYPES, issues: methodControlIssues } = require("../method-control-contract");
 const { TYPES: ISSUANCE_TYPES, issues: issuanceIssues } = require("../dispatch-issuance-contract");
+const { TYPES: COP_TYPES, issues: copIssues } = require("../operational-cop-contract");
 const { consentIssues } = require("../operator-consent-contract");
 const { reconciliationIssues, TYPES: RECONCILIATION_TYPES } = require("../operator-reconciliation-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
@@ -140,6 +141,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "operational-cop": "operational-cop.schema.json",
   "operator-consent-record": "operator-consent-record.schema.json",
   "operator-reconciliation-authorization": "operator-reconciliation-authorization.schema.json",
   "operator-reconciliation-record": "operator-reconciliation-record.schema.json",
@@ -6111,7 +6113,7 @@ function validationResult(issues, type, payload) {
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
-      !["frago", "frago-scope-change"].includes(type) &&
+      !COP_TYPES.has(type) && !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
@@ -6146,7 +6148,7 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {

@@ -1,5 +1,9 @@
 # Sample Payloads
 
+The `operational-cop` pair is a synthetic empty read-product contract example,
+not a live status report. The invalid record attempts release authority.
+Actual Operations data comes only from authenticated verified-history replay.
+
 The `dispatch-lease-issuance-request`, `dispatch-lease-issuance-resolution` and
 `agent-dispatch-lease-issuance` pairs are synthetic structural examples for the
 frozen transaction and lease v0.2. Their references do not identify a real
