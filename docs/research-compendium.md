@@ -3,6 +3,10 @@
 ## Local Issuance Transactions (2026-10-23)
 
 Full consumer integration distinguishes historical replay from current grants:
+reconciled-failure markers and required revocation retain their specific denial
+before generic legacy-lease/source eligibility. Existing active/interrupted and
+resumed-descendant settlement cases must retain their exact assertions; moving
+a generic migration guard earlier cannot silently replace recovery diagnostics.
 mandatory new-context rules must not prevent neutral settlement of an already
 admitted legacy result. Resume/publication retain specific terminal, stop and
 reconciled-failure holds before generic conflicts. Reappraisal of
