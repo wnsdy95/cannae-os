@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["local-operator-console"]);
+    assert(result.recommended_documents.some(item => item.path === "docs/local-operator-console.md"));
+    assert(result.validation_commands.includes("node run-operator-console-fixtures.js"));
+    assert.equal(result.capability_routing.status, "covered");
+  }
   for (const query of ["order revision", "order-revision-controller.js", "revise_controls_order.js", "order replay", "FRAGO"]) {
     const result = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"], query);
     assertRoutes(result, ["orders"]);

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Controls Operator</title>
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <section id="auth" class="auth-layout" hidden>
+    <header class="auth-heading"><img src="/icons/shield-check.svg" alt=""><span>CONTROLS</span></header>
+    <h1 id="auth-title">Operator Sign In</h1>
+    <form id="auth-form">
+      <label>Username<input name="username" autocomplete="username" required minlength="3" maxlength="64" pattern="[a-z][a-z0-9._-]{2,63}"></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required minlength="15" maxlength="128"></label>
+      <label id="token-label" hidden>Setup or invitation token<input name="token" type="password" autocomplete="off" maxlength="128"></label>
+      <button type="submit" class="primary"><span id="auth-action">Sign In</span><img src="/icons/arrow-right.svg" alt=""></button>
+    </form>
+    <button id="register-mode" class="text-button" type="button">Use Invitation</button>
+    <p id="auth-error" class="error" role="alert"></p>
+  </section>
+  <div id="workspace" hidden>
+    <header class="topbar">
+      <div class="brand"><img src="/icons/shield-check.svg" alt=""><strong>Controls Operator</strong><span class="mode">Read-only</span></div>
+      <div class="identity"><span id="identity"></span><button id="logout" class="icon" title="Sign out" aria-label="Sign out"><img src="/icons/log-out.svg" alt=""></button></div>
+    </header>
+    <div class="workspace-grid">
+      <nav aria-label="Workspace">
+        <div id="repository" class="repository"></div>
+        <button data-tab="evidence" aria-current="page"><img src="/icons/folder-search.svg" alt="">Evidence</button>
+        <button data-tab="proposals"><img src="/icons/clipboard-list.svg" alt="">Order Proposals</button>
+        <button data-tab="access" data-owner><img src="/icons/users.svg" alt="">Access</button>
+        <button data-tab="activity" data-owner><img src="/icons/activity.svg" alt="">Activity</button>
+        <div class="nav-footer"><span class="status-dot"></span>Local session</div>
+      </nav>
+      <main>
+        <div class="section-heading"><div><p class="eyebrow">OPERATOR WORKSPACE</p><h1 id="view-title">Evidence</h1></div>
+          <button id="refresh" class="icon" title="Refresh" aria-label="Refresh"><img src="/icons/refresh-cw.svg" alt=""></button></div>
+        <p id="workspace-error" class="error" role="alert"></p>
+        <section id="evidence-view">
+          <form id="filters" class="filters"><label>Mission<input id="mission-filter" name="mission" placeholder="All permitted missions" maxlength="128"></label>
+            <label>Kind<input id="kind-filter" name="kind" placeholder="All kinds" maxlength="128"></label><button type="submit">Apply</button></form>
+          <div class="table-summary"><span id="artifact-count"></span><span id="revision"></span></div>
+          <div class="table-wrap"><table><thead><tr><th>Artifact</th><th>Mission / Wave</th><th>Kind</th><th>Recorded</th><th>Handling</th></tr></thead><tbody id="artifacts"></tbody></table></div>
+          <div class="pagination"><button id="more" hidden>Load More</button></div>
+        </section>
+        <section id="access-view" hidden>
+          <form id="invite-form" class="access-form"><h2>Invite Viewer</h2>
+            <label>Restricted mission access<input name="missions" placeholder="MIS-ALPHA, MIS-BRAVO" required maxlength="4096"></label>
+            <label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+            <button class="primary" type="submit">Create Invitation</button>
+          </form>
+          <div id="invitation" hidden><label>Invitation link<input id="invitation-link" type="text" readonly></label><button id="copy-invitation" class="icon" title="Copy invitation" aria-label="Copy invitation"><img src="/icons/copy.svg" alt=""></button></div>
+          <h2>Accounts</h2><div class="table-wrap"><table><thead><tr><th>Account</th><th>Role</th><th>Mission Access</th><th>Status</th><th></th></tr></thead><tbody id="users"></tbody></table></div>
+        </section>
+        <section id="activity-view" hidden><div class="table-wrap"><table><thead><tr><th>Recorded</th><th>Action</th><th>Actor</th><th>Subject</th></tr></thead><tbody id="activity"></tbody></table></div></section>
+        <footer><span>Approval: disabled</span><span>Tool execution: disabled</span><span>Release: disabled</span><a href="/licenses/lucide.txt" target="_blank" rel="noopener">Icon Licenses</a></footer>
+      </main>
+    </div>
+  </div>
+  <dialog id="detail"><header><div><p class="eyebrow">RETAINED EVIDENCE</p><h2 id="detail-title"></h2></div><button id="close-detail" class="icon" title="Close" aria-label="Close"><img src="/icons/x.svg" alt=""></button></header>
+    <dl id="detail-meta"></dl><pre id="detail-content" tabindex="0"></pre><p id="detail-error" class="error" role="alert"></p></dialog>
+  <dialog id="deactivate"><form id="deactivate-form"><h2>Deactivate Viewer</h2><p id="deactivate-name"></p><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><div class="dialog-actions"><button id="cancel-deactivate" type="button">Cancel</button><button type="submit" class="danger">Deactivate</button></div><p id="deactivate-error" class="error" role="alert"></p></form></dialog>
+</body>
+</html>

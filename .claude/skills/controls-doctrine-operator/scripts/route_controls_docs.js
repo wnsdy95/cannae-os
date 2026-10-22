@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "local-operator-console",
+    keywords: ["operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"],
+    docs: ["docs/local-operator-console.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
+    commands: ["node run-operator-console-fixtures.js"]
+  },
+  {
     id: "orientation",
     keywords: ["overview", "framework", "start", "read", "use", "description", "overall", "concept", "begin", "usage"],
     docs: [
@@ -459,7 +465,7 @@ const AUTHORITY_DOCS = [
   }
 ];
 
-const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".json", ".js", ".go", ".sh", ".svg", ".yaml", ".yml"]);
+const ROUTABLE_EXTENSIONS = new Set([".md", ".html", ".css", ".json", ".js", ".go", ".sh", ".svg", ".yaml", ".yml"]);
 const EXCLUDED_DIRS = new Set([
   ".cache",
   ".cannae",
@@ -480,6 +486,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "local-operator-console", keywords: ["operator-console", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "check_controls_intent"] },
   {
     id: "gateway-effect-review",

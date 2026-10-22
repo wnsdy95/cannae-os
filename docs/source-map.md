@@ -393,6 +393,20 @@ Usage:
 
 ## 16. Implementation Sources and Artifacts
 
+### Local Operator Console Sources
+
+| Primary source | Topic | Source-supported behavior | Application | Local artifact |
+| --- | --- | --- | --- | --- |
+| Fastify sessions: https://github.com/fastify/session | Server-side sessions | Cookie-backed identifiers use a configured server-side store; regenerate replaces the old session | Store hashed session keys in private SQLite; rotate on login and invalidation | `local-operator-console.md`, `operator-console-auth.js`, `operator-console-server.js` |
+| Fastify CSRF: https://github.com/fastify/csrf-protection | Session-bound CSRF | The plugin supports `@fastify/session` and explicit token extraction | Require a CSRF header plus exact Host/Origin; never infer complete protection from the plugin alone | `local-operator-console.md`, `operator-console-server.js` |
+| OWASP password storage: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html | Password derivation | Native scrypt is an alternative when Argon2id is unavailable; one recommended parameter set is N=2^17, r=8, p=1 | Bound expensive hash concurrency, use separate random salts and never retain plaintext passwords | `local-operator-console.md`, `operator-console-auth.js` |
+| Node.js 22.22.3 SQLite source documentation: https://github.com/nodejs/node/blob/v22.22.3/doc/api/sqlite.md | Local state | DatabaseSync supports prepared statements and local transactional persistence | Private repository-bound authentication state; experimental runtime, not external protected custody | `local-operator-console.md`, `operator-console-auth.js` |
+
+The local console supplies actual scoped read access, not authenticated order
+adoption or non-bypassable production enforcement. Its user-managed deployment
+target remains deferred. No military-source authority is inferred from these
+implementation primitives.
+
 | Source / artifact | Military concept | Extracted principle | LLM application | Local documents |
 | --- | --- | --- | --- | --- |
 | OPORD/WARNO/FRAGO doctrine | Standard order format | Orders must be structured to be verifiable | Converted into a machine-readable prompt DSL | `prompt-dsl.md` |

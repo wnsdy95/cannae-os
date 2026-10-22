@@ -152,7 +152,10 @@ Completion criteria:
 
 ## 6. Phase 5: Evidence Store
 
-Status: partially implemented through repository-scoped manifests, receipts, attestations, and source maps; queryable production storage remains open.
+Status: partially implemented through repository-scoped manifests, receipts,
+attestations, source maps and a local authenticated evidence API. Production
+storage, broader claim semantics and independently retained custody remain open.
+See [Local Operator Console](local-operator-console.md).
 
 Goal:
 
@@ -173,7 +176,9 @@ Completion criteria:
 
 ## 7. Phase 6: Command Post Dashboard
 
-Status: static UI and deterministic projections only.
+Status: static operational projections plus a working local authenticated
+evidence/proposal-inspection console. Fresh operational COP, real authenticated
+approval consumption and integrated command decisions remain open.
 
 Goal:
 

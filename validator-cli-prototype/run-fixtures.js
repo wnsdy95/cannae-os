@@ -467,6 +467,13 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "pre-console v0.2 producer evidence remains structurally readable",
+    file: "sample-payloads/valid-github-release-independent-verification-pre-console-v0.2.json",
+    type: "github-release-independent-verification",
+    exitCode: 0,
+    requiredCodes: []
+  },
+  {
     name: "legacy independent evidence remains structurally readable",
     file: "sample-payloads/valid-github-release-independent-verification-legacy.json",
     type: "github-release-independent-verification",

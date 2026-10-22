@@ -1,0 +1,95 @@
+#!/usr/bin/env node
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
+const { spawnSync } = require("node:child_process");
+const { chromium } = require("playwright");
+const { createConsole } = require("../operator-console-server");
+const { writeRepositoryArtifact } = require("../repository-artifact-store");
+
+async function main() {
+  assert.equal(process.argv[2], "--output"); assert(process.argv[3]);
+  const output = path.resolve(process.argv[3]); fs.mkdirSync(output, { recursive: true });
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "cannae-console-browser-")));
+  const repository = path.join(root, "repo"); fs.mkdirSync(repository);
+  assert.equal(spawnSync("git", ["init", "--quiet", repository]).status, 0);
+  const password = "synthetic-browser-password-2026";
+  const base = { repositoryPath: repository, artifactRoot: path.join(repository, ".cannae", "artifacts"), missionId: "MIS-ALPHA", waveId: "W1", kind: "agent-outputs" };
+  writeRepositoryArtifact({ ...base, artifactId: "OUT-ALPHA", payload: { claim: "Synthetic browser evidence", content: "<script>window.compromised=true</script>" } });
+  writeRepositoryArtifact({ ...base, missionId: "MIS-BRAVO", artifactId: "OUT-BRAVO", payload: { claim: "Owner-only synthetic evidence" } });
+  let service, browser;
+  const results = [], errors = [];
+  try {
+    service = await createConsole({ repository, stateDir: path.join(root, "private"), port: 0 });
+    await service.app.listen({ host: "127.0.0.1", port: 0 });
+    browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } }), page = await context.newPage();
+    page.on("pageerror", error => errors.push(error.message));
+    await page.goto(`${service.origin()}/#setup=${service.auth.createBootstrap()}`);
+    await page.locator("#auth-form input[name=username]").fill("browserowner");
+    await page.locator("#auth-form input[name=password]").fill(password);
+    await page.locator("#auth-form button[type=submit]").click();
+    await page.getByRole("button", { name: "OUT-ALPHA", exact: true }).waitFor();
+    assert.equal(new URL(page.url()).hash, "");
+    await page.screenshot({ path: path.join(output, "owner-desktop.png"), fullPage: true });
+    results.push("real owner setup and desktop evidence listing");
+    await page.getByRole("button", { name: "OUT-ALPHA", exact: true }).click();
+    await page.locator("#detail-content").filter({ hasText: "Synthetic browser evidence" }).waitFor();
+    assert.equal(await page.evaluate(() => window.compromised), undefined);
+    await page.screenshot({ path: path.join(output, "evidence-desktop.png"), fullPage: true });
+    await page.getByRole("button", { name: "Close", exact: true }).click();
+    results.push("untrusted artifact text never executes");
+    await page.getByRole("button", { name: "Access", exact: true }).click();
+    await page.locator("#invite-form input[name=missions]").fill("MIS-ALPHA");
+    await page.locator("#invite-form input[name=password]").fill(password);
+    await page.getByRole("button", { name: "Create Invitation", exact: true }).click();
+    await page.locator("#invitation-link").waitFor({ state: "visible" });
+    const invitation = await page.locator("#invitation-link").inputValue();
+    const viewerContext = await browser.newContext({ viewport: { width: 390, height: 844 } }), viewer = await viewerContext.newPage();
+    viewer.on("pageerror", error => errors.push(error.message));
+    await viewer.goto(invitation);
+    await viewer.locator("#auth-form input[name=username]").fill("browserviewer");
+    await viewer.locator("#auth-form input[name=password]").fill(password);
+    await viewer.locator("#auth-form button[type=submit]").click();
+    await viewer.getByRole("button", { name: "OUT-ALPHA", exact: true }).waitFor();
+    assert.equal(await viewer.getByRole("button", { name: "OUT-BRAVO", exact: true }).count(), 0);
+    assert.equal(await viewer.getByRole("button", { name: "Access", exact: true }).count(), 0);
+    assert.equal(new URL(viewer.url()).hash, "");
+    await viewer.screenshot({ path: path.join(output, "viewer-mobile.png"), fullPage: true });
+    assert(await viewer.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    assert(await viewer.evaluate(() => document.querySelector("nav").getBoundingClientRect().height < 70));
+    await viewer.getByRole("button", { name: "OUT-ALPHA", exact: true }).click();
+    await viewer.locator("#detail-content").filter({ hasText: "Synthetic browser evidence" }).waitFor();
+    await viewer.screenshot({ path: path.join(output, "evidence-mobile.png"), fullPage: true });
+    assert(await viewer.evaluate(() => { const r = document.querySelector("#detail").getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight; }));
+    await viewer.getByRole("button", { name: "Close", exact: true }).click();
+    results.push("mobile viewer registration, bounded mission scope and evidence dialog");
+    await page.getByRole("button", { name: "Refresh", exact: true }).click();
+    const viewerRow = page.getByRole("row").filter({ hasText: "browserviewer" });
+    await viewerRow.getByRole("button", { name: "Deactivate", exact: true }).click();
+    await page.locator("#deactivate-form input[name=password]").fill(password);
+    await page.locator("#deactivate-form button[type=submit]").click();
+    await page.locator("#deactivate").waitFor({ state: "hidden" });
+    await viewer.getByRole("button", { name: "Refresh", exact: true }).click();
+    await viewer.locator("#auth").waitFor({ state: "visible" });
+    assert.equal(await viewer.locator("#auth-title").textContent(), "Operator Sign In");
+    results.push("owner deactivation invalidates the existing viewer session");
+    await page.getByRole("button", { name: "Activity", exact: true }).click();
+    await page.getByRole("cell", { name: "viewer_deactivated", exact: true }).waitFor();
+    await page.getByRole("button", { name: "Sign out", exact: true }).click();
+    await page.locator("#auth").waitFor({ state: "visible" });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.screenshot({ path: path.join(output, "login-mobile.png"), fullPage: true });
+    results.push("authentication activity and real logout");
+    assert.deepEqual(errors, []);
+    const summary = { passed: results.length, failed: 0, results, page_errors: errors,
+      approval_authorized: false, tool_execution_authorized: false, release_authorized: false };
+    fs.writeFileSync(path.join(output, "browser-results.json"), JSON.stringify(summary, null, 2) + "\n");
+    console.log(JSON.stringify(summary, null, 2));
+  } finally {
+    if (browser) await browser.close(); if (service) await service.app.close();
+    fs.rmSync(root, { force: true, recursive: true });
+  }
+}
+main().catch(error => { console.error(error.stack); process.exitCode = 1; });

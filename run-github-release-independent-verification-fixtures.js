@@ -281,6 +281,13 @@ function runFixtures() {
     });
   }
 
+  const preConsolePath = path.join(__dirname, "sample-payloads/valid-github-release-independent-verification-pre-console-v0.2.json");
+  const preConsoleBytes = fs.readFileSync(preConsolePath);
+  results.push({ name: "byte-identical pre-console producer sample replays after the HTTP dependency migration",
+    ok: sha256(preConsoleBytes) === "0b3689ca33ac2741aa75fc136739ab1d5a919ee1a0bb645ee012d622340637f8" &&
+      validateIndependentVerificationEvidence(JSON.parse(preConsoleBytes), rawVerification, trustedRoot, EXPECTED).length === 0 &&
+      fs.readFileSync(preConsolePath).equals(preConsoleBytes) });
+
   const priorBytes = fs.readFileSync(path.join(__dirname,
     "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json"));
   const prior = JSON.parse(priorBytes);

@@ -2,6 +2,11 @@
 
 ## 0. Purpose
 
+The implemented [local operator console](local-operator-console.md) supplies
+authentication, actual evidence queries and order proposal inspection only.
+The operational screens and approval buttons specified below are target
+behavior, not claims that authenticated approval or a complete COP exists.
+
 This document defines the screen design of the command post dashboard for the military-style LLM runtime.
 
 The Dashboard is not a fancy monitoring screen — it is a screen built to let the commander make decisions. What information to show and what information to hide must be clearly distinguished.
