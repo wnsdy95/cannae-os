@@ -223,6 +223,8 @@ Keep issuance/recovery/cancellation commands on the trusted operator side;
 listing their shell digest as an ordinary task does not delegate control-plane
 authority. A valid lease JSON and a historical commit result are not current
 tool permission. Inspect unresolved issuance before reporting settled work.
+Diagnose dispatch denials by their exact reason code; changed prose is not a
+different authority state or permission to retry with new bindings.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

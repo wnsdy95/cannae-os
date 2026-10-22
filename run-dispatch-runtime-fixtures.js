@@ -417,7 +417,7 @@ fixture("resume refuses post-checkpoint drift", () => {
   }, issued.lease.id, {
     sessionId: "session-a",
     providerAgentId: "main"
-  }), /changed after the interruption/);
+  }), /DISPATCH_ISSUANCE_REPOSITORY_DRIFT/);
   fs.writeFileSync(path.join(repositoryA, "README.md"), "dispatch fixture\n");
 });
 
