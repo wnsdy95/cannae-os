@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Strengthen the issuance stop-publication fixture to require the exact campaign-blocked code, retained stop reason and a denied successor tool admission. This test/documentation-only alignment preserves the unchanged stricter runtime instead of accepting a broad error union or reverting to generic CAS. Both skills teach the exact assertion and non-authorizing pending state.
+
 - Preserve specific reconciled-failure and required-revocation denials before generic legacy/source eligibility in the actual active-lease projection. Keep exact existing active/interrupted/resumed-descendant assertions and result-only migration; both skills inspect failure and migration as separate non-authorizing conditions.
 
 - Reappraise repository-wide gateway and unknown-effect holds before the generic issuance publication conflict, including obligations arriving in another wave. Preserve the existing exact denial/no-grant regression. An optional exact gateway fixture filter rejects unknown/empty selections; filtered checks are not full-suite acceptance. Both skills require cross-wave hold inspection.

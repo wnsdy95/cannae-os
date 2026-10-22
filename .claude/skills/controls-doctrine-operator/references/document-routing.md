@@ -244,6 +244,9 @@ after changing issuance. Preserve specific stop/failure reasons and legacy
 result settlement separately from new authority. When a stricter guard rejects
 earlier, prove its exact denial and absence of publications; do not weaken the
 guard or broaden an expected-error regex to simulate the old unsafe sequence.
+When a retained stop wins over generic CAS, require its exact blocked code and
+stop reason plus an actually denied successor admission. Align the assertion
+with that stricter boundary; do not restore a generic error or suppress the case.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

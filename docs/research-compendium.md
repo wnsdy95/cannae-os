@@ -7,7 +7,7 @@ reconciled-failure markers and required revocation retain their specific denial
 before generic legacy-lease/source eligibility. Existing active/interrupted and
 resumed-descendant settlement cases must retain their exact assertions; moving
 a generic migration guard earlier cannot silently replace recovery diagnostics.
-mandatory new-context rules must not prevent neutral settlement of an already
+Mandatory new-context rules must not prevent neutral settlement of an already
 admitted legacy result. Resume/publication retain specific terminal, stop and
 reconciled-failure holds before generic conflicts. Reappraisal of
 repository-wide gateway/effect obligations also applies at actual publication,
@@ -18,6 +18,10 @@ Stronger early rejection of
 unobserved startup or unknown effects is tested for no partial publications,
 not relaxed to reproduce an obsolete unsafe sequence. These checks supplement,
 not replace, full exact-source CI and the wider unfinished program.
+For a retained stop arriving at commit publication, the issuance fixture now
+requires the exact campaign-blocked code and stop reason, plus denied new-session
+admission. The runtime is unchanged by this test/documentation alignment; its
+earlier generic-conflict expectation would contradict specific stop precedence.
 
 A reproduced core resume failure could retain predecessor supersession without
 its successor. Work stayed denied, but the original input was not retained for

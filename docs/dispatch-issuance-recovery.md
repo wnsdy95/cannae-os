@@ -35,6 +35,9 @@ they never bypass the current mandatory-context guard for new calls or resume.
 An active/interrupted legacy lease with a reconciled failure still reports that
 specific failure and required revocation before the generic result-only guard.
 Result-only migration status never conceals or clears retained failure markers.
+The commit-publication stop fixture checks the exact continuation-blocked code
+and retained stop reason, not a generic manifest conflict. It also attempts the
+new session's real admission and verifies denial before cancelling unused issuance.
 Unobserved startup and known unknown effects deny before a successor is frozen.
 Tests must prove that early denial publishes nothing, not force an unsafe old
 sequence merely to reach its former downstream guard.
