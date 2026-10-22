@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-deviation-common.schema.json",
+  "$defs": {
+    "nullable_ref": { "anyOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/artifact_ref" }] },
+    "binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["baseline_sha256", "step_id", "method_id", "deviation_ref"],
+      "properties": {
+        "baseline_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "step_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+        "method_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+        "deviation_ref": { "$ref": "#/$defs/nullable_ref" }
+      }
+    }
+  }
+}

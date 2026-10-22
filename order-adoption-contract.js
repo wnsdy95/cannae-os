@@ -98,6 +98,10 @@ function backbriefIssues(payload, proposal, draft) {
   const brief = payload.backbrief;
   const order = draft.opord;
   if (!agent || !task) return [problem("ORDER_BACKBRIEF_AGENT_MISMATCH", "$.agent_id", "The backbrief must identify an assigned agent, not only a role.")];
+  if (plan.method_control && (!payload.method_acknowledgement || !same(payload.method_acknowledgement,
+      require("./method-deviation-contract").baseline(plan, payload.agent_id)))) {
+    issues.push(problem("ORDER_BACKBRIEF_METHOD_MISMATCH", "$.method_acknowledgement", "A method-governed backbrief acknowledges its complete exact reviewed baseline."));
+  }
   if (brief.parent_order !== proposal.id || brief.task_order !== task.id || brief.actor !== agent.operational_role ||
       brief.mission_id !== plan.mission_id || brief.classification !== draft.classification ||
       brief.understanding.commander_intent !== order.intent.purpose || brief.understanding.assigned_task !== task.task ||

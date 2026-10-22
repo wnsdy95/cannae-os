@@ -22,10 +22,15 @@ const {
 
 const NONE_REF = Object.freeze({ artifact_id: "none", relative_path: "none", sha256: "none" });
 const CONTROL_EVIDENCE_KINDS = new Set([
+  "method-deviation-events", "initiative-deviation-reports", "degeneration-incidents",
   "commander-intents", "intent-delegations", "intent-continuity-projections",
   "aar-readiness-updates",
   "aars",
   "agent-context-packs",
+  "dispatch-tool-policies",
+  "agent-dispatch-leases",
+  "tool-admission-events",
+  "agent-execution-checkpoints",
   "control-execution-receipts",
   "integrated-mission-preflights",
   "mission-wave-closeouts",
@@ -807,7 +812,9 @@ function openWaveUnlocked(plan, options = {}) {
   const contextPacks = [];
   for (const [index, agent] of plan.agents.entries()) {
     const routed = agentReceipts[index];
-    const validationCommands = unique(routed.receipt.validation_commands || []);
+    const methodContract = require("./method-deviation-contract");
+    const methodAssignment = methodContract.methodAssignment(plan, agent.agent_id);
+    const validationCommands = unique([...(routed.receipt.validation_commands || []), ...(methodAssignment ? [methodContract.METHOD_CHECK] : [])]);
     const contextId = `ACP-${safeIdPart(plan.wave_id)}-${safeIdPart(agent.agent_id)}`;
     const existingContext = optionalArtifact(operationOptions, {
       missionId: plan.mission_id, waveId: plan.wave_id, kind: "agent-context-packs", artifactId: contextId
@@ -818,6 +825,7 @@ function openWaveUnlocked(plan, options = {}) {
     const contextPack = {
       schema_version: "0.4",
       intent_assignment: require("./intent-continuity-contract").assignmentForPlan(plan, agent.agent_id),
+      ...(methodAssignment ? { method_assignment: methodAssignment } : {}),
       ...(adopted ? { order_assignment: contextAssignment(adopted, agent.agent_id) } : {}),
       type: "AgentContextPack",
       id: contextId,
@@ -834,7 +842,7 @@ function openWaveUnlocked(plan, options = {}) {
       capability_query: routed.receipt.capability_query,
       capability_routing: routed.receipt.capability_routing,
       doctrine_state: doctrineState,
-      documents: unique(routed.receipt.recommended_documents.map(document => document.path))
+      documents: unique([...routed.receipt.recommended_documents.map(document => document.path), ...(methodAssignment ? [methodContract.METHOD_DOCUMENT] : [])])
         .map(relativePath => safeDoctrineDocument(doctrineRoot, relativePath)),
       validation_commands: validationCommands,
       required_controls: buildRequiredControls(validationCommands, doctrineRoot),
@@ -1008,6 +1016,29 @@ function executeRequiredControls(report, contextArtifacts, options) {
   return refs;
 }
 
+function copiesControlEvidence(store, entry, payload, snapshots) {
+  const snapshot = store.verification.manifest_sha256;
+  let index = snapshots.get(snapshot);
+  if (!index) {
+    const controls = store.manifest.artifacts.filter(item => CONTROL_EVIDENCE_KINDS.has(item.kind));
+    index = { controls, bytes: new Set(controls.map(item => item.sha256)), payloads: null };
+    snapshots.set(snapshot, index);
+  }
+  if (index.bytes.has(entry.sha256)) return true;
+  if (!payload || typeof payload !== "object") return false;
+  if (!index.payloads) {
+    index.payloads = new Set();
+    // Legacy controls such as SITREPs have no type tag; compare the complete JSON value.
+    for (const control of index.controls) {
+      let value;
+      try { value = readEntryPayload(store, control); }
+      catch (error) { if (error instanceof SyntaxError) continue; throw error; }
+      if (value && typeof value === "object") index.payloads.add(sha256(JSON.stringify(canonicalValue(value))));
+    }
+  }
+  return index.payloads.has(sha256(JSON.stringify(canonicalValue(payload))));
+}
+
 function validateReportBindings(report, planArtifact, preflightArtifact, contextArtifacts, options) {
   if (!sameRef(report.plan_ref, planArtifact.ref)) throw new Error("Wave report does not cite the exact mission wave plan.");
   if (!sameRef(report.routing_preflight_ref, preflightArtifact.ref)) throw new Error("Wave report does not cite the exact routing preflight.");
@@ -1018,6 +1049,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
     throw new Error("Wave report agent set does not exactly match the opened wave.");
   }
   const contextByAgent = new Map(contextArtifacts.map(item => [item.payload.agent_id, item]));
+  const controlSnapshots = new Map();
   for (const result of report.agent_results) {
     const context = contextByAgent.get(result.agent_id);
     if (!context || !sameRef(result.context_pack_ref, context.ref)) {
@@ -1031,16 +1063,17 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         waveId: report.wave_id,
         loadPayload: false
       });
-      const consentCopy = evidence.store.manifest.artifacts.some(entry => ["operator-consent-records", "operator-reconciliation-authorizations", "operator-reconciliation-records"]
-        .includes(entry.kind) && entry.sha256 === evidence.entry.sha256);
       // MIME is caller-declared; whole JSON control records remain metadata in text or binary files.
       let evidencePayload;
       try { evidencePayload = readEntryPayload(evidence.store, evidence.entry); }
       catch (error) {
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
-      const consentPayload = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type);
-      if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || consentCopy || consentPayload) {
+      const typedControl = require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
+        ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack",
+          "DispatchToolPolicy", "AgentDispatchLease", "ToolAdmissionEvent", "AgentExecutionCheckpoint"].includes(evidencePayload?.type);
+      if (CONTROL_EVIDENCE_KINDS.has(evidence.entry.kind) || typedControl ||
+          copiesControlEvidence(evidence.store, evidence.entry, evidencePayload, controlSnapshots)) {
         throw new Error(`${result.agent_id} cites control metadata as execution evidence: ${evidence.entry.kind}.`);
       }
       const evidenceTime = Date.parse(evidence.entry.created_at);
@@ -1053,6 +1086,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
 }
 
 function validateDispatchCompletion(report, plan, options) {
+  require("./method-deviation-gate").assertMethodWaveReport(options, plan, report);
   if (!plan.dispatch_control || plan.dispatch_control.required !== true) {
     return {
       required: false,
@@ -1182,6 +1216,7 @@ function recordWaveUnlocked(report, options = {}) {
     createdAt: report.recorded_at,
     publicationGuard: snapshot => {
       wavePublicationGuard(planArtifact.payload, operationOptions)(snapshot);
+      validateReportBindings(report, planArtifact, preflightArtifact, contextArtifacts, operationOptions);
       validateDispatchCompletion(report, planArtifact.payload, operationOptions);
       return true;
     }

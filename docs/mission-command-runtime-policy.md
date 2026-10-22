@@ -11,6 +11,11 @@ plan commitments through agent echelons and covered execution gates. Semantic
 intent interpretation, concrete approval-bearing delegation and the decision
 whether a method change is disciplined initiative remain incomplete.
 
+The [exact reviewed method runtime](method-deviation-runtime.md) now supplies a
+partial execution path for finite Green alternatives, mandatory steps,
+before/after reports and actual drift response. Novel methods, semantic checks,
+recovery and universal rollout remain separate requirements.
+
 This document defines that runtime policy. The enumerated boundary rules that enforce it are split out into `docs/disciplined-initiative-rules.md`.
 
 This document extends the existing corpus; it does not restate it. The commander input format stays in the handbook, role authority stays in the roles document, and ROE grades stay in `docs/tool-use-roe.md`.
@@ -203,7 +208,8 @@ The [implementation registry](implementation-candidate-registry.md) tracks these
 The [intent runtime](intent-continuity-runtime.md) now implements the commander
 intent contract, complete mechanical lineage checks and their dedicated fixtures.
 Delegation events are partial until a concrete approval-bearing scope adapter is
-reviewed. Method deviation and semantic intent interpretation remain open. The
+reviewed. Method deviation has the partial exact-input path above; broader
+initiative and semantic intent interpretation remain open. The
 list retains original proposal identities; the registry owns current mappings.
 
 schema:

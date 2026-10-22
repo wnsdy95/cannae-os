@@ -33,6 +33,10 @@
   "additionalProperties": false,
   "allOf": [
     {
+      "if": { "required": ["method_assignment"] },
+      "then": { "properties": { "schema_version": { "const": "0.4" } } }
+    },
+    {
       "if": { "properties": { "schema_version": { "const": "0.3" } }, "required": ["schema_version"] },
       "then": { "required": ["order_assignment"] },
       "else": {
@@ -47,6 +51,7 @@
     }
   ],
   "properties": {
+    "method_assignment": { "$ref": "method-control-baseline.schema.json#/$defs/assignment" },
     "schema_version": { "type": "string", "enum": ["0.2", "0.3", "0.4"] },
     "intent_assignment": { "$ref": "intent-continuity-common.schema.json#/$defs/assignment" },
     "order_assignment": { "$ref": "order-adoption-common.schema.json#/$defs/context_assignment" },

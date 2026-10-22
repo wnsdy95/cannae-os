@@ -67,6 +67,7 @@ function propose(env) { env.proposed = proposeOrder(env.request, optionsAt(env, 
 function brief(env, index) {
   const agent = env.plan.agents[index], task = env.draft.opord.execution.tasks[index], order = env.draft.opord;
   return { schema_version: "0.1", type: "OrderBackbrief", id: `OBB-${agent.agent_id}`, mission_id: env.plan.mission_id,
+    ...(env.plan.method_control ? { method_acknowledgement: clone(require("../method-deviation-contract").baseline(env.plan, agent.agent_id)) } : {}),
     wave_id: env.plan.wave_id, proposal_ref: env.proposed.proposal_ref, agent_id: agent.agent_id,
     backbrief: { ...sample("backbrief"), id: `BB-${agent.agent_id}`, mission_id: env.plan.mission_id, parent_order: env.proposed.proposal.id,
       task_order: task.id, actor: agent.operational_role, classification: env.draft.classification,

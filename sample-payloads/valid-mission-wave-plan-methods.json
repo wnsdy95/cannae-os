@@ -1,0 +1,240 @@
+{
+  "schema_version": "0.2",
+  "type": "MissionWavePlan",
+  "id": "MWP-ADOPTION",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "title": "Operationalize a repository skill",
+  "objective": "Request quote: Prepare an internal comparison of two onboarding options.",
+  "success_conditions": [
+    "Request quote: Return a recommendation with explicit uncertainties."
+  ],
+  "failure_conditions": [
+    "Proposal: Do not treat missing evidence as a fact."
+  ],
+  "constraints": [
+    "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+  ],
+  "mission_profile": {
+    "classification": "internal",
+    "risk_level": "medium",
+    "roe_class": "Amber",
+    "release_target": "internal_handoff"
+  },
+  "agents": [
+    {
+      "agent_id": "agent-S2",
+      "operational_role": "S2",
+      "department": "operations",
+      "task": "Proposal: Extract evidence for each option without editing source records.",
+      "model_billet_id": "not_required",
+      "delegated_authority": "scoped-execution",
+      "allowed_actions": [
+        "Request quote: Prepare an internal comparison of two onboarding options."
+      ],
+      "approval_required": [
+        "Request quote: The user decides the target segment and any budget change."
+      ],
+      "prohibited_actions": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "context_scope": "internal"
+    },
+    {
+      "agent_id": "agent-S3",
+      "operational_role": "S3",
+      "department": "operations",
+      "task": "Proposal: Compare the two options and prepare a draft recommendation.",
+      "model_billet_id": "not_required",
+      "delegated_authority": "scoped-execution",
+      "allowed_actions": [
+        "Request quote: Prepare an internal comparison of two onboarding options."
+      ],
+      "approval_required": [
+        "Request quote: The user decides the target segment and any budget change."
+      ],
+      "prohibited_actions": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "context_scope": "internal"
+    }
+  ],
+  "model_assignment": {
+    "required": false,
+    "integrated_preflight_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    }
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "routing_required_every_wave": true,
+    "repository_artifacts_required": true,
+    "approval_required_for_scope_change": true,
+    "approval_required_for_commit": true,
+    "approval_required_for_push": true,
+    "approval_required_for_merge": true,
+    "approval_required_for_release": true,
+    "self_approval_prohibited": true
+  },
+  "adaptive_work": {
+    "enabled": false,
+    "campaign_id": "SIC-SKILL-DEMO",
+    "target_type": "skill",
+    "acceptance_criteria": [
+      "Routing coverage remains complete.",
+      "Baseline behavior does not regress."
+    ],
+    "non_goals": [
+      "Changing approval authority.",
+      "Publishing or releasing without the user."
+    ],
+    "max_cycles": 4,
+    "max_changed_files": 20,
+    "max_elapsed_minutes": 240
+  },
+  "created_at": "2026-09-29T16:00:10.000Z",
+  "valid_until": "2026-09-29T17:00:00.000Z",
+  "order_binding": {
+    "draft_ref": {
+      "artifact_id": "OD-0c6dd10283b6f07f7f3fe05105333086",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-drafts/OD-0c6dd10283b6f07f7f3fe05105333086.json",
+      "sha256": "0a82e0770f7c846cb1a50d82a09ff1fdb23bbbacba34a3204a0bf074656d6f26"
+    },
+    "task_assignments": [
+      {
+        "task_order_id": "TASK-S2",
+        "agent_id": "agent-S2"
+      },
+      {
+        "task_order_id": "TASK-S3",
+        "agent_id": "agent-S3"
+      }
+    ]
+  },
+  "dispatch_control": {
+    "required": true,
+    "enforcement_level": "guardrail",
+    "gateway_exclusive": false,
+    "policy_authorizations": [
+      {
+        "agent_id": "agent-S2",
+        "provider": "codex",
+        "policy_id": "DTP-agent-S2",
+        "draft_sha256": "f7592ee08f415371e7b3fc6c1ca00e47f33e76a4ccc618c33a72cd37c2ef7860"
+      },
+      {
+        "agent_id": "agent-S3",
+        "provider": "codex",
+        "policy_id": "DTP-agent-S3",
+        "draft_sha256": "5f6d5a70ac447265194ffea9a8ef35d7d4053ffa49ed03bcfb220259ff205c03"
+      }
+    ]
+  },
+  "method_control": {
+    "schema_version": "0.1",
+    "type": "MethodControlBaseline",
+    "required": true,
+    "after_report_due": "before_next_tool_or_completion",
+    "max_deviation_age_seconds": 300,
+    "agents": [
+      {
+        "agent_id": "agent-S2",
+        "task_id": "TASK-S2",
+        "task_sha256": "3a6e0e60c8df439bebf45a7152acdfddef3525b331b39ecdc0859c19f7ccd9f5",
+        "steps": [
+          {
+            "step_id": "inspect",
+            "kind": "work",
+            "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+            "planned": {
+              "tool_name": "Read",
+              "rule_id": "DTR-READ",
+              "input_sha256": "e2a230533e0725b393333bdc3a76c9118fe2070b47e3495d2ff6d6aec200e5a1",
+              "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\"}. Preserve the reviewed task and every subsequent safeguard."
+            },
+            "alternatives": [
+              {
+                "method_id": "short_read",
+                "tool_name": "Read",
+                "rule_id": "DTR-READ",
+                "input_sha256": "1f23fbf6bfe6746458629cabe4c17f743792abb87d20a6049bdcfbb1fd6c038f",
+                "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"limit\":1}. Preserve the reviewed task and every subsequent safeguard.",
+                "report_timing": "after"
+              },
+              {
+                "method_id": "coordinated_read",
+                "tool_name": "Read",
+                "rule_id": "DTR-READ",
+                "input_sha256": "891676c60a5c2dbd972cbfdf701d7b169d06000fb4e480a5c1d076d82cf09380",
+                "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"offset\":1,\"limit\":1}. Preserve the reviewed task and every subsequent safeguard.",
+                "report_timing": "before_and_after"
+              }
+            ]
+          },
+          {
+            "step_id": "verify",
+            "kind": "safeguard",
+            "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+            "planned": {
+              "tool_name": "Read",
+              "rule_id": "DTR-READ",
+              "input_sha256": "926e9a263a87292a6fbe91a44c78feb46f84702e6666e031e3005aa327599815",
+              "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"offset\":1}. Preserve the reviewed task and every subsequent safeguard."
+            },
+            "alternatives": []
+          }
+        ]
+      },
+      {
+        "agent_id": "agent-S3",
+        "task_id": "TASK-S3",
+        "task_sha256": "6af65f985b4405c7c056db0dd71e33dc49433b5ae14cd04b7a9972a7a1d3c1b2",
+        "steps": [
+          {
+            "step_id": "inspect",
+            "kind": "work",
+            "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+            "planned": {
+              "tool_name": "Read",
+              "rule_id": "DTR-READ",
+              "input_sha256": "e2a230533e0725b393333bdc3a76c9118fe2070b47e3495d2ff6d6aec200e5a1",
+              "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\"}. Preserve the reviewed task and every subsequent safeguard."
+            },
+            "alternatives": [
+              {
+                "method_id": "short_read",
+                "tool_name": "Read",
+                "rule_id": "DTR-READ",
+                "input_sha256": "1f23fbf6bfe6746458629cabe4c17f743792abb87d20a6049bdcfbb1fd6c038f",
+                "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"limit\":1}. Preserve the reviewed task and every subsequent safeguard.",
+                "report_timing": "after"
+              },
+              {
+                "method_id": "coordinated_read",
+                "tool_name": "Read",
+                "rule_id": "DTR-READ",
+                "input_sha256": "891676c60a5c2dbd972cbfdf701d7b169d06000fb4e480a5c1d076d82cf09380",
+                "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"offset\":1,\"limit\":1}. Preserve the reviewed task and every subsequent safeguard.",
+                "report_timing": "before_and_after"
+              }
+            ]
+          },
+          {
+            "step_id": "verify",
+            "kind": "safeguard",
+            "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+            "planned": {
+              "tool_name": "Read",
+              "rule_id": "DTR-READ",
+              "input_sha256": "926e9a263a87292a6fbe91a44c78feb46f84702e6666e031e3005aa327599815",
+              "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"offset\":1}. Preserve the reviewed task and every subsequent safeguard."
+            },
+            "alternatives": []
+          }
+        ]
+      }
+    ]
+  }
+}

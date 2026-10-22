@@ -1,0 +1,1019 @@
+{
+  "schema_version": "0.4",
+  "intent_assignment": {
+    "schema_version": "0.1",
+    "type": "AgentIntentAssignment",
+    "agent_id": "agent-S2",
+    "plan_sha256": "a00fb734cd81e364bdf1c3276aa5fcd781bb4fa1d66fc502fc1fe3929c455088",
+    "tree_sha256": "8b42fd3de4cb317958f4589267030a3e109dc026f34794308d5d00d6df7a5365",
+    "root_intent_id": "INT-d068c23cd2f40aa0671820c7d18f8abd",
+    "lineage": [
+      {
+        "schema_version": "0.1",
+        "type": "CommanderIntent",
+        "id": "INT-d068c23cd2f40aa0671820c7d18f8abd",
+        "mission_id": "MIS-ADOPTION",
+        "wave_id": "W1",
+        "plan_id": "MWP-ADOPTION",
+        "agent_id": "USER",
+        "parent_intent_id": null,
+        "purpose": "Request quote: Prepare an internal comparison of two onboarding options.",
+        "key_tasks": [
+          {
+            "task_id": "TASK-S2",
+            "task_sha256": "3a6e0e60c8df439bebf45a7152acdfddef3525b331b39ecdc0859c19f7ccd9f5",
+            "owner_agent_id": "agent-S2"
+          },
+          {
+            "task_id": "TASK-S3",
+            "task_sha256": "6af65f985b4405c7c056db0dd71e33dc49433b5ae14cd04b7a9972a7a1d3c1b2",
+            "owner_agent_id": "agent-S3"
+          }
+        ],
+        "end_state": [
+          "Request quote: Return a recommendation with explicit uncertainties."
+        ],
+        "failure_to_avoid": [
+          "Proposal: Do not treat missing evidence as a fact."
+        ],
+        "constraints": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ],
+        "authority_boundary": {
+          "green": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "amber": [],
+          "red": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "black": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ]
+        }
+      },
+      {
+        "schema_version": "0.1",
+        "type": "CommanderIntent",
+        "id": "INT-2b5f54a52fab44961b5241c0cb1cb322",
+        "mission_id": "MIS-ADOPTION",
+        "wave_id": "W1",
+        "plan_id": "MWP-ADOPTION",
+        "agent_id": "agent-S2",
+        "parent_intent_id": "INT-d068c23cd2f40aa0671820c7d18f8abd",
+        "purpose": "Request quote: Prepare an internal comparison of two onboarding options.",
+        "key_tasks": [
+          {
+            "task_id": "TASK-S2",
+            "task_sha256": "3a6e0e60c8df439bebf45a7152acdfddef3525b331b39ecdc0859c19f7ccd9f5",
+            "owner_agent_id": "agent-S2"
+          },
+          {
+            "task_id": "TASK-S3",
+            "task_sha256": "6af65f985b4405c7c056db0dd71e33dc49433b5ae14cd04b7a9972a7a1d3c1b2",
+            "owner_agent_id": "agent-S3"
+          }
+        ],
+        "end_state": [
+          "Request quote: Return a recommendation with explicit uncertainties."
+        ],
+        "failure_to_avoid": [
+          "Proposal: Do not treat missing evidence as a fact."
+        ],
+        "constraints": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ],
+        "authority_boundary": {
+          "green": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "amber": [],
+          "red": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "black": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ]
+        }
+      }
+    ],
+    "delegations": [
+      {
+        "schema_version": "0.1",
+        "type": "IntentDelegationEvent",
+        "id": "IDE-7135c1c723199d461b6bf5a513233192",
+        "mission_id": "MIS-ADOPTION",
+        "wave_id": "W1",
+        "parent_intent_id": "INT-d068c23cd2f40aa0671820c7d18f8abd",
+        "child_intent_id": "INT-2b5f54a52fab44961b5241c0cb1cb322",
+        "delegator_agent_id": "USER",
+        "delegate_agent_id": "agent-S2",
+        "delegated_boundary": {
+          "green": [
+            "Request quote: Prepare an internal comparison of two onboarding options."
+          ],
+          "amber": [],
+          "red": [
+            "Request quote: The user decides the target segment and any budget change."
+          ],
+          "black": [
+            "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+          ]
+        },
+        "approval_scope_ref": {
+          "artifact_id": "none",
+          "relative_path": "none",
+          "sha256": "none"
+        }
+      }
+    ],
+    "assigned_task": {
+      "task_id": "TASK-S2",
+      "task_sha256": "3a6e0e60c8df439bebf45a7152acdfddef3525b331b39ecdc0859c19f7ccd9f5",
+      "owner_agent_id": "agent-S2"
+    }
+  },
+  "method_assignment": {
+    "schema_version": "0.1",
+    "type": "AgentMethodAssignment",
+    "control_channel": "trusted_operator_control_plane",
+    "plan_sha256": "a00fb734cd81e364bdf1c3276aa5fcd781bb4fa1d66fc502fc1fe3929c455088",
+    "baseline_sha256": "cce332f8cec5e70a4019f8a99391c0253cf119939d50727e54e407c546b38d6d",
+    "baseline": {
+      "agent_id": "agent-S2",
+      "task_id": "TASK-S2",
+      "task_sha256": "3a6e0e60c8df439bebf45a7152acdfddef3525b331b39ecdc0859c19f7ccd9f5",
+      "steps": [
+        {
+          "step_id": "inspect",
+          "kind": "work",
+          "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+          "planned": {
+            "tool_name": "Read",
+            "rule_id": "DTR-READ",
+            "input_sha256": "e2a230533e0725b393333bdc3a76c9118fe2070b47e3495d2ff6d6aec200e5a1",
+            "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\"}. Preserve the reviewed task and every subsequent safeguard."
+          },
+          "alternatives": [
+            {
+              "method_id": "short_read",
+              "tool_name": "Read",
+              "rule_id": "DTR-READ",
+              "input_sha256": "1f23fbf6bfe6746458629cabe4c17f743792abb87d20a6049bdcfbb1fd6c038f",
+              "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"limit\":1}. Preserve the reviewed task and every subsequent safeguard.",
+              "report_timing": "after"
+            },
+            {
+              "method_id": "coordinated_read",
+              "tool_name": "Read",
+              "rule_id": "DTR-READ",
+              "input_sha256": "891676c60a5c2dbd972cbfdf701d7b169d06000fb4e480a5c1d076d82cf09380",
+              "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"offset\":1,\"limit\":1}. Preserve the reviewed task and every subsequent safeguard.",
+              "report_timing": "before_and_after"
+            }
+          ]
+        },
+        {
+          "step_id": "verify",
+          "kind": "safeguard",
+          "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+          "planned": {
+            "tool_name": "Read",
+            "rule_id": "DTR-READ",
+            "input_sha256": "926e9a263a87292a6fbe91a44c78feb46f84702e6666e031e3005aa327599815",
+            "instructions": "Call Read with this exact JSON input: {\"file_path\":\"README.md\",\"offset\":1}. Preserve the reviewed task and every subsequent safeguard."
+          },
+          "alternatives": []
+        }
+      ]
+    },
+    "after_report_due": "before_next_tool_or_completion",
+    "max_deviation_age_seconds": 300
+  },
+  "order_assignment": {
+    "adoption_ref": {
+      "artifact_id": "OAR-ce76b49867ebaa96b11f44e9a144088b",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-adoption-records/OAR-ce76b49867ebaa96b11f44e9a144088b.json",
+      "sha256": "66de04b1e42d3bf00703243a279902701b460e450e740751f23a1db3942e04d6"
+    },
+    "proposal_ref": {
+      "artifact_id": "OAP-a3a8c2d0b0aaab6c86f3fab4102babe2",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-adoption-proposals/OAP-a3a8c2d0b0aaab6c86f3fab4102babe2.json",
+      "sha256": "752aecbc923d9ddb0d7af221d319072fbdda39ccf1f0d3f3891283d19be9bb61"
+    },
+    "draft_ref": {
+      "artifact_id": "OD-0c6dd10283b6f07f7f3fe05105333086",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-drafts/OD-0c6dd10283b6f07f7f3fe05105333086.json",
+      "sha256": "0a82e0770f7c846cb1a50d82a09ff1fdb23bbbacba34a3204a0bf074656d6f26"
+    },
+    "backbrief_ref": {
+      "artifact_id": "OBB-agent-S2",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-backbriefs/OBB-agent-S2.json",
+      "sha256": "3e0f2d795c4fce32099969bb4757e08c078d934b2fce5388c4ebc2a47db60315"
+    },
+    "rehearsal_ref": {
+      "artifact_id": "ORH-ADOPTION",
+      "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/order-rehearsals/ORH-ADOPTION.json",
+      "sha256": "3f6de8284244439f7b002480748fba6f3421df8e9f81c3295816bdca5905f8a4"
+    },
+    "plan_sha256": "a00fb734cd81e364bdf1c3276aa5fcd781bb4fa1d66fc502fc1fe3929c455088",
+    "task_order": {
+      "type": "TASK_ORDER_DRAFT",
+      "id": "TASK-S2",
+      "mission_id": "MIS-ADOPTION",
+      "assigned_to": "S2",
+      "task": "Proposal: Extract evidence for each option without editing source records.",
+      "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+      "deliverables": [
+        "Request quote: Return a recommendation with explicit uncertainties."
+      ],
+      "verification": [
+        "Proposal: Every factual claim cites an exact retained source quote."
+      ],
+      "ccir": [
+        "Proposal: Request clarification when evidence cannot support comparison."
+      ],
+      "status": "draft",
+      "inherited_constraints": [
+        "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+      ],
+      "retained_user_decisions": [
+        "Request quote: The user decides the target segment and any budget change."
+      ],
+      "draft_binding_sha256": "0c6dd10283b6f07f7f3fe0510533308617eebc7595fca724844ff1723c5a7d76",
+      "execution_authorized": false
+    },
+    "commander_intent": {
+      "purpose": "Proposal: Help USER compare onboarding options using traceable repository evidence.",
+      "key_tasks": [
+        "Proposal: Extract evidence for each option without editing source records.",
+        "Proposal: Compare the two options and prepare a draft recommendation."
+      ],
+      "failure_to_avoid": [
+        "Proposal: Do not treat missing evidence as a fact."
+      ]
+    },
+    "mission_end_state": [
+      "Request quote: Return a recommendation with explicit uncertainties."
+    ],
+    "constraints": [
+      "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+    ],
+    "assessment": {
+      "mop": [
+        "Proposal: Two alternatives are compared."
+      ],
+      "moe": [
+        "Proposal: USER can inspect the evidence and uncertainty behind the recommendation."
+      ],
+      "verification": [
+        "Proposal: Every factual claim cites an exact retained source quote."
+      ]
+    }
+  },
+  "type": "AgentContextPack",
+  "id": "ACP-W1-agent-S2",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "agent_id": "agent-S2",
+  "operational_role": "S2",
+  "department": "operations",
+  "task": "Proposal: Extract evidence for each option without editing source records.",
+  "classification": "internal",
+  "plan_ref": {
+    "artifact_id": "MWP-ADOPTION",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/mission-wave-plans/MWP-ADOPTION.json",
+    "sha256": "6e9d2f90a9f2f05e1444412065d6fa0a9717b1a1ab30997fe65235fcab26031a"
+  },
+  "routing_receipt_ref": {
+    "artifact_id": "RR-W1-agent-S2",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/routing-receipts/RR-W1-agent-S2.json",
+    "sha256": "2e948a4d02a1f90affd373fa3e94d5d6bb060d0e7f885a86e6c80f6b2a146bc5"
+  },
+  "routing_preflight_ref": {
+    "artifact_id": "ARP-W1",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/routing-preflights/ARP-W1.json",
+    "sha256": "2a9487315b50bc984353cd8638f33357e8fb8867a7b2e022944ef5200ea834b9"
+  },
+  "capability_query": "Request quote: Prepare an internal comparison of two onboarding options.",
+  "capability_routing": {
+    "status": "covered",
+    "reason_code": "MATCHED_DOCTRINE_ROUTE",
+    "capability_scope": "Request quote: Prepare an internal comparison of two onboarding options.",
+    "matched_capability_routes": [
+      "bounded-self-improvement"
+    ],
+    "provisional_organization": {
+      "required": false,
+      "organization_type": "existing_doctrine_route",
+      "organization_id": "none",
+      "name": "Existing doctrine route",
+      "task_organization_status": "not_required",
+      "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+      "authority_expansion_authorized": false,
+      "standing_department_activation_authorized": false,
+      "disband_condition": "Not applicable; no provisional organization was created."
+    },
+    "force_structure_review": {
+      "required": false,
+      "change_type": "none",
+      "target_kind": "none",
+      "status": "not_required",
+      "candidate_department_id": "none",
+      "candidate_department_name": "none",
+      "final_decision_authority": "USER",
+      "formal_approving_role": "COMMANDER"
+    },
+    "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+  },
+  "doctrine_state": {
+    "revision": "67734b1258d0ca4523b4dd917b601fb2fc0c672a",
+    "router_sha256": "4d191a1e8b4bc9e4a4f71ffa0c2032e885652218fa6381f108a1c272a8524181",
+    "controller_sha256": "018a2ee5be00898ac2920403421a8603dee18dc69a352155dec244b1720dc06e"
+  },
+  "documents": [
+    {
+      "path": "README.md",
+      "sha256": "5f55d9343d8023723d7951a430ae612d248be5c1eb588397350cd7ae9759fb09"
+    },
+    {
+      "path": "docs/source-map.md",
+      "sha256": "e7624698a989572f0c947883f9ff386af411a7f66644255911bfbe7f4c02eab2"
+    },
+    {
+      "path": "docs/role-document-access-policy.md",
+      "sha256": "768fe8d93a80ffa00567752b5ada7ac44bc3b1107832f726e013d1e56a60004d"
+    },
+    {
+      "path": "docs/agent-roles-and-authority.md",
+      "sha256": "9e9404b980da4b0dbec9560b006e97e975299146654a4dab7eec2577d973d824"
+    },
+    {
+      "path": "docs/approval-scope-policy.md",
+      "sha256": "5954c8202b9e0dabc7e529cd60e08df30f117a62c7fd69782bea3202833b0d6a"
+    },
+    {
+      "path": "docs/tool-use-roe.md",
+      "sha256": "615bdb389dde90a7b4c59913c1d801a4f5bfeb151654a514726c39eb3f163821"
+    },
+    {
+      "path": "docs/orders-production-pipeline.md",
+      "sha256": "f6b74ea841e97e64ad7a70b2625271359e37354e7264a2f7548d65e4885dbea1"
+    },
+    {
+      "path": "docs/policy-engine-rules.md",
+      "sha256": "0934d30dbe6e6b71d3222aef0cac36dc326ffa06c566287b44cc1aa42319b788"
+    },
+    {
+      "path": "docs/enforced-dispatch-and-resume.md",
+      "sha256": "f7e00d146565d44797d12add245a1493a3d3250acfa5a5539b59379b2da8a821"
+    },
+    {
+      "path": "docs/protected-tool-gateway-contract.md",
+      "sha256": "16802b00f1214d35531a29ce7cafc0a5464c28a18d38192520e84ff8e8952ffd"
+    },
+    {
+      "path": "docs/protected-process-execution.md",
+      "sha256": "c925b7feb3e302d69b51a65591a7767273c3195fad8f7f6432776a0db265c467"
+    },
+    {
+      "path": "docs/oci-linux-sandbox-provider.md",
+      "sha256": "d4f0b55762e7c00347a21a2203de28219a8badfbf8cbd3448bbc8c3a0831c6a1"
+    },
+    {
+      "path": "docs/production-sandbox-admission.md",
+      "sha256": "fad7bea11e7d38f200cdfd08f517b3f0790dd6ebd7ea345e3c687173a49e5b18"
+    },
+    {
+      "path": "docs/information-to-operations-cycle.md",
+      "sha256": "c6f1c9dc6f01111c782e0ab6c02d5b18dc49db62e15cabe9c7262a9dcf00f83c"
+    },
+    {
+      "path": "docs/bounded-self-improvement-operations.md",
+      "sha256": "b4294fad45cba902f2548141c018d0bb1042ea70c694653c682fb66a3bfea24a"
+    },
+    {
+      "path": "docs/campaign-terminal-reconciliation.md",
+      "sha256": "87d7e2927911e3211855937862604a5cdfc0e23b3231a620b0eba74d7976cf07"
+    },
+    {
+      "path": "docs/campaign-successor-admission.md",
+      "sha256": "c479cc72fa6724382913a980e253d74d100354673b5399cb3d4694421573ce7c"
+    },
+    {
+      "path": "docs/sigstore-verifier-workload-admission.md",
+      "sha256": "945e60e06f1102ab5a6bfb3b7b323714421c6327084a307c255ee018c244dce4"
+    },
+    {
+      "path": "docs/verifier-execution-integrity.md",
+      "sha256": "876cc079e8421f28c7b9b82258a91853b7f6b933c9fa3661177e07588fe257b7"
+    },
+    {
+      "path": "docs/github-actions-native-verifier-adapter.md",
+      "sha256": "5524292b9140b475327efe263efa57dc6d0630980670f7aaa9725c2c0552b279"
+    },
+    {
+      "path": "docs/gitlab-ci-native-verifier-adapter.md",
+      "sha256": "39afef07ca3e0cb0343e40c0b742a8e65625589bca40b0e74f6230b10fb01a96"
+    },
+    {
+      "path": "docs/verifier-pre-dispatch-challenge.md",
+      "sha256": "8ac9060ac1988acea5d9d36439f04f779fc9720af5255aef9c87747ff428f237"
+    },
+    {
+      "path": "docs/verifier-independence-assurance.md",
+      "sha256": "c58269704424b429ca86810fff95c0bbeb141d323a4afb7076b3edd7df0d6199"
+    },
+    {
+      "path": "docs/transparency-operations.md",
+      "sha256": "36300680dbdf5a68f149f82735ed89a402fabd142bace1c103f867f4c5b20996"
+    },
+    {
+      "path": "docs/repository-artifact-isolation-policy.md",
+      "sha256": "f1f95f7fa69e37292bae9a228bbc8a71074d1ad6da39d652489ad9ade7c57e9a"
+    },
+    {
+      "path": "docs/knowledge-management-sop.md",
+      "sha256": "4c0b3db1cac57640e4a3b13d5ea9e0433ec65dce06811b3a0b1a06e95c003503"
+    },
+    {
+      "path": "docs/evaluation-metrics.md",
+      "sha256": "0897eee736108a074165eada6d9c6aa84eef73bed446c2b0602ab6eabb65baff"
+    },
+    {
+      "path": "docs/runtime-automation-roadmap.md",
+      "sha256": "1825f6f33e118ee2450f289319ed022260711eb971cbb7ea76edc3e06c21e0cf"
+    },
+    {
+      "path": "docs/context-releasability-policy.md",
+      "sha256": "de93a86396c15e2e6464f1951f26b992b0ea9e9e9600490a5b21819e3401afe4"
+    },
+    {
+      "path": "docs/opsec-classification-model.md",
+      "sha256": "857f10f05183dbb2c4fb3a4796561969043870edd0663205262223f2baec8e5e"
+    },
+    {
+      "path": "docs/research-compendium.md",
+      "sha256": "b94632d34fe407a9009143b9af514ac5d5a3ee2fb897c8513077050d5ba24eb3"
+    },
+    {
+      "path": "docs/source-reliability-rubric.md",
+      "sha256": "4183938622c52768bcc97f75eb615fa086cb8de7edd03333918e31018344aee3"
+    },
+    {
+      "path": "docs/korean-military-sources.md",
+      "sha256": "5fb89f3f2cee3ad9bb0933ffe8ef9df8731d9babccd1029e820972cbd814bec7"
+    },
+    {
+      "path": "docs/korean-org-culture.md",
+      "sha256": "dadfed228c3f4f95e2a13591fff737816ae662c3643c62c10e12773b79efc4f1"
+    },
+    {
+      "path": "docs/multinational-doctrine-consistency-review.md",
+      "sha256": "708b759f283b743c735d16c5a0754f879a934bc38a08e895becb96c7cad0d57a"
+    },
+    {
+      "path": "docs/method-deviation-runtime.md",
+      "sha256": "4f3c0e258ff897dc24bf1e7505664e18809271de5c07703b7e2236571c223f8f"
+    }
+  ],
+  "validation_commands": [
+    "node run-self-improvement-fixtures.js",
+    "node run-signed-self-improvement-fixtures.js",
+    "node run-campaign-supervisor-fixtures.js",
+    "node run-campaign-terminal-fixtures.js",
+    "node run-campaign-successor-fixtures.js",
+    "node run-verifier-trust-readiness-fixtures.js",
+    "node run-verifier-identity-evidence-fixtures.js",
+    "node run-sigstore-verifier-identity-fixtures.js",
+    "node run-verifier-execution-evidence-fixtures.js",
+    "node run-github-actions-oidc-fixtures.js",
+    "node run-gitlab-ci-oidc-fixtures.js",
+    "node run-verifier-challenge-fixtures.js",
+    "node run-verifier-independence-fixtures.js",
+    "node run-transparency-operations-fixtures.js",
+    "node run-transparency-supervisor-fixtures.js",
+    "node run-workload-identity-admission-fixtures.js",
+    "node run-cycle-order-admission-fixtures.js",
+    "node run-verification-runner-fixtures.js",
+    "node run-verification-attestation-fixtures.js",
+    "node run-comparative-evaluation-fixtures.js",
+    "node run-comparative-evaluation-attestation-fixtures.js",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-campaign.json self-improvement-campaign",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-checkpoint.json self-improvement-checkpoint",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-cycle-order.json self-improvement-cycle-order",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-verification-receipt.json verification-receipt",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-trust-policy.json verifier-trust-policy",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-identity-evidence.json verifier-identity-evidence",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-sigstore-trusted-root.json sigstore-trusted-root",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-sigstore-verifier-identity-evidence.json sigstore-verifier-identity-evidence",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-runtime-policy.json verifier-runtime-policy",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-execution-evidence.json verifier-execution-evidence",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-github-actions-oidc-evidence.json github-actions-oidc-evidence",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-gitlab-ci-oidc-evidence.json gitlab-ci-oidc-evidence",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-challenge-set.json verifier-challenge-set",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-verification-attestation.json verification-attestation",
+    "node validator-cli-prototype/validate.js sample-payloads/valid-comparative-evaluation-attestation.json comparative-evaluation-attestation",
+    "node run-document-access-fixtures.js",
+    "node run-release-review-fixtures.js",
+    "node source-map-linter.js",
+    "node run-doctrine-consistency-fixtures.js",
+    "node run-method-deviation-contract-fixtures.js"
+  ],
+  "required_controls": [
+    {
+      "control_id": "CTRL-7d5bcba5cf36315a",
+      "command": "node run-self-improvement-fixtures.js",
+      "command_sha256": "7d5bcba5cf36315a1321f632f06b9a30540fc13cf7f006838e3f54830734589e",
+      "runner": "node",
+      "script_path": "run-self-improvement-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-eb30a6f46b7b4bbe",
+      "command": "node run-signed-self-improvement-fixtures.js",
+      "command_sha256": "eb30a6f46b7b4bbe9ee1da10a04ac4cb6d44cae91bd888670e7bcb4d98b81177",
+      "runner": "node",
+      "script_path": "run-signed-self-improvement-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-e45a9be6d5403409",
+      "command": "node run-campaign-supervisor-fixtures.js",
+      "command_sha256": "e45a9be6d540340952c9b80ad310fbd6b027b2a2034186e018831b8951a3bf9b",
+      "runner": "node",
+      "script_path": "run-campaign-supervisor-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-35524b03d7da8c29",
+      "command": "node run-campaign-terminal-fixtures.js",
+      "command_sha256": "35524b03d7da8c29326e78d17f6572e762b8c5d439254c66111d203c4f68d815",
+      "runner": "node",
+      "script_path": "run-campaign-terminal-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-7ff9c891c604938a",
+      "command": "node run-campaign-successor-fixtures.js",
+      "command_sha256": "7ff9c891c604938a56e554d28ece9a0f154b2efb395f9b844b3160563f362eeb",
+      "runner": "node",
+      "script_path": "run-campaign-successor-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-1958775d3c1b65e1",
+      "command": "node run-verifier-trust-readiness-fixtures.js",
+      "command_sha256": "1958775d3c1b65e18489513a8da4424c77184050787a280248d370f1aabe22be",
+      "runner": "node",
+      "script_path": "run-verifier-trust-readiness-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-1031a463d90a4398",
+      "command": "node run-verifier-identity-evidence-fixtures.js",
+      "command_sha256": "1031a463d90a43987f3197f5c0d426105292193ec0dc6f023e75c76187614ecb",
+      "runner": "node",
+      "script_path": "run-verifier-identity-evidence-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-3021af9f045291f6",
+      "command": "node run-sigstore-verifier-identity-fixtures.js",
+      "command_sha256": "3021af9f045291f6670ed8262b16f57fdb19af62cdbfd2af25d2ff225d10b3cb",
+      "runner": "node",
+      "script_path": "run-sigstore-verifier-identity-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-3a4b5c9e4e625446",
+      "command": "node run-verifier-execution-evidence-fixtures.js",
+      "command_sha256": "3a4b5c9e4e625446b8e0cf1c1722bc9d5d07b557dcfc057387c23d887b5d08d1",
+      "runner": "node",
+      "script_path": "run-verifier-execution-evidence-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-61a82cc8946281f5",
+      "command": "node run-github-actions-oidc-fixtures.js",
+      "command_sha256": "61a82cc8946281f5a5738f69cc8f80476a4a4e53f1a0d618bbeb33aad7ea05ff",
+      "runner": "node",
+      "script_path": "run-github-actions-oidc-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-2ecc465a79b0033f",
+      "command": "node run-gitlab-ci-oidc-fixtures.js",
+      "command_sha256": "2ecc465a79b0033f086a66a9ccb3bfbd6e3df155efd18a827367b874065d8645",
+      "runner": "node",
+      "script_path": "run-gitlab-ci-oidc-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-5fdd3060efd2d79f",
+      "command": "node run-verifier-challenge-fixtures.js",
+      "command_sha256": "5fdd3060efd2d79f8811024aef1f6134d9bf27c365b0dc40f5183aa64046361d",
+      "runner": "node",
+      "script_path": "run-verifier-challenge-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-7217ba59691c6093",
+      "command": "node run-verifier-independence-fixtures.js",
+      "command_sha256": "7217ba59691c60931ce9243d1736a7292ea7ce1289a453e2a03980719de17370",
+      "runner": "node",
+      "script_path": "run-verifier-independence-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-357e19ea6ca61cda",
+      "command": "node run-transparency-operations-fixtures.js",
+      "command_sha256": "357e19ea6ca61cdaf6244ce4aea48fe9267bda94ad26647f76d9862cad1960bc",
+      "runner": "node",
+      "script_path": "run-transparency-operations-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-69bb4f30f25680c0",
+      "command": "node run-transparency-supervisor-fixtures.js",
+      "command_sha256": "69bb4f30f25680c0985946f99848fd17bb52a5607704a996b483948378c49a99",
+      "runner": "node",
+      "script_path": "run-transparency-supervisor-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-2895fda1e8d26b8c",
+      "command": "node run-workload-identity-admission-fixtures.js",
+      "command_sha256": "2895fda1e8d26b8cd022eaafb3e5c20368441b589ecf82a0f99b5e8d8ea2ed36",
+      "runner": "node",
+      "script_path": "run-workload-identity-admission-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-bdbf851c1a9d8ba0",
+      "command": "node run-cycle-order-admission-fixtures.js",
+      "command_sha256": "bdbf851c1a9d8ba079c56f820706d21d3ba2404c148a3954c26c72e454b4fe46",
+      "runner": "node",
+      "script_path": "run-cycle-order-admission-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-90a41c2173f91731",
+      "command": "node run-verification-runner-fixtures.js",
+      "command_sha256": "90a41c2173f917312494226ba132fe74bb15332f4d2243b4c0017421614c66ba",
+      "runner": "node",
+      "script_path": "run-verification-runner-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-1f3725683a8d6aee",
+      "command": "node run-verification-attestation-fixtures.js",
+      "command_sha256": "1f3725683a8d6aee91c2d32d4ea9d8bdc3d7c2d970046c0b021b1e0593375f56",
+      "runner": "node",
+      "script_path": "run-verification-attestation-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-fe6313424c2774c8",
+      "command": "node run-comparative-evaluation-fixtures.js",
+      "command_sha256": "fe6313424c2774c8e97b510ee29868c75429f6053681a5dd23f90221db0ff5f6",
+      "runner": "node",
+      "script_path": "run-comparative-evaluation-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-e3f1e9bce625840c",
+      "command": "node run-comparative-evaluation-attestation-fixtures.js",
+      "command_sha256": "e3f1e9bce625840c221ac98b0b2068c65b5d9c4eaa17d60e855d644ab18e138c",
+      "runner": "node",
+      "script_path": "run-comparative-evaluation-attestation-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-e221696104042ea3",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-campaign.json self-improvement-campaign",
+      "command_sha256": "e221696104042ea364aa1dec768237518fa55341a964b60291e91103d5d2607c",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-self-improvement-campaign.json",
+        "self-improvement-campaign"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-34490b5ab7f73620",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-checkpoint.json self-improvement-checkpoint",
+      "command_sha256": "34490b5ab7f7362070071d3dcfff869a71894a96b53d906788b58b6e12d6b8f6",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-self-improvement-checkpoint.json",
+        "self-improvement-checkpoint"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-3cb4858ecd64e2fb",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-self-improvement-cycle-order.json self-improvement-cycle-order",
+      "command_sha256": "3cb4858ecd64e2fbfa82b71e7049c192b027c4d5d806e4f22a1ecaf9c9a54df7",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-self-improvement-cycle-order.json",
+        "self-improvement-cycle-order"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-6584a1ffef19587f",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-verification-receipt.json verification-receipt",
+      "command_sha256": "6584a1ffef19587fbf798eeef5faac8c30fd20696c9ece2108ff1fba51ea1a11",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-verification-receipt.json",
+        "verification-receipt"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-b0ba61cdd2ab8bc4",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-trust-policy.json verifier-trust-policy",
+      "command_sha256": "b0ba61cdd2ab8bc48968c00b3a362e546aaa8e76deb2c27a91b8fb050f1097b3",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-verifier-trust-policy.json",
+        "verifier-trust-policy"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-3fcf31cdf7d16c9a",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-identity-evidence.json verifier-identity-evidence",
+      "command_sha256": "3fcf31cdf7d16c9a9a45df3924f55f0ccd360dc9a138ba59c09f5bf629a0afda",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-verifier-identity-evidence.json",
+        "verifier-identity-evidence"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-8b7b54a28a5ab56b",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-sigstore-trusted-root.json sigstore-trusted-root",
+      "command_sha256": "8b7b54a28a5ab56b2eda25ffc5141b3d6b1bfc489b91efc333faa04dff0c2811",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-sigstore-trusted-root.json",
+        "sigstore-trusted-root"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-918a8ff285360d64",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-sigstore-verifier-identity-evidence.json sigstore-verifier-identity-evidence",
+      "command_sha256": "918a8ff285360d64037f9e656255611c0bcf4e2d74c580503939f65c4a5a39f2",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-sigstore-verifier-identity-evidence.json",
+        "sigstore-verifier-identity-evidence"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-a4c77946463a44c1",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-runtime-policy.json verifier-runtime-policy",
+      "command_sha256": "a4c77946463a44c106b26635a0f80d7aa9140ab125e5df55e587dff0a301bd90",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-verifier-runtime-policy.json",
+        "verifier-runtime-policy"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-e625143dd8cd9e38",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-execution-evidence.json verifier-execution-evidence",
+      "command_sha256": "e625143dd8cd9e3864c58a2adbcdab9b09381627f6fc9e2b8934c9aab4aa2db3",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-verifier-execution-evidence.json",
+        "verifier-execution-evidence"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-fd16220d29f01538",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-github-actions-oidc-evidence.json github-actions-oidc-evidence",
+      "command_sha256": "fd16220d29f01538a111e205af44646d3b66299906e9f7e520d859d8b56305e2",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-github-actions-oidc-evidence.json",
+        "github-actions-oidc-evidence"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-f0f19c5e53a94e6a",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-gitlab-ci-oidc-evidence.json gitlab-ci-oidc-evidence",
+      "command_sha256": "f0f19c5e53a94e6afbc23c475b0dadce9ae1545777d3b8daef80186534bc233f",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-gitlab-ci-oidc-evidence.json",
+        "gitlab-ci-oidc-evidence"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-1acabfca27f8ce6f",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-verifier-challenge-set.json verifier-challenge-set",
+      "command_sha256": "1acabfca27f8ce6f0540518be73f2bf21402a4520b9735b7c9a2939765e580c3",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-verifier-challenge-set.json",
+        "verifier-challenge-set"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-24afb19ad6e5e995",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-verification-attestation.json verification-attestation",
+      "command_sha256": "24afb19ad6e5e99501564f19b3eaa9cb32d335e9a7be5be734b406dbcfb14dbd",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-verification-attestation.json",
+        "verification-attestation"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-7e81daaa75be45f0",
+      "command": "node validator-cli-prototype/validate.js sample-payloads/valid-comparative-evaluation-attestation.json comparative-evaluation-attestation",
+      "command_sha256": "7e81daaa75be45f0ca2a8da41582abbe325cfee9c49cd7eb6e8b391b21f83efa",
+      "runner": "node",
+      "script_path": "validator-cli-prototype/validate.js",
+      "argv": [
+        "sample-payloads/valid-comparative-evaluation-attestation.json",
+        "comparative-evaluation-attestation"
+      ],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-18b01cd2733d4e42",
+      "command": "node run-document-access-fixtures.js",
+      "command_sha256": "18b01cd2733d4e428aa04962dc84ec897f4820c870e278607f3ec8dec9d8cebd",
+      "runner": "node",
+      "script_path": "run-document-access-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-0155e1b64612c403",
+      "command": "node run-release-review-fixtures.js",
+      "command_sha256": "0155e1b64612c4031aa7ee807f500c3b2dceb1357255a1c681955992f5c43360",
+      "runner": "node",
+      "script_path": "run-release-review-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-8f0fa3f6e848c0cf",
+      "command": "node source-map-linter.js",
+      "command_sha256": "8f0fa3f6e848c0cfbd16cf201f28a0e380a618e52ac223b72055b33cc69f8d11",
+      "runner": "node",
+      "script_path": "source-map-linter.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-e0cfa0a9b1f021d0",
+      "command": "node run-doctrine-consistency-fixtures.js",
+      "command_sha256": "e0cfa0a9b1f021d03540555bf02119da5badb9acc46ecb3259ee2d28ff30aed4",
+      "runner": "node",
+      "script_path": "run-doctrine-consistency-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    },
+    {
+      "control_id": "CTRL-2393f96d77ad836d",
+      "command": "node run-method-deviation-contract-fixtures.js",
+      "command_sha256": "2393f96d77ad836dd084daed8c74e51d20cbe99f76652d13f3c2bce6d2c0f5b2",
+      "runner": "node",
+      "script_path": "run-method-deviation-contract-fixtures.js",
+      "argv": [],
+      "working_directory": "doctrine_root",
+      "shell": false
+    }
+  ],
+  "model_assignment": {
+    "required": false,
+    "integrated_preflight_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "billet_id": "not_required",
+    "model_profile_id": "not_required",
+    "model_family": "not_required",
+    "model_version": "not_required",
+    "harness_version": "not_required"
+  },
+  "authority": {
+    "delegated_authority": "scoped-execution",
+    "allowed_actions": [
+      "Request quote: Prepare an internal comparison of two onboarding options."
+    ],
+    "approval_required": [
+      "Request quote: The user decides the target segment and any budget change."
+    ],
+    "prohibited_actions": [
+      "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+    ],
+    "human_final_decision_authority": "USER",
+    "release_authorized": false,
+    "self_approval_prohibited": true
+  },
+  "escalation_conditions": [
+    "Requested action exceeds delegated role, department, or authority.",
+    "A provisional capability cell is proposed as a standing department or requests broader authority.",
+    "Release target is external, final, or cross-boundary.",
+    "Risk level requires acceptance authority above the AI delegate.",
+    "Need-to-know cannot justify reading or sharing extra documents.",
+    "Approval required before: Request quote: The user decides the target segment and any budget change."
+  ],
+  "status": "ready",
+  "created_at": "2026-09-29T16:01:10.000Z",
+  "valid_until": "2026-09-29T17:00:00.000Z"
+}

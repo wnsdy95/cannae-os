@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1",
+  "type": "DegenerationIncidentEvent",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "agent_id": "agent-S2",
+  "deny_ref": {
+    "artifact_id": "TAE-cae5a7b51990350b82617280",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/tool-admission-events/TAE-cae5a7b51990350b82617280.json",
+    "sha256": "eaec8ed505c1fcff2516a6fd853773cb36c178f56dbd8a69161f8fdbdf5d47cc"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-c7568865-7d99-4103-92d3-e5759f4c6893",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/agent-dispatch-leases/ADL-c7568865-7d99-4103-92d3-e5759f4c6893.json",
+    "sha256": "e6a34fb51c4eecab0ca4e555610f92d1f03b7af0be97f4150e92c6504e2a5656"
+  },
+  "response_checkpoint_ref": {
+    "artifact_id": "AEC-ee7ec74a3599f11861012179",
+    "relative_path": "repositories/repo-fd3da1d477a3/missions/MIS-ADOPTION/W1/agent-execution-checkpoints/AEC-ee7ec74a3599f11861012179.json",
+    "sha256": "eb360a431aca28850dd8e4d21bc0f8f054d9107a7c543cad680cba92ab37d475"
+  },
+  "required_response": "revoke",
+  "response_status": "revoked",
+  "reason_codes": [
+    "METHOD_DRIFT_SEQUENCE_OR_SCOPE"
+  ],
+  "recorded_at": "2026-09-29T16:01:50.000Z",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": true,
+  "human_final_decision_authority": "USER",
+  "id": "DIE-48269846acb84a52f89f0087b4cfaa48"
+}

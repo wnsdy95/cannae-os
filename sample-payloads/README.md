@@ -1,5 +1,12 @@
 # Sample Payloads
 
+The method-control-baseline, method-deviation-event, initiative-deviation-report,
+degeneration-incident-event, mission-wave-plan-methods and agent-context-pack-methods pairs are synthetic
+non-authorizing examples. They bind exact task/method metadata and before/after
+phases; only the separate live controller replays actual admissions, results,
+SITREPs and revocation. Do not treat a valid sample as a USER decision or work
+evidence. Regeneration is explicit through `disciplined-initiative-fixtures/`.
+
 The valid/invalid `operator-reconciliation-authorization` and
 `operator-reconciliation-record` pairs are synthetic non-authorizing terminal
 audit metadata. `operator-reconciliation-fixtures/` holds their public key and

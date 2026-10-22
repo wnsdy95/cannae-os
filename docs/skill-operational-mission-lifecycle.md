@@ -197,6 +197,21 @@ The controller rejects:
 
 A valid report creates a manifest-backed report and SITREP. Work evidence may be a JSON artifact or a regular file artifact such as source code, Markdown, or a test log. Lifecycle control records cannot substitute for work evidence. A blocked or failed report is recorded but returns a nonzero CLI status so automation cannot silently continue. Omit `--at` in normal operation; it exists for deterministic replay and testing.
 
+Whole-record control copies remain metadata after MIME, whitespace or JSON
+key-order changes, including legacy SITREPs with no type tag. Native dispatch
+policies, leases, admission events and execution checkpoints cannot substitute
+for separately retained task outputs, even in a legacy data-only wave without
+the independent dispatch-completion gate. Binding appraisal
+compares complete canonical JSON against the exact verified manifest's retained
+controls; its cache is not reused across snapshots or publication. The final
+report write reappraises bindings after routed controls have executed. If that
+write is rejected, keep its receipts as history and submit a fresh report ID with
+real task outputs so every required control reruns. The dedicated
+`run-skill-control-evidence-fixtures.js` covers native dispatch records, canonical copies, ordinary JSON
+work, a newly introduced alias at publication and actual fresh-ID control
+execution in legacy data-only waves. This is not semantic authenticity of any
+arbitrary claimed work or new dispatch authority.
+
 ## 4A. Terminate Without Claiming Success
 
 An expired plan cannot accept a late report, and normal closeout still requires

@@ -47,9 +47,9 @@ const RULES = [
   },
   {
     id: "intent-initiative",
-    keywords: ["commander intent", "commander's intent", "mission command", "mission-command", "intent continuity", "intent-continuity", "intent lineage", "task conservation", "disciplined initiative", "disciplined-initiative", "method deviation", "check_controls_intent"],
-    docs: ["docs/mission-command-runtime-policy.md", "docs/disciplined-initiative-rules.md", "docs/intent-continuity-runtime.md", "docs/commander-handbook.md"],
-    commands: ["node run-intent-continuity-fixtures.js"]
+    keywords: ["commander intent", "commander's intent", "mission command", "mission-command", "intent continuity", "intent-continuity", "intent lineage", "task conservation", "disciplined initiative", "disciplined-initiative", "disciplined method", "method control", "method assignment", "method deviation", "method-deviation", "method baseline", "method drift", "report before", "report after", "check_controls_intent", "operate_controls_methods"],
+    docs: ["docs/mission-command-runtime-policy.md", "docs/disciplined-initiative-rules.md", "docs/intent-continuity-runtime.md", "docs/method-deviation-runtime.md", "docs/commander-handbook.md"],
+    commands: ["node run-intent-continuity-fixtures.js", "node run-method-deviation-contract-fixtures.js"]
   },
   {
     id: "authority-risk-release",
@@ -487,7 +487,7 @@ const EXCLUDED_DIRS = new Set([
 
 const ROUTE_HINTS = [
   { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
-  { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "check_controls_intent"] },
+  { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "method-control-baseline", "method-deviation", "initiative-deviation", "degeneration-incident", "check_controls_intent"] },
   {
     id: "gateway-effect-review",
     keywords: ["gateway-effect", "review_gateway_effects", "settle_gateway_effects", "effect-settlement-fixture-support"]

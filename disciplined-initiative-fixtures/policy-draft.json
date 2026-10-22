@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1",
+  "type": "DispatchToolPolicy",
+  "id": "DTP-agent-S2",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "agent_id": "agent-S2",
+  "provider": "codex",
+  "default_decision": "deny",
+  "tool_rules": [
+    {
+      "rule_id": "DTR-READ",
+      "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+      "tool_name": "Read",
+      "operation_class": "repository_read",
+      "input_match": {
+        "mode": "exact_sha256",
+        "allowed_sha256": [
+          "e2a230533e0725b393333bdc3a76c9118fe2070b47e3495d2ff6d6aec200e5a1",
+          "926e9a263a87292a6fbe91a44c78feb46f84702e6666e031e3005aa327599815",
+          "1f23fbf6bfe6746458629cabe4c17f743792abb87d20a6049bdcfbb1fd6c038f",
+          "891676c60a5c2dbd972cbfdf701d7b169d06000fb4e480a5c1d076d82cf09380",
+          "bde7cb66d7636f442a868a8ed09604ec94efa2be5f73505fea90fd66c46111aa"
+        ]
+      },
+      "max_uses": 8
+    }
+  ],
+  "max_total_admissions": 8,
+  "lease_ttl_seconds": 600,
+  "repository_state": {
+    "require_head_match": true,
+    "require_serial_state_chain": true,
+    "require_clean_start": true
+  },
+  "authority": {
+    "human_final_decision_authority": "USER",
+    "self_approval_prohibited": true,
+    "release_authorized": false
+  },
+  "approved_at": "2026-09-29T16:00:10.000Z",
+  "valid_until": "2026-09-29T17:00:00.000Z"
+}

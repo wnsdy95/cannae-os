@@ -33,7 +33,7 @@
     },
     {
       "document": "docs/disciplined-initiative-rules.md",
-      "section_sha256": "696dab870d3feb040d536429736c148264afc9ca2cb0183cabf95dfe034338f1"
+      "section_sha256": "6574e417d885e92549b50b36d3c5a42eb355828144f78986fa5b6b912bec1b66"
     },
     {
       "document": "docs/dry-run-approval-ui.md",
@@ -57,7 +57,7 @@
     },
     {
       "document": "docs/mission-command-runtime-policy.md",
-      "section_sha256": "28c46c2e60f74706ae06f464cd237767e35c98fc9f77ef5481df815fe5e33d8d"
+      "section_sha256": "0e31f15bcd3210bcf6c252497bb2346201ec5769dac4aac3f9b65883f4b03b68"
     },
     {
       "document": "docs/opsec-classification-model.md",
@@ -1031,19 +1031,19 @@
       "candidate_key": "schema-files/initiative-deviation-report.schema.json",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["schema-files/initiative-deviation-report.schema.json", "method-deviation-contract.js", "method-deviation-gate.js", "order-adoption-contract.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`schema-files/initiative-deviation-report.schema.json`: report-before/report-after deviation record linked to backbrief and SITREP ids.",
-          "validation_commands": []
+          "validation_commands": ["node run-method-deviation-contract-fixtures.js", "node run-disciplined-initiative-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for schema-files/initiative-deviation-report.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Extend exact reviewed-baseline reports to broader acknowledged changes and CoS transport, novel methods/reordering, and mandatory rollout. Current actual-result/SITREP binding does not cover every initiative class."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "The reviewed exact-input path retains before/after reports and actual completion consumers; broader doctrine coverage remains explicit."
     },
     {
       "id": "IC-e82ec43e0d32c9cc",
@@ -1051,19 +1051,19 @@
       "candidate_key": "schema-files/degeneration-incident-event.schema.json",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["schema-files/degeneration-incident-event.schema.json", "method-deviation-gate.js", "dispatch-runtime-controller.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`schema-files/degeneration-incident-event.schema.json`: detected pattern, evidence events, and executed response (block/escalate/revoke).",
-          "validation_commands": []
+          "validation_commands": ["node run-method-deviation-contract-fixtures.js", "node run-disciplined-initiative-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for schema-files/degeneration-incident-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Cover all degeneration patterns and their escalation/readiness/recovery consumers, beyond the retained exact-input method drift and real revocation response."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "Method incidents bind an actual denial and revocation checkpoint; a blocked response remains held and is never reported as completed containment."
     },
     {
       "id": "IC-f3aab6d1c0ce0e11",
@@ -1071,19 +1071,19 @@
       "candidate_key": "initiative-drift-detector.js",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["method-deviation-gate.js", "dispatch-runtime-controller.js", "schema-files/method-control-baseline.schema.json"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`initiative-drift-detector.js`: compares the event log against the accepted backbrief and emits drift-class alerts.",
-          "validation_commands": []
+          "validation_commands": ["node run-disciplined-initiative-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for initiative-drift-detector.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Add semantic purpose/scope assessment, trusted effect adapters for novel methods and the complete drift class/threshold model. The current baseline compares exact admitted steps and reporting history only."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "Equivalent detector logic lives with the actual method gate and uses verified introduction history, not sorted artifact inventory or claimed report status."
     },
     {
       "id": "IC-942385079f3a008f",
@@ -1091,19 +1091,19 @@
       "candidate_key": "degeneration-response-runner.js",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["method-deviation-gate.js", "dispatch-runtime-controller.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`degeneration-response-runner.js`: maps a detected pattern to its mandatory response and verifies the response actually occurred.",
-          "validation_commands": []
+          "validation_commands": ["node run-disciplined-initiative-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for degeneration-response-runner.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Integrate every degeneration pattern with its required escalation, downstream scope revocation, readiness downgrade and reviewed recovery, and roll out beyond enrolled method baselines."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "The method gate owns durable denial-to-revocation response and actual checkpoint replay; it does not claim the rest of the response ladder is implemented."
     },
     {
       "id": "IC-e7818cb43b37343e",
@@ -1111,19 +1111,19 @@
       "candidate_key": "run-disciplined-initiative-fixtures.js",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["run-disciplined-initiative-fixtures.js", "run-method-deviation-contract-fixtures.js", "disciplined-initiative-fixtures/support.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`run-disciplined-initiative-fixtures.js`: disciplined Green deviation, unreported deviation, approval stretching, and self-delegation fixtures.",
-          "validation_commands": []
+          "validation_commands": ["node run-disciplined-initiative-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for run-disciplined-initiative-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Add broader approval-stretching and self-delegation integration, every degeneration class, semantic purpose drift and reviewed recovery cases. Existing exact-input workflow fixtures cover only their declared operational slice."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "Dedicated pure and actual-controller fixture families cover bounded substitutions, reporting, drift response, publication and evidence boundaries without claiming the full source doctrine is complete."
     },
     {
       "id": "IC-7d3c179981077bc6",
@@ -1707,19 +1707,19 @@
       "candidate_key": "schema-files/method-deviation-event.schema.json",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["schema-files/method-deviation-event.schema.json", "schema-files/method-control-baseline.schema.json", "method-deviation-contract.js", "method-deviation-gate.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`schema-files/method-deviation-event.schema.json`: recorded deviation with intent check results and reporting obligation status.",
-          "validation_commands": []
+          "validation_commands": ["node run-method-deviation-contract-fixtures.js", "node run-disciplined-initiative-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for schema-files/method-deviation-event.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Generalize beyond finite reviewed alternatives to trusted novel-method effect appraisal and semantic intent preservation. Reporting state is derived from actual reports/results, not a caller-declared boolean."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "The current event binds the exact reviewed plan, complete intent/task assignment, policy, lease, checkpoint, chosen method and finite reporting obligation; standalone validity never authorizes execution."
     },
     {
       "id": "IC-ef2daf4a8eb10fd1",
@@ -1745,19 +1745,19 @@
       "candidate_key": "method-deviation-gate.js",
       "kind": "artifact",
       "workstream_id": "intent-initiative",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": ["method-deviation-gate.js", "method-deviation-contract.js", "dispatch-runtime-controller.js", "skill-mission-controller.js"],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "`method-deviation-gate.js`: implements the section 5 gate against a backbrief and a proposed plan change.",
-          "validation_commands": []
+          "validation_commands": ["node run-disciplined-initiative-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for method-deviation-gate.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Implement bounded novel methods, Green insertion/reordering, broader report-before/CoS acknowledgment, semantic effect checks, mandatory baseline rollout and reviewed recovery without authority expansion."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "A first real local path consumes exact reviewed alternatives, actual before/after SITREPs, mandatory-step completion and durable drift denial/revocation; it does not redefine the broader candidate as complete."
     },
     {
       "id": "IC-650668451151e814",

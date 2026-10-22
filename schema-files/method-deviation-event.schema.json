@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/method-deviation-event.schema.json",
+  "title": "Exact Reviewed Method Deviation",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "agent_id", "plan_ref", "context_ref", "lease_ref", "policy_ref", "checkpoint_ref", "baseline_sha256", "intent_sha256", "step_id", "method_id", "tool_name", "rule_id", "input_sha256", "report_timing", "rationale", "recorded_at", "expires_at", "execution_authorized", "continuation_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "MethodDeviationEvent" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+    "plan_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "context_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "lease_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "policy_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "baseline_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "intent_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "step_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+    "method_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/safe_identifier" },
+    "tool_name": { "$ref": "dispatch-tool-policy.schema.json#/$defs/tool_name" },
+    "rule_id": { "$ref": "dispatch-tool-policy.schema.json#/$defs/rule_id" },
+    "input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "report_timing": { "enum": ["after", "before_and_after"] },
+    "rationale": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false }, "continuation_authorized": { "const": false },
+    "release_authorized": { "const": false }, "human_final_decision_authority": { "const": "USER" }
+  }
+}
