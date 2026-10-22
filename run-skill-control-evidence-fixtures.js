@@ -66,6 +66,24 @@ try {
         /control metadata as execution evidence/);
     }
   });
+  check("semantic previews, transfer consent and results cannot become work by copying or MIME changes", () => {
+    for (const type of require("./semantic-control-types").NON_WORK_TYPES) {
+      for (const extension of ["txt", "bin", "json"]) {
+        const ref = env.fileArtifact(`DATA-SEMANTIC-${type}-${extension}`, { release_authorized: false, execution_authorized: false, type }, extension);
+        assert.throws(() => recordWave(env.report(`MWR-SEMANTIC-${type}-${extension}`, ref), { ...env.options, now: env.at(30) }),
+          /control metadata as execution evidence/);
+      }
+    }
+    for (const contract of [require("./dispatch-issuance-contract"), require("./method-control-contract")]) {
+      assert(contract.CODE.includes("semantic-control-types.js"));
+      const original = fs.readFileSync, before = contract.runtimeDigest();
+      fs.readFileSync = function(filename, ...args) {
+        const bytes = original.call(this, filename, ...args);
+        return typeof filename === "string" && path.resolve(filename) === path.join(__dirname, "semantic-control-types.js") ? Buffer.concat([Buffer.from(bytes), Buffer.from("\n")]) : bytes;
+      };
+      try { assert.notEqual(contract.runtimeDigest(), before); } finally { fs.readFileSync = original; }
+    }
+  });
   check("ordinary JSON work is admitted only after every actually routed control executes", () => {
     const work = env.fileArtifact("DATA-NOTE-SUMMARY", { source_line: fs.readFileSync(path.join(env.options.repository, "README.md"), "utf8"),
       summary: "The supplied local note is explicitly synthetic." });

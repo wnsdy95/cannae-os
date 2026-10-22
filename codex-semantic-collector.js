@@ -148,8 +148,8 @@ async function collectEvaluation(invocation, consent, configuration) {
         const diagnostic = { item_type: String(item?.type || "missing").slice(0, 128),
           message: typeof item?.message === "string" ? item.message.slice(0, 8192) : "" };
         // Quarantined operator-only data, never part of the returned assessment.
-        durable(path.join(directory, "diagnostic.json"), diagnostic, true);
-        record.diagnostic_sha256 = digest(diagnostic);
+        try { durable(path.join(directory, "diagnostic.json"), diagnostic, true); record.diagnostic_sha256 = digest(diagnostic); }
+        catch { stop("SEMANTIC_DIAGNOSTIC_WRITE_FAILED"); }
         stop("SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC");
       }
       if (value.type === "item.completed" && item?.type === "agent_message") finalMessage = item.text;
@@ -188,7 +188,11 @@ async function collectEvaluation(invocation, consent, configuration) {
     requireThat(fs.readdirSync(workspace).length === 0, "SEMANTIC_WORKSPACE_CHANGED");
     const fd = fs.openSync(responseFile, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
     let bytes;
-    try { const stat = fs.fstatSync(fd); requireThat(stat.isFile() && stat.size > 0 && stat.size <= profile.max_output_bytes, "SEMANTIC_RESPONSE_SIZE_INVALID"); bytes = fs.readFileSync(fd); }
+    try {
+      const stat = fs.fstatSync(fd); requireThat(stat.isFile() && stat.size > 0 && stat.size <= profile.max_output_bytes, "SEMANTIC_RESPONSE_SIZE_INVALID");
+      const buffer = Buffer.alloc(stat.size + 1), length = fs.readSync(fd, buffer, 0, buffer.length, 0);
+      requireThat(length === stat.size, "SEMANTIC_RESPONSE_SIZE_CHANGED"); bytes = buffer.subarray(0, length);
+    }
     finally { fs.closeSync(fd); }
     requireThat(Buffer.from(bytes.toString("utf8")).equals(bytes), "SEMANTIC_RESPONSE_UTF8_INVALID");
     const response = JSON.parse(bytes.toString("utf8"));
@@ -210,7 +214,11 @@ async function collectEvaluation(invocation, consent, configuration) {
     if (!record.process_group_absent) { record.status = "not_evaluated"; record.failure_reasons.push("SEMANTIC_PROCESS_GROUP_REMAINS"); }
     if (record.status !== "evaluated") delete record.assessment;
     record.stdout_sha256 = stdoutHash.digest("hex"); record.stderr_sha256 = stderrHash.digest("hex");
-    record.ended_at = new Date().toISOString(); save();
+    record.ended_at = new Date().toISOString();
+    record.result_persisted = true;
+    try { save(); }
+    catch { record.status = "not_evaluated"; record.result_persisted = false;
+      record.failure_reasons.push("SEMANTIC_JOURNAL_RESULT_WRITE_FAILED"); delete record.assessment; }
   }
   return { ...record, directory };
 }

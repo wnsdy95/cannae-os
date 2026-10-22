@@ -76,7 +76,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
-- [Semantic Omission Collector](docs/semantic-omission-evaluation.md): source-bound preparation and bounded existing-Codex-CLI collection with separate one-use transfer consent. This foundation is advisory; authenticated model-transfer UI, calibrated mandatory semantic gates and automatic replanning remain open.
+- [Semantic Omission Evaluation](docs/semantic-omission-evaluation.md): source-bound existing-Codex collection with [exact authenticated owner transfer review](docs/model-transfer-consent.md), one-use session-bound consent and signed result inspection. Verdicts remain advisory; mandatory calibrated consumers, model-hold reconciliation and automatic replanning remain open.
 
 - [Operational COP](docs/operational-cop.md): authenticated, read-only Operations views replay actual wave/control history with freshness, exact evidence links and mission-bounded accounts. Display filters cannot hide authorized critical alerts. This is not worker liveness, tool authority or the complete reporting/CoS workflow.
 

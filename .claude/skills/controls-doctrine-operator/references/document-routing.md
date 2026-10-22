@@ -1,12 +1,23 @@
 # Document Routing
 
 For semantic omission evaluation, read `docs/semantic-omission-evaluation.md`
-and run `node run-semantic-evaluation-fixtures.js`. `prepare` transmits nothing.
+and `docs/model-transfer-consent.md`. Run the collector, operator-semantic and
+control-evidence fixture suites plus the real browser check. `prepare` transmits nothing.
 Use bundled `scripts/evaluate_controls_request.js prepare --repository <repo>
 --draft-id <id>` outside the checkout; it exposes no model-execution command.
 Inspect actual compiled order/receiver projections, not unused analysis quotes.
 Existing CLI login and order consent never approve model transfer. Do not mint
 operational consent with fixture keys or expose private previews in agent chat.
+Use the console's exact-packet owner preview, password and one-use session-bound
+nonce after the trusted host explicitly configures its CLI/model pair. Never
+automate the real owner's account or approval. After logout/stop/shutdown require
+actual child close and group absence; inspect Model Evaluations after a lost
+response. A held or unverifiable record has no discharge operation yet: preserve
+it, never delete rows/journals or retry through a new nonce/session. Do not cite
+previews, transfer consents or evaluation results as task outputs, even in text
+or binary form. Native process exit does not prove upstream billing cancellation.
+Reject any response changed between collection and signing; do not bless the new
+bytes with a fresh signature or rerun the model to hide the original mismatch.
 After a timeout or lost result, keep the consumed reservation and inspect it;
 never retry the model automatically. Treat `complete` as advisory until held-out
 calibration and mandatory consumers exist; fake-process passes are not calibration.

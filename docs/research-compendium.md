@@ -1,5 +1,20 @@
 # Research Compendium
 
+## Exact Model Transfer Consent (2026-10-23)
+
+The [local ceremony](model-transfer-consent.md) now connects an owner-reviewed
+packet to the existing collector. Cached user identity alone cannot revoke an
+already running collector after logout: check the actual stored session and
+retain the one-use reservation while terminating its child. Killing a read
+worker is not evidence that a separately spawned CLI stopped.
+
+Authenticated preparation is not transmission, HTTP 202 is not completion and
+process-group absence is not provider billing cancellation. Signed historical
+results remain advisory control metadata; their expiry does not become renewed
+permission. Missing/changed results are unverifiable and fence another local
+transfer. Held-out calibration, mandatory adoption consumers, model-hold discharge,
+automatic replanning and protected operation remain separate unfinished work.
+
 ## Existing-CLI Semantic Collector Foundation (2026-10-23)
 
 Literal source fidelity does not prove that compiled orders preserve prohibitions,

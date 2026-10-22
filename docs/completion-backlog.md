@@ -76,12 +76,14 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
-The [semantic collector foundation](semantic-omission-evaluation.md) implements
-source/profile-bound preparation, one-use transfer-signature checking, bounded
-existing-CLI collection and strict downstream quote appraisal. It does not close
-row 4 or goal 3: real owner model-transfer consent, held-out calibration, mandatory
-adoption/receiver/dispatch consumers and bounded planning/replanning are still
-required. Its fake-provider regressions execute zero actual model calls.
+The [semantic collector](semantic-omission-evaluation.md) now has an opt-in
+[authenticated owner transfer ceremony](model-transfer-consent.md): exact packet
+preview, password/stored-session checks, a one-use reservation and signed result
+inspection through the actual collector. Logout/stop/shutdown preserve failed
+and unknown outcomes; copies remain control metadata at the report consumer.
+This does not close rows 4/9 or goals 3/7. Held-out calibration, mandatory versioned
+adoption/receiver/dispatch consumers, bounded planning/replanning and model-hold
+discharge remain open. Default fixture passes execute zero actual model calls.
 
 ### Active Eight-Part Goal
 

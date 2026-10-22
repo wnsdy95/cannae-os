@@ -2,8 +2,9 @@
 
 ## Current Boundary
 
-This is a local collector foundation, not an enabled semantic admission gate or
-an automatic planner. It compares retained request bytes with the actual compiled
+This is a local collector with an opt-in
+[authenticated transfer ceremony](model-transfer-consent.md), not an enabled
+semantic admission gate or an automatic planner. It compares retained request bytes with the actual compiled
 order and every receiver task. Unused analysis statements cannot hide missing
 downstream restrictions. All eight program outcomes remain open.
 
@@ -48,7 +49,7 @@ binds the requested model, exact limits and complete preview. Model choice is
 explicit; a mutable model alias is not a snapshot attestation.
 
 `collectEvaluation(invocation, consent, configuration)` is a library interface
-only. There is intentionally no public `run` CLI or agent-facing endpoint yet.
+only. There is no public `run` CLI or agent-facing execution endpoint.
 The trusted operator host must configure its pinned public key and private
 owner-only journal directory outside repositories and artifacts. Neither key nor
 directory is accepted from the untrusted invocation/consent payload.
@@ -63,13 +64,14 @@ The separate signed `SemanticEvaluationTransferConsent` must carry:
 An existing order-adoption consent, caller `USER`, `approved: true`, valid CLI
 login or synthetic-test signature cannot establish actual owner authorization.
 The library verifies cryptography and scope; it does not authenticate a browser
-principal. **The real owner preview/password/session ceremony for this purpose
-is not implemented. Do not mint operational consent with a development key or
-run real mission transfers through this foundation.**
+principal. The separate console service now supplies exact owner preview,
+password, stored-session and one-use checks. Use that ceremony for real packets;
+never mint operational consent with a development key or invoke the library as
+an unowned general-agent tool.
 
 One consent reserves a durable private directory before launch. Interrupted,
 failed or unknown invocations keep that reservation; exact replay is rejected.
-The foundation does not reconcile provider billing or clear operational holds.
+The collector does not reconcile provider billing or clear operational holds.
 Its journal is local mutable host state, not a protected or distributed fence.
 
 ## Collection And Interpretation
@@ -119,9 +121,8 @@ transport/negative behavior with zero actual model calls. It cannot establish
 real model quality or native tool inventory. Retain any separate live native
 probe with exact source, input/output, model/profile and explicit synthetic scope.
 
-Remaining: authenticated purpose-specific owner UI and service integration;
-independently annotated atomic requirements and held-out calibration; mandatory
+Remaining: independently annotated atomic requirements and held-out calibration; mandatory
 versioned adoption/receiver/dispatch consumers; bounded planning/replanning with
 fresh USER revision review; unknown-provider-result reconciliation; trusted time,
-hard cost/provider cancellation and protected-host/native-context attestation.
+hard cost/provider cancellation, model-hold discharge and protected-host/native-context attestation.
 Do not relax existing adoption, stop, lease, gateway or release controls.
