@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Bounded Structural Planning (2026-10-23)
+
+The compiler-to-execution gap previously required a whole manually authored
+mission plan even after retaining actual OPORD tasks. The
+[structural generator](bounded-plan-synthesis.md) now constructs those plans and
+policy drafts from finite roster/control bounds, preserving actual task text,
+every task assignment, parent restrictions and exact source provenance. Failed
+allocation or exhausted search never presents a shortened or partial plan.
+Replanning subtracts actual prior allow admissions from parent policy/rule caps
+and rechecks remaining budget at consumption; a new wave must not silently reset
+spent allowance. Actual revision, fresh human coverage and USER adoption remain
+separate. This is structural synthesis with zero model calls, not automatic
+understanding, invented strategy, verified readiness or independent calibration.
+
 ## Source-Accounted Human Coverage Review (2026-10-23)
 
 An advisory evaluator can enumerate only part of a request and still derive

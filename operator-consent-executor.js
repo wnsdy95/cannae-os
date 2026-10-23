@@ -15,7 +15,8 @@ const { digest, signConsent, verifyConsent, decisionForAction } = require("./ope
 const reference = entry => ({ artifact_id: entry.artifact_id, relative_path: entry.relative_path, sha256: entry.sha256 });
 const snapshot = store => ({ revision: store.manifest.manifest_revision, sha256: manifestDigest(store.manifest) });
 const subject = value => ({ request: value.request, proposal: value.proposal, draft: value.draft,
-  backbriefs: value.backbriefs, rehearsal: value.rehearsal, ...(value.semantic_review ? { semantic_review: value.semantic_review } : {}) });
+  backbriefs: value.backbriefs, rehearsal: value.rehearsal, ...(value.semantic_review ? { semantic_review: value.semantic_review } : {}),
+  ...(value.planning_review ? { planning_review: value.planning_review } : {}) });
 function load(configuration) {
   requireThat(resolveRepository(configuration.repository).identity_fingerprint === configuration.identity, "CONSOLE_REPOSITORY_IDENTITY_CHANGED", 409);
   return loadVerifiedStore(configuration.repository, configuration.artifactRoot);

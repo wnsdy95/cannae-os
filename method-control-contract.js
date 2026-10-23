@@ -17,6 +17,7 @@ const CODE = ["method-control-contract.js", "method-control-broker.js", "method-
   "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
   "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
   "requirement-inventory-contract.js", "requirement-inventory-controller.js", "order-adoption-controller.js",
+  "bounded-planning-contract.js", "bounded-planning-controller.js", "schema-files/bounded-planning-request.schema.json", "schema-files/bounded-planning-proposal.schema.json",
   "schema-files/requirement-inventory.schema.json", "schema-files/semantic-coverage-proposal.schema.json", "schema-files/semantic-review-assignment.schema.json",
   "schema-files/order-adoption-common.schema.json", "schema-files/order-adoption-proposal-request.schema.json",
   "schema-files/order-adoption-proposal.schema.json", "schema-files/order-adoption-decision-request.schema.json", "schema-files/order-adoption-record.schema.json",

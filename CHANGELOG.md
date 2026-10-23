@@ -6,6 +6,15 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Construct complete source-bound plans/policy drafts from actual OPORD tasks
+  and finite roster/control/estimate bounds. Link generated provenance to real
+  adoption/context/policy/lease/next-call consumers; finalize successor revisions
+  before fresh coverage. Preserve parent controls and subtract actual admission
+  usage instead of resetting spent budgets. Add contracts, synthetic examples,
+  executable consumer/negative fixtures and both skill wrappers/adaptation.
+  Structural synthesis is not model strategy, calibrated semantics, attested
+  resource readiness or completion of the eight program outcomes.
+
 - Compare owner-reviewed source fragments, requirements and actual order/task/agent
   locations in a bounded, read-only coverage UI. Preserve the full plan/raw subject,
   filter-invariant one-use consent and session/view clearing; reject incomplete

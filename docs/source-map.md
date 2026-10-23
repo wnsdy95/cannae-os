@@ -7,6 +7,15 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [bounded structural generator](bounded-plan-synthesis.md) is local engineering
+synthesis over actual OPORD/adoption/revision/dispatch contracts. It selects a
+finite declared roster without inventing tasks or authority and binds generated
+plans to retained source/history. Replanning checks exact parent policy bytes
+and remaining admitted-use budgets; actual consumers still require fresh review
+and supersession. No new military, model-quality or availability claim is made.
+Declared cost units and synthetic fixtures are not measured budgets, attested
+readiness, semantic calibration or protected deployment.
+
 The [requirement inventory admission candidate](requirement-inventory-admission.md)
 is local engineering synthesis, not a new military or model-quality source
 claim. `requirement-inventory-contract.js` and its controller bind source byte

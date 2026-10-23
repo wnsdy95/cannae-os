@@ -16,6 +16,7 @@ const { reconciliationIssues, TYPES: RECONCILIATION_TYPES } = require("../operat
 const { contractIssues: modelReconciliationIssues, TYPES: MODEL_RECONCILIATION_TYPES } = require("../operator-model-reconciliation-contract");
 const { evaluationIssues, TYPES: MODEL_EVALUATION_TYPES } = require("../operator-semantic-evaluation-contract");
 const { issues: requirementInventoryIssues, TYPES: REQUIREMENT_INVENTORY_TYPES } = require("../requirement-inventory-contract");
+const { issues: planningIssues, TYPES: PLANNING_TYPES } = require("../bounded-planning-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -152,6 +153,8 @@ const TYPE_TO_SCHEMA = {
   "operator-model-reconciliation-record": "operator-model-reconciliation-record.schema.json",
   "operator-semantic-evaluation": "operator-semantic-evaluation.schema.json",
   "requirement-inventory": "requirement-inventory.schema.json",
+  "bounded-planning-request": "bounded-planning-request.schema.json",
+  "bounded-planning-proposal": "bounded-planning-proposal.schema.json",
   "semantic-coverage-proposal": "semantic-coverage-proposal.schema.json",
   "semantic-review-assignment": "semantic-review-assignment.schema.json",
   ...Object.fromEntries([...INTENT_TYPES].map(type => [type, `${type}.schema.json`])),
@@ -6124,7 +6127,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
       !COP_TYPES.has(type) && !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !REQUIREMENT_INVENTORY_TYPES.has(type) &&
+      type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6157,7 +6160,7 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type), ...evaluationIssues(payload, type), ...requirementInventoryIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type), ...evaluationIssues(payload, type), ...requirementInventoryIssues(payload, type), ...planningIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {
@@ -6184,6 +6187,9 @@ function validatePayloadInSnapshot(payload, type, options) {
       issues.push(...validatePayload(payload[field], "operator-reconciliation-authorization", options).issues
         .map(item => ({ ...item, path: `$.${field}${item.path.slice(1)}` })));
     }
+  }
+  if (schemaResult.valid && type === "bounded-planning-proposal" && payload.plan) {
+    issues.push(...validatePayload(payload.plan, "mission-wave-plan", options).issues.map(item => ({ ...item, path: `$.plan${item.path.slice(1)}` })));
   }
   return validationResult(issues, type, payload);
 }

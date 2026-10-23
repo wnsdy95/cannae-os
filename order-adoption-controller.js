@@ -67,6 +67,8 @@ function appraiseProposal(store, request, now) {
     "ORDER_ADOPTION_DRAFT_EXPIRED_OR_FUTURE");
   const issues = planDraftIssues(request.plan, draft);
   requireTrue(issues.length === 0, issues.map(item => item.code).join(","));
+  require("./bounded-planning-controller").assertPlanning(request.plan,
+    { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
   require("./order-revision-controller").assertRevisionPreparation(request.plan,
     { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
   if (request.schema_version === "0.2") require("./requirement-inventory-controller").reviewProof(store, request.semantic_review_ref, request.plan, draft, now);
@@ -88,7 +90,9 @@ function computeProposalProof(store, item) {
     "ORDER_ADOPTION_PROPOSAL_REPLAY_MISMATCH");
   const semantic = item.payload.schema_version === "0.2" ? require("./requirement-inventory-controller").reviewProof(before,
     item.payload.request.semantic_review_ref, item.payload.request.plan, draft, item.payload.recorded_at) : null;
-  return { ...item, draft, semantic };
+  const planning = item.payload.request.plan.order_binding.planning_ref ? require("./bounded-planning-controller").proposalProof(before,
+    item.payload.request.plan.order_binding.planning_ref, { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now: item.payload.recorded_at }) : null;
+  return { ...item, draft, semantic, planning };
 }
 function appraiseBrief(store, brief, now) {
   valid(brief, "order-backbrief");
@@ -165,6 +169,8 @@ function appraiseDisposition(store, request, now, historical = false) {
   const rehearsal = same(request.rehearsal_ref, NONE) ? null : rehearsalProof(store, request.rehearsal_ref, proposal);
   if (request.disposition === "approve") {
     requireTrue(historical || proposal.payload.schema_version === "0.2", "ORDER_SEMANTIC_REVIEW_REQUIRED");
+    require("./bounded-planning-controller").assertPlanning(proposal.payload.request.plan,
+      { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
     if (proposal.semantic) require("./requirement-inventory-controller").reviewProof(store, proposal.payload.request.semantic_review_ref,
       proposal.payload.request.plan, proposal.draft, now);
     require("./order-revision-controller").assertRevisionPreparation(proposal.payload.request.plan,
@@ -236,6 +242,7 @@ function inspectOrderDecision(input, options) {
       "ORDER_ADOPTION_DECISION_ALREADY_CONSUMED");
   }
   return { request, proposal: appraisal.proposal.payload, draft: appraisal.proposal.draft,
+    ...(appraisal.proposal.planning ? { planning_review: appraisal.proposal.planning.payload } : {}),
     ...(appraisal.proposal.semantic ? { semantic_review: {
       coverage: appraisal.proposal.semantic.coverage.payload, inventory: appraisal.proposal.semantic.inventory.payload } } : {}),
     backbriefs: appraisal.briefs.map(item => item.payload), rehearsal: appraisal.rehearsal?.payload || null,
@@ -312,6 +319,7 @@ function orderForPlan(plan, options, knownStore) {
   if (!record) return null;
   requireTrue(record.payload.schema_version === "0.2", "ORDER_SEMANTIC_REVIEW_REQUIRED");
   const store = knownStore?.manifestHistory ? knownStore : load(options);
+  require("./bounded-planning-controller").assertPlanning(plan, options, store);
   require("./requirement-inventory-controller").reviewProof(store, record.proposal.payload.request.semantic_review_ref,
     plan, record.proposal.draft, clock(options));
   return record;
@@ -374,6 +382,7 @@ function inspectOrder(options) {
   requireTrue(records.length <= 1, "ORDER_ADOPTION_RECORD_CONFLICT");
   requireTrue(records.every(item => at(item.payload.recorded_at) <= at(now)), "ORDER_ADOPTION_RECORD_FROM_FUTURE");
   return { proposal: proposal.payload, proposal_ref: proposal.ref, draft: proposal.draft,
+    ...(proposal.planning ? { planning_review: proposal.planning.payload } : {}),
     ...(proposal.semantic ? { semantic_review: { coverage: proposal.semantic.coverage.payload, inventory: proposal.semantic.inventory.payload } } : {}),
     request: readRequest(store, proposal.draft.request_ref, proposal.draft), record: records[0]?.payload || null,
     status: records[0]?.payload.status || "awaiting_review", freshness: at(now) < at(proposal.payload.expires_at) ? "current" : "expired",

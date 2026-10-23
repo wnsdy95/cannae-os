@@ -74,6 +74,12 @@ quoting establishes the location under review, not equivalence of its meaning.
 
 ## Actual Consumers And Historical Compatibility
 
+For [structurally generated plans](bounded-plan-synthesis.md), retain the returned
+planning reference and finalize linked revisions before preparing coverage.
+Generation never supplies a semantic review or USER decision. The owner preview
+also contains the exact planning envelope/proposal; display and signature checks
+do not attest the declared workforce, estimates or semantic correctness.
+
 New `OrderAdoptionProposalRequest` v0.2 requires `semantic_review_ref`.
 The proposal, decision request and adoption record preserve that version.
 The existing [owner approval ceremony](operator-consent-and-adoption.md) presents

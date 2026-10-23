@@ -78,7 +78,8 @@ try {
       "operator-model-reconciliation-contract.js", "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
       "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
       "requirement-inventory-contract.js", "requirement-inventory-controller.js", "schema-files/requirement-inventory.schema.json",
-      "schema-files/semantic-coverage-proposal.schema.json", "schema-files/semantic-review-assignment.schema.json"]) {
+      "schema-files/semantic-coverage-proposal.schema.json", "schema-files/semantic-review-assignment.schema.json",
+      "bounded-planning-contract.js", "bounded-planning-controller.js", "schema-files/bounded-planning-request.schema.json", "schema-files/bounded-planning-proposal.schema.json"]) {
       assert(contract.CODE.includes(file));
       const original = fs.readFileSync, before = contract.runtimeDigest();
       fs.readFileSync = function(filename, ...args) {

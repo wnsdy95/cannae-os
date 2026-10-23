@@ -15,6 +15,8 @@ async function main() {
       ["malformed-preview", { width: 1440, height: 1000 }, "reject", null]]) {
       const env = support.environment(Date.now() - 120000); let service, context;
       try {
+        const planning = require("../bounded-planning-fixtures/support");
+        planning.useGenerated(env, require("../bounded-planning-controller").generatePlan(planning.requestFor(env), support.optionsAt(env, 12)));
         support.propose(env); support.retainBriefs(env); support.rehearse(env);
         service = await createConsole({ repository: env.options.repository, artifactRoot: env.options.artifactRoot,
           stateDir: path.join(fs.realpathSync(env.root), "private"), port: 0 });
@@ -90,6 +92,8 @@ async function main() {
         assert.equal(review.semantic_review.coverage.model_calibrated_for_admission, false);
         assert(review.semantic_review.inventory.requirements.some(item => item.kind === "prohibition"));
         assert.equal(review.request.schema_version, "0.2");
+        assert.deepEqual(review.planning_review, env.generated.proposal);
+        assert.equal(review.planning_review.model_invocations, 0); assert.equal(review.planning_review.readiness_attested, false);
         assert.equal(new URL(page.url()).hash, "");
         assert.equal(await page.locator("#coverage-review").isVisible(), true);
         assert.match(await page.locator("#coverage-summary").textContent(), new RegExp(`${review.semantic_review.inventory.requirements.length} requirements`));

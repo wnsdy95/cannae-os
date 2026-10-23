@@ -44,6 +44,7 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "order-drafts",
   "requirement-inventories",
   "semantic-coverage-proposals",
+  "bounded-planning-proposals",
   "order-adoption-proposals",
   "order-backbriefs",
   "order-rehearsals",

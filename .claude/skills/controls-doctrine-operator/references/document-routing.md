@@ -14,6 +14,20 @@ node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
 
 ## Requirement Review
 
+For automatic structural plan construction, read `docs/bounded-plan-synthesis.md`
+and use `scripts/plan_controls_mission.js` against the explicit target repository.
+Supply bounded roster/policy/control inputs, not a fabricated complete plan.
+Inspect `blocked` and search-limit results; never drop tasks, raise a budget or
+retry a larger search automatically to obtain readiness. Use only the returned
+plan with `planning_ref`. For a successor, run `prepare-revision` before preparing
+fresh coverage, then use its finalized plan. An old review is invalid after that
+binding changes. Preserve parent intent/caps and actual supersession/settlement;
+generation grants neither model transfer nor adoption, dispatch or release.
+The structural generator uses zero model calls and does not replace calibrated
+semantic analysis or an independently reviewed strategic planner.
+Reuse agent identity across a successor only with wave-distinct backbrief,
+rehearsal and decision IDs; a prior wave's evidence is not fresh acknowledgment.
+
 For requirement inventory and semantic coverage admission, read
 `docs/requirement-inventory-admission.md` and run
 `scripts/review_controls_requirements.js` with the exact target repository.

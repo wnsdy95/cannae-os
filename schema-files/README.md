@@ -1,5 +1,11 @@
 # Schema Files
 
+`bounded-planning-request.schema.json` and `bounded-planning-proposal.schema.json`
+describe finite proposed roster/control envelopes and non-authorizing structural
+generation. `order_binding.planning_ref` binds the finalized plan; actual replay
+and parent-budget/revision consumers, not schema validity alone, prove that
+construction. Follow [bounded synthesis](../docs/bounded-plan-synthesis.md).
+
 `requirement-inventory.schema.json`, `semantic-coverage-proposal.schema.json`
 and `semantic-review-assignment.schema.json` describe non-authorizing source
 partitions, human coverage proposals and need-to-know receiver assignments.

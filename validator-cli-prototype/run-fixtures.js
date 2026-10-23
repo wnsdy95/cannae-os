@@ -11,6 +11,10 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...[["bounded-planning-request", "PLANNING_DUPLICATE_AGENT"], ["bounded-planning-proposal", "PLANNING_PROPOSAL_BINDING_INVALID"]]
+    .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
   ...[["requirement-inventory", "REQUIREMENT_INVENTORY_PARTITION_INVALID"],
     ["semantic-coverage-proposal", "SEMANTIC_REVIEW_ID_BINDING_INVALID"], ["semantic-review-assignment", "CONST_MISMATCH"]]
     .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,

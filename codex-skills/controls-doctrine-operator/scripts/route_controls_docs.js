@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "bounded-planning",
+    keywords: ["bounded planning", "bounded-planning", "automatic plan", "structural synthesis", "plan_controls_mission"],
+    docs: ["docs/bounded-plan-synthesis.md", "docs/requirement-inventory-admission.md", "docs/order-adoption-and-plan-binding.md", "docs/order-revision-and-supersession.md"],
+    commands: ["node run-bounded-planning-fixtures.js", "node run-order-adoption-fixtures.js", "node run-order-revision-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
     id: "semantic-admission",
     keywords: ["requirement inventory", "requirement-inventory", "semantic admission", "semantic-admission", "semantic coverage", "semantic-coverage", "human coverage review", "semantic review assignment", "review_controls_requirements"],
     docs: ["docs/requirement-inventory-admission.md", "docs/order-adoption-and-plan-binding.md", "docs/operator-consent-and-adoption.md", "docs/semantic-omission-evaluation.md"],
@@ -516,6 +522,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "bounded-planning", keywords: ["bounded-planning", "bounded-plan-synthesis", "plan_controls_mission"] },
   { id: "semantic-admission", keywords: ["requirement-inventory", "semantic-coverage", "semantic-review-assignment", "review_controls_requirements"] },
   { id: "semantic-omission", keywords: ["semantic-omission", "semantic-evaluation", "codex-semantic", "evaluate_controls_request", "operator-semantic", "semantic-control", "model-transfer-consent", "model-reconciliation", "model-transfer-reconciliation"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },

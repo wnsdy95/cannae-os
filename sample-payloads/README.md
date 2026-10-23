@@ -1,5 +1,11 @@
 # Sample Payloads
 
+The `bounded-planning-request` and `bounded-planning-proposal` pairs are synthetic
+non-authorizing structural construction examples, not model strategy, real
+readiness or USER consent. Regenerate these four only with
+`node bounded-planning-fixtures/write-samples.js`; never rewrite retained producer
+history to match a newer runtime.
+
 The `requirement-inventory`, `semantic-coverage-proposal` and
 `semantic-review-assignment` pairs are authored synthetic structural examples,
 not real owner decisions, model assessments or independent calibration labels.

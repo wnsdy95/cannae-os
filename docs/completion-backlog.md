@@ -76,6 +76,14 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [bounded structural generator](bounded-plan-synthesis.md) fills the actual
+OPORD-to-plan/policy assembly gap and links generated successors to existing
+revision/adoption/dispatch consumers. Remaining budgets come from actual parent
+admissions, not a reset at a new wave. It uses declared roster/estimate bounds
+and zero model calls: model-authored strategy, calibrated semantic completeness,
+actual cross-mission readiness/resource truth and autonomous planning orchestration
+remain open. This candidate does not close row 4 or any of the eight outcomes.
+
 The [source-accounted inventory candidate](requirement-inventory-admission.md)
 adds a mandatory **human inventory and coverage** review class to new captured
 request adoption, receiver assignment and covered next-call paths. It is not
