@@ -121,6 +121,19 @@ async function main() {
     await env.owner.post("/api/model-evaluations/preview", env.previewInput, 409);
     assert.equal(fs.readdirSync(path.join(env.configuration.stateDir, "model-evaluations")).length, 1);
   }, { model: "fixture-timeout" });
+  await check("shutdown fences the worker queue before model-close completion and retains database ownership", async env => {
+    const p = await preview(env); await env.owner.post("/api/model-evaluations/commit", commitInput(p), 202); await started(env, p.challenge_id);
+    const original = env.service.semantic.close; let release, entered = false;
+    const gate = new Promise(resolve => { release = resolve; });
+    env.service.semantic.close = async () => { entered = true; await original(); await gate; };
+    const closing = env.service.app.close();
+    try {
+      for (let count = 0; count < 100 && !entered; count++) await new Promise(resolve => setTimeout(resolve, 10));
+      assert.equal(entered, true); assert.equal(env.service.workerStatus().closing, true);
+      assert.equal(env.service.auth.db.prepare("SELECT value FROM meta WHERE key='operator-service-pid'").get().value, String(process.pid));
+      assert.equal(env.service.auth.db.prepare("SELECT id FROM operator_model_actions WHERE id=?").get(p.challenge_id).id, p.challenge_id);
+    } finally { release(); await closing; env.service.semantic.close = original; }
+  }, { model: "fixture-timeout" });
   for (const model of ["fixture-invalid", "fixture-null", "fixture-invalid-utf8"]) await check(`${model} remains held without crashing the owning service or retrying`, async env => {
     const p = await preview(env); await env.owner.post("/api/model-evaluations/commit", commitInput(p), 202);
     const result = await terminal(env, p.challenge_id); assert.equal(result.state, "held"); assert.equal(result.result_verified, true);

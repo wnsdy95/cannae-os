@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Start model-collector and worker-queue shutdown fences together and wait for both actual exits before closing private auth state. A delayed model close must not leave queued work admissible. Both skills preserve this shared shutdown rule.
+
 - Reject null/non-object JSONL and malformed UTF-8 inside the collector before field access, preserving the HTTP service and observed child/group termination. Keep these actual-process regressions separate from model-quality evidence; both skills preserve the failed one-use action without replay.
 
 - Connect exact model-transfer owner preview/password/stored-session consent to the actual bounded CLI collector, with asynchronous queryable signed results, cancellation, logout revocation and shutdown exit checks. Preserve model holds and missing/changed signed history; never replay a nonce or promote an advisory verdict into authority. Both skills require the real ceremony and exclude semantic control copies from work evidence. Measure that type catalog in issuance/channel bindings and regenerate only their synthetic examples. Calibration, mandatory consumers, model-hold discharge, planning and protected operation remain open.

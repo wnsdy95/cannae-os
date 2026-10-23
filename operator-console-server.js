@@ -223,9 +223,15 @@ async function createConsole(options) {
     const bytes = fs.readFileSync(path.join(ROOT, relative));
     app.get(url, async (request, reply) => reply.type(type).send(bytes));
   }
-  app.addHook("preClose", async () => { await semantic.close(); await jobs.close(); });
-  app.addHook("onClose", async () => { await semantic.close(); await jobs.close(); consent.close(); auth.close(); });
-  return { app, auth, consent, semantic, origin, repository, configuration: consent.workerConfiguration, readOnly };
+  let closingWork;
+  function closeWork() {
+    closingWork ||= Promise.allSettled([Promise.resolve().then(() => semantic.close()), Promise.resolve().then(() => jobs.close())])
+      .then(results => { for (const result of results) if (result.status === "rejected") throw result.reason; });
+    return closingWork;
+  }
+  app.addHook("preClose", closeWork);
+  app.addHook("onClose", async () => { await closeWork(); consent.close(); auth.close(); });
+  return { app, auth, consent, semantic, origin, repository, workerStatus: jobs.status, configuration: consent.workerConfiguration, readOnly };
 }
 
 async function main(argv = process.argv.slice(2)) {

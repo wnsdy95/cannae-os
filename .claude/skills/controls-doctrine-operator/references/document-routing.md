@@ -20,6 +20,8 @@ Reject any response changed between collection and signing; do not bless the new
 bytes with a fresh signature or rerun the model to hide the original mismatch.
 Treat null/non-object JSONL and invalid UTF-8 as failed collection, not a reason
 to restart the HTTP service or replay consent. Confirm its actual child exit.
+At shutdown fence the worker queue and model collector together, then await both
+actual exits before releasing ownership. Never wait on one while the other admits work.
 After a timeout or lost result, keep the consumed reservation and inspect it;
 never retry the model automatically. Treat `complete` as advisory until held-out
 calibration and mandatory consumers exist; fake-process passes are not calibration.

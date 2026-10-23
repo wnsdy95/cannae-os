@@ -67,8 +67,10 @@ even after a lost HTTP response; query its action instead. Stop Evaluation
 requests cancellation, not billing cancellation or hold discharge. Logout checks
 the actual stored session, not a cached user object, and aborts its collection.
 
-Graceful shutdown waits for observed child close and independent process-group
-absence before releasing service ownership or closing SQLite. Signal errors and
+Graceful shutdown starts both model and worker-queue closing fences before
+awaiting either. It waits for both observed exits, including independent native
+process-group absence, before releasing ownership or closing SQLite. A slow or
+failed model close cannot leave the other queue open for new work. Signal errors and
 private diagnostic/final-journal write failures remain failed results.
 Malformed/non-object JSONL and invalid UTF-8 are rejected inside the collector;
 they cannot throw an uncaught stream callback in the owning HTTP service.
