@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Preserve bounded model HTTP statuses, UI errors and sanitized action/result state on browser fixture failure; diagnose failed observation before changing deadlines or consent validity.
+
 - Separate synthetic collector reservation-collision checks from expired transfer consent, retaining exact denial and immutable-journal assertions without renewing operational authority.
 
 - Bind signed model evaluation v0.2 to exact collector-returned journal bytes before owner review, then require that original commitment for model-hold acknowledgment and replay. Reject PID substitution before preview or before signing; preserve authentic v0.1 history without retrospectively blessing unsigned journals. Add a strict shared current/legacy evaluation schema and state/verdict rules; both skills require original provenance rather than a newly computed hash. The earlier passing selected ladder did not cover this counterexample and is not evidence that it was prevented.

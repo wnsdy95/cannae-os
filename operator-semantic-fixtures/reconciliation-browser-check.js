@@ -6,10 +6,14 @@ async function main() {
   assert.equal(process.argv[2], "--output"); assert(process.argv[3]);
   const output = path.resolve(process.argv[3]); fs.mkdirSync(output, { recursive: true });
   const env = await environment({ initialize: false, model: "fixture-invalid", port: 0 });
-  const results = [], errors = [], routeErrors = [], releases = []; let browser, closing = false, commitRequests = 0;
+  const results = [], errors = [], routeErrors = [], releases = [], responses = []; let browser, page, closing = false, commitRequests = 0;
   try {
     await env.service.app.listen({ host: "127.0.0.1", port: 0 }); browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } }); page.on("pageerror", error => errors.push(error.message));
+    page = await browser.newPage({ viewport: { width: 1440, height: 1000 } }); page.on("pageerror", error => errors.push(error.message));
+    page.on("response", response => {
+      const url = new URL(response.url());
+      if (url.pathname.startsWith("/api/model-")) responses.push({ observed_at: new Date().toISOString(), path: url.pathname, status: response.status() });
+    });
     page.on("request", request => { if (request.method() === "POST" && request.url().endsWith("/api/model-reconciliations/commit")) commitRequests++; });
     await page.goto(`${env.service.origin()}/#setup=${env.service.auth.createBootstrap()}`);
     async function authenticate(username, token) {
@@ -94,8 +98,18 @@ async function main() {
       actual_model_invocations: 0, synthetic_fake_provider_invocations: 2, actual_owner_account_touched: false, release_authorized: false };
     fs.writeFileSync(path.join(output, "browser-results.json"), JSON.stringify(summary, null, 2) + "\n"); console.log(JSON.stringify(summary, null, 2));
   } catch (error) {
+    const diagnostics = { model_responses: responses.slice(-100), actions: env.service.auth.db.prepare("SELECT id,state,result FROM operator_model_actions").all()
+      .map(row => { let result; try { result = JSON.parse(row.result); } catch { /* Missing or invalid results stay visible as absent. */ }
+        return { id: row.id, state: row.state, result_status: result?.status || null, error: result?.error || null, collection: result?.collection || null }; }) };
+    if (page && !page.isClosed()) {
+      try {
+        diagnostics.detail_title = await page.locator("#detail-title").textContent({ timeout: 1000 });
+        diagnostics.detail_error = await page.locator("#detail-error").textContent({ timeout: 1000 });
+        await page.screenshot({ path: path.join(output, "failed-model-hold-browser.png"), fullPage: true, timeout: 5000 });
+      } catch (failure) { diagnostics.inspection_error = failure.message; }
+    }
     fs.writeFileSync(path.join(output, "browser-failure.json"), JSON.stringify({ error: error.stack, completed_scenarios: results,
-      page_errors: errors, route_errors: routeErrors, all_scenarios_passed: false }, null, 2) + "\n"); throw error;
+      page_errors: errors, route_errors: routeErrors, diagnostics, all_scenarios_passed: false }, null, 2) + "\n"); throw error;
   } finally { closing = true; releases.forEach(release => release()); if (browser) await browser.close(); await env.service.app.close(); fs.rmSync(env.root, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error.stack); process.exitCode = 1; });

@@ -72,6 +72,12 @@ and assert that original journal bytes remain unchanged. Keep expiry tests
 separate; never broaden the expected error set or renew real consent to obtain
 a passing reservation assertion.
 
+Before changing a browser deadline, retain bounded HTTP status history, the
+current UI error and sanitized durable action/result state. A missing rendered
+result does not distinguish a rejected request, held process, polling failure or
+slow observation. Never export auth rows, credentials or approval nonces in that
+diagnostic record; keep the original failed run separate from revalidation.
+
 ## Publication Denial And Partial State
 
 For an explicit USER stop, read the stop-intake section of
