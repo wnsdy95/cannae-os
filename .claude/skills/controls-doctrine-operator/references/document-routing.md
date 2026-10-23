@@ -29,6 +29,8 @@ model automatically. Ask for a separately reviewed bounded decomposition and
 fresh review/consent where required. Test the actual compiler and reader, not
 only response schema/input bytes. Old oversized artifacts are not repaired by
 truncation or re-signing.
+An overall-size regression must first pass structural validation; a per-field
+`MAX_LENGTH` denial does not prove the complete-output budget ran.
 After uncertain draft publication, inspect Evidence and Model Actions separately;
 preserve a draft already written without clearing the held transfer or rerunning it.
 For a verifiable failed analysis, use the separate procedure in

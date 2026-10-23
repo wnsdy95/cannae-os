@@ -17,6 +17,11 @@ the exact denial and require a separately reviewed decomposition instead of
 automatic truncation, transfer replay or historical artifact rewriting.
 Synthetic collector regressions are not real provider/owner acceptance or
 semantic calibration. Existing oversized history needs separate recovery.
+The first frozen correction ladder rejected the original counterexample, then
+failed its new semantic-validator assertion because a deliberately oversized
+analysis field hit schema `MAX_LENGTH` first. That failure is retained, not a
+whole-suite pass. The revised regression proves structural validity before
+requiring the whole-draft size denial; neither limit is weakened.
 
 ## Purpose-Specific Analysis Recovery (2026-10-24)
 

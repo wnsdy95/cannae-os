@@ -70,7 +70,8 @@ try {
       assert.equal(encoded(value), MAX_ORDER_ARTIFACT_BYTES + 1); assert.equal(draftArtifactFits(value), false);
     }
     const invalid = clone(require("./sample-payloads/valid-order-draft.json"));
-    invalid.analysis.statements[0].text = "x".repeat(MAX_ORDER_ARTIFACT_BYTES);
+    invalid.opord.execution.tasks[0].task = "x".repeat(MAX_ORDER_ARTIFACT_BYTES);
+    assert.equal(validateSchemaPayload(invalid, "order-draft").valid, true);
     const result = validatePayload(invalid, "order-draft");
     assert.equal(result.valid, false); assert(result.issues.some(item => item.code === "ORDER_INTAKE_DRAFT_TOO_LARGE"));
   });

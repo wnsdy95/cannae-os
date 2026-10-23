@@ -6,6 +6,11 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Repair the size regression's fixture-layer interference: prove structural
+  validity before requiring the complete-output denial instead of expecting
+  that semantic rule after a correct per-field MAX_LENGTH rejection. Preserve
+  the failed exact-source ladder and adapt both skills; no limit is weakened.
+
 - Reject derived order drafts that exceed the unchanged 8 MiB reader limit
   before serialization/publication, including UTF-8, escaping and inherited
   repetition. Retain the actual small-response/21 MiB-publication counterexample;
