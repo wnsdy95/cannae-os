@@ -48,16 +48,23 @@ function prepareInvocation(preview, options) {
       sandbox: "read-only", upstream_cost_cap_enforced: false, native_context_attested: false, model_snapshot_attested: false }, ...AUTHORITY };
   return { ...invocation, invocation_sha256: digest(invocation) };
 }
-function verifyInvocation(invocation) {
+function assertInvocationIntegrity(invocation) {
   requireThat(invocation?.type === adapter.invocationType, "SEMANTIC_INVOCATION_PURPOSE_INVALID");
   const { invocation_sha256: expected, ...body } = invocation;
   requireThat(expected === digest(body), "SEMANTIC_INVOCATION_SUBSTITUTED");
+  requireThat(invocation.preview && typeof invocation.preview === "object" && !Array.isArray(invocation.preview), "SEMANTIC_INVOCATION_PREVIEW_INVALID");
+  const { preview_sha256: previewDigest, ...previewBody } = invocation.preview;
+  requireThat(previewDigest === digest(previewBody), "SEMANTIC_INVOCATION_PREVIEW_SUBSTITUTED");
+  return expected;
+}
+function verifyInvocation(invocation) {
+  const expected = assertInvocationIntegrity(invocation);
   const current = prepareInvocation(invocation.preview, { executable: invocation.profile.executable,
     model: invocation.profile.requested_model, timeoutMs: invocation.profile.timeout_ms, maxOutputBytes: invocation.profile.max_output_bytes });
   requireThat(current.invocation_sha256 === expected, "SEMANTIC_EXECUTABLE_OR_PROFILE_CHANGED");
 }
 function verifyTransferConsent(consent, invocation, trustedPublicKey, now = Date.now()) {
-  requireThat(invocation?.type === adapter.invocationType, "SEMANTIC_INVOCATION_PURPOSE_INVALID");
+  assertInvocationIntegrity(invocation);
   requireThat(CONSENT.safeParse(consent).success && validOperatorSignature(consent, trustedPublicKey), "SEMANTIC_TRANSFER_CONSENT_INVALID");
   const start = Date.parse(consent.created_at), end = Date.parse(consent.expires_at);
   requireThat(start <= now && now < end && end - start > 0 && end - start <= 120000 &&

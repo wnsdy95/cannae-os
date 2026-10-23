@@ -1,5 +1,13 @@
 # Authenticated Model Transfer Review
 
+Historical inspection must recompute the whole stored invocation and nested
+preview commitments before validating the signed consent and result. Checking
+only the supplied digest field allowed a predecessor's projected scope to change
+while its original signatures still appeared valid. Fresh execution already
+rejected that substitution; history now uses the same integrity rule without
+renewing old freshness or signing changed bytes. See
+[native analysis](native-order-analysis.md) and the shared integrity regressions.
+
 ## Scope
 
 The local console can now approve one exact semantic-evaluation packet for the

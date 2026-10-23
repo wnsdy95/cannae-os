@@ -8,9 +8,9 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "order-analysis-generation",
-    keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector"],
+    keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector", "model invocation integrity", "model-invocation-integrity"],
     docs: ["docs/native-order-analysis.md", "docs/request-order-intake.md", "docs/model-transfer-consent.md", "docs/bounded-plan-synthesis.md"],
-    commands: ["node run-order-analysis-generation-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+    commands: ["node run-order-analysis-generation-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
   },
   {
     id: "bounded-planning",
@@ -528,7 +528,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
-  { id: "order-analysis-generation", keywords: ["order-analysis", "native-order-planning", "native-order-analysis", "codex-bounded-collector", "prepare_controls_analysis"] },
+  { id: "order-analysis-generation", keywords: ["order-analysis", "native-order-planning", "native-order-analysis", "codex-bounded-collector", "prepare_controls_analysis", "model-invocation-integrity"] },
   { id: "bounded-planning", keywords: ["bounded-planning", "bounded-plan-synthesis", "plan_controls_mission"] },
   { id: "semantic-admission", keywords: ["requirement-inventory", "semantic-coverage", "semantic-review-assignment", "review_controls_requirements"] },
   { id: "semantic-omission", keywords: ["semantic-omission", "semantic-evaluation", "codex-semantic", "evaluate_controls_request", "operator-semantic", "semantic-control", "model-transfer-consent", "model-reconciliation", "model-transfer-reconciliation"] },

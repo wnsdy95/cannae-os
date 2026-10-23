@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The shared model invocation/history integrity rule is local engineering synthesis.
+A retained actual-controller probe found that original signatures and a supplied
+digest field could label a changed projected mission as verified in history,
+although new collection rejected it. The verifier now recomputes both nested and
+outer commitments before trusting history; no fresh model call, history repair,
+scope grant or protected-host claim follows from this check.
+
 The [native request-analysis candidate](native-order-analysis.md) uses the official
 [Codex exec interface](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
 and a separately purpose-bound adapter over the existing bounded collector.

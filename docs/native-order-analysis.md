@@ -67,6 +67,18 @@ nested/wrapped copies, not work evidence. The draft does not prove complete
 extraction or good strategy. It does not yet carry a calibrated model-origin
 admission class; actual adoption remains the separate human-review class.
 
+A retained predecessor probe changed only the stored invocation's projected
+mission while leaving its invocation-digest field and original signatures intact.
+Historical inspection incorrectly returned the substituted scope as verified;
+fresh collection still rejected it before launch. Positive transport/browser
+checks did not cover that historical path. The shared verifier now independently
+rehashes the entire invocation and nested preview before consent/result history
+can be trusted, without live freshness renewal. Both analysis and omission
+history fail closed on changed bodies; recomputing hashes cannot reuse the old
+signed consent. Preserve the original failed probe and immutable journal instead
+of re-signing altered history. This is not a native-execution bypass claim or
+protected-host proof.
+
 Inspect Model Actions after lost delivery. Failed, unknown, changed-source or
 interrupted collection/publication remains held and fences both local model
 purposes. The existing omission-only failed-transfer acknowledgment explicitly

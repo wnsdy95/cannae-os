@@ -85,9 +85,9 @@ function openSemanticService(auth, configuration, consentService) {
     try {
       const result = JSON.parse(row.result), consent = JSON.parse(row.consent), invocation = JSON.parse(row.preview);
       const purpose = purposeFor(invocation);
+      purpose.verifyTransferConsent(consent, invocation, consentService.publicKey(), Date.parse(consent.created_at));
       if (purpose.id === "order_analysis") analysisContract.verifyEvaluation(result, consentService.publicKey(), invocation);
       else verifyEvaluation(result, consentService.publicKey());
-      purpose.verifyTransferConsent(consent, invocation, consentService.publicKey(), Date.parse(consent.created_at));
       return validOperatorSignature(consent, consentService.publicKey()) && validOperatorSignature(result, consentService.publicKey()) &&
         consent.type === purpose.consentType && consent.purpose === purpose.purpose &&
         consent.id === row.id && consent.principal_id === row.principal_id && consent.invocation_sha256 === invocation.invocation_sha256 &&

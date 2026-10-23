@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Recompute complete invocation and nested preview commitments during historical
+  consent/result verification for both model purposes. Preserve the actual
+  signed-scope substitution counterexample and fresh-execution denial separately;
+  changed history becomes unverifiable and fences further transfers. Both skills
+  prohibit repairing history by rehashing or re-signing altered content.
+
 - Add a separate existing-Codex request-analysis purpose over a shared bounded
   collector and actual OPORD compiler. Keep owner nonce/session/password review,
   exact quotes, proposed-role bounds, original journal and generated draft

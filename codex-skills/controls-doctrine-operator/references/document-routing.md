@@ -24,6 +24,10 @@ USER adoption before dispatch. Proposed roles and quoted bytes do not
 prove semantic completeness or expand authority.
 After uncertain draft publication, inspect Evidence and Model Actions separately;
 preserve a draft already written without clearing the held transfer or rerunning it.
+For signed model history, require the full invocation and nested preview to rehash
+to their original signed commitments before trusting displayed scope. A valid
+signature over a digest field alone is insufficient. Keep changed records held;
+never recalculate their hashes or re-sign altered bodies as a history repair.
 
 Inventory coverage and request routing are separate gates. After adding a
 contract alias, run `node run-document-routing-fixtures.js` as well as `--coverage`

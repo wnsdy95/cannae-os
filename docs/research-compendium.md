@@ -1,5 +1,18 @@
 # Research Compendium
 
+## Historical Model Scope Integrity (2026-10-23)
+
+An actual synthetic controller probe on the first native-analysis candidate
+changed the stored preview's projected mission without changing its claimed
+invocation digest. Valid original consent/result signatures then accompanied an
+incorrectly verified history scope; fresh collection correctly rejected the
+modified body before launch. Those are separate paths and evidence classes.
+The shared consent verifier now recomputes the complete invocation and nested
+preview commitments before static historical validation, preserving original
+timing and signatures. Rehashing new content cannot repair old consent. Both
+skills and actual analysis/omission history regressions retain this operational
+lesson. This does not establish independent model quality or protected operation.
+
 ## Purpose-Bound Native Request Analysis (2026-10-23)
 
 The [analysis candidate](native-order-analysis.md) addresses the still-manual
