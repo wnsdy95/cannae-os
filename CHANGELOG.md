@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Repair the native-analysis validator fixture's missing explicit issue-code
+  expectation. Preflight every CLI fixture definition before spawning children
+  and regress malformed definitions without defaulting missing expectations.
+  Both skills require the actual CLI ladder early and preserve harness failures
+  separately from runtime results; predecessor failures remain retained.
+
 - Recompute complete invocation and nested preview commitments during historical
   consent/result verification for both model purposes. Preserve the actual
   signed-scope substitution counterexample and fresh-execution denial separately;

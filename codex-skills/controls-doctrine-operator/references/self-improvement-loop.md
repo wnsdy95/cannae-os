@@ -32,6 +32,13 @@ Move procedure detail into the linked reference or doctrine document; do not rai
 the limit or omit the routed control. Routing fixtures execute this check so a
 valid route cannot conceal an invalid entrypoint.
 
+When extending validator CLI cases, declare `requiredCodes` explicitly, including
+`[]` for valid cases, and run `node validator-cli-prototype/run-fixtures.js`
+before expensive producer/browser ladders. The harness preflights definitions;
+never hide a missing expectation with a default empty array. A harness exception
+is a failed gate with an unexecuted suffix, even if individual runtime runners
+passed. Preserve its original source/log and verify the repaired CLI separately.
+
 ## Completion Audits
 
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select

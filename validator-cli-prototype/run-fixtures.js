@@ -11,8 +11,15 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  { name: "validator fixture expectations are explicit before any child runs", check() {
+    for (const requiredCodes of [undefined, null, "CONST_MISMATCH", [7]]) {
+      assert.throws(() => assertFixtureDefinitions([{ name: "malformed definition", requiredCodes }]),
+        /must explicitly declare requiredCodes as a string array/);
+    }
+    assert.doesNotThrow(() => assertFixtureDefinitions([{ requiredCodes: [] }, { requiredCodes: ["CONST_MISMATCH"] }, { check() {} }]));
+  } },
   { name: "evaluated proposed analysis remains non-authorizing", file: "sample-payloads/valid-operator-order-analysis-evaluated.json",
-    type: "operator-order-analysis", exitCode: 0, expectedCanExecute: false },
+    type: "operator-order-analysis", exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
   ...[["order-analysis-response", "CONST_MISMATCH"], ["operator-order-analysis", "ORDER_ANALYSIS_RESULT_STATE_INVALID"]]
     .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} proposed ${type}`,
       file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
@@ -2921,6 +2928,14 @@ const fixtures = [
   }
 ];
 
+function assertFixtureDefinitions(entries) {
+  for (const [index, fixture] of entries.entries()) {
+    if (typeof fixture.check === "function") continue;
+    assert(Array.isArray(fixture.requiredCodes) && fixture.requiredCodes.every(code => typeof code === "string"),
+      `Validator fixture ${index} (${fixture.name}) must explicitly declare requiredCodes as a string array.`);
+  }
+}
+
 function runFixture(fixture) {
   if (fixture.check) {
     try {
@@ -3000,6 +3015,7 @@ function runFixture(fixture) {
   };
 }
 
+assertFixtureDefinitions(fixtures);
 const results = fixtures.map(runFixture);
 const failed = results.filter(result => !result.ok);
 
