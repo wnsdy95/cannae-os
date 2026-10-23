@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["readiness drop", "cross-mission capability registry training progression readiness actual grant reconciliation",
+    "READINESS_REQUALIFICATION_REQUIRED", "reconcile_controls_readiness", "schema-files/readiness-drop-reconciliation.schema.json"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["force-readiness"]); assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/readiness-drop-reconciliation.md"));
+    assert(result.validation_commands.includes("node run-readiness-drop-revocation-fixtures.js"));
+  }
   for (const query of ["analysis reconciliation", "analysis hold", "failed request analysis", "order analysis failed transfer reconciliation",
     "schema-files/operator-analysis-reconciliation-authorization.schema.json", "Review ANALYSIS-RECONCILIATION before acknowledging publication", "operator-analysis-publication.js", "operator-reconciliation-contract-core.js"]) {
     const result = route(router, ["--actor=user"], query);

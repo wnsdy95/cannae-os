@@ -1,5 +1,17 @@
 # Document Routing
 
+## Readiness Restrictions
+
+Read `docs/readiness-drop-reconciliation.md` after a readiness drop. A rating or
+schema-valid event is not a grant. Inspect actual affected leases with
+`scripts/reconcile_controls_readiness.js inspect`, collect already admitted
+results and use `reconcile` to narrow them. Blocked is not terminal revocation;
+preserve tool-effect/gateway obligations and reconcile again after settlement.
+Never replay a tool, delete an event, use a later promotion to revive old scope
+or infer full qualification from the absence of a drop. Match the actual receiver
+role/task and inspect retained introduction history, not path-sorted manifests.
+Literal task matching is not a stable cross-mission capability/performer registry.
+
 ## Manual Receipt Procedure
 
 Use only for diagnosis/lower-level integration, not default dispatch. Give the

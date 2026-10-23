@@ -181,6 +181,7 @@ const TYPE_TO_SCHEMA = {
   "battle-rhythm-scheduler": "battle-rhythm-scheduler.schema.json",
   "agent-metl": "agent-metl.schema.json",
   "readiness-event": "readiness-event.schema.json",
+  "readiness-drop-reconciliation": "readiness-drop-reconciliation.schema.json",
   "source-plan": "source-plan.schema.json",
   "context-release": "context-release.schema.json",
   "resource-status": "resource-status.schema.json",
@@ -6133,7 +6134,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
       !COP_TYPES.has(type) && !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
+      type !== "readiness-event" && type !== "readiness-drop-reconciliation" && type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6166,6 +6167,8 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
+    ...(schemaResult.valid && type === "readiness-drop-reconciliation" ?
+      require("../readiness-drop-revocation-runner").reconciliationIssues(payload).map(item => ({ ...item, layer: "semantic" })) : []),
     ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type), ...analysisReconciliationIssues(payload, type), ...evaluationIssues(payload, type), ...analysisEvaluationIssues(payload, type), ...requirementInventoryIssues(payload, type), ...planningIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];

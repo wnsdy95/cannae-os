@@ -7,6 +7,15 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [readiness-drop candidate](readiness-drop-reconciliation.md) is local
+engineering synthesis over the existing readiness-event and dispatch/gateway
+settlement contracts. It follows an actual allow-after-drop dispatcher probe,
+reads verified cross-mission observations and fences exact role/task grants.
+Manifest path order is not introduction history. Late results and ownership
+obligations survive revocation attempts; later promotions cannot restore scope.
+This does not prove a full capability registry, qualified models, authenticated
+evaluator provenance, fresh USER requalification or protected-host enforcement.
+
 The complete-draft size boundary in [request intake](request-order-intake.md)
 and [native analysis](native-order-analysis.md) is local engineering synthesis,
 not a military-source or model-quality claim. It follows an actual synthetic

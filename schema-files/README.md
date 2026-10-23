@@ -1,5 +1,12 @@
 # Schema Files
 
+`readiness-drop-reconciliation.schema.json` binds a non-authorizing restrictive
+batch report to exact readiness observations and actual lease checkpoints.
+The [runtime consumer](../docs/readiness-drop-reconciliation.md), not schema
+validity, verifies history and narrows authority while preserving pending results.
+Readiness events and reports both remain `can_execute: false`; neither proves
+positive qualification, authenticated evaluator identity or fresh grant authority.
+
 `operator-analysis-reconciliation-authorization.schema.json` and
 `operator-analysis-reconciliation-record.schema.json` bind a separate fresh owner
 acknowledgment to one failed analysis and exact observed compiler publication.

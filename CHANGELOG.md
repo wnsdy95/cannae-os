@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add a restrictive retained-readiness consumer after an actual allow-after-drop
+  dispatch probe. Fence exact role/task issuance, next-call/gateway publication
+  and completion; revoke old grants or retain blocked state while results/effects
+  remain unsettled. Later promotions never restore scope. Keep stable capability
+  registration, authenticated qualification/restoration and operational rollout
+  open. Both skills teach actual grant inspection and no-replay settlement.
+
 - Repair the size regression's fixture-layer interference: prove structural
   validity before requiring the complete-output denial instead of expecting
   that semantic rule after a correct per-field MAX_LENGTH rejection. Preserve
