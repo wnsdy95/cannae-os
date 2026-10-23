@@ -55,6 +55,15 @@ facts, duplicate/missing references, unknown fields, authority fields and roles
 outside the reviewed envelope fail. Proposals, assumptions and unknowns remain
 explicitly separate from attributed facts.
 
+The full projected draft must also fit the compiler reader's unchanged 8 MiB
+limit, including actual JSON formatting, escaping and inherited repetitions.
+A small accepted response shape is not proof of bounded derived output. The
+collector's assessment and actual compiler both reject excessive expansion
+before draft publication; failed collection keeps its original journal and hold.
+Do not retry a transfer, raise the reader limit or silently drop boundaries to
+make it fit. Request a separately reviewed decomposition instead. Existing
+oversized historical artifacts remain unreadable and held, not auto-repaired.
+
 The actual compiler verifies the source again and persists a non-executable draft.
 Blocking unknowns or incomplete required sections produce needs_clarification,
 never a manufactured ready result. Successful analysis still needs independently
@@ -82,8 +91,9 @@ protected-host proof.
 Inspect Model Actions after lost delivery. Failed, unknown, changed-source or
 interrupted collection/publication remains held and fences both local model
 purposes. The existing omission-only failed-transfer acknowledgment explicitly
-rejects analysis actions; a purpose-specific analysis recovery ceremony remains
-unfinished. Never delete rows, relabel purpose, reuse a nonce or rerun a model to
+rejects analysis actions. The separate [analysis ceremony](order-analysis-reconciliation.md)
+now supports a verifiable failed transfer and exact observed compiler publication,
+not missing/integrity/unknown-process recovery. Never delete rows, relabel purpose, reuse a nonce or rerun a model to
 clear a hold. Result inspection cannot establish remote cancellation or billing.
 If compilation publishes a draft before a later failure, keep that exact draft
 and the held action. Inspect Evidence and Model Actions separately; neither

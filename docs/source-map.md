@@ -7,6 +7,34 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The complete-draft size boundary in [request intake](request-order-intake.md)
+and [native analysis](native-order-analysis.md) is local engineering synthesis,
+not a military-source or model-quality claim. It follows an actual synthetic
+small-response/amplified-publication counterexample and reuses the reader's
+unchanged byte limit. Complete serialized output is bounded without dropping
+inherited constraints or renewing consent. Historical oversize recovery and
+current-source operational acceptance remain separate.
+Both issuance/channel runtime commitments now directly include the intake
+contract and compiler; only synthetic structural samples are regenerated.
+Existing operational signatures or runtime commitments are never rewritten.
+
+The [analysis recovery candidate](order-analysis-reconciliation.md) is local
+engineering synthesis over the existing purpose-bound collector, signed owner
+reservation, exact journal inspection and actual compiler reader. Separate
+analysis authorization/receipt types do not share omission consent or upgrade
+unbound legacy provenance. A review-time verified-manifest absence is not a
+no-effect assertion; later legitimate publication preserves that old observation.
+Current response/journal/publication bindings and failed receipt history remain
+accountable. No new military source, protected-host/human-presence guarantee,
+provider cancellation or semantic-quality claim is introduced.
+Its retained initial browser failure was a stale evidence-selection race during
+full manifest refresh; the server denied correctly. The UI now removes old
+actions/counts before the new list arrives and tests delayed delivery without
+weakening snapshot validation or automatically retrying a decision.
+Its later HTTP fixture failure was rate-limit interference with a different
+intended rule, not an authorization bypass. Independent exact-error cases and
+an actual throttle case preserve both requirements without weakening the limit.
+
 The shared model invocation/history integrity rule is local engineering synthesis.
 A retained actual-controller probe found that original signatures and a supplied
 digest field could label a changed projected mission as verified in history,

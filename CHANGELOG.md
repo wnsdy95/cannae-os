@@ -6,6 +6,36 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Repair the size regression's fixture-layer interference: prove structural
+  validity before requiring the complete-output denial instead of expecting
+  that semantic rule after a correct per-field MAX_LENGTH rejection. Preserve
+  the failed exact-source ladder and adapt both skills; no limit is weakened.
+
+- Reject derived order drafts that exceed the unchanged 8 MiB reader limit
+  before serialization/publication, including UTF-8, escaping and inherited
+  repetition. Retain the actual small-response/21 MiB-publication counterexample;
+  test exact byte boundaries, real compilation/inspection and held synthetic
+  native collection without truncating tasks or widening authority. Both skills
+  require reviewed decomposition rather than automatic retry or boundary loss.
+
+- Separate independent analysis-recovery denial fixtures from the real commit
+  throttle and regress its exact ninth-attempt denial. Preserve the original
+  21-pass/one-failure suite and update both skills; do not widen production limits
+  or count an unrelated rate rejection as proof of a later rule.
+
+- Fence stale evidence actions during full manifest refresh after actual compiler
+  publication. Keep server snapshot denial and the failed browser ladder intact;
+  regress delayed list delivery instead of bypassing freshness or retrying consent.
+  Both skill sources carry the refresh-boundary lesson.
+
+- Add separate failed-analysis acknowledgment with exact original journal,
+  response and observed draft-publication appraisal, two owner acknowledgments
+  and distinct signed records/endpoints. Preserve failures, existing drafts and
+  review-time absence through legitimate later publication without model/compiler
+  replay or adoption/cleanup authority. Keep missing/integrity/unknown-process
+  holds closed, retain receipt-boundary crash/lost-response behavior and old
+  omission compatibility, and adapt both routed skills. Acceptance stays separate.
+
 - Repair the native-analysis validator fixture's missing explicit issue-code
   expectation. Preflight every CLI fixture definition before spawning children
   and regress malformed definitions without defaulting missing expectations.

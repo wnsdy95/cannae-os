@@ -6,7 +6,8 @@ if (model.startsWith("fixture-")) { require("../semantic-evaluation-fixtures/fak
 else {
   let input = ""; process.stdin.setEncoding("utf8"); process.stdin.on("data", bytes => { input += bytes; });
   process.stdin.on("end", () => {
-    const output = args[args.indexOf("--output-last-message") + 1], body = require("./support").response();
+    const output = args[args.indexOf("--output-last-message") + 1], support = require("./support");
+    const body = model === "analysis-amplified" ? support.amplifiedResponse() : support.response();
     JSON.parse(input.split("\n\nINPUT:\n")[1]);
     fs.writeFileSync(path.join(path.dirname(output), "provider-started"), "Synthetic analysis process, not model evidence.");
     if (model === "analysis-uncertain") body.statements.push({ id: "ST-UNRESOLVED", kind: "unknown", text: "Clarify an unresolved target.", blocking: true, source: { kind: "none" } });

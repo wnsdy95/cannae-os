@@ -155,6 +155,14 @@ async function createConsole(options) {
   }) } }, async request => semantic.reconciliation.commit(request.session, request.body));
   app.get("/api/model-evaluations/:id/reconciliations", { schema: { params: plain({ id: uuid }) } },
     async request => semantic.reconciliation.list(request.session, request.params.id));
+  app.post("/api/order-analyses/:id/reconciliation/preview", { onRequest: guard,
+    schema: { params: plain({ id: uuid }), body: plain({}) } }, async request => semantic.reconciliation.prepare(request.session, request.params.id, "order_analysis"));
+  app.post("/api/analysis-reconciliations/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    reconciliation_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000),
+    acknowledge_provider_uncertainty: { const: true }, acknowledge_analysis_publication: { const: true }
+  }) } }, async request => semantic.reconciliation.commit(request.session, request.body, "order_analysis"));
+  app.get("/api/order-analyses/:id/reconciliations", { schema: { params: plain({ id: uuid }) } },
+    async request => semantic.reconciliation.list(request.session, request.params.id, "order_analysis"));
   app.post("/api/order-decisions/preview", { onRequest: guard, schema: { body: plain({
     entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" },
     rehearsal_id: { type: "string", pattern: "^(none|[a-f0-9]{64})$" }, disposition: { type: "string", enum: ["approve", "reject", "revise"] }

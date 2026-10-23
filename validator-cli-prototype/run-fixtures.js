@@ -11,6 +11,11 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["authorization", "record"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing analysis reconciliation ${suffix}`, file: `sample-payloads/${prefix}-operator-analysis-reconciliation-${suffix}.json`,
+    type: `operator-analysis-reconciliation-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : [suffix === "authorization" ? "CONST_MISMATCH" : "ANALYSIS_RECONCILIATION_PUBLICATION_INVALID"]
+  }))),
   { name: "validator fixture expectations are explicit before any child runs", check() {
     for (const requiredCodes of [undefined, null, "CONST_MISMATCH", [7]]) {
       assert.throws(() => assertFixtureDefinitions([{ name: "malformed definition", requiredCodes }]),

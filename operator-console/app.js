@@ -182,10 +182,15 @@ async function loadOperations() {
 }
 async function loadEvidence(append) {
   const scope = beginRead("evidence");
+  const body = $("#artifacts");
   const params = new URLSearchParams();
   if ($("#mission-filter").value.trim()) params.set("mission", $("#mission-filter").value.trim());
   if ($("#kind-filter").value.trim()) params.set("kind", $("#kind-filter").value.trim());
   if (append && cursor) params.set("cursor", cursor);
+  if (!append) {
+    snapshot = cursor = null; empty(body, 5, "Loading...");
+    $("#artifact-count").textContent = ""; $("#revision").textContent = ""; $("#more").hidden = true;
+  }
   $("#more").disabled = true;
   try {
     const data = await readResponse(`/api/evidence?${params}`, scope);
@@ -193,7 +198,6 @@ async function loadEvidence(append) {
     snapshot = data.manifest_sha256; cursor = data.next_cursor;
     $("#artifact-count").textContent = `${data.total} retained artifacts`;
     $("#revision").textContent = `Manifest revision ${data.manifest_revision}`;
-    const body = $("#artifacts");
     if (!append) body.replaceChildren();
     if (!data.total) empty(body, 5, "No retained artifacts");
     for (const item of data.entries) {
@@ -205,6 +209,9 @@ async function loadEvidence(append) {
       const handling = cell(row, ""), label = document.createElement("span"); label.className = "tag"; label.textContent = "Restricted"; handling.append(label);
     }
     $("#more").hidden = !cursor;
+  } catch (failure) {
+    if (readCurrent(scope) && !append) empty(body, 5, "Evidence unavailable");
+    throw failure;
   } finally { if (readCurrent(scope)) $("#more").disabled = false; }
 }
 async function inspect(item, manifest) {

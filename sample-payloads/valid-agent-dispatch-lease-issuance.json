@@ -56,8 +56,8 @@
     "release_authorized": false
   },
   "issuance_ref": {
-    "artifact_id": "DLI-cf118e46c07117a8c03097cdde7c4df18128e02c",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-cf118e46c07117a8c03097cdde7c4df18128e02c.json",
+    "artifact_id": "DLI-0873f87aaa8ecc5d2397a16f25dac7239cdcc0bf",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-0873f87aaa8ecc5d2397a16f25dac7239cdcc0bf.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   }
 }

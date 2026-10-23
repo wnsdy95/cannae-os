@@ -41,6 +41,23 @@ passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
 
+Before acknowledging a failed model action, route its exact producer purpose.
+Analysis can publish a draft before later failure; a null result reference is
+not publication-absence evidence. Bind original response bytes and read actual
+retained draft history without invoking compilation. Preserve a review-time
+manifest absence observation when later separately approved work publishes the
+same deterministic draft; never rewrite old proof or confer adoption/cleanup
+authority. Verify this with both actual pre/post-publication failures and receipt
+boundary process death, not only schema or successful-transfer cases.
+After compiler publication changes a manifest, invalidate old evidence selections
+while a full list refresh is pending. A stale-snapshot denial is a working server
+guard, not permission to bypass or auto-renew it; regress delayed list delivery
+through the real browser and preserve any failed workflow's original evidence.
+Keep independent authentication/validation fixture cases below the production
+request limit. A throttled request does not prove a later semantic rule ran;
+isolate those test environments and separately exercise the real throttle without
+disabling it or accepting its rejection in place of the intended exact error.
+
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
 the next dependency-ready item from `docs/completion-backlog.md`, then inspect
 its registered source requirements and existing implementation mappings.

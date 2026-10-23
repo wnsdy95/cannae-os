@@ -11,7 +11,7 @@ async function main() {
     await check("both issuance/channel source commitments include the shared collector, analysis contracts and result schemas", () => {
       for (const surface of [require("./dispatch-issuance-contract"), require("./method-control-contract")]) {
         for (const file of ["codex-bounded-collector.js", "codex-order-analysis-collector.js", "order-analysis-generator.js", "order-analysis-generation-contract.js",
-          "operator-order-analysis-contract.js", "schema-files/order-analysis-response.schema.json", "schema-files/operator-order-analysis.schema.json"]) assert(surface.CODE.includes(file), file);
+          "order-intake-contract.js", "request-order-compiler.js", "operator-order-analysis-contract.js", "schema-files/order-analysis-response.schema.json", "schema-files/operator-order-analysis.schema.json"]) assert(surface.CODE.includes(file), file);
       }
     });
     await check("actual proposed response compiles through real intake and structural planning without manual analysis input", () => {
@@ -25,6 +25,29 @@ async function main() {
       assert.equal(plan.proposal.status, "ready_for_review"); assert.equal(plan.plan.agents.length, 2);
       assert.equal(plan.execution_authorized, false); assert.equal(plan.release_authorized, false);
       assert.throws(() => require("./skill-mission-controller").openWave(plan.plan, value.options), /ORDER_ADOPTION_REQUIRED/);
+    });
+    await check("small repeated responses cannot publish unreadable amplified drafts or silently drop inherited boundaries", () => {
+      const value = env(), preview = prepare(value), response = support.amplifiedResponse();
+      assert(Buffer.byteLength(JSON.stringify(response)) < 1048576);
+      const input = clone(response), analysis = contract.materialize(response, preview), compiler = require("./request-order-compiler");
+      const manifest = () => require("./campaign-supervisor").loadVerifiedStore(value.options.repository, value.options.artifactRoot).manifest;
+      const before = clone(manifest());
+      assert.throws(() => contract.assessResponse(response, preview), /^Error: ORDER_INTAKE_DRAFT_TOO_LARGE$/);
+      assert.throws(() => generator.compileAnalysis(response, preview), /^Error: ORDER_INTAKE_DRAFT_TOO_LARGE$/);
+      assert.throws(() => compiler.compileOrder(analysis, value.options), /^Error: ORDER_INTAKE_DRAFT_TOO_LARGE$/);
+      assert.deepEqual(manifest(), before); assert.deepEqual(response, input);
+      assert.equal(manifest().artifacts.filter(item => item.kind === "order-drafts").length, 0);
+      // A separate smaller proposal is still complete, reviewable and non-executable.
+      response.statements.at(-1).text = "Synthetic bounded proposal. " + "x".repeat(15000);
+      const result = generator.compileAnalysis(response, preview), draft = compiler.inspectDraft({ ...value.options, draftId: result.draft.id }).draft;
+      assert.equal(draft.opord.execution.tasks.length, 64);
+      assert.deepEqual(draft.analysis.tasks, response.tasks); assert.deepEqual(draft.analysis.retained_user_decisions, response.retained_user_decisions);
+      for (const task of draft.opord.execution.tasks) {
+        assert.deepEqual(task.inherited_constraints, draft.opord.situation.constraints);
+        assert.equal(task.retained_user_decisions.length, response.retained_user_decisions.length);
+        assert.equal(task.execution_authorized, false);
+      }
+      assert.equal(result.execution_authorized, false); assert.equal(result.release_authorized, false);
     });
     await check("blocking unknowns and missing required sections persist needs_clarification rather than ready execution", () => {
       for (const mutate of [body => body.statements.push({ id: "ST-UNKNOWN", kind: "unknown", text: "Clarify target.", blocking: true, source: { kind: "none" } }),

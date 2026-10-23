@@ -1,5 +1,62 @@
 # Research Compendium
 
+## Bounded Derived Order Publication (2026-10-24)
+
+A retained synthetic probe passed an 80,932-byte authored response through the
+actual materializer/compiler and published a 21,200,694-byte draft that the
+8,388,608-byte reader then rejected. It did not invoke the native collector or
+a real model; execution and release remained false. Input/schema limits alone
+do not bound output when global text is inherited by many tasks.
+
+The local correction counts the complete store encoding, including two-space
+formatting, final newline, escaping and UTF-8, with early termination and cached
+string costs rather than allocating an amplified serialized output. Actual
+assessment/compiler paths reject before publication; the reader limit is not
+widened. Under-limit work keeps every task/constraint/decision. Both skills route
+the exact denial and require a separately reviewed decomposition instead of
+automatic truncation, transfer replay or historical artifact rewriting.
+Synthetic collector regressions are not real provider/owner acceptance or
+semantic calibration. Existing oversized history needs separate recovery.
+The first frozen correction ladder rejected the original counterexample, then
+failed its new semantic-validator assertion because a deliberately oversized
+analysis field hit schema `MAX_LENGTH` first. That failure is retained, not a
+whole-suite pass. The revised regression proves structural validity before
+requiring the whole-draft size denial; neither limit is weakened.
+
+## Purpose-Specific Analysis Recovery (2026-10-24)
+
+A failed request analysis can already have published a non-executable draft when
+later delivery fails. A null draft field in the signed failure therefore does not
+prove publication absence. The separate [owner ceremony](order-analysis-reconciliation.md)
+binds original collector/response bytes and derives the expected draft for actual
+read-only compiler inspection. It never recompiles or adopts that draft. An exact
+verified-manifest absence observation is not a universal no-effect claim; later
+independently approved deterministic publication must not rewrite that historical
+observation or permanently deadlock future work. A previously observed published
+reference and original response/journal/consent must remain exact.
+
+Analysis v0.1 already has a journal commitment; accepting it does not retrofit
+unbound omission v0.1 history. Separate typed purposes and endpoints prevent
+borrowing another acknowledgment while sharing verification mechanics. This is
+local engineering synthesis. Synthetic crash/browser checks and current signatures
+do not prove real human presence, protected keys, provider cancellation, billing,
+unknown-process recovery or independent semantic calibration. All eight outcomes
+and operational acceptance remain separate.
+
+The first frozen browser ladder also exposed stale Evidence rows remaining
+clickable during a full refresh after publication changed the manifest. The
+server correctly rejected the old snapshot. Clearing old actions/counts before
+awaiting a fresh list repairs that workflow without weakening the server guard
+or silently renewing consent. Preserve the original failed ladder/screenshot;
+the delayed-list regression tests the changed UI boundary, not a security bypass.
+
+The next frozen HTTP ladder retained a different failure: nine invalid commit
+attempts in one fixture caused the real eight-per-minute throttle to run before
+the intended rationale check. An unrelated rejection cannot prove that later
+rule. Separate synthetic environments now test the exact independent denials,
+and a dedicated case tests the actual ninth-attempt throttle with unchanged hold
+and no signature. The production limit is not relaxed or mocked away.
+
 ## Historical Model Scope Integrity (2026-10-23)
 
 An actual synthetic controller probe on the first native-analysis candidate
@@ -24,7 +81,9 @@ treating generated statements as verified facts. Existing owner review remains
 mandatory. The official [CLI reference](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
 supports the transport choices, not semantic correctness or protected execution.
 Synthetic response labels are authored tests, not independent held-out truth.
-Analysis-specific recovery, calibration and complete orchestration remain open.
+The later analysis acknowledgment entry supports verifiable failures and observed
+publication only; unknown/integrity recovery, calibration and complete orchestration
+remain open.
 
 ## Bounded Structural Planning (2026-10-23)
 

@@ -22,8 +22,24 @@ response; never rerun to hide failure or use the omission acknowledgment to clea
 an analysis hold. Generate the exact bounded plan, then obtain fresh coverage and
 USER adoption before dispatch. Proposed roles and quoted bytes do not
 prove semantic completeness or expand authority.
+On `ORDER_INTAKE_DRAFT_TOO_LARGE`, stop publication and preserve the original
+analysis/transfer history. Small responses can amplify through inherited task
+text; do not raise the 8 MiB reader limit, drop constraints/tasks or retry a
+model automatically. Ask for a separately reviewed bounded decomposition and
+fresh review/consent where required. Test the actual compiler and reader, not
+only response schema/input bytes. Old oversized artifacts are not repaired by
+truncation or re-signing.
+An overall-size regression must first pass structural validation; a per-field
+`MAX_LENGTH` denial does not prove the complete-output budget ran.
 After uncertain draft publication, inspect Evidence and Model Actions separately;
 preserve a draft already written without clearing the held transfer or rerunning it.
+For a verifiable failed analysis, use the separate procedure in
+`docs/order-analysis-reconciliation.md`. Review both original process/journal
+proof and the exact observed draft publication, then let the real owner consume
+the analysis-specific two-acknowledgment ceremony. Never use omission endpoints,
+recompile to discover effects, adopt/delete a draft as cleanup or treat verified
+manifest absence as proof of no effects. Inspect a lost commit; obtain fresh
+consent after a failed reservation. Unknown/integrity holds remain unsupported.
 For signed model history, require the full invocation and nested preview to rehash
 to their original signed commitments before trusting displayed scope. A valid
 signature over a digest field alone is insufficient. Keep changed records held;

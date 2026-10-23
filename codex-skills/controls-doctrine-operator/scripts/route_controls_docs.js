@@ -7,10 +7,16 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "analysis-reconciliation",
+    keywords: ["analysis reconciliation", "analysis-reconciliation", "analysis hold", "analysis-hold", "failed request analysis", "order analysis recovery", "order analysis failed transfer", "operator-analysis-publication", "operator-reconciliation-contract-core"],
+    docs: ["docs/order-analysis-reconciliation.md", "docs/native-order-analysis.md", "docs/model-transfer-reconciliation.md"],
+    commands: ["node run-operator-analysis-reconciliation-contract-fixtures.js", "node run-operator-analysis-reconciliation-fixtures.js", "node run-operator-model-reconciliation-contract-fixtures.js", "node run-operator-model-reconciliation-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
     id: "order-analysis-generation",
-    keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector", "model invocation integrity", "model-invocation-integrity"],
+    keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector", "model invocation integrity", "model-invocation-integrity", "derived order", "draft too large", "order_intake_draft_too_large"],
     docs: ["docs/native-order-analysis.md", "docs/request-order-intake.md", "docs/model-transfer-consent.md", "docs/bounded-plan-synthesis.md"],
-    commands: ["node run-order-analysis-generation-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+    commands: ["node run-request-order-compiler-fixtures.js", "node run-order-analysis-generation-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
   },
   {
     id: "bounded-planning",
@@ -528,6 +534,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "analysis-reconciliation", keywords: ["analysis-reconciliation", "operator-analysis-publication", "operator-reconciliation-contract-core", "order-analysis-fixtures/reconciliation", "order-analysis-fixtures/write-reconciliation"] },
   { id: "order-analysis-generation", keywords: ["order-analysis", "native-order-planning", "native-order-analysis", "codex-bounded-collector", "prepare_controls_analysis", "model-invocation-integrity"] },
   { id: "bounded-planning", keywords: ["bounded-planning", "bounded-plan-synthesis", "plan_controls_mission"] },
   { id: "semantic-admission", keywords: ["requirement-inventory", "semantic-coverage", "semantic-review-assignment", "review_controls_requirements"] },
