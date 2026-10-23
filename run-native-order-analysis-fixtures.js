@@ -75,10 +75,16 @@ async function main() {
       assert.equal(fs.readdirSync(path.join(env.stateDir, "model-evaluations")).length, 1);
     } finally { generator.compileAnalysis = original; }
   });
-  for (const model of ["analysis-forged", "analysis-authority", "fixture-null", "fixture-invalid-utf8", "fixture-tool"]) {
+  for (const model of ["analysis-forged", "analysis-authority", "analysis-amplified", "fixture-null", "fixture-invalid-utf8", "fixture-tool"]) {
     await check(`actual ${model} collection cannot create an order and holds both model purposes`, async env => {
       const prepared = await preview(env); await env.owner.post("/api/order-analyses/commit", commitInput(prepared), 202);
       const current = await terminal(env, prepared.challenge_id); assert.equal(current.state, "held"); assert.equal(current.hold_preserved, true);
+      if (model === "analysis-amplified") {
+        assert.equal(current.result_verified, true); assert.equal(current.result.collection.status, "not_evaluated");
+        assert(current.result.collection.failure_reasons.includes("SEMANTIC_COLLECTION_FAILED"));
+        assert.equal(current.result.collection.process_exit_confirmed, true); assert.equal(current.result.collection.process_group_absent, true);
+        assert.equal(fs.readdirSync(path.join(env.stateDir, "model-evaluations")).length, 1);
+      }
       assert.equal((await env.owner.get("/api/evidence?kind=order-drafts")).total, 0);
       assert.equal((await env.owner.post("/api/order-analyses/preview", env.previewInput, 409)).error, "CONSOLE_MODEL_RECONCILIATION_REQUIRED");
       assert.equal((await env.owner.post(`/api/model-evaluations/${current.id}/reconciliation/preview`, {}, 409)).error, "CONSOLE_MODEL_RECONCILIATION_PURPOSE_UNSUPPORTED");

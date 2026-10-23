@@ -43,13 +43,14 @@ for (const router of ROUTERS) {
     assert(result.validation_commands.includes("node run-operator-analysis-reconciliation-contract-fixtures.js"));
   }
   for (const query of ["order analysis", "order-analysis-generation", "native planning", "prepare_controls_analysis", "codex-bounded-collector.js",
-    "model invocation integrity", "model-invocation-integrity"]) {
+    "model invocation integrity", "model-invocation-integrity", "derived order output bounds", "draft too large", "ORDER_INTAKE_DRAFT_TOO_LARGE"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["order-analysis-generation"]);
     assert.equal(result.capability_routing.status, "covered");
     assert(result.recommended_documents.some(item => item.path === "docs/native-order-analysis.md"));
     assert(result.validation_commands.includes("node run-native-order-analysis-fixtures.js"));
     assert(result.validation_commands.includes("node run-model-invocation-integrity-fixtures.js"));
+    assert(result.validation_commands.includes("node run-request-order-compiler-fixtures.js"));
   }
   for (const query of ["requirement inventory", "semantic coverage review", "semantic-review-assignment", "semantic review assignment",
     "schema-files/semantic-review-assignment.schema.json", "Review SEMANTIC-REVIEW-ASSIGNMENT before adoption", "review_controls_requirements"]) {

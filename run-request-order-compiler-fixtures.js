@@ -10,7 +10,7 @@ const originalWrite = store.writeRepositoryArtifact;
 let beforeWrite = null;
 store.writeRepositoryArtifact = options => { if (beforeWrite) beforeWrite(options); return originalWrite(options); };
 const { captureRequest, analysisTemplate, compileOrder, inspectDraft } = require("./request-order-compiler");
-const { buildDraft, sha256 } = require("./order-intake-contract");
+const { buildDraft, sha256, draftArtifactFits, MAX_ORDER_ARTIFACT_BYTES } = require("./order-intake-contract");
 const { validatePayload, validateSchemaPayload } = require("./validator-cli-prototype/validate");
 const { verifyDissemination } = require("./orders-dissemination-runner");
 const { openWave } = require("./skill-mission-controller");
@@ -58,6 +58,22 @@ function denied(name, mutation, expected) {
 }
 
 try {
+  check("draft byte accounting matches actual pretty JSON at the exact reader boundary", () => {
+    for (const text of ["plain", "\uD83D\uDE80\uAC00", "\n\t\"\\\u0000\ud800"]) {
+      const value = { nested: [{ text }, [], {}, null, false, 1], padding: "" };
+      const encoded = item => Buffer.byteLength(JSON.stringify(item, null, 2) + "\n");
+      value.padding = "x".repeat(MAX_ORDER_ARTIFACT_BYTES - encoded(value) - 1);
+      assert.equal(encoded(value), MAX_ORDER_ARTIFACT_BYTES - 1); assert.equal(draftArtifactFits(value), true);
+      value.padding += "x";
+      assert.equal(encoded(value), MAX_ORDER_ARTIFACT_BYTES); assert.equal(draftArtifactFits(value), true);
+      value.padding += "x";
+      assert.equal(encoded(value), MAX_ORDER_ARTIFACT_BYTES + 1); assert.equal(draftArtifactFits(value), false);
+    }
+    const invalid = clone(require("./sample-payloads/valid-order-draft.json"));
+    invalid.analysis.statements[0].text = "x".repeat(MAX_ORDER_ARTIFACT_BYTES);
+    const result = validatePayload(invalid, "order-draft");
+    assert.equal(result.valid, false); assert(result.issues.some(item => item.code === "ORDER_INTAKE_DRAFT_TOO_LARGE"));
+  });
   check("captured request is byte-exact, immutable and never execution authority", () => {
     const env = environment(), request = read(env, env.captured.artifact_ref);
     assert.equal(request.text, REQUEST_TEXT); assert.equal(request.text_sha256, sha256(Buffer.from(REQUEST_TEXT)));

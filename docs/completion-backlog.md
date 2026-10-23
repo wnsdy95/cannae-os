@@ -76,6 +76,14 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+An actual synthetic probe published a 21 MiB draft from an approximately 81 KiB
+response, then failed the unchanged 8 MiB reader. The local size-bound correction
+rejects excessive complete output before publication, preserves all inherited
+boundaries and adds exact encoding/compiler/native-collector regressions. This
+does not repair already oversized history, prove provider semantics or constitute
+source acceptance/operational rollout. The predecessor remains a merge hold
+until the correction receives its own current-source verification.
+
 The [native request-analysis candidate](native-order-analysis.md) adds a separate
 purpose-bound model proposal consumed by the actual OPORD compiler. Its shared
 transport does not share omission consent or confer calibrated admission. A

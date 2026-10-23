@@ -22,6 +22,13 @@ response; never rerun to hide failure or use the omission acknowledgment to clea
 an analysis hold. Generate the exact bounded plan, then obtain fresh coverage and
 USER adoption before dispatch. Proposed roles and quoted bytes do not
 prove semantic completeness or expand authority.
+On `ORDER_INTAKE_DRAFT_TOO_LARGE`, stop publication and preserve the original
+analysis/transfer history. Small responses can amplify through inherited task
+text; do not raise the 8 MiB reader limit, drop constraints/tasks or retry a
+model automatically. Ask for a separately reviewed bounded decomposition and
+fresh review/consent where required. Test the actual compiler and reader, not
+only response schema/input bytes. Old oversized artifacts are not repaired by
+truncation or re-signing.
 After uncertain draft publication, inspect Evidence and Model Actions separately;
 preserve a draft already written without clearing the held transfer or rerunning it.
 For a verifiable failed analysis, use the separate procedure in

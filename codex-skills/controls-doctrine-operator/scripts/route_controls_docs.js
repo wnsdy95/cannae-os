@@ -14,9 +14,9 @@ const RULES = [
   },
   {
     id: "order-analysis-generation",
-    keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector", "model invocation integrity", "model-invocation-integrity"],
+    keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector", "model invocation integrity", "model-invocation-integrity", "derived order", "draft too large", "order_intake_draft_too_large"],
     docs: ["docs/native-order-analysis.md", "docs/request-order-intake.md", "docs/model-transfer-consent.md", "docs/bounded-plan-synthesis.md"],
-    commands: ["node run-order-analysis-generation-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+    commands: ["node run-request-order-compiler-fixtures.js", "node run-order-analysis-generation-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
   },
   {
     id: "bounded-planning",

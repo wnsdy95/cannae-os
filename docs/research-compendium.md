@@ -1,5 +1,23 @@
 # Research Compendium
 
+## Bounded Derived Order Publication (2026-10-24)
+
+A retained synthetic probe passed an 80,932-byte authored response through the
+actual materializer/compiler and published a 21,200,694-byte draft that the
+8,388,608-byte reader then rejected. It did not invoke the native collector or
+a real model; execution and release remained false. Input/schema limits alone
+do not bound output when global text is inherited by many tasks.
+
+The local correction counts the complete store encoding, including two-space
+formatting, final newline, escaping and UTF-8, with early termination and cached
+string costs rather than allocating an amplified serialized output. Actual
+assessment/compiler paths reject before publication; the reader limit is not
+widened. Under-limit work keeps every task/constraint/decision. Both skills route
+the exact denial and require a separately reviewed decomposition instead of
+automatic truncation, transfer replay or historical artifact rewriting.
+Synthetic collector regressions are not real provider/owner acceptance or
+semantic calibration. Existing oversized history needs separate recovery.
+
 ## Purpose-Specific Analysis Recovery (2026-10-24)
 
 A failed request analysis can already have published a non-executable draft when

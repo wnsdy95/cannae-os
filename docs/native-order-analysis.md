@@ -55,6 +55,15 @@ facts, duplicate/missing references, unknown fields, authority fields and roles
 outside the reviewed envelope fail. Proposals, assumptions and unknowns remain
 explicitly separate from attributed facts.
 
+The full projected draft must also fit the compiler reader's unchanged 8 MiB
+limit, including actual JSON formatting, escaping and inherited repetitions.
+A small accepted response shape is not proof of bounded derived output. The
+collector's assessment and actual compiler both reject excessive expansion
+before draft publication; failed collection keeps its original journal and hold.
+Do not retry a transfer, raise the reader limit or silently drop boundaries to
+make it fit. Request a separately reviewed decomposition instead. Existing
+oversized historical artifacts remain unreadable and held, not auto-repaired.
+
 The actual compiler verifies the source again and persists a non-executable draft.
 Blocking unknowns or incomplete required sections produce needs_clarification,
 never a manufactured ready result. Successful analysis still needs independently

@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reject derived order drafts that exceed the unchanged 8 MiB reader limit
+  before serialization/publication, including UTF-8, escaping and inherited
+  repetition. Retain the actual small-response/21 MiB-publication counterexample;
+  test exact byte boundaries, real compilation/inspection and held synthetic
+  native collection without truncating tasks or widening authority. Both skills
+  require reviewed decomposition rather than automatic retry or boundary loss.
+
 - Separate independent analysis-recovery denial fixtures from the real commit
   throttle and regress its exact ninth-attempt denial. Preserve the original
   21-pass/one-failure suite and update both skills; do not widen production limits
