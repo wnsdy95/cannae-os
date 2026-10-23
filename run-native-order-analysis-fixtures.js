@@ -58,6 +58,23 @@ async function main() {
     assert.equal((await env.owner.post("/api/order-analyses/commit", commitInput(prepared), 409)).error, "CONSOLE_MODEL_PREVIEW_CHANGED");
     assert.equal(fs.readdirSync(path.join(env.stateDir, "model-evaluations")).length, 0);
   });
+  await check("a failure after actual compiler publication preserves the draft and failed one-use action without model replay", async env => {
+    const generator = require("./order-analysis-generator"), original = generator.compileAnalysis;
+    generator.compileAnalysis = (...args) => { original(...args); throw new Error("SEMANTIC_ANALYSIS_PUBLICATION_UNKNOWN"); };
+    try {
+      const prepared = await preview(env); await env.owner.post("/api/order-analyses/commit", commitInput(prepared), 202);
+      const current = await terminal(env, prepared.challenge_id);
+      assert.equal(current.state, "held"); assert.equal(current.result_verified, true); assert.equal(current.hold_preserved, true);
+      assert.equal(current.result.error, "SEMANTIC_ANALYSIS_PUBLICATION_UNKNOWN"); assert.equal(current.result.draft_ref, null);
+      const drafts = await env.owner.get("/api/evidence?kind=order-drafts"); assert.equal(drafts.total, 1);
+      assert.equal(inspectDraft({ ...env.options, draftId: drafts.entries[0].artifact_id }).draft.execution_authorized, false);
+      assert.equal(fs.readdirSync(path.join(env.stateDir, "model-evaluations")).length, 1);
+      env.previewInput = await env.refresh();
+      assert.equal((await env.owner.post("/api/order-analyses/preview", env.previewInput, 409)).error, "CONSOLE_MODEL_RECONCILIATION_REQUIRED");
+      await env.owner.post("/api/order-analyses/commit", commitInput(prepared), 409);
+      assert.equal(fs.readdirSync(path.join(env.stateDir, "model-evaluations")).length, 1);
+    } finally { generator.compileAnalysis = original; }
+  });
   for (const model of ["analysis-forged", "analysis-authority", "fixture-null", "fixture-invalid-utf8", "fixture-tool"]) {
     await check(`actual ${model} collection cannot create an order and holds both model purposes`, async env => {
       const prepared = await preview(env); await env.owner.post("/api/order-analyses/commit", commitInput(prepared), 202);

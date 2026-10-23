@@ -8,6 +8,12 @@ const clone = value => JSON.parse(JSON.stringify(value)); let passed = 0;
 async function check(name, fn) { await fn(); passed++; console.log(`PASS ${name}`); }
 async function main() {
   try {
+    await check("both issuance/channel source commitments include the shared collector, analysis contracts and result schemas", () => {
+      for (const surface of [require("./dispatch-issuance-contract"), require("./method-control-contract")]) {
+        for (const file of ["codex-bounded-collector.js", "codex-order-analysis-collector.js", "order-analysis-generator.js", "order-analysis-generation-contract.js",
+          "operator-order-analysis-contract.js", "schema-files/order-analysis-response.schema.json", "schema-files/operator-order-analysis.schema.json"]) assert(surface.CODE.includes(file), file);
+      }
+    });
     await check("actual proposed response compiles through real intake and structural planning without manual analysis input", () => {
       const value = env(), preview = prepare(value), result = generator.compileAnalysis(support.response(), preview);
       const draft = require("./request-order-compiler").inspectDraft({ ...value.options, draftId: result.draft.id }).draft;

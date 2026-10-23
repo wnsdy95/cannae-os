@@ -73,6 +73,9 @@ purposes. The existing omission-only failed-transfer acknowledgment explicitly
 rejects analysis actions; a purpose-specific analysis recovery ceremony remains
 unfinished. Never delete rows, relabel purpose, reuse a nonce or rerun a model to
 clear a hold. Result inspection cannot establish remote cancellation or billing.
+If compilation publishes a draft before a later failure, keep that exact draft
+and the held action. Inspect Evidence and Model Actions separately; neither
+absence of a successful response nor a visible draft permits model replay.
 
 ## Sources And Evidence
 

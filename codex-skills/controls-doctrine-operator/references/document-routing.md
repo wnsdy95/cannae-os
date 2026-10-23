@@ -22,6 +22,8 @@ response; never rerun to hide failure or use the omission acknowledgment to clea
 an analysis hold. Generate the exact bounded plan, then obtain fresh coverage and
 USER adoption before dispatch. Proposed roles and quoted bytes do not
 prove semantic completeness or expand authority.
+After uncertain draft publication, inspect Evidence and Model Actions separately;
+preserve a draft already written without clearing the held transfer or rerunning it.
 
 Inventory coverage and request routing are separate gates. After adding a
 contract alias, run `node run-document-routing-fixtures.js` as well as `--coverage`
