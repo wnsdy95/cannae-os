@@ -32,6 +32,13 @@ Move procedure detail into the linked reference or doctrine document; do not rai
 the limit or omit the routed control. Routing fixtures execute this check so a
 valid route cannot conceal an invalid entrypoint.
 
+When extending validator CLI cases, declare `requiredCodes` explicitly, including
+`[]` for valid cases, and run `node validator-cli-prototype/run-fixtures.js`
+before expensive producer/browser ladders. The harness preflights definitions;
+never hide a missing expectation with a default empty array. A harness exception
+is a failed gate with an unexecuted suffix, even if individual runtime runners
+passed. Preserve its original source/log and verify the repaired CLI separately.
+
 ## Completion Audits
 
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
@@ -65,6 +72,18 @@ not a reason to relax the gate. Finish the edit, retain the failed run, then rer
 from one fixed tree. After an early-stop failure, distinguish tests actually run
 from the unexecuted remainder; neither the old pass count nor an aggregate's
 remaining-failure count proves the final tree.
+
+In replay fixtures, isolate durable one-use ID consumption from consent expiry.
+Use a separately signed, currently valid synthetic proposal with the consumed ID
+and assert that original journal bytes remain unchanged. Keep expiry tests
+separate; never broaden the expected error set or renew real consent to obtain
+a passing reservation assertion.
+
+Before changing a browser deadline, retain bounded HTTP status history, the
+current UI error and sanitized durable action/result state. A missing rendered
+result does not distinguish a rejected request, held process, polling failure or
+slow observation. Never export auth rows, credentials or approval nonces in that
+diagnostic record; keep the original failed run separate from revalidation.
 
 ## Publication Denial And Partial State
 
@@ -407,6 +426,12 @@ unrelated or cosmetic edit merely to satisfy the gate.
 - If the source is not strong enough for policy, record it as a research gap rather than a rule.
 
 ## Validation Discipline
+
+When added proof traversal expires a repository lease, retain the exact failure
+before changing timeouts. Share immutable replay only inside the existing
+synchronous operation scope, keyed by exact history and subject. Keep live
+freshness outside that cache and start publication with a fresh appraisal.
+Never make a passing test depend on extending authority or reusing cached consent.
 
 Start targeted, then broaden:
 

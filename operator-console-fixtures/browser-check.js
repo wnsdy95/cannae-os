@@ -30,6 +30,7 @@ async function main() {
     await page.locator("#auth-form input[name=username]").fill("browserowner");
     await page.locator("#auth-form input[name=password]").fill(password);
     await page.locator("#auth-form button[type=submit]").click();
+    await page.getByRole("button", { name: "Evidence", exact: true }).click();
     await page.getByRole("button", { name: "OUT-ALPHA", exact: true }).waitFor();
     assert.equal(new URL(page.url()).hash, "");
     await page.screenshot({ path: path.join(output, "owner-desktop.png"), fullPage: true });
@@ -52,6 +53,7 @@ async function main() {
     await viewer.locator("#auth-form input[name=username]").fill("browserviewer");
     await viewer.locator("#auth-form input[name=password]").fill(password);
     await viewer.locator("#auth-form button[type=submit]").click();
+    await viewer.getByRole("button", { name: "Evidence", exact: true }).click();
     await viewer.getByRole("button", { name: "OUT-ALPHA", exact: true }).waitFor();
     assert.equal(await viewer.getByRole("button", { name: "OUT-BRAVO", exact: true }).count(), 0);
     assert.equal(await viewer.getByRole("button", { name: "Access", exact: true }).count(), 0);

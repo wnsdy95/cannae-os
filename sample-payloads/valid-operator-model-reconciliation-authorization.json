@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "type": "OperatorModelReconciliationAuthorization",
+  "id": "OMRA-32a18873-1a60-4a28-a399-6f07e9b6821e",
+  "reconciliation_id": "32a18873-1a60-4a28-a399-6f07e9b6821e",
+  "action_id": "075b474d-820d-49ec-8153-231e6c888afd",
+  "sequence": 1,
+  "purpose": "acknowledge_one_failed_model_transfer",
+  "resolution": "acknowledge_failed_transfer",
+  "principal_id": "2a2f67c9-6bce-4070-87e2-8a4b178a0ca4",
+  "principal_epoch": 1,
+  "authentication_method": "local_owner_password_reauthentication",
+  "session_sha256": "30c6694c1dc67d6760db752ebcf9159c1bebbbb92f9fe622a6d1d44773d8f74a",
+  "nonce_sha256": "c9c6a4839b21fafce0edea52be0012cf85eaca8c392f7f0fb86cff3e2d6dd072",
+  "rationale": "Synthetic fixture acknowledges only a failed local transfer, not provider billing or execution.",
+  "created_at": "2026-10-23T00:00:01Z",
+  "expires_at": "2026-10-23T00:02:00Z",
+  "subject": {
+    "action_id": "075b474d-820d-49ec-8153-231e6c888afd",
+    "repository_binding": {
+      "repository_key": "synthetic-model-repository",
+      "identity_fingerprint": "5dc2b1cc634f98453856d5c02ec10d2a17e681d86ca23159901ed993110080ad"
+    },
+    "original_action_sha256": "336dbb4329ab352fa26e1f915c29b5ed75a814cd8d032fd7920a296f00d3bcc3",
+    "invocation_sha256": "2bb4bd6d72c7adc03ff7bdd11278e668ef498b3b2dedc55feb719c361b1b681a",
+    "consent_sha256": "e1f17963f6b69a1e310a07f20769ba5649d1d3e73afae6128e5216a3ec88a3c3",
+    "result_sha256": "5ae031c1e9c78fe734217c1b49b9cb06768a1f8536b9ed8f479f4d14a7232be4",
+    "journal_sha256": "32c68e53f30cbcb5c5a4b8e3699cd31a102623617d07470d217cb18995769981",
+    "manifest_sha256": "650c5d632d4e8bc404f747ea19c1d3d7684f6131d45803930beb11908024856e",
+    "repository_state_sha256": "47546cd25125f930aaba848634a5ddab78b28e6e8bf3dcd6f17837cae8c33502",
+    "runtime_source_sha256": "ffd2abe1d145e4a56463d358c5559d248d8647d4956de2916be0447fdaa52859",
+    "prior_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "trusted_key_sha256": "1b67e8c264c5acc85ae49ee8c31a4aacf68dabc17044dd324e20a7015c7b38ab",
+    "process_id": 2147483000,
+    "observed_at": "2026-10-23T00:00:00Z",
+    "child_exit_recorded": true,
+    "child_absence_observed": true,
+    "process_group_absence_observed": true,
+    "failure_reasons": [
+      "SEMANTIC_PROVIDER_FAILED"
+    ],
+    "transfer_effects": "possibly_transmitted",
+    "provider_billing_verified": false,
+    "provider_cancellation_verified": false
+  },
+  "provider_uncertainty_acknowledged": true,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "1b67e8c264c5acc85ae49ee8c31a4aacf68dabc17044dd324e20a7015c7b38ab",
+    "value": "trXectGUJd7hpR/u7QRieTTGzmxzgwunoij0uPquzbOI2pIwXXqzNzOv6QqNtqrajbbpJNFYv7ZBrHqTYfL/BA=="
+  }
+}

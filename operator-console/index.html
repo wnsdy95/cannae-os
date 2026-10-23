@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Controls Operator</title>
   <link rel="stylesheet" href="/app.css">
+  <script src="/semantic.js" defer></script>
+  <script src="/coverage.js" defer></script>
   <script src="/app.js" defer></script>
 </head>
 <body>
@@ -28,9 +30,11 @@
     <div class="workspace-grid">
       <nav aria-label="Workspace">
         <div id="repository" class="repository"></div>
-        <button data-tab="evidence" aria-current="page"><img src="/icons/folder-search.svg" alt="">Evidence</button>
+        <button data-tab="operations" aria-current="page"><img src="/icons/activity.svg" alt="">Operations</button>
+        <button data-tab="evidence"><img src="/icons/folder-search.svg" alt="">Evidence</button>
         <button data-tab="proposals"><img src="/icons/clipboard-list.svg" alt="">Order Proposals</button>
         <button data-tab="decisions" data-owner><img src="/icons/clipboard-check.svg" alt="">Decisions</button>
+        <button data-tab="semantic" data-owner><img src="/icons/clipboard-check.svg" alt="">Model Actions</button>
         <button data-tab="access" data-owner><img src="/icons/users.svg" alt="">Access</button>
         <button data-tab="activity" data-owner><img src="/icons/activity.svg" alt="">Activity</button>
         <div class="nav-footer"><span class="status-dot"></span>Local session</div>
@@ -39,6 +43,18 @@
         <div class="section-heading"><div><p class="eyebrow">OPERATOR WORKSPACE</p><h1 id="view-title">Evidence</h1></div>
           <button id="refresh" class="icon" title="Refresh" aria-label="Refresh"><img src="/icons/refresh-cw.svg" alt=""></button></div>
         <p id="workspace-error" class="error" role="alert"></p>
+        <section id="operations-view" hidden>
+          <div class="cop-status"><strong id="operations-state" role="status">Loading snapshot</strong><span>Recorded state / liveness unverified</span></div>
+          <div class="table-summary"><span id="operations-asof"></span><span id="operations-manifest"></span></div>
+          <section class="cop-attention" aria-labelledby="attention-title"><h2 id="attention-title">Attention / All Permitted Missions</h2><p id="operations-alert-count"></p><ul id="operations-alerts"></ul></section>
+          <form id="operations-filters" class="filters">
+            <label>Mission<input name="mission" placeholder="All permitted missions" maxlength="128" pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}"></label>
+            <label>Staff role<select name="role"><option value="">All staff roles</option></select></label>
+            <button type="submit">Apply</button>
+          </form>
+          <div class="table-summary"><span id="operations-count"></span><span>Restricted / Read-only</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Mission / Wave</th><th>Recorded State</th><th>Assignments</th><th>Control Activity</th><th>Evidence</th></tr></thead><tbody id="operations-waves"></tbody></table></div>
+        </section>
         <section id="evidence-view">
           <form id="filters" class="filters"><label>Mission<input id="mission-filter" name="mission" placeholder="All permitted missions" maxlength="128"></label>
             <label>Kind<input id="kind-filter" name="kind" placeholder="All kinds" maxlength="128"></label><button type="submit">Apply</button></form>
@@ -57,17 +73,42 @@
         </section>
         <section id="activity-view" hidden><div class="table-wrap"><table><thead><tr><th>Recorded</th><th>Action</th><th>Actor</th><th>Subject</th></tr></thead><tbody id="activity"></tbody></table></div></section>
         <section id="decisions-view" hidden><div class="table-wrap"><table><thead><tr><th>Decision</th><th>Proposal</th><th>Disposition</th><th>State</th><th>Recorded</th></tr></thead><tbody id="decisions"></tbody></table></div></section>
+        <section id="semantic-view" hidden><p id="semantic-attention" role="status"></p><div class="table-wrap"><table><thead><tr><th>Model Action</th><th>Source / Mission</th><th>Model</th><th>State / Verdict</th><th>Recorded</th></tr></thead><tbody id="semantic-entries"></tbody></table></div></section>
         <footer><span id="review-mode">Order review: disabled</span><span>Tool execution: disabled</span><span>Release: disabled</span><a href="/licenses/lucide.txt" target="_blank" rel="noopener">Icon Licenses</a></footer>
       </main>
     </div>
   </div>
   <dialog id="detail"><header><div><p class="eyebrow">RETAINED EVIDENCE</p><h2 id="detail-title"></h2></div><button id="close-detail" class="icon" title="Close" aria-label="Close"><img src="/icons/x.svg" alt=""></button></header>
     <p id="decision-status" role="status"></p><div class="outcome-actions"><button id="inspect-outcome" type="button" hidden><img src="/icons/folder-search.svg" alt="">Inspect Outcome</button><button id="review-terminal" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Terminal Outcome</button></div><dl id="detail-meta"></dl><pre id="detail-content" tabindex="0"></pre>
+    <div class="outcome-actions"><button id="semantic-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt=""><span id="semantic-preview-label">Evaluate Omissions</span></button><button id="semantic-stop" type="button" hidden><img src="/icons/x.svg" alt="">Stop Evaluation</button><button id="model-hold-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Model Hold</button></div>
+    <section id="semantic-confirmation" hidden><h2>Model Transfer Review</h2><dl id="semantic-profile"></dl><p id="semantic-expiry"></p><pre id="semantic-prompt" tabindex="0"></pre>
+      <form id="semantic-commit-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I approve sending this exact text to this model once.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt=""><span id="semantic-commit-label">Approve One Evaluation</span></button></form>
+    </section>
+    <section id="model-hold-confirmation" hidden><h2>Failed Model Transfer Review</h2><p id="model-hold-expiry"></p><dl id="model-hold-meta"></dl><pre id="model-hold-subject" tabindex="0"></pre>
+      <form id="model-hold-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I acknowledge this failed local transfer. Prior transmission, provider billing and cancellation remain unverified.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt="">Acknowledge Failed Transfer</button></form>
+    </section>
     <form id="decision-preview-form" hidden>
       <fieldset><legend>Disposition</legend><div class="disposition-options"><label><input type="radio" name="disposition" value="approve" required>Adopt</label><label><input type="radio" name="disposition" value="revise">Revise</label><label><input type="radio" name="disposition" value="reject">Reject</label></div></fieldset>
       <label>Rehearsal<select id="rehearsal-select" name="rehearsal"><option value="none">None</option></select></label><button type="submit">Preview Decision</button>
     </form>
-    <section id="decision-confirmation" hidden><h2>Exact Decision Review</h2><p id="decision-expiry"></p><pre id="consent-content" tabindex="0"></pre>
+    <section id="decision-confirmation" hidden><h2>Exact Decision Review</h2><p id="decision-expiry"></p>
+      <section id="coverage-review" aria-label="Requirement coverage review" hidden>
+        <div class="coverage-assurance"><strong>Human review</strong><span>Model uncalibrated</span><span>Semantic completeness not proven</span></div>
+        <p id="coverage-summary"></p><p id="coverage-binding" class="muted"></p>
+        <div class="coverage-tabs" role="tablist" aria-label="Review views">
+          <button type="button" id="coverage-tab-coverage" role="tab" data-coverage-view="coverage" aria-selected="true" aria-controls="coverage-panel-coverage">Coverage</button>
+          <button type="button" id="coverage-tab-source" role="tab" data-coverage-view="source" aria-selected="false" aria-controls="coverage-panel-source">Source</button>
+          <button type="button" id="coverage-tab-plan" role="tab" data-coverage-view="plan" aria-selected="false" aria-controls="coverage-panel-plan">Plan</button>
+        </div>
+        <div id="coverage-filters" class="filters"><label>Receiver<select id="coverage-target"><option value="">All receivers</option></select></label>
+          <label>Proposed disposition<select id="coverage-disposition"><option value="">All dispositions</option><option value="preserved">Preserved</option><option value="not_applicable">Not applicable</option><option value="omitted">Omitted</option><option value="contradicted">Contradicted</option><option value="uncertain">Uncertain</option></select></label></div>
+        <p id="coverage-count" role="status"></p>
+        <div id="coverage-panel-coverage" role="tabpanel" aria-labelledby="coverage-tab-coverage" data-coverage-panel="coverage" class="table-wrap"><table class="coverage-table"><thead><tr><th>Requirement / Source</th><th>Receiver / Exact Location</th><th>Proposed Coverage</th></tr></thead><tbody id="coverage-rows"></tbody></table></div>
+        <div id="coverage-panel-source" role="tabpanel" aria-labelledby="coverage-tab-source" data-coverage-panel="source" class="table-wrap" hidden><table class="coverage-table"><thead><tr><th>Fragment</th><th>Exact Source</th><th>Authored Classification</th></tr></thead><tbody id="coverage-source-rows"></tbody></table></div>
+        <div id="coverage-panel-plan" role="tabpanel" aria-labelledby="coverage-tab-plan" data-coverage-panel="plan" hidden><h3>Compiled Order</h3><pre id="coverage-order" tabindex="0"></pre><h3>Complete Proposed Plan</h3><pre id="coverage-plan" tabindex="0"></pre></div>
+        <div id="coverage-pagination"><button type="button" id="coverage-previous" class="icon" title="Previous review page" aria-label="Previous review page"><img src="/icons/chevron-left.svg" alt=""></button><span id="coverage-page"></span><button type="button" id="coverage-next" class="icon" title="Next review page" aria-label="Next review page"><img src="/icons/chevron-right.svg" alt=""></button></div>
+      </section>
+      <details id="consent-raw"><summary>Exact Approval Subject</summary><pre id="consent-content" tabindex="0"></pre></details>
       <form id="decision-commit-form"><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button id="commit-decision" type="submit" class="primary">Record Decision</button></form>
     </section><section id="terminal-confirmation" hidden><h2 id="terminal-title">Terminal Review</h2><p id="terminal-expiry"></p><pre id="terminal-content" tabindex="0"></pre>
       <form id="terminal-commit-form"><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button id="commit-terminal" type="submit" class="primary">Record Terminal Decision</button></form>

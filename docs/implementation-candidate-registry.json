@@ -730,19 +730,23 @@
       "workstream_id": "cop-reporting",
       "implementation_status": "partial",
       "implementation_paths": [
-        "event-replay-prototype/replay.js"
+        "event-replay-prototype/replay.js",
+        "operational-cop.js",
+        "schema-files/operational-cop.schema.json",
+        "operator-console-server.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the cop-projection-runner.js proposal and associated constraints in docs/common-operational-picture-state.md.",
           "validation_commands": [
-            "node event-replay-prototype/run-event-fixtures.js"
+            "node event-replay-prototype/run-event-fixtures.js",
+            "node run-operational-cop-fixtures.js"
           ]
         }
       ],
       "remaining_work": [
-        "Add unified COP contract, source completeness, version/freshness validation, and lifecycle integration; raw replay is only the base projection."
+        "Complete unified source coverage across approvals, CCIR, readiness, risks and resources, configurable report thresholds and CoS decision consumption. The Operations candidate replays real wave/control history and scoped freshness only; acceptance and complete goal 4 remain separate."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },

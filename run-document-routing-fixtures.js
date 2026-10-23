@@ -34,6 +34,47 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["order analysis", "order-analysis-generation", "native planning", "prepare_controls_analysis", "codex-bounded-collector.js",
+    "model invocation integrity", "model-invocation-integrity"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["order-analysis-generation"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/native-order-analysis.md"));
+    assert(result.validation_commands.includes("node run-native-order-analysis-fixtures.js"));
+    assert(result.validation_commands.includes("node run-model-invocation-integrity-fixtures.js"));
+  }
+  for (const query of ["requirement inventory", "semantic coverage review", "semantic-review-assignment", "semantic review assignment",
+    "schema-files/semantic-review-assignment.schema.json", "Review SEMANTIC-REVIEW-ASSIGNMENT before adoption", "review_controls_requirements"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["semantic-admission"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/requirement-inventory-admission.md"));
+    assert(result.validation_commands.includes("node run-requirement-inventory-fixtures.js"));
+    assert.equal(result.capability_routing.provisional_organization.required, false);
+  }
+  for (const query of ["bounded planning", "bounded-planning", "automatic plan", "structural synthesis", "plan_controls_mission"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["bounded-planning"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert.equal(result.capability_routing.provisional_organization.required, false);
+    assert(result.recommended_documents.some(item => item.path === "docs/bounded-plan-synthesis.md"));
+    assert(result.validation_commands.includes("node run-bounded-planning-fixtures.js"));
+    assert(result.validation_commands.includes("node run-bounded-planning-metadata-fixtures.js"));
+  }
+  for (const query of ["model hold", "operator-model-reconciliation", "model-transfer-reconciliation"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["semantic-omission"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/model-transfer-reconciliation.md"));
+    assert(result.validation_commands.includes("node run-operator-model-reconciliation-fixtures.js"));
+  }
+  for (const query of ["operational COP", "operations screen", "critical alert scope"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["operational-cop"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/operational-cop.md"));
+    assert(result.validation_commands.includes("node run-operational-cop-fixtures.js"));
+  }
   for (const query of ["issuance recovery", "recover-issuance", "cancel-issuance"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["dispatch-issuance-recovery"]);

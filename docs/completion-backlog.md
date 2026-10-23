@@ -21,7 +21,7 @@ before an operation. No row grants approval or changes the USER's final authorit
 | 3 | Implementation inventory: source-bound registry and CI audit merged in PR #50; 125 requirements accounted for, 40 declared implemented, 26 partial and 59 planned after the first reviewed-method integration. | Every current candidate accounted for, mapped aliases reviewed, unfinished behavior explicit, drift/omission/false-completion tests, CI audit, and both skill entrypoints updated. This closes inventory coverage, not all candidates. |
 | 4 | General request-to-OPORD compiler: exact capture, typed analysis and provenance-bound drafts connect to full USER adoption, per-agent backbrief/rehearsal and versioned lifecycle/dispatch consumers. Local owner consent now reaches actual adoption; linked revisions fence predecessor/successor tools around settlement and supersession. | Preserve original bytes, inherited boundaries and one-use full-plan review. Test substitution, expiry during cleanup, concurrent selection, publication races, wrappers, termination history and same-wave downgrade. Semantic-completeness evaluation, broader authenticated control transport, automatic replanning and initiative integration remain open. Quote fidelity is not truth; adoption is not tool/release authority. |
 | 5 | Intent lineage and disciplined initiative: mandatory context v0.4 and narrowing-only checks reach execution consumers. An optional reviewed baseline adds finite substitutions, result-bound SITREPs, safeguards and actual drift denial/revocation. Its local MCP channel adds dormant startup, exact observed-session enrollment and delivery holds without agent shell/approval authority. Separately reviewed channel policy v0.2 adds finite same-wave continuation with root deadlines, shared metadata/task budgets, settled reports and exact interruption/supersession lineage. A local journaled issuance candidate freezes successor inputs before supersession and permits only exact missing-publication recovery or unused cancellation; validation and acceptance remain separate. Approval-bearing delegation and the broader initiative workflow remain incomplete. | Preserve admitted-result settlement; prove actual native agent-client startup/configuration separately from SDK pipes and synthetic hooks. Validate issuance crash/journal recovery, concurrency and stop-publication races across real consumers; unrecorded legacy successor inputs must never be reconstructed. Add novel-method effect/semantic checks, Green insertion/reordering, full DI catalog and degeneration coverage, broader authenticated CoS acknowledgments, readiness/recovery and mandatory rollout. Local metadata or issuance recovery never reruns tasks or closes goal 2. |
-| 6 | COP, reporting, and CoS integration: event projections and individual linters exist, unified operational controls remain partial. | Event-derived, freshness-aware role views; exception-first reporting thresholds; critical alerts cannot be suppressed; board/packet integration and anti-noise checks across actual mission lifecycle. |
+| 6 | COP, reporting, and CoS integration: an authenticated read-only Operations candidate now replays verified wave/context/terminal and dispatch history with mission scope, freshness and unsuppressed critical alerts. Unified operational controls remain partial; candidate acceptance is separate. | Event-derived, freshness-aware role views; exception-first reporting thresholds; critical alerts cannot be suppressed; readiness/risk/resource completeness, board/packet integration and anti-noise checks across actual mission lifecycle. See `docs/operational-cop.md`; a current-looking snapshot is not liveness or authority. |
 | 7 | Capability and force lifecycle: gap routing creates a mission-scoped cell and requires USER approval for standing activation; no complete cross-mission capability registry/reconciliation. | Stable capability ownership, repeat-demand evidence, explicit create/expand/merge/reduce/deactivate decisions, bounded task organization, and reconciliation of active agents, model/resource assignments, and authority after each change. Include liaison, partner boundaries, readiness ceilings, and training regression. |
 | 8 | Sustainment and controlled boundary outputs: budget/fallback checks and disclosure gates exist; candidate-level orchestration remains partial. | Checkpoint recovery drills, resource priority/preemption, audited filter exceptions, handoff quality gates, and release-packet assembly/revocation with adversarial fixtures. Consult each registry entry; a detector is not an end-to-end output filter. |
 | 9 | Evidence API and actual approval/COP UI: local login, bounded viewer accounts, verified evidence and one-use password-reauthenticated order adoption/rejection/revision are implemented. Worker exit fences the queue; outcome inspection replays history without writes. The separate local terminal ceremony uses fresh owner consent, exact old-decision cancellation or acknowledgment, durable receipts and guarded hold discharge without replaying original adoption. Broader tool-action approval, operational COP, other transaction ownership classes and protected production remain open. | Verify repository-isolated evidence, actual controller consumption, observed exit, immutable inspection, preserved failures/expiry and every original/terminal write interruption. Prove old decision rejection and separate legitimate fresh review, nonce/session/role/race boundaries, signed audit bindings and desktop/mobile terminal flows. See `docs/local-operator-console.md`, `docs/operator-consent-and-adoption.md` and `docs/operator-terminal-reconciliation.md`. |
@@ -75,6 +75,50 @@ requires a new policy or external deployment decision, return that decision to
 the USER and continue independent in-scope work.
 
 ## Closure Discipline
+
+The [native request-analysis candidate](native-order-analysis.md) adds a separate
+purpose-bound model proposal consumed by the actual OPORD compiler. Its shared
+transport does not share omission consent or confer calibrated admission. A
+signed proposed/clarification draft still needs human coverage and USER adoption;
+the existing finite roster/policy envelope remains explicit. Purpose-specific
+analysis recovery, independently held-out semantic calibration and complete
+autonomous orchestration remain open. This does not close rows 4/9 or goal 3/7.
+
+The [bounded structural generator](bounded-plan-synthesis.md) fills the actual
+OPORD-to-plan/policy assembly gap and links generated successors to existing
+revision/adoption/dispatch consumers. Remaining budgets come from actual parent
+admissions, not a reset at a new wave. It uses declared roster/estimate bounds
+and zero model calls: model-authored strategy, calibrated semantic completeness,
+actual cross-mission readiness/resource truth and autonomous planning orchestration
+remain open. This candidate does not close row 4 or any of the eight outcomes.
+The separately reproduced CLI-envelope-as-work counterexample requires the
+operation/nested-metadata regression, not merely the prior positive synthesis
+ladder. Structured-packet rejection still does not attest arbitrary work truth.
+
+The [source-accounted inventory candidate](requirement-inventory-admission.md)
+adds a mandatory **human inventory and coverage** review class to new captured
+request adoption, receiver assignment and covered next-call paths. It is not
+calibrated model admission or automatic planning. Legacy history remains readable
+without renewed captured-request execution. Every-byte classification and exact
+quote matrices cannot detect a human's incorrect semantic classification. Rows
+4/9 and all eight goals remain open; acceptance is separate from implementation.
+The owner's source/requirement/receiver UI adds scannable comparison, explicit
+human-review limits, complete plan/raw inspection and filter-invariant consent.
+It does not close calibrated admission, automatic planning, broader approvals or
+any of the eight outcomes; browser presentation is not semantic assurance.
+
+The [semantic collector](semantic-omission-evaluation.md) now has an opt-in
+[authenticated owner transfer ceremony](model-transfer-consent.md): exact packet
+preview, password/stored-session checks, a one-use reservation and signed result
+inspection through the actual collector. Logout/stop/shutdown preserve failed
+and unknown outcomes; copies remain control metadata at the report consumer.
+This does not close rows 4/9 or goals 3/7. Held-out calibration, mandatory versioned
+calibrated model adoption/receiver/dispatch consumers, bounded planning/replanning and model-hold
+recovery for unknown/integrity failures remain open. A separate
+[verified failed-transfer acknowledgment](model-transfer-reconciliation.md)
+now appends fresh owner consent and a saved signed receipt after PID/group absence,
+without changing the failed result or invoking a model. It does not discharge
+provider billing or other ownership domains. Default fixture passes execute zero actual model calls.
 
 ### Active Eight-Part Goal
 

@@ -3,7 +3,7 @@
   "type": "MethodControlChannelPolicy",
   "transport": "mcp_stdio_reference",
   "identity_assurance": "local_operator_enrollment_reference",
-  "runtime_sha256": "75add20f9266671eda7962b6ff29b7f29a10eeff8955d739c34193cfda8b9694",
+  "runtime_sha256": "eaeb194e1a6cd47d66f990b794f470a926e5f8d34407a4de77ffaa9dc2bd3e71",
   "max_requests": 32,
   "max_validity_seconds": 600,
   "request_validity_seconds": 30,

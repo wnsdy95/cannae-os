@@ -42,6 +42,9 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "decision-logs",
   "mission-requests",
   "order-drafts",
+  "requirement-inventories",
+  "semantic-coverage-proposals",
+  "bounded-planning-proposals",
   "order-adoption-proposals",
   "order-backbriefs",
   "order-rehearsals",
@@ -1077,6 +1080,8 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
       const typedControl = require("./method-control-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
+        require("./semantic-control-types").isNonWorkPayload(evidencePayload) ||
+        require("./operational-cop-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
         require("./dispatch-issuance-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
         require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
         ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack",

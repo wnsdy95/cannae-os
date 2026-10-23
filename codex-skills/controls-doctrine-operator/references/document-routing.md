@@ -1,5 +1,131 @@
 # Document Routing
 
+## Manual Receipt Procedure
+
+Use only for diagnosis/lower-level integration, not default dispatch. Give the
+wave and every receiver the same mission objective as `--capability-query`; the
+final query describes that receipt's narrower task. These commands grant nothing:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking --capability-query="<mission objective>" "<wave task>" .
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution --capability-query="<mission objective>" "<agent task>" .
+node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
+```
+
+## Requirement Review
+
+For model-proposed analysis from a retained request, read
+`docs/native-order-analysis.md`. Use `scripts/prepare_controls_analysis.js`
+only to prepare; real transfer uses the owner's exact request-analysis purpose,
+not omission/order consent or a CLI run flag. Inspect Model Actions after a lost
+response; never rerun to hide failure or use the omission acknowledgment to clear
+an analysis hold. Generate the exact bounded plan, then obtain fresh coverage and
+USER adoption before dispatch. Proposed roles and quoted bytes do not
+prove semantic completeness or expand authority.
+After uncertain draft publication, inspect Evidence and Model Actions separately;
+preserve a draft already written without clearing the held transfer or rerunning it.
+For signed model history, require the full invocation and nested preview to rehash
+to their original signed commitments before trusting displayed scope. A valid
+signature over a digest field alone is insufficient. Keep changed records held;
+never recalculate their hashes or re-sign altered bodies as a history repair.
+
+Inventory coverage and request routing are separate gates. After adding a
+contract alias, run `node run-document-routing-fixtures.js` as well as `--coverage`
+for both providers; a fully indexed corpus can still misroute a real query.
+If a known `semantic-review-assignment` request returns `gap_detected`, retain
+that failed result and inspect the query rule before proposing a new department.
+Do not suppress real capability gaps or infer authority from a corrected route.
+
+For automatic structural plan construction, read `docs/bounded-plan-synthesis.md`
+and use `scripts/plan_controls_mission.js` against the explicit target repository.
+Supply bounded roster/policy/control inputs, not a fabricated complete plan.
+Inspect `blocked` and search-limit results; never drop tasks, raise a budget or
+retry a larger search automatically to obtain readiness. Use only the returned
+plan with `planning_ref`. For a successor, run `prepare-revision` before preparing
+fresh coverage, then use its finalized plan. An old review is invalid after that
+binding changes. Preserve parent intent/caps and actual supersession/settlement;
+generation grants neither model transfer nor adoption, dispatch or release.
+The structural generator uses zero model calls and does not replace calibrated
+semantic analysis or an independently reviewed strategic planner.
+Reuse agent identity across a successor only with wave-distinct backbrief,
+rehearsal and decision IDs; a prior wave's evidence is not fresh acknowledgment.
+Keep `BoundedPlanningOperation` outputs out of task evidence, including legacy
+untyped bundles and nested/array-wrapped planning or semantic packets. Publish
+independent work facts and cite exact control references instead; wrapping a
+proposal or removing its outer tag never proves a task was performed.
+
+For requirement inventory and semantic coverage admission, read
+`docs/requirement-inventory-admission.md` and run
+`scripts/review_controls_requirements.js` with the exact target repository.
+Its template performs no extraction or transmission. Review every source
+fragment, retain coverage of every actual receiver and bind new adoption v0.2.
+Whole-plan edits invalidate that review. Legacy history is readable, not a way
+to regain active captured-request execution. Model results remain advisory;
+human inventory review is an explicit separate class, not calibrated automation.
+For linked revision, finalize its returned successor plan before preparing
+coverage: its new revision reference and shortened validity change the plan hash.
+Do not backdate coverage before the plan's creation or reuse the prior review.
+For browser adoption, compare the Source classifications (including context),
+global restrictions and each actual receiver in the Coverage view; inspect the
+complete Plan and Exact Approval Subject for budgets and fields not quoted in
+the matrix. Receiver/status filters and pagination narrow only the display, not
+the signed decision subject. They never renew consent. A readable matrix does
+not establish semantic equivalence or prove the human reviewed it. Close stale
+previews and obtain fresh review after plan changes; never approve from a
+partial or malformed matrix. Run `run-operator-coverage-ui-fixtures.js` and the
+real `operator-consent-fixtures/browser-check.js` after changing this presentation.
+
+For semantic omission evaluation, read `docs/semantic-omission-evaluation.md`
+and `docs/model-transfer-consent.md`. Run the collector, operator-semantic and
+control-evidence fixture suites plus the real browser check. `prepare` transmits nothing.
+Use bundled `scripts/evaluate_controls_request.js prepare --repository <repo>
+--draft-id <id>` outside the checkout; it exposes no model-execution command.
+Inspect actual compiled order/receiver projections, not unused analysis quotes.
+Existing CLI login and order consent never approve model transfer. Do not mint
+operational consent with fixture keys or expose private previews in agent chat.
+Use the console's exact-packet owner preview, password and one-use session-bound
+nonce after the trusted host explicitly configures its CLI/model pair. Never
+automate the real owner's account or approval. After logout/stop/shutdown require
+actual child close and group absence; inspect Model Actions after a lost
+response. For a verifiable failed transfer, read `docs/model-transfer-reconciliation.md`
+and use Review Model Hold. Require a fresh password/session-bound acknowledgment,
+exact original history and independently observed PID/group absence. Require the
+original v0.2 signed journal binding: never trust an unsigned journal PID or
+retroactively sign a v0.1 result's current files. Legacy unbound results remain
+readable but held; a later receipt cannot manufacture their missing provenance.
+Preserve the original failure; a saved signed receipt acknowledges only this local model hold
+and never starts a new call. After an interrupted acknowledgment, inspect history
+and obtain new consent; never finish the old reservation or replay its nonce.
+Missing signatures/journals or unconfirmed termination stay held. Never delete
+rows/journals or use another nonce/session to bypass a hold. Do not cite
+previews, transfer consents or evaluation results as task outputs, even in text
+or binary form. Native process exit does not prove upstream billing cancellation.
+Reject any response changed between collection and signing; do not bless the new
+bytes with a fresh signature or rerun the model to hide the original mismatch.
+Treat null/non-object JSONL and invalid UTF-8 as failed collection, not a reason
+to restart the HTTP service or replay consent. Confirm its actual child exit.
+An authentic signed transport-failure record is not signature corruption. Keep
+known digit-bearing codes such as `SEMANTIC_EVENT_UTF8_INVALID` intact; never
+replace that distinction with a broad diagnostic exception or a success label.
+At shutdown fence the worker queue and model collector together, then await both
+actual exits before releasing ownership. Never wait on one while the other admits work.
+After a timeout or lost result, keep the consumed reservation and inspect it;
+never retry the model automatically. Treat `complete` as advisory until held-out
+calibration and mandatory consumers exist; fake-process passes are not calibration.
+Unexpected startup diagnostics stay private and failed. Inspect their quarantined
+file; never broaden the diagnostic allowlist just to make the run pass.
+After a signal failure, preserve that failure and require actual child close
+plus group absence; a termination request or clean working tree proves neither.
+
+For an operational situation read, use `docs/operational-cop.md` and the
+authenticated Operations view; run `node run-operational-cop-fixtures.js` when
+maintaining it. Read attention across the entire permitted scope even when
+mission/staff filters return no rows. Refresh expired snapshots and reselect
+evidence after manifest drift. A recorded active lease, zero alerts or a fresh
+snapshot never proves worker liveness, task completion or tool eligibility.
+Never clear a hold by editing the view or recovering issuance during a read;
+follow its owning controller. COP JSON is control metadata, not work evidence.
+
 At lease issuance, inspect repository-wide gateway and unknown-effect holds,
 including other waves. A new session/wave cannot clear them. Publication must
 retain the specific hold before a generic manifest conflict. Use the exact
@@ -13,6 +139,12 @@ Do not read private setup links into chat, seed fake operational records, or
 interpret login, viewer invitations or proposal inspection as scope approval.
 Grant explicit restricted mission access only after owner reauthentication.
 After a stale manifest/cursor error, refresh the list and reselect the evidence.
+After logout, account replacement or a changed filter/selection, discard earlier
+responses and obtain a fresh principal-bound read; hidden old tables and dialogs
+must remain cleared. Run `operator-console-fixtures/session-browser-check.js`
+with the existing browser/API suites. A discarded approval response is not a
+cancelled decision: inspect its exact retained outcome, never replay its write.
+Keep authentication throttles active and obey an observed retry interval.
 
 For actual owner plan decisions, read `docs/operator-consent-and-adoption.md`
 and run `node run-operator-consent-fixtures.js` with the adoption/console suites.

@@ -1,5 +1,46 @@
 # Schema Files
 
+`order-analysis-response.schema.json` and `operator-order-analysis.schema.json`
+describe bounded proposed statements/tasks and non-authorizing signed collection
+results with exact original-journal and compiled-draft bindings. Schema checks
+cannot prove source quotes, signature trust, retained draft scope or calibration;
+the [actual analysis consumers](../docs/native-order-analysis.md) perform these
+separate checks. A held result is not a new execution grant.
+
+`bounded-planning-request.schema.json` and `bounded-planning-proposal.schema.json`
+describe finite proposed roster/control envelopes and non-authorizing structural
+generation. `order_binding.planning_ref` binds the finalized plan; actual replay
+and parent-budget/revision consumers, not schema validity alone, prove that
+construction. Follow [bounded synthesis](../docs/bounded-plan-synthesis.md).
+
+`requirement-inventory.schema.json`, `semantic-coverage-proposal.schema.json`
+and `semantic-review-assignment.schema.json` describe non-authorizing source
+partitions, human coverage proposals and need-to-know receiver assignments.
+New adoption request/proposal/decision/record v0.2 requires the exact review path;
+v0.1 remains historical only at active captured-request consumers. Schema checks
+cannot verify retained sources, human judgement or model calibration. Follow
+[requirement inventory admission](../docs/requirement-inventory-admission.md).
+
+`operator-semantic-evaluation.schema.json` preserves authentic v0.1 historical
+result shapes and v0.2 results with an original collector-journal commitment.
+Both versions are non-authorizing. The live reconciliation reader requires v0.2
+and its exact pinned journal; structural validity or a fresh hash cannot upgrade
+legacy provenance. Derived state/verdict and response-digest rules do not prove
+semantic quality, signature trust or process isolation.
+
+`operator-model-reconciliation-authorization.schema.json` and
+`operator-model-reconciliation-record.schema.json` bind fresh owner acknowledgment
+of one verifiable failed local transfer. Both remain non-authorizing, including
+the nested authorization. Schema validity cannot prove signatures, private
+history, process absence, provider cancellation or hold discharge; follow the
+[live model-domain ceremony](../docs/model-transfer-reconciliation.md).
+
+`operational-cop.schema.json` describes a restricted read-only snapshot of
+verified wave history, display filters, freshness and authorized-scope alerts.
+The validator never returns execution permission. Schema validity alone cannot
+prove session access, actual history, liveness or current repository state;
+the [COP query](../docs/operational-cop.md) independently replays those inputs.
+
 `dispatch-lease-issuance-request.schema.json` freezes one exact planned lease,
 observed manifest and predecessor/channel evidence before publication.
 `dispatch-lease-issuance-resolution.schema.json` records actual commit or

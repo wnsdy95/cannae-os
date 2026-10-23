@@ -1,5 +1,166 @@
 # Research Compendium
 
+## Historical Model Scope Integrity (2026-10-23)
+
+An actual synthetic controller probe on the first native-analysis candidate
+changed the stored preview's projected mission without changing its claimed
+invocation digest. Valid original consent/result signatures then accompanied an
+incorrectly verified history scope; fresh collection correctly rejected the
+modified body before launch. Those are separate paths and evidence classes.
+The shared consent verifier now recomputes the complete invocation and nested
+preview commitments before static historical validation, preserving original
+timing and signatures. Rehashing new content cannot repair old consent. Both
+skills and actual analysis/omission history regressions retain this operational
+lesson. This does not establish independent model quality or protected operation.
+
+## Purpose-Bound Native Request Analysis (2026-10-23)
+
+The [analysis candidate](native-order-analysis.md) addresses the still-manual
+request-to-analysis step before structural planning. A closed purpose adapter
+shares finite collection/process controls without sharing omission consent,
+prompt/schema or task authority. Model statements become actual compiler inputs;
+the host binds request/scope and retains proposed/unknown status rather than
+treating generated statements as verified facts. Existing owner review remains
+mandatory. The official [CLI reference](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
+supports the transport choices, not semantic correctness or protected execution.
+Synthetic response labels are authored tests, not independent held-out truth.
+Analysis-specific recovery, calibration and complete orchestration remain open.
+
+## Bounded Structural Planning (2026-10-23)
+
+The compiler-to-execution gap previously required a whole manually authored
+mission plan even after retaining actual OPORD tasks. The
+[structural generator](bounded-plan-synthesis.md) now constructs those plans and
+policy drafts from finite roster/control bounds, preserving actual task text,
+every task assignment, parent restrictions and exact source provenance. Failed
+allocation or exhausted search never presents a shortened or partial plan.
+Replanning subtracts actual prior allow admissions from parent policy/rule caps
+and rechecks remaining budget at consumption; a new wave must not silently reset
+spent allowance. Actual revision, fresh human coverage and USER adoption remain
+separate. This is structural synthesis with zero model calls, not automatic
+understanding, invented strategy, verified readiness or independent calibration.
+A separate actual report-consumer probe found an untyped planner CLI envelope
+could complete a data-only wave despite its inner proposal being non-work.
+Positive structural/browser/schema checks did not cover that composition.
+Typed operation returns and recursive semantic/planning packet detection now
+guard this boundary, with reference-only work as an explicit positive control.
+
+## Source-Accounted Human Coverage Review (2026-10-23)
+
+An advisory evaluator can enumerate only part of a request and still derive
+`complete` for its own subset. An unused analysis quotation likewise does not
+preserve a prohibition in an actual receiver task. The separate
+[human inventory admission candidate](requirement-inventory-admission.md) requires
+every source byte to be classified and every declared requirement to be reviewed
+against the actual order and receiving task/agent projection. New captured-request
+adoption binds that review and the whole plan; active consumers cannot downgrade
+it while historical records remain readable.
+
+This is an explicit human-review class, not a promotion of an uncalibrated model
+result. A wrong context classification or applicability judgement can still omit
+meaning. Exact pointers, fresh authentication and passing synthetic fixtures do
+not prove complete extraction or semantic equivalence. Independent held-out
+calibration and bounded automatic planning/replanning remain unfinished.
+The local owner preview now exposes exact source classifications, requirement
+instructions and actual receiving task/agent quotes side by side, while retaining
+the full plan and raw subject. Pagination/filter counts preserve the full matrix
+denominator and do not redefine consent. A clearer display helps inspection but
+cannot establish semantic equivalence or that the human read every requirement.
+
+## Failed Model Transfer Acknowledgment (2026-10-23)
+
+The [separate owner ceremony](model-transfer-reconciliation.md) resolves a verified
+failed local invocation without changing it to success or replaying its transfer.
+Bind fresh consent to exact signed failure, journal, source/repository/manifest,
+key and consumed-attempt inventory; independently observe both PID and process
+group absence. `EPERM` and PID reuse deny, rather than becoming absence evidence.
+An atomic saved receipt, not a private terminal label, acknowledges the local hold.
+
+The PID must already be committed by the original signed observation. A reproduced
+candidate counterexample changed only a private journal PID before review and
+obtained acknowledgment of that unrelated value despite a valid original result
+signature. Signed evaluation v0.2 now commits exact collector-returned journal
+bytes before review; historical v0.1 results remain readable but cannot acquire
+that missing provenance retroactively. Passing the earlier selected ladder did
+not cover or refute this counterexample.
+
+The original failure and prior attempts remain immutable. Fresh acknowledgment
+does not verify or cancel remote provider billing, clear another ownership class
+or authorize the next evaluation. Missing signatures, journals and termination
+proof stay held. Protected infrastructure and unknown-process recovery remain open.
+
+## Exact Model Transfer Consent (2026-10-23)
+
+The [local ceremony](model-transfer-consent.md) now connects an owner-reviewed
+packet to the existing collector. Cached user identity alone cannot revoke an
+already running collector after logout: check the actual stored session and
+retain the one-use reservation while terminating its child. Killing a read
+worker is not evidence that a separately spawned CLI stopped.
+
+Authenticated preparation is not transmission, HTTP 202 is not completion and
+process-group absence is not provider billing cancellation. Signed historical
+results remain advisory control metadata; their expiry does not become renewed
+permission. Missing/changed results are unverifiable and fence another local
+transfer. The later verified-failure acknowledgment above supplies only its own
+local hold ceremony; unknown/integrity recovery, held-out calibration, mandatory
+adoption consumers, automatic replanning and protected operation remain unfinished.
+
+## Existing-CLI Semantic Collector Foundation (2026-10-23)
+
+Literal source fidelity does not prove that compiled orders preserve prohibitions,
+approval conditions or bounds. The [collector foundation](semantic-omission-evaluation.md)
+therefore excludes unused analysis from its candidate and checks actual order and
+receiver projections. Exact UTF-8 spans and candidate pointers establish quoted
+provenance, not the truth of a model's coverage judgement.
+
+The existing local CLI login avoids new credential provisioning; it does not
+authorize private request transmission. A distinct pinned-key purpose binds one
+exact preview/profile and a durable reservation prevents automatic replay.
+At the foundation checkpoint, no owner-transfer ceremony existed; the separate
+authenticated transfer service described above now supplies that local path. Fake processes test
+failure behavior, never model quality; actual native probes must remain separately
+identified. Model snapshots, full native context/tool inventory, billing cancellation,
+held-out calibration and mandatory planning/adoption consumers remain unproven.
+
+## Browser Response Scope (2026-10-23)
+
+A real local browser counterexample retained an owner-authorized Evidence list,
+logged out, authenticated the same browser as a mission-scoped viewer, then
+delivered the old response. The server correctly bounded current viewer reads,
+but the old unguarded renderer restored an owner-only row in that workspace.
+Authentication at request time is therefore not sufficient render context.
+
+The shared console now checks session epoch, principal, view and per-surface
+request sequence, clears hidden data on identity changes and ignores stale
+errors and mutation responses. Its browser suite delays actual authenticated
+HTTP bodies; it does not infer correctness from mocked business decisions or
+API-only tests. The unchanged throttle can legitimately delay repeated fixture
+logins; tests validate the 429 and wait for `Retry-After`, never disable it.
+Both skills require fresh principal-bound reads and exact outcome inspection
+instead of replaying writes after a discarded response. This is a local display
+boundary, not erasure of previously copied data or protected deployment.
+
+## Operational Read Product (2026-10-23)
+
+The [local operational COP](operational-cop.md) derives an authenticated,
+restricted read product from actual manifest-backed wave/control history,
+not supplied demo events. Replaying terminal dependencies is necessary:
+a plausible closeout JSON is not proof that its report, controls, evidence,
+AAR/readiness derivation and dispatch settlement were admitted.
+
+Lease discovery is also not complete call admission. Owner-side projection
+separately compares the latest settled checkpoint with current repository
+state; it never calls admission or writes a denial to render the board.
+Pending tools remain pending while their actual result may change the tree.
+Staff display filters cannot suppress critical alerts elsewhere in permitted
+scope, and viewer scope cannot disclose foreign missions. Snapshot validity,
+record freshness and worker liveness are distinct. Both skills teach refreshing
+the manifest and never converting a current-looking view into execution consent.
+
+The fixed 300-second activity threshold is a local conservative display rule,
+not the planned configurable CCIR/reporting policy. Readiness/risk/resource
+blocks, CoS decision consumption and complete goal 4 remain unfinished.
+
 ## Local Issuance Transactions (2026-10-23)
 
 Full consumer integration distinguishes historical replay from current grants:
