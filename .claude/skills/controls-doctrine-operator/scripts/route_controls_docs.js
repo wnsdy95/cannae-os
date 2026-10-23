@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "force-registry",
+    keywords: ["force registry", "force-registry", "capability registry", "performer registry", "organization registry", "forceregistryentity", "forceregistryrequest", "forceregistryproposal", "forceregistryauthorization", "forceregistryevent", "operate_controls_force_registry"],
+    docs: ["docs/force-registry-enrollment.md", "docs/readiness-drop-reconciliation.md", "docs/readiness-to-authority-policy.md", "docs/force-structure-change-policy.md", "docs/completion-backlog.md"],
+    commands: ["node run-force-registry-contract-fixtures.js", "node run-force-registry-fixtures.js"]
+  },
+  {
     id: "workload-controls",
     keywords: ["workload control", "workload-control", "workload-policy-assessment", "workloadcontrolinput", "workloadcontrolreceipt", "workloadcontrolfailure", "workloadpolicyassessment", "subject-bound", "workload assessment", "report input binding", "actual evidence scan"],
     docs: ["docs/subject-bound-workload-controls.md", "docs/skill-operational-mission-lifecycle.md", "docs/sensitive-output-filter.md", "docs/completion-backlog.md"],
@@ -546,6 +552,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "force-registry", keywords: ["force-registry", "operate_controls_force_registry", "operator-console/force.js"] },
   { id: "workload-controls", keywords: ["workload-control", "workload-policy-assessment", "subject-bound-workload"] },
   { id: "force-readiness", keywords: ["readiness-drop", "reconcile_controls_readiness", "readiness-to-authority", "training-progression", "agent-readiness-ledger"] },
   { id: "analysis-reconciliation", keywords: ["analysis-reconciliation", "operator-analysis-publication", "operator-reconciliation-contract-core", "order-analysis-fixtures/reconciliation", "order-analysis-fixtures/write-reconciliation"] },

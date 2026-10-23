@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1",
+  "type": "ForceRegistryRequest",
+  "purpose": "force_registry_enrollment",
+  "mission_id": "MIS-FORCE-FIXTURE",
+  "wave_id": "ENROLL",
+  "operation": "enroll",
+  "expected_head_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "entity": {
+    "schema_version": "0.1",
+    "type": "ForceRegistryEntity",
+    "id": "ORG-FIXTURE",
+    "kind": "organization",
+    "version": 1,
+    "enrollment_state": "enrolled",
+    "label": "Synthetic organization",
+    "description": "Synthetic structural definition, not a qualified performer.",
+    "data": {
+      "kind": "organization",
+      "parent_id": "none",
+      "maintainer_roles": [
+        "USER",
+        "COS"
+      ]
+    },
+    "qualification_state": "unassessed",
+    "execution_authorized": false,
+    "release_authorized": false
+  },
+  "rationale": "Synthetic definition enrollment only.",
+  "evidence_refs": [],
+  "execution_authorized": false,
+  "release_authorized": true,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "standing_activation_authorized": false,
+  "id": "FRQ-0b1470fe9df498f4e5ab46a2c5ae44a415ad2607"
+}

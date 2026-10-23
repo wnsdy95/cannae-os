@@ -1,0 +1,54 @@
+{
+  "schema_version": "0.1",
+  "type": "ForceRegistryEvent",
+  "purpose": "force_registry_enrollment",
+  "sequence": 1,
+  "previous_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "authorization_ref": {
+    "artifact_id": "FRA-00000000-0000-4000-8000-000000000001",
+    "relative_path": "synthetic/authorization.json",
+    "sha256": "d64a07206f72335c2116392d6912712f98c6a2a60f21a53c3e78f489c4dda043"
+  },
+  "proposal_ref": {
+    "artifact_id": "FRP-8c11aeef33d3951976f4395367bb9f10209d1ffa",
+    "relative_path": "synthetic/proposal.json",
+    "sha256": "f0b1d022f18b3027eaa1aa89f352a880d7e7559e77bc5b5fd771f94f4a89d456"
+  },
+  "operation": "enroll",
+  "entity": {
+    "schema_version": "0.1",
+    "type": "ForceRegistryEntity",
+    "id": "ORG-FIXTURE",
+    "kind": "organization",
+    "version": 1,
+    "enrollment_state": "enrolled",
+    "label": "Synthetic organization",
+    "description": "Synthetic structural definition, not a qualified performer.",
+    "data": {
+      "kind": "organization",
+      "parent_id": "none",
+      "maintainer_roles": [
+        "USER",
+        "COS"
+      ]
+    },
+    "qualification_state": "unassessed",
+    "execution_authorized": false,
+    "release_authorized": false
+  },
+  "repository_binding": {
+    "repository_key": "synthetic-fixture",
+    "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "recorded_at": "2026-10-24T00:00:01Z",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "standing_activation_authorized": false,
+  "id": "FRE-b27f13bdb48e05cdb9db10993f046a7386bd3f42"
+}

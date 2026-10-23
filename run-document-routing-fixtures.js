@@ -34,6 +34,14 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["ForceRegistryEntity", "ForceRegistryRequest", "ForceRegistryProposal", "ForceRegistryAuthorization", "ForceRegistryEvent",
+    "force-registry", "operate_controls_force_registry", "schema-files/force-registry-entity.schema.json"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["force-registry"]); assert.equal(result.capability_routing.status, "covered");
+    assert.equal(result.capability_routing.provisional_organization.required, false);
+    assert(result.recommended_documents.some(item => item.path === "docs/force-registry-enrollment.md"));
+    assert(result.validation_commands.includes("node run-force-registry-fixtures.js"));
+  }
   for (const query of ["WorkloadControlInput", "WorkloadPolicyAssessment", "WorkloadControlReceipt", "workload-control", "subject-bound report input", "schema-files/workload-policy-assessment.schema.json"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["workload-controls"]); assert.equal(result.capability_routing.status, "covered");

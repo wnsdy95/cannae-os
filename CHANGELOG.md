@@ -6,6 +6,14 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add local stable organization/capability/performer definition enrollment with
+  explicit alias history, exact pinned configuration declarations and separate
+  password-reauthenticated owner consent. Bind full reviewed subjects to immutable
+  event lineage, preserve partial publication holds and expose actual inspection
+  and definition review in the console. Keep every definition unassessed and all
+  execution/qualification/standing activation flags false. Both skills teach the
+  owner-only ceremony and no-replay procedure; full goal-5 consumers remain open.
+
 - Separate actual workload inspection from framework fixture execution after a
   retained input-flow counterexample. New report admission captures bounded
   exact report/evidence bytes, invokes a fixed local OPSEC worker, retains only

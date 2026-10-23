@@ -35,6 +35,7 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "agent-execution-checkpoints",
   "control-execution-receipts",
   "workload-control-receipts",
+  "force-registry-proposals", "force-registry-authorizations", "force-registry-events",
   "integrated-mission-preflights",
   "mission-wave-closeouts",
   "mission-wave-plans",

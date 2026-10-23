@@ -11,6 +11,17 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["entity", "request", "proposal", "authorization", "event"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing force registry ${suffix}`, file: `sample-payloads/${prefix}-force-registry-${suffix}.json`,
+    type: `force-registry-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]
+  }))),
+  { name: "force authorization rejects missing displayed subject commitment", file: "sample-payloads/valid-force-registry-authorization.json",
+    type: "force-registry-authorization", exitCode: 1, expectedCanExecute: false, requiredCodes: ["MISSING_REQUIRED"],
+    mutate(value) { delete value.displayed_review_sha256; } },
+  { name: "force proposal rejects a null nested entity before semantic access", file: "sample-payloads/valid-force-registry-proposal.json",
+    type: "force-registry-proposal", exitCode: 1, expectedCanExecute: false, requiredCodes: ["TYPE_MISMATCH"],
+    mutate(value) { value.request.entity = null; } },
   ...["workload-control-input", "workload-policy-assessment", "workload-control-receipt"].flatMap(type => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-authorizing ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type,
     exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]

@@ -1,5 +1,11 @@
 # Schema Files
 
+The five `force-registry-*.schema.json` contracts bind permanent unqualified
+entity definitions, exact requests/proposals, distinct signed owner consent and
+immutable transition events. All validate with `can_execute: false`; no field
+promotes readiness or activates a unit. See
+[force registry enrollment](../docs/force-registry-enrollment.md).
+
 `workload-control-input.schema.json`, `workload-policy-assessment.schema.json` and
 `workload-control-receipt.schema.json` separate actual bounded report/evidence
 policy input and observation from framework code regressions. The report's

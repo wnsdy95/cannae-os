@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [force registry enrollment candidate](force-registry-enrollment.md) is local
+engineering synthesis over the existing force-structure, task/readiness, owner
+authentication and immutable artifact contracts. It distinguishes signed exact
+definition enrollment from readiness qualification and actual grant activation.
+Reviewed alias history is not semantic task equivalence or provider attestation.
+There is no new external military-source claim or implicit standing activation.
+
 The [subject-bound workload candidate](subject-bound-workload-controls.md) is local
 engineering synthesis over existing report, artifact-store and OPSEC contracts.
 A report digest on a framework fixture receipt does not prove that the child

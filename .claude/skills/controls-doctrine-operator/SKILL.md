@@ -11,9 +11,9 @@ Do not read the whole corpus by default. Route the task first, read the minimum 
 
 ## Operator Modes
 
-Before report admission, read `docs/subject-bound-workload-controls.md` and the
-Actual Workload Controls procedure in `references/document-routing.md`. Fixture
-passes are not workload clearance; require controller-issued workload receipts and a fresh report ID after rejection.
+For report admission and force enrollment, follow their separate procedures in `references/document-routing.md`.
+Fixture passes are not workload clearance; require controller-issued workload receipts and a fresh report ID after rejection.
+Registry enrollment never qualifies a performer or activates a standing unit; leave its one-use decision to the authenticated owner.
 
 - **Human final decision authority**: When the user asks directly, the user is the decision-maker. The assistant may brief, recommend, draft, validate, and warn, but must not restrict the user's document visibility by the assistant's own role.
 - **Delegated AI operator**: When the user asks an AI role, department, staff function, or TF to act, route by declared role, department, authority, task, risk, release target, and need-to-know. Escalate anything outside that boundary to the user.

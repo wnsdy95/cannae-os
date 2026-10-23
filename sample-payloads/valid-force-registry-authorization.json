@@ -1,0 +1,109 @@
+{
+  "schema_version": "0.1",
+  "type": "ForceRegistryAuthorization",
+  "id": "FRA-00000000-0000-4000-8000-000000000001",
+  "purpose": "force_registry_enrollment",
+  "acknowledgment": "definition_only_no_qualification_or_execution",
+  "challenge_id": "00000000-0000-4000-8000-000000000001",
+  "principal_id": "synthetic-owner",
+  "principal_epoch": 1,
+  "authentication_method": "local_owner_password_reauthentication",
+  "session_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "nonce_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "created_at": "2026-10-24T00:00:01Z",
+  "expires_at": "2026-10-24T00:01:00Z",
+  "rationale": "Synthetic signed example only.",
+  "review": {
+    "proposal_ref": {
+      "artifact_id": "FRP-8c11aeef33d3951976f4395367bb9f10209d1ffa",
+      "relative_path": "synthetic/proposal.json",
+      "sha256": "f0b1d022f18b3027eaa1aa89f352a880d7e7559e77bc5b5fd771f94f4a89d456"
+    },
+    "proposal": {
+      "schema_version": "0.1",
+      "type": "ForceRegistryProposal",
+      "purpose": "force_registry_enrollment",
+      "request": {
+        "schema_version": "0.1",
+        "type": "ForceRegistryRequest",
+        "purpose": "force_registry_enrollment",
+        "mission_id": "MIS-FORCE-FIXTURE",
+        "wave_id": "ENROLL",
+        "operation": "enroll",
+        "expected_head_ref": {
+          "artifact_id": "none",
+          "relative_path": "none",
+          "sha256": "none"
+        },
+        "entity": {
+          "schema_version": "0.1",
+          "type": "ForceRegistryEntity",
+          "id": "ORG-FIXTURE",
+          "kind": "organization",
+          "version": 1,
+          "enrollment_state": "enrolled",
+          "label": "Synthetic organization",
+          "description": "Synthetic structural definition, not a qualified performer.",
+          "data": {
+            "kind": "organization",
+            "parent_id": "none",
+            "maintainer_roles": [
+              "USER",
+              "COS"
+            ]
+          },
+          "qualification_state": "unassessed",
+          "execution_authorized": false,
+          "release_authorized": false
+        },
+        "rationale": "Synthetic definition enrollment only.",
+        "evidence_refs": [],
+        "execution_authorized": false,
+        "release_authorized": false,
+        "human_final_decision_authority": "USER",
+        "qualification_granted": false,
+        "standing_activation_authorized": false,
+        "id": "FRQ-0b1470fe9df498f4e5ab46a2c5ae44a415ad2607"
+      },
+      "request_sha256": "9e43d425be32db2f6fc859c4d97d3ba6396e249e465b73572ceeaa3343e5d1ca",
+      "created_at": "2026-10-24T00:00:00Z",
+      "expires_at": "2026-10-24T00:30:00.000Z",
+      "execution_authorized": false,
+      "release_authorized": false,
+      "human_final_decision_authority": "USER",
+      "qualification_granted": false,
+      "standing_activation_authorized": false,
+      "id": "FRP-8c11aeef33d3951976f4395367bb9f10209d1ffa"
+    },
+    "materials": [],
+    "registry_head_ref": {
+      "artifact_id": "none",
+      "relative_path": "none",
+      "sha256": "none"
+    },
+    "previous_entity": null,
+    "next_sequence": 1,
+    "repository_binding": {
+      "repository_key": "synthetic-fixture",
+      "identity_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "observed_manifest": {
+      "revision": 1,
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "source_state_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "repository_state_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "review_sha256": "e6ec44b3a88935e0a273e2e12b7fafbb5bb7cec8dbcd38c81aa8a8a120c71cd8",
+  "displayed_review_sha256": "e6ec44b3a88935e0a273e2e12b7fafbb5bb7cec8dbcd38c81aa8a8a120c71cd8",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "standing_activation_authorized": false,
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "4935ff6c5cf1218dd5ecfd2ea13def6efb8ca684429766f5fedcd3fb7eb5c06f",
+    "value": "HHcOQyaqyATN1dPs/WZal44eV/NsPqj/mfaA0KmqMY7vQ+WJjD0vSj42WkXrQ9YaJPn410kWiXbwmNodv+1TCA=="
+  }
+}

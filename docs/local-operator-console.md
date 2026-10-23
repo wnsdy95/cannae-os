@@ -1,5 +1,11 @@
 # Local Operator Console
 
+The separate [Force Registry enrollment](force-registry-enrollment.md) view and
+ceremony approve only exact organization/capability/performer definitions.
+They do not reuse order-adoption consent, train a subject or grant tools/release.
+Partial enrollment publication preserves its own hold and requires a separate
+terminal-review protocol; never delete the action or re-sign history to proceed.
+
 The separate [native request-analysis candidate](native-order-analysis.md) adds
 an explicitly configured `--analysis-executable`/`--analysis-model` profile.
 Owners may propose an OPORD analysis from a retained mission request; Model Actions
