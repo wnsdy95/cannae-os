@@ -25,6 +25,15 @@ human inventory review is an explicit separate class, not calibrated automation.
 For linked revision, finalize its returned successor plan before preparing
 coverage: its new revision reference and shortened validity change the plan hash.
 Do not backdate coverage before the plan's creation or reuse the prior review.
+For browser adoption, compare the Source classifications (including context),
+global restrictions and each actual receiver in the Coverage view; inspect the
+complete Plan and Exact Approval Subject for budgets and fields not quoted in
+the matrix. Receiver/status filters and pagination narrow only the display, not
+the signed decision subject. They never renew consent. A readable matrix does
+not establish semantic equivalence or prove the human reviewed it. Close stale
+previews and obtain fresh review after plan changes; never approve from a
+partial or malformed matrix. Run `run-operator-coverage-ui-fixtures.js` and the
+real `operator-consent-fixtures/browser-check.js` after changing this presentation.
 
 For semantic omission evaluation, read `docs/semantic-omission-evaluation.md`
 and `docs/model-transfer-consent.md`. Run the collector, operator-semantic and

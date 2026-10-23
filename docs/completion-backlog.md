@@ -83,6 +83,10 @@ calibrated model admission or automatic planning. Legacy history remains readabl
 without renewed captured-request execution. Every-byte classification and exact
 quote matrices cannot detect a human's incorrect semantic classification. Rows
 4/9 and all eight goals remain open; acceptance is separate from implementation.
+The owner's source/requirement/receiver UI adds scannable comparison, explicit
+human-review limits, complete plan/raw inspection and filter-invariant consent.
+It does not close calibrated admission, automatic planning, broader approvals or
+any of the eight outcomes; browser presentation is not semantic assurance.
 
 The [semantic collector](semantic-omission-evaluation.md) now has an opt-in
 [authenticated owner transfer ceremony](model-transfer-consent.md): exact packet

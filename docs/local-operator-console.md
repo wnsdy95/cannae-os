@@ -26,6 +26,13 @@ history with scoped views, exact evidence and explicit freshness. Complete COP,
 CoS integration, general tool approvals and automatic replanning remain open.
 A legacy CLI document containing `USER` is not authenticated consent.
 
+Captured-request decisions include a [source/requirement/receiver comparison](requirement-inventory-admission.md)
+with explicit human-review limits, all source classifications and the complete
+proposed plan. Display filters never narrow the exact approval subject or renew
+its nonce. Raw evidence remains inspectable; a missing matrix row fails the new
+preview rather than displaying an actionable partial approval. This is not an
+automatic completeness evaluator or evidence that the owner read every row.
+
 ## Start And Initialize
 
 Use Node.js 22.22.2 or newer on a POSIX host with `node:sqlite`. SQLite is

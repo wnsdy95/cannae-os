@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Compare owner-reviewed source fragments, requirements and actual order/task/agent
+  locations in a bounded, read-only coverage UI. Preserve the full plan/raw subject,
+  filter-invariant one-use consent and session/view clearing; reject incomplete
+  display matrices. Extend synthetic projection and actual authenticated browser
+  regressions, and adapt both skills. This remains uncalibrated human review,
+  not automatic planning, proven completeness or program acceptance.
+
 - Require coverage to follow plan creation and finalize the exact returned
   successor before reviewing a revision. Update both skills and the real
   revision/adoption wrapper fixture; preserve its earlier missing-review failure.

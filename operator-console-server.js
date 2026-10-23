@@ -223,8 +223,9 @@ async function createConsole(options) {
   const assets = { "/": ["operator-console/index.html", "text/html"],
     "/app.js": ["operator-console/app.js", "text/javascript"], "/app.css": ["operator-console/app.css", "text/css"],
     "/semantic.js": ["operator-console/semantic.js", "text/javascript"],
+    "/coverage.js": ["operator-console/coverage.js", "text/javascript"],
     "/licenses/lucide.txt": ["node_modules/lucide-static/LICENSE", "text/plain"] };
-  for (const icon of ["shield-check", "folder-search", "clipboard-list", "clipboard-check", "users", "activity", "log-out", "refresh-cw", "x", "arrow-right", "copy"]) {
+  for (const icon of ["shield-check", "folder-search", "clipboard-list", "clipboard-check", "users", "activity", "log-out", "refresh-cw", "x", "arrow-right", "copy", "chevron-left", "chevron-right"]) {
     assets[`/icons/${icon}.svg`] = [`node_modules/lucide-static/icons/${icon}.svg`, "image/svg+xml"];
   }
   for (const [url, [relative, type]] of Object.entries(assets)) {

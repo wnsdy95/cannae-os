@@ -6,6 +6,7 @@
   <title>Controls Operator</title>
   <link rel="stylesheet" href="/app.css">
   <script src="/semantic.js" defer></script>
+  <script src="/coverage.js" defer></script>
   <script src="/app.js" defer></script>
 </head>
 <body>
@@ -90,7 +91,24 @@
       <fieldset><legend>Disposition</legend><div class="disposition-options"><label><input type="radio" name="disposition" value="approve" required>Adopt</label><label><input type="radio" name="disposition" value="revise">Revise</label><label><input type="radio" name="disposition" value="reject">Reject</label></div></fieldset>
       <label>Rehearsal<select id="rehearsal-select" name="rehearsal"><option value="none">None</option></select></label><button type="submit">Preview Decision</button>
     </form>
-    <section id="decision-confirmation" hidden><h2>Exact Decision Review</h2><p id="decision-expiry"></p><pre id="consent-content" tabindex="0"></pre>
+    <section id="decision-confirmation" hidden><h2>Exact Decision Review</h2><p id="decision-expiry"></p>
+      <section id="coverage-review" aria-label="Requirement coverage review" hidden>
+        <div class="coverage-assurance"><strong>Human review</strong><span>Model uncalibrated</span><span>Semantic completeness not proven</span></div>
+        <p id="coverage-summary"></p><p id="coverage-binding" class="muted"></p>
+        <div class="coverage-tabs" role="tablist" aria-label="Review views">
+          <button type="button" id="coverage-tab-coverage" role="tab" data-coverage-view="coverage" aria-selected="true" aria-controls="coverage-panel-coverage">Coverage</button>
+          <button type="button" id="coverage-tab-source" role="tab" data-coverage-view="source" aria-selected="false" aria-controls="coverage-panel-source">Source</button>
+          <button type="button" id="coverage-tab-plan" role="tab" data-coverage-view="plan" aria-selected="false" aria-controls="coverage-panel-plan">Plan</button>
+        </div>
+        <div id="coverage-filters" class="filters"><label>Receiver<select id="coverage-target"><option value="">All receivers</option></select></label>
+          <label>Proposed disposition<select id="coverage-disposition"><option value="">All dispositions</option><option value="preserved">Preserved</option><option value="not_applicable">Not applicable</option><option value="omitted">Omitted</option><option value="contradicted">Contradicted</option><option value="uncertain">Uncertain</option></select></label></div>
+        <p id="coverage-count" role="status"></p>
+        <div id="coverage-panel-coverage" role="tabpanel" aria-labelledby="coverage-tab-coverage" data-coverage-panel="coverage" class="table-wrap"><table class="coverage-table"><thead><tr><th>Requirement / Source</th><th>Receiver / Exact Location</th><th>Proposed Coverage</th></tr></thead><tbody id="coverage-rows"></tbody></table></div>
+        <div id="coverage-panel-source" role="tabpanel" aria-labelledby="coverage-tab-source" data-coverage-panel="source" class="table-wrap" hidden><table class="coverage-table"><thead><tr><th>Fragment</th><th>Exact Source</th><th>Authored Classification</th></tr></thead><tbody id="coverage-source-rows"></tbody></table></div>
+        <div id="coverage-panel-plan" role="tabpanel" aria-labelledby="coverage-tab-plan" data-coverage-panel="plan" hidden><h3>Compiled Order</h3><pre id="coverage-order" tabindex="0"></pre><h3>Complete Proposed Plan</h3><pre id="coverage-plan" tabindex="0"></pre></div>
+        <div id="coverage-pagination"><button type="button" id="coverage-previous" class="icon" title="Previous review page" aria-label="Previous review page"><img src="/icons/chevron-left.svg" alt=""></button><span id="coverage-page"></span><button type="button" id="coverage-next" class="icon" title="Next review page" aria-label="Next review page"><img src="/icons/chevron-right.svg" alt=""></button></div>
+      </section>
+      <details id="consent-raw"><summary>Exact Approval Subject</summary><pre id="consent-content" tabindex="0"></pre></details>
       <form id="decision-commit-form"><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button id="commit-decision" type="submit" class="primary">Record Decision</button></form>
     </section><section id="terminal-confirmation" hidden><h2 id="terminal-title">Terminal Review</h2><p id="terminal-expiry"></p><pre id="terminal-content" tabindex="0"></pre>
       <form id="terminal-commit-form"><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button id="commit-terminal" type="submit" class="primary">Record Terminal Decision</button></form>

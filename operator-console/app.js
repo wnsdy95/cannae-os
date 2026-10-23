@@ -1,6 +1,6 @@
 "use strict";
 const $ = selector => document.querySelector(selector);
-let session, csrf, semanticUi, authMode = "login", tab = "operations", snapshot, cursor, selectedUser;
+let session, csrf, semanticUi, coverageUi, authMode = "login", tab = "operations", snapshot, cursor, selectedUser;
 let selectedProposal, decisionPreview, selectedAction, inspectedOutcome, terminalPreview;
 let previewGeneration = 0;
 let operationsData, operationsTimer, operationsPending = false, operationsGeneration = 0, operationsFailed = false, operationsReadAt = 0;
@@ -239,8 +239,12 @@ function clearDecision() {
   inspectedOutcome = null; $("#review-terminal").hidden = true; resetTerminal();
   $("#decision-preview-form").hidden = true; $("#decision-preview-form").reset();
   $("#rehearsal-select").replaceChildren(new Option("None", "none"));
+  resetDecisionPreview(); $("#decision-status").textContent = "";
+}
+function resetDecisionPreview() {
+  decisionPreview = null; coverageUi?.clear();
   $("#decision-confirmation").hidden = true; $("#decision-commit-form").reset();
-  $("#consent-content").textContent = ""; $("#decision-status").textContent = "";
+  $("#consent-content").textContent = ""; $("#decision-expiry").textContent = "";
 }
 function resetTerminal() {
   terminalPreview = null; $("#terminal-confirmation").hidden = true; $("#terminal-commit-form").reset(); $("#terminal-content").textContent = "";
@@ -398,10 +402,11 @@ $("#decision-preview-form").onsubmit = event => {
   event.preventDefault(); const form = event.currentTarget;
   void busy(form, async () => {
     const generation = ++previewGeneration, selected = selectedProposal, scope = currentView();
+    resetDecisionPreview();
     const prepared = await api("/api/order-decisions/preview", { entry_id: selected.item.id, manifest: selected.manifest,
       rehearsal_id: form.elements.rehearsal.value, disposition: form.elements.disposition.value });
     if (!viewCurrent(scope) || generation !== previewGeneration || selected !== selectedProposal) return;
-    decisionPreview = prepared;
+    coverageUi.show(prepared.review); decisionPreview = prepared;
     $("#consent-content").textContent = JSON.stringify(decisionPreview.review, null, 2);
     $("#decision-expiry").textContent = `Expires ${displayTime(decisionPreview.expires_at)}`;
     $("#commit-decision").textContent = { approve: "Adopt Plan", reject: "Reject Plan", revise: "Request Revision" }[prepared.review.request.disposition];
@@ -409,7 +414,7 @@ $("#decision-preview-form").onsubmit = event => {
     $("#detail").scrollTop = $("#decision-confirmation").offsetTop - $("#detail header").offsetHeight - 20;
   }, "#detail-error");
 };
-$("#decision-preview-form").addEventListener("change", () => { previewGeneration++; decisionPreview = null; $("#decision-confirmation").hidden = true; $("#decision-commit-form").reset(); });
+$("#decision-preview-form").addEventListener("change", () => { previewGeneration++; resetDecisionPreview(); });
 $("#decision-commit-form").onsubmit = event => {
   event.preventDefault(); const form = event.currentTarget;
   void busy(form, async () => {
@@ -430,8 +435,7 @@ $("#decision-commit-form").onsubmit = event => {
       if (!viewCurrent(scope) || generation !== previewGeneration || selected !== selectedProposal) return;
       const current = await api(`/api/order-decisions/${preview.challenge_id}`);
       if (!viewCurrent(scope) || generation !== previewGeneration || selected !== selectedProposal) return;
-      $("#decision-status").textContent = current.state; $("#decision-confirmation").hidden = true;
-      $("#consent-content").textContent = ""; throw failure;
+      $("#decision-status").textContent = current.state; resetDecisionPreview(); throw failure;
     } finally { if (viewCurrent(scope) && generation === previewGeneration && selected === selectedProposal) form.elements.password.value = ""; }
   }, "#detail-error");
 };
@@ -456,6 +460,7 @@ $("#deactivate-form").onsubmit = event => {
     form.reset(); $("#deactivate").close(); await loadUsers();
   }, "#deactivate-error");
 };
+coverageUi = createCoverageUi({ $ });
 semanticUi = createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, viewCurrent, clearDecision, cell, empty, displayTime, session: () => session });
 if (suppliedToken) $("#auth-form").elements.token.value = suppliedToken;
 void loadSession().catch(failure => { $("#auth").hidden = false; error("#auth-error", failure); });

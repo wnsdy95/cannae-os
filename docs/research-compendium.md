@@ -16,6 +16,11 @@ result. A wrong context classification or applicability judgement can still omit
 meaning. Exact pointers, fresh authentication and passing synthetic fixtures do
 not prove complete extraction or semantic equivalence. Independent held-out
 calibration and bounded automatic planning/replanning remain unfinished.
+The local owner preview now exposes exact source classifications, requirement
+instructions and actual receiving task/agent quotes side by side, while retaining
+the full plan and raw subject. Pagination/filter counts preserve the full matrix
+denominator and do not redefine consent. A clearer display helps inspection but
+cannot establish semantic equivalence or that the human read every requirement.
 
 ## Failed Model Transfer Acknowledgment (2026-10-23)
 

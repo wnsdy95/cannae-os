@@ -83,6 +83,24 @@ fresh password, stored session and one-use nonce checks. Review source fragments
 requirement instructions, applicability and actual target quotes before adopting.
 No signature can prove that a human made the right semantic judgement.
 
+The owner's decision preview now compares requirements and exact source quotes
+with each actual order/task/agent target, JSON pointer, proposed disposition and
+rationale. The Source view includes operative, context and unknown fragments
+with byte positions and authored classification, not just extracted requirements.
+The Plan view preserves the full compiled order and complete proposed plan;
+the expandable Exact Approval Subject also retains backbriefs, rehearsal and
+every other original preview field. No view describes this as proven completeness.
+
+Receiver/disposition filters and 25-row pagination affect presentation only.
+Visible counts always retain the unfiltered denominator; global restrictions
+and not-applicable rows remain available. No filter changes the prepared subject,
+nonce, expiry or commit request. A malformed/incomplete new-version display
+cannot become an actionable preview; genuine legacy review uses the raw subject.
+Closing, selection/view changes and session replacement erase matrix, source,
+plan, filters and hidden raw content. Delayed owner responses cannot restore them
+in a viewer session. These browser checks do not replace server authentication,
+signature/binding validation or actual semantic judgement.
+
 The actual proposal, approval, context opening, policy/lease issuance and covered
 next-call paths require the exact ready review. Publication rechecks it. Receiver
 contexts carry only applicable requirement instructions/IDs, exact inventory and
@@ -111,10 +129,19 @@ remain control metadata, including copied/reordered/renamed JSON, never work.
 
 ## Verification And Remaining Work
 
-Run `node run-requirement-inventory-fixtures.js`, adoption/consent/dispatch
+Run `node run-requirement-inventory-fixtures.js`,
+`node run-operator-coverage-ui-fixtures.js`, adoption/consent/dispatch
 regressions, metadata-boundary fixtures and the validator. The fixtures use
 authored synthetic requirements and zero actual model calls. They are not an
 independent held-out calibration dataset or a claim about model quality.
+
+The real `operator-consent-fixtures/browser-check.js --output <directory>`
+checks synthetic authenticated desktop adoption/mobile rejection, actual
+source/receiver/plan projection, filter-invariant one-use consent, display-only
+pagination/inert markup, malformed response denial and delayed owner preview
+delivery after viewer login. Synthetic browser decisions are never real USER
+consent. The presentation projection does not independently verify signatures or
+cryptographic bindings; the existing server/controller remains authoritative.
 
 Remaining work includes independently sealed requirement/applicability labels,
 denominator-separated held-out evaluator calibration, extraction beyond a human

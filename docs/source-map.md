@@ -14,6 +14,11 @@ partitions, requirement/target matrices and whole-plan digests to actual adoptio
 receiver and next-call consumers. Authored synthetic fixtures are not independent
 calibration. Exact quotes and authenticated human review do not prove semantic
 equivalence, complete extraction or a non-bypassable deployment.
+Its local `operator-console/coverage.js` presentation compares exact source
+fragments and actual receiver locations, retains the full plan/raw subject and
+rejects incomplete display matrices. Projection fixtures and authenticated
+desktop/mobile browser cases test presentation, unchanged consent and stale
+response clearing, not independent semantic calibration or cryptographic proof.
 
 The [failed model-transfer ceremony](model-transfer-reconciliation.md) is local
 engineering synthesis over the existing signed owner-transfer service, private
