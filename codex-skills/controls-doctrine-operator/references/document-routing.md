@@ -1,5 +1,11 @@
 # Document Routing
 
+At lease issuance, inspect repository-wide gateway and unknown-effect holds,
+including other waves. A new session/wave cannot clear them. Publication must
+retain the specific hold before a generic manifest conflict. Use the exact
+gateway regression filter for diagnosis only; unknown filters must fail and a
+filtered pass never replaces the full consuming suites.
+
 For a real local evidence workspace, route to `docs/local-operator-console.md`
 and `scripts/serve_controls_operator.js`; validate with
 `node run-operator-console-fixtures.js`. The human creates the owner account.
@@ -208,7 +214,39 @@ checkpoint. Use `prepare-continuation` for a fresh private file; configure it,
 observe the exact native start, explicitly `resume`, then `enroll` that lease.
 Never reuse the old file or reset root deadlines, request IDs, metadata/task
 budgets or rule counters. Initial-only v0.1 needs a newly reviewed wave instead.
-Preserve unknown partial resume issuance; this channel does not repair it.
+For interrupted core issuance, read `docs/dispatch-issuance-recovery.md` and
+inspect `status` before retrying. Use only the retained issuance ID with
+`recover-issuance`; bindings, nonce and expiry are frozen. An unused request may
+be explicitly cancelled, never converted into a completed task. Missing legacy
+requests cannot be reconstructed. If verification reports `PENDING_TRANSACTION`,
+pause dispatch and inspect/recover the actual store journal before issuance
+status; require a valid store, then recover only the retained issuance ID.
+Store recovery is not issuance approval or task replay. An ordinary first wave
+can initialize a genuinely missing namespace; never seed invented evidence or
+treat an existing corrupt store as empty. Preserve admitted results; do not hot-swap
+runtime code, reuse the old private file or replay a task to repair issuance.
+Keep issuance/recovery/cancellation commands on the trusted operator side;
+listing their shell digest as an ordinary task does not delegate control-plane
+authority. A valid lease JSON and a historical commit result are not current
+tool permission. Inspect unresolved issuance before reporting settled work.
+Store recovery may finish the final commit record. Still require the live
+source-binding and ordinary tool gates; committed history or
+`runtime_source_current` alone grants nothing. On source drift, preserve
+already-admitted results and explicitly revoke unused authority; never renew
+bindings or replay work to hide the denial.
+Diagnose dispatch denials by their exact reason code; changed prose is not a
+different authority state or permission to retry with new bindings.
+For legacy result-only leases, inspect reconciled failure and revocation markers
+separately. Preserve their specific hold; a generic migration denial is not
+clearance or permission to skip post-settlement revocation of a failed agent.
+Require full supervisor, gateway, intent, channel and lifecycle regressions
+after changing issuance. Preserve specific stop/failure reasons and legacy
+result settlement separately from new authority. When a stricter guard rejects
+earlier, prove its exact denial and absence of publications; do not weaken the
+guard or broaden an expected-error regex to simulate the old unsafe sequence.
+When a retained stop wins over generic CAS, require its exact blocked code and
+stop reason plus an actually denied successor admission. Align the assertion
+with that stricter boundary; do not restore a generic error or suppress the case.
 
 Propose the exact reviewed alternative before calling its tool. Obtain an exact
 USER acknowledgment when required, then report

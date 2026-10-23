@@ -1,5 +1,49 @@
 # Research Compendium
 
+## Local Issuance Transactions (2026-10-23)
+
+Full consumer integration distinguishes historical replay from current grants:
+reconciled-failure markers and required revocation retain their specific denial
+before generic legacy-lease/source eligibility. Existing active/interrupted and
+resumed-descendant settlement cases must retain their exact assertions; moving
+a generic migration guard earlier cannot silently replace recovery diagnostics.
+Mandatory new-context rules must not prevent neutral settlement of an already
+admitted legacy result. Resume/publication retain specific terminal, stop and
+reconciled-failure holds before generic conflicts. Reappraisal of
+repository-wide gateway/effect obligations also applies at actual publication,
+including a different wave's obligation arriving after initial appraisal.
+The existing publication-race regression retains its specific denial assertion;
+an exact case filter diagnoses it without silently accepting an empty selection.
+Stronger early rejection of
+unobserved startup or unknown effects is tested for no partial publications,
+not relaxed to reproduce an obsolete unsafe sequence. These checks supplement,
+not replace, full exact-source CI and the wider unfinished program.
+For a retained stop arriving at commit publication, the issuance fixture now
+requires the exact campaign-blocked code and stop reason, plus denied new-session
+admission. The runtime is unchanged by this test/documentation alignment; its
+earlier generic-conflict expectation would contradict specific stop precedence.
+
+A reproduced core resume failure could retain predecessor supersession without
+its successor. Work stayed denied, but the original input was not retained for
+exact recovery. The [issuance protocol](dispatch-issuance-recovery.md) now freezes
+that input before any transition and requires the actual request, lease,
+baseline and terminal resolution. Recovery reuses identity, nonce and expiry;
+cancellation never restores the predecessor or replays a task. Pending issuance
+is a visible obligation even when no usable successor exists.
+
+Generic store-journal recovery can restore a final committed resolution. That
+historical fact is not current execution eligibility: actual new-call admission
+and final allow publication also compare the retained runtime source entry with
+current bytes. Copied-runtime cases distinguish valid unchanged recovery from
+source drift, preserve already-admitted results and explicit revocation, and
+ensure restored source bytes cannot clear an actual revoked checkpoint.
+
+This local design uses the repository's existing verified introduction history
+and guarded publication. It does not reconstruct unknown legacy inputs, attest
+native clients, authenticate a human from a role string or provide production
+infrastructure. Broader semantic planning, staff/readiness/sustainment workflows,
+authenticated approvals and externally protected operation remain open.
+
 ## Local Method Metadata Transport (2026-10-23)
 
 The subsequent reviewed channel policy v0.2 permits finite same-wave handoffs

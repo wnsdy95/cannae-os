@@ -1,5 +1,11 @@
 # Enforced Dispatch And Resumable Execution
 
+New lease v0.2 requires the complete [issuance transaction](dispatch-issuance-recovery.md),
+not a schema-valid lease alone. Inspect `status.issuances` after interruption,
+recover only the retained request ID or cancel an unused request explicitly.
+Pending issuance blocks task admission and settled report/terminal claims.
+Lease v0.1 is retained-result and revocation history, not new tool authority.
+
 ## 1. Purpose
 
 The operational mission lifecycle proves that an agent received a current routing

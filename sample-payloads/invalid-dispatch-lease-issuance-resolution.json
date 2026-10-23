@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "type": "DispatchLeaseIssuanceResolution",
+  "mission_id": "MIS-ENFORCED-DISPATCH",
+  "wave_id": "W1",
+  "agent_id": "runtime-agent",
+  "request_ref": {
+    "artifact_id": "DLI-56d10d2278136f959d4a9254170ac36b005692fa",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-56d10d2278136f959d4a9254170ac36b005692fa.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "outcome": "committed",
+  "lease_ref": {
+    "artifact_id": "ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f.json",
+    "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "baseline_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "supersession_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "reason": "Synthetic contract example; not actual authority.",
+  "recorded_at": "2026-07-23T04:35:00Z",
+  "execution_authorized": false,
+  "continuation_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "id": "DLI-2eaec51fde25033ea7b3eb891a1d245224c0dce0"
+}

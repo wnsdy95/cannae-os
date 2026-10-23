@@ -12,12 +12,14 @@ const {
 } = require("./repository-artifact-store");
 const {
   acquireRepositoryLease,
+  assertRepositoryLease,
   releaseRepositoryLease,
   renewRepositoryLease
 } = require("./repository-lease");
 const { computeRepositoryState } = require("./verification-runner");
 const { validatePayload } = require("./validator-cli-prototype/validate");
 const { withinOrderReplay } = require("./order-replay-context");
+const issuance = require("./dispatch-issuance-contract");
 
 const NONE_REF = Object.freeze({
   artifact_id: "none",
@@ -147,23 +149,12 @@ function sameRepositoryState(left, right) {
 function storeView(options) {
   const repository = resolveRepository(options.repository);
   const artifactRoot = path.resolve(options.artifactRoot || path.join(repository.root, ".cannae", "artifacts"));
-  const verification = verifyRepositoryArtifacts({
-    repositoryPath: repository.root,
-    artifactRoot
-  });
-  if (!verification.valid) {
-    throw new Error(`Repository artifact store is invalid: ${verification.issues.map(item => item.code).join(", ")}`);
-  }
+  const store = require("./campaign-supervisor").loadVerifiedStore(repository.root, artifactRoot);
   const namespacePath = path.join(artifactRoot, "repositories", repository.key);
-  const manifestPath = path.join(namespacePath, "manifest.json");
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-  if (manifestDigest(manifest) !== verification.manifest_sha256) throw new Error("DISPATCH_MANIFEST_CHANGED_AFTER_VERIFICATION");
   return {
-    artifactRoot,
-    manifest,
+    ...store,
     namespacePath,
-    repository,
-    verification
+    repository
   };
 }
 
@@ -503,13 +494,12 @@ function persistCheckpoint(options, checkpoint, publicationGuard) {
   });
 }
 
-function createLeaseFromRecord(
+function prepareLeaseDraft(
   options,
   policyRecord,
   bindings,
   previousLeaseRef = NONE_REF,
-  issuanceReason = "initial",
-  coordinationLock
+  issuanceReason = "initial"
 ) {
   const policy = policyRecord.payload;
   assertProvider(policy.provider);
@@ -547,7 +537,8 @@ function createLeaseFromRecord(
   const nonterminal = repositoryHistory.map(item => ({
     item,
     checkpoint: latestCheckpoint(bundle.view, item)
-  })).filter(entry => !TERMINAL_LEASE_STATUSES.has(entry.checkpoint.payload.lease_status));
+  })).filter(entry => !TERMINAL_LEASE_STATUSES.has(entry.checkpoint.payload.lease_status) &&
+    !(issuanceReason === "resume" && sameRef(entry.item.ref, previousLeaseRef) && entry.checkpoint.payload.lease_status === "interrupted"));
   if (nonterminal.length > 0) {
     throw new Error("Another nonterminal dispatch lease blocks this repository; settle it before issuing new tool authority.");
   }
@@ -591,48 +582,7 @@ function createLeaseFromRecord(
     }
   };
   assertValid(lease, "agent-dispatch-lease", "Agent dispatch lease");
-  renewRepositoryLease(coordinationLock);
-  const leaseRef = writeJsonArtifact(options, {
-    missionId: lease.mission_id,
-    waveId: lease.wave_id,
-    kind: "agent-dispatch-leases",
-    artifactId: lease.id,
-    payload: lease,
-    createdAt: lease.issued_at,
-    publicationGuard: () => {
-      const current = contextBundle(options, policy);
-      policyValidity(policy, current.context.payload, nowIso(options));
-      if (gatewayObligations(current.view).length) {
-        throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations block lease publication.");
-      }
-      if (leaseRecords(current.view).some(item => unresolvedToolEffectRecords(current.view, item).length > 0)) {
-        throw new Error("UNRESOLVED_TOOL_EFFECTS: unknown effects block lease publication.");
-      }
-      if (!sameRef(current.context.ref, lease.context_pack_ref) ||
-          timestamp(nowIso(options), "Lease publication time") >= timestamp(lease.expires_at, "Lease expires_at")) {
-        throw new Error("Dispatch lease publication no longer matches live authority.");
-      }
-      return true;
-    }
-  });
-  const checkpoint = initialCheckpoint(lease, leaseRef, repositoryState, now);
-  renewRepositoryLease(coordinationLock);
-  const checkpointRef = persistCheckpoint(options, checkpoint);
-  const verification = verifyRepositoryArtifacts({
-    repositoryPath: options.repository,
-    artifactRoot: options.artifactRoot || path.join(resolveRepository(options.repository).root, ".cannae", "artifacts")
-  });
-  if (!verification.valid) throw new Error("Artifact store failed verification after dispatch lease issuance.");
-  return {
-    status: "active",
-    execution_authorized: true,
-    release_authorized: false,
-    lease,
-    lease_ref: leaseRef,
-    checkpoint,
-    checkpoint_ref: checkpointRef,
-    artifact_store: verification
-  };
+  return { lease, bundle, policy };
 }
 
 function loadPolicyById(options, policyIdValue) {
@@ -654,19 +604,15 @@ function issueLeaseFromPolicyRef(
   issuanceReason = "initial"
 ) {
   const firstView = storeView(options);
-  const firstPolicy = loadArtifactRef(firstView, policyRef, "dispatch-tool-policy");
+  loadArtifactRef(firstView, policyRef, "dispatch-tool-policy");
   const lock = dispatchIssuanceLock(firstView);
   try {
-    const view = storeView(options);
-    const policyRecord = loadArtifactRef(view, policyRef, "dispatch-tool-policy");
-    return createLeaseFromRecord(
-      options,
-      policyRecord,
-      bindings,
-      previousLeaseRef,
-      issuanceReason,
-      lock
-    );
+    const run = oldLock => beginDispatchIssuance(options, policyRef, bindings, previousLeaseRef, issuanceReason, [lock, oldLock].filter(Boolean));
+    if (issuanceReason === "resume") {
+      const oldLock = dispatchLock(storeView(options), previousLeaseRef.artifact_id);
+      try { return run(oldLock); } finally { releaseRepositoryLease(oldLock); }
+    }
+    return run(null);
   } finally {
     releaseRepositoryLease(lock);
   }
@@ -677,7 +623,7 @@ function issueLease(options, policyIdValue, bindings) {
   return issueLeaseFromPolicyRef(options, loaded.policyRecord.ref, bindings);
 }
 
-function leaseRecords(view, missionId, waveId) {
+function rawLeaseRecords(view, missionId, waveId) {
   return listArtifacts(view, {
     missionId,
     waveId,
@@ -685,6 +631,364 @@ function leaseRecords(view, missionId, waveId) {
   }).map(item => {
     assertValid(item.payload, "agent-dispatch-lease", `Dispatch lease ${item.payload.id || "unknown"}`);
     return item;
+  });
+}
+
+const issuanceSnapshots = new WeakMap();
+const issuancePrefixes = new WeakMap();
+function issuanceNeed(value, code) {
+  if (!value) throw new Error(code);
+}
+
+function issuanceBefore(view, entry) {
+  let prefixes = issuancePrefixes.get(view);
+  if (!prefixes) { prefixes = new Map(); issuancePrefixes.set(view, prefixes); }
+  const key = `${entry.relative_path}\0${entry.sha256}`;
+  if (!prefixes.has(key)) prefixes.set(key, require("./campaign-terminal-controller").prefixBeforeEntry(view, entry));
+  return prefixes.get(key);
+}
+
+function issuancePrecedes(view, first, second) {
+  const before = issuanceBefore(view, second.entry);
+  return timestamp(first.entry.created_at, "Issuance introduction") <= timestamp(second.entry.created_at, "Issuance introduction") &&
+    before.manifest.artifacts.some(entry => sameRef(artifactRef(entry, entry.artifact_id), first.ref));
+}
+
+function issuanceRecord(view, kind, id, scope) {
+  const matches = listArtifacts(view, { kind, missionId: scope.mission_id, waveId: scope.wave_id }).filter(item => item.payload.id === id);
+  issuanceNeed(matches.length <= 1, "DISPATCH_ISSUANCE_RECORD_AMBIGUOUS");
+  return matches[0] || null;
+}
+
+function observedChannelBinding(view, lease, interruptionRef) {
+  const context = loadArtifactRef(view, lease.context_pack_ref, "agent-context-pack");
+  const pocket = context.payload.method_assignment?.broker;
+  if (!pocket) return null;
+  const matches = listArtifacts(view, { kind: "method-control-session-observations", missionId: lease.mission_id, waveId: lease.wave_id })
+    .filter(item => item.payload.agent_id === lease.agent_id && item.payload.provider === lease.provider &&
+      inputDigest(item.payload.session_binding) === inputDigest(lease.session_binding))
+    .map(observation => ({ observation, slot: loadArtifactRef(view, observation.payload.launch_slot_ref, "method-control-launch-slot") }))
+    .filter(({ observation, slot }) => slot.payload.agent_id === lease.agent_id && slot.payload.provider === lease.provider &&
+      slot.payload.server_name === pocket.server_name && slot.payload.runtime_sha256 === pocket.runtime_sha256 &&
+      ["plan_ref", "policy_ref", "context_ref"].every((key, index) =>
+      sameRef(slot.payload[key], [lease.plan_ref, lease.tool_policy_ref, lease.context_pack_ref][index])) &&
+      (lease.issuance_reason === "initial" ? slot.payload.schema_version === "0.1" && observation.payload.source === "startup" :
+        slot.payload.schema_version === "0.2" && observation.payload.source === slot.payload.expected_source &&
+        sameRef(slot.payload.interruption_checkpoint_ref, interruptionRef) &&
+        sameRef(loadArtifactRef(view, slot.payload.predecessor_enrollment_ref, "method-control-enrollment").payload.lease_ref, lease.previous_lease_ref)));
+  issuanceNeed(matches.length === 1, "DISPATCH_ISSUANCE_CHANNEL_OBSERVATION_REQUIRED");
+  const result = matches[0];
+  assertValid(result.observation.payload, "method-control-session-observation", "Issuance channel observation");
+  issuanceNeed(timestamp(result.observation.payload.recorded_at, "Channel observation") <= timestamp(lease.issued_at, "Frozen issuance") &&
+    issuancePrecedes(view, result.slot, result.observation), "DISPATCH_ISSUANCE_CHANNEL_OBSERVATION_INVALID");
+  return result;
+}
+
+function issuanceProgress(view, request, resolutions) {
+  const value = request.payload, planned = issuance.leaseForRequest(request);
+  const before = issuanceBefore(view, request.entry);
+  issuanceNeed(value.id === request.entry.artifact_id && value.mission_id === request.entry.mission_id && value.wave_id === request.entry.wave_id &&
+    value.observed_manifest.revision === before.manifest.manifest_revision &&
+    value.observed_manifest.sha256 === manifestDigest(before.manifest) && value.recorded_at === request.entry.created_at,
+  "DISPATCH_ISSUANCE_INTRODUCTION_INVALID");
+  const policy = loadArtifactRef(before, planned.tool_policy_ref, "dispatch-tool-policy");
+  const context = loadArtifactRef(before, planned.context_pack_ref, "agent-context-pack");
+  const plan = loadArtifactRef(before, planned.plan_ref, "mission-wave-plan");
+  const agent = (plan.payload.agents || []).find(item => item.agent_id === planned.agent_id);
+  issuanceNeed(agent && ["mission_id", "wave_id", "agent_id", "provider"].every(key => planned[key] === policy.payload[key]) &&
+    ["mission_id", "wave_id", "agent_id"].every(key => context.payload[key] === planned[key]) &&
+    plan.payload.mission_id === planned.mission_id && plan.payload.wave_id === planned.wave_id &&
+    sameRef(context.payload.plan_ref, plan.ref) && sameRef(context.payload.routing_preflight_ref, planned.routing_preflight_ref) &&
+    planned.repository_binding.repository_key === view.repository.key && planned.repository_binding.identity_fingerprint === view.repository.identity_fingerprint &&
+    planned.request_budget === policy.payload.max_total_admissions && timestamp(planned.expires_at, "Frozen lease expiry") <=
+      Math.min(policyValidity(policy.payload, context.payload, planned.issued_at), timestamp(planned.issued_at, "Frozen issuance") + policy.payload.lease_ttl_seconds * 1000),
+  "DISPATCH_ISSUANCE_SCOPE_INVALID");
+  assertPolicyAuthorization(policy.payload, { context, plan, agent });
+  // Historical legacy contexts remain result-settleable; live consumers require v0.4.
+  if (context.payload.schema_version === "0.4") require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
+  require("./method-deviation-contract").assertMethodPolicy(plan.payload, policy.payload);
+  const observed = observedChannelBinding(before, planned, value.interruption_checkpoint_ref);
+  issuanceNeed(sameRef(value.channel_observation_ref, observed?.observation.ref || NONE_REF) &&
+    (!observed || timestamp(planned.expires_at, "Frozen lease expiry") <= timestamp(observed.slot.payload.expires_at, "Root channel expiry")),
+  "DISPATCH_ISSUANCE_CHANNEL_OBSERVATION_INVALID");
+  const earlier = rawLeaseRecords(before).filter(item => item.payload.schema_version === "0.1" || resolutions.some(resolution =>
+    resolution.payload.outcome === "committed" && sameRef(resolution.payload.lease_ref, item.ref) &&
+    before.manifest.artifacts.some(entry => sameRef(artifactRef(entry, entry.artifact_id), resolution.ref))));
+  issuanceNeed(!earlier.some(item => !TERMINAL_LEASE_STATUSES.has(latestCheckpoint(before, item).payload.lease_status) &&
+    !sameRef(item.ref, planned.previous_lease_ref)), "DISPATCH_ISSUANCE_NONTERMINAL_PREDECESSOR");
+  if (planned.issuance_reason === "initial") issuanceNeed(!earlier.some(item => item.payload.mission_id === planned.mission_id &&
+    item.payload.wave_id === planned.wave_id && item.payload.agent_id === planned.agent_id), "DISPATCH_ISSUANCE_INITIAL_LINEAGE_EXISTS");
+  if (value.planned_supersession) {
+    const predecessor = loadArtifactRef(before, planned.previous_lease_ref, "agent-dispatch-lease"), interrupted = latestCheckpoint(before, predecessor);
+    issuanceNeed(["mission_id", "wave_id", "agent_id", "provider"].every(key => predecessor.payload[key] === planned[key]) &&
+      sameRef(predecessor.payload.plan_ref, planned.plan_ref) && sameRef(predecessor.payload.context_pack_ref, planned.context_pack_ref) &&
+      sameRef(predecessor.payload.tool_policy_ref, planned.tool_policy_ref) && pendingAdmissions(before, predecessor).length === 0 &&
+      sameRepositoryState(interrupted.payload.repository_state, planned.initial_repository_state) &&
+      interrupted.payload.lease_status === "interrupted" && sameRef(interrupted.ref, value.interruption_checkpoint_ref) &&
+      inputDigest(transitionCheckpoint(predecessor, interrupted, planned.initial_repository_state, { kind: "supersession", status: "superseded",
+        reasonCodes: ["LEASE_SUPERSEDED_BY_RESUME"], recordedAt: value.recorded_at })) === inputDigest(value.planned_supersession),
+    "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
+    if (predecessor.payload.schema_version === "0.2") issuanceNeed(resolutions.some(item =>
+      item.payload.outcome === "committed" && sameRef(item.payload.request_ref, predecessor.payload.issuance_ref) &&
+      sameRef(item.payload.lease_ref, predecessor.ref) && before.manifest.artifacts.some(entry => sameRef(artifactRef(entry, entry.artifact_id), item.ref))),
+    "DISPATCH_ISSUANCE_PREDECESSOR_UNCOMMITTED");
+  }
+  const lease = issuanceRecord(view, "agent-dispatch-leases", planned.id, value);
+  if (lease) {
+    assertValid(lease.payload, "agent-dispatch-lease", "Issued lease");
+    issuanceNeed(inputDigest(lease.payload) === inputDigest(planned) && lease.entry.created_at === planned.issued_at &&
+      issuancePrecedes(view, request, lease), "DISPATCH_ISSUANCE_LEASE_SUBSTITUTED");
+  }
+  const checkpoints = lease ? checkpointRecords(view, lease.ref, value.mission_id, value.wave_id) : [];
+  const baselines = checkpoints.filter(item => item.payload.sequence === 0);
+  issuanceNeed(baselines.length <= 1, "DISPATCH_ISSUANCE_BASELINE_AMBIGUOUS");
+  const baseline = baselines[0] || null;
+  if (baseline) issuanceNeed(inputDigest(baseline.payload) === inputDigest(initialCheckpoint(planned, lease.ref, planned.initial_repository_state, planned.issued_at)) &&
+    baseline.entry.created_at === planned.issued_at && issuancePrecedes(view, lease, baseline), "DISPATCH_ISSUANCE_BASELINE_SUBSTITUTED");
+  const supersession = value.planned_supersession && issuanceRecord(view, "agent-execution-checkpoints", value.planned_supersession.id, value);
+  if (supersession) issuanceNeed(inputDigest(supersession.payload) === inputDigest(value.planned_supersession) &&
+    supersession.entry.created_at === value.recorded_at && issuancePrecedes(view, request, supersession) &&
+    (!lease || issuancePrecedes(view, supersession, lease)), "DISPATCH_ISSUANCE_SUPERSESSION_SUBSTITUTED");
+  const selected = resolutions.filter(item => sameRef(item.payload.request_ref, request.ref));
+  issuanceNeed(selected.length <= 1, "DISPATCH_ISSUANCE_RESOLUTION_AMBIGUOUS");
+  const resolution = selected[0] || null;
+  if (resolution) {
+    const terminal = resolution.payload;
+    issuanceNeed(["mission_id", "wave_id", "agent_id"].every(key => terminal[key] === value[key]) &&
+      sameRef(terminal.lease_ref, lease?.ref || NONE_REF) && sameRef(terminal.baseline_ref, baseline?.ref || NONE_REF) &&
+      sameRef(terminal.supersession_ref, supersession?.ref || NONE_REF) && terminal.recorded_at === resolution.entry.created_at &&
+      issuancePrecedes(view, request, resolution) && (!lease || issuancePrecedes(view, lease, resolution)) &&
+      (!baseline || issuancePrecedes(view, baseline, resolution)) && (!supersession || issuancePrecedes(view, supersession, resolution)),
+    "DISPATCH_ISSUANCE_RESOLUTION_SUBSTITUTED");
+    if (terminal.outcome === "committed") issuanceNeed(lease && baseline && (!value.planned_supersession || supersession) &&
+      timestamp(terminal.recorded_at, "Issuance commit") < timestamp(value.expires_at, "Issuance expiry"), "DISPATCH_ISSUANCE_COMMIT_INCOMPLETE");
+  }
+  const committed = resolution?.payload.outcome === "committed";
+  if (!committed && lease) issuanceNeed(checkpoints.length === baselines.length &&
+    admissionRecords(view, lease.ref, value.mission_id, value.wave_id).length === 0, "DISPATCH_ISSUANCE_UNCOMMITTED_EXECUTION");
+  return { request, planned, lease, baseline, supersession, resolution,
+    status: resolution?.payload.outcome || "pending" };
+}
+
+function issuanceProgresses(view) {
+  if (issuanceSnapshots.has(view)) return issuanceSnapshots.get(view);
+  const requests = listArtifacts(view, { kind: issuance.REQUESTS }), resolutions = listArtifacts(view, { kind: issuance.RESOLUTIONS });
+  for (const item of requests) assertValid(item.payload, "dispatch-lease-issuance-request", "Issuance request");
+  for (const item of resolutions) {
+    assertValid(item.payload, "dispatch-lease-issuance-resolution", "Issuance resolution");
+    issuanceNeed(item.payload.id === item.entry.artifact_id && item.payload.mission_id === item.entry.mission_id && item.payload.wave_id === item.entry.wave_id &&
+      requests.some(request => sameRef(request.ref, item.payload.request_ref)), "DISPATCH_ISSUANCE_REQUEST_REQUIRED");
+  }
+  const result = requests.map(request => issuanceProgress(view, request, resolutions));
+  issuanceSnapshots.set(view, result);
+  return result;
+}
+
+function leaseRecords(view, missionId, waveId) {
+  const progress = issuanceProgresses(view);
+  return rawLeaseRecords(view, missionId, waveId).filter(item => {
+    if (item.payload.schema_version === "0.1") return true;
+    const operation = progress.find(value => sameRef(value.request.ref, item.payload.issuance_ref));
+    issuanceNeed(operation && sameRef(operation.lease?.ref, item.ref), "DISPATCH_ISSUANCE_REQUEST_REQUIRED");
+    return operation.status === "committed";
+  });
+}
+
+function assertNoPendingIssuance(options, view) {
+  if (!view) {
+    const repository = resolveRepository(options.repository);
+    const verification = verifyRepositoryArtifacts({ repositoryPath: repository.root,
+      artifactRoot: options.artifactRoot || path.join(repository.root, ".cannae", "artifacts") });
+    if (!verification.valid && verification.issues.length === 1 &&
+        ["ARTIFACT_ROOT_MISSING", "REPOSITORY_NAMESPACE_MISSING"].includes(verification.issues[0].code)) return;
+    view = storeView(options);
+  }
+  issuanceNeed(!issuanceProgresses(view).some(item => item.status === "pending"), "DISPATCH_ISSUANCE_PENDING");
+}
+
+function issuancePublicationGuard(options, request, view, locks, cancellation = false) {
+  const expected = manifestDigest(view.manifest), value = request.payload || request;
+  return snapshot => {
+    locks.forEach(assertRepositoryLease);
+    if (!cancellation) {
+      const live = storeView(options), previousRef = value.planned_lease.previous_lease_ref;
+      if (!isNoneRef(previousRef)) {
+        const previous = leaseRecords(live).find(item => sameRef(item.ref, previousRef));
+        issuanceNeed(previous, "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
+        issuanceNeed(!reconciledFailureState(live, previous).checkpoint_refs.length, "RECONCILED_FAILED_AGENT");
+      }
+      contextBundle(options, loadArtifactRef(live, value.planned_lease.tool_policy_ref, "dispatch-tool-policy").payload);
+      issuanceNeed(!gatewayObligations(live).length, "UNRESOLVED_GATEWAY_TRANSACTIONS");
+      issuanceNeed(!leaseRecords(live).some(item => unresolvedToolEffectRecords(live, item).length), "UNRESOLVED_TOOL_EFFECTS");
+    }
+    issuanceNeed(snapshot.manifest && manifestDigest(snapshot.manifest) === expected, "DISPATCH_ISSUANCE_STATE_CHANGED");
+    const current = timestamp(nowIso(options), "Issuance publication time");
+    issuanceNeed(current >= timestamp(value.recorded_at, "Issuance request time"), "DISPATCH_ISSUANCE_CLOCK_ROLLBACK");
+    if (!cancellation) {
+      issuanceNeed(current < timestamp(value.expires_at, "Frozen issuance expiry"), "DISPATCH_ISSUANCE_EXPIRED");
+      issuanceNeed(issuance.runtimeDigest() === value.runtime_sha256, "DISPATCH_ISSUANCE_RUNTIME_CHANGED");
+      issuanceNeed(sameRepositoryState(runtimeRepositoryState(options.repository), value.planned_lease.initial_repository_state), "DISPATCH_ISSUANCE_REPOSITORY_DRIFT");
+    }
+    return true;
+  };
+}
+
+function interruptedForIssuance(options, view, previousRef) {
+  const previous = leaseRecords(view).find(item => sameRef(item.ref, previousRef));
+  issuanceNeed(previous, "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
+  const checkpoint = latestCheckpoint(view, previous);
+  issuanceNeed(!reconciledFailureState(view, previous).checkpoint_refs.length, "RECONCILED_FAILED_AGENT");
+  const operationOptions = { ...options, artifactRoot: view.artifactRoot }, policy = policyForLease(view, previous).payload;
+  require("./skill-mission-controller").assertWaveNotTerminated(operationOptions, previous.payload.mission_id, previous.payload.wave_id);
+  const plan = loadArtifactRef(view, previous.payload.plan_ref, "mission-wave-plan");
+  require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, operationOptions);
+  require("./order-revision-controller").assertRevisionDispatch(plan.payload, operationOptions, view);
+  const intent = require("./intent-continuity-contract").assertIntentContext(contextForLease(view, previous).payload, plan.payload);
+  require("./intent-continuity-contract").assertIntentPolicy(policy, intent);
+  require("./method-deviation-gate").assertNoMethodDrift(options, previous.payload.mission_id, view);
+  require("./method-control-broker").assertSettled(options, previous.payload, view);
+  issuanceNeed(!gatewayObligations(view).length, "UNRESOLVED_GATEWAY_TRANSACTIONS");
+  issuanceNeed(!unresolvedToolEffectRecords(view, previous).length, "UNRESOLVED_TOOL_EFFECTS");
+  if (checkpoint.payload.lease_status !== "interrupted") throw new Error("Only an interrupted lease can be resumed.");
+  issuanceNeed(pendingAdmissions(view, previous).length === 0, "DISPATCH_ISSUANCE_PENDING_TOOL_REQUEST");
+  const bundle = require("./method-deviation-gate").scopeForLease(view, previous.ref);
+  if (bundle.agent) issuanceNeed(require("./method-deviation-gate").methodState(view, bundle.plan, previous.payload.agent_id).pending_reports.length === 0,
+    "DISPATCH_ISSUANCE_METHOD_REPORT_PENDING");
+  return { previous, checkpoint };
+}
+
+function beginDispatchIssuance(options, policyRef, bindings, previousRef, reason, locks) {
+  locks.forEach(renewRepositoryLease);
+  const view = storeView(options);
+  issuanceNeed(!issuanceProgresses(view).some(item => item.status === "pending"), "DISPATCH_ISSUANCE_PENDING");
+  const prior = reason === "resume" ? interruptedForIssuance(options, view, previousRef) : null;
+  if (prior) issuanceNeed(sameRef(prior.previous.payload.tool_policy_ref, policyRef), "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
+  const prepared = prepareLeaseDraft(options, loadArtifactRef(view, policyRef, "dispatch-tool-policy"), bindings, previousRef, reason);
+  if (prior) issuanceNeed(sameRepositoryState(prepared.lease.initial_repository_state, prior.checkpoint.payload.repository_state), "DISPATCH_ISSUANCE_REPOSITORY_DRIFT");
+  const channel = observedChannelBinding(prepared.bundle.view, prepared.lease, prior?.checkpoint.ref || NONE_REF);
+  if (channel) issuanceNeed(prepared.bundle.context.payload.method_assignment.broker.runtime_sha256 === require("./method-control-contract").runtimeDigest(),
+    "DISPATCH_ISSUANCE_CHANNEL_REVIEW_REQUIRED");
+  if (channel) prepared.lease.expires_at = new Date(Math.min(timestamp(prepared.lease.expires_at, "Lease expiry"),
+    timestamp(channel.slot.payload.expires_at, "Channel expiry"))).toISOString();
+  const lease = prepared.lease;
+  const value = issuance.identified("DispatchLeaseIssuanceRequest", { mission_id: lease.mission_id, wave_id: lease.wave_id, agent_id: lease.agent_id,
+    planned_lease: lease, interruption_checkpoint_ref: prior?.checkpoint.ref || clone(NONE_REF),
+    planned_supersession: prior ? transitionCheckpoint(prior.previous, prior.checkpoint, lease.initial_repository_state,
+      { kind: "supersession", status: "superseded", reasonCodes: ["LEASE_SUPERSEDED_BY_RESUME"], recordedAt: lease.issued_at }) : null,
+    channel_observation_ref: channel?.observation.ref || clone(NONE_REF),
+    observed_manifest: { revision: prepared.bundle.view.manifest.manifest_revision, sha256: manifestDigest(prepared.bundle.view.manifest) },
+    runtime_sha256: issuance.runtimeDigest(), recorded_at: lease.issued_at, expires_at: lease.expires_at });
+  assertValid(value, "dispatch-lease-issuance-request", "Issuance request");
+  locks.forEach(renewRepositoryLease);
+  const reference = writeJsonArtifact(options, { missionId: value.mission_id, waveId: value.wave_id, kind: issuance.REQUESTS,
+    artifactId: value.id, payload: value, createdAt: value.recorded_at,
+    publicationGuard: issuancePublicationGuard(options, value, prepared.bundle.view, locks) });
+  return continueDispatchIssuance(options, reference, locks);
+}
+
+function appraiseLiveIssuance(options, operation, view) {
+  const { request, planned } = operation, value = request.payload, current = timestamp(nowIso(options), "Issuance recovery time");
+  issuanceNeed(current >= timestamp(value.recorded_at, "Issuance request time"), "DISPATCH_ISSUANCE_CLOCK_ROLLBACK");
+  issuanceNeed(current < timestamp(value.expires_at, "Issuance expiry"), "DISPATCH_ISSUANCE_EXPIRED");
+  issuanceNeed(issuance.runtimeDigest() === value.runtime_sha256, "DISPATCH_ISSUANCE_RUNTIME_CHANGED");
+  issuanceNeed(!issuanceProgresses(view).some(item => item.status === "pending" && !sameRef(item.request.ref, request.ref)), "DISPATCH_ISSUANCE_AMBIGUOUS");
+  const policy = loadArtifactRef(view, planned.tool_policy_ref, "dispatch-tool-policy"), bundle = contextBundle(options, policy.payload);
+  if (bundle.context.payload.method_assignment?.broker) issuanceNeed(bundle.context.payload.method_assignment.broker.runtime_sha256 ===
+    require("./method-control-contract").runtimeDigest(), "DISPATCH_ISSUANCE_CHANNEL_REVIEW_REQUIRED");
+  issuanceNeed(sameRef(bundle.context.ref, planned.context_pack_ref) && sameRef(bundle.plan.ref, planned.plan_ref), "DISPATCH_ISSUANCE_SCOPE_CHANGED");
+  policyValidity(policy.payload, bundle.context.payload, nowIso(options));
+  issuanceNeed(sameRepositoryState(runtimeRepositoryState(options.repository), planned.initial_repository_state), "DISPATCH_ISSUANCE_REPOSITORY_DRIFT");
+  issuanceNeed(!gatewayObligations(view).length, "UNRESOLVED_GATEWAY_TRANSACTIONS");
+  const history = leaseRecords(view);
+  issuanceNeed(!history.some(item => unresolvedToolEffectRecords(view, item).length), "UNRESOLVED_TOOL_EFFECTS");
+  if (value.planned_supersession) {
+    const previous = history.find(item => sameRef(item.ref, planned.previous_lease_ref));
+    issuanceNeed(previous, "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
+    const checkpoint = latestCheckpoint(view, previous);
+    issuanceNeed(sameRef(checkpoint.ref, operation.supersession?.ref || value.interruption_checkpoint_ref) &&
+      !pendingAdmissions(view, previous).length && !reconciledFailureState(view, previous).checkpoint_refs.length,
+    "DISPATCH_ISSUANCE_PREDECESSOR_CHANGED");
+    require("./method-control-broker").assertSettled(options, previous.payload, view);
+  }
+  issuanceNeed(!history.some(item => {
+    const checkpoint = latestCheckpoint(view, item);
+    return !TERMINAL_LEASE_STATUSES.has(checkpoint.payload.lease_status) &&
+      !(sameRef(item.ref, planned.previous_lease_ref) && checkpoint.payload.lease_status === "interrupted");
+  }), "DISPATCH_ISSUANCE_NONTERMINAL_LEASE");
+}
+
+function dispatchIssuanceResult(options, operation) {
+  if (operation.status !== "committed") return { status: operation.status, issuance_ref: operation.request.ref,
+    resolution_ref: operation.resolution?.ref || clone(NONE_REF), ...issuance.AUTHORITY };
+  const lease = operation.lease, checkpoint = latestCheckpoint(storeView(options), lease);
+  const selected = activeLease(options, { missionId: lease.payload.mission_id, waveId: lease.payload.wave_id, agentId: lease.payload.agent_id,
+    provider: lease.payload.provider, sessionId: lease.payload.session_binding.session_id, providerAgentId: lease.payload.session_binding.provider_agent_id });
+  return { status: selected.code === "LEASE_ACTIVE" ? "active" : "committed", execution_authorized: selected.code === "LEASE_ACTIVE",
+    release_authorized: false, issuance_ref: operation.request.ref, resolution_ref: operation.resolution.ref,
+    lease: lease.payload, lease_ref: lease.ref, checkpoint: operation.baseline.payload, checkpoint_ref: operation.baseline.ref,
+    current_checkpoint_ref: checkpoint.ref, current_lease_status: checkpoint.payload.lease_status, artifact_store: selected.view.verification };
+}
+
+function continueDispatchIssuance(options, reference, locks) {
+  for (let step = 0; step < 5; step++) {
+    locks.forEach(renewRepositoryLease);
+    const view = storeView(options), operation = issuanceProgresses(view).find(item => sameRef(item.request.ref, reference));
+    issuanceNeed(operation, "DISPATCH_ISSUANCE_REQUEST_REQUIRED");
+    if (operation.status !== "pending") return dispatchIssuanceResult(options, operation);
+    appraiseLiveIssuance(options, operation, view);
+    let payload, kind, type;
+    if (operation.request.payload.planned_supersession && !operation.supersession) {
+      payload = operation.request.payload.planned_supersession; kind = "agent-execution-checkpoints"; type = "agent-execution-checkpoint";
+    } else if (!operation.lease) {
+      payload = operation.planned; kind = "agent-dispatch-leases"; type = "agent-dispatch-lease";
+    } else if (!operation.baseline) {
+      payload = initialCheckpoint(operation.planned, operation.lease.ref, operation.planned.initial_repository_state, operation.planned.issued_at);
+      kind = "agent-execution-checkpoints"; type = "agent-execution-checkpoint";
+    } else {
+      payload = issuance.identified("DispatchLeaseIssuanceResolution", { mission_id: operation.planned.mission_id, wave_id: operation.planned.wave_id,
+        agent_id: operation.planned.agent_id, request_ref: reference, outcome: "committed", lease_ref: operation.lease.ref,
+        baseline_ref: operation.baseline.ref, supersession_ref: operation.supersession?.ref || clone(NONE_REF), reason: "Exact frozen issuance committed.", recorded_at: nowIso(options) });
+      kind = issuance.RESOLUTIONS; type = "dispatch-lease-issuance-resolution";
+    }
+    assertValid(payload, type, "Issuance publication"); locks.forEach(renewRepositoryLease);
+    writeJsonArtifact(options, { missionId: payload.mission_id, waveId: payload.wave_id, kind, artifactId: payload.id,
+      payload, createdAt: payload.recorded_at || payload.issued_at, publicationGuard: issuancePublicationGuard(options, operation.request, view, locks) });
+  }
+  throw new Error("DISPATCH_ISSUANCE_STAGE_LIMIT");
+}
+
+function withIssuanceOperation(options, id, callback) {
+  const lock = dispatchIssuanceLock(storeView(options));
+  try {
+    const matches = issuanceProgresses(storeView(options)).filter(item => item.request.payload.id === id);
+    issuanceNeed(matches.length === 1, "DISPATCH_ISSUANCE_REQUEST_REQUIRED");
+    const operation = matches[0], previous = operation.planned.previous_lease_ref;
+    if (isNoneRef(previous)) return callback(operation, [lock]);
+    const oldLock = dispatchLock(storeView(options), previous.artifact_id);
+    try { return callback(operation, [lock, oldLock]); } finally { releaseRepositoryLease(oldLock); }
+  } finally { releaseRepositoryLease(lock); }
+}
+
+function recoverDispatchIssuance(options, id) {
+  return withIssuanceOperation(options, id, (operation, locks) => continueDispatchIssuance(options, operation.request.ref, locks));
+}
+
+function cancelDispatchIssuance(options, id, reason) {
+  issuanceNeed(typeof reason === "string" && reason.trim().length > 0 && reason.length <= 1024, "DISPATCH_ISSUANCE_CANCELLATION_REASON_REQUIRED");
+  return withIssuanceOperation(options, id, (_previous, locks) => {
+    const view = storeView(options), operation = issuanceProgresses(view).find(item => item.request.payload.id === id);
+    if (operation.status === "cancelled") {
+      issuanceNeed(operation.resolution.payload.reason === reason.trim(), "DISPATCH_ISSUANCE_CANCELLATION_CONFLICT");
+      return dispatchIssuanceResult(options, operation);
+    }
+    issuanceNeed(operation.status === "pending", "DISPATCH_ISSUANCE_ALREADY_COMMITTED");
+    const payload = issuance.identified("DispatchLeaseIssuanceResolution", { mission_id: operation.planned.mission_id, wave_id: operation.planned.wave_id,
+      agent_id: operation.planned.agent_id, request_ref: operation.request.ref, outcome: "cancelled", lease_ref: operation.lease?.ref || clone(NONE_REF),
+      baseline_ref: operation.baseline?.ref || clone(NONE_REF), supersession_ref: operation.supersession?.ref || clone(NONE_REF), reason: reason.trim(), recorded_at: nowIso(options) });
+    assertValid(payload, "dispatch-lease-issuance-resolution", "Issuance cancellation"); locks.forEach(renewRepositoryLease);
+    writeJsonArtifact(options, { missionId: payload.mission_id, waveId: payload.wave_id, kind: issuance.RESOLUTIONS, artifactId: payload.id, payload,
+      createdAt: payload.recorded_at, publicationGuard: issuancePublicationGuard(options, operation.request, view, locks, true) });
+    return dispatchIssuanceResult(options, issuanceProgresses(storeView(options)).find(item => item.request.payload.id === id));
   });
 }
 
@@ -940,6 +1244,9 @@ function activeLease(options, identity, at = nowIso(options)) {
 }
 function activeLeaseInReplay(options, identity, at) {
   const view = storeView(options);
+  if (issuanceProgresses(view).some(item => item.status === "pending")) {
+    return { code: "DISPATCH_ISSUANCE_PENDING", view, leaseRecord: null, checkpointRecord: null };
+  }
   if (listArtifacts(view, { missionId: identity.missionId, waveId: identity.waveId, kind: "mission-wave-terminations" }).length) {
     return { code: "MISSION_WAVE_TERMINATED", view, leaseRecord: null, checkpointRecord: null };
   }
@@ -968,6 +1275,13 @@ function activeLeaseInReplay(options, identity, at) {
   }
   if (hasReconciledFailureAwaitingRevocation(view)) {
     return { code: "RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED", view, ...selected };
+  }
+  if (selected.leaseRecord.payload.schema_version === "0.1") {
+    return { code: "LEGACY_LEASE_RESULT_ONLY", view, ...selected };
+  }
+  const issued = loadArtifactRef(view, selected.leaseRecord.payload.issuance_ref, "dispatch-lease-issuance-request");
+  if (issued.payload.runtime_sha256 !== issuance.runtimeDigest()) {
+    return { code: "DISPATCH_ISSUANCE_RUNTIME_CHANGED", view, ...selected };
   }
   if (gatewayObligations(view, options, true).length) {
     return { code: "UNRESOLVED_GATEWAY_TRANSACTIONS", view, ...selected };
@@ -1124,6 +1438,7 @@ function obviousRetainedCommand(toolName, toolInput) {
   if (toolName !== "Bash" || !toolInput || typeof toolInput.command !== "string") return false;
   const command = toolInput.command;
   const patterns = [
+    /\b(?:dispatch-runtime-controller|operate_dispatch_runtime)\.js["']?\s+(?:authorize-policy|issue|resume|recover-issuance|cancel-issuance|interrupt|revoke|complete)\b/i,
     /(^|[\n;&|])\s*git(?:\s+-C\s+\S+)?\s+(commit|push|merge|rebase|reset|tag|clean|checkout|switch)\b/i,
     /(^|[\n;&|])\s*gh\s+(pr\s+merge|release\s+(create|delete|upload)|repo\s+delete)\b/i,
     /(^|[\n;&|])\s*(npm|pnpm|yarn|cargo|gem|twine)\s+publish\b/i,
@@ -1666,6 +1981,11 @@ function loadLeaseById(options, leaseIdValue) {
     .filter(item => item.payload.id === leaseIdValue);
   if (matches.length !== 1) throw new Error(`Expected one dispatch lease ${leaseIdValue}; found ${matches.length}.`);
   assertValid(matches[0].payload, "agent-dispatch-lease", "Agent dispatch lease");
+  if (matches[0].payload.schema_version === "0.2") {
+    const operation = issuanceProgresses(view).find(item => sameRef(item.request.ref, matches[0].payload.issuance_ref));
+    issuanceNeed(operation && sameRef(operation.lease?.ref, matches[0].ref), "DISPATCH_ISSUANCE_REQUEST_REQUIRED");
+    issuanceNeed(operation.status === "committed", operation.status === "cancelled" ? "DISPATCH_ISSUANCE_CANCELLED" : "DISPATCH_ISSUANCE_PENDING");
+  }
   return { view, leaseRecord: matches[0] };
 }
 
@@ -1675,6 +1995,7 @@ function transitionLease(options, leaseIdValue, descriptor) {
   try {
     const refreshed = loadLeaseById(options, leaseIdValue);
     if (descriptor.kind === "completion") {
+      assertNoPendingIssuance(options, refreshed.view);
       require("./method-control-broker").assertSettled(options, refreshed.leaseRecord.payload, refreshed.view);
       require("./method-deviation-gate").assertMethodComplete(options, refreshed.leaseRecord.ref, refreshed.view);
     }
@@ -1720,7 +2041,10 @@ function transitionLease(options, leaseIdValue, descriptor) {
     renewRepositoryLease(lock);
     const ref = persistCheckpoint(options, checkpoint, TERMINAL_LEASE_STATUSES.has(status) ? () => {
       const view = storeView(options);
-      if (descriptor.kind === "completion") require("./method-deviation-gate").assertMethodComplete(options, refreshed.leaseRecord.ref, view);
+      if (descriptor.kind === "completion") {
+        assertNoPendingIssuance(options, view);
+        require("./method-deviation-gate").assertMethodComplete(options, refreshed.leaseRecord.ref, view);
+      }
       const currentFailure = reconciledFailureState(view, refreshed.leaseRecord);
       if (descriptor.kind !== "revocation" && currentFailure.checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
       if (currentFailure.checkpoint_refs.length && Date.parse(checkpoint.recorded_at) < Date.parse(currentFailure.latest_settled_at)) {
@@ -1769,6 +2093,7 @@ function revokeLease(options, leaseIdValue, reasonCode = "LEASE_REVOKED") {
 
 function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED") {
   const loaded = loadLeaseById(options, leaseIdValue);
+  assertNoPendingIssuance(options, loaded.view);
   require("./method-control-broker").assertSettled(options, loaded.leaseRecord.payload, loaded.view);
   require("./method-deviation-gate").assertMethodComplete(options, loaded.leaseRecord.ref, loaded.view);
   return transitionLease(options, leaseIdValue, {
@@ -1782,70 +2107,7 @@ function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED"
 
 function resumeLease(options, leaseIdValue, bindings) {
   const loaded = loadLeaseById(options, leaseIdValue);
-  if (reconciledFailureState(loaded.view, loaded.leaseRecord).checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
-  require("./skill-mission-controller").assertWaveNotTerminated({ ...options, artifactRoot: loaded.view.artifactRoot }, loaded.leaseRecord.payload.mission_id, loaded.leaseRecord.payload.wave_id);
-  const plan = loadArtifactRef(loaded.view, loaded.leaseRecord.payload.plan_ref, "mission-wave-plan");
-  require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot });
-  require("./order-revision-controller").assertRevisionDispatch(plan.payload, { ...options, artifactRoot: loaded.view.artifactRoot }, loaded.view);
-  const intent = require("./intent-continuity-contract").assertIntentContext(contextForLease(loaded.view, loaded.leaseRecord).payload, plan.payload);
-  require("./intent-continuity-contract").assertIntentPolicy(policyForLease(loaded.view, loaded.leaseRecord).payload, intent);
-  require("./method-deviation-gate").assertNoMethodDrift(options, loaded.leaseRecord.payload.mission_id, loaded.view);
-  const lock = dispatchLock(loaded.view, leaseIdValue);
-  let oldLease;
-  let policy;
-  let oldLeaseRef;
-  try {
-    const refreshed = loadLeaseById(options, leaseIdValue);
-    oldLease = refreshed.leaseRecord;
-    require("./method-control-broker").assertSettled(options, oldLease.payload, refreshed.view);
-    const previous = latestCheckpoint(refreshed.view, oldLease);
-    if (reconciledFailureState(refreshed.view, oldLease).checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
-    if (gatewayObligations(refreshed.view).length) {
-      throw new Error("UNRESOLVED_GATEWAY_TRANSACTIONS: gateway obligations cannot be cleared by resume.");
-    }
-    if (unresolvedToolEffectRecords(refreshed.view, oldLease).length > 0) {
-      throw new Error("UNRESOLVED_TOOL_EFFECTS: unknown effects cannot be cleared by resume.");
-    }
-    if (previous.payload.lease_status !== "interrupted") {
-      throw new Error("Only an interrupted lease can be resumed.");
-    }
-    if (pendingAdmissions(refreshed.view, oldLease).length > 0) {
-      throw new Error("Interrupted lease has an unresolved admitted tool request.");
-    }
-    const state = runtimeRepositoryState(refreshed.view.repository.root);
-    if (!sameRepositoryState(state, previous.payload.repository_state)) {
-      throw new Error("Repository state changed after the interruption checkpoint.");
-    }
-    policy = policyForLease(refreshed.view, oldLease).payload;
-    const context = contextForLease(refreshed.view, oldLease).payload;
-    const currentPlan = loadArtifactRef(refreshed.view, oldLease.payload.plan_ref, "mission-wave-plan");
-    require("./intent-continuity-contract").assertIntentPolicy(policy,
-      require("./intent-continuity-contract").assertIntentContext(context, currentPlan.payload));
-    policyValidity(policy, context, nowIso(options));
-    const superseded = transitionCheckpoint(oldLease, previous, state, {
-      kind: "supersession",
-      status: "superseded",
-      reasonCodes: ["LEASE_SUPERSEDED_BY_RESUME"],
-      recordedAt: nowIso(options)
-    });
-    renewRepositoryLease(lock);
-    persistCheckpoint(options, superseded, () => {
-      const view = storeView(options);
-      if (reconciledFailureState(view, oldLease).checkpoint_refs.length) throw new Error("RECONCILED_FAILED_AGENT");
-      if (!sameRef(latestCheckpoint(view, oldLease).ref, previous.ref)) throw new Error("DISPATCH_TRANSITION_CHECKPOINT_CHANGED");
-      return true;
-    });
-    oldLeaseRef = oldLease.ref;
-  } finally {
-    releaseRepositoryLease(lock);
-  }
-  return issueLeaseFromPolicyRef(
-    options,
-    oldLease.payload.tool_policy_ref,
-    bindings,
-    oldLeaseRef,
-    "resume"
-  );
+  return issueLeaseFromPolicyRef(options, loaded.leaseRecord.payload.tool_policy_ref, bindings, loaded.leaseRecord.ref, "resume");
 }
 
 function sessionStart(options, identity, hookInput) {
@@ -1890,6 +2152,18 @@ function historicalDispatchStatus(options, snapshot, filters = {}) {
 }
 
 function projectDispatchStatus(view, filters) {
+  const runtime = issuance.runtimeDigest();
+  const operations = issuanceProgresses(view).filter(item => (!filters.missionId || item.planned.mission_id === filters.missionId) &&
+    (!filters.waveId || item.planned.wave_id === filters.waveId) && (!filters.agentId || item.planned.agent_id === filters.agentId))
+    .map(item => ({ issuance_ref: item.request.ref, resolution_ref: item.resolution?.ref || clone(NONE_REF), status: item.status,
+      lease_ref: item.lease?.ref || clone(NONE_REF), baseline_ref: item.baseline?.ref || clone(NONE_REF),
+      supersession_ref: item.supersession?.ref || clone(NONE_REF),
+      runtime_source_current: item.request.payload.runtime_sha256 === runtime,
+      planned_lease_id: item.planned.id, previous_lease_ref: item.planned.previous_lease_ref,
+      mission_id: item.planned.mission_id, wave_id: item.planned.wave_id, agent_id: item.planned.agent_id,
+      provider: item.planned.provider, session_binding: item.planned.session_binding, expires_at: item.planned.expires_at,
+      lease_published: Boolean(item.lease), baseline_published: Boolean(item.baseline), supersession_published: Boolean(item.supersession),
+      ...issuance.AUTHORITY }));
   const obligations = gatewayObligations(view);
   const scopedObligations = obligations.filter(item => {
     const request = loadArtifactRef(view, item.request_ref, "tool-gateway-request").payload;
@@ -1905,12 +2179,15 @@ function projectDispatchStatus(view, filters) {
       const gatewayTransactions = obligations.filter(item => sameRef(item.lease_ref, leaseRecord.ref));
       return {
         lease_id: leaseRecord.payload.id,
+        lease_ref: leaseRecord.ref,
+        previous_lease_ref: leaseRecord.payload.previous_lease_ref,
         mission_id: leaseRecord.payload.mission_id,
         wave_id: leaseRecord.payload.wave_id,
         agent_id: leaseRecord.payload.agent_id,
         provider: leaseRecord.payload.provider,
         session_binding: clone(leaseRecord.payload.session_binding),
         status: checkpoint.payload.lease_status,
+        legacy_result_only: leaseRecord.payload.schema_version === "0.1",
         checkpoint_sequence: checkpoint.payload.sequence,
         pending_tool_requests: pendingAdmissions(view, leaseRecord).length,
         unresolved_tool_effects: unknownEffects.length,
@@ -1933,6 +2210,8 @@ function projectDispatchStatus(view, filters) {
       head_commit: view.repository.head_commit
     },
     leases: records,
+    issuances: operations,
+    unresolved_issuances: operations.filter(item => item.status === "pending"),
     unresolved_gateway_obligations: scopedObligations,
     artifact_store: view.verification,
     release_authorized: false
@@ -1945,14 +2224,16 @@ function parseArgs(argv) {
   const positional = [];
   const valueFlags = new Set([
     "repository", "artifact-root", "policy", "policy-id", "mission", "wave", "agent", "provider",
-    "session", "provider-agent", "lease", "reason", "at"
+    "session", "provider-agent", "lease", "reason", "at", "issuance"
   ]);
   for (let index = 0; index < rest.length; index += 1) {
     const arg = rest[index];
     if (arg.startsWith("--") && valueFlags.has(arg.slice(2))) {
       index += 1;
-      if (index >= rest.length) throw new Error(`${arg} requires a value.`);
-      options[arg.slice(2).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = rest[index];
+      const key = arg.slice(2).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+      if (index >= rest.length || rest[index].startsWith("--")) throw new Error(`${arg} requires a value.`);
+      if (Object.hasOwn(options, key)) throw new Error(`${arg} must not be repeated.`);
+      options[key] = rest[index];
     } else {
       positional.push(arg);
     }
@@ -1968,6 +2249,10 @@ function required(value, label) {
 function main() {
   try {
     const parsed = parseArgs(process.argv.slice(2));
+    if (["recover-issuance", "cancel-issuance"].includes(parsed.command) &&
+        (parsed.positional.length || Object.keys(parsed.options).some(key => !["repository", "artifactRoot", "issuance", ...(parsed.command === "cancel-issuance" ? ["reason"] : [])].includes(key)))) {
+      throw new Error("Issuance recovery and cancellation accept only exact repository, artifact root, issuance ID and cancellation reason; no clock or binding overrides.");
+    }
     const options = {
       repository: path.resolve(required(parsed.options.repository, "--repository")),
       artifactRoot: parsed.options.artifactRoot ? path.resolve(parsed.options.artifactRoot) : undefined,
@@ -2002,12 +2287,16 @@ function main() {
         waveId: parsed.options.wave,
         agentId: parsed.options.agent
       });
+    } else if (parsed.command === "recover-issuance") {
+      result = recoverDispatchIssuance(options, required(parsed.options.issuance, "--issuance"));
+    } else if (parsed.command === "cancel-issuance") {
+      result = cancelDispatchIssuance(options, required(parsed.options.issuance, "--issuance"), required(parsed.options.reason, "--reason"));
     } else if (parsed.command === "hash-input") {
       const inputPath = required(parsed.positional[0], "JSON input path");
       result = { sha256: inputDigest(JSON.parse(fs.readFileSync(path.resolve(inputPath), "utf8"))) };
     } else {
       throw new Error(
-        "Usage: node dispatch-runtime-controller.js <authorize-policy|issue|interrupt|revoke|complete|resume|status|hash-input> " +
+        "Usage: node dispatch-runtime-controller.js <authorize-policy|issue|interrupt|revoke|complete|resume|recover-issuance|cancel-issuance|status|hash-input> " +
         "--repository <repo> [--artifact-root <root>] ..."
       );
     }
@@ -2021,6 +2310,7 @@ function main() {
 
 module.exports = {
   inspectDispatchHistory,
+  assertNoPendingIssuance,
   compiledPolicyContext,
   withDispatchControlLock,
   historicalDispatchStatus,
@@ -2032,6 +2322,7 @@ module.exports = {
   admitToolRequest,
   authorizeDispatchPolicy,
   cancelToolRequest,
+  cancelDispatchIssuance,
   canonicalBytes,
   completeLease,
   completeToolRequest,
@@ -2040,6 +2331,7 @@ module.exports = {
   inputDigest,
   interruptLease,
   issueLease,
+  recoverDispatchIssuance,
   resumeLease,
   revokeLease,
   runtimeRepositoryState,

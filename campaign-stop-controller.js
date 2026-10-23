@@ -165,7 +165,8 @@ function campaignStopStatus(options, missionId) {
   const dispatch = require("./dispatch-runtime-controller").dispatchStatus(options, { missionId });
   if (dispatch.artifact_store.manifest_sha256 !== store.verification.manifest_sha256) throw new Error("CAMPAIGN_STOP_STATUS_CHANGED");
   return { type: "CampaignStopStatus", mission_id: missionId, status: stops.length ? "stop_requested" : "no_stop_record",
-    stop_refs: stops.map(item => item.ref), leases: dispatch.leases, settlement_complete: false,
+    stop_refs: stops.map(item => item.ref), leases: dispatch.leases, issuances: dispatch.issuances,
+    unresolved_issuances: dispatch.unresolved_issuances, settlement_complete: false,
     execution_completion_claimed: false, execution_authorized: false, continuation_authorized: false, release_authorized: false };
 }
 

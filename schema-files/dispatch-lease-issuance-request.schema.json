@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/dispatch-lease-issuance-request.schema.json",
+  "title": "Dispatch Lease Issuance Request",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "agent_id", "planned_lease", "interruption_checkpoint_ref", "planned_supersession", "channel_observation_ref", "observed_manifest", "runtime_sha256", "recorded_at", "expires_at", "execution_authorized", "continuation_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "DispatchLeaseIssuanceRequest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "agent-dispatch-lease.schema.json#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "agent-dispatch-lease.schema.json#/$defs/safe_identifier" },
+    "planned_lease": { "allOf": [{ "$ref": "agent-dispatch-lease.schema.json" }, { "properties": { "schema_version": { "const": "0.1" } } }] },
+    "interruption_checkpoint_ref": { "$ref": "agent-dispatch-lease.schema.json#/$defs/artifact_ref_or_none" },
+    "planned_supersession": { "oneOf": [{ "type": "null" }, { "$ref": "agent-execution-checkpoint.schema.json" }] },
+    "channel_observation_ref": { "$ref": "agent-dispatch-lease.schema.json#/$defs/artifact_ref_or_none" },
+    "observed_manifest": { "type": "object", "additionalProperties": false, "required": ["revision", "sha256"],
+      "properties": { "revision": { "type": "integer", "minimum": 0 }, "sha256": { "$ref": "common.schema.json#/$defs/sha256" } } },
+    "runtime_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false }, "continuation_authorized": { "const": false }, "release_authorized": { "const": false },
+    "human_final_decision_authority": { "const": "USER" }
+  }
+}

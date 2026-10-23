@@ -11,6 +11,7 @@ const NON_WORK_TYPES = new Set([...Object.keys(RECORDS), "MethodControlChannelPo
 const AUTHORITY = Object.freeze({ execution_authorized: false, continuation_authorized: false, release_authorized: false,
   human_final_decision_authority: "USER" });
 const CODE = ["method-control-contract.js", "method-control-broker.js", "method-control-private-state.js", "method-control-server.js",
+  "dispatch-issuance-contract.js", "schema-files/agent-dispatch-lease.schema.json", "schema-files/dispatch-lease-issuance-request.schema.json", "schema-files/dispatch-lease-issuance-resolution.schema.json",
   "method-control-runner.js", "dispatch-hook-adapter.js", "dispatch-runtime-controller.js", "method-deviation-contract.js", "method-deviation-gate.js",
   "order-adoption-contract.js", "validator-cli-prototype/validate.js", "package.json", "package-lock.json",
   ...fs.readdirSync(path.join(__dirname, "schema-files")).filter(file => file.startsWith("method-control-") && file.endsWith(".schema.json"))

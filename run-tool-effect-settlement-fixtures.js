@@ -339,7 +339,8 @@ for (const resource of scope.resources) {
     assert.strictEqual(runtime.revokeLease(isolated, lease.id).status, "revoked");
     assert.strictEqual(runtime.dispatchStatus(isolated).leases[0].failed_effect_revocation_required, false);
   });
-  for (const status of ["active", "interrupted"]) check(`publication rejects reconciliation racing ${status === "active" ? "completion" : "resume"}`, () => {
+  for (const status of ["active", "interrupted"]) check(status === "active" ? "publication rejects reconciliation racing completion"
+    : "resume rejects existing unknown effects before freezing a successor", () => {
     const isolated = forkStore(`publication-race-${status}`);
     const child = { ...clone(lease), id: `ADL-RACE-${status}`, previous_lease_ref: leaseRef, issuance_reason: "resume",
       session_binding: { session_id: `race-${status}`, provider_agent_id: "main" } };
@@ -360,9 +361,14 @@ for (const resource of scope.resources) {
       settleToolEffects(isolated, request);
     };
     try {
-      assert.throws(() => status === "active" ? runtime.completeLease(isolated, child.id)
-        : runtime.resumeLease(isolated, child.id, { sessionId: "race-resume", providerAgentId: "main" }), /RECONCILED_FAILED_AGENT/);
-      assert(fired, "must reach the publication boundary before injecting settlement");
+      if (status === "active") {
+        assert.throws(() => runtime.completeLease(isolated, child.id), /RECONCILED_FAILED_AGENT/);
+        assert(fired, "completion must reappraise settlement at publication");
+      } else {
+        assert.throws(() => runtime.resumeLease(isolated, child.id, { sessionId: "race-resume", providerAgentId: "main" }), /UNRESOLVED_TOOL_EFFECTS/);
+        assert.strictEqual(fired, false, "known unknown effects must deny before any successor publication");
+        assert.strictEqual(runtime.dispatchStatus(isolated).unresolved_issuances.length, 0);
+      }
       assert.strictEqual(runtime.dispatchStatus(isolated).leases.find(item => item.lease_id === child.id).status, status);
     } finally { beforePublication = null; }
   });

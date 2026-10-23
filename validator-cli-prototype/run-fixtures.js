@@ -946,7 +946,38 @@ const fixtures = [
     file: "sample-payloads/valid-agent-dispatch-lease.json",
     type: "agent-dispatch-lease",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
+  },
+  {
+    name: "frozen non-authorizing issuance request",
+    file: "sample-payloads/valid-dispatch-lease-issuance-request.json",
+    type: "dispatch-lease-issuance-request", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "issuance request nonce substitution",
+    file: "sample-payloads/invalid-dispatch-lease-issuance-request.json",
+    type: "dispatch-lease-issuance-request", exitCode: 1, requiredCodes: ["DISPATCH_ISSUANCE_ID_MISMATCH"]
+  },
+  {
+    name: "non-authorizing issuance resolution",
+    file: "sample-payloads/valid-dispatch-lease-issuance-resolution.json",
+    type: "dispatch-lease-issuance-resolution", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "issuance commit without its actual baseline",
+    file: "sample-payloads/invalid-dispatch-lease-issuance-resolution.json",
+    type: "dispatch-lease-issuance-resolution", exitCode: 1, requiredCodes: ["DISPATCH_ISSUANCE_RESOLUTION_INVALID"]
+  },
+  {
+    name: "journal-linked lease remains non-authorizing as standalone JSON",
+    file: "sample-payloads/valid-agent-dispatch-lease-issuance.json",
+    type: "agent-dispatch-lease", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "new lease without an issuance reference",
+    file: "sample-payloads/invalid-agent-dispatch-lease-issuance.json",
+    type: "agent-dispatch-lease", exitCode: 1, requiredCodes: ["MISSING_REQUIRED"]
   },
   {
     name: "unsafe agent dispatch lease",

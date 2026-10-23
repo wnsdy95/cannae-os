@@ -711,6 +711,7 @@ function wavePublicationGuard(plan, options, allowMissingCampaign = false) {
     }
     if (manifest) {
       require("./dispatch-runtime-controller").assertReconciledFailureRevocations(options);
+      require("./dispatch-runtime-controller").assertNoPendingIssuance(options);
       assertWaveNotTerminated(options, plan.mission_id, plan.wave_id);
       assertAdaptiveCampaignMayContinue(plan, options, allowMissingCampaign);
     } else if (!allowMissingCampaign) {
@@ -725,6 +726,7 @@ function openWave(plan, options = {}) {
   return withWaveLifecycle(options, plan.mission_id, plan.wave_id, locked => {
     assertWaveNotTerminated(locked, plan.mission_id, plan.wave_id);
     require("./dispatch-runtime-controller").assertReconciledFailureRevocations(locked);
+    require("./dispatch-runtime-controller").assertNoPendingIssuance(locked);
     assertAdaptiveCampaignMayContinue(plan, locked, true);
     return openWaveUnlocked(plan, locked);
   });
@@ -1075,6 +1077,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
       const typedControl = require("./method-control-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
+        require("./dispatch-issuance-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
         require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||
         ["MethodDeviationEvent", "InitiativeDeviationReport", "DegenerationIncidentEvent", "MethodControlBaseline", "AgentMethodAssignment", "AgentContextPack",
           "DispatchToolPolicy", "AgentDispatchLease", "ToolAdmissionEvent", "AgentExecutionCheckpoint"].includes(evidencePayload?.type);
@@ -1105,9 +1108,12 @@ function validateDispatchCompletion(report, plan, options) {
     missionId: report.mission_id,
     waveId: report.wave_id
   });
+  if (projection.unresolved_issuances.length) throw new Error("DISPATCH_ISSUANCE_PENDING: report cannot omit an unfinished issuance.");
   for (const result of report.agent_results) {
     const leases = projection.leases.filter(item => item.agent_id === result.agent_id);
+    const cancelled = projection.issuances.filter(item => item.agent_id === result.agent_id && item.status === "cancelled");
     if (leases.length === 0) {
+      if (result.status !== "complete" && cancelled.some(item => item.previous_lease_ref.artifact_id === "none")) continue;
       throw new Error(`Dispatch-controlled agent ${result.agent_id} has no lease lineage.`);
     }
     if (leases.some(item => item.failed_effect_revocation_required)) {
@@ -1123,6 +1129,9 @@ function validateDispatchCompletion(report, plan, options) {
       throw new Error(`Dispatch-controlled agent ${result.agent_id} has an unresolved tool request.`);
     }
     const lineageHeads = leases.filter(item => item.status !== "superseded");
+    const leaves = leases.filter(item => !leases.some(other => sameRef(other.previous_lease_ref, item.lease_ref)));
+    if (!lineageHeads.length && result.status !== "complete" && leaves.length === 1 &&
+        cancelled.some(item => sameRef(item.previous_lease_ref, leaves[0].lease_ref))) continue;
     if (lineageHeads.length !== 1) {
       throw new Error(`Dispatch-controlled agent ${result.agent_id} does not have one unambiguous lease head.`);
     }
@@ -1517,6 +1526,7 @@ function terminateWave(request, options = {}) {
         assertValid(previous.payload, "mission-wave-termination", "Retained termination");
         if (previous.payload.request_sha256 !== requestSha256) throw new Error("Wave termination is immutable; request differs from retained termination.");
         const current = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+        if (current.unresolved_issuances.length) throw new Error("DISPATCH_ISSUANCE_PENDING");
         if (current.leases.some(lease => lease.failed_effect_revocation_required)) throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED");
         return terminationResult(previous.payload, previous.ref, locked);
       }
@@ -1583,6 +1593,7 @@ function terminateWave(request, options = {}) {
         }
       }
       const dispatch = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+      if (dispatch.unresolved_issuances.length) throw new Error("DISPATCH_ISSUANCE_PENDING: termination requires exact issuance recovery or cancellation.");
       if (dispatch.leases.some(lease => lease.failed_effect_revocation_required)) {
         throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED: termination requires explicit post-settlement revocation.");
       }
@@ -1615,6 +1626,7 @@ function terminateWave(request, options = {}) {
         publicationGuard: () => {
           require("./order-revision-controller").assertRevisionSupersession(request, locked, loadStore(locked));
           const current = dispatchStatus(locked, { missionId: request.mission_id, waveId: request.wave_id });
+          if (current.unresolved_issuances.length) throw new Error("DISPATCH_ISSUANCE_PENDING");
           if (current.leases.some(lease => lease.failed_effect_revocation_required)) {
             throw new Error("RECONCILED_FAILED_AGENT_REVOCATION_REQUIRED: reconciliation changed before termination publication.");
           }
