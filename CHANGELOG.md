@@ -6,6 +6,14 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Separate actual workload inspection from framework fixture execution after a
+  retained input-flow counterexample. New report admission captures bounded
+  exact report/evidence bytes, invokes a fixed local OPSEC worker, retains only
+  digest-bound findings and rechecks the subject at publication. Keep framework
+  gates/timeouts, legacy read access and all authority boundaries. Both skills
+  teach reviewed replacement/fresh report admission, not receipt reuse or waivers.
+  Custom policies, release review, regression caching and rollout remain open.
+
 - Add a restrictive retained-readiness consumer after an actual allow-after-drop
   dispatch probe. Fence exact role/task issuance, next-call/gateway publication
   and completion; revoke old grants or retain blocked state while results/effects

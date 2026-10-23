@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["WorkloadControlInput", "WorkloadPolicyAssessment", "WorkloadControlReceipt", "workload-control", "subject-bound report input", "schema-files/workload-policy-assessment.schema.json"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["workload-controls"]); assert.equal(result.capability_routing.status, "covered");
+    assert.equal(result.capability_routing.provisional_organization.required, false);
+    assert(result.recommended_documents.some(item => item.path === "docs/subject-bound-workload-controls.md"));
+    assert(result.validation_commands.includes("node run-workload-control-fixtures.js"));
+  }
   for (const query of ["readiness drop", "cross-mission capability registry training progression readiness actual grant reconciliation",
     "READINESS_REQUALIFICATION_REQUIRED", "reconcile_controls_readiness", "schema-files/readiness-drop-reconciliation.schema.json"]) {
     const result = route(router, ["--actor=user"], query);

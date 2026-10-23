@@ -2452,19 +2452,26 @@
       "implementation_status": "partial",
       "implementation_paths": [
         "eefi-detector.js",
-        "evidence-redactor.js"
+        "evidence-redactor.js",
+        "workload-control-contract.js",
+        "workload-control-runner.js",
+        "workload-control-worker.js",
+        "skill-mission-controller.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the sensitive-output-filter.js proposal and associated constraints in docs/sensitive-output-filter.md.",
-          "validation_commands": []
+          "validation_commands": [
+            "node run-workload-control-fixtures.js"
+          ]
         }
       ],
       "remaining_work": [
-        "Compose both EEFI lanes with exact classification, destination, exception, review, expiry, and revocation checks before dispatch/release."
+        "Compose both EEFI lanes with exact classification, destination, exception, review, expiry, and revocation checks before dispatch/release.",
+        "Extend actual report-bound core-pattern inspection to reviewed custom mission policies, audited exceptions and complete input-bound CCIR/KM/resource controls; separately qualify/cache framework regressions without weakening admission."
       ],
-      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+      "rationale": "Actual report admission now inspects bounded same-mission/wave work bytes through a separate core-pattern worker. This is narrower than the full output-filter requirement; keep partial status and all release/exception boundaries."
     },
     {
       "id": "IC-3b0394530b5e4e0e",

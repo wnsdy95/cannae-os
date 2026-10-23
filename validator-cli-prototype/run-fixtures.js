@@ -11,6 +11,14 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["workload-control-input", "workload-policy-assessment", "workload-control-receipt"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type,
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]
+  }))),
+  ...["missing", "null-item"].map(kind => ({ name: `workload input rejects malformed ${kind} before semantic validation`,
+    file: "sample-payloads/valid-workload-control-input.json", type: "workload-control-input", exitCode: 1,
+    expectedCanExecute: false, requiredCodes: [kind === "missing" ? "MISSING_REQUIRED" : "TYPE_MISMATCH"],
+    mutate(payload) { if (kind === "missing") delete payload.evidence; else payload.evidence[0] = null; } })),
   ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing readiness drop reconciliation`,
     file: `sample-payloads/${prefix}-readiness-drop-reconciliation.json`, type: "readiness-drop-reconciliation",
     exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"] })),

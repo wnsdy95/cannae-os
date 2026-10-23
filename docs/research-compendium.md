@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Code Regression Is Not Workload Inspection (2026-10-24)
+
+A retained actual-function probe on `1f2b261` passed the same routed fixture
+command for both clean and credential-bearing report inputs. The command received
+no report/evidence bytes; a digest-bound receipt alone did not close that gap.
+It did not exercise full report admission or demonstrate external disclosure.
+The [local corrective candidate](subject-bound-workload-controls.md) adds actual
+same-mission/wave work-byte inspection, a bounded fixed worker and separately
+bound policy receipts to report admission. Publication rechecks the full subject.
+This is engineering synthesis, not new military doctrine or model calibration.
+Core credential/marking checks remain narrower than custom EEFI, CCIR, KM,
+resource, semantic-truth or releasability assessment. Regression caching and
+protected execution remain open; all eight program outcomes remain open.
+
 ## Readiness Must Reach Actual Grants (2026-10-24)
 
 A synthetic probe on `c475726` retained a schema-valid T-to-X event for the
