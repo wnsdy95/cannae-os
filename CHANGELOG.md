@@ -6,6 +6,11 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Separate independent analysis-recovery denial fixtures from the real commit
+  throttle and regress its exact ninth-attempt denial. Preserve the original
+  21-pass/one-failure suite and update both skills; do not widen production limits
+  or count an unrelated rate rejection as proof of a later rule.
+
 - Fence stale evidence actions during full manifest refresh after actual compiler
   publication. Keep server snapshot denial and the failed browser ladder intact;
   regress delayed list delivery instead of bypassing freshness or retrying consent.

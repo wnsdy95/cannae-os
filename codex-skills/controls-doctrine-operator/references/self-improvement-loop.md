@@ -53,6 +53,10 @@ After compiler publication changes a manifest, invalidate old evidence selection
 while a full list refresh is pending. A stale-snapshot denial is a working server
 guard, not permission to bypass or auto-renew it; regress delayed list delivery
 through the real browser and preserve any failed workflow's original evidence.
+Keep independent authentication/validation fixture cases below the production
+request limit. A throttled request does not prove a later semantic rule ran;
+isolate those test environments and separately exercise the real throttle without
+disabling it or accepting its rejection in place of the intended exact error.
 
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
 the next dependency-ready item from `docs/completion-backlog.md`, then inspect

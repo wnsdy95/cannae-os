@@ -20,6 +20,9 @@ Its retained initial browser failure was a stale evidence-selection race during
 full manifest refresh; the server denied correctly. The UI now removes old
 actions/counts before the new list arrives and tests delayed delivery without
 weakening snapshot validation or automatically retrying a decision.
+Its later HTTP fixture failure was rate-limit interference with a different
+intended rule, not an authorization bypass. Independent exact-error cases and
+an actual throttle case preserve both requirements without weakening the limit.
 
 The shared model invocation/history integrity rule is local engineering synthesis.
 A retained actual-controller probe found that original signatures and a supplied

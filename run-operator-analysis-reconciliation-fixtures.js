@@ -59,16 +59,35 @@ add("analysis routes cannot consume a real omission failure or its owner challen
   await env.owner.post("/api/analysis-reconciliations/commit", ackInput(old), 409);
   const input = ackInput(old); delete input.acknowledge_analysis_publication; await env.owner.post("/api/model-reconciliations/commit", input);
 });
-add("password, nonce, publication/provider acknowledgments and caller overrides cannot widen consent", async (env, id) => {
+add("password, nonce and both acknowledgments cannot widen analysis consent", async (env, id) => {
   const p = await review(env, id), input = ackInput(p);
   await env.owner.post("/api/analysis-reconciliations/commit", { ...input, password: "incorrect-password" }, 403);
   await env.owner.post("/api/analysis-reconciliations/commit", { ...input, nonce: "x".repeat(43) }, 409);
   for (const field of ["acknowledge_provider_uncertainty", "acknowledge_analysis_publication"]) {
     const changed = { ...input }; delete changed[field]; await env.owner.post("/api/analysis-reconciliations/commit", changed, 400);
   }
-  for (const [name, value] of [["subject", p.subject], ["actor", "USER"], ["release_authorized", true], ["resolution", "adopt_draft"]]) await env.owner.post("/api/analysis-reconciliations/commit", { ...input, [name]: value }, 400);
-  await env.owner.post("/api/analysis-reconciliations/commit", { ...input, rationale: p.nonce }, 400);
   assert.equal((await held(env, id)).hold_preserved, true);
+});
+add("caller-supplied subject, actor, authority and resolution fail before signing", async (env, id) => {
+  const p = await review(env, id), input = ackInput(p);
+  for (const [name, value] of [["subject", p.subject], ["actor", "USER"], ["release_authorized", true], ["resolution", "adopt_draft"]]) {
+    await env.owner.post("/api/analysis-reconciliations/commit", { ...input, [name]: value }, 400);
+  }
+  assert.equal(env.service.auth.db.prepare("SELECT authorization FROM operator_model_reconciliations WHERE id=?").get(p.reconciliation_id).authorization, null);
+  assert.equal((await held(env, id)).hold_preserved, true);
+});
+add("known raw nonce in rationale is rejected by its own rule rather than a prior throttle", async (env, id) => {
+  const p = await review(env, id); await env.owner.post("/api/analysis-reconciliations/commit", { ...ackInput(p), rationale: p.nonce }, 400);
+  assert.equal(env.service.auth.db.prepare("SELECT authorization FROM operator_model_reconciliations WHERE id=?").get(p.reconciliation_id).authorization, null);
+  assert.equal((await held(env, id)).hold_preserved, true);
+});
+add("the unchanged eight-per-minute commit throttle rejects a ninth attempt without signing or clearing", async (env, id) => {
+  const p = await review(env, id), input = { ...ackInput(p), nonce: "x".repeat(43) }, original = digest(row(env, id));
+  for (let index = 0; index < 8; index++) await env.owner.post("/api/analysis-reconciliations/commit", input, 409);
+  const denial = await env.owner.post("/api/analysis-reconciliations/commit", input, 429); assert.equal(denial.error, "CONSOLE_RATE_LIMIT");
+  assert.equal(denial.release_authorized, false); assert.equal(digest(row(env, id)), original);
+  assert.equal(env.service.auth.db.prepare("SELECT authorization FROM operator_model_reconciliations WHERE id=?").get(p.reconciliation_id).authorization, null);
+  assert.equal((await held(env, id)).hold_preserved, true); assert.equal(count(env), 1);
 });
 add("viewer roles and another stored owner session cannot consume a leaked analysis nonce", async (env, id) => {
   const p = await review(env, id), other = client(env.service); await other.session(); await other.post("/api/login", { username: "owner", password }); await other.session();

@@ -124,3 +124,11 @@ new list and retains unavailable state on failure. A delayed real list response
 tests that fence. Preserve the original timeout/screenshot and unexecuted suffix;
 do not weaken snapshot checks, silently retry approval or turn observed browser
 subscenarios into a suite pass.
+
+A later frozen HTTP ladder retained 21 passing cases and one failed case: its
+ninth invalid commit hit the unchanged eight-per-minute throttle before the
+intended rationale rule. That is a failed test gate, not evidence that the
+rationale rule ran. Independent negative cases now use separate synthetic
+environments, while a dedicated case requires the actual ninth-attempt denial
+and unchanged pending/held state. Production limits and expected denial codes
+are not widened or replaced by a generic rejection assertion.

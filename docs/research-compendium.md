@@ -27,6 +27,13 @@ awaiting a fresh list repairs that workflow without weakening the server guard
 or silently renewing consent. Preserve the original failed ladder/screenshot;
 the delayed-list regression tests the changed UI boundary, not a security bypass.
 
+The next frozen HTTP ladder retained a different failure: nine invalid commit
+attempts in one fixture caused the real eight-per-minute throttle to run before
+the intended rationale check. An unrelated rejection cannot prove that later
+rule. Separate synthetic environments now test the exact independent denials,
+and a dedicated case tests the actual ninth-attempt throttle with unchanged hold
+and no signature. The production limit is not relaxed or mocked away.
+
 ## Historical Model Scope Integrity (2026-10-23)
 
 An actual synthetic controller probe on the first native-analysis candidate
