@@ -8,6 +8,7 @@ const fastify = require("fastify");
 const { resolveRepository } = require("./repository-artifact-store");
 const { openAuthStore, privateFile, requireThat, SESSION_MS } = require("./operator-console-auth");
 const { openConsentService } = require("./operator-consent-service");
+const { openSemanticService } = require("./operator-semantic-service");
 const { createWorkerQueue } = require("./operator-console-jobs");
 const { repositoryStateDigest } = require("./skill-mission-controller");
 
@@ -33,10 +34,13 @@ async function createConsole(options) {
   const app = fastify({ logger: false, trustProxy: false, bodyLimit: 4096,
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false, useDefaults: false } } });
   const configuration = { repository: repository.root, repositoryKey: repository.key,
-    artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT) };
+    artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT), semantic: options.semantic || null };
   let consent;
   try { consent = openConsentService(auth, configuration); }
   catch (error) { auth.close(); throw error; }
+  let semantic;
+  try { semantic = openSemanticService(auth, configuration, consent); }
+  catch (error) { consent.close(); auth.close(); throw error; }
   const jobs = createWorkerQueue(path.join(ROOT, "operator-console-worker.js"));
   function query(user, request) {
     return jobs.submit({ configuration: consent.workerConfiguration, user, request });
@@ -91,7 +95,8 @@ async function createConsole(options) {
       }
     }
     return { initialized: auth.hasOwner(), user: current, csrf_token: await reply.generateCsrf(),
-      repository: current ? { key: repository.key, label: repository.label } : null, order_review_available: current?.role === "owner", ...readOnly };
+      repository: current ? { key: repository.key, label: repository.label } : null, order_review_available: current?.role === "owner",
+      semantic_review_available: current?.role === "owner" && semantic.available, ...readOnly };
   });
   for (const [name, handler] of [["setup", input => auth.createOwner(input)], ["login", input => auth.login(input)],
     ["register", input => auth.redeem(input)]]) {
@@ -112,6 +117,23 @@ async function createConsole(options) {
   app.get("/api/users", async request => ({ users: auth.users(owner(request).id), ...readOnly }));
   app.get("/api/activity", async request => ({ entries: auth.activity(owner(request).id), ...readOnly }));
   const uuid = { type: "string", pattern: "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" };
+  app.post("/api/model-evaluations/preview", { onRequest: guard, schema: { body: plain({
+    entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" }
+  }) } }, async request => {
+    const principal = owner(request);
+    const invocation = await query(principal, { action: "prepare-semantic", ...request.body });
+    owner(request); return semantic.prepare(request.session, invocation);
+  });
+  app.post("/api/model-evaluations/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    challenge_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000)
+  }) } }, async (request, reply) => {
+    owner(request); const result = await semantic.commit(request.session, request.body);
+    owner(request); return reply.code(202).send(result);
+  });
+  app.get("/api/model-evaluations", async request => semantic.list(request.session));
+  app.get("/api/model-evaluations/:id", { schema: { params: plain({ id: uuid }) } }, async request => semantic.inspect(request.session, request.params.id));
+  app.post("/api/model-evaluations/:id/cancel", { onRequest: guard, schema: { params: plain({ id: uuid }), body: plain({}) } },
+    async request => semantic.cancel(request.session, request.params.id));
   app.post("/api/order-decisions/preview", { onRequest: guard, schema: { body: plain({
     entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" },
     rehearsal_id: { type: "string", pattern: "^(none|[a-f0-9]{64})$" }, disposition: { type: "string", enum: ["approve", "reject", "revise"] }
@@ -192,6 +214,7 @@ async function createConsole(options) {
   });
   const assets = { "/": ["operator-console/index.html", "text/html"],
     "/app.js": ["operator-console/app.js", "text/javascript"], "/app.css": ["operator-console/app.css", "text/css"],
+    "/semantic.js": ["operator-console/semantic.js", "text/javascript"],
     "/licenses/lucide.txt": ["node_modules/lucide-static/LICENSE", "text/plain"] };
   for (const icon of ["shield-check", "folder-search", "clipboard-list", "clipboard-check", "users", "activity", "log-out", "refresh-cw", "x", "arrow-right", "copy"]) {
     assets[`/icons/${icon}.svg`] = [`node_modules/lucide-static/icons/${icon}.svg`, "image/svg+xml"];
@@ -200,15 +223,21 @@ async function createConsole(options) {
     const bytes = fs.readFileSync(path.join(ROOT, relative));
     app.get(url, async (request, reply) => reply.type(type).send(bytes));
   }
-  app.addHook("preClose", async () => { await jobs.close(); });
-  app.addHook("onClose", async () => { await jobs.close(); consent.close(); auth.close(); });
-  return { app, auth, consent, origin, repository, configuration: consent.workerConfiguration, readOnly };
+  let closingWork;
+  function closeWork() {
+    closingWork ||= Promise.allSettled([Promise.resolve().then(() => semantic.close()), Promise.resolve().then(() => jobs.close())])
+      .then(results => { for (const result of results) if (result.status === "rejected") throw result.reason; });
+    return closingWork;
+  }
+  app.addHook("preClose", closeWork);
+  app.addHook("onClose", async () => { await closeWork(); consent.close(); auth.close(); });
+  return { app, auth, consent, semantic, origin, repository, workerStatus: jobs.status, configuration: consent.workerConfiguration, readOnly };
 }
 
 async function main(argv = process.argv.slice(2)) {
   const options = {};
   for (let i = 0; i < argv.length; i += 2) {
-    requireThat(["--repository", "--artifact-root", "--state-dir", "--port"].includes(argv[i]) && argv[i + 1] &&
+    requireThat(["--repository", "--artifact-root", "--state-dir", "--port", "--semantic-executable", "--semantic-model"].includes(argv[i]) && argv[i + 1] &&
       options[argv[i]] === undefined, "CONSOLE_OPTION_INVALID");
     options[argv[i]] = argv[i + 1];
   }
@@ -216,7 +245,9 @@ async function main(argv = process.argv.slice(2)) {
   const repository = resolveRepository(options["--repository"]);
   const port = options["--port"] === undefined ? 4317 : Number(options["--port"]);
   requireThat(Number.isInteger(port) && port >= 0 && port <= 65535, "CONSOLE_PORT_INVALID");
+  requireThat(!!options["--semantic-executable"] === !!options["--semantic-model"], "CONSOLE_MODEL_CONFIGURATION_INCOMPLETE");
   const consoleApp = await createConsole({ repository: repository.root, artifactRoot: options["--artifact-root"], port,
+    semantic: options["--semantic-executable"] ? { executable: options["--semantic-executable"], model: options["--semantic-model"] } : null,
     stateDir: options["--state-dir"] || path.join(os.homedir(), ".local", "state", "cannae-operator", repository.key) });
   try {
     await consoleApp.app.listen({ host: "127.0.0.1", port });

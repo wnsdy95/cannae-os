@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Start model-collector and worker-queue shutdown fences together and wait for both actual exits before closing private auth state. A delayed model close must not leave queued work admissible. Both skills preserve this shared shutdown rule.
+
+- Reject null/non-object JSONL and malformed UTF-8 inside the collector before field access, preserving the HTTP service and observed child/group termination. Keep these actual-process regressions separate from model-quality evidence; both skills preserve the failed one-use action without replay.
+
+- Connect exact model-transfer owner preview/password/stored-session consent to the actual bounded CLI collector, with asynchronous queryable signed results, cancellation, logout revocation and shutdown exit checks. Preserve model holds and missing/changed signed history; never replay a nonce or promote an advisory verdict into authority. Both skills require the real ceremony and exclude semantic control copies from work evidence. Measure that type catalog in issuance/channel bindings and regenerate only their synthetic examples. Calibration, mandatory consumers, model-hold discharge, planning and protected operation remain open.
+
 - Add a source-bound semantic omission collector foundation for the existing local Codex CLI login. Compare compiled order/receiver projections rather than unused analysis; require purpose-specific pinned-key transfer consent, a durable one-use reservation, bounded process collection and strict quoted response validation. Both skills prohibit reusing order consent, manufacturing operational approval or treating fake-provider tests as semantic calibration. Actual owner transfer UI, mandatory semantic admission and bounded planning/replanning remain open.
 
 - Fence delayed console reads and mutation responses by session, principal, view and request generation. Clear hidden evidence, account/activity/decision rows, previews and invitation links on identity changes; ignore old-session 401 and reversed selections. Reproduce the owner-to-viewer stale-list counterexample and add nine real-browser response-order regressions without disabling authentication throttles. Both skills require fresh principal-bound reads and forbid replaying discarded approval writes. Previously copied data, broader approvals and protected operation remain outside this boundary.

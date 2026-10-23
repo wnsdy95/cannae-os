@@ -3,7 +3,7 @@ const path = require("node:path");
 const os = require("node:os");
 const crypto = require("node:crypto");
 const { spawn, spawnSync } = require("node:child_process");
-const { StringDecoder } = require("node:string_decoder");
+const { TextDecoder } = require("node:util");
 const { z } = require("zod");
 const { digest, sha256, AUTHORITY } = require("./order-intake-contract");
 const { validOperatorSignature } = require("./operator-consent-contract");
@@ -114,7 +114,7 @@ async function collectEvaluation(invocation, consent, configuration) {
     "--output-schema", schemaFile, "--output-last-message", responseFile, "--color", "never", "--json", "-"];
   record.argv_sha256 = digest(argv); save();
   let child, exitPromise, timer, killTimer, pending = "", finalMessage = null, totalBytes = 0;
-  const decoder = new StringDecoder("utf8"), stdoutHash = crypto.createHash("sha256"), stderrHash = crypto.createHash("sha256");
+  const decoder = new TextDecoder("utf-8", { fatal: true }), stdoutHash = crypto.createHash("sha256"), stderrHash = crypto.createHash("sha256");
   function terminate(signal) {
     if (!signalGroup(child.pid, signal)) {
       if (!record.failure_reasons.includes("SEMANTIC_PROCESS_SIGNAL_FAILED")) record.failure_reasons.push("SEMANTIC_PROCESS_SIGNAL_FAILED");
@@ -132,6 +132,7 @@ async function collectEvaluation(invocation, consent, configuration) {
   function event(line) {
     if (!line.trim() || record.failure_reasons.length) return;
     let value; try { value = JSON.parse(line); } catch { stop("SEMANTIC_EVENT_JSON_INVALID"); return; }
+    if (!value || typeof value !== "object" || Array.isArray(value)) { stop("SEMANTIC_EVENT_JSON_INVALID"); return; }
     const allowed = ["thread.started", "turn.started", "turn.completed", "turn.failed", "error", "item.started", "item.updated", "item.completed"];
     if (!allowed.includes(value.type)) { stop("SEMANTIC_EVENT_UNKNOWN"); return; }
     record.event_counts[value.type] = (record.event_counts[value.type] || 0) + 1;
@@ -148,8 +149,8 @@ async function collectEvaluation(invocation, consent, configuration) {
         const diagnostic = { item_type: String(item?.type || "missing").slice(0, 128),
           message: typeof item?.message === "string" ? item.message.slice(0, 8192) : "" };
         // Quarantined operator-only data, never part of the returned assessment.
-        durable(path.join(directory, "diagnostic.json"), diagnostic, true);
-        record.diagnostic_sha256 = digest(diagnostic);
+        try { durable(path.join(directory, "diagnostic.json"), diagnostic, true); record.diagnostic_sha256 = digest(diagnostic); }
+        catch { stop("SEMANTIC_DIAGNOSTIC_WRITE_FAILED"); }
         stop("SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC");
       }
       if (value.type === "item.completed" && item?.type === "agent_message") finalMessage = item.text;
@@ -172,14 +173,16 @@ async function collectEvaluation(invocation, consent, configuration) {
     child.stdout.on("data", bytes => {
       stdoutHash.update(bytes); totalBytes += bytes.length;
       if (totalBytes > profile.max_output_bytes) { stop("SEMANTIC_OUTPUT_LIMIT"); return; }
-      pending += decoder.write(bytes); const lines = pending.split("\n"); pending = lines.pop(); lines.forEach(event);
+      try { pending += decoder.decode(bytes, { stream: true }); }
+      catch { stop("SEMANTIC_EVENT_UTF8_INVALID"); return; }
+      const lines = pending.split("\n"); pending = lines.pop(); lines.forEach(event);
     });
     child.stderr.on("data", bytes => { stderrHash.update(bytes); totalBytes += bytes.length; if (totalBytes > profile.max_output_bytes) stop("SEMANTIC_OUTPUT_LIMIT"); });
     timer = setTimeout(() => stop("SEMANTIC_TIMEOUT"), Math.min(profile.timeout_ms,
       Date.parse(invocation.preview.expires_at) - Date.now()));
     child.stdin.end(invocation.preview.prompt);
     const exit = await exitPromise;
-    pending += decoder.end();
+    try { pending += decoder.decode(); } catch { stop("SEMANTIC_EVENT_UTF8_INVALID"); }
     if (pending) event(pending);
     if (exit.code !== 0 || exit.signal) stop("SEMANTIC_PROCESS_FAILED");
     requireThat(exit.code === 0 && !exit.signal && record.failure_reasons.length === 0 &&
@@ -188,7 +191,11 @@ async function collectEvaluation(invocation, consent, configuration) {
     requireThat(fs.readdirSync(workspace).length === 0, "SEMANTIC_WORKSPACE_CHANGED");
     const fd = fs.openSync(responseFile, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
     let bytes;
-    try { const stat = fs.fstatSync(fd); requireThat(stat.isFile() && stat.size > 0 && stat.size <= profile.max_output_bytes, "SEMANTIC_RESPONSE_SIZE_INVALID"); bytes = fs.readFileSync(fd); }
+    try {
+      const stat = fs.fstatSync(fd); requireThat(stat.isFile() && stat.size > 0 && stat.size <= profile.max_output_bytes, "SEMANTIC_RESPONSE_SIZE_INVALID");
+      const buffer = Buffer.alloc(stat.size + 1), length = fs.readSync(fd, buffer, 0, buffer.length, 0);
+      requireThat(length === stat.size, "SEMANTIC_RESPONSE_SIZE_CHANGED"); bytes = buffer.subarray(0, length);
+    }
     finally { fs.closeSync(fd); }
     requireThat(Buffer.from(bytes.toString("utf8")).equals(bytes), "SEMANTIC_RESPONSE_UTF8_INVALID");
     const response = JSON.parse(bytes.toString("utf8"));
@@ -210,7 +217,11 @@ async function collectEvaluation(invocation, consent, configuration) {
     if (!record.process_group_absent) { record.status = "not_evaluated"; record.failure_reasons.push("SEMANTIC_PROCESS_GROUP_REMAINS"); }
     if (record.status !== "evaluated") delete record.assessment;
     record.stdout_sha256 = stdoutHash.digest("hex"); record.stderr_sha256 = stderrHash.digest("hex");
-    record.ended_at = new Date().toISOString(); save();
+    record.ended_at = new Date().toISOString();
+    record.result_persisted = true;
+    try { save(); }
+    catch { record.status = "not_evaluated"; record.result_persisted = false;
+      record.failure_reasons.push("SEMANTIC_JOURNAL_RESULT_WRITE_FAILED"); delete record.assessment; }
   }
   return { ...record, directory };
 }

@@ -175,7 +175,8 @@ async function main() {
       assert.equal(retained.invocation_sha256, input.invocation_sha256);
     });
     for (const [model, reason] of [["fixture-timeout", "SEMANTIC_TIMEOUT"], ["fixture-output", "SEMANTIC_OUTPUT_LIMIT"],
-      ["fixture-malformed", "SEMANTIC_EVENT_JSON_INVALID"], ["fixture-tool", "SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC"],
+      ["fixture-malformed", "SEMANTIC_EVENT_JSON_INVALID"], ["fixture-null", "SEMANTIC_EVENT_JSON_INVALID"],
+      ["fixture-invalid-utf8", "SEMANTIC_EVENT_UTF8_INVALID"], ["fixture-tool", "SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC"],
       ["fixture-unknown", "SEMANTIC_EVENT_UNKNOWN"], ["fixture-invalid", "SEMANTIC_RESPONSE_SCHEMA_INVALID"],
       ["fixture-workspace", "SEMANTIC_WORKSPACE_CHANGED"], ["fixture-two-turns", "SEMANTIC_MULTIPLE_TURNS"],
       ["fixture-diagnostic", "SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC"], ["fixture-missing-turn", "SEMANTIC_RESPONSE_UNAVAILABLE"],
@@ -234,6 +235,47 @@ async function main() {
         assert(result.failure_reasons.includes("SEMANTIC_PROCESS_SIGNAL_FAILED"));
         assert.equal(result.process_exit_confirmed, true); assert.equal(result.process_group_absent, true);
       } finally { process.kill = kill; }
+    });
+    await check("private diagnostic write failure still terminates the actual child", async () => {
+      const env = environment(), input = invocation(env, "fixture-tool"), open = fs.openSync;
+      fs.openSync = function(file, ...args) {
+        if (typeof file === "string" && file.endsWith("/diagnostic.json")) throw new Error("Synthetic private diagnostic write failure");
+        return open.call(this, file, ...args);
+      };
+      try {
+        const result = await collectEvaluation(input, consent(env, input), env.configuration);
+        assert.equal(result.status, "not_evaluated"); assert(result.failure_reasons.includes("SEMANTIC_DIAGNOSTIC_WRITE_FAILED"));
+        assert.equal(result.process_exit_confirmed, true); assert.equal(result.process_group_absent, true);
+      } finally { fs.openSync = open; }
+    });
+    await check("response growth after stat is rejected by a bounded read", async () => {
+      const env = environment(), input = invocation(env), approved = consent(env, input), open = fs.openSync, read = fs.readSync;
+      const file = path.join(fs.realpathSync(env.configuration.stateRoot), approved.id, "response.json"); let responseFd;
+      fs.openSync = function(filename, ...args) { const fd = open.call(this, filename, ...args); if (filename === file) responseFd = fd; return fd; };
+      fs.readSync = function(fd, ...args) { if (fd === responseFd) { fs.appendFileSync(file, "x"); responseFd = undefined; } return read.call(this, fd, ...args); };
+      try {
+        const result = await collectEvaluation(input, approved, env.configuration);
+        assert.equal(result.status, "not_evaluated"); assert(result.failure_reasons.includes("SEMANTIC_RESPONSE_SIZE_CHANGED"));
+        assert.equal(result.process_exit_confirmed, true); assert.equal(result.process_group_absent, true);
+      } finally { fs.openSync = open; fs.readSync = read; }
+    });
+    await check("final journal write failure cannot erase confirmed termination or claim a verdict", async () => {
+      const env = environment(), input = invocation(env), approved = consent(env, input), open = fs.openSync;
+      const resultFile = path.join(fs.realpathSync(env.configuration.stateRoot), approved.id, "result.json");
+      let writes = 0;
+      fs.openSync = function(file, ...args) {
+        if (typeof file === "string" && file === resultFile && ++writes === 4) {
+          throw new Error("Synthetic final journal write failure");
+        }
+        return open.call(this, file, ...args);
+      };
+      try {
+        const result = await collectEvaluation(input, approved, env.configuration);
+        assert.equal(writes, 4);
+        assert.equal(result.status, "not_evaluated"); assert.equal(result.result_persisted, false);
+        assert(result.failure_reasons.includes("SEMANTIC_JOURNAL_RESULT_WRITE_FAILED")); assert.equal(result.assessment, undefined);
+        assert.equal(result.process_exit_confirmed, true); assert.equal(result.process_group_absent, true);
+      } finally { fs.openSync = open; }
     });
     await check("limits, missing model and unsafe journal roots cannot broaden execution", async () => {
       const env = environment();

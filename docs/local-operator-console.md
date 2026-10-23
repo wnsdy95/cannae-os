@@ -1,5 +1,10 @@
 # Local Operator Console
 
+The optional [model-transfer review](model-transfer-consent.md) adds exact-packet
+owner consent and signed semantic result inspection when the trusted host supplies
+both CLI/model flags. It never grants task execution or release and preserves
+failed/unknown model holds without automatic replay.
+
 ## Implemented Boundary
 
 This is a real loopback HTTP application over the configured repository's

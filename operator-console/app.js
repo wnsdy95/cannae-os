@@ -1,6 +1,6 @@
 "use strict";
 const $ = selector => document.querySelector(selector);
-let session, csrf, authMode = "login", tab = "operations", snapshot, cursor, selectedUser;
+let session, csrf, semanticUi, authMode = "login", tab = "operations", snapshot, cursor, selectedUser;
 let selectedProposal, decisionPreview, selectedAction, inspectedOutcome, terminalPreview;
 let previewGeneration = 0;
 let operationsData, operationsTimer, operationsPending = false, operationsGeneration = 0, operationsFailed = false, operationsReadAt = 0;
@@ -37,6 +37,7 @@ async function readResponse(url, scope) {
 }
 function clearWorkspace() {
   viewEpoch++; clearOperations(); clearDecision(); snapshot = cursor = selectedUser = null;
+  semanticUi?.clear();
   for (const selector of ["#artifacts", "#users", "#activity", "#decisions", "#detail-meta"]) $(selector).replaceChildren();
   for (const selector of ["#identity", "#repository", "#artifact-count", "#revision", "#detail-title", "#detail-content", "#deactivate-name", "#workspace-error", "#detail-error", "#deactivate-error"]) $(selector).textContent = "";
   for (const form of document.querySelectorAll("#workspace form, #detail form, #deactivate form")) form.reset();
@@ -75,7 +76,7 @@ async function loadSession() {
   $("#review-mode").textContent = session.user.role === "owner" ? "Order review: owner" : "Order review: disabled";
   $("#repository").textContent = session.repository.label;
   document.querySelectorAll("[data-owner]").forEach(element => { element.hidden = session.user.role !== "owner"; });
-  if (session.user.role !== "owner" && ["access", "activity", "decisions"].includes(tab)) tab = "operations";
+  if (session.user.role !== "owner" && ["access", "activity", "decisions", "semantic"].includes(tab)) tab = "operations";
   await showTab(tab);
 }
 async function showTab(next) {
@@ -83,11 +84,12 @@ async function showTab(next) {
   operationsGeneration++; operationsRequest++; operationsPending = false; clearInterval(operationsTimer);
   tab = next; error("#workspace-error");
   document.querySelectorAll("[data-tab]").forEach(button => { button.setAttribute("aria-current", button.dataset.tab === tab ? "page" : "false"); });
-  $("#view-title").textContent = { operations: "Operations", evidence: "Evidence", proposals: "Order Proposals", access: "Access", activity: "Activity", decisions: "Decisions" }[tab];
+  $("#view-title").textContent = { operations: "Operations", evidence: "Evidence", proposals: "Order Proposals", access: "Access", activity: "Activity", decisions: "Decisions", semantic: "Model Evaluations" }[tab];
   $("#operations-view").hidden = tab !== "operations";
   $("#evidence-view").hidden = !["evidence", "proposals"].includes(tab);
   $("#access-view").hidden = tab !== "access"; $("#activity-view").hidden = tab !== "activity";
   $("#decisions-view").hidden = tab !== "decisions";
+  $("#semantic-view").hidden = tab !== "semantic";
   $("#kind-filter").disabled = tab === "proposals";
   $("#kind-filter").value = tab === "proposals" ? "order-adoption-proposals" : "";
   $("#invitation").hidden = true; $("#invitation-link").value = "";
@@ -100,6 +102,7 @@ async function showTab(next) {
   }
   else if (tab === "access") await loadUsers();
   else if (tab === "decisions") await loadDecisions();
+  else if (tab === "semantic") await semanticUi.load();
   else if (tab === "activity") await loadActivity();
   else await loadEvidence(false);
 }
@@ -223,10 +226,12 @@ async function inspect(item, manifest) {
         const option = document.createElement("option"); option.value = rehearsal.id; option.textContent = rehearsal.artifact_id; $("#rehearsal-select").append(option);
       }
     }
-    else { try { $("#detail-content").textContent = JSON.stringify(JSON.parse(data.content), null, 2); } catch { $("#detail-content").textContent = data.content; } }
+    else { try { $("#detail-content").textContent = JSON.stringify(JSON.parse(data.content), null, 2); } catch { $("#detail-content").textContent = data.content; }
+      semanticUi.selectDraft(item, manifest); }
   } catch (failure) { if (readCurrent(scope) && selectedProposal === selected && generation === previewGeneration) { $("#detail-content").textContent = ""; error("#detail-error", failure); } }
 }
 function clearDecision() {
+  semanticUi?.reset();
   previewGeneration++;
   $("#inspect-outcome").disabled = false; $("#review-terminal").disabled = false;
   decisionPreview = null; selectedProposal = null;
@@ -451,5 +456,6 @@ $("#deactivate-form").onsubmit = event => {
     form.reset(); $("#deactivate").close(); await loadUsers();
   }, "#deactivate-error");
 };
+semanticUi = createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, viewCurrent, clearDecision, cell, empty, displayTime, session: () => session });
 if (suppliedToken) $("#auth-form").elements.token.value = suppliedToken;
 void loadSession().catch(failure => { $("#auth").hidden = false; error("#auth-error", failure); });

@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [model-transfer ceremony](model-transfer-consent.md) is local engineering
+synthesis over existing auth, owner reauthentication, pinned operator signatures,
+verified intake, the semantic collector and the wave-report metadata boundary.
+It checks the actual stored session for logout revocation and owns the native
+child separately from disposable read workers. API/browser fixtures distinguish
+actual approval, cancellation, unknown results and stale display context. This
+does not attest protected hosts/keys, account equivalence or provider cancellation.
+
 The [semantic omission collector](semantic-omission-evaluation.md) uses the
 official [Codex non-interactive interface](https://developers.openai.com/codex/noninteractive)
 for saved local authentication, JSONL, ephemeral runs and structured output.
