@@ -14,3 +14,10 @@ The fixtures use zero model calls and no real owner action. Controller calls
 test real admission/settlement logic, not native target execution or independent
 semantic planning quality. Preserve failed observations separately from any
 later corrected-source proof.
+
+`node run-bounded-planning-metadata-fixtures.js` consumes the actual generated
+operation through the real report boundary. Current/legacy, object/array, generated
+plan and signed semantic examples remain non-work across JSON/text/binary MIME
+aliases; independent facts with exact planning references remain admissible.
+The earlier raw-envelope counterexample is retained separately, not relabeled
+as a passing gate or hidden behind the preceding positive checks.

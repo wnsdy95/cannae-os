@@ -83,6 +83,9 @@ admissions, not a reset at a new wave. It uses declared roster/estimate bounds
 and zero model calls: model-authored strategy, calibrated semantic completeness,
 actual cross-mission readiness/resource truth and autonomous planning orchestration
 remain open. This candidate does not close row 4 or any of the eight outcomes.
+The separately reproduced CLI-envelope-as-work counterexample requires the
+operation/nested-metadata regression, not merely the prior positive synthesis
+ladder. Structured-packet rejection still does not attest arbitrary work truth.
 
 The [source-accounted inventory candidate](requirement-inventory-admission.md)
 adds a mandatory **human inventory and coverage** review class to new captured

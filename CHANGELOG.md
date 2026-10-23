@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reject raw planner operation envelopes and nested semantic/planning packets as
+  task work, including historical untyped bundles, arrays and MIME/key-order
+  aliases. Tag all planning operation returns and retain the actual data-only
+  wave counterexample separately from earlier positive checks. Preserve
+  reference-only independent work; update both skills and real consumer fixtures.
+
 - Construct complete source-bound plans/policy drafts from actual OPORD tasks
   and finite roster/control/estimate bounds. Link generated provenance to real
   adoption/context/policy/lease/next-call consumers; finalize successor revisions

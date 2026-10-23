@@ -10,7 +10,7 @@ const RULES = [
     id: "bounded-planning",
     keywords: ["bounded planning", "bounded-planning", "automatic plan", "structural synthesis", "plan_controls_mission"],
     docs: ["docs/bounded-plan-synthesis.md", "docs/requirement-inventory-admission.md", "docs/order-adoption-and-plan-binding.md", "docs/order-revision-and-supersession.md"],
-    commands: ["node run-bounded-planning-fixtures.js", "node run-order-adoption-fixtures.js", "node run-order-revision-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+    commands: ["node run-bounded-planning-fixtures.js", "node run-bounded-planning-metadata-fixtures.js", "node run-order-adoption-fixtures.js", "node run-order-revision-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
   },
   {
     id: "semantic-admission",

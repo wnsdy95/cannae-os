@@ -5,13 +5,13 @@
   "wave_id": "W1",
   "agent_id": "fixture-agent",
   "enrollment_ref": {
-    "artifact_id": "MCTL-c9a943ef33e2a29585554cf897c8ac62ae93bed2",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-c9a943ef33e2a29585554cf897c8ac62ae93bed2.json",
+    "artifact_id": "MCTL-a7af80af6f62ccbb5696d23610f17f7c7ea19ba0",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-a7af80af6f62ccbb5696d23610f17f7c7ea19ba0.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
   "request_ref": {
-    "artifact_id": "MCTL-1f2da6bc1830514e42bb3d58f3aab93601a34c62",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-1f2da6bc1830514e42bb3d58f3aab93601a34c62.json",
+    "artifact_id": "MCTL-0d476f73641fc3aee755e4b2420d6d534c8239dc",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-0d476f73641fc3aee755e4b2420d6d534c8239dc.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
   "result": {
@@ -27,5 +27,5 @@
   "continuation_authorized": false,
   "release_authorized": false,
   "human_final_decision_authority": "USER",
-  "id": "MCTL-ccec4e314004970ed811cab2853ddc1778fd4e68"
+  "id": "MCTL-cbf6c7062c370e30f42ccfd5a5a48ff5ef3188b2"
 }

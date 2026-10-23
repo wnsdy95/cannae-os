@@ -15,6 +15,9 @@ and remaining admitted-use budgets; actual consumers still require fresh review
 and supersession. No new military, model-quality or availability claim is made.
 Declared cost units and synthetic fixtures are not measured budgets, attested
 readiness, semantic calibration or protected deployment.
+Its structured-packet guard follows the report's actual nested JSON values,
+including legacy untyped CLI envelopes; it does not infer task execution from
+metadata, parse arbitrary encoded strings or reject reference-only work facts.
 
 The [requirement inventory admission candidate](requirement-inventory-admission.md)
 is local engineering synthesis, not a new military or model-quality source

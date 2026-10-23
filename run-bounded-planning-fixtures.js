@@ -14,6 +14,7 @@ try {
   check("actual draft tasks automatically produce a bounded complete plan, policies and intent tree without accepting a manual plan", () => {
     const env = environment(), request = s.requestFor(env), before = s.clone(request), generated = generate(env, request);
     assert.deepEqual(request, before); assert.equal(generated.proposal.status, "ready_for_review");
+    assert.equal(generated.type, "BoundedPlanningOperation");
     assert.equal(generated.proposal.estimated_cost_units, 3); assert.equal(generated.proposal.search.complete_allocations, 1);
     assert.deepEqual(generated.plan.agents.map(item => item.task), env.draft.opord.execution.tasks.map(item => item.task));
     assert.deepEqual(generated.plan.order_binding.planning_ref, generated.proposal_ref);
@@ -119,6 +120,7 @@ try {
       assert.throws(() => generate(child, altered), /PLANNING_PARENT_POLICY_EXPANDED|PLANNING_PARENT_AGENT_SCOPE_EXPANDED|PLANNING_PARENT_CONTROL_WEAKENED|PLANNING_PARENT_INTENT_OR_PROFILE_CHANGED/);
     }
     const prepared = controller.prepareRevision(result.proposal_ref, s.optionsAt(child, 15)); child.plan = prepared.successor_plan; child.request.plan = child.plan;
+    assert.equal(prepared.type, "BoundedPlanningOperation");
     assert(child.plan.order_binding.revision_ref); controller.assertPlanning(child.plan, s.optionsAt(child, 16));
     s.adoptGeneratedRevision(child); child.opened = openWave(child.plan, s.optionsAt(child, 70));
     assert.throws(() => dispatch.authorizeDispatchPolicy(s.optionsAt(parent, 300), child.policies[0]), /ORDER_REVISION_PREDECESSOR_NOT_SETTLED/);
@@ -149,6 +151,7 @@ try {
       assert.equal(value.proposal.model_invocations, 0); assert.equal(value.execution_authorized, false);
       const inspected = run(["inspect", "--repository", env.options.repository, "--artifact-root", env.options.artifactRoot, "--proposal-id", id]);
       assert.equal(inspected.status, 0, inspected.stderr); assert.deepEqual(JSON.parse(inspected.stdout).plan, value.plan);
+      assert.equal(JSON.parse(inspected.stdout).type, "BoundedPlanningOperation");
       for (const extra of [["--now", "2026-01-01T00:00:00Z"], ["--model", "unreviewed"]]) assert.notEqual(run([...args, ...extra]).status, 0);
       assert.notEqual(run(args.filter((_, index) => ![1, 2].includes(index))).status, 0);
     }

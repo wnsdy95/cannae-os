@@ -171,7 +171,7 @@ function generatePlan(input, options) {
   if (existing) {
     const item = proposalProof(store, existing.ref, options);
     need(Date.parse(item.payload.recorded_at) <= Date.parse(now) && Date.parse(now) < Date.parse(item.payload.expires_at), "PLANNING_PROPOSAL_EXPIRED_OR_BLOCKED");
-    return { proposal: item.payload, proposal_ref: item.ref, plan: item.payload.plan ? planFor(item) : null, existing: true, ...AUTHORITY };
+    return { type: "BoundedPlanningOperation", action: "generate", proposal: item.payload, proposal_ref: item.ref, plan: item.payload.plan ? planFor(item) : null, existing: true, ...AUTHORITY };
   }
   const proof = appraise(store, request, now, options), payload = build(request, proof.draft, proof.parent, proof.budgets, now, store.manifest); valid(payload, "bounded-planning-proposal");
   const saved = writeRepositoryArtifact({ repositoryPath: store.verification.repository.root, artifactRoot: store.artifactRoot, missionId: payload.mission_id,
@@ -183,14 +183,15 @@ function generatePlan(input, options) {
       need(same(fresh.draft, proof.draft) && same(fresh.parent, proof.parent), "PLANNING_PUBLICATION_SOURCE_CHANGED"); return true;
     }, true) });
   const reference = { artifact_id: payload.id, relative_path: saved.relative_path, sha256: saved.sha256 };
-  return { proposal: payload, proposal_ref: reference, plan: payload.plan ? planFor({ payload, ref: reference }) : null, existing: false, ...AUTHORITY };
+  return { type: "BoundedPlanningOperation", action: "generate", proposal: payload, proposal_ref: reference, plan: payload.plan ? planFor({ payload, ref: reference }) : null, existing: false, ...AUTHORITY };
 }
 function prepareRevision(reference, options) {
   const store = load(options), item = proposalProof(store, reference, options), plan = planFor(item);
   need(item.payload.request.mode === "revision", "PLANNING_REVISION_REQUIRED"); assertPlanning(plan, options, store, true);
-  return require("./order-revision-controller").proposeRevision({ schema_version: "0.1", type: "OrderRevisionRequest", id: `ORR-${digest(reference).slice(0, 32)}`,
+  const result = require("./order-revision-controller").proposeRevision({ schema_version: "0.1", type: "OrderRevisionRequest", id: `ORR-${digest(reference).slice(0, 32)}`,
     mission_id: plan.mission_id, wave_id: plan.wave_id, parent_plan_ref: item.payload.request.parent_plan_ref, parent_adoption_ref: item.payload.request.parent_adoption_ref,
     change_request_ref: item.draft.request_ref, successor_plan: plan, ...require("./order-adoption-contract").ADOPTION_AUTHORITY }, options);
+  return { ...result, type: "BoundedPlanningOperation", action: "prepare_revision" };
 }
 function main(argv = process.argv.slice(2)) {
   const [action, ...rest] = argv, options = {};
@@ -209,7 +210,7 @@ function main(argv = process.argv.slice(2)) {
     const store = load(options), entries = store.manifest.artifacts.filter(item => item.kind === KIND && item.artifact_id === options.proposalId);
     need(entries.length === 1, "PLANNING_PROPOSAL_NOT_FOUND");
     if (action === "prepare-revision") result = prepareRevision(ref(entries[0]), options);
-    else { const item = proposalProof(store, ref(entries[0]), options); result = { proposal: item.payload, proposal_ref: item.ref,
+    else { const item = proposalProof(store, ref(entries[0]), options); result = { type: "BoundedPlanningOperation", action: "inspect", proposal: item.payload, proposal_ref: item.ref,
       plan: item.payload.plan ? planFor(item) : null, freshness: Date.parse(clock(options)) < Date.parse(item.payload.expires_at) ? "current" : "expired", ...AUTHORITY }; }
   }
   console.log(JSON.stringify(result, null, 2));

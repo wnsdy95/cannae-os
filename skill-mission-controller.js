@@ -1080,7 +1080,7 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
       const typedControl = require("./method-control-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
-        require("./semantic-control-types").NON_WORK_TYPES.has(evidencePayload?.type) ||
+        require("./semantic-control-types").isNonWorkPayload(evidencePayload) ||
         require("./operational-cop-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
         require("./dispatch-issuance-contract").NON_WORK_TYPES.has(evidencePayload?.type) ||
         require("./operator-reconciliation-contract").AUDIT_TYPES.has(evidencePayload?.type) ||

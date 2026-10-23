@@ -119,7 +119,19 @@ The proposal/request and copied or reordered versions remain control metadata,
 never task deliverables. Both issuance/channel source commitments include this
 runtime. Historical producer evidence is not rewritten to match new source.
 
-Run `node run-bounded-planning-fixtures.js`, the compiler/adoption/revision,
+`generate`, `inspect` and `prepare-revision` return non-authorizing
+`BoundedPlanningOperation` envelopes. A reproduced initial candidate admitted
+its raw untyped CLI envelope as a data-only wave's work even though the enclosed
+proposal was control metadata. Earlier positive structural/browser/schema checks
+did not cover that case. The report consumer now rejects semantic/planning control
+records at any JSON object/array depth, including old untyped operation envelopes
+and generated plans. MIME changes and key order do not alter the boundary.
+Reference-only independently authored work remains eligible for its actual gates.
+This is a structured packet guard, not semantic detection of arbitrary encodings,
+proof of native task execution or a non-bypassable host boundary.
+
+Run `node run-bounded-planning-fixtures.js`,
+`node run-bounded-planning-metadata-fixtures.js`, the compiler/adoption/revision,
 metadata/issuance/channel, authenticated consent/browser suites and validator.
 Synthetic decisions exercise actual consumers, not real USER approval. They are
 not semantic calibration. Remaining work includes model-authored strategic

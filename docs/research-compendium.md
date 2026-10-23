@@ -13,6 +13,11 @@ and rechecks remaining budget at consumption; a new wave must not silently reset
 spent allowance. Actual revision, fresh human coverage and USER adoption remain
 separate. This is structural synthesis with zero model calls, not automatic
 understanding, invented strategy, verified readiness or independent calibration.
+A separate actual report-consumer probe found an untyped planner CLI envelope
+could complete a data-only wave despite its inner proposal being non-work.
+Positive structural/browser/schema checks did not cover that composition.
+Typed operation returns and recursive semantic/planning packet detection now
+guard this boundary, with reference-only work as an explicit positive control.
 
 ## Source-Accounted Human Coverage Review (2026-10-23)
 

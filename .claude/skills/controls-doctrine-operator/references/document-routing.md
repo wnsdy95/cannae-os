@@ -27,6 +27,10 @@ The structural generator uses zero model calls and does not replace calibrated
 semantic analysis or an independently reviewed strategic planner.
 Reuse agent identity across a successor only with wave-distinct backbrief,
 rehearsal and decision IDs; a prior wave's evidence is not fresh acknowledgment.
+Keep `BoundedPlanningOperation` outputs out of task evidence, including legacy
+untyped bundles and nested/array-wrapped planning or semantic packets. Publish
+independent work facts and cite exact control references instead; wrapping a
+proposal or removing its outer tag never proves a task was performed.
 
 For requirement inventory and semantic coverage admission, read
 `docs/requirement-inventory-admission.md` and run
