@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [requirement inventory admission candidate](requirement-inventory-admission.md)
+is local engineering synthesis, not a new military or model-quality source
+claim. `requirement-inventory-contract.js` and its controller bind source byte
+partitions, requirement/target matrices and whole-plan digests to actual adoption,
+receiver and next-call consumers. Authored synthetic fixtures are not independent
+calibration. Exact quotes and authenticated human review do not prove semantic
+equivalence, complete extraction or a non-bypassable deployment.
+
 The [failed model-transfer ceremony](model-transfer-reconciliation.md) is local
 engineering synthesis over the existing signed owner-transfer service, private
 outbox and process lifecycle. It verifies exact failed history, observes PID/group

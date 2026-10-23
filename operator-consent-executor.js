@@ -15,7 +15,7 @@ const { digest, signConsent, verifyConsent, decisionForAction } = require("./ope
 const reference = entry => ({ artifact_id: entry.artifact_id, relative_path: entry.relative_path, sha256: entry.sha256 });
 const snapshot = store => ({ revision: store.manifest.manifest_revision, sha256: manifestDigest(store.manifest) });
 const subject = value => ({ request: value.request, proposal: value.proposal, draft: value.draft,
-  backbriefs: value.backbriefs, rehearsal: value.rehearsal });
+  backbriefs: value.backbriefs, rehearsal: value.rehearsal, ...(value.semantic_review ? { semantic_review: value.semantic_review } : {}) });
 function load(configuration) {
   requireThat(resolveRepository(configuration.repository).identity_fingerprint === configuration.identity, "CONSOLE_REPOSITORY_IDENTITY_CHANGED", 409);
   return loadVerifiedStore(configuration.repository, configuration.artifactRoot);
@@ -30,7 +30,7 @@ function prepareOrderDecision(configuration, input) {
   requireThat(manifestDigest(store.manifest) === input.manifest, "CONSOLE_EVIDENCE_SNAPSHOT_STALE", 409);
   const proposal = store.manifest.artifacts.find(item => entryId(item) === input.entry_id && item.kind === "order-adoption-proposals");
   requireThat(proposal, "CONSOLE_EVIDENCE_NOT_FOUND", 404);
-  readEntry(store, proposal);
+  const proposalPayload = JSON.parse(readEntry(store, proposal));
   let rehearsal = null;
   if (input.rehearsal_id !== "none") {
     const entry = store.manifest.artifacts.find(item => entryId(item) === input.rehearsal_id && item.kind === "order-rehearsals" &&
@@ -47,7 +47,7 @@ function prepareOrderDecision(configuration, input) {
     }
     rehearsal = { ref: reference(entry), payload: value };
   }
-  const request = { schema_version: "0.1", type: "OrderAdoptionDecisionRequest", id: `OADR-${input.challenge_id}`,
+  const request = { schema_version: proposalPayload.schema_version, type: "OrderAdoptionDecisionRequest", id: `OADR-${input.challenge_id}`,
     mission_id: proposal.mission_id, wave_id: proposal.wave_id, proposal_ref: reference(proposal),
     backbrief_refs: rehearsal?.payload.backbrief_refs || [], rehearsal_ref: rehearsal?.ref || { ...NONE },
     disposition: input.disposition, decision_ref: { ...NONE }, ...ADOPTION_AUTHORITY };

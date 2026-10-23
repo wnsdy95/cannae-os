@@ -34,6 +34,10 @@ async function main() {
         await page.locator("#decision-confirmation").waitFor({ state: "visible" });
         const review = JSON.parse(await page.locator("#consent-content").textContent());
         assert.deepEqual(review.proposal.request.plan, env.plan); assert.equal(review.request.disposition, disposition);
+        assert.equal(review.semantic_review.coverage.review_class, "human_inventory_and_coverage");
+        assert.equal(review.semantic_review.coverage.model_calibrated_for_admission, false);
+        assert(review.semantic_review.inventory.requirements.some(item => item.kind === "prohibition"));
+        assert.equal(review.request.schema_version, "0.2");
         assert.equal(new URL(page.url()).hash, "");
         await page.screenshot({ path: path.join(output, `${name}-preview.png`), fullPage: true });
         await page.locator("#decision-commit-form textarea[name=rationale]").fill("Synthetic browser decision only; not real USER consent.");

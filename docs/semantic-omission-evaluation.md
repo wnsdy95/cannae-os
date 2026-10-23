@@ -8,6 +8,11 @@ semantic admission gate or an automatic planner. It compares retained request by
 order and every receiver task. Unused analysis statements cannot hide missing
 downstream restrictions. All eight program outcomes remain open.
 
+The separate [human inventory admission candidate](requirement-inventory-admission.md)
+now requires an explicit source-accounted review for new captured-request
+adoption and actual receiver/next-call consumers. It does not turn this
+collector's advisory verdict into calibrated admission or replace owner review.
+
 The USER selected the existing Codex CLI login. No new API key, copied account
 token, public-CI login or credential-file inspection is needed. Official
 [non-interactive CLI documentation](https://developers.openai.com/codex/noninteractive)

@@ -90,6 +90,9 @@
         },
         "assessment": {
           "$ref": "opord.schema.json#/properties/assessment"
+        },
+        "semantic_review": {
+          "$ref": "semantic-review-assignment.schema.json"
         }
       }
     },

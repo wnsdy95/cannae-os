@@ -50,13 +50,7 @@ node .claude/skills/controls-doctrine-operator/scripts/operate_controls_mission.
   --artifact-root .cannae/artifacts
 ```
 
-The manual receipt commands below are for diagnosis or lower-level integration, not the default dispatch path. Use the same mission objective as `--capability-query` on the wave and every agent receipt; use the final positional query for that receipt's narrower task:
-
-```bash
-node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking --capability-query="<mission objective>" "<wave task>" .
-node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution --capability-query="<mission objective>" "<agent task>" .
-node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
-```
+Manual receipt commands are diagnostic/lower-level integration only. Read the manual receipt procedure in `references/document-routing.md`; the lifecycle controller above remains the default dispatch path.
 
 If role, department, or authority is missing in delegated AI mode, start with least-privilege routing and ask or infer only from explicit mission context.
 
@@ -330,6 +324,8 @@ path. GitHub Actions artifacts are same-provider continuity evidence, not an
 independent durable archive or witness.
 
 ## References
+
+- For new captured-request adoption, read `docs/requirement-inventory-admission.md`. Use `scripts/review_controls_requirements.js` against the explicit target repository, classify every source fragment and review every requirement against the actual order and task/agent targets. Bind the returned review to request v0.2 before proposing adoption; any plan edit requires new coverage and fresh USER review. Never use an advisory model `complete` as admission or relabel missing restrictions as context. This human review class does not prove semantics or model calibration. Preserve old records/results for inspection and settlement; do not downgrade a captured-request wave to obtain another call.
 
 - For live Operations reads, use `docs/operational-cop.md` and the COP procedure in `references/document-routing.md`; display filters never remove critical reporting or create execution authority.
 

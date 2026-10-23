@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add source-accounted, non-authorizing requirement inventories and human coverage
+  proposals bound to the whole plan and actual adoption/context/next-call
+  consumers. Preserve legacy history and admitted-result settlement; update both
+  skills and target-explicit wrappers. Model calibration, automatic planning and
+  all eight program outcomes remain open. Candidate acceptance remains separate.
+
 - Preserve bounded model HTTP statuses, UI errors and sanitized action/result state on browser fixture failure; diagnose failed observation before changing deadlines or consent validity.
 
 - Separate synthetic collector reservation-collision checks from expired transfer consent, retaining exact denial and immutable-journal assertions without renewing operational authority.

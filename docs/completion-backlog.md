@@ -76,13 +76,21 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [source-accounted inventory candidate](requirement-inventory-admission.md)
+adds a mandatory **human inventory and coverage** review class to new captured
+request adoption, receiver assignment and covered next-call paths. It is not
+calibrated model admission or automatic planning. Legacy history remains readable
+without renewed captured-request execution. Every-byte classification and exact
+quote matrices cannot detect a human's incorrect semantic classification. Rows
+4/9 and all eight goals remain open; acceptance is separate from implementation.
+
 The [semantic collector](semantic-omission-evaluation.md) now has an opt-in
 [authenticated owner transfer ceremony](model-transfer-consent.md): exact packet
 preview, password/stored-session checks, a one-use reservation and signed result
 inspection through the actual collector. Logout/stop/shutdown preserve failed
 and unknown outcomes; copies remain control metadata at the report consumer.
 This does not close rows 4/9 or goals 3/7. Held-out calibration, mandatory versioned
-adoption/receiver/dispatch consumers, bounded planning/replanning and model-hold
+calibrated model adoption/receiver/dispatch consumers, bounded planning/replanning and model-hold
 recovery for unknown/integrity failures remain open. A separate
 [verified failed-transfer acknowledgment](model-transfer-reconciliation.md)
 now appends fresh owner consent and a saved signed receipt after PID/group absence,

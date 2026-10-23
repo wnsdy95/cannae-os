@@ -1,5 +1,10 @@
 # Exact Order Adoption And Plan Binding
 
+New captured-request adoption uses request/proposal/decision/record v0.2 and
+requires the [source-accounted human coverage review](requirement-inventory-admission.md)
+over the whole exact plan. Version 0.1 remains historical, not an active
+captured-request admission path. A model `complete` verdict is not that review.
+
 ## Boundary
 
 This extends [request intake](request-order-intake.md) with a finite, exact USER

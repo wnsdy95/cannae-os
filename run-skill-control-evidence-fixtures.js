@@ -76,7 +76,9 @@ try {
     }
     for (const contract of [require("./dispatch-issuance-contract"), require("./method-control-contract")]) for (const file of ["semantic-control-types.js",
       "operator-model-reconciliation-contract.js", "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
-      "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js"]) {
+      "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
+      "requirement-inventory-contract.js", "requirement-inventory-controller.js", "schema-files/requirement-inventory.schema.json",
+      "schema-files/semantic-coverage-proposal.schema.json", "schema-files/semantic-review-assignment.schema.json"]) {
       assert(contract.CODE.includes(file));
       const original = fs.readFileSync, before = contract.runtimeDigest();
       fs.readFileSync = function(filename, ...args) {

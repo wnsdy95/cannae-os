@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Source-Accounted Human Coverage Review (2026-10-23)
+
+An advisory evaluator can enumerate only part of a request and still derive
+`complete` for its own subset. An unused analysis quotation likewise does not
+preserve a prohibition in an actual receiver task. The separate
+[human inventory admission candidate](requirement-inventory-admission.md) requires
+every source byte to be classified and every declared requirement to be reviewed
+against the actual order and receiving task/agent projection. New captured-request
+adoption binds that review and the whole plan; active consumers cannot downgrade
+it while historical records remain readable.
+
+This is an explicit human-review class, not a promotion of an uncalibrated model
+result. A wrong context classification or applicability judgement can still omit
+meaning. Exact pointers, fresh authentication and passing synthetic fixtures do
+not prove complete extraction or semantic equivalence. Independent held-out
+calibration and bounded automatic planning/replanning remain unfinished.
+
 ## Failed Model Transfer Acknowledgment (2026-10-23)
 
 The [separate owner ceremony](model-transfer-reconciliation.md) resolves a verified

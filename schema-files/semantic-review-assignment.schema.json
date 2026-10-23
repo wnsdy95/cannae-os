@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "SemanticReviewAssignment"
+    },
+    "review_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "inventory_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "review_class": {
+      "type": "string",
+      "const": "human_inventory_and_coverage"
+    },
+    "plan_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "requirements": {
+      "maxItems": 1024,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "instruction": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "obligation",
+              "prohibition",
+              "approval",
+              "resource",
+              "deadline",
+              "condition"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "global",
+              "task"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "instruction",
+          "kind",
+          "scope"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "model_calibrated_for_admission": {
+      "type": "boolean",
+      "const": false
+    },
+    "semantic_completeness_proven": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "required": [
+    "type",
+    "review_ref",
+    "inventory_ref",
+    "review_class",
+    "plan_sha256",
+    "requirements",
+    "model_calibrated_for_admission",
+    "semantic_completeness_proven"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/semantic-review-assignment.schema.json",
+  "title": "semantic-review-assignment"
+}

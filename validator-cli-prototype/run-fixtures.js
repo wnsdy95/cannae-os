@@ -11,6 +11,11 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...[["requirement-inventory", "REQUIREMENT_INVENTORY_PARTITION_INVALID"],
+    ["semantic-coverage-proposal", "SEMANTIC_REVIEW_ID_BINDING_INVALID"], ["semantic-review-assignment", "CONST_MISMATCH"]]
+    .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
   ...[["valid-operator-semantic-evaluation", 0, []], ["valid-operator-semantic-evaluation-legacy", 0, []],
     ["invalid-operator-semantic-evaluation", 1, ["MODEL_EVALUATION_VERDICT_BINDING_INVALID"]]].map(([name, exitCode, requiredCodes]) => ({
     name, file: `sample-payloads/${name}.json`, type: "operator-semantic-evaluation", exitCode, requiredCodes, expectedCanExecute: false

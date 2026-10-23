@@ -76,7 +76,8 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
-- [Semantic Omission Evaluation](docs/semantic-omission-evaluation.md): source-bound existing-Codex collection with [exact authenticated owner transfer review](docs/model-transfer-consent.md), one-use session-bound consent, signed original-journal binding and [verified failed-transfer acknowledgment](docs/model-transfer-reconciliation.md). Verdicts remain advisory; calibrated mandatory consumers, unknown-result recovery and automatic replanning remain open.
+- [Semantic Omission Evaluation](docs/semantic-omission-evaluation.md): source-bound existing-Codex collection with [exact authenticated owner transfer review](docs/model-transfer-consent.md), one-use session-bound consent, signed original-journal binding and [verified failed-transfer acknowledgment](docs/model-transfer-reconciliation.md). Verdicts remain advisory; calibrated model admission, unknown-result recovery and automatic replanning remain open.
+- [Requirement Inventory And Human Coverage Admission](docs/requirement-inventory-admission.md): source-accounted human review bound to the whole plan and actual adoption/context/next-call consumers. This separate review class is not calibrated model admission or proof of semantic completeness; legacy records remain readable without renewed execution permission.
 
 - [Operational COP](docs/operational-cop.md): authenticated, read-only Operations views replay actual wave/control history with freshness, exact evidence links and mission-bounded accounts. Display filters cannot hide authorized critical alerts. This is not worker liveness, tool authority or the complete reporting/CoS workflow.
 

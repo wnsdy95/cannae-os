@@ -1,5 +1,12 @@
 # Sample Payloads
 
+The `requirement-inventory`, `semantic-coverage-proposal` and
+`semantic-review-assignment` pairs are authored synthetic structural examples,
+not real owner decisions, model assessments or independent calibration labels.
+Regenerate only these six samples with
+`node requirement-inventory-fixtures/write-samples.js`. Retained operational
+history must not be rewritten to acquire a new review or provenance field.
+
 The `operational-cop` pair is a synthetic empty read-product contract example,
 not a live status report. The invalid record attempts release authority.
 Actual Operations data comes only from authenticated verified-history replay.

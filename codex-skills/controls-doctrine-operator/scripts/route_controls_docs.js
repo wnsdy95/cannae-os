@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "semantic-admission",
+    keywords: ["requirement inventory", "requirement-inventory", "semantic admission", "semantic-admission", "semantic coverage", "semantic-coverage", "human coverage review", "semantic review assignment", "review_controls_requirements"],
+    docs: ["docs/requirement-inventory-admission.md", "docs/order-adoption-and-plan-binding.md", "docs/operator-consent-and-adoption.md", "docs/semantic-omission-evaluation.md"],
+    commands: ["node run-requirement-inventory-fixtures.js", "node run-order-adoption-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
     id: "semantic-omission",
     keywords: ["semantic omission", "semantic completeness", "semantic-omission", "semantic-evaluation", "codex-semantic", "model transfer consent", "model-transfer-consent", "operator-semantic", "semantic-control", "evaluate_controls_request", "model hold", "model-reconciliation", "model-transfer-reconciliation"],
     docs: ["docs/semantic-omission-evaluation.md", "docs/model-transfer-consent.md", "docs/model-transfer-reconciliation.md", "docs/request-order-intake.md", "docs/operator-consent-and-adoption.md", "docs/completion-backlog.md"],
@@ -510,6 +516,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "semantic-admission", keywords: ["requirement-inventory", "semantic-coverage", "semantic-review-assignment", "review_controls_requirements"] },
   { id: "semantic-omission", keywords: ["semantic-omission", "semantic-evaluation", "codex-semantic", "evaluate_controls_request", "operator-semantic", "semantic-control", "model-transfer-consent", "model-reconciliation", "model-transfer-reconciliation"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
   { id: "operational-cop", keywords: ["operational-cop"] },

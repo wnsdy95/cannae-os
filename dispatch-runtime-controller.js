@@ -1589,6 +1589,9 @@ function admitToolRequest(options, identity, hookInput) {
     const policyRecord = policyForLease(view, leaseRecord);
     const contextRecord = contextForLease(view, leaseRecord);
     const now = nowIso(options);
+    const plan = loadArtifactRef(view, contextRecord.payload.plan_ref, "mission-wave-plan").payload;
+    require("./order-adoption-controller").orderForPlan(plan, { ...options, now }, view);
+    require("./order-adoption-controller").assertContextAssignment(contextRecord.payload, plan, { ...options, now }, view);
     policyValidity(policyRecord.payload, loadArtifactRef(view, leaseRecord.payload.context_pack_ref).payload, now);
     if (leaseRecord.payload.repository_binding.repository_key !== view.repository.key ||
         leaseRecord.payload.repository_binding.identity_fingerprint !== view.repository.identity_fingerprint) {
@@ -1676,6 +1679,8 @@ function admitToolRequest(options, identity, hookInput) {
       }
       const code = gatewayDispatchCode(options, current.view, leaseRecord.ref, hookInput.tool_use_id, "admit");
       if (code) throw new Error(code);
+      require("./order-adoption-controller").orderForPlan(plan, { ...options, now: nowIso(options) }, current.view);
+      require("./order-adoption-controller").assertContextAssignment(contextRecord.payload, plan, { ...options, now: nowIso(options) }, current.view);
       const methodNow = require("./method-deviation-gate").assessMethodRequest(options, current.leaseRecord, current.checkpointRecord, selection.rule, hookInput, current.view);
       if (decision === "allow" ? (methodNow.code || inputDigest(methodNow.binding || null) !== inputDigest(method.binding || null)) :
         (!methodNow.drift || methodNow.code !== method.code)) throw new Error("METHOD_PUBLICATION_CHANGED");

@@ -81,4 +81,4 @@ function assessResponse(response, request, targets) {
     semantic_completeness_proven: false, calibrated_for_admission: false, ...AUTHORITY };
 }
 
-module.exports = { RESPONSE, INSTRUCTION, methodBinding, targetsFor, promptFor, assessResponse, requireThat };
+module.exports = { RESPONSE, INSTRUCTION, methodBinding, targetsFor, promptFor, assessResponse, requireThat, pointerValue };

@@ -16,6 +16,10 @@ const CODE = ["method-control-contract.js", "method-control-broker.js", "method-
   "order-adoption-contract.js", "semantic-control-types.js", "operator-model-reconciliation-contract.js",
   "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
   "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
+  "requirement-inventory-contract.js", "requirement-inventory-controller.js", "order-adoption-controller.js",
+  "schema-files/requirement-inventory.schema.json", "schema-files/semantic-coverage-proposal.schema.json", "schema-files/semantic-review-assignment.schema.json",
+  "schema-files/order-adoption-common.schema.json", "schema-files/order-adoption-proposal-request.schema.json",
+  "schema-files/order-adoption-proposal.schema.json", "schema-files/order-adoption-decision-request.schema.json", "schema-files/order-adoption-record.schema.json",
   "validator-cli-prototype/validate.js", "operational-cop-contract.js", "schema-files/operational-cop.schema.json", "package.json", "package-lock.json",
   ...fs.readdirSync(path.join(__dirname, "schema-files")).filter(file => file.startsWith("method-control-") && file.endsWith(".schema.json"))
     .sort().map(file => `schema-files/${file}`)];

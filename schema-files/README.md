@@ -1,5 +1,13 @@
 # Schema Files
 
+`requirement-inventory.schema.json`, `semantic-coverage-proposal.schema.json`
+and `semantic-review-assignment.schema.json` describe non-authorizing source
+partitions, human coverage proposals and need-to-know receiver assignments.
+New adoption request/proposal/decision/record v0.2 requires the exact review path;
+v0.1 remains historical only at active captured-request consumers. Schema checks
+cannot verify retained sources, human judgement or model calibration. Follow
+[requirement inventory admission](../docs/requirement-inventory-admission.md).
+
 `operator-semantic-evaluation.schema.json` preserves authentic v0.1 historical
 result shapes and v0.2 results with an original collector-journal commitment.
 Both versions are non-authorizing. The live reconciliation reader requires v0.2

@@ -1,5 +1,28 @@
 # Document Routing
 
+## Manual Receipt Procedure
+
+Use only for diagnosis/lower-level integration, not default dispatch. Give the
+wave and every receiver the same mission objective as `--capability-query`; the
+final query describes that receipt's narrower task. These commands grant nothing:
+
+```bash
+node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking --capability-query="<mission objective>" "<wave task>" .
+node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution --capability-query="<mission objective>" "<agent task>" .
+node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
+```
+
+## Requirement Review
+
+For requirement inventory and semantic coverage admission, read
+`docs/requirement-inventory-admission.md` and run
+`scripts/review_controls_requirements.js` with the exact target repository.
+Its template performs no extraction or transmission. Review every source
+fragment, retain coverage of every actual receiver and bind new adoption v0.2.
+Whole-plan edits invalidate that review. Legacy history is readable, not a way
+to regain active captured-request execution. Model results remain advisory;
+human inventory review is an explicit separate class, not calibrated automation.
+
 For semantic omission evaluation, read `docs/semantic-omission-evaluation.md`
 and `docs/model-transfer-consent.md`. Run the collector, operator-semantic and
 control-evidence fixture suites plus the real browser check. `prepare` transmits nothing.
