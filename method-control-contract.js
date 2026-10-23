@@ -20,6 +20,7 @@ const CODE = ["method-control-contract.js", "method-control-broker.js", "method-
   "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
   "codex-bounded-collector.js", "codex-order-analysis-collector.js", "order-analysis-generation-contract.js", "order-analysis-generator.js", "operator-order-analysis-contract.js",
   "order-intake-contract.js", "request-order-compiler.js",
+  "readiness-drop-revocation-runner.js", "schema-files/readiness-event.schema.json", "schema-files/readiness-drop-reconciliation.schema.json",
   "schema-files/order-analysis-response.schema.json", "schema-files/operator-order-analysis.schema.json",
   "requirement-inventory-contract.js", "requirement-inventory-controller.js", "order-adoption-controller.js",
   "bounded-planning-contract.js", "bounded-planning-controller.js", "schema-files/bounded-planning-request.schema.json", "schema-files/bounded-planning-proposal.schema.json",

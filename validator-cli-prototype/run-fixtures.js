@@ -11,6 +11,13 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing readiness drop reconciliation`,
+    file: `sample-payloads/${prefix}-readiness-drop-reconciliation.json`, type: "readiness-drop-reconciliation",
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"] })),
+  ...["missing", "null-item"].map(kind => ({ name: `readiness report handles malformed ${kind} before semantic replay`,
+    file: "sample-payloads/valid-readiness-drop-reconciliation.json", type: "readiness-drop-reconciliation", exitCode: 1,
+    expectedCanExecute: false, requiredCodes: [kind === "missing" ? "MISSING_REQUIRED" : "TYPE_MISMATCH"],
+    mutate(payload) { if (kind === "missing") delete payload.results; else payload.results[0] = null; } })),
   ...["authorization", "record"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-authorizing analysis reconciliation ${suffix}`, file: `sample-payloads/${prefix}-operator-analysis-reconciliation-${suffix}.json`,
     type: `operator-analysis-reconciliation-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
@@ -754,6 +761,7 @@ const fixtures = [
     file: "sample-payloads/valid-readiness-event.json",
     type: "readiness-event",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
   },
   {

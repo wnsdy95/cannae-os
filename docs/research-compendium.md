@@ -1,5 +1,23 @@
 # Research Compendium
 
+## Readiness Must Reach Actual Grants (2026-10-24)
+
+A synthetic probe on `c475726` retained a schema-valid T-to-X event for the
+same role and exact task after a completed call; actual next-call admission
+still allowed it. The [local restriction candidate](readiness-drop-reconciliation.md)
+now reads that history at issuance, dispatch/gateway admission, publication and
+completion. Old grants cannot revive merely because a later event claims T.
+Pending results and gateway obligations still need their original settlement;
+blocked does not mean revoked, and a reconciliation report is not task work.
+
+Current manifests are path-sorted. Valid transitions must replay their retained
+introduction revisions and parsed timestamps, not lexical event IDs or offsets.
+Payload rejection and actual consumer/race tests remain distinct evidence classes.
+This is local engineering synthesis, not a new military-source or model-quality
+claim. Literal role/task matching, trusted local EVALUATOR labels and a deny-only
+fence do not finish stable capability ownership, authenticated training,
+positive qualification, fresh restoration or goal 5. All eight outcomes remain open.
+
 ## Bounded Derived Order Publication (2026-10-24)
 
 A retained synthetic probe passed an 80,932-byte authored response through the

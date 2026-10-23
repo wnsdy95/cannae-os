@@ -505,6 +505,7 @@ function prepareLeaseDraft(
   assertProvider(policy.provider);
   const now = nowIso(options);
   const bundle = contextBundle(options, policy);
+  require("./readiness-drop-revocation-runner").assertMayExecute(bundle.view, bundle.context.payload, now);
   const currentPolicy = loadArtifactRef(bundle.view, policyRecord.ref, "dispatch-tool-policy");
   if (currentPolicy.payload.id !== policy.id) {
     throw new Error("Dispatch policy reference does not match the requested policy.");
@@ -817,7 +818,8 @@ function issuancePublicationGuard(options, request, view, locks, cancellation = 
         issuanceNeed(previous, "DISPATCH_ISSUANCE_PREDECESSOR_INVALID");
         issuanceNeed(!reconciledFailureState(live, previous).checkpoint_refs.length, "RECONCILED_FAILED_AGENT");
       }
-      contextBundle(options, loadArtifactRef(live, value.planned_lease.tool_policy_ref, "dispatch-tool-policy").payload);
+      const bundle = contextBundle(options, loadArtifactRef(live, value.planned_lease.tool_policy_ref, "dispatch-tool-policy").payload);
+      require("./readiness-drop-revocation-runner").assertMayExecute(live, bundle.context.payload, nowIso(options));
       issuanceNeed(!gatewayObligations(live).length, "UNRESOLVED_GATEWAY_TRANSACTIONS");
       issuanceNeed(!leaseRecords(live).some(item => unresolvedToolEffectRecords(live, item).length), "UNRESOLVED_TOOL_EFFECTS");
     }
@@ -893,6 +895,7 @@ function appraiseLiveIssuance(options, operation, view) {
   issuanceNeed(issuance.runtimeDigest() === value.runtime_sha256, "DISPATCH_ISSUANCE_RUNTIME_CHANGED");
   issuanceNeed(!issuanceProgresses(view).some(item => item.status === "pending" && !sameRef(item.request.ref, request.ref)), "DISPATCH_ISSUANCE_AMBIGUOUS");
   const policy = loadArtifactRef(view, planned.tool_policy_ref, "dispatch-tool-policy"), bundle = contextBundle(options, policy.payload);
+  require("./readiness-drop-revocation-runner").assertMayExecute(view, bundle.context.payload, nowIso(options));
   if (bundle.context.payload.method_assignment?.broker) issuanceNeed(bundle.context.payload.method_assignment.broker.runtime_sha256 ===
     require("./method-control-contract").runtimeDigest(), "DISPATCH_ISSUANCE_CHANNEL_REVIEW_REQUIRED");
   issuanceNeed(sameRef(bundle.context.ref, planned.context_pack_ref) && sameRef(bundle.plan.ref, planned.plan_ref), "DISPATCH_ISSUANCE_SCOPE_CHANGED");
@@ -1292,11 +1295,12 @@ function activeLeaseInReplay(options, identity, at) {
   const plan = loadArtifactRef(view, selected.leaseRecord.payload.plan_ref, "mission-wave-plan");
   try {
     const context = loadArtifactRef(view, selected.leaseRecord.payload.context_pack_ref, "agent-context-pack");
+    require("./readiness-drop-revocation-runner").assertMayExecute(view, context.payload, at);
     const intent = require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
     require("./intent-continuity-contract").assertIntentPolicy(policyForLease(view, selected.leaseRecord).payload, intent);
     require("./method-deviation-gate").assertNoMethodDrift(options, identity.missionId, view);
   } catch (error) {
-    if (!error.message.startsWith("INTENT_") && !error.message.startsWith("METHOD_")) throw error;
+    if (!error.message.startsWith("INTENT_") && !error.message.startsWith("METHOD_") && !error.message.startsWith("READINESS_")) throw error;
     return { code: error.message, view, ...selected };
   }
   try {
@@ -1576,11 +1580,17 @@ function admitToolRequest(options, identity, hookInput) {
     return inMemoryDenial("TOOL_REQUEST_IDENTITY_MISSING");
   }
   const selected = activeLease(options, identity, nowIso(options));
+  if (selected.code === "READINESS_REQUALIFICATION_REQUIRED") {
+    const revoked = revokeLease(options, selected.leaseRecord.payload.id, selected.code);
+    return inMemoryDenial(selected.code, { readiness_checkpoint_ref: revoked.checkpoint_ref, lease_status: revoked.status });
+  }
   if (selected.code !== "LEASE_ACTIVE") return inMemoryDenial(selected.code);
   const lock = dispatchLock(selected.view, selected.leaseRecord.payload.id);
   let methodDriftDenial = null;
+  let readinessRevocation = null;
   try {
     const refreshed = activeLease(options, identity, nowIso(options));
+    if (refreshed.code === "READINESS_REQUALIFICATION_REQUIRED") readinessRevocation = refreshed.leaseRecord.payload.id;
     if (refreshed.code !== "LEASE_ACTIVE") return inMemoryDenial(refreshed.code);
     const { checkpointRecord, leaseRecord, view } = refreshed;
     require("./method-control-broker").assertWorkReady(options, leaseRecord.ref, view);
@@ -1701,6 +1711,7 @@ function admitToolRequest(options, identity, hookInput) {
     };
   } finally {
     releaseRepositoryLease(lock);
+    if (readinessRevocation) revokeLease(options, readinessRevocation, "READINESS_REQUALIFICATION_REQUIRED");
     if (methodDriftDenial) require("./method-deviation-gate").respondToDrift(options, methodDriftDenial);
   }
 }
@@ -2098,6 +2109,8 @@ function revokeLease(options, leaseIdValue, reasonCode = "LEASE_REVOKED") {
 
 function completeLease(options, leaseIdValue, reasonCode = "EXECUTION_COMPLETED") {
   const loaded = loadLeaseById(options, leaseIdValue);
+  const context = loadArtifactRef(loaded.view, loaded.leaseRecord.payload.context_pack_ref, "agent-context-pack");
+  require("./readiness-drop-revocation-runner").assertMayExecute(loaded.view, context.payload, nowIso(options));
   assertNoPendingIssuance(options, loaded.view);
   require("./method-control-broker").assertSettled(options, loaded.leaseRecord.payload, loaded.view);
   require("./method-deviation-gate").assertMethodComplete(options, loaded.leaseRecord.ref, loaded.view);

@@ -2103,17 +2103,21 @@
       "workstream_id": "force-readiness",
       "implementation_status": "partial",
       "implementation_paths": [
-        "approval-delegation-revocation-runner.js"
+        "approval-delegation-revocation-runner.js",
+        "readiness-drop-revocation-runner.js",
+        "dispatch-runtime-controller.js",
+        "run-readiness-drop-revocation-fixtures.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the readiness-drop-revocation-runner.js proposal and associated constraints in docs/readiness-to-authority-policy.md.",
-          "validation_commands": []
+          "validation_commands": ["node run-readiness-drop-revocation-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Connect a validated readiness drop to exact active delegation/lease revocation; test pending and already-consumed approvals."
+        "Complete stable cross-mission capability/performer/model/tool binding, authenticated evaluator provenance and positive requalification with fresh USER scope; literal role/task drops do not prove that registry.",
+        "Reconcile pending and already-consumed approval scopes and standing delegations, not only dispatch leases; complete P-stage supervision and accepted operational rollout."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },
