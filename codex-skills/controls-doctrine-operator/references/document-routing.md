@@ -1,5 +1,24 @@
 # Document Routing
 
+## Force Registry Enrollment
+
+Read `docs/force-registry-enrollment.md` for stable organization, capability and
+performer definitions. Use `scripts/operate_controls_force_registry.js propose`
+for an exact non-authorizing request, then leave its distinct definition-only
+review and password reauthentication to the real owner in the console. A chat
+approval, Commander string, earlier order consent or proposed profile is not
+enrollment authority. Never read/export the owner's private signing state.
+Inspect a lost response and retain partial publication holds; no replay,
+automatic repair, signature replacement or retired-ID resurrection is supported.
+Public-key pins come from the trusted operator, never from the acting agent.
+Require the browser's digest of the complete displayed review; a nonce alone
+cannot approve a modified or truncated subject. Keep supporting text in its
+original artifact and private owner review, not copied into signed enrollment
+history. A changed manifest or target needs a new preview, never replayed consent.
+Enrolled is still unassessed: do not dispatch, promote, train unrestrictedly or
+activate a standing unit from this registry. Qualification, mandatory actual
+grant consumers, full organization lifecycle and controlled rollout remain open.
+
 ## Actual Workload Controls
 
 Route `workload-control`, `subject-bound` and report/evidence scan issues to

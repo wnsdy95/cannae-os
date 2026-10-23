@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Definition Enrollment Is Not Qualification (2026-10-24)
+
+The existing force-change projection uses approval strings and does not create
+an authenticated persistent registry. Literal task/readiness matching also
+cannot provide stable organization, capability or performer identity. The
+[local enrollment candidate](force-registry-enrollment.md) adds permanent IDs,
+versioned owner/configuration declarations, explicit alias history and separate
+exact password-reauthenticated owner consent with full signed nested subjects.
+It deliberately keeps definitions unassessed and preserves partial publication
+holds. This is local engineering synthesis, not new military doctrine, training
+evidence, native configuration attestation or positive execution authority.
+Full training, mandatory grant consumers, all organization lifecycle operations,
+recovery, CoS/COP integration and controlled rollout remain open under goal 5.
+
 ## Code Regression Is Not Workload Inspection (2026-10-24)
 
 A retained actual-function probe on `1f2b261` passed the same routed fixture

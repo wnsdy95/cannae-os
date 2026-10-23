@@ -11,9 +11,9 @@ Do not read the whole corpus by default. Route the task by operator mode, read t
 
 ## Operator Modes
 
-Before report admission, read `docs/subject-bound-workload-controls.md` and the
-Actual Workload Controls procedure in `references/document-routing.md`. Fixture
-passes are not workload clearance; require controller-issued workload receipts and a fresh report ID after rejection.
+For report admission and force enrollment, follow their separate procedures in `references/document-routing.md`.
+Fixture passes are not workload clearance; require controller-issued workload receipts and a fresh report ID after rejection.
+Registry enrollment never qualifies a performer or activates a standing unit; leave its one-use decision to the authenticated owner.
 
 There are two modes:
 

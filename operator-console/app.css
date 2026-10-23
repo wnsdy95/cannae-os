@@ -93,6 +93,14 @@ legend { font-size: 12px; color: #4a565c; margin-bottom: 10px; padding: 0; }
 .consent-check input { flex: 0 0 16px; width: 16px; height: 16px; min-height: 16px; margin: 2px 0 0; accent-color: #176e58; }
 #semantic-attention { margin-bottom: 16px; color: #725426; font-size: 12px; }
 .outcome-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.force-actions-heading { margin: 28px 0 14px; }
+#force-view table { min-width: 680px; }
+#force-view td { min-width: 100px; }
+#force-view td:first-child { min-width: 220px; }
+#force-confirmation { border-top: 1px solid #e1e6e9; padding-top: 20px; margin-top: 20px; scroll-margin-top: 128px; }
+#force-commit-form { display: grid; gap: 17px; margin: 22px 0; }
+#force-commit-form button { justify-self: start; max-width: 100%; }
+#force-expiry { color: #725426; font-size: 12px; margin: 10px 0; }
 #decision-status { color: #176e58; font-size: 13px; margin-top: 18px; }
 #decision-status:empty { display: none; }
 .dialog-actions { display: flex; justify-content: end; gap: 10px; }

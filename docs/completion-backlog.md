@@ -76,6 +76,14 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [force registry enrollment candidate](force-registry-enrollment.md) adds
+repository-isolated stable definition IDs, versioned organization ownership and
+performer configuration, explicit alias history and a distinct authenticated
+owner review. It does not finish row 7: every enrolled subject stays unassessed.
+Training, positive qualification, mandatory actual grant consumers, broader
+organization lifecycle, unknown-outcome recovery, CoS/COP and rollout remain
+required. Source/fixture existence alone is not operational acceptance.
+
 An actual routed-fixture probe passed both clean and credential-bearing report
 inputs without passing either to its child. The local
 [subject-bound controls candidate](subject-bound-workload-controls.md) now adds
