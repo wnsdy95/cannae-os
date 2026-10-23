@@ -24,6 +24,13 @@ USER adoption before dispatch. Proposed roles and quoted bytes do not
 prove semantic completeness or expand authority.
 After uncertain draft publication, inspect Evidence and Model Actions separately;
 preserve a draft already written without clearing the held transfer or rerunning it.
+For a verifiable failed analysis, use the separate procedure in
+`docs/order-analysis-reconciliation.md`. Review both original process/journal
+proof and the exact observed draft publication, then let the real owner consume
+the analysis-specific two-acknowledgment ceremony. Never use omission endpoints,
+recompile to discover effects, adopt/delete a draft as cleanup or treat verified
+manifest absence as proof of no effects. Inspect a lost commit; obtain fresh
+consent after a failed reservation. Unknown/integrity holds remain unsupported.
 For signed model history, require the full invocation and nested preview to rehash
 to their original signed commitments before trusting displayed scope. A valid
 signature over a digest field alone is insufficient. Keep changed records held;

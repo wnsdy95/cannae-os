@@ -8,6 +8,11 @@ that evaluation into success, reruns the model, cancels provider billing, clears
 another ownership domain or grants task execution/release. All eight program
 outcomes remain open, including semantic calibration and mandatory consumers.
 
+This omission purpose does not acknowledge analysis actions. Use the separate
+[request-analysis ceremony](order-analysis-reconciliation.md), which additionally
+appraises exact observed draft publication without compiler replay or adoption.
+Shared verification mechanics never make these signed purposes interchangeable.
+
 The original `operator_model_actions` row, signed failure, invocation, consent and
 collector journal are preserved byte-for-byte. A separate signed authorization
 and receipt explain why the local model-domain hold can be acknowledged. A new

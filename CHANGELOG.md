@@ -6,6 +6,14 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add separate failed-analysis acknowledgment with exact original journal,
+  response and observed draft-publication appraisal, two owner acknowledgments
+  and distinct signed records/endpoints. Preserve failures, existing drafts and
+  review-time absence through legitimate later publication without model/compiler
+  replay or adoption/cleanup authority. Keep missing/integrity/unknown-process
+  holds closed, retain receipt-boundary crash/lost-response behavior and old
+  omission compatibility, and adapt both routed skills. Acceptance stays separate.
+
 - Repair the native-analysis validator fixture's missing explicit issue-code
   expectation. Preflight every CLI fixture definition before spawning children
   and regress malformed definitions without defaulting missing expectations.

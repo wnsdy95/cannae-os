@@ -1,5 +1,25 @@
 # Research Compendium
 
+## Purpose-Specific Analysis Recovery (2026-10-24)
+
+A failed request analysis can already have published a non-executable draft when
+later delivery fails. A null draft field in the signed failure therefore does not
+prove publication absence. The separate [owner ceremony](order-analysis-reconciliation.md)
+binds original collector/response bytes and derives the expected draft for actual
+read-only compiler inspection. It never recompiles or adopts that draft. An exact
+verified-manifest absence observation is not a universal no-effect claim; later
+independently approved deterministic publication must not rewrite that historical
+observation or permanently deadlock future work. A previously observed published
+reference and original response/journal/consent must remain exact.
+
+Analysis v0.1 already has a journal commitment; accepting it does not retrofit
+unbound omission v0.1 history. Separate typed purposes and endpoints prevent
+borrowing another acknowledgment while sharing verification mechanics. This is
+local engineering synthesis. Synthetic crash/browser checks and current signatures
+do not prove real human presence, protected keys, provider cancellation, billing,
+unknown-process recovery or independent semantic calibration. All eight outcomes
+and operational acceptance remain separate.
+
 ## Historical Model Scope Integrity (2026-10-23)
 
 An actual synthetic controller probe on the first native-analysis candidate
@@ -24,7 +44,9 @@ treating generated statements as verified facts. Existing owner review remains
 mandatory. The official [CLI reference](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
 supports the transport choices, not semantic correctness or protected execution.
 Synthetic response labels are authored tests, not independent held-out truth.
-Analysis-specific recovery, calibration and complete orchestration remain open.
+The later analysis acknowledgment entry supports verifiable failures and observed
+publication only; unknown/integrity recovery, calibration and complete orchestration
+remain open.
 
 ## Bounded Structural Planning (2026-10-23)
 

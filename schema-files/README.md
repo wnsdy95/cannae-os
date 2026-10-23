@@ -1,5 +1,13 @@
 # Schema Files
 
+`operator-analysis-reconciliation-authorization.schema.json` and
+`operator-analysis-reconciliation-record.schema.json` bind a separate fresh owner
+acknowledgment to one failed analysis and exact observed compiler publication.
+They never substitute for omission consent, adopt/delete a draft, settle artifacts
+or grant execution/release. Schema checks cannot establish history, signatures,
+process absence or absence of all effects. Follow the
+[actual analysis ceremony](../docs/order-analysis-reconciliation.md).
+
 `order-analysis-response.schema.json` and `operator-order-analysis.schema.json`
 describe bounded proposed statements/tasks and non-authorizing signed collection
 results with exact original-journal and compiled-draft bindings. Schema checks

@@ -34,6 +34,14 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["analysis reconciliation", "analysis hold", "failed request analysis", "order analysis failed transfer reconciliation",
+    "schema-files/operator-analysis-reconciliation-authorization.schema.json", "Review ANALYSIS-RECONCILIATION before acknowledging publication", "operator-analysis-publication.js", "operator-reconciliation-contract-core.js"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["analysis-reconciliation"]); assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/order-analysis-reconciliation.md"));
+    assert(result.validation_commands.includes("node run-operator-analysis-reconciliation-fixtures.js"));
+    assert(result.validation_commands.includes("node run-operator-analysis-reconciliation-contract-fixtures.js"));
+  }
   for (const query of ["order analysis", "order-analysis-generation", "native planning", "prepare_controls_analysis", "codex-bounded-collector.js",
     "model invocation integrity", "model-invocation-integrity"]) {
     const result = route(router, ["--actor=user"], query);

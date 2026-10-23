@@ -80,9 +80,12 @@ The [native request-analysis candidate](native-order-analysis.md) adds a separat
 purpose-bound model proposal consumed by the actual OPORD compiler. Its shared
 transport does not share omission consent or confer calibrated admission. A
 signed proposed/clarification draft still needs human coverage and USER adoption;
-the existing finite roster/policy envelope remains explicit. Purpose-specific
-analysis recovery, independently held-out semantic calibration and complete
-autonomous orchestration remain open. This does not close rows 4/9 or goal 3/7.
+the existing finite roster/policy envelope remains explicit. Its separate
+[analysis acknowledgment candidate](order-analysis-reconciliation.md) appraises
+verifiable failed collection and observed compiler publication without replay,
+adoption or artifact settlement. Unknown/integrity recovery, independently held-out
+semantic calibration and complete autonomous orchestration remain open. This does
+not close rows 4/9 or goal 3/7; source acceptance and operational rollout are separate.
 
 The [bounded structural generator](bounded-plan-synthesis.md) fills the actual
 OPORD-to-plan/policy assembly gap and links generated successors to existing

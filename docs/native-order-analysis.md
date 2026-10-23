@@ -82,8 +82,9 @@ protected-host proof.
 Inspect Model Actions after lost delivery. Failed, unknown, changed-source or
 interrupted collection/publication remains held and fences both local model
 purposes. The existing omission-only failed-transfer acknowledgment explicitly
-rejects analysis actions; a purpose-specific analysis recovery ceremony remains
-unfinished. Never delete rows, relabel purpose, reuse a nonce or rerun a model to
+rejects analysis actions. The separate [analysis ceremony](order-analysis-reconciliation.md)
+now supports a verifiable failed transfer and exact observed compiler publication,
+not missing/integrity/unknown-process recovery. Never delete rows, relabel purpose, reuse a nonce or rerun a model to
 clear a hold. Result inspection cannot establish remote cancellation or billing.
 If compilation publishes a draft before a later failure, keep that exact draft
 and the held action. Inspect Evidence and Model Actions separately; neither

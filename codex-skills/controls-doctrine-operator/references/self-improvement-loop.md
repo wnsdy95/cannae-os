@@ -41,6 +41,15 @@ passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
 
+Before acknowledging a failed model action, route its exact producer purpose.
+Analysis can publish a draft before later failure; a null result reference is
+not publication-absence evidence. Bind original response bytes and read actual
+retained draft history without invoking compilation. Preserve a review-time
+manifest absence observation when later separately approved work publishes the
+same deterministic draft; never rewrite old proof or confer adoption/cleanup
+authority. Verify this with both actual pre/post-publication failures and receipt
+boundary process death, not only schema or successful-transfer cases.
+
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
 the next dependency-ready item from `docs/completion-backlog.md`, then inspect
 its registered source requirements and existing implementation mappings.

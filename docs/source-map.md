@@ -7,6 +7,16 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [analysis recovery candidate](order-analysis-reconciliation.md) is local
+engineering synthesis over the existing purpose-bound collector, signed owner
+reservation, exact journal inspection and actual compiler reader. Separate
+analysis authorization/receipt types do not share omission consent or upgrade
+unbound legacy provenance. A review-time verified-manifest absence is not a
+no-effect assertion; later legitimate publication preserves that old observation.
+Current response/journal/publication bindings and failed receipt history remain
+accountable. No new military source, protected-host/human-presence guarantee,
+provider cancellation or semantic-quality claim is introduced.
+
 The shared model invocation/history integrity rule is local engineering synthesis.
 A retained actual-controller probe found that original signatures and a supplied
 digest field could label a changed projected mission as verified in history,

@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "analysis-reconciliation",
+    keywords: ["analysis reconciliation", "analysis-reconciliation", "analysis hold", "analysis-hold", "failed request analysis", "order analysis recovery", "order analysis failed transfer", "operator-analysis-publication", "operator-reconciliation-contract-core"],
+    docs: ["docs/order-analysis-reconciliation.md", "docs/native-order-analysis.md", "docs/model-transfer-reconciliation.md"],
+    commands: ["node run-operator-analysis-reconciliation-contract-fixtures.js", "node run-operator-analysis-reconciliation-fixtures.js", "node run-operator-model-reconciliation-contract-fixtures.js", "node run-operator-model-reconciliation-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
     id: "order-analysis-generation",
     keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector", "model invocation integrity", "model-invocation-integrity"],
     docs: ["docs/native-order-analysis.md", "docs/request-order-intake.md", "docs/model-transfer-consent.md", "docs/bounded-plan-synthesis.md"],
@@ -528,6 +534,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "analysis-reconciliation", keywords: ["analysis-reconciliation", "operator-analysis-publication", "operator-reconciliation-contract-core", "order-analysis-fixtures/reconciliation", "order-analysis-fixtures/write-reconciliation"] },
   { id: "order-analysis-generation", keywords: ["order-analysis", "native-order-planning", "native-order-analysis", "codex-bounded-collector", "prepare_controls_analysis", "model-invocation-integrity"] },
   { id: "bounded-planning", keywords: ["bounded-planning", "bounded-plan-synthesis", "plan_controls_mission"] },
   { id: "semantic-admission", keywords: ["requirement-inventory", "semantic-coverage", "semantic-review-assignment", "review_controls_requirements"] },
