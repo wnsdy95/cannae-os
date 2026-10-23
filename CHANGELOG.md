@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Route the explicit semantic-review-assignment contract alias through the actual
+  semantic-admission query rule, not only artifact inventory hints. Preserve the
+  failed hosted checks and local reproduction; extend both-provider query and
+  planner regressions. Both skills distinguish query correctness from inventory
+  coverage without disabling genuine mission-scoped capability gaps.
+
 - Reject raw planner operation envelopes and nested semantic/planning packets as
   task work, including historical untyped bundles, arrays and MIME/key-order
   aliases. Tag all planning operation returns and retain the actual data-only

@@ -14,6 +14,13 @@ node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
 
 ## Requirement Review
 
+Inventory coverage and request routing are separate gates. After adding a
+contract alias, run `node run-document-routing-fixtures.js` as well as `--coverage`
+for both providers; a fully indexed corpus can still misroute a real query.
+If a known `semantic-review-assignment` request returns `gap_detected`, retain
+that failed result and inspect the query rule before proposing a new department.
+Do not suppress real capability gaps or infer authority from a corrected route.
+
 For automatic structural plan construction, read `docs/bounded-plan-synthesis.md`
 and use `scripts/plan_controls_mission.js` against the explicit target repository.
 Supply bounded roster/policy/control inputs, not a fabricated complete plan.

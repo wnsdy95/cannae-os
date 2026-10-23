@@ -14,7 +14,7 @@ const RULES = [
   },
   {
     id: "semantic-admission",
-    keywords: ["requirement inventory", "requirement-inventory", "semantic admission", "semantic-admission", "semantic coverage", "semantic-coverage", "human coverage review", "semantic review assignment", "review_controls_requirements"],
+    keywords: ["requirement inventory", "requirement-inventory", "semantic admission", "semantic-admission", "semantic coverage", "semantic-coverage", "human coverage review", "semantic review assignment", "semantic-review-assignment", "review_controls_requirements"],
     docs: ["docs/requirement-inventory-admission.md", "docs/order-adoption-and-plan-binding.md", "docs/operator-consent-and-adoption.md", "docs/semantic-omission-evaluation.md"],
     commands: ["node run-requirement-inventory-fixtures.js", "node run-operator-coverage-ui-fixtures.js", "node run-order-adoption-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
   },
