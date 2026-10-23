@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["model hold", "operator-model-reconciliation", "model-transfer-reconciliation"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["semantic-omission"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/model-transfer-reconciliation.md"));
+    assert(result.validation_commands.includes("node run-operator-model-reconciliation-fixtures.js"));
+  }
   for (const query of ["operational COP", "operations screen", "critical alert scope"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["operational-cop"]);

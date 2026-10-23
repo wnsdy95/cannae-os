@@ -81,8 +81,11 @@ open. An exit request or clean Git status never proves termination.
 Failed, cancelled, interrupted or changed actions are held. Restart invalidates
 pending previews and preserves holds without replay. A model hold or unverifiable
 signed history fences another transfer in this local model domain. No model-hold
-discharge ceremony exists yet. Do not delete rows/journals, edit statuses or rotate
-keys to retry. This does not settle tool/gateway/campaign obligations or undo
+discharge is allowed for missing/unverifiable proof. For a verified failed local
+invocation, use the separate [owner acknowledgment](model-transfer-reconciliation.md),
+which preserves the original failure and requires fresh process-absence checks
+and consent. Do not delete rows/journals, edit statuses or rotate keys to retry.
+This does not settle tool/gateway/campaign obligations or undo
 earlier transmission. Twenty pending and 1,000 retained actions are fail-closed
 capacity limits, not an automatic archive/retention workflow.
 
@@ -108,6 +111,6 @@ measured fake provider and zero actual model calls. Separate native probes must
 identify exact source and synthetic scope.
 
 Remaining: held-out calibration; mandatory versioned adoption/receiver/dispatch
-consumers; bounded planning/replanning with USER revision; model-hold reconciliation;
+consumers; bounded planning/replanning with USER revision; unknown/integrity model-hold recovery;
 trusted time/hard billing cancellation; protected keys/hosts, external fencing and
 independent monitoring. This UI does not close any of the eight full outcomes.

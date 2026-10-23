@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [failed model-transfer ceremony](model-transfer-reconciliation.md) is local
+engineering synthesis over the existing signed owner-transfer service, private
+outbox and process lifecycle. It verifies exact failed history, observes PID/group
+absence and appends fresh signed acknowledgment without rewriting the failure or
+calling the model. SQLite reservation order is not trusted time, and PID/group
+absence is not provider cancellation. No new military-source claim is introduced.
+
 The [model-transfer ceremony](model-transfer-consent.md) is local engineering
 synthesis over existing auth, owner reauthentication, pinned operator signatures,
 verified intake, the semantic collector and the wave-report metadata boundary.

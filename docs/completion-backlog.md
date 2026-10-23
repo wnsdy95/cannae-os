@@ -83,7 +83,11 @@ inspection through the actual collector. Logout/stop/shutdown preserve failed
 and unknown outcomes; copies remain control metadata at the report consumer.
 This does not close rows 4/9 or goals 3/7. Held-out calibration, mandatory versioned
 adoption/receiver/dispatch consumers, bounded planning/replanning and model-hold
-discharge remain open. Default fixture passes execute zero actual model calls.
+recovery for unknown/integrity failures remain open. A separate
+[verified failed-transfer acknowledgment](model-transfer-reconciliation.md)
+now appends fresh owner consent and a saved signed receipt after PID/group absence,
+without changing the failed result or invoking a model. It does not discharge
+provider billing or other ownership domains. Default fixture passes execute zero actual model calls.
 
 ### Active Eight-Part Goal
 

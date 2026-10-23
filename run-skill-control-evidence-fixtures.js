@@ -74,12 +74,13 @@ try {
           /control metadata as execution evidence/);
       }
     }
-    for (const contract of [require("./dispatch-issuance-contract"), require("./method-control-contract")]) {
-      assert(contract.CODE.includes("semantic-control-types.js"));
+    for (const contract of [require("./dispatch-issuance-contract"), require("./method-control-contract")]) for (const file of ["semantic-control-types.js",
+      "operator-model-reconciliation-contract.js", "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json"]) {
+      assert(contract.CODE.includes(file));
       const original = fs.readFileSync, before = contract.runtimeDigest();
       fs.readFileSync = function(filename, ...args) {
         const bytes = original.call(this, filename, ...args);
-        return typeof filename === "string" && path.resolve(filename) === path.join(__dirname, "semantic-control-types.js") ? Buffer.concat([Buffer.from(bytes), Buffer.from("\n")]) : bytes;
+        return typeof filename === "string" && path.resolve(filename) === path.join(__dirname, file) ? Buffer.concat([Buffer.from(bytes), Buffer.from("\n")]) : bytes;
       };
       try { assert.notEqual(contract.runtimeDigest(), before); } finally { fs.readFileSync = original; }
     }

@@ -6,6 +6,7 @@ const { prepareInvocation, collectEvaluation, verifyTransferConsent } = require(
 const { loadVerifiedStore } = require("./campaign-supervisor");
 const { entryId } = require("./operator-console-evidence");
 const { repositoryStateDigest } = require("./skill-mission-controller");
+const { openModelReconciliation } = require("./operator-model-reconciliation-service");
 const AUTHORITY = Object.freeze({ execution_authorized: false, release_authorized: false, human_final_decision_authority: "USER" });
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
 function modelError(error) { return /^(?:SEMANTIC|CONSOLE)_[A-Z_]+$/.test(error?.message) ? error.message : "CONSOLE_MODEL_COLLECTION_FAILED"; }
@@ -70,8 +71,8 @@ function openSemanticService(auth, configuration, consentService) {
     } catch { return false; }
   }
   function noHold() {
-    const rows = db.prepare("SELECT * FROM operator_model_actions WHERE state IN ('running','held','evaluated')").all();
-    requireThat(!rows.some(row => row.state !== "evaluated" || !verifiedResult(row)), "CONSOLE_MODEL_RECONCILIATION_REQUIRED", 409);
+    const rows = db.prepare("SELECT * FROM operator_model_actions WHERE consent IS NOT NULL OR result IS NOT NULL OR state IN ('running','held','evaluated')").all();
+    requireThat(!rows.some(row => !verifiedResult(row) || (row.state !== "evaluated" && !reconciliation.status(row).verified)), "CONSOLE_MODEL_RECONCILIATION_REQUIRED", 409);
   }
   function checkInvocation(invocation) {
     try {
@@ -87,13 +88,15 @@ function openSemanticService(auth, configuration, consentService) {
   function view(row, details = false) {
     const invocation = JSON.parse(row.preview), verified = row.result && verifiedResult(row);
     const unverifiable = !verified && (!!row.result || row.state === "evaluated");
+    const reconciled = reconciliation.status(row);
     return { type: "OperatorSemanticEvaluation", id: row.id, state: unverifiable ? "unverifiable" : row.state,
       mission_id: invocation.preview.mission_id, wave_id: invocation.preview.wave_id, draft_id: invocation.preview.draft_ref.artifact_id,
       model: invocation.profile.requested_model, created_at: new Date(row.created).toISOString(), expires_at: new Date(row.expires).toISOString(),
-      hold_preserved: row.state === "held" || !!unverifiable, cancellation_requested: !!row.cancellation,
+      hold_preserved: (row.state === "held" && !reconciled.verified) || !!unverifiable, cancellation_requested: !!row.cancellation,
+      reconciliation_state: reconciled.state, reconciliation_verified: reconciled.verified,
       result_verified: !!verified, verdict: verified ? JSON.parse(row.result).assessment?.verdict || null : null,
       ...(details ? { invocation_sha256: invocation.invocation_sha256, consent: row.consent ? JSON.parse(row.consent) : null,
-        rationale: row.rationale, result: verified ? JSON.parse(row.result) : null } : {}), ...AUTHORITY };
+        rationale: row.rationale, result: verified ? JSON.parse(row.result) : null, reconciliation: reconciled.record } : {}), ...AUTHORITY };
   }
   async function run(id, session) {
     const control = active.get(id), row = rowFor(id), invocation = JSON.parse(row.preview), consent = JSON.parse(row.consent);
@@ -156,7 +159,9 @@ function openSemanticService(auth, configuration, consentService) {
       if (!control.enteredCollector || collection?.process_group_absent) active.delete(id);
     }
   }
+  const reconciliation = openModelReconciliation({ auth, configuration, owner, transaction, audit, rowFor, verifiedResult, active, stateRoot, sourceCurrent, consentService });
   return {
+    reconciliation,
     available: !!configuration.semantic,
     prepare(session, invocation) {
       const user = owner(session); checkInvocation(invocation); noHold();
@@ -207,6 +212,7 @@ function openSemanticService(auth, configuration, consentService) {
       for (const control of active.values()) { control.reason ||= "CONSOLE_MODEL_SHUTDOWN"; control.abort.abort(); }
       await Promise.all([...active.values()].map(control => control.promise));
       requireThat(active.size === 0, "CONSOLE_MODEL_PROCESS_EXIT_UNCONFIRMED", 409);
+      reconciliation.close();
       db.prepare("UPDATE operator_model_actions SET state='invalidated' WHERE state='pending'").run();
     }
   };

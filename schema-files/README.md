@@ -1,5 +1,12 @@
 # Schema Files
 
+`operator-model-reconciliation-authorization.schema.json` and
+`operator-model-reconciliation-record.schema.json` bind fresh owner acknowledgment
+of one verifiable failed local transfer. Both remain non-authorizing, including
+the nested authorization. Schema validity cannot prove signatures, private
+history, process absence, provider cancellation or hold discharge; follow the
+[live model-domain ceremony](../docs/model-transfer-reconciliation.md).
+
 `operational-cop.schema.json` describes a restricted read-only snapshot of
 verified wave history, display filters, freshness and authorized-scope alerts.
 The validator never returns execution permission. Schema validity alone cannot

@@ -1,12 +1,15 @@
 "use strict";
 function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, viewCurrent, clearDecision, cell, empty, displayTime, session }) {
-  let draft, preview, action, generation = 0, timer, polling = false;
+  let draft, preview, holdPreview, action, generation = 0, timer, polling = false;
   function reset() {
-    generation++; clearInterval(timer); polling = false; draft = preview = action = null;
+    generation++; clearInterval(timer); polling = false; draft = preview = holdPreview = action = null;
     $("#semantic-preview").hidden = true; $("#semantic-preview").disabled = false;
     $("#semantic-stop").hidden = true; $("#semantic-stop").disabled = false;
     $("#semantic-confirmation").hidden = true; $("#semantic-commit-form").reset();
     $("#semantic-prompt").textContent = ""; $("#semantic-expiry").textContent = ""; $("#semantic-profile").replaceChildren();
+    $("#model-hold-preview").hidden = true; $("#model-hold-preview").disabled = false;
+    $("#model-hold-confirmation").hidden = true; $("#model-hold-form").reset();
+    $("#model-hold-expiry").textContent = ""; $("#model-hold-subject").textContent = ""; $("#model-hold-meta").replaceChildren();
   }
   function clear() { reset(); $("#semantic-entries").replaceChildren(); $("#semantic-attention").textContent = ""; }
   function selectDraft(item, manifest) {
@@ -22,9 +25,11 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
   function render(current) {
     $("#detail-title").textContent = `Model Evaluation / ${current.state}`;
     fields("#detail-meta", [["Mission / Wave", `${current.mission_id} / ${current.wave_id}`], ["Draft", current.draft_id],
-      ["Model", current.model], ["Hold", current.hold_preserved ? "Active" : "None"], ["Verified result", current.result_verified ? "Yes" : "Not established"]]);
+      ["Model", current.model], ["Hold", current.hold_preserved ? "Active" : "None"], ["Verified result", current.result_verified ? "Yes" : "Not established"],
+      ["Reconciliation", current.reconciliation_state]]);
     $("#detail-content").textContent = JSON.stringify(current, null, 2);
     $("#semantic-stop").hidden = current.state !== "running";
+    $("#model-hold-preview").hidden = current.state !== "held" || !current.result_verified || current.reconciliation_verified;
     if (current.state !== "running") clearInterval(timer);
   }
   async function poll(id, revision, scope) {
@@ -115,6 +120,40 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
       if (revision === generation && id === action && viewCurrent(scope) && readCurrent(read)) render(current);
     }).catch(failure => { if (revision === generation && id === action && viewCurrent(scope) && readCurrent(read)) $("#detail-error").textContent = failure.message; })
       .finally(() => { if (revision === generation && id === action && viewCurrent(scope)) button.disabled = false; });
+  };
+  $("#model-hold-preview").onclick = () => {
+    const id = action, revision = generation, scope = currentView(), button = $("#model-hold-preview");
+    if (!id || button.disabled) return; button.disabled = true;
+    void api(`/api/model-evaluations/${id}/reconciliation/preview`, {}).then(prepared => {
+      if (revision !== generation || action !== id || !viewCurrent(scope)) return;
+      holdPreview = prepared; const subject = prepared.subject;
+      fields("#model-hold-meta", [["Resolution", "Acknowledge failed transfer; preserve original failure"],
+        ["Local child / Process group", "Both observed absent"], ["Prior transmission", "Possibly transmitted"],
+        ["Provider billing / Cancellation", "Not verified"], ["New model call / Task execution / Release", "Not authorized"]]);
+      $("#model-hold-subject").textContent = JSON.stringify(subject, null, 2);
+      $("#model-hold-expiry").textContent = `Expires ${displayTime(prepared.expires_at)}`;
+      $("#model-hold-form").reset(); $("#model-hold-confirmation").hidden = false;
+      $("#detail").scrollTop = $("#model-hold-confirmation").offsetTop - $("#detail header").offsetHeight - 20;
+    }).catch(failure => { if (revision === generation && action === id && viewCurrent(scope)) $("#detail-error").textContent = failure.message; })
+      .finally(() => { if (revision === generation && action === id && viewCurrent(scope)) button.disabled = false; });
+  };
+  $("#model-hold-form").onsubmit = event => {
+    event.preventDefault(); const form = event.currentTarget;
+    void busy(form, async () => {
+      const prepared = holdPreview, id = action, revision = generation, scope = currentView();
+      if (!prepared || !id || !form.elements.acknowledge.checked) throw new Error("CONSOLE_MODEL_RECONCILIATION_PREVIEW_REQUIRED");
+      holdPreview = null;
+      try {
+        await api("/api/model-reconciliations/commit", { reconciliation_id: prepared.reconciliation_id, nonce: prepared.nonce,
+          password: form.elements.password.value, rationale: form.elements.rationale.value, acknowledge_provider_uncertainty: true });
+      } finally {
+        if (revision === generation && action === id && viewCurrent(scope)) {
+          form.reset(); $("#model-hold-confirmation").hidden = true; $("#model-hold-subject").textContent = "";
+          const current = await api(`/api/model-evaluations/${id}`);
+          if (revision === generation && action === id && viewCurrent(scope)) render(current);
+        }
+      }
+    }, "#detail-error");
   };
   return { reset, clear, load, selectDraft };
 }

@@ -8,9 +8,9 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "semantic-omission",
-    keywords: ["semantic omission", "semantic completeness", "semantic-omission", "semantic-evaluation", "codex-semantic", "model transfer consent", "model-transfer-consent", "operator-semantic", "semantic-control", "evaluate_controls_request"],
-    docs: ["docs/semantic-omission-evaluation.md", "docs/model-transfer-consent.md", "docs/request-order-intake.md", "docs/operator-consent-and-adoption.md", "docs/completion-backlog.md"],
-    commands: ["node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+    keywords: ["semantic omission", "semantic completeness", "semantic-omission", "semantic-evaluation", "codex-semantic", "model transfer consent", "model-transfer-consent", "operator-semantic", "semantic-control", "evaluate_controls_request", "model hold", "model-reconciliation", "model-transfer-reconciliation"],
+    docs: ["docs/semantic-omission-evaluation.md", "docs/model-transfer-consent.md", "docs/model-transfer-reconciliation.md", "docs/request-order-intake.md", "docs/operator-consent-and-adoption.md", "docs/completion-backlog.md"],
+    commands: ["node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-operator-model-reconciliation-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
   },
   {
     id: "operational-cop",
@@ -510,7 +510,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
-  { id: "semantic-omission", keywords: ["semantic-omission", "semantic-evaluation", "codex-semantic", "evaluate_controls_request", "operator-semantic", "semantic-control", "model-transfer-consent"] },
+  { id: "semantic-omission", keywords: ["semantic-omission", "semantic-evaluation", "codex-semantic", "evaluate_controls_request", "operator-semantic", "semantic-control", "model-transfer-consent", "model-reconciliation", "model-transfer-reconciliation"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
   { id: "operational-cop", keywords: ["operational-cop"] },
   { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },

@@ -11,6 +11,22 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["authorization", "record"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing model reconciliation ${suffix}`, file: `sample-payloads/${prefix}-operator-model-reconciliation-${suffix}.json`,
+    type: `operator-model-reconciliation-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : [suffix === "authorization" ? "CONST_MISMATCH" : "MODEL_RECONCILIATION_RECORD_BINDING_INVALID"]
+  }))),
+  ...["time", "action", "observation", "extra"].map(kind => ({ name: `model reconciliation rejects ${kind}`,
+    file: "sample-payloads/valid-operator-model-reconciliation-authorization.json", type: "operator-model-reconciliation-authorization",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: [kind === "extra" ? "ADDITIONAL_PROPERTY" : "MODEL_RECONCILIATION_AUTHORIZATION_BINDING_INVALID"],
+    mutate(value) { if (kind === "time") value.expires_at = value.created_at;
+      if (kind === "action") value.action_id = value.reconciliation_id;
+      if (kind === "observation") value.subject.observed_at = value.expires_at;
+      if (kind === "extra") value.tool_execution_authorized = true; }
+  })),
+  { name: "model receipt cannot expand nested authority", file: "sample-payloads/valid-operator-model-reconciliation-record.json",
+    type: "operator-model-reconciliation-record", exitCode: 1, expectedCanExecute: false,
+    mutate(value) { value.authorization.release_authorized = true; }, requiredCodes: ["CONST_MISMATCH"] },
   ...["valid", "invalid"].map(prefix => ({ name: `${prefix} read-only operational COP`, file: `sample-payloads/${prefix}-operational-cop.json`,
     type: "operational-cop", exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"] })),
   { name: "COP snapshot cannot invert display validity", file: "sample-payloads/valid-operational-cop.json", type: "operational-cop",

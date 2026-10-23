@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Failed Model Transfer Acknowledgment (2026-10-23)
+
+The [separate owner ceremony](model-transfer-reconciliation.md) resolves a verified
+failed local invocation without changing it to success or replaying its transfer.
+Bind fresh consent to exact signed failure, journal, source/repository/manifest,
+key and consumed-attempt inventory; independently observe both PID and process
+group absence. `EPERM` and PID reuse deny, rather than becoming absence evidence.
+An atomic saved receipt, not a private terminal label, acknowledges the local hold.
+
+The original failure and prior attempts remain immutable. Fresh acknowledgment
+does not verify or cancel remote provider billing, clear another ownership class
+or authorize the next evaluation. Missing signatures, journals and termination
+proof stay held. Protected infrastructure and unknown-process recovery remain open.
+
 ## Exact Model Transfer Consent (2026-10-23)
 
 The [local ceremony](model-transfer-consent.md) now connects an owner-reviewed
@@ -12,8 +26,9 @@ Authenticated preparation is not transmission, HTTP 202 is not completion and
 process-group absence is not provider billing cancellation. Signed historical
 results remain advisory control metadata; their expiry does not become renewed
 permission. Missing/changed results are unverifiable and fence another local
-transfer. Held-out calibration, mandatory adoption consumers, model-hold discharge,
-automatic replanning and protected operation remain separate unfinished work.
+transfer. The later verified-failure acknowledgment above supplies only its own
+local hold ceremony; unknown/integrity recovery, held-out calibration, mandatory
+adoption consumers, automatic replanning and protected operation remain unfinished.
 
 ## Existing-CLI Semantic Collector Foundation (2026-10-23)
 
@@ -26,7 +41,8 @@ provenance, not the truth of a model's coverage judgement.
 The existing local CLI login avoids new credential provisioning; it does not
 authorize private request transmission. A distinct pinned-key purpose binds one
 exact preview/profile and a durable reservation prevents automatic replay.
-No operational owner-transfer ceremony is available yet. Fake processes test
+At the foundation checkpoint, no owner-transfer ceremony existed; the separate
+authenticated transfer service described above now supplies that local path. Fake processes test
 failure behavior, never model quality; actual native probes must remain separately
 identified. Model snapshots, full native context/tool inventory, billing cancellation,
 held-out calibration and mandatory planning/adoption consumers remain unproven.

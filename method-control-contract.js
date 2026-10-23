@@ -13,7 +13,9 @@ const AUTHORITY = Object.freeze({ execution_authorized: false, continuation_auth
 const CODE = ["method-control-contract.js", "method-control-broker.js", "method-control-private-state.js", "method-control-server.js",
   "dispatch-issuance-contract.js", "schema-files/agent-dispatch-lease.schema.json", "schema-files/dispatch-lease-issuance-request.schema.json", "schema-files/dispatch-lease-issuance-resolution.schema.json",
   "method-control-runner.js", "dispatch-hook-adapter.js", "dispatch-runtime-controller.js", "method-deviation-contract.js", "method-deviation-gate.js",
-  "order-adoption-contract.js", "semantic-control-types.js", "validator-cli-prototype/validate.js", "operational-cop-contract.js", "schema-files/operational-cop.schema.json", "package.json", "package-lock.json",
+  "order-adoption-contract.js", "semantic-control-types.js", "operator-model-reconciliation-contract.js",
+  "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
+  "validator-cli-prototype/validate.js", "operational-cop-contract.js", "schema-files/operational-cop.schema.json", "package.json", "package-lock.json",
   ...fs.readdirSync(path.join(__dirname, "schema-files")).filter(file => file.startsWith("method-control-") && file.endsWith(".schema.json"))
     .sort().map(file => `schema-files/${file}`)];
 const identifier = () => z.string().min(1).max(128).regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/);

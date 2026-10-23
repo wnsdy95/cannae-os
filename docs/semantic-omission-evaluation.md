@@ -124,5 +124,7 @@ probe with exact source, input/output, model/profile and explicit synthetic scop
 Remaining: independently annotated atomic requirements and held-out calibration; mandatory
 versioned adoption/receiver/dispatch consumers; bounded planning/replanning with
 fresh USER revision review; unknown-provider-result reconciliation; trusted time,
-hard cost/provider cancellation, model-hold discharge and protected-host/native-context attestation.
+hard cost/provider cancellation, unknown/integrity model-hold recovery and protected-host/native-context attestation.
+Verified failed local transfers now have a separate
+[owner acknowledgment](model-transfer-reconciliation.md), not a model retry or semantic admission.
 Do not relax existing adoption, stop, lease, gateway or release controls.

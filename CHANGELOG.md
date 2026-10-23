@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add a separate exact owner acknowledgment for verifiable failed model transfers: fresh password/session/nonce consent, current PID/group absence, signed one-use outbox and atomically verified receipt. Preserve original failure/journal bytes and every consumed attempt; changed or missing proof remains held. Receipt publication and corrupted state-label regressions fail closed. Both skills require fresh review rather than replay, and new acknowledgment records remain non-authorizing control metadata. Unknown-process/integrity recovery, remote billing, calibration and mandatory semantic consumers remain open.
+
 - Start model-collector and worker-queue shutdown fences together and wait for both actual exits before closing private auth state. A delayed model close must not leave queued work admissible. Both skills preserve this shared shutdown rule.
 
 - Reject null/non-object JSONL and malformed UTF-8 inside the collector before field access, preserving the HTTP service and observed child/group termination. Keep these actual-process regressions separate from model-quality evidence; both skills preserve the failed one-use action without replay.

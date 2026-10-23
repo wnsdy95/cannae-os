@@ -13,6 +13,7 @@ const { TYPES: ISSUANCE_TYPES, issues: issuanceIssues } = require("../dispatch-i
 const { TYPES: COP_TYPES, issues: copIssues } = require("../operational-cop-contract");
 const { consentIssues } = require("../operator-consent-contract");
 const { reconciliationIssues, TYPES: RECONCILIATION_TYPES } = require("../operator-reconciliation-contract");
+const { contractIssues: modelReconciliationIssues, TYPES: MODEL_RECONCILIATION_TYPES } = require("../operator-model-reconciliation-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
 const {
   COMPARATIVE_PREDICATE_TYPE,
@@ -145,6 +146,8 @@ const TYPE_TO_SCHEMA = {
   "operator-consent-record": "operator-consent-record.schema.json",
   "operator-reconciliation-authorization": "operator-reconciliation-authorization.schema.json",
   "operator-reconciliation-record": "operator-reconciliation-record.schema.json",
+  "operator-model-reconciliation-authorization": "operator-model-reconciliation-authorization.schema.json",
+  "operator-model-reconciliation-record": "operator-model-reconciliation-record.schema.json",
   ...Object.fromEntries([...INTENT_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...METHOD_TYPES].map(type => [type, `${type}.schema.json`])),
   ...Object.fromEntries([...METHOD_CONTROL_TYPES].map(type => [type, `${type}.schema.json`])),
@@ -6115,7 +6118,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
       !COP_TYPES.has(type) && !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
+      type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6148,7 +6151,7 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...schemaResult.issues,
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type)]
+    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {

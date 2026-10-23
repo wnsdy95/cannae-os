@@ -12,8 +12,14 @@ Use the console's exact-packet owner preview, password and one-use session-bound
 nonce after the trusted host explicitly configures its CLI/model pair. Never
 automate the real owner's account or approval. After logout/stop/shutdown require
 actual child close and group absence; inspect Model Evaluations after a lost
-response. A held or unverifiable record has no discharge operation yet: preserve
-it, never delete rows/journals or retry through a new nonce/session. Do not cite
+response. For a verifiable failed transfer, read `docs/model-transfer-reconciliation.md`
+and use Review Model Hold. Require a fresh password/session-bound acknowledgment,
+exact original history and independently observed PID/group absence. Preserve the
+original failure; a saved signed receipt acknowledges only this local model hold
+and never starts a new call. After an interrupted acknowledgment, inspect history
+and obtain new consent; never finish the old reservation or replay its nonce.
+Missing signatures/journals or unconfirmed termination stay held. Never delete
+rows/journals or use another nonce/session to bypass a hold. Do not cite
 previews, transfer consents or evaluation results as task outputs, even in text
 or binary form. Native process exit does not prove upstream billing cancellation.
 Reject any response changed between collection and signing; do not bless the new
