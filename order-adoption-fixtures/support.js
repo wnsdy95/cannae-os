@@ -64,7 +64,7 @@ function environment(epoch = Date.parse("2026-09-29T16:00:00.000Z"), validForSec
     semantic_review_ref: env.captured.artifact_ref, ...ADOPTION_AUTHORITY };
   return env;
 }
-function prepareSemanticReview(env) {
+function prepareSemanticReview(env, recordedAt) {
   const { templateFor, reviewTargets } = require("../requirement-inventory-contract");
   const { retainInventory, retainCoverage } = require("../requirement-inventory-controller");
   const request = read(env, env.captured.artifact_ref), input = templateFor(request);
@@ -85,7 +85,8 @@ function prepareSemanticReview(env) {
     return { id, instruction: fragment.quote.trim(), kind, source_fragment_ids: [fragment.id], scope, task_ids: scope === "global" ? [] : [taskId] };
   });
   env.inventoryInput = { request_ref: env.captured.artifact_ref, ...input };
-  env.inventory = retainInventory(env.inventoryInput, optionsAt(env, 16));
+  const at = seconds => recordedAt ? { ...env.options, now: recordedAt } : optionsAt(env, seconds);
+  env.inventory = retainInventory(env.inventoryInput, at(16));
   const pointerValue = require("../semantic-omission-contract").pointerValue;
   const coverage = input.requirements.flatMap((requirement, index) => reviewTargets(env.draft, env.plan).map(target => {
     const applicable = target.id === "order" || requirement.scope === "global" || requirement.task_ids.includes(target.id);
@@ -94,7 +95,7 @@ function prepareSemanticReview(env) {
       pointer, quote: applicable ? pointerValue(target.content, pointer) : "", rationale: "Authored synthetic coverage only; no real USER approval." };
   }));
   env.coverageInput = { inventory_ref: env.inventory.artifact_ref, coverage };
-  env.semanticReview = retainCoverage(env.coverageInput, env.plan, optionsAt(env, 18));
+  env.semanticReview = retainCoverage(env.coverageInput, env.plan, at(18));
   env.request.semantic_review_ref = env.semanticReview.artifact_ref;
   return env.semanticReview;
 }

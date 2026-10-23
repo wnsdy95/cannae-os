@@ -6,6 +6,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Require coverage to follow plan creation and finalize the exact returned
+  successor before reviewing a revision. Update both skills and the real
+  revision/adoption wrapper fixture; preserve its earlier missing-review failure.
+
 - Bound repeated immutable inventory/coverage/proposal replay to one synchronous
   operation without changing lease timeouts; recheck freshness per use and start
   publication with a fresh appraisal. Preserve the original expired-lease test

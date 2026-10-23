@@ -60,7 +60,7 @@ function computeReviewProof(store, item, plan, draft) {
     inventory.payload.wave_id === plan.wave_id && value.classification === draft.classification &&
     value.expires_at === new Date(Math.min(Date.parse(inventory.payload.expires_at), Date.parse(plan.valid_until))).toISOString() &&
     Date.parse(value.recorded_at) === Date.parse(item.entry.created_at) && Date.parse(inventory.payload.recorded_at) <= Date.parse(value.recorded_at) &&
-    Date.parse(draft.compiled_at) <= Date.parse(value.recorded_at), "SEMANTIC_REVIEW_SCOPE_MISMATCH");
+    Date.parse(draft.compiled_at) <= Date.parse(value.recorded_at) && Date.parse(plan.created_at) <= Date.parse(value.recorded_at), "SEMANTIC_REVIEW_SCOPE_MISMATCH");
   const result = contract.assessCoverage(value, inventory.payload, draft, plan);
   requireTrue(result.findings.length === 0 && result.status === value.status, "SEMANTIC_REVIEW_INCOMPLETE");
   return { coverage: item, inventory };
@@ -95,7 +95,8 @@ function retainCoverage(input, plan, options) {
   requireTrue(entry, "SEMANTIC_REVIEW_DRAFT_REQUIRED"); const draft = replayDraft(store, entry);
   requireTrue(inventory.payload.mission_id === plan.mission_id && inventory.payload.wave_id === plan.wave_id &&
     same(inventory.payload.request_ref, draft.request_ref) && inventory.payload.request_text_sha256 === draft.request_text_sha256 &&
-    Date.parse(draft.compiled_at) <= Date.parse(now) && Date.parse(now) < Date.parse(plan.valid_until), "SEMANTIC_REVIEW_SCOPE_MISMATCH");
+    Date.parse(draft.compiled_at) <= Date.parse(now) && Date.parse(plan.created_at) <= Date.parse(now) &&
+    Date.parse(now) < Date.parse(plan.valid_until), "SEMANTIC_REVIEW_SCOPE_MISMATCH");
   let payload = { schema_version: "0.1", type: "SemanticCoverageProposal", mission_id: plan.mission_id, wave_id: plan.wave_id,
     inventory_ref: input.inventory_ref, draft_ref: plan.order_binding.draft_ref, plan_sha256: digest(plan),
     request_text_sha256: inventory.payload.request_text_sha256, classification: draft.classification, recorded_at: now,

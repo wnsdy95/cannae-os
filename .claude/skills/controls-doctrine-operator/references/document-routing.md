@@ -22,6 +22,9 @@ fragment, retain coverage of every actual receiver and bind new adoption v0.2.
 Whole-plan edits invalidate that review. Legacy history is readable, not a way
 to regain active captured-request execution. Model results remain advisory;
 human inventory review is an explicit separate class, not calibrated automation.
+For linked revision, finalize its returned successor plan before preparing
+coverage: its new revision reference and shortened validity change the plan hash.
+Do not backdate coverage before the plan's creation or reuse the prior review.
 
 For semantic omission evaluation, read `docs/semantic-omission-evaluation.md`
 and `docs/model-transfer-consent.md`. Run the collector, operator-semantic and

@@ -84,6 +84,8 @@ try {
       assert.throws(() => reviewProof(store(env), env.semanticReview.artifact_ref, plan, env.draft, s.optionsAt(env, 20).now), /SEMANTIC_REVIEW_SCOPE_MISMATCH|SEMANTIC_REVIEW_INCOMPLETE/);
     }
     assert.throws(() => reviewProof(store(env), env.semanticReview.artifact_ref, env.plan, env.draft, env.plan.valid_until), /SEMANTIC_REVIEW_SCOPE_MISMATCH/);
+    const futurePlan = { ...env.plan, created_at: s.optionsAt(env, 21).now };
+    assert.throws(() => retainCoverage(env.coverageInput, futurePlan, s.optionsAt(env, 20)), /SEMANTIC_REVIEW_SCOPE_MISMATCH/);
   });
   check("new adoption cannot omit a review, downgrade its request or use the advisory model assessment as review", () => {
     const missing = s.clone(env.request); delete missing.semantic_review_ref;

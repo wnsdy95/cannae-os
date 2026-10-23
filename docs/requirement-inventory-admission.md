@@ -67,7 +67,9 @@ The resulting non-authorizing proposal binds the exact request, inventory,
 compiled draft, **whole plan digest**, classification, publication history and
 finite lifetime. A changed agent, model, policy, budget, title or other plan field
 needs a new coverage proposal and fresh plan adoption. Do not edit a plan after
-review and reuse the reference. A genuine paraphrase may be preserved: exact
+review and reuse the reference, including after a revision adds its retained
+reference or shortens the plan's validity. Coverage cannot predate the plan's
+declared creation. A genuine paraphrase may be preserved: exact
 quoting establishes the location under review, not equivalence of its meaning.
 
 ## Actual Consumers And Historical Compatibility
