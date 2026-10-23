@@ -420,6 +420,12 @@ unrelated or cosmetic edit merely to satisfy the gate.
 
 ## Validation Discipline
 
+When added proof traversal expires a repository lease, retain the exact failure
+before changing timeouts. Share immutable replay only inside the existing
+synchronous operation scope, keyed by exact history and subject. Keep live
+freshness outside that cache and start publication with a fresh appraisal.
+Never make a passing test depend on extending authority or reusing cached consent.
+
 Start targeted, then broaden:
 
 1. Validate the exact new/changed artifact.

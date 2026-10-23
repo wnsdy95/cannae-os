@@ -70,6 +70,15 @@ try {
     assert.throws(() => retainCoverage(input, env.plan, s.optionsAt(env, 20)), /SEMANTIC_COVERAGE_BINDING_INVALID/);
   });
   check("a review cannot be reused for a changed complete plan, another scope or after expiry", () => {
+    const current = store(env);
+    require("./order-replay-context").withinOrderReplay(() => {
+      const first = reviewProof(current, env.semanticReview.artifact_ref, env.plan, env.draft, s.optionsAt(env, 20).now);
+      first.coverage.payload.coverage.pop();
+      assert.equal(reviewProof(current, env.semanticReview.artifact_ref, env.plan, env.draft, s.optionsAt(env, 20).now).coverage.payload.coverage.length, review.coverage.length);
+      const changed = { ...env.plan, title: "Substituted inside the same operation" };
+      assert.throws(() => reviewProof(current, env.semanticReview.artifact_ref, changed, env.draft, s.optionsAt(env, 20).now), /SEMANTIC_REVIEW_INCOMPLETE/);
+      assert.throws(() => reviewProof(current, env.semanticReview.artifact_ref, env.plan, env.draft, env.plan.valid_until), /SEMANTIC_REVIEW_SCOPE_MISMATCH/);
+    });
     for (const mutate of [value => { value.title = "Different reviewed title"; }, value => { value.wave_id = "W2"; }]) {
       const plan = s.clone(env.plan); mutate(plan);
       assert.throws(() => reviewProof(store(env), env.semanticReview.artifact_ref, plan, env.draft, s.optionsAt(env, 20).now), /SEMANTIC_REVIEW_SCOPE_MISMATCH|SEMANTIC_REVIEW_INCOMPLETE/);

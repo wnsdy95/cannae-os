@@ -87,6 +87,12 @@ contexts carry only applicable requirement instructions/IDs, exact inventory and
 review references, review class and plan digest; they do not copy every raw
 source fragment. Contradictory or stripped receiver assignments are rejected.
 
+Immutable replay work is shared only within one synchronous operation and exact
+retained history/reference/plan/draft. Freshness is checked for each use, returned
+values cannot mutate cached proof, and publication starts a fresh appraisal.
+This avoids repeated history traversal exhausting the existing short repository
+lease; it does not lengthen that lease or cache authority across operations.
+
 Version 0.1 proposals/decisions/adoptions remain readable and replay at their
 original retained prefix/time. They cannot be newly proposed, approved or used
 to open a captured-request wave or admit its next tool call. Existing admitted

@@ -4,6 +4,8 @@ const { writeRepositoryArtifact, resolveRepository } = require("./repository-art
 const { readRequest, replayDraft } = require("./request-order-compiler");
 const { digest, same, AUTHORITY } = require("./order-intake-contract");
 const contract = require("./requirement-inventory-contract");
+const { withinOrderReplay, retainedOrderReplay } = require("./order-replay-context");
+const clone = value => JSON.parse(JSON.stringify(value));
 const ref = entry => ({ artifact_id: entry.artifact_id, relative_path: entry.relative_path, sha256: entry.sha256 });
 const requireTrue = (condition, code) => { if (!condition) throw new Error(code); };
 function valid(value, type) {
@@ -25,7 +27,11 @@ function read(store, reference, kind, type) {
   return { payload: value, ref: reference, entry };
 }
 function inventoryProof(store, reference) {
-  const item = read(store, reference, "requirement-inventories", "requirement-inventory"), value = item.payload;
+  const item = read(store, reference, "requirement-inventories", "requirement-inventory");
+  return clone(retainedOrderReplay(store, `requirement-inventory:${digest(reference)}`, () => computeInventoryProof(store, item)));
+}
+function computeInventoryProof(store, item) {
+  const value = item.payload;
   const before = require("./campaign-terminal-controller").prefixBeforeEntry(store, item.entry);
   const request = readRequest(before, value.request_ref, value);
   requireTrue(value.request_text_sha256 === request.text_sha256 && value.classification === request.classification &&
@@ -35,7 +41,16 @@ function inventoryProof(store, reference) {
   return { ...item, request };
 }
 function reviewProof(store, reference, plan, draft, now, requireReady = true) {
-  const item = read(store, reference, "semantic-coverage-proposals", "semantic-coverage-proposal"), value = item.payload;
+  const item = read(store, reference, "semantic-coverage-proposals", "semantic-coverage-proposal");
+  const proof = retainedOrderReplay(store, `semantic-coverage:${digest(reference)}:${digest(plan)}:${digest(draft)}`,
+    () => computeReviewProof(store, item, plan, draft));
+  const value = proof.coverage.payload;
+  requireTrue(Date.parse(value.recorded_at) <= Date.parse(now) && Date.parse(now) < Date.parse(value.expires_at), "SEMANTIC_REVIEW_SCOPE_MISMATCH");
+  requireTrue(!requireReady || value.status === "ready_for_human_review", "SEMANTIC_REVIEW_INCOMPLETE");
+  return clone(proof);
+}
+function computeReviewProof(store, item, plan, draft) {
+  const value = item.payload;
   const before = require("./campaign-terminal-controller").prefixBeforeEntry(store, item.entry);
   const inventory = inventoryProof(before, value.inventory_ref);
   const draftEntry = before.manifest.artifacts.find(entry => entry.kind === "order-drafts" && same(ref(entry), value.draft_ref));
@@ -45,10 +60,9 @@ function reviewProof(store, reference, plan, draft, now, requireReady = true) {
     inventory.payload.wave_id === plan.wave_id && value.classification === draft.classification &&
     value.expires_at === new Date(Math.min(Date.parse(inventory.payload.expires_at), Date.parse(plan.valid_until))).toISOString() &&
     Date.parse(value.recorded_at) === Date.parse(item.entry.created_at) && Date.parse(inventory.payload.recorded_at) <= Date.parse(value.recorded_at) &&
-    Date.parse(draft.compiled_at) <= Date.parse(value.recorded_at) &&
-    Date.parse(value.recorded_at) <= Date.parse(now) && Date.parse(now) < Date.parse(value.expires_at), "SEMANTIC_REVIEW_SCOPE_MISMATCH");
+    Date.parse(draft.compiled_at) <= Date.parse(value.recorded_at), "SEMANTIC_REVIEW_SCOPE_MISMATCH");
   const result = contract.assessCoverage(value, inventory.payload, draft, plan);
-  requireTrue(result.status === value.status && (!requireReady || result.status === "ready_for_human_review"), "SEMANTIC_REVIEW_INCOMPLETE");
+  requireTrue(result.findings.length === 0 && result.status === value.status, "SEMANTIC_REVIEW_INCOMPLETE");
   return { coverage: item, inventory };
 }
 function persist(options, payload, kind, appraise) {
@@ -56,10 +70,10 @@ function persist(options, payload, kind, appraise) {
   appraise(store, now);
   const written = writeRepositoryArtifact({ repositoryPath: store.verification.repository.root, artifactRoot: store.artifactRoot,
     missionId: payload.mission_id, waveId: payload.wave_id, kind, artifactId: payload.id, payload, createdAt: payload.recorded_at,
-    reuseExisting: true, publicationGuard: () => {
+    reuseExisting: true, publicationGuard: () => withinOrderReplay(() => {
       const time = clock(options); requireTrue(Date.parse(time) >= Date.parse(payload.recorded_at), "SEMANTIC_REVIEW_CLOCK_ROLLBACK");
       appraise(load(options), time); return true;
-    } });
+    }, true) });
   return { artifact_ref: { artifact_id: payload.id, relative_path: written.relative_path, sha256: written.sha256 }, status: payload.status, ...AUTHORITY };
 }
 function retainInventory(input, options) {
@@ -121,7 +135,9 @@ function main(argv = process.argv.slice(2)) {
   }
   console.log(JSON.stringify(result, null, 2));
 }
-module.exports = { inventoryProof, reviewProof, retainInventory, retainCoverage, main };
+const scoped = fn => (...args) => withinOrderReplay(() => fn(...args));
+module.exports = { inventoryProof: scoped(inventoryProof), reviewProof: scoped(reviewProof),
+  retainInventory: scoped(retainInventory), retainCoverage: scoped(retainCoverage), main: scoped(main) };
 if (require.main === module) {
-  try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
+  try { withinOrderReplay(() => main()); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

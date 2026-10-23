@@ -6,6 +6,11 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Bound repeated immutable inventory/coverage/proposal replay to one synchronous
+  operation without changing lease timeouts; recheck freshness per use and start
+  publication with a fresh appraisal. Preserve the original expired-lease test
+  failure separately from corrected-source verification.
+
 - Add source-accounted, non-authorizing requirement inventories and human coverage
   proposals bound to the whole plan and actual adoption/context/next-call
   consumers. Preserve legacy history and admitted-result settlement; update both

@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["requirement inventory", "semantic coverage review", "semantic-review-assignment", "review_controls_requirements"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["semantic-admission"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/requirement-inventory-admission.md"));
+    assert(result.validation_commands.includes("node run-requirement-inventory-fixtures.js"));
+  }
   for (const query of ["model hold", "operator-model-reconciliation", "model-transfer-reconciliation"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["semantic-omission"]);

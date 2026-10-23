@@ -67,9 +67,9 @@ function appraiseProposal(store, request, now) {
     "ORDER_ADOPTION_DRAFT_EXPIRED_OR_FUTURE");
   const issues = planDraftIssues(request.plan, draft);
   requireTrue(issues.length === 0, issues.map(item => item.code).join(","));
-  if (request.schema_version === "0.2") require("./requirement-inventory-controller").reviewProof(store, request.semantic_review_ref, request.plan, draft, now);
   require("./order-revision-controller").assertRevisionPreparation(request.plan,
     { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
+  if (request.schema_version === "0.2") require("./requirement-inventory-controller").reviewProof(store, request.semantic_review_ref, request.plan, draft, now);
   noOpenedWave(store, request);
   requireTrue(!entries(store, request, RECORDS).some(entry => read(store, ref(entry), RECORDS, "order-adoption-record", request).payload.status === "adopted"),
     "ORDER_ADOPTION_WAVE_ALREADY_ADOPTED");
@@ -77,6 +77,9 @@ function appraiseProposal(store, request, now) {
 }
 function proposalProof(store, reference, scope) {
   const item = read(store, reference, PROPOSALS, "order-adoption-proposal", scope);
+  return clone(retainedOrderReplay(store, `proposal:${digest(reference)}`, () => computeProposalProof(store, item)));
+}
+function computeProposalProof(store, item) {
   const before = prefixBeforeEntry(store, item.entry);
   requireTrue(same(snapshot(before), item.payload.observed_manifest) && at(item.entry.created_at) === at(item.payload.recorded_at),
     "ORDER_ADOPTION_PROPOSAL_HISTORY_INVALID");
