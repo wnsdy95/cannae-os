@@ -4,6 +4,7 @@ const { spawnSync } = require("node:child_process");
 const { verifyAuthorization, verifyRecord, contractIssues } = require("./operator-model-reconciliation-contract");
 const { signOperatorRecord, digest } = require("./operator-consent-contract");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const { verifyEvaluation, evaluationIssues } = require("./operator-semantic-evaluation-contract");
 const key = require("./operator-semantic-fixtures/model-reconciliation-public-key.json").public_key_pem;
 const authorization = require("./sample-payloads/valid-operator-model-reconciliation-authorization.json");
 const record = require("./sample-payloads/valid-operator-model-reconciliation-record.json");
@@ -11,6 +12,28 @@ const clone = value => JSON.parse(JSON.stringify(value)); let passed = 0;
 const check = (name, callback) => { callback(); passed++; console.log(`PASS ${name}`); };
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), "cannae-model-reconciliation-contract-"));
 try {
+  check("current and historical model evaluation contracts are authentic but never execution authority", () => {
+    const key = require("./operator-semantic-fixtures/evaluation-public-key.json").public_key_pem;
+    for (const name of ["valid-operator-semantic-evaluation", "valid-operator-semantic-evaluation-legacy"]) {
+      const value = require(`./sample-payloads/${name}.json`); verifyEvaluation(value, key);
+      const result = validatePayload(value, "operator-semantic-evaluation"); assert.equal(result.valid, true); assert.equal(result.can_execute, false);
+    }
+  });
+  check("v0.2 evaluation cannot omit its original journal or invert its derived advisory verdict", () => {
+    const value = clone(require("./sample-payloads/valid-operator-semantic-evaluation.json"));
+    const key = require("./operator-semantic-fixtures/evaluation-public-key.json").public_key_pem;
+    delete value.collection.journal_sha256; assert.throws(() => verifyEvaluation(value, key), /CONSOLE_MODEL_RESULT_INVALID/);
+    const changed = clone(require("./sample-payloads/valid-operator-semantic-evaluation.json")); changed.assessment.verdict = "incomplete";
+    assert(evaluationIssues(changed, "operator-semantic-evaluation").some(item => item.code === "MODEL_EVALUATION_VERDICT_BINDING_INVALID"));
+  });
+  check("known UTF8 failure tokens are data, not signature corruption or free-form provider diagnostics", () => {
+    const value = clone(require("./sample-payloads/valid-operator-semantic-evaluation.json"));
+    value.status = "held"; value.assessment = null; value.response = null; value.response_payload_sha256 = null;
+    value.collection.status = "not_evaluated"; value.collection.failure_reasons = ["SEMANTIC_EVENT_UTF8_INVALID"];
+    assert.equal(evaluationIssues(value, "operator-semantic-evaluation").length, 0);
+    value.collection.failure_reasons = ["SEMANTIC_EVENT_UTF8_INVALID raw provider diagnostic"];
+    assert(evaluationIssues(value, "operator-semantic-evaluation").some(item => item.code === "MODEL_EVALUATION_SCHEMA_INVALID"));
+  });
   check("both exact signatures and nested digest bindings verify without execution authority", () => {
     verifyAuthorization(authorization, key); verifyRecord(record, key);
     for (const [suffix, value] of [["authorization", authorization], ["record", record]]) {

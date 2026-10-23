@@ -15,6 +15,7 @@ const CODE = ["method-control-contract.js", "method-control-broker.js", "method-
   "method-control-runner.js", "dispatch-hook-adapter.js", "dispatch-runtime-controller.js", "method-deviation-contract.js", "method-deviation-gate.js",
   "order-adoption-contract.js", "semantic-control-types.js", "operator-model-reconciliation-contract.js",
   "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
+  "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
   "validator-cli-prototype/validate.js", "operational-cop-contract.js", "schema-files/operational-cop.schema.json", "package.json", "package-lock.json",
   ...fs.readdirSync(path.join(__dirname, "schema-files")).filter(file => file.startsWith("method-control-") && file.endsWith(".schema.json"))
     .sort().map(file => `schema-files/${file}`)];

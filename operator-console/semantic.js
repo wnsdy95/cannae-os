@@ -26,10 +26,11 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     $("#detail-title").textContent = `Model Evaluation / ${current.state}`;
     fields("#detail-meta", [["Mission / Wave", `${current.mission_id} / ${current.wave_id}`], ["Draft", current.draft_id],
       ["Model", current.model], ["Hold", current.hold_preserved ? "Active" : "None"], ["Verified result", current.result_verified ? "Yes" : "Not established"],
-      ["Reconciliation", current.reconciliation_state]]);
+      ["Original journal binding", current.result?.collection?.journal_sha256 ? "Signed" : "Not established"], ["Reconciliation", current.reconciliation_state]]);
     $("#detail-content").textContent = JSON.stringify(current, null, 2);
     $("#semantic-stop").hidden = current.state !== "running";
-    $("#model-hold-preview").hidden = current.state !== "held" || !current.result_verified || current.reconciliation_verified;
+    $("#model-hold-preview").hidden = current.state !== "held" || !current.result_verified || current.reconciliation_verified ||
+      current.result?.schema_version !== "0.2" || !current.result?.collection?.journal_sha256;
     if (current.state !== "running") clearInterval(timer);
   }
   async function poll(id, revision, scope) {

@@ -1,5 +1,12 @@
 # Schema Files
 
+`operator-semantic-evaluation.schema.json` preserves authentic v0.1 historical
+result shapes and v0.2 results with an original collector-journal commitment.
+Both versions are non-authorizing. The live reconciliation reader requires v0.2
+and its exact pinned journal; structural validity or a fresh hash cannot upgrade
+legacy provenance. Derived state/verdict and response-digest rules do not prove
+semantic quality, signature trust or process isolation.
+
 `operator-model-reconciliation-authorization.schema.json` and
 `operator-model-reconciliation-record.schema.json` bind fresh owner acknowledgment
 of one verifiable failed local transfer. Both remain non-authorizing, including

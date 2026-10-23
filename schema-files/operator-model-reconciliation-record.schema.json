@@ -194,7 +194,9 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "pattern": "^(?:SEMANTIC|CONSOLE)_[A-Z_]+$"
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^(?:SEMANTIC|CONSOLE)_[A-Z0-9_]+$"
               }
             },
             "transfer_effects": {

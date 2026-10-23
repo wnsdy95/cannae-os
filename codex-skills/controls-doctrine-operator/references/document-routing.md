@@ -14,8 +14,11 @@ automate the real owner's account or approval. After logout/stop/shutdown requir
 actual child close and group absence; inspect Model Evaluations after a lost
 response. For a verifiable failed transfer, read `docs/model-transfer-reconciliation.md`
 and use Review Model Hold. Require a fresh password/session-bound acknowledgment,
-exact original history and independently observed PID/group absence. Preserve the
-original failure; a saved signed receipt acknowledges only this local model hold
+exact original history and independently observed PID/group absence. Require the
+original v0.2 signed journal binding: never trust an unsigned journal PID or
+retroactively sign a v0.1 result's current files. Legacy unbound results remain
+readable but held; a later receipt cannot manufacture their missing provenance.
+Preserve the original failure; a saved signed receipt acknowledges only this local model hold
 and never starts a new call. After an interrupted acknowledgment, inspect history
 and obtain new consent; never finish the old reservation or replay its nonce.
 Missing signatures/journals or unconfirmed termination stay held. Never delete
@@ -26,6 +29,9 @@ Reject any response changed between collection and signing; do not bless the new
 bytes with a fresh signature or rerun the model to hide the original mismatch.
 Treat null/non-object JSONL and invalid UTF-8 as failed collection, not a reason
 to restart the HTTP service or replay consent. Confirm its actual child exit.
+An authentic signed transport-failure record is not signature corruption. Keep
+known digit-bearing codes such as `SEMANTIC_EVENT_UTF8_INVALID` intact; never
+replace that distinction with a broad diagnostic exception or a success label.
 At shutdown fence the worker queue and model collector together, then await both
 actual exits before releasing ownership. Never wait on one while the other admits work.
 After a timeout or lost result, keep the consumed reservation and inspect it;

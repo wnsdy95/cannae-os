@@ -20,6 +20,9 @@ async function main() {
     assert.equal(current.state, "evaluated", JSON.stringify(current)); assert.equal(current.verdict, "incomplete");
     assert.equal(current.result_verified, true); assert.equal(current.result.collection.process_exit_confirmed, true);
     assert.equal(current.result.collection.process_group_absent, true);
+    assert.equal(current.result.schema_version, "0.2");
+    assert.equal(current.result.collection.journal_sha256, require("node:crypto").createHash("sha256")
+      .update(fs.readFileSync(path.join(env.configuration.stateDir, "model-evaluations", p.challenge_id, "result.json"))).digest("hex"));
     const key = (await env.owner.get("/api/operator-key")).public_key_pem;
     assert(validOperatorSignature(current.consent, key)); assert(validOperatorSignature(current.result, key));
     assert.equal(current.consent.principal_id, (await env.owner.session()).user.id);
@@ -171,6 +174,27 @@ async function main() {
       assert.equal(current.result.error, "CONSOLE_MODEL_RESPONSE_CHANGED"); assert.equal(current.result.collection.process_group_absent, true);
     } finally { fs.openSync = open; }
   });
+  for (const kind of ["pid", "format"]) await check(`a ${kind}-substituted collector journal is never promoted into a signed original binding`, async env => {
+    const p = await preview(env), open = fs.openSync;
+    const file = path.join(env.configuration.stateDir, "model-evaluations", p.challenge_id, "result.json"); let changed = false;
+    fs.openSync = function(filename, flags, ...args) {
+      if (filename === file && typeof flags === "number" && !changed) {
+        changed = true; const value = JSON.parse(fs.readFileSync(file)); if (kind === "pid") value.pid += 1;
+        fs.writeFileSync(file, kind === "pid" ? JSON.stringify(value, null, 2) + "\n" : JSON.stringify(value));
+      }
+      return open.call(this, filename, flags, ...args);
+    };
+    try {
+      await env.owner.post("/api/model-evaluations/commit", commitInput(p), 202);
+      const current = await terminal(env, p.challenge_id);
+      assert.equal(changed, true); assert.equal(current.state, "held"); assert.equal(current.result_verified, true);
+      assert.equal(current.result.schema_version, "0.2"); assert.equal(current.result.error, "CONSOLE_MODEL_COLLECTION_JOURNAL_CHANGED");
+      assert.equal(current.result.collection.journal_sha256, null); assert.equal(current.result.collection.process_group_absent, true);
+      const denial = await env.owner.post(`/api/model-evaluations/${p.challenge_id}/reconciliation/preview`, {}, 409);
+      assert.equal(denial.error, "CONSOLE_MODEL_RECONCILIATION_JOURNAL_BINDING_REQUIRED");
+      await env.owner.post("/api/model-evaluations/preview", env.previewInput, 409);
+    } finally { fs.openSync = open; }
+  }, { model: "fixture-invalid" });
   await check("changed active action cancels its real process rather than publishing under a replacement", async env => {
     const p = await preview(env); await env.owner.post("/api/model-evaluations/commit", commitInput(p), 202); await started(env, p.challenge_id);
     env.service.auth.db.prepare("UPDATE operator_model_actions SET rationale='changed' WHERE id=?").run(p.challenge_id);

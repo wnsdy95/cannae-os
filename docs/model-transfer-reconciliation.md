@@ -17,11 +17,14 @@ evaluation still requires a new exact-packet preview and owner consent.
 
 1. Open the exact held entry in Model Evaluations. Review its original failure.
    Use **Review Model Hold**, not another evaluation or a database edit.
-2. The server requires a valid pinned-key failure and exact retained invocation,
+2. The server requires a valid pinned-key v0.2 failure that commits the original
+   collector journal bytes, plus the exact retained invocation,
    consent and bounded collector journal. Both signed result and journal must
    record child close and group absence. It separately probes the original PID
    and negative process-group ID now: only `ESRCH` establishes absence. `EPERM`,
    PID reuse, a live process, a symlink, missing proof or an active collector denies.
+   An unsigned journal PID is not an identity source. A fresh hash during review
+   cannot substitute for the collector-bound hash in the original signed result.
 3. Review the exact action, journal, source/repository/manifest/key and previous
    attempt digests. The two-minute nonce binds the actual stored owner session
    and account epoch, not a cached role or caller-provided `USER` field.
@@ -51,6 +54,11 @@ corrupt journals are not automatically repairable through this path. Keep those
 holds; they need a separate integrity/unknown-process recovery contract. A timeout
 or clean Git status never proves process exit. This reference does not establish
 containment after SIGKILL/host failure or provider-side cancellation.
+
+Authentic legacy v0.1 results can be inspected but cannot be retrospectively given
+a journal binding. A prior candidate receipt over such an unbound producer result
+cannot clear a hold in this reader. Preserve it as historical evidence, not proof
+of the original process identity or permission to resume a transfer.
 
 Failed receipt publication preserves the signed reservation and original action.
 Inspect its history, then obtain a fresh acknowledgment; never resume the old

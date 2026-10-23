@@ -173,6 +173,9 @@ async function main() {
       await assert.rejects(collectEvaluation(input, approval, env.configuration), /ALREADY_RESERVED/);
       const retained = JSON.parse(fs.readFileSync(path.join(result.directory, "result.json")));
       assert.equal(retained.invocation_sha256, input.invocation_sha256);
+      assert.equal(result.journal_sha256, require("node:crypto").createHash("sha256")
+        .update(fs.readFileSync(path.join(result.directory, "result.json"))).digest("hex"));
+      assert.equal(Object.hasOwn(retained, "journal_sha256"), false);
     });
     for (const [model, reason] of [["fixture-timeout", "SEMANTIC_TIMEOUT"], ["fixture-output", "SEMANTIC_OUTPUT_LIMIT"],
       ["fixture-malformed", "SEMANTIC_EVENT_JSON_INVALID"], ["fixture-null", "SEMANTIC_EVENT_JSON_INVALID"],
@@ -186,7 +189,13 @@ async function main() {
         const approved = consent(env, input), result = await collectEvaluation(input, approved, env.configuration);
         assert.equal(result.status, "not_evaluated"); assert(result.failure_reasons.includes(reason), JSON.stringify(result.failure_reasons));
         assert.equal(result.process_exit_confirmed, true); assert.equal(result.process_group_absent, true);
-        await assert.rejects(collectEvaluation(input, approved, env.configuration), /ALREADY_RESERVED/);
+        const journal = path.join(result.directory, "result.json"), original = fs.readFileSync(journal);
+        // Test durable ID consumption independently of the original approval's expiry.
+        const proposal = invocation(env, model, { timeoutMs: input.profile.timeout_ms, maxOutputBytes: input.profile.max_output_bytes });
+        const collision = consent(env, proposal, { id: approved.id, principal_id: approved.principal_id });
+        verifyTransferConsent(collision, proposal, env.configuration.trustedPublicKey);
+        await assert.rejects(collectEvaluation(proposal, collision, env.configuration), /ALREADY_RESERVED/);
+        assert.deepEqual(fs.readFileSync(journal), original);
       });
     }
     await check("abort before launch consumes approval without executing", async () => {
@@ -272,7 +281,7 @@ async function main() {
       try {
         const result = await collectEvaluation(input, approved, env.configuration);
         assert.equal(writes, 4);
-        assert.equal(result.status, "not_evaluated"); assert.equal(result.result_persisted, false);
+        assert.equal(result.status, "not_evaluated"); assert.equal(result.result_persisted, false); assert.equal(result.journal_sha256, null);
         assert(result.failure_reasons.includes("SEMANTIC_JOURNAL_RESULT_WRITE_FAILED")); assert.equal(result.assessment, undefined);
         assert.equal(result.process_exit_confirmed, true); assert.equal(result.process_group_absent, true);
       } finally { fs.openSync = open; }

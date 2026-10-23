@@ -1,5 +1,6 @@
 const { z } = require("zod");
 const { digest, keyDigest, validOperatorSignature, signOperatorRecord } = require("./operator-consent-contract");
+const { CODE } = require("./operator-semantic-evaluation-contract");
 const TYPES = new Set(["operator-model-reconciliation-authorization", "operator-model-reconciliation-record"]);
 const hex = z.string().regex(/^[a-f0-9]{64}$/), time = z.iso.datetime({ offset: true });
 const flags = { execution_authorized: z.literal(false), release_authorized: z.literal(false), human_final_decision_authority: z.literal("USER") };
@@ -10,7 +11,7 @@ const SUBJECT = z.strictObject({
   prior_attempts_sha256: hex, manifest_sha256: hex, repository_state_sha256: hex, runtime_source_sha256: hex, trusted_key_sha256: hex,
   process_id: z.number().int().min(2), observed_at: time,
   child_exit_recorded: z.literal(true), child_absence_observed: z.literal(true), process_group_absence_observed: z.literal(true),
-  failure_reasons: z.array(z.string().regex(/^(?:SEMANTIC|CONSOLE)_[A-Z_]+$/)).min(1).max(100),
+  failure_reasons: z.array(CODE).min(1).max(100),
   transfer_effects: z.literal("possibly_transmitted"), provider_billing_verified: z.literal(false), provider_cancellation_verified: z.literal(false)
 });
 const AUTHORIZATION = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("OperatorModelReconciliationAuthorization"),

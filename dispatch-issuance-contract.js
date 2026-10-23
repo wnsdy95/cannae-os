@@ -9,6 +9,7 @@ const CODE = ["dispatch-runtime-controller.js", "dispatch-issuance-contract.js",
   "intent-continuity-contract.js", "method-deviation-gate.js", "method-control-broker.js", "order-adoption-controller.js",
   "order-revision-controller.js", "skill-mission-controller.js", "semantic-control-types.js", "operator-model-reconciliation-contract.js",
   "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
+  "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
   "validator-cli-prototype/validate.js", "operational-cop-contract.js", "schema-files/operational-cop.schema.json", "package-lock.json",
   "schema-files/agent-dispatch-lease.schema.json", "schema-files/dispatch-lease-issuance-request.schema.json",
   "schema-files/dispatch-lease-issuance-resolution.schema.json"];

@@ -6,10 +6,11 @@ const { prepareInvocation, collectEvaluation, verifyTransferConsent } = require(
 const { loadVerifiedStore } = require("./campaign-supervisor");
 const { entryId } = require("./operator-console-evidence");
 const { repositoryStateDigest } = require("./skill-mission-controller");
-const { openModelReconciliation } = require("./operator-model-reconciliation-service");
+const { openModelReconciliation, readJournal } = require("./operator-model-reconciliation-service");
+const { verifyEvaluation, isModelCode } = require("./operator-semantic-evaluation-contract");
 const AUTHORITY = Object.freeze({ execution_authorized: false, release_authorized: false, human_final_decision_authority: "USER" });
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
-function modelError(error) { return /^(?:SEMANTIC|CONSOLE)_[A-Z_]+$/.test(error?.message) ? error.message : "CONSOLE_MODEL_COLLECTION_FAILED"; }
+function modelError(error) { return isModelCode(error?.message) ? error.message : "CONSOLE_MODEL_COLLECTION_FAILED"; }
 function sourceCurrent(configuration) {
   requireThat(configuration.sourceSha256 === repositoryStateDigest(__dirname), "CONSOLE_MODEL_SOURCE_CHANGED", 409);
 }
@@ -60,13 +61,15 @@ function openSemanticService(auth, configuration, consentService) {
   function verifiedResult(row) {
     try {
       const result = JSON.parse(row.result), consent = JSON.parse(row.consent), invocation = JSON.parse(row.preview);
+      verifyEvaluation(result, consentService.publicKey());
       verifyTransferConsent(consent, invocation, consentService.publicKey(), Date.parse(consent.created_at));
       return validOperatorSignature(consent, consentService.publicKey()) && validOperatorSignature(result, consentService.publicKey()) &&
         consent.type === "SemanticEvaluationTransferConsent" && consent.purpose === "one_semantic_evaluation_transfer" &&
         consent.id === row.id && consent.principal_id === row.principal_id && consent.invocation_sha256 === invocation.invocation_sha256 &&
-        result.type === "OperatorSemanticEvaluation" && result.id === row.id && result.consent_sha256 === digest(consent) &&
+        result.type === "OperatorSemanticEvaluation" && ["0.1", "0.2"].includes(result.schema_version) && result.id === row.id && result.consent_sha256 === digest(consent) &&
         result.invocation_sha256 === invocation.invocation_sha256 && result.status === row.state && result.rationale_sha256 === hash(row.rationale || "") &&
         result.execution_authorized === false && result.release_authorized === false &&
+        (result.schema_version !== "0.2" || result.status !== "evaluated" || /^[a-f0-9]{64}$/.test(result.collection?.journal_sha256 || "")) &&
         (!result.response || digest(result.response) === result.response_payload_sha256);
     } catch { return false; }
   }
@@ -100,7 +103,7 @@ function openSemanticService(auth, configuration, consentService) {
   }
   async function run(id, session) {
     const control = active.get(id), row = rowFor(id), invocation = JSON.parse(row.preview), consent = JSON.parse(row.consent);
-    let collection;
+    let collection, journalSha256 = null;
     function unchanged() {
       const current = rowFor(id);
       requireThat(current.state === "running" && ["preview", "consent", "principal_id", "epoch", "session_hash", "expires", "rationale"]
@@ -114,6 +117,10 @@ function openSemanticService(auth, configuration, consentService) {
       owner(session); checkInvocation(invocation);
       control.enteredCollector = true;
       collection = await collectEvaluation(invocation, consent, { trustedPublicKey: consentService.publicKey(), stateRoot, signal: control.abort.signal });
+      const journal = readJournal(path.join(stateRoot, id), "result.json"), { directory, journal_sha256: writtenSha256, ...observed } = collection;
+      requireThat(collection.result_persisted === true && /^[a-f0-9]{64}$/.test(writtenSha256 || "") && journal.sha256 === writtenSha256 &&
+        digest(journal.value) === digest(observed), "CONSOLE_MODEL_COLLECTION_JOURNAL_CHANGED", 409);
+      journalSha256 = writtenSha256;
       let response = null;
       if (collection.status === "evaluated") {
         owner(session);
@@ -128,14 +135,14 @@ function openSemanticService(auth, configuration, consentService) {
       }
       const evaluated = collection.status === "evaluated" && collection.process_exit_confirmed && collection.process_group_absent && !control.reason;
       const state = evaluated ? "evaluated" : "held";
-      const result = signOperatorRecord({ schema_version: "0.1", type: "OperatorSemanticEvaluation", id, status: state,
+      const result = signOperatorRecord({ schema_version: "0.2", type: "OperatorSemanticEvaluation", id, status: state,
         invocation_sha256: invocation.invocation_sha256, consent_sha256: digest(consent),
         rationale_sha256: hash(row.rationale || ""),
         started_at: collection.started_at, ended_at: collection.ended_at, requested_model: invocation.profile.requested_model,
         method_sha256: invocation.preview.method_sha256, cli_executable_sha256: invocation.profile.executable_sha256,
         assessment: evaluated ? collection.assessment : null, response: evaluated ? response : null,
         response_payload_sha256: evaluated ? digest(response) : null,
-        collection: { status: collection.status, process_exit_confirmed: collection.process_exit_confirmed, process_group_absent: collection.process_group_absent,
+        collection: { status: collection.status, journal_sha256: journalSha256, process_exit_confirmed: collection.process_exit_confirmed, process_group_absent: collection.process_group_absent,
           stdout_sha256: collection.stdout_sha256, stderr_sha256: collection.stderr_sha256, response_sha256: collection.response_sha256 || null,
           failure_reasons: [...collection.failure_reasons, ...(control.reason ? [control.reason] : [])] }, ...AUTHORITY }, meta("operator-signing-key"));
       transaction(() => {
@@ -145,11 +152,12 @@ function openSemanticService(auth, configuration, consentService) {
         audit(row.principal_id, `model_${state}`, id);
       });
     } catch (error) {
-      const failure = signOperatorRecord({ schema_version: "0.1", type: "OperatorSemanticEvaluation", id, status: "held",
+      const failure = signOperatorRecord({ schema_version: "0.2", type: "OperatorSemanticEvaluation", id, status: "held",
         invocation_sha256: invocation.invocation_sha256, consent_sha256: digest(consent), rationale_sha256: hash(row.rationale || ""),
         ended_at: new Date().toISOString(), error: modelError(error), assessment: null, response: null,
-        collection: collection ? { status: collection.status, process_exit_confirmed: collection.process_exit_confirmed,
-          process_group_absent: collection.process_group_absent, failure_reasons: [...collection.failure_reasons, modelError(error), ...(control.reason ? [control.reason] : [])] } : null,
+        collection: collection ? { status: collection.status, journal_sha256: journalSha256, process_exit_confirmed: collection.process_exit_confirmed,
+          process_group_absent: collection.process_group_absent, stdout_sha256: collection.stdout_sha256, stderr_sha256: collection.stderr_sha256,
+          response_sha256: collection.response_sha256 || null, failure_reasons: [...collection.failure_reasons, modelError(error), ...(control.reason ? [control.reason] : [])] } : null,
         ...AUTHORITY }, meta("operator-signing-key"));
       db.prepare("UPDATE operator_model_actions SET state='held',result=? WHERE id=? AND state='running'").run(JSON.stringify(failure), id);
       audit(row.principal_id, "model_held", id);

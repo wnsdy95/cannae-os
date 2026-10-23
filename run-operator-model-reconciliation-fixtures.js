@@ -2,7 +2,7 @@
 const fs = require("node:fs"), path = require("node:path"), assert = require("node:assert/strict");
 const { environment, client, password, preview, commitInput, terminal } = require("./operator-semantic-fixtures/support");
 const { createConsole } = require("./operator-console-server");
-const { digest, validOperatorSignature } = require("./operator-consent-contract");
+const { digest, validOperatorSignature, signOperatorRecord } = require("./operator-consent-contract");
 const { writeRepositoryArtifact, verifyRepositoryArtifacts } = require("./repository-artifact-store");
 const { spawnSync } = require("node:child_process");
 const os = require("node:os");
@@ -15,9 +15,9 @@ async function failed(env) {
   const p = await preview(env); await env.owner.post("/api/model-evaluations/commit", commitInput(p), 202);
   const result = await terminal(env, p.challenge_id); assert.equal(result.state, "held"); return p.challenge_id;
 }
-async function check(name, fn) {
+async function check(name, fn, options = {}) {
   let env;
-  try { env = await environment({ model: "fixture-invalid" }); const id = await failed(env); await fn(env, id);
+  try { env = await environment({ model: "fixture-invalid", ...options }); const id = await failed(env); await fn(env, id);
     results.push({ name, passed: true }); console.log(`PASS ${name}`); }
   catch (error) { results.push({ name, passed: false, error: error.stack }); console.error(`FAIL ${name}: ${error.message}`); }
   finally { if (env) { await env.service.app.close(); fs.rmSync(env.root, { recursive: true, force: true }); } }
@@ -100,6 +100,33 @@ async function main() {
     try { await review(env, id, 409); } finally { process.kill = kill; }
     assert.equal((await env.owner.get(`/api/model-evaluations/${id}`)).hold_preserved, true);
   });
+  await check("a PID changed before preview cannot replace the originally signed collector journal", async (env, id) => {
+    const file = path.join(env.configuration.stateDir, "model-evaluations", id, "result.json"), value = JSON.parse(fs.readFileSync(file));
+    value.pid = 2147483000; fs.writeFileSync(file, JSON.stringify(value, null, 2) + "\n");
+    const denial = await review(env, id, 409); assert.equal(denial.error, "CONSOLE_MODEL_RECONCILIATION_JOURNAL_CHANGED");
+    const current = await env.owner.get(`/api/model-evaluations/${id}`); assert.equal(current.result_verified, true); assert.equal(current.hold_preserved, true);
+    assert.equal(env.service.auth.db.prepare("SELECT count(*) AS n FROM operator_model_reconciliations").get().n, 0);
+  });
+  await check("authentic legacy results remain readable but cannot acquire a journal binding retrospectively", async (env, id) => {
+    const original = row(env, id), value = JSON.parse(original.result); value.schema_version = "0.1"; delete value.collection.journal_sha256;
+    const legacy = signOperatorRecord(value, env.service.auth.db.prepare("SELECT value FROM meta WHERE key='operator-signing-key'").get().value);
+    env.service.auth.db.prepare("UPDATE operator_model_actions SET result=? WHERE id=?").run(JSON.stringify(legacy), id);
+    const current = await env.owner.get(`/api/model-evaluations/${id}`); assert.equal(current.result_verified, true); assert.equal(current.result.schema_version, "0.1");
+    assert.equal(current.hold_preserved, true); const denial = await review(env, id, 409);
+    assert.equal(denial.error, "CONSOLE_MODEL_RECONCILIATION_JOURNAL_BINDING_REQUIRED");
+    assert.equal(env.service.auth.db.prepare("SELECT count(*) AS n FROM operator_model_reconciliations").get().n, 0);
+    await env.owner.post("/api/model-evaluations/preview", env.previewInput, 409);
+  });
+  await check("a known UTF8 transport failure remains authentic and can be acknowledged only after proven termination", async (env, id) => {
+    const before = await env.owner.get(`/api/model-evaluations/${id}`);
+    assert.equal(before.state, "held"); assert.equal(before.result_verified, true);
+    assert(before.result.collection.failure_reasons.includes("SEMANTIC_EVENT_UTF8_INVALID"));
+    const p = await review(env, id); assert(p.subject.failure_reasons.includes("SEMANTIC_EVENT_UTF8_INVALID"));
+    const result = await env.owner.post("/api/model-reconciliations/commit", reconcileInput(p));
+    assert(result.record.authorization.subject.failure_reasons.includes("SEMANTIC_EVENT_UTF8_INVALID"));
+    const current = await env.owner.get(`/api/model-evaluations/${id}`); assert.equal(current.hold_preserved, false);
+    assert.equal(current.result.status, "held"); assert.equal(current.result.response, null);
+  }, { model: "fixture-invalid-utf8" });
   await check("record publication failure preserves the reservation and requires fresh explicit consent", async (env, id) => {
     const p = await review(env, id), original = digest(row(env, id));
     env.service.auth.db.exec("CREATE TRIGGER synthetic_model_record_failure BEFORE UPDATE ON operator_model_reconciliations WHEN NEW.state='committed' BEGIN SELECT RAISE(ABORT,'synthetic write failure'); END;");

@@ -66,6 +66,12 @@ from one fixed tree. After an early-stop failure, distinguish tests actually run
 from the unexecuted remainder; neither the old pass count nor an aggregate's
 remaining-failure count proves the final tree.
 
+In replay fixtures, isolate durable one-use ID consumption from consent expiry.
+Use a separately signed, currently valid synthetic proposal with the consumed ID
+and assert that original journal bytes remain unchanged. Keep expiry tests
+separate; never broaden the expected error set or renew real consent to obtain
+a passing reservation assertion.
+
 ## Publication Denial And Partial State
 
 For an explicit USER stop, read the stop-intake section of

@@ -4,6 +4,7 @@ const { digest, keyDigest, signOperatorRecord } = require("./operator-consent-co
 const { loadVerifiedStore } = require("./campaign-supervisor");
 const { repositoryStateDigest } = require("./skill-mission-controller");
 const { verifyAuthorization, verifyRecord, recordFor } = require("./operator-model-reconciliation-contract");
+const { isModelCode } = require("./operator-semantic-evaluation-contract");
 const AUTHORITY = { execution_authorized: false, release_authorized: false, human_final_decision_authority: "USER" };
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
 function readJournal(directory, name) {
@@ -39,7 +40,9 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
   }
   function completed(row, action) {
     const a = signedAttempt(row), record = verifyRecord(JSON.parse(row.record), key());
+    const result = JSON.parse(action.result);
     requireThat(row.state === "committed" && digest(record.authorization) === digest(a) && digest(action) === a.subject.original_action_sha256 &&
+      result.schema_version === "0.2" && result.collection?.journal_sha256 === a.subject.journal_sha256 &&
       digest(history(row.action_id, row.id).filter(prior => prior.reserved_sequence < row.reserved_sequence)) === a.subject.prior_attempts_sha256,
       "CONSOLE_MODEL_RECONCILIATION_HISTORY_CHANGED", 409);
     const directory = path.join(stateRoot, action.id), stat = fs.lstatSync(directory);
@@ -73,6 +76,9 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
       "CONSOLE_MODEL_RECONCILIATION_JOURNAL_INVALID", 409);
     const journal = readJournal(directory, "result.json"), retainedInvocation = readJournal(directory, "invocation.json"), consent = readJournal(directory, "consent.json");
     const value = journal.value, collection = result.collection;
+    requireThat(result.schema_version === "0.2" && typeof collection?.journal_sha256 === "string" && /^[a-f0-9]{64}$/.test(collection.journal_sha256),
+      "CONSOLE_MODEL_RECONCILIATION_JOURNAL_BINDING_REQUIRED", 409);
+    requireThat(collection.journal_sha256 === journal.sha256, "CONSOLE_MODEL_RECONCILIATION_JOURNAL_CHANGED", 409);
     requireThat(digest(retainedInvocation.value) === digest(invocation) && digest(consent.value) === digest(JSON.parse(action.consent)) &&
       value.type === "CodexSemanticCollection" && value.invocation_sha256 === invocation.invocation_sha256 && value.consent_id === id &&
       ["evaluated", "not_evaluated"].includes(value.status) && value.result_persisted === true &&
@@ -82,7 +88,7 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
       Date.parse(value.ended_at) >= action.created && Date.parse(value.ended_at) <= Date.now(), "CONSOLE_MODEL_RECONCILIATION_TERMINATION_UNVERIFIED", 409);
     requireThat(absent(value.pid) && absent(-value.pid), "CONSOLE_MODEL_RECONCILIATION_PROCESS_PRESENT", 409);
     const reasons = [...new Set([...(collection.failure_reasons || []), ...(result.error ? [result.error] : [])])];
-    requireThat(reasons.length && reasons.every(reason => /^(?:SEMANTIC|CONSOLE)_[A-Z_]+$/.test(reason)), "CONSOLE_MODEL_RECONCILIATION_FAILURE_REQUIRED", 409);
+    requireThat(reasons.length && reasons.every(isModelCode), "CONSOLE_MODEL_RECONCILIATION_FAILURE_REQUIRED", 409);
     const store = loadVerifiedStore(configuration.repository, configuration.artifactRoot);
     return { action_id: id, repository_binding: { repository_key: configuration.repositoryKey, identity_fingerprint: configuration.identity },
       original_action_sha256: digest(action), invocation_sha256: invocation.invocation_sha256, consent_sha256: digest(JSON.parse(action.consent)),

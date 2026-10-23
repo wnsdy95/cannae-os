@@ -53,6 +53,23 @@ body schemas, account permissions and auth throttles apply to these routes.
    Pinned-key verification is required before display. Model verdicts remain
    advisory; a changed/missing result is unverifiable, never a clear successful row.
 
+Signed `OperatorSemanticEvaluation` v0.2 additionally binds the original collector
+journal byte digest. The collector returns the digest of the exact bytes it
+actually wrote and fsynced, separately from that file to avoid a self-hash cycle.
+Before signing, the service compares its bounded, no-follow read with that digest
+and the complete in-memory observation actually returned by the collector,
+not an independently mutable file's current claim. That commits the original PID
+and every recorded observation without exposing a private path. A changed journal
+cannot gain authenticity merely because a later review computes a fresh hash.
+The strict evaluation schema and derived state/verdict checks are shared with
+the validator and actual owner result reader. Generic validation still cannot
+verify issuer trust, private history, source quotes or discharge a hold.
+
+Authentic v0.1 results remain readable historical control metadata. They lack an
+original signed journal commitment and cannot enter the new failed-transfer
+ceremony. Never re-sign an old mutable journal or edit its version to repair that
+missing provenance; use a separately specified integrity recovery if needed.
+
 Rationales remain in private audit state and are not transmitted. The service
 rejects the supplied password, nonce and session ID in a rationale; this is not
 a general third-party-secret detector. Raw nonce/password/session ID are absent

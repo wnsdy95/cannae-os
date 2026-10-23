@@ -6,6 +6,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Separate synthetic collector reservation-collision checks from expired transfer consent, retaining exact denial and immutable-journal assertions without renewing operational authority.
+
+- Bind signed model evaluation v0.2 to exact collector-returned journal bytes before owner review, then require that original commitment for model-hold acknowledgment and replay. Reject PID substitution before preview or before signing; preserve authentic v0.1 history without retrospectively blessing unsigned journals. Add a strict shared current/legacy evaluation schema and state/verdict rules; both skills require original provenance rather than a newly computed hash. The earlier passing selected ladder did not cover this counterexample and is not evidence that it was prevented.
+
 - Add a separate exact owner acknowledgment for verifiable failed model transfers: fresh password/session/nonce consent, current PID/group absence, signed one-use outbox and atomically verified receipt. Preserve original failure/journal bytes and every consumed attempt; changed or missing proof remains held. Receipt publication and corrupted state-label regressions fail closed. Both skills require fresh review rather than replay, and new acknowledgment records remain non-authorizing control metadata. Unknown-process/integrity recovery, remote billing, calibration and mandatory semantic consumers remain open.
 
 - Start model-collector and worker-queue shutdown fences together and wait for both actual exits before closing private auth state. A delayed model close must not leave queued work admissible. Both skills preserve this shared shutdown rule.

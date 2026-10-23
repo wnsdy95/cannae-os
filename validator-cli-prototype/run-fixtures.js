@@ -11,6 +11,17 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...[["valid-operator-semantic-evaluation", 0, []], ["valid-operator-semantic-evaluation-legacy", 0, []],
+    ["invalid-operator-semantic-evaluation", 1, ["MODEL_EVALUATION_VERDICT_BINDING_INVALID"]]].map(([name, exitCode, requiredCodes]) => ({
+    name, file: `sample-payloads/${name}.json`, type: "operator-semantic-evaluation", exitCode, requiredCodes, expectedCanExecute: false
+  })),
+  ...["termination", "response", "time"].map(kind => ({ name: `signed model evaluation rejects ${kind}`,
+    file: "sample-payloads/valid-operator-semantic-evaluation.json", type: "operator-semantic-evaluation", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: [kind === "time" ? "MODEL_EVALUATION_TIME_INVALID" : "MODEL_EVALUATION_STATE_BINDING_INVALID"],
+    mutate(value) { if (kind === "termination") value.collection.process_group_absent = false;
+      if (kind === "response") value.response_payload_sha256 = "0".repeat(64);
+      if (kind === "time") value.started_at = "2026-10-23T00:00:02Z"; }
+  })),
   ...["authorization", "record"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-authorizing model reconciliation ${suffix}`, file: `sample-payloads/${prefix}-operator-model-reconciliation-${suffix}.json`,
     type: `operator-model-reconciliation-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,

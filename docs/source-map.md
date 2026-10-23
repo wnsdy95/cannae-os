@@ -13,6 +13,9 @@ outbox and process lifecycle. It verifies exact failed history, observes PID/gro
 absence and appends fresh signed acknowledgment without rewriting the failure or
 calling the model. SQLite reservation order is not trusted time, and PID/group
 absence is not provider cancellation. No new military-source claim is introduced.
+Its v0.2 signed evaluation commits the collector's original journal before
+reconciliation. The service compares bounded bytes to the actual returned
+observation; a later hash of unsigned mutable state is not equivalent provenance.
 
 The [model-transfer ceremony](model-transfer-consent.md) is local engineering
 synthesis over existing auth, owner reauthentication, pinned operator signatures,

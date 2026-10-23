@@ -36,7 +36,7 @@
       "repository_state_sha256": "47546cd25125f930aaba848634a5ddab78b28e6e8bf3dcd6f17837cae8c33502",
       "runtime_source_sha256": "ffd2abe1d145e4a56463d358c5559d248d8647d4956de2916be0447fdaa52859",
       "prior_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "trusted_key_sha256": "8b11cd884612accc13a5b9134e4683d5a6e0cbe8c07d3be84de70c15aae931b2",
+      "trusted_key_sha256": "1b67e8c264c5acc85ae49ee8c31a4aacf68dabc17044dd324e20a7015c7b38ab",
       "process_id": 2147483000,
       "observed_at": "2026-10-23T00:00:00Z",
       "child_exit_recorded": true,
@@ -55,12 +55,12 @@
     "human_final_decision_authority": "USER",
     "signature": {
       "algorithm": "Ed25519",
-      "key_sha256": "8b11cd884612accc13a5b9134e4683d5a6e0cbe8c07d3be84de70c15aae931b2",
-      "value": "jKnrwqj7Y1H1mTM8HTEPCt3+Ugum9EViMUGetNP+eX55OLSpmtpPY/7huUCe13hxeuWaQ05Vyr9HpyejXgMSCA=="
+      "key_sha256": "1b67e8c264c5acc85ae49ee8c31a4aacf68dabc17044dd324e20a7015c7b38ab",
+      "value": "trXectGUJd7hpR/u7QRieTTGzmxzgwunoij0uPquzbOI2pIwXXqzNzOv6QqNtqrajbbpJNFYv7ZBrHqTYfL/BA=="
     }
   },
   "authorization_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-  "subject_sha256": "13a9096279e1d6f6f5ff2a815150a5bd6e9db7bf0cdaef0b641429375ac9b6d4",
+  "subject_sha256": "bdb0c11e80eab58c8024add694719de1c8f53ed5d3b995cc42974c9ec7744f90",
   "recorded_at": "2026-10-23T00:00:02Z",
   "rechecked_at": "2026-10-23T00:00:02Z",
   "resolution": "acknowledge_failed_transfer",
@@ -72,7 +72,7 @@
   "human_final_decision_authority": "USER",
   "signature": {
     "algorithm": "Ed25519",
-    "key_sha256": "8b11cd884612accc13a5b9134e4683d5a6e0cbe8c07d3be84de70c15aae931b2",
-    "value": "2Y2JBRjT4zS/p8oD6BXLlmPBIcTL4QH/D9Qsqg5pQ1T5oxsIFHcRAZpZqYxWD9Caz8GqJ9TeyQMve4ZUBIZACQ=="
+    "key_sha256": "1b67e8c264c5acc85ae49ee8c31a4aacf68dabc17044dd324e20a7015c7b38ab",
+    "value": "e+ArXCNpjuYtgCymkzxqMMxnQWDeq3Di3qJV19jzMpjx/i2B8RBz/GyHAHjXkCap24apiOUWvYLzPi4EaKI6BA=="
   }
 }

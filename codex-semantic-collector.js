@@ -72,8 +72,9 @@ function privateRoot(directory, preview) {
   return root;
 }
 function durable(file, value, exclusive = false) {
+  const bytes = Buffer.from(JSON.stringify(value, null, 2) + "\n");
   const descriptor = fs.openSync(file, exclusive ? "wx" : "w", 0o600);
-  try { fs.writeFileSync(descriptor, JSON.stringify(value, null, 2) + "\n"); fs.fsyncSync(descriptor); }
+  try { fs.writeFileSync(descriptor, bytes); fs.fsyncSync(descriptor); return sha256(bytes); }
   finally { fs.closeSync(descriptor); }
 }
 function syncDirectory(directory) {
@@ -113,7 +114,7 @@ async function collectEvaluation(invocation, consent, configuration) {
     ...DISABLED.flatMap(feature => ["--disable", feature]),
     "--output-schema", schemaFile, "--output-last-message", responseFile, "--color", "never", "--json", "-"];
   record.argv_sha256 = digest(argv); save();
-  let child, exitPromise, timer, killTimer, pending = "", finalMessage = null, totalBytes = 0;
+  let child, exitPromise, timer, killTimer, journalSha256 = null, pending = "", finalMessage = null, totalBytes = 0;
   const decoder = new TextDecoder("utf-8", { fatal: true }), stdoutHash = crypto.createHash("sha256"), stderrHash = crypto.createHash("sha256");
   function terminate(signal) {
     if (!signalGroup(child.pid, signal)) {
@@ -219,10 +220,10 @@ async function collectEvaluation(invocation, consent, configuration) {
     record.stdout_sha256 = stdoutHash.digest("hex"); record.stderr_sha256 = stderrHash.digest("hex");
     record.ended_at = new Date().toISOString();
     record.result_persisted = true;
-    try { save(); }
+    try { journalSha256 = save(); }
     catch { record.status = "not_evaluated"; record.result_persisted = false;
       record.failure_reasons.push("SEMANTIC_JOURNAL_RESULT_WRITE_FAILED"); delete record.assessment; }
   }
-  return { ...record, directory };
+  return { ...record, journal_sha256: journalSha256, directory };
 }
 module.exports = { VERSION, prepareInvocation, verifyTransferConsent, collectEvaluation };

@@ -9,6 +9,14 @@ key and consumed-attempt inventory; independently observe both PID and process
 group absence. `EPERM` and PID reuse deny, rather than becoming absence evidence.
 An atomic saved receipt, not a private terminal label, acknowledges the local hold.
 
+The PID must already be committed by the original signed observation. A reproduced
+candidate counterexample changed only a private journal PID before review and
+obtained acknowledgment of that unrelated value despite a valid original result
+signature. Signed evaluation v0.2 now commits exact collector-returned journal
+bytes before review; historical v0.1 results remain readable but cannot acquire
+that missing provenance retroactively. Passing the earlier selected ladder did
+not cover or refute this counterexample.
+
 The original failure and prior attempts remain immutable. Fresh acknowledgment
 does not verify or cancel remote provider billing, clear another ownership class
 or authorize the next evaluation. Missing signatures, journals and termination
