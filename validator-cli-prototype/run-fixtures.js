@@ -11,6 +11,12 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  { name: "evaluated proposed analysis remains non-authorizing", file: "sample-payloads/valid-operator-order-analysis-evaluated.json",
+    type: "operator-order-analysis", exitCode: 0, expectedCanExecute: false },
+  ...[["order-analysis-response", "CONST_MISMATCH"], ["operator-order-analysis", "ORDER_ANALYSIS_RESULT_STATE_INVALID"]]
+    .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} proposed ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
   ...[["bounded-planning-request", "PLANNING_DUPLICATE_AGENT"], ["bounded-planning-proposal", "PLANNING_PROPOSAL_BINDING_INVALID"]]
     .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
       file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,

@@ -14,6 +14,15 @@ node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
 
 ## Requirement Review
 
+For model-proposed analysis from a retained request, read
+`docs/native-order-analysis.md`. Use `scripts/prepare_controls_analysis.js`
+only to prepare; real transfer uses the owner's exact request-analysis purpose,
+not omission/order consent or a CLI run flag. Inspect Model Actions after a lost
+response; never rerun to hide failure or use the omission acknowledgment to clear
+an analysis hold. Generate the exact bounded plan, then obtain fresh coverage and
+USER adoption before dispatch. Proposed roles and quoted bytes do not
+prove semantic completeness or expand authority.
+
 Inventory coverage and request routing are separate gates. After adding a
 contract alias, run `node run-document-routing-fixtures.js` as well as `--coverage`
 for both providers; a fully indexed corpus can still misroute a real query.
@@ -71,7 +80,7 @@ operational consent with fixture keys or expose private previews in agent chat.
 Use the console's exact-packet owner preview, password and one-use session-bound
 nonce after the trusted host explicitly configures its CLI/model pair. Never
 automate the real owner's account or approval. After logout/stop/shutdown require
-actual child close and group absence; inspect Model Evaluations after a lost
+actual child close and group absence; inspect Model Actions after a lost
 response. For a verifiable failed transfer, read `docs/model-transfer-reconciliation.md`
 and use Review Model Hold. Require a fresh password/session-bound acknowledgment,
 exact original history and independently observed PID/group absence. Require the

@@ -7,6 +7,14 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [native request-analysis candidate](native-order-analysis.md) uses the official
+[Codex exec interface](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
+and a separately purpose-bound adapter over the existing bounded collector.
+Its exact quotation, proposed-role envelope, compiler consumption, shared model
+hold and owner nonce checks are local engineering synthesis. Source fidelity and
+fake-provider fixtures do not prove strategy quality, complete semantics, protected
+execution, provider cancellation or a calibrated model-origin adoption class.
+
 The [bounded structural generator](bounded-plan-synthesis.md) is local engineering
 synthesis over actual OPORD/adoption/revision/dispatch contracts. It selects a
 finite declared roster without inventing tasks or authority and binds generated

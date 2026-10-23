@@ -15,7 +15,7 @@ evaluation still requires a new exact-packet preview and owner consent.
 
 ## Owner Procedure
 
-1. Open the exact held entry in Model Evaluations. Review its original failure.
+1. Open the exact held entry in Model Actions. Review its original failure.
    Use **Review Model Hold**, not another evaluation or a database edit.
 2. The server requires a valid pinned-key v0.2 failure that commits the original
    collector journal bytes, plus the exact retained invocation,

@@ -75,7 +75,7 @@ async function main() {
     await page.getByRole("button", { name: "Access", exact: true }).click(); await page.locator("#invite-form input[name=missions]").fill(env.options.mission);
     await page.locator("#invite-form input[name=password]").fill(password); await page.getByRole("button", { name: "Create Invitation", exact: true }).click();
     await page.locator("#invitation-link").waitFor({ state: "visible" }); const token = new URL(await page.locator("#invitation-link").inputValue()).hash.split("=")[1];
-    await page.getByRole("button", { name: "Model Evaluations", exact: true }).click(); await page.getByRole("button", { name: second.id, exact: true }).click();
+    await page.getByRole("button", { name: "Model Actions", exact: true }).click(); await page.getByRole("button", { name: second.id, exact: true }).click();
     let release, observed, delivered; const seen = new Promise(resolve => { observed = resolve; }), held = new Promise(resolve => { release = resolve; });
     const delivery = new Promise(resolve => { delivered = resolve; }); releases.push(() => release());
     const url = `**/api/model-evaluations/${second.id}/reconciliation/preview`;

@@ -1,5 +1,18 @@
 # Research Compendium
 
+## Purpose-Bound Native Request Analysis (2026-10-23)
+
+The [analysis candidate](native-order-analysis.md) addresses the still-manual
+request-to-analysis step before structural planning. A closed purpose adapter
+shares finite collection/process controls without sharing omission consent,
+prompt/schema or task authority. Model statements become actual compiler inputs;
+the host binds request/scope and retains proposed/unknown status rather than
+treating generated statements as verified facts. Existing owner review remains
+mandatory. The official [CLI reference](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
+supports the transport choices, not semantic correctness or protected execution.
+Synthetic response labels are authored tests, not independent held-out truth.
+Analysis-specific recovery, calibration and complete orchestration remain open.
+
 ## Bounded Structural Planning (2026-10-23)
 
 The compiler-to-execution gap previously required a whole manually authored

@@ -1,6 +1,6 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-10-22",
+  "as_of": "2026-10-23",
   "source_map": "docs/source-map.md",
   "valid": true,
   "checked_hosts": 56,
@@ -143,6 +143,7 @@
       "host": "developers.openai.com",
       "files": [
         "docs/research-compendium.md",
+        "docs/semantic-omission-evaluation.md",
         "docs/source-map.md"
       ]
     },
@@ -289,7 +290,9 @@
       "files": [
         "docs/enforced-dispatch-and-resume.md",
         "docs/method-control-channel.md",
-        "docs/research-compendium.md"
+        "docs/native-order-analysis.md",
+        "docs/research-compendium.md",
+        "docs/source-map.md"
       ]
     },
     {

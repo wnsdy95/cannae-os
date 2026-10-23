@@ -1,5 +1,11 @@
 # Sample Payloads
 
+The `order-analysis-response` and `operator-order-analysis` pairs are synthetic
+proposed/held contract examples, not real model runs, owner decisions or independent
+labels. Regenerate only these with
+`node order-analysis-fixtures/write-schemas-and-samples.js`. Retained private
+collector history must never be rewritten to acquire a different purpose.
+
 The `bounded-planning-request` and `bounded-planning-proposal` pairs are synthetic
 non-authorizing structural construction examples, not model strategy, real
 readiness or USER consent. Regenerate these four only with

@@ -4,6 +4,8 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
   function reset() {
     generation++; clearInterval(timer); polling = false; draft = preview = holdPreview = action = null;
     $("#semantic-preview").hidden = true; $("#semantic-preview").disabled = false;
+    $("#semantic-preview-label").textContent = "Evaluate Omissions";
+    $("#semantic-commit-label").textContent = "Approve One Evaluation";
     $("#semantic-stop").hidden = true; $("#semantic-stop").disabled = false;
     $("#semantic-confirmation").hidden = true; $("#semantic-commit-form").reset();
     $("#semantic-prompt").textContent = ""; $("#semantic-expiry").textContent = ""; $("#semantic-profile").replaceChildren();
@@ -13,8 +15,12 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
   }
   function clear() { reset(); $("#semantic-entries").replaceChildren(); $("#semantic-attention").textContent = ""; }
   function selectDraft(item, manifest) {
-    reset(); if (!session()?.semantic_review_available || item.kind !== "order-drafts") return;
-    draft = { item, manifest }; $("#semantic-preview").hidden = false;
+    reset();
+    const analysis = item.kind === "mission-requests";
+    if (analysis ? !session()?.order_analysis_available : !session()?.semantic_review_available || item.kind !== "order-drafts") return;
+    draft = { item, manifest, purpose: analysis ? "order_analysis" : "semantic_omission" };
+    $("#semantic-preview-label").textContent = analysis ? "Propose Order Analysis" : "Evaluate Omissions";
+    $("#semantic-preview").hidden = false;
   }
   function fields(selector, rows) {
     $(selector).replaceChildren();
@@ -23,13 +29,14 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     }
   }
   function render(current) {
-    $("#detail-title").textContent = `Model Evaluation / ${current.state}`;
+    const analysis = current.purpose === "order_analysis";
+    $("#detail-title").textContent = `${analysis ? "Order Analysis" : "Model Evaluation"} / ${current.state}`;
     fields("#detail-meta", [["Mission / Wave", `${current.mission_id} / ${current.wave_id}`], ["Draft", current.draft_id],
       ["Model", current.model], ["Hold", current.hold_preserved ? "Active" : "None"], ["Verified result", current.result_verified ? "Yes" : "Not established"],
       ["Original journal binding", current.result?.collection?.journal_sha256 ? "Signed" : "Not established"], ["Reconciliation", current.reconciliation_state]]);
     $("#detail-content").textContent = JSON.stringify(current, null, 2);
     $("#semantic-stop").hidden = current.state !== "running";
-    $("#model-hold-preview").hidden = current.state !== "held" || !current.result_verified || current.reconciliation_verified ||
+    $("#model-hold-preview").hidden = analysis || current.state !== "held" || !current.result_verified || current.reconciliation_verified ||
       current.result?.schema_version !== "0.2" || !current.result?.collection?.journal_sha256;
     if (current.state !== "running") clearInterval(timer);
   }
@@ -61,14 +68,14 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     try { data = await api("/api/model-evaluations"); }
     catch (failure) { if (readCurrent(scope)) $("#workspace-error").textContent = failure.message; return; }
     if (!readCurrent(scope)) return;
-    $("#semantic-attention").textContent = `${data.held_count} held evaluations / ${data.entries.length} retained actions`;
+    $("#semantic-attention").textContent = `${data.held_count} held model actions / ${data.entries.length} retained actions`;
     const body = $("#semantic-entries"); body.replaceChildren();
-    if (!data.entries.length) empty(body, 5, "No model evaluations");
+    if (!data.entries.length) empty(body, 5, "No model actions");
     for (const entry of data.entries) {
       const row = body.insertRow(), name = cell(row, ""), button = document.createElement("button");
       button.className = "artifact-button"; button.textContent = entry.id;
       button.onclick = () => { void inspect(entry.id, scope).catch(failure => { if (readCurrent(scope)) $("#workspace-error").textContent = failure.message; }); };
-      name.append(button); cell(row, `${entry.draft_id} / ${entry.mission_id}`); cell(row, entry.model);
+      name.append(button); cell(row, `${entry.purpose === "order_analysis" ? "Analysis" : "Omission"} / ${entry.draft_id} / ${entry.mission_id}`); cell(row, entry.model);
       cell(row, `${entry.state}${entry.verdict ? " / " + entry.verdict : ""}`); cell(row, displayTime(entry.created_at));
     }
   }
@@ -76,18 +83,33 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     const button = $("#semantic-preview"), selected = draft, revision = generation, scope = currentView();
     if (!selected || button.disabled) return;
     button.disabled = true;
-    void api("/api/model-evaluations/preview", { entry_id: selected.item.id, manifest: selected.manifest }).then(prepared => {
+    const endpoint = selected.purpose === "order_analysis" ? "/api/order-analyses" : "/api/model-evaluations";
+    void api(`${endpoint}/preview`, { entry_id: selected.item.id, manifest: selected.manifest }).then(prepared => {
       if (revision !== generation || selected !== draft || !viewCurrent(scope)) return;
-      preview = prepared; const { profile, preview: packet } = prepared.invocation;
-      fields("#semantic-profile", [["Destination", "OpenAI / Existing Codex CLI account"], ["Model alias", profile.requested_model],
+      const analysis = selected.purpose === "order_analysis", invocation = prepared?.invocation, packet = invocation?.preview, profile = invocation?.profile;
+      const reference = analysis ? packet?.request_ref : packet?.draft_ref;
+      if (prepared?.purpose !== selected.purpose || invocation?.type !== (analysis ? "CodexOrderAnalysisInvocation" : "CodexSemanticInvocation") ||
+        packet?.type !== (analysis ? "OrderAnalysisPreview" : "SemanticEvaluationPreview") || reference?.artifact_id !== selected.item.artifact_id ||
+        reference?.sha256 !== selected.item.sha256 || typeof packet?.prompt !== "string" || profile?.maximum_invocations !== 1 ||
+        invocation.execution_authorized !== false || invocation.release_authorized !== false || !/^[A-Za-z0-9_-]{43}$/.test(prepared.nonce || "") ||
+        !Number.isFinite(Date.parse(prepared.expires_at)) || Date.now() >= Date.parse(prepared.expires_at) ||
+        analysis && (!Array.isArray(packet.input?.allowed_roles) || !packet.input.allowed_roles.length)) throw new Error("CONSOLE_MODEL_PREVIEW_INVALID");
+      preview = prepared;
+      $("#semantic-commit-label").textContent = analysis ? "Approve One Analysis" : "Approve One Evaluation";
+      fields("#semantic-profile", [["Purpose", prepared.purpose === "order_analysis" ? "One request analysis and proposed draft" : "One semantic omission evaluation"],
+        ["Destination", "OpenAI / Existing Codex CLI account"], ["Model alias", profile.requested_model],
         ["CLI version", profile.cli_version], ["Executable SHA-256", profile.executable_sha256], ["Invocation SHA-256", prepared.invocation.invocation_sha256],
         ["Handling", packet.classification], ["Maximum duration", `${profile.timeout_ms / 1000} seconds`], ["Maximum invocations", "1"],
-        ["Provider billing cap", "Not enforced"], ["Native context / Model snapshot", "Not attested"], ["Task execution / Release", "Not authorized"]]);
+        ["Provider billing cap", "Not enforced"], ["Native context / Model snapshot", "Not attested"], ["Task execution / Release", "Not authorized"],
+        ...(prepared.purpose === "order_analysis" ? [["Permitted proposed roles", packet.input.allowed_roles.join(", ")], ["Adoption / Calibrated semantics", "Not authorized / Not established"]] : [])]);
       $("#semantic-expiry").textContent = `Expires ${displayTime(prepared.expires_at)}`;
       $("#semantic-prompt").textContent = packet.prompt;
       $("#semantic-commit-form").reset(); $("#semantic-confirmation").hidden = false;
       $("#detail").scrollTop = $("#semantic-confirmation").offsetTop - $("#detail header").offsetHeight - 20;
-    }).catch(failure => { if (revision === generation && selected === draft && viewCurrent(scope)) $("#detail-error").textContent = failure.message; })
+    }).catch(failure => { if (revision === generation && selected === draft && viewCurrent(scope)) {
+      preview = null; $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = "";
+      $("#semantic-profile").replaceChildren(); $("#semantic-commit-form").reset(); $("#detail-error").textContent = failure.message;
+    } })
       .finally(() => { if (revision === generation && selected === draft && viewCurrent(scope)) button.disabled = false; });
   };
   $("#semantic-commit-form").onsubmit = event => {
@@ -97,7 +119,8 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
       if (!prepared || !form.elements.acknowledge.checked) throw new Error("CONSOLE_MODEL_PREVIEW_REQUIRED");
       preview = null; action = prepared.challenge_id;
       try {
-        const current = await api("/api/model-evaluations/commit", { challenge_id: prepared.challenge_id, nonce: prepared.nonce,
+        const endpoint = prepared.purpose === "order_analysis" ? "/api/order-analyses" : "/api/model-evaluations";
+        const current = await api(`${endpoint}/commit`, { challenge_id: prepared.challenge_id, nonce: prepared.nonce,
           password: form.elements.password.value, rationale: form.elements.rationale.value });
         if (revision !== generation || !viewCurrent(scope)) return;
         $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = ""; $("#semantic-preview").hidden = true;

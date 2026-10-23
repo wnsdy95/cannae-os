@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["order analysis", "order-analysis-generation", "native planning", "prepare_controls_analysis", "codex-bounded-collector.js"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["order-analysis-generation"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.recommended_documents.some(item => item.path === "docs/native-order-analysis.md"));
+    assert(result.validation_commands.includes("node run-native-order-analysis-fixtures.js"));
+  }
   for (const query of ["requirement inventory", "semantic coverage review", "semantic-review-assignment", "semantic review assignment",
     "schema-files/semantic-review-assignment.schema.json", "Review SEMANTIC-REVIEW-ASSIGNMENT before adoption", "review_controls_requirements"]) {
     const result = route(router, ["--actor=user"], query);

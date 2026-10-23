@@ -77,7 +77,7 @@ async function main() {
       catch (error) { if (!closing) routeErrors.push(error.message); }
       finally { delivered(); }
     });
-    await page.getByRole("button", { name: "Model Evaluations", exact: true }).click(); await seen;
+    await page.getByRole("button", { name: "Model Actions", exact: true }).click(); await seen;
     await page.getByRole("button", { name: "Sign out", exact: true }).click();
     await page.locator("#auth").waitFor({ state: "visible" });
     await page.getByRole("button", { name: "Use Invitation", exact: true }).click();
@@ -85,7 +85,7 @@ async function main() {
     await page.waitForTimeout(100);
     assert.equal(await page.locator("#semantic-entries").textContent(), "");
     assert.equal(await page.locator("#semantic-prompt").textContent(), "");
-    assert.equal(await page.getByRole("button", { name: "Model Evaluations", exact: true }).count(), 0);
+    assert.equal(await page.getByRole("button", { name: "Model Actions", exact: true }).count(), 0);
     assert.equal(await page.locator("body").textContent().then(text => text.includes(current.id)), false);
     results.push("a delayed actual owner list cannot repaint the same browser after viewer registration");
     await page.getByRole("button", { name: "Sign out", exact: true }).click(); await page.locator("#auth").waitFor({ state: "visible" });

@@ -47,7 +47,7 @@ body schemas, account permissions and auth throttles apply to these routes.
    only. The owning main service launches the bounded collector, not a worker
    thread that could terminate while leaving an OS child running. HTTP 202 is
    not a completed result or execution grant.
-5. Inspect Model Evaluations. The signed `OperatorSemanticEvaluation` binds
+5. Inspect Model Actions. The signed `OperatorSemanticEvaluation` binds
    consent, invocation, rationale digest, model response and collection evidence.
    Bounded response reads must match the collector's exact byte digest before signing.
    Pinned-key verification is required before display. Model verdicts remain

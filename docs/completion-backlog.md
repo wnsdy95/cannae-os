@@ -76,6 +76,14 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [native request-analysis candidate](native-order-analysis.md) adds a separate
+purpose-bound model proposal consumed by the actual OPORD compiler. Its shared
+transport does not share omission consent or confer calibrated admission. A
+signed proposed/clarification draft still needs human coverage and USER adoption;
+the existing finite roster/policy envelope remains explicit. Purpose-specific
+analysis recovery, independently held-out semantic calibration and complete
+autonomous orchestration remain open. This does not close rows 4/9 or goal 3/7.
+
 The [bounded structural generator](bounded-plan-synthesis.md) fills the actual
 OPORD-to-plan/policy assembly gap and links generated successors to existing
 revision/adoption/dispatch consumers. Remaining budgets come from actual parent

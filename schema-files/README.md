@@ -1,5 +1,12 @@
 # Schema Files
 
+`order-analysis-response.schema.json` and `operator-order-analysis.schema.json`
+describe bounded proposed statements/tasks and non-authorizing signed collection
+results with exact original-journal and compiled-draft bindings. Schema checks
+cannot prove source quotes, signature trust, retained draft scope or calibration;
+the [actual analysis consumers](../docs/native-order-analysis.md) perform these
+separate checks. A held result is not a new execution grant.
+
 `bounded-planning-request.schema.json` and `bounded-planning-proposal.schema.json`
 describe finite proposed roster/control envelopes and non-authorizing structural
 generation. `order_binding.planning_ref` binds the finalized plan; actual replay

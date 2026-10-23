@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add a separate existing-Codex request-analysis purpose over a shared bounded
+  collector and actual OPORD compiler. Keep owner nonce/session/password review,
+  exact quotes, proposed-role bounds, original journal and generated draft
+  bindings; share model holds without allowing omission-only reconciliation to
+  clear an analysis action. Both skills require exact purpose and fresh human
+  coverage/adoption. Calibration, analysis recovery and orchestration stay open.
+
 - Route the explicit semantic-review-assignment contract alias through the actual
   semantic-admission query rule, not only artifact inventory hints. Preserve the
   failed hosted checks and local reproduction; extend both-provider query and

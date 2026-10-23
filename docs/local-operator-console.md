@@ -1,5 +1,13 @@
 # Local Operator Console
 
+The separate [native request-analysis candidate](native-order-analysis.md) adds
+an explicitly configured `--analysis-executable`/`--analysis-model` profile.
+Owners may propose an OPORD analysis from a retained mission request; Model Actions
+keeps its exact purpose and result distinct from omission evaluation. The latter's
+old failed-transfer acknowledgment cannot clear an analysis hold. Neither purpose
+can adopt an order or grant task execution; global installed/runtime rollout is
+separate from this source candidate's tests.
+
 The optional [model-transfer review](model-transfer-consent.md) adds exact-packet
 owner consent and signed semantic result inspection when the trusted host supplies
 both CLI/model flags. It never grants task execution or release and preserves

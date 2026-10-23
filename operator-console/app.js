@@ -84,7 +84,7 @@ async function showTab(next) {
   operationsGeneration++; operationsRequest++; operationsPending = false; clearInterval(operationsTimer);
   tab = next; error("#workspace-error");
   document.querySelectorAll("[data-tab]").forEach(button => { button.setAttribute("aria-current", button.dataset.tab === tab ? "page" : "false"); });
-  $("#view-title").textContent = { operations: "Operations", evidence: "Evidence", proposals: "Order Proposals", access: "Access", activity: "Activity", decisions: "Decisions", semantic: "Model Evaluations" }[tab];
+  $("#view-title").textContent = { operations: "Operations", evidence: "Evidence", proposals: "Order Proposals", access: "Access", activity: "Activity", decisions: "Decisions", semantic: "Model Actions" }[tab];
   $("#operations-view").hidden = tab !== "operations";
   $("#evidence-view").hidden = !["evidence", "proposals"].includes(tab);
   $("#access-view").hidden = tab !== "access"; $("#activity-view").hidden = tab !== "activity";

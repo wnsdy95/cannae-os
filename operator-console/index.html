@@ -34,7 +34,7 @@
         <button data-tab="evidence"><img src="/icons/folder-search.svg" alt="">Evidence</button>
         <button data-tab="proposals"><img src="/icons/clipboard-list.svg" alt="">Order Proposals</button>
         <button data-tab="decisions" data-owner><img src="/icons/clipboard-check.svg" alt="">Decisions</button>
-        <button data-tab="semantic" data-owner><img src="/icons/clipboard-check.svg" alt="">Model Evaluations</button>
+        <button data-tab="semantic" data-owner><img src="/icons/clipboard-check.svg" alt="">Model Actions</button>
         <button data-tab="access" data-owner><img src="/icons/users.svg" alt="">Access</button>
         <button data-tab="activity" data-owner><img src="/icons/activity.svg" alt="">Activity</button>
         <div class="nav-footer"><span class="status-dot"></span>Local session</div>
@@ -73,16 +73,16 @@
         </section>
         <section id="activity-view" hidden><div class="table-wrap"><table><thead><tr><th>Recorded</th><th>Action</th><th>Actor</th><th>Subject</th></tr></thead><tbody id="activity"></tbody></table></div></section>
         <section id="decisions-view" hidden><div class="table-wrap"><table><thead><tr><th>Decision</th><th>Proposal</th><th>Disposition</th><th>State</th><th>Recorded</th></tr></thead><tbody id="decisions"></tbody></table></div></section>
-        <section id="semantic-view" hidden><p id="semantic-attention" role="status"></p><div class="table-wrap"><table><thead><tr><th>Evaluation</th><th>Draft / Mission</th><th>Model</th><th>State / Verdict</th><th>Recorded</th></tr></thead><tbody id="semantic-entries"></tbody></table></div></section>
+        <section id="semantic-view" hidden><p id="semantic-attention" role="status"></p><div class="table-wrap"><table><thead><tr><th>Model Action</th><th>Source / Mission</th><th>Model</th><th>State / Verdict</th><th>Recorded</th></tr></thead><tbody id="semantic-entries"></tbody></table></div></section>
         <footer><span id="review-mode">Order review: disabled</span><span>Tool execution: disabled</span><span>Release: disabled</span><a href="/licenses/lucide.txt" target="_blank" rel="noopener">Icon Licenses</a></footer>
       </main>
     </div>
   </div>
   <dialog id="detail"><header><div><p class="eyebrow">RETAINED EVIDENCE</p><h2 id="detail-title"></h2></div><button id="close-detail" class="icon" title="Close" aria-label="Close"><img src="/icons/x.svg" alt=""></button></header>
     <p id="decision-status" role="status"></p><div class="outcome-actions"><button id="inspect-outcome" type="button" hidden><img src="/icons/folder-search.svg" alt="">Inspect Outcome</button><button id="review-terminal" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Terminal Outcome</button></div><dl id="detail-meta"></dl><pre id="detail-content" tabindex="0"></pre>
-    <div class="outcome-actions"><button id="semantic-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Evaluate Omissions</button><button id="semantic-stop" type="button" hidden><img src="/icons/x.svg" alt="">Stop Evaluation</button><button id="model-hold-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Model Hold</button></div>
+    <div class="outcome-actions"><button id="semantic-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt=""><span id="semantic-preview-label">Evaluate Omissions</span></button><button id="semantic-stop" type="button" hidden><img src="/icons/x.svg" alt="">Stop Evaluation</button><button id="model-hold-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Model Hold</button></div>
     <section id="semantic-confirmation" hidden><h2>Model Transfer Review</h2><dl id="semantic-profile"></dl><p id="semantic-expiry"></p><pre id="semantic-prompt" tabindex="0"></pre>
-      <form id="semantic-commit-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I approve sending this exact text to this model once.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt="">Approve One Evaluation</button></form>
+      <form id="semantic-commit-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I approve sending this exact text to this model once.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt=""><span id="semantic-commit-label">Approve One Evaluation</span></button></form>
     </section>
     <section id="model-hold-confirmation" hidden><h2>Failed Model Transfer Review</h2><p id="model-hold-expiry"></p><dl id="model-hold-meta"></dl><pre id="model-hold-subject" tabindex="0"></pre>
       <form id="model-hold-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I acknowledge this failed local transfer. Prior transmission, provider billing and cancellation remain unverified.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt="">Acknowledge Failed Transfer</button></form>

@@ -67,6 +67,7 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
   function subject(id, excluded) {
     sourceCurrent(configuration);
     const action = rowFor(id), result = action.result && JSON.parse(action.result), invocation = JSON.parse(action.preview);
+    requireThat(invocation.type === "CodexSemanticInvocation", "CONSOLE_MODEL_RECONCILIATION_PURPOSE_UNSUPPORTED", 409);
     requireThat(action.state === "held" && verifiedResult(action) && !active.has(id), "CONSOLE_MODEL_RECONCILIATION_VERIFIED_FAILURE_REQUIRED", 409);
     const previous = history(id, excluded);
     requireThat(!previous.some(row => row.state === "reserved" || row.state === "committed"), "CONSOLE_MODEL_RECONCILIATION_ALREADY_RESERVED", 409);

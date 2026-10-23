@@ -7,6 +7,9 @@ try {
   } else if (request.action === "prepare-semantic") {
     if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
     result = require("./operator-semantic-service").prepareSemanticEvaluation(configuration, request);
+  } else if (request.action === "prepare-order-analysis") {
+    if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
+    result = require("./operator-semantic-service").prepareOrderAnalysis(configuration, request);
   } else if (request.action === "prepare-decision") {
     if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
     result = require("./operator-consent-executor").prepareOrderDecision(configuration, request);

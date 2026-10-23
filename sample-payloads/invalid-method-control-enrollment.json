@@ -10,13 +10,13 @@
     "provider_agent_id": "main"
   },
   "launch_slot_ref": {
-    "artifact_id": "MCTL-ea7675a7b3fb1847a87902967c1d125c05240646",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-ea7675a7b3fb1847a87902967c1d125c05240646.json",
+    "artifact_id": "MCTL-01f5c544144d25ea3477d1430b9e008ba5a239a4",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-01f5c544144d25ea3477d1430b9e008ba5a239a4.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
   "session_observation_ref": {
-    "artifact_id": "MCTL-694b10963cda72c8bbbc122320d0d358aba41f33",
-    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-694b10963cda72c8bbbc122320d0d358aba41f33.json",
+    "artifact_id": "MCTL-7fcf3a4dc4339eb14f5ca0be4bea4fd9ba1c6c94",
+    "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/MCTL-7fcf3a4dc4339eb14f5ca0be4bea4fd9ba1c6c94.json",
     "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
   },
   "plan_ref": {
@@ -42,7 +42,7 @@
   "repository_key": "fixture",
   "repository_identity_fingerprint": "2222222222222222222222222222222222222222222222222222222222222222",
   "server_name": "cannae_method_fixture",
-  "runtime_sha256": "d079ecdb0ee6e4225ee4306e138d2f5fe3c190b539e8d25b16f2de759986c892",
+  "runtime_sha256": "e76c8e51f9fb2ba5d22b8da7564588ac7af75e0f155645dde9c766cbe0e2fe73",
   "launch_descriptor_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
   "credential_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
   "identity_assurance": "local_operator_enrollment_reference",
@@ -53,5 +53,5 @@
   "continuation_authorized": false,
   "release_authorized": true,
   "human_final_decision_authority": "USER",
-  "id": "MCTL-7bfa6d4c26d73c9856053a48ebcab3dc38e254e4"
+  "id": "MCTL-8181c4221142325c6da34821b393b320f77e72a2"
 }
