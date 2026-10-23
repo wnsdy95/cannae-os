@@ -20,6 +20,13 @@ do not prove real human presence, protected keys, provider cancellation, billing
 unknown-process recovery or independent semantic calibration. All eight outcomes
 and operational acceptance remain separate.
 
+The first frozen browser ladder also exposed stale Evidence rows remaining
+clickable during a full refresh after publication changed the manifest. The
+server correctly rejected the old snapshot. Clearing old actions/counts before
+awaiting a fresh list repairs that workflow without weakening the server guard
+or silently renewing consent. Preserve the original failed ladder/screenshot;
+the delayed-list regression tests the changed UI boundary, not a security bypass.
+
 ## Historical Model Scope Integrity (2026-10-23)
 
 An actual synthetic controller probe on the first native-analysis candidate

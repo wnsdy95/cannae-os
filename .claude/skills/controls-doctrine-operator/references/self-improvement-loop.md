@@ -49,6 +49,10 @@ manifest absence observation when later separately approved work publishes the
 same deterministic draft; never rewrite old proof or confer adoption/cleanup
 authority. Verify this with both actual pre/post-publication failures and receipt
 boundary process death, not only schema or successful-transfer cases.
+After compiler publication changes a manifest, invalidate old evidence selections
+while a full list refresh is pending. A stale-snapshot denial is a working server
+guard, not permission to bypass or auto-renew it; regress delayed list delivery
+through the real browser and preserve any failed workflow's original evidence.
 
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
 the next dependency-ready item from `docs/completion-backlog.md`, then inspect

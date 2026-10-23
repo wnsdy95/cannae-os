@@ -15,8 +15,23 @@ async function main() {
       if (token) await page.locator("#auth-form input[name=token]").fill(token);
       await page.locator("#auth-form button[type=submit]").click(); await page.locator("#workspace").waitFor({ state: "visible" });
     }
-    async function collectFailure() {
-      await page.getByRole("button", { name: "Evidence", exact: true }).click(); await page.getByRole("button", { name: env.request.id, exact: true }).click();
+    async function collectFailure(delayEvidence = false) {
+      let releaseEvidence, observedEvidence, deliveredEvidence;
+      const evidenceUrl = url => url.pathname === "/api/evidence";
+      const observed = new Promise(resolve => { observedEvidence = resolve; }), heldEvidence = new Promise(resolve => { releaseEvidence = resolve; }), delivered = new Promise(resolve => { deliveredEvidence = resolve; });
+      if (delayEvidence) {
+        releases.push(releaseEvidence);
+        await page.route(evidenceUrl, async route => { try { const response = await route.fetch(); assert.equal(response.status(), 200); observedEvidence(); await heldEvidence; if (!closing) await route.fulfill({ response }); }
+          catch (error) { if (!closing) routeErrors.push(error.message); } finally { deliveredEvidence(); } });
+      }
+      await page.getByRole("button", { name: "Evidence", exact: true }).click();
+      if (delayEvidence) {
+        await observed; assert.equal(await page.locator("#artifacts button").count(), 0); assert.equal(await page.locator("#revision").textContent(), "");
+        await page.screenshot({ path: path.join(output, "evidence-refresh-fences-stale-list.png"), fullPage: true });
+        releaseEvidence(); await delivered; await page.unroute(evidenceUrl);
+        results.push("actual manifest refresh removes prior evidence actions until the new verified list arrives");
+      }
+      await page.getByRole("button", { name: env.request.id, exact: true }).click();
       await page.getByRole("button", { name: "Propose Order Analysis", exact: true }).click(); await page.locator("#semantic-confirmation").waitFor({ state: "visible" });
       await page.locator("#semantic-commit-form input[name=acknowledge]").check(); await page.locator("#semantic-commit-form textarea[name=rationale]").fill("Synthetic browser approves one exact proposed analysis.");
       await page.locator("#semantic-commit-form input[name=password]").fill(password); await page.getByRole("button", { name: "Approve One Analysis", exact: true }).click();
@@ -56,7 +71,7 @@ async function main() {
     assert.equal(await page.locator("#model-hold-form input[name=password]").inputValue(), ""); assert.equal(await page.evaluate(() => window.compromised), undefined);
     await page.screenshot({ path: path.join(output, "analysis-failure-preserved-after-ack.png"), fullPage: true });
     results.push("lost actual acknowledgment response is inspected without model/compiler replay or rewriting the original failure");
-    await page.getByRole("button", { name: "Close", exact: true }).click(); const second = await collectFailure(); assert.notEqual(second.id, first.id); assert.equal(compiled, 2);
+    await page.getByRole("button", { name: "Close", exact: true }).click(); const second = await collectFailure(true); assert.notEqual(second.id, first.id); assert.equal(compiled, 2);
     await page.setViewportSize({ width: 390, height: 844 }); await openReview(); await acknowledgmentFields();
     await page.getByRole("button", { name: "Acknowledge Failed Transfer", exact: true }).scrollIntoViewIfNeeded();
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));

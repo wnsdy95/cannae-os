@@ -6,6 +6,11 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Fence stale evidence actions during full manifest refresh after actual compiler
+  publication. Keep server snapshot denial and the failed browser ladder intact;
+  regress delayed list delivery instead of bypassing freshness or retrying consent.
+  Both skill sources carry the refresh-boundary lesson.
+
 - Add separate failed-analysis acknowledgment with exact original journal,
   response and observed draft-publication appraisal, two owner acknowledgments
   and distinct signed records/endpoints. Preserve failures, existing drafts and

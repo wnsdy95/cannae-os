@@ -16,6 +16,10 @@ no-effect assertion; later legitimate publication preserves that old observation
 Current response/journal/publication bindings and failed receipt history remain
 accountable. No new military source, protected-host/human-presence guarantee,
 provider cancellation or semantic-quality claim is introduced.
+Its retained initial browser failure was a stale evidence-selection race during
+full manifest refresh; the server denied correctly. The UI now removes old
+actions/counts before the new list arrives and tests delayed delivery without
+weakening snapshot validation or automatically retrying a decision.
 
 The shared model invocation/history integrity rule is local engineering synthesis.
 A retained actual-controller probe found that original signatures and a supplied

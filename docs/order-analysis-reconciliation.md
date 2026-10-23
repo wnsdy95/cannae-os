@@ -115,3 +115,12 @@ regressions. Focused development cases are not the full suite. Fixtures make zer
 actual model calls and never script the real owner. Source-bound local evidence
 and required hosted CI precede acceptance; publication is not an installed-skill
 or operational-daemon upgrade.
+
+A retained first browser ladder stopped after a valid acknowledgment because
+the Evidence view briefly exposed its old list during full manifest refresh.
+The server correctly rejected the stale snapshot; it was not an authorization
+bypass. Full refresh now removes old evidence actions/counts before awaiting the
+new list and retains unavailable state on failure. A delayed real list response
+tests that fence. Preserve the original timeout/screenshot and unexecuted suffix;
+do not weaken snapshot checks, silently retry approval or turn observed browser
+subscenarios into a suite pass.
