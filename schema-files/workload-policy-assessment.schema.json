@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/workload-policy-assessment.schema.json",
+  "title": "Digest-Only Subject Policy Assessment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "purpose", "mission_id", "wave_id", "input_id", "input_sha256", "subject_set_sha256", "invocation_id", "report_id_sha256", "report_input_sha256", "policy_source_sha256", "finding_count", "findings", "findings_truncated", "status", "evaluated_at", "finished_at", "scope", "execution_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "WorkloadPolicyAssessment" },
+    "id": { "$ref": "common.schema.json#/$defs/id" }, "purpose": { "const": "report_and_evidence_opsec" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" }, "wave_id": { "type": "string", "minLength": 1 },
+    "input_id": { "$ref": "common.schema.json#/$defs/id" }, "input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "subject_set_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "invocation_id": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+    "report_id_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "report_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "policy_source_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "finding_count": { "type": "integer", "minimum": 0 }, "findings_truncated": { "type": "boolean" },
+    "findings": { "type": "array", "maxItems": 128, "items": { "type": "object", "additionalProperties": false,
+      "required": ["severity", "code", "subject_kind", "subject_index", "location_sha256"],
+      "properties": { "severity": { "enum": ["error", "critical"] }, "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,79}$" }, "subject_kind": { "enum": ["report", "evidence"] }, "subject_index": { "type": "integer", "minimum": 0 }, "location_sha256": { "$ref": "common.schema.json#/$defs/sha256" } } } },
+    "status": { "enum": ["passed", "blocked"] }, "evaluated_at": { "$ref": "common.schema.json#/$defs/timestamp" }, "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "scope": { "type": "object", "additionalProperties": false, "required": ["core_credential_patterns", "restricted_markings", "custom_mission_eefi", "semantic_truth_verified", "releasability_review_completed"],
+      "properties": { "core_credential_patterns": { "const": true }, "restricted_markings": { "const": true }, "custom_mission_eefi": { "const": false }, "semantic_truth_verified": { "const": false }, "releasability_review_completed": { "const": false } } },
+    "execution_authorized": { "const": false }, "release_authorized": { "const": false }, "human_final_decision_authority": { "const": "USER" }
+  }
+}

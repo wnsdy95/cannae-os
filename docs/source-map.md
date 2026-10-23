@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [subject-bound workload candidate](subject-bound-workload-controls.md) is local
+engineering synthesis over existing report, artifact-store and OPSEC contracts.
+A report digest on a framework fixture receipt does not prove that the child
+consumed the report. Separate typed input, actual work-byte capture, bounded
+worker observation and publication recheck address that input-flow gap without
+new military-source claims, universal detection or release/host attestation.
+
 The [readiness-drop candidate](readiness-drop-reconciliation.md) is local
 engineering synthesis over the existing readiness-event and dispatch/gateway
 settlement contracts. It follows an actual allow-after-drop dispatcher probe,

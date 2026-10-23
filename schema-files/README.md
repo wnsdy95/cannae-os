@@ -1,5 +1,13 @@
 # Schema Files
 
+`workload-control-input.schema.json`, `workload-policy-assessment.schema.json` and
+`workload-control-receipt.schema.json` separate actual bounded report/evidence
+policy input and observation from framework code regressions. The report's
+additive `workload_control_receipt_refs` field is controller-selected on every
+new admission; historical absence is readable, not fresh publication authority.
+All three contracts validate with `can_execute: false`. See
+[subject-bound controls](../docs/subject-bound-workload-controls.md) for limits.
+
 `readiness-drop-reconciliation.schema.json` binds a non-authorizing restrictive
 batch report to exact readiness observations and actual lease checkpoints.
 The [runtime consumer](../docs/readiness-drop-reconciliation.md), not schema

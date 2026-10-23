@@ -76,6 +76,15 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+An actual routed-fixture probe passed both clean and credential-bearing report
+inputs without passing either to its child. The local
+[subject-bound controls candidate](subject-bound-workload-controls.md) now adds
+a distinct actual report/evidence worker and mandatory receipt to admission;
+code regressions remain separate and unchanged. Custom mission policies,
+audited exceptions, broader input-bound assessments and source-qualified
+regression caching remain open. This does not close sustainment/output goal 6
+or any other full program outcome.
+
 An actual synthetic probe published a 21 MiB draft from an approximately 81 KiB
 response, then failed the unchanged 8 MiB reader. The local size-bound correction
 rejects excessive complete output before publication, preserves all inherited

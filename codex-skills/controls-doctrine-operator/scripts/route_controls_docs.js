@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "workload-controls",
+    keywords: ["workload control", "workload-control", "workload-policy-assessment", "workloadcontrolinput", "workloadcontrolreceipt", "workloadcontrolfailure", "workloadpolicyassessment", "subject-bound", "workload assessment", "report input binding", "actual evidence scan"],
+    docs: ["docs/subject-bound-workload-controls.md", "docs/skill-operational-mission-lifecycle.md", "docs/sensitive-output-filter.md", "docs/completion-backlog.md"],
+    commands: ["node run-workload-control-fixtures.js", "node run-skill-control-enforcement-fixtures.js"]
+  },
+  {
     id: "force-readiness",
     keywords: ["readiness drop", "readiness-drop", "readiness revocation", "readiness_requalification_required", "training progression", "cross-mission capability", "readiness-to-authority", "agent-readiness", "reconcile_controls_readiness"],
     docs: ["docs/readiness-drop-reconciliation.md", "docs/readiness-to-authority-policy.md", "docs/training-progression-model.md", "docs/agent-readiness-ledger.md", "docs/force-structure-change-policy.md", "docs/completion-backlog.md"],
@@ -540,6 +546,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "workload-controls", keywords: ["workload-control", "workload-policy-assessment", "subject-bound-workload"] },
   { id: "force-readiness", keywords: ["readiness-drop", "reconcile_controls_readiness", "readiness-to-authority", "training-progression", "agent-readiness-ledger"] },
   { id: "analysis-reconciliation", keywords: ["analysis-reconciliation", "operator-analysis-publication", "operator-reconciliation-contract-core", "order-analysis-fixtures/reconciliation", "order-analysis-fixtures/write-reconciliation"] },
   { id: "order-analysis-generation", keywords: ["order-analysis", "native-order-planning", "native-order-analysis", "codex-bounded-collector", "prepare_controls_analysis", "model-invocation-integrity"] },

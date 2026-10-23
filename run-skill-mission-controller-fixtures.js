@@ -576,6 +576,10 @@ fixture("manifest-backed agent evidence produces a complete wave report", () => 
   assert(result.release_authorized === false, "report must not authorize release");
   const expectedReportDigest = reportInputDigest(report);
   assert(result.control_receipt_refs.length > 0, "complete report did not persist mandatory control receipts");
+  assert(result.workload_control_receipt_refs.length === 1, "complete report omitted actual workload assessment");
+  const workload = loadArtifact(artifactRoot, result.workload_control_receipt_refs[0]);
+  assert(workload.status === "passed" && workload.input_binding.report_input_sha256 === reportInputDigest(report),
+    "clean report did not bind a passing actual workload receipt");
   for (const receiptRef of result.control_receipt_refs) {
     const receipt = loadArtifact(artifactRoot, receiptRef);
     assert(receipt.schema_version === "0.2", "mission lifecycle persisted a legacy control receipt");

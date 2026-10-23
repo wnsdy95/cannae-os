@@ -34,6 +34,7 @@ const CONTROL_EVIDENCE_KINDS = new Set([
   "tool-admission-events",
   "agent-execution-checkpoints",
   "control-execution-receipts",
+  "workload-control-receipts",
   "integrated-mission-preflights",
   "mission-wave-closeouts",
   "mission-wave-plans",
@@ -77,8 +78,7 @@ function canonicalValue(value) {
 }
 
 function reportInputDigest(report) {
-  const { control_receipt_refs: _generatedRefs, ...input } = report;
-  return sha256(JSON.stringify(canonicalValue(input)));
+  return require("./workload-control-contract").reportInputDigest(report);
 }
 
 function controlReceiptMatchesExecution(receipt, expected) {
@@ -1050,6 +1050,11 @@ function copiesControlEvidence(store, entry, payload, snapshots) {
 }
 
 function validateReportBindings(report, planArtifact, preflightArtifact, contextArtifacts, options) {
+  const workload = require("./workload-control-contract");
+  workload.assertJsonLimits(report);
+  workload.need(Buffer.byteLength(JSON.stringify(workload.reportProjection(report))) <= workload.LIMITS.report_bytes, "WORKLOAD_REPORT_BYTES_EXCEEDED");
+  workload.need(workload.reportEvidence(report).length <= workload.LIMITS.evidence_count, "WORKLOAD_EVIDENCE_COUNT_EXCEEDED");
+  const scanned = new Set(); let evidenceBytes = 0;
   if (!sameRef(report.plan_ref, planArtifact.ref)) throw new Error("Wave report does not cite the exact mission wave plan.");
   if (!sameRef(report.routing_preflight_ref, preflightArtifact.ref)) throw new Error("Wave report does not cite the exact routing preflight.");
   if (preflightArtifact.payload.status !== "ready") throw new Error("Wave report cannot be accepted for a blocked routing preflight.");
@@ -1074,8 +1079,13 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
         loadPayload: false
       });
       // MIME is caller-declared; whole JSON control records remain metadata in text or binary files.
+      const bounded = require("./workload-control-runner").boundedEvidence(evidence.store, evidenceRef, report);
+      if (!scanned.has(evidenceRef.sha256)) {
+        scanned.add(evidenceRef.sha256); evidenceBytes += bounded.byte_size;
+        workload.need(evidenceBytes <= workload.LIMITS.evidence_bytes, "WORKLOAD_EVIDENCE_BYTES_EXCEEDED");
+      }
       let evidencePayload;
-      try { evidencePayload = readEntryPayload(evidence.store, evidence.entry); }
+      try { evidencePayload = JSON.parse(bounded.text); workload.assertJsonLimits(evidencePayload); }
       catch (error) {
         if (!(error instanceof SyntaxError) || evidence.entry.content_type === "application/json") throw error;
       }
@@ -1210,6 +1220,28 @@ function recordWaveUnlocked(report, options = {}) {
       throw new Error("Mission wave report is immutable after admission; corrections require a new wave.");
     }
   }
+  const workloadRunner = require("./workload-control-runner");
+  let workloadReceipt, workloadReceiptRefs;
+  const workloadNow = options.now || new Date().toISOString();
+  if (admittedReport) {
+    workloadReceiptRefs = admittedReport.workload_control_receipt_refs || [];
+    if (workloadReceiptRefs.length !== 1) throw new Error("WORKLOAD_LEGACY_REPORT_READ_ONLY: historical reports cannot republish without a subject-bound assessment.");
+    workloadReceipt = requiredArtifactRef(operationOptions, workloadReceiptRefs[0], {
+      missionId: report.mission_id, waveId: report.wave_id, kind: "workload-control-receipts"
+    }).payload;
+    workloadRunner.assertCurrent(workloadReceipt, report, loadStore(operationOptions), repositoryStateDigest(repository.root), workloadNow);
+  } else {
+    const input = workloadRunner.buildInput(report, loadStore(operationOptions), repositoryStateDigest(repository.root), workloadNow);
+    workloadReceipt = workloadRunner.executeInput(input, () => repositoryStateDigest(repository.root));
+    workloadReceiptRefs = [persistJson(operationOptions, {
+      missionId: report.mission_id, waveId: report.wave_id, kind: "workload-control-receipts",
+      artifactId: workloadReceipt.id, payload: workloadReceipt, createdAt: workloadNow
+    })];
+    if (workloadReceipt.status !== "passed") throw new Error(`WORKLOAD_CONTROL_${workloadReceipt.status.toUpperCase()}: ${workloadReceipt.failure_code}.`);
+  }
+  if (report.workload_control_receipt_refs && JSON.stringify(report.workload_control_receipt_refs) !== JSON.stringify(workloadReceiptRefs)) {
+    throw new Error("WORKLOAD_RECEIPT_SUBSTITUTED: use only controller-issued workload receipts.");
+  }
   const controlReceiptRefs = executeRequiredControls(report, contextArtifacts, {
     ...operationOptions,
     doctrineRoot: options.doctrineRoot,
@@ -1224,7 +1256,7 @@ function recordWaveUnlocked(report, options = {}) {
       JSON.stringify(report.control_receipt_refs) !== JSON.stringify(controlReceiptRefs)) {
     throw new Error("Caller-supplied control receipt references do not match controller-issued receipts.");
   }
-  const recordedReport = { ...report, control_receipt_refs: controlReceiptRefs };
+  const recordedReport = { ...report, control_receipt_refs: controlReceiptRefs, workload_control_receipt_refs: workloadReceiptRefs };
   assertValid(recordedReport, "mission-wave-report", "Controller-bound mission wave report");
   assertAdaptiveCampaignMayContinue(planArtifact.payload, operationOptions);
   const reportRef = persistJson(operationOptions, {
@@ -1238,6 +1270,7 @@ function recordWaveUnlocked(report, options = {}) {
       wavePublicationGuard(planArtifact.payload, operationOptions)(snapshot);
       validateReportBindings(report, planArtifact, preflightArtifact, contextArtifacts, operationOptions);
       validateDispatchCompletion(report, planArtifact.payload, operationOptions);
+      workloadRunner.assertCurrent(workloadReceipt, report, loadStore(operationOptions), repositoryStateDigest(repository.root), workloadNow);
       return true;
     }
   });
@@ -1278,6 +1311,7 @@ function recordWaveUnlocked(report, options = {}) {
     release_authorized: false,
     dispatch_control: dispatchControl,
     control_receipt_refs: controlReceiptRefs,
+    workload_control_receipt_refs: workloadReceiptRefs,
     report_ref: reportRef,
     sitrep_ref: sitrepRef,
     repository: publicRepository(repository),

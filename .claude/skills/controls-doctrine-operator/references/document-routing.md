@@ -1,5 +1,16 @@
 # Document Routing
 
+## Actual Workload Controls
+
+Route `workload-control`, `subject-bound` and report/evidence scan issues to
+`docs/subject-bound-workload-controls.md`. Run the workload and control-enforcement
+fixtures for code changes, but do not cite those fixture results as a mission's
+policy assessment. Use the actual lifecycle `report` operation: it reads exact
+same-mission/wave work bytes, runs the bounded worker and retains a separate
+digest-only receipt. Keep rejected attempts; replace/redact only through reviewed
+work, assign a fresh report ID, then rerun admission. No caller flag skips this
+gate. Legacy admitted reports remain readable, not newly publishable authority.
+
 ## Readiness Restrictions
 
 Read `docs/readiness-drop-reconciliation.md` after a readiness drop. A rating or

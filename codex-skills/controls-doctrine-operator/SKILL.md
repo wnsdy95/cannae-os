@@ -11,6 +11,10 @@ Do not read the whole corpus by default. Route the task by operator mode, read t
 
 ## Operator Modes
 
+Before report admission, read `docs/subject-bound-workload-controls.md` and the
+Actual Workload Controls procedure in `references/document-routing.md`. Fixture
+passes are not workload clearance; require controller-issued workload receipts and a fresh report ID after rejection.
+
 There are two modes:
 
 - **Human final decision authority**: When the chat user is using this skill directly, treat the user as the final decision-maker. The AI may brief, recommend, draft, validate, and warn, but should not restrict the user's document visibility by the AI's own role.

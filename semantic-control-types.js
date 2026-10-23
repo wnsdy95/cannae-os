@@ -4,7 +4,7 @@ const NON_WORK_TYPES = new Set(["SemanticEvaluationPreview", "CodexSemanticInvoc
   "OrderAnalysisPreview", "CodexOrderAnalysisInvocation", "CodexOrderAnalysisCollection", "OrderAnalysisTransferConsent", "OperatorOrderAnalysis",
   "OrderAnalysisOperation", "OrderDraftReference", "MissionOrderAnalysis", "MissionRequest", "OrderDraft",
   "OperatorAnalysisReconciliationAuthorization", "OperatorAnalysisReconciliationRecord", "READINESS_EVENT",
-  "ReadinessDropInspection", "ReadinessDropReconciliation"]);
+  "ReadinessDropInspection", "ReadinessDropReconciliation", "WorkloadControlInput", "WorkloadPolicyAssessment", "WorkloadControlReceipt", "WorkloadControlFailure"]);
 function isNonWorkPayload(value) {
   const pending = [value], seen = new WeakSet();
   while (pending.length) {
