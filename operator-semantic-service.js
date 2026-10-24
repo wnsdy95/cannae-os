@@ -234,6 +234,7 @@ function openSemanticService(auth, configuration, consentService) {
           row.nonce_hash === hash(input.nonce) && row.created <= Date.now() && Date.now() < row.expires, "CONSOLE_MODEL_CHALLENGE_DENIED", 409);
         const invocation = JSON.parse(row.preview), purpose = purposeFor(invocation);
         requireThat(purpose.id === expectedPurpose, "CONSOLE_MODEL_PURPOSE_INVALID", 409); checkInvocation(invocation);
+        requireThat(input.displayed_invocation_sha256 === invocation.invocation_sha256, "CONSOLE_MODEL_DISPLAY_MISMATCH", 409);
         const consent = signOperatorRecord({ schema_version: "0.1", type: purpose.consentType, id: row.id,
           purpose: purpose.purpose, invocation_sha256: invocation.invocation_sha256, principal_id: user.id,
           created_at: new Date().toISOString(), expires_at: new Date(row.expires).toISOString(), execution_authorized: false, release_authorized: false }, meta("operator-signing-key"));

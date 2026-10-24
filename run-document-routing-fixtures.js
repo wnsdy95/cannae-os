@@ -34,6 +34,11 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["@cli-default", "CLI default model", "default model binding", "CodexModelSelection", "codex-model-selection"]) {
+    const result = route(router, ["--actor=user"], query); assertRoutes(result, ["cli-model-selection"]);
+    assert.equal(result.capability_routing.status, "covered"); assert(result.validation_commands.includes("node run-codex-model-selection-fixtures.js"));
+    assert(result.recommended_documents.some(item => item.path === "docs/codex-default-model-binding.md"));
+  }
   for (const query of ["ip-address", "ip-zone", "zone parser", "GHSA-rxp7-6hxx-x8q5", "verifier dependency", "dependency migration", "historical producer", "parser denial of service"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["advisory-dependency"]); assert.equal(result.capability_routing.status, "covered");

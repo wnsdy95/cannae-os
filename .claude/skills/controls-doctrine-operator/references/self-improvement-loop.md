@@ -41,6 +41,22 @@ passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
 
+When the USER chooses the CLI default, route `@cli-default` and read
+`docs/codex-default-model-binding.md`. Resolve through trusted host preparation,
+not a guessed model label or agent/browser override. Review the frozen literal,
+resolution time and digest; a preference or catalog listing is not transfer
+consent, account entitlement or a snapshot guarantee. Default changes require a
+separately controlled fresh host profile, never silent substitution or nonce reuse.
+Keep failed metadata discovery and actual model-transfer holds separate. A fake
+wire peer can omit real native notifications: compare generated pinned schemas
+and an isolated native metadata probe before broadening the allowed protocol.
+Accept only an inactive schema-shaped status, never generic unknown notifications.
+At model approval, hash the complete rendered invocation and submit the required
+display commitment. Never copy an unverified digest label, replace an altered
+display with the server's hidden original or treat unchanged request parameters
+as proof of what the operator reviewed. A mismatch needs a fresh exact review,
+not an automatic resend or a weaker approval contract.
+
 Before acknowledging a failed model action, route its exact producer purpose.
 Analysis can publish a draft before later failure; a null result reference is
 not publication-absence evidence. Bind original response bytes and read actual

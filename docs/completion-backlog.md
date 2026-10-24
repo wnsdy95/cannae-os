@@ -76,6 +76,14 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [CLI-default preparation candidate](codex-default-model-binding.md) resolves
+the USER's model preference into an exact frozen owner-review profile. Native
+empty-HOME protocol and synthetic owner/collector flows are separate evidence;
+neither is real-account inference, calibrated completeness or planning quality.
+This advances prerequisites in rows 4/9, not completion of goals 3/7. Source
+acceptance, existing-stack integration and controlled installed rollout remain
+open alongside all eight full outcomes.
+
 The local [IPv6-zone dependency candidate](github-release-independent-verification.md#producer-compatibility)
 pins 10.7.4 after actual bounded-child parser timeouts, preserves accepted main
 `22c61c3` as an exact historical producer and retains normal long-zone behavior.

@@ -24,7 +24,11 @@ async function environment({ model = "fixture-valid", executable = path.join(__d
   return env;
 }
 const preview = env => env.owner.post("/api/model-evaluations/preview", env.previewInput);
-const commitInput = value => ({ challenge_id: value.challenge_id, nonce: value.nonce, password, rationale: "Synthetic owner approves one exact model packet, not task execution." });
+const commitInput = value => {
+  const { invocation_sha256, ...displayed } = value.invocation;
+  return { challenge_id: value.challenge_id, nonce: value.nonce, password,
+    displayed_invocation_sha256: require("../order-intake-contract").digest(displayed), rationale: "Synthetic owner approves one exact model packet, not task execution." };
+};
 async function terminal(env, id) {
   for (let count = 0; count < 100; count++) {
     const current = await env.owner.get(`/api/model-evaluations/${id}`);

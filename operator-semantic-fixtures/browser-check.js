@@ -7,7 +7,9 @@ const { completeAnalysis, REQUEST_TEXT } = require("../request-order-compiler-fi
 async function main() {
   assert.equal(process.argv[2], "--output"); assert(process.argv[3]);
   const output = path.resolve(process.argv[3]); fs.mkdirSync(output, { recursive: true });
-  const env = await environment({ initialize: false, port: 0 });
+  const defaultFixture = process.argv[4] === "--default-model" ? require("../codex-model-selection-fixtures/support").fixture() : null;
+  const env = await environment({ initialize: false, port: 0,
+    ...(defaultFixture ? { model: "@cli-default", executable: defaultFixture.executable } : {}) });
   let browser, closing = false; const errors = [], routeErrors = [], results = [], releases = [];
   try {
     const request = captureRequest({ ...env.options, requestId: "MR-BROWSER-MODEL", text: REQUEST_TEXT + "\n<img src=x onerror=window.compromised=true>" });
@@ -39,6 +41,13 @@ async function main() {
     assert.equal(await page.evaluate(() => window.compromised), undefined);
     assert.equal(await page.locator("#semantic-profile").textContent().then(text => text.includes("Not enforced")), true);
     assert.equal(await page.locator("#semantic-profile").textContent().then(text => text.includes("Not attested")), true);
+    if (defaultFixture) {
+      assert.equal(defaultFixture.read("exec.jsonl").length, 0);
+      assert.equal(prepared.invocation.profile.requested_model, "fixture-valid");
+      for (const value of ["CLI default frozen during host preparation", prepared.invocation.profile.model_selection.selection_sha256]) {
+        assert((await page.locator("#semantic-profile").textContent()).includes(value));
+      }
+    }
     await page.screenshot({ path: path.join(output, "transfer-preview-desktop.png"), fullPage: true });
     results.push("actual owner preview displays the exact transmitted text, profile and risk without executing markup");
     await page.locator("#semantic-commit-form input[name=acknowledge]").check();
@@ -52,6 +61,33 @@ async function main() {
     assert.equal(await page.locator("#semantic-commit-form input[name=password]").inputValue(), "");
     await page.screenshot({ path: path.join(output, "evaluation-result-desktop.png"), fullPage: true });
     results.push("real browser password/nonce approval reaches the collector and signed queryable result");
+    if (defaultFixture) {
+      assert.equal(defaultFixture.read("exec.jsonl").length, 1);
+      await page.getByRole("button", { name: "Close", exact: true }).click(); await selectDraft();
+      await page.route("**/api/model-evaluations/preview", async route => {
+        const response = await route.fetch(), value = await response.json(); value.invocation.profile.requested_model = "altered-preview";
+        await route.fulfill({ response, json: value });
+      });
+      await page.getByRole("button", { name: "Evaluate Omissions", exact: true }).click();
+      await page.locator("#detail-error").filter({ hasText: "CONSOLE_MODEL_DISPLAY_MISMATCH" }).waitFor();
+      assert.equal(await page.locator("#semantic-confirmation").isVisible(), false); assert.equal(defaultFixture.read("exec.jsonl").length, 1);
+      await page.unroute("**/api/model-evaluations/preview"); results.push("altered actual preview bytes cannot open the browser approval form with the old digest");
+      await page.route("**/api/model-evaluations/preview", async route => {
+        const response = await route.fetch(), value = await response.json(); value.invocation.profile.requested_model = "altered-and-rekeyed";
+        const { invocation_sha256, ...body } = value.invocation; value.invocation.invocation_sha256 = require("../order-intake-contract").digest(body);
+        await route.fulfill({ response, json: value });
+      });
+      await page.getByRole("button", { name: "Evaluate Omissions", exact: true }).click();
+      await page.locator("#semantic-confirmation").waitFor({ state: "visible" });
+      await page.locator("#semantic-commit-form input[name=acknowledge]").check();
+      await page.locator("#semantic-commit-form textarea[name=rationale]").fill("Synthetic altered display must not transfer.");
+      await page.locator("#semantic-commit-form input[name=password]").fill(password);
+      const denied = page.waitForResponse(response => response.url().endsWith("/api/model-evaluations/commit") && response.status() === 409);
+      await page.getByRole("button", { name: "Approve One Evaluation", exact: true }).click(); await denied;
+      await page.locator("#detail-error").filter({ hasText: "CONSOLE_MODEL_DISPLAY_MISMATCH" }).waitFor();
+      assert.equal(defaultFixture.read("exec.jsonl").length, 1); assert.equal(await page.locator("#semantic-commit-form input[name=password]").inputValue(), "");
+      await page.unroute("**/api/model-evaluations/preview"); results.push("rekeyed altered browser preview fails the actual server display commitment without another collection");
+    }
     await page.getByRole("button", { name: "Close", exact: true }).click(); await page.setViewportSize({ width: 390, height: 844 });
     await selectDraft(); await page.getByRole("button", { name: "Evaluate Omissions", exact: true }).click();
     await page.locator("#semantic-confirmation").waitFor({ state: "visible" });
@@ -85,6 +121,7 @@ async function main() {
     await page.waitForTimeout(100);
     assert.equal(await page.locator("#semantic-entries").textContent(), "");
     assert.equal(await page.locator("#semantic-prompt").textContent(), "");
+    assert.equal(await page.locator("#semantic-invocation").textContent(), "");
     assert.equal(await page.getByRole("button", { name: "Model Actions", exact: true }).count(), 0);
     assert.equal(await page.locator("body").textContent().then(text => text.includes(current.id)), false);
     results.push("a delayed actual owner list cannot repaint the same browser after viewer registration");
@@ -115,6 +152,7 @@ async function main() {
   } catch (error) {
     fs.writeFileSync(path.join(output, "browser-failure.json"), JSON.stringify({ error: error.stack, completed_scenarios: results,
       page_errors: errors, route_errors: routeErrors, all_scenarios_passed: false }, null, 2) + "\n"); throw error;
-  } finally { closing = true; releases.forEach(release => release()); if (browser) await browser.close(); await env.service.app.close(); fs.rmSync(env.root, { recursive: true, force: true }); }
+  } finally { closing = true; releases.forEach(release => release()); if (browser) await browser.close(); await env.service.app.close(); fs.rmSync(env.root, { recursive: true, force: true });
+    if (defaultFixture) fs.rmSync(defaultFixture.root, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error.stack); process.exitCode = 1; });

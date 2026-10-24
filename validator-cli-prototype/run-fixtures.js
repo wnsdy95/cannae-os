@@ -11,6 +11,10 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  { name: "valid non-authorizing CLI model selection", file: "sample-payloads/valid-codex-model-selection.json", type: "codex-model-selection",
+    exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  { name: "changed CLI model selection digest", file: "sample-payloads/invalid-codex-model-selection.json", type: "codex-model-selection",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["SEMANTIC_MODEL_SELECTION_SUBSTITUTED"] },
   ...["entity", "request", "proposal", "authorization", "event"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-authorizing force registry ${suffix}`, file: `sample-payloads/${prefix}-force-registry-${suffix}.json`,
     type: `force-registry-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,

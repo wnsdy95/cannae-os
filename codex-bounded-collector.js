@@ -7,9 +7,9 @@ const { TextDecoder } = require("node:util");
 const { z } = require("zod");
 const { digest, sha256, AUTHORITY } = require("./order-intake-contract");
 const { validOperatorSignature } = require("./operator-consent-contract");
+const { VERSION, assertSelection } = require("./codex-model-selection-contract");
 function requireThat(value, code) { if (!value) throw new Error(code); }
 
-const VERSION = "codex-cli 0.162.1";
 const DISABLED = ["shell_tool", "hooks", "apps", "plugins", "remote_plugin", "multi_agent", "goals", "browser_use",
   "browser_use_external", "computer_use", "in_app_browser", "skill_mcp_dependency_install", "skill_search", "memories",
   "image_generation", "code_mode", "code_mode_host", "daemon_auto_start", "unbounded_connection_retries",
@@ -38,12 +38,18 @@ function prepareInvocation(preview, options) {
     env: { HOME: os.homedir(), PATH: process.env.PATH || "/usr/bin:/bin" } });
   requireThat(!version.error && version.status === 0 && version.stdout.trim() === VERSION, "SEMANTIC_CLI_VERSION_UNSUPPORTED");
   requireThat(typeof options.model === "string" && /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(options.model), "SEMANTIC_MODEL_REQUIRED");
+  const selection = options.modelSelection;
+  if (selection) {
+    assertSelection(selection);
+    requireThat(selection.requested_model === options.model && selection.executable_sha256 === executableDigest(executable) &&
+      selection.cli_version === VERSION, "SEMANTIC_MODEL_SELECTION_PROFILE_MISMATCH");
+  }
   const timeout = options.timeoutMs ?? 240000, maxBytes = options.maxOutputBytes ?? 1048576;
   requireThat(Number.isSafeInteger(timeout) && timeout >= 100 && timeout <= 240000 && Number.isSafeInteger(maxBytes) &&
     maxBytes >= 1024 && maxBytes <= 1048576, "SEMANTIC_LIMITS_INVALID");
   const invocation = { schema_version: "0.1", type: adapter.invocationType, preview,
     profile: { executable, executable_sha256: executableDigest(executable), cli_version: VERSION,
-      requested_model: options.model, reasoning_effort: "medium", disabled_features: DISABLED, enabled_features: [], host_skill_discovery_attested: false,
+      requested_model: options.model, ...(selection ? { model_selection: selection } : {}), reasoning_effort: "medium", disabled_features: DISABLED, enabled_features: [], host_skill_discovery_attested: false,
       timeout_ms: timeout, max_output_bytes: maxBytes, maximum_invocations: 1,
       sandbox: "read-only", upstream_cost_cap_enforced: false, native_context_attested: false, model_snapshot_attested: false }, ...AUTHORITY };
   return { ...invocation, invocation_sha256: digest(invocation) };
@@ -55,12 +61,18 @@ function assertInvocationIntegrity(invocation) {
   requireThat(invocation.preview && typeof invocation.preview === "object" && !Array.isArray(invocation.preview), "SEMANTIC_INVOCATION_PREVIEW_INVALID");
   const { preview_sha256: previewDigest, ...previewBody } = invocation.preview;
   requireThat(previewDigest === digest(previewBody), "SEMANTIC_INVOCATION_PREVIEW_SUBSTITUTED");
+  if (invocation.profile?.model_selection) {
+    const selection = assertSelection(invocation.profile.model_selection);
+    requireThat(selection.requested_model === invocation.profile.requested_model && selection.executable_sha256 === invocation.profile.executable_sha256 &&
+      selection.cli_version === invocation.profile.cli_version, "SEMANTIC_MODEL_SELECTION_PROFILE_MISMATCH");
+  }
   return expected;
 }
 function verifyInvocation(invocation) {
   const expected = assertInvocationIntegrity(invocation);
   const current = prepareInvocation(invocation.preview, { executable: invocation.profile.executable,
-    model: invocation.profile.requested_model, timeoutMs: invocation.profile.timeout_ms, maxOutputBytes: invocation.profile.max_output_bytes });
+    model: invocation.profile.requested_model, modelSelection: invocation.profile.model_selection,
+    timeoutMs: invocation.profile.timeout_ms, maxOutputBytes: invocation.profile.max_output_bytes });
   requireThat(current.invocation_sha256 === expected, "SEMANTIC_EXECUTABLE_OR_PROFILE_CHANGED");
 }
 function verifyTransferConsent(consent, invocation, trustedPublicKey, now = Date.now()) {

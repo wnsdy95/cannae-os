@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "cli-model-selection",
+    keywords: ["@cli-default", "cli default model", "default model binding", "codexmodelselection", "codex-model-selection"],
+    docs: ["docs/codex-default-model-binding.md", "docs/model-transfer-consent.md", "docs/native-order-analysis.md"],
+    commands: ["node run-codex-model-selection-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
     id: "advisory-dependency",
     keywords: ["ip-address", "ip-zone", "zone parser", "ghsa-rxp7-6hxx-x8q5", "verifier dependency", "dependency migration", "historical producer", "parser denial of service"],
     docs: ["docs/github-release-independent-verification.md", "docs/completion-backlog.md"],
@@ -558,6 +564,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "cli-model-selection", keywords: ["codex-model-selection", "codex-default-model-binding"] },
   { id: "advisory-dependency", keywords: ["ip-zone", "pre-zone", "github-release-independent-verification"] },
   { id: "force-registry", keywords: ["force-registry", "operate_controls_force_registry", "operator-console/force.js"] },
   { id: "workload-controls", keywords: ["workload-control", "workload-policy-assessment", "subject-bound-workload"] },

@@ -22,6 +22,7 @@ const INSTRUCTION = [
 function methodBinding() {
   return digest({ instruction: INSTRUCTION, response_schema: z.toJSONSchema(RESPONSE), files: [
     "order-analysis-generation-contract.js", "order-analysis-generator.js", "codex-order-analysis-collector.js", "codex-bounded-collector.js",
+    "codex-model-selection-contract.js", "codex-model-selection.js",
     "order-intake-contract.js", "request-order-compiler.js", "schema-files/mission-order-analysis.schema.json"
   ].map(file => ({ file, sha256: sha256(fs.readFileSync(path.join(__dirname, file))) })) });
 }

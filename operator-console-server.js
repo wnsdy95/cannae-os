@@ -29,12 +29,14 @@ async function createConsole(options) {
   while (!fs.existsSync(parent) && path.dirname(parent) !== parent) parent = path.dirname(parent);
   const gitLocation = spawnSync("git", ["-C", parent, "rev-parse", "--is-inside-work-tree", "--is-inside-git-dir"], { encoding: "utf8", shell: false });
   requireThat(!gitLocation.error && !gitLocation.stdout.trim().split(/\r?\n/).includes("true"), "CONSOLE_STATE_LOCATION_UNSAFE");
+  const profiles = await require("./codex-model-selection").resolveHostProfiles(options, repository.root, { signal: options.startupSignal });
+  requireThat(!options.startupSignal?.aborted, "CONSOLE_START_CANCELLED");
   const binding = crypto.createHash("sha256").update(`${repository.identity_fingerprint}\n${artifactRoot}`).digest("hex");
   const auth = await openAuthStore(stateDir, binding);
   const app = fastify({ logger: false, trustProxy: false, bodyLimit: 4096,
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false, useDefaults: false } } });
   const configuration = { repository: repository.root, repositoryKey: repository.key,
-    artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT), semantic: options.semantic || null, analysis: options.analysis || null };
+    artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT), semantic: profiles.semantic, analysis: profiles.analysis };
   let consent;
   try { consent = openConsentService(auth, configuration); }
   catch (error) { auth.close(); throw error; }
@@ -149,6 +151,7 @@ async function createConsole(options) {
     owner(request); return semantic.prepare(request.session, invocation);
   });
   app.post("/api/model-evaluations/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    displayed_invocation_sha256: { type: "string", pattern: "^[a-f0-9]{64}$" },
     challenge_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000)
   }) } }, async (request, reply) => {
     owner(request); const result = await semantic.commit(request.session, request.body);
@@ -162,6 +165,7 @@ async function createConsole(options) {
     owner(request); return semantic.prepare(request.session, invocation, "order_analysis");
   });
   app.post("/api/order-analyses/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    displayed_invocation_sha256: { type: "string", pattern: "^[a-f0-9]{64}$" },
     challenge_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000)
   }) } }, async (request, reply) => {
     owner(request); const result = await semantic.commit(request.session, request.body, "order_analysis");
@@ -301,11 +305,16 @@ async function main(argv = process.argv.slice(2)) {
   requireThat(Number.isInteger(port) && port >= 0 && port <= 65535, "CONSOLE_PORT_INVALID");
   requireThat(!!options["--semantic-executable"] === !!options["--semantic-model"], "CONSOLE_MODEL_CONFIGURATION_INCOMPLETE");
   requireThat(!!options["--analysis-executable"] === !!options["--analysis-model"], "CONSOLE_MODEL_CONFIGURATION_INCOMPLETE");
-  const consoleApp = await createConsole({ repository: repository.root, artifactRoot: options["--artifact-root"], port,
+  const startup = new AbortController(), abortStartup = () => startup.abort();
+  for (const signal of ["SIGINT", "SIGTERM"]) process.once(signal, abortStartup);
+  let consoleApp;
+  try { consoleApp = await createConsole({ repository: repository.root, artifactRoot: options["--artifact-root"], port, startupSignal: startup.signal,
     semantic: options["--semantic-executable"] ? { executable: options["--semantic-executable"], model: options["--semantic-model"] } : null,
     analysis: options["--analysis-executable"] ? { executable: options["--analysis-executable"], model: options["--analysis-model"] } : null,
-    stateDir: options["--state-dir"] || path.join(os.homedir(), ".local", "state", "cannae-operator", repository.key) });
+    stateDir: options["--state-dir"] || path.join(os.homedir(), ".local", "state", "cannae-operator", repository.key) }); }
+  finally { for (const signal of ["SIGINT", "SIGTERM"]) process.removeListener(signal, abortStartup); }
   try {
+    requireThat(!startup.signal.aborted, "CONSOLE_START_CANCELLED");
     await consoleApp.app.listen({ host: "127.0.0.1", port });
     if (!consoleApp.auth.hasOwner()) {
       const link = path.join(consoleApp.auth.root, "setup-link.txt");
@@ -319,4 +328,4 @@ async function main(argv = process.argv.slice(2)) {
   } catch (error) { await consoleApp.app.close(); throw error; }
 }
 module.exports = { createConsole, main };
-if (require.main === module) main().catch(error => { console.error(/^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message : "CONSOLE_START_FAILED"); process.exitCode = 1; });
+if (require.main === module) main().catch(error => { console.error(/^(?:CONSOLE|SEMANTIC)_[A-Z_]+$/.test(error.message) ? error.message : "CONSOLE_START_FAILED"); process.exitCode = 1; });

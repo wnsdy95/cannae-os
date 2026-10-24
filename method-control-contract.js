@@ -19,6 +19,7 @@ const CODE = ["method-control-contract.js", "method-control-broker.js", "method-
   "schema-files/operator-analysis-reconciliation-authorization.schema.json", "schema-files/operator-analysis-reconciliation-record.schema.json",
   "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
   "codex-bounded-collector.js", "codex-order-analysis-collector.js", "order-analysis-generation-contract.js", "order-analysis-generator.js", "operator-order-analysis-contract.js",
+  "codex-model-selection-contract.js", "codex-model-selection.js", "schema-files/codex-model-selection.schema.json",
   "order-intake-contract.js", "request-order-compiler.js",
   "force-registry-contract.js", "force-registry-controller.js", "operator-consent-contract.js",
   "operator-force-registry-service.js", "operator-force-registry-executor.js",

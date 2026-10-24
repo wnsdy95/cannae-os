@@ -76,6 +76,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
+- [Codex Default Model Binding](docs/codex-default-model-binding.md): bounded metadata-only host preparation freezes a concrete CLI model before exact owner transfer review. Selection is not account-access proof, inference consent or an automatic default upgrade.
 - [Native Request Analysis](docs/native-order-analysis.md): purpose-bound existing-Codex proposals consumed by the actual OPORD compiler, with separate owner transfer review and [failed-analysis/publication acknowledgment](docs/order-analysis-reconciliation.md). Proposed drafts remain uncalibrated and require human coverage/adoption; no self-granted task authority.
 - [Subject-Bound Workload Controls](docs/subject-bound-workload-controls.md): actual report admission scans exact report and work-evidence bytes in a bounded local worker, with a separate digest-only receipt. Framework fixture passes do not establish workload inspection; this core-pattern check is not release clearance or complete policy coverage.
 - [Force Registry Enrollment](docs/force-registry-enrollment.md): stable, versioned organization/capability/performer definitions with separate authenticated owner review and immutable history. Enrollment is unassessed, not qualification, standing activation or an operational grant.

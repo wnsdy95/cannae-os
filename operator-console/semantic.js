@@ -1,6 +1,16 @@
 "use strict";
 function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, viewCurrent, clearDecision, cell, empty, displayTime, session }) {
-  let draft, preview, holdPreview, action, actionPurpose, actionSource, actionInvocation, generation = 0, timer, polling = false;
+  let draft, preview, displaySnapshot, holdPreview, action, actionPurpose, actionSource, actionInvocation, generation = 0, timer, polling = false;
+  const invalidDisplay = () => { throw new Error("CONSOLE_MODEL_DISPLAY_MISMATCH"); };
+  const canonical = value => Array.isArray(value) ? value.map(canonical) : value && typeof value === "object" ?
+    Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])])) : value;
+  async function displayedDigest(invocation) {
+    if (!invocation || typeof invocation !== "object" || Array.isArray(invocation)) invalidDisplay();
+    const { invocation_sha256, ...body } = invocation, bytes = new TextEncoder().encode(JSON.stringify(canonical(body)));
+    if (bytes.length > 1048576) invalidDisplay();
+    const hash = await crypto.subtle.digest("SHA-256", bytes);
+    return [...new Uint8Array(hash)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+  }
   function clearHoldReview() {
     holdPreview = null; $("#model-hold-confirmation").hidden = true; $("#model-hold-form").reset();
     $("#model-hold-title").textContent = "Failed Model Transfer Review";
@@ -8,13 +18,14 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     $("#model-hold-expiry").textContent = ""; $("#model-hold-subject").textContent = ""; $("#model-hold-meta").replaceChildren();
   }
   function reset() {
-    generation++; clearInterval(timer); polling = false; draft = preview = holdPreview = action = actionPurpose = actionSource = actionInvocation = null;
+    generation++; clearInterval(timer); polling = false; draft = preview = displaySnapshot = holdPreview = action = actionPurpose = actionSource = actionInvocation = null;
     $("#semantic-preview").hidden = true; $("#semantic-preview").disabled = false;
     $("#semantic-preview-label").textContent = "Evaluate Omissions";
     $("#semantic-commit-label").textContent = "Approve One Evaluation";
     $("#semantic-stop").hidden = true; $("#semantic-stop").disabled = false;
     $("#semantic-confirmation").hidden = true; $("#semantic-commit-form").reset();
     $("#semantic-prompt").textContent = ""; $("#semantic-expiry").textContent = ""; $("#semantic-profile").replaceChildren();
+    $("#semantic-invocation").textContent = "";
     $("#model-hold-preview").hidden = true; $("#model-hold-preview").disabled = false;
     clearHoldReview();
   }
@@ -91,7 +102,7 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     if (!selected || button.disabled) return;
     button.disabled = true;
     const endpoint = selected.purpose === "order_analysis" ? "/api/order-analyses" : "/api/model-evaluations";
-    void api(`${endpoint}/preview`, { entry_id: selected.item.id, manifest: selected.manifest }).then(prepared => {
+    void api(`${endpoint}/preview`, { entry_id: selected.item.id, manifest: selected.manifest }).then(async prepared => {
       if (revision !== generation || selected !== draft || !viewCurrent(scope)) return;
       const analysis = selected.purpose === "order_analysis", invocation = prepared?.invocation, packet = invocation?.preview, profile = invocation?.profile;
       const reference = analysis ? packet?.request_ref : packet?.draft_ref;
@@ -101,20 +112,26 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
         invocation.execution_authorized !== false || invocation.release_authorized !== false || !/^[A-Za-z0-9_-]{43}$/.test(prepared.nonce || "") ||
         !Number.isFinite(Date.parse(prepared.expires_at)) || Date.now() >= Date.parse(prepared.expires_at) ||
         analysis && (!Array.isArray(packet.input?.allowed_roles) || !packet.input.allowed_roles.length)) throw new Error("CONSOLE_MODEL_PREVIEW_INVALID");
+      if (await displayedDigest(invocation) !== invocation.invocation_sha256) invalidDisplay();
+      if (revision !== generation || selected !== draft || !viewCurrent(scope)) return;
       preview = prepared;
       $("#semantic-commit-label").textContent = analysis ? "Approve One Analysis" : "Approve One Evaluation";
       fields("#semantic-profile", [["Purpose", prepared.purpose === "order_analysis" ? "One request analysis and proposed draft" : "One semantic omission evaluation"],
         ["Destination", "OpenAI / Existing Codex CLI account"], ["Model alias", profile.requested_model],
+        ...(profile.model_selection ? [["Model selection", "CLI default frozen during host preparation"],
+          ["Default resolved", displayTime(profile.model_selection.resolved_at)], ["Selection SHA-256", profile.model_selection.selection_sha256]] : []),
         ["CLI version", profile.cli_version], ["Executable SHA-256", profile.executable_sha256], ["Invocation SHA-256", prepared.invocation.invocation_sha256],
         ["Handling", packet.classification], ["Maximum duration", `${profile.timeout_ms / 1000} seconds`], ["Maximum invocations", "1"],
         ["Provider billing cap", "Not enforced"], ["Native context / Model snapshot", "Not attested"], ["Task execution / Release", "Not authorized"],
         ...(prepared.purpose === "order_analysis" ? [["Permitted proposed roles", packet.input.allowed_roles.join(", ")], ["Adoption / Calibrated semantics", "Not authorized / Not established"]] : [])]);
       $("#semantic-expiry").textContent = `Expires ${displayTime(prepared.expires_at)}`;
       $("#semantic-prompt").textContent = packet.prompt;
+      $("#semantic-invocation").textContent = JSON.stringify(invocation, null, 2);
+      displaySnapshot = { record: $("#semantic-invocation").textContent, profile: $("#semantic-profile").textContent, prompt: packet.prompt };
       $("#semantic-commit-form").reset(); $("#semantic-confirmation").hidden = false;
       $("#detail").scrollTop = $("#semantic-confirmation").offsetTop - $("#detail header").offsetHeight - 20;
     }).catch(failure => { if (revision === generation && selected === draft && viewCurrent(scope)) {
-      preview = null; $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = "";
+      preview = displaySnapshot = null; $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = ""; $("#semantic-invocation").textContent = "";
       $("#semantic-profile").replaceChildren(); $("#semantic-commit-form").reset(); $("#detail-error").textContent = failure.message;
     } })
       .finally(() => { if (revision === generation && selected === draft && viewCurrent(scope)) button.disabled = false; });
@@ -123,20 +140,29 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     event.preventDefault(); const form = event.currentTarget;
     void busy(form, async () => {
       const prepared = preview, revision = generation, scope = currentView();
-      if (!prepared || !form.elements.acknowledge.checked) throw new Error("CONSOLE_MODEL_PREVIEW_REQUIRED");
-      preview = null; action = prepared.challenge_id;
+      const snapshot = displaySnapshot, raw = $("#semantic-invocation").textContent;
+      let submitted = false;
       try {
+        if (!prepared || !snapshot || !form.elements.acknowledge.checked) throw new Error("CONSOLE_MODEL_PREVIEW_REQUIRED");
+        if (raw.length > 2097152 || raw !== snapshot.record || $("#semantic-profile").textContent !== snapshot.profile || $("#semantic-prompt").textContent !== snapshot.prompt) invalidDisplay();
+        const displayed = JSON.parse(raw), displayedHash = await displayedDigest(displayed);
+        if (revision !== generation || !viewCurrent(scope) || preview !== prepared) return;
+        if (displayedHash !== prepared.invocation.invocation_sha256 || raw !== $("#semantic-invocation").textContent ||
+            $("#semantic-profile").textContent !== snapshot.profile || $("#semantic-prompt").textContent !== snapshot.prompt) invalidDisplay();
+        preview = null; action = prepared.challenge_id;
+        submitted = true;
         const endpoint = prepared.purpose === "order_analysis" ? "/api/order-analyses" : "/api/model-evaluations";
         const current = await api(`${endpoint}/commit`, { challenge_id: prepared.challenge_id, nonce: prepared.nonce,
-          password: form.elements.password.value, rationale: form.elements.rationale.value });
+          password: form.elements.password.value, rationale: form.elements.rationale.value, displayed_invocation_sha256: displayedHash });
         if (revision !== generation || !viewCurrent(scope)) return;
-        $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = ""; $("#semantic-preview").hidden = true;
+        displaySnapshot = null; $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = ""; $("#semantic-invocation").textContent = ""; $("#semantic-preview").hidden = true;
         render(current); if (current.state === "running") watch(current.id);
       } catch (failure) {
+        if (!submitted) throw failure;
         if (revision !== generation || !viewCurrent(scope)) return;
         const current = await api(`/api/model-evaluations/${prepared.challenge_id}`);
         if (revision !== generation || !viewCurrent(scope)) return;
-        $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = "";
+        displaySnapshot = null; $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = ""; $("#semantic-invocation").textContent = "";
         render(current); if (current.state === "running") watch(current.id);
         throw failure;
       } finally { if (revision === generation && viewCurrent(scope)) form.reset(); }

@@ -7,6 +7,15 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [CLI-default bridge](codex-default-model-binding.md) uses the official
+[App Server model catalog](https://learn.chatgpt.com/docs/app-server#list-models-modellist)
+and effective configuration RPC plus locally generated 0.162.1 schemas. Catalog
+recommendations depend on the client/account; they do not prove an entitlement or
+immutable model snapshot. Frozen exact model/selection consent, inactive-status
+validation, privacy and observed child cleanup are local engineering policy.
+An empty-HOME network-denied protocol probe is not the real user's configuration
+or a successful inference. No new military-source claim is introduced.
+
 The [force registry enrollment candidate](force-registry-enrollment.md) is local
 engineering synthesis over the existing force-structure, task/readiness, owner
 authentication and immutable artifact contracts. It distinguishes signed exact

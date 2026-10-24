@@ -23,6 +23,13 @@ the local host does not attest their account relationship.
 
 ## Configure The Trusted Host
 
+For the USER's CLI-default preference, use the explicit
+[default binding preparation](codex-default-model-binding.md). It freezes a
+literal model and resolution commitment before this host opens, not at inference
+time. A later default change does not silently alter this host; the owner still
+reviews the exact displayed model and packet. Metadata discovery may contact the
+catalog but transmits no mission content and grants no inference consent.
+
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/serve_controls_operator.js \
   --repository <target-repository> --state-dir <private-directory-outside-git> \
@@ -39,6 +46,14 @@ requires its authenticated loopback API. Existing origin/host, CSP, CSRF, strict
 body schemas, account permissions and auth throttles apply to these routes.
 
 ## Owner Procedure
+
+New analysis/omission commits require the browser's independently computed
+`displayed_invocation_sha256` over the complete rendered transfer record. The
+server compares the exact private original before reservation. Altered/rekeyed
+response bytes and edited prompt/profile text fail without another collection;
+do not replace the display with a digest label supplied by the response. Inspect
+the complete record when needed; this check does not attest human presence or
+protect a compromised host. Historical signed records retain their original shape.
 
 1. In Evidence, inspect an actual `order-drafts` artifact and select **Evaluate
    Omissions**. Preparation verifies the selected manifest, replays the draft,

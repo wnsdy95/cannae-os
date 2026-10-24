@@ -17,6 +17,7 @@ const { contractIssues: modelReconciliationIssues, TYPES: MODEL_RECONCILIATION_T
 const { contractIssues: analysisReconciliationIssues, TYPES: ANALYSIS_RECONCILIATION_TYPES } = require("../operator-analysis-reconciliation-contract");
 const { evaluationIssues, TYPES: MODEL_EVALUATION_TYPES } = require("../operator-semantic-evaluation-contract");
 const { evaluationIssues: analysisEvaluationIssues, TYPES: ANALYSIS_EVALUATION_TYPES } = require("../operator-order-analysis-contract");
+const { selectionIssues } = require("../codex-model-selection-contract");
 const { issues: requirementInventoryIssues, TYPES: REQUIREMENT_INVENTORY_TYPES } = require("../requirement-inventory-contract");
 const { issues: planningIssues, TYPES: PLANNING_TYPES } = require("../bounded-planning-contract");
 const { attestationDigest, publicKeyId, strictBase64 } = require("../verification-attestation");
@@ -147,6 +148,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "codex-model-selection": "codex-model-selection.schema.json",
   "operational-cop": "operational-cop.schema.json",
   "operator-consent-record": "operator-consent-record.schema.json",
   "operator-reconciliation-authorization": "operator-reconciliation-authorization.schema.json",
@@ -6140,7 +6142,7 @@ function validationResult(issues, type, payload) {
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
-      !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !["frago", "frago-scope-change", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification"].includes(type) &&
+      !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !["frago", "frago-scope-change", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification", "codex-model-selection"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "readiness-event" && type !== "readiness-drop-reconciliation" && type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
@@ -6181,7 +6183,7 @@ function validatePayloadInSnapshot(payload, type, options) {
       .map(item => ({ ...item, layer: "semantic" })) : []),
     ...(schemaResult.valid && type === "readiness-drop-reconciliation" ?
       require("../readiness-drop-revocation-runner").reconciliationIssues(payload).map(item => ({ ...item, layer: "semantic" })) : []),
-    ...(schemaResult.valid ? [...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type), ...analysisReconciliationIssues(payload, type), ...evaluationIssues(payload, type), ...analysisEvaluationIssues(payload, type), ...requirementInventoryIssues(payload, type), ...planningIssues(payload, type)]
+    ...(schemaResult.valid ? [...selectionIssues(payload, type), ...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type), ...analysisReconciliationIssues(payload, type), ...evaluationIssues(payload, type), ...analysisEvaluationIssues(payload, type), ...requirementInventoryIssues(payload, type), ...planningIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {

@@ -63,7 +63,9 @@ async function main() {
         await page.locator("#semantic-commit-form input[name=password]").fill(password);
         const submitted = page.waitForRequest(value => new URL(value.url()).pathname === "/api/order-analyses/commit");
         await page.getByRole("button", { name: "Approve One Analysis", exact: true }).click();
-        const input = (await submitted).postDataJSON(); assert.deepEqual(Object.keys(input).sort(), ["challenge_id", "nonce", "password", "rationale"]);
+        const input = (await submitted).postDataJSON(); assert.deepEqual(Object.keys(input).sort(), ["challenge_id", "displayed_invocation_sha256", "nonce", "password", "rationale"]);
+        const { invocation_sha256, ...displayed } = prepared.invocation;
+        assert.equal(input.displayed_invocation_sha256, require("../order-intake-contract").digest(displayed));
         assert.equal(input.challenge_id, prepared.challenge_id); assert.equal(input.nonce, prepared.nonce);
         await page.locator("#detail-title").filter({ hasText: "Order Analysis / evaluated" }).waitFor({ timeout: 45000 });
         const current = JSON.parse(await page.locator("#detail-content").textContent());

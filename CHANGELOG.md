@@ -6,6 +6,16 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Resolve an explicitly selected CLI-default model during trusted host preparation,
+  freeze its concrete name and strict selection commitment in owner packets, and
+  preserve literal-model history. Bound metadata-only protocol and process cleanup;
+  reject ambiguity, active remote control, unsupported providers and substitution.
+  Add actual synthetic omission/analysis/compiler and browser coverage, both skill
+  routing/procedures and non-work evidence classification. No inference consent,
+  model access, calibrated semantics or installed rollout is inferred.
+  Require an independently computed complete-display invocation commitment at
+  both model commit endpoints; reject altered/rekeyed previews before reservation.
+
 - Pin transitive `ip-address` 10.7.4 after bounded public-parser timeouts in the
   installed baseline. Preserve accepted main's exact pre-zone evidence and
   replay it with the current engine; regenerate only current structural examples.

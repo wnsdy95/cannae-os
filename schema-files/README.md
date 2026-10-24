@@ -1,5 +1,11 @@
 # Schema Files
 
+`codex-model-selection.schema.json` describes strict non-authorizing host model
+metadata, including exact model, catalog/configuration commitments, pinned CLI
+and observed child exit. Both validator APIs keep `can_execute: false` and the
+semantic validator checks its self-digest. It is not transfer consent or model
+access evidence. See [default binding](../docs/codex-default-model-binding.md).
+
 The five `force-registry-*.schema.json` contracts bind permanent unqualified
 entity definitions, exact requests/proposals, distinct signed owner consent and
 immutable transition events. All validate with `can_execute: false`; no field

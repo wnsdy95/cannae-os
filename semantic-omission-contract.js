@@ -30,7 +30,8 @@ const INSTRUCTION = [
 function requireThat(value, code) { if (!value) throw new Error(code); }
 function methodBinding() {
   return digest({ instruction: INSTRUCTION, response_schema: z.toJSONSchema(RESPONSE), files:
-    ["semantic-omission-contract.js", "semantic-omission-evaluator.js", "codex-semantic-collector.js", "codex-bounded-collector.js"].map(file =>
+    ["semantic-omission-contract.js", "semantic-omission-evaluator.js", "codex-semantic-collector.js", "codex-bounded-collector.js",
+      "codex-model-selection-contract.js", "codex-model-selection.js"].map(file =>
       ({ file, sha256: sha256(fs.readFileSync(path.join(__dirname, file))) })) });
 }
 function targetsFor(draft) {

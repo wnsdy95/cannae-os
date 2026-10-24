@@ -1,4 +1,4 @@
-const NON_WORK_TYPES = new Set(["SemanticEvaluationPreview", "CodexSemanticInvocation", "SemanticEvaluationTransferConsent",
+const NON_WORK_TYPES = new Set(["CodexModelSelection", "SemanticEvaluationPreview", "CodexSemanticInvocation", "SemanticEvaluationTransferConsent",
   "CodexSemanticCollection", "OperatorSemanticEvaluation", "OperatorModelReconciliationAuthorization", "OperatorModelReconciliationRecord",
   "RequirementInventory", "SemanticCoverageProposal", "SemanticReviewAssignment", "BoundedPlanningRequest", "BoundedPlanningProposal", "BoundedPlanningOperation",
   "OrderAnalysisPreview", "CodexOrderAnalysisInvocation", "CodexOrderAnalysisCollection", "OrderAnalysisTransferConsent", "OperatorOrderAnalysis",

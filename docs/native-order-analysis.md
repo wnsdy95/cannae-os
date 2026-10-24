@@ -19,6 +19,11 @@ This is local process control, not protected-host or native-context attestation.
 
 ## Prepare And Review
 
+The trusted host may use [CLI-default preparation](codex-default-model-binding.md)
+to freeze a concrete model before opening. Each analysis packet retains that
+resolution; no role, browser field or later default change can substitute a model
+for the owner's exact consent. This remains separate from semantic calibration.
+
 Capture the exact request with the existing compiler first. Both provider skills
 offer a prepare-only wrapper; it requires the target repository and exposes no
 run, model, role, approval or clock override:

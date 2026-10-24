@@ -1,5 +1,32 @@
 # Research Compendium
 
+## A Default Preference Is Not Transfer Consent (2026-10-24)
+
+The human selected the current Codex CLI default, not an invented military model
+alias. The [local bridge](codex-default-model-binding.md) resolves a configured
+model or one unambiguous catalog recommendation during trusted host preparation,
+then freezes the literal, time and digest for subsequent exact-packet review.
+There is no automatic upgrade after a default change or transfer from a browser
+model override. Raw configuration/account responses are not retained.
+
+The actual installed CLI emitted an inactive remote-control notification omitted
+by the first fake. The original native probes failed closed. A generated schema
+review and new disabled/connecting/connected regressions distinguish harmless
+metadata from active or unknown behavior. A later empty-HOME, network-denied probe
+completed without a model turn; it does not resolve the real account's default or
+prove access. Synthetic owner APIs exercise frozen omission and analysis/compiler
+paths separately. None supplies calibrated semantics, planning quality, protected
+execution or real owner consent; all eight full outcomes remain open.
+
+A separate synthetic owner/API probe displayed a separately altered model while
+the original no-display-commitment request still collected the original model.
+It was not a deployed browser or real-owner exploit. The new commit contract
+requires the digest of the complete displayed invocation; the browser computes
+it rather than copying a supplied digest, and the server compares the private
+original before reservation. Re-keying altered response bytes cannot authorize
+that original. The old failed/counterexample artifacts stay immutable; no human
+presence, compromised-host protection or semantic-quality guarantee is inferred.
+
 ## Definition Enrollment Is Not Qualification (2026-10-24)
 
 The existing force-change projection uses approval strings and does not create
