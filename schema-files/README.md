@@ -1,5 +1,81 @@
 # Schema Files
 
+`codex-model-selection.schema.json` describes strict non-authorizing host model
+metadata, including exact model, catalog/configuration commitments, pinned CLI
+and observed child exit. Both validator APIs keep `can_execute: false` and the
+semantic validator checks its self-digest. It is not transfer consent or model
+access evidence. See [default binding](../docs/codex-default-model-binding.md).
+
+The five `force-registry-*.schema.json` contracts bind permanent unqualified
+entity definitions, exact requests/proposals, distinct signed owner consent and
+immutable transition events. All validate with `can_execute: false`; no field
+promotes readiness or activates a unit. See
+[force registry enrollment](../docs/force-registry-enrollment.md).
+
+`workload-control-input.schema.json`, `workload-policy-assessment.schema.json` and
+`workload-control-receipt.schema.json` separate actual bounded report/evidence
+policy input and observation from framework code regressions. The report's
+additive `workload_control_receipt_refs` field is controller-selected on every
+new admission; historical absence is readable, not fresh publication authority.
+All three contracts validate with `can_execute: false`. See
+[subject-bound controls](../docs/subject-bound-workload-controls.md) for limits.
+
+`readiness-drop-reconciliation.schema.json` binds a non-authorizing restrictive
+batch report to exact readiness observations and actual lease checkpoints.
+The [runtime consumer](../docs/readiness-drop-reconciliation.md), not schema
+validity, verifies history and narrows authority while preserving pending results.
+Readiness events and reports both remain `can_execute: false`; neither proves
+positive qualification, authenticated evaluator identity or fresh grant authority.
+
+`operator-analysis-reconciliation-authorization.schema.json` and
+`operator-analysis-reconciliation-record.schema.json` bind a separate fresh owner
+acknowledgment to one failed analysis and exact observed compiler publication.
+They never substitute for omission consent, adopt/delete a draft, settle artifacts
+or grant execution/release. Schema checks cannot establish history, signatures,
+process absence or absence of all effects. Follow the
+[actual analysis ceremony](../docs/order-analysis-reconciliation.md).
+
+`order-analysis-response.schema.json` and `operator-order-analysis.schema.json`
+describe bounded proposed statements/tasks and non-authorizing signed collection
+results with exact original-journal and compiled-draft bindings. Schema checks
+cannot prove source quotes, signature trust, retained draft scope or calibration;
+the [actual analysis consumers](../docs/native-order-analysis.md) perform these
+separate checks. A held result is not a new execution grant.
+
+`bounded-planning-request.schema.json` and `bounded-planning-proposal.schema.json`
+describe finite proposed roster/control envelopes and non-authorizing structural
+generation. `order_binding.planning_ref` binds the finalized plan; actual replay
+and parent-budget/revision consumers, not schema validity alone, prove that
+construction. Follow [bounded synthesis](../docs/bounded-plan-synthesis.md).
+
+`requirement-inventory.schema.json`, `semantic-coverage-proposal.schema.json`
+and `semantic-review-assignment.schema.json` describe non-authorizing source
+partitions, human coverage proposals and need-to-know receiver assignments.
+New adoption request/proposal/decision/record v0.2 requires the exact review path;
+v0.1 remains historical only at active captured-request consumers. Schema checks
+cannot verify retained sources, human judgement or model calibration. Follow
+[requirement inventory admission](../docs/requirement-inventory-admission.md).
+
+`operator-semantic-evaluation.schema.json` preserves authentic v0.1 historical
+result shapes and v0.2 results with an original collector-journal commitment.
+Both versions are non-authorizing. The live reconciliation reader requires v0.2
+and its exact pinned journal; structural validity or a fresh hash cannot upgrade
+legacy provenance. Derived state/verdict and response-digest rules do not prove
+semantic quality, signature trust or process isolation.
+
+`operator-model-reconciliation-authorization.schema.json` and
+`operator-model-reconciliation-record.schema.json` bind fresh owner acknowledgment
+of one verifiable failed local transfer. Both remain non-authorizing, including
+the nested authorization. Schema validity cannot prove signatures, private
+history, process absence, provider cancellation or hold discharge; follow the
+[live model-domain ceremony](../docs/model-transfer-reconciliation.md).
+
+`operational-cop.schema.json` describes a restricted read-only snapshot of
+verified wave history, display filters, freshness and authorized-scope alerts.
+The validator never returns execution permission. Schema validity alone cannot
+prove session access, actual history, liveness or current repository state;
+the [COP query](../docs/operational-cop.md) independently replays those inputs.
+
 `dispatch-lease-issuance-request.schema.json` freezes one exact planned lease,
 observed manifest and predecessor/channel evidence before publication.
 `dispatch-lease-issuance-resolution.schema.json` records actual commit or
@@ -101,6 +177,8 @@ the original raw bundle and retained trust root. Current, frozen prior-v0.2 and 
 are test wrappers around public signed material, not release authority or proof
 that the historical runtime executed. Equal schema/package versions do not admit
 an unrecognized module/lockfile pair; use the full replay fixtures for migration.
+The frozen pre-zone v0.2 sample preserves accepted main `22c61c3` byte-for-byte;
+the separately generated current sample binds the patched installed producer.
 
 `implementation-candidate-registry.schema.json` defines the source-bound
 engineering inventory: unique candidate identities, reviewed implementation

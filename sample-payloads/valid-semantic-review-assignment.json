@@ -1,0 +1,37 @@
+{
+  "type": "SemanticReviewAssignment",
+  "review_ref": {
+    "artifact_id": "SCV-a4d452efbf655932aa6a2a8c011bca1f",
+    "relative_path": "repositories/repo-4ab2504372ab/missions/MIS-ADOPTION/W1/semantic-coverage-proposals/SCV-a4d452efbf655932aa6a2a8c011bca1f.json",
+    "sha256": "e6ca655b3246bc48a27a1d6814a18d31be9a818fce8dc0c49b3f5993564372a3"
+  },
+  "inventory_ref": {
+    "artifact_id": "RI-ee3788380de90abac4739db2beab5e53",
+    "relative_path": "repositories/repo-4ab2504372ab/missions/MIS-ADOPTION/W1/requirement-inventories/RI-ee3788380de90abac4739db2beab5e53.json",
+    "sha256": "8786e9d426854829ed77a8f6a15f288bb406983daecf7661e29bc21dccf8bfe1"
+  },
+  "review_class": "human_inventory_and_coverage",
+  "plan_sha256": "3153d6c75b5dce5dc757990d844d44ff13e9dd8b8f8ef8d8c04978aa2584a501",
+  "requirements": [
+    {
+      "id": "REQ-2",
+      "instruction": "Use only the supplied repository evidence.",
+      "kind": "prohibition",
+      "scope": "global"
+    },
+    {
+      "id": "REQ-3",
+      "instruction": "Do not publish or modify customer data.",
+      "kind": "prohibition",
+      "scope": "global"
+    },
+    {
+      "id": "REQ-4",
+      "instruction": "The user decides the target segment and any budget change.",
+      "kind": "approval",
+      "scope": "global"
+    }
+  ],
+  "model_calibrated_for_admission": false,
+  "semantic_completeness_proven": false
+}

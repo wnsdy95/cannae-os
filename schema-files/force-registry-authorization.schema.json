@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/force-registry-authorization.schema.json",
+  "title": "Authenticated Exact Force Registry Enrollment Consent",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "purpose", "acknowledgment", "challenge_id", "principal_id", "principal_epoch", "authentication_method", "session_sha256", "nonce_sha256", "created_at", "expires_at", "rationale", "review", "review_sha256", "displayed_review_sha256", "signature", "execution_authorized", "release_authorized", "human_final_decision_authority", "qualification_granted", "standing_activation_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "ForceRegistryAuthorization" }, "id": { "$ref": "common.schema.json#/$defs/id" }, "purpose": { "const": "force_registry_enrollment" },
+    "acknowledgment": { "const": "definition_only_no_qualification_or_execution" },
+    "challenge_id": { "type": "string", "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" }, "principal_id": { "type": "string", "minLength": 1, "maxLength": 128 }, "principal_epoch": { "type": "integer", "minimum": 1 },
+    "authentication_method": { "const": "local_owner_password_reauthentication" }, "session_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "nonce_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }, "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" }, "rationale": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "review_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "displayed_review_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "review": { "type": "object", "additionalProperties": false,
+      "required": ["proposal_ref", "proposal", "materials", "registry_head_ref", "previous_entity", "next_sequence", "repository_binding", "observed_manifest", "source_state_sha256", "repository_state_sha256"],
+      "properties": {
+        "proposal_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" }, "proposal": { "$ref": "force-registry-proposal.schema.json" },
+        "materials": { "type": "array", "maxItems": 17, "items": { "type": "object", "additionalProperties": false, "required": ["reference", "text_sha256"], "properties": {
+          "reference": { "$ref": "common.schema.json#/$defs/artifact_ref" }, "text_sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+        } } },
+        "registry_head_ref": { "$ref": "force-registry-request.schema.json#/$defs/reference_or_none" }, "previous_entity": { "anyOf": [{ "$ref": "force-registry-entity.schema.json" }, { "type": "null" }] }, "next_sequence": { "type": "integer", "minimum": 1, "maximum": 256 },
+        "repository_binding": { "$ref": "#/$defs/repository_binding" },
+        "observed_manifest": { "type": "object", "additionalProperties": false, "required": ["revision", "sha256"], "properties": { "revision": { "type": "integer", "minimum": 1 }, "sha256": { "$ref": "common.schema.json#/$defs/sha256" } } },
+        "source_state_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "repository_state_sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+      }
+    },
+    "signature": { "type": "object", "additionalProperties": false, "required": ["algorithm", "key_sha256", "value"], "properties": { "algorithm": { "const": "Ed25519" }, "key_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "value": { "type": "string", "minLength": 88, "maxLength": 88 } } },
+    "execution_authorized": { "const": false }, "release_authorized": { "const": false }, "human_final_decision_authority": { "const": "USER" },
+    "qualification_granted": { "const": false }, "standing_activation_authorized": { "const": false }
+  },
+  "$defs": { "repository_binding": { "type": "object", "additionalProperties": false, "required": ["repository_key", "identity_fingerprint"], "properties": { "repository_key": { "type": "string", "minLength": 1 }, "identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" } } } }
+}

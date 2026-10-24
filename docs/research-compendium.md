@@ -1,5 +1,298 @@
 # Research Compendium
 
+## A Default Preference Is Not Transfer Consent (2026-10-24)
+
+The human selected the current Codex CLI default, not an invented military model
+alias. The [local bridge](codex-default-model-binding.md) resolves a configured
+model or one unambiguous catalog recommendation during trusted host preparation,
+then freezes the literal, time and digest for subsequent exact-packet review.
+There is no automatic upgrade after a default change or transfer from a browser
+model override. Raw configuration/account responses are not retained.
+
+The actual installed CLI emitted an inactive remote-control notification omitted
+by the first fake. The original native probes failed closed. A generated schema
+review and new disabled/connecting/connected regressions distinguish harmless
+metadata from active or unknown behavior. A later empty-HOME, network-denied probe
+completed without a model turn; it does not resolve the real account's default or
+prove access. Synthetic owner APIs exercise frozen omission and analysis/compiler
+paths separately. None supplies calibrated semantics, planning quality, protected
+execution or real owner consent; all eight full outcomes remain open.
+
+A separate synthetic owner/API probe displayed a separately altered model while
+the original no-display-commitment request still collected the original model.
+It was not a deployed browser or real-owner exploit. The new commit contract
+requires the digest of the complete displayed invocation; the browser computes
+it rather than copying a supplied digest, and the server compares the private
+original before reservation. Re-keying altered response bytes cannot authorize
+that original. The old failed/counterexample artifacts stay immutable; no human
+presence, compromised-host protection or semantic-quality guarantee is inferred.
+
+## Definition Enrollment Is Not Qualification (2026-10-24)
+
+The existing force-change projection uses approval strings and does not create
+an authenticated persistent registry. Literal task/readiness matching also
+cannot provide stable organization, capability or performer identity. The
+[local enrollment candidate](force-registry-enrollment.md) adds permanent IDs,
+versioned owner/configuration declarations, explicit alias history and separate
+exact password-reauthenticated owner consent with full signed nested subjects.
+It deliberately keeps definitions unassessed and preserves partial publication
+holds. This is local engineering synthesis, not new military doctrine, training
+evidence, native configuration attestation or positive execution authority.
+Full training, mandatory grant consumers, all organization lifecycle operations,
+recovery, CoS/COP integration and controlled rollout remain open under goal 5.
+
+## Code Regression Is Not Workload Inspection (2026-10-24)
+
+A retained actual-function probe on `1f2b261` passed the same routed fixture
+command for both clean and credential-bearing report inputs. The command received
+no report/evidence bytes; a digest-bound receipt alone did not close that gap.
+It did not exercise full report admission or demonstrate external disclosure.
+The [local corrective candidate](subject-bound-workload-controls.md) adds actual
+same-mission/wave work-byte inspection, a bounded fixed worker and separately
+bound policy receipts to report admission. Publication rechecks the full subject.
+This is engineering synthesis, not new military doctrine or model calibration.
+Core credential/marking checks remain narrower than custom EEFI, CCIR, KM,
+resource, semantic-truth or releasability assessment. Regression caching and
+protected execution remain open; all eight program outcomes remain open.
+
+## Readiness Must Reach Actual Grants (2026-10-24)
+
+A synthetic probe on `c475726` retained a schema-valid T-to-X event for the
+same role and exact task after a completed call; actual next-call admission
+still allowed it. The [local restriction candidate](readiness-drop-reconciliation.md)
+now reads that history at issuance, dispatch/gateway admission, publication and
+completion. Old grants cannot revive merely because a later event claims T.
+Pending results and gateway obligations still need their original settlement;
+blocked does not mean revoked, and a reconciliation report is not task work.
+
+Current manifests are path-sorted. Valid transitions must replay their retained
+introduction revisions and parsed timestamps, not lexical event IDs or offsets.
+Payload rejection and actual consumer/race tests remain distinct evidence classes.
+This is local engineering synthesis, not a new military-source or model-quality
+claim. Literal role/task matching, trusted local EVALUATOR labels and a deny-only
+fence do not finish stable capability ownership, authenticated training,
+positive qualification, fresh restoration or goal 5. All eight outcomes remain open.
+
+## Bounded Derived Order Publication (2026-10-24)
+
+A retained synthetic probe passed an 80,932-byte authored response through the
+actual materializer/compiler and published a 21,200,694-byte draft that the
+8,388,608-byte reader then rejected. It did not invoke the native collector or
+a real model; execution and release remained false. Input/schema limits alone
+do not bound output when global text is inherited by many tasks.
+
+The local correction counts the complete store encoding, including two-space
+formatting, final newline, escaping and UTF-8, with early termination and cached
+string costs rather than allocating an amplified serialized output. Actual
+assessment/compiler paths reject before publication; the reader limit is not
+widened. Under-limit work keeps every task/constraint/decision. Both skills route
+the exact denial and require a separately reviewed decomposition instead of
+automatic truncation, transfer replay or historical artifact rewriting.
+Synthetic collector regressions are not real provider/owner acceptance or
+semantic calibration. Existing oversized history needs separate recovery.
+The first frozen correction ladder rejected the original counterexample, then
+failed its new semantic-validator assertion because a deliberately oversized
+analysis field hit schema `MAX_LENGTH` first. That failure is retained, not a
+whole-suite pass. The revised regression proves structural validity before
+requiring the whole-draft size denial; neither limit is weakened.
+
+## Purpose-Specific Analysis Recovery (2026-10-24)
+
+A failed request analysis can already have published a non-executable draft when
+later delivery fails. A null draft field in the signed failure therefore does not
+prove publication absence. The separate [owner ceremony](order-analysis-reconciliation.md)
+binds original collector/response bytes and derives the expected draft for actual
+read-only compiler inspection. It never recompiles or adopts that draft. An exact
+verified-manifest absence observation is not a universal no-effect claim; later
+independently approved deterministic publication must not rewrite that historical
+observation or permanently deadlock future work. A previously observed published
+reference and original response/journal/consent must remain exact.
+
+Analysis v0.1 already has a journal commitment; accepting it does not retrofit
+unbound omission v0.1 history. Separate typed purposes and endpoints prevent
+borrowing another acknowledgment while sharing verification mechanics. This is
+local engineering synthesis. Synthetic crash/browser checks and current signatures
+do not prove real human presence, protected keys, provider cancellation, billing,
+unknown-process recovery or independent semantic calibration. All eight outcomes
+and operational acceptance remain separate.
+
+The first frozen browser ladder also exposed stale Evidence rows remaining
+clickable during a full refresh after publication changed the manifest. The
+server correctly rejected the old snapshot. Clearing old actions/counts before
+awaiting a fresh list repairs that workflow without weakening the server guard
+or silently renewing consent. Preserve the original failed ladder/screenshot;
+the delayed-list regression tests the changed UI boundary, not a security bypass.
+
+The next frozen HTTP ladder retained a different failure: nine invalid commit
+attempts in one fixture caused the real eight-per-minute throttle to run before
+the intended rationale check. An unrelated rejection cannot prove that later
+rule. Separate synthetic environments now test the exact independent denials,
+and a dedicated case tests the actual ninth-attempt throttle with unchanged hold
+and no signature. The production limit is not relaxed or mocked away.
+
+## Historical Model Scope Integrity (2026-10-23)
+
+An actual synthetic controller probe on the first native-analysis candidate
+changed the stored preview's projected mission without changing its claimed
+invocation digest. Valid original consent/result signatures then accompanied an
+incorrectly verified history scope; fresh collection correctly rejected the
+modified body before launch. Those are separate paths and evidence classes.
+The shared consent verifier now recomputes the complete invocation and nested
+preview commitments before static historical validation, preserving original
+timing and signatures. Rehashing new content cannot repair old consent. Both
+skills and actual analysis/omission history regressions retain this operational
+lesson. This does not establish independent model quality or protected operation.
+
+## Purpose-Bound Native Request Analysis (2026-10-23)
+
+The [analysis candidate](native-order-analysis.md) addresses the still-manual
+request-to-analysis step before structural planning. A closed purpose adapter
+shares finite collection/process controls without sharing omission consent,
+prompt/schema or task authority. Model statements become actual compiler inputs;
+the host binds request/scope and retains proposed/unknown status rather than
+treating generated statements as verified facts. Existing owner review remains
+mandatory. The official [CLI reference](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
+supports the transport choices, not semantic correctness or protected execution.
+Synthetic response labels are authored tests, not independent held-out truth.
+The later analysis acknowledgment entry supports verifiable failures and observed
+publication only; unknown/integrity recovery, calibration and complete orchestration
+remain open.
+
+## Bounded Structural Planning (2026-10-23)
+
+The compiler-to-execution gap previously required a whole manually authored
+mission plan even after retaining actual OPORD tasks. The
+[structural generator](bounded-plan-synthesis.md) now constructs those plans and
+policy drafts from finite roster/control bounds, preserving actual task text,
+every task assignment, parent restrictions and exact source provenance. Failed
+allocation or exhausted search never presents a shortened or partial plan.
+Replanning subtracts actual prior allow admissions from parent policy/rule caps
+and rechecks remaining budget at consumption; a new wave must not silently reset
+spent allowance. Actual revision, fresh human coverage and USER adoption remain
+separate. This is structural synthesis with zero model calls, not automatic
+understanding, invented strategy, verified readiness or independent calibration.
+A separate actual report-consumer probe found an untyped planner CLI envelope
+could complete a data-only wave despite its inner proposal being non-work.
+Positive structural/browser/schema checks did not cover that composition.
+Typed operation returns and recursive semantic/planning packet detection now
+guard this boundary, with reference-only work as an explicit positive control.
+
+## Source-Accounted Human Coverage Review (2026-10-23)
+
+An advisory evaluator can enumerate only part of a request and still derive
+`complete` for its own subset. An unused analysis quotation likewise does not
+preserve a prohibition in an actual receiver task. The separate
+[human inventory admission candidate](requirement-inventory-admission.md) requires
+every source byte to be classified and every declared requirement to be reviewed
+against the actual order and receiving task/agent projection. New captured-request
+adoption binds that review and the whole plan; active consumers cannot downgrade
+it while historical records remain readable.
+
+This is an explicit human-review class, not a promotion of an uncalibrated model
+result. A wrong context classification or applicability judgement can still omit
+meaning. Exact pointers, fresh authentication and passing synthetic fixtures do
+not prove complete extraction or semantic equivalence. Independent held-out
+calibration and bounded automatic planning/replanning remain unfinished.
+The local owner preview now exposes exact source classifications, requirement
+instructions and actual receiving task/agent quotes side by side, while retaining
+the full plan and raw subject. Pagination/filter counts preserve the full matrix
+denominator and do not redefine consent. A clearer display helps inspection but
+cannot establish semantic equivalence or that the human read every requirement.
+
+## Failed Model Transfer Acknowledgment (2026-10-23)
+
+The [separate owner ceremony](model-transfer-reconciliation.md) resolves a verified
+failed local invocation without changing it to success or replaying its transfer.
+Bind fresh consent to exact signed failure, journal, source/repository/manifest,
+key and consumed-attempt inventory; independently observe both PID and process
+group absence. `EPERM` and PID reuse deny, rather than becoming absence evidence.
+An atomic saved receipt, not a private terminal label, acknowledges the local hold.
+
+The PID must already be committed by the original signed observation. A reproduced
+candidate counterexample changed only a private journal PID before review and
+obtained acknowledgment of that unrelated value despite a valid original result
+signature. Signed evaluation v0.2 now commits exact collector-returned journal
+bytes before review; historical v0.1 results remain readable but cannot acquire
+that missing provenance retroactively. Passing the earlier selected ladder did
+not cover or refute this counterexample.
+
+The original failure and prior attempts remain immutable. Fresh acknowledgment
+does not verify or cancel remote provider billing, clear another ownership class
+or authorize the next evaluation. Missing signatures, journals and termination
+proof stay held. Protected infrastructure and unknown-process recovery remain open.
+
+## Exact Model Transfer Consent (2026-10-23)
+
+The [local ceremony](model-transfer-consent.md) now connects an owner-reviewed
+packet to the existing collector. Cached user identity alone cannot revoke an
+already running collector after logout: check the actual stored session and
+retain the one-use reservation while terminating its child. Killing a read
+worker is not evidence that a separately spawned CLI stopped.
+
+Authenticated preparation is not transmission, HTTP 202 is not completion and
+process-group absence is not provider billing cancellation. Signed historical
+results remain advisory control metadata; their expiry does not become renewed
+permission. Missing/changed results are unverifiable and fence another local
+transfer. The later verified-failure acknowledgment above supplies only its own
+local hold ceremony; unknown/integrity recovery, held-out calibration, mandatory
+adoption consumers, automatic replanning and protected operation remain unfinished.
+
+## Existing-CLI Semantic Collector Foundation (2026-10-23)
+
+Literal source fidelity does not prove that compiled orders preserve prohibitions,
+approval conditions or bounds. The [collector foundation](semantic-omission-evaluation.md)
+therefore excludes unused analysis from its candidate and checks actual order and
+receiver projections. Exact UTF-8 spans and candidate pointers establish quoted
+provenance, not the truth of a model's coverage judgement.
+
+The existing local CLI login avoids new credential provisioning; it does not
+authorize private request transmission. A distinct pinned-key purpose binds one
+exact preview/profile and a durable reservation prevents automatic replay.
+At the foundation checkpoint, no owner-transfer ceremony existed; the separate
+authenticated transfer service described above now supplies that local path. Fake processes test
+failure behavior, never model quality; actual native probes must remain separately
+identified. Model snapshots, full native context/tool inventory, billing cancellation,
+held-out calibration and mandatory planning/adoption consumers remain unproven.
+
+## Browser Response Scope (2026-10-23)
+
+A real local browser counterexample retained an owner-authorized Evidence list,
+logged out, authenticated the same browser as a mission-scoped viewer, then
+delivered the old response. The server correctly bounded current viewer reads,
+but the old unguarded renderer restored an owner-only row in that workspace.
+Authentication at request time is therefore not sufficient render context.
+
+The shared console now checks session epoch, principal, view and per-surface
+request sequence, clears hidden data on identity changes and ignores stale
+errors and mutation responses. Its browser suite delays actual authenticated
+HTTP bodies; it does not infer correctness from mocked business decisions or
+API-only tests. The unchanged throttle can legitimately delay repeated fixture
+logins; tests validate the 429 and wait for `Retry-After`, never disable it.
+Both skills require fresh principal-bound reads and exact outcome inspection
+instead of replaying writes after a discarded response. This is a local display
+boundary, not erasure of previously copied data or protected deployment.
+
+## Operational Read Product (2026-10-23)
+
+The [local operational COP](operational-cop.md) derives an authenticated,
+restricted read product from actual manifest-backed wave/control history,
+not supplied demo events. Replaying terminal dependencies is necessary:
+a plausible closeout JSON is not proof that its report, controls, evidence,
+AAR/readiness derivation and dispatch settlement were admitted.
+
+Lease discovery is also not complete call admission. Owner-side projection
+separately compares the latest settled checkpoint with current repository
+state; it never calls admission or writes a denial to render the board.
+Pending tools remain pending while their actual result may change the tree.
+Staff display filters cannot suppress critical alerts elsewhere in permitted
+scope, and viewer scope cannot disclose foreign missions. Snapshot validity,
+record freshness and worker liveness are distinct. Both skills teach refreshing
+the manifest and never converting a current-looking view into execution consent.
+
+The fixed 300-second activity threshold is a local conservative display rule,
+not the planned configurable CCIR/reporting policy. Readiness/risk/resource
+blocks, CoS decision consumption and complete goal 4 remain unfinished.
+
 ## Local Issuance Transactions (2026-10-23)
 
 Full consumer integration distinguishes historical replay from current grants:
@@ -206,6 +499,28 @@ approved-edit integration and semantic completeness. Distinct types block accide
 rewriting of local contracts or code.
 
 ## Dependency Security And Retained Proof (2026-09-29)
+
+The 2026-10-24 IPv6-zone follow-up pins transitive `ip-address` 10.7.4 after a
+local 10.7.2 reproduction: both constructor and `isValid()` entered parsing but
+exceeded the same 2.5-second child deadline; normal controls completed. Identical
+patched inputs then completed without rejecting long valid zones. The
+[upstream fix](https://github.com/beaugunderson/ip-address/commit/ec80fcd) keeps
+the deprecated exported regex but removes library use. Neither a successful
+rejection nor the patch version alone proves bounded behavior for every caller.
+
+Accepted main `22c61c3` and its unchanged sample are separately frozen before
+installation; old and current producer tuples remain distinct. The current
+sample comes from actual pinned-engine verification. Unknown/hybrid identities
+and changed signed claims remain rejected. Both skills route package/advisory
+queries directly to this procedure and require valid long-input controls, not a
+blanket cap. This local candidate does not clear the separate HTTP-cache alert,
+repair monitor credentials or close any of the eight full program outcomes.
+
+A separate local classification check found that both generic validator APIs
+returned `can_execute: true` for valid monitoring-only independent evidence,
+including historical records. This was not an actual publisher/tool bypass.
+The corrected type classification keeps validity true and execution false;
+both APIs and the real CLI are regressed independently of cryptographic replay.
 
 The 2026-10-22 follow-up updates only transitive `brace-expansion` 5.0.9 to
 5.0.12. The [maintainer's changes](https://github.com/juliangruber/brace-expansion/compare/v5.0.9...v5.0.12)

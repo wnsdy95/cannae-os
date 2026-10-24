@@ -7,6 +7,72 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "cli-model-selection",
+    keywords: ["@cli-default", "cli default model", "default model binding", "codexmodelselection", "codex-model-selection"],
+    docs: ["docs/codex-default-model-binding.md", "docs/model-transfer-consent.md", "docs/native-order-analysis.md"],
+    commands: ["node run-codex-model-selection-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
+    id: "advisory-dependency",
+    keywords: ["ip-address", "ip-zone", "zone parser", "ghsa-rxp7-6hxx-x8q5", "verifier dependency", "dependency migration", "historical producer", "parser denial of service"],
+    docs: ["docs/github-release-independent-verification.md", "docs/completion-backlog.md"],
+    commands: ["node run-github-release-independent-verification-fixtures.js", "node run-github-release-integrity-fixtures.js"]
+  },
+  {
+    id: "force-registry",
+    keywords: ["force registry", "force-registry", "capability registry", "performer registry", "organization registry", "forceregistryentity", "forceregistryrequest", "forceregistryproposal", "forceregistryauthorization", "forceregistryevent", "operate_controls_force_registry"],
+    docs: ["docs/force-registry-enrollment.md", "docs/readiness-drop-reconciliation.md", "docs/readiness-to-authority-policy.md", "docs/force-structure-change-policy.md", "docs/completion-backlog.md"],
+    commands: ["node run-force-registry-contract-fixtures.js", "node run-force-registry-fixtures.js"]
+  },
+  {
+    id: "workload-controls",
+    keywords: ["workload control", "workload-control", "workload-policy-assessment", "workloadcontrolinput", "workloadcontrolreceipt", "workloadcontrolfailure", "workloadpolicyassessment", "subject-bound", "workload assessment", "report input binding", "actual evidence scan"],
+    docs: ["docs/subject-bound-workload-controls.md", "docs/skill-operational-mission-lifecycle.md", "docs/sensitive-output-filter.md", "docs/completion-backlog.md"],
+    commands: ["node run-workload-control-fixtures.js", "node run-skill-control-enforcement-fixtures.js"]
+  },
+  {
+    id: "force-readiness",
+    keywords: ["readiness drop", "readiness-drop", "readiness revocation", "readiness_requalification_required", "training progression", "cross-mission capability", "readiness-to-authority", "agent-readiness", "reconcile_controls_readiness"],
+    docs: ["docs/readiness-drop-reconciliation.md", "docs/readiness-to-authority-policy.md", "docs/training-progression-model.md", "docs/agent-readiness-ledger.md", "docs/force-structure-change-policy.md", "docs/completion-backlog.md"],
+    commands: ["node run-readiness-drop-revocation-fixtures.js", "node run-aar-readiness-update-fixtures.js", "node run-force-structure-change-fixtures.js"]
+  },
+  {
+    id: "analysis-reconciliation",
+    keywords: ["analysis reconciliation", "analysis-reconciliation", "analysis hold", "analysis-hold", "failed request analysis", "order analysis recovery", "order analysis failed transfer", "operator-analysis-publication", "operator-reconciliation-contract-core"],
+    docs: ["docs/order-analysis-reconciliation.md", "docs/native-order-analysis.md", "docs/model-transfer-reconciliation.md"],
+    commands: ["node run-operator-analysis-reconciliation-contract-fixtures.js", "node run-operator-analysis-reconciliation-fixtures.js", "node run-operator-model-reconciliation-contract-fixtures.js", "node run-operator-model-reconciliation-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
+    id: "order-analysis-generation",
+    keywords: ["order analysis", "order-analysis", "native planning", "native-order-planning", "prepare_controls_analysis", "codex-bounded-collector", "model invocation integrity", "model-invocation-integrity", "derived order", "draft too large", "order_intake_draft_too_large"],
+    docs: ["docs/native-order-analysis.md", "docs/request-order-intake.md", "docs/model-transfer-consent.md", "docs/bounded-plan-synthesis.md"],
+    commands: ["node run-request-order-compiler-fixtures.js", "node run-order-analysis-generation-fixtures.js", "node run-native-order-analysis-fixtures.js", "node run-model-invocation-integrity-fixtures.js", "node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
+    id: "bounded-planning",
+    keywords: ["bounded planning", "bounded-planning", "automatic plan", "structural synthesis", "plan_controls_mission"],
+    docs: ["docs/bounded-plan-synthesis.md", "docs/requirement-inventory-admission.md", "docs/order-adoption-and-plan-binding.md", "docs/order-revision-and-supersession.md"],
+    commands: ["node run-bounded-planning-fixtures.js", "node run-bounded-planning-metadata-fixtures.js", "node run-order-adoption-fixtures.js", "node run-order-revision-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
+    id: "semantic-admission",
+    keywords: ["requirement inventory", "requirement-inventory", "semantic admission", "semantic-admission", "semantic coverage", "semantic-coverage", "human coverage review", "semantic review assignment", "semantic-review-assignment", "review_controls_requirements"],
+    docs: ["docs/requirement-inventory-admission.md", "docs/order-adoption-and-plan-binding.md", "docs/operator-consent-and-adoption.md", "docs/semantic-omission-evaluation.md"],
+    commands: ["node run-requirement-inventory-fixtures.js", "node run-operator-coverage-ui-fixtures.js", "node run-order-adoption-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
+    id: "semantic-omission",
+    keywords: ["semantic omission", "semantic completeness", "semantic-omission", "semantic-evaluation", "codex-semantic", "model transfer consent", "model-transfer-consent", "operator-semantic", "semantic-control", "evaluate_controls_request", "model hold", "model-reconciliation", "model-transfer-reconciliation"],
+    docs: ["docs/semantic-omission-evaluation.md", "docs/model-transfer-consent.md", "docs/model-transfer-reconciliation.md", "docs/request-order-intake.md", "docs/operator-consent-and-adoption.md", "docs/completion-backlog.md"],
+    commands: ["node run-semantic-evaluation-fixtures.js", "node run-operator-semantic-fixtures.js", "node run-operator-model-reconciliation-fixtures.js", "node run-skill-control-evidence-fixtures.js"]
+  },
+  {
+    id: "operational-cop",
+    keywords: ["operational cop", "operational-cop", "operations screen", "live situation", "role-filtered situation", "critical alert scope"],
+    docs: ["docs/operational-cop.md", "docs/local-operator-console.md", "docs/command-post-dashboard.md", "docs/completion-backlog.md"],
+    commands: ["node run-operational-cop-fixtures.js"]
+  },
+  {
     id: "local-operator-console",
     keywords: ["operator consent", "operator-consent", "operator-reconciliation", "operator terminal", "terminal order reconciliation", "terminal review", "review terminal outcome", "cancel interrupted order", "decision outcome", "inspect outcome", "authenticated order review", "operator console", "local-operator-console", "operator worker", "worker exit", "interrupted owner decision", "evidence api", "viewer invitation", "serve_controls_operator"],
     docs: ["docs/local-operator-console.md", "docs/operator-consent-and-adoption.md", "docs/operator-terminal-reconciliation.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
@@ -498,7 +564,18 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "cli-model-selection", keywords: ["codex-model-selection", "codex-default-model-binding"] },
+  { id: "advisory-dependency", keywords: ["ip-zone", "pre-zone", "github-release-independent-verification"] },
+  { id: "force-registry", keywords: ["force-registry", "operate_controls_force_registry", "operator-console/force.js"] },
+  { id: "workload-controls", keywords: ["workload-control", "workload-policy-assessment", "subject-bound-workload"] },
+  { id: "force-readiness", keywords: ["readiness-drop", "reconcile_controls_readiness", "readiness-to-authority", "training-progression", "agent-readiness-ledger"] },
+  { id: "analysis-reconciliation", keywords: ["analysis-reconciliation", "operator-analysis-publication", "operator-reconciliation-contract-core", "order-analysis-fixtures/reconciliation", "order-analysis-fixtures/write-reconciliation"] },
+  { id: "order-analysis-generation", keywords: ["order-analysis", "native-order-planning", "native-order-analysis", "codex-bounded-collector", "prepare_controls_analysis", "model-invocation-integrity"] },
+  { id: "bounded-planning", keywords: ["bounded-planning", "bounded-plan-synthesis", "plan_controls_mission"] },
+  { id: "semantic-admission", keywords: ["requirement-inventory", "semantic-coverage", "semantic-review-assignment", "review_controls_requirements"] },
+  { id: "semantic-omission", keywords: ["semantic-omission", "semantic-evaluation", "codex-semantic", "evaluate_controls_request", "operator-semantic", "semantic-control", "model-transfer-consent", "model-reconciliation", "model-transfer-reconciliation"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
+  { id: "operational-cop", keywords: ["operational-cop"] },
   { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "method-control-baseline", "method-deviation", "initiative-deviation", "degeneration-incident", "check_controls_intent"] },
   {

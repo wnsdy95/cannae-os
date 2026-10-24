@@ -1,5 +1,10 @@
 # Exact Order Adoption And Plan Binding
 
+New captured-request adoption uses request/proposal/decision/record v0.2 and
+requires the [source-accounted human coverage review](requirement-inventory-admission.md)
+over the whole exact plan. Version 0.1 remains historical, not an active
+captured-request admission path. A model `complete` verdict is not that review.
+
 ## Boundary
 
 This extends [request intake](request-order-intake.md) with a finite, exact USER
@@ -9,7 +14,7 @@ artifact has execution, continuation and release authority fixed to false.
 
 ```text
 Retained request + analysis -> ready OrderDraft
-Ready draft + complete MissionWavePlan v0.2 -> OrderAdoptionProposal
+Ready draft + complete MissionWavePlan v0.2 + exact human coverage review -> OrderAdoptionProposal v0.2
 Each assigned agent -> OrderBackbrief (full task acknowledgement)
 All agents + exact backbriefs -> OrderRehearsal
 Exact proposal + briefs + rehearsal + USER scope decision -> OrderAdoptionRecord
@@ -36,7 +41,10 @@ CLI operations use the live clock and reject clock overrides.
    distinct agent. Preserve objective, outcomes, constraints, failure conditions,
    role/task text, handling level and retained decisions. Allowed actions must be
    a subset of the draft's proposed actions, not newly invented permissions.
-3. Wrap that plan in `OrderAdoptionProposalRequest`; run `propose`. It freezes
+3. Prepare and retain the source inventory and every-target coverage with
+   `review_controls_requirements.js`. Wrap the unchanged plan in
+   `OrderAdoptionProposalRequest` v0.2 with its exact `semantic_review_ref`;
+   run `propose`. It freezes
    the complete request/plan digest, observed manifest and lifetime. The lifetime
    is at most one hour and never exceeds the draft or plan. An opened or terminated
    wave cannot be re-proposed. Exact retry cannot refresh time or expand scope.
@@ -50,7 +58,7 @@ CLI operations use the live clock and reject clock overrides.
    newline-joined deliverables and required verification. High/critical unresolved
    friction and required changes block this reference adoption path. It cannot
    accept risk for the USER.
-6. Prepare `OrderAdoptionDecisionRequest` with `approve`, `reject` or `revise`.
+6. Prepare `OrderAdoptionDecisionRequest` v0.2 with `approve`, `reject` or `revise`.
    Approval requires all exact backbriefs and the corresponding rehearsal;
    rejection/revision may precede them. Use an all-`none` decision reference while
    running `decision-option` to compute the exact `review-order:<digest>` option.

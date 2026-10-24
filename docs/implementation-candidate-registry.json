@@ -730,19 +730,23 @@
       "workstream_id": "cop-reporting",
       "implementation_status": "partial",
       "implementation_paths": [
-        "event-replay-prototype/replay.js"
+        "event-replay-prototype/replay.js",
+        "operational-cop.js",
+        "schema-files/operational-cop.schema.json",
+        "operator-console-server.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the cop-projection-runner.js proposal and associated constraints in docs/common-operational-picture-state.md.",
           "validation_commands": [
-            "node event-replay-prototype/run-event-fixtures.js"
+            "node event-replay-prototype/run-event-fixtures.js",
+            "node run-operational-cop-fixtures.js"
           ]
         }
       ],
       "remaining_work": [
-        "Add unified COP contract, source completeness, version/freshness validation, and lifecycle integration; raw replay is only the base projection."
+        "Complete unified source coverage across approvals, CCIR, readiness, risks and resources, configurable report thresholds and CoS decision consumption. The Operations candidate replays real wave/control history and scoped freshness only; acceptance and complete goal 4 remain separate."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },
@@ -2099,17 +2103,21 @@
       "workstream_id": "force-readiness",
       "implementation_status": "partial",
       "implementation_paths": [
-        "approval-delegation-revocation-runner.js"
+        "approval-delegation-revocation-runner.js",
+        "readiness-drop-revocation-runner.js",
+        "dispatch-runtime-controller.js",
+        "run-readiness-drop-revocation-fixtures.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the readiness-drop-revocation-runner.js proposal and associated constraints in docs/readiness-to-authority-policy.md.",
-          "validation_commands": []
+          "validation_commands": ["node run-readiness-drop-revocation-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Connect a validated readiness drop to exact active delegation/lease revocation; test pending and already-consumed approvals."
+        "Complete stable cross-mission capability/performer/model/tool binding, authenticated evaluator provenance and positive requalification with fresh USER scope; literal role/task drops do not prove that registry.",
+        "Reconcile pending and already-consumed approval scopes and standing delegations, not only dispatch leases; complete P-stage supervision and accepted operational rollout."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },
@@ -2444,19 +2452,26 @@
       "implementation_status": "partial",
       "implementation_paths": [
         "eefi-detector.js",
-        "evidence-redactor.js"
+        "evidence-redactor.js",
+        "workload-control-contract.js",
+        "workload-control-runner.js",
+        "workload-control-worker.js",
+        "skill-mission-controller.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the sensitive-output-filter.js proposal and associated constraints in docs/sensitive-output-filter.md.",
-          "validation_commands": []
+          "validation_commands": [
+            "node run-workload-control-fixtures.js"
+          ]
         }
       ],
       "remaining_work": [
-        "Compose both EEFI lanes with exact classification, destination, exception, review, expiry, and revocation checks before dispatch/release."
+        "Compose both EEFI lanes with exact classification, destination, exception, review, expiry, and revocation checks before dispatch/release.",
+        "Extend actual report-bound core-pattern inspection to reviewed custom mission policies, audited exceptions and complete input-bound CCIR/KM/resource controls; separately qualify/cache framework regressions without weakening admission."
       ],
-      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+      "rationale": "Actual report admission now inspects bounded same-mission/wave work bytes through a separate core-pattern worker. This is narrower than the full output-filter requirement; keep partial status and all release/exception boundaries."
     },
     {
       "id": "IC-3b0394530b5e4e0e",

@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1",
+  "type": "OperatorOrderAnalysis",
+  "id": "99ea66e0-8232-4e91-b6ff-ff7504b80e3b",
+  "status": "held",
+  "invocation_sha256": "7ec4c230c11af9ec21d51ef2193f094309b3cc6d073769481d225441e5e1c39e",
+  "consent_sha256": "83f214326578281befbb8feb5394d0df15fedf3663e1974dedd3062deba6dc19",
+  "rationale_sha256": "0e4391bc284e1ac7dd65334500f9b75f399112c75146d436e92b70916afc63a7",
+  "ended_at": "2026-10-23T15:00:00Z",
+  "error": "SEMANTIC_PROVIDER_FAILED",
+  "assessment": null,
+  "response": null,
+  "response_payload_sha256": null,
+  "draft_ref": null,
+  "draft_status": null,
+  "collection": null,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "d1b2383c2391bb4c810c942ed0ea02b778b9f336098d1301fb93f7fabe1084e1",
+    "value": "XW+p/9ErfzcBIhHha+x+GyiEj6X975xyxYWvNR7fWuIVhrfKkuQBgOKgGEh3uNcccZCuiwduCdCUtnPOwRy/Cg=="
+  }
+}

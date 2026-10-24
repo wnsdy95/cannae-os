@@ -1,0 +1,134 @@
+{
+  "schema_version": "0.1",
+  "type": "RequirementInventory",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "request_ref": {
+    "artifact_id": "MR-ADOPTION",
+    "relative_path": "repositories/repo-4ab2504372ab/missions/MIS-ADOPTION/W1/mission-requests/MR-ADOPTION.json",
+    "sha256": "bd6bc44debe79f8e8f6f00e872ed45b019fddecce4422d1d74e64f4ac70d4737"
+  },
+  "request_text_sha256": "fad82a878f3a06904e28ec8e95cd24224c4b3e9b97bafa0023d2d2ed4d1127bc",
+  "classification": "internal",
+  "recorded_at": "2026-09-29T16:00:16.000Z",
+  "expires_at": "2026-09-29T17:00:00.000Z",
+  "fragments": [
+    {
+      "id": "FR-1",
+      "start_byte": 0,
+      "end_byte": 59,
+      "quote": "Prepare an internal comparison of two onboarding options.\n",
+      "classification": "operative",
+      "requirement_ids": [
+        "REQ-1"
+      ],
+      "rationale": "Authored synthetic fixture expectation."
+    },
+    {
+      "id": "FR-2",
+      "start_byte": 58,
+      "end_byte": 101,
+      "quote": "Use only the supplied repository evidence. ",
+      "classification": "operative",
+      "requirement_ids": [
+        "REQ-2"
+      ],
+      "rationale": "Authored synthetic fixture expectation."
+    },
+    {
+      "id": "FR-3",
+      "start_byte": 101,
+      "end_byte": 141,
+      "quote": "Do not publish or modify customer data.\n",
+      "classification": "operative",
+      "requirement_ids": [
+        "REQ-3"
+      ],
+      "rationale": "Authored synthetic fixture expectation."
+    },
+    {
+      "id": "FR-4",
+      "start_byte": 141,
+      "end_byte": 200,
+      "quote": "The user decides the target segment and any budget change.\n",
+      "classification": "operative",
+      "requirement_ids": [
+        "REQ-4"
+      ],
+      "rationale": "Authored synthetic fixture expectation."
+    },
+    {
+      "id": "FR-5",
+      "start_byte": 200,
+      "end_byte": 253,
+      "quote": "Return a recommendation with explicit uncertainties.\n",
+      "classification": "operative",
+      "requirement_ids": [
+        "REQ-5"
+      ],
+      "rationale": "Authored synthetic fixture expectation."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "instruction": "Prepare an internal comparison of two onboarding options.",
+      "kind": "obligation",
+      "source_fragment_ids": [
+        "FR-1"
+      ],
+      "scope": "task",
+      "task_ids": [
+        "TASK-S3"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "instruction": "Use only the supplied repository evidence.",
+      "kind": "prohibition",
+      "source_fragment_ids": [
+        "FR-2"
+      ],
+      "scope": "global",
+      "task_ids": []
+    },
+    {
+      "id": "REQ-3",
+      "instruction": "Do not publish or modify customer data.",
+      "kind": "prohibition",
+      "source_fragment_ids": [
+        "FR-3"
+      ],
+      "scope": "global",
+      "task_ids": []
+    },
+    {
+      "id": "REQ-4",
+      "instruction": "The user decides the target segment and any budget change.",
+      "kind": "approval",
+      "source_fragment_ids": [
+        "FR-4"
+      ],
+      "scope": "global",
+      "task_ids": []
+    },
+    {
+      "id": "REQ-5",
+      "instruction": "Return a recommendation with explicit uncertainties.",
+      "kind": "obligation",
+      "source_fragment_ids": [
+        "FR-5"
+      ],
+      "scope": "task",
+      "task_ids": [
+        "TASK-S3"
+      ]
+    }
+  ],
+  "status": "ready_for_review",
+  "semantic_completeness_proven": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "id": "RI-a5c12deeb25e7d4135678a0cbec8534e"
+}

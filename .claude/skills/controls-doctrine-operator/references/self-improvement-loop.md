@@ -32,7 +32,47 @@ Move procedure detail into the linked reference or doctrine document; do not rai
 the limit or omit the routed control. Routing fixtures execute this check so a
 valid route cannot conceal an invalid entrypoint.
 
+When extending validator CLI cases, declare `requiredCodes` explicitly, including
+`[]` for valid cases, and run `node validator-cli-prototype/run-fixtures.js`
+before expensive producer/browser ladders. The harness preflights definitions;
+never hide a missing expectation with a default empty array. A harness exception
+is a failed gate with an unexecuted suffix, even if individual runtime runners
+passed. Preserve its original source/log and verify the repaired CLI separately.
+
 ## Completion Audits
+
+When the USER chooses the CLI default, route `@cli-default` and read
+`docs/codex-default-model-binding.md`. Resolve through trusted host preparation,
+not a guessed model label or agent/browser override. Review the frozen literal,
+resolution time and digest; a preference or catalog listing is not transfer
+consent, account entitlement or a snapshot guarantee. Default changes require a
+separately controlled fresh host profile, never silent substitution or nonce reuse.
+Keep failed metadata discovery and actual model-transfer holds separate. A fake
+wire peer can omit real native notifications: compare generated pinned schemas
+and an isolated native metadata probe before broadening the allowed protocol.
+Accept only an inactive schema-shaped status, never generic unknown notifications.
+At model approval, hash the complete rendered invocation and submit the required
+display commitment. Never copy an unverified digest label, replace an altered
+display with the server's hidden original or treat unchanged request parameters
+as proof of what the operator reviewed. A mismatch needs a fresh exact review,
+not an automatic resend or a weaker approval contract.
+
+Before acknowledging a failed model action, route its exact producer purpose.
+Analysis can publish a draft before later failure; a null result reference is
+not publication-absence evidence. Bind original response bytes and read actual
+retained draft history without invoking compilation. Preserve a review-time
+manifest absence observation when later separately approved work publishes the
+same deterministic draft; never rewrite old proof or confer adoption/cleanup
+authority. Verify this with both actual pre/post-publication failures and receipt
+boundary process death, not only schema or successful-transfer cases.
+After compiler publication changes a manifest, invalidate old evidence selections
+while a full list refresh is pending. A stale-snapshot denial is a working server
+guard, not permission to bypass or auto-renew it; regress delayed list delivery
+through the real browser and preserve any failed workflow's original evidence.
+Keep independent authentication/validation fixture cases below the production
+request limit. A throttled request does not prove a later semantic rule ran;
+isolate those test environments and separately exercise the real throttle without
+disabling it or accepting its rejection in place of the intended exact error.
 
 For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
 the next dependency-ready item from `docs/completion-backlog.md`, then inspect
@@ -65,6 +105,18 @@ not a reason to relax the gate. Finish the edit, retain the failed run, then rer
 from one fixed tree. After an early-stop failure, distinguish tests actually run
 from the unexecuted remainder; neither the old pass count nor an aggregate's
 remaining-failure count proves the final tree.
+
+In replay fixtures, isolate durable one-use ID consumption from consent expiry.
+Use a separately signed, currently valid synthetic proposal with the consumed ID
+and assert that original journal bytes remain unchanged. Keep expiry tests
+separate; never broaden the expected error set or renew real consent to obtain
+a passing reservation assertion.
+
+Before changing a browser deadline, retain bounded HTTP status history, the
+current UI error and sanitized durable action/result state. A missing rendered
+result does not distinguish a rejected request, held process, polling failure or
+slow observation. Never export auth rows, credentials or approval nonces in that
+diagnostic record; keep the original failed run separate from revalidation.
 
 ## Publication Denial And Partial State
 
@@ -296,6 +348,17 @@ an unexercised call path or a successful unrelated patch into permission to
 dismiss the alert or accept risk. Keep the baseline sample before installing,
 including lockfile-only migrations where the direct verifier version is equal.
 
+For parser fixes, test the public entry points with late line terminators and
+long valid qualifiers, not only a version string or rejection result. A blanket
+input cap can hide the defect while breaking previously valid input. Distinguish
+patched library callers from deprecated exported helpers that remain unsafe;
+audit real caller paths before claiming application reachability or safety.
+Use the advisory/package query route to find this migration procedure first;
+retain the other matched authority gates rather than removing them for speed.
+Keep replayable evidence non-executable in both schema-only and semantic API
+results. A valid historical producer is not a new execution or release grant;
+verify that distinction separately from successful cryptographic replay.
+
 Run fresh and historical records through the current pinned verifier. Historical
 support must recognize exact source-audited producer tuples, not a version range
 or caller-supplied digest allowlist. It never authorizes loading an old runtime.
@@ -407,6 +470,12 @@ unrelated or cosmetic edit merely to satisfy the gate.
 - If the source is not strong enough for policy, record it as a research gap rather than a rule.
 
 ## Validation Discipline
+
+When added proof traversal expires a repository lease, retain the exact failure
+before changing timeouts. Share immutable replay only inside the existing
+synchronous operation scope, keyed by exact history and subject. Keep live
+freshness outside that cache and start publication with a fresh appraisal.
+Never make a passing test depend on extending authority or reusing cached consent.
 
 Start targeted, then broaden:
 

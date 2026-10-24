@@ -1,0 +1,159 @@
+{
+  "schema_version": "0.1",
+  "type": "BoundedPlanningRequest",
+  "id": "BPR-W1",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "draft_ref": {
+    "artifact_id": "OD-17f2ed915c50b352ce4ddbdce902feaa",
+    "relative_path": "repositories/repo-0d930a5677d4/missions/MIS-ADOPTION/W1/order-drafts/OD-17f2ed915c50b352ce4ddbdce902feaa.json",
+    "sha256": "16b49cf278d08735e57bf1978e9f3f9e20060bac8eb80c1aa0a0697df2bce749"
+  },
+  "mode": "initial",
+  "parent_plan_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "parent_adoption_ref": {
+    "artifact_id": "none",
+    "relative_path": "none",
+    "sha256": "none"
+  },
+  "parent_policy_drafts": [],
+  "envelope": {
+    "title": "Synthetic bounded comparison plan",
+    "risk_level": "medium",
+    "roe_class": "Amber",
+    "release_target": "internal_handoff",
+    "candidates": [
+      {
+        "agent_id": "agent-S2",
+        "operational_role": "S2",
+        "department": "operations",
+        "model_billet_id": "not_required",
+        "delegated_authority": "scoped-execution",
+        "allowed_actions": [
+          "Request quote: Prepare an internal comparison of two onboarding options."
+        ],
+        "approval_required": [
+          "Request quote: The user decides the target segment and any budget change."
+        ],
+        "prohibited_actions": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ],
+        "allowed_task_ids": [
+          "TASK-S2"
+        ],
+        "enabled": true,
+        "estimated_cost_units": 1,
+        "policy_template": {
+          "provider": "codex",
+          "tool_rules": [
+            {
+              "rule_id": "DTR-READ",
+              "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+              "tool_name": "Bash",
+              "operation_class": "process_execute",
+              "input_match": {
+                "mode": "exact_sha256",
+                "allowed_sha256": [
+                  "a7ce245ec6171f47d5ddacc518e8705d982fe8f4eafefc446b1f7fb609671132"
+                ]
+              },
+              "max_uses": 2
+            }
+          ],
+          "max_total_admissions": 2,
+          "lease_ttl_seconds": 600,
+          "repository_state": {
+            "require_head_match": true,
+            "require_serial_state_chain": true,
+            "require_clean_start": true
+          }
+        }
+      },
+      {
+        "agent_id": "agent-S3",
+        "operational_role": "S3",
+        "department": "operations",
+        "model_billet_id": "not_required",
+        "delegated_authority": "scoped-execution",
+        "allowed_actions": [
+          "Request quote: Prepare an internal comparison of two onboarding options."
+        ],
+        "approval_required": [
+          "Request quote: The user decides the target segment and any budget change."
+        ],
+        "prohibited_actions": [
+          "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data."
+        ],
+        "allowed_task_ids": [
+          "TASK-S3"
+        ],
+        "enabled": true,
+        "estimated_cost_units": 2,
+        "policy_template": {
+          "provider": "codex",
+          "tool_rules": [
+            {
+              "rule_id": "DTR-READ",
+              "mission_action": "Request quote: Prepare an internal comparison of two onboarding options.",
+              "tool_name": "Bash",
+              "operation_class": "process_execute",
+              "input_match": {
+                "mode": "exact_sha256",
+                "allowed_sha256": [
+                  "a7ce245ec6171f47d5ddacc518e8705d982fe8f4eafefc446b1f7fb609671132"
+                ]
+              },
+              "max_uses": 2
+            }
+          ],
+          "max_total_admissions": 2,
+          "lease_ttl_seconds": 600,
+          "repository_state": {
+            "require_head_match": true,
+            "require_serial_state_chain": true,
+            "require_clean_start": true
+          }
+        }
+      }
+    ],
+    "limits": {
+      "max_agents": 4,
+      "max_estimated_cost_units": 10,
+      "max_search_states": 128,
+      "valid_for_seconds": 600
+    },
+    "controls": {
+      "model_assignment": {
+        "required": false,
+        "integrated_preflight_ref": {
+          "artifact_id": "none",
+          "relative_path": "none",
+          "sha256": "none"
+        }
+      },
+      "adaptive_work": {
+        "enabled": false,
+        "campaign_id": "SIC-SKILL-DEMO",
+        "target_type": "skill",
+        "acceptance_criteria": [
+          "Routing coverage remains complete.",
+          "Baseline behavior does not regress."
+        ],
+        "non_goals": [
+          "Changing approval authority.",
+          "Publishing or releasing without the user."
+        ],
+        "max_cycles": 4,
+        "max_changed_files": 20,
+        "max_elapsed_minutes": 240
+      }
+    }
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER"
+}
