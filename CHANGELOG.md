@@ -6,6 +6,15 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Pin transitive `ip-address` 10.7.4 after bounded public-parser timeouts in the
+  installed baseline. Preserve accepted main's exact pre-zone evidence and
+  replay it with the current engine; regenerate only current structural examples.
+  Add bounded line-terminator, valid long-zone, deprecated-helper and producer
+  substitution regressions. Both skills route advisories directly and prohibit
+  hiding parser defects behind blanket caps. HTTP-cache and rollout remain open.
+  Keep valid monitoring-only release evidence non-executable in both validator
+  APIs and the CLI; historical replay never grants fresh execution authority.
+
 - Add local stable organization/capability/performer definition enrollment with
   explicit alias history, exact pinned configuration declarations and separate
   password-reauthenticated owner consent. Bind full reviewed subjects to immutable

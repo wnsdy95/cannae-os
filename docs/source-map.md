@@ -272,6 +272,14 @@ The patched library's NAT64 classification is tested locally; exact former
 v0.2 producer replay is our compatibility design, not an upstream trust claim.
 Neither proves complete network security or historical protected execution.
 
+The subsequent IPv6 zone migration uses the primary
+[zone-parser advisory](https://github.com/advisories/GHSA-rxp7-6hxx-x8q5),
+[index-based fix](https://github.com/beaugunderson/ip-address/commit/ec80fcd)
+and [10.7.4 release](https://github.com/beaugunderson/ip-address/releases/tag/v10.7.4).
+Local bounded-child counterexamples and regressions distinguish parser liveness,
+normal semantics, deprecated helpers and exact accepted producer replay. They do
+not establish application reachability, protected execution or release authority.
+
 The subsequent brace dependency migration uses the primary
 [5.0.9-to-5.0.12 changes](https://github.com/juliangruber/brace-expansion/compare/v5.0.9...v5.0.12)
 and maintainer advisories for

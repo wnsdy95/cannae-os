@@ -590,15 +590,20 @@ const fixtures = [
     name: "current independent release evidence v0.2",
     file: "sample-payloads/valid-github-release-independent-verification-v0.2.json",
     type: "github-release-independent-verification",
-    exitCode: 0,
+    exitCode: 0, expectedCanExecute: false,
     requiredCodes: []
   },
   {
     name: "prior v0.2 producer evidence remains structurally readable",
     file: "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json",
     type: "github-release-independent-verification",
-    exitCode: 0,
+    exitCode: 0, expectedCanExecute: false,
     requiredCodes: []
+  },
+  {
+    name: "frozen pre-zone producer remains non-authorizing and structurally readable",
+    file: "sample-payloads/valid-github-release-independent-verification-pre-zone-v0.2.json",
+    type: "github-release-independent-verification", exitCode: 0, expectedCanExecute: false, requiredCodes: []
   },
   {
     name: "pre-console v0.2 producer evidence remains structurally readable",
@@ -611,9 +616,17 @@ const fixtures = [
     name: "legacy independent evidence remains structurally readable",
     file: "sample-payloads/valid-github-release-independent-verification-legacy.json",
     type: "github-release-independent-verification",
-    exitCode: 0,
+    exitCode: 0, expectedCanExecute: false,
     requiredCodes: []
   },
+  { name: "both validator APIs keep current and historical independent evidence non-executable", check() {
+    for (const name of ["v0.2", "pre-zone-v0.2", "legacy"]) {
+      const payload = JSON.parse(fs.readFileSync(path.join(ROOT, `sample-payloads/valid-github-release-independent-verification-${name}.json`)));
+      for (const api of [validateSchemaPayload, validatePayload]) {
+        const result = api(payload, "github-release-independent-verification"); assert.equal(result.valid, true); assert.equal(result.can_execute, false);
+      }
+    }
+  } },
   {
     name: "evidence version cannot substitute another verifier generation",
     file: "sample-payloads/invalid-github-release-independent-verification-version-pair.json",

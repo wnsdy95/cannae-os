@@ -34,6 +34,14 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["ip-address", "ip-zone", "zone parser", "GHSA-rxp7-6hxx-x8q5", "verifier dependency", "dependency migration", "historical producer", "parser denial of service"]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["advisory-dependency"]); assert.equal(result.capability_routing.status, "covered");
+    assert.equal(result.matched_routes[0].id, "advisory-dependency");
+    assert.equal(result.recommended_documents[2].path, "docs/github-release-independent-verification.md");
+    assert(result.validation_commands.includes("node run-github-release-independent-verification-fixtures.js"));
+    if (query === "ip-address") assert(result.validation_commands.includes("node run-github-release-publisher-fixtures.js"));
+  }
   for (const query of ["ForceRegistryEntity", "ForceRegistryRequest", "ForceRegistryProposal", "ForceRegistryAuthorization", "ForceRegistryEvent",
     "force-registry", "operate_controls_force_registry", "schema-files/force-registry-entity.schema.json"]) {
     const result = route(router, ["--actor=user"], query);

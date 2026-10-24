@@ -473,6 +473,28 @@ rewriting of local contracts or code.
 
 ## Dependency Security And Retained Proof (2026-09-29)
 
+The 2026-10-24 IPv6-zone follow-up pins transitive `ip-address` 10.7.4 after a
+local 10.7.2 reproduction: both constructor and `isValid()` entered parsing but
+exceeded the same 2.5-second child deadline; normal controls completed. Identical
+patched inputs then completed without rejecting long valid zones. The
+[upstream fix](https://github.com/beaugunderson/ip-address/commit/ec80fcd) keeps
+the deprecated exported regex but removes library use. Neither a successful
+rejection nor the patch version alone proves bounded behavior for every caller.
+
+Accepted main `22c61c3` and its unchanged sample are separately frozen before
+installation; old and current producer tuples remain distinct. The current
+sample comes from actual pinned-engine verification. Unknown/hybrid identities
+and changed signed claims remain rejected. Both skills route package/advisory
+queries directly to this procedure and require valid long-input controls, not a
+blanket cap. This local candidate does not clear the separate HTTP-cache alert,
+repair monitor credentials or close any of the eight full program outcomes.
+
+A separate local classification check found that both generic validator APIs
+returned `can_execute: true` for valid monitoring-only independent evidence,
+including historical records. This was not an actual publisher/tool bypass.
+The corrected type classification keeps validity true and execution false;
+both APIs and the real CLI are regressed independently of cryptographic replay.
+
 The 2026-10-22 follow-up updates only transitive `brace-expansion` 5.0.9 to
 5.0.12. The [maintainer's changes](https://github.com/juliangruber/brace-expansion/compare/v5.0.9...v5.0.12)
 address comma parsing, nested-set stack exhaustion and quadratic rescanning.

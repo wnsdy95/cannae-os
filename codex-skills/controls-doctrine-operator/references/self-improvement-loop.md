@@ -332,6 +332,17 @@ an unexercised call path or a successful unrelated patch into permission to
 dismiss the alert or accept risk. Keep the baseline sample before installing,
 including lockfile-only migrations where the direct verifier version is equal.
 
+For parser fixes, test the public entry points with late line terminators and
+long valid qualifiers, not only a version string or rejection result. A blanket
+input cap can hide the defect while breaking previously valid input. Distinguish
+patched library callers from deprecated exported helpers that remain unsafe;
+audit real caller paths before claiming application reachability or safety.
+Use the advisory/package query route to find this migration procedure first;
+retain the other matched authority gates rather than removing them for speed.
+Keep replayable evidence non-executable in both schema-only and semantic API
+results. A valid historical producer is not a new execution or release grant;
+verify that distinction separately from successful cryptographic replay.
+
 Run fresh and historical records through the current pinned verifier. Historical
 support must recognize exact source-audited producer tuples, not a version range
 or caller-supplied digest allowlist. It never authorizes loading an old runtime.
