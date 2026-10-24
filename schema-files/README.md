@@ -171,6 +171,8 @@ the original raw bundle and retained trust root. Current, frozen prior-v0.2 and 
 are test wrappers around public signed material, not release authority or proof
 that the historical runtime executed. Equal schema/package versions do not admit
 an unrecognized module/lockfile pair; use the full replay fixtures for migration.
+The frozen pre-zone v0.2 sample preserves accepted main `22c61c3` byte-for-byte;
+the separately generated current sample binds the patched installed producer.
 
 `implementation-candidate-registry.schema.json` defines the source-bound
 engineering inventory: unique candidate identities, reviewed implementation

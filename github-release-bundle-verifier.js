@@ -79,6 +79,13 @@ const HISTORICAL_VERIFIER_PROFILES = Object.freeze([
     version: "4.1.2",
     module_sha256: "4c363dfd69f3e91044b708dc4a5a0a7b9312c4d6ab7bf3329ba6860458a9d6dd",
     dependency_lock_sha256: "0cfef8325212f90530eb025b93512db9f2ff00dd0905276860c6c05d4aa45dce"
+  }),
+  Object.freeze({
+    commit: "22c61c3345a79f6d993369c12035492d04bf5861",
+    schema_version: "0.2",
+    version: "4.1.2",
+    module_sha256: "012795a0c4cb6d63e0b4ad18edc9495db4732a54994cea534f38a279184a69c3",
+    dependency_lock_sha256: "ef9fcf979ddc996bf9b2808d7f565264bedd8d45319bc6baae2f19510a9589f3"
   })
 ]);
 

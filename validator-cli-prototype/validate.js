@@ -6140,7 +6140,7 @@ function validationResult(issues, type, payload) {
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
-      !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !["frago", "frago-scope-change", "workload-control-input", "workload-policy-assessment", "workload-control-receipt"].includes(type) &&
+      !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !["frago", "frago-scope-change", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "readiness-event" && type !== "readiness-drop-reconciliation" && type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),

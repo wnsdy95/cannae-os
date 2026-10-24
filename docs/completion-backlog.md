@@ -76,6 +76,14 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The local [IPv6-zone dependency candidate](github-release-independent-verification.md#producer-compatibility)
+pins 10.7.4 after actual bounded-child parser timeouts, preserves accepted main
+`22c61c3` as an exact historical producer and retains normal long-zone behavior.
+This advances row 1 only: full current-source acceptance and rollout remain
+separate, and the HTTP-cache advisory/maintainer dispute stays unresolved.
+Dependency repair does not renew credentials, reset checkpoint lineage, grant
+release or close any full program outcome.
+
 The [force registry enrollment candidate](force-registry-enrollment.md) adds
 repository-isolated stable definition IDs, versioned organization ownership and
 performer configuration, explicit alias history and a distinct authenticated
