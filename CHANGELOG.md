@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Preserve readiness minimums and prohibitions through reference approval/release
+  composition after actual synthetic allow counterexamples. Validate exact
+  matrix/request scope, overlap and expiry; reject missing ratings/unknown risk
+  and bind approval request/task/approver. Migrate only synthetic bundle labels,
+  add exact-code regressions and adapt both skills. This is not authenticated
+  qualification, P-stage supervision, actual grant restoration or installed rollout.
+
 - Resolve an explicitly selected CLI-default model during trusted host preparation,
   freeze its concrete name and strict selection commitment in owner packets, and
   preserve literal-model history. Bound metadata-only protocol and process cleanup;

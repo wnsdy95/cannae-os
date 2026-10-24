@@ -71,19 +71,29 @@ function scopeMatchesRiskAcceptance(riskAcceptance, request, now) {
 }
 
 function integrate(bundle) {
-  const now = bundle.now || new Date().toISOString();
+  const now = Object.hasOwn(bundle, "now") ? bundle.now : new Date().toISOString();
   const toolRequest = bundle.tool_request;
+  const reject = code => ({ allowed: false, blocked: true, final_decision: "prohibit", policy: null, readiness: null,
+    approval: { required: false, valid: false, reasons: [] }, risk_acceptance: { required: false, valid: false, reasons: [] }, reasons: [code] });
+  let validRequest;
+  try { validRequest = require("./validator-cli-prototype/validate").validatePayload(toolRequest, "tool-request").valid; }
+  catch { return reject("AUTHORITY_TOOL_REQUEST_INVALID"); }
+  if (!validRequest || !toolRequest.task_id || !["low", "medium", "high", "critical"].includes(toolRequest.risk_level)) return reject("AUTHORITY_TOOL_REQUEST_INVALID");
+  if (!isValidDate(now)) return reject("AUTHORITY_CLOCK_INVALID");
+  if (bundle.authority_matrix?.mission_id !== toolRequest.mission_id) return reject("AUTHORITY_MATRIX_MISSION_MISMATCH");
+  const policy = decidePolicy(toolRequest);
   const authorityRequest = bundle.authority_request || {
     role: toolRequest.actor,
-    task: toolRequest.task || toolRequest.task_id || "any",
+    task: toolRequest.task_id,
     tool: toolRequest.tool,
     target: toolRequest.target,
-    roe_class: toolRequest.roe_class,
-    readiness: bundle.readiness || "P"
+    roe_class: policy.roe_class,
+    readiness: bundle.readiness
   };
-
-  const policy = decidePolicy(toolRequest);
-  const readiness = decideReadiness(bundle.authority_matrix, authorityRequest);
+  for (const [field, actual] of Object.entries({ role: toolRequest.actor, task: toolRequest.task_id, tool: toolRequest.tool, target: toolRequest.target, roe_class: policy.roe_class })) {
+    if (authorityRequest[field] !== actual) return reject(`AUTHORITY_REQUEST_${field.toUpperCase()}_MISMATCH`);
+  }
+  const readiness = decideReadiness(bundle.authority_matrix, authorityRequest, { now });
 
   const reasons = [
     ...policy.reason,
@@ -108,6 +118,11 @@ function integrate(bundle) {
     required: approvalRequired,
     ...scopeMatchesApproval(bundle.approval_scope, toolRequest, now)
   };
+  if (approvalRequired && bundle.approval_scope) {
+    if (bundle.approval_scope.granted_by !== (readiness.approval_authority || bundle.authority_matrix.owner)) approval.reasons.push("APPROVAL_AUTHORITY_MISMATCH");
+    if (bundle.approval_scope.tool_request_id !== toolRequest.id || bundle.approval_scope.scope?.task_order !== toolRequest.task_id) approval.reasons.push("APPROVAL_REQUEST_BINDING_MISMATCH");
+    approval.valid = approval.reasons.length === 0;
+  }
 
   const riskRequired = HIGH_RISK.has(String(toolRequest.risk_level || "").toLowerCase()) || policy.roe_class === "Red";
   const riskAcceptance = {

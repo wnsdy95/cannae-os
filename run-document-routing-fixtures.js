@@ -34,6 +34,11 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["minimum readiness", "readiness authority intersection", "readiness-authority-intersection", "approval cannot replace readiness"]) {
+    const result = route(router, ["--actor=user"], query); assertRoutes(result, ["readiness-intersection"]);
+    assert.equal(result.capability_routing.status, "covered"); assert(result.validation_commands.includes("node run-authority-integration-fixtures.js"));
+    assert(result.recommended_documents.some(item => item.path === "docs/readiness-authority-intersection.md"));
+  }
   for (const query of ["@cli-default", "CLI default model", "default model binding", "CodexModelSelection", "codex-model-selection"]) {
     const result = route(router, ["--actor=user"], query); assertRoutes(result, ["cli-model-selection"]);
     assert.equal(result.capability_routing.status, "covered"); assert(result.validation_commands.includes("node run-codex-model-selection-fixtures.js"));

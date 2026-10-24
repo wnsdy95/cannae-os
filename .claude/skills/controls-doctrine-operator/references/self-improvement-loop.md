@@ -41,6 +41,15 @@ passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
 
+Before positive qualification work, route `minimum readiness` and read
+`docs/readiness-authority-intersection.md`. Regress valid approval together with
+an unmet minimum or prohibition, not just missing approvals in isolation. Bind
+the actual mission/task ID/tool/target/ROE, intersect overlapping restrictions
+and preserve expiry. Never repair a denial by lowering a floor, reordering rules,
+using a shorthand target or resubmitting a different authority projection.
+Declared grades and approving-role labels are not authenticated training, P-stage
+supervision or fresh grants; qualification must not resurrect old authority.
+
 When the USER chooses the CLI default, route `@cli-default` and read
 `docs/codex-default-model-binding.md`. Resolve through trusted host preparation,
 not a guessed model label or agent/browser override. Review the frozen literal,

@@ -15,9 +15,9 @@
   },
   "authority_request": {
     "role": "S3",
-    "task": "deployment",
+    "task": "T-DEMO-001",
     "tool": "deploy",
-    "target": "production",
+    "target": "prod.command-post-dashboard",
     "roe_class": "Red",
     "readiness": "T"
   },
@@ -33,9 +33,9 @@
       {
         "rule_id": "RUL-DEMO-002",
         "role": "S3",
-        "task_scope": ["deployment"],
+        "task_scope": ["T-DEMO-001"],
         "tool_scope": ["deploy"],
-        "target_scope": ["production"],
+        "target_scope": ["prod.command-post-dashboard"],
         "roe_class": "Red",
         "decision": "approval_required",
         "approval_authority": "COMMANDER",

@@ -1,5 +1,18 @@
 # Research Compendium
 
+## Approval Cannot Replace Readiness (2026-10-24)
+
+Actual reference consumers on `26660c3` allowed a below-minimum performer with
+approval and weakened a schema-valid Green prohibition into an approvable
+decision. Separate direct probes admitted a suffixed tool and did not prohibit
+unmatched Black. The [local correction](readiness-authority-intersection.md)
+intersects exact matching restrictions, checks expiry and binds the matrix and
+approval to the actual request. Failed prerequisites survive release composition.
+This is engineering synthesis, not new military doctrine, real-owner execution
+or positive training evidence. Declared ratings/signers, P supervision, durable
+approval consumption, qualification, active-grant reconciliation and controlled
+rollout remain separate; all eight full outcomes stay open.
+
 ## A Default Preference Is Not Transfer Consent (2026-10-24)
 
 The human selected the current Codex CLI default, not an invented military model

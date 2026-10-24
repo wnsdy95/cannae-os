@@ -76,6 +76,13 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [reference readiness intersection correction](readiness-authority-intersection.md)
+repairs actual allow-below-minimum and softened-prohibition probes, exact subject
+binding, overlap and expiry. It advances a prerequisite in row 7, not authenticated
+training or positive qualification. Declared rating/role strings and reference
+approval composition are not actual grants; full goal 5 and all eight outcomes
+remain open, including current-source acceptance and controlled rollout.
+
 The [CLI-default preparation candidate](codex-default-model-binding.md) resolves
 the USER's model preference into an exact frozen owner-review profile. Native
 empty-HOME protocol and synthetic owner/collector flows are separate evidence;

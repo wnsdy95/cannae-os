@@ -58,6 +58,12 @@ const cases = [
   }
 ];
 
+for (const [name, mutate, reason] of [
+  ["valid release review cannot repair below-minimum readiness", value => { value.authority_request.readiness = "P"; }, "READINESS_BELOW_MINIMUM"],
+  ["valid release review cannot substitute a different authority target", value => { value.authority_request.target = "production"; }, "AUTHORITY_REQUEST_TARGET_MISMATCH"]
+]) cases.push({ name, file: "release-integration-fixtures/valid-release-bundle.json", mutate,
+  expected: { allowed: false, blocked: true, final_decision: "prohibit", reason } });
+
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));
 }
@@ -71,7 +77,12 @@ function matches(actual, expected) {
 
 const results = cases.map(testCase => {
   const bundlePath = path.join(ROOT, testCase.file);
-  const actual = integrate(readJson(testCase.file), { baseDir: path.dirname(bundlePath) });
+  const bundle = readJson(testCase.file);
+  if (testCase.mutate) {
+    bundle.authority_bundle = JSON.parse(fs.readFileSync(path.resolve(path.dirname(bundlePath), bundle.authority_bundle_path), "utf8"));
+    delete bundle.authority_bundle_path; testCase.mutate(bundle.authority_bundle);
+  }
+  const actual = integrate(bundle, { baseDir: path.dirname(bundlePath) });
   return {
     name: testCase.name,
     ok: matches(actual, testCase.expected),

@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "readiness-intersection",
+    keywords: ["minimum readiness", "readiness authority intersection", "readiness-authority-intersection", "readiness intersection", "approval cannot replace readiness"],
+    docs: ["docs/readiness-authority-intersection.md", "docs/readiness-to-authority-policy.md", "docs/readiness-drop-reconciliation.md", "docs/completion-backlog.md"],
+    commands: ["node readiness-gate-prototype/run-readiness-fixtures.js", "node run-authority-integration-fixtures.js", "node run-release-integration-fixtures.js"]
+  },
+  {
     id: "cli-model-selection",
     keywords: ["@cli-default", "cli default model", "default model binding", "codexmodelselection", "codex-model-selection"],
     docs: ["docs/codex-default-model-binding.md", "docs/model-transfer-consent.md", "docs/native-order-analysis.md"],

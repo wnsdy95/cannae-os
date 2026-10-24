@@ -2061,19 +2061,25 @@
       "workstream_id": "force-readiness",
       "implementation_status": "partial",
       "implementation_paths": [
-        "readiness-gate-prototype/readiness-gate.js"
+        "readiness-gate-prototype/readiness-gate.js",
+        "policy-engine-authority-integration.js",
+        "docs/readiness-authority-intersection.md"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the readiness-authority-ceiling-runner.js proposal and associated constraints in docs/readiness-to-authority-policy.md.",
-          "validation_commands": []
+          "validation_commands": [
+            "node readiness-gate-prototype/run-readiness-fixtures.js",
+            "node run-authority-integration-fixtures.js",
+            "node run-release-integration-fixtures.js"
+          ]
         }
       ],
       "remaining_work": [
-        "Implement the declared readiness-band ceiling contract and integrate automatic narrowing with active grants without allowing self-promotion."
+        "Complete authenticated stable performer/task/configuration qualification, P-stage supervision, report acknowledgments and actual active-grant consumers; reference declared-rating intersection is not that contract."
       ],
-      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+      "rationale": "The reference correction preserves minimums, prohibitions, exact scope, overlap and expiry through approval/release consumers. It does not establish authenticated training or complete readiness ceilings."
     },
     {
       "id": "IC-1b2c9c3c5e7939fb",
@@ -2081,19 +2087,27 @@
       "candidate_key": "run-readiness-ceiling-fixtures.js",
       "kind": "artifact",
       "workstream_id": "force-readiness",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "readiness-gate-prototype/run-readiness-fixtures.js",
+        "run-authority-integration-fixtures.js",
+        "run-release-integration-fixtures.js"
+      ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the run-readiness-ceiling-fixtures.js proposal and associated constraints in docs/readiness-to-authority-policy.md.",
-          "validation_commands": []
+          "validation_commands": [
+            "node readiness-gate-prototype/run-readiness-fixtures.js",
+            "node run-authority-integration-fixtures.js",
+            "node run-release-integration-fixtures.js"
+          ]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for run-readiness-ceiling-fixtures.js, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Add authenticated qualification, stable performer/configuration substitution, P-stage supervision, report acknowledgments and live grant/restoration regressions; current checks prove reference intersection only."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "Dedicated reference gate, authority and release tests now cover non-overridable readiness/prohibition, exact scope, overlap, expiry and request binding; full doctrine coverage remains partial."
     },
     {
       "id": "IC-4d852996a7c4e813",
