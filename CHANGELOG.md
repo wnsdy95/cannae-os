@@ -11,6 +11,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   without executing old code in production or downgrading fresh transfer. Add a
   pinned prior-source regression, strict inspection contract, inspect-only
   wrappers and both skill adaptations. Native uncertainty discharge stays open.
+  Preserve the first broad regression failure and separate the newly earlier
+  preview-integrity denial from the unsigned manifest-history counterexample;
+  neither production guard nor expected denial codes are relaxed.
 
 - Fix a synthetic native-training consent clock race: derive both timestamps
   from one sample, not separate reads that can produce 120001ms against the

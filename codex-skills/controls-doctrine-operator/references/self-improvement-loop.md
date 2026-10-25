@@ -307,6 +307,9 @@ Git commit/tree and ignored directory shape; an untracked dependency symlink is
 a source change, not permission to ignore a failed digest. Production history
 replay runs the current engine; it cannot renew consent, qualify a performer or
 clear native uncertainty. Unknown/hybrid producers remain denied.
+After adding an earlier integrity guard, test raw substitution separately from
+a rehashed unsigned fixture targeting a later history boundary. Never broaden
+expected errors or rewrite real signed evidence to reach that later check.
 
 For an explicit USER stop, read the stop-intake section of
 `docs/bounded-self-improvement-operations.md` and use
