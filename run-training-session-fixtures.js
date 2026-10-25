@@ -5,17 +5,18 @@ let inject = null; artifacts.writeRepositoryArtifact = options => inject ? injec
 const s = require("./training-session-fixtures/support"), { executeTrainingSession } = require("./operator-training-session-executor");
 let passed = 0;
 async function test(name, run) {
-  let env;
+  let env; const started = process.hrtime.bigint();
   try { env = await s.environment(); await run(env); passed++; console.log(`PASS ${name}`); }
+  catch (error) {
+    console.error(JSON.stringify({ synthetic_fixture_failure: name, elapsed_monotonic_seconds: Number(process.hrtime.bigint() - started) / 1e9,
+      challenge: env ? s.challengeObservation(env) : { available: false }, credentials_or_auth_rows_exported: false })); throw error;
+  }
   finally { inject = null; if (env) await s.close(env); }
 }
 async function main() {
   await test("real authenticated ceremony precedes an actual admitted read and appraises its original signed review", async env => {
     const p = await s.preview(env), input = s.input(p);
     assert.equal(p.review.standard.id, env.standard.id); assert.equal(p.review.performer.id, env.performer.id);
-    await env.owner.post("/api/training-sessions/commit", { ...input, nonce: "x".repeat(43) }, 409);
-    await env.owner.post("/api/training-sessions/commit", { ...input, displayed_review_sha256: "0".repeat(64) }, 409);
-    const missing = { ...input }; delete missing.acknowledge_session_only; await env.owner.post("/api/training-sessions/commit", missing, 400);
     const terminal = await env.owner.post("/api/training-sessions/commit", input);
     for (const field of ["execution_authorized", "release_authorized", "qualification_granted", "grant_restoration_authorized"]) assert.equal(terminal[field], false);
     env.bindingRef = terminal.session_binding_ref;
@@ -32,14 +33,24 @@ async function main() {
     assert.equal(appraisal.qualification_granted, false); assert.equal(appraisal.actual_model_execution_attested, false);
     assert.equal((await env.owner.get(`/api/training-sessions/actions/${p.challenge_id}`)).state, "applied");
   });
-  await test("wrong password, another session and a viewer cannot register a session; a completed earlier call cannot be labeled post-hoc", async env => {
-    const p = await s.preview(env), input = s.input(p);
-    await env.owner.post("/api/training-sessions/commit", { ...input, password: "incorrect-synthetic-password" }, 403);
+  await test("wrong nonce, display, acknowledgment, password, session and viewer cannot register; earlier calls cannot be labeled post-hoc", async env => {
+    let p = await s.preview(env), input = s.input(p);
+    assert.equal((await env.owner.post("/api/training-sessions/commit", { ...input, nonce: "x".repeat(43) }, 409)).error, "CONSOLE_TRAINING_CHALLENGE_DENIED");
+    p = await s.preview(env); input = s.input(p);
+    assert.equal((await env.owner.post("/api/training-sessions/commit", { ...input, displayed_review_sha256: "0".repeat(64) }, 409)).error, "CONSOLE_TRAINING_DISPLAY_SUBJECT_CHANGED");
+    p = await s.preview(env); input = s.input(p);
+    const missing = { ...input }; delete missing.acknowledge_session_only;
+    assert.equal((await env.owner.post("/api/training-sessions/commit", missing, 400)).error, "CONSOLE_INPUT_INVALID");
+    p = await s.preview(env); input = s.input(p);
+    assert.equal((await env.owner.post("/api/training-sessions/commit", { ...input, password: "incorrect-synthetic-password" }, 403)).error, "CONSOLE_REAUTH_DENIED");
     const other = s.f.client(env.service); await other.session(); await other.post("/api/login", { username: "owner", password: s.f.password }); await other.session();
-    await other.post("/api/training-sessions/commit", input, 409);
+    p = await s.preview(env); input = s.input(p);
+    assert.equal((await other.post("/api/training-sessions/commit", input, 409)).error, "CONSOLE_TRAINING_CHALLENGE_DENIED");
     const invite = await env.owner.post("/api/invites", { password: s.f.password, missions: [env.plan.mission_id] });
     const viewer = s.f.client(env.service); await viewer.session(); await viewer.post("/api/register", { username: "viewer", password: s.f.password, token: invite.token }); await viewer.session();
-    await viewer.get("/api/training-sessions", 403); await viewer.post("/api/training-sessions/commit", input, 403);
+    await viewer.get("/api/training-sessions", 403);
+    assert.equal((await viewer.post("/api/training-sessions/commit", input, 403)).error, "CONSOLE_OWNER_REQUIRED");
+    assert.equal(s.count(env, s.c.KINDS.authorizations), 0); assert.equal(s.count(env, s.c.KINDS.bindings), 0);
     const list = await env.owner.get(`/api/evidence?kind=${s.c.KINDS.proposals}`); assert.equal((await viewer.get(`/api/evidence?kind=${s.c.KINDS.proposals}`)).entries.length, 0);
     await viewer.get(`/api/evidence/${list.entries[0].id}?manifest=${list.manifest_sha256}`, 404);
     const options = () => ({ ...env.options, now: new Date().toISOString() });

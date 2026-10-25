@@ -72,3 +72,7 @@ session reconciliation, organization lifecycle, CoS/COP and operational rollout.
 
 Tests use only isolated synthetic owners and actual local file reads. No real
 owner credentials, installed service, real model or production gateway is operated.
+Keep independent refusal cases separate from the positive ceremony with fresh
+synthetic previews and exact error checks. On failure, capture timing and boolean
+challenge/session matches before cleanup, never credentials or raw auth rows.
+This adds diagnosis, not a longer approval window or an automatic real retry.

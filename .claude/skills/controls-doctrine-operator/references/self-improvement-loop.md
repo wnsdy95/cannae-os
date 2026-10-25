@@ -63,6 +63,13 @@ both providers. A zero-unrouted inventory alone cannot prove that those requests
 reach their required controls. Keep a failing route's exact query and expected
 control; never replace the expected route with a provisional-cell fallback.
 
+Isolate independent rejection tests from the positive consent flow and obtain
+each test's own fresh synthetic preview before its intended action. This is not
+retrying a failed operation or renewing real consent. Assert the exact denial,
+not an unrelated expiry or throttle. Before fixture cleanup, retain only timing
+and boolean challenge/session matches, never nonce/password/auth-row exports.
+A healthy repeat cannot explain or repair an earlier unexplained refusal.
+
 When adding a refusal-code family, regress both worker emission and queue
 sanitization through the actual HTTP outcome. A refusal with an empty reason list
 does not prove the expected boundary fired. Keep a bounded code namespace and

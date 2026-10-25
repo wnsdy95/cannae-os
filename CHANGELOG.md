@@ -26,6 +26,11 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   had inventory hints but no matching query keyword. Route filename/type/prose
   forms in both providers and human/AI modes without changing gap policy or the
   expected training control. Zero-unrouted inventory alone is not query coverage.
+  Preserve a later original positive-challenge refusal and its unexecuted suffix.
+  A bounded same-source predicate diagnostic passed but does not explain that
+  failure. Isolate independent rejection cases from the positive ceremony, assert
+  exact errors, and retain sanitized timing/predicate observations before cleanup.
+  Do not lengthen the real challenge window or automatically retry consent.
 
 - Start task-training evidence intake over owner-enrolled definitions, pre-call
   signed stage/case session mappings and actual dispatch completion/result bytes.
