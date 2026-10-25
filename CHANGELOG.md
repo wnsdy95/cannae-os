@@ -6,6 +6,42 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Start the native owner-transfer integration: exact classification/mission
+  handling and external-tool review, authenticated one-use transfer, original
+  byte/signature publication and managed-attempt/orphan inventory through the
+  existing console. Preserve partial/restart/logout uncertainty and refuse
+  cross-purpose recovery. Evaluation, qualification, grants, full acceptance and
+  rollout remain open. Both skills require reviewed v0.2 packets and original
+  evidence rather than fixture signing or control wrappers relabeled as work.
+  Preserve the initial sample-equality failure: its enclosing review had a fixed
+  clock while its referenced request used the current clock. Pin the same clock
+  through the synthetic dependency; do not weaken exact equality.
+  Preserve the next pre-transfer refusal too: the fixture passed an already
+  identified review to a raw-recipe proposer. Pass only its raw body; preserve
+  the content-derived ID guard and separate read/verification boundaries.
+  Preserve the following preview refusal and boolean-only diagnostics: the
+  invocation/profile/repository/identity matched but macOS artifact-root aliases
+  differed as strings. Pin the physical training root at startup and recheck it;
+  accept aliases only for that root, reject retargeting, and keep original
+  authorization-before-execution timestamp checks.
+  Preserve two subsequently reproduced pre-transfer defects: an adverse shared
+  standard label was omitted when its original mission differed, and a reservation
+  tied only to a pending unsigned preview was treated as authorized. Inherit exact
+  source-mission labels and bind reservations to signed original authorization,
+  consent, request and timestamps. Unexpected fixture status failures now withhold
+  response bodies; the original private failure contained only a temporary synthetic
+  challenge, no real credentials, and remains preserved rather than rewritten.
+  Preserve the staged-file substitution failure as well: the signed success
+  result was denied, but invalid bytes had already reached the canonical output
+  kind. Add an optional source-buffer digest precondition to file publication
+  and require it for native task bytes before any canonical write. Regress the
+  shared store's unchanged-on-refusal, successful pinning, recovery and isolation.
+  Retain the exact-type routing failure and register full new type names without
+  weakening word boundaries. The next runtime ladder passed ten groups, then
+  force-enrollment setup timed out before the last two groups. Preserve that
+  observation and unexecuted suffix; cause remains unresolved and deadlines
+  remain unchanged. A later passing ladder must not be described as its repair.
+
 - Start the native training task-product path with a distinct native standard,
   exact enrolled profile/context/case, purpose-specific bounded collector API,
   pre-start one-use collection identity and original private JSONL/response replay.

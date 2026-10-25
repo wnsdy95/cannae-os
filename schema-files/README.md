@@ -1,5 +1,11 @@
 # Schema Files
 
+Native owner-transfer candidate contracts:
+`native-training-transfer-review-request.schema.json`,
+`native-training-transfer-authorization.schema.json` and
+`operator-native-training-product.schema.json`. They bind nested existing
+classification/release contracts and original evidence, not a grade or grant.
+
 The `native-training-product` request/response/appraisal contracts separate a
 native task from tool-hook observations. Standard v0.2 carries explicit native
 task cases; v0.1 stays readable without reinterpretation. All validator APIs keep

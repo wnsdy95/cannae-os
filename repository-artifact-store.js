@@ -866,9 +866,14 @@ function writeRepositoryFileArtifact(options) {
   if (!/^(?:\.[A-Za-z0-9]+){1,3}$/.test(suffix)) {
     throw new Error("Artifact source extension is not path-safe.");
   }
+  const bytes = fs.readFileSync(sourcePath);
+  if (options.expectedSha256 !== undefined) {
+    if (typeof options.expectedSha256 !== "string" || !/^[a-f0-9]{64}$/.test(options.expectedSha256)) throw new Error("ARTIFACT_SOURCE_DIGEST_INVALID");
+    if (sha256(bytes) !== options.expectedSha256) throw new Error("ARTIFACT_SOURCE_DIGEST_MISMATCH");
+  }
   return persistRepositoryArtifact(
     options,
-    fs.readFileSync(sourcePath),
+    bytes,
     `${artifactId}${suffix}`,
     options.contentType || contentTypeForExtension(path.extname(sourceName))
   );

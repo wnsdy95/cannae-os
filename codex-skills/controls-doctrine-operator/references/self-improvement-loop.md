@@ -49,9 +49,16 @@ before process startup. Observe a separate native thread ID in the original
 bounded JSONL; never attach it retrospectively or call it account/weight attestation.
 Read original response bytes and event history, not a caller's appraisal or a
 control wrapper relabeled as work. Preserve failed reservations and raw-output
-quarantine. The new owner-transfer UI/producer, complete failure inventory,
-authenticated grading, qualification and grant consumers remain unfinished;
-do not sign fixture consent or use an omission/session approval to operate it.
+quarantine. Read `docs/native-training-owner-consent.md` for the in-progress
+owner producer. Propose its exact handling review with `propose-review`; require
+the reviewed v0.2 packet, original request/source labels, mission handling and
+external-tool review plus actual owner password/session/nonce acknowledgment.
+Do not sign fixture consent or use an omission/session approval to operate it.
+Inspect every managed attempt, reservation orphan and deterministic publication
+after interruption. Keep native uncertainty held; older purpose-specific recovery
+cannot discharge it. A collected row or canonical candidate alone is not a grade,
+independent finality or new authority. Cross-runtime history, uncertainty discharge,
+authenticated grading, qualification, actual grants and rollout remain unfinished.
 Exercise the actual routed mission setup before producer tests: missing inventory
 must be registered, not bypassed. For independent invalid-input cases, rebuild
 the content-derived ID and assert the first authoritative parser/semantic guard,
@@ -74,6 +81,37 @@ After regenerating measured-runtime issuance samples, follow their transitive
 synthetic consumers, including the embedded lease in session authorizations and
 bindings. Regenerate those current examples and keep exact equality/signature
 checks; never rewrite retained operational evidence or accept stale references.
+Pin one clock through every transitive synthetic request/review builder before
+comparing generated examples. Preserve a mismatched-clock failure, then fix the
+builder rather than accepting changing IDs or loosening equality. For an
+ID-derived proposer, pass its raw recipe, not an already identified record.
+Do not silently discard an incoming ID inside production proposal code; keep
+construction separate from read/verification. When extending
+a worker denial family, test both actual worker emission and queue filtering.
+For a path-alias refusal, record individual equality predicates without exporting
+credentials or auth rows. Pin the physical training root once at host startup;
+recheck that pin before preparation, collection and publication. Never replace
+scope equality with a basename comparison or a dynamically trusted retarget.
+When reusing a cross-mission standard, inherit its original source-mission label
+references as well as the current request's labels. A fresh inline review cannot
+erase an adverse source label.
+For internal data, preserve the original receiver's need-to-know and run the
+actual context filter and external-tool release evaluator. A valid schema or
+owner signature never substitutes for those delivery-mode checks.
+A pending preview is not an authorized attempt: bind each reservation to original
+signed consent/authorization, exact scope and pre-start time. Emit bounded status
+errors in adversarial fixtures, not complete
+unexpected response bodies containing even synthetic challenges.
+For raw file publication, pin the digest of the actual buffer read by the writer
+before canonical persistence. Comparing only a later signed result can leave
+unvalidated bytes published. Test source substitution, no manifest change on
+refusal, and the actual file-writer consumer rather than a re-read-only probe.
+Route exact new contract type names explicitly when matching uses word boundaries;
+a shorter type prefix is not a match. Regress prose, filenames and complete types
+for both operator modes and both providers without relaxing generic matching.
+For a query timeout during fixture enrollment, preserve the failed source and
+observed passing prefix/unexecuted suffix. A fresh passing proof is not a diagnosis
+or repair of that timeout; never raise the production deadline to hide it.
 
 For training evidence, route `task training` and read `docs/task-training-evidence.md`.
 Require a signed exact session mapping introduced before the observed call; never
