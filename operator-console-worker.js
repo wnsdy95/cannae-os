@@ -2,7 +2,11 @@ const { parentPort, workerData } = require("node:worker_threads");
 try {
   const { configuration, user, request } = workerData;
   let result;
-  if (["force-registry", "prepare-force-registry", "execute-force-registry"].includes(request.action)) {
+  if (["prepare-training-session", "execute-training-session"].includes(request.action)) {
+    if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
+    result = request.action === "prepare-training-session" ? require("./training-session-controller").prepareReview(configuration, request)
+      : require("./operator-training-session-executor").executeTrainingSession(configuration, request.challenge_id);
+  } else if (["force-registry", "prepare-force-registry", "execute-force-registry"].includes(request.action)) {
     if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
     const core = require("./force-registry-controller");
     if (request.action === "force-registry") result = core.inspection(configuration, configuration.forceRegistryPublicKey);
@@ -34,5 +38,5 @@ try {
   parentPort.postMessage({ result });
 } catch (error) {
   parentPort.postMessage({ error: /^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message : "CONSOLE_EVIDENCE_UNAVAILABLE",
-    reason_codes: [...new Set([...(error.reason_codes || []), ...(error.message.match(/\b(?:CONSOLE|ORDER|OPERATOR|SEMANTIC|FORCE_REGISTRY|FORCE_ENTITY)_[A-Z_]+\b/g) || [])])].slice(0, 8), statusCode: error.statusCode || 409 });
+    reason_codes: [...new Set([...(error.reason_codes || []), ...(error.message.match(/\b(?:CONSOLE|ORDER|OPERATOR|SEMANTIC|TRAINING|FORCE_REGISTRY|FORCE_ENTITY)_[A-Z_]+\b/g) || [])])].slice(0, 8), statusCode: error.statusCode || 409 });
 }

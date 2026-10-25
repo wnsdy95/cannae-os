@@ -11,9 +11,13 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["training-session-proposal", "training-session-authorization", "task-training-session-binding-current"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} distinct training session consent ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type: type.replace("-current", ""),
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [type.endsWith("-current") ? "ANY_OF_MISMATCH" : "CONST_MISMATCH"]
+  }))),
   ...["standard", "trial-request", "session-binding", "completion-input", "trial-appraisal"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-authorizing task training ${suffix}`, file: `sample-payloads/${prefix}-task-training-${suffix}.json`, type: `task-training-${suffix}`,
-    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [["session-binding", "trial-appraisal"].includes(suffix) ? "ANY_OF_MISMATCH" : "CONST_MISMATCH"]
   }))),
   { name: "training critical step cannot be waived as N/A", file: "sample-payloads/valid-task-training-standard.json", type: "task-training-standard",
     exitCode: 1, expectedCanExecute: false, requiredCodes: ["TRAINING_STANDARD_CRITICAL_OR_PRODUCT_MISSING"], mutate(value) { value.steps[0].not_applicable_permitted = true; } },

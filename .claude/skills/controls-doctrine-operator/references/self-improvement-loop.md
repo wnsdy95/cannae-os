@@ -46,8 +46,23 @@ Require a signed exact session mapping introduced before the observed call; neve
 hash a session ID into a substitute stable principal or attach a later performer
 label to old results. Bind actual provider completion and retained bytes, keep
 settled failed trials visible, and separate that evidence from step evaluation,
-qualification and new grants. The present intake has no real owner-session
-producer or qualification/grant consumer; do not invent one from a signed fixture.
+qualification and new grants. Use the distinct owner-session candidate in
+`docs/training-session-consent.md`, not a definition approval or a signed fixture.
+Run the proposal-only `scripts/prepare_controls_training_session.js`; leave the
+exact console review/password/nonce decision to the human. Require current v0.2
+mapping provenance through its original authorization. Legacy v0.1 remains
+reference evidence, never retrospectively verified consent. After a partial write,
+inspect the exact action and keep the hold; no automatic discharge or retry is
+implemented. Neither the mapping nor an incoming/cached appraisal grants a grade
+or authority; reappraise original evidence before any future qualification use.
+
+When adding a refusal-code family, regress both worker emission and queue
+sanitization through the actual HTTP outcome. A refusal with an empty reason list
+does not prove the expected boundary fired. Keep a bounded code namespace and
+continue filtering private details; never replace it with arbitrary error text.
+Also run the actual CLI, not just library imports, when a contract re-enters a
+shared validator. Export the library before CLI execution; otherwise `main` can
+observe incomplete exports and fail before returning its JSON refusal/result.
 
 For a training case's tool-input commitment, use the dispatcher's exported
 `inputDigest`, not the artifact digest: their canonical byte domains differ,

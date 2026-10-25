@@ -6,6 +6,19 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add a distinct local owner training-session consent candidate through the real
+  authenticated console and worker, full display commitment, password/session/
+  nonce checks, pre-call lease lock and immutable authorization/binding chain.
+  Reject post-hoc/duplicate enrollment, preserve partial-write/restart holds and
+  read historical mappings without retroactive assurance. Keep task quality,
+  qualification, actual grants, uncertain-outcome discharge and rollout open.
+  Adapt both skills and preserve the initial development failure: new denial
+  codes were removed by the second worker transport filter. Add an exact-code
+  regression without weakening private-detail filtering or the refusal itself.
+  Preserve the subsequent 594/595 CLI development failure too: nested validation
+  saw incomplete exports only through the real CLI entrypoint. Export before
+  entering main and regress that exact path, rather than relying on library tests.
+
 - Start task-training evidence intake over owner-enrolled definitions, pre-call
   signed stage/case session mappings and actual dispatch completion/result bytes.
   Add non-executable contracts, owner-only evidence reads and both skill routes.

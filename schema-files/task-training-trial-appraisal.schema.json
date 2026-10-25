@@ -1,21 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schema_version": {
-      "type": "string",
-      "const": "0.1"
-    },
-    "type": {
-      "type": "string",
-      "const": "TaskTrainingTrialAppraisal"
-    },
-    "id": {
-      "type": "string",
-      "maxLength": 128,
-      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-    },
-    "request": {
+  "anyOf": [
+    {
       "type": "object",
       "properties": {
         "schema_version": {
@@ -24,32 +10,326 @@
         },
         "type": {
           "type": "string",
-          "const": "TaskTrainingTrialRequest"
+          "const": "TaskTrainingTrialAppraisal"
         },
         "id": {
           "type": "string",
           "maxLength": 128,
           "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
         },
-        "mission_id": {
-          "type": "string",
-          "maxLength": 128,
-          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        "request": {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "type": "string",
+              "const": "0.1"
+            },
+            "type": {
+              "type": "string",
+              "const": "TaskTrainingTrialRequest"
+            },
+            "id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "mission_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "wave_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "capability_id": {
+              "type": "string",
+              "pattern": "^CAP-[A-Za-z0-9_-]+$"
+            },
+            "performer_id": {
+              "type": "string",
+              "pattern": "^PERF-[A-Za-z0-9_-]+$"
+            },
+            "registry_head_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "case_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "session_binding_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "lease_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "completion_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "completion_input_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "observed_output_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "execution_authorized": {
+              "type": "boolean",
+              "const": false
+            },
+            "release_authorized": {
+              "type": "boolean",
+              "const": false
+            },
+            "human_final_decision_authority": {
+              "type": "string",
+              "const": "USER"
+            },
+            "qualification_granted": {
+              "type": "boolean",
+              "const": false
+            },
+            "grant_restoration_authorized": {
+              "type": "boolean",
+              "const": false
+            }
+          },
+          "required": [
+            "schema_version",
+            "type",
+            "id",
+            "mission_id",
+            "wave_id",
+            "capability_id",
+            "performer_id",
+            "registry_head_ref",
+            "case_id",
+            "session_binding_ref",
+            "lease_ref",
+            "completion_ref",
+            "completion_input_ref",
+            "observed_output_ref",
+            "execution_authorized",
+            "release_authorized",
+            "human_final_decision_authority",
+            "qualification_granted",
+            "grant_restoration_authorized"
+          ],
+          "additionalProperties": false
         },
-        "wave_id": {
+        "request_sha256": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 128
+          "pattern": "^[a-f0-9]{64}$"
         },
-        "capability_id": {
+        "source_state_sha256": {
           "type": "string",
-          "pattern": "^CAP-[A-Za-z0-9_-]+$"
+          "pattern": "^[a-f0-9]{64}$"
         },
-        "performer_id": {
-          "type": "string",
-          "pattern": "^PERF-[A-Za-z0-9_-]+$"
+        "repository_binding": {
+          "type": "object",
+          "properties": {
+            "repository_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "identity_fingerprint": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "repository_key",
+            "identity_fingerprint"
+          ],
+          "additionalProperties": false
+        },
+        "observed_manifest": {
+          "type": "object",
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ],
+          "additionalProperties": false
         },
         "registry_head_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "capability_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "performer_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "standard_ref": {
           "type": "object",
           "properties": {
             "artifact_id": {
@@ -79,32 +359,14 @@
           "maxLength": 128,
           "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
         },
-        "session_binding_ref": {
-          "type": "object",
-          "properties": {
-            "artifact_id": {
-              "type": "string",
-              "maxLength": 128,
-              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-            },
-            "relative_path": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 4096
-            },
-            "sha256": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            }
-          },
-          "required": [
-            "artifact_id",
-            "relative_path",
-            "sha256"
-          ],
-          "additionalProperties": false
+        "stage": {
+          "type": "string",
+          "enum": [
+            "crawl",
+            "walk"
+          ]
         },
-        "lease_ref": {
+        "admission_ref": {
           "type": "object",
           "properties": {
             "artifact_id": {
@@ -154,55 +416,41 @@
           ],
           "additionalProperties": false
         },
-        "completion_input_ref": {
-          "type": "object",
-          "properties": {
-            "artifact_id": {
-              "type": "string",
-              "maxLength": 128,
-              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-            },
-            "relative_path": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 4096
-            },
-            "sha256": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            }
-          },
-          "required": [
-            "artifact_id",
-            "relative_path",
-            "sha256"
-          ],
-          "additionalProperties": false
+        "execution_succeeded": {
+          "type": "boolean"
         },
-        "observed_output_ref": {
-          "type": "object",
-          "properties": {
-            "artifact_id": {
-              "type": "string",
-              "maxLength": 128,
-              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-            },
-            "relative_path": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 4096
-            },
-            "sha256": {
-              "type": "string",
-              "pattern": "^[a-f0-9]{64}$"
-            }
-          },
-          "required": [
-            "artifact_id",
-            "relative_path",
-            "sha256"
-          ],
-          "additionalProperties": false
+        "observed_output_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "type": "string",
+          "const": "observed_result_bound"
+        },
+        "valid_for_training_review_until": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "actual_model_execution_attested": {
+          "type": "boolean",
+          "const": false
+        },
+        "configuration_attested": {
+          "type": "boolean",
+          "const": false
+        },
+        "conditions_observed": {
+          "type": "boolean",
+          "const": false
+        },
+        "task_standard_evaluated": {
+          "type": "boolean",
+          "const": false
+        },
+        "evaluator_authenticated": {
+          "type": "boolean",
+          "const": false
         },
         "execution_authorized": {
           "type": "boolean",
@@ -229,17 +477,28 @@
         "schema_version",
         "type",
         "id",
-        "mission_id",
-        "wave_id",
-        "capability_id",
-        "performer_id",
+        "request",
+        "request_sha256",
+        "source_state_sha256",
+        "repository_binding",
+        "observed_manifest",
         "registry_head_ref",
+        "capability_sha256",
+        "performer_sha256",
+        "standard_ref",
         "case_id",
-        "session_binding_ref",
-        "lease_ref",
+        "stage",
+        "admission_ref",
         "completion_ref",
-        "completion_input_ref",
-        "observed_output_ref",
+        "execution_succeeded",
+        "observed_output_sha256",
+        "status",
+        "valid_for_training_review_until",
+        "actual_model_execution_attested",
+        "configuration_attested",
+        "conditions_observed",
+        "task_standard_evaluated",
+        "evaluator_authenticated",
         "execution_authorized",
         "release_authorized",
         "human_final_decision_authority",
@@ -248,261 +507,516 @@
       ],
       "additionalProperties": false
     },
-    "request_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "source_state_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "repository_binding": {
+    {
       "type": "object",
       "properties": {
-        "repository_key": {
+        "schema_version": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 256
+          "const": "0.2"
         },
-        "identity_fingerprint": {
+        "type": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        }
-      },
-      "required": [
-        "repository_key",
-        "identity_fingerprint"
-      ],
-      "additionalProperties": false
-    },
-    "observed_manifest": {
-      "type": "object",
-      "properties": {
-        "revision": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9007199254740991
+          "const": "TaskTrainingTrialAppraisal"
         },
-        "sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        }
-      },
-      "required": [
-        "revision",
-        "sha256"
-      ],
-      "additionalProperties": false
-    },
-    "registry_head_ref": {
-      "type": "object",
-      "properties": {
-        "artifact_id": {
+        "id": {
           "type": "string",
           "maxLength": 128,
           "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
         },
-        "relative_path": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 4096
+        "request": {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "type": "string",
+              "const": "0.1"
+            },
+            "type": {
+              "type": "string",
+              "const": "TaskTrainingTrialRequest"
+            },
+            "id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "mission_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "wave_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "capability_id": {
+              "type": "string",
+              "pattern": "^CAP-[A-Za-z0-9_-]+$"
+            },
+            "performer_id": {
+              "type": "string",
+              "pattern": "^PERF-[A-Za-z0-9_-]+$"
+            },
+            "registry_head_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "case_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "session_binding_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "lease_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "completion_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "completion_input_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "observed_output_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "execution_authorized": {
+              "type": "boolean",
+              "const": false
+            },
+            "release_authorized": {
+              "type": "boolean",
+              "const": false
+            },
+            "human_final_decision_authority": {
+              "type": "string",
+              "const": "USER"
+            },
+            "qualification_granted": {
+              "type": "boolean",
+              "const": false
+            },
+            "grant_restoration_authorized": {
+              "type": "boolean",
+              "const": false
+            }
+          },
+          "required": [
+            "schema_version",
+            "type",
+            "id",
+            "mission_id",
+            "wave_id",
+            "capability_id",
+            "performer_id",
+            "registry_head_ref",
+            "case_id",
+            "session_binding_ref",
+            "lease_ref",
+            "completion_ref",
+            "completion_input_ref",
+            "observed_output_ref",
+            "execution_authorized",
+            "release_authorized",
+            "human_final_decision_authority",
+            "qualification_granted",
+            "grant_restoration_authorized"
+          ],
+          "additionalProperties": false
         },
-        "sha256": {
+        "request_sha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
-        }
-      },
-      "required": [
-        "artifact_id",
-        "relative_path",
-        "sha256"
-      ],
-      "additionalProperties": false
-    },
-    "capability_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "performer_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "standard_ref": {
-      "type": "object",
-      "properties": {
-        "artifact_id": {
+        },
+        "source_state_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "repository_binding": {
+          "type": "object",
+          "properties": {
+            "repository_key": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "identity_fingerprint": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "repository_key",
+            "identity_fingerprint"
+          ],
+          "additionalProperties": false
+        },
+        "observed_manifest": {
+          "type": "object",
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "revision",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "registry_head_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "capability_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "performer_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "standard_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "case_id": {
           "type": "string",
           "maxLength": 128,
           "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
         },
-        "relative_path": {
+        "stage": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 4096
+          "enum": [
+            "crawl",
+            "walk"
+          ]
         },
-        "sha256": {
+        "admission_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "completion_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "execution_succeeded": {
+          "type": "boolean"
+        },
+        "observed_output_sha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
+        },
+        "status": {
+          "type": "string",
+          "const": "observed_result_bound"
+        },
+        "valid_for_training_review_until": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "actual_model_execution_attested": {
+          "type": "boolean",
+          "const": false
+        },
+        "configuration_attested": {
+          "type": "boolean",
+          "const": false
+        },
+        "conditions_observed": {
+          "type": "boolean",
+          "const": false
+        },
+        "task_standard_evaluated": {
+          "type": "boolean",
+          "const": false
+        },
+        "evaluator_authenticated": {
+          "type": "boolean",
+          "const": false
+        },
+        "execution_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "qualification_granted": {
+          "type": "boolean",
+          "const": false
+        },
+        "grant_restoration_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "owner_session_ceremony_verified": {
+          "type": "boolean"
         }
       },
       "required": [
-        "artifact_id",
-        "relative_path",
-        "sha256"
+        "schema_version",
+        "type",
+        "id",
+        "request",
+        "request_sha256",
+        "source_state_sha256",
+        "repository_binding",
+        "observed_manifest",
+        "registry_head_ref",
+        "capability_sha256",
+        "performer_sha256",
+        "standard_ref",
+        "case_id",
+        "stage",
+        "admission_ref",
+        "completion_ref",
+        "execution_succeeded",
+        "observed_output_sha256",
+        "status",
+        "valid_for_training_review_until",
+        "actual_model_execution_attested",
+        "configuration_attested",
+        "conditions_observed",
+        "task_standard_evaluated",
+        "evaluator_authenticated",
+        "execution_authorized",
+        "release_authorized",
+        "human_final_decision_authority",
+        "qualification_granted",
+        "grant_restoration_authorized",
+        "owner_session_ceremony_verified"
       ],
       "additionalProperties": false
-    },
-    "case_id": {
-      "type": "string",
-      "maxLength": 128,
-      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-    },
-    "stage": {
-      "type": "string",
-      "enum": [
-        "crawl",
-        "walk"
-      ]
-    },
-    "admission_ref": {
-      "type": "object",
-      "properties": {
-        "artifact_id": {
-          "type": "string",
-          "maxLength": 128,
-          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-        },
-        "relative_path": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 4096
-        },
-        "sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        }
-      },
-      "required": [
-        "artifact_id",
-        "relative_path",
-        "sha256"
-      ],
-      "additionalProperties": false
-    },
-    "completion_ref": {
-      "type": "object",
-      "properties": {
-        "artifact_id": {
-          "type": "string",
-          "maxLength": 128,
-          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-        },
-        "relative_path": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 4096
-        },
-        "sha256": {
-          "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        }
-      },
-      "required": [
-        "artifact_id",
-        "relative_path",
-        "sha256"
-      ],
-      "additionalProperties": false
-    },
-    "execution_succeeded": {
-      "type": "boolean"
-    },
-    "observed_output_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "status": {
-      "type": "string",
-      "const": "observed_result_bound"
-    },
-    "valid_for_training_review_until": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
-    },
-    "actual_model_execution_attested": {
-      "type": "boolean",
-      "const": false
-    },
-    "configuration_attested": {
-      "type": "boolean",
-      "const": false
-    },
-    "conditions_observed": {
-      "type": "boolean",
-      "const": false
-    },
-    "task_standard_evaluated": {
-      "type": "boolean",
-      "const": false
-    },
-    "evaluator_authenticated": {
-      "type": "boolean",
-      "const": false
-    },
-    "execution_authorized": {
-      "type": "boolean",
-      "const": false
-    },
-    "release_authorized": {
-      "type": "boolean",
-      "const": false
-    },
-    "human_final_decision_authority": {
-      "type": "string",
-      "const": "USER"
-    },
-    "qualification_granted": {
-      "type": "boolean",
-      "const": false
-    },
-    "grant_restoration_authorized": {
-      "type": "boolean",
-      "const": false
     }
-  },
-  "required": [
-    "schema_version",
-    "type",
-    "id",
-    "request",
-    "request_sha256",
-    "source_state_sha256",
-    "repository_binding",
-    "observed_manifest",
-    "registry_head_ref",
-    "capability_sha256",
-    "performer_sha256",
-    "standard_ref",
-    "case_id",
-    "stage",
-    "admission_ref",
-    "completion_ref",
-    "execution_succeeded",
-    "observed_output_sha256",
-    "status",
-    "valid_for_training_review_until",
-    "actual_model_execution_attested",
-    "configuration_attested",
-    "conditions_observed",
-    "task_standard_evaluated",
-    "evaluator_authenticated",
-    "execution_authorized",
-    "release_authorized",
-    "human_final_decision_authority",
-    "qualification_granted",
-    "grant_restoration_authorized"
   ],
-  "additionalProperties": false,
   "$id": "https://controls.local/schema-files/task-training-trial-appraisal.schema.json"
 }

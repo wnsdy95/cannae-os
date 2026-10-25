@@ -45,6 +45,8 @@ function appraiseTrial(options, input, trustedPublicKey) {
   const session = record(store, request.session_binding_ref, "task-training-session-bindings"); c.checked(session.payload, "task-training-session-binding");
   const binding = session.payload;
   c.need(trustedPublicKey && validOperatorSignature(binding, trustedPublicKey), "TRAINING_SESSION_SIGNATURE_INVALID");
+  const ceremonyVerified = binding.schema_version === "0.2";
+  if (ceremonyVerified) require("./training-session-controller").verifyBinding(store, session, trustedPublicKey);
   c.need(binding.performer_id === performer.id && binding.performer_version === performer.version && binding.capability_id === capability.id &&
     binding.capability_version === capability.version && binding.configuration_sha256 === c.digest(performer.data) &&
     same(binding.lease_ref, request.lease_ref) && binding.provider === lease.payload.provider && same(binding.session_binding, lease.payload.session_binding),
@@ -87,7 +89,7 @@ function appraiseTrial(options, input, trustedPublicKey) {
   c.need(typeof value === "string" && Buffer.byteLength(value) >= trainingCase.minimum_output_bytes && Buffer.byteLength(value) <= 65536 && output.text === value &&
     sha256(Buffer.from(value)) === output.ref.sha256, "TRAINING_OBSERVED_OUTPUT_SUBSTITUTED");
   const current = force.load(options); c.need(same(force.manifestState(current), force.manifestState(store)), "TRAINING_SNAPSHOT_CHANGED");
-  const body = { schema_version: "0.1", type: "TaskTrainingTrialAppraisal", request, request_sha256: c.digest(request),
+  const body = { schema_version: "0.2", type: "TaskTrainingTrialAppraisal", owner_session_ceremony_verified: ceremonyVerified, request, request_sha256: c.digest(request),
     source_state_sha256: require("./skill-mission-controller").repositoryStateDigest(__dirname),
     repository_binding: force.binding(store), observed_manifest: force.manifestState(store), registry_head_ref: state.head,
     capability_sha256: c.digest(capability), performer_sha256: c.digest(performer), standard_ref: standardRecord.ref, case_id: trainingCase.case_id,

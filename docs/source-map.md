@@ -7,6 +7,11 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [training session ceremony](training-session-consent.md) is local engineering
+synthesis of existing owner consent, pinned signatures, immutable artifact prefixes
+and dispatch locks. Its exact display/nonce and partial-write boundaries are not
+new military-source claims or evidence of model proficiency or a protected host.
+
 The [training evidence foundation](task-training-evidence.md) applies existing
 registry, artifact, dispatch and owner-trust contracts. Its engineering constraints
 separate observed results from qualification and grants. The dated

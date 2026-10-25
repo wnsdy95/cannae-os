@@ -76,7 +76,8 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
-- [Task Training Evidence](docs/task-training-evidence.md): in-progress intake binds enrolled definitions, pre-call session mappings and actual completion/output evidence. It does not yet implement real owner session enrollment, qualification or operational grants.
+- [Task Training Evidence](docs/task-training-evidence.md): in-progress intake binds enrolled definitions, pre-call session mappings and actual completion/output evidence. Qualification and operational grants remain incomplete.
+- [Training Session Consent](docs/training-session-consent.md): a separate authenticated owner ceremony binds the complete standard/case/lease review before any counted call. Historical mappings do not gain new assurance; quality, qualification, grants, recovery and rollout remain separate.
 - [Readiness And Authority Intersection](docs/readiness-authority-intersection.md): reference policy consumers preserve minimum readiness, prohibitions, exact scope, overlapping restrictions and expiry through approval/release composition. Declared ratings are not authenticated qualification or actual tool authority.
 - [Codex Default Model Binding](docs/codex-default-model-binding.md): bounded metadata-only host preparation freezes a concrete CLI model before exact owner transfer review. Selection is not account-access proof, inference consent or an automatic default upgrade.
 - [Native Request Analysis](docs/native-order-analysis.md): purpose-bound existing-Codex proposals consumed by the actual OPORD compiler, with separate owner transfer review and [failed-analysis/publication acknowledgment](docs/order-analysis-reconciliation.md). Proposed drafts remain uncalibrated and require human coverage/adoption; no self-granted task authority.

@@ -1,216 +1,460 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "properties": {
-    "schema_version": {
-      "type": "string",
-      "const": "0.1"
-    },
-    "type": {
-      "type": "string",
-      "const": "TaskTrainingSessionBinding"
-    },
-    "id": {
-      "type": "string",
-      "maxLength": 128,
-      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-    },
-    "purpose": {
-      "type": "string",
-      "const": "task_training_session_binding"
-    },
-    "capability_id": {
-      "type": "string",
-      "pattern": "^CAP-[A-Za-z0-9_-]+$"
-    },
-    "capability_version": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 9007199254740991
-    },
-    "performer_id": {
-      "type": "string",
-      "pattern": "^PERF-[A-Za-z0-9_-]+$"
-    },
-    "performer_version": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 9007199254740991
-    },
-    "configuration_sha256": {
-      "type": "string",
-      "pattern": "^[a-f0-9]{64}$"
-    },
-    "stage": {
-      "type": "string",
-      "enum": [
-        "crawl",
-        "walk"
-      ]
-    },
-    "case_ids": {
-      "minItems": 1,
-      "maxItems": 32,
-      "type": "array",
-      "items": {
-        "type": "string",
-        "maxLength": 128,
-        "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
-      }
-    },
-    "lease_ref": {
+  "anyOf": [
+    {
       "type": "object",
       "properties": {
-        "artifact_id": {
+        "schema_version": {
+          "type": "string",
+          "const": "0.1"
+        },
+        "type": {
+          "type": "string",
+          "const": "TaskTrainingSessionBinding"
+        },
+        "id": {
           "type": "string",
           "maxLength": 128,
           "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
         },
-        "relative_path": {
+        "purpose": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 4096
+          "const": "task_training_session_binding"
         },
-        "sha256": {
+        "capability_id": {
           "type": "string",
-          "pattern": "^[a-f0-9]{64}$"
-        }
-      },
-      "required": [
-        "artifact_id",
-        "relative_path",
-        "sha256"
-      ],
-      "additionalProperties": false
-    },
-    "provider": {
-      "type": "string",
-      "enum": [
-        "codex",
-        "claude_code"
-      ]
-    },
-    "session_binding": {
-      "type": "object",
-      "properties": {
-        "session_id": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
+          "pattern": "^CAP-[A-Za-z0-9_-]+$"
         },
-        "provider_agent_id": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
-        }
-      },
-      "required": [
-        "session_id",
-        "provider_agent_id"
-      ],
-      "additionalProperties": false
-    },
-    "principal_id": {
-      "type": "string",
-      "format": "uuid",
-      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-    },
-    "principal_epoch": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 9007199254740991
-    },
-    "authentication_method": {
-      "type": "string",
-      "const": "local_owner_password_reauthentication"
-    },
-    "created_at": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
-    },
-    "expires_at": {
-      "type": "string",
-      "format": "date-time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
-    },
-    "model_identity_attested": {
-      "type": "boolean",
-      "const": false
-    },
-    "execution_authorized": {
-      "type": "boolean",
-      "const": false
-    },
-    "release_authorized": {
-      "type": "boolean",
-      "const": false
-    },
-    "human_final_decision_authority": {
-      "type": "string",
-      "const": "USER"
-    },
-    "qualification_granted": {
-      "type": "boolean",
-      "const": false
-    },
-    "grant_restoration_authorized": {
-      "type": "boolean",
-      "const": false
-    },
-    "signature": {
-      "type": "object",
-      "properties": {
-        "algorithm": {
-          "type": "string",
-          "const": "Ed25519"
+        "capability_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
         },
-        "key_sha256": {
+        "performer_id": {
+          "type": "string",
+          "pattern": "^PERF-[A-Za-z0-9_-]+$"
+        },
+        "performer_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "configuration_sha256": {
           "type": "string",
           "pattern": "^[a-f0-9]{64}$"
         },
-        "value": {
+        "stage": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 128
+          "enum": [
+            "crawl",
+            "walk"
+          ]
+        },
+        "case_ids": {
+          "minItems": 1,
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "lease_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude_code"
+          ]
+        },
+        "session_binding": {
+          "type": "object",
+          "properties": {
+            "session_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "provider_agent_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "session_id",
+            "provider_agent_id"
+          ],
+          "additionalProperties": false
+        },
+        "principal_id": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "principal_epoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "authentication_method": {
+          "type": "string",
+          "const": "local_owner_password_reauthentication"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "model_identity_attested": {
+          "type": "boolean",
+          "const": false
+        },
+        "execution_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "qualification_granted": {
+          "type": "boolean",
+          "const": false
+        },
+        "grant_restoration_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "const": "Ed25519"
+            },
+            "key_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "algorithm",
+            "key_sha256",
+            "value"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
-        "algorithm",
-        "key_sha256",
-        "value"
+        "schema_version",
+        "type",
+        "id",
+        "purpose",
+        "capability_id",
+        "capability_version",
+        "performer_id",
+        "performer_version",
+        "configuration_sha256",
+        "stage",
+        "case_ids",
+        "lease_ref",
+        "provider",
+        "session_binding",
+        "principal_id",
+        "principal_epoch",
+        "authentication_method",
+        "created_at",
+        "expires_at",
+        "model_identity_attested",
+        "execution_authorized",
+        "release_authorized",
+        "human_final_decision_authority",
+        "qualification_granted",
+        "grant_restoration_authorized",
+        "signature"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "0.2"
+        },
+        "type": {
+          "type": "string",
+          "const": "TaskTrainingSessionBinding"
+        },
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "purpose": {
+          "type": "string",
+          "const": "task_training_session_binding"
+        },
+        "capability_id": {
+          "type": "string",
+          "pattern": "^CAP-[A-Za-z0-9_-]+$"
+        },
+        "capability_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "performer_id": {
+          "type": "string",
+          "pattern": "^PERF-[A-Za-z0-9_-]+$"
+        },
+        "performer_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "configuration_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "crawl",
+            "walk"
+          ]
+        },
+        "case_ids": {
+          "minItems": 1,
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "lease_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "codex",
+            "claude_code"
+          ]
+        },
+        "session_binding": {
+          "type": "object",
+          "properties": {
+            "session_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "provider_agent_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "session_id",
+            "provider_agent_id"
+          ],
+          "additionalProperties": false
+        },
+        "principal_id": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "principal_epoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "authentication_method": {
+          "type": "string",
+          "const": "local_owner_password_reauthentication"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "model_identity_attested": {
+          "type": "boolean",
+          "const": false
+        },
+        "execution_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "release_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "human_final_decision_authority": {
+          "type": "string",
+          "const": "USER"
+        },
+        "qualification_granted": {
+          "type": "boolean",
+          "const": false
+        },
+        "grant_restoration_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "const": "Ed25519"
+            },
+            "key_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "algorithm",
+            "key_sha256",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "authorization_ref": {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "id",
+        "purpose",
+        "capability_id",
+        "capability_version",
+        "performer_id",
+        "performer_version",
+        "configuration_sha256",
+        "stage",
+        "case_ids",
+        "lease_ref",
+        "provider",
+        "session_binding",
+        "principal_id",
+        "principal_epoch",
+        "authentication_method",
+        "created_at",
+        "expires_at",
+        "model_identity_attested",
+        "execution_authorized",
+        "release_authorized",
+        "human_final_decision_authority",
+        "qualification_granted",
+        "grant_restoration_authorized",
+        "signature",
+        "authorization_ref"
       ],
       "additionalProperties": false
     }
-  },
-  "required": [
-    "schema_version",
-    "type",
-    "id",
-    "purpose",
-    "capability_id",
-    "capability_version",
-    "performer_id",
-    "performer_version",
-    "configuration_sha256",
-    "stage",
-    "case_ids",
-    "lease_ref",
-    "provider",
-    "session_binding",
-    "principal_id",
-    "principal_epoch",
-    "authentication_method",
-    "created_at",
-    "expires_at",
-    "model_identity_attested",
-    "execution_authorized",
-    "release_authorized",
-    "human_final_decision_authority",
-    "qualification_granted",
-    "grant_restoration_authorized",
-    "signature"
   ],
-  "additionalProperties": false,
   "$id": "https://controls.local/schema-files/task-training-session-binding.schema.json"
 }

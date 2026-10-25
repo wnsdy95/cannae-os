@@ -44,11 +44,15 @@ The mapping fixes the training stage and allowed case IDs before execution;
 the caller cannot relabel an earlier crawl call as a walk trial. The appraisal
 returns a deterministic review deadline, not a cached claim of current freshness.
 
-**The real owner session-binding ceremony is not implemented yet.** Current
-fixtures explicitly construct synthetic signed bindings in an isolated synthetic
-operator store. Those tests do not prove a real owner approval path. There is no
-public signing/approve CLI, real-owner automation, key import, or active-service
-upgrade in this slice.
+The separate [owner-session consent candidate](training-session-consent.md)
+connects the actual console, worker and pinned-key executor to a v0.2 binding.
+It retains the full exact review before the binding and before any counted call.
+The v0.2 appraisal independently verifies that original history and exposes
+`owner_session_ceremony_verified`; legacy v0.1 mappings remain readable without
+retrospective assurance. The older intake fixtures still explicitly sign their
+synthetic reference mappings. The new ceremony fixtures instead use the real
+approval endpoint in isolated synthetic owner stores. There is no public signing/
+approve CLI, real-owner automation, key import or active-service upgrade here.
 
 `TaskTrainingCompletionInput` retains the precise result-digest projection used
 by actual dispatch completion. `TaskTrainingTrialRequest` names that input,
@@ -93,8 +97,9 @@ real local file read. They execute zero real model calls and do not touch the
 installed owner, daemon or credentials. Preserve early routing/validation failure
 records; an unexecuted test suffix is not a pass.
 
-Next, implement the actual purpose-bound owner session ceremony, complete
-trial/failure inventory and independently authenticated step evaluations. Require
+Next, verify and roll out the purpose-bound session ceremony, complete its separate
+uncertain-outcome reconciliation, trial/failure inventory and independently
+authenticated step evaluations. Require
 all critical observations, explicit applicability, current configuration, distinct
 stage evidence, retained incidents and prior-stage qualification. No missing
 observation may become GO, and a critical failure cannot disappear into an average.

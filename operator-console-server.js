@@ -45,7 +45,7 @@ async function createConsole(options) {
   catch (error) { consent.close(); auth.close(); throw error; }
   const jobs = createWorkerQueue(path.join(ROOT, "operator-console-worker.js"));
   function query(user, request) {
-    const force = ["force-registry", "prepare-force-registry", "execute-force-registry"].includes(request.action);
+    const force = ["force-registry", "prepare-force-registry", "execute-force-registry", "prepare-training-session", "execute-training-session"].includes(request.action);
     return jobs.submit({ configuration: { ...consent.workerConfiguration, ...(force ? { forceRegistryPublicKey: consent.publicKey() } : {}) }, user, request });
   }
   const origin = () => `http://127.0.0.1:${app.server.address()?.port || options.port || 0}`;
@@ -121,6 +121,24 @@ async function createConsole(options) {
   app.get("/api/users", async request => ({ users: auth.users(owner(request).id), ...readOnly }));
   app.get("/api/activity", async request => ({ entries: auth.activity(owner(request).id), ...readOnly }));
   const uuid = { type: "string", pattern: "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" };
+  app.get("/api/training-sessions", request => { owner(request); return consent.trainingSessions.list(request.session); });
+  app.get("/api/training-sessions/actions/:id", { schema: { params: plain({ id: uuid }) } }, request => {
+    owner(request); return consent.trainingSessions.inspect(request.session, request.params.id);
+  });
+  app.post("/api/training-sessions/preview", { onRequest: guard, schema: { body: plain({
+    entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" }
+  }) } }, async request => {
+    const principal = owner(request), review = await query(principal, { action: "prepare-training-session", ...request.body });
+    owner(request); return consent.trainingSessions.prepare(request.session, review);
+  });
+  app.post("/api/training-sessions/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    challenge_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000),
+    acknowledge_session_only: { const: true, type: "boolean" }, displayed_review_sha256: { type: "string", pattern: "^[a-f0-9]{64}$" }
+  }) } }, async request => {
+    const principal = owner(request), id = await consent.trainingSessions.reserve(request.session, request.body);
+    try { const result = await query(principal, { action: "execute-training-session", challenge_id: id }); owner(request); return result; }
+    catch (error) { consent.trainingSessions.fail(id); throw error; }
+  });
   app.get("/api/force-registry", async request => {
     const principal = owner(request), result = await query(principal, { action: "force-registry" }); owner(request);
     const actions = consent.forceRegistry.list(request.session);
@@ -273,6 +291,7 @@ async function createConsole(options) {
     "/semantic.js": ["operator-console/semantic.js", "text/javascript"],
     "/coverage.js": ["operator-console/coverage.js", "text/javascript"],
     "/force.js": ["operator-console/force.js", "text/javascript"],
+    "/training.js": ["operator-console/training.js", "text/javascript"],
     "/licenses/lucide.txt": ["node_modules/lucide-static/LICENSE", "text/plain"] };
   for (const icon of ["shield-check", "folder-search", "clipboard-list", "clipboard-check", "users", "activity", "log-out", "refresh-cw", "x", "arrow-right", "copy", "chevron-left", "chevron-right"]) {
     assets[`/icons/${icon}.svg`] = [`node_modules/lucide-static/icons/${icon}.svg`, "image/svg+xml"];
