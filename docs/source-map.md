@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [native task-product candidate](native-training-products.md) uses the official
+[Codex JSONL/final-message documentation](https://learn.chatgpt.com/docs/non-interactive-mode#make-output-machine-readable)
+(retrieved 2026-10-25). Its collection-ID reservation, profile binding, private
+raw-event replay and purpose boundaries are local engineering policy. Observed
+thread/turn events do not attest an account, immutable model weights or a
+pre-inference identity gate. No new military-source claim is introduced.
+
 The [training session ceremony](training-session-consent.md) is local engineering
 synthesis of existing owner consent, pinned signatures, immutable artifact prefixes
 and dispatch locks. Its exact display/nonce and partial-write boundaries are not

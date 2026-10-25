@@ -1,0 +1,360 @@
+{
+  "schema_version": "0.2",
+  "type": "TaskTrainingStandard",
+  "id": "STD-NATIVE-FIXTURE",
+  "capability_id": "CAP-NATIVE",
+  "metl_id": "METL-FIXTURE",
+  "metl_task_id": "TASK-NATIVE",
+  "performer_organization_id": "ORG-FIXTURE",
+  "version": 1,
+  "created_at": "2026-10-24T23:59:00.000Z",
+  "expires_at": "2026-10-26T00:00:00.000Z",
+  "sustainment_seconds": 3600,
+  "minimum_distinct_trials": 3,
+  "steps": [
+    {
+      "step_id": "STEP-product",
+      "standard": "Return the actual requested product, not a self-assessment.",
+      "critical": true,
+      "evidence_class": "task_product",
+      "not_applicable_permitted": false
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "CASE-crawl-success",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:success:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-missingthread",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:success:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-duplicatethread",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:duplicatethread:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-turnbeforethread",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:turnbeforethread:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-wrongcase",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:wrongcase:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-tool",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:tool:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-timeout",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:timeout:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-workspace",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:workspace:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-quarantine",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:quarantine:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-control",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:control:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-malformed",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:malformed:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-invalidutf8",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:invalidutf8:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-twoturns",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:twoturns:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-itembeforeturn",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:itembeforeturn:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-slow",
+      "stage": "crawl",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:slow:crawl",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-success",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:success:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-missingthread",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:missingthread:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-duplicatethread",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:duplicatethread:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-turnbeforethread",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:turnbeforethread:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-wrongcase",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:wrongcase:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-tool",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:tool:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-timeout",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:timeout:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-workspace",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:workspace:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-quarantine",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:quarantine:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-control",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:control:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-malformed",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:malformed:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-invalidutf8",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:invalidutf8:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-twoturns",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:twoturns:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-itembeforeturn",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:itembeforeturn:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-slow",
+      "stage": "walk",
+      "execution_method": "native_model_text",
+      "instruction": "Complete the synthetic task only. This fixture never proves actual model proficiency.",
+      "input_text": "fixture:slow:walk",
+      "minimum_output_bytes": 5,
+      "conditions": [
+        "Synthetic measured fake process only; no actual model or real owner."
+      ]
+    }
+  ],
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false
+}

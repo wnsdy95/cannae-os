@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1",
+  "type": "NativeTrainingProductAppraisal",
+  "collection_id": "00000000-0000-4000-8000-000000000001",
+  "request_ref": {
+    "artifact_id": "SYN-reference",
+    "relative_path": "synthetic/reference.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "invocation_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "consent_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "journal_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "native_thread_id": "00000000-0000-4000-8000-000000000001",
+  "observed_output_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "observed_output_bytes": 45,
+  "status": "native_task_bytes_bound",
+  "native_account_identity_attested": false,
+  "pre_inference_native_identity_attested": false,
+  "model_snapshot_attested": false,
+  "actual_model_execution_attested": false,
+  "conditions_observed": false,
+  "task_standard_evaluated": false,
+  "evaluator_authenticated": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "id": "NTPA-8b73a5d5ef8b999cfcbff01903a143ba6e4882e9"
+}

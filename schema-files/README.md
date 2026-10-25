@@ -1,5 +1,11 @@
 # Schema Files
 
+The `native-training-product` request/response/appraisal contracts separate a
+native task from tool-hook observations. Standard v0.2 carries explicit native
+task cases; v0.1 stays readable without reinterpretation. All validator APIs keep
+the new wrappers non-executable. The distinct owner-transfer producer and whole
+qualification flow remain unfinished; read [native products](../docs/native-training-products.md).
+
 The five `task-training-*.schema.json` contracts describe non-authorizing standards,
 requests, signed session mappings, observed-result inputs and appraisals. Both
 validator APIs keep them non-executable; runtime intake separately checks actual

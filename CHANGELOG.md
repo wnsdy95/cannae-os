@@ -6,6 +6,32 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Start the native training task-product path with a distinct native standard,
+  exact enrolled profile/context/case, purpose-specific bounded collector API,
+  pre-start one-use collection identity and original private JSONL/response replay.
+  Keep account/weight/pre-inference attestation, owner UI/producer, full inventory,
+  grading, qualification, operational grants and rollout explicitly unfinished.
+  Both skills prohibit post-hoc native identity labels and unrelated consent.
+  Preserve initial contract fixture failures (stale reconstructed ID and an
+  earlier shared Unicode guard) and the unmapped-inventory setup failure rather
+  than changing expected boundaries or waiving actual routing preflight.
+  Preserve the subsequent pre-transfer OPSEC failure and its scoped diagnostic:
+  unused sibling cases were scanned although absent from the outbound prompt.
+  Check the exact minimized prompt, exclude sibling cases, and regress that
+  forbidden selected content and returned content still block without changing
+  detector patterns.
+  Preserve the next successful-collection/immediate-appraisal failure: the shared
+  historical reader accepts strict ancestors, not the current exact snapshot.
+  Select the already verified current store only on an exact revision/digest
+  match, otherwise use the unchanged historical guard; regress later-history
+  replay and altered hashes. Regenerate only synthetic measured-runtime samples.
+  Keep proposal parser/filesystem diagnostics code-only and exercise a malformed
+  input canary through the actual CLI and both skill wrappers without exporting
+  rejected input or real credentials.
+  Preserve the canary assertion failure caused by eager SQLite initialization;
+  parse malformed input before runtime loading without suppressing warnings or
+  loosening the expected diagnostic.
+
 - Add a distinct local owner training-session consent candidate through the real
   authenticated console and worker, full display commitment, password/session/
   nonce checks, pre-call lease lock and immutable authorization/binding chain.

@@ -10,12 +10,16 @@ const step = z.strictObject({ step_id: id, standard: text, critical: z.boolean()
   evidence_class: z.enum(["task_product", "boundary_behavior"]), not_applicable_permitted: z.boolean() });
 const trainingCase = z.strictObject({ case_id: id, stage: z.enum(["crawl", "walk"]), tool_name: z.string().min(1).max(256),
   tool_input_sha256: hex, output_pointer: z.enum(["/stdout", "/content"]), minimum_output_bytes: z.number().int().min(0).max(65536), conditions: z.array(text).min(1).max(16) });
-const STANDARD = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingStandard"), id,
+const LEGACY_STANDARD = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingStandard"), id,
   capability_id: z.string().regex(/^CAP-[A-Za-z0-9_-]+$/), metl_id: id, metl_task_id: id,
   performer_organization_id: z.string().regex(/^ORG-[A-Za-z0-9_-]+$/), version: z.number().int().min(1),
   created_at: time, expires_at: time, sustainment_seconds: z.number().int().min(60).max(2592000),
   minimum_distinct_trials: z.number().int().min(3).max(16), steps: z.array(step).min(1).max(16),
   cases: z.array(trainingCase).min(3).max(32), ...flags });
+const nativeCase = z.strictObject({ case_id: id, stage: z.enum(["crawl", "walk"]), execution_method: z.literal("native_model_text"),
+  instruction: z.string().min(1).max(8192), input_text: z.string().min(1).max(16384),
+  minimum_output_bytes: z.number().int().min(1).max(65536), conditions: z.array(text).min(1).max(16) });
+const STANDARD = z.union([LEGACY_STANDARD, LEGACY_STANDARD.extend({ schema_version: z.literal("0.2"), cases: z.array(nativeCase).min(3).max(32) })]);
 const TRIAL = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingTrialRequest"), id,
   mission_id: id, wave_id: z.string().min(1).max(128), capability_id: z.string().regex(/^CAP-[A-Za-z0-9_-]+$/),
   performer_id: z.string().regex(/^PERF-[A-Za-z0-9_-]+$/), registry_head_ref: ref, case_id: id,
@@ -53,7 +57,8 @@ function issues(value, type) {
   if (!SCHEMAS[type]) return [];
   const result = [], add = code => result.push({ severity: "critical", code, path: "$", message: "Training input binds observed evidence, never a grade or authority grant." });
   if (type === "task-training-standard") {
-    if (value.steps.some(item => !item.standard.trim()) || value.cases.some(item => item.conditions.some(condition => !condition.trim()))) add("TRAINING_STANDARD_TEXT_MISSING");
+    if (value.steps.some(item => !item.standard.trim()) || value.cases.some(item => item.conditions.some(condition => !condition.trim()) ||
+      (value.schema_version === "0.2" && (!item.instruction.trim() || !item.input_text.trim())))) add("TRAINING_STANDARD_TEXT_MISSING");
     if (new Set(value.steps.map(item => item.step_id)).size !== value.steps.length ||
         new Set(value.cases.map(item => item.case_id)).size !== value.cases.length) add("TRAINING_STANDARD_DUPLICATE_ID");
     if (!value.steps.some(item => item.critical) || !value.steps.some(item => item.evidence_class === "task_product") ||
@@ -62,7 +67,8 @@ function issues(value, type) {
     if (!(end > start && end - start <= 2592000000 && value.sustainment_seconds * 1000 <= end - start)) add("TRAINING_STANDARD_WINDOW_INVALID");
     for (const stage of ["crawl", "walk"]) {
       const cases = value.cases.filter(item => item.stage === stage);
-      if (cases.length < value.minimum_distinct_trials || new Set(cases.map(item => `${item.tool_name}\0${item.tool_input_sha256}`)).size !== cases.length) add("TRAINING_STANDARD_CASE_COVERAGE_INVALID");
+      const inputKey = item => value.schema_version === "0.2" ? digest({ instruction: item.instruction, input_text: item.input_text }) : `${item.tool_name}\0${item.tool_input_sha256}`;
+      if (cases.length < value.minimum_distinct_trials || new Set(cases.map(inputKey)).size !== cases.length) add("TRAINING_STANDARD_CASE_COVERAGE_INVALID");
     }
   } else if (type === "task-training-session-binding") {
     const start = Date.parse(value.created_at), end = Date.parse(value.expires_at);

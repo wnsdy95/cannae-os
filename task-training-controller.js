@@ -35,6 +35,7 @@ function appraiseTrial(options, input, trustedPublicKey) {
   c.need(!state.unresolved.length && same(state.head, request.registry_head_ref), "TRAINING_REGISTRY_HELD_OR_CHANGED");
   const capability = enrolled(state, request.capability_id, "capability"), performer = enrolled(state, request.performer_id, "performer");
   const standardRecord = record(store, capability.data.standard_ref, "capability-standards"), standard = c.checked(standardRecord.payload, "task-training-standard");
+  c.need(standard.schema_version === "0.1", "TRAINING_NATIVE_PRODUCT_PATH_REQUIRED");
   c.need(standard.capability_id === capability.id && standard.metl_id === capability.data.metl_id &&
     performer.data.owner_id === standard.performer_organization_id, "TRAINING_STANDARD_OR_ORGANIZATION_MISMATCH");
   const trainingCase = standard.cases.find(item => item.case_id === request.case_id);

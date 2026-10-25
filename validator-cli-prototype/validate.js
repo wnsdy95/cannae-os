@@ -292,6 +292,9 @@ const TYPE_TO_SCHEMA = {
   "task-training-trial-appraisal": "task-training-trial-appraisal.schema.json",
   "training-session-proposal": "training-session-proposal.schema.json",
   "training-session-authorization": "training-session-authorization.schema.json",
+  "native-training-product-request": "native-training-product-request.schema.json",
+  "native-training-product-response": "native-training-product-response.schema.json",
+  "native-training-product-appraisal": "native-training-product-appraisal.schema.json",
   "mission-wave-report": "mission-wave-report.schema.json",
   "mission-wave-closeout": "mission-wave-closeout.schema.json",
   "mission-wave-termination-request": "mission-wave-termination-request.schema.json",
@@ -6148,7 +6151,7 @@ function validationResult(issues, type, payload) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-    can_execute: !Object.hasOwn(require("../training-session-contract").SCHEMAS, type) && !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
+    can_execute: !Object.hasOwn(require("../native-training-product-contract").SCHEMAS, type) && !Object.hasOwn(require("../training-session-contract").SCHEMAS, type) && !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
       !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !Object.hasOwn(require("../task-training-contract").SCHEMAS, type) && !["frago", "frago-scope-change", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification", "codex-model-selection"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "readiness-event" && type !== "readiness-drop-reconciliation" && type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
@@ -6186,6 +6189,7 @@ function validatePayloadInSnapshot(payload, type, options) {
     ...(schemaResult.valid ? require("../force-registry-contract").issues(payload, type).map(item => ({ ...item, layer: "semantic" })) : []),
     ...(schemaResult.valid ? require("../task-training-contract").issues(payload, type).map(item => ({ ...item, layer: "semantic" })) : []),
     ...(schemaResult.valid ? require("../training-session-contract").issues(payload, type).map(item => ({ ...item, layer: "semantic" })) : []),
+    ...(schemaResult.valid ? require("../native-training-product-contract").issues(payload, type).map(item => ({ ...item, layer: "semantic" })) : []),
     ...semanticRules(payload, type, options)
       .map(item => ({ ...item, layer: "semantic" })),
     ...(schemaResult.valid && workloadChecks[type] ? require("../workload-control-contract")[workloadChecks[type]](payload)

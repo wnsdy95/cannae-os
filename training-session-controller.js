@@ -14,6 +14,7 @@ function candidate(store, reference, key, at, provenance, ownAuthorization = nul
   t.need(capability?.kind === "capability" && performer?.kind === "performer" &&
     [capability, performer].every(item => item.enrollment_state === "enrolled"), "TRAINING_SESSION_ENTITY_UNAVAILABLE");
   const standardRecord = read(store, capability.data.standard_ref, "capability-standards"), standard = t.checked(standardRecord.payload, "task-training-standard");
+  t.need(standard.schema_version === "0.1", "TRAINING_NATIVE_PRODUCT_PATH_REQUIRED");
   t.need(standard.capability_id === capability.id && standard.metl_id === capability.data.metl_id &&
     standard.performer_organization_id === performer.data.owner_id, "TRAINING_SESSION_STANDARD_SCOPE_INVALID");
   t.need(request.case_ids.every(id => standard.cases.some(item => item.case_id === id && item.stage === request.stage)), "TRAINING_SESSION_CASE_SCOPE_INVALID");

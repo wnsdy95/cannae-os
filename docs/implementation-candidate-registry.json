@@ -2713,7 +2713,10 @@
         "schema-files/task-training-completion-input.schema.json",
         "schema-files/task-training-trial-appraisal.schema.json",
         "schema-files/training-session-proposal.schema.json",
-        "schema-files/training-session-authorization.schema.json"
+        "schema-files/training-session-authorization.schema.json",
+        "schema-files/native-training-product-request.schema.json",
+        "schema-files/native-training-product-response.schema.json",
+        "schema-files/native-training-product-appraisal.schema.json"
       ],
       "acceptance_criteria": [
         {
@@ -2721,12 +2724,13 @@
           "requirement": "Satisfy the training-progression.schema.json proposal and associated constraints in docs/training-progression-model.md.",
           "validation_commands": [
             "node run-task-training-contract-fixtures.js",
-            "node run-training-session-contract-fixtures.js"
+            "node run-training-session-contract-fixtures.js",
+            "node run-native-training-product-contract-fixtures.js"
           ]
         }
       ],
       "remaining_work": [
-        "Verify and roll out owner session consent and its uncertain-outcome reconciliation; complete authenticated step evaluations, progression/qualification history and mandatory operational consumers. Intake and session consent do not define a trained stage."
+        "Complete native task owner-transfer UI/producer, signed publication, whole-attempt inventory and reconciliation; verify and roll out session consent, authenticated step evaluations, progression/qualification history and mandatory operational consumers. Collector APIs and session consent do not define a trained stage."
       ],
       "rationale": "Typed standards, pre-call stage/case session mappings and actual-result intake cover part of the evidence foundation. Qualification and progression remain incomplete."
     },
@@ -2762,7 +2766,9 @@
         "readiness-gate-prototype/readiness-gate.js",
         "task-training-controller.js",
         "training-session-controller.js",
-        "operator-training-session-executor.js"
+        "operator-training-session-executor.js",
+        "native-training-product-controller.js",
+        "codex-training-product-collector.js"
       ],
       "acceptance_criteria": [
         {
@@ -2772,12 +2778,14 @@
             "node run-task-training-contract-fixtures.js",
             "node run-task-training-fixtures.js",
             "node run-training-session-contract-fixtures.js",
-            "node run-training-session-fixtures.js"
+            "node run-training-session-fixtures.js",
+            "node run-native-training-product-contract-fixtures.js",
+            "node run-native-training-product-fixtures.js"
           ]
         }
       ],
       "remaining_work": [
-        "Complete session acceptance/rollout and uncertain-outcome reconciliation, authenticated condition/step evaluation, whole-trial failure inventory, stage transitions, qualification, staleness/regression and actual grant consumers without self-promotion."
+        "Complete native owner transfer/signed publication and all-attempt failure inventory, session acceptance/rollout and uncertain-outcome reconciliation, authenticated condition/step evaluation, stage transitions, qualification, staleness/regression and actual grant consumers without self-promotion."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },
@@ -2793,7 +2801,9 @@
         "run-task-training-contract-fixtures.js",
         "run-task-training-fixtures.js",
         "run-training-session-contract-fixtures.js",
-        "run-training-session-fixtures.js"
+        "run-training-session-fixtures.js",
+        "run-native-training-product-contract-fixtures.js",
+        "run-native-training-product-fixtures.js"
       ],
       "acceptance_criteria": [
         {
@@ -2803,12 +2813,14 @@
             "node run-task-training-contract-fixtures.js",
             "node run-task-training-fixtures.js",
             "node run-training-session-contract-fixtures.js",
-            "node run-training-session-fixtures.js"
+            "node run-training-session-fixtures.js",
+            "node run-native-training-product-contract-fixtures.js",
+            "node run-native-training-product-fixtures.js"
           ]
         }
       ],
       "remaining_work": [
-        "Accept and roll out the actual owner session ceremony; add uncertain-outcome discharge, qualification, complete failed-trial inventory, stage transition, stale assessment, regression and live plan/lease/gateway restoration cases. Current intake/session fixtures do not prove these."
+        "Complete the native owner-purpose UI and actual-model acceptance, signed publication, uncertain-outcome discharge, qualification, complete failed-trial inventory, stage transition, stale assessment, regression and live plan/lease/gateway restoration cases. Collector/intake/session fixtures do not prove these."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },

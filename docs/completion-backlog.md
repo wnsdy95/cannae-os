@@ -76,6 +76,13 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [native task-product candidate](native-training-products.md) adds native
+standards and a purpose-separated bounded collector API with preauthorized
+collection IDs, original JSONL and returned bytes. Its new owner UI/producer,
+signed publication, whole-attempt inventory, reconciliation, authenticated grading,
+qualification and mandatory grant consumers remain incomplete under goals 3/5/7.
+This is not acceptance of real-model quality or completion of any full outcome.
+
 The [in-progress training evidence intake](task-training-evidence.md) starts the
 actual-result/standard/session binding needed by row 7. The separate
 [owner session ceremony candidate](training-session-consent.md) adds exact
