@@ -70,6 +70,10 @@ actual wrappers; do not log the rejected input or any real credential file.
 Parse the proposed JSON before loading stateful runtime modules. Keep the exact
 diagnostic assertion; do not suppress process warnings globally to hide eager
 initialization on the malformed-input path.
+After regenerating measured-runtime issuance samples, follow their transitive
+synthetic consumers, including the embedded lease in session authorizations and
+bindings. Regenerate those current examples and keep exact equality/signature
+checks; never rewrite retained operational evidence or accept stale references.
 
 For training evidence, route `task training` and read `docs/task-training-evidence.md`.
 Require a signed exact session mapping introduced before the observed call; never

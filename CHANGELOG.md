@@ -31,6 +31,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   Preserve the canary assertion failure caused by eager SQLite initialization;
   parse malformed input before runtime loading without suppressing warnings or
   loosening the expected diagnostic.
+  Preserve the first frozen ladder failure (16 gates passed, session sample
+  equality failed, 18 later gates unexecuted). Refresh the transitive current
+  synthetic session authorization/binding after issuance measurement changes;
+  keep exact equality, signatures and retained operational history unchanged.
 
 - Add a distinct local owner training-session consent candidate through the real
   authenticated console and worker, full display commitment, password/session/
