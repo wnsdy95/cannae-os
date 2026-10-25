@@ -6,6 +6,14 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reconcile the reviewed training stack with the actual published main ancestry
+  on a separate candidate branch. Require complete tree preservation before the
+  four-file documentation follow-up, preserve original PR/CI subjects and primary
+  user changes, and revalidate the new head. Both skills now require exact squash
+  evidence and an early failure journal rather than blanket conflict preference
+  or treating an API timeout as a terminal run. Full CI, ordinary merge, rollout
+  and every complete program outcome remain separate.
+
 - Start the native owner-transfer integration: exact classification/mission
   handling and external-tool review, authenticated one-use transfer, original
   byte/signature publication and managed-attempt/orphan inventory through the

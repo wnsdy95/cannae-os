@@ -237,6 +237,32 @@ from one fixed tree. After an early-stop failure, distinguish tests actually run
 from the unexecuted remainder; neither the old pass count nor an aggregate's
 remaining-failure count proves the final tree.
 
+For a stacked source integration after squash, compare the provider's actual
+merge commit and its complete tree with the original reviewed head. The old
+head's absence from main ancestry does not prove that its changes were lost.
+An ancestry-only reconciliation requires fetched main to match the provider,
+its tree to equal that reviewed head's tree, and that head to be an ancestor of
+the complete candidate. Before adding any follow-up documentation, require the
+entire merged index tree to equal the candidate tree. A conflict strategy or
+absence of conflict markers alone is never evidence of content preservation.
+If any predicate fails, stop that shortcut and reconcile the actual content;
+never prefer one side blindly or discard unrelated remote changes.
+
+Use a clean inactive attached checkout on a separate branch, preserving every
+original head, live CI subject and the user's primary changes. Retain the two
+parents, expected/observed tree digests and narrowly reviewed follow-up diff.
+Start the failure journal before network queries and branch mutation. A transport
+timeout is an unknown observation, not a terminal CI result or permission to
+restart it. For branch absence, use quiet ref verification and its exact
+missing-ref exit code; an arbitrary fatal error is not absence.
+Prior byte-identical runtime proof remains historical evidence. Revalidate the
+new HEAD's source-bound mission/owner flows and both skills, then require full
+checks on the actual integration head before normal merge. Do not force-push,
+use admin bypass, weaken checks, install a candidate or restart the service as
+part of ancestry reconciliation. Source integration closes none of the full
+intent, initiative, semantic quality, COP, qualification, sustainment, real-user
+acceptance or protected-deployment outcomes by itself.
+
 In replay fixtures, isolate durable one-use ID consumption from consent expiry.
 Use a separately signed, currently valid synthetic proposal with the consumed ID
 and assert that original journal bytes remain unchanged. Keep expiry tests

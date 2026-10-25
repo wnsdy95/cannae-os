@@ -76,6 +76,13 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+An ancestry-preserving source integration does not close any full outcome.
+Retain the original reviewed stack and squash/tree evidence, revalidate the new
+HEAD's source-bound flows and require its full hosted checks before ordinary
+merge. Current-source installation, real user/model acceptance and deployed
+independence remain separate; never import an old green status or clear a hold
+because the files appear on a main-based candidate.
+
 The [native owner-transfer candidate](native-training-owner-consent.md) connects
 exact handling review, authenticated consent, original-byte publication and a
 managed local attempt/orphan inventory. Acceptance and rollout, complete
