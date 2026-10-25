@@ -27,6 +27,8 @@ const CODE = ["method-control-contract.js", "method-control-broker.js", "method-
   "operator-force-registry-service.js", "operator-force-registry-executor.js",
   "training-session-contract.js", "training-session-controller.js", "operator-training-session-service.js", "operator-training-session-executor.js",
   "schema-files/training-session-proposal.schema.json", "schema-files/training-session-authorization.schema.json",
+  "native-training-product-contract.js", "native-training-product-controller.js", "codex-training-product-collector.js",
+  "schema-files/native-training-product-request.schema.json", "schema-files/native-training-product-response.schema.json", "schema-files/native-training-product-appraisal.schema.json",
   "schema-files/force-registry-entity.schema.json", "schema-files/force-registry-request.schema.json",
   "schema-files/force-registry-proposal.schema.json", "schema-files/force-registry-authorization.schema.json", "schema-files/force-registry-event.schema.json",
   "workload-control-contract.js", "workload-control-runner.js", "workload-control-worker.js", "opsec-linter.js",

@@ -1,5 +1,18 @@
 # Research Compendium
 
+## Collection Identity Is Not Native Identity (2026-10-25)
+
+The [native task-product candidate](native-training-products.md) separates a
+reviewed pre-start collection UUID from the later observed provider thread.
+The official [Codex JSONL documentation](https://learn.chatgpt.com/docs/non-interactive-mode#make-output-machine-readable)
+describes streamed thread/turn events and final-message output; it does not claim
+that upstream inference waits for an external enrollment ceremony. Original
+private events, exact returned bytes and measured profile commitments improve
+local evidence, not account/weight attestation, authenticated grading or grants.
+The separate owner purpose, complete failure inventory and all full outcomes
+remain required. Local byte-count minima and distinct-case thresholds are
+engineering policy, not measured accuracy or a numerical military requirement.
+
 ## A Session Mapping Needs Its Own Original Consent (2026-10-25)
 
 The [owner-session ceremony candidate](training-session-consent.md) separates

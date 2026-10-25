@@ -41,6 +41,40 @@ passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
 
+For native training task products, read `docs/native-training-products.md` and
+use the proposal-only `scripts/prepare_controls_training_product.js`. Standard
+v0.2 is a native task, not a renamed tool hook. Bind the enrolled performer to
+the measured profile/template/tool policy, and authorize one collection identity
+before process startup. Observe a separate native thread ID in the original
+bounded JSONL; never attach it retrospectively or call it account/weight attestation.
+Read original response bytes and event history, not a caller's appraisal or a
+control wrapper relabeled as work. Preserve failed reservations and raw-output
+quarantine. The new owner-transfer UI/producer, complete failure inventory,
+authenticated grading, qualification and grant consumers remain unfinished;
+do not sign fixture consent or use an omission/session approval to operate it.
+Exercise the actual routed mission setup before producer tests: missing inventory
+must be registered, not bypassed. For independent invalid-input cases, rebuild
+the content-derived ID and assert the first authoritative parser/semantic guard,
+not an unreachable later guard or a broader acceptable-error list.
+Apply transfer checks to the exact minimized outbound prompt, not unrelated
+sibling cases in the complete owner review. Keep those siblings out of the
+prompt and regress that forbidden selected content still fails; never weaken
+the EEFI/OPSEC patterns to make an input pass.
+When reusing an immutable-history helper, check whether it accepts only strict
+ancestors. Use the already verified current store for an exact current snapshot;
+use the strict historical reader for older prefixes. Regress both and reject
+changed hashes rather than relaxing the shared history guard.
+At proposal CLI boundaries, return bounded failure codes rather than raw parser
+or filesystem exceptions. Regress a malformed synthetic canary through both
+actual wrappers; do not log the rejected input or any real credential file.
+Parse the proposed JSON before loading stateful runtime modules. Keep the exact
+diagnostic assertion; do not suppress process warnings globally to hide eager
+initialization on the malformed-input path.
+After regenerating measured-runtime issuance samples, follow their transitive
+synthetic consumers, including the embedded lease in session authorizations and
+bindings. Regenerate those current examples and keep exact equality/signature
+checks; never rewrite retained operational evidence or accept stale references.
+
 For training evidence, route `task training` and read `docs/task-training-evidence.md`.
 Require a signed exact session mapping introduced before the observed call; never
 hash a session ID into a substitute stable principal or attach a later performer

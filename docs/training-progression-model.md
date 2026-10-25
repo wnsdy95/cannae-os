@@ -2,6 +2,11 @@
 
 ## 0. Purpose
 
+The [in-progress native task-product path](native-training-products.md) separates
+actual model-task collection from the tool-hook reference standard. It adds no
+progression grade: distinct owner transfer, authenticated evaluation, complete
+failure inventory and actual grant reconciliation are still required.
+
 The military increases a unit's autonomy in stages: crawl, walk, run. Each stage is entered and exited against explicit criteria per mission essential task, and the readiness rating that results is an evidence-based determination, not an impression.
 
 The same discipline applies to agent autonomy. `agent-metl.md` defines the essential tasks per role and names the crawl-walk-run stages; `agent-readiness-ledger.md` defines how ratings are recorded. What has been missing is the progression mechanics: the entry and exit criteria per stage, the evidence required to advance, the triggers that force regression, and how each transition is recorded.
