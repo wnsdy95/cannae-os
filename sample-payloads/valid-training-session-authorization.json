@@ -1,0 +1,529 @@
+{
+  "schema_version": "0.1",
+  "type": "TaskTrainingSessionAuthorization",
+  "id": "TSA-00000000-0000-4000-8000-000000000001",
+  "purpose": "task_training_session_enrollment",
+  "acknowledgment": "session_mapping_only_no_training_grade_or_grant",
+  "challenge_id": "00000000-0000-4000-8000-000000000001",
+  "principal_id": "00000000-0000-4000-8000-000000000001",
+  "principal_epoch": 1,
+  "authentication_method": "local_owner_password_reauthentication",
+  "session_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "nonce_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "created_at": "2026-07-23T04:35:01.000Z",
+  "expires_at": "2026-07-23T04:35:30.000Z",
+  "rationale": "Synthetic contract example only.",
+  "review": {
+    "proposal_ref": {
+      "artifact_id": "TSP-6a99dc5c5b9f7e45b35d3e6085397897d9d23639",
+      "relative_path": "synthetic/TSP-6a99dc5c5b9f7e45b35d3e6085397897d9d23639.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "proposal": {
+      "schema_version": "0.1",
+      "type": "TaskTrainingSessionProposal",
+      "purpose": "task_training_session_enrollment",
+      "request": {
+        "mission_id": "MIS-ENFORCED-DISPATCH",
+        "wave_id": "W1",
+        "capability_id": "CAP-TRAINING",
+        "performer_id": "PERF-TRAINING",
+        "expected_registry_head_ref": {
+          "artifact_id": "FRE-HEAD",
+          "relative_path": "synthetic/FRE-HEAD.json",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "lease_ref": {
+          "artifact_id": "ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f",
+          "relative_path": "synthetic/ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f.json",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "stage": "crawl",
+        "case_ids": [
+          "CASE-crawl-0"
+        ],
+        "expires_at": "2026-07-23T04:50:00Z"
+      },
+      "created_at": "2026-07-23T04:35:00Z",
+      "expires_at": "2026-07-23T04:45:00.000Z",
+      "execution_authorized": false,
+      "release_authorized": false,
+      "human_final_decision_authority": "USER",
+      "qualification_granted": false,
+      "grant_restoration_authorized": false,
+      "id": "TSP-6a99dc5c5b9f7e45b35d3e6085397897d9d23639"
+    },
+    "registry_head_ref": {
+      "artifact_id": "FRE-HEAD",
+      "relative_path": "synthetic/FRE-HEAD.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "repository_binding": {
+      "repository_key": "synthetic-training",
+      "identity_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "observed_manifest": {
+      "revision": 1,
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "source_state_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "repository_state_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "capability": {
+      "schema_version": "0.1",
+      "type": "ForceRegistryEntity",
+      "id": "CAP-TRAINING",
+      "kind": "capability",
+      "version": 1,
+      "enrollment_state": "enrolled",
+      "label": "Synthetic capability",
+      "description": "Synthetic structural definition, not a qualified performer.",
+      "data": {
+        "kind": "capability",
+        "owner_id": "ORG-FIXTURE",
+        "metl_id": "METL-FIXTURE",
+        "standard_ref": {
+          "artifact_id": "STD-TRAINING",
+          "relative_path": "synthetic/STD-TRAINING.json",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "aliases": [
+          {
+            "operational_role": "S3",
+            "task": "Synthetic scoped task."
+          }
+        ]
+      },
+      "qualification_state": "unassessed",
+      "execution_authorized": false,
+      "release_authorized": false
+    },
+    "performer": {
+      "schema_version": "0.1",
+      "type": "ForceRegistryEntity",
+      "id": "PERF-TRAINING",
+      "kind": "performer",
+      "version": 1,
+      "enrollment_state": "enrolled",
+      "label": "Synthetic performer",
+      "description": "Synthetic structural definition, not a qualified performer.",
+      "data": {
+        "kind": "performer",
+        "owner_id": "ORG-FIXTURE",
+        "provider": "codex",
+        "principal_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "model_id": "synthetic-test-model",
+        "model_revision": "synthetic-revision-001",
+        "harness_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "prompt_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "tool_schema_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+        "tool_policy_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+        "execution_profile_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+      },
+      "qualification_state": "unassessed",
+      "execution_authorized": false,
+      "release_authorized": false
+    },
+    "standard_ref": {
+      "artifact_id": "STD-TRAINING",
+      "relative_path": "synthetic/STD-TRAINING.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "standard": {
+      "schema_version": "0.1",
+      "type": "TaskTrainingStandard",
+      "id": "STD-TRAINING",
+      "capability_id": "CAP-TRAINING",
+      "metl_id": "METL-FIXTURE",
+      "metl_task_id": "METLT-TRAINING",
+      "performer_organization_id": "ORG-FIXTURE",
+      "version": 1,
+      "created_at": "2026-07-23T04:34:00.000Z",
+      "expires_at": "2026-07-24T04:34:00.000Z",
+      "sustainment_seconds": 3600,
+      "minimum_distinct_trials": 3,
+      "steps": [
+        {
+          "step_id": "STEP-PRODUCT",
+          "standard": "Review the actual retained task product, not a control receipt.",
+          "critical": true,
+          "evidence_class": "task_product",
+          "not_applicable_permitted": false
+        }
+      ],
+      "cases": [
+        {
+          "case_id": "CASE-crawl-0",
+          "stage": "crawl",
+          "tool_name": "Read",
+          "tool_input_sha256": "e2a230533e0725b393333bdc3a76c9118fe2070b47e3495d2ff6d6aec200e5a1",
+          "output_pointer": "/content",
+          "minimum_output_bytes": 1,
+          "conditions": [
+            "Template review required."
+          ]
+        },
+        {
+          "case_id": "CASE-crawl-1",
+          "stage": "crawl",
+          "tool_name": "Read",
+          "tool_input_sha256": "926e9a263a87292a6fbe91a44c78feb46f84702e6666e031e3005aa327599815",
+          "output_pointer": "/content",
+          "minimum_output_bytes": 1,
+          "conditions": [
+            "Template review required."
+          ]
+        },
+        {
+          "case_id": "CASE-crawl-2",
+          "stage": "crawl",
+          "tool_name": "Read",
+          "tool_input_sha256": "1f23fbf6bfe6746458629cabe4c17f743792abb87d20a6049bdcfbb1fd6c038f",
+          "output_pointer": "/content",
+          "minimum_output_bytes": 1,
+          "conditions": [
+            "Template review required."
+          ]
+        },
+        {
+          "case_id": "CASE-walk-0",
+          "stage": "walk",
+          "tool_name": "Read",
+          "tool_input_sha256": "e2a230533e0725b393333bdc3a76c9118fe2070b47e3495d2ff6d6aec200e5a1",
+          "output_pointer": "/content",
+          "minimum_output_bytes": 1,
+          "conditions": [
+            "Prior supervision and backbrief required."
+          ]
+        },
+        {
+          "case_id": "CASE-walk-1",
+          "stage": "walk",
+          "tool_name": "Read",
+          "tool_input_sha256": "926e9a263a87292a6fbe91a44c78feb46f84702e6666e031e3005aa327599815",
+          "output_pointer": "/content",
+          "minimum_output_bytes": 1,
+          "conditions": [
+            "Prior supervision and backbrief required."
+          ]
+        },
+        {
+          "case_id": "CASE-walk-2",
+          "stage": "walk",
+          "tool_name": "Read",
+          "tool_input_sha256": "1f23fbf6bfe6746458629cabe4c17f743792abb87d20a6049bdcfbb1fd6c038f",
+          "output_pointer": "/content",
+          "minimum_output_bytes": 1,
+          "conditions": [
+            "Prior supervision and backbrief required."
+          ]
+        }
+      ],
+      "execution_authorized": false,
+      "release_authorized": false,
+      "human_final_decision_authority": "USER",
+      "qualification_granted": false,
+      "grant_restoration_authorized": false
+    },
+    "lease": {
+      "schema_version": "0.2",
+      "type": "AgentDispatchLease",
+      "id": "ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f",
+      "mission_id": "MIS-ENFORCED-DISPATCH",
+      "wave_id": "W1",
+      "agent_id": "runtime-agent",
+      "provider": "codex",
+      "session_binding": {
+        "session_id": "session-phase16-01",
+        "provider_agent_id": "main"
+      },
+      "plan_ref": {
+        "artifact_id": "MWP-ENFORCED-DISPATCH-W1",
+        "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/mission-wave-plans/MWP-ENFORCED-DISPATCH-W1.json",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "routing_preflight_ref": {
+        "artifact_id": "ARP-W1",
+        "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/routing-preflights/ARP-W1.json",
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "context_pack_ref": {
+        "artifact_id": "ACP-W1-plans-agent",
+        "relative_path": "synthetic/ACP-W1-plans-agent.json",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "tool_policy_ref": {
+        "artifact_id": "DTP-W1-runtime-agent",
+        "relative_path": "synthetic/DTP-W1-runtime-agent.json",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "repository_binding": {
+        "repository_key": "controls-example",
+        "identity_fingerprint": "4444444444444444444444444444444444444444444444444444444444444444"
+      },
+      "initial_repository_state": {
+        "head_commit": "5555555555555555555555555555555555555555",
+        "worktree_fingerprint": "6666666666666666666666666666666666666666666666666666666666666666",
+        "dirty": false
+      },
+      "previous_lease_ref": {
+        "artifact_id": "none",
+        "relative_path": "none",
+        "sha256": "none"
+      },
+      "issuance_reason": "initial",
+      "nonce": "7777777777777777777777777777777777777777777777777777777777777777",
+      "request_budget": 6,
+      "issued_at": "2026-07-23T04:35:00Z",
+      "not_before": "2026-07-23T04:35:00Z",
+      "expires_at": "2026-07-23T04:50:00Z",
+      "authority": {
+        "human_final_decision_authority": "USER",
+        "self_approval_prohibited": true,
+        "release_authorized": false
+      },
+      "issuance_ref": {
+        "artifact_id": "DLI-f58072d0c9ed2a74f3f13c0c7f862e116c762b94",
+        "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-f58072d0c9ed2a74f3f13c0c7f862e116c762b94.json",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    },
+    "context_ref": {
+      "artifact_id": "ACP-W1-plans-agent",
+      "relative_path": "synthetic/ACP-W1-plans-agent.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "context": {
+      "schema_version": "0.2",
+      "type": "AgentContextPack",
+      "id": "ACP-W1-plans-agent",
+      "mission_id": "MIS-SKILL-DEMO",
+      "wave_id": "W1",
+      "agent_id": "plans-agent",
+      "operational_role": "S3",
+      "department": "operations",
+      "task": "Implement the bounded skill change and its fixtures.",
+      "classification": "internal",
+      "plan_ref": {
+        "artifact_id": "MWP-SKILL-DEMO-W1",
+        "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "routing_receipt_ref": {
+        "artifact_id": "RR-W1-plans-agent",
+        "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-receipts/RR-W1-plans-agent.json",
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "routing_preflight_ref": {
+        "artifact_id": "ARP-W1",
+        "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
+        "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "capability_query": "Implement the bounded skill change and its fixtures.",
+      "capability_routing": {
+        "status": "covered",
+        "reason_code": "MATCHED_DOCTRINE_ROUTE",
+        "capability_scope": "Implement the bounded skill change and its fixtures.",
+        "matched_capability_routes": [
+          "skill-operations"
+        ],
+        "provisional_organization": {
+          "required": false,
+          "organization_type": "existing_doctrine_route",
+          "organization_id": "none",
+          "name": "Existing doctrine route",
+          "task_organization_status": "not_required",
+          "authority_scope": "Use the declared operator mode and existing role, department, and authority boundaries.",
+          "authority_expansion_authorized": false,
+          "standing_department_activation_authorized": false,
+          "disband_condition": "Not applicable; no provisional organization was created."
+        },
+        "force_structure_review": {
+          "required": false,
+          "change_type": "none",
+          "target_kind": "none",
+          "status": "not_required",
+          "candidate_department_id": "none",
+          "candidate_department_name": "none",
+          "final_decision_authority": "USER",
+          "formal_approving_role": "COMMANDER"
+        },
+        "operator_directive": "Use the matched doctrine routes and remain inside the declared authority boundary."
+      },
+      "doctrine_state": {
+        "revision": "0123456789abcdef0123456789abcdef01234567",
+        "router_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "controller_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "documents": [
+        {
+          "path": "README.md",
+          "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        },
+        {
+          "path": "docs/source-map.md",
+          "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        {
+          "path": "docs/agent-roles-and-authority.md",
+          "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      ],
+      "validation_commands": [
+        "node run-document-routing-fixtures.js"
+      ],
+      "required_controls": [
+        {
+          "control_id": "CTRL-6a29130c7d6dd8ed",
+          "command": "node run-document-routing-fixtures.js",
+          "command_sha256": "6a29130c7d6dd8ed39c3076f1a27d620e6f2628a42d46ba3ec45e548a7c98959",
+          "runner": "node",
+          "script_path": "run-document-routing-fixtures.js",
+          "argv": [],
+          "working_directory": "doctrine_root",
+          "shell": false
+        }
+      ],
+      "model_assignment": {
+        "required": false,
+        "integrated_preflight_ref": {
+          "artifact_id": "none",
+          "relative_path": "none",
+          "sha256": "none"
+        },
+        "billet_id": "not_required",
+        "model_profile_id": "not_required",
+        "model_family": "not_required",
+        "model_version": "not_required",
+        "harness_version": "not_required"
+      },
+      "authority": {
+        "delegated_authority": "scoped-execution",
+        "allowed_actions": [
+          "Edit the assigned skill and test surfaces."
+        ],
+        "approval_required": [
+          "Any scope change."
+        ],
+        "prohibited_actions": [
+          "External release."
+        ],
+        "human_final_decision_authority": "USER",
+        "release_authorized": false,
+        "self_approval_prohibited": true
+      },
+      "escalation_conditions": [
+        "Requested action exceeds delegated authority."
+      ],
+      "status": "ready",
+      "created_at": "2026-07-23T04:00:00+09:00",
+      "valid_until": "2027-07-23T04:00:00+09:00"
+    },
+    "policy_ref": {
+      "artifact_id": "DTP-W1-runtime-agent",
+      "relative_path": "synthetic/DTP-W1-runtime-agent.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy": {
+      "schema_version": "0.2",
+      "type": "DispatchToolPolicy",
+      "id": "DTP-W1-runtime-agent",
+      "mission_id": "MIS-ENFORCED-DISPATCH",
+      "wave_id": "W1",
+      "agent_id": "runtime-agent",
+      "provider": "codex",
+      "default_decision": "deny",
+      "tool_rules": [
+        {
+          "rule_id": "read-contract-scope",
+          "mission_action": "Inspect scoped repository files.",
+          "tool_name": "Read",
+          "operation_class": "repository_read",
+          "input_match": {
+            "mode": "path_prefix",
+            "path_fields": [
+              "/file_path"
+            ],
+            "allowed_path_prefixes": [
+              "schema-files",
+              "sample-payloads"
+            ]
+          },
+          "max_uses": 3
+        },
+        {
+          "rule_id": "patch-contract-scope",
+          "mission_action": "Edit the assigned skill and test surfaces.",
+          "tool_name": "apply_patch",
+          "operation_class": "repository_write",
+          "input_match": {
+            "mode": "patch_paths",
+            "allowed_path_prefixes": [
+              "schema-files/dispatch-tool-policy.schema.json",
+              "schema-files/agent-dispatch-lease.schema.json",
+              "schema-files/tool-admission-event.schema.json",
+              "schema-files/agent-execution-checkpoint.schema.json"
+            ]
+          },
+          "max_uses": 2
+        },
+        {
+          "rule_id": "exact-validator-command",
+          "mission_action": "Run deterministic validation.",
+          "tool_name": "exec_command",
+          "operation_class": "process_execute",
+          "input_match": {
+            "mode": "exact_sha256",
+            "allowed_sha256": [
+              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            ]
+          },
+          "max_uses": 1
+        }
+      ],
+      "max_total_admissions": 6,
+      "lease_ttl_seconds": 900,
+      "repository_state": {
+        "require_head_match": true,
+        "require_serial_state_chain": true,
+        "require_clean_start": true
+      },
+      "authorization": {
+        "source": "mission_plan_policy_digest",
+        "authorized_by": "USER",
+        "compiled_by": "controls_dispatch_controller",
+        "plan_ref": {
+          "artifact_id": "MWP-ENFORCED-DISPATCH-W1",
+          "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/mission-wave-plans/MWP-ENFORCED-DISPATCH-W1.json",
+          "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "context_pack_ref": {
+          "artifact_id": "ACP-W1-runtime-agent",
+          "relative_path": "repositories/example/missions/MIS-ENFORCED-DISPATCH/W1/agent-context-packs/ACP-W1-runtime-agent.json",
+          "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "draft_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "enforcement_level": "guardrail",
+        "gateway_exclusive": false
+      },
+      "authority": {
+        "human_final_decision_authority": "USER",
+        "self_approval_prohibited": true,
+        "release_authorized": false
+      },
+      "approved_at": "2026-07-23T04:30:00Z",
+      "valid_until": "2026-07-23T06:30:00Z"
+    }
+  },
+  "review_sha256": "f36efe87ee758312742abf777740e99ef6ce9aac1b28add4e7a212ef3f6daa8e",
+  "displayed_review_sha256": "f36efe87ee758312742abf777740e99ef6ce9aac1b28add4e7a212ef3f6daa8e",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "a9123481ddb94a276c0441ddc5f2adbd52b9f7b090387166f111e12f014a5af6",
+    "value": "oKqjw0d+g2QiT00aZnZM9kfHLbruRsoMq5KHaFLDgFwlJXeROySRrBKE1WPwdJSjvkKkh+nEjCVBDH9WEshQDA=="
+  }
+}

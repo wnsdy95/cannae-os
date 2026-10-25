@@ -3,8 +3,13 @@
 The five `task-training-*.schema.json` contracts describe non-authorizing standards,
 requests, signed session mappings, observed-result inputs and appraisals. Both
 validator APIs keep them non-executable; runtime intake separately checks actual
-history and pinned signatures. Session issuance, qualification and operational
-grant consumers remain in progress. See [task training evidence](../docs/task-training-evidence.md).
+history and pinned signatures. Current mapping/appraisal v0.2 preserves legacy
+v0.1 reads without retrospectively asserting an owner ceremony. The separate
+`training-session-proposal` and `training-session-authorization` contracts bind
+that purpose and its full displayed review. Qualification, operational grants,
+uncertain session reconciliation and rollout remain in progress. See
+[task training evidence](../docs/task-training-evidence.md) and
+[session consent](../docs/training-session-consent.md).
 
 `codex-model-selection.schema.json` describes strict non-authorizing host model
 metadata, including exact model, catalog/configuration commitments, pinned CLI

@@ -6,6 +6,32 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add a distinct local owner training-session consent candidate through the real
+  authenticated console and worker, full display commitment, password/session/
+  nonce checks, pre-call lease lock and immutable authorization/binding chain.
+  Reject post-hoc/duplicate enrollment, preserve partial-write/restart holds and
+  read historical mappings without retroactive assurance. Keep task quality,
+  qualification, actual grants, uncertain-outcome discharge and rollout open.
+  Adapt both skills and preserve the initial development failure: new denial
+  codes were removed by the second worker transport filter. Add an exact-code
+  regression without weakening private-detail filtering or the refusal itself.
+  Preserve the subsequent 594/595 CLI development failure too: nested validation
+  saw incomplete exports only through the real CLI entrypoint. Export before
+  entering main and regress that exact path, rather than relying on library tests.
+  Preserve the first frozen ladder's logout-test failure: its fixture called an
+  audit-only helper, not actual logout. Coordinate a worker at the publication
+  boundary, call HTTP logout, prove session removal and then assert the original
+  guard/hold. Do not weaken the expected denial or claim that an audit event revokes.
+  Preserve the later frozen ladder's route failure: a training-session filename
+  had inventory hints but no matching query keyword. Route filename/type/prose
+  forms in both providers and human/AI modes without changing gap policy or the
+  expected training control. Zero-unrouted inventory alone is not query coverage.
+  Preserve a later original positive-challenge refusal and its unexecuted suffix.
+  A bounded same-source predicate diagnostic passed but does not explain that
+  failure. Isolate independent rejection cases from the positive ceremony, assert
+  exact errors, and retain sanitized timing/predicate observations before cleanup.
+  Do not lengthen the real challenge window or automatically retry consent.
+
 - Start task-training evidence intake over owner-enrolled definitions, pre-call
   signed stage/case session mappings and actual dispatch completion/result bytes.
   Add non-executable contracts, owner-only evidence reads and both skill routes.

@@ -20,7 +20,7 @@ const TRIAL = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal
   mission_id: id, wave_id: z.string().min(1).max(128), capability_id: z.string().regex(/^CAP-[A-Za-z0-9_-]+$/),
   performer_id: z.string().regex(/^PERF-[A-Za-z0-9_-]+$/), registry_head_ref: ref, case_id: id,
   session_binding_ref: ref, lease_ref: ref, completion_ref: ref, completion_input_ref: ref, observed_output_ref: ref, ...flags });
-const SESSION = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingSessionBinding"), id,
+const LEGACY_SESSION = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingSessionBinding"), id,
   purpose: z.literal("task_training_session_binding"), capability_id: z.string().regex(/^CAP-[A-Za-z0-9_-]+$/), capability_version: z.number().int().min(1),
   performer_id: z.string().regex(/^PERF-[A-Za-z0-9_-]+$/), performer_version: z.number().int().min(1), configuration_sha256: hex,
   stage: z.enum(["crawl", "walk"]), case_ids: z.array(id).min(1).max(32),
@@ -30,10 +30,11 @@ const SESSION = z.strictObject({ schema_version: z.literal("0.1"), type: z.liter
   authentication_method: z.literal("local_owner_password_reauthentication"), created_at: time, expires_at: time,
   model_identity_attested: z.literal(false), ...flags,
   signature: z.strictObject({ algorithm: z.literal("Ed25519"), key_sha256: hex, value: z.string().min(1).max(128) }) });
+const SESSION = z.union([LEGACY_SESSION, LEGACY_SESSION.extend({ schema_version: z.literal("0.2"), authorization_ref: ref })]);
 const COMPLETION_INPUT = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingCompletionInput"), id,
   hook_input: z.strictObject({ hook_event_name: z.enum(["PostToolUse", "PostToolUseFailure"]), tool_name: z.string().min(1).max(256),
     tool_use_id: z.string().min(1).max(512), tool_input: z.record(z.string(), z.json()), tool_response: z.json() }), ...flags });
-const APPRAISAL = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingTrialAppraisal"), id,
+const LEGACY_APPRAISAL = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("TaskTrainingTrialAppraisal"), id,
   request: TRIAL, request_sha256: hex, source_state_sha256: hex,
   repository_binding: z.strictObject({ repository_key: z.string().min(1).max(256), identity_fingerprint: hex }),
   observed_manifest: z.strictObject({ revision: z.number().int().min(1), sha256: hex }), registry_head_ref: ref,
@@ -42,6 +43,7 @@ const APPRAISAL = z.strictObject({ schema_version: z.literal("0.1"), type: z.lit
   status: z.literal("observed_result_bound"), valid_for_training_review_until: time,
   actual_model_execution_attested: z.literal(false), configuration_attested: z.literal(false),
   conditions_observed: z.literal(false), task_standard_evaluated: z.literal(false), evaluator_authenticated: z.literal(false), ...flags });
+const APPRAISAL = z.union([LEGACY_APPRAISAL, LEGACY_APPRAISAL.extend({ schema_version: z.literal("0.2"), owner_session_ceremony_verified: z.boolean() })]);
 const SCHEMAS = Object.freeze({ "task-training-standard": STANDARD, "task-training-trial-request": TRIAL,
   "task-training-completion-input": COMPLETION_INPUT, "task-training-session-binding": SESSION, "task-training-trial-appraisal": APPRAISAL });
 const NON_WORK_TYPES = new Set(["TaskTrainingStandard", "TaskTrainingTrialRequest", "TaskTrainingCompletionInput", "TaskTrainingSessionBinding", "TaskTrainingTrialAppraisal"]);

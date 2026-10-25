@@ -35,6 +35,13 @@ async function check(name, fn) {
   catch (error) { results.push({ name, ok: false, error: error.stack }); }
 }
 async function main() {
+  await check("training refusal codes survive both transport boundaries while private details remain filtered", async () => {
+    const { queue, workers } = controlled(); const request = observe(queue.submit({})); await tick();
+    workers[0].emit("message", { error: "CONSOLE_EVIDENCE_UNAVAILABLE", statusCode: 409,
+      reason_codes: ["TRAINING_SESSION_ADMISSION_ALREADY_EXISTS", "private-training-detail", "TRAINING_bad_detail", null] });
+    assert.equal(request.settled, false); workers[0].exit(); await request.done;
+    assert.deepEqual(request.error.reason_codes, ["TRAINING_SESSION_ADMISSION_ALREADY_EXISTS"]); await queue.close();
+  });
   await check("a success message cannot release a caller or start the next worker before observed exit", async () => {
     const { queue, workers } = controlled();
     const first = observe(queue.submit({ request: 1 })), second = observe(queue.submit({ request: 2 }));

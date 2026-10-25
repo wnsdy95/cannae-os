@@ -1,5 +1,22 @@
 # Research Compendium
 
+## A Session Mapping Needs Its Own Original Consent (2026-10-25)
+
+The [owner-session ceremony candidate](training-session-consent.md) separates
+definition enrollment from a pre-call, exact standard/case/lease review. Its
+current binding references the original purpose-bound signed authorization;
+historical mappings cannot acquire that assurance through a later label. Actual
+task-result appraisal still proves no model quality, qualification or new grant.
+Uncertain publication remains held rather than replaying consent. Deployment,
+whole-trial evaluation, qualification and actual grant reconciliation stay open.
+
+The first development run passed its positive real-ceremony/dispatch group,
+then stopped because the worker queue discarded the new `TRAINING_*` denial code.
+Its unexecuted suffix was not a pass. A separately retained controlled transport
+probe reproduced that loss; the correction permits the bounded code namespace
+at both boundaries while still filtering private details. This is an engineering
+lesson, not broader completion evidence.
+
 ## Training Observations Precede Qualification (2026-10-25)
 
 The [in-progress intake](task-training-evidence.md) binds actual admitted-call
@@ -8,7 +25,7 @@ signed session mapping. Stable performer identity is not an ephemeral session ID
 Evidence intake cannot turn a model/configuration declaration into attestation
 or a step observation into a qualification/grant. The initial routing rejection
 correctly exposed unregistered new source; inventory must be registered, not
-waived. Real owner-session issuance, step assessment, positive qualification and
+waived. Owner-session verification/rollout, step assessment, positive qualification and
 actual new-grant/freshness/regression consumers remain required under goal 5.
 
 ## Green Does Not Remove Explicit Approval (2026-10-25)

@@ -77,10 +77,12 @@ the USER and continue independent in-scope work.
 ## Closure Discipline
 
 The [in-progress training evidence intake](task-training-evidence.md) starts the
-actual-result/standard/session binding needed by row 7. It is not an implemented
-owner session ceremony, authenticated step evaluation, positive qualification or
-operational grant consumer. Complete those stages and their actual reconciliation
-before accepting the full training workflow; all eight outcomes remain open.
+actual-result/standard/session binding needed by row 7. The separate
+[owner session ceremony candidate](training-session-consent.md) adds exact
+authenticated pre-call review and historical verification, not step evaluation,
+positive qualification or operational grants. Current-source acceptance, uncertain
+session reconciliation and controlled rollout remain open alongside the remaining
+training stages and actual grant reconciliation. All eight outcomes remain open.
 
 The [reference readiness intersection correction](readiness-authority-intersection.md)
 repairs actual allow-below-minimum and softened-prohibition probes, exact subject

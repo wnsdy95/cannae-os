@@ -46,8 +46,41 @@ Require a signed exact session mapping introduced before the observed call; neve
 hash a session ID into a substitute stable principal or attach a later performer
 label to old results. Bind actual provider completion and retained bytes, keep
 settled failed trials visible, and separate that evidence from step evaluation,
-qualification and new grants. The present intake has no real owner-session
-producer or qualification/grant consumer; do not invent one from a signed fixture.
+qualification and new grants. Use the distinct owner-session candidate in
+`docs/training-session-consent.md`, not a definition approval or a signed fixture.
+Run the proposal-only `scripts/prepare_controls_training_session.js`; leave the
+exact console review/password/nonce decision to the human. Require current v0.2
+mapping provenance through its original authorization. Legacy v0.1 remains
+reference evidence, never retrospectively verified consent. After a partial write,
+inspect the exact action and keep the hold; no automatic discharge or retry is
+implemented. Neither the mapping nor an incoming/cached appraisal grants a grade
+or authority; reappraise original evidence before any future qualification use.
+
+Inventory hints do not select query routes. Before classifying an existing
+contract as a capability gap, exercise its prose, hyphenated filename/schema path,
+wrapper and CamelCase type through both human and delegated AI query modes in
+both providers. A zero-unrouted inventory alone cannot prove that those requests
+reach their required controls. Keep a failing route's exact query and expected
+control; never replace the expected route with a provisional-cell fallback.
+
+Isolate independent rejection tests from the positive consent flow and obtain
+each test's own fresh synthetic preview before its intended action. This is not
+retrying a failed operation or renewing real consent. Assert the exact denial,
+not an unrelated expiry or throttle. Before fixture cleanup, retain only timing
+and boolean challenge/session matches, never nonce/password/auth-row exports.
+A healthy repeat cannot explain or repair an earlier unexplained refusal.
+
+When adding a refusal-code family, regress both worker emission and queue
+sanitization through the actual HTTP outcome. A refusal with an empty reason list
+does not prove the expected boundary fired. Keep a bounded code namespace and
+continue filtering private details; never replace it with arbitrary error text.
+Also run the actual CLI, not just library imports, when a contract re-enters a
+shared validator. Export the library before CLI execution; otherwise `main` can
+observe incomplete exports and fail before returning its JSON refusal/result.
+For logout/revocation races, exercise the actual endpoint and prove session or
+epoch invalidation before releasing the paused writer. An audit-only helper or
+message is not a revoke operation; keep consent cancellation and tool-lease stop
+as separate obligations, and preserve the failed fixture rather than relabel it.
 
 For a training case's tool-input commitment, use the dispatcher's exported
 `inputDigest`, not the artifact digest: their canonical byte domains differ,

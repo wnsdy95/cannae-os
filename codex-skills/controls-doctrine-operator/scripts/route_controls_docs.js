@@ -8,9 +8,9 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "task-training",
-    keywords: ["task training", "task-training", "training evidence", "training qualification", "training session binding", "tasktrainingstandard", "tasktrainingtrialrequest", "tasktrainingsessionbinding", "tasktrainingtrialappraisal"],
-    docs: ["docs/task-training-evidence.md", "docs/training-progression-model.md", "docs/force-registry-enrollment.md", "docs/readiness-to-authority-policy.md"],
-    commands: ["node run-task-training-contract-fixtures.js", "node run-task-training-fixtures.js"]
+    keywords: ["task training", "task-training", "training evidence", "training qualification", "training session", "training-session", "prepare_controls_training_session", "tasktrainingstandard", "tasktrainingtrialrequest", "tasktrainingsessionbinding", "tasktrainingtrialappraisal", "tasktrainingsessionproposal", "tasktrainingsessionauthorization"],
+    docs: ["docs/task-training-evidence.md", "docs/training-session-consent.md", "docs/training-progression-model.md", "docs/force-registry-enrollment.md", "docs/readiness-to-authority-policy.md"],
+    commands: ["node run-task-training-contract-fixtures.js", "node run-task-training-fixtures.js", "node run-training-session-contract-fixtures.js", "node run-training-session-fixtures.js"]
   },
   {
     id: "readiness-intersection",
@@ -578,7 +578,7 @@ const EXCLUDED_DIRS = new Set([
 const ROUTE_HINTS = [
   { id: "cli-model-selection", keywords: ["codex-model-selection", "codex-default-model-binding"] },
   { id: "advisory-dependency", keywords: ["ip-zone", "pre-zone", "github-release-independent-verification"] },
-  { id: "task-training", keywords: ["task-training", "training-session-binding"] },
+  { id: "task-training", keywords: ["task-training", "training-session", "prepare_controls_training_session", "operator-console/training.js"] },
   { id: "force-registry", keywords: ["force-registry", "operate_controls_force_registry", "operator-console/force.js"] },
   { id: "workload-controls", keywords: ["workload-control", "workload-policy-assessment", "subject-bound-workload"] },
   { id: "force-readiness", keywords: ["readiness-drop", "reconcile_controls_readiness", "readiness-to-authority", "training-progression", "agent-readiness-ledger"] },

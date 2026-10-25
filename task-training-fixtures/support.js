@@ -16,7 +16,7 @@ function output(env, text, id = "OUT-TRAINING") {
     missionId: env.plan.mission_id, waveId: env.plan.wave_id, kind: "task-training-observed-outputs", artifactId: id, sourcePath: file });
   return { artifact_id: id, relative_path: item.relative_path, sha256: item.sha256 };
 }
-async function environment() {
+async function environment({ syntheticBinding = true } = {}) {
   const env = base.environment(Date.now() - 180000);
   try {
     base.adopt(env); env.opened = openWave(env.plan, base.optionsAt(env, 70)); env.policy = env.policies[0];
@@ -35,6 +35,8 @@ async function environment() {
       provider: "codex", sessionId: "training-session", providerAgentId: "main" };
     env.issued = base.dispatch.issueLease({ ...env.options, now: new Date().toISOString() }, env.policy.id,
       { sessionId: env.actor.sessionId, providerAgentId: env.actor.providerAgentId }); env.leaseId = env.issued.lease_ref.artifact_id;
+    env.publicKey = env.service.consent.publicKey();
+    if (!syntheticBinding) return env;
     // Synthetic controller evidence only. A real owner-session issuance ceremony is not implemented here.
     const key = env.service.auth.db.prepare("SELECT value FROM meta WHERE key='operator-signing-key'").get().value;
     env.syntheticPrivateKey = key;
