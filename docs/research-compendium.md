@@ -1,5 +1,14 @@
 # Research Compendium
 
+## Green Does Not Remove Explicit Approval (2026-10-25)
+
+A further schema-valid reference probe on `c91cae6` declared approval required
+for a Green request without an approval scope. The integrator still returned
+allowed because it considered only computed ROE and the matrix decision. The
+[corrective path](readiness-authority-intersection.md) now intersects the actual
+request's flag too, including release composition. This is engineering synthesis,
+not proof of authenticated approval consumption or complete qualification.
+
 ## Approval Cannot Replace Readiness (2026-10-24)
 
 Actual reference consumers on `26660c3` allowed a below-minimum performer with

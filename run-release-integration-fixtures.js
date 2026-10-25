@@ -63,6 +63,13 @@ for (const [name, mutate, reason] of [
   ["valid release review cannot substitute a different authority target", value => { value.authority_request.target = "production"; }, "AUTHORITY_REQUEST_TARGET_MISMATCH"]
 ]) cases.push({ name, file: "release-integration-fixtures/valid-release-bundle.json", mutate,
   expected: { allowed: false, blocked: true, final_decision: "prohibit", reason } });
+cases.push({ name: "valid release review cannot erase explicit Green request approval", file: "release-integration-fixtures/valid-release-bundle.json",
+  mutate(value) {
+    Object.assign(value.tool_request, { tool: "validator", action: "validate", target: "local workspace", risk_level: "low", roe_class: "Green", approval_required: true });
+    Object.assign(value.authority_request, { tool: "validator", target: "local workspace", roe_class: "Green", readiness: "T" });
+    Object.assign(value.authority_matrix.rules[0], { tool_scope: ["validator"], target_scope: ["local workspace"], roe_class: "Green", decision: "allow" });
+    delete value.authority_matrix.rules[0].approval_authority; delete value.approval_scope; delete value.risk_acceptance;
+  }, expected: { allowed: false, blocked: true, final_decision: "blocked_pending_authority", reason: "MISSING_APPROVAL_SCOPE" } });
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));

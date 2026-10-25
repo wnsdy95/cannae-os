@@ -49,6 +49,8 @@ and preserve expiry. Never repair a denial by lowering a floor, reordering rules
 using a shorthand target or resubmitting a different authority projection.
 Declared grades and approving-role labels are not authenticated training, P-stage
 supervision or fresh grants; qualification must not resurrect old authority.
+Treat computed Green as a risk classification, not permission to remove the
+actual request's explicit approval requirement. Carry both through release review.
 
 When the USER chooses the CLI default, route `@cli-default` and read
 `docs/codex-default-model-binding.md`. Resolve through trusted host preparation,

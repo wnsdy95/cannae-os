@@ -113,7 +113,7 @@ function integrate(bundle) {
     };
   }
 
-  const approvalRequired = policy.approval_required === true || readiness.decision === "approval_required";
+  const approvalRequired = toolRequest.approval_required === true || policy.approval_required === true || readiness.decision === "approval_required";
   const approval = {
     required: approvalRequired,
     ...scopeMatchesApproval(bundle.approval_scope, toolRequest, now)

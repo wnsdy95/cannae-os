@@ -63,6 +63,17 @@ mutationCase("schema-valid Green prohibition cannot become approvable at P", bun
 }, "AUTHORITY_RULE_PROHIBITS");
 cases.push({ name: "derived request uses exact identity and explicit rating without a separate projection", file: "authority-integration-fixtures/approved-red-bundle.json",
   mutate(bundle) { delete bundle.authority_request; bundle.readiness = "T"; }, expected: { allowed: true, blocked: false } });
+function greenApproval(bundle, keepApproval) {
+  Object.assign(bundle.tool_request, { tool: "validator", action: "validate", target: "local workspace", risk_level: "low", roe_class: "Green", approval_required: true });
+  Object.assign(bundle.authority_request, { tool: "validator", target: "local workspace", roe_class: "Green", readiness: "T" });
+  Object.assign(bundle.authority_matrix.rules[0], { tool_scope: ["validator"], target_scope: ["local workspace"], roe_class: "Green", decision: "allow" });
+  delete bundle.authority_matrix.rules[0].approval_authority; delete bundle.risk_acceptance;
+  if (keepApproval) Object.assign(bundle.approval_scope.scope, { action: "validate", tool: "validator", target: "local workspace" });
+  else delete bundle.approval_scope;
+}
+mutationCase("computed Green cannot discard explicit request approval", bundle => greenApproval(bundle, false), "MISSING_APPROVAL_SCOPE");
+cases.push({ name: "exact scoped approval satisfies an explicit Green request requirement", file: "authority-integration-fixtures/approved-red-bundle.json",
+  mutate(bundle) { greenApproval(bundle, true); }, expected: { allowed: true, blocked: false } });
 
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));

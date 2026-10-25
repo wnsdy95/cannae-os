@@ -12,6 +12,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   and bind approval request/task/approver. Migrate only synthetic bundle labels,
   add exact-code regressions and adapt both skills. This is not authenticated
   qualification, P-stage supervision, actual grant restoration or installed rollout.
+  Preserve an explicit request approval flag even when computed ROE is Green;
+  add separate denied/approved Green cases and release-composition regression.
 
 - Resolve an explicitly selected CLI-default model during trusted host preparation,
   freeze its concrete name and strict selection commitment in owner packets, and

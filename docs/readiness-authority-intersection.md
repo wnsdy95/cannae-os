@@ -35,6 +35,8 @@ matrix mission plus role, task ID, tool, target and computed ROE to it. A suppli
 `authority_request` cannot substitute another subject. Missing readiness is not
 implicitly P; missing/unknown risk is not implicitly low. Approved scopes must
 also name the actual request/task and the matrix's required approving role.
+An explicit `ToolRequest.approval_required: true` also survives computed Green
+and an allow rule. Risk classification cannot erase a stricter request control.
 The reference release integrator consumes this same denial; a valid release
 review cannot repair a failed execution prerequisite.
 

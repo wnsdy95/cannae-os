@@ -12,6 +12,8 @@ is local engineering synthesis of existing authority-ceiling rules after actual
 synthetic reference-consumer counterexamples. Exact scope, restriction
 intersection and non-overridable minimums are not a new military-source claim
 or proof of evaluator identity, positive qualification or protected execution.
+The subsequent explicit-request approval check is the same local synthesis:
+computed Green never removes a stricter request flag, including at release review.
 
 The [CLI-default bridge](codex-default-model-binding.md) uses the official
 [App Server model catalog](https://learn.chatgpt.com/docs/app-server#list-models-modellist)
