@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Start task-training evidence intake over owner-enrolled definitions, pre-call
+  signed stage/case session mappings and actual dispatch completion/result bytes.
+  Add non-executable contracts, owner-only evidence reads and both skill routes.
+  Keep the real session ceremony, step assessment, qualification, supervision and
+  operational grant/reconciliation consumers explicitly in progress; no actor
+  is promoted and no real model, owner or installed service is operated here.
+
 - Preserve readiness minimums and prohibitions through reference approval/release
   composition after actual synthetic allow counterexamples. Validate exact
   matrix/request scope, overlap and expiry; reject missing ratings/unknown risk

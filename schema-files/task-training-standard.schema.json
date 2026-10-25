@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "TaskTrainingStandard"
+    },
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "capability_id": {
+      "type": "string",
+      "pattern": "^CAP-[A-Za-z0-9_-]+$"
+    },
+    "metl_id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "metl_task_id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "performer_organization_id": {
+      "type": "string",
+      "pattern": "^ORG-[A-Za-z0-9_-]+$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "sustainment_seconds": {
+      "type": "integer",
+      "minimum": 60,
+      "maximum": 2592000
+    },
+    "minimum_distinct_trials": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 16
+    },
+    "steps": {
+      "minItems": 1,
+      "maxItems": 16,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "standard": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "critical": {
+            "type": "boolean"
+          },
+          "evidence_class": {
+            "type": "string",
+            "enum": [
+              "task_product",
+              "boundary_behavior"
+            ]
+          },
+          "not_applicable_permitted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "step_id",
+          "standard",
+          "critical",
+          "evidence_class",
+          "not_applicable_permitted"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cases": {
+      "minItems": 3,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "case_id": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "crawl",
+              "walk"
+            ]
+          },
+          "tool_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "tool_input_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "output_pointer": {
+            "type": "string",
+            "enum": [
+              "/stdout",
+              "/content"
+            ]
+          },
+          "minimum_output_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65536
+          },
+          "conditions": {
+            "minItems": 1,
+            "maxItems": 16,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          }
+        },
+        "required": [
+          "case_id",
+          "stage",
+          "tool_name",
+          "tool_input_sha256",
+          "output_pointer",
+          "minimum_output_bytes",
+          "conditions"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    },
+    "qualification_granted": {
+      "type": "boolean",
+      "const": false
+    },
+    "grant_restoration_authorized": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "capability_id",
+    "metl_id",
+    "metl_task_id",
+    "performer_organization_id",
+    "version",
+    "created_at",
+    "expires_at",
+    "sustainment_seconds",
+    "minimum_distinct_trials",
+    "steps",
+    "cases",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority",
+    "qualification_granted",
+    "grant_restoration_authorized"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/task-training-standard.schema.json"
+}

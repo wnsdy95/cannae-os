@@ -2705,19 +2705,27 @@
       "candidate_key": "training-progression.schema.json",
       "kind": "artifact",
       "workstream_id": "force-readiness",
-      "implementation_status": "planned",
-      "implementation_paths": [],
+      "implementation_status": "partial",
+      "implementation_paths": [
+        "schema-files/task-training-standard.schema.json",
+        "schema-files/task-training-session-binding.schema.json",
+        "schema-files/task-training-trial-request.schema.json",
+        "schema-files/task-training-completion-input.schema.json",
+        "schema-files/task-training-trial-appraisal.schema.json"
+      ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the training-progression.schema.json proposal and associated constraints in docs/training-progression-model.md.",
-          "validation_commands": []
+          "validation_commands": [
+            "node run-task-training-contract-fixtures.js"
+          ]
         }
       ],
       "remaining_work": [
-        "Implement or demonstrate equivalent behavior for training-progression.schema.json, including the source document's boundary conditions, valid/invalid cases, and consuming integration."
+        "Complete the real owner session ceremony, authenticated step evaluations, progression/qualification history and mandatory operational consumers; evidence-intake contracts alone do not define a trained stage."
       ],
-      "rationale": "No verified implementation mapping has been established for this proposal. Missing filename alone is not proof that all related behavior is absent."
+      "rationale": "Typed standards, pre-call stage/case session mappings and actual-result intake cover part of the evidence foundation. Qualification and progression remain incomplete."
     },
     {
       "id": "IC-969c86ce571c5c84",
@@ -2748,17 +2756,21 @@
       "implementation_status": "partial",
       "implementation_paths": [
         "aar-to-readiness-update.js",
-        "readiness-gate-prototype/readiness-gate.js"
+        "readiness-gate-prototype/readiness-gate.js",
+        "task-training-controller.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the progression-gate-runner.js proposal and associated constraints in docs/training-progression-model.md.",
-          "validation_commands": []
+          "validation_commands": [
+            "node run-task-training-contract-fixtures.js",
+            "node run-task-training-fixtures.js"
+          ]
         }
       ],
       "remaining_work": [
-        "Validate crawl/walk/run task-specific evidence, stage transition constraints, and regression/staleness triggers without self-promotion."
+        "Complete real owner session issuance, authenticated condition/step evaluation, whole-trial failure inventory, stage transitions, qualification, staleness/regression and actual grant consumers without self-promotion."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },
@@ -2770,17 +2782,22 @@
       "workstream_id": "force-readiness",
       "implementation_status": "partial",
       "implementation_paths": [
-        "run-aar-readiness-update-fixtures.js"
+        "run-aar-readiness-update-fixtures.js",
+        "run-task-training-contract-fixtures.js",
+        "run-task-training-fixtures.js"
       ],
       "acceptance_criteria": [
         {
           "id": "AC-1",
           "requirement": "Satisfy the run-progression-fixtures.js proposal and associated constraints in docs/training-progression-model.md.",
-          "validation_commands": []
+          "validation_commands": [
+            "node run-task-training-contract-fixtures.js",
+            "node run-task-training-fixtures.js"
+          ]
         }
       ],
       "remaining_work": [
-        "Add progression-specific stage transition, stale evidence, and regression cases against the progression gate."
+        "Add actual owner session/qualification ceremonies, complete failed-trial inventory, stage transition, stale assessment, regression and live plan/lease/gateway restoration cases; current intake fixtures do not prove these."
       ],
       "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
     },

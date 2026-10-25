@@ -22,6 +22,8 @@ const CODE = ["method-control-contract.js", "method-control-broker.js", "method-
   "codex-model-selection-contract.js", "codex-model-selection.js", "schema-files/codex-model-selection.schema.json",
   "order-intake-contract.js", "request-order-compiler.js",
   "force-registry-contract.js", "force-registry-controller.js", "operator-consent-contract.js",
+  "task-training-contract.js", "task-training-controller.js", "schema-files/task-training-standard.schema.json", "schema-files/task-training-session-binding.schema.json",
+  "schema-files/task-training-completion-input.schema.json", "schema-files/task-training-trial-request.schema.json", "schema-files/task-training-trial-appraisal.schema.json",
   "operator-force-registry-service.js", "operator-force-registry-executor.js",
   "schema-files/force-registry-entity.schema.json", "schema-files/force-registry-request.schema.json",
   "schema-files/force-registry-proposal.schema.json", "schema-files/force-registry-authorization.schema.json", "schema-files/force-registry-event.schema.json",

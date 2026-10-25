@@ -1,5 +1,11 @@
 # Schema Files
 
+The five `task-training-*.schema.json` contracts describe non-authorizing standards,
+requests, signed session mappings, observed-result inputs and appraisals. Both
+validator APIs keep them non-executable; runtime intake separately checks actual
+history and pinned signatures. Session issuance, qualification and operational
+grant consumers remain in progress. See [task training evidence](../docs/task-training-evidence.md).
+
 `codex-model-selection.schema.json` describes strict non-authorizing host model
 metadata, including exact model, catalog/configuration commitments, pinned CLI
 and observed child exit. Both validator APIs keep `can_execute: false` and the

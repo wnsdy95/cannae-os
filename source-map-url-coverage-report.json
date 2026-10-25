@@ -1,6 +1,6 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-10-24",
+  "as_of": "2026-10-25",
   "source_map": "docs/source-map.md",
   "valid": true,
   "checked_hosts": 56,
@@ -388,7 +388,9 @@
     {
       "host": "www.army.mil",
       "files": [
-        "docs/research-compendium.md"
+        "docs/research-compendium.md",
+        "docs/source-map.md",
+        "docs/task-training-evidence.md"
       ]
     },
     {

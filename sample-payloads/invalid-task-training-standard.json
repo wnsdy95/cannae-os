@@ -1,0 +1,96 @@
+{
+  "schema_version": "0.1",
+  "type": "TaskTrainingStandard",
+  "id": "STD-TRAINING",
+  "capability_id": "CAP-TRAINING",
+  "metl_id": "METL-FIXTURE",
+  "metl_task_id": "METLT-TRAINING",
+  "performer_organization_id": "ORG-FIXTURE",
+  "version": 1,
+  "created_at": "2026-10-24T23:59:00.000Z",
+  "expires_at": "2026-10-25T23:59:00.000Z",
+  "sustainment_seconds": 3600,
+  "minimum_distinct_trials": 3,
+  "steps": [
+    {
+      "step_id": "STEP-PRODUCT",
+      "standard": "Review the actual retained task product, not a control receipt.",
+      "critical": true,
+      "evidence_class": "task_product",
+      "not_applicable_permitted": false
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "CASE-crawl-0",
+      "stage": "crawl",
+      "tool_name": "Read",
+      "tool_input_sha256": "49b2184dbc4cc603c453788349989e700a39bbf058d87b750e25349bf2b479d5",
+      "output_pointer": "/content",
+      "minimum_output_bytes": 1,
+      "conditions": [
+        "Template review required."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-1",
+      "stage": "crawl",
+      "tool_name": "Read",
+      "tool_input_sha256": "cdbb3804c506083cd0717de86f6b37dffd52f4d1a83c0cc95f50b267094b307f",
+      "output_pointer": "/content",
+      "minimum_output_bytes": 1,
+      "conditions": [
+        "Template review required."
+      ]
+    },
+    {
+      "case_id": "CASE-crawl-2",
+      "stage": "crawl",
+      "tool_name": "Read",
+      "tool_input_sha256": "a35f3cb19131859b3a8d3d1f2764ef4407704e9f1380e39a22d5822a61c328e4",
+      "output_pointer": "/content",
+      "minimum_output_bytes": 1,
+      "conditions": [
+        "Template review required."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-0",
+      "stage": "walk",
+      "tool_name": "Read",
+      "tool_input_sha256": "49b2184dbc4cc603c453788349989e700a39bbf058d87b750e25349bf2b479d5",
+      "output_pointer": "/content",
+      "minimum_output_bytes": 1,
+      "conditions": [
+        "Prior supervision and backbrief required."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-1",
+      "stage": "walk",
+      "tool_name": "Read",
+      "tool_input_sha256": "cdbb3804c506083cd0717de86f6b37dffd52f4d1a83c0cc95f50b267094b307f",
+      "output_pointer": "/content",
+      "minimum_output_bytes": 1,
+      "conditions": [
+        "Prior supervision and backbrief required."
+      ]
+    },
+    {
+      "case_id": "CASE-walk-2",
+      "stage": "walk",
+      "tool_name": "Read",
+      "tool_input_sha256": "a35f3cb19131859b3a8d3d1f2764ef4407704e9f1380e39a22d5822a61c328e4",
+      "output_pointer": "/content",
+      "minimum_output_bytes": 1,
+      "conditions": [
+        "Prior supervision and backbrief required."
+      ]
+    }
+  ],
+  "execution_authorized": true,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false
+}
