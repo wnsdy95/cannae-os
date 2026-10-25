@@ -7,6 +7,13 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [training evidence foundation](task-training-evidence.md) applies existing
+registry, artifact, dispatch and owner-trust contracts. Its engineering constraints
+separate observed results from qualification and grants. The dated
+[Army training-management explanation](https://www.army.mil/article-amp/293526/met_assessment_initiates_the_training_management_cycle)
+supports the observation/assessment distinction, not these JSON fields, local
+trial thresholds or LLM attestation. Full referenced TC PDFs were not retrieved.
+
 The [readiness intersection correction](readiness-authority-intersection.md)
 is local engineering synthesis of existing authority-ceiling rules after actual
 synthetic reference-consumer counterexamples. Exact scope, restriction

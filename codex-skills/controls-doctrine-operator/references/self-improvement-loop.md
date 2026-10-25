@@ -41,6 +41,21 @@ passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
 
+For training evidence, route `task training` and read `docs/task-training-evidence.md`.
+Require a signed exact session mapping introduced before the observed call; never
+hash a session ID into a substitute stable principal or attach a later performer
+label to old results. Bind actual provider completion and retained bytes, keep
+settled failed trials visible, and separate that evidence from step evaluation,
+qualification and new grants. The present intake has no real owner-session
+producer or qualification/grant consumer; do not invent one from a signed fixture.
+
+For a training case's tool-input commitment, use the dispatcher's exported
+`inputDigest`, not the artifact digest: their canonical byte domains differ,
+including the final newline. Regress the producer against an actual admission;
+schema/sample agreement alone can repeat the same mistake. Correct only synthetic
+examples mechanically. A live enrolled standard needs a newly owner-reviewed
+revision; never rehash history or accept both digests to make a trial pass.
+
 Before positive qualification work, route `minimum readiness` and read
 `docs/readiness-authority-intersection.md`. Regress valid approval together with
 an unmet minimum or prohibition, not just missing approvals in isolation. Bind

@@ -6,6 +6,17 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Start task-training evidence intake over owner-enrolled definitions, pre-call
+  signed stage/case session mappings and actual dispatch completion/result bytes.
+  Add non-executable contracts, owner-only evidence reads and both skill routes.
+  Keep the real session ceremony, step assessment, qualification, supervision and
+  operational grant/reconciliation consumers explicitly in progress; no actor
+  is promoted and no real model, owner or installed service is operated here.
+  Correct the synthetic standard producer to use the dispatcher's input digest,
+  not the distinct artifact digest domain, after the first clean-head intake
+  gate failed. Add a producer-boundary regression and both skill recovery rules;
+  preserve the original failure and its unexecuted verification suffix.
+
 - Preserve readiness minimums and prohibitions through reference approval/release
   composition after actual synthetic allow counterexamples. Validate exact
   matrix/request scope, overlap and expiry; reject missing ratings/unknown risk

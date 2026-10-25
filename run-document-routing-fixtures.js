@@ -34,6 +34,11 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["task training", "training evidence", "training qualification", "TaskTrainingSessionBinding", "TaskTrainingTrialAppraisal"]) {
+    const result = route(router, ["--actor=user"], query); assertRoutes(result, ["task-training"]);
+    assert.equal(result.capability_routing.status, "covered"); assert(result.validation_commands.includes("node run-task-training-contract-fixtures.js"));
+    assert(result.recommended_documents.some(item => item.path === "docs/task-training-evidence.md"));
+  }
   for (const query of ["minimum readiness", "readiness authority intersection", "readiness-authority-intersection", "approval cannot replace readiness"]) {
     const result = route(router, ["--actor=user"], query); assertRoutes(result, ["readiness-intersection"]);
     assert.equal(result.capability_routing.status, "covered"); assert(result.validation_commands.includes("node run-authority-integration-fixtures.js"));

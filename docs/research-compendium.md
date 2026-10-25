@@ -1,5 +1,16 @@
 # Research Compendium
 
+## Training Observations Precede Qualification (2026-10-25)
+
+The [in-progress intake](task-training-evidence.md) binds actual admitted-call
+results and retained bytes to pre-existing enrolled definitions and a separately
+signed session mapping. Stable performer identity is not an ephemeral session ID.
+Evidence intake cannot turn a model/configuration declaration into attestation
+or a step observation into a qualification/grant. The initial routing rejection
+correctly exposed unregistered new source; inventory must be registered, not
+waived. Real owner-session issuance, step assessment, positive qualification and
+actual new-grant/freshness/regression consumers remain required under goal 5.
+
 ## Green Does Not Remove Explicit Approval (2026-10-25)
 
 A further schema-valid reference probe on `c91cae6` declared approval required

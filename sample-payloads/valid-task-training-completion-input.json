@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "type": "TaskTrainingCompletionInput",
+  "hook_input": {
+    "hook_event_name": "PostToolUse",
+    "tool_use_id": "synthetic-call",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "README.md"
+    },
+    "tool_response": {
+      "content": "Synthetic observed output, not execution or qualification proof."
+    }
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "id": "TCI-115e249bf37157da2b86ec7f7a2e892e963585fd"
+}
