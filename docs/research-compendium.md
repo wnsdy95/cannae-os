@@ -1,5 +1,15 @@
 # Research Compendium
 
+## Preserve Actual Producers Before Upgrading Consumers (2026-10-26)
+
+The [native producer-history foundation](native-training-producer-history.md)
+replays a genuine prior producer's signed failures and collected products through
+the current owner API. Relabeled new records would not establish compatibility.
+Exact commit/tree restoration and unchanged rows remain distinct from execution,
+trust admission and hold discharge. A dependency directory-to-symlink change
+altered the fixture source digest; preserve its shape instead of weakening the
+check. This is local synthesis, not a new provider or military claim.
+
 ## Consent, Data Handling And Collection Are Separate (2026-10-25)
 
 The [native owner-transfer candidate](native-training-owner-consent.md) binds

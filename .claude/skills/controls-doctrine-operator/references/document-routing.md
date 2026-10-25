@@ -42,6 +42,14 @@ or infer full qualification from the absence of a drop. Match the actual receive
 role/task and inspect retained introduction history, not path-sorted manifests.
 Literal task matching is not a stable cross-mission capability/performer registry.
 
+## Native Producer History
+
+For native consumer upgrades, route to `docs/native-training-producer-history.md`
+and use `scripts/inspect_controls_training_producer.js inspect <method-sha256>`.
+Run both producer fixture runners before accepting a new consumer. Preserve the
+real old producer, exact source/ignored directory shape and original records;
+inspection never signs, executes, settles, qualifies or clears a native hold.
+
 ## Manual Receipt Procedure
 
 Use only for diagnosis/lower-level integration, not default dispatch. Give the

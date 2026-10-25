@@ -57,6 +57,11 @@ fences execution/publication; actual stop/logout/shutdown cancels the child.
 
 ## Original Evidence And Uncertainty
 
+The [producer-history foundation](native-training-producer-history.md) preserves
+exact original owner evidence across a method-hash upgrade using current-engine
+replay. Known historical metadata cannot authorize a fresh transfer, qualify a
+performer or discharge a held attempt; unknown/hybrid producers remain denied.
+
 Before publication, independently reload original consent, reservation, terminal
 journal, JSONL, response and task bytes. Mission-specific output findings retain
 owner-private quarantine. A guarded sequence publishes the signed authorization,

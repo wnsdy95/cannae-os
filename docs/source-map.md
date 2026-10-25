@@ -7,6 +7,12 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [native producer-history foundation](native-training-producer-history.md)
+applies the existing exact-producer compatibility pattern to original native
+owner evidence. Current-engine replay, the pinned prior-source regression and
+current-only admission are local engineering policy, not new military sources,
+a human trust decision or protected execution attestation.
+
 The [native owner-transfer candidate](native-training-owner-consent.md) rechecks
 the existing official Codex JSONL source on 2026-10-25. Exact human handling
 review, original signed authorization, publication progression and orphan

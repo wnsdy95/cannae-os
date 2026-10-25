@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "NativeTrainingProducerInspection"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^NTPI-[a-f0-9]{40}$"
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "current",
+        "historical_cab6d09"
+      ]
+    },
+    "method_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "dependency_lock_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source_revision": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_tree": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "method_files": {
+      "minItems": 21,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "file",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "inspection_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "producer_execution_attested": {
+      "type": "boolean",
+      "const": false
+    },
+    "producer_trust_admitted": {
+      "type": "boolean",
+      "const": false
+    },
+    "historical_execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "hold_discharge_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    },
+    "qualification_granted": {
+      "type": "boolean",
+      "const": false
+    },
+    "grant_restoration_authorized": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "profile",
+    "method_sha256",
+    "dependency_lock_sha256",
+    "source_revision",
+    "source_tree",
+    "method_files",
+    "inspection_only",
+    "producer_execution_attested",
+    "producer_trust_admitted",
+    "historical_execution_authorized",
+    "hold_discharge_authorized",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority",
+    "qualification_granted",
+    "grant_restoration_authorized"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/native-training-producer-inspection.schema.json"
+}

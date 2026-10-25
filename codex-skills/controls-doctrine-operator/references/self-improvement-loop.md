@@ -299,6 +299,15 @@ diagnostic record; keep the original failed run separate from revalidation.
 
 ## Publication Denial And Partial State
 
+For native consumer upgrades, read `docs/native-training-producer-history.md`
+before changing method-bound files. Inspect the original digest, freeze the real
+producer and run both producer fixtures plus native regressions. Never relabel a
+new record as old or regenerate prior catalog/archive bytes. Restore the exact
+Git commit/tree and ignored directory shape; an untracked dependency symlink is
+a source change, not permission to ignore a failed digest. Production history
+replay runs the current engine; it cannot renew consent, qualify a performer or
+clear native uncertainty. Unknown/hybrid producers remain denied.
+
 For an explicit USER stop, read the stop-intake section of
 `docs/bounded-self-improvement-operations.md` and use
 `scripts/stop_controls_campaign.js`. Prepare the exact decision option, obtain

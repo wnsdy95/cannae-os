@@ -11,6 +11,11 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing native producer inspection`,
+    file: `sample-payloads/${prefix}-native-training-producer-inspection.json`, type: "native-training-producer-inspection", exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["NATIVE_TRAINING_PRODUCER_SUBSTITUTED"] })),
+  { name: "producer inspection cannot grant hold discharge", file: "sample-payloads/valid-native-training-producer-inspection.json", type: "native-training-producer-inspection", exitCode: 1,
+    expectedCanExecute: false, requiredCodes: ["CONST_MISMATCH"], mutate(value) { value.hold_discharge_authorized = true; } },
   ...["native-training-transfer-review-request", "native-training-transfer-authorization", "operator-native-training-product"].flatMap(type => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-authorizing native owner transfer ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
     expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]

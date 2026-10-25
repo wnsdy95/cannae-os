@@ -1,5 +1,10 @@
 # Schema Files
 
+`native-training-producer-inspection.schema.json` binds the complete recognized
+method-file tuple to non-authorizing inspection. Unknown/hybrid producers fail;
+history readability grants neither execution nor hold discharge. See
+[producer history](../docs/native-training-producer-history.md).
+
 Native owner-transfer candidate contracts:
 `native-training-transfer-review-request.schema.json`,
 `native-training-transfer-authorization.schema.json` and

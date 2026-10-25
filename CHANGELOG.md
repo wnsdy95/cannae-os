@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add exact native producer-history inspection and current-engine replay for
+  the frozen `cab6d09` owner producer. Preserve original failures/collected bytes
+  without executing old code in production or downgrading fresh transfer. Add a
+  pinned prior-source regression, strict inspection contract, inspect-only
+  wrappers and both skill adaptations. Native uncertainty discharge stays open.
+
 - Fix a synthetic native-training consent clock race: derive both timestamps
   from one sample, not separate reads that can produce 120001ms against the
   unchanged 120000ms production limit. Add an advancing-clock regression covering

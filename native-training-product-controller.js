@@ -85,7 +85,10 @@ function verifyScope(preview, configuration) {
     requestId: preview.request_ref.artifact_id, now: preview.prepared_at, reviewed: preview.schema_version === "0.2" }, key).preview_sha256 === preview.preview_sha256, "SEMANTIC_TRAINING_ORIGINAL_SUBJECT_CHANGED");
 }
 function verifyHistoricalSubject(preview, key) {
-  c.need(keyDigest(key) === preview.trusted_registry_key_sha256 && preview.method_sha256 === c.methodBinding(), "SEMANTIC_TRAINING_HISTORICAL_METHOD_CHANGED");
+  const { preview_sha256, ...body } = preview;
+  c.need(keyDigest(key) === preview.trusted_registry_key_sha256 && preview.type === "NativeTrainingProductPreview" && preview_sha256 === t.digest(body) &&
+    preview.prompt === c.promptFor(preview.input) && same(preview.response_schema, z.toJSONSchema(c.RESPONSE)), "SEMANTIC_TRAINING_HISTORICAL_METHOD_CHANGED");
+  c.historicalProducer(preview);
   const store = force.load({ repository: preview.repository, artifactRoot: preview.artifact_root });
   const prefix = same(force.manifestState(store), preview.observed_manifest) ? store :
     historicalSettlementStore(store, preview.observed_manifest.revision, preview.observed_manifest.sha256);

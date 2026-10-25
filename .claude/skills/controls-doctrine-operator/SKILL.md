@@ -329,6 +329,8 @@ independent durable archive or witness.
 
 ## References
 
+- Before native consumer upgrades, read `docs/native-training-producer-history.md` and run `scripts/inspect_controls_training_producer.js inspect <method-sha256>`. Freeze the genuine prior producer and exercise its actual records under the new engine. Inspection grants no trust or hold discharge; fresh transfers stay current-only.
+
 - For new captured-request adoption, read `docs/requirement-inventory-admission.md`. Use `scripts/review_controls_requirements.js` against the explicit target repository, classify every source fragment and review every requirement against the actual order and task/agent targets. Bind the returned review to request v0.2 before proposing adoption; any plan edit requires new coverage and fresh USER review. Never use an advisory model `complete` as admission or relabel missing restrictions as context. This human review class does not prove semantics or model calibration. Preserve old records/results for inspection and settlement; do not downgrade a captured-request wave to obtain another call.
 
 - For live Operations reads, use `docs/operational-cop.md` and the COP procedure in `references/document-routing.md`; display filters never remove critical reporting or create execution authority.

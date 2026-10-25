@@ -76,6 +76,13 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [native producer-history foundation](native-training-producer-history.md)
+preserves exact original owner evidence across method-hash upgrades. Inspection
+and historical readability cannot authorize new execution or clear a failure.
+Its prior-code regression does not complete native uncertainty discharge,
+orphan/unknown-process recovery, grading, qualification, live grant consumers,
+actual-model acceptance or any full program outcome.
+
 An ancestry-preserving source integration does not close any full outcome.
 Retain the original reviewed stack and squash/tree evidence, revalidate the new
 HEAD's source-bound flows and require its full hosted checks before ordinary
