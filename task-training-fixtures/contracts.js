@@ -1,5 +1,6 @@
 const crypto = require("node:crypto"), c = require("../task-training-contract");
 const { signOperatorRecord } = require("../operator-consent-contract");
+const { inputDigest } = require("../dispatch-runtime-controller");
 const inputs = [{ file_path: "README.md" }, { file_path: "README.md", offset: 1 }, { file_path: "README.md", limit: 1 }];
 const reference = name => ({ artifact_id: `${name}-SYNTHETIC`, relative_path: `synthetic/${name}.json`, sha256: "a".repeat(64) });
 function standard(now = Date.parse("2026-10-25T00:00:00Z"), task = "METLT-TRAINING") {
@@ -10,7 +11,7 @@ function standard(now = Date.parse("2026-10-25T00:00:00Z"), task = "METLT-TRAINI
     minimum_distinct_trials: 3, steps: [{ step_id: "STEP-PRODUCT", standard: "Review the actual retained task product, not a control receipt.", critical: true,
       evidence_class: "task_product", not_applicable_permitted: false }],
     cases: ["crawl", "walk"].flatMap(stage => inputs.map((input, index) => ({ case_id: `CASE-${stage}-${index}`, stage, tool_name: "Read",
-      tool_input_sha256: c.digest(input), output_pointer: "/content", minimum_output_bytes: 1,
+      tool_input_sha256: inputDigest(input), output_pointer: "/content", minimum_output_bytes: 1,
       conditions: [stage === "crawl" ? "Template review required." : "Prior supervision and backbrief required."] }))), ...c.FLAGS }, "task-training-standard");
 }
 function samples() {

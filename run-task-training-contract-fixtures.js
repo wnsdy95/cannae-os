@@ -5,6 +5,12 @@ const { validatePayload, validateSchemaPayload } = require("./validator-cli-prot
 let passed = 0;
 function check(name, run) { run(); passed++; console.log(`PASS ${name}`); }
 const values = samples();
+check("training cases use the dispatcher input digest, not the artifact digest", () => {
+  const input = { file_path: "README.md" };
+  const actual = values["task-training-standard"].cases[0].tool_input_sha256;
+  assert.equal(actual, require("./dispatch-runtime-controller").inputDigest(input));
+  assert.notEqual(actual, c.digest(input));
+});
 for (const [type, value] of Object.entries(values)) {
   check(`${type} has exact current generated schema and sample`, () => {
     const expected = { ...z.toJSONSchema(c.SCHEMAS[type]), $id: `https://controls.local/schema-files/${type}.schema.json` };
@@ -18,7 +24,7 @@ for (const [type, value] of Object.entries(values)) {
   });
 }
 for (const [name, mutate, code] of [
-  ["unobserved critical step cannot be omitted", value => { value.steps = []; }, "TRAINING_CONTRACT_INVALID"],
+  ["a standard must define its required steps", value => { value.steps = []; }, "TRAINING_CONTRACT_INVALID"],
   ["critical steps cannot use N/A", value => { value.steps[0].not_applicable_permitted = true; }, "TRAINING_STANDARD_CRITICAL_OR_PRODUCT_MISSING"],
   ["walk case coverage cannot be replaced by crawl repeats", value => { value.cases = value.cases.filter(item => item.stage === "crawl"); }, "TRAINING_STANDARD_CASE_COVERAGE_INVALID"],
   ["duplicate case labels fail", value => { value.cases[1].case_id = value.cases[0].case_id; }, "TRAINING_STANDARD_DUPLICATE_ID"],
