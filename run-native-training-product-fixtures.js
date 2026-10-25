@@ -68,6 +68,21 @@ async function main() {
         assert.equal(invalid.status, 1); assert.equal(invalid.stdout, ""); assert.equal(invalid.stderr.trim(), "SEMANTIC_TRAINING_PROPOSAL_FAILED"); assert(!invalid.stderr.includes("PRIVATEVALUE"));
       }
     });
+    await test("synthetic consent uses one clock sample without weakening production expiry boundaries", async () => {
+      const RealDate = Date; let tick = RealDate.now(), p;
+      class SteppingDate extends RealDate {
+        constructor(...args) { super(...(args.length ? args : [tick++])); }
+        static now() { return tick++; }
+      }
+      try { global.Date = SteppingDate; p = s.prepare(env); } finally { global.Date = RealDate; }
+      const from = Date.parse(p.consent.created_at), to = Date.parse(p.consent.expires_at);
+      assert.equal(to - from, 120000);
+      const verify = (consent, now) => s.collector.verifyTransferConsent(consent, p.invocation, env.publicKey, now);
+      verify(p.consent, from); verify(p.consent, to - 1);
+      for (const now of [from - 1, to]) assert.throws(() => verify(p.consent, now), /SEMANTIC_TRANSFER_CONSENT_EXPIRED_OR_FUTURE/);
+      const tooLong = signOperatorRecord({ ...p.consent, id: crypto.randomUUID(), expires_at: new Date(to + 1).toISOString() }, env.syntheticKey);
+      assert.throws(() => verify(tooLong, from), /SEMANTIC_TRANSFER_CONSENT_EXPIRED_OR_FUTURE/);
+    });
     for (const [mode, expected] of [["missingthread", "SEMANTIC_NATIVE_THREAD_MISSING_BEFORE_TURN"], ["duplicatethread", "SEMANTIC_NATIVE_THREAD_INVALID"],
       ["turnbeforethread", "SEMANTIC_NATIVE_THREAD_MISSING_BEFORE_TURN"], ["itembeforeturn", "SEMANTIC_NATIVE_EVENT_ORDER_INVALID"],
       ["wrongcase", "SEMANTIC_TRAINING_RESPONSE_SUBSTITUTED"], ["tool", "SEMANTIC_UNEXPECTED_TOOL_OR_DIAGNOSTIC"],

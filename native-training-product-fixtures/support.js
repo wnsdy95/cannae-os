@@ -33,9 +33,10 @@ function prepare(env, mode = "success") {
     capability_id: env.capability.id, performer_id: env.performer.id, registry_head_ref: env.registry.head_ref, context_ref: env.contextRef,
     case_id: `CASE-crawl-${mode}`, classification: "internal", created_at: new Date(now).toISOString(), expires_at: new Date(now + 600000).toISOString() }, env.options);
   const preview = core.prepareProduct({ ...env.options, requestId: proposed.request.id }, env.publicKey), invocation = collector.prepareInvocation(preview, env.profile);
+  const consentAt = Date.now();
   const consent = require("../operator-consent-contract").signOperatorRecord({ schema_version: "0.1", type: "TrainingProductTransferConsent", id: crypto.randomUUID(),
     purpose: c.PURPOSE, invocation_sha256: invocation.invocation_sha256, principal_id: env.owner.storedSession().userId,
-    created_at: new Date().toISOString(), expires_at: new Date(Date.now() + 120000).toISOString(), execution_authorized: false, release_authorized: false }, env.syntheticKey);
+    created_at: new Date(consentAt).toISOString(), expires_at: new Date(consentAt + 120000).toISOString(), execution_authorized: false, release_authorized: false }, env.syntheticKey);
   return { proposed, preview, invocation, consent };
 }
 const configuration = env => ({ trustedPublicKey: env.publicKey, stateRoot: env.stateRoot });

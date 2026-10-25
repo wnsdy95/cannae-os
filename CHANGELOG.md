@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Fix a synthetic native-training consent clock race: derive both timestamps
+  from one sample, not separate reads that can produce 120001ms against the
+  unchanged 120000ms production limit. Add an advancing-clock regression covering
+  valid, future, expired and over-limit consent, and adapt both skill references.
+  Preserve the earlier failed awake ladder; this fixture correction does not
+  establish its missing original signed state or complete integration acceptance.
+
 - Add bounded awake-validation discipline to both skills after retained local
   lease and enrollment failures overlapped host sleep. Correlate filtered power
   events without claiming missing original state, and use only a USER-approved

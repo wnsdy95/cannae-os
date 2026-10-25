@@ -276,6 +276,15 @@ change persistent power settings or enlarge execution/lease/consent deadlines.
 Preserve earlier failures even when the awake run passes. This is local test
 environment control, not protected-host attestation or model-transfer consent.
 
+For synthetic consent fixtures, derive creation and expiry from one captured
+clock value. Separate reads can exceed a strict duration limit by one tick even
+without host sleep. Reproduce that boundary with an advancing fixture-only clock
+and exercise the actual verifier at start, just before expiry, at expiry, in the
+future and beyond the duration limit. Restore the real clock in `finally`; never
+freeze production time, widen the verifier limit or renew an existing consent.
+Keep an independently reproduced fixture defect distinct from an original
+failure whose signed record was removed before it could be inspected.
+
 In replay fixtures, isolate durable one-use ID consumption from consent expiry.
 Use a separately signed, currently valid synthetic proposal with the consumed ID
 and assert that original journal bytes remain unchanged. Keep expiry tests

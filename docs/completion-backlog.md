@@ -89,6 +89,13 @@ do not repair missing original state, discharge unknown operations, renew old
 approvals or establish protected deployment. Any passing awake run must preserve
 the earlier failed runs and the exact scope of the temporary resource approval.
 
+The one-use awake integration ladder also failed at native consent validation;
+17 gates passed and eight later gates were not executed. A separate advancing
+clock reproduces a 120001ms synthetic consent. The fixture now derives both times
+from one sample and exercises unchanged verifier boundaries. This correction is
+not new-head integration acceptance or reconstruction of the original discarded
+signed record; full current-head checks and normal hosted validation remain due.
+
 The [native owner-transfer candidate](native-training-owner-consent.md) connects
 exact handling review, authenticated consent, original-byte publication and a
 managed local attempt/orphan inventory. Acceptance and rollout, complete
