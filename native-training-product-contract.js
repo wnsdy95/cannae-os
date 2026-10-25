@@ -45,8 +45,9 @@ function promptFor(input) { return TEMPLATE + JSON.stringify({ collection_id: in
     case_id: input.training_case.case_id, output: "The actual task product, not a report of having done it." } }, null, 2); }
 function methodBinding() {
   return t.digest(["native-training-product-contract.js", "native-training-product-controller.js", "codex-training-product-collector.js", "codex-bounded-collector.js",
-    "task-training-contract.js", "force-registry-controller.js", "semantic-control-types.js", "package-lock.json", "order-intake-contract.js",
-    "workload-control-contract.js", "opsec-linter.js", "eefi-detector.js"].map(file => ({ file, sha256: sha256(fs.readFileSync(path.join(__dirname, file))) })));
+    "task-training-contract.js", "native-training-transfer-contract.js", "operator-native-training.js", "operator-semantic-service.js", "repository-artifact-store.js", "force-registry-controller.js", "semantic-control-types.js", "package-lock.json", "order-intake-contract.js",
+    "workload-control-contract.js", "opsec-linter.js", "eefi-detector.js", "context-filter-prototype/context-filter.js", "release-review-runner.js",
+    "schema-files/classification-label.schema.json", "schema-files/releasability-review.schema.json", "schema-files/release-review.schema.json"].map(file => ({ file, sha256: sha256(fs.readFileSync(path.join(__dirname, file))) })));
 }
 function profileDigest(profile) { const { model_selection, ...execution } = profile; return t.digest(execution); }
 function commitments(profile) { return { model_id: profile.requested_model, harness_sha256: methodBinding(), prompt_sha256: sha256(Buffer.from(TEMPLATE)),

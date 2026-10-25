@@ -14,6 +14,9 @@ try {
     else result = require("./operator-force-registry-executor").executeForceRegistryChange(configuration, request.challenge_id);
   } else if (request.action === "operations") {
     result = require("./operational-cop").queryOperationalCop(configuration, user, request);
+  } else if (request.action === "prepare-native-training-product") {
+    if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
+    result = require("./operator-native-training").prepare(configuration, request);
   } else if (request.action === "prepare-semantic") {
     if (user.role !== "owner") throw Object.assign(new Error("CONSOLE_OWNER_REQUIRED"), { statusCode: 403 });
     result = require("./operator-semantic-service").prepareSemanticEvaluation(configuration, request);
@@ -38,5 +41,5 @@ try {
   parentPort.postMessage({ result });
 } catch (error) {
   parentPort.postMessage({ error: /^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message : "CONSOLE_EVIDENCE_UNAVAILABLE",
-    reason_codes: [...new Set([...(error.reason_codes || []), ...(error.message.match(/\b(?:CONSOLE|ORDER|OPERATOR|SEMANTIC|TRAINING|FORCE_REGISTRY|FORCE_ENTITY)_[A-Z_]+\b/g) || [])])].slice(0, 8), statusCode: error.statusCode || 409 });
+    reason_codes: [...new Set([...(error.reason_codes || []), ...(error.message.match(/\b(?:CONSOLE|ORDER|OPERATOR|SEMANTIC|NATIVE_TRAINING|TRAINING|FORCE_REGISTRY|FORCE_ENTITY)_[A-Z_]+\b/g) || [])])].slice(0, 8), statusCode: error.statusCode || 409 });
 }

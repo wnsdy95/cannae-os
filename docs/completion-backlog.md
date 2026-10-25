@@ -76,11 +76,18 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [native owner-transfer candidate](native-training-owner-consent.md) connects
+exact handling review, authenticated consent, original-byte publication and a
+managed local attempt/orphan inventory. Acceptance and rollout, complete
+cross-runtime history, uncertainty discharge, evaluation, qualification and
+actual grant consumers remain open. No full outcome is closed by this candidate.
+
 The [native task-product candidate](native-training-products.md) adds native
 standards and a purpose-separated bounded collector API with preauthorized
-collection IDs, original JSONL and returned bytes. Its new owner UI/producer,
-signed publication, whole-attempt inventory, reconciliation, authenticated grading,
-qualification and mandatory grant consumers remain incomplete under goals 3/5/7.
+collection IDs, original JSONL and returned bytes. Verify its separate owner
+UI/producer and signed publication candidate; complete cross-runtime inventory,
+reconciliation, authenticated grading, qualification and mandatory grant consumers
+under goals 3/5/7.
 This is not acceptance of real-model quality or completion of any full outcome.
 
 The [in-progress training evidence intake](task-training-evidence.md) starts the

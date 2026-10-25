@@ -11,6 +11,10 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["native-training-transfer-review-request", "native-training-transfer-authorization", "operator-native-training-product"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing native owner transfer ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]
+  }))),
   ...["native-training-product-request", "native-training-product-response", "native-training-product-appraisal"].flatMap(type => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-executable ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
     expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [type.endsWith("response") ? "ADDITIONAL_PROPERTY" : "CONST_MISMATCH"]

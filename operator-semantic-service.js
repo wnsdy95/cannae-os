@@ -11,6 +11,7 @@ const { verifyEvaluation, isModelCode } = require("./operator-semantic-evaluatio
 const analysisCollector = require("./codex-order-analysis-collector");
 const analysisGenerator = require("./order-analysis-generator");
 const analysisContract = require("./operator-order-analysis-contract");
+const native = require("./operator-native-training"), nativeCollector = require("./codex-training-product-collector"), nativeContract = require("./native-training-transfer-contract");
 const AUTHORITY = Object.freeze({ execution_authorized: false, release_authorized: false, human_final_decision_authority: "USER" });
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
 function modelError(error) { return isModelCode(error?.message) ? error.message : "CONSOLE_MODEL_COLLECTION_FAILED"; }
@@ -18,6 +19,8 @@ function sourceCurrent(configuration) {
   requireThat(configuration.sourceSha256 === repositoryStateDigest(__dirname), "CONSOLE_MODEL_SOURCE_CHANGED", 409);
 }
 function purposeFor(invocation) {
+  if (invocation?.type === "CodexTrainingProductInvocation") return { id: "native_training", type: "OperatorNativeTrainingProduct", version: "0.1",
+    consentType: "TrainingProductTransferConsent", purpose: "one_native_training_product_transfer", configuration: "training", ...nativeCollector };
   if (invocation?.type === "CodexSemanticInvocation") return { id: "semantic_omission", type: "OperatorSemanticEvaluation", version: "0.2",
     consentType: "SemanticEvaluationTransferConsent", purpose: "one_semantic_evaluation_transfer", configuration: "semantic",
     prepareInvocation, collectEvaluation, verifyTransferConsent };
@@ -57,6 +60,7 @@ function openSemanticService(auth, configuration, consentService) {
     session_hash TEXT NOT NULL, preview TEXT NOT NULL, created INTEGER NOT NULL, expires INTEGER NOT NULL,
     state TEXT NOT NULL, consent TEXT, result TEXT, cancellation TEXT, rationale TEXT);
     CREATE UNIQUE INDEX IF NOT EXISTS one_live_model_action ON operator_model_actions((1)) WHERE state='running';`);
+  native.init(db);
   db.prepare("UPDATE operator_model_actions SET state='held' WHERE state='running'").run();
   db.prepare("UPDATE operator_model_actions SET state='invalidated' WHERE state='pending'").run();
   const stateRoot = privateDirectory(path.join(auth.root, "model-evaluations"));
@@ -86,6 +90,8 @@ function openSemanticService(auth, configuration, consentService) {
       const result = JSON.parse(row.result), consent = JSON.parse(row.consent), invocation = JSON.parse(row.preview);
       const purpose = purposeFor(invocation);
       purpose.verifyTransferConsent(consent, invocation, consentService.publicKey(), Date.parse(consent.created_at));
+      if (purpose.id === "native_training") return consent.type === purpose.consentType && consent.purpose === purpose.purpose && consent.id === row.id &&
+        consent.principal_id === row.principal_id && native.verifyResult(result, row, invocation, consent, consentService.publicKey(), db, configuration, stateRoot);
       if (purpose.id === "order_analysis") analysisContract.verifyEvaluation(result, consentService.publicKey(), invocation);
       else verifyEvaluation(result, consentService.publicKey());
       return validOperatorSignature(consent, consentService.publicKey()) && validOperatorSignature(result, consentService.publicKey()) &&
@@ -99,6 +105,7 @@ function openSemanticService(auth, configuration, consentService) {
     } catch { return false; }
   }
   function noHold() {
+    requireThat(native.inventory(db, stateRoot, consentService.publicKey()).clear, "CONSOLE_TRAINING_ORPHAN_INVENTORY_HELD", 409);
     const rows = db.prepare("SELECT * FROM operator_model_actions WHERE consent IS NOT NULL OR result IS NOT NULL OR state IN ('running','held','evaluated')").all();
     requireThat(!rows.some(row => !verifiedResult(row) || (row.state !== "evaluated" && !reconciliation.status(row).verified)), "CONSOLE_MODEL_RECONCILIATION_REQUIRED", 409);
   }
@@ -108,8 +115,13 @@ function openSemanticService(auth, configuration, consentService) {
       const purpose = purposeFor(invocation), profile = configuration[purpose.configuration];
       requireThat(profile && digest(purpose.prepareInvocation(invocation.preview, profile)) === digest(invocation) &&
         (purpose.id !== "order_analysis" || digest(invocation.preview.input.allowed_roles) === digest([...(profile.allowedRoles || ["S2", "S3"])].sort())) &&
-        invocation.preview.repository === configuration.repository && invocation.preview.artifact_root === configuration.artifactRoot &&
+        invocation.preview.repository === configuration.repository && invocation.preview.artifact_root === (purpose.id === "native_training" ? configuration.trainingArtifactRoot : configuration.artifactRoot) &&
         invocation.preview.identity_fingerprint === configuration.identity, "CONSOLE_MODEL_PREVIEW_CHANGED", 409);
+      if (purpose.id === "native_training") {
+        native.assertRoot(configuration);
+        requireThat(invocation.preview.schema_version === "0.2", "CONSOLE_TRAINING_REVIEW_REQUIRED", 409);
+        require("./native-training-product-controller").verifyScope(invocation.preview, { trustedPublicKey: consentService.publicKey() });
+      }
     } catch (error) {
       if (/^CONSOLE_[A-Z_]+$/.test(error.message)) throw error;
       const failure = new Error("CONSOLE_MODEL_PREVIEW_CHANGED"); failure.statusCode = 409; failure.reason_codes = [modelError(error)]; throw failure;
@@ -118,20 +130,23 @@ function openSemanticService(auth, configuration, consentService) {
   function view(row, details = false) {
     const invocation = JSON.parse(row.preview), verified = row.result && verifiedResult(row);
     const purpose = purposeFor(invocation);
-    const unverifiable = !verified && (!!row.result || row.state === "evaluated");
+    const unverifiable = !verified && (!!row.result || row.state === "evaluated" || purpose.id === "native_training" && row.state === "held");
     const reconciled = reconciliation.status(row);
-    return { type: purpose.type, purpose: purpose.id, id: row.id, state: unverifiable ? "unverifiable" : row.state,
+    return { type: purpose.type, purpose: purpose.id, id: row.id, state: unverifiable ? "unverifiable" : purpose.id === "native_training" && row.state === "evaluated" ? "collected" : row.state,
       mission_id: invocation.preview.mission_id, wave_id: invocation.preview.wave_id, draft_id: (invocation.preview.draft_ref || invocation.preview.request_ref).artifact_id,
       model: invocation.profile.requested_model, created_at: new Date(row.created).toISOString(), expires_at: new Date(row.expires).toISOString(),
       hold_preserved: (row.state === "held" && !reconciled.verified) || !!unverifiable, cancellation_requested: !!row.cancellation,
       reconciliation_state: reconciled.state, reconciliation_verified: reconciled.verified,
       result_verified: !!verified, verdict: verified ? JSON.parse(row.result).assessment?.verdict || null : null,
       ...(details ? { invocation_sha256: invocation.invocation_sha256, consent: row.consent ? JSON.parse(row.consent) : null,
-        rationale: row.rationale, result: verified ? JSON.parse(row.result) : null, reconciliation: reconciled.record } : {}), ...AUTHORITY };
+        rationale: row.rationale, result: verified ? JSON.parse(row.result) : null, reconciliation: reconciled.record,
+        ...(purpose.id === "native_training" ? { publication_observation: native.publicationInventory(invocation, row.id, configuration) } : {}),
+        ...(purpose.id === "native_training" && verified && row.state === "evaluated" ? { product_output: nativeCollector.readProduct(invocation, JSON.parse(row.consent),
+          { trustedPublicKey: consentService.publicKey(), stateRoot }).bytes.toString("utf8") } : {}) } : {}), ...AUTHORITY };
   }
   async function run(id, session) {
     const control = active.get(id), row = rowFor(id), invocation = JSON.parse(row.preview), consent = JSON.parse(row.consent);
-    const purpose = purposeFor(invocation), analysis = purpose.id === "order_analysis";
+    const purpose = purposeFor(invocation), analysis = purpose.id === "order_analysis", training = purpose.id === "native_training", artifactsWritten = [];
     let collection, journalSha256 = null;
     function unchanged() {
       const current = rowFor(id);
@@ -139,11 +154,14 @@ function openSemanticService(auth, configuration, consentService) {
         .every(key => current[key] === row[key]), "CONSOLE_MODEL_ACTION_CHANGED", 409);
     }
     const guard = setInterval(() => {
-      try { owner(session); unchanged(); }
+      try { owner(session); unchanged(); if (training) { sourceCurrent(configuration); native.assertRoot(configuration);
+        const a = native.authorization(db, row, invocation, consentService.publicKey());
+        requireThat(Date.parse(a.created_at) <= Date.now() && Date.now() < Date.parse(a.expires_at), "CONSOLE_TRAINING_AUTHORIZATION_EXPIRED", 409); } }
       catch (error) { control.reason ||= error.message === "CONSOLE_MODEL_ACTION_CHANGED" ? error.message : "CONSOLE_MODEL_SESSION_ENDED"; control.abort.abort(); }
     }, 250);
     try {
       owner(session); checkInvocation(invocation);
+      if (training) native.authorization(db, row, invocation, consentService.publicKey());
       control.enteredCollector = true;
       collection = await purpose.collectEvaluation(invocation, consent, { trustedPublicKey: consentService.publicKey(), stateRoot, signal: control.abort.signal });
       const journal = readJournal(path.join(stateRoot, id), "result.json"), { directory, journal_sha256: writtenSha256, ...observed } = collection;
@@ -164,6 +182,18 @@ function openSemanticService(auth, configuration, consentService) {
       }
       const evaluated = collection.status === "evaluated" && collection.process_exit_confirmed && collection.process_group_absent && !control.reason;
       const state = evaluated ? "evaluated" : "held";
+      const summary = { status: collection.status, journal_sha256: journalSha256, process_exit_confirmed: collection.process_exit_confirmed,
+        process_group_absent: collection.process_group_absent, stdout_sha256: collection.stdout_sha256, stderr_sha256: collection.stderr_sha256,
+        response_sha256: collection.response_sha256 || null, failure_reasons: [...collection.failure_reasons, ...(control.reason ? [control.reason] : [])] };
+      if (training) {
+        requireThat(evaluated, "CONSOLE_TRAINING_COLLECTION_HELD", 409);
+        const current = native.publish({ invocation, consent, collection: summary, db, row, configuration, stateRoot, key: consentService.publicKey(),
+          signingKey: meta("operator-signing-key"), artifactsWritten, guard: () => { owner(session); unchanged(); sourceCurrent(configuration);
+            const a = native.authorization(db, row, invocation, consentService.publicKey()); requireThat(Date.now() < Date.parse(a.expires_at), "CONSOLE_TRAINING_AUTHORIZATION_EXPIRED", 409); } });
+        transaction(() => { owner(session); unchanged(); sourceCurrent(configuration);
+          db.prepare("UPDATE operator_model_actions SET state='evaluated',result=? WHERE id=? AND state='running'").run(JSON.stringify(current), id); audit(row.principal_id, "native_training_collected", id); });
+        return;
+      }
       let compiled = null;
       if (evaluated && analysis) {
         owner(session); unchanged(); sourceCurrent(configuration);
@@ -188,6 +218,21 @@ function openSemanticService(auth, configuration, consentService) {
         audit(row.principal_id, `model_${state}`, id);
       });
     } catch (error) {
+      if (training) {
+        let authorizationSha256 = "0".repeat(64);
+        try { authorizationSha256 = digest(native.authorization(db, row, invocation, consentService.publicKey())); } catch { /* Preserve an unverified hold if the original authorization changed. */ }
+        const failure = signOperatorRecord({ schema_version: "0.1", type: "OperatorNativeTrainingProduct", id: `NTOR-${id}`, action_id: id, status: "held",
+          invocation_sha256: invocation.invocation_sha256, consent_sha256: digest(consent), authorization_sha256: authorizationSha256, rationale_sha256: hash(row.rationale || ""),
+          ended_at: new Date().toISOString(), collection: collection ? { status: collection.status, journal_sha256: journalSha256,
+            process_exit_confirmed: collection.process_exit_confirmed, process_group_absent: collection.process_group_absent, stdout_sha256: collection.stdout_sha256,
+            stderr_sha256: collection.stderr_sha256, response_sha256: collection.response_sha256 || null,
+            failure_reasons: [...collection.failure_reasons, modelError(error), ...(control.reason ? [control.reason] : [])] } : null,
+          appraisal: null, output_ref: null, authorization_ref: null, retained_artifact_refs: artifactsWritten.slice(0, 3), error: modelError(error),
+          task_standard_evaluated: false, evaluator_authenticated: false, publication_finality_independently_attested: false,
+          ...require("./task-training-contract").FLAGS }, meta("operator-signing-key"));
+        db.prepare("UPDATE operator_model_actions SET state='held',result=? WHERE id=? AND state='running'").run(JSON.stringify(failure), id);
+        audit(row.principal_id, "native_training_held", id); control.error = modelError(error); return;
+      }
       const failure = signOperatorRecord({ schema_version: purpose.version, type: purpose.type, id, status: "held",
         invocation_sha256: invocation.invocation_sha256, consent_sha256: digest(consent), rationale_sha256: hash(row.rationale || ""),
         ended_at: new Date().toISOString(), error: modelError(error), assessment: null, response: null,
@@ -209,6 +254,7 @@ function openSemanticService(auth, configuration, consentService) {
     reconciliation,
     available: !!configuration.semantic,
     analysisAvailable: !!configuration.analysis,
+    trainingAvailable: !!configuration.training,
     prepare(session, invocation, expectedPurpose = "semantic_omission") {
       const user = owner(session), purpose = purposeFor(invocation);
       requireThat(purpose.id === expectedPurpose, "CONSOLE_MODEL_PURPOSE_INVALID", 409); checkInvocation(invocation); noHold();
@@ -228,6 +274,7 @@ function openSemanticService(auth, configuration, consentService) {
     },
     async commit(session, input, expectedPurpose = "semantic_omission") {
       const user = owner(session); await auth.reauthenticate(session, input.password); assertSafeRationale(input, session);
+      if (expectedPurpose === "native_training") requireThat(input.acknowledge_mission_handling === true, "CONSOLE_TRAINING_HANDLING_ACK_REQUIRED", 409);
       const id = transaction(() => {
         owner(session); noHold(); const row = rowFor(input.challenge_id);
         requireThat(row.state === "pending" && row.principal_id === user.id && row.epoch === user.epoch && row.session_hash === hash(session.sessionId) &&
@@ -238,6 +285,7 @@ function openSemanticService(auth, configuration, consentService) {
         const consent = signOperatorRecord({ schema_version: "0.1", type: purpose.consentType, id: row.id,
           purpose: purpose.purpose, invocation_sha256: invocation.invocation_sha256, principal_id: user.id,
           created_at: new Date().toISOString(), expires_at: new Date(row.expires).toISOString(), execution_authorized: false, release_authorized: false }, meta("operator-signing-key"));
+        if (purpose.id === "native_training") native.authorize(db, { ...row, rationale: input.rationale }, invocation, meta("operator-signing-key"));
         db.prepare("UPDATE operator_model_actions SET state='running',consent=?,rationale=? WHERE id=?").run(JSON.stringify(consent), input.rationale, row.id);
         audit(user.id, "model_transfer_reserved", row.id); return row.id;
       });
@@ -247,7 +295,7 @@ function openSemanticService(auth, configuration, consentService) {
       return view(rowFor(id));
     },
     list(session) { owner(session); const entries = db.prepare("SELECT * FROM operator_model_actions ORDER BY created DESC").all().map(row => view(row));
-      return { entries, held_count: entries.filter(row => row.hold_preserved).length, ...AUTHORITY }; },
+      return { entries, held_count: entries.filter(row => row.hold_preserved).length, native_inventory: native.inventory(db, stateRoot, consentService.publicKey()), ...AUTHORITY }; },
     inspect(session, id) { owner(session); return view(rowFor(id), true); },
     cancel(session, id) {
       const user = owner(session), row = rowFor(id), control = active.get(id);

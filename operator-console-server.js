@@ -36,7 +36,8 @@ async function createConsole(options) {
   const app = fastify({ logger: false, trustProxy: false, bodyLimit: 4096,
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false, useDefaults: false } } });
   const configuration = { repository: repository.root, repositoryKey: repository.key,
-    artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT), semantic: profiles.semantic, analysis: profiles.analysis };
+    artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT), semantic: profiles.semantic, analysis: profiles.analysis, training: profiles.training,
+    ...(profiles.training ? { trainingArtifactRoot: require("./operator-native-training").canonicalScopePath(artifactRoot) } : {}) };
   let consent;
   try { consent = openConsentService(auth, configuration); }
   catch (error) { auth.close(); throw error; }
@@ -45,7 +46,7 @@ async function createConsole(options) {
   catch (error) { consent.close(); auth.close(); throw error; }
   const jobs = createWorkerQueue(path.join(ROOT, "operator-console-worker.js"));
   function query(user, request) {
-    const force = ["force-registry", "prepare-force-registry", "execute-force-registry", "prepare-training-session", "execute-training-session"].includes(request.action);
+    const force = ["force-registry", "prepare-force-registry", "execute-force-registry", "prepare-training-session", "execute-training-session", "prepare-native-training-product"].includes(request.action);
     return jobs.submit({ configuration: { ...consent.workerConfiguration, ...(force ? { forceRegistryPublicKey: consent.publicKey() } : {}) }, user, request });
   }
   const origin = () => `http://127.0.0.1:${app.server.address()?.port || options.port || 0}`;
@@ -100,7 +101,8 @@ async function createConsole(options) {
     return { initialized: auth.hasOwner(), user: current, csrf_token: await reply.generateCsrf(),
       repository: current ? { key: repository.key, label: repository.label } : null, order_review_available: current?.role === "owner",
       semantic_review_available: current?.role === "owner" && semantic.available,
-      order_analysis_available: current?.role === "owner" && semantic.analysisAvailable, ...readOnly };
+      order_analysis_available: current?.role === "owner" && semantic.analysisAvailable,
+      native_training_available: current?.role === "owner" && semantic.trainingAvailable, ...readOnly };
   });
   for (const [name, handler] of [["setup", input => auth.createOwner(input)], ["login", input => auth.login(input)],
     ["register", input => auth.redeem(input)]]) {
@@ -176,6 +178,20 @@ async function createConsole(options) {
     owner(request); return reply.code(202).send(result);
   });
   app.get("/api/model-evaluations", async request => semantic.list(request.session));
+  app.post("/api/training-products/preview", { onRequest: guard, schema: { body: plain({
+    entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" }
+  }) } }, async request => {
+    const principal = owner(request), invocation = await query(principal, { action: "prepare-native-training-product", ...request.body });
+    owner(request); return semantic.prepare(request.session, invocation, "native_training");
+  });
+  app.post("/api/training-products/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    displayed_invocation_sha256: { type: "string", pattern: "^[a-f0-9]{64}$" }, acknowledge_mission_handling: { const: true, type: "boolean" },
+    challenge_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000)
+  }) } }, async (request, reply) => {
+    owner(request); const result = await semantic.commit(request.session, request.body, "native_training"); owner(request); return reply.code(202).send(result);
+  });
+  app.get("/api/training-products", async request => { const value = semantic.list(request.session), entries = value.entries.filter(row => row.purpose === "native_training");
+    return { ...value, entries, held_count: entries.filter(row => row.hold_preserved).length, all_model_held_count: value.held_count }; });
   app.post("/api/order-analyses/preview", { onRequest: guard, schema: { body: plain({
     entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" }
   }) } }, async request => {
@@ -314,7 +330,7 @@ async function createConsole(options) {
 async function main(argv = process.argv.slice(2)) {
   const options = {};
   for (let i = 0; i < argv.length; i += 2) {
-    requireThat(["--repository", "--artifact-root", "--state-dir", "--port", "--semantic-executable", "--semantic-model", "--analysis-executable", "--analysis-model"].includes(argv[i]) && argv[i + 1] &&
+    requireThat(["--repository", "--artifact-root", "--state-dir", "--port", "--semantic-executable", "--semantic-model", "--analysis-executable", "--analysis-model", "--training-executable", "--training-model"].includes(argv[i]) && argv[i + 1] &&
       options[argv[i]] === undefined, "CONSOLE_OPTION_INVALID");
     options[argv[i]] = argv[i + 1];
   }
@@ -324,12 +340,14 @@ async function main(argv = process.argv.slice(2)) {
   requireThat(Number.isInteger(port) && port >= 0 && port <= 65535, "CONSOLE_PORT_INVALID");
   requireThat(!!options["--semantic-executable"] === !!options["--semantic-model"], "CONSOLE_MODEL_CONFIGURATION_INCOMPLETE");
   requireThat(!!options["--analysis-executable"] === !!options["--analysis-model"], "CONSOLE_MODEL_CONFIGURATION_INCOMPLETE");
+  requireThat(!!options["--training-executable"] === !!options["--training-model"], "CONSOLE_MODEL_CONFIGURATION_INCOMPLETE");
   const startup = new AbortController(), abortStartup = () => startup.abort();
   for (const signal of ["SIGINT", "SIGTERM"]) process.once(signal, abortStartup);
   let consoleApp;
   try { consoleApp = await createConsole({ repository: repository.root, artifactRoot: options["--artifact-root"], port, startupSignal: startup.signal,
     semantic: options["--semantic-executable"] ? { executable: options["--semantic-executable"], model: options["--semantic-model"] } : null,
     analysis: options["--analysis-executable"] ? { executable: options["--analysis-executable"], model: options["--analysis-model"] } : null,
+    training: options["--training-executable"] ? { executable: options["--training-executable"], model: options["--training-model"] } : null,
     stateDir: options["--state-dir"] || path.join(os.homedir(), ".local", "state", "cannae-operator", repository.key) }); }
   finally { for (const signal of ["SIGINT", "SIGTERM"]) process.removeListener(signal, abortStartup); }
   try {

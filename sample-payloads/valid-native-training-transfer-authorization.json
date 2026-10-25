@@ -1,0 +1,40 @@
+{
+  "schema_version": "0.1",
+  "type": "NativeTrainingTransferAuthorization",
+  "id": "NTFA-00000000-0000-4000-8000-000000000001",
+  "purpose": "authorize_one_reviewed_native_training_transfer",
+  "action_id": "00000000-0000-4000-8000-000000000001",
+  "request_ref": {
+    "artifact_id": "NTPR-1fde3453e83128ba751b50dbc8b4b9aa2165871b",
+    "relative_path": "synthetic/request.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "transfer_review_ref": {
+    "artifact_id": "NTDR-c04646d26b87bce2259536e337ed3386aef419d9",
+    "relative_path": "synthetic/review.json",
+    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "invocation_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "preview_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "displayed_invocation_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "principal_id": "00000000-0000-4000-8000-000000000001",
+  "principal_epoch": 1,
+  "authentication_method": "local_owner_password_reauthentication",
+  "session_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "nonce_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "rationale_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "mission_handling_acknowledged": true,
+  "handling_completeness_independently_attested": false,
+  "created_at": "2026-10-25T00:00:00.000Z",
+  "expires_at": "2026-10-25T00:01:00.000Z",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "0c2257b80ac5364995b9897596a8f881f5efd58792dd828ba8bcc31d17ac1849",
+    "value": "zyYMJx4SOFRTOQ9xi5PAyjQ30Z+4zj2KPf2yvu6S3lxsm1argZ5Ykk0jWynNZo7tAmDbLc+oHlh0U5aiCMvHDw=="
+  }
+}

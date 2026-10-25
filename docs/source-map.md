@@ -7,6 +7,11 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [native owner-transfer candidate](native-training-owner-consent.md) rechecks
+the existing official Codex JSONL source on 2026-10-25. Exact human handling
+review, original signed authorization, publication progression and orphan
+inventory are local synthesis, not native identity or protected-host attestation.
+
 The [native task-product candidate](native-training-products.md) uses the official
 [Codex JSONL/final-message documentation](https://learn.chatgpt.com/docs/non-interactive-mode#make-output-machine-readable)
 (retrieved 2026-10-25). Its collection-ID reservation, profile binding, private

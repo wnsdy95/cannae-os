@@ -1,5 +1,16 @@
 # Research Compendium
 
+## Consent, Data Handling And Collection Are Separate (2026-10-25)
+
+The [native owner-transfer candidate](native-training-owner-consent.md) binds
+the exact original prompt and source labels to authenticated human consent.
+An explicit external-tool review cannot be replaced by an internal handoff.
+The runtime can reject existing adverse labels and literal mission matches;
+it cannot prove a human inventory semantically complete. Signed bytes are not
+a grade, and a canonical publication is not independently attested finality.
+Retain unknown/partial outcomes and inspect deterministic artifacts rather than
+rerunning the task to manufacture an apparently complete history.
+
 ## Collection Identity Is Not Native Identity (2026-10-25)
 
 The [native task-product candidate](native-training-products.md) separates a

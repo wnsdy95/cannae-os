@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "NativeTrainingTransferReviewRequest"
+    },
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "request_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "mission_id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "wave_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "prompt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "labels": {
+      "minItems": 2,
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "$ref": "classification-label.schema.json"
+      }
+    },
+    "releasability_review": {
+      "$ref": "releasability-review.schema.json"
+    },
+    "release_review": {
+      "$ref": "release-review.schema.json"
+    },
+    "mission_eefi_items": {
+      "maxItems": 32,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "term": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "class": {
+            "type": "string",
+            "enum": [
+              "output_forbidden",
+              "tool_transfer_forbidden"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "term",
+          "class"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    },
+    "qualification_granted": {
+      "type": "boolean",
+      "const": false
+    },
+    "grant_restoration_authorized": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "request_ref",
+    "mission_id",
+    "wave_id",
+    "prompt_sha256",
+    "labels",
+    "releasability_review",
+    "release_review",
+    "mission_eefi_items",
+    "created_at",
+    "expires_at",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority",
+    "qualification_granted",
+    "grant_restoration_authorized"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/native-training-transfer-review-request.schema.json"
+}

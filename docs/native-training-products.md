@@ -3,8 +3,9 @@
 ## In-Progress Scope
 
 This candidate adds the native-task standard and a purpose-separated actual
-bounded collector API. It is not an operational owner-transfer product: the
-new authenticated console ceremony/producer is not implemented. The installed
+bounded collector API. The separate [owner-transfer candidate](native-training-owner-consent.md)
+now connects review, collection, publication and managed-attempt inventory, with
+current-source acceptance and controlled rollout still required. The installed
 service must not be used to sign an unrelated purpose, and there is no signing
 or execution CLI. All eight complete program outcomes remain open.
 The context reference constrains the selected case/alias and mission fences; it
@@ -31,9 +32,9 @@ old standards or relabel a completed local read as an LLM task.
    `scripts/prepare_controls_training_product.js`. A proposal grants nothing.
 3. The trusted API prepares the full original subject and exact prompt/profile.
    It checks enrolled definitions, native method, context/plan alias, `valid_until`,
-   stop/termination, source/manifest and OPSEC. The future owner ceremony must
+   stop/termination, source/manifest and OPSEC. The separate owner ceremony must
    personally approve this exact complete transfer under its own purpose.
-   Current omission, analysis, definition and session consent cannot substitute.
+   Omission, analysis, definition and session consent cannot substitute.
    Transfer OPSEC/EEFI checks cover the exact selected-case prompt, not unused
    cases from the complete owner review. Unused cases are excluded from the
    explicit prompt; full native context remains unattested. Forbidden selected
@@ -76,8 +77,8 @@ Run `run-native-training-product-contract-fixtures.js` and
 provider and their owners are synthetic. They prove local control behavior,
 not real-account inference, task quality, calibrated semantics or qualification.
 
-Complete the purpose-specific owner UI and signed result publication, complete
-all-attempt/failure inventory and uncertain-outcome recovery, authenticated step
+Verify the separate owner UI, signed result publication and managed-attempt
+inventory candidate; complete cross-runtime history and uncertain-outcome recovery, authenticated step
 evaluation, separate USER qualification, P supervision and mandatory real grant
 consumers. Current-source full acceptance, stacked main integration and controlled
 rollout remain separate. No real owner, credential export, model call or installed
