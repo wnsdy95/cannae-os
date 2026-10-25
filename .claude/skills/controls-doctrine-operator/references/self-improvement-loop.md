@@ -307,6 +307,11 @@ Git commit/tree and ignored directory shape; an untracked dependency symlink is
 a source change, not permission to ignore a failed digest. Production history
 replay runs the current engine; it cannot renew consent, qualify a performer or
 clear native uncertainty. Unknown/hybrid producers remain denied.
+Interpret `result_verified` by the original status before using it as evidence.
+On a `held` native row it verifies signed failure/original-scope bindings, not
+process termination, raw-journal/task-byte replay or hold discharge. Only
+`collected` replay adds the original raw-product/profile/publication checks;
+neither status supplies independent finality, a grade or an operational grant.
 After adding an earlier integrity guard, test raw substitution separately from
 a rehashed unsigned fixture targeting a later history boundary. Never broaden
 expected errors or rewrite real signed evidence to reach that later check.

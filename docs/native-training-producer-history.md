@@ -28,13 +28,22 @@ cannot become work. Neither wrapper supports run, sign, authorize or settle.
 
 ## Current-Engine Historical Replay
 
-The current engine rechecks preview integrity, prompt/schema, signed registry
-history, exact manifest prefix, handling review, original consent/authorization,
-reservation, terminal journal, JSONL, response and actual output. The historical
-tuple supports reviewed owner previews v0.2 only; it cannot upgrade an old purpose.
-Historical profile comparison preserves only its recognized original harness
+For every supported result, the current engine checks preview integrity,
+prompt/schema, signed registry history, exact manifest prefix, handling review
+and the signed result's original authorization/consent/invocation bindings.
+For a `held` failure, `result_verified` describes those checks only. It does not
+prove original-process termination, replay the raw journal or task bytes, or
+discharge the hold.
+
+Only the `collected` branch additionally reloads the original reservation,
+terminal journal, JSONL, response and task bytes, checks their appraisal against
+the signed result, and verifies canonical authorization/output/result publication.
+Its historical profile comparison preserves only the recognized original harness
 digest; model, prompt, tool schema/policy and execution commitments still match.
-Original records and signatures are never rewritten.
+This is not independent publication finality, a grade or an operational grant.
+
+The historical tuple supports reviewed owner previews v0.2 only; it cannot
+upgrade an old purpose. Original records and signatures are never rewritten.
 
 Fresh profile/invocation checks remain current-only. Publication rechecks current
 scope and refuses old invocations. A known producer cannot excuse substituted

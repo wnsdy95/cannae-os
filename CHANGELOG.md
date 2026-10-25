@@ -14,6 +14,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   Preserve the first broad regression failure and separate the newly earlier
   preview-integrity denial from the unsigned manifest-history counterexample;
   neither production guard nor expected denial codes are relaxed.
+  Correct an unqualified historical-replay description: a verified held row
+  checks its signed failure and original-scope bindings, not process termination
+  or raw journal/task bytes. Only collected replay adds original raw-product,
+  profile and canonical-publication checks. Both skills now require this status
+  distinction before using `result_verified`; no runtime behavior or authority
+  changes with this clarification.
 
 - Fix a synthetic native-training consent clock race: derive both timestamps
   from one sample, not separate reads that can produce 120001ms against the
