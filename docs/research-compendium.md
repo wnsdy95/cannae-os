@@ -1,5 +1,57 @@
 # Research Compendium
 
+## Consent, Data Handling And Collection Are Separate (2026-10-25)
+
+The [native owner-transfer candidate](native-training-owner-consent.md) binds
+the exact original prompt and source labels to authenticated human consent.
+An explicit external-tool review cannot be replaced by an internal handoff.
+The runtime can reject existing adverse labels and literal mission matches;
+it cannot prove a human inventory semantically complete. Signed bytes are not
+a grade, and a canonical publication is not independently attested finality.
+Retain unknown/partial outcomes and inspect deterministic artifacts rather than
+rerunning the task to manufacture an apparently complete history.
+
+## Collection Identity Is Not Native Identity (2026-10-25)
+
+The [native task-product candidate](native-training-products.md) separates a
+reviewed pre-start collection UUID from the later observed provider thread.
+The official [Codex JSONL documentation](https://learn.chatgpt.com/docs/non-interactive-mode#make-output-machine-readable)
+describes streamed thread/turn events and final-message output; it does not claim
+that upstream inference waits for an external enrollment ceremony. Original
+private events, exact returned bytes and measured profile commitments improve
+local evidence, not account/weight attestation, authenticated grading or grants.
+The separate owner purpose, complete failure inventory and all full outcomes
+remain required. Local byte-count minima and distinct-case thresholds are
+engineering policy, not measured accuracy or a numerical military requirement.
+
+## A Session Mapping Needs Its Own Original Consent (2026-10-25)
+
+The [owner-session ceremony candidate](training-session-consent.md) separates
+definition enrollment from a pre-call, exact standard/case/lease review. Its
+current binding references the original purpose-bound signed authorization;
+historical mappings cannot acquire that assurance through a later label. Actual
+task-result appraisal still proves no model quality, qualification or new grant.
+Uncertain publication remains held rather than replaying consent. Deployment,
+whole-trial evaluation, qualification and actual grant reconciliation stay open.
+
+The first development run passed its positive real-ceremony/dispatch group,
+then stopped because the worker queue discarded the new `TRAINING_*` denial code.
+Its unexecuted suffix was not a pass. A separately retained controlled transport
+probe reproduced that loss; the correction permits the bounded code namespace
+at both boundaries while still filtering private details. This is an engineering
+lesson, not broader completion evidence.
+
+## Training Observations Precede Qualification (2026-10-25)
+
+The [in-progress intake](task-training-evidence.md) binds actual admitted-call
+results and retained bytes to pre-existing enrolled definitions and a separately
+signed session mapping. Stable performer identity is not an ephemeral session ID.
+Evidence intake cannot turn a model/configuration declaration into attestation
+or a step observation into a qualification/grant. The initial routing rejection
+correctly exposed unregistered new source; inventory must be registered, not
+waived. Owner-session verification/rollout, step assessment, positive qualification and
+actual new-grant/freshness/regression consumers remain required under goal 5.
+
 ## Green Does Not Remove Explicit Approval (2026-10-25)
 
 A further schema-valid reference probe on `c91cae6` declared approval required

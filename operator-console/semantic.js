@@ -1,5 +1,6 @@
 "use strict";
 function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, viewCurrent, clearDecision, cell, empty, displayTime, session }) {
+  const endpointFor = purpose => purpose === "native_training" ? "/api/training-products" : purpose === "order_analysis" ? "/api/order-analyses" : "/api/model-evaluations";
   let draft, preview, displaySnapshot, holdPreview, action, actionPurpose, actionSource, actionInvocation, generation = 0, timer, polling = false;
   const invalidDisplay = () => { throw new Error("CONSOLE_MODEL_DISPLAY_MISMATCH"); };
   const canonical = value => Array.isArray(value) ? value.map(canonical) : value && typeof value === "object" ?
@@ -23,9 +24,12 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     $("#semantic-preview-label").textContent = "Evaluate Omissions";
     $("#semantic-commit-label").textContent = "Approve One Evaluation";
     $("#semantic-stop").hidden = true; $("#semantic-stop").disabled = false;
+    $("#semantic-stop-label").textContent = "Stop Evaluation";
     $("#semantic-confirmation").hidden = true; $("#semantic-commit-form").reset();
     $("#semantic-prompt").textContent = ""; $("#semantic-expiry").textContent = ""; $("#semantic-profile").replaceChildren();
     $("#semantic-invocation").textContent = "";
+    $("#native-handling").hidden = $("#native-handling-check").hidden = true; $("#native-handling-subject").textContent = "";
+    $("#semantic-commit-form").elements.acknowledge_handling.required = false;
     $("#model-hold-preview").hidden = true; $("#model-hold-preview").disabled = false;
     clearHoldReview();
   }
@@ -33,9 +37,10 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
   function selectDraft(item, manifest) {
     reset();
     const analysis = item.kind === "mission-requests";
-    if (analysis ? !session()?.order_analysis_available : !session()?.semantic_review_available || item.kind !== "order-drafts") return;
-    draft = { item, manifest, purpose: analysis ? "order_analysis" : "semantic_omission" };
-    $("#semantic-preview-label").textContent = analysis ? "Propose Order Analysis" : "Evaluate Omissions";
+    const training = item.kind === "task-training-product-requests";
+    if (training ? !session()?.native_training_available : analysis ? !session()?.order_analysis_available : !session()?.semantic_review_available || item.kind !== "order-drafts") return;
+    draft = { item, manifest, purpose: training ? "native_training" : analysis ? "order_analysis" : "semantic_omission" };
+    $("#semantic-preview-label").textContent = training ? "Review Training Transfer" : analysis ? "Propose Order Analysis" : "Evaluate Omissions";
     $("#semantic-preview").hidden = false;
   }
   function fields(selector, rows) {
@@ -46,15 +51,17 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
   }
   function render(current) {
     const analysis = current.purpose === "order_analysis";
+    const training = current.purpose === "native_training";
     actionPurpose = current.purpose;
     actionSource = current.draft_id; actionInvocation = current.invocation_sha256;
-    $("#detail-title").textContent = `${analysis ? "Order Analysis" : "Model Evaluation"} / ${current.state}`;
+    $("#detail-title").textContent = `${training ? "Training Product" : analysis ? "Order Analysis" : "Model Evaluation"} / ${current.state}`;
     fields("#detail-meta", [["Mission / Wave", `${current.mission_id} / ${current.wave_id}`], ["Draft", current.draft_id],
       ["Model", current.model], ["Hold", current.hold_preserved ? "Active" : "None"], ["Verified result", current.result_verified ? "Yes" : "Not established"],
       ["Original journal binding", current.result?.collection?.journal_sha256 ? "Signed" : "Not established"], ["Reconciliation", current.reconciliation_state]]);
     $("#detail-content").textContent = JSON.stringify(current, null, 2);
     $("#semantic-stop").hidden = current.state !== "running";
-    $("#model-hold-preview").hidden = current.state !== "held" || !current.result_verified || current.reconciliation_verified ||
+    $("#semantic-stop-label").textContent = training ? "Stop Transfer" : analysis ? "Stop Analysis" : "Stop Evaluation";
+    $("#model-hold-preview").hidden = training || current.state !== "held" || !current.result_verified || current.reconciliation_verified ||
       current.result?.schema_version !== (analysis ? "0.1" : "0.2") || !current.result?.collection?.journal_sha256;
     if (current.state !== "running") clearInterval(timer);
   }
@@ -86,28 +93,32 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
     try { data = await api("/api/model-evaluations"); }
     catch (failure) { if (readCurrent(scope)) $("#workspace-error").textContent = failure.message; return; }
     if (!readCurrent(scope)) return;
-    $("#semantic-attention").textContent = `${data.held_count} held model actions / ${data.entries.length} retained actions`;
+    const orphans = data.native_inventory?.orphaned || [];
+    $("#semantic-attention").textContent = `${data.held_count} held model actions / ${data.entries.length} retained actions / ${orphans.length} orphaned training records`;
     const body = $("#semantic-entries"); body.replaceChildren();
-    if (!data.entries.length) empty(body, 5, "No model actions");
+    if (!data.entries.length && !orphans.length) empty(body, 5, "No model actions");
     for (const entry of data.entries) {
       const row = body.insertRow(), name = cell(row, ""), button = document.createElement("button");
       button.className = "artifact-button"; button.textContent = entry.id;
       button.onclick = () => { void inspect(entry.id, scope).catch(failure => { if (readCurrent(scope)) $("#workspace-error").textContent = failure.message; }); };
-      name.append(button); cell(row, `${entry.purpose === "order_analysis" ? "Analysis" : "Omission"} / ${entry.draft_id} / ${entry.mission_id}`); cell(row, entry.model);
+      name.append(button); cell(row, `${entry.purpose === "native_training" ? "Training" : entry.purpose === "order_analysis" ? "Analysis" : "Omission"} / ${entry.draft_id} / ${entry.mission_id}`); cell(row, entry.model);
       cell(row, `${entry.state}${entry.verdict ? " / " + entry.verdict : ""}`); cell(row, displayTime(entry.created_at));
     }
+    for (const orphan of orphans) { const row = body.insertRow(); cell(row, orphan.code); cell(row, orphan.action_id || orphan.directory_sha256); cell(row, "Not established"); cell(row, "Uncertain / Held"); cell(row, "Not established"); }
   }
   $("#semantic-preview").onclick = () => {
     const button = $("#semantic-preview"), selected = draft, revision = generation, scope = currentView();
     if (!selected || button.disabled) return;
     button.disabled = true;
-    const endpoint = selected.purpose === "order_analysis" ? "/api/order-analyses" : "/api/model-evaluations";
+    preview = displaySnapshot = null; $("#detail-error").textContent = "";
+    $("#semantic-confirmation").hidden = true; $("#semantic-commit-form").reset();
+    const endpoint = endpointFor(selected.purpose);
     void api(`${endpoint}/preview`, { entry_id: selected.item.id, manifest: selected.manifest }).then(async prepared => {
       if (revision !== generation || selected !== draft || !viewCurrent(scope)) return;
       const analysis = selected.purpose === "order_analysis", invocation = prepared?.invocation, packet = invocation?.preview, profile = invocation?.profile;
-      const reference = analysis ? packet?.request_ref : packet?.draft_ref;
-      if (prepared?.purpose !== selected.purpose || invocation?.type !== (analysis ? "CodexOrderAnalysisInvocation" : "CodexSemanticInvocation") ||
-        packet?.type !== (analysis ? "OrderAnalysisPreview" : "SemanticEvaluationPreview") || reference?.artifact_id !== selected.item.artifact_id ||
+      const training = selected.purpose === "native_training", reference = analysis || training ? packet?.request_ref : packet?.draft_ref;
+      if (prepared?.purpose !== selected.purpose || invocation?.type !== (training ? "CodexTrainingProductInvocation" : analysis ? "CodexOrderAnalysisInvocation" : "CodexSemanticInvocation") ||
+        packet?.type !== (training ? "NativeTrainingProductPreview" : analysis ? "OrderAnalysisPreview" : "SemanticEvaluationPreview") || training && (packet.schema_version !== "0.2" || !packet.input?.transfer_review) || reference?.artifact_id !== selected.item.artifact_id ||
         reference?.sha256 !== selected.item.sha256 || typeof packet?.prompt !== "string" || profile?.maximum_invocations !== 1 ||
         invocation.execution_authorized !== false || invocation.release_authorized !== false || !/^[A-Za-z0-9_-]{43}$/.test(prepared.nonce || "") ||
         !Number.isFinite(Date.parse(prepared.expires_at)) || Date.now() >= Date.parse(prepared.expires_at) ||
@@ -115,19 +126,25 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
       if (await displayedDigest(invocation) !== invocation.invocation_sha256) invalidDisplay();
       if (revision !== generation || selected !== draft || !viewCurrent(scope)) return;
       preview = prepared;
-      $("#semantic-commit-label").textContent = analysis ? "Approve One Analysis" : "Approve One Evaluation";
-      fields("#semantic-profile", [["Purpose", prepared.purpose === "order_analysis" ? "One request analysis and proposed draft" : "One semantic omission evaluation"],
+      $("#semantic-commit-label").textContent = training ? "Approve One Training Transfer" : analysis ? "Approve One Analysis" : "Approve One Evaluation";
+      fields("#semantic-profile", [["Purpose", training ? "One native task product / No grade or grant" : prepared.purpose === "order_analysis" ? "One request analysis and proposed draft" : "One semantic omission evaluation"],
         ["Destination", "OpenAI / Existing Codex CLI account"], ["Model alias", profile.requested_model],
         ...(profile.model_selection ? [["Model selection", "CLI default frozen during host preparation"],
           ["Default resolved", displayTime(profile.model_selection.resolved_at)], ["Selection SHA-256", profile.model_selection.selection_sha256]] : []),
         ["CLI version", profile.cli_version], ["Executable SHA-256", profile.executable_sha256], ["Invocation SHA-256", prepared.invocation.invocation_sha256],
-        ["Handling", packet.classification], ["Maximum duration", `${profile.timeout_ms / 1000} seconds`], ["Maximum invocations", "1"],
-        ["Provider billing cap", "Not enforced"], ["Native context / Model snapshot", "Not attested"], ["Task execution / Release", "Not authorized"],
+        ["Handling", training ? packet.input.request.classification : packet.classification], ["Maximum duration", `${profile.timeout_ms / 1000} seconds`], ["Maximum invocations", "1"],
+        ["Provider billing cap", "Not enforced"], ["Native context / Model snapshot", "Not attested"], [training ? "Operational execution / Release" : "Task execution / Release", "Not authorized"],
+        ...(training ? [["Case", packet.input.request.case_id], ["Receiving role", packet.input.context.operational_role],
+          ["Standard source mission", packet.input.source_standard.mission_id], ["Collection", packet.input.request.collection_id],
+          ["Handling review", packet.input.transfer_review.request.id]] : []),
         ...(prepared.purpose === "order_analysis" ? [["Permitted proposed roles", packet.input.allowed_roles.join(", ")], ["Adoption / Calibrated semantics", "Not authorized / Not established"]] : [])]);
       $("#semantic-expiry").textContent = `Expires ${displayTime(prepared.expires_at)}`;
       $("#semantic-prompt").textContent = packet.prompt;
       $("#semantic-invocation").textContent = JSON.stringify(invocation, null, 2);
-      displaySnapshot = { record: $("#semantic-invocation").textContent, profile: $("#semantic-profile").textContent, prompt: packet.prompt };
+      $("#native-handling").hidden = $("#native-handling-check").hidden = !training;
+      $("#native-handling-subject").textContent = training ? JSON.stringify(packet.input.transfer_review, null, 2) : "";
+      $("#semantic-commit-form").elements.acknowledge_handling.required = training;
+      displaySnapshot = { record: $("#semantic-invocation").textContent, profile: $("#semantic-profile").textContent, prompt: packet.prompt, handling: $("#native-handling-subject").textContent };
       $("#semantic-commit-form").reset(); $("#semantic-confirmation").hidden = false;
       $("#detail").scrollTop = $("#semantic-confirmation").offsetTop - $("#detail header").offsetHeight - 20;
     }).catch(failure => { if (revision === generation && selected === draft && viewCurrent(scope)) {
@@ -144,16 +161,17 @@ function createSemanticUi({ $, api, busy, beginRead, readCurrent, currentView, v
       let submitted = false;
       try {
         if (!prepared || !snapshot || !form.elements.acknowledge.checked) throw new Error("CONSOLE_MODEL_PREVIEW_REQUIRED");
-        if (raw.length > 2097152 || raw !== snapshot.record || $("#semantic-profile").textContent !== snapshot.profile || $("#semantic-prompt").textContent !== snapshot.prompt) invalidDisplay();
+        if (raw.length > 2097152 || raw !== snapshot.record || $("#semantic-profile").textContent !== snapshot.profile || $("#semantic-prompt").textContent !== snapshot.prompt || $("#native-handling-subject").textContent !== snapshot.handling) invalidDisplay();
         const displayed = JSON.parse(raw), displayedHash = await displayedDigest(displayed);
         if (revision !== generation || !viewCurrent(scope) || preview !== prepared) return;
         if (displayedHash !== prepared.invocation.invocation_sha256 || raw !== $("#semantic-invocation").textContent ||
-            $("#semantic-profile").textContent !== snapshot.profile || $("#semantic-prompt").textContent !== snapshot.prompt) invalidDisplay();
+            $("#semantic-profile").textContent !== snapshot.profile || $("#semantic-prompt").textContent !== snapshot.prompt || $("#native-handling-subject").textContent !== snapshot.handling) invalidDisplay();
         preview = null; action = prepared.challenge_id;
         submitted = true;
-        const endpoint = prepared.purpose === "order_analysis" ? "/api/order-analyses" : "/api/model-evaluations";
+        const endpoint = endpointFor(prepared.purpose);
         const current = await api(`${endpoint}/commit`, { challenge_id: prepared.challenge_id, nonce: prepared.nonce,
-          password: form.elements.password.value, rationale: form.elements.rationale.value, displayed_invocation_sha256: displayedHash });
+          password: form.elements.password.value, rationale: form.elements.rationale.value, displayed_invocation_sha256: displayedHash,
+          ...(prepared.purpose === "native_training" ? { acknowledge_mission_handling: form.elements.acknowledge_handling.checked } : {}) });
         if (revision !== generation || !viewCurrent(scope)) return;
         displaySnapshot = null; $("#semantic-confirmation").hidden = true; $("#semantic-prompt").textContent = ""; $("#semantic-invocation").textContent = ""; $("#semantic-preview").hidden = true;
         render(current); if (current.state === "running") watch(current.id);

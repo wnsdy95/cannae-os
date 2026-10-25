@@ -38,7 +38,7 @@ function createWorkerQueue(filename, options = {}) {
         stop(message.error ? { error: Object.assign(failure(code,
           Number.isInteger(message.statusCode) && message.statusCode >= 400 && message.statusCode <= 599 ? message.statusCode : 503),
         { reason_codes: Array.isArray(message.reason_codes) ? message.reason_codes.filter(value =>
-          typeof value === "string" && /^(?:CONSOLE|ORDER|OPERATOR|FORCE_REGISTRY|FORCE_ENTITY)_[A-Z_]+$/.test(value)).slice(0, 8) : [] }) } : { value: message.result });
+          typeof value === "string" && /^(?:CONSOLE|ORDER|OPERATOR|SEMANTIC|NATIVE_TRAINING|TRAINING|FORCE_REGISTRY|FORCE_ENTITY)_[A-Z_]+$/.test(value)).slice(0, 8) : [] }) } : { value: message.result });
       });
       worker.once("error", () => stop({ error: failure("CONSOLE_QUERY_FAILED") }));
       worker.once("messageerror", () => stop({ error: failure("CONSOLE_QUERY_FAILED") }));

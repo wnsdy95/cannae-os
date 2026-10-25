@@ -1,0 +1,8 @@
+{
+  "schema_version": "0.1",
+  "type": "NativeTrainingProductResponse",
+  "collection_id": "00000000-0000-4000-8000-000000000001",
+  "case_id": "CASE-crawl-success",
+  "output": "Synthetic task bytes, never model proficiency.",
+  "execution_authorized": true
+}

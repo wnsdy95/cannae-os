@@ -1,0 +1,98 @@
+{
+  "schema_version": "0.1",
+  "type": "TaskTrainingTrialAppraisal",
+  "request": {
+    "schema_version": "0.1",
+    "type": "TaskTrainingTrialRequest",
+    "mission_id": "MIS-TRAINING",
+    "wave_id": "W1",
+    "capability_id": "CAP-TRAINING",
+    "performer_id": "PERF-TRAINING",
+    "registry_head_ref": {
+      "artifact_id": "FRE-SYNTHETIC",
+      "relative_path": "synthetic/FRE.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "case_id": "CASE-crawl-0",
+    "session_binding_ref": {
+      "artifact_id": "TSB-SYNTHETIC",
+      "relative_path": "synthetic/TSB.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "lease_ref": {
+      "artifact_id": "ADL-SYNTHETIC",
+      "relative_path": "synthetic/ADL.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "completion_ref": {
+      "artifact_id": "AEC-SYNTHETIC",
+      "relative_path": "synthetic/AEC.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "completion_input_ref": {
+      "artifact_id": "TCI-SYNTHETIC",
+      "relative_path": "synthetic/TCI.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "observed_output_ref": {
+      "artifact_id": "OUT-SYNTHETIC",
+      "relative_path": "synthetic/OUT.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "execution_authorized": false,
+    "release_authorized": false,
+    "human_final_decision_authority": "USER",
+    "qualification_granted": false,
+    "grant_restoration_authorized": false,
+    "id": "TTR-82d6dcbdc7f45ba460136635d1edc033418981d8"
+  },
+  "request_sha256": "1819a7f0da2de888e9fc50ffb92722b4fd94157fb912edd7a4a763643768ca97",
+  "source_state_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "repository_binding": {
+    "repository_key": "synthetic-training",
+    "identity_fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "observed_manifest": {
+    "revision": 1,
+    "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "registry_head_ref": {
+    "artifact_id": "FRE-SYNTHETIC",
+    "relative_path": "synthetic/FRE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "capability_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "performer_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "standard_ref": {
+    "artifact_id": "STD-SYNTHETIC",
+    "relative_path": "synthetic/STD.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "case_id": "CASE-crawl-0",
+  "stage": "crawl",
+  "admission_ref": {
+    "artifact_id": "TAE-SYNTHETIC",
+    "relative_path": "synthetic/TAE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "completion_ref": {
+    "artifact_id": "AEC-SYNTHETIC",
+    "relative_path": "synthetic/AEC.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "execution_succeeded": true,
+  "observed_output_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "status": "observed_result_bound",
+  "valid_for_training_review_until": "2026-10-25T01:00:00Z",
+  "actual_model_execution_attested": false,
+  "configuration_attested": false,
+  "conditions_observed": false,
+  "task_standard_evaluated": false,
+  "evaluator_authenticated": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "id": "TTA-c497529c1933e19e1d92b1e599311369edf818ce"
+}

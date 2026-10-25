@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1",
+  "type": "NativeTrainingProductRequest",
+  "collection_id": "00000000-0000-4000-8000-000000000001",
+  "mission_id": "MIS-NATIVE",
+  "wave_id": "W1",
+  "capability_id": "CAP-NATIVE",
+  "performer_id": "PERF-NATIVE",
+  "registry_head_ref": {
+    "artifact_id": "SYN-reference",
+    "relative_path": "synthetic/reference.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "context_ref": {
+    "artifact_id": "SYN-reference",
+    "relative_path": "synthetic/reference.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "case_id": "CASE-crawl-success",
+  "classification": "internal",
+  "created_at": "2026-10-25T00:00:00.000Z",
+  "expires_at": "2026-10-25T00:10:00.000Z",
+  "execution_authorized": true,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "id": "NTPR-1fde3453e83128ba751b50dbc8b4b9aa2165871b"
+}

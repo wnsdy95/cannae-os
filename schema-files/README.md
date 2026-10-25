@@ -1,5 +1,28 @@
 # Schema Files
 
+Native owner-transfer candidate contracts:
+`native-training-transfer-review-request.schema.json`,
+`native-training-transfer-authorization.schema.json` and
+`operator-native-training-product.schema.json`. They bind nested existing
+classification/release contracts and original evidence, not a grade or grant.
+
+The `native-training-product` request/response/appraisal contracts separate a
+native task from tool-hook observations. Standard v0.2 carries explicit native
+task cases; v0.1 stays readable without reinterpretation. All validator APIs keep
+the new wrappers non-executable. The distinct owner-transfer producer and whole
+qualification flow remain unfinished; read [native products](../docs/native-training-products.md).
+
+The five `task-training-*.schema.json` contracts describe non-authorizing standards,
+requests, signed session mappings, observed-result inputs and appraisals. Both
+validator APIs keep them non-executable; runtime intake separately checks actual
+history and pinned signatures. Current mapping/appraisal v0.2 preserves legacy
+v0.1 reads without retrospectively asserting an owner ceremony. The separate
+`training-session-proposal` and `training-session-authorization` contracts bind
+that purpose and its full displayed review. Qualification, operational grants,
+uncertain session reconciliation and rollout remain in progress. See
+[task training evidence](../docs/task-training-evidence.md) and
+[session consent](../docs/training-session-consent.md).
+
 `codex-model-selection.schema.json` describes strict non-authorizing host model
 metadata, including exact model, catalog/configuration commitments, pinned CLI
 and observed child exit. Both validator APIs keep `can_execute: false` and the

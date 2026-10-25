@@ -8,6 +8,7 @@
   <script src="/semantic.js" defer></script>
   <script src="/coverage.js" defer></script>
   <script src="/force.js" defer></script>
+  <script src="/training.js" defer></script>
   <script src="/app.js" defer></script>
 </head>
 <body>
@@ -37,6 +38,7 @@
         <button data-tab="decisions" data-owner><img src="/icons/clipboard-check.svg" alt="">Decisions</button>
         <button data-tab="semantic" data-owner><img src="/icons/clipboard-check.svg" alt="">Model Actions</button>
         <button data-tab="force" data-owner><img src="/icons/users.svg" alt="">Force Registry</button>
+        <button data-tab="training" data-owner><img src="/icons/clipboard-check.svg" alt="">Training Sessions</button>
         <button data-tab="access" data-owner><img src="/icons/users.svg" alt="">Access</button>
         <button data-tab="activity" data-owner><img src="/icons/activity.svg" alt="">Activity</button>
         <div class="nav-footer"><span class="status-dot"></span>Local session</div>
@@ -80,14 +82,19 @@
           <div class="table-wrap" tabindex="0" role="region" aria-label="Enrolled definitions"><table><thead><tr><th>Definition</th><th>Version / State</th><th>Ownership / Configuration</th><th>Qualification</th></tr></thead><tbody id="force-entities"></tbody></table></div>
           <h2 class="force-actions-heading">Enrollment Decisions</h2><div class="table-wrap" tabindex="0" role="region" aria-label="Enrollment decisions"><table><thead><tr><th>Decision</th><th>Entity</th><th>State</th><th>Recorded</th></tr></thead><tbody id="force-actions"></tbody></table></div>
         </section>
+        <section id="training-view" hidden><div class="table-summary"><span id="training-state"></span></div><div class="table-wrap" tabindex="0" role="region" aria-label="Training session decisions"><table><thead><tr><th>Decision</th><th>Performer</th><th>State</th><th>Recorded</th></tr></thead><tbody id="training-actions"></tbody></table></div></section>
         <footer><span id="review-mode">Order review: disabled</span><span>Tool execution: disabled</span><span>Release: disabled</span><a href="/licenses/lucide.txt" target="_blank" rel="noopener">Icon Licenses</a></footer>
       </main>
     </div>
   </div>
   <dialog id="detail"><header><div><p class="eyebrow">RETAINED EVIDENCE</p><h2 id="detail-title"></h2></div><button id="close-detail" class="icon" title="Close" aria-label="Close"><img src="/icons/x.svg" alt=""></button></header>
     <p id="decision-status" role="status"></p><div class="outcome-actions"><button id="inspect-outcome" type="button" hidden><img src="/icons/folder-search.svg" alt="">Inspect Outcome</button><button id="review-terminal" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Terminal Outcome</button></div><dl id="detail-meta"></dl><pre id="detail-content" tabindex="0"></pre>
-    <div class="outcome-actions"><button id="semantic-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt=""><span id="semantic-preview-label">Evaluate Omissions</span></button><button id="semantic-stop" type="button" hidden><img src="/icons/x.svg" alt="">Stop Evaluation</button><button id="model-hold-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Model Hold</button></div>
+    <div class="outcome-actions"><button id="semantic-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt=""><span id="semantic-preview-label">Evaluate Omissions</span></button><button id="semantic-stop" type="button" hidden><img src="/icons/x.svg" alt=""><span id="semantic-stop-label">Stop Evaluation</span></button><button id="model-hold-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Model Hold</button></div>
     <div class="outcome-actions"><button id="force-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Review Enrollment</button></div>
+    <div class="outcome-actions"><button id="training-preview" type="button" hidden><img src="/icons/clipboard-check.svg" alt="">Training Session Review</button></div>
+    <section id="training-confirmation" hidden><h2>Exact Training Session Review</h2><p id="training-expiry"></p><pre id="training-subject" tabindex="0"></pre>
+      <form id="training-commit-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I approve only this session mapping. No training grade, qualification or execution is granted.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt="">Register Training Session</button></form>
+    </section>
     <section id="force-confirmation" hidden><h2>Exact Definition Review</h2><p id="force-expiry"></p><pre id="force-subject" tabindex="0"></pre>
       <form id="force-commit-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I approve this exact definition change only. No qualification or execution is granted.</label>
         <label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
@@ -95,7 +102,8 @@
     </section>
     <section id="semantic-confirmation" hidden><h2>Model Transfer Review</h2><dl id="semantic-profile"></dl><p id="semantic-expiry"></p><pre id="semantic-prompt" tabindex="0"></pre>
       <details><summary>Complete Transfer Record</summary><pre id="semantic-invocation" tabindex="0"></pre></details>
-      <form id="semantic-commit-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I approve sending this exact text to this model once.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt=""><span id="semantic-commit-label">Approve One Evaluation</span></button></form>
+      <section id="native-handling" hidden><h3>Classification / Mission Handling</h3><pre id="native-handling-subject" tabindex="0"></pre></section>
+      <form id="semantic-commit-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I approve sending this exact text to this model once.</label><label id="native-handling-check" class="consent-check" hidden><input name="acknowledge_handling" type="checkbox">I reviewed these exact labels, mission handling inventory and external-tool release decision. No grade, qualification or operational authority is granted.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt=""><span id="semantic-commit-label">Approve One Evaluation</span></button></form>
     </section>
     <section id="model-hold-confirmation" hidden><h2 id="model-hold-title">Failed Model Transfer Review</h2><p id="model-hold-expiry"></p><dl id="model-hold-meta"></dl><pre id="model-hold-subject" tabindex="0"></pre>
       <form id="model-hold-form"><label class="consent-check"><input name="acknowledge" type="checkbox" required>I acknowledge this failed local transfer. Prior transmission, provider billing and cancellation remain unverified.</label><label id="analysis-publication-check" class="consent-check" hidden><input name="acknowledge_publication" type="checkbox">I reviewed the observed draft publication. No draft is adopted, deleted or authorized by this acknowledgment.</label><label>Rationale<textarea name="rationale" maxlength="2000" required rows="3"></textarea></label><label>Owner password<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label><button type="submit" class="primary"><img src="/icons/shield-check.svg" alt="">Acknowledge Failed Transfer</button></form>

@@ -6,6 +6,130 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Fix a synthetic native-training consent clock race: derive both timestamps
+  from one sample, not separate reads that can produce 120001ms against the
+  unchanged 120000ms production limit. Add an advancing-clock regression covering
+  valid, future, expired and over-limit consent, and adapt both skill references.
+  Preserve the earlier failed awake ladder; this fixture correction does not
+  establish its missing original signed state or complete integration acceptance.
+
+- Add bounded awake-validation discipline to both skills after retained local
+  lease and enrollment failures overlapped host sleep. Correlate filtered power
+  events without claiming missing original state, and use only a USER-approved
+  one-attempt, finite, PID-bound idle assertion. Never renew old authority, weaken
+  deadlines, change persistent power policy or call this host attestation.
+
+- Reconcile the reviewed training stack with the actual published main ancestry
+  on a separate candidate branch. Require complete tree preservation before the
+  four-file documentation follow-up, preserve original PR/CI subjects and primary
+  user changes, and revalidate the new head. Both skills now require exact squash
+  evidence and an early failure journal rather than blanket conflict preference
+  or treating an API timeout as a terminal run. Full CI, ordinary merge, rollout
+  and every complete program outcome remain separate.
+
+- Start the native owner-transfer integration: exact classification/mission
+  handling and external-tool review, authenticated one-use transfer, original
+  byte/signature publication and managed-attempt/orphan inventory through the
+  existing console. Preserve partial/restart/logout uncertainty and refuse
+  cross-purpose recovery. Evaluation, qualification, grants, full acceptance and
+  rollout remain open. Both skills require reviewed v0.2 packets and original
+  evidence rather than fixture signing or control wrappers relabeled as work.
+  Preserve the initial sample-equality failure: its enclosing review had a fixed
+  clock while its referenced request used the current clock. Pin the same clock
+  through the synthetic dependency; do not weaken exact equality.
+  Preserve the next pre-transfer refusal too: the fixture passed an already
+  identified review to a raw-recipe proposer. Pass only its raw body; preserve
+  the content-derived ID guard and separate read/verification boundaries.
+  Preserve the following preview refusal and boolean-only diagnostics: the
+  invocation/profile/repository/identity matched but macOS artifact-root aliases
+  differed as strings. Pin the physical training root at startup and recheck it;
+  accept aliases only for that root, reject retargeting, and keep original
+  authorization-before-execution timestamp checks.
+  Preserve two subsequently reproduced pre-transfer defects: an adverse shared
+  standard label was omitted when its original mission differed, and a reservation
+  tied only to a pending unsigned preview was treated as authorized. Inherit exact
+  source-mission labels and bind reservations to signed original authorization,
+  consent, request and timestamps. Unexpected fixture status failures now withhold
+  response bodies; the original private failure contained only a temporary synthetic
+  challenge, no real credentials, and remains preserved rather than rewritten.
+  Preserve the staged-file substitution failure as well: the signed success
+  result was denied, but invalid bytes had already reached the canonical output
+  kind. Add an optional source-buffer digest precondition to file publication
+  and require it for native task bytes before any canonical write. Regress the
+  shared store's unchanged-on-refusal, successful pinning, recovery and isolation.
+  Retain the exact-type routing failure and register full new type names without
+  weakening word boundaries. The next runtime ladder passed ten groups, then
+  force-enrollment setup timed out before the last two groups. Preserve that
+  observation and unexecuted suffix; cause remains unresolved and deadlines
+  remain unchanged. A later passing ladder must not be described as its repair.
+
+- Start the native training task-product path with a distinct native standard,
+  exact enrolled profile/context/case, purpose-specific bounded collector API,
+  pre-start one-use collection identity and original private JSONL/response replay.
+  Keep account/weight/pre-inference attestation, owner UI/producer, full inventory,
+  grading, qualification, operational grants and rollout explicitly unfinished.
+  Both skills prohibit post-hoc native identity labels and unrelated consent.
+  Preserve initial contract fixture failures (stale reconstructed ID and an
+  earlier shared Unicode guard) and the unmapped-inventory setup failure rather
+  than changing expected boundaries or waiving actual routing preflight.
+  Preserve the subsequent pre-transfer OPSEC failure and its scoped diagnostic:
+  unused sibling cases were scanned although absent from the outbound prompt.
+  Check the exact minimized prompt, exclude sibling cases, and regress that
+  forbidden selected content and returned content still block without changing
+  detector patterns.
+  Preserve the next successful-collection/immediate-appraisal failure: the shared
+  historical reader accepts strict ancestors, not the current exact snapshot.
+  Select the already verified current store only on an exact revision/digest
+  match, otherwise use the unchanged historical guard; regress later-history
+  replay and altered hashes. Regenerate only synthetic measured-runtime samples.
+  Keep proposal parser/filesystem diagnostics code-only and exercise a malformed
+  input canary through the actual CLI and both skill wrappers without exporting
+  rejected input or real credentials.
+  Preserve the canary assertion failure caused by eager SQLite initialization;
+  parse malformed input before runtime loading without suppressing warnings or
+  loosening the expected diagnostic.
+  Preserve the first frozen ladder failure (16 gates passed, session sample
+  equality failed, 18 later gates unexecuted). Refresh the transitive current
+  synthetic session authorization/binding after issuance measurement changes;
+  keep exact equality, signatures and retained operational history unchanged.
+
+- Add a distinct local owner training-session consent candidate through the real
+  authenticated console and worker, full display commitment, password/session/
+  nonce checks, pre-call lease lock and immutable authorization/binding chain.
+  Reject post-hoc/duplicate enrollment, preserve partial-write/restart holds and
+  read historical mappings without retroactive assurance. Keep task quality,
+  qualification, actual grants, uncertain-outcome discharge and rollout open.
+  Adapt both skills and preserve the initial development failure: new denial
+  codes were removed by the second worker transport filter. Add an exact-code
+  regression without weakening private-detail filtering or the refusal itself.
+  Preserve the subsequent 594/595 CLI development failure too: nested validation
+  saw incomplete exports only through the real CLI entrypoint. Export before
+  entering main and regress that exact path, rather than relying on library tests.
+  Preserve the first frozen ladder's logout-test failure: its fixture called an
+  audit-only helper, not actual logout. Coordinate a worker at the publication
+  boundary, call HTTP logout, prove session removal and then assert the original
+  guard/hold. Do not weaken the expected denial or claim that an audit event revokes.
+  Preserve the later frozen ladder's route failure: a training-session filename
+  had inventory hints but no matching query keyword. Route filename/type/prose
+  forms in both providers and human/AI modes without changing gap policy or the
+  expected training control. Zero-unrouted inventory alone is not query coverage.
+  Preserve a later original positive-challenge refusal and its unexecuted suffix.
+  A bounded same-source predicate diagnostic passed but does not explain that
+  failure. Isolate independent rejection cases from the positive ceremony, assert
+  exact errors, and retain sanitized timing/predicate observations before cleanup.
+  Do not lengthen the real challenge window or automatically retry consent.
+
+- Start task-training evidence intake over owner-enrolled definitions, pre-call
+  signed stage/case session mappings and actual dispatch completion/result bytes.
+  Add non-executable contracts, owner-only evidence reads and both skill routes.
+  Keep the real session ceremony, step assessment, qualification, supervision and
+  operational grant/reconciliation consumers explicitly in progress; no actor
+  is promoted and no real model, owner or installed service is operated here.
+  Correct the synthetic standard producer to use the dispatcher's input digest,
+  not the distinct artifact digest domain, after the first clean-head intake
+  gate failed. Add a producer-boundary regression and both skill recovery rules;
+  preserve the original failure and its unexecuted verification suffix.
+
 - Preserve readiness minimums and prohibitions through reference approval/release
   composition after actual synthetic allow counterexamples. Validate exact
   matrix/request scope, overlap and expiry; reject missing ratings/unknown risk

@@ -41,6 +41,126 @@ passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
 
+For native training task products, read `docs/native-training-products.md` and
+use the proposal-only `scripts/prepare_controls_training_product.js`. Standard
+v0.2 is a native task, not a renamed tool hook. Bind the enrolled performer to
+the measured profile/template/tool policy, and authorize one collection identity
+before process startup. Observe a separate native thread ID in the original
+bounded JSONL; never attach it retrospectively or call it account/weight attestation.
+Read original response bytes and event history, not a caller's appraisal or a
+control wrapper relabeled as work. Preserve failed reservations and raw-output
+quarantine. Read `docs/native-training-owner-consent.md` for the in-progress
+owner producer. Propose its exact handling review with `propose-review`; require
+the reviewed v0.2 packet, original request/source labels, mission handling and
+external-tool review plus actual owner password/session/nonce acknowledgment.
+Do not sign fixture consent or use an omission/session approval to operate it.
+Inspect every managed attempt, reservation orphan and deterministic publication
+after interruption. Keep native uncertainty held; older purpose-specific recovery
+cannot discharge it. A collected row or canonical candidate alone is not a grade,
+independent finality or new authority. Cross-runtime history, uncertainty discharge,
+authenticated grading, qualification, actual grants and rollout remain unfinished.
+Exercise the actual routed mission setup before producer tests: missing inventory
+must be registered, not bypassed. For independent invalid-input cases, rebuild
+the content-derived ID and assert the first authoritative parser/semantic guard,
+not an unreachable later guard or a broader acceptable-error list.
+Apply transfer checks to the exact minimized outbound prompt, not unrelated
+sibling cases in the complete owner review. Keep those siblings out of the
+prompt and regress that forbidden selected content still fails; never weaken
+the EEFI/OPSEC patterns to make an input pass.
+When reusing an immutable-history helper, check whether it accepts only strict
+ancestors. Use the already verified current store for an exact current snapshot;
+use the strict historical reader for older prefixes. Regress both and reject
+changed hashes rather than relaxing the shared history guard.
+At proposal CLI boundaries, return bounded failure codes rather than raw parser
+or filesystem exceptions. Regress a malformed synthetic canary through both
+actual wrappers; do not log the rejected input or any real credential file.
+Parse the proposed JSON before loading stateful runtime modules. Keep the exact
+diagnostic assertion; do not suppress process warnings globally to hide eager
+initialization on the malformed-input path.
+After regenerating measured-runtime issuance samples, follow their transitive
+synthetic consumers, including the embedded lease in session authorizations and
+bindings. Regenerate those current examples and keep exact equality/signature
+checks; never rewrite retained operational evidence or accept stale references.
+Pin one clock through every transitive synthetic request/review builder before
+comparing generated examples. Preserve a mismatched-clock failure, then fix the
+builder rather than accepting changing IDs or loosening equality. For an
+ID-derived proposer, pass its raw recipe, not an already identified record.
+Do not silently discard an incoming ID inside production proposal code; keep
+construction separate from read/verification. When extending
+a worker denial family, test both actual worker emission and queue filtering.
+For a path-alias refusal, record individual equality predicates without exporting
+credentials or auth rows. Pin the physical training root once at host startup;
+recheck that pin before preparation, collection and publication. Never replace
+scope equality with a basename comparison or a dynamically trusted retarget.
+When reusing a cross-mission standard, inherit its original source-mission label
+references as well as the current request's labels. A fresh inline review cannot
+erase an adverse source label.
+For internal data, preserve the original receiver's need-to-know and run the
+actual context filter and external-tool release evaluator. A valid schema or
+owner signature never substitutes for those delivery-mode checks.
+A pending preview is not an authorized attempt: bind each reservation to original
+signed consent/authorization, exact scope and pre-start time. Emit bounded status
+errors in adversarial fixtures, not complete
+unexpected response bodies containing even synthetic challenges.
+For raw file publication, pin the digest of the actual buffer read by the writer
+before canonical persistence. Comparing only a later signed result can leave
+unvalidated bytes published. Test source substitution, no manifest change on
+refusal, and the actual file-writer consumer rather than a re-read-only probe.
+Route exact new contract type names explicitly when matching uses word boundaries;
+a shorter type prefix is not a match. Regress prose, filenames and complete types
+for both operator modes and both providers without relaxing generic matching.
+For a query timeout during fixture enrollment, preserve the failed source and
+observed passing prefix/unexecuted suffix. A fresh passing proof is not a diagnosis
+or repair of that timeout; never raise the production deadline to hide it.
+
+For training evidence, route `task training` and read `docs/task-training-evidence.md`.
+Require a signed exact session mapping introduced before the observed call; never
+hash a session ID into a substitute stable principal or attach a later performer
+label to old results. Bind actual provider completion and retained bytes, keep
+settled failed trials visible, and separate that evidence from step evaluation,
+qualification and new grants. Use the distinct owner-session candidate in
+`docs/training-session-consent.md`, not a definition approval or a signed fixture.
+Run the proposal-only `scripts/prepare_controls_training_session.js`; leave the
+exact console review/password/nonce decision to the human. Require current v0.2
+mapping provenance through its original authorization. Legacy v0.1 remains
+reference evidence, never retrospectively verified consent. After a partial write,
+inspect the exact action and keep the hold; no automatic discharge or retry is
+implemented. Neither the mapping nor an incoming/cached appraisal grants a grade
+or authority; reappraise original evidence before any future qualification use.
+
+Inventory hints do not select query routes. Before classifying an existing
+contract as a capability gap, exercise its prose, hyphenated filename/schema path,
+wrapper and CamelCase type through both human and delegated AI query modes in
+both providers. A zero-unrouted inventory alone cannot prove that those requests
+reach their required controls. Keep a failing route's exact query and expected
+control; never replace the expected route with a provisional-cell fallback.
+
+Isolate independent rejection tests from the positive consent flow and obtain
+each test's own fresh synthetic preview before its intended action. This is not
+retrying a failed operation or renewing real consent. Assert the exact denial,
+not an unrelated expiry or throttle. Before fixture cleanup, retain only timing
+and boolean challenge/session matches, never nonce/password/auth-row exports.
+A healthy repeat cannot explain or repair an earlier unexplained refusal.
+
+When adding a refusal-code family, regress both worker emission and queue
+sanitization through the actual HTTP outcome. A refusal with an empty reason list
+does not prove the expected boundary fired. Keep a bounded code namespace and
+continue filtering private details; never replace it with arbitrary error text.
+Also run the actual CLI, not just library imports, when a contract re-enters a
+shared validator. Export the library before CLI execution; otherwise `main` can
+observe incomplete exports and fail before returning its JSON refusal/result.
+For logout/revocation races, exercise the actual endpoint and prove session or
+epoch invalidation before releasing the paused writer. An audit-only helper or
+message is not a revoke operation; keep consent cancellation and tool-lease stop
+as separate obligations, and preserve the failed fixture rather than relabel it.
+
+For a training case's tool-input commitment, use the dispatcher's exported
+`inputDigest`, not the artifact digest: their canonical byte domains differ,
+including the final newline. Regress the producer against an actual admission;
+schema/sample agreement alone can repeat the same mistake. Correct only synthetic
+examples mechanically. A live enrolled standard needs a newly owner-reviewed
+revision; never rehash history or accept both digests to make a trial pass.
+
 Before positive qualification work, route `minimum readiness` and read
 `docs/readiness-authority-intersection.md`. Regress valid approval together with
 an unmet minimum or prohibition, not just missing approvals in isolation. Bind
@@ -116,6 +236,54 @@ not a reason to relax the gate. Finish the edit, retain the failed run, then rer
 from one fixed tree. After an early-stop failure, distinguish tests actually run
 from the unexecuted remainder; neither the old pass count nor an aggregate's
 remaining-failure count proves the final tree.
+
+For a stacked source integration after squash, compare the provider's actual
+merge commit and its complete tree with the original reviewed head. The old
+head's absence from main ancestry does not prove that its changes were lost.
+An ancestry-only reconciliation requires fetched main to match the provider,
+its tree to equal that reviewed head's tree, and that head to be an ancestor of
+the complete candidate. Before adding any follow-up documentation, require the
+entire merged index tree to equal the candidate tree. A conflict strategy or
+absence of conflict markers alone is never evidence of content preservation.
+If any predicate fails, stop that shortcut and reconcile the actual content;
+never prefer one side blindly or discard unrelated remote changes.
+
+Use a clean inactive attached checkout on a separate branch, preserving every
+original head, live CI subject and the user's primary changes. Retain the two
+parents, expected/observed tree digests and narrowly reviewed follow-up diff.
+Start the failure journal before network queries and branch mutation. A transport
+timeout is an unknown observation, not a terminal CI result or permission to
+restart it. For branch absence, use quiet ref verification and its exact
+missing-ref exit code; an arbitrary fatal error is not absence.
+Prior byte-identical runtime proof remains historical evidence. Revalidate the
+new HEAD's source-bound mission/owner flows and both skills, then require full
+checks on the actual integration head before normal merge. Do not force-push,
+use admin bypass, weaken checks, install a candidate or restart the service as
+part of ancestry reconciliation. Source integration closes none of the full
+intent, initiative, semantic quality, COP, qualification, sustainment, real-user
+acceptance or protected-deployment outcomes by itself.
+
+When local validation unexpectedly outlives lease or consent windows, preserve
+the failed source, actual passing prefix and unexecuted suffix before retry.
+Compare narrowly filtered host sleep/wake events with wall and monotonic timing;
+correlation does not reconstruct missing original lease or authorization state.
+Keep diagnostic-only instrumentation separate from normal acceptance. A host
+wake never renews consent, permits an old task replay or clears uncertainty.
+If the USER authorizes awake validation, bind a transient idle-sleep assertion
+to that one validation PID and the approved finite duration. Observe activation
+and actual release; do not extend it automatically, prevent display sleep,
+change persistent power settings or enlarge execution/lease/consent deadlines.
+Preserve earlier failures even when the awake run passes. This is local test
+environment control, not protected-host attestation or model-transfer consent.
+
+For synthetic consent fixtures, derive creation and expiry from one captured
+clock value. Separate reads can exceed a strict duration limit by one tick even
+without host sleep. Reproduce that boundary with an advancing fixture-only clock
+and exercise the actual verifier at start, just before expiry, at expiry, in the
+future and beyond the duration limit. Restore the real clock in `finally`; never
+freeze production time, widen the verifier limit or renew an existing consent.
+Keep an independently reproduced fixture defect distinct from an original
+failure whose signed record was removed before it could be inspected.
 
 In replay fixtures, isolate durable one-use ID consumption from consent expiry.
 Use a separately signed, currently valid synthetic proposal with the consumed ID

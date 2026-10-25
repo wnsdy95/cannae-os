@@ -76,6 +76,48 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+An ancestry-preserving source integration does not close any full outcome.
+Retain the original reviewed stack and squash/tree evidence, revalidate the new
+HEAD's source-bound flows and require its full hosted checks before ordinary
+merge. Current-source installation, real user/model acceptance and deployed
+independence remain separate; never import an old green status or clear a hold
+because the files appear on a main-based candidate.
+
+Retain interrupted local validation separately from new-head acceptance. Host
+sleep observations and a USER-approved finite validation-only idle assertion
+do not repair missing original state, discharge unknown operations, renew old
+approvals or establish protected deployment. Any passing awake run must preserve
+the earlier failed runs and the exact scope of the temporary resource approval.
+
+The one-use awake integration ladder also failed at native consent validation;
+17 gates passed and eight later gates were not executed. A separate advancing
+clock reproduces a 120001ms synthetic consent. The fixture now derives both times
+from one sample and exercises unchanged verifier boundaries. This correction is
+not new-head integration acceptance or reconstruction of the original discarded
+signed record; full current-head checks and normal hosted validation remain due.
+
+The [native owner-transfer candidate](native-training-owner-consent.md) connects
+exact handling review, authenticated consent, original-byte publication and a
+managed local attempt/orphan inventory. Acceptance and rollout, complete
+cross-runtime history, uncertainty discharge, evaluation, qualification and
+actual grant consumers remain open. No full outcome is closed by this candidate.
+
+The [native task-product candidate](native-training-products.md) adds native
+standards and a purpose-separated bounded collector API with preauthorized
+collection IDs, original JSONL and returned bytes. Verify its separate owner
+UI/producer and signed publication candidate; complete cross-runtime inventory,
+reconciliation, authenticated grading, qualification and mandatory grant consumers
+under goals 3/5/7.
+This is not acceptance of real-model quality or completion of any full outcome.
+
+The [in-progress training evidence intake](task-training-evidence.md) starts the
+actual-result/standard/session binding needed by row 7. The separate
+[owner session ceremony candidate](training-session-consent.md) adds exact
+authenticated pre-call review and historical verification, not step evaluation,
+positive qualification or operational grants. Current-source acceptance, uncertain
+session reconciliation and controlled rollout remain open alongside the remaining
+training stages and actual grant reconciliation. All eight outcomes remain open.
+
 The [reference readiness intersection correction](readiness-authority-intersection.md)
 repairs actual allow-below-minimum and softened-prohibition probes, exact subject
 binding, overlap and expiry. It advances a prerequisite in row 7, not authenticated

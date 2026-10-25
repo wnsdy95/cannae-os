@@ -227,6 +227,14 @@ node repository-artifact-store.js \
 
 The stored filename is derived from `artifact-id` and the source extension. The original source path is not recorded in the manifest.
 
+Trusted API callers may pass `expectedSha256` to
+`writeRepositoryFileArtifact`. The store checks the SHA-256 of the exact buffer
+it will persist, before starting a write transaction or changing the manifest.
+An invalid digest or mismatched source fails without publication. This is an
+API-only precondition, not a CLI flag; existing callers remain unchanged.
+The native-training owner path requires this precondition against the independently
+reloaded original task bytes, rather than checking only a staged filename.
+
 ## 7. Multi-Repository Campaign Procedure
 
 1. Choose one shared artifact root for the campaign.

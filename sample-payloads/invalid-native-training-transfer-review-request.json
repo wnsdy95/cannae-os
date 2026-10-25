@@ -1,0 +1,108 @@
+{
+  "schema_version": "0.1",
+  "type": "NativeTrainingTransferReviewRequest",
+  "request_ref": {
+    "artifact_id": "NTPR-1fde3453e83128ba751b50dbc8b4b9aa2165871b",
+    "relative_path": "synthetic/request.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "mission_id": "MIS-NATIVE",
+  "wave_id": "W1",
+  "prompt_sha256": "70733dff312dcdc40b70aa8be9c16e18e0cd94c921b7df0da9241ac4083a204c",
+  "labels": [
+    {
+      "schema_version": "0.1",
+      "type": "ClassificationLabel",
+      "id": "CL-NATIVE-0",
+      "mission_id": "MIS-NATIVE",
+      "subject_id": "NTPR-1fde3453e83128ba751b50dbc8b4b9aa2165871b",
+      "classification": "internal",
+      "eefi_class": "none",
+      "releasability": "partner",
+      "need_to_know_roles": [
+        "USER",
+        "S3"
+      ],
+      "labeling_authority": "USER",
+      "review_by": "2026-10-25T00:10:00.000Z"
+    },
+    {
+      "schema_version": "0.1",
+      "type": "ClassificationLabel",
+      "id": "CL-NATIVE-1",
+      "mission_id": "MIS-NATIVE",
+      "subject_id": "STD-NATIVE-FIXTURE",
+      "classification": "internal",
+      "eefi_class": "none",
+      "releasability": "partner",
+      "need_to_know_roles": [
+        "USER",
+        "S3"
+      ],
+      "labeling_authority": "USER",
+      "review_by": "2026-10-25T00:10:00.000Z"
+    }
+  ],
+  "mission_eefi_items": [],
+  "releasability_review": {
+    "schema_version": "0.1",
+    "type": "ReleasabilityReview",
+    "id": "RLR-NATIVE",
+    "mission_id": "MIS-NATIVE",
+    "artifact": {
+      "artifact_id": "NTPR-1fde3453e83128ba751b50dbc8b4b9aa2165871b",
+      "relative_path": "synthetic/request.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "labels": [
+      {
+        "label_id": "CL-NATIVE-0",
+        "classification": "internal",
+        "eefi_class": "none"
+      },
+      {
+        "label_id": "CL-NATIVE-1",
+        "classification": "internal",
+        "eefi_class": "none"
+      }
+    ],
+    "requested_audience": "partner",
+    "findings": [],
+    "decision": "release",
+    "reviewer": "USER",
+    "release_review_id": "RR-NATIVE",
+    "reviewed_at": "2026-10-25T00:00:00.000Z",
+    "expires_at": "2026-10-25T00:10:00.000Z"
+  },
+  "release_review": {
+    "schema_version": "0.1",
+    "type": "ReleaseReview",
+    "id": "RR-NATIVE",
+    "mission_id": "MIS-NATIVE",
+    "reviewer": "USER",
+    "classification": "internal",
+    "target": "external_tool",
+    "decision": "approve",
+    "items": [
+      {
+        "item_id": "NTPR-1fde3453e83128ba751b50dbc8b4b9aa2165871b",
+        "classification": "internal",
+        "eefi": false,
+        "delivery_mode": "raw",
+        "rationale": "Synthetic exact task case only."
+      }
+    ],
+    "output_constraints": [
+      "One reviewed native transfer only; no operational authority."
+    ],
+    "created_at": "2026-10-25T00:00:00.000Z"
+  },
+  "created_at": "2026-10-25T00:00:00.000Z",
+  "expires_at": "2026-10-25T00:10:00.000Z",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": true,
+  "grant_restoration_authorized": false,
+  "id": "NTDR-c04646d26b87bce2259536e337ed3386aef419d9"
+}
