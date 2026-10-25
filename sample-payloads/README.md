@@ -1,5 +1,28 @@
 # Sample Payloads
 
+The `order-analysis-response` and `operator-order-analysis` pairs are synthetic
+proposed/held contract examples, not real model runs, owner decisions or independent
+labels. Regenerate only these with
+`node order-analysis-fixtures/write-schemas-and-samples.js`. Retained private
+collector history must never be rewritten to acquire a different purpose.
+
+The `bounded-planning-request` and `bounded-planning-proposal` pairs are synthetic
+non-authorizing structural construction examples, not model strategy, real
+readiness or USER consent. Regenerate these four only with
+`node bounded-planning-fixtures/write-samples.js`; never rewrite retained producer
+history to match a newer runtime.
+
+The `requirement-inventory`, `semantic-coverage-proposal` and
+`semantic-review-assignment` pairs are authored synthetic structural examples,
+not real owner decisions, model assessments or independent calibration labels.
+Regenerate only these six samples with
+`node requirement-inventory-fixtures/write-samples.js`. Retained operational
+history must not be rewritten to acquire a new review or provenance field.
+
+The `operational-cop` pair is a synthetic empty read-product contract example,
+not a live status report. The invalid record attempts release authority.
+Actual Operations data comes only from authenticated verified-history replay.
+
 The `dispatch-lease-issuance-request`, `dispatch-lease-issuance-resolution` and
 `agent-dispatch-lease-issuance` pairs are synthetic structural examples for the
 frozen transaction and lease v0.2. Their references do not identify a real

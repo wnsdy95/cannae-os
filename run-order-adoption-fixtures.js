@@ -245,6 +245,7 @@ try {
   check("publication rejects manifest races, live expiry and rollback without retaining a proposal", () => {
     for (const mutation of ["manifest", "expired", "rollback"]) {
       const env = setup(), options = optionsAt(env, 20);
+      require("./order-adoption-fixtures/support").prepareSemanticReview(env);
       beforeWrite = write => {
         if (write.kind !== "order-adoption-proposals") return;
         beforeWrite = null;
@@ -273,6 +274,7 @@ try {
       const wrapper = path.join(__dirname, provider, "controls-doctrine-operator/scripts/adopt_controls_order.js");
       const file = path.join(env.root, "proposal.json");
       const current = environment(Date.now() - 60000); roots.push(current.root);
+      require("./order-adoption-fixtures/support").prepareSemanticReview(current);
       fs.writeFileSync(file, JSON.stringify(current.request));
       const call = args => spawnSync(process.execPath, [wrapper, ...args], { cwd: env.root, encoding: "utf8" });
       const args = ["propose", "--repository", current.options.repository, "--artifact-root", current.options.artifactRoot, "--input", file];

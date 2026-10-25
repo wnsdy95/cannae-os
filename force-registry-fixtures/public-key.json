@@ -1,0 +1,4 @@
+{
+  "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAgSml0PMjpqyA4Ee3xtF3aBBZ3BoLEJjX0l49W83tg/Q=\n-----END PUBLIC KEY-----\n",
+  "purpose": "Public deterministic synthetic fixture only; never install as an operator identity."
+}

@@ -11,7 +11,10 @@ const within = (root, file) => file.startsWith(root + path.sep);
 function entryId(entry) {
   return sha256(JSON.stringify([entry.mission_id, entry.wave_id, entry.kind, entry.artifact_id, entry.relative_path, entry.sha256]));
 }
-function canRead(user, entry) { return user.role === "owner" || user.missions.includes(entry.mission_id); }
+function canRead(user, entry) {
+  if (entry.kind.startsWith("force-registry-") || entry.kind === "capability-standards") return user.role === "owner";
+  return user.role === "owner" || user.missions.includes(entry.mission_id);
+}
 function entryMetadata(entry) {
   return { id: entryId(entry), artifact_id: entry.artifact_id, mission_id: entry.mission_id,
     wave_id: entry.wave_id, kind: entry.kind, sha256: entry.sha256,

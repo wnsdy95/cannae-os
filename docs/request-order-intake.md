@@ -6,6 +6,11 @@ Turn a general request and typed model analysis into a traceable OPORD draft and
 role-task drafts. The LLM/operator interprets the request; the deterministic
 compiler does not claim to understand prose or prove complete interpretation.
 
+The [semantic collector foundation](semantic-omission-evaluation.md) can prepare
+exact downstream comparisons for a separately authorized existing-CLI evaluation.
+It is not an enabled admission gate; `ready_for_review` still does not prove
+semantic completeness, and no automatic planner or transfer approval is implied.
+
 ```text
 Original UTF-8 request -> retained MissionRequest
                     + -> proposed MissionOrderAnalysis
@@ -109,6 +114,14 @@ Pass the same `--artifact-root` everywhere when overriding the default
 
 Exact compilation retry reuses the immutable draft while the request is current
 and the retained compilation is not later than the current clock.
+Before validation or publication, the complete draft must fit the reader's
+unchanged 8 MiB limit. The bounded counter includes two-space JSON formatting,
+the final newline, UTF-8 and escaped text; repeated task references can amplify
+a small analysis well beyond its input size. `ORDER_INTAKE_DRAFT_TOO_LARGE`
+publishes nothing. Do not remove tasks, inherited constraints, retained decisions
+or source statements automatically to pass this limit. Review a separate bounded
+decomposition with the USER; changed analysis requires its own new draft/review.
+Legacy oversized drafts remain rejected, not truncated or rewritten in place.
 Publication rechecks expiry and source references under the namespace guard.
 The compiler executes no tool names, shell text or instructions found in inputs.
 

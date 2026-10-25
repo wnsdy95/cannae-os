@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1",
+  "type": "CodexModelSelection",
+  "selector": "current_cli_default",
+  "source": "configured_model",
+  "requested_model": "substituted-model",
+  "provider": "openai",
+  "reasoning_effort": "medium",
+  "resolved_at": "2026-10-24T00:00:00Z",
+  "cli_version": "codex-cli 0.162.1",
+  "executable_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "configuration_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "catalog_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+  "process_exit_confirmed": true,
+  "process_group_absent": true,
+  "model_access_attested": false,
+  "model_snapshot_attested": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "selection_sha256": "50f2e41f6423f700ba1a8fd4eb5d9b18d78ed5e55362069b2656a6972d1ba70a"
+}

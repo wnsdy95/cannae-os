@@ -16,9 +16,16 @@
     "release_authorized",
     "human_final_decision_authority"
   ],
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "0.2" } } },
+      "then": { "required": ["semantic_review_ref"] },
+      "else": { "not": { "required": ["semantic_review_ref"] } }
+    }
+  ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "enum": ["0.1", "0.2"]
     },
     "id": {
       "$ref": "common.schema.json#/$defs/id"
@@ -35,6 +42,9 @@
     },
     "plan": {
       "$ref": "mission-wave-plan.schema.json"
+    },
+    "semantic_review_ref": {
+      "$ref": "common.schema.json#/$defs/artifact_ref"
     },
     "execution_authorized": {
       "const": false

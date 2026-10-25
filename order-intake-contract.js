@@ -15,10 +15,37 @@ const REQUIRED = Object.freeze(["mission.statement", "mission.target_end_state",
   "command_and_signal.authority.prohibited", "assessment.mop", "assessment.moe", "assessment.verification"]);
 const DRAFT_TYPES = new Set(["mission-request", "mission-order-analysis", "order-draft"]);
 const AUTHORITY = Object.freeze({ execution_authorized: false, release_authorized: false, human_final_decision_authority: "USER" });
+const MAX_ORDER_ARTIFACT_BYTES = 8388608;
 const sha256 = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
 const digest = value => sha256(canonicalJsonBytes(value));
 const same = (left, right) => digest(left) === digest(right);
 const problem = (code, location, message) => ({ severity: "critical", code, path: location, message });
+
+// Count the store's two-space JSON plus final newline without expanding repeated text.
+function draftArtifactFits(value) {
+  let bytes = 1;
+  const strings = new Map();
+  const scalar = item => {
+    if (typeof item !== "string") return Buffer.byteLength(JSON.stringify(item));
+    if (!strings.has(item)) strings.set(item, Buffer.byteLength(JSON.stringify(item)));
+    return strings.get(item);
+  };
+  function visit(item, depth) {
+    if (bytes > MAX_ORDER_ARTIFACT_BYTES) return;
+    if (item === null || typeof item !== "object") { bytes += scalar(item); return; }
+    const array = Array.isArray(item), entries = array ? item : Object.entries(item);
+    bytes += 2;
+    if (!entries.length) return;
+    bytes += 1 + depth * 2 + 1;
+    for (let index = 0; index < entries.length && bytes <= MAX_ORDER_ARTIFACT_BYTES; index++) {
+      bytes += (depth + 1) * 2 + (index ? 2 : 0);
+      if (!array) bytes += scalar(entries[index][0]) + 2;
+      visit(array ? entries[index] : entries[index][1], depth + 1);
+    }
+  }
+  visit(value, 0);
+  return bytes <= MAX_ORDER_ARTIFACT_BYTES;
+}
 
 function requestIssues(request) {
   const issues = [];
@@ -112,14 +139,17 @@ function buildDraft(request, requestRef, analysis, compiledAt) {
   const bound = binding(request, requestRef, analysis);
   // Unclassified external evidence cannot lower the captured request's handling level.
   const classification = analysis.statements.some(item => item.kind === "evidence_quote") ? "restricted" : request.classification;
-  return { schema_version: "0.1", type: "OrderDraft", id: `OD-${bound.slice(0, 32)}`,
+  const draft = { schema_version: "0.1", type: "OrderDraft", id: `OD-${bound.slice(0, 32)}`,
     mission_id: request.mission_id, wave_id: request.wave_id, repository_binding: request.repository_binding,
     request_ref: requestRef, request_text_sha256: request.text_sha256, analysis, analysis_sha256: digest(analysis),
     draft_binding_sha256: bound, compiled_at: compiledAt, expires_at: request.expires_at,
     ...deriveOrder(analysis, classification, bound), classification, review_required: true, source_claims_verified: false, ...AUTHORITY };
+  if (!draftArtifactFits(draft)) throw new Error("ORDER_INTAKE_DRAFT_TOO_LARGE");
+  return draft;
 }
 
 function draftIssues(draft) {
+  if (!draftArtifactFits(draft)) return [problem("ORDER_INTAKE_DRAFT_TOO_LARGE", "$", "The complete stored draft must fit the unchanged 8 MiB reader limit.")];
   const issues = analysisIssues(draft.analysis);
   if (issues.length) return issues;
   const request = { text_sha256: draft.request_text_sha256, repository_binding: draft.repository_binding };
@@ -147,4 +177,4 @@ function intakeIssues(payload, type) {
   return [];
 }
 
-module.exports = { AUTHORITY, DRAFT_TYPES, FIELDS, sha256, digest, same, intakeIssues, buildDraft };
+module.exports = { AUTHORITY, DRAFT_TYPES, FIELDS, MAX_ORDER_ARTIFACT_BYTES, draftArtifactFits, sha256, digest, same, intakeIssues, buildDraft };

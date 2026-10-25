@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "type": "ForceRegistryEntity",
+  "id": "ORG-FIXTURE",
+  "kind": "organization",
+  "version": 1,
+  "enrollment_state": "enrolled",
+  "label": "Synthetic organization",
+  "description": "Synthetic structural definition, not a qualified performer.",
+  "data": {
+    "kind": "organization",
+    "parent_id": "none",
+    "maintainer_roles": [
+      "USER",
+      "COS"
+    ]
+  },
+  "qualification_state": "unassessed",
+  "execution_authorized": false,
+  "release_authorized": false
+}

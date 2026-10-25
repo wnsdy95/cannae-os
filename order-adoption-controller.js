@@ -67,8 +67,11 @@ function appraiseProposal(store, request, now) {
     "ORDER_ADOPTION_DRAFT_EXPIRED_OR_FUTURE");
   const issues = planDraftIssues(request.plan, draft);
   requireTrue(issues.length === 0, issues.map(item => item.code).join(","));
+  require("./bounded-planning-controller").assertPlanning(request.plan,
+    { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
   require("./order-revision-controller").assertRevisionPreparation(request.plan,
     { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
+  if (request.schema_version === "0.2") require("./requirement-inventory-controller").reviewProof(store, request.semantic_review_ref, request.plan, draft, now);
   noOpenedWave(store, request);
   requireTrue(!entries(store, request, RECORDS).some(entry => read(store, ref(entry), RECORDS, "order-adoption-record", request).payload.status === "adopted"),
     "ORDER_ADOPTION_WAVE_ALREADY_ADOPTED");
@@ -76,13 +79,20 @@ function appraiseProposal(store, request, now) {
 }
 function proposalProof(store, reference, scope) {
   const item = read(store, reference, PROPOSALS, "order-adoption-proposal", scope);
+  return clone(retainedOrderReplay(store, `proposal:${digest(reference)}`, () => computeProposalProof(store, item)));
+}
+function computeProposalProof(store, item) {
   const before = prefixBeforeEntry(store, item.entry);
   requireTrue(same(snapshot(before), item.payload.observed_manifest) && at(item.entry.created_at) === at(item.payload.recorded_at),
     "ORDER_ADOPTION_PROPOSAL_HISTORY_INVALID");
   const draft = appraiseProposal(before, item.payload.request, item.payload.recorded_at);
   requireTrue(same(item.payload, proposalPayload(item.payload.request, draft, snapshot(before), item.payload.recorded_at)),
     "ORDER_ADOPTION_PROPOSAL_REPLAY_MISMATCH");
-  return { ...item, draft };
+  const semantic = item.payload.schema_version === "0.2" ? require("./requirement-inventory-controller").reviewProof(before,
+    item.payload.request.semantic_review_ref, item.payload.request.plan, draft, item.payload.recorded_at) : null;
+  const planning = item.payload.request.plan.order_binding.planning_ref ? require("./bounded-planning-controller").proposalProof(before,
+    item.payload.request.plan.order_binding.planning_ref, { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now: item.payload.recorded_at }) : null;
+  return { ...item, draft, semantic, planning };
 }
 function appraiseBrief(store, brief, now) {
   valid(brief, "order-backbrief");
@@ -149,14 +159,20 @@ function assertDecisionCurrent(store, proposal, decision) {
     }
   }
 }
-function appraiseDisposition(store, request, now) {
+function appraiseDisposition(store, request, now, historical = false) {
   valid(request, "order-adoption-decision-request");
   const proposal = proposalProof(store, request.proposal_ref, request);
+  requireTrue(request.schema_version === proposal.payload.schema_version, "ORDER_ADOPTION_VERSION_MISMATCH");
   fresh(proposal.payload, now);
   noOpenedWave(store, request);
   const briefs = request.backbrief_refs.map(reference => briefProof(store, reference, proposal));
   const rehearsal = same(request.rehearsal_ref, NONE) ? null : rehearsalProof(store, request.rehearsal_ref, proposal);
   if (request.disposition === "approve") {
+    requireTrue(historical || proposal.payload.schema_version === "0.2", "ORDER_SEMANTIC_REVIEW_REQUIRED");
+    require("./bounded-planning-controller").assertPlanning(proposal.payload.request.plan,
+      { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
+    if (proposal.semantic) require("./requirement-inventory-controller").reviewProof(store, proposal.payload.request.semantic_review_ref,
+      proposal.payload.request.plan, proposal.draft, now);
     require("./order-revision-controller").assertRevisionPreparation(proposal.payload.request.plan,
       { repository: store.verification.repository.root, artifactRoot: store.artifactRoot, now }, store);
     requireTrue(rehearsal && same(rehearsal.payload.backbrief_refs, request.backbrief_refs), "ORDER_ADOPTION_REHEARSAL_REQUIRED");
@@ -164,8 +180,8 @@ function appraiseDisposition(store, request, now) {
   }
   return { proposal, briefs, rehearsal };
 }
-function appraiseDecision(store, request, now) {
-  const { proposal, briefs, rehearsal } = appraiseDisposition(store, request, now);
+function appraiseDecision(store, request, now, historical = false) {
+  const { proposal, briefs, rehearsal } = appraiseDisposition(store, request, now, historical);
   const decision = read(store, request.decision_ref, "decision-logs", "decision-log");
   const value = decision.payload;
   const affected = [proposal.ref, ...request.backbrief_refs, ...(rehearsal ? [rehearsal.ref] : [])];
@@ -196,7 +212,7 @@ function computeRecordProof(store, item) {
   const before = prefixBeforeEntry(store, item.entry);
   requireTrue(same(snapshot(before), item.payload.observed_manifest) && at(item.entry.created_at) === at(item.payload.recorded_at),
     "ORDER_ADOPTION_RECORD_HISTORY_INVALID");
-  const appraisal = appraiseDecision(before, item.payload.request, item.payload.recorded_at);
+  const appraisal = appraiseDecision(before, item.payload.request, item.payload.recorded_at, true);
   requireTrue(same(item.payload, recordPayload(item.payload.request, appraisal.proposal.payload, snapshot(before), item.payload.recorded_at)),
     "ORDER_ADOPTION_RECORD_REPLAY_MISMATCH");
   return { ...item, ...appraisal };
@@ -226,12 +242,16 @@ function inspectOrderDecision(input, options) {
       "ORDER_ADOPTION_DECISION_ALREADY_CONSUMED");
   }
   return { request, proposal: appraisal.proposal.payload, draft: appraisal.proposal.draft,
+    ...(appraisal.proposal.planning ? { planning_review: appraisal.proposal.planning.payload } : {}),
+    ...(appraisal.proposal.semantic ? { semantic_review: {
+      coverage: appraisal.proposal.semantic.coverage.payload, inventory: appraisal.proposal.semantic.inventory.payload } } : {}),
     backbriefs: appraisal.briefs.map(item => item.payload), rehearsal: appraisal.rehearsal?.payload || null,
     observed_manifest: snapshot(store), checked_at: now, ...ADOPTION_AUTHORITY };
 }
 function proposeOrder(input, options) {
   const request = clone(input), store = load(options), now = clock(options);
   valid(request, "order-adoption-proposal-request");
+  requireTrue(request.schema_version === "0.2", "ORDER_SEMANTIC_REVIEW_REQUIRED");
   const existing = find(store, PROPOSALS, `OAP-${digest(request).slice(0, 32)}`);
   if (existing) {
     const retained = proposalProof(store, ref(existing), request);
@@ -277,7 +297,7 @@ function decideOrder(input, options) {
   const reference = publish(options, store, record, RECORDS, now, (current, time) => appraiseDecision(current, request, time));
   return { record, record_ref: reference, existing: false, freshness: "current", ...ADOPTION_AUTHORITY };
 }
-function orderForPlan(plan, options, knownStore) {
+function inspectAdoptedOrderForPlan(plan, options, knownStore) {
   const manifest = knownStore && knownStore.manifest;
   const scoped = (manifest && manifest.artifacts || []).filter(item => item.mission_id === plan.mission_id && item.wave_id === plan.wave_id);
   if (knownStore && plan.schema_version === "0.1" && !scoped.some(item => ["mission-requests", PROPOSALS, RECORDS].includes(item.kind))) return null;
@@ -294,6 +314,16 @@ function orderForPlan(plan, options, knownStore) {
   require("./order-revision-controller").assertRevisionPreparation(plan, options, store);
   return record;
 }
+function orderForPlan(plan, options, knownStore) {
+  const record = inspectAdoptedOrderForPlan(plan, options, knownStore);
+  if (!record) return null;
+  requireTrue(record.payload.schema_version === "0.2", "ORDER_SEMANTIC_REVIEW_REQUIRED");
+  const store = knownStore?.manifestHistory ? knownStore : load(options);
+  require("./bounded-planning-controller").assertPlanning(plan, options, store);
+  require("./requirement-inventory-controller").reviewProof(store, record.proposal.payload.request.semantic_review_ref,
+    plan, record.proposal.draft, clock(options));
+  return record;
+}
 function contextAssignment(adopted, agentId) {
   const plan = adopted.proposal.payload.request.plan;
   const draft = adopted.proposal.draft;
@@ -302,7 +332,8 @@ function contextAssignment(adopted, agentId) {
   return { adoption_ref: adopted.ref, proposal_ref: adopted.proposal.ref, draft_ref: plan.order_binding.draft_ref,
     backbrief_ref: brief.ref, rehearsal_ref: adopted.rehearsal.ref, plan_sha256: adopted.payload.plan_sha256,
     task_order: assignedTask(plan, draft, agentId), commander_intent: draft.opord.intent,
-    mission_end_state: plan.success_conditions, constraints: plan.constraints, assessment: draft.opord.assessment };
+    mission_end_state: plan.success_conditions, constraints: plan.constraints, assessment: draft.opord.assessment,
+    ...(adopted.proposal.semantic ? { semantic_review: require("./requirement-inventory-contract").assignmentFor(adopted.proposal.semantic, agentId, plan) } : {}) };
 }
 function expectedModelAssignment(plan, agent, options, knownStore) {
   if (!plan.model_assignment.required) return { required: false, integrated_preflight_ref: { ...NONE },
@@ -321,7 +352,7 @@ function expectedModelAssignment(plan, agent, options, knownStore) {
     model_version: entry.model_version, harness_version: entry.harness_version };
 }
 function assertContextAssignment(context, plan, options, knownStore) {
-  const adopted = orderForPlan(plan, options, knownStore);
+  const adopted = inspectAdoptedOrderForPlan(plan, options, knownStore);
   if (!adopted) {
     requireTrue(["0.2", "0.4"].includes(context.schema_version) && !context.order_assignment, "ORDER_CONTEXT_LEGACY_MISMATCH");
     return;
@@ -351,6 +382,8 @@ function inspectOrder(options) {
   requireTrue(records.length <= 1, "ORDER_ADOPTION_RECORD_CONFLICT");
   requireTrue(records.every(item => at(item.payload.recorded_at) <= at(now)), "ORDER_ADOPTION_RECORD_FROM_FUTURE");
   return { proposal: proposal.payload, proposal_ref: proposal.ref, draft: proposal.draft,
+    ...(proposal.planning ? { planning_review: proposal.planning.payload } : {}),
+    ...(proposal.semantic ? { semantic_review: { coverage: proposal.semantic.coverage.payload, inventory: proposal.semantic.inventory.payload } } : {}),
     request: readRequest(store, proposal.draft.request_ref, proposal.draft), record: records[0]?.payload || null,
     status: records[0]?.payload.status || "awaiting_review", freshness: at(now) < at(proposal.payload.expires_at) ? "current" : "expired",
     ...ADOPTION_AUTHORITY };
@@ -381,7 +414,8 @@ function main(argv = process.argv.slice(2)) {
 
 const scoped = fn => (...args) => withinOrderReplay(() => fn(...args));
 module.exports = { proposeOrder: scoped(proposeOrder), retainOrderEvidence: scoped(retainOrderEvidence), decideOrder: scoped(decideOrder),
-  inspectOrder: scoped(inspectOrder), inspectOrderDecision: scoped(inspectOrderDecision), orderForPlan: scoped(orderForPlan), contextAssignment,
+  inspectOrder: scoped(inspectOrder), inspectOrderDecision: scoped(inspectOrderDecision), orderForPlan: scoped(orderForPlan),
+  inspectAdoptedOrderForPlan: scoped(inspectAdoptedOrderForPlan), contextAssignment,
   assertContextAssignment: scoped(assertContextAssignment), proposalProof: scoped(proposalProof), recordProof: scoped(recordProof), main: scoped(main) };
 if (require.main === module) {
   try { withinOrderReplay(() => main()); } catch (error) { console.error(error.message); process.exitCode = 1; }

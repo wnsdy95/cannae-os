@@ -1,6 +1,7 @@
 const crypto = require("node:crypto");
 const { requireThat, assertSafeRationale } = require("./operator-console-auth");
 const { openReconciliationService } = require("./operator-reconciliation-service");
+const { openForceRegistryService } = require("./operator-force-registry-service");
 
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
 function openConsentService(auth, configuration) {
@@ -52,8 +53,10 @@ function openConsentService(auth, configuration) {
       proposal_id: preview.request.proposal_ref.artifact_id, disposition: preview.request.disposition,
       created_at: new Date(row.created).toISOString(), expires_at: new Date(row.expires).toISOString(),
       result: row.result ? JSON.parse(row.result) : null, execution_authorized: false, release_authorized: false }; };
+  const forceRegistry = openForceRegistryService({ auth, owner, transaction, audit, hash });
   return {
     instance,
+    forceRegistry,
     reconciliation: openReconciliationService({ auth, configuration, owner, transaction, audit, hash }),
     publicKey() { return crypto.createPublicKey(meta("operator-signing-key")).export({ type: "spki", format: "pem" }); },
     prepare(session, preview) {
@@ -102,6 +105,7 @@ function openConsentService(auth, configuration) {
     },
     list(session) { owner(session); return db.prepare("SELECT * FROM operator_actions ORDER BY created DESC LIMIT 100").all().map(view); },
     close() { transaction(() => { if (meta("operator-service-instance") === instance) {
+      forceRegistry.close();
       db.prepare("UPDATE operator_actions SET state='reconciliation_required' WHERE state='executing'").run();
       db.prepare("UPDATE operator_reconciliations SET state='reconciliation_required' WHERE state='executing'").run();
       db.prepare("UPDATE operator_reconciliations SET state='invalidated' WHERE state='pending'").run();

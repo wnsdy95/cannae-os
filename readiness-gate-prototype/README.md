@@ -1,6 +1,6 @@
 # Readiness Gate Prototype
 
-Dependency-free prototype that combines an authority matrix with role/task readiness to decide whether a tool action can proceed.
+Local reference prototype using the repository validator to combine an authority matrix with declared role/task readiness. It is not authenticated qualification or a dispatch grant.
 
 Usage:
 
@@ -16,4 +16,10 @@ Decision meanings:
 - `approval_required`: execution is blocked until scoped approval.
 - `prohibit`: execution is blocked and cannot be approved.
 
-Readiness is task-specific. A role with insufficient readiness is escalated to `approval_required` even if the authority rule would otherwise allow execution.
+Readiness is task-specific. An unmet minimum, U/X execution, any matching
+prohibition or expired restriction, unmatched Black request, malformed matrix
+or missing exact scope prohibits execution; approval cannot repair it. Matching
+rules intersect independently of array order. Scope strings are exact and
+case-sensitive except an explicitly declared `any` entry. Blocked CLI results
+exit nonzero. See [the corrective boundary](../docs/readiness-authority-intersection.md)
+for subject binding, migration and remaining qualification/supervision limits.

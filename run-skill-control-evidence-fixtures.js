@@ -58,6 +58,37 @@ try {
         /control metadata as execution evidence/);
     }
   });
+  check("a COP snapshot is control metadata even without a retained counterpart", () => {
+    const payload = sample("operational-cop");
+    for (const extension of ["txt", "bin", "json"]) {
+      const ref = env.fileArtifact(`DATA-COP-${extension}`, Object.fromEntries(Object.entries(payload).reverse()), extension);
+      assert.throws(() => recordWave(env.report(`MWR-COP-${extension}`, ref), { ...env.options, now: env.at(30) }),
+        /control metadata as execution evidence/);
+    }
+  });
+  check("semantic previews, transfer consent and results cannot become work by copying or MIME changes", () => {
+    for (const type of require("./semantic-control-types").NON_WORK_TYPES) {
+      for (const extension of ["txt", "bin", "json"]) {
+        const ref = env.fileArtifact(`DATA-SEMANTIC-${type}-${extension}`, { release_authorized: false, execution_authorized: false, type }, extension);
+        assert.throws(() => recordWave(env.report(`MWR-SEMANTIC-${type}-${extension}`, ref), { ...env.options, now: env.at(30) }),
+          /control metadata as execution evidence/);
+      }
+    }
+    for (const contract of [require("./dispatch-issuance-contract"), require("./method-control-contract")]) for (const file of ["semantic-control-types.js",
+      "operator-model-reconciliation-contract.js", "schema-files/operator-model-reconciliation-authorization.schema.json", "schema-files/operator-model-reconciliation-record.schema.json",
+      "operator-semantic-evaluation-contract.js", "schema-files/operator-semantic-evaluation.schema.json", "semantic-omission-contract.js",
+      "requirement-inventory-contract.js", "requirement-inventory-controller.js", "schema-files/requirement-inventory.schema.json",
+      "schema-files/semantic-coverage-proposal.schema.json", "schema-files/semantic-review-assignment.schema.json",
+      "bounded-planning-contract.js", "bounded-planning-controller.js", "schema-files/bounded-planning-request.schema.json", "schema-files/bounded-planning-proposal.schema.json"]) {
+      assert(contract.CODE.includes(file));
+      const original = fs.readFileSync, before = contract.runtimeDigest();
+      fs.readFileSync = function(filename, ...args) {
+        const bytes = original.call(this, filename, ...args);
+        return typeof filename === "string" && path.resolve(filename) === path.join(__dirname, file) ? Buffer.concat([Buffer.from(bytes), Buffer.from("\n")]) : bytes;
+      };
+      try { assert.notEqual(contract.runtimeDigest(), before); } finally { fs.readFileSync = original; }
+    }
+  });
   check("ordinary JSON work is admitted only after every actually routed control executes", () => {
     const work = env.fileArtifact("DATA-NOTE-SUMMARY", { source_line: fs.readFileSync(path.join(env.options.repository, "README.md"), "utf8"),
       summary: "The supplied local note is explicitly synthetic." });

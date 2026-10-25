@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "type": "ReadinessDropReconciliation",
+  "observed_at": "2026-10-24T00:00:00Z",
+  "repository_key": "fixture",
+  "initial_manifest_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "results": [
+    {
+      "lease_ref": {
+        "artifact_id": "ADL-SYNTHETIC",
+        "relative_path": "repositories/fixture/missions/MIS-SYNTHETIC/W1/controls/ADL-SYNTHETIC.json",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "event_refs": [
+        {
+          "artifact_id": "RE-SYNTHETIC",
+          "relative_path": "repositories/fixture/missions/MIS-SYNTHETIC/W1/controls/RE-SYNTHETIC.json",
+          "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ],
+      "status": "revoked",
+      "checkpoint_ref": {
+        "artifact_id": "AEC-SYNTHETIC",
+        "relative_path": "repositories/fixture/missions/MIS-SYNTHETIC/W1/controls/AEC-SYNTHETIC.json",
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    }
+  ],
+  "registry_complete": false,
+  "requalification_supported": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "id": "RDR-a80ce6d0f05566fde1619459b7c9b8cdc7efeb04"
+}

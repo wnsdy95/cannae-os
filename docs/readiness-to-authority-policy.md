@@ -37,7 +37,7 @@ Ceiling rules:
 Effective authority for a requested action is the most restrictive of:
 
 1. The readiness ceiling for the role/task pair (this policy, read from the ledger projection).
-2. The matching authority matrix rule, including its `readiness_min` (the readiness gate already forces `approval_required` when the actual rating is below the rule minimum, and `prohibit` for Black).
+2. All matching authority matrix restrictions, including each `readiness_min`. An unmet minimum prohibits execution; approval cannot promote the performer. Black is prohibited even without a matching rule. See the [reference intersection correction](readiness-authority-intersection.md) and its explicit remaining authentication/supervision limits.
 3. Any approval scope covering the action, with its target, expiry, and consumption state per `approval-scope-policy.md`.
 4. The mission scope of the current order — rating T confers no authority outside it.
 5. Risk acceptance at the right level per `risk-acceptance-authority.md`, which also treats low readiness as raising the effective risk of the same action.
