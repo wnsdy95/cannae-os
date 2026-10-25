@@ -18,6 +18,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   Preserve the subsequent 594/595 CLI development failure too: nested validation
   saw incomplete exports only through the real CLI entrypoint. Export before
   entering main and regress that exact path, rather than relying on library tests.
+  Preserve the first frozen ladder's logout-test failure: its fixture called an
+  audit-only helper, not actual logout. Coordinate a worker at the publication
+  boundary, call HTTP logout, prove session removal and then assert the original
+  guard/hold. Do not weaken the expected denial or claim that an audit event revokes.
 
 - Start task-training evidence intake over owner-enrolled definitions, pre-call
   signed stage/case session mappings and actual dispatch completion/result bytes.

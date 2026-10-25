@@ -63,6 +63,10 @@ continue filtering private details; never replace it with arbitrary error text.
 Also run the actual CLI, not just library imports, when a contract re-enters a
 shared validator. Export the library before CLI execution; otherwise `main` can
 observe incomplete exports and fail before returning its JSON refusal/result.
+For logout/revocation races, exercise the actual endpoint and prove session or
+epoch invalidation before releasing the paused writer. An audit-only helper or
+message is not a revoke operation; keep consent cancellation and tool-lease stop
+as separate obligations, and preserve the failed fixture rather than relabel it.
 
 For a training case's tool-input commitment, use the dispatcher's exported
 `inputDigest`, not the artifact digest: their canonical byte domains differ,

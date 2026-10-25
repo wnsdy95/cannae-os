@@ -43,6 +43,10 @@ pending challenges and preserves reserved or uncertain actions. Logout, revocati
 expiry and subject drift cannot be repaired by replaying a nonce or changing a
 digest label. An attempted partial write remains a durable reconciliation hold;
 automatic recovery/discharge is not implemented here.
+The HTTP logout endpoint destroys the session as well as recording its audit
+event. An audit helper alone does not revoke authentication. Logout prevents
+further consent writes; it does not itself revoke a separately authorized tool
+lease. Mission stop, result settlement and explicit lease revocation remain distinct.
 
 `TaskTrainingSessionBinding` v0.2 refers to its exact original signed
 `TaskTrainingSessionAuthorization`. The intake independently verifies that chain

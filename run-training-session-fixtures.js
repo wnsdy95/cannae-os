@@ -70,10 +70,22 @@ async function main() {
     assert.equal((await env.owner.get(`/api/training-sessions/actions/${p.challenge_id}`)).state, "blocked");
   });
   await test("logout after authorization publication denies the binding and retains the exact uncertainty hold", async env => {
-    const p = await s.preview(env), principal = env.owner.storedSession().userId;
-    await env.service.consent.trainingSessions.reserve(env.owner.storedSession(), s.input(p));
-    inject = (options, write) => { const value = write(options); if (options.kind === s.c.KINDS.authorizations) env.service.auth.logout(principal); return value; };
-    assert.throws(() => executeTrainingSession(s.configuration(env), p.challenge_id), /CONSOLE_TRAINING_SESSION_BLOCKED/); inject = null;
+    const p = await s.preview(env), session = env.owner.storedSession();
+    await env.service.consent.trainingSessions.reserve(session, s.input(p));
+    const { Worker } = require("node:worker_threads"), { once } = require("node:events"), buffer = new SharedArrayBuffer(4), gate = new Int32Array(buffer);
+    const worker = new Worker(path.join(__dirname, "training-session-fixtures/logout-worker.js"), { workerData: { configuration: s.configuration(env), id: p.challenge_id, gate: buffer } });
+    const exited = once(worker, "exit");
+    try {
+      const [paused] = await once(worker, "message"); assert.equal(paused.phase, "authorization_written");
+      const terminal = once(worker, "message");
+      await env.owner.post("/api/logout", {});
+      const stored = await new Promise((resolve, reject) => env.service.auth.sessionStore.get(session.sessionId, (error, value) => error ? reject(error) : resolve(value)));
+      assert.equal(stored, null);
+      Atomics.store(gate, 0, 1); Atomics.notify(gate, 0);
+      const [result] = await terminal; assert.equal(result.phase, "terminal"); assert.equal(result.returned, false);
+      assert.equal(result.error, "CONSOLE_TRAINING_SESSION_BLOCKED"); assert(result.reason_codes.includes("CONSOLE_TRAINING_AUTHORIZATION_EXPIRED"));
+      await exited;
+    } finally { Atomics.store(gate, 0, 1); Atomics.notify(gate, 0); await worker.terminate(); }
     assert.equal(s.count(env, s.c.KINDS.authorizations), 1); assert.equal(s.count(env, s.c.KINDS.bindings), 0);
     assert.equal(env.service.auth.db.prepare("SELECT state FROM operator_training_sessions WHERE id=?").get(p.challenge_id).state, "reconciliation_required");
   });
