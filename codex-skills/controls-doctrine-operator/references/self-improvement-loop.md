@@ -56,6 +56,13 @@ inspect the exact action and keep the hold; no automatic discharge or retry is
 implemented. Neither the mapping nor an incoming/cached appraisal grants a grade
 or authority; reappraise original evidence before any future qualification use.
 
+Inventory hints do not select query routes. Before classifying an existing
+contract as a capability gap, exercise its prose, hyphenated filename/schema path,
+wrapper and CamelCase type through both human and delegated AI query modes in
+both providers. A zero-unrouted inventory alone cannot prove that those requests
+reach their required controls. Keep a failing route's exact query and expected
+control; never replace the expected route with a provisional-cell fallback.
+
 When adding a refusal-code family, regress both worker emission and queue
 sanitization through the actual HTTP outcome. A refusal with an empty reason list
 does not prove the expected boundary fired. Keep a bounded code namespace and

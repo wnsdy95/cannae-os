@@ -34,9 +34,12 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
-  for (const query of ["training session consent", "training session enrollment", "prepare_controls_training_session", "training-session-contract"]) {
-    const result = route(router, ["--actor=user"], query); assertRoutes(result, ["task-training"]);
+  for (const query of ["training session consent", "training session enrollment", "prepare_controls_training_session", "training-session-contract",
+    "training session contract", "TaskTrainingSessionProposal", "TaskTrainingSessionAuthorization", "schema-files/training-session-authorization.schema.json",
+    "operator-training-session-executor.js"]) for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+    const result = route(router, actor, query); assertRoutes(result, ["task-training"]);
     assert.equal(result.capability_routing.status, "covered");
+    assert.equal(result.capability_routing.provisional_organization.required, false);
     assert(result.validation_commands.includes("node run-training-session-contract-fixtures.js"));
     assert(result.validation_commands.includes("node run-training-session-fixtures.js"));
     assert(result.recommended_documents.some(item => item.path === "docs/training-session-consent.md"));

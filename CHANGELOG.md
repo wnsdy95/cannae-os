@@ -22,6 +22,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   audit-only helper, not actual logout. Coordinate a worker at the publication
   boundary, call HTTP logout, prove session removal and then assert the original
   guard/hold. Do not weaken the expected denial or claim that an audit event revokes.
+  Preserve the later frozen ladder's route failure: a training-session filename
+  had inventory hints but no matching query keyword. Route filename/type/prose
+  forms in both providers and human/AI modes without changing gap policy or the
+  expected training control. Zero-unrouted inventory alone is not query coverage.
 
 - Start task-training evidence intake over owner-enrolled definitions, pre-call
   signed stage/case session mappings and actual dispatch completion/result bytes.

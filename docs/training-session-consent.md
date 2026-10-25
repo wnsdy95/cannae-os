@@ -33,6 +33,11 @@ consent, plan adoption and model transfer approval cannot substitute for this pu
    both must precede the counted admission. Complete the separately authorized
    execution, retain actual output and appraise it through task-training intake.
 
+Route prose, `training-session` filenames, wrapper names and the exact proposal
+or authorization type through the `task-training` query rule. Inventory hints
+alone do not match operator queries. Both providers regress human and delegated
+AI modes; an existing session contract must not create a false capability cell.
+
 ## Failure And Compatibility
 
 The executor uses the actual dispatch control lock. It rechecks the current

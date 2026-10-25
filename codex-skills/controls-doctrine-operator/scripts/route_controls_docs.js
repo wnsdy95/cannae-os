@@ -8,7 +8,7 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "task-training",
-    keywords: ["task training", "task-training", "training evidence", "training qualification", "training session binding", "training session consent", "training session enrollment", "prepare_controls_training_session", "tasktrainingstandard", "tasktrainingtrialrequest", "tasktrainingsessionbinding", "tasktrainingtrialappraisal"],
+    keywords: ["task training", "task-training", "training evidence", "training qualification", "training session", "training-session", "prepare_controls_training_session", "tasktrainingstandard", "tasktrainingtrialrequest", "tasktrainingsessionbinding", "tasktrainingtrialappraisal", "tasktrainingsessionproposal", "tasktrainingsessionauthorization"],
     docs: ["docs/task-training-evidence.md", "docs/training-session-consent.md", "docs/training-progression-model.md", "docs/force-registry-enrollment.md", "docs/readiness-to-authority-policy.md"],
     commands: ["node run-task-training-contract-fixtures.js", "node run-task-training-fixtures.js", "node run-training-session-contract-fixtures.js", "node run-training-session-fixtures.js"]
   },
