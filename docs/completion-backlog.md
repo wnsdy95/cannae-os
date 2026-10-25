@@ -83,6 +83,12 @@ merge. Current-source installation, real user/model acceptance and deployed
 independence remain separate; never import an old green status or clear a hold
 because the files appear on a main-based candidate.
 
+Retain interrupted local validation separately from new-head acceptance. Host
+sleep observations and a USER-approved finite validation-only idle assertion
+do not repair missing original state, discharge unknown operations, renew old
+approvals or establish protected deployment. Any passing awake run must preserve
+the earlier failed runs and the exact scope of the temporary resource approval.
+
 The [native owner-transfer candidate](native-training-owner-consent.md) connects
 exact handling review, authenticated consent, original-byte publication and a
 managed local attempt/orphan inventory. Acceptance and rollout, complete

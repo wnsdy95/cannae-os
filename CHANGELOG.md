@@ -6,6 +6,12 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add bounded awake-validation discipline to both skills after retained local
+  lease and enrollment failures overlapped host sleep. Correlate filtered power
+  events without claiming missing original state, and use only a USER-approved
+  one-attempt, finite, PID-bound idle assertion. Never renew old authority, weaken
+  deadlines, change persistent power policy or call this host attestation.
+
 - Reconcile the reviewed training stack with the actual published main ancestry
   on a separate candidate branch. Require complete tree preservation before the
   four-file documentation follow-up, preserve original PR/CI subjects and primary

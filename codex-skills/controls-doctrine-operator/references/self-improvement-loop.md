@@ -263,6 +263,19 @@ part of ancestry reconciliation. Source integration closes none of the full
 intent, initiative, semantic quality, COP, qualification, sustainment, real-user
 acceptance or protected-deployment outcomes by itself.
 
+When local validation unexpectedly outlives lease or consent windows, preserve
+the failed source, actual passing prefix and unexecuted suffix before retry.
+Compare narrowly filtered host sleep/wake events with wall and monotonic timing;
+correlation does not reconstruct missing original lease or authorization state.
+Keep diagnostic-only instrumentation separate from normal acceptance. A host
+wake never renews consent, permits an old task replay or clears uncertainty.
+If the USER authorizes awake validation, bind a transient idle-sleep assertion
+to that one validation PID and the approved finite duration. Observe activation
+and actual release; do not extend it automatically, prevent display sleep,
+change persistent power settings or enlarge execution/lease/consent deadlines.
+Preserve earlier failures even when the awake run passes. This is local test
+environment control, not protected-host attestation or model-transfer consent.
+
 In replay fixtures, isolate durable one-use ID consumption from consent expiry.
 Use a separately signed, currently valid synthetic proposal with the consumed ID
 and assert that original journal bytes remain unchanged. Keep expiry tests
