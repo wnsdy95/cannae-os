@@ -2809,7 +2809,8 @@
             "node run-native-training-failure-fixtures.js",
             "node run-native-training-reconciliation-prefixes-fixtures.js",
             "node run-native-training-reconciliation-authority-fixtures.js",
-            "node run-native-training-reconciliation-receipts-fixtures.js",
+            "node run-native-training-reconciliation-receipts-durability-fixtures.js",
+            "node run-native-training-reconciliation-receipts-integrity-fixtures.js",
             "node run-native-training-reconciliation-publication-fixtures.js",
             "node run-native-training-reconciliation-crash-fixtures.js",
             "node run-native-training-reconciliation-source-fixtures.js"
@@ -2869,7 +2870,8 @@
             "node run-native-training-failure-fixtures.js",
             "node run-native-training-reconciliation-prefixes-fixtures.js",
             "node run-native-training-reconciliation-authority-fixtures.js",
-            "node run-native-training-reconciliation-receipts-fixtures.js",
+            "node run-native-training-reconciliation-receipts-durability-fixtures.js",
+            "node run-native-training-reconciliation-receipts-integrity-fixtures.js",
             "node run-native-training-reconciliation-publication-fixtures.js",
             "node run-native-training-reconciliation-crash-fixtures.js",
             "node run-native-training-reconciliation-source-fixtures.js"

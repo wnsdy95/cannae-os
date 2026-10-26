@@ -75,6 +75,12 @@ registry before an expensive proof. Regress each wrapper's exact case mapping
 and reject extra arguments before runtime loading; never widen the registry
 compiler or treat one group as complete coverage. The full aggregate also runs
 the dedicated entry points, so repeated cases are real additional work, not skips.
+Keep all five registry groups even though the router has four controls: split
+near-deadline receipt coverage instead of extending the five-minute registry
+limit. Before fixture cleanup, retain phase, normalized route, actual/expected
+status and bounded error codes, never bodies or credentials. An instrumented
+passing replay does not establish an unexplained original refusal's cause;
+preserve that uncertainty and require separate unchanged-transport acceptance.
 Keep an unknown-field injection below the server body limit; test oversized
 requests separately at their earlier parser guard. Fault the actual consumer-owned
 runtime in an isolated copy, not an exported worker projection that the consumer

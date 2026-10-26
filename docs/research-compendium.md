@@ -19,9 +19,14 @@ This is local synthesis, not protected process or provider attestation.
 
 A command accepted by the router is not automatically valid for the stricter
 candidate registry. Preserve the failed registry audit, use dedicated
-argument-free suites for all four groups, verify their exact mapping and reject
+argument-free suites for all five registry groups, verify their exact mapping and reject
 extra arguments before runtime loading. Keep the original compiler and deadlines;
 the root aggregate honestly repeats coverage of both entry surfaces.
+Split a near-deadline receipt suite rather than extending its five-minute
+registry limit; the four routed controls retain their ten-minute watchdog.
+Record bounded first-guard HTTP context before fixture cleanup. A later passing
+instrumented replay leaves an earlier unrecorded setup refusal unexplained,
+not fixed; never remove that uncertainty or the original failed source/log.
 
 ## Preserve Actual Producers Before Upgrading Consumers (2026-10-26)
 

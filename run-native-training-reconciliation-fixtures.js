@@ -142,10 +142,10 @@ add("publication introduced after acknowledgment invalidates its observed absenc
 async function run(selected = cases) {
   const results = [];
   for (const item of selected) {
-    let env;
-    try { env = await s.environment(); const id = await s.failed(env, item.mode); await item.run(env, id); results.push({ name: item.name, passed: true }); console.log(`PASS ${item.name}`); }
+    let env, phase = "environment";
+    try { env = await s.environment(); phase = "failed-fixture"; const id = await s.failed(env, item.mode); phase = "case-body"; await item.run(env, id); results.push({ name: item.name, passed: true }); console.log(`PASS ${item.name}`); }
     catch (error) { const location = String(error.stack).match(/run-native-training-reconciliation-fixtures\.js:(\d+):\d+/);
-      results.push({ name: item.name, passed: false, code: /^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message : "NATIVE_RECOVERY_FIXTURE_FAILED", line: location ? Number(location[1]) : null,
+      results.push({ name: item.name, passed: false, phase, http: error.fixture_http || null, code: /^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message : "NATIVE_RECOVERY_FIXTURE_FAILED", line: location ? Number(location[1]) : null,
         actual_status: typeof error.actual === "number" ? error.actual : null, expected_status: typeof error.expected === "number" ? error.expected : null }); console.error(JSON.stringify(results.at(-1))); }
     finally { if (env) await s.close(env); }
   }

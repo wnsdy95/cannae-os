@@ -15,7 +15,8 @@ not new military sources, native identity, independent time/process attestation,
 task admission or completed training. Read-only receipt history is separate from
 fresh model execution; unknown evidence/process/orphan classes remain held.
 Its documented argument-free registry suites and bounded routed controls execute
-the same complete partition. Those are separate command contracts, not a reason
+the same complete matrix through separately checked partitions. Those are
+separate command contracts, not a reason
 to weaken either compiler, skip cases or extend the existing watchdog.
 
 The [native producer-history foundation](native-training-producer-history.md)
