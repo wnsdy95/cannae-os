@@ -11,6 +11,9 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} later historical native producer inspection`,
+    file: `sample-payloads/${prefix}-native-training-producer-inspection-bcb.json`, type: "native-training-producer-inspection", exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["NATIVE_TRAINING_PRODUCER_SUBSTITUTED"] })),
   ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing native producer inspection`,
     file: `sample-payloads/${prefix}-native-training-producer-inspection.json`, type: "native-training-producer-inspection", exitCode: prefix === "valid" ? 0 : 1,
     expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["NATIVE_TRAINING_PRODUCER_SUBSTITUTED"] })),

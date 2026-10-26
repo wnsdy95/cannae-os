@@ -8,7 +8,13 @@ the current owner API. Relabeled new records would not establish compatibility.
 Exact commit/tree restoration and unchanged rows remain distinct from execution,
 trust admission and hold discharge. A dependency directory-to-symlink change
 altered the fixture source digest; preserve its shape instead of weakening the
-check. This is local synthesis, not a new provider or military claim.
+check. A later producer snapshot references already retained archives by exact
+path/size/hash, then restores and verifies the complete original tree. Do not
+embed recursive historical copies or call a partial tree the original source.
+Freeze actual signed failures before method edits. When an assessment throws
+before the collector records a response hash, a later file hash cannot repair
+the missing original commitment. Preserve that evidence distinction and the
+hold; this is local synthesis, not a new provider or military claim.
 
 ## Consent, Data Handling And Collection Are Separate (2026-10-25)
 

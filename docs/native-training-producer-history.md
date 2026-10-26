@@ -7,10 +7,15 @@ old method current for execution. This is a prerequisite for native uncertainty
 reconciliation, not that ceremony, a qualification or a grant.
 
 The method binds code, policy, schema and dependency-lock bytes, not just schema
-or package versions. The captured candidate producer is
+or package versions. The first captured candidate producer is
 `cab6d098a1229ede35dff4697994ac34f5ad7418`, with original 21-file digest
 `64882bcfe0d2319850c4234c4c31a71b0342575fa063ee143cf4c5817e4b9f04`.
-The current method additionally binds the inspection module and pinned catalog.
+The later captured producer is
+`bcb79dd9009e96d4ffd4acd5f449d218ba768846`, with its original 23-file digest
+`41bbc4bf46433f528d5e1a51aa44f5b924320c62c186273065e47eb53ff58d32`.
+The current method additionally binds the inspection module and both pinned
+catalogs. Inspections distinguish `historical_cab6d09`, `historical_bcb79dd` and
+`current`; historical recognition is never a fresh-execution fallback.
 Unknown/hybrid tuples, changed file order or bytes and extra metadata fail.
 
 ## Inspection Is Not Admission
@@ -53,10 +58,15 @@ Production never loads or executes archived source.
 
 ## Actual Prior-Producer Regression
 
-The pinned JSON/catalog and compressed source fixture preserve the complete
+The pinned JSON/catalogs and compressed source fixtures preserve each complete
 prior tree, original commit object, method-file digests, source-state digest and
-archive SHA-256. The test verifies the hash before extraction, reconstructs the
-exact Git identity and compares the original source digest. Only this fixture
+archive SHA-256. Snapshot v0.2 keeps previous source archives as flat external
+blobs with exact path, size and SHA-256, rather than recursively embedding them.
+Both versions remain readable. The test verifies all archive/blob buffers before
+extraction, hydrates external blobs without overwrites, reconstructs the exact
+Git identity and compares the original source digest. A missing, changed or
+unsafe blob fails; a partial source tree is never accepted as the original.
+Only this fixture
 executes the frozen prior code, using synthetic owners and a measured fake
 process to produce actual signed failures and collected products.
 
@@ -72,6 +82,7 @@ dependencies are shared, not independently byte-attested or sandboxed.
 
 ```bash
 node run-native-training-producer-contract-fixtures.js
+node run-native-training-snapshot-fixtures.js
 node run-native-training-producer-fixtures.js
 node run-native-training-product-contract-fixtures.js
 node run-native-training-product-fixtures.js
@@ -81,6 +92,18 @@ node run-native-training-transfer-adversarial-fixtures.js
 ```
 
 ## Remaining Work
+
+Freeze a producer and generate its actual signed attempts before editing its
+method-bound files. Source fixtures must contain source only, never runtime
+authentication databases, private keys or exported credentials.
+
+A failed assessment can throw before the original collector records
+`response_sha256`, even when the signed journal binds the raw native JSONL and
+the process exit. A response-file hash observed after that failure cannot be
+presented as an original byte commitment. A future failed-product appraiser
+must distinguish those observations, inspect original final-event evidence and
+keep missing evidence and uncertainty explicit. The current held-row verifier
+does not implement that appraisal or discharge.
 
 New producer tuples require a reviewed exact compatibility change and adversarial
 replay. This catalog is not a human trust decision, quorum admission or execution

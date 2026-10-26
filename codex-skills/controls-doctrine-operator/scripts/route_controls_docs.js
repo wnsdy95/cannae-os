@@ -8,15 +8,15 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "native-producer-history",
-    keywords: ["native producer", "producer history", "training producer", "native-training-producer", "historical native", "inspect_controls_training_producer", "nativetrainingproducerinspection", "nativetraininghistoricalproducersnapshot"],
+    keywords: ["native producer", "producer history", "training producer", "native-training-producer", "native-training-snapshot", "deduplicated producer", "producer snapshots", "historical native", "inspect_controls_training_producer", "nativetrainingproducerinspection", "nativetraininghistoricalproducersnapshot"],
     docs: ["docs/native-training-producer-history.md", "docs/native-training-owner-consent.md", "docs/completion-backlog.md"],
-    commands: ["node run-native-training-producer-contract-fixtures.js", "node run-native-training-producer-fixtures.js", "node run-native-training-product-contract-fixtures.js"]
+    commands: ["node run-native-training-producer-contract-fixtures.js", "node run-native-training-snapshot-fixtures.js", "node run-native-training-producer-fixtures.js", "node run-native-training-product-contract-fixtures.js"]
   },
   {
     id: "task-training",
     keywords: ["task training", "task-training", "training evidence", "training qualification", "training session", "training-session", "prepare_controls_training_session", "tasktrainingstandard", "tasktrainingtrialrequest", "tasktrainingsessionbinding", "tasktrainingtrialappraisal", "tasktrainingsessionproposal", "tasktrainingsessionauthorization", "native training", "native-training", "training product", "codex-training-product", "prepare_controls_training_product", "nativetrainingproductrequest", "nativetrainingproductappraisal", "nativetrainingproductresponse", "nativetrainingproductpreview", "codextrainingproductinvocation", "codextrainingproductcollection", "trainingproducttransferconsent", "training transfer", "training handling", "operator-native-training", "nativetrainingtransferreviewrequest", "nativetrainingtransferauthorization", "operatornativetrainingproduct"],
     docs: ["docs/task-training-evidence.md", "docs/training-session-consent.md", "docs/native-training-products.md", "docs/native-training-owner-consent.md", "docs/training-progression-model.md", "docs/force-registry-enrollment.md", "docs/readiness-to-authority-policy.md"],
-    commands: ["node run-task-training-contract-fixtures.js", "node run-task-training-fixtures.js", "node run-training-session-contract-fixtures.js", "node run-training-session-fixtures.js", "node run-native-training-product-contract-fixtures.js", "node run-native-training-product-fixtures.js", "node run-native-training-transfer-contract-fixtures.js", "node run-native-training-transfer-fixtures.js", "node run-native-training-transfer-adversarial-fixtures.js", "node run-native-training-producer-contract-fixtures.js", "node run-native-training-producer-fixtures.js"]
+    commands: ["node run-task-training-contract-fixtures.js", "node run-task-training-fixtures.js", "node run-training-session-contract-fixtures.js", "node run-training-session-fixtures.js", "node run-native-training-product-contract-fixtures.js", "node run-native-training-product-fixtures.js", "node run-native-training-transfer-contract-fixtures.js", "node run-native-training-transfer-fixtures.js", "node run-native-training-transfer-adversarial-fixtures.js", "node run-native-training-producer-contract-fixtures.js", "node run-native-training-snapshot-fixtures.js", "node run-native-training-producer-fixtures.js"]
   },
   {
     id: "readiness-intersection",
@@ -584,7 +584,7 @@ const EXCLUDED_DIRS = new Set([
 const ROUTE_HINTS = [
   { id: "cli-model-selection", keywords: ["codex-model-selection", "codex-default-model-binding"] },
   { id: "advisory-dependency", keywords: ["ip-zone", "pre-zone", "github-release-independent-verification"] },
-  { id: "native-producer-history", keywords: ["native-training-producer", "inspect_controls_training_producer"] },
+  { id: "native-producer-history", keywords: ["native-training-producer", "native-training-snapshot", "inspect_controls_training_producer"] },
   { id: "task-training", keywords: ["task-training", "training-session", "native-training", "codex-training-product", "prepare_controls_training_product", "prepare_controls_training_session", "operator-console/training.js"] },
   { id: "force-registry", keywords: ["force-registry", "operate_controls_force_registry", "operator-console/force.js"] },
   { id: "workload-controls", keywords: ["workload-control", "workload-policy-assessment", "subject-bound-workload"] },

@@ -16,6 +16,14 @@ test("current measured bytes and the exact historical tuple are distinct", () =>
   assert(current.method_files.some(item => item.file === "native-training-producer.js"));
   assert.equal(old.source_revision, "cab6d098a1229ede35dff4697994ac34f5ad7418");
 });
+test("the later captured producer is historical-only with its exact schema and semantic bindings", () => {
+  const later = c.inspect(c.legacySnapshot("bcb79dd").method_sha256), type = "native-training-producer-inspection";
+  assert.equal(later.profile, "historical_bcb79dd"); assert.equal(later.source_revision, "bcb79dd9009e96d4ffd4acd5f449d218ba768846");
+  assert.deepEqual(require("./sample-payloads/valid-native-training-producer-inspection-bcb.json"), later);
+  for (const validate of [v.validatePayload, v.validateSchemaPayload]) { const result = validate(later, type); assert.equal(result.valid, true); assert.equal(result.can_execute, false); }
+  assert(v.validatePayload(require("./sample-payloads/invalid-native-training-producer-inspection-bcb.json"), type).issues.some(item => item.code === "NATIVE_TRAINING_PRODUCER_SUBSTITUTED"));
+  assert.notEqual(c.inspect().method_sha256, later.method_sha256); assert.equal(later.historical_execution_authorized, false); assert.equal(later.hold_discharge_authorized, false);
+});
 test("unknown same-version and hybrid metadata fail closed without an ignored digest", () => {
   const old = c.inspect(c.legacySnapshot().method_sha256), changed = JSON.parse(JSON.stringify(old));
   changed.method_files[0].sha256 = "0".repeat(64);
@@ -34,7 +42,9 @@ test("inspection cannot add authority, become work or mutate the next observatio
 test("both actual skill wrappers inspect but cannot sign, settle or run a historical producer", () => {
   for (const provider of ["codex-skills", ".claude/skills"]) {
     const script = path.join(__dirname, provider, "controls-doctrine-operator/scripts/inspect_controls_training_producer.js"), options = { cwd: __dirname, encoding: "utf8", env: { PATH: process.env.PATH, CANNAE_OS_HOME: __dirname, HOME: __dirname } };
-    const result = cp.spawnSync(process.execPath, [script, "inspect", c.legacySnapshot().method_sha256], options); assert.equal(result.status, 0, result.stderr); assert.equal(JSON.parse(result.stdout).hold_discharge_authorized, false);
+    for (const name of c.snapshotNames()) {
+      const result = cp.spawnSync(process.execPath, [script, "inspect", c.legacySnapshot(name).method_sha256], options); assert.equal(result.status, 0, result.stderr); assert.equal(JSON.parse(result.stdout).hold_discharge_authorized, false);
+    }
     for (const action of ["run", "authorize", "settle"]) assert.equal(cp.spawnSync(process.execPath, [script, action], options).status, 1);
     const invalid = cp.spawnSync(process.execPath, [script, "inspect", "PRIVATEVALUE-CANARY"], options); assert.equal(invalid.status, 1); assert(!invalid.stderr.includes("PRIVATEVALUE")); assert.equal(invalid.stdout, "");
   }
