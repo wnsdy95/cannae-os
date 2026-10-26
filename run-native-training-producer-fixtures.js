@@ -34,6 +34,15 @@ async function replayProducer(name) {
         else assert.equal(replay.product_output, observed.product_output);
         assert.equal(JSON.stringify(env.service.auth.db.prepare("SELECT * FROM operator_model_actions WHERE id=?").get(row.id)), original);
         assert.equal(digest(replay.result), digest(result));
+        if (mode === "wrongcase") {
+          const recovery = require("./native-training-reconciliation-fixtures/support"), p = await recovery.review(env, row.id);
+          assert.equal(p.subject.native_appraisal.producer_method_sha256, frozen.snapshot.method_sha256);
+          const receipt = await env.owner.post("/api/native-training-reconciliations/commit", recovery.ackInput(p));
+          assert.equal(receipt.record.type, "OperatorNativeTrainingReconciliationRecord"); assert.equal(receipt.record.execution_authorized, false);
+          const acknowledged = await env.owner.get(`/api/model-evaluations/${row.id}`); assert.equal(acknowledged.state, "held"); assert.equal(acknowledged.hold_preserved, false);
+          assert.equal(JSON.stringify(env.service.auth.db.prepare("SELECT * FROM operator_model_actions WHERE id=?").get(row.id)), original);
+          assert.equal(digest(acknowledged.result), digest(result));
+        }
         console.log(`PASS actual ${name} old ${mode === "success" ? "collected product" : "signed failed attempt"} replays through current owner API without rewriting or clearing authority`); passed++;
       } finally { await s.close(env); }
     }
@@ -43,6 +52,6 @@ async function replayProducer(name) {
 async function main() {
   for (const name of require("./native-training-producer").snapshotNames()) await replayProducer(name);
   console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, real_owner_actions: 0, historical_source_executed_in_fixture_only: true,
-    production_appraiser_runs_old_code: false, native_uncertainty_discharge_implemented: false, qualification_supported: false, all_eight_goals_complete: false }));
+    production_appraiser_runs_old_code: false, historical_appraisable_failure_acknowledgment_exercised: true, qualification_supported: false, all_eight_goals_complete: false }));
 }
 main().catch(error => { console.error(error.stack); console.error(JSON.stringify({ passed, failed: 1, unexecuted_suffix_not_passed: true })); process.exitCode = 1; });
