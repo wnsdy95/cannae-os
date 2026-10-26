@@ -35,11 +35,13 @@ function assertRoutes(result, expectedRoutes) {
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   for (const query of ["native training recovery", "native failure appraisal", "NativeTrainingFailureAppraisal", "OperatorNativeTrainingReconciliationAuthorization",
-    "OperatorNativeTrainingReconciliationRecord", "operator-native-training-failure.js", "native-training-failure-appraisal.schema.json"])
+    "OperatorNativeTrainingReconciliationRecord", "operator-native-training-failure.js", "native-training-failure-appraisal.schema.json", "native training reconciliation fresh owner ceremony durable one-use receipt history UI publication adversaries",
+    "run-native-training-reconciliation-fixtures.js", "run-native-training-reconciliation-crash-fixtures.js", "native-training-reconciliation-fixtures/browser-check.js", "run-native-training-reconciliation-source-fixtures.js"])
     for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
       const result = route(router, actor, query); assertRoutes(result, ["native-training-reconciliation"]); assert.equal(result.capability_routing.status, "covered");
       assert(result.recommended_documents.some(value => value.path === "docs/native-training-failure-reconciliation.md"));
-      for (const command of ["node run-native-training-reconciliation-contract-fixtures.js", "node run-native-training-failure-fixtures.js"]) assert(result.validation_commands.includes(command));
+      for (const command of ["node run-native-training-reconciliation-contract-fixtures.js", "node run-native-training-failure-fixtures.js", "node run-native-training-reconciliation-crash-fixtures.js", "node run-native-training-reconciliation-source-fixtures.js",
+        ...["prefixes", "authority", "receipts", "publication"].map(group => `node native-training-reconciliation-fixtures/control-group.js ${group}`)]) assert(result.validation_commands.includes(command));
     }
   for (const query of ["native producer history", "NativeTrainingProducerInspection", "NativeTrainingHistoricalProducerSnapshot", "inspect_controls_training_producer",
     "deduplicated producer snapshots", "run-native-training-snapshot-fixtures.js"])

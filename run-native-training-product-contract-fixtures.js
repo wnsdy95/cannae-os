@@ -61,4 +61,4 @@ test("proposal CLI emits a bounded code without a malformed-input canary", () =>
     assert.equal(result.status, 1); assert.equal(result.stdout, ""); assert.equal(result.stderr.trim(), "SEMANTIC_TRAINING_PROPOSAL_FAILED"); assert(!result.stderr.includes("PRIVATEVALUE"));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 });
-console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, owner_consent_producer_implemented: false, qualification_supported: false }));
+console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, owner_consent_producer_exercised: false, qualification_supported: false }));

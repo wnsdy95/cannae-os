@@ -100,17 +100,20 @@ authentication databases, private keys or exported credentials.
 A failed assessment can throw before the original collector records
 `response_sha256`, even when the signed journal binds the raw native JSONL and
 the process exit. A response-file hash observed after that failure cannot be
-presented as an original byte commitment. A future failed-product appraiser
-must distinguish those observations, inspect original final-event evidence and
-keep missing evidence and uncertainty explicit. The current held-row verifier
-does not implement that appraisal or discharge.
+presented as an original byte commitment. The dedicated
+[native failure appraiser and owner consumer](native-training-failure-reconciliation.md)
+distinguish those observations and inspect original final-event evidence,
+process absence and exact publication prefixes. The generic held-row verifier
+alone still does not supply that private-evidence appraisal or acknowledgment.
 
 New producer tuples require a reviewed exact compatibility change and adversarial
 replay. This catalog is not a human trust decision, quorum admission or execution
-attestation. Native uncertainty discharge still needs fresh authenticated human
-review, original-process proof, partial-publication appraisal and a durable
-one-use receipt. Missing original evidence, unknown processes and orphans retain
-separate holds. Grading, qualification, live grants, actual-model acceptance,
+attestation. Appraisable failures now have a native-only fresh owner ceremony,
+durable one-use receipt consumer and UI; genuine prior-producer fixtures exercise
+that path while preserving the original failure and publications. This is not
+real-human acceptance or a substitute for fresh consent to any later transfer.
+Missing original evidence, unknown processes and orphans retain separate holds.
+Grading, qualification, live grants, actual-model acceptance,
 controlled rollout and all eight full program outcomes remain open.
 
 This is local engineering synthesis of the existing

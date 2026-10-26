@@ -84,15 +84,17 @@ partial or acknowledgment-lost writes. A missing database result or changed
 original evidence cannot become an accepted collected row. Canonical candidate
 records alone are not independent publication finality or a grade.
 
-Partial writes, restart, unknown exit or lost acknowledgment stay held. Native
-uncertainty discharge is not implemented; omission/analysis reconciliation must
-refuse it. Never delete reservations, rewrite earlier failures, regenerate a
-missing signed record or rerun a task to clear a hold. Future reconciliation must
-bind exact original evidence and a fresh, separately authenticated USER decision.
-The [failure appraiser/contracts](native-training-failure-reconciliation.md) now
-provide a non-authorizing prerequisite: original evidence and deterministic
-publication-prefix inspection. They do not yet supply that fresh ceremony,
-receipt consumer, UI or discharge operation.
+Partial writes, restart, unknown exit or lost acknowledgment stay held unless
+the dedicated [native failure recovery](native-training-failure-reconciliation.md)
+can appraise the original evidence and consume a fresh authenticated owner
+acknowledgment. Its Model Actions UI binds the exact displayed subject, password,
+session, epoch, nonce and separate provider/publication/response-proof limits.
+The durable one-use receipt is reverified against private history. The original
+action remains `held`; a valid receipt only removes that failed transfer's fence
+on a separately approved future transfer. Omission/analysis reconciliation must
+still refuse this native purpose. Never delete reservations, rewrite earlier
+failures, regenerate missing evidence or rerun a task to clear a hold. Missing
+original evidence, uncertain process termination and orphan ownership remain held.
 
 ## Remaining Work
 
@@ -102,7 +104,7 @@ Playwright. Synthetic owners and measured fake processes are not real-account
 inference or protected execution. Preserve every failed source/log separately.
 
 Authenticated condition/step evaluation, complete cross-runtime failure history,
-uncertain-outcome discharge, separate USER qualification, P supervision and
+recovery for remaining held classes, separate USER qualification, P supervision and
 mandatory plan/model/policy/lease/gateway grant consumers remain open. Actual
 intent/delegation, initiative, COP/CoS, sustainment and production infrastructure
 also remain required. A `collected` row never supplies those missing outcomes.

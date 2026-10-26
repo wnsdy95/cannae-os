@@ -1,10 +1,10 @@
 const fs = require("node:fs"), path = require("node:path"), base = require("../native-training-product-fixtures/support"), native = require("../operator-native-training"), f = require("./contracts");
 function boundedClient(client) {
-  const assert = require("node:assert/strict");
+  const { assertHttpStatus } = require("../operator-consent-fixtures/support");
   return { ...client, async get(url, status = 200) { const response = await client.request("GET", url);
-    assert.equal(response.statusCode, status, `Unexpected HTTP status for ${url}; response body withheld.`); return response.json(); },
+    assertHttpStatus(response, status, "GET", url, "Unexpected fixture HTTP status; response body withheld."); return response.json(); },
   async post(url, input, status = 200) { const response = await client.request("POST", url, input);
-    assert.equal(response.statusCode, status, `Unexpected HTTP status for ${url}; response body withheld.`); return response.json(); } };
+    assertHttpStatus(response, status, "POST", url, "Unexpected fixture HTTP status; response body withheld."); return response.json(); } };
 }
 async function environment(options = {}) { const env = await base.environment({ ...options, operatorTraining: true }); env.owner = boundedClient(env.owner); return env; }
 function draft(env, mode = "success") {

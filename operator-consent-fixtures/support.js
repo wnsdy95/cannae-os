@@ -1,6 +1,18 @@
 const assert = require("node:assert/strict"), fs = require("node:fs"), path = require("node:path"), crypto = require("node:crypto");
 const cookie = require("@fastify/cookie");
 const password = "synthetic-owner-consent-password-2026";
+function assertHttpStatus(response, expected, method, url, message = response.body) {
+  try { assert.equal(response.statusCode, expected, message); }
+  catch (error) {
+    let body; try { body = response.json(); } catch { body = null; }
+    let pathname = "other"; try { pathname = new URL(url, "http://fixture.invalid").pathname.replace(/[a-f0-9]{8}-[a-f0-9-]{27,}/gi, "<id>"); } catch { /* Preserve the original status assertion. */ }
+    const code = value => typeof value === "string" && /^(?:CONSOLE|FORCE_REGISTRY|TRAINING_PRODUCT|NATIVE_TRAINING)_[A-Z0-9_]{1,96}$/.test(value);
+    error.fixture_http = { method: ["GET", "POST"].includes(method) ? method : "other", status: response.statusCode, expected_status: expected,
+      route: /^\/api\/(?:session|setup|login|logout|force-registry|training-products|model-evaluations)(?:\/(?:<id>|preview|commit|reconciliation|reconciliations)){0,3}$/.test(pathname) ? pathname : "other",
+      error_code: code(body?.error) ? body.error : null, reason_codes: Array.isArray(body?.reason_codes) ? body.reason_codes.filter(code).slice(0, 20) : [] };
+    throw error;
+  }
+}
 function client(service) {
   const jar = new Map(); let csrf;
   return {
@@ -12,8 +24,8 @@ function client(service) {
       for (const item of response.cookies) jar.set(item.name, item.value);
       return response;
     },
-    async get(url, expected = 200) { const r = await this.request("GET", url); assert.equal(r.statusCode, expected, r.body); return r.json(); },
-    async post(url, body, expected = 200) { const r = await this.request("POST", url, body); assert.equal(r.statusCode, expected, r.body); return r.json(); },
+    async get(url, expected = 200) { const r = await this.request("GET", url); assertHttpStatus(r, expected, "GET", url); return r.json(); },
+    async post(url, body, expected = 200) { const r = await this.request("POST", url, body); assertHttpStatus(r, expected, "POST", url); return r.json(); },
     async session() { const data = await this.get("/api/session"); csrf = data.csrf_token; return data; },
     storedSession() {
       const unsigned = cookie.unsign(jar.get("cannae_operator"), service.auth.secret);
@@ -44,4 +56,4 @@ const preview = (env, changes = {}) => env.owner.post("/api/order-decisions/prev
 const commitInput = p => ({ challenge_id: p.challenge_id, nonce: p.nonce, password, rationale: "Synthetic fixture decision; no real USER approval." });
 function store(env) { return require("../campaign-supervisor").loadVerifiedStore(env.options.repository, env.options.artifactRoot); }
 function count(env, kind) { return store(env).manifest.artifacts.filter(item => item.kind === kind).length; }
-module.exports = { client, environment, preview, commitInput, store, count, password };
+module.exports = { client, environment, preview, commitInput, store, count, password, assertHttpStatus };

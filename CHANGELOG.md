@@ -6,6 +6,26 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add native-only authenticated failed-transfer acknowledgment to the existing
+  owner service: fresh displayed-subject/password/session/epoch/nonce review,
+  independent provider/publication/response-proof acknowledgments, durable
+  reservation/receipt consumption and private-history reappraisal. Preserve
+  original failure, publications and all task/settlement/qualification limits.
+  Keep history readable with model execution disabled. Add actual API, process
+  death, publication adversary and desktop/mobile browser fixtures; both skills
+  route and require the dedicated procedure. Unknown/missing/orphan classes,
+  actual-model/owner acceptance, controlled rollout and full outcomes remain open.
+  Preserve browser Origin and parser-boundary failures before correcting test
+  clients/inputs. Exercise actual copied runtime source drift rather than mutating
+  a worker projection. Partition all 25 API cases into four required controls
+  without increasing the ten-minute control watchdog or weakening a denial.
+  Preserve the registry-audit failure and use five argument-free suite wrappers
+  for its unchanged compiler; verify their complete mapping and reject caller
+  arguments. Keep router controls separate and correct stale recovery guidance.
+  Split near-deadline registry receipt coverage without increasing its limit.
+  Preserve an unexplained setup refusal and subsequent passing diagnostic probes;
+  record bounded first-guard HTTP context before cleanup without logging bodies.
+
 - Bound validator schema loading to each input's file-reference closure, with
   nested single reads and fresh snapshots after return or exception. Missing
   roots and unresolved references fail closed; malformed referenced branches

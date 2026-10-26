@@ -39,6 +39,12 @@ never hide a missing expectation with a default empty array. A harness exception
 is a failed gate with an unexecuted suffix, even if individual runtime runners
 passed. Preserve its original source/log and verify the repaired CLI separately.
 
+For a browser fixture listening on an ephemeral port, switch from a pre-listen
+injection client to the actual origin and browser cookie/CSRF session. Preserve
+an Origin-denied result before repairing the harness; never relax host, Origin
+or CSRF checks to let a hardcoded-port fixture pass. Keep failed browser evidence
+separate from the corrected run and inspect desktop/mobile screenshots.
+
 ## Completion Audits
 
 For native training task products, read `docs/native-training-products.md` and
@@ -63,6 +69,22 @@ Exercise the actual routed mission setup before producer tests: missing inventor
 must be registered, not bypassed. For independent invalid-input cases, rebuild
 the content-derived ID and assert the first authoritative parser/semantic guard,
 not an unreachable later guard or a broader acceptable-error list.
+Keep candidate-registry checks argument-free even when the router uses bounded
+group arguments. Use every dedicated native recovery wrapper and audit the
+registry before an expensive proof. Regress each wrapper's exact case mapping
+and reject extra arguments before runtime loading; never widen the registry
+compiler or treat one group as complete coverage. The full aggregate also runs
+the dedicated entry points, so repeated cases are real additional work, not skips.
+Keep all five registry groups even though the router has four controls: split
+near-deadline receipt coverage instead of extending the five-minute registry
+limit. Before fixture cleanup, retain phase, normalized route, actual/expected
+status and bounded error codes, never bodies or credentials. An instrumented
+passing replay does not establish an unexplained original refusal's cause;
+preserve that uncertainty and require separate unchanged-transport acceptance.
+Keep an unknown-field injection below the server body limit; test oversized
+requests separately at their earlier parser guard. Fault the actual consumer-owned
+runtime in an isolated copy, not an exported worker projection that the consumer
+does not read. Preserve every failed expectation before correcting its target.
 Apply transfer checks to the exact minimized outbound prompt, not unrelated
 sibling cases in the complete owner review. Keep those siblings out of the
 prompt and regress that forbidden selected content still fails; never weaken

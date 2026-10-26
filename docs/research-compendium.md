@@ -8,8 +8,25 @@ publication prefixes. A missing response-file commitment stays null; a current
 file observation and canonical equality cannot manufacture original byte proof.
 Inspect all deterministic publication IDs, not only the failed row's nullable
 references. Even a complete candidate publication is not a grade or hold
-discharge. These contracts precede, rather than replace, fresh authenticated owner
-approval and a durable one-use consumer. This is local synthesis.
+discharge. The dedicated owner ceremony now binds displayed subject, password,
+session/epoch/nonce and separate provider/publication/response-proof acknowledgments
+to a durable one-use receipt. Its private-history consumer reappraises original
+evidence and restores the hold on drift; it never rewrites failure, admits output,
+settles artifacts or grades a performer. Offline signature validity is not that
+consumer. Model-disabled history remains readable without enabling new execution.
+Missing/unknown/orphan classes and actual-model/owner acceptance remain open.
+This is local synthesis, not protected process or provider attestation.
+
+A command accepted by the router is not automatically valid for the stricter
+candidate registry. Preserve the failed registry audit, use dedicated
+argument-free suites for all five registry groups, verify their exact mapping and reject
+extra arguments before runtime loading. Keep the original compiler and deadlines;
+the root aggregate honestly repeats coverage of both entry surfaces.
+Split a near-deadline receipt suite rather than extending its five-minute
+registry limit; the four routed controls retain their ten-minute watchdog.
+Record bounded first-guard HTTP context before fixture cleanup. A later passing
+instrumented replay leaves an earlier unrecorded setup refusal unexplained,
+not fixed; never remove that uncertainty or the original failed source/log.
 
 ## Preserve Actual Producers Before Upgrading Consumers (2026-10-26)
 

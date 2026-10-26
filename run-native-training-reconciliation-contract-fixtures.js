@@ -84,4 +84,4 @@ test("native, issuance and channel bindings measure the appraisal, contracts and
     }
   }
 });
-console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, real_owner_actions: 0, native_owner_ceremony_implemented: false, hold_discharge_implemented: false, all_eight_goals_complete: false }));
+console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, real_owner_actions: 0, native_owner_ceremony_exercised: false, hold_discharge_exercised: false, all_eight_goals_complete: false }));
