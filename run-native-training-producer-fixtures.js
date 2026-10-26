@@ -3,9 +3,9 @@ const fs = require("node:fs"), path = require("node:path"), assert = require("no
 const f = require("./native-training-producer-fixtures/support"), c = require("./native-training-product-contract"), core = require("./native-training-product-controller"), collector = require("./codex-training-product-collector");
 const native = require("./operator-native-training"), { digest } = require("./operator-consent-contract");
 let passed = 0;
-async function main() {
-  const frozen = f.restoreProducer(), s = frozen.support;
-  console.log("PASS exact archived producer commit, complete tree, method files and original source digest restored"); passed++;
+async function replayProducer(name) {
+  const frozen = f.restoreProducer(name), s = frozen.support;
+  console.log(`PASS exact ${name} archived producer commit, complete tree, method files and original source digest restored`); passed++;
   try {
     for (const mode of ["wrongcase", "success"]) {
       const env = await s.environment();
@@ -34,11 +34,14 @@ async function main() {
         else assert.equal(replay.product_output, observed.product_output);
         assert.equal(JSON.stringify(env.service.auth.db.prepare("SELECT * FROM operator_model_actions WHERE id=?").get(row.id)), original);
         assert.equal(digest(replay.result), digest(result));
-        console.log(`PASS actual old ${mode === "success" ? "collected product" : "signed failed attempt"} replays through current owner API without rewriting or clearing authority`); passed++;
+        console.log(`PASS actual ${name} old ${mode === "success" ? "collected product" : "signed failed attempt"} replays through current owner API without rewriting or clearing authority`); passed++;
       } finally { await s.close(env); }
     }
     assert.equal(require(path.join(frozen.root, "skill-mission-controller")).repositoryStateDigest(frozen.root), frozen.snapshot.source_state_sha256);
   } finally { fs.rmSync(frozen.temporary, { recursive: true, force: true }); }
+}
+async function main() {
+  for (const name of require("./native-training-producer").snapshotNames()) await replayProducer(name);
   console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, real_owner_actions: 0, historical_source_executed_in_fixture_only: true,
     production_appraiser_runs_old_code: false, native_uncertainty_discharge_implemented: false, qualification_supported: false, all_eight_goals_complete: false }));
 }

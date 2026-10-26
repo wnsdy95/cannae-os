@@ -1,7 +1,8 @@
 # Schema Files
 
 `native-training-producer-inspection.schema.json` binds the complete recognized
-method-file tuple to non-authorizing inspection. Unknown/hybrid producers fail;
+method-file tuple to non-authorizing current or exact two-generation historical
+inspection. Unknown/hybrid producers fail;
 history readability grants neither execution nor hold discharge. See
 [producer history](../docs/native-training-producer-history.md).
 

@@ -18,7 +18,8 @@
       "type": "string",
       "enum": [
         "current",
-        "historical_cab6d09"
+        "historical_cab6d09",
+        "historical_bcb79dd"
       ]
     },
     "method_sha256": {

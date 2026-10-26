@@ -46,9 +46,19 @@ Literal task matching is not a stable cross-mission capability/performer registr
 
 For native consumer upgrades, route to `docs/native-training-producer-history.md`
 and use `scripts/inspect_controls_training_producer.js inspect <method-sha256>`.
-Run both producer fixture runners before accepting a new consumer. Preserve the
+Run the producer contract, snapshot and actual prior-producer runners before
+accepting a new consumer. Preserve the
 real old producer, exact source/ignored directory shape and original records;
 inspection never signs, executes, settles, qualifies or clears a native hold.
+Freeze the actual current producer and its signed attempts before changing
+method-bound files. For later snapshots, reference already retained archives by
+exact path/size/hash instead of embedding recursive copies; hydrate and verify
+the complete original tree and source digest before any fixture execution.
+Keep runtime authentication databases and private keys out of source snapshots.
+For a failed collection, inspect which hashes the original journal actually
+contains. A later response-file hash is a new observation, not an original byte
+commitment; missing original evidence must not become a fabricated success or
+automatic hold discharge.
 
 ## Manual Receipt Procedure
 

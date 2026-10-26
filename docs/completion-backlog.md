@@ -79,6 +79,11 @@ the USER and continue independent in-scope work.
 The [native producer-history foundation](native-training-producer-history.md)
 preserves exact original owner evidence across method-hash upgrades. Inspection
 and historical readability cannot authorize new execution or clear a failure.
+Two captured source generations and a deduplicated snapshot format now preserve
+the complete original tree without recursive archive copies. Restoration and
+inspection checks are separate from each producer's actual prior-code replay
+and hosted acceptance. Missing original response hashes cannot be filled in by
+a later file observation. This prerequisite is not native recovery completion.
 Its prior-code regression does not complete native uncertainty discharge,
 orphan/unknown-process recovery, grading, qualification, live grant consumers,
 actual-model acceptance or any full program outcome.

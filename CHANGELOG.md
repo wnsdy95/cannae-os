@@ -6,6 +6,16 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Preserve the actual `bcb79dd` native owner producer before method-bound edits.
+  Add exact second-generation inspection and flattened fixture snapshots that
+  reference existing source archives by path/size/hash, verify buffers before
+  extraction and reconstruct the complete original Git identity. Regress source
+  substitution, cached catalog drift and both historical owner consumers; keep
+  fresh execution current-only. Both skills now require freeze-before-edit and
+  distinguish missing original response commitments from later observations.
+  This is a recovery prerequisite, not hold discharge, qualification or full
+  program acceptance.
+
 - Add bounded method-channel fixture phase telemetry for actual SDK requests,
   native-hook pre/postflight and owned transport cleanup. Preserve result/error
   identity, existing deadlines and privacy; distinguish local-parent CPU from

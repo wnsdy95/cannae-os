@@ -12,6 +12,9 @@ applies the existing exact-producer compatibility pattern to original native
 owner evidence. Current-engine replay, the pinned prior-source regression and
 current-only admission are local engineering policy, not new military sources,
 a human trust decision or protected execution attestation.
+The second producer's flattened source snapshot retains the complete original
+tree through exact external-blob commitments. This is fixture preservation, not
+an independently attested runtime or a newly accepted trust root.
 
 The [native owner-transfer candidate](native-training-owner-consent.md) rechecks
 the existing official Codex JSONL source on 2026-10-25. Exact human handling
