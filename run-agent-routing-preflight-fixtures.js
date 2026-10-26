@@ -90,6 +90,12 @@ function routeWithSkill(skillRoot, query, args = []) {
 const delegatedArgs = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"];
 const routingCases = [
   {
+    name: "plain method control diagnostics reach the channel rather than only intent guidance",
+    query: "method control SDK timeout lineage performance diagnostic",
+    required: ["docs/method-control-channel.md", "docs/method-deviation-runtime.md", "docs/enforced-dispatch-and-resume.md"],
+    command: "node run-method-control-contract-fixtures.js"
+  },
+  {
     name: "effect settlement keeps both task documents behind a large role bundle",
     query: "effect settlement exact USER verification evidence",
     required: ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md"],

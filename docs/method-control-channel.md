@@ -212,6 +212,15 @@ an earlier SDK failure. Correlate narrowly filtered host sleep events without
 equating a later local expiry with the original hosted timeout. Never increase
 deadlines, renew approval or clear a hold to make either run pass.
 
+Distinguish client waiting from actual server work before choosing an optimization.
+Correlate the exact request digest with server handler entry, child CPU and bounded
+file-read counts; parent event-loop delay is not child CPU. Diagnostic preloads may
+perturb timings and are not launch attestation. Revalidate without instrumentation.
+When schema loading dominates, the validator loads the selected reference closure
+within one synchronous validation only; it never caches a live channel, consent,
+repository state or runtime digest across calls. Preserve every publication and
+freshness guard, then run the original continuation matrix at unchanged deadlines.
+
 Run `node run-method-control-contract-fixtures.js`, broker transport/integration
 fixtures, dispatch/method/adoption/lifecycle regressions, historical and current
 release-verifier replay, source/routing checks and both provider skills before

@@ -169,8 +169,13 @@ never treats an artifact's own retrieval or record time as the current clock.
 - The exported `validateSchemaPayload` path performs structural-only
   preflight where time-based semantic errors need separate policy codes.
 - Each synchronous `validatePayload` invocation uses one schema snapshot for
-  its nested checks. The snapshot is discarded on return or exception; the next
-  invocation reads current schema files again.
+  its nested checks. Load the selected root's complete file-reference closure,
+  including unselected branches, rather than parsing every unrelated schema.
+  Nested types join that same snapshot and read each required file once. The
+  snapshot is discarded on return or exception; the next invocation reads current
+  files again. An absent root throws `VALIDATOR_ROOT_SCHEMA_REQUIRED`; unresolved
+  references remain blocking `UNRESOLVED_REF` issues. This is input validation,
+  not a whole-corpus JSON integrity audit or a cache of consent/runtime appraisal.
 - This remains a repository-specific subset, not a complete JSON Schema
   draft 2020-12 implementation.
 - Does not yet resolve recursive or remote refs.

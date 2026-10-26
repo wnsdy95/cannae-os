@@ -143,7 +143,7 @@ const RULES = [
   },
   {
     id: "method-control-channel",
-    keywords: ["method control channel", "method channel", "method-control", "method broker", "MCP method", "operate_controls_channel", "serve_controls_methods"],
+    keywords: ["method control", "method channel", "method-control", "method broker", "MCP method", "operate_controls_channel", "serve_controls_methods"],
     docs: ["docs/method-control-channel.md", "docs/method-deviation-runtime.md", "docs/enforced-dispatch-and-resume.md"],
     commands: ["node run-method-control-contract-fixtures.js"]
   },

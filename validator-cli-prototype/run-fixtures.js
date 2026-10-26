@@ -9,6 +9,7 @@ const { validatePayload, validateSchemaPayload } = require("./validate");
 
 const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
+const readJsonFixture = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), "utf8"));
 
 const fixtures = [
   ...[["native-training-failure-appraisal", "NATIVE_RECONCILIATION_RESPONSE_COMMITMENT_INVALID"],
@@ -275,6 +276,74 @@ const fixtures = [
         assert(reads.size > 0); assert([...reads.values()].every(count => count === 1));
       } finally { fs.readFileSync = original; }
     } },
+  { name: "schema snapshots read only the selected reference closure and never survive a call", check() {
+    const payload = readJsonFixture("sample-payloads/valid-mission.json");
+    const original = fs.readFileSync, root = path.join(ROOT, "schema-files") + path.sep, reads = new Map();
+    try {
+      fs.readFileSync = function(file, ...args) {
+        if (typeof file === "string" && file.startsWith(root)) reads.set(path.basename(file), (reads.get(path.basename(file)) || 0) + 1);
+        return original.call(this, file, ...args);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) assert.equal(validate(payload, "mission").valid, true);
+      assert.deepEqual([...reads.keys()].sort(), ["common.schema.json", "mission.schema.json"]);
+      assert([...reads.values()].every(count => count === 2));
+    } finally { fs.readFileSync = original; }
+  } },
+  { name: "changed referenced schemas are reloaded and malformed unused branches fail closed", check() {
+    const payload = readJsonFixture("sample-payloads/valid-mission.json");
+    const original = fs.readFileSync, root = path.join(ROOT, "schema-files");
+    try {
+      fs.readFileSync = function(file, ...args) {
+        const raw = original.call(this, file, ...args);
+        if (file !== path.join(root, "common.schema.json")) return raw;
+        const schema = JSON.parse(raw); schema.$defs.id.const = "unmatchable-synthetic-id";
+        return JSON.stringify(schema);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) {
+        const result = validate(payload, "mission");
+        assert.equal(result.valid, false); assert.equal(result.can_execute, false);
+        assert(result.issues.some(item => item.code === "CONST_MISMATCH" && item.path === "$.id"));
+      }
+      fs.readFileSync = function(file, ...args) {
+        if (file === path.join(root, "agent.schema.json")) return "{malformed-synthetic-schema";
+        const raw = original.call(this, file, ...args);
+        if (file !== path.join(root, "mission.schema.json")) return raw;
+        const schema = JSON.parse(raw); schema.$defs = { unused: { $ref: "agent.schema.json" } };
+        return JSON.stringify(schema);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) assert.throws(() => validate(payload, "mission"), SyntaxError);
+    } finally { fs.readFileSync = original; }
+    assert.equal(validatePayload(payload, "mission").valid, true);
+  } },
+  { name: "missing root or referenced schemas never validate through an absent or inherited entry", check() {
+    const payload = readJsonFixture("sample-payloads/valid-mission.json");
+    const original = fs.readdirSync, read = fs.readFileSync, root = path.join(ROOT, "schema-files");
+    try {
+      for (const missing of ["mission.schema.json", "common.schema.json"]) {
+        fs.readdirSync = function(dir, ...args) {
+          const files = original.call(this, dir, ...args);
+          return dir === root ? files.filter(file => file !== missing) : files;
+        };
+        for (const validate of [validateSchemaPayload, validatePayload]) {
+          if (missing === "mission.schema.json") assert.throws(() => validate(payload, "mission"), /^Error: VALIDATOR_ROOT_SCHEMA_REQUIRED$/);
+          else {
+            const result = validate(payload, "mission");
+            assert.equal(result.valid, false); assert.equal(result.can_execute, false);
+            assert(result.issues.some(item => item.code === "UNRESOLVED_REF"));
+          }
+        }
+      }
+      fs.readdirSync = original;
+      fs.readFileSync = function(file, ...args) {
+        return file === path.join(root, "mission.schema.json") ? JSON.stringify({ $ref: "__proto__" }) : read.call(this, file, ...args);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) {
+        const result = validate(payload, "mission");
+        assert.equal(result.valid, false); assert(result.issues.some(item => item.code === "UNRESOLVED_REF"));
+      }
+    } finally { fs.readdirSync = original; fs.readFileSync = read; }
+    assert.equal(validatePayload(payload, "mission").valid, true);
+  } },
   { name: "schema snapshot refreshes after return and exceptional validation", file: "sample-payloads/valid-mission.json",
     check() {
       const payload = JSON.parse(fs.readFileSync(path.join(ROOT, this.file), "utf8"));

@@ -684,6 +684,15 @@ synchronous operation scope, keyed by exact history and subject. Keep live
 freshness outside that cache and start publication with a fresh appraisal.
 Never make a passing test depend on extending authority or reusing cached consent.
 
+For method control SDK timeouts, distinguish parent waiting from child handler
+work. Retain request-correlated server CPU/read counts without raw arguments,
+then run uninstrumented acceptance at the original deadline. If schema loading
+dominates, restrict each synchronous validation to its root's reference closure;
+regress missing roots/refs, malformed unselected branches, nested single reads and
+fresh schemas after return/exception. Never reuse that snapshot across requests
+or cache live authority/publication checks. A plain `method control` query must
+reach the channel procedure in both skills, not only general intent guidance.
+
 Start targeted, then broaden:
 
 1. Validate the exact new/changed artifact.
