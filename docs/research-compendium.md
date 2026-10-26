@@ -17,6 +17,12 @@ consumer. Model-disabled history remains readable without enabling new execution
 Missing/unknown/orphan classes and actual-model/owner acceptance remain open.
 This is local synthesis, not protected process or provider attestation.
 
+A command accepted by the router is not automatically valid for the stricter
+candidate registry. Preserve the failed registry audit, use dedicated
+argument-free suites for all four groups, verify their exact mapping and reject
+extra arguments before runtime loading. Keep the original compiler and deadlines;
+the root aggregate honestly repeats coverage of both entry surfaces.
+
 ## Preserve Actual Producers Before Upgrading Consumers (2026-10-26)
 
 The [native producer-history foundation](native-training-producer-history.md)

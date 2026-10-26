@@ -69,6 +69,12 @@ Exercise the actual routed mission setup before producer tests: missing inventor
 must be registered, not bypassed. For independent invalid-input cases, rebuild
 the content-derived ID and assert the first authoritative parser/semantic guard,
 not an unreachable later guard or a broader acceptable-error list.
+Keep candidate-registry checks argument-free even when the router uses bounded
+group arguments. Use every dedicated native recovery wrapper and audit the
+registry before an expensive proof. Regress each wrapper's exact case mapping
+and reject extra arguments before runtime loading; never widen the registry
+compiler or treat one group as complete coverage. The full aggregate also runs
+the dedicated entry points, so repeated cases are real additional work, not skips.
 Keep an unknown-field injection below the server body limit; test oversized
 requests separately at their earlier parser guard. Fault the actual consumer-owned
 runtime in an isolated copy, not an exported worker projection that the consumer

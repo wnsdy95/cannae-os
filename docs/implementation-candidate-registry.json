@@ -2807,10 +2807,10 @@
             "node run-native-training-producer-fixtures.js",
             "node run-native-training-reconciliation-contract-fixtures.js",
             "node run-native-training-failure-fixtures.js",
-            "node native-training-reconciliation-fixtures/control-group.js prefixes",
-            "node native-training-reconciliation-fixtures/control-group.js authority",
-            "node native-training-reconciliation-fixtures/control-group.js receipts",
-            "node native-training-reconciliation-fixtures/control-group.js publication",
+            "node run-native-training-reconciliation-prefixes-fixtures.js",
+            "node run-native-training-reconciliation-authority-fixtures.js",
+            "node run-native-training-reconciliation-receipts-fixtures.js",
+            "node run-native-training-reconciliation-publication-fixtures.js",
             "node run-native-training-reconciliation-crash-fixtures.js",
             "node run-native-training-reconciliation-source-fixtures.js"
           ]
@@ -2867,10 +2867,10 @@
             "node run-native-training-producer-fixtures.js",
             "node run-native-training-reconciliation-contract-fixtures.js",
             "node run-native-training-failure-fixtures.js",
-            "node native-training-reconciliation-fixtures/control-group.js prefixes",
-            "node native-training-reconciliation-fixtures/control-group.js authority",
-            "node native-training-reconciliation-fixtures/control-group.js receipts",
-            "node native-training-reconciliation-fixtures/control-group.js publication",
+            "node run-native-training-reconciliation-prefixes-fixtures.js",
+            "node run-native-training-reconciliation-authority-fixtures.js",
+            "node run-native-training-reconciliation-receipts-fixtures.js",
+            "node run-native-training-reconciliation-publication-fixtures.js",
             "node run-native-training-reconciliation-crash-fixtures.js",
             "node run-native-training-reconciliation-source-fixtures.js"
           ]

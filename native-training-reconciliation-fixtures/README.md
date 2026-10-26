@@ -15,4 +15,9 @@ owner consent. No authentication database, raw model payload or private key
 belongs in a source snapshot.
 
 See [native failure recovery](../docs/native-training-failure-reconciliation.md).
+The candidate registry uses the four argument-free root suites named there,
+not the router's argument-bearing group command. Every group remains required;
+the full root aggregate also exercises those entry points without skipping its
+original full matrix. The source fixture tests their exact mapping and closed
+argument boundary before its actual copied-source drift check.
 The owner ceremony/UI/receipt consumer and actual hold discharge remain absent.

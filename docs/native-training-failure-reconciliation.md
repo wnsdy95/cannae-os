@@ -167,6 +167,22 @@ actual isolated runtime file; mutating an exported worker configuration copy is
 not a source-drift test. Unknown-field injection uses a compact payload so the
 closed-object guard is reached; oversized requests separately require HTTP 413.
 
+Candidate-registry verification retains its existing argument-free fixture rule.
+Its four dedicated entry points execute the same complete partition:
+
+```bash
+node run-native-training-reconciliation-prefixes-fixtures.js
+node run-native-training-reconciliation-authority-fixtures.js
+node run-native-training-reconciliation-receipts-fixtures.js
+node run-native-training-reconciliation-publication-fixtures.js
+```
+
+Never put the argument-bearing router commands in the registry or relax its
+compiler to accept them. All four wrappers are required and reject extra
+arguments before loading the runtime. The root aggregate exercises both the full
+matrix and these executable entry points; this adds repeated coverage, not a skip
+or a longer timeout. The source fixture also checks their exact group mapping.
+
 The failure matrix generates actual synthetic native rejection and failures
 before authorization, before output, before result and after complete canonical
 publication. `--case <name>` is a focused development selection, not a full-matrix

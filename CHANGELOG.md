@@ -19,6 +19,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   clients/inputs. Exercise actual copied runtime source drift rather than mutating
   a worker projection. Partition all 25 API cases into four required controls
   without increasing the ten-minute control watchdog or weakening a denial.
+  Preserve the registry-audit failure and use four argument-free suite wrappers
+  for its unchanged compiler; verify their complete mapping and reject caller
+  arguments. Keep router controls separate and correct stale recovery guidance.
 
 - Bound validator schema loading to each input's file-reference closure, with
   nested single reads and fresh snapshots after return or exception. Missing
