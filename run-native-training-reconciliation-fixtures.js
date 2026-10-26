@@ -39,7 +39,8 @@ add("wrong password, nonce, caller subject and authority fail before reservation
   const p = await s.review(env, id), input = s.ackInput(p);
   await env.owner.post(endpoint, { ...input, password: "incorrect-synthetic-password" }, 403);
   await env.owner.post(endpoint, { ...input, nonce: "x".repeat(43) }, 409);
-  for (const [key, value] of [["subject", p.subject], ["actor", "USER"], ["release_authorized", true]]) await env.owner.post(endpoint, { ...input, [key]: value }, 400);
+  for (const [key, value] of [["subject", { synthetic: true }], ["actor", "USER"], ["release_authorized", true]]) await env.owner.post(endpoint, { ...input, [key]: value }, 400);
+  await env.owner.post(endpoint, { ...input, subject: { oversized_synthetic_value: "x".repeat(4096) } }, 413);
   assert.equal(attempt(env, p).authorization, null); assert.equal((await s.inspect(env, id)).hold_preserved, true);
 });
 add("another session and a viewer cannot consume an owner challenge", async (env, id) => {
@@ -95,13 +96,10 @@ add("live or unobservable original processes cannot consume a native review", as
   }
   assert.equal(attempt(env, p).authorization, null);
 });
-add("missing original bytes and changed runtime source cannot consume a native review", async (env, id) => {
+add("missing original bytes cannot consume a native review", async (env, id) => {
   const p = await s.review(env, id), file = path.join(s.directory(env, id), "native-events.jsonl"), backup = file + ".fixture-backup";
   try { fs.renameSync(file, backup); assert.equal((await env.owner.post(endpoint, s.ackInput(p), 409)).error, "CONSOLE_NATIVE_RECONCILIATION_ORIGINAL_EVIDENCE_MISSING"); }
   finally { fs.renameSync(backup, file); }
-  const source = env.service.configuration.sourceSha256;
-  try { env.service.configuration.sourceSha256 = "0".repeat(64); assert.equal((await env.owner.post(endpoint, s.ackInput(p), 409)).error, "CONSOLE_MODEL_SOURCE_CHANGED"); }
-  finally { env.service.configuration.sourceSha256 = source; }
   assert.equal(attempt(env, p).authorization, null); assert.equal((await s.inspect(env, id)).hold_preserved, true);
 });
 add("a response race after reservation fails receipt persistence and keeps the original hold", async (env, id) => {
@@ -147,7 +145,8 @@ async function run(selected = cases) {
     let env;
     try { env = await s.environment(); const id = await s.failed(env, item.mode); await item.run(env, id); results.push({ name: item.name, passed: true }); console.log(`PASS ${item.name}`); }
     catch (error) { const location = String(error.stack).match(/run-native-training-reconciliation-fixtures\.js:(\d+):\d+/);
-      results.push({ name: item.name, passed: false, code: /^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message : "NATIVE_RECOVERY_FIXTURE_FAILED", line: location ? Number(location[1]) : null }); console.error(JSON.stringify(results.at(-1))); }
+      results.push({ name: item.name, passed: false, code: /^CONSOLE_[A-Z_]+$/.test(error.message) ? error.message : "NATIVE_RECOVERY_FIXTURE_FAILED", line: location ? Number(location[1]) : null,
+        actual_status: typeof error.actual === "number" ? error.actual : null, expected_status: typeof error.expected === "number" ? error.expected : null }); console.error(JSON.stringify(results.at(-1))); }
     finally { if (env) await s.close(env); }
   }
   const result = { total: results.length, planned_cases: cases.length, passed: results.filter(item => item.passed).length, failed: results.filter(item => !item.passed).length, focused_subset: selected !== cases,

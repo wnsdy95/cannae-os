@@ -143,10 +143,29 @@ node run-native-training-reconciliation-contract-fixtures.js
 node run-native-training-failure-fixtures.js
 node run-native-training-reconciliation-fixtures.js
 node run-native-training-reconciliation-crash-fixtures.js
+node run-native-training-reconciliation-source-fixtures.js
 node run-native-training-producer-fixtures.js
 node run-operator-model-reconciliation-contract-fixtures.js
 node run-operator-analysis-reconciliation-contract-fixtures.js
 ```
+
+The full API matrix remains the default aggregate regression. Mandatory skill
+controls run its complete 25-case partition through four commands:
+
+```bash
+node native-training-reconciliation-fixtures/control-group.js prefixes
+node native-training-reconciliation-fixtures/control-group.js authority
+node native-training-reconciliation-fixtures/control-group.js receipts
+node native-training-reconciliation-fixtures/control-group.js publication
+```
+
+All four are required, not alternative focused selections. Their 5/6/8/6 cases
+cover the same matrix exactly once; an added case requires an explicit partition
+update. This keeps each control inside the existing ten-minute watchdog without
+extending authority or skipping cases. The separate source fixture changes an
+actual isolated runtime file; mutating an exported worker configuration copy is
+not a source-drift test. Unknown-field injection uses a compact payload so the
+closed-object guard is reached; oversized requests separately require HTTP 413.
 
 The failure matrix generates actual synthetic native rejection and failures
 before authorization, before output, before result and after complete canonical

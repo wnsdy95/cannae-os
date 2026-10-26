@@ -15,6 +15,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
   death, publication adversary and desktop/mobile browser fixtures; both skills
   route and require the dedicated procedure. Unknown/missing/orphan classes,
   actual-model/owner acceptance, controlled rollout and full outcomes remain open.
+  Preserve browser Origin and parser-boundary failures before correcting test
+  clients/inputs. Exercise actual copied runtime source drift rather than mutating
+  a worker projection. Partition all 25 API cases into four required controls
+  without increasing the ten-minute control watchdog or weakening a denial.
 
 - Bound validator schema loading to each input's file-reference closure, with
   nested single reads and fresh snapshots after return or exception. Missing

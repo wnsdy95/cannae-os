@@ -69,6 +69,10 @@ Exercise the actual routed mission setup before producer tests: missing inventor
 must be registered, not bypassed. For independent invalid-input cases, rebuild
 the content-derived ID and assert the first authoritative parser/semantic guard,
 not an unreachable later guard or a broader acceptable-error list.
+Keep an unknown-field injection below the server body limit; test oversized
+requests separately at their earlier parser guard. Fault the actual consumer-owned
+runtime in an isolated copy, not an exported worker projection that the consumer
+does not read. Preserve every failed expectation before correcting its target.
 Apply transfer checks to the exact minimized outbound prompt, not unrelated
 sibling cases in the complete owner review. Keep those siblings out of the
 prompt and regress that forbidden selected content still fails; never weaken

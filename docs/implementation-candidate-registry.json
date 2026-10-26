@@ -2807,8 +2807,12 @@
             "node run-native-training-producer-fixtures.js",
             "node run-native-training-reconciliation-contract-fixtures.js",
             "node run-native-training-failure-fixtures.js",
-            "node run-native-training-reconciliation-fixtures.js",
-            "node run-native-training-reconciliation-crash-fixtures.js"
+            "node native-training-reconciliation-fixtures/control-group.js prefixes",
+            "node native-training-reconciliation-fixtures/control-group.js authority",
+            "node native-training-reconciliation-fixtures/control-group.js receipts",
+            "node native-training-reconciliation-fixtures/control-group.js publication",
+            "node run-native-training-reconciliation-crash-fixtures.js",
+            "node run-native-training-reconciliation-source-fixtures.js"
           ]
         }
       ],
@@ -2841,7 +2845,9 @@
         "run-native-training-failure-fixtures.js",
         "run-native-training-reconciliation-fixtures.js",
         "run-native-training-reconciliation-crash-fixtures.js",
-        "native-training-reconciliation-fixtures/browser-check.js"
+        "native-training-reconciliation-fixtures/browser-check.js",
+        "native-training-reconciliation-fixtures/control-group.js",
+        "run-native-training-reconciliation-source-fixtures.js"
       ],
       "acceptance_criteria": [
         {
@@ -2861,8 +2867,12 @@
             "node run-native-training-producer-fixtures.js",
             "node run-native-training-reconciliation-contract-fixtures.js",
             "node run-native-training-failure-fixtures.js",
-            "node run-native-training-reconciliation-fixtures.js",
-            "node run-native-training-reconciliation-crash-fixtures.js"
+            "node native-training-reconciliation-fixtures/control-group.js prefixes",
+            "node native-training-reconciliation-fixtures/control-group.js authority",
+            "node native-training-reconciliation-fixtures/control-group.js receipts",
+            "node native-training-reconciliation-fixtures/control-group.js publication",
+            "node run-native-training-reconciliation-crash-fixtures.js",
+            "node run-native-training-reconciliation-source-fixtures.js"
           ]
         }
       ],

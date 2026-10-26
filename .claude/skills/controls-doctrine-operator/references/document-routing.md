@@ -72,6 +72,9 @@ acknowledgments. Inspect the actual persisted receipt after delivery loss rather
 than reposting it. A failed/ignored receipt write requires fresh consent. History
 must reappraise private original evidence even with model execution disabled;
 drift restores the hold. Acknowledgment admits no work, grade, settlement or grant.
+Run all four routed control groups (`prefixes`, `authority`, `receipts`,
+`publication`); they partition the complete matrix to fit the unchanged
+ten-minute per-control watchdog. A passing group alone is not a full matrix.
 Distinguish rejected responses from accepted task bytes and inspect all three
 deterministic publication IDs even when the failed row has null references.
 Do not regenerate missing output. A later hash of an originally unbound response
