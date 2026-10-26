@@ -27,7 +27,15 @@ async function main() {
       dialog: document.querySelector("#detail").getBoundingClientRect().width, buttons: [...document.querySelectorAll("#model-hold-form button")].map(node => ({ width: node.clientWidth, content: node.scrollWidth })),
       images: [...document.images].filter(node => node.getBoundingClientRect().width).map(node => node.complete && node.naturalWidth > 0) }));
       assert(value.document <= value.viewport && value.dialog <= value.viewport); assert(value.buttons.every(item => item.content <= item.width)); assert(value.images.every(Boolean)); return value; }
-    await login("owner"); await select(first);
+    await login("owner");
+    // Injection clients use the pre-listen port; browser fixtures use real origin and cookies.
+    let csrf;
+    const live = { async request(method, url, input) {
+      const response = await page.request.fetch(env.service.origin() + url, { method, ...(input === undefined ? {} : { data: input }),
+        headers: method === "POST" ? { origin: env.service.origin(), "x-csrf-token": csrf } : {} });
+      const value = await response.json(); return { statusCode: response.status(), json: () => value };
+    }, async session() { const response = await this.request("GET", "/api/session"); assert.equal(response.statusCode, 200); const value = response.json(); csrf = value.csrf_token; return value; } };
+    env.owner = s.boundedClient(live); await env.owner.session(); await select(first);
     const reviewUrl = `**/api/training-products/${first}/reconciliation/preview`;
     for (const change of ["purpose", "response_binding"]) {
       await page.route(reviewUrl, async route => { const response = await route.fetch(), value = await response.json();

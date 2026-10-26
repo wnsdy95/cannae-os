@@ -39,6 +39,12 @@ never hide a missing expectation with a default empty array. A harness exception
 is a failed gate with an unexecuted suffix, even if individual runtime runners
 passed. Preserve its original source/log and verify the repaired CLI separately.
 
+For a browser fixture listening on an ephemeral port, switch from a pre-listen
+injection client to the actual origin and browser cookie/CSRF session. Preserve
+an Origin-denied result before repairing the harness; never relax host, Origin
+or CSRF checks to let a hardcoded-port fixture pass. Keep failed browser evidence
+separate from the corrected run and inspect desktop/mobile screenshots.
+
 ## Completion Audits
 
 For native training task products, read `docs/native-training-products.md` and
