@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Bound validator schema loading to each input's file-reference closure, with
+  nested single reads and fresh snapshots after return or exception. Missing
+  roots and unresolved references fail closed; malformed referenced branches
+  still reject. Keep runtime/authority/publication checks and SDK deadlines
+  unchanged. Both skills route plain method control diagnostics to the channel
+  and require child-side measurement plus uninstrumented continuation acceptance.
+
 - Add a dedicated native failure appraiser and three strict recovery contracts.
   Replay original authorization/consent/reservation/journal/native events,
   observe child/group absence and inspect all four exact canonical publication

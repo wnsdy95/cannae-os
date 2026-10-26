@@ -437,13 +437,27 @@ function validateCapabilityRouting(payload, options = {}) {
 }
 
 function loadSchemas() {
-  const schemas = {};
-  for (const file of fs.readdirSync(SCHEMA_DIR)) {
-    if (file.endsWith(".json")) {
-      schemas[file] = readJson(path.join(SCHEMA_DIR, file));
+  return { files: new Set(fs.readdirSync(SCHEMA_DIR).filter(file => file.endsWith(".json"))),
+    schemas: Object.create(null) };
+}
+
+function loadSchema(snapshot, file) {
+  if (Object.hasOwn(snapshot.schemas, file)) return snapshot.schemas[file];
+  if (!snapshot.files.has(file)) return undefined;
+  const schema = readJson(path.join(SCHEMA_DIR, file));
+  snapshot.schemas[file] = schema;
+  // Load the whole reference closure, including branches the input will not select.
+  const pending = [schema];
+  while (pending.length) {
+    const node = pending.pop();
+    if (!node || typeof node !== "object") continue;
+    if (typeof node.$ref === "string") {
+      const referencedFile = node.$ref.split("#")[0];
+      if (referencedFile) loadSchema(snapshot, referencedFile);
     }
+    pending.push(...Object.values(node));
   }
-  return schemas;
+  return schema;
 }
 
 function resolveRef(ref, schemas, rootSchema) {
@@ -6174,10 +6188,11 @@ let activeSchemaSnapshot = null;
 
 function validateSchemaPayload(payload, type) {
   if (!Object.hasOwn(TYPE_TO_SCHEMA, type)) throw new Error(`Unknown payload type: ${type}`);
-  const schemas = activeSchemaSnapshot || loadSchemas();
-  const schema = schemas[TYPE_TO_SCHEMA[type]];
+  const snapshot = activeSchemaSnapshot || loadSchemas();
+  const schema = loadSchema(snapshot, TYPE_TO_SCHEMA[type]);
+  if (!schema || typeof schema !== "object") throw new Error("VALIDATOR_ROOT_SCHEMA_REQUIRED");
   return validationResult(
-    validateSchema(payload, schema, schemas)
+    validateSchema(payload, schema, snapshot.schemas)
       .map(item => ({ ...item, layer: "schema" })), type, payload
   );
 }
