@@ -2720,7 +2720,10 @@
         "schema-files/native-training-transfer-review-request.schema.json",
         "schema-files/native-training-transfer-authorization.schema.json",
         "schema-files/operator-native-training-product.schema.json",
-        "schema-files/native-training-producer-inspection.schema.json"
+        "schema-files/native-training-producer-inspection.schema.json",
+        "schema-files/native-training-failure-appraisal.schema.json",
+        "schema-files/operator-native-training-reconciliation-authorization.schema.json",
+        "schema-files/operator-native-training-reconciliation-record.schema.json"
       ],
       "acceptance_criteria": [
         {
@@ -2731,7 +2734,8 @@
             "node run-training-session-contract-fixtures.js",
             "node run-native-training-product-contract-fixtures.js",
             "node run-native-training-transfer-contract-fixtures.js",
-            "node run-native-training-producer-contract-fixtures.js"
+            "node run-native-training-producer-contract-fixtures.js",
+            "node run-native-training-reconciliation-contract-fixtures.js"
           ]
         }
       ],
@@ -2778,7 +2782,9 @@
         "operator-native-training.js",
         "operator-semantic-service.js",
         "native-training-transfer-contract.js",
-        "native-training-producer.js"
+        "native-training-producer.js",
+        "operator-native-training-failure.js",
+        "operator-native-training-reconciliation-contract.js"
       ],
       "acceptance_criteria": [
         {
@@ -2795,7 +2801,9 @@
             "node run-native-training-transfer-fixtures.js",
             "node run-native-training-transfer-adversarial-fixtures.js",
             "node run-native-training-producer-contract-fixtures.js",
-            "node run-native-training-producer-fixtures.js"
+            "node run-native-training-producer-fixtures.js",
+            "node run-native-training-reconciliation-contract-fixtures.js",
+            "node run-native-training-failure-fixtures.js"
           ]
         }
       ],
@@ -2823,7 +2831,9 @@
         "run-native-training-transfer-fixtures.js",
         "run-native-training-transfer-adversarial-fixtures.js",
         "run-native-training-producer-contract-fixtures.js",
-        "run-native-training-producer-fixtures.js"
+        "run-native-training-producer-fixtures.js",
+        "run-native-training-reconciliation-contract-fixtures.js",
+        "run-native-training-failure-fixtures.js"
       ],
       "acceptance_criteria": [
         {
@@ -2840,7 +2850,9 @@
             "node run-native-training-transfer-fixtures.js",
             "node run-native-training-transfer-adversarial-fixtures.js",
             "node run-native-training-producer-contract-fixtures.js",
-            "node run-native-training-producer-fixtures.js"
+            "node run-native-training-producer-fixtures.js",
+            "node run-native-training-reconciliation-contract-fixtures.js",
+            "node run-native-training-failure-fixtures.js"
           ]
         }
       ],

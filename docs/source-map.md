@@ -7,6 +7,12 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [native failure-recovery candidate](native-training-failure-reconciliation.md)
+appraises original local journal/JSONL/process/publication evidence without
+re-execution. Its purpose-specific contracts and missing-original-hash distinction
+are local engineering policy, not new military sources, native identity,
+independent time/process attestation or a completed owner ceremony.
+
 The [native producer-history foundation](native-training-producer-history.md)
 applies the existing exact-producer compatibility pattern to original native
 owner evidence. Current-engine replay, the pinned prior-source regression and

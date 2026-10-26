@@ -60,6 +60,20 @@ contains. A later response-file hash is a new observation, not an original byte
 commitment; missing original evidence must not become a fabricated success or
 automatic hold discharge.
 
+## Native Failure Evidence
+
+For failed native transfers, read `docs/native-training-failure-reconciliation.md`.
+Run the dedicated contract and actual failure matrix, not just the generic
+signature audit. Appraisal remains inspection-only: the native owner ceremony,
+durable receipt consumer and UI are not implemented, so never script the older
+omission/analysis endpoint to clear a native hold.
+Distinguish rejected responses from accepted task bytes and inspect all three
+deterministic publication IDs even when the failed row has null references.
+Do not regenerate missing output. A later hash of an originally unbound response
+is a current observation; freeze it in any future review and reject review-time
+drift without claiming an original byte commitment. Keep missing evidence,
+reused/unobservable PIDs and orphan ownership held separately.
+
 ## Manual Receipt Procedure
 
 Use only for diagnosis/lower-level integration, not default dispatch. Give the

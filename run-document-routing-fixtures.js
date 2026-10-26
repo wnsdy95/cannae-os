@@ -34,6 +34,13 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["native training recovery", "native failure appraisal", "NativeTrainingFailureAppraisal", "OperatorNativeTrainingReconciliationAuthorization",
+    "OperatorNativeTrainingReconciliationRecord", "operator-native-training-failure.js", "native-training-failure-appraisal.schema.json"])
+    for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+      const result = route(router, actor, query); assertRoutes(result, ["native-training-reconciliation"]); assert.equal(result.capability_routing.status, "covered");
+      assert(result.recommended_documents.some(value => value.path === "docs/native-training-failure-reconciliation.md"));
+      for (const command of ["node run-native-training-reconciliation-contract-fixtures.js", "node run-native-training-failure-fixtures.js"]) assert(result.validation_commands.includes(command));
+    }
   for (const query of ["native producer history", "NativeTrainingProducerInspection", "NativeTrainingHistoricalProducerSnapshot", "inspect_controls_training_producer",
     "deduplicated producer snapshots", "run-native-training-snapshot-fixtures.js"])
     for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {

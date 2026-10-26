@@ -15,6 +15,7 @@ const { consentIssues } = require("../operator-consent-contract");
 const { reconciliationIssues, TYPES: RECONCILIATION_TYPES } = require("../operator-reconciliation-contract");
 const { contractIssues: modelReconciliationIssues, TYPES: MODEL_RECONCILIATION_TYPES } = require("../operator-model-reconciliation-contract");
 const { contractIssues: analysisReconciliationIssues, TYPES: ANALYSIS_RECONCILIATION_TYPES } = require("../operator-analysis-reconciliation-contract");
+const { contractIssues: nativeReconciliationIssues, TYPES: NATIVE_RECONCILIATION_TYPES } = require("../operator-native-training-reconciliation-contract");
 const { evaluationIssues, TYPES: MODEL_EVALUATION_TYPES } = require("../operator-semantic-evaluation-contract");
 const { evaluationIssues: analysisEvaluationIssues, TYPES: ANALYSIS_EVALUATION_TYPES } = require("../operator-order-analysis-contract");
 const { selectionIssues } = require("../codex-model-selection-contract");
@@ -157,6 +158,9 @@ const TYPE_TO_SCHEMA = {
   "operator-model-reconciliation-record": "operator-model-reconciliation-record.schema.json",
   "operator-analysis-reconciliation-authorization": "operator-analysis-reconciliation-authorization.schema.json",
   "operator-analysis-reconciliation-record": "operator-analysis-reconciliation-record.schema.json",
+  "native-training-failure-appraisal": "native-training-failure-appraisal.schema.json",
+  "operator-native-training-reconciliation-authorization": "operator-native-training-reconciliation-authorization.schema.json",
+  "operator-native-training-reconciliation-record": "operator-native-training-reconciliation-record.schema.json",
   "operator-semantic-evaluation": "operator-semantic-evaluation.schema.json",
   "operator-order-analysis": "operator-order-analysis.schema.json",
   "order-analysis-response": "order-analysis-response.schema.json",
@@ -6155,7 +6159,7 @@ function validationResult(issues, type, payload) {
   const severity = maxSeverity(issues);
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
-    can_execute: !Object.hasOwn(require("../native-training-producer").SCHEMAS, type) && !Object.hasOwn(require("../native-training-transfer-contract").SCHEMAS, type) && !Object.hasOwn(require("../native-training-product-contract").SCHEMAS, type) && !Object.hasOwn(require("../training-session-contract").SCHEMAS, type) && !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
+    can_execute: !NATIVE_RECONCILIATION_TYPES.has(type) && !Object.hasOwn(require("../native-training-producer").SCHEMAS, type) && !Object.hasOwn(require("../native-training-transfer-contract").SCHEMAS, type) && !Object.hasOwn(require("../native-training-product-contract").SCHEMAS, type) && !Object.hasOwn(require("../training-session-contract").SCHEMAS, type) && !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
       !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !Object.hasOwn(require("../task-training-contract").SCHEMAS, type) && !["frago", "frago-scope-change", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification", "codex-model-selection"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "readiness-event" && type !== "readiness-drop-reconciliation" && type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
@@ -6202,7 +6206,7 @@ function validatePayloadInSnapshot(payload, type, options) {
       .map(item => ({ ...item, layer: "semantic" })) : []),
     ...(schemaResult.valid && type === "readiness-drop-reconciliation" ?
       require("../readiness-drop-revocation-runner").reconciliationIssues(payload).map(item => ({ ...item, layer: "semantic" })) : []),
-    ...(schemaResult.valid ? [...selectionIssues(payload, type), ...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type), ...analysisReconciliationIssues(payload, type), ...evaluationIssues(payload, type), ...analysisEvaluationIssues(payload, type), ...requirementInventoryIssues(payload, type), ...planningIssues(payload, type)]
+    ...(schemaResult.valid ? [...selectionIssues(payload, type), ...intakeIssues(payload, type), ...adoptionIssues(payload, type), ...revisionIssues(payload, type), ...intentIssues(payload, type), ...methodIssues(payload, type), ...methodControlIssues(payload, type), ...issuanceIssues(payload, type), ...copIssues(payload, type), ...consentIssues(payload, type), ...reconciliationIssues(payload, type), ...modelReconciliationIssues(payload, type), ...analysisReconciliationIssues(payload, type), ...nativeReconciliationIssues(payload, type), ...evaluationIssues(payload, type), ...analysisEvaluationIssues(payload, type), ...requirementInventoryIssues(payload, type), ...planningIssues(payload, type)]
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {

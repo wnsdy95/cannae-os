@@ -1,5 +1,14 @@
 # Schema Files
 
+Native failure-recovery candidate contracts:
+`native-training-failure-appraisal.schema.json`,
+`operator-native-training-reconciliation-authorization.schema.json` and
+`operator-native-training-reconciliation-record.schema.json`.
+They distinguish original native-event commitments from current unbound-file
+observations, and exact publication prefixes. They grant no task admission,
+qualification or execution. The live owner ceremony/receipt consumer remains
+unimplemented; read [native recovery](../docs/native-training-failure-reconciliation.md).
+
 `native-training-producer-inspection.schema.json` binds the complete recognized
 method-file tuple to non-authorizing current or exact two-generation historical
 inspection. Unknown/hybrid producers fail;

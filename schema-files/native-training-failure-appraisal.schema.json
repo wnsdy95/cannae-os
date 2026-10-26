@@ -1,0 +1,421 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "NativeTrainingFailureAppraisal"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^NTFAP-[a-f0-9]{40}$"
+    },
+    "action_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "collection_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "request_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "original_action_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "invocation_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "consent_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "result_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "journal_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "reservation_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "transfer_authorization_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "producer_method_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "trusted_key_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "native_events_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "native_thread_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "process_id": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 9007199254740991
+    },
+    "child_exit_recorded": {
+      "type": "boolean",
+      "const": true
+    },
+    "child_absence_observed": {
+      "type": "boolean",
+      "const": true
+    },
+    "process_group_absence_observed": {
+      "type": "boolean",
+      "const": true
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "original_file_sha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observed_file_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "canonical_payload_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "original_file_bytes_bound": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "original_file_sha256",
+        "observed_file_sha256",
+        "canonical_payload_sha256",
+        "original_file_bytes_bound"
+      ],
+      "additionalProperties": false
+    },
+    "assessment": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "rejected_response"
+            },
+            "rejection_code": {
+              "type": "string",
+              "enum": [
+                "SEMANTIC_TRAINING_RESPONSE_SUBSTITUTED",
+                "SEMANTIC_TRAINING_CONTRACT_INVALID",
+                "SEMANTIC_TRAINING_PRODUCT_SIZE_INVALID",
+                "SEMANTIC_TRAINING_CONTROL_METADATA_NOT_PRODUCT",
+                "SEMANTIC_TRAINING_OUTPUT_QUARANTINED"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "rejection_code"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "accepted_native_product"
+            },
+            "appraisal_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "output_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "output_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65536
+            }
+          },
+          "required": [
+            "kind",
+            "appraisal_sha256",
+            "output_sha256",
+            "output_bytes"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "publication": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "none",
+            "authorization_only",
+            "authorization_and_output",
+            "complete"
+          ]
+        },
+        "authorization_ref": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "output_ref": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result_ref": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "artifact_settlement_authorized": {
+          "type": "boolean",
+          "const": false
+        },
+        "task_output_admitted": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "required": [
+        "state",
+        "authorization_ref",
+        "output_ref",
+        "result_ref",
+        "artifact_settlement_authorized",
+        "task_output_admitted"
+      ],
+      "additionalProperties": false
+    },
+    "inspection_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "private_history_required_for_consumption": {
+      "type": "boolean",
+      "const": true
+    },
+    "process_identity_independently_attested": {
+      "type": "boolean",
+      "const": false
+    },
+    "actual_model_execution_attested": {
+      "type": "boolean",
+      "const": false
+    },
+    "task_standard_evaluated": {
+      "type": "boolean",
+      "const": false
+    },
+    "evaluator_authenticated": {
+      "type": "boolean",
+      "const": false
+    },
+    "hold_discharge_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    },
+    "qualification_granted": {
+      "type": "boolean",
+      "const": false
+    },
+    "grant_restoration_authorized": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "action_id",
+    "collection_id",
+    "request_ref",
+    "original_action_sha256",
+    "invocation_sha256",
+    "consent_sha256",
+    "result_sha256",
+    "journal_sha256",
+    "reservation_sha256",
+    "transfer_authorization_sha256",
+    "producer_method_sha256",
+    "trusted_key_sha256",
+    "native_events_sha256",
+    "native_thread_id",
+    "process_id",
+    "child_exit_recorded",
+    "child_absence_observed",
+    "process_group_absence_observed",
+    "response",
+    "assessment",
+    "publication",
+    "inspection_only",
+    "private_history_required_for_consumption",
+    "process_identity_independently_attested",
+    "actual_model_execution_attested",
+    "task_standard_evaluated",
+    "evaluator_authenticated",
+    "hold_discharge_authorized",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority",
+    "qualification_granted",
+    "grant_restoration_authorized"
+  ],
+  "additionalProperties": false,
+  "$id": "native-training-failure-appraisal.schema.json"
+}
