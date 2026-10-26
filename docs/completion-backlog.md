@@ -76,6 +76,13 @@ the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
+The [native failure appraiser/contracts](native-training-failure-reconciliation.md)
+now distinguish actual rejected responses, originally bound task products and
+four canonical publication prefixes without replaying a model or publishing.
+The separate fresh owner ceremony, durable receipt consumption, UI and actual
+native hold discharge are still unimplemented. Missing evidence, unknown
+processes and orphans remain explicit separate obligations, not waived cases.
+
 The [native producer-history foundation](native-training-producer-history.md)
 preserves exact original owner evidence across method-hash upgrades. Inspection
 and historical readability cannot authorize new execution or clear a failure.

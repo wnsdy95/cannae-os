@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "native-training-reconciliation",
+    keywords: ["native training recovery", "native failure reconciliation", "native failure appraisal", "failed native", "native-training-failure", "native-training-reconciliation", "operator-native-training-failure", "operator-native-training-reconciliation", "nativetrainingfailureappraisal", "operatornativetrainingreconciliationauthorization", "operatornativetrainingreconciliationrecord"],
+    docs: ["docs/native-training-failure-reconciliation.md", "docs/native-training-owner-consent.md", "docs/native-training-producer-history.md", "docs/completion-backlog.md"],
+    commands: ["node run-native-training-reconciliation-contract-fixtures.js", "node run-native-training-failure-fixtures.js", "node run-operator-model-reconciliation-contract-fixtures.js", "node run-operator-analysis-reconciliation-contract-fixtures.js", "node run-native-training-producer-contract-fixtures.js"]
+  },
+  {
     id: "native-producer-history",
     keywords: ["native producer", "producer history", "training producer", "native-training-producer", "native-training-snapshot", "deduplicated producer", "producer snapshots", "historical native", "inspect_controls_training_producer", "nativetrainingproducerinspection", "nativetraininghistoricalproducersnapshot"],
     docs: ["docs/native-training-producer-history.md", "docs/native-training-owner-consent.md", "docs/completion-backlog.md"],
@@ -582,6 +588,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "native-training-reconciliation", keywords: ["native-training-failure", "native-training-reconciliation", "operator-native-training-failure", "operator-native-training-reconciliation"] },
   { id: "cli-model-selection", keywords: ["codex-model-selection", "codex-default-model-binding"] },
   { id: "advisory-dependency", keywords: ["ip-zone", "pre-zone", "github-release-independent-verification"] },
   { id: "native-producer-history", keywords: ["native-training-producer", "native-training-snapshot", "inspect_controls_training_producer"] },

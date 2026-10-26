@@ -8,7 +8,9 @@ const catalogs = [
   if (sha256(bytes) !== entry.sha256) throw new Error("SEMANTIC_TRAINING_PRODUCER_CATALOG_CHANGED");
   return { ...entry, value: JSON.parse(bytes) };
 });
-const METHOD_FILES = Object.freeze([...catalogs[0].value.method_files.map(item => item.file), "native-training-producer.js", ...catalogs.map(entry => entry.path)]);
+const METHOD_FILES = Object.freeze([...catalogs[0].value.method_files.map(item => item.file), "native-training-producer.js", ...catalogs.map(entry => entry.path),
+  "operator-native-training-failure.js", "operator-native-training-reconciliation-contract.js", "operator-reconciliation-contract-core.js",
+  "schema-files/native-training-failure-appraisal.schema.json", "schema-files/operator-native-training-reconciliation-authorization.schema.json", "schema-files/operator-native-training-reconciliation-record.schema.json"]);
 const hex = z.string().regex(/^[a-f0-9]{64}$/), gitId = z.string().regex(/^[a-f0-9]{40}$/);
 const flags = Object.fromEntries(Object.entries(t.FLAGS).map(([key, value]) => [key, z.literal(value)]));
 const INSPECTION = z.strictObject({ schema_version: z.literal("0.1"), type: z.literal("NativeTrainingProducerInspection"),

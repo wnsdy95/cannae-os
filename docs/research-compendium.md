@@ -1,5 +1,16 @@
 # Research Compendium
 
+## Failed Native Evidence Must Not Become Synthetic Success (2026-10-26)
+
+The [native failure appraiser](native-training-failure-reconciliation.md) checks
+actual original signed scope, raw native-event commitments and exact canonical
+publication prefixes. A missing response-file commitment stays null; a current
+file observation and canonical equality cannot manufacture original byte proof.
+Inspect all deterministic publication IDs, not only the failed row's nullable
+references. Even a complete candidate publication is not a grade or hold
+discharge. These contracts precede, rather than replace, fresh authenticated owner
+approval and a durable one-use consumer. This is local synthesis.
+
 ## Preserve Actual Producers Before Upgrading Consumers (2026-10-26)
 
 The [native producer-history foundation](native-training-producer-history.md)

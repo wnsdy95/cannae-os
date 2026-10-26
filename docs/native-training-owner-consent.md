@@ -89,6 +89,10 @@ uncertainty discharge is not implemented; omission/analysis reconciliation must
 refuse it. Never delete reservations, rewrite earlier failures, regenerate a
 missing signed record or rerun a task to clear a hold. Future reconciliation must
 bind exact original evidence and a fresh, separately authenticated USER decision.
+The [failure appraiser/contracts](native-training-failure-reconciliation.md) now
+provide a non-authorizing prerequisite: original evidence and deterministic
+publication-prefix inspection. They do not yet supply that fresh ceremony,
+receipt consumer, UI or discharge operation.
 
 ## Remaining Work
 

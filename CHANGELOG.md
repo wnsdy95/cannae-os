@@ -6,6 +6,16 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add a dedicated native failure appraiser and three strict recovery contracts.
+  Replay original authorization/consent/reservation/journal/native events,
+  observe child/group absence and inspect all four exact canonical publication
+  prefixes without rerunning or repairing output. Keep missing original
+  response-file commitments distinct from current observations. Add actual
+  rejection/partial-publication fixtures, generic non-executable validation,
+  offline signature audit and measured native/channel/issuance bindings.
+  Both skills route and enforce the new appraisal checks. Fresh owner approval,
+  durable receipt consumption, UI and native hold discharge remain unimplemented.
+
 - Preserve the actual `bcb79dd` native owner producer before method-bound edits.
   Add exact second-generation inspection and flattened fixture snapshots that
   reference existing source archives by path/size/hash, verify buffers before
