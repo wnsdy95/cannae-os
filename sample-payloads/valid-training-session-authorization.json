@@ -282,8 +282,8 @@
         "release_authorized": false
       },
       "issuance_ref": {
-        "artifact_id": "DLI-13aa21e90f17a35b7d9a9dfe55f154110f73e705",
-        "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-13aa21e90f17a35b7d9a9dfe55f154110f73e705.json",
+        "artifact_id": "DLI-4ced78024bd7ed39cc1d74ddaa12055e738e16c2",
+        "relative_path": "repositories/fixture/missions/MIS-FIXTURE/W1/controls/DLI-4ced78024bd7ed39cc1d74ddaa12055e738e16c2.json",
         "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
       }
     },
@@ -514,8 +514,8 @@
       "valid_until": "2026-07-23T06:30:00Z"
     }
   },
-  "review_sha256": "8751ce60819033aa6bdcc8b047edfb4359740572e4ef65c07f2428ea75de8f24",
-  "displayed_review_sha256": "8751ce60819033aa6bdcc8b047edfb4359740572e4ef65c07f2428ea75de8f24",
+  "review_sha256": "e4f2a75cf8ba0f0d56d451c0b41a6176fb6e4fb8041a00b25c73931e1de88a7e",
+  "displayed_review_sha256": "e4f2a75cf8ba0f0d56d451c0b41a6176fb6e4fb8041a00b25c73931e1de88a7e",
   "execution_authorized": false,
   "release_authorized": false,
   "human_final_decision_authority": "USER",
@@ -524,6 +524,6 @@
   "signature": {
     "algorithm": "Ed25519",
     "key_sha256": "a9123481ddb94a276c0441ddc5f2adbd52b9f7b090387166f111e12f014a5af6",
-    "value": "poJolYKnT9qvhvmhUVDQ0uOyBCE9eXEymub6G/868dT+UyHkVHY5qLm4d/KZJI+NeeDpTy4iUa8d0w9DHASnAA=="
+    "value": "lDBPkRrMHYviQOc9Hb/g5UJ95uxcAk/M0sy01N7k2Au+BKV4xeuSl5GVJE6eY65q+JDgi6/+Gf91doDBDe8/Ag=="
   }
 }

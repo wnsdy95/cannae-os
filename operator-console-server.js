@@ -37,7 +37,7 @@ async function createConsole(options) {
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false, useDefaults: false } } });
   const configuration = { repository: repository.root, repositoryKey: repository.key,
     artifactRoot, identity: repository.identity_fingerprint, sourceSha256: repositoryStateDigest(ROOT), semantic: profiles.semantic, analysis: profiles.analysis, training: profiles.training,
-    ...(profiles.training ? { trainingArtifactRoot: require("./operator-native-training").canonicalScopePath(artifactRoot) } : {}) };
+    trainingArtifactRoot: require("./operator-native-training").canonicalScopePath(artifactRoot) };
   let consent;
   try { consent = openConsentService(auth, configuration); }
   catch (error) { auth.close(); throw error; }
@@ -224,6 +224,15 @@ async function createConsole(options) {
   }) } }, async request => semantic.reconciliation.commit(request.session, request.body, "order_analysis"));
   app.get("/api/order-analyses/:id/reconciliations", { schema: { params: plain({ id: uuid }) } },
     async request => semantic.reconciliation.list(request.session, request.params.id, "order_analysis"));
+  app.post("/api/training-products/:id/reconciliation/preview", { onRequest: guard,
+    schema: { params: plain({ id: uuid }), body: plain({}) } }, async request => semantic.reconciliation.prepare(request.session, request.params.id, "native_training"));
+  app.post("/api/native-training-reconciliations/commit", { onRequest: guard, config: authLimit, schema: { body: plain({
+    reconciliation_id: uuid, nonce: { type: "string", pattern: "^[A-Za-z0-9_-]{43}$" }, password: text(128), rationale: text(2000),
+    displayed_subject_sha256: { type: "string", pattern: "^[a-f0-9]{64}$" }, acknowledge_provider_uncertainty: { const: true },
+    acknowledge_native_publication: { const: true }, acknowledge_response_observation: { const: true }
+  }) } }, async request => semantic.reconciliation.commit(request.session, request.body, "native_training"));
+  app.get("/api/training-products/:id/reconciliations", { schema: { params: plain({ id: uuid }) } },
+    async request => semantic.reconciliation.list(request.session, request.params.id, "native_training"));
   app.post("/api/order-decisions/preview", { onRequest: guard, schema: { body: plain({
     entry_id: { type: "string", pattern: "^[a-f0-9]{64}$" }, manifest: { type: "string", pattern: "^[a-f0-9]{64}$" },
     rehearsal_id: { type: "string", pattern: "^(none|[a-f0-9]{64})$" }, disposition: { type: "string", enum: ["approve", "reject", "revise"] }

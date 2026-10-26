@@ -2784,7 +2784,10 @@
         "native-training-transfer-contract.js",
         "native-training-producer.js",
         "operator-native-training-failure.js",
-        "operator-native-training-reconciliation-contract.js"
+        "operator-native-training-reconciliation-contract.js",
+        "operator-model-reconciliation-service.js",
+        "operator-console-server.js",
+        "operator-console/semantic.js"
       ],
       "acceptance_criteria": [
         {
@@ -2803,7 +2806,9 @@
             "node run-native-training-producer-contract-fixtures.js",
             "node run-native-training-producer-fixtures.js",
             "node run-native-training-reconciliation-contract-fixtures.js",
-            "node run-native-training-failure-fixtures.js"
+            "node run-native-training-failure-fixtures.js",
+            "node run-native-training-reconciliation-fixtures.js",
+            "node run-native-training-reconciliation-crash-fixtures.js"
           ]
         }
       ],
@@ -2833,7 +2838,10 @@
         "run-native-training-producer-contract-fixtures.js",
         "run-native-training-producer-fixtures.js",
         "run-native-training-reconciliation-contract-fixtures.js",
-        "run-native-training-failure-fixtures.js"
+        "run-native-training-failure-fixtures.js",
+        "run-native-training-reconciliation-fixtures.js",
+        "run-native-training-reconciliation-crash-fixtures.js",
+        "native-training-reconciliation-fixtures/browser-check.js"
       ],
       "acceptance_criteria": [
         {
@@ -2852,7 +2860,9 @@
             "node run-native-training-producer-contract-fixtures.js",
             "node run-native-training-producer-fixtures.js",
             "node run-native-training-reconciliation-contract-fixtures.js",
-            "node run-native-training-failure-fixtures.js"
+            "node run-native-training-failure-fixtures.js",
+            "node run-native-training-reconciliation-fixtures.js",
+            "node run-native-training-reconciliation-crash-fixtures.js"
           ]
         }
       ],

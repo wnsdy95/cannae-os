@@ -5,6 +5,8 @@ const { loadVerifiedStore } = require("./campaign-supervisor");
 const { repositoryStateDigest } = require("./skill-mission-controller");
 const omissionContract = require("./operator-model-reconciliation-contract");
 const analysisContract = require("./operator-analysis-reconciliation-contract");
+const nativeContract = require("./operator-native-training-reconciliation-contract");
+const { FLAGS } = require("./task-training-contract");
 const { analysisPublication, samePublicationHistory } = require("./operator-analysis-publication");
 const { isModelCode } = require("./operator-semantic-evaluation-contract");
 const AUTHORITY = { execution_authorized: false, release_authorized: false, human_final_decision_authority: "USER" };
@@ -24,6 +26,8 @@ function absent(pid) {
 }
 function profileFor(action) {
   const invocation = JSON.parse(action.preview);
+  if (invocation.type === "CodexTrainingProductInvocation") return { id: "native_training", resultVersion: "0.1", collectionType: "CodexTrainingProductCollection",
+    authorizationTag: "OperatorNativeTrainingReconciliationAuthorization", authorizationPrefix: "ONTRA", purpose: "acknowledge_one_failed_native_training_transfer", ...nativeContract };
   if (invocation.type === "CodexSemanticInvocation") return { id: "semantic_omission", resultVersion: "0.2", collectionType: "CodexSemanticCollection",
     authorizationTag: "OperatorModelReconciliationAuthorization", authorizationPrefix: "OMRA", purpose: "acknowledge_one_failed_model_transfer", ...omissionContract };
   requireThat(invocation.type === "CodexOrderAnalysisInvocation", "CONSOLE_MODEL_RECONCILIATION_PURPOSE_UNSUPPORTED", 409);
@@ -41,6 +45,7 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
   db.prepare("UPDATE operator_model_reconciliations SET state='invalidated' WHERE state='pending'").run();
   const rows = id => db.prepare("SELECT * FROM operator_model_reconciliations WHERE action_id=? AND state NOT IN ('pending','invalidated') ORDER BY reserved_sequence").all(id);
   function history(id, excluded) { return rows(id).filter(row => row.id !== excluded); }
+  const nativeAppraisal = action => require("./operator-native-training-failure").appraiseFailure({ action, db, configuration, stateRoot, key: key() });
   function signedAttempt(row) {
     const a = profileFor(rowFor(row.action_id)).verifyAuthorization(JSON.parse(row.authorization), key());
     requireThat(a.reconciliation_id === row.id && a.action_id === row.action_id && a.principal_id === row.principal_id && a.principal_epoch === row.epoch &&
@@ -55,6 +60,10 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
       verifiedResult(action) && result.schema_version === profile.resultVersion && result.collection?.journal_sha256 === a.subject.journal_sha256 &&
       digest(history(row.action_id, row.id).filter(prior => prior.reserved_sequence < row.reserved_sequence)) === a.subject.prior_attempts_sha256,
       "CONSOLE_MODEL_RECONCILIATION_HISTORY_CHANGED", 409);
+    if (profile.id === "native_training") {
+      requireThat(digest(nativeAppraisal(action)) === digest(a.subject.native_appraisal), "CONSOLE_NATIVE_RECONCILIATION_EVIDENCE_CHANGED", 409);
+      return record;
+    }
     const directory = path.join(stateRoot, action.id), stat = fs.lstatSync(directory);
     requireThat(stat.isDirectory() && !stat.isSymbolicLink() && readJournal(directory, "result.json").sha256 === a.subject.journal_sha256 &&
       digest(readJournal(directory, "invocation.json").value) === digest(JSON.parse(action.preview)) &&
@@ -87,6 +96,18 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
     const previous = history(id, excluded);
     requireThat(!previous.some(row => row.state === "reserved" || row.state === "committed"), "CONSOLE_MODEL_RECONCILIATION_ALREADY_RESERVED", 409);
     for (const row of previous) { signedAttempt(row); requireThat(row.state === "failed" && !row.record, "CONSOLE_MODEL_RECONCILIATION_HISTORY_CHANGED", 409); }
+    if (profile.id === "native_training") {
+      const appraisal = nativeAppraisal(action), store = loadVerifiedStore(configuration.repository, configuration.artifactRoot);
+      const reasons = [...new Set([...(result.collection?.failure_reasons || []), ...(result.error ? [result.error] : [])])];
+      requireThat(reasons.length && reasons.every(isModelCode), "CONSOLE_MODEL_RECONCILIATION_FAILURE_REQUIRED", 409);
+      return { action_id: id, repository_binding: { repository_key: configuration.repositoryKey, identity_fingerprint: configuration.identity },
+        ...Object.fromEntries(["original_action_sha256", "invocation_sha256", "consent_sha256", "result_sha256", "journal_sha256", "trusted_key_sha256",
+          "process_id", "child_exit_recorded", "child_absence_observed", "process_group_absence_observed"].map(field => [field, appraisal[field]])),
+        prior_attempts_sha256: digest(previous), manifest_sha256: store.verification.manifest_sha256,
+        repository_state_sha256: repositoryStateDigest(configuration.repository), runtime_source_sha256: configuration.sourceSha256,
+        observed_at: new Date().toISOString(), failure_reasons: reasons, model_purpose: profile.id, native_appraisal: appraisal,
+        transfer_effects: "possibly_transmitted", provider_billing_verified: false, provider_cancellation_verified: false };
+    }
     const directory = path.join(stateRoot, id), stat = fs.lstatSync(directory);
     requireThat(stat.isDirectory() && !stat.isSymbolicLink() && stat.uid === process.getuid() && (stat.mode & 0o077) === 0,
       "CONSOLE_MODEL_RECONCILIATION_JOURNAL_INVALID", 409);
@@ -136,7 +157,8 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
         audit(user.id, "model_reconciliation_previewed", id);
       });
       return { reconciliation_id: id, nonce, expires_at: new Date(now + 120000).toISOString(), subject: review,
-        ...(profile.id === "order_analysis" ? { purpose: profile.id } : {}), ...AUTHORITY };
+        ...(profile.id !== "semantic_omission" ? { purpose: profile.id } : {}),
+        ...(profile.id === "native_training" ? { displayed_subject_sha256: digest(review) } : {}), ...AUTHORITY };
     },
     async commit(session, input, expectedPurpose = "semantic_omission") {
       owner(session); await auth.reauthenticate(session, input.password); assertSafeRationale(input, session);
@@ -150,12 +172,19 @@ function openModelReconciliation({ auth, configuration, owner, transaction, audi
         requireThat(row?.state === "pending" && row.principal_id === user.id && row.epoch === user.epoch && row.session_hash === hash(session.sessionId) &&
           row.nonce_hash === hash(input.nonce) && row.created <= Date.now() && Date.now() < row.expires, "CONSOLE_MODEL_RECONCILIATION_CHALLENGE_DENIED", 409);
         const review = JSON.parse(row.preview); currentSubject(review, row.id);
+        if (profile.id === "native_training") {
+          requireThat(input.displayed_subject_sha256 === digest(review), "CONSOLE_NATIVE_RECONCILIATION_DISPLAY_MISMATCH", 409);
+          requireThat(input.acknowledge_native_publication === true && input.acknowledge_response_observation === true,
+            "CONSOLE_NATIVE_RECONCILIATION_ACKNOWLEDGMENT_REQUIRED", 409);
+        }
         const sequence = db.prepare("SELECT coalesce(max(reserved_sequence),0)+1 AS n FROM operator_model_reconciliations").get().n;
         const authorization = signOperatorRecord({ schema_version: "0.1", type: profile.authorizationTag, id: `${profile.authorizationPrefix}-${row.id}`, sequence,
           reconciliation_id: row.id, action_id: row.action_id, purpose: profile.purpose, resolution: "acknowledge_failed_transfer",
           principal_id: user.id, principal_epoch: user.epoch, authentication_method: "local_owner_password_reauthentication", session_sha256: row.session_hash,
           nonce_sha256: row.nonce_hash, rationale: input.rationale, created_at: new Date().toISOString(), expires_at: new Date(row.expires).toISOString(),
-          subject: review, provider_uncertainty_acknowledged: true, ...AUTHORITY }, meta("operator-signing-key"));
+          subject: review, provider_uncertainty_acknowledged: true, ...AUTHORITY,
+          ...(profile.id === "native_training" ? { displayed_subject_sha256: digest(review), native_publication_acknowledged: true,
+            unbound_response_observation_acknowledged: true, ...FLAGS } : {}) }, meta("operator-signing-key"));
         profile.verifyAuthorization(authorization, key());
         db.prepare("UPDATE operator_model_reconciliations SET state='reserved',authorization=?,original_row=?,reserved_sequence=? WHERE id=?")
           .run(JSON.stringify(authorization), JSON.stringify(rowFor(row.action_id)), sequence, row.id);

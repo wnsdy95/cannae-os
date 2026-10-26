@@ -69,7 +69,7 @@ async function run(mode) {
 async function main() {
   for (const mode of selected) await run(mode);
   console.log(JSON.stringify({ passed: observations.length, failed: 0, selected_cases: selected, total_matrix_cases: cases.length, full_matrix_executed: selected.length === cases.length, observations,
-    actual_model_invocations: 0, real_owner_actions: 0, native_owner_ceremony_implemented: false, hold_discharge_implemented: false, all_eight_goals_complete: false }));
+    actual_model_invocations: 0, real_owner_actions: 0, native_owner_ceremony_exercised: false, hold_discharge_exercised: false, all_eight_goals_complete: false }));
 }
 main().catch(error => { console.error(/^(?:CONSOLE|SEMANTIC|NATIVE)_[A-Z0-9_]+$/.test(error.message) ? error.message : "NATIVE_FAILURE_FIXTURE_ASSERTION_FAILED");
   const location = String(error.stack).match(/run-native-training-failure-fixtures\.js:(\d+):\d+/);

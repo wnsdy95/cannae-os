@@ -2,11 +2,12 @@
 
 ## Candidate Boundary
 
-This local candidate implements strict recovery contracts and a non-authorizing
-original-evidence appraiser. It does **not** yet implement the fresh native owner
-ceremony, durable receipt consumption, UI or hold discharge. Omission/analysis
-reconciliation endpoints still reject native training. A signed sample or offline
-audit must not be used to bypass that refusal.
+This local candidate implements original-evidence appraisal and a dedicated
+authenticated owner ceremony, durable one-use receipt consumer and Model Actions
+UI for appraisable native failures. Omission/analysis endpoints still reject this
+purpose. A signed sample or offline audit is not the private-history consumer.
+Missing evidence, uncertain termination and orphan ownership remain held; this
+does not implement every native uncertainty class or establish deployed acceptance.
 
 This advances the recovery prerequisites for goals 3/5/7. It does not qualify a
 performer, admit task output, settle publication artifacts, grant tools/release
@@ -79,7 +80,7 @@ A later owner review must freeze that exact observation and reject drift; do not
 pretend whitespace violated a nonexistent original file commitment, or ignore a
 changed review-time digest. Bound original files reject even whitespace changes.
 
-## Contracts Are Not The Ceremony
+## Contracts And The Owner Ceremony
 
 The dedicated `OperatorNativeTrainingReconciliationAuthorization` and
 `OperatorNativeTrainingReconciliationRecord` separate this purpose from other
@@ -90,10 +91,41 @@ acknowledgments. Contradictory metadata, missing original commitments relabeled
 as bound, invalid publication prefixes and authority expansion fail semantic
 validation even with a new signature.
 
-Only the future authenticated service may create or consume a live authorization.
-The present schemas/signature checks do not authenticate a browser session,
-reserve/consume a nonce, persist a receipt or discharge a hold. The existing
-offline runner can audit a supplied public-key signature, but explicitly returns
+Only the authenticated service creates and consumes a live authorization. In
+Model Actions, open the retained native failure and choose Review Model Hold.
+The service freshly appraises original evidence and all deterministic publication
+IDs. Review the complete displayed subject, the original-versus-observed response
+commitment and publication state. Independently acknowledge provider uncertainty,
+native publication and response-proof limits, give a rationale and reauthenticate
+the exact owner session. The browser hashes its displayed native subject; the
+server independently matches that hash to its retained preview before signing.
+
+The native-only API is:
+
+```text
+POST /api/training-products/:id/reconciliation/preview
+POST /api/native-training-reconciliations/commit
+GET  /api/training-products/:id/reconciliations
+```
+
+Preview/commit bind the principal, epoch, stored session, nonce, sequence, exact
+source/repository/manifest state and original action. A reserved attempt is
+durable before receipt publication. Consumption rereads actual evidence and the
+persisted signed receipt; an ignored/failed write cannot return success. Process
+death leaves a reserved attempt failed on restart, while a committed receipt is
+verified from original private history. Pending reviews are invalidated. A retry
+needs fresh approval, never model replay or deletion of the failed attempt.
+
+The original action stays `held` with the original signed failure and journal.
+Only a currently verified native acknowledgment removes that transfer's hold on
+a separately approved future transfer. New source packets still need their own
+fresh consent and collection identity. Receipt history reappraises original bytes,
+process absence and exact publications; drift restores the hold. An unrelated
+manifest append after consumption does not rewrite the acknowledged publication,
+but a changed original publication invalidates it. Read-only history remains
+available with model execution disabled; that does not enable a new transfer.
+
+The existing offline runner audits a supplied public-key signature but returns
 `private_history_verified: false` and `hold_discharged: false`.
 
 All three wrappers are control metadata, including nested copies, never work.
@@ -109,6 +141,8 @@ Run the full validator before expensive acceptance, then:
 ```bash
 node run-native-training-reconciliation-contract-fixtures.js
 node run-native-training-failure-fixtures.js
+node run-native-training-reconciliation-fixtures.js
+node run-native-training-reconciliation-crash-fixtures.js
 node run-native-training-producer-fixtures.js
 node run-operator-model-reconciliation-contract-fixtures.js
 node run-operator-analysis-reconciliation-contract-fixtures.js
@@ -120,11 +154,16 @@ publication. `--case <name>` is a focused development selection, not a full-matr
 pass. Source-bound original-producer replay remains separate from current-source
 synthetic cases. Fixtures never invoke real inference or operate the real owner.
 
-Next implement fresh displayed-subject/password/session/epoch/nonce approval,
-durable one-use reservation/receipt with crash/race/revocation checks, original
-failure preservation, purpose-specific UI/history and exact new-transfer admission.
+Run `native-training-reconciliation-fixtures/browser-check.js --output <directory>`
+with the supported Playwright runtime for actual desktop/mobile, malformed and
+changed displayed subjects, lost receipt delivery and delayed owner-to-viewer
+responses. API and process-death fixtures are separate evidence classes, not a
+substitute for browser inspection or actual-owner acceptance.
+
 Keep missing-evidence, unknown-process and orphan ownership as distinct paths.
-Then verify full hosted/source/browser acceptance and controlled installation.
+Full hosted/source acceptance, personally approved actual-model/human calibration
+and controlled installation remain separate. The generic contracts and appraiser
+still grant no task admission, artifact settlement, grading or authority.
 Authenticated training/qualification, live grants, intent/initiative, COP/CoS,
 sustainment and eventually deployed independent infrastructure remain required.
 

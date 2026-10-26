@@ -14,6 +14,7 @@ test("current measured bytes and the exact historical tuple are distinct", () =>
   assert.equal(current.profile, "current"); assert.equal(old.profile, "historical_cab6d09"); assert.notEqual(current.method_sha256, old.method_sha256);
   assert.equal(current.method_sha256, t.digest(current.method_files)); assert.equal(old.method_sha256, t.digest(old.method_files));
   assert(current.method_files.some(item => item.file === "native-training-producer.js"));
+  for (const file of ["operator-model-reconciliation-service.js", "operator-console-server.js"]) assert(current.method_files.some(item => item.file === file));
   assert.equal(old.source_revision, "cab6d098a1229ede35dff4697994ac34f5ad7418");
 });
 test("the later captured producer is historical-only with its exact schema and semantic bindings", () => {
@@ -49,4 +50,4 @@ test("both actual skill wrappers inspect but cannot sign, settle or run a histor
     const invalid = cp.spawnSync(process.execPath, [script, "inspect", "PRIVATEVALUE-CANARY"], options); assert.equal(invalid.status, 1); assert(!invalid.stderr.includes("PRIVATEVALUE")); assert.equal(invalid.stdout, "");
   }
 });
-console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, hold_discharge_implemented: false, all_eight_goals_complete: false }));
+console.log(JSON.stringify({ passed, failed: 0, actual_model_invocations: 0, inspection_grants_hold_discharge: false, all_eight_goals_complete: false }));

@@ -8,9 +8,9 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "native-training-reconciliation",
-    keywords: ["native training recovery", "native failure reconciliation", "native failure appraisal", "failed native", "native-training-failure", "native-training-reconciliation", "operator-native-training-failure", "operator-native-training-reconciliation", "nativetrainingfailureappraisal", "operatornativetrainingreconciliationauthorization", "operatornativetrainingreconciliationrecord"],
+    keywords: ["native training recovery", "native training reconciliation", "native failure reconciliation", "native failure appraisal", "failed native", "native-training-failure", "native-training-reconciliation", "operator-native-training-failure", "operator-native-training-reconciliation", "nativetrainingfailureappraisal", "operatornativetrainingreconciliationauthorization", "operatornativetrainingreconciliationrecord"],
     docs: ["docs/native-training-failure-reconciliation.md", "docs/native-training-owner-consent.md", "docs/native-training-producer-history.md", "docs/completion-backlog.md"],
-    commands: ["node run-native-training-reconciliation-contract-fixtures.js", "node run-native-training-failure-fixtures.js", "node run-operator-model-reconciliation-contract-fixtures.js", "node run-operator-analysis-reconciliation-contract-fixtures.js", "node run-native-training-producer-contract-fixtures.js"]
+    commands: ["node run-native-training-reconciliation-contract-fixtures.js", "node run-native-training-failure-fixtures.js", "node run-native-training-reconciliation-fixtures.js", "node run-native-training-reconciliation-crash-fixtures.js", "node run-operator-model-reconciliation-contract-fixtures.js", "node run-operator-analysis-reconciliation-contract-fixtures.js", "node run-native-training-producer-contract-fixtures.js"]
   },
   {
     id: "native-producer-history",

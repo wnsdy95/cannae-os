@@ -6,6 +6,16 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add native-only authenticated failed-transfer acknowledgment to the existing
+  owner service: fresh displayed-subject/password/session/epoch/nonce review,
+  independent provider/publication/response-proof acknowledgments, durable
+  reservation/receipt consumption and private-history reappraisal. Preserve
+  original failure, publications and all task/settlement/qualification limits.
+  Keep history readable with model execution disabled. Add actual API, process
+  death, publication adversary and desktop/mobile browser fixtures; both skills
+  route and require the dedicated procedure. Unknown/missing/orphan classes,
+  actual-model/owner acceptance, controlled rollout and full outcomes remain open.
+
 - Bound validator schema loading to each input's file-reference closure, with
   nested single reads and fresh snapshots after return or exception. Missing
   roots and unresolved references fail closed; malformed referenced branches
