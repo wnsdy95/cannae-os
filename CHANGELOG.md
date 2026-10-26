@@ -6,6 +6,15 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add bounded method-channel fixture phase telemetry for actual SDK requests,
+  native-hook pre/postflight and owned transport cleanup. Preserve result/error
+  identity, existing deadlines and privacy; distinguish local-parent CPU from
+  elapsed time and keep both skill procedures aligned. This improves diagnosis,
+  not the unresolved hosted continuation timeout or full transport acceptance.
+  Preserve a direct telemetry counterexample: inspecting a plain value's `then`
+  getter could replace its result. Observe native Promises only and regress the
+  untouched plain value without probing it; no SDK deadline or denial is relaxed.
+
 - Add exact native producer-history inspection and current-engine replay for
   the frozen `cab6d09` owner producer. Preserve original failures/collected bytes
   without executing old code in production or downgrading fresh transfer. Add a
