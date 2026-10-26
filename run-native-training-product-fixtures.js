@@ -30,8 +30,10 @@ async function main() {
     await test("new request history does not invalidate historical original-prefix evidence", async () => {
       s.prepare(env); assert.notDeepEqual(s.force.manifestState(s.force.load(env.options)), env.completed.preview.observed_manifest);
       assert(s.collector.readProduct(env.completed.invocation, env.completed.consent, s.configuration(env)).bytes.length > 0);
-      assert.throws(() => s.core.verifyHistoricalSubject({ ...env.completed.preview, observed_manifest: { ...env.completed.preview.observed_manifest, sha256: "0".repeat(64) } }, env.publicKey),
-        /TOOL_EFFECT_SETTLEMENT_HISTORY_MISMATCH/);
+      const changed = { ...env.completed.preview, observed_manifest: { ...env.completed.preview.observed_manifest, sha256: "0".repeat(64) } };
+      assert.throws(() => s.core.verifyHistoricalSubject(changed, env.publicKey), /SEMANTIC_TRAINING_HISTORICAL_METHOD_CHANGED/);
+      const { preview_sha256, ...body } = changed;
+      assert.throws(() => s.core.verifyHistoricalSubject({ ...body, preview_sha256: s.t.digest(body) }, env.publicKey), /TOOL_EFFECT_SETTLEMENT_HISTORY_MISMATCH/);
     });
     await test("other purposes and substituted performer profiles cannot authorize native task collection", async () => {
       const p = s.prepare(env), bad = signOperatorRecord({ ...p.consent, purpose: "one_semantic_evaluation_transfer" }, env.syntheticKey);

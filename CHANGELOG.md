@@ -6,6 +6,21 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add exact native producer-history inspection and current-engine replay for
+  the frozen `cab6d09` owner producer. Preserve original failures/collected bytes
+  without executing old code in production or downgrading fresh transfer. Add a
+  pinned prior-source regression, strict inspection contract, inspect-only
+  wrappers and both skill adaptations. Native uncertainty discharge stays open.
+  Preserve the first broad regression failure and separate the newly earlier
+  preview-integrity denial from the unsigned manifest-history counterexample;
+  neither production guard nor expected denial codes are relaxed.
+  Correct an unqualified historical-replay description: a verified held row
+  checks its signed failure and original-scope bindings, not process termination
+  or raw journal/task bytes. Only collected replay adds original raw-product,
+  profile and canonical-publication checks. Both skills now require this status
+  distinction before using `result_verified`; no runtime behavior or authority
+  changes with this clarification.
+
 - Fix a synthetic native-training consent clock race: derive both timestamps
   from one sample, not separate reads that can produce 120001ms against the
   unchanged 120000ms production limit. Add an advancing-clock regression covering

@@ -44,16 +44,23 @@ function promptFor(input) { return TEMPLATE + JSON.stringify({ collection_id: in
   task_standard: input.standard.steps, response: { schema_version: "0.1", type: "NativeTrainingProductResponse", collection_id: input.request.collection_id,
     case_id: input.training_case.case_id, output: "The actual task product, not a report of having done it." } }, null, 2); }
 function methodBinding() {
-  return t.digest(["native-training-product-contract.js", "native-training-product-controller.js", "codex-training-product-collector.js", "codex-bounded-collector.js",
-    "task-training-contract.js", "native-training-transfer-contract.js", "operator-native-training.js", "operator-semantic-service.js", "repository-artifact-store.js", "force-registry-controller.js", "semantic-control-types.js", "package-lock.json", "order-intake-contract.js",
-    "workload-control-contract.js", "opsec-linter.js", "eefi-detector.js", "context-filter-prototype/context-filter.js", "release-review-runner.js",
-    "schema-files/classification-label.schema.json", "schema-files/releasability-review.schema.json", "schema-files/release-review.schema.json"].map(file => ({ file, sha256: sha256(fs.readFileSync(path.join(__dirname, file))) })));
+  return require("./native-training-producer").currentMethodBinding();
 }
 function profileDigest(profile) { const { model_selection, ...execution } = profile; return t.digest(execution); }
 function commitments(profile) { return { model_id: profile.requested_model, harness_sha256: methodBinding(), prompt_sha256: sha256(Buffer.from(TEMPLATE)),
   tool_schema_sha256: t.digest(TOOL_SCHEMA), tool_policy_sha256: t.digest(TOOL_POLICY), execution_profile_sha256: profileDigest(profile) }; }
 function verifyProfile(profile, preview) {
   const expected = commitments(profile); need(Object.entries(expected).every(([key, value]) => preview.input.performer.data[key] === value), "SEMANTIC_TRAINING_PERFORMER_PROFILE_CHANGED");
+}
+function historicalProducer(preview) {
+  const inspected = require("./native-training-producer").inspect(preview.method_sha256);
+  need(inspected.profile === "current" || preview.schema_version === "0.2" && preview.input?.transfer_review,
+    "SEMANTIC_TRAINING_HISTORICAL_METHOD_CHANGED");
+  return inspected;
+}
+function verifyHistoricalProfile(profile, preview) {
+  const expected = { ...commitments(profile), harness_sha256: historicalProducer(preview).method_sha256 };
+  need(Object.entries(expected).every(([key, value]) => preview.input.performer.data[key] === value), "SEMANTIC_TRAINING_PERFORMER_PROFILE_CHANGED");
 }
 function assertTransferPermitted(input) {
   const outbound = { prompt: promptFor(input) };
@@ -74,4 +81,4 @@ function assessResponse(response, preview) {
     task_standard_evaluated: false, conditions_observed: false, ...t.FLAGS };
 }
 module.exports = { REQUEST, RESPONSE, APPRAISAL, SCHEMAS, NON_WORK_TYPES, PURPOSE, KIND, TEMPLATE, issues, checked, request, promptFor,
-  methodBinding, profileDigest, commitments, verifyProfile, assertTransferPermitted, assessResponse, need };
+  methodBinding, profileDigest, commitments, verifyProfile, historicalProducer, verifyHistoricalProfile, assertTransferPermitted, assessResponse, need };

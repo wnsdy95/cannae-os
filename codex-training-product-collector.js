@@ -23,7 +23,7 @@ function readProduct(invocation, consent, configuration) {
   c.need(t.digest(originalInvocation) === t.digest(invocation) && t.digest(originalConsent) === t.digest(consent), "SEMANTIC_TRAINING_JOURNAL_SUBSTITUTED");
   const journal = readPrivate(directory, "result.json"), result = journal.value;
   collector.verifyTransferConsent(consent, invocation, configuration.trustedPublicKey, Date.parse(result.started_at));
-  scope.verifyHistoricalSubject(invocation.preview, configuration.forceRegistryPublicKey || configuration.trustedPublicKey); c.verifyProfile(invocation.profile, invocation.preview);
+  scope.verifyHistoricalSubject(invocation.preview, configuration.forceRegistryPublicKey || configuration.trustedPublicKey); c.verifyHistoricalProfile(invocation.profile, invocation.preview);
   const reservation = readPrivate(path.join(stateRoot, `collection-${invocation.preview.input.request.collection_id}`), "reservation.json").value;
   c.need(result.type === "CodexTrainingProductCollection" && result.invocation_sha256 === invocation.invocation_sha256 && result.consent_id === consent.id &&
     result.status === "evaluated" && result.result_persisted && result.actual_model_invocation_started && result.completed_turns === 1 && result.event_counts["thread.started"] === 1 &&
