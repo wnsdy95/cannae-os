@@ -61,6 +61,11 @@ async function main() {
     assert.throws(() => reporter.run("tool_preflight", () => { throw opaque; }), value => value === opaque);
     assert.equal(events[1].error_class, "other"); assert(!JSON.stringify(events).includes("canary"));
   });
+  await check("plain callback values never have their then getter inspected by telemetry", () => {
+    const events = [], reporter = createDiagnostics({ sink: event => events.push(event) }), value = {}; let getterCalls = 0;
+    Object.defineProperty(value, "then", { get() { getterCalls++; throw new Error("Synthetic getter trap"); } });
+    assert.equal(reporter.run("tool_preflight", () => value), value); assert.equal(getterCalls, 0); assert.equal(events[1].ok, true);
+  });
   console.log(JSON.stringify({ passed, failed: 0, actual_sdk_transport_exercised: false, sdk_timeout_fixed: false, execution_authorized: false, release_authorized: false }));
 }
 main().catch(error => { console.error(error.stack); process.exitCode = 1; });

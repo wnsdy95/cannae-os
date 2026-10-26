@@ -1,4 +1,5 @@
 const { performance } = require("node:perf_hooks");
+const { isPromise } = require("node:util").types;
 const phases = new Set(["sdk_connect", "sdk_request", "tool_preflight", "sdk_tool_call", "tool_postflight", "cleanup", "transport_close"]);
 const denials = new Set(["METHOD_CONTROL_ENROLLMENT_EXPIRED", "METHOD_CONTROL_REQUEST_EXPIRED", "METHOD_CONTROL_DELIVERY_UNRESOLVED",
   "METHOD_CONTROL_REQUEST_REPLAY", "METHOD_CONTROL_BUDGET_EXHAUSTED", "METHOD_CONTROL_NATIVE_REQUEST_REQUIRED",
@@ -33,7 +34,7 @@ function createDiagnostics(options = {}) {
     };
     let value;
     try { value = callback(); } catch (error) { finish(false, error); throw error; }
-    if (value && typeof value.then === "function") return value.then(result => { finish(true); return result; }, error => { finish(false, error); throw error; });
+    if (isPromise(value)) return Promise.prototype.then.call(value, result => { finish(true); return result; }, error => { finish(false, error); throw error; });
     finish(true); return value;
   }
   return { run, statistics: () => ({ emitted_events: sequence, dropped_events: dropped }) };

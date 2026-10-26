@@ -146,8 +146,10 @@ For a method-channel SDK failure, preserve the exact source/log and inspect its
 `METHOD_FIXTURE` preflight, SDK request and cleanup phases before changing code.
 Compare monotonic elapsed with local-parent CPU time and filtered sleep events;
 do not equate a later local expiry with an earlier hosted request timeout. Keep
-arguments, credentials and arbitrary error text out of diagnostics. Run the
-telemetry unit fixture separately from actual transport/continuation acceptance;
+arguments, credentials and arbitrary error text out of diagnostics. Preserve
+plain callback values, exact SDK arguments and native Promise outcomes; do not
+probe returned objects or mask the original result. Run the telemetry unit
+fixture separately from actual transport/continuation acceptance;
 missing logs or a healthy repeat cannot prove original completion or justify
 longer deadlines, renewed consent or hold discharge.
 
