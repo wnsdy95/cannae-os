@@ -8,7 +8,7 @@
     "node": ">=22.22.2"
   },
   "dependencies": {
-    "@fastify/cookie": "11.1.3",
+    "@fastify/cookie": "11.1.5",
     "@fastify/csrf-protection": "8.0.2",
     "@fastify/helmet": "13.2.0",
     "@fastify/rate-limit": "11.2.1",
