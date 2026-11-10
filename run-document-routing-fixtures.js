@@ -62,6 +62,44 @@ for (const router of ROUTERS) {
         /operator-console|operator-consent|protected-tool-gateway|github-release/.test(command)));
     }
   }
+  for (const query of [
+    "Draft a support escalation SOP from SUPPORT.md, GOVERNANCE.md and SECURITY.md. Preserve best-effort support and private vulnerability reporting. Do not publish it.",
+    "Revise the support escalation SOP to add a handoff section without changing policy.",
+    "Write a research note comparing the support and security reporting rules.",
+    "Review the standard operating procedure for support triage."
+  ]) {
+    for (const args of [["--actor=user"],
+      ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+      const result = route(router, args, query);
+      assertRoutes(result, ["document-authoring"]);
+      for (const document of ["docs/document-authoring-workflow.md", "docs/sop-library.md",
+        "docs/prompt-templates.md", "docs/handoff-packet-template.md"]) {
+        assert(result.recommended_documents.some(item => item.path === document),
+          `${query}: missing task reference ${document}`);
+      }
+      const delegated = args.includes("--actor=ai");
+      assert.strictEqual(result.operating_mode.decision_authority,
+        delegated ? "bounded_ai_delegate" : "human_user");
+      if (delegated) assert.strictEqual(result.operating_mode.authority, "read-only");
+    }
+  }
+  const handoff = route(router, ["--actor=user"],
+    "Prepare a receiver-ready handoff for this documentation task.");
+  assertRoutes(handoff, ["continuity-handoff"]);
+  assert(handoff.recommended_documents.some(item => item.path === "docs/handoff-packet-template.md"));
+  const unrelated = route(router, ["--actor=user"], "Analyze soap sales and rank sales targets");
+  assert(!unrelated.matched_routes.some(item => item.id === "document-authoring"));
+  assert.strictEqual(unrelated.capability_routing.status, "gap_detected");
+  const authoringGap = route(router, ["--actor=ai", "--role=S6",
+    "--department=knowledge", "--authority=read-only",
+    "--capability-query=Research ICP and sales targeting using the canonical track view"],
+  "Draft a sales targeting SOP");
+  assertRoutes(authoringGap, ["document-authoring", "force-structure"]);
+  assert.strictEqual(authoringGap.capability_routing.status, "gap_detected");
+  assert.strictEqual(authoringGap.operating_mode.authority, "read-only");
+  assert.strictEqual(authoringGap.capability_routing.provisional_organization.authority_expansion_authorized, false);
+  assert.strictEqual(authoringGap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+  assert(authoringGap.recommended_documents.some(item => item.path === "docs/document-authoring-workflow.md"));
   for (const query of ["operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["local-operator-console"]);

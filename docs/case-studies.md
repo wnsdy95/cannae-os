@@ -8,6 +8,11 @@ Conceptual documents explain "what should be done." Case documents show "how it 
 
 ## 1. Case-Writing Standard
 
+For a current document-only exercise, see
+[Source-Grounded Authoring Case](document-authoring-case-study.md). It separates
+real repository source policies and observed routing failures from its selected
+evaluation scenario, self-review and unverified receiver acceptance.
+
 Every case follows the structure below.
 
 ```text

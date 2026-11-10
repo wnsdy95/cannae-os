@@ -2,6 +2,12 @@
 
 ## Skill-First Scope And Authoring
 
+`docs/document-authoring-case-study.md` uses the repository's `SUPPORT.md`,
+`GOVERNANCE.md` and `SECURITY.md` as its actual policy sources. It records source
+hashes, draft/revision boundaries and a requirement comparison. The scenario
+is a local authoring exercise and the review is by its author, not an adopted
+policy, independent semantic evaluation or externally performed support action.
+
 `docs/skill-first-product-scope.md` records the USER's 2026-11-10 scope decision,
 not a military-source claim. `docs/document-authoring-workflow.md` synthesizes
 the existing knowledge-management, prompt, order, source and handoff guidance

@@ -12,8 +12,8 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | Workflow and illustrative example exist; behavioral acceptance remains open. | Representative SOP, order, research and handoff tasks preserve intent, required work, sources, authority, unknowns and supersession. |
-| G2. Role-bounded routing and delegation | Both provider routes and receipt/preflight regressions pass locally. | Review task-document relevance and unnecessary context on realistic requests; preserve authority and test capability gaps, missing/stale routes and provisional cells. |
+| G1. Document authoring and revision quality | Workflow plus a source-grounded support SOP, revision, research note and handoff exist in `document-authoring-case-study.md`; its review is by the author. | Independent/receiver acceptance and broader order/report cases remain open. Do not treat the source hashes or requirement matrix as proof of semantic completeness. |
+| G2. Role-bounded routing and delegation | Realistic support-SOP and handoff requests exposed missing task references; both provider routes now include them, verified in the 146-query regression run. | Address unnecessary release material from negated publication terms and explicit source-path resolution. Preserve role/authority and capability-gap behavior; full relevance acceptance remains open. |
 | G3. Complete working flow | Procedures and supporting local controls exist; full observed acceptance is open. | Request -> plan -> review/backbrief -> work -> report/handoff without an application login; check omissions, bounded replanning/method changes, reporting, stop/failure handling, output limits and receiver acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | Index checks and mirrored route improvements exist; the full AAR-driven loop remains open. | Demonstrate an observed gap becoming a tested improvement in both skills with coherent sources, indexes, change history and repository-specific outputs; no self-issued authority. |
 | G5. Client distribution | Both installed symlink routers resolve the doctrine root; full distribution acceptance is open. | Verify installation/discovery, copy-install path resolution and equivalent Codex/Claude behavior; separately identify and test any optional plugin packaging. |
@@ -45,6 +45,27 @@ Both installed symlink routers resolved the authoring path from another working
 directory with an explicit doctrine root. This is not a full installation test.
 The optional Python skill validator could not start because PyYAML is absent.
 Full platform, browser, actual-model and hosted CI acceptance were not run.
+
+### Current Authoring Exercise
+
+`docs/document-authoring-case-study.md` retains the task, actual source hashes,
+drafts, R1-R12 comparison, observed routing failures and next reviewer action.
+It is a local authoring exercise, not a live support incident or USER policy
+adoption. The demonstrated missing-template behavior drives a concrete route and
+skill improvement; new regression results must be recorded after execution.
+Do not infer that an independent receiver accepted the handoff.
+
+Executed on 2026-11-10: document routing 146 queries across both providers plus
+3 link-inventory checks, routing preflight 8/8 and mandatory-control enforcement
+6/6. Source policy hashes and the pre-existing user `.gitignore` remained
+unchanged. The new checks include modified SOP names, the actual handoff
+template, whole-word mismatch and an uncovered mission whose SOP subtask must
+retain its capability cell without increased authority. These are routing and
+control regressions, not an independent grade for the authored prose.
+
+Next: improve task-reference relevance and explicit source resolution for G2,
+then extend G1/G3 to order/report revisions and an observed receiver cold start.
+No new model invocation, service or external publication was performed.
 
 
 ## Retained Platform Baseline

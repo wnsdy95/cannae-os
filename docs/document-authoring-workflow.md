@@ -71,6 +71,39 @@ scope. A role label, reviewer signature string or generated approval example
 does not establish that decision. File dates and model confidence do not
 establish evidence freshness or correctness.
 
+## Review Against The Request
+
+Before calling a draft complete, build a short requirement-to-evidence matrix.
+Use the actual request and supplied sources, not the draft itself, to enumerate
+requirements. Include prohibitions, conditions, unknowns and retained decisions
+as well as requested outputs. Otherwise an omitted requirement can disappear
+from both the document and its review.
+
+| Requirement and origin | Draft location | Review outcome and basis |
+| --- | --- | --- |
+| One explicit requirement, constraint or source rule | Exact section/step in the current draft | Preserved, missing, contradicted or unresolved, with source comparison |
+
+For each revision, recheck unchanged requirements as well as the requested
+delta. Distinguish an acceptable explicit unknown from a missing required
+answer: unresolved required decisions block adoption, even if the document
+can be handed off as a draft. Do not infer approval from a filled-in matrix.
+Identify whether the review was an author self-review, an independent reviewer
+or an actual USER decision. A deterministic reference check cannot prove
+semantic completeness or independent acceptance.
+
+Keep source files explicitly named in the request in the reading set even if
+the router does not recommend them. Router doctrine selection is not a source
+resolver or an access grant; apply delegated access rules before opening a
+restricted source. Re-route after task or phase changes and retain the original
+mission objective for delegated receipts. Lexical routing does not understand
+negation: "do not publish" may still return release-control references. Do not
+execute publication, omit the prohibition or strip an issued control because
+of that match.
+
+See [Source-Grounded Authoring Case](document-authoring-case-study.md) for actual
+repository policies, a draft/revision, a source comparison and a bounded handoff.
+Its self-review is not independent semantic acceptance.
+
 ## Revision And Storage
 
 - Preserve unaffected requirements. Describe additions, removals and changed

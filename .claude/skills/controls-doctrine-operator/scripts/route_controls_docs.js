@@ -8,10 +8,11 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "document-authoring",
-    keywords: ["document authoring", "document writing", "document revision", "document-authoring", "write a document", "revise a document", "write an sop", "draft an sop", "revise an sop", "sop writing", "authoring workflow", "handoff document", "draft a handoff", "documentation update"],
+    keywords: ["document authoring", "document writing", "document revision", "document-authoring", "write a document", "revise a document", "sop", "standard operating procedure", "research note", "authoring workflow", "handoff document", "draft a handoff", "documentation update"],
     docs: [
       "docs/document-authoring-workflow.md",
       "docs/knowledge-management-sop.md",
+      "docs/sop-library.md",
       "docs/prompt-templates.md",
       "docs/handoff-packet-template.md",
       "docs/skill-first-product-scope.md"
@@ -326,6 +327,8 @@ const RULES = [
     id: "continuity-handoff",
     keywords: ["continuity", "handoff", "rotation", "succession", "knowledge", "km", "handover", "succession planning", "replacement", "cycling", "knowledge transfer"],
     docs: [
+      "docs/handoff-packet-template.md",
+      "docs/document-authoring-workflow.md",
       "docs/personnel-continuity-model.md",
       "docs/knowledge-management-sop.md",
       "docs/event-sourcing-model.md"

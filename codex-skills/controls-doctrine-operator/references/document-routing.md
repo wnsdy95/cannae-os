@@ -7,6 +7,17 @@ or revision, use `docs/document-authoring-workflow.md`, then the selected format
 and `docs/knowledge-management-sop.md`. The `document-authoring` route covers
 SOP drafting, document revision and handoff documents in both provider trees.
 
+Test realistic format names with modifiers, such as "support escalation SOP",
+not only "draft an SOP". An authoring route must include the selected format's
+actual template; a continuity label without the handoff template is incomplete.
+Retain explicitly supplied source files separately from doctrine recommendations.
+Use the requirement-to-evidence matrix in `docs/document-authoring-workflow.md`
+before accepting a draft or revision, including unchanged prohibitions and
+unknowns. Record author self-review separately from independent acceptance.
+Finding a document format is not domain expertise. For delegated authoring,
+keep the real mission objective in `--capability-query`; an SOP-shaped subtask
+must not suppress its mission-level capability gap or activate a standing unit.
+
 Ordinary authoring does not require a dashboard, owner login, server or a full
 platform verification campaign. Preserve original intent, source/interpretation
 boundaries, ownership, supersession and unresolved decisions. Existing runtime

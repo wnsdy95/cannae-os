@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Source-Grounded Authoring Exercise (2026-11-10)
+
+`docs/document-authoring-case-study.md` applies the existing support, governance
+and security policies to a review-only SOP and continuity revision. The actual
+source files were read and hashed; a requirement matrix compares draft sections
+with source requirements, conditional reporting paths, exclusions and unknowns.
+Author self-review is explicitly separate from independent or receiver acceptance.
+
+The realistic task exposed an authoring-route miss for "support escalation SOP"
+and a continuity route that omitted the handoff template. Both provider routes
+and realistic-query regressions now cover those references. The skill lesson is
+to verify the selected task template and supplied sources, then review original
+requirements rather than using the draft as its own checklist. Lexical negation,
+unnecessary release recommendations and explicit source resolution remain open;
+the case does not claim complete G1/G2/G3 acceptance or a live support operation.
+
 ## Skill-First Product Boundary (2026-11-10)
 
 `docs/skill-first-product-scope.md` records the USER decision to prioritize
