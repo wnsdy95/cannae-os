@@ -1853,8 +1853,32 @@ const fixtures = [
     file: "sample-payloads/valid-document-access-manifest.json",
     type: "document-access-manifest",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
   },
+  {
+    name: "bounded delivery modes are non-authorizing metadata",
+    file: "sample-payloads/valid-document-access-manifest-bounded.json",
+    type: "document-access-manifest", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "ambiguous document policies cannot select an allowing record",
+    file: "sample-payloads/invalid-document-access-manifest-ambiguous.json",
+    type: "document-access-manifest", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: ["DOCUMENT_ACCESS_DUPLICATE_PATH", "DOCUMENT_ACCESS_DUPLICATE_PROFILE",
+      "DOCUMENT_ACCESS_REQUIRED_REFERENCE_ONLY", "DOCUMENT_ACCESS_DENIED_DOC_OPTIONAL"]
+  },
+  ...[
+    ["null documents", value => { value.documents = null; }, "TYPE_MISMATCH"],
+    ["unknown authority", value => { value.role_profiles[0].authority_level = "L9"; }, "ENUM_MISMATCH"],
+    ["undeclared policy field", value => { value.allow_all = true; }, "ADDITIONAL_PROPERTY"],
+    ["empty profiles", value => { value.role_profiles = []; }, "MIN_ITEMS"],
+    ["path alias", value => { value.documents[0].path = "./docs/source-map.md"; }, "DOCUMENT_ACCESS_NONLOCAL_PATH"],
+    ["directory instead of document", value => { value.documents[0].path = "docs"; }, "DOCUMENT_ACCESS_DOC_PATH_MISSING"]
+  ].map(([label, mutate, code]) => ({
+    name: `document access rejects ${label}`, file: "sample-payloads/valid-document-access-manifest-bounded.json",
+    type: "document-access-manifest", exitCode: 1, expectedCanExecute: false, mutate, requiredCodes: [code]
+  })),
   {
     name: "overbroad document access manifest",
     file: "sample-payloads/invalid-document-access-manifest-overbroad.json",

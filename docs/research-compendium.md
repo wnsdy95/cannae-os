@@ -1,5 +1,29 @@
 # Research Compendium
 
+## Profile-Bounded Document Access Projection (2026-11-11)
+
+Inspection of target-repository source handling exposed a prerequisite defect:
+`document-access-runner.js` bypassed its shared validator. An undeclared field
+and an unknown `L9` authority both produced ready projections despite validator
+rejection. An explicit denial produced blocked status but retained allowed rows;
+removing an optional path still delivered it through the document's role match.
+These observations were reproduced locally with copied sample metadata, not
+private file reads or a live authority change.
+
+The consumer now validates before projection, restricts candidates to the selected
+role/duty/tier profile and clears all allowed rows on any error. Ambiguous records,
+unknown authority, invalid paths and required reference-only delivery are rejected.
+Summary and optional references retain their distinct modes. Both skills teach
+that role eligibility is not need-to-know or raw access; a ready projection is
+not actual delivery, authenticated authority or approval. The manifest remains
+non-authorizing metadata even when structurally valid.
+
+This corrects historical descriptions below that could imply the runner itself
+enforces filesystem access. It projects a policy list; a protected read path,
+receiver consumption and separately authorized target-repository source binding
+are not implemented by this change. The pending authoring-review packet and
+its one-attempt consent boundary are unchanged.
+
 ## Plain-Document Handoff And Separated Review Input (2026-11-11)
 
 The authoring workflow and handoff template conflicted: ordinary prose could

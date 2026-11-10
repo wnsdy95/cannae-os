@@ -148,7 +148,7 @@ cleanup is recorded separately; none is declared complete from a routing pass.
 - [Independent GitHub Release Verification](docs/github-release-independent-verification.md): pinned TUF-chain replay, current-engine bundle verification, exact historical v0.1/v0.2 producer compatibility, and bounded installed-dependency regressions without rewriting evidence or hiding unresolved advisories.
 - [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): monotonic prior-state comparison, stable run/attempt artifact lineage, rerun-fork rejection, and fail-closed rollback/equivocation detection.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
-- [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.
+- [Role Document Access Policy](docs/role-document-access-policy.md): validated, profile-bounded reading lists with distinct raw/summary/reference modes. Blocked projections expose no allowed rows; metadata is not actual access authorization.
 - [Sensitive Output Filter](docs/sensitive-output-filter.md): digest-only detection, redaction, blocking, and escalation at output and tool boundaries.
 - [Interop Release Packet](docs/interop-release-packet.md): the only approved boundary-crossing package for partner-facing information.
 

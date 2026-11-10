@@ -13,6 +13,7 @@
     "default_decision": { "type": "string", "enum": ["deny"] },
     "role_profiles": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "required": ["role", "duty", "authority_level", "required_documents", "optional_documents", "denied_documents", "escalation_role"],
@@ -21,15 +22,16 @@
           "role": { "$ref": "common.schema.json#/$defs/role_id" },
           "duty": { "type": "string", "minLength": 1 },
           "authority_level": { "type": "string", "enum": ["L0", "L1", "L2", "L3", "L4", "L5"] },
-          "required_documents": { "$ref": "common.schema.json#/$defs/string_list" },
-          "optional_documents": { "$ref": "common.schema.json#/$defs/string_list" },
-          "denied_documents": { "$ref": "common.schema.json#/$defs/string_list" },
+          "required_documents": { "$ref": "common.schema.json#/$defs/string_list", "description": "Exact declared paths needed by this profile. Reference-only delivery does not satisfy required reading." },
+          "optional_documents": { "$ref": "common.schema.json#/$defs/string_list", "description": "Additional exact paths within this profile's need-to-know scope; not blanket role access." },
+          "denied_documents": { "$ref": "common.schema.json#/$defs/string_list", "description": "Explicit prohibitions override document-level role matches; conflicts with required or optional paths are invalid." },
           "escalation_role": { "$ref": "common.schema.json#/$defs/role_id" }
         }
       }
     },
     "documents": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "required": ["path", "title", "classification", "owner_role", "allowed_roles", "duties", "minimum_authority_level", "delivery_mode", "rationale"],

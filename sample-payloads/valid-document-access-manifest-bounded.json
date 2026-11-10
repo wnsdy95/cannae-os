@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1",
+  "type": "DocumentAccessManifest",
+  "id": "DAM-BOUNDED-001",
+  "mission_id": "M-DEMO-001",
+  "default_decision": "deny",
+  "role_profiles": [
+    {
+      "role": "S2",
+      "duty": "source_verification",
+      "authority_level": "L0",
+      "required_documents": ["docs/source-map.md"],
+      "optional_documents": ["docs/research-compendium.md", "docs/role-document-access-policy.md"],
+      "denied_documents": ["docs/commander-handbook.md"],
+      "escalation_role": "COS"
+    }
+  ],
+  "documents": [
+    {
+      "path": "docs/source-map.md",
+      "title": "Source Map",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": ["S2"],
+      "duties": ["source_verification"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "Required source index for this fixture."
+    },
+    {
+      "path": "docs/research-compendium.md",
+      "title": "Research Compendium",
+      "classification": "internal",
+      "owner_role": "RECORDER",
+      "allowed_roles": ["S2"],
+      "duties": ["source_verification"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "summary",
+      "rationale": "Only the separately prepared mission-relevant summary is eligible."
+    },
+    {
+      "path": "docs/role-document-access-policy.md",
+      "title": "Example Reference-Only Policy",
+      "classification": "restricted",
+      "owner_role": "S6",
+      "allowed_roles": ["S2"],
+      "duties": ["source_verification"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "reference_only",
+      "rationale": "Synthetic classification for a delivery-mode test, not a change to this public policy."
+    }
+  ],
+  "controls": {
+    "need_to_know": true,
+    "no_bulk_read": true,
+    "audit_required": true,
+    "exception_requires_approval": true,
+    "source_of_truth": "docs/role-document-access-policy.md"
+  },
+  "classification": "internal",
+  "status": "pending",
+  "created_at": "2026-11-10T00:00:00Z"
+}

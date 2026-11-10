@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Validate complete document-access manifests inside the consumer and limit reading candidates to the selected role/duty/authority profile. Clear allowed rows on every block, reject unknown authority and ambiguous policy records, preserve delivery modes and return nonzero CLI exits for denied/invalid inputs. Manifest validation and projection explicitly do not authenticate or grant authority. Both skills require profile-selected reading and distinguish summaries/references from raw access; target-repository source delivery remains separate.
+
 - Separate ordinary document handoffs from existing runtime mission packets without changing schema/admission controls. Prepare source-bound SOP/revision review inputs with author ratings and seeded-defect references kept outside evaluator input; no model invocation or automatic semantic pass is provided. Both skills now require work-appropriate handoffs and source-first review, and both routers index the offline preparation tool.
 
 - Preserve a failed approved review attempt and correct its observer's misclassification of native diagnostic items as tool activity. Add structural-event regressions while retaining failure/unknown-tool rejection; both skills require separate correction records and fresh consent after a consumed attempt. No semantic review result was received.

@@ -10,6 +10,12 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G4 work corrects the existing document-access projection before adding
+cross-repository sources: the consumer now validates the manifest and restricts
+its list to the selected profile. This is not protected file access, actual
+delivery or authenticated delegation. Target-project source binding stays open;
+the separately pending authoring assessment has not been retried.
+
 Latest G1/G3 preparation: the routed handoff template now separates plain-document
 work from existing runtime missions, and the offline authoring review tool keeps
 author ratings/reference answers out of evaluator input. Its eight cases are
@@ -21,7 +27,7 @@ The actual revision-3 handoff is in `docs/document-authoring-case-study.md`.
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
 | G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded SOP/revision/research/handoff and an actual maintenance work order written before implementation, with a separate result report and revision. | Broader cases and independent/receiver acceptance remain open. The author's review, source hashes and matrices do not prove semantic completeness. |
-| G2. Role-bounded routing and delegation | Both routers resolve named corpus inputs, reject unresolved required `--source` inputs and select GitHub specialist reading by task/mission/source context. Generic support writing preserves its policies and controls with 19 rather than 23 primary documents. | Broader relevance, semantic input/output distinction and target-repository sources remain open. Lexical context selection is not negation understanding; validation-command selection remains conservative. |
+| G2. Role-bounded routing and delegation | Both routers resolve named corpus inputs, reject unresolved required `--source` inputs and select GitHub specialist reading by task/mission/source context. Generic support writing preserves its policies and controls with 19 rather than 23 primary documents. Shared-validated document-access projections now enforce profile selection and empty blocked lists. | Actual authorized delivery/receiver use, broader relevance, semantic input/output distinction and target-repository sources remain open. Lexical context selection is not negation understanding; validation-command selection remains conservative. A projection does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
 | G5. Client distribution | Isolated installation fixtures cover link/copy binding, refresh, conflicts and receipt parity. Actual Codex/Claude processes discover both bundle forms in temporary homes; absent and Claude bare-mode negative controls distinguish real discovery from a folder check. | Skill-body consumption, semantic task execution and an independent fresh-session workflow remain unverified. Native metadata under isolated settings does not prove the user's full configuration. Separate plugin packaging is not included. |
@@ -290,6 +296,44 @@ Next: the separate `retry-proposal.md` in that local directory offers the same
 input/model and restrictions with only the observer correction. Do not execute
 it without a fresh USER decision. Meanwhile retain the failed result and pursue
 other bounded core work without changing the pending assessment's source files.
+
+### Profile-Bounded Access Correction (2026-11-11)
+
+While inspecting target-source handling, the local reproduction found four
+existing consumer failures: an undeclared field yielded `ready` despite schema
+rejection; unknown profile/document/caller authority `L9` yielded `ready`; a
+required/denied conflict retained allowed rows with blocked status; removing an
+optional path still allowed it through document-level role matching.
+
+The runner now uses shared schema/semantic validation before projecting any
+usable list. Selected-profile required/optional paths bound need-to-know;
+duplicate policy identities, unknown authority, conflicting denials, unsafe paths
+and required reference-only delivery fail. Every blocked result clears allowed
+rows and required satisfaction. A ready projection remains non-authorizing,
+does not read sources and does not prove recipient delivery. CLI exits distinguish
+ready, blocked and invalid input without echoing malformed input content.
+
+The first focused run passed 18/18 document-access fixtures, including actual CLI
+exit checks and the original before/after reproductions. Broader validation is
+recorded after execution below. Both provider skills now require the selected
+profile and actual delivery mode rather than treating role matches as raw-access
+permission. No model call, authentication, service or pending assessment-source
+change was made. The next dependency remains an explicitly authorized
+target-repository input binding and its eventual receiver-consumption evidence;
+do not silently substitute doctrine files with the same basename.
+
+Final checks passed: document access 18/18; full validator 502/502; authoring
+preparation/observer 15/15; routing preflight 10/10; mandatory-control enforcement
+6/6; isolated installation 21/21; routing 208 queries, 32 required-source
+rejections and 3 link-inventory checks. Both skills validate at 198 lines; both
+inventories have zero unrouted artifacts. Source-map/registry audits and Markdown
+links (182 files) also pass. The full validator log is retained at
+`.cannae/maintenance/document-access-validator-1b6f6b3d-c81f-4027-a84f-157ec72bd198.log`;
+the other six suite logs are in
+`.cannae/maintenance/document-access-checks-1def5d7d-fb4c-4cb2-a6a0-43f9fc6bad90/`.
+Source files remained fixed while these suites ran. No full aggregate, hosted CI,
+actual-model, browser or protected-access acceptance is claimed. The original
+installed links, pending assessment input and user ignore-file bytes are unchanged.
 
 ## Retained Platform Baseline
 

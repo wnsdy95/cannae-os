@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+The document-access correction is a local implementation audit against the
+existing `docs/role-document-access-policy.md`, not a new military claim.
+`document-access-runner.js` now consumes shared validation, selects only the
+profile's named documents and emits an empty allowed list on any block.
+`run-document-access-fixtures.js` checks the projection and CLI; it does not
+establish protected file reads, current approval or cross-repository delivery.
+
 `authoring-review-packet.js` uses the current local support/governance/security
 policies and the existing authoring case to prepare evaluator input separately
 from the author's reference. Its deliberate variants are test material, not

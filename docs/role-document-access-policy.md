@@ -100,6 +100,48 @@ Output:
 - `preflight_blocks`: cases where the manifest itself is unsafe.
 - `audit_requirements`: the items that must be logged for a read event.
 
+### Projection Boundary
+
+The runner validates the complete manifest with the shared schema and semantic
+validator before producing a usable list. A structural or policy error anywhere
+blocks the projection; `allowed_documents` is then empty and all required rows
+are unsatisfied. The CLI exits 0 for a ready projection, 1 for blocked and 2 for
+invalid invocation or unreadable/malformed JSON. A caller must check both the
+exit disposition and the projection, not only whether JSON was printed.
+
+For an explicit role, duty and known authority level, select the highest
+applicable profile tier at or below that level. Only its named required and
+optional documents are candidates; a document-level role match or
+`mission_common` duty cannot add files outside that profile. Do not union lower
+tiers into the selected profile. Duplicate role/duty/tier records, duplicate
+document paths and allow/deny conflicts are invalid, not a first/last-row choice.
+This selection compares declared levels; it does not authenticate a delegation
+or permit an agent to choose a higher level for itself.
+
+Preserve each delivery mode. `summary` permits only a separately prepared,
+appropriately reviewed summary, not opening the source to summarize it.
+`reference_only` permits the reference, not source contents; it cannot satisfy
+required reading. An optional reference-only record may remain in the eligible
+list. `required_documents.satisfied` means eligible delivery under this policy,
+not observed delivery, reading, comprehension or receiver acceptance.
+
+All paths refer to this doctrine repository, regardless of the caller's working
+directory. They must identify existing regular files with canonical relative
+paths and no symlink components. This runner does not resolve a different
+target repository or substitute a same-named file from it. Keep target-project
+inputs and outputs in their own repository; cross-repository delivery requires
+its separately authorized resolution and handoff rather than copying private
+data into the doctrine corpus.
+
+The projection reads policy metadata, not the referenced document contents;
+`authorization_verified` is always false. Schema validation likewise reports
+`can_execute: false` for this manifest type. A ready result is not a signed or
+current USER approval, a release decision, a read audit or an OS file-access
+barrier. Bind actual consumption to current task authority and recheck after
+policy/source changes. The exported `documentDecision` primitive checks only a
+single document; it cannot replace full-manifest/profile validation. The human
+USER's visibility is not restricted by an AI role profile.
+
 ## 8. Anti-patterns
 
 - Having every agent read `README.md` and the entirety of `docs/`.

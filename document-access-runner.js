@@ -2,6 +2,8 @@
 
 const fs = require("fs");
 const path = require("path");
+const { validatePayload, validateSchemaPayload } = require("./validator-cli-prototype/validate");
+const DEFINITIONS = require("./schema-files/common.schema.json").$defs;
 
 const AUTHORITY_LEVELS = ["L0", "L1", "L2", "L3", "L4", "L5"];
 
@@ -10,11 +12,21 @@ function readJson(filePath) {
 }
 
 function levelAtLeast(actual, minimum) {
-  return AUTHORITY_LEVELS.indexOf(actual) >= AUTHORITY_LEVELS.indexOf(minimum);
+  return AUTHORITY_LEVELS.includes(actual) && AUTHORITY_LEVELS.includes(minimum) &&
+    AUTHORITY_LEVELS.indexOf(actual) >= AUTHORITY_LEVELS.indexOf(minimum);
 }
 
 function documentDecision(document, role, duty, authorityLevel) {
-  if (!(document.allowed_roles || []).includes(role)) {
+  if (!document || !DEFINITIONS.role_id.enum.includes(role) ||
+      typeof duty !== "string" || !duty.trim() ||
+      !AUTHORITY_LEVELS.includes(authorityLevel) ||
+      !AUTHORITY_LEVELS.includes(document.minimum_authority_level) ||
+      !DEFINITIONS.classification.enum.includes(document.classification) ||
+      !["raw", "summary", "reference_only"].includes(document.delivery_mode) ||
+      !Array.isArray(document.allowed_roles) || !Array.isArray(document.duties)) {
+    return { allowed: false, reason: "invalid_access_context" };
+  }
+  if (!document.allowed_roles.includes(role)) {
     return { allowed: false, reason: "role_not_allowed" };
   }
   if (!((document.duties || []).includes(duty) || (document.duties || []).includes("mission_common"))) {
@@ -26,27 +38,40 @@ function documentDecision(document, role, duty, authorityLevel) {
   if (document.classification === "restricted" && document.delivery_mode === "raw") {
     return { allowed: false, reason: "restricted_raw_blocked" };
   }
+  if (document.classification === "sensitive" && document.delivery_mode === "raw" &&
+      (document.allowed_roles.includes("EXECUTOR") || document.allowed_roles.length > 3)) {
+    return { allowed: false, reason: "sensitive_raw_too_broad" };
+  }
   return { allowed: true, reason: "role_duty_authority_match" };
 }
 
 function projectDocumentAccess(manifest, role, duty, authorityLevel) {
-  const preflightBlocks = [];
-  const controls = manifest.controls || {};
-  if (manifest.default_decision !== "deny") preflightBlocks.push("Manifest must default to deny.");
-  if (controls.need_to_know !== true) preflightBlocks.push("Manifest must enforce need-to-know.");
-  if (controls.no_bulk_read !== true) preflightBlocks.push("Manifest must prohibit bulk read.");
-  if (controls.audit_required !== true) preflightBlocks.push("Manifest must require access audit.");
-  if (controls.exception_requires_approval !== true) preflightBlocks.push("Manifest exceptions must require approval.");
+  const structural = validateSchemaPayload(manifest, "document-access-manifest");
+  const validation = structural.valid ? validatePayload(manifest, "document-access-manifest") : structural;
+  const preflightBlocks = validation.issues
+    .filter(item => ["error", "critical"].includes(item.severity))
+    .map(item => `${item.code}: ${item.message}`);
+  const controls = structural.valid ? manifest.controls : {};
+  const documents = structural.valid ? manifest.documents : [];
+  const contextValid = DEFINITIONS.role_id.enum.includes(role) &&
+    typeof duty === "string" && Boolean(duty.trim()) && AUTHORITY_LEVELS.includes(authorityLevel);
+  if (!contextValid) preflightBlocks.push("DOCUMENT_ACCESS_CONTEXT_INVALID: role, duty and authority must be known and explicit.");
 
-  const profile = (manifest.role_profiles || [])
+  const profile = (structural.valid && contextValid ? manifest.role_profiles : [])
     .filter(item => item.role === role && item.duty === duty && levelAtLeast(authorityLevel, item.authority_level))
     .sort((left, right) => AUTHORITY_LEVELS.indexOf(right.authority_level) - AUTHORITY_LEVELS.indexOf(left.authority_level))[0];
   if (!profile) preflightBlocks.push(`No role profile for ${role}/${duty}/${authorityLevel}.`);
 
-  const allowedDocuments = [];
+  let allowedDocuments = [];
   const deniedDocuments = [];
-  for (const document of manifest.documents || []) {
-    const decision = documentDecision(document, role, duty, authorityLevel);
+  const needed = new Set(profile ? [...profile.required_documents, ...profile.optional_documents] : []);
+  const explicitlyDenied = new Set(profile ? profile.denied_documents : []);
+  for (const document of documents) {
+    const decision = explicitlyDenied.has(document.path)
+      ? { allowed: false, reason: "profile_explicit_deny" }
+      : !needed.has(document.path)
+        ? { allowed: false, reason: "not_selected_by_profile" }
+        : documentDecision(document, role, duty, authorityLevel);
     const projected = {
       path: document.path,
       title: document.title,
@@ -58,7 +83,7 @@ function projectDocumentAccess(manifest, role, duty, authorityLevel) {
     else deniedDocuments.push(projected);
   }
 
-  const allowedPaths = new Set(allowedDocuments.map(item => item.path));
+  const allowedPaths = new Set(allowedDocuments.filter(item => item.delivery_mode !== "reference_only").map(item => item.path));
   const requiredDocuments = (profile ? profile.required_documents : []).map(pathName => ({
     path: pathName,
     satisfied: allowedPaths.has(pathName)
@@ -67,21 +92,21 @@ function projectDocumentAccess(manifest, role, duty, authorityLevel) {
     if (!item.satisfied) preflightBlocks.push(`Required document is not readable: ${item.path}`);
   }
 
-  const explicitlyDenied = new Set(profile ? profile.denied_documents : []);
-  for (const allowed of allowedDocuments) {
-    if (explicitlyDenied.has(allowed.path)) {
-      preflightBlocks.push(`Denied document was allowed: ${allowed.path}`);
-    }
+  if (preflightBlocks.length) {
+    deniedDocuments.push(...allowedDocuments.map(item => ({ ...item, delivery_mode: "denied", reason: "preflight_blocked" })));
+    allowedDocuments = [];
+    for (const required of requiredDocuments) required.satisfied = false;
   }
 
   return {
     schema_version: "0.1",
     type: "DocumentAccessProjection",
-    manifest_id: manifest.id,
-    mission_id: manifest.mission_id,
+    manifest_id: structural.valid ? manifest.id : null,
+    mission_id: structural.valid ? manifest.mission_id : null,
     role,
     duty,
     authority_level: authorityLevel,
+    authorization_verified: false,
     status: preflightBlocks.length === 0 ? "ready" : "blocked",
     required_documents: requiredDocuments,
     allowed_documents: allowedDocuments,
@@ -97,12 +122,19 @@ function projectDocumentAccess(manifest, role, duty, authorityLevel) {
 
 function main() {
   const [, , manifestPath, role, duty, authorityLevel] = process.argv;
-  if (!manifestPath || !role || !duty || !authorityLevel) {
+  if (process.argv.length !== 6 || !manifestPath || !role || !duty || !authorityLevel) {
     console.error("Usage: node document-access-runner.js <manifest.json> <ROLE> <DUTY> <L0-L5>");
     process.exit(2);
   }
-  const manifest = readJson(path.resolve(manifestPath));
-  process.stdout.write(`${JSON.stringify(projectDocumentAccess(manifest, role, duty, authorityLevel), null, 2)}\n`);
+  try {
+    const manifest = readJson(path.resolve(manifestPath));
+    const projection = projectDocumentAccess(manifest, role, duty, authorityLevel);
+    process.stdout.write(`${JSON.stringify(projection, null, 2)}\n`);
+    process.exitCode = projection.status === "ready" ? 0 : 1;
+  } catch {
+    console.error("Document access input could not be evaluated.");
+    process.exitCode = 2;
+  }
 }
 
 if (require.main === module) {

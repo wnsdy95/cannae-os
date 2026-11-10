@@ -66,6 +66,11 @@ repeat `--source=<path>`; an unresolved input stops this routing invocation.
 Inspect `task_references.unresolved` for other filename mentions and resolve
 input/output ambiguity before work. References do not grant read or tool access.
 
+For delegated document access, require a ready manifest projection and its
+profile-selected list; a role match alone is insufficient. Preserve summary and
+reference-only modes. A ready projection does not authenticate authority or
+prove that a recipient read the source. See [Document Routing](references/document-routing.md).
+
 Keep reading scope separate from execution controls. Conditional specialist
 manuals need not be read for an unrelated task, but their omission never waives
 an issued validation command, approval or stop condition.

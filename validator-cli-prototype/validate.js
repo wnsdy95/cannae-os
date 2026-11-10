@@ -2857,6 +2857,8 @@ function semanticRules(payload, type, options = {}) {
   }
 
   if (type === "document-access-manifest") {
+    // Do not traverse malformed policy structures after schema rejection.
+    if (!validateSchemaPayload(payload, type).valid) return issues;
     if (payload.default_decision !== "deny") {
       issues.push(issue("critical", "DOCUMENT_ACCESS_DEFAULT_NOT_DENY", "$.default_decision", "Document access manifest must default to deny."));
     }
@@ -2882,16 +2884,29 @@ function semanticRules(payload, type, options = {}) {
     const documentByPath = new Map();
     for (const [index, document] of documents.entries()) {
       const pointer = `$.documents[${index}]`;
+      if (documentByPath.has(document.path)) {
+        issues.push(issue("error", "DOCUMENT_ACCESS_DUPLICATE_PATH", `${pointer}.path`, "Each document path must have exactly one policy record."));
+      }
       documentByPath.set(document.path, document);
       if (document.path === "*" || /\/\*$/.test(document.path || "")) {
         issues.push(issue("critical", "DOCUMENT_ACCESS_WILDCARD_PATH", `${pointer}.path`, "Document access must name explicit files, not wildcard paths."));
       }
-      if (/^https?:\/\//.test(document.path || "") || path.isAbsolute(document.path || "") || (document.path || "").includes("..")) {
+      const parts = document.path.split("/");
+      const canonical = !path.isAbsolute(document.path) && !/[:\\\x00*?\[\]]/.test(document.path) &&
+        !document.path.startsWith("~") && parts.every(part => part && part !== "." && part !== "..");
+      if (!canonical) {
         issues.push(issue("error", "DOCUMENT_ACCESS_NONLOCAL_PATH", `${pointer}.path`, "Document access manifest should point to controlled local repository paths."));
       }
-      if (document.path && document.path !== "*" && !/^https?:\/\//.test(document.path) && !path.isAbsolute(document.path) && !document.path.includes("..")) {
-        if (!fs.existsSync(path.join(ROOT, document.path))) {
-          issues.push(issue("error", "DOCUMENT_ACCESS_DOC_PATH_MISSING", `${pointer}.path`, "Declared document path does not exist."));
+      if (canonical) {
+        try {
+          let current = ROOT;
+          for (const part of parts) {
+            current = path.join(current, part);
+            if (fs.lstatSync(current).isSymbolicLink()) throw new Error("Symlinked document path.");
+          }
+          if (!fs.statSync(current).isFile()) throw new Error("Document path is not a file.");
+        } catch {
+          issues.push(issue("error", "DOCUMENT_ACCESS_DOC_PATH_MISSING", `${pointer}.path`, "Declared document must be an existing regular repository file without symlink components."));
         }
       }
       if (!hasSubstantiveItems(document.allowed_roles)) {
@@ -2911,8 +2926,14 @@ function semanticRules(payload, type, options = {}) {
       }
     }
 
+    const profileKeys = new Set();
     for (const [index, profile] of (payload.role_profiles || []).entries()) {
       const pointer = `$.role_profiles[${index}]`;
+      const key = JSON.stringify([profile.role, profile.duty, profile.authority_level]);
+      if (profileKeys.has(key)) {
+        issues.push(issue("error", "DOCUMENT_ACCESS_DUPLICATE_PROFILE", pointer, "A role/duty/authority tier must have exactly one profile."));
+      }
+      profileKeys.add(key);
       if (!hasSubstantiveItems(profile.required_documents)) {
         issues.push(issue("critical", "DOCUMENT_ACCESS_PROFILE_WITHOUT_REQUIRED_DOCS", `${pointer}.required_documents`, "Each role profile must define required reading."));
       }
@@ -2937,9 +2958,15 @@ function semanticRules(payload, type, options = {}) {
         if (!roleAllowed || !dutyAllowed || !authorityAllowed || restrictedRaw) {
           issues.push(issue("critical", "DOCUMENT_ACCESS_REQUIRED_DOC_NOT_READABLE", `${pointer}.required_documents`, "Required document is not readable by the profile role, duty, authority, or delivery rule."));
         }
+        if (document.delivery_mode === "reference_only") {
+          issues.push(issue("error", "DOCUMENT_ACCESS_REQUIRED_REFERENCE_ONLY", `${pointer}.required_documents`, "Reference-only delivery cannot satisfy required reading."));
+        }
       }
 
       for (const docPath of profile.optional_documents || []) {
+        if (denied.has(docPath)) {
+          issues.push(issue("error", "DOCUMENT_ACCESS_DENIED_DOC_OPTIONAL", `${pointer}.optional_documents`, "Optional reading cannot include an explicitly denied document."));
+        }
         if (!documentByPath.has(docPath)) {
           issues.push(issue("error", "DOCUMENT_ACCESS_OPTIONAL_DOC_NOT_DECLARED", `${pointer}.optional_documents`, "Optional document must be declared in documents list."));
         }
@@ -6111,7 +6138,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) &&
       !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
+      type !== "agent-context-pack" && type !== "document-access-manifest" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
