@@ -2,17 +2,50 @@
 
 ## Scope
 
-This is the cross-cutting completion queue for the existing Controls program.
-It preserves outstanding work rather than treating the latest merged feature
-as overall completion. The [runtime roadmap](runtime-automation-roadmap.md)
-owns phase contracts; the [implementation registry](implementation-candidate-registry.md)
-owns per-doctrine candidate mappings and executable checks. Consult both.
+The USER narrowed active development on 2026-11-10 to the
+[skill-first product](skill-first-product-scope.md): document authoring,
+maintenance, routing and bounded agent workflows in existing clients.
+The active queue below takes precedence over the retained platform program.
+Deferral is not completion, deletion or permission to bypass existing controls.
+
+## Active Core Work
+
+| Order | Work | Evidence and remaining acceptance |
+| --- | --- | --- |
+| 1 | Core-first entry path: locally implemented and checked on 2026-11-10. | Both entrypoints are 169 lines; original conditional runtime procedures are retained. Routing covers 124 queries across both providers, including the new authoring path; 3 link-inventory cases pass. Core end-to-end acceptance remains row 6. |
+| 2 | Document creation and revision: workflow and illustrative example added; behavioral acceptance remains open. | Representative SOP, order, research and handoff tasks must preserve requirements, sources, authority, unknowns and supersession without an application login. |
+| 3 | Verify role-bounded delegation and context handoffs. | Current-wave receipt checks, exact task references, missing/stale/wrong-role rejection and a receiver-ready handoff; no access or tool authority inferred from routing. |
+| 4 | Improve corpus maintenance from observed gaps. | Index/link/source consistency and an AAR-driven change mirrored in both skills with focused checks. |
+| 5 | Verify client distribution and optional plugin packaging. | Codex/Claude discovery, explicit repository resolution and equivalent behavior; distinguish an installed skill from a separately tested plugin package. |
+| 6 | Audit the complete core workflow. | Observed request -> route -> draft -> review -> handoff -> bounded improvement, with actual checks and residual limits recorded. Do not substitute fixture coverage for semantic quality. |
+
+These rows are acceptance work, not an assertion that every item is unimplemented
+or complete. Use the [implementation registry](implementation-candidate-registry.md)
+to find existing work; verify before promoting any claim. Keep its historical
+candidate statuses unchanged unless their own criteria are actually satisfied.
+The former 125-candidate inventory percentage is not current core completion.
+
+The 2026-11-10 local check also passed routing preflight (8/8), mandatory-control
+enforcement (6/6), both repository-specific skill validators, both inventory
+coverage checks, the source-map and registry audits, and current-document links.
+Both installed symlink routers resolved the authoring path from another working
+directory with an explicit doctrine root. This is not a full installation test.
+The optional Python skill validator could not start because PyYAML is absent.
+Full platform, browser, actual-model and hosted CI acceptance were not run.
+
+
+## Retained Platform Baseline
+
+The following rows preserve the previous broader program and its unresolved
+evidence. They are not the default next-work order. Dashboards, operator UI/API,
+separate execution services and production trust infrastructure are deferred.
+Existing guarded operations and known failures retain their original rules.
 
 The statuses below are a review baseline on 2026-09-29, not an automatically
 refreshed operational dashboard. Runtime state and CI evidence must be re-read
 before an operation. No row grants approval or changes the USER's final authority.
 
-## Ordered Work
+### Historical Ordered Work
 
 | Order | Workstream and current state | Concrete completion evidence |
 | --- | --- | --- |
@@ -68,18 +101,19 @@ containment and managed coordination/fencing remain open. The separate
 [successor contract](campaign-successor-admission.md) supplies exact local
 admission but not automatic replacement planning or production infrastructure.
 
-Orders 10-12 include external operator dependencies and can progress alongside
-repository work, but may not be reported complete without actual evidence.
+Historical orders 10-12 include external operator dependencies and are deferred;
+do not resume them alongside core work without an explicit USER scope decision.
 Credential renewal does not authorize a lineage reset. If any row's exact scope
 requires a new policy or external deployment decision, return that decision to
 the USER and continue independent in-scope work.
 
 ## Closure Discipline
 
-### Active Eight-Part Goal
+### Deferred Eight-Part Program
 
-The user's full goal remains the following eight outcomes. A completed schema,
-runner or merged subset does not redefine or close any broader outcome.
+The previous program comprised the following eight outcomes. They remain
+historical requirements, not current skill/plugin acceptance criteria. A
+completed schema, runner or merged subset does not close a broader outcome.
 
 | Goal | Required end state and remaining evidence | Backlog rows |
 | --- | --- | --- |
@@ -92,12 +126,12 @@ runner or merged subset does not redefine or close any broader outcome.
 | 7. Authenticated operator product | A working approval UI and queryable evidence API with user authentication, bounded multi-user permissions, real approval consumption and browser-tested operator flows. | 9 |
 | 8. Protected production operation | Non-bypassable external tool path, linearizable coordination/storage fencing, independently appraised protected hosts/keys and operated independent monitoring. Fixtures and signed local claims cannot prove deployment. | 2, 10, 11, 12 |
 
-The deployment target for goal 8 is deferred by the USER as of 2026-10-22;
-continue local implementation without selecting or deploying external
-infrastructure, shrinking that goal, or claiming its production evidence exists.
+The earlier 2026-10-22 decision deferred deployment selection while retaining
+local platform work. The 2026-11-10 scope decision now also defers platform
+development. Do not select an environment or continue goal 8 by default.
 
-All eight outcomes require evidence at their actual scope. Keep externally blocked
-operator decisions visible while continuing independent implementation work.
+If resumed, all eight outcomes require evidence at their actual scope. Preserve
+open operator decisions while selecting work from the active core queue.
 
 At each checkpoint record implemented behavior, checks actually run, residual
 work, and any required USER decision. Update both installed skill source trees
@@ -105,7 +139,7 @@ with a reusable operational lesson, not a restatement of the code change.
 Keep unrelated worktree changes intact. Commit coherent verified batches and
 merge only after their required checks pass under the repository policy.
 
-Before claiming the whole program complete, re-audit every row and candidate,
+Before claiming the historical platform program complete, re-audit every row and candidate,
 re-read the roadmap's residual limitations, verify retained mission evidence,
 and check current main CI and provider monitoring. Any unfinished or externally
 blocked item remains visible. A clean worktree, all local tests passing, or a

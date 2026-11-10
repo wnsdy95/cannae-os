@@ -1,0 +1,120 @@
+# Document Authoring Workflow
+
+Use this workflow to write or revise Controls documents through either client
+skill. No dashboard, owner login or application server is required. The
+[skill-first scope](skill-first-product-scope.md) defines the current product;
+the [Knowledge Management SOP](knowledge-management-sop.md) remains the corpus
+storage, indexing and review policy.
+
+## Choose The Document
+
+Prefer an existing canonical document over a duplicate. Match the requested
+decision or handoff to the smallest useful format:
+
+| Need | Format and primary reference |
+| --- | --- |
+| Brief one agent on a small task | Quick prompt in [Prompt Templates](prompt-templates.md); retain intent, boundaries, output and completion criteria. |
+| Assign coordinated work | OPORD and task orders in [Orders Production Pipeline](orders-production-pipeline.md), with backbrief before delegated execution. |
+| Change an issued instruction | FRAGO in [Prompt Templates](prompt-templates.md); cite the predecessor, changed scope and unchanged constraints. For an already opened runtime plan, use [Order Revision](order-revision-and-supersession.md). |
+| Define a repeatable procedure | SOP using [SOP Library](sop-library.md) and the knowledge-management rules; name its trigger, owner, steps, stop conditions and review path. |
+| Record research or a claim | [Source Map](source-map.md), [Research Compendium](research-compendium.md) and [Source Reliability Rubric](source-reliability-rubric.md). |
+| Report progress or a required decision | SITREP or CCIR template; distinguish completed work, observed failures, pending approval and planned work. |
+| Transfer unfinished work | [Handoff Packet Template](handoff-packet-template.md); preserve unresolved decisions, canonical files and the next bounded action. |
+| Improve a completed workflow | AAR template; connect an observed gap to a specific procedure or routing change and a relevant check. |
+
+## Authoring Sequence
+
+1. Preserve the request's purpose, required tasks, expected result, constraints
+   and exclusions. Ask only for missing information that changes the work.
+2. Route using the original task and declared operator mode. For a generic
+   authoring request, start with this document and the knowledge-management SOP,
+   then read only the chosen format and its directly relevant policy.
+3. Identify the canonical destination, owner and intended readers. A document
+   recommendation does not grant access to restricted underlying evidence.
+4. Draft facts with source references. Label interpretation and proposed action
+   separately; mark assumptions and unknowns rather than filling gaps with
+   plausible details. A valid template cannot guarantee factual truth.
+5. Check that every required task and constraint survived. For delegation,
+   require the receiver to restate purpose, output, authority and stop points
+   using [Backbrief And Rehearsal SOP](backbrief-and-rehearsal-sop.md).
+6. Validate the changed surface. Record which checks actually ran and what
+   remains unverified. A draft, a sample approval or a passed schema is not
+   permission to execute, publish or increase authority.
+7. Update the canonical document and applicable indexes together, report the
+   change, and leave a receiver-ready handoff when work remains.
+
+For non-English requests, preserve the original wording when analyzing intent.
+The current lexical router uses English route terms; use a faithful English
+task description to find references, not as a substitute source of user intent.
+Do not interpret a routing miss as permission to omit the task or constraints.
+
+## Minimum Durable Context
+
+Use existing schema fields when the artifact already has a contract. For a
+plain Markdown document, include the following when relevant; do not invent
+approvals or populate a large control record for a simple prose edit:
+
+```text
+Purpose and required result:
+Owner and intended readers:
+Status: draft / reviewed / approved / superseded
+Canonical path and predecessor/version:
+Source references and evidence:
+Interpretation, assumptions and unknowns:
+Allowed work, retained decisions and stop conditions:
+Acceptance criteria and checks actually run:
+Unresolved decisions and next action:
+```
+
+Only mark `approved` when an actual authorized decision exists and name its
+scope. A role label, reviewer signature string or generated approval example
+does not establish that decision. File dates and model confidence do not
+establish evidence freshness or correctness.
+
+## Revision And Storage
+
+- Preserve unaffected requirements. Describe additions, removals and changed
+  assumptions; reference the superseded document without silently rewriting
+  historical decisions or validation evidence.
+- Keep doctrine in `docs/`, contract definitions in `schema-files/`, examples
+  in the existing sample directories, and provider-specific instructions in
+  the two skill trees. Keep task outputs in their target repository, not in a
+  shared corpus output folder. Runtime evidence uses the existing manifest store.
+- New doctrine needs exact-path entries in the README, source map, compendium
+  and the research queue's doctrine index. Classify local design decisions as
+  local synthesis; do not invent an external source for them.
+- Changes to an executable contract still need schema, valid/invalid samples,
+  consumer/fixture and documentation updates. Writing a new SOP does not by
+  itself require creating a new executable contract or service.
+
+## Small Worked Example
+
+Request: "Draft a support escalation SOP from the supplied support policy.
+Do not change response-time commitments or publish it. Hand off open questions."
+
+1. Route the task as human-directed authoring. Read the current support policy
+   and the SOP guidance, not the dashboard or release-monitoring manual.
+2. Draft a support SOP that cites the supplied policy's exact sections. Keep
+   its commitments unchanged. If no escalation owner is named, record
+   `Unknown: escalation owner requires USER decision` rather than inventing one.
+3. Review every escalation step against the source and the no-publication
+   boundary. Report source sections checked; do not report tests not executed.
+4. Hand off the canonical draft path, preserved commitments, owner question,
+   review evidence and next action: USER selects the escalation owner.
+5. If the authoring route missed the SOP guidance, fix that route in both
+   provider skills and add a regression for the request. Do not turn this
+   correction into an autonomous platform-development campaign.
+
+This example is illustrative, not evidence of an actual support-policy review.
+For a delegated agent's real execution, use current-wave receipts and preflight;
+for an existing guarded mission, retain its controller-issued context, leases,
+approval boundaries and unresolved-effect rules.
+
+## Validation And Limits
+
+For corpus edits, use `source-map-linter.js`, the local-link and English checks
+under `.github/scripts/`, both routers' `--coverage`, and the affected routing
+fixtures. Add contract or lifecycle checks when those behaviors changed.
+Repository CI requirements remain unchanged; a focused pass is not a full-suite
+pass. Do not start console/browser/platform acceptance work just to draft a
+document. Read actual task documents, not only successful coverage counts.

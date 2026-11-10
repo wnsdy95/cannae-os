@@ -55,18 +55,21 @@ The goal is not to make agents more autonomous by default. The goal is to make d
 
 ## Project Direction
 
-Cannae OS is moving toward a practical runtime discipline for AI teams:
+The active product is a **document-driven skill/plugin for existing AI clients**:
 
-1. Doctrine: shared concepts, vocabulary, and operating principles.
-2. Structured documents: OPORD, WARNO, FRAGO, SITREP, AAR, backbrief, rehearsal, approval, risk, release, and handoff contracts.
-3. Runtime schemas: JSON contracts that make orders, authority, release, evidence, and readiness machine-checkable.
-4. Policy gates: local runners that block known unsafe or under-specified states.
-5. Skill routing: Codex and Claude Code skills that route huge documentation sets by user mode, role, department, authority, and need-to-know.
-6. Operational skill lifecycle: one fail-closed entry point that opens every wave, generates mandatory routing evidence, issues digest-bound context packs, records manifest-backed results, and converts AAR findings into bounded follow-on work.
-7. Bounded adaptation: campaign/checkpoint/decision contracts that let agents improve active work without self-authorizing scope, policy, or release.
-8. Future runtime: a tool-gated orchestrator with approval UI, evidence store, event replay, dashboards, and cryptographically verifiable learning evidence.
+1. Write and revise orders, SOPs, reports and handoffs without losing intent.
+2. Route the minimum relevant documents by task, role, department and authority.
+3. Preserve human final decisions and bounded single-agent or multi-agent work.
+4. Maintain canonical documents, sources, indexes and repository-specific outputs.
+5. Improve prompts and procedures from observed failures and AARs, with focused checks.
+6. Distribute equivalent operating rules through Codex and Claude skills.
 
-The current repository is strongest as a doctrine, schema, fixture, and prototype suite. It is not yet a complete production agent runtime.
+As decided on 2026-11-10, dashboards, approval applications, separate execution
+services and production infrastructure are **deferred**. Existing code and proof
+remain available, but they are not prerequisites for ordinary document work.
+Existing guarded operations still retain their controls and unresolved holds.
+See [Skill-First Product Scope](docs/skill-first-product-scope.md) for the active
+acceptance criteria. A separate plugin package is not yet claimed implemented.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
@@ -76,13 +79,15 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
+- [Skill-First Product Scope](docs/skill-first-product-scope.md): active core, deferred platform work and honest completion criteria.
+- [Document Authoring Workflow](docs/document-authoring-workflow.md): choose a format, preserve evidence and intent, revise the canonical document and hand off unresolved work without a dashboard.
 - [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
 - [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.
 - [Request Intake And Order Drafts](docs/request-order-intake.md): retain exact requests, separate quotes from assumptions and proposals, and compile non-executable OPORD/task drafts with inherited constraints.
 - [Exact Order Adoption And Plan Binding](docs/order-adoption-and-plan-binding.md): bind the complete plan, each agent's backbrief and rehearsal to one finite USER scope decision; recheck it at lifecycle and dispatch admission without granting release or bypassing other gates.
 - [Order Revision And Supersession](docs/order-revision-and-supersession.md): review a full changed plan against its exact predecessor, prepare successor contexts, settle old execution and supersede before new tool authority.
 - [Mandatory Intent Continuity](docs/intent-continuity-runtime.md): bind every new context to the plan's complete task commitments and USER-rooted delegation chain; deny missing tasks, widened child authority and legacy-context tool reuse while preserving admitted-result settlement.
-- [Local Operator Console](docs/local-operator-console.md): real loopback login, mission-bounded evidence, [exact order decisions and outcome replay](docs/operator-consent-and-adoption.md), plus [fresh authenticated terminal reconciliation](docs/operator-terminal-reconciliation.md). Confirm worker exit, retain exact cancellation/acknowledgment evidence and preserve original failures/expiry. Broader tool approvals, operational COP and production protection remain open; adoption or reconciliation is not execution authority.
+- [Local Operator Console](docs/local-operator-console.md) (deferred development): retained loopback login, mission-bounded evidence, [order decisions](docs/operator-consent-and-adoption.md) and [terminal reconciliation](docs/operator-terminal-reconciliation.md). Existing failures, expiry and holds retain their rules; adoption or reconciliation is not execution authority.
 
 - [Military LLM Framework](docs/military-llm-framework-v0.1.md): the core command, authority, reporting, and AAR model.
 - [Military Operating System](docs/military-operating-system.md): the layered operating system view of doctrine, SOP, intent, planning, orders, risk, liaison, assessment, and learning.
@@ -565,32 +570,10 @@ for monotonic prior-state and artifact-lineage controls.
 
 ## Quick Start
 
-Requirements:
-
-- Node.js for local runners and validators.
-- OpenSSL 3.x for verifier workload-identity fixtures.
-- Bash-compatible shell for the installer and validation loops.
-- Python 3 only for optional Codex skill validation.
-
-Install the exact lockfile dependencies in a clean checkout:
-
-```bash
-npm ci --ignore-scripts
-```
-
-Run the main validation suite:
-
-```bash
-node validator-cli-prototype/run-fixtures.js
-for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
-node source-map-linter.js
-```
-
-Check corpus routing coverage:
-
-```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
-```
+For core document routing, use Node.js and a local checkout. The skill installer
+uses Bash. No dashboard, owner account or server startup is needed. Read
+[Document Authoring Workflow](docs/document-authoring-workflow.md) for writing,
+revision and handoff rules.
 
 Install local AI CLI skills:
 
@@ -603,7 +586,7 @@ Route a user-facing framework question:
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   --actor=user \
-  "How should I operate a multi-agent implementation campaign?" .
+  "Draft an SOP and handoff document from the supplied policy." .
 ```
 
 Route a delegated AI operator:
@@ -617,14 +600,23 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   "Prepare an execution plan for a bounded documentation update." .
 ```
 
-Open a delegated mission wave through the enforced lifecycle:
+Actual delegated execution, unlike a document draft, requires a current wave,
+routing receipts and applicable tool approvals. Read the
+[mission lifecycle](docs/skill-operational-mission-lifecycle.md) before opening
+a wave; sample payloads are examples, not your approval. Its command shape is:
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
-  open sample-payloads/valid-mission-wave-plan.json \
+  open <reviewed-mission-wave-plan.json> \
   --repository . \
   --artifact-root .cannae/artifacts
 ```
+
+For contributor validation, install the exact lockfile dependencies in a clean
+checkout with `npm ci --ignore-scripts`. Workload-identity fixtures additionally
+need OpenSSL 3.x; optional Codex skill validation needs Python 3. Run relevant
+checks first, then the required repository gates. See the surfaces below;
+ordinary routing does not require running every platform fixture.
 
 ## Validation Surfaces
 
@@ -818,33 +810,15 @@ git diff --check
 
 ## Roadmap
 
-Near-term:
+Active priorities are authoring quality, task-level routing, receiver-ready
+handoffs, corpus maintenance, bounded improvement and equivalent client skill
+distribution. See the [active backlog](docs/completion-backlog.md#active-core-work).
+Do not infer completion from the number of files or a passing inventory audit.
 
-- exercise enforced dispatch in additional real Codex/Claude multi-session campaign trials and harden managed-hook installation;
-- tighten public documentation and contribution structure;
-- continue removing generated artifacts from source control;
-- improve source-map coverage and source interpretation notes;
-- expand fixture coverage around routing, release, and authority mismatches;
-- extend native provider adapters beyond the implemented GitHub Actions and GitLab.com OIDC paths to enterprise/self-managed providers, self-hosted runners, cloud, local-host, and TEE evidence;
-- implement provider adapters that collect Rekor checkpoints, consistency proofs, shard metadata, witness signatures, and monitor reports for v0.7;
-
-Mid-term:
-
-- define a persistent event model for missions, approvals, releases, handoffs, and AARs;
-- deploy the protected policy gateway behind independently operated identity, admission, coordination, and storage-fencing providers as the only side-effect path;
-- connect approval scope and release gates to that gateway;
-- implement authenticated self-hosted runner, local sandbox, and TEE execution-evidence adapters;
-- operate production transparency polling, witnesses, monitors, gossip, TUF distribution, and incident response around the implemented Phase 13 verifier;
-- operate independently durable release-trust checkpoint storage and cross-provider liveness monitoring around Phase 19D;
-- build a useful command-post dashboard from event projections;
-- formalize an evidence store for claims, sources, reliability, and interpretation.
-
-Long-term:
-
-- make Cannae OS a reusable control plane for human-led AI teams;
-- support different organizational cultures and doctrine families without hard-coding US assumptions;
-- support measurable agent readiness and authority delegation;
-- close the loop from AAR findings to SOP, policy, and readiness updates.
+The [runtime roadmap](docs/runtime-automation-roadmap.md) retains prior platform
+designs and unfinished work as a deferred reference. It is not the default
+continuation queue. Resuming dashboard, application or production-infrastructure
+development requires a new USER scope decision, not an old open backlog item.
 
 ## License
 

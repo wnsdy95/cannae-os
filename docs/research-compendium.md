@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Skill-First Product Boundary (2026-11-10)
+
+`docs/skill-first-product-scope.md` records the USER decision to prioritize
+document authoring, maintenance and routing through client skills/plugins.
+`docs/document-authoring-workflow.md` connects existing formats to source
+discipline, revision and receiver-ready handoffs without an application login.
+The lesson is to separate ordinary corpus work from conditional execution,
+approval and release operations, not to remove their guards.
+
+Dashboard, console and production-infrastructure development are deferred,
+not completed. Existing code, evidence and open failures remain retained.
+Both skill entrypoints prioritize the core and disclose detailed runtime
+procedures only when applicable. These are local engineering decisions; no
+new military-source claim, semantic accuracy guarantee, plugin-package
+acceptance or revised completion percentage follows from this change.
+
 ## Local Method Metadata Transport (2026-10-23)
 
 The [local method channel](method-control-channel.md) uses the official pinned

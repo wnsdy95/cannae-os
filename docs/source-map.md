@@ -1,5 +1,14 @@
 # Source Map
 
+## Skill-First Scope And Authoring
+
+`docs/skill-first-product-scope.md` records the USER's 2026-11-10 scope decision,
+not a military-source claim. `docs/document-authoring-workflow.md` synthesizes
+the existing knowledge-management, prompt, order, source and handoff guidance
+into a document-only entry path. Both provider skills apply this boundary while
+preserving existing guarded execution and release procedures as conditional
+references. No new external-source assertion is introduced.
+
 `docs/gateway-effect-settlement.md` is local engineering synthesis of the
 existing USER, supervisor, verifier, gateway review and OCI containment contracts.
 `gateway-effect-settlement.js`, its schema pair, fixture runner and both skill

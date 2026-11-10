@@ -1,5 +1,29 @@
 # Document Routing
 
+## Start With Core Work
+
+Read `docs/skill-first-product-scope.md` before selecting new work. For writing
+or revision, use `docs/document-authoring-workflow.md`, then the selected format
+and `docs/knowledge-management-sop.md`. The `document-authoring` route covers
+SOP drafting, document revision and handoff documents in both provider trees.
+
+Ordinary authoring does not require a dashboard, owner login, server or a full
+platform verification campaign. Preserve original intent, source/interpretation
+boundaries, ownership, supersession and unresolved decisions. Existing runtime
+holds and actual delegated execution still require their original controls.
+
+Router commands are validation recommendations, not actions already performed
+or permission to expand the user's request. Lexical matches can include broad
+or negated terms; distinguish drafting an instruction from executing it. Do not
+strip required controls from an already issued receipt or context pack. Clarify
+an ambiguous guarded operation before dispatch, not by silently removing gates.
+
+## Conditional Runtime Maintenance
+
+The following operating notes apply only to a relevant existing guarded
+operation or explicitly requested maintenance. They are not default onboarding.
+Detailed retained procedures are in `references/runtime-operations.md`.
+
 For a real local evidence workspace, route to `docs/local-operator-console.md`
 and `scripts/serve_controls_operator.js`; validate with
 `node run-operator-console-fixtures.js`. The human creates the owner account.
@@ -84,6 +108,10 @@ For a reconciled failure or legacy resumed/terminal lease, inspect the separate
 failed-agent marker and require explicit post-settlement revocation. Do not
 translate zero unresolved effects into successful completion or renewed tools.
 
+For current continuation work, select from the active core queue in
+`docs/completion-backlog.md`; do not resume deferred platform work because an
+older roadmap lists it. The broad registry percentage is not core completion.
+
 For implementation-candidate audits and existing-program completion, route to
 `docs/implementation-candidate-registry.md` and `docs/completion-backlog.md`.
 Run `node implementation-candidate-registry.js audit`; use its source-bound
@@ -101,6 +129,9 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --co
 The report must return `valid: true` and `unrouted_artifact_count: 0`. If it does not, update `ROUTE_HINTS`, `RULES`, or the artifact naming so the item has a clear route.
 
 Inventory coverage does not prove that a specific task received its documents.
+Keep local archives in `.cannae` and `.cxt` out of current-document link checks;
+their historical relative links are not live corpus failures. Do not ignore
+hidden provider skill trees: broken `.claude/skills` references must still fail.
 The recommendation bundle preserves orientation, role/authority, capability-gap,
 and all documents from the top four selected task routes, without a 16-document
 cutoff. `--limit` and `--all` affect only supporting artifacts. Check the exact
@@ -165,6 +196,8 @@ restored conversational context never restores authority.
 
 | Task | Read First | Then Read |
 | --- | --- | --- |
+| Write or revise a document | `docs/document-authoring-workflow.md`, `docs/knowledge-management-sop.md` | Selected prompt/SOP/handoff format and its relevant policy |
+| Choose current work or explain scope | `docs/skill-first-product-scope.md`, active `docs/completion-backlog.md` | Registry mappings; deferred runtime roadmap only as history |
 | Understand the whole framework | `README.md`, `docs/military-llm-framework-v0.1.md` | `docs/military-operating-system.md`, `docs/glossary.md` |
 | Contribute or review project governance | `CONTRIBUTING.md`, `GOVERNANCE.md` | `CODE_OF_CONDUCT.md`, `SECURITY.md`, `SUPPORT.md` |
 | Find source backing | `docs/source-map.md` | `docs/research-compendium.md`, `docs/source-reliability-rubric.md` |

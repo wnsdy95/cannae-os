@@ -2,6 +2,14 @@
 
 ## 0. Purpose
 
+For ordinary writing and revision, start with
+[Document Authoring Workflow](document-authoring-workflow.md). Under the current
+[skill-first scope](skill-first-product-scope.md), document work does not require
+a dashboard, login or server. Runtime-specific proof and campaign rules below
+apply when using those workflows; they are not prerequisites for a prose edit.
+Existing guarded operations and retained holds cannot be bypassed by relabeling
+them as document work.
+
 Military-style mission command does not work on the basis of "a good commander gives clear verbal instructions" alone. Shared understanding, records, terminology, knowledge repositories, battle rhythm, liaison, and AAR must all operate together.
 
 In an LLM runtime, conversational memory is the most fragile repository. Therefore, the source of truth for long-running work must reside in the following.
@@ -44,7 +52,7 @@ This SOP defines how the S6 Knowledge role and the CoS operate knowledge managem
 | Adaptive validation proof | verification receipt + signed verifier quorum + manifest history | checkpoint metric projection |
 | Privileged adaptive approval | approval scope + consumption event | checkpoint approval binding |
 | Multi-repository deliverables | repository artifact manifest | repository-scoped artifact files |
-| Next task queue | implementation-candidate registry, completion backlog, runtime roadmap | research queue, compendium |
+| Next task queue | skill-first product scope, active completion backlog | implementation registry, deferred runtime roadmap, research queue, compendium |
 
 Conversation history is not a source of truth. Conversation is task instruction and transient context.
 

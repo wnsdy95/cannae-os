@@ -2,6 +2,11 @@
 
 ## Purpose
 
+For current development priority, read [Skill-First Product Scope](skill-first-product-scope.md)
+and the active completion backlog first. This registry retains the broader
+engineering inventory, including deferred platform candidates. Do not use its
+implemented/total ratio as the current skill/plugin completion percentage.
+
 The canonical [registry](implementation-candidate-registry.json) connects each
 doctrine implementation proposal to actual source files, acceptance criteria,
 executable checks, and remaining work. It is an engineering inventory, not a

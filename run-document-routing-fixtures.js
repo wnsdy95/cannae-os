@@ -2,6 +2,7 @@
 
 const assert = require("assert");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const { validateSkill } = require("./validate-controls-skill");
@@ -34,6 +35,33 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["document authoring and document routing",
+    "Draft an SOP and handoff document from the supplied policy.",
+    "Revise a document", "docs/document-authoring-workflow.md"]) {
+    for (const args of [["--actor=user"],
+      ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+      const result = route(router, args, query);
+      assertRoutes(result, ["document-authoring"]);
+      assert.strictEqual(result.capability_routing.status, "covered");
+      for (const document of ["docs/document-authoring-workflow.md",
+        "docs/knowledge-management-sop.md", "docs/prompt-templates.md",
+        "docs/handoff-packet-template.md", "docs/skill-first-product-scope.md"]) {
+        assert(result.recommended_documents.some(item => item.path === document),
+          `${query}: missing authoring reference ${document}`);
+      }
+      const delegated = args.includes("--actor=ai");
+      assert.strictEqual(result.operating_mode.decision_authority,
+        delegated ? "bounded_ai_delegate" : "human_user");
+      if (delegated) {
+        assert.strictEqual(result.operating_mode.role, "S6");
+        assert.strictEqual(result.operating_mode.authority, "read-only");
+      }
+      assert(!result.matched_routes.some(item =>
+        ["local-operator-console", "runtime-architecture-dashboard", "enforced-dispatch"].includes(item.id)));
+      assert(!result.validation_commands.some(command =>
+        /operator-console|operator-consent|protected-tool-gateway|github-release/.test(command)));
+    }
+  }
   for (const query of ["operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["local-operator-console"]);
@@ -216,4 +244,33 @@ for (const router of ROUTERS) {
   }
 }
 
-console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers.`);
+const linkRoot = fs.mkdtempSync(path.join(os.tmpdir(), "controls-document-links-"));
+try {
+  fs.mkdirSync(path.join(linkRoot, "docs"));
+  fs.writeFileSync(path.join(linkRoot, "README.md"), "[Guide](docs/guide.md)\n");
+  fs.writeFileSync(path.join(linkRoot, "docs/guide.md"), "# Guide\n");
+  for (const directory of [".cannae", ".cxt"]) {
+    fs.mkdirSync(path.join(linkRoot, directory));
+    fs.writeFileSync(path.join(linkRoot, directory, "retained.md"), "[Old relative link](missing.md)\n");
+  }
+  const checkLinks = () => spawnSync(process.execPath,
+    [path.join(ROOT, ".github/scripts/check-markdown-links.js")],
+    { cwd: linkRoot, encoding: "utf8" });
+  const valid = checkLinks();
+  assert.strictEqual(valid.status, 0, valid.stderr);
+  assert(valid.stdout.includes("2 files"), "Local history must not be scanned as current doctrine.");
+  fs.writeFileSync(path.join(linkRoot, "docs/guide.md"), "[Missing source](absent.md)\n");
+  const brokenDoc = checkLinks();
+  assert.strictEqual(brokenDoc.status, 1);
+  assert(brokenDoc.stderr.includes("docs/guide.md: absent.md"));
+  fs.writeFileSync(path.join(linkRoot, "docs/guide.md"), "# Guide\n");
+  fs.mkdirSync(path.join(linkRoot, ".claude/skills/example"), { recursive: true });
+  fs.writeFileSync(path.join(linkRoot, ".claude/skills/example/SKILL.md"), "[Missing reference](missing.md)\n");
+  const brokenSkill = checkLinks();
+  assert.strictEqual(brokenSkill.status, 1);
+  assert(brokenSkill.stderr.includes(".claude/skills/example/SKILL.md: missing.md"));
+} finally {
+  fs.rmSync(linkRoot, { recursive: true, force: true });
+}
+
+console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers; 3 link-inventory checks.`);

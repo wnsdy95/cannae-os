@@ -2,7 +2,14 @@
 
 Use this after answering, editing, researching, or validating the Controls corpus.
 
-This reference governs maintenance of the doctrine corpus and router. For autonomous improvement of an active mission or in-progress artifact, use `docs/bounded-self-improvement-operations.md` and the campaign/checkpoint/decision contracts instead of an informal AAR-only loop.
+This reference governs maintenance of the doctrine corpus and router under
+`docs/skill-first-product-scope.md`. A directly requested document or skill edit
+does not automatically start an autonomous runtime campaign. Keep its improvement
+bounded to the request, record the observed gap and validate the changed surface.
+For an explicitly authorized autonomous campaign or already guarded mission,
+use `docs/bounded-self-improvement-operations.md` and the retained
+`references/runtime-operations.md` procedures; an informal AAR cannot replace
+their proof, approval, stop or settlement rules.
 
 ## Mandatory Per-Improvement Skill Adaptation
 
@@ -34,9 +41,13 @@ valid route cannot conceal an invalid entrypoint.
 
 ## Completion Audits
 
-For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
-the next dependency-ready item from `docs/completion-backlog.md`, then inspect
-its registered source requirements and existing implementation mappings.
+For "what remains" or continuation, read `docs/skill-first-product-scope.md`
+and the active core queue in `docs/completion-backlog.md` first. Do not select
+dashboard, console, separate execution service or infrastructure work from the
+retained platform backlog without a new USER scope decision. Run
+`node implementation-candidate-registry.js audit` to inspect existing mappings
+and claims, not to redefine the product. Its broad implemented/total ratio is
+not skill/plugin completion. Deferred candidates remain in the inventory.
 Keep out-of-corpus capability routing for genuinely uncovered domains, not
 ordinary corpus maintenance.
 

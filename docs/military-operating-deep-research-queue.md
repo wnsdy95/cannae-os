@@ -1,5 +1,10 @@
 # Military Operating Deep Research Queue
 
+Current priority follows [Skill-First Product Scope](skill-first-product-scope.md).
+Dashboard and platform integration gaps below are retained research history,
+not the active implementation queue. Select current work from the active
+[Completion Backlog](completion-backlog.md#active-core-work).
+
 ## 0. Purpose
 
 This document is the research backlog that manages the areas requiring deeper investigation going forward, in order to translate how the military operates into an LLM operating framework.
@@ -597,6 +602,8 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
+- `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
+- `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.
 - `implementation-candidate-registry.md`: Source-bound requirements, mapped implementations, executable checks, and explicit remaining work.
 - `completion-backlog.md`: Cross-cutting roadmap and operational closure criteria, including external dependencies.
 - `mission-command-runtime-policy.md`: Commander's intent as a five-field machine-checkable constraint object surviving delegation across agent echelons.
@@ -629,7 +636,7 @@ Completed:
 Next:
 
 1. The named research outputs in sections 3.1 through 3.11 exist, but that does not close their runtime implementation candidates. Use `implementation-candidate-registry.json` and its live audit for exact mappings and residual work.
-2. Use `completion-backlog.md` for the full remaining program, including request compilation, intent continuity, COP/reporting, force reconciliation, actual UI/API integration, and external trust operations.
+2. Use the active core queue in `completion-backlog.md` for current work. Its retained platform baseline preserves request compilation, intent continuity, COP/reporting, force reconciliation, UI/API and external trust requirements without scheduling their development by default.
 3. Once access to the official Australian ADF doctrine site is secured, review adding a multinational source family.
 4. Reconcile existing candidates and roadmap gaps before opening unrelated expansion. New policy or external deployment scope still needs an explicit USER decision.
 

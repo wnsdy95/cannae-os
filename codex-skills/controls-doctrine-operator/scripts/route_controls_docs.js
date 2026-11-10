@@ -7,6 +7,18 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "document-authoring",
+    keywords: ["document authoring", "document writing", "document revision", "document-authoring", "write a document", "revise a document", "write an sop", "draft an sop", "revise an sop", "sop writing", "authoring workflow", "handoff document", "draft a handoff", "documentation update"],
+    docs: [
+      "docs/document-authoring-workflow.md",
+      "docs/knowledge-management-sop.md",
+      "docs/prompt-templates.md",
+      "docs/handoff-packet-template.md",
+      "docs/skill-first-product-scope.md"
+    ],
+    commands: ["node source-map-linter.js"]
+  },
+  {
     id: "local-operator-console",
     keywords: ["operator consent", "operator-consent", "operator-reconciliation", "operator terminal", "terminal order reconciliation", "terminal review", "review terminal outcome", "cancel interrupted order", "decision outcome", "inspect outcome", "authenticated order review", "operator console", "local-operator-console", "operator worker", "worker exit", "interrupted owner decision", "evidence api", "viewer invitation", "serve_controls_operator"],
     docs: ["docs/local-operator-console.md", "docs/operator-consent-and-adoption.md", "docs/operator-terminal-reconciliation.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
@@ -326,6 +338,8 @@ const RULES = [
     id: "skill-operations",
     keywords: ["skill", "routing", "operator", "inventory", "coverage", "install", "installer", "cli", "codex", "claude", "skillset", "skill adaptation", "skill improvement", "mandatory skill improvement", "route mapping", "documentation system", "doc taxonomy", "coverage report", "setup", "auto-setup", "mission lifecycle", "open wave", "context pack", "wave report", "wave closeout", "operational skill", "termination", "supersession", "expired wave", "abort wave", "implementation candidate", "completion backlog", "completion audit", "corpus maintenance", "implementation-candidate", "completion-backlog"],
     docs: [
+      "docs/skill-first-product-scope.md",
+      "docs/document-authoring-workflow.md",
       ".claude/skills/controls-doctrine-operator/SKILL.md",
       "docs/implementation-candidate-registry.md",
       "docs/completion-backlog.md",
@@ -492,6 +506,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "document-authoring", keywords: ["document-authoring", "knowledge-management", "prompt-templates", "handoff-packet-template"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
   { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "method-control-baseline", "method-deviation", "initiative-deviation", "degeneration-incident", "check_controls_intent"] },
