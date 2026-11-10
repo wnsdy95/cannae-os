@@ -12,9 +12,16 @@ The realistic task exposed an authoring-route miss for "support escalation SOP"
 and a continuity route that omitted the handoff template. Both provider routes
 and realistic-query regressions now cover those references. The skill lesson is
 to verify the selected task template and supplied sources, then review original
-requirements rather than using the draft as its own checklist. Lexical negation,
-unnecessary release recommendations and explicit source resolution remain open;
-the case does not claim complete G1/G2/G3 acceptance or a live support operation.
+requirements rather than using the draft as its own checklist.
+
+Follow-up work resolves named corpus inputs and rejects unresolved explicit
+`--source` inputs. Specialist GitHub release reading is now selected by positive
+task/mission/source context, with general policies and executable controls
+unchanged. The case records an actual local maintenance work order before this
+reading-scope implementation, then separates observed results and handoff.
+Semantic input inference, broader minimal-context behavior and independent
+receiver acceptance remain open. These are local engineering observations,
+not complete G1/G2/G3 acceptance or a live support operation.
 
 ## Skill-First Product Boundary (2026-11-10)
 

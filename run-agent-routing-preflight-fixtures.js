@@ -95,6 +95,17 @@ const routingCases = [
     extra: ["--capability-query=Draft a support SOP.", "--source=GOVERNANCE.md"],
     required: ["SUPPORT.md", "SECURITY.md", "GOVERNANCE.md", "docs/document-authoring-workflow.md"],
     command: "node run-release-integration-fixtures.js",
+    absent: ["docs/github-release-authorization.md", "docs/github-release-immutability.md",
+      "docs/github-release-integrity-monitoring.md", "docs/github-release-independent-verification.md"],
+    gap: false
+  },
+  {
+    name: "a narrow authoring task retains its mission-level GitHub release reading",
+    query: "Draft a support SOP from SUPPORT.md. Do not publish it.",
+    extra: ["--capability-query=Review GitHub release approval."],
+    required: ["SUPPORT.md", "docs/github-release-authorization.md", "docs/github-release-immutability.md",
+      "docs/github-release-integrity-monitoring.md", "docs/github-release-independent-verification.md"],
+    command: "node run-github-release-publisher-fixtures.js",
     gap: false
   },
   {
@@ -132,6 +143,9 @@ for (const fixture of routingCases) {
         "--receipt", "--scope=agent", "--mission=MIS-ROUTING", "--wave=W1", "--agent=fixture-agent"]);
       const paths = routed.recommended_documents.map(item => item.path);
       assert.strictEqual(new Set(paths).size, paths.length, "recommended documents must remain unique");
+      for (const document of fixture.absent || []) {
+        assert(!paths.includes(document), `unrelated specialist reading: ${document}`);
+      }
       for (const expected of [...fixture.required, ...routed.operating_mode.mode_documents,
         ...human.recommended_documents.map(item => item.path)]) {
         assert(paths.includes(expected), `missing selected task or authority document: ${expected}`);

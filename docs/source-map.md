@@ -7,6 +7,10 @@
 hashes, draft/revision boundaries and a requirement comparison. The scenario
 is a local authoring exercise and the review is by its author, not an adopted
 policy, independent semantic evaluation or externally performed support action.
+Its separate maintenance work order records actual local router work, with
+pre-implementation requirements and later verification kept distinct. This
+uses the project scope and local execution evidence, not external military
+authority or an invented approval.
 
 `docs/skill-first-product-scope.md` records the USER's 2026-11-10 scope decision,
 not a military-source claim. `docs/document-authoring-workflow.md` synthesizes

@@ -307,6 +307,42 @@ fixture("task documents beyond the old routing cap reach digest-bound context pa
   }
 });
 
+fixture("specialist reading is task-scoped while release controls remain mandatory", () => {
+  const plan = wavePlan(basePlan, "WREADING");
+  plan.id = "MWP-READING-SCOPE";
+  plan.mission_id = "MIS-READING-SCOPE";
+  plan.objective = "Draft a support SOP from SUPPORT.md. Do not publish.";
+  plan.adaptive_work.campaign_id = "SIC-READING-SCOPE";
+  for (const agent of plan.agents) agent.task = plan.objective;
+  plan.agents[1].task += " Review GitHub release approval separately.";
+  const result = openWave(plan, {
+    repository: repositoryRouting, artifactRoot, doctrineRoot: ROOT, now: FIXED_OPEN_TIME
+  });
+  assert(result.status === "ready", "reading-scope wave should open");
+  assert(result.tool_execution_authorized === false && result.release_authorized === false,
+    "reading selection must not authorize execution");
+  for (const item of result.context_packs) {
+    const pack = loadArtifact(artifactRoot, item.context_pack_ref);
+    assert(validatePayload(pack, "agent-context-pack").valid, "reading-scope context should validate");
+    const specialist = item.agent_id === plan.agents[1].agent_id;
+    for (const document of ["docs/github-release-authorization.md", "docs/github-release-immutability.md",
+      "docs/github-release-integrity-monitoring.md", "docs/github-release-independent-verification.md"]) {
+      assert(pack.documents.some(row => row.path === document) === specialist,
+        `incorrect specialist reading for ${item.agent_id}: ${document}`);
+    }
+    for (const document of ["SUPPORT.md", "docs/approval-scope-policy.md", "docs/context-releasability-policy.md"]) {
+      const row = pack.documents.find(item => item.path === document);
+      const digest = createHash("sha256").update(fs.readFileSync(path.join(ROOT, document))).digest("hex");
+      assert(row && row.sha256 === digest, `reading-scope context lost ${document}`);
+    }
+    for (const command of ["node run-authority-integration-fixtures.js", "node run-release-integration-fixtures.js",
+      "node run-github-release-publisher-fixtures.js", "node run-github-release-immutability-fixtures.js",
+      "node run-github-release-integrity-fixtures.js", "node run-github-release-independent-verification-fixtures.js"]) {
+      assert(pack.required_controls.some(control => control.command === command), `lost mandatory control: ${command}`);
+    }
+  }
+});
+
 fixture("unmatched mission capability creates one bounded cell across every agent context", () => {
   const plan = wavePlan(basePlan, "WGAP");
   plan.id = "MWP-CAPABILITY-GAP-WGAP";

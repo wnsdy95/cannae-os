@@ -14,6 +14,20 @@ const ROUTERS = [
 ];
 let routedQueries = 0;
 let rejectedSources = 0;
+const GITHUB_RELEASE_DOCS = [
+  "docs/github-release-authorization.md",
+  "docs/github-release-immutability.md",
+  "docs/github-release-integrity-monitoring.md",
+  "docs/github-release-independent-verification.md"
+];
+const AUTHORITY_CONTROLS = [
+  "node run-authority-integration-fixtures.js",
+  "node run-release-integration-fixtures.js",
+  "node run-github-release-publisher-fixtures.js",
+  "node run-github-release-immutability-fixtures.js",
+  "node run-github-release-integrity-fixtures.js",
+  "node run-github-release-independent-verification-fixtures.js"
+];
 
 function route(router, args, query, repository = ROOT) {
   const result = spawnSync(process.execPath, [path.join(ROOT, router), ...args, query, repository], {
@@ -88,10 +102,72 @@ for (const router of ROUTERS) {
           assert(result.task_references.resolved.some(item => item.path === source));
         }
         assert.strictEqual(result.task_references.unresolved.length, 0);
+        assert(!result.recommended_documents.some(item => GITHUB_RELEASE_DOCS.includes(item.path)),
+          "generic support writing must not require GitHub release manuals");
+        assert.deepStrictEqual(result.validation_commands, [
+          ...AUTHORITY_CONTROLS, "node run-document-access-fixtures.js",
+          "node run-release-review-fixtures.js", "node source-map-linter.js"
+        ], "the original task must retain its entire selected control list");
         assert(result.validation_commands.includes("node run-github-release-publisher-fixtures.js"),
           "source resolution must not remove a selected release control");
       }
     }
+  }
+  for (const query of [
+    "Draft a support SOP. Do not publish.",
+    "Draft a support SOP. Do not release.",
+    "Review approval scope for the support SOP.",
+    "Publish the support SOP only after USER approval.",
+    "Draft a support approval SOP for GitHub issue triage.",
+    "Draft a support SOP; do not skip approval."
+  ]) {
+    for (const args of [["--actor=user"],
+      ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+      const result = route(router, args, query);
+      assertRoutes(result, ["authority-risk-release", "document-authoring"]);
+      assert(!result.recommended_documents.some(item => GITHUB_RELEASE_DOCS.includes(item.path)), query);
+      for (const required of ["docs/agent-roles-and-authority.md", "docs/tool-use-roe.md",
+        "docs/approval-scope-policy.md", "docs/risk-acceptance-authority.md",
+        "docs/context-releasability-policy.md", "docs/policy-engine-rules.md"]) {
+        assert(result.recommended_documents.some(item => item.path === required), `${query}: lost ${required}`);
+      }
+      for (const command of AUTHORITY_CONTROLS) assert(result.validation_commands.includes(command));
+      assert.strictEqual(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      if (args.includes("--actor=ai")) assert.strictEqual(result.operating_mode.authority, "scoped-execution");
+    }
+  }
+  for (const query of [
+    "Review GitHub release approval.",
+    "Do not skip verification before publishing a release on GitHub.",
+    "Draft an SOP. Do not publish a GitHub release.",
+    "Do not publish now; later review GitHub release integrity.",
+    "Run gh release view as a read-only review.",
+    "Review a release asset on GitHub.",
+    "Check CANNAE_IMMUTABILITY_MONITOR_TOKEN scope."
+  ]) {
+    const result = route(router, ["--actor=user"], query);
+    assertRoutes(result, ["authority-risk-release"]);
+    for (const document of GITHUB_RELEASE_DOCS) {
+      assert(result.recommended_documents.some(item => item.path === document), `${query}: lost ${document}`);
+    }
+    for (const command of AUTHORITY_CONTROLS) assert(result.validation_commands.includes(command));
+  }
+  const readingQuery = "Draft a support SOP. Do not publish.";
+  const genericReading = route(router, ["--actor=user"], readingQuery);
+  const explicitReading = route(router, ["--actor=user",
+    "--source=docs/github-release-authorization.md"], readingQuery);
+  assert.deepStrictEqual(explicitReading.matched_routes, genericReading.matched_routes);
+  assert.deepStrictEqual(explicitReading.validation_commands, genericReading.validation_commands);
+  assert.deepStrictEqual(explicitReading.capability_routing, genericReading.capability_routing);
+  assert.deepStrictEqual(explicitReading.operating_mode, genericReading.operating_mode);
+  assert.deepStrictEqual(explicitReading.recommended_documents.map(item => item.path).sort(),
+    [...genericReading.recommended_documents.map(item => item.path), ...GITHUB_RELEASE_DOCS].sort(),
+    "an explicit specialist source changes reading only, not task/control selection");
+  const inheritedReading = route(router, ["--actor=ai", "--role=S3", "--department=operations",
+    "--authority=scoped-execution", "--capability-query=Review GitHub release approval."], readingQuery);
+  for (const document of GITHUB_RELEASE_DOCS) {
+    assert(inheritedReading.recommended_documents.some(item => item.path === document),
+      "the narrowed subtask must retain applicable mission-level release reading");
   }
   const handoff = route(router, ["--actor=user"],
     "Prepare a receiver-ready handoff for this documentation task.");

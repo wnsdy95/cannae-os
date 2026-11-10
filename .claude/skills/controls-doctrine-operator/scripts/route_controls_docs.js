@@ -1122,6 +1122,19 @@ function operatorMode(options) {
   };
 }
 
+function needsGithubReleaseReading(text) {
+  const context = normalizeText(text);
+  if (countMatches(context, [
+    "dependency migration", "verifier dependency", "producer compatibility",
+    "lockfile update", "ip address", "github release", "gh release",
+    "release immutability", "release integrity", "release publisher",
+    "release monitor", "immutability monitor", "independent release verification"
+  ]) > 0) return true;
+  return keywordMatches(context, "github") && countMatches(context, [
+    "release", "releases", "asset", "assets", "immutability", "integrity", "publisher"
+  ]) > 0;
+}
+
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
   const inventory = buildArtifactInventory(repoRoot);
@@ -1168,8 +1181,13 @@ function route(query, repoRoot, options) {
     commands.push(...CAPABILITY_GAP_COMMANDS);
   }
   docs.push(...mode.mode_documents);
+  const githubReleaseReading = needsGithubReleaseReading([
+    query, capabilityQuery, ...references.resolved.map(item => item.path)
+  ].join("\n"));
   for (const rule of selectedRules.slice(0, 4)) {
-    docs.push(...rule.docs);
+    // Specialist reading is conditional; route/control selection is unchanged.
+    docs.push(...rule.docs.filter(file => rule.id !== "authority-risk-release" ||
+      !file.startsWith("docs/github-release-") || githubReleaseReading));
     commands.push(...rule.commands);
   }
 

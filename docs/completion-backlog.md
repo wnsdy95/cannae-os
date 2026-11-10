@@ -12,10 +12,10 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | Workflow plus a source-grounded support SOP, revision, research note and handoff exist in `document-authoring-case-study.md`; its review is by the author. | Independent/receiver acceptance and broader order/report cases remain open. Do not treat the source hashes or requirement matrix as proof of semantic completeness. |
-| G2. Role-bounded routing and delegation | Realistic support-SOP and handoff requests exposed missing references. Both routers now also resolve named corpus inputs and reject unresolved required `--source` inputs before issuing receipts. | Address unnecessary release material from negated publication terms, semantic input/output distinction and target-repository sources. Preserve role/authority and capability-gap behavior; full relevance acceptance remains open. |
-| G3. Complete working flow | Procedures and supporting local controls exist; full observed acceptance is open. | Request -> plan -> review/backbrief -> work -> report/handoff without an application login; check omissions, bounded replanning/method changes, reporting, stop/failure handling, output limits and receiver acceptance. |
-| G4. Bounded self-improvement and corpus maintenance | Index checks and mirrored route improvements exist; the full AAR-driven loop remains open. | Demonstrate an observed gap becoming a tested improvement in both skills with coherent sources, indexes, change history and repository-specific outputs; no self-issued authority. |
+| G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded SOP/revision/research/handoff and an actual maintenance work order written before implementation, with a separate result report and revision. | Broader cases and independent/receiver acceptance remain open. The author's review, source hashes and matrices do not prove semantic completeness. |
+| G2. Role-bounded routing and delegation | Both routers resolve named corpus inputs, reject unresolved required `--source` inputs and select GitHub specialist reading by task/mission/source context. Generic support writing preserves its policies and controls with 19 rather than 23 primary documents. | Broader relevance, semantic input/output distinction and target-repository sources remain open. Lexical context selection is not negation understanding; validation-command selection remains conservative. |
+| G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
+| G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
 | G5. Client distribution | Both installed symlink routers resolve the doctrine root; full distribution acceptance is open. | Verify installation/discovery, copy-install path resolution and equivalent Codex/Claude behavior; separately identify and test any optional plugin packaging. |
 
 These are the five objectives in
@@ -27,8 +27,8 @@ document authoring/revision cases for G1 and task relevance checks for G2.
 ### Completed Groundwork
 
 Scope documentation, both core-first entrypoints and the dedicated authoring
-route were implemented and locally checked on 2026-11-10. Both entrypoints are
-169 lines at that checkpoint; original conditional runtime procedures are retained. Routing covers
+route were implemented and locally checked on 2026-11-10. Both entrypoints were
+169 lines at that checkpoint; original conditional runtime procedures are retained. Routing covered
 124 queries across both providers and 3 link-inventory cases pass. This is
 completed groundwork, not a sixth goal or proof that G1-G5 are complete.
 
@@ -63,7 +63,7 @@ template, whole-word mismatch and an uncovered mission whose SOP subtask must
 retain its capability cell without increased authority. These are routing and
 control regressions, not an independent grade for the authored prose.
 
-The next G2 change resolves existing named corpus inputs and offers repeatable
+The subsequent G2 change resolves existing named corpus inputs and offers repeatable
 `--source` checks without changing receipt schemas, selected controls or authority.
 Ordinary unresolved filenames become escalation items, not automatic failures,
 because a new output need not exist. Other-repository input resolution and a
@@ -77,16 +77,44 @@ keeps its selected release checks; negated-topic relevance is still open.
 These are local fixture results, not live multi-agent or independent semantic
 acceptance. No extra model call, service or external publication was performed.
 
-Both current entrypoints validate at 174 lines; both inventories have zero
+At that checkpoint both entrypoints validated at 174 lines; both inventories had zero
 unrouted artifacts. Source-map/registry audits, links (182 files), English-only
 (1194 tracked files) and JSON parsing (664 files) passed. Installed Codex/Claude
 symlinks also resolved the three required inputs from another working directory.
 The three source policies and the user's pre-existing `.gitignore` hash were
 unchanged. This is not a copy-install, hosted CI or full-platform acceptance run.
 
-Next: reduce unnecessary reading while preserving applicable controls for G2,
-then extend G1/G3 to order/report revisions and an observed receiver cold start.
-No new model invocation, service or external publication was performed.
+### Specialist Reading And Actual Maintenance Case
+
+The next local improvement keeps general authority/disclosure policy primary
+but selects GitHub release manuals only with relevant task, mission or named
+source context. It does not change route scores, capability decisions, declared
+authority, selected validation commands or already issued packets. The original
+support task retains its three sources and nine commands while dropping four
+unrelated primary manuals. Specialist documents remain in supporting inventory.
+
+Executed on 2026-11-10: routing 200 queries plus 32 required-source rejections
+and 3 link-inventory checks; preflight 10/10; mandatory-control enforcement 6/6;
+mission-controller 32/32. The new context test distinguishes generic writing
+from release review in one test wave while preserving digest binding, controls
+and denied execution/release authority. No schema or production controller was
+weakened to obtain these results.
+Both skill entrypoints validated at 178 lines; inventory coverage was valid
+with zero unrouted files. Source/registry audits, Markdown links (182 files),
+English-only content (1194 tracked files), JSON parsing (664 files) and diff
+whitespace checks passed. The source-policy and user-ignore hashes stayed unchanged.
+
+`docs/document-authoring-case-study.md#actual-maintenance-work-order` records
+M1-M7 before implementation, then a separate revision-2 result report and
+handoff. It retains a corrected diagnostic-launcher syntax failure as a failed
+pre-execution observation, not a passing check or an unknown-effect recovery.
+This is actual local work plus test execution, not independent prose review,
+receiver acceptance, live model dispatch, hosted CI or full-platform acceptance.
+
+Next: verify G5 installation/copy discovery and repository resolution in isolated
+targets, without replacing the current installed skills or starting a server.
+G1/G3 semantic evaluation and a genuinely observed receiver cold start remain
+open; do not claim them from this author-generated handoff.
 
 
 ## Retained Platform Baseline

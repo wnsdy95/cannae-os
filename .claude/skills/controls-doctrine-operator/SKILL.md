@@ -65,6 +65,10 @@ repeat `--source=<path>`; an unresolved input stops this routing invocation.
 Inspect `task_references.unresolved` for other filename mentions and resolve
 input/output ambiguity before work. References do not grant read or tool access.
 
+Keep reading scope separate from execution controls. Conditional specialist
+manuals need not be read for an unrelated task, but their omission never waives
+an issued validation command, approval or stop condition.
+
 Installed symlinks resolve to the source tree; copy installs retain a
 `.cannae-os-root` marker. Wrappers can also use `CANNAE_OS_HOME`. A copied
 skill is not a copy of the entire doctrine corpus or an independent runtime.

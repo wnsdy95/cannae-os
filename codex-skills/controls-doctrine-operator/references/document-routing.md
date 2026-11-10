@@ -29,6 +29,25 @@ or negated terms; distinguish drafting an instruction from executing it. Do not
 strip required controls from an already issued receipt or context pack. Clarify
 an ambiguous guarded operation before dispatch, not by silently removing gates.
 
+## Specialist Reading
+
+General authority, approval, risk, tool and disclosure policy remains primary
+when the authority route matches. GitHub release-operation manuals become
+primary only with release-specific context in the task, mission objective or
+resolved source references. Verifier dependency migration retains its existing
+release-verification reading. A generic support SOP with "do not publish" no
+longer requires those four specialist manuals.
+
+This is positive context selection, not a negation parser. Explicit GitHub
+release prohibitions, mixed clauses and "do not skip verification" still retain
+specialist reading. The route IDs, capability decision, mode/authority and
+selected validation commands are not reduced. Generic publication still needs
+its normal approvals; a shorter reading list does not authorize an action.
+Specialist files remain discoverable as supporting artifacts. Read them when
+their operation applies, not merely because they appear in that inventory.
+Re-route for the new task/phase instead of manually trimming an issued packet.
+Test the direct result, generated receipt and receiver context separately.
+
 ## Explicit Task Inputs
 
 The router adds existing corpus files named in the task query to primary
@@ -177,7 +196,7 @@ Keep local archives in `.cannae` and `.cxt` out of current-document link checks;
 their historical relative links are not live corpus failures. Do not ignore
 hidden provider skill trees: broken `.claude/skills` references must still fail.
 The recommendation bundle preserves orientation, role/authority, capability-gap,
-and all documents from the top four selected task routes, without a 16-document
+and applicable documents from the top four selected task routes, without a 16-document
 cutoff. `--limit` and `--all` affect only supporting artifacts. Check the exact
 task paths in `recommended_documents` and the resulting context pack; a matched
 route or validation command alone is not enough. Do not manually truncate a

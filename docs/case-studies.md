@@ -12,6 +12,8 @@ For a current document-only exercise, see
 [Source-Grounded Authoring Case](document-authoring-case-study.md). It separates
 real repository source policies and observed routing failures from its selected
 evaluation scenario, self-review and unverified receiver acceptance.
+Its later maintenance work order uses an actual local routing improvement:
+the plan precedes implementation and the result report cannot grant new authority.
 
 Every case follows the structure below.
 

@@ -216,10 +216,153 @@ regression checks the exact SHA-256 of all three source policies at the receiver
 with tool execution and release still unauthorized. These fixtures are not a
 new independent authoring review or evidence of a live support operation.
 
-Residual G2 work: lexical matching still treats `do not publish` as a possible
-release topic and can recommend unnecessary release material. This change keeps
+At that source-resolution checkpoint, lexical matching still treated
+`do not publish` as a release topic and recommended unnecessary specialist
+material. The follow-up work order below addresses reading scope while keeping
 all selected release controls. Arbitrary semantic source inference, other
 repositories' inputs, and a plan-level mandatory-input contract remain unproven;
 neither source lookup nor a passed fixture supplies independent case acceptance.
 
 The case is grounded in local project policy, not new external military research.
+
+## Actual Maintenance Work Order
+
+Record: `WO-ROUTING-READING-20261110`, revision 1, written before the reading-scope
+implementation. Baseline: commit `574ff66`. This is a plain-language local work
+order derived from active goal G2 and the observed case above, not an adopted
+runtime OPORD, a delegated wave or a new USER policy approval. The assistant
+owns execution and reporting; USER retains final scope and policy decisions.
+
+### Situation And Intent
+
+The original support-SOP query currently recommends 23 documents totaling
+419345 filesystem bytes, including four GitHub release-operation documents.
+These are recommendation measurements, not measured model token usage.
+The source lookup fix is already present; the remaining observed gap is
+specialist reading attached to a generic publication prohibition.
+
+Purpose: reduce irrelevant reading without losing sources, required general
+authority policy or executable controls. End state: ordinary support writing
+does not require GitHub release manuals, while actual release maintenance keeps
+them. This does not authorize execution of a release.
+
+### Tasks And Acceptance
+
+| ID | Required work and unchanged constraint | Evidence needed |
+| --- | --- | --- |
+| M1 | Keep the three named source policies and authoring references. | Same original task in human and delegated modes. |
+| M2 | Keep general approval, risk, tool and disclosure policy; omit only unrelated GitHub specialist reading. | Exact expected primary-document set for a generic publication boundary. |
+| M3 | Retain specialist documents for explicit GitHub release work, inherited mission context, named source references and verifier dependency migration. | Positive routing regressions, including negated and mixed clauses. |
+| M4 | Do not change route scores, capability decisions, role/authority fields, selected commands or required-control admission. | Direct/receipt comparison and existing enforcement/context regressions. |
+| M5 | Carry the new reading selection into receiver context, not only CLI output. | Digest-bound context documents plus retained required controls. |
+| M6 | Mirror a reusable procedure in both skills; keep source/index/history coherence. | Skill checks, routing coverage, links, source audit and this order/report record. |
+| M7 | No service, model invocation, credential change, external publication or scope expansion. Preserve the user's existing ignore edit. | Actual action report and source/ignore comparison; not an inferred approval. |
+
+### Backbrief And Method
+
+Author backbrief: the deliverable is a smaller task-relevant reading selection,
+not fewer safety checks. Do not remove a keyword merely because it appears
+after "do not". Use positive release-context selection for specialist reading;
+ambiguous publication remains subject to the existing general controls.
+This is a self-check, not a second agent's acknowledgement.
+
+Planned sequence: route and inspect the task, implement the smallest mirrored
+selection change, run direct/receipt/context tests, record actual results,
+and leave the next bounded action. Any method change must preserve M1-M7.
+Stop and report if satisfying a check requires dropping controls or expanding
+authority; fix ordinary reversible implementation/test failures in scope.
+Freeze source while state-sensitive lifecycle checks run.
+
+### Initial SITREP
+
+At work-order creation, the baseline probe and source inspection are complete.
+The reading-scope implementation, regressions and final handoff are not yet
+complete. No independent review or receiver acceptance has occurred.
+Append the actual disposition below; do not rewrite this planning snapshot
+as though later results were known in advance.
+
+### Result Report And Revision 2
+
+Revision 2 appends observed results and the current handoff on 2026-11-10.
+The revision-1 intent, tasks M1-M7, authority and stop conditions above remain
+unchanged. No FRAGO or new runtime approval was needed for this bounded
+implementation choice. Review below is by the author, not independent acceptance.
+
+Both routers now condition the four GitHub release manuals on positive task,
+mission or source context. The original support task changed from 23 primary
+documents to 19. The four omitted manuals totaled 64255 filesystem bytes at
+the implementation probe; this is not a model-token or cost measurement.
+The same nine validation commands and all three source policies remained.
+Explicit release work, including negated and mixed release clauses, retains
+the specialist reading. This does not solve general natural-language negation.
+
+| Requirement | Observed disposition and evidence | Limit |
+| --- | --- | --- |
+| M1 | The exact original task retains its three source files and authoring references in `run-document-routing-fixtures.js`. | Reference selection is not a semantic grade of the SOP. |
+| M2 | Generic publication/approval tasks omit the four specialist manuals while all six general authority/policy documents remain. | Other routes can still over-recommend; no globally minimal bundle is claimed. |
+| M3 | Explicit, inherited and source-selected GitHub contexts and existing dependency-migration requests retain specialist documents. | Context selection is lexical and intentionally conservative about explicit prohibitions. |
+| M4 | Source-selected reading changes leave routes, capability, mode and commands equal; the original task retains its exact nine commands. Enforcement regressions remain passing. | No previously issued context or approval was rewritten. |
+| M5 | A real fixture wave gives generic and release-review tasks different digest-bound reading, with the same six release/authority controls and no execution or release grant. | This is controller execution in a test repository, not live agent dispatch. |
+| M6 | Both skill entrypoints/references teach that smaller reading is not waived control; current corpus checks accompany the change. | No independent review or complete G4 acceptance follows automatically. |
+| M7 | Only local code, fixtures and documents changed. Source-policy and user-ignore digests remained unchanged. No operator service, credential, actual model call or external publication was changed or started. | Local fixture execution is not production or multi-client acceptance. |
+
+Executed local checks:
+
+- `node run-document-routing-fixtures.js`: 200 queries across both providers,
+  32 required-source rejections and 3 link-inventory checks passed.
+- `node run-agent-routing-preflight-fixtures.js`: 10/10 passed, including direct
+  output, receipt schema/selection and inherited mission context.
+- `node run-skill-control-enforcement-fixtures.js`: 6/6 passed.
+- `node run-skill-mission-controller-fixtures.js`: 32/32 passed, including the
+  new per-task reading test, rerouting, isolation, stop and termination checks.
+- `validate-controls-skill.js` passed for both provider trees (178 lines each);
+  both routers' `--coverage` checks returned valid with zero unrouted artifacts.
+- `source-map-linter.js` and `implementation-candidate-registry.js audit`
+  returned valid with no findings. The `.github/scripts/` checks passed for
+  Markdown links (182 files), English-only content (1194 tracked files) and
+  JSON parsing (664 files); `git diff --check` was clean.
+
+These are the checks executed for this change, not a full aggregate, hosted CI,
+native multi-client/model run or independent review.
+
+A diagnostic launcher initially had a JavaScript syntax error and exited before
+starting the router. The launcher was corrected and the read-only query rerun;
+the failure is not counted as a pass. This is a known pre-execution local error,
+not evidence of recovery from unknown remote effects. No failed control was
+removed or relabeled. Source edits were frozen during lifecycle verification.
+
+### Maintenance AAR
+
+- **Expected versus observed:** a support-writing task needed general disclosure
+  policy, but a single authority route also attached four GitHub operation manuals.
+- **Cause and change:** a coarse reading bundle mixed general boundaries with
+  specialist procedures. Positive context selection separates the reading,
+  while retaining the full command selection and authority boundaries.
+- **Reusable adaptation:** both provider skills now tell the next operator to
+  distinguish omitted reading from waived checks, reroute on task/phase changes,
+  and inspect direct output, receipt and receiver context separately.
+- **Evidence and limits:** the report above records the executed regressions;
+  broader semantic routing and an independent cold start remain unproven.
+  Do not generalize this result into permission to delete issued controls.
+
+### Current Maintenance Handoff
+
+- **Canonical record:** this work order, revision 2; code remains in the two
+  `controls-doctrine-operator/scripts/route_controls_docs.js` provider trees.
+- **Completed local work:** conditional specialist reading, mirrored operator
+  guidance and the direct/receipt/context regression checks above.
+- **Read first:** `docs/skill-first-product-scope.md`, this work order and
+  `docs/completion-backlog.md` under Active Core Work. The actual test entrypoints
+  are listed in the result report; no chat history is required to locate them.
+- **Open work:** broader semantic omission/replanning and receiver acceptance;
+  required inputs across target repositories; full install/copy discovery tests.
+  Conditional reading does not reduce conservative validation-command selection.
+- **Next bounded action:** inspect `install-ai-cli-skills.sh` and existing skill
+  installation fixtures for G5. Verify both clients using isolated temporary
+  homes/targets first, preserving current installed links and all user settings.
+  Separate what those tests prove from actual native-client/model execution.
+- **Retained decisions and stops:** USER owns product scope, authority, actual
+  model-call approval and external publication. Do not restore deferred platform
+  work, weaken checks, alter credentials or treat a test pass as release approval.
+- **Receiver acceptance:** not obtained. This is an available handoff, not proof
+  that a new agent independently resumed the work or approved the prose.

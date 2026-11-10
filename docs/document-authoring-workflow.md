@@ -102,9 +102,11 @@ External repository inputs and URLs need separate authorized resolution.
 The resolver neither reads source contents nor grants access; apply delegated
 access rules before opening a restricted source. Re-route after task or phase changes and retain the original
 mission objective for delegated receipts. Lexical routing does not understand
-negation: "do not publish" may still return release-control references. Do not
-execute publication, omit the prohibition or strip an issued control because
-of that match.
+negation: "do not publish" still retains general authority/release controls.
+GitHub-specific manuals now require relevant task, mission or named-source
+context; a shorter reading list never removes selected commands. Explicit
+GitHub release prohibitions retain those manuals conservatively. Do not execute
+publication, omit the prohibition or strip an issued control because of a match.
 
 Explicit source flags apply to that router invocation; they do not add a
 required-input contract to an existing mission plan. Generated receipts retain
@@ -114,7 +116,10 @@ freshness, approval or an independent review.
 
 See [Source-Grounded Authoring Case](document-authoring-case-study.md) for actual
 repository policies, a draft/revision, a source comparison and a bounded handoff.
-Its self-review is not independent semantic acceptance.
+Its self-review is not independent semantic acceptance. The same record's
+[actual maintenance work order](document-authoring-case-study.md#actual-maintenance-work-order)
+keeps a pre-implementation plan separate from subsequent results; do not
+retroactively write an execution plan as though it preceded the work.
 
 ## Revision And Storage
 

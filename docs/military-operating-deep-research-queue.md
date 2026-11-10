@@ -602,7 +602,7 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
-- `document-authoring-case-study.md`: Source-grounded support SOP and revision, requirement comparison, explicit self-review limits and observed routing gaps.
+- `docs/document-authoring-case-study.md`: Source-grounded support SOP/revision and an actual routing-maintenance order, separate result report, AAR and handoff; self-review and receiver-acceptance limits remain explicit.
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
 - `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.
 - `implementation-candidate-registry.md`: Source-bound requirements, mapped implementations, executable checks, and explicit remaining work.
