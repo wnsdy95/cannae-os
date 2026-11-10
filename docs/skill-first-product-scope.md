@@ -8,6 +8,35 @@ development queue. It does not declare those outcomes complete or delete their
 code, requirements, failures or evidence. The [completion backlog](completion-backlog.md)
 separates active core work from the retained platform program.
 
+## Active Objectives
+
+The USER confirmed these five remaining objectives on 2026-11-10. They replace
+the previous eight-outcome program as the active goal. All five still require
+behavioral acceptance; the completed scope and entrypoint cleanup is supporting
+work, not completion of any objective.
+
+1. **G1 - Document authoring and revision quality:** verify representative SOP,
+   order, research and handoff tasks preserve intent, required work, sources,
+   authority, explicit unknowns and revision history.
+2. **G2 - Role-bounded routing and delegation:** verify required references are
+   delivered without unnecessary context or expanded authority. Cover human/AI
+   modes, stale or missing routes, capability gaps and provisional task cells.
+3. **G3 - Complete working flow:** demonstrate request -> plan -> review/backbrief
+   -> work -> report/handoff in existing clients without a dashboard or login.
+   Check semantic omissions, bounded replanning, method changes, reporting,
+   stop points, tool-failure handling and sensitive-output boundaries. Reuse
+   applicable existing controls instead of building a separate execution service.
+4. **G4 - Bounded self-improvement and corpus maintenance:** turn observed gaps
+   and AAR findings into tested document, prompt and routing changes in both
+   provider skills. Keep canonical sources, indexes and repository outputs
+   coherent without self-authorizing scope, policy or release.
+5. **G5 - Client distribution:** verify Codex/Claude installation, discovery,
+   repository resolution and equivalent behavior. Add a thin plugin package
+   only if needed; report whether it is included, tested or still unproven.
+
+The product areas below describe what these objectives cover; they are not an
+additional goal count. The backlog owns current evidence and next actions.
+
 ## Active Core
 
 1. **Document authoring:** choose a useful format, preserve original intent and
@@ -53,16 +82,15 @@ tool controls. Ordinary document drafting is not evidence of execution.
 
 ## Core Acceptance
 
-| Criterion | Evidence required before closure |
+| Objective | Evidence required before closure |
 | --- | --- |
-| Authoring | Representative requests create the right document with traceable claims, explicit unknowns, ownership and acceptance criteria; a revision preserves intent and records what changed. |
-| Routing | Both providers select the required authoring/task documents; human and delegated modes preserve their distinct authority rules; unknown domains retain capability-gap handling. |
-| Handoff | Another agent can identify the objective, approved scope, canonical files, results, unresolved decisions and next action without relying on chat memory. |
-| Maintenance | New doctrine is indexed consistently; source, local-link and routing checks pass; a reusable improvement reaches both provider skills. |
-| Distribution | Installation/discovery and repository resolution work for both clients; copying a skill is not misrepresented as copying the entire corpus or runtime. |
-| End-to-end use | A documented and observed request-to-draft-to-review-to-handoff example works without a dashboard or application login. Actual tool execution is assessed separately. |
+| G1 | Representative requests create the right document with traceable claims, explicit unknowns, ownership and acceptance criteria; revisions preserve required intent and record changes. |
+| G2 | Both providers deliver the required task documents in human and delegated modes; missing/stale/wrong-role cases and capability gaps are checked without expanding access or authority. |
+| G3 | An observed complete workflow covers requirement checks, bounded changes, actual results, failure/stop decisions and a receiver-ready handoff without chat-memory dependence, a dashboard or application login. Actual tool execution is assessed separately from drafting. |
+| G4 | An observed gap leads to a reusable improvement in both skills, relevant regression evidence and coherent source/index/history/output records; no new authority follows from a pass. |
+| G5 | Installation/discovery and repository resolution work for both clients with equivalent rules; a copied skill is not misrepresented as the entire corpus or runtime. Optional plugin packaging has an explicit tested or deferred disposition. |
 
-This is an acceptance list, not six newly completed features. Record the checks
+This is an acceptance list, not five newly completed features. Record the checks
 actually run and residual work in the backlog. Report passed/total criteria
 only after reviewing that fixed denominator. Do not use the old 125-candidate
 inventory percentage as skill/plugin completion, remove deferred candidates

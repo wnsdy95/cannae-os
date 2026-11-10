@@ -51,6 +51,12 @@ not skill/plugin completion. Deferred candidates remain in the inventory.
 Keep out-of-corpus capability routing for genuinely uncovered domains, not
 ordinary corpus maintenance.
 
+Tie each continuation task and its acceptance evidence to one of the five
+active objectives, G1-G5, in `docs/skill-first-product-scope.md`. Keep completed
+entrypoint/scope cleanup separate from behavioral goal acceptance. Do not count
+that preparation as a completed goal or reuse the old eight-outcome list as
+the active queue. A goal remains open until its own evidence is sufficient.
+
 After changing a candidate section, compare `scan` with the committed registry,
 review its exact source digest and mappings, and update both in the same change.
 Do not automatically promote status from file presence. Preserve proposed names

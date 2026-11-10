@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Replace the active eight-outcome platform goal with five explicit skill-first objectives (G1-G5), each with behavioral acceptance and remaining evidence. Separate completed scope/entrypoint groundwork from goal completion; both skills now bind continuation tasks and evidence to the selected active objective. Retain deferred platform requirements and existing controls unchanged.
+
 - Refocus the active product on document authoring, role-bounded routing, handoffs and corpus maintenance through Codex/Claude skills. Defer dashboard, operator application and production-platform development without deleting evidence or weakening existing guards. Add an authoring workflow and route, preserve detailed runtime procedures in conditional references, and mirror the core-first continuation rule in both skills. Keep local historical archives out of current-document link checks while retaining hidden provider-skill validation. The broader implementation inventory is retained, not reclassified as core completion; separate plugin packaging and end-to-end semantic acceptance remain unproven.
 
 - Sanitize private-channel filesystem/parser exceptions before the actual hook can return them to an agent. Preserve only fixed non-secret codes and test missing-file paths plus invented malformed-input sentinels through the real hook executable. Both skills keep raw private-state diagnostics on the trusted operator side; resumed broker lineages require separately reviewed successor handling rather than reusing initial enrollment.

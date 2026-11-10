@@ -10,14 +10,27 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
-| Order | Work | Evidence and remaining acceptance |
+| Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| 1 | Core-first entry path: locally implemented and checked on 2026-11-10. | Both entrypoints are 169 lines; original conditional runtime procedures are retained. Routing covers 124 queries across both providers, including the new authoring path; 3 link-inventory cases pass. Core end-to-end acceptance remains row 6. |
-| 2 | Document creation and revision: workflow and illustrative example added; behavioral acceptance remains open. | Representative SOP, order, research and handoff tasks must preserve requirements, sources, authority, unknowns and supersession without an application login. |
-| 3 | Verify role-bounded delegation and context handoffs. | Current-wave receipt checks, exact task references, missing/stale/wrong-role rejection and a receiver-ready handoff; no access or tool authority inferred from routing. |
-| 4 | Improve corpus maintenance from observed gaps. | Index/link/source consistency and an AAR-driven change mirrored in both skills with focused checks. |
-| 5 | Verify client distribution and optional plugin packaging. | Codex/Claude discovery, explicit repository resolution and equivalent behavior; distinguish an installed skill from a separately tested plugin package. |
-| 6 | Audit the complete core workflow. | Observed request -> route -> draft -> review -> handoff -> bounded improvement, with actual checks and residual limits recorded. Do not substitute fixture coverage for semantic quality. |
+| G1. Document authoring and revision quality | Workflow and illustrative example exist; behavioral acceptance remains open. | Representative SOP, order, research and handoff tasks preserve intent, required work, sources, authority, unknowns and supersession. |
+| G2. Role-bounded routing and delegation | Both provider routes and receipt/preflight regressions pass locally. | Review task-document relevance and unnecessary context on realistic requests; preserve authority and test capability gaps, missing/stale routes and provisional cells. |
+| G3. Complete working flow | Procedures and supporting local controls exist; full observed acceptance is open. | Request -> plan -> review/backbrief -> work -> report/handoff without an application login; check omissions, bounded replanning/method changes, reporting, stop/failure handling, output limits and receiver acceptance. |
+| G4. Bounded self-improvement and corpus maintenance | Index checks and mirrored route improvements exist; the full AAR-driven loop remains open. | Demonstrate an observed gap becoming a tested improvement in both skills with coherent sources, indexes, change history and repository-specific outputs; no self-issued authority. |
+| G5. Client distribution | Both installed symlink routers resolve the doctrine root; full distribution acceptance is open. | Verify installation/discovery, copy-install path resolution and equivalent Codex/Claude behavior; separately identify and test any optional plugin packaging. |
+
+These are the five objectives in
+[Skill-First Product Scope](skill-first-product-scope.md#active-objectives).
+All remain open; partial implementation and focused checks are not full goal
+acceptance. Select the next bounded task by goal ID, starting with realistic
+document authoring/revision cases for G1 and task relevance checks for G2.
+
+### Completed Groundwork
+
+Scope documentation, both core-first entrypoints and the dedicated authoring
+route were implemented and locally checked on 2026-11-10. Both entrypoints are
+169 lines; original conditional runtime procedures are retained. Routing covers
+124 queries across both providers and 3 link-inventory cases pass. This is
+completed groundwork, not a sixth goal or proof that G1-G5 are complete.
 
 These rows are acceptance work, not an assertion that every item is unimplemented
 or complete. Use the [implementation registry](implementation-candidate-registry.md)

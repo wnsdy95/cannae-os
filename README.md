@@ -71,6 +71,11 @@ Existing guarded operations still retain their controls and unresolved holds.
 See [Skill-First Product Scope](docs/skill-first-product-scope.md) for the active
 acceptance criteria. A separate plugin package is not yet claimed implemented.
 
+The [five active objectives](docs/skill-first-product-scope.md#active-objectives)
+are authoring quality, role-bounded routing/delegation, a complete working flow,
+bounded improvement/corpus maintenance, and client distribution. Preparatory
+cleanup is recorded separately; none is declared complete from a routing pass.
+
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
 </p>
