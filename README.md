@@ -610,11 +610,25 @@ the skill or performed a task; see the [current evidence](docs/completion-backlo
 For offline document-review preparation, run `node authoring-review-packet.js prepare`.
 It separates evaluator input from the author's seeded-defect reference under
 this repository's local maintenance directory; it never calls a model or grants
-consent. The [authoring case](docs/document-authoring-case-study.md#ordinary-document-handoff-and-review-preparation)
-records the actual boundary and remaining semantic evaluation. Ordinary prose
+consent. The [authoring case](docs/document-authoring-case-study.md#approved-review-retry-and-appraisal)
+records one approved advisory review, its source appraisal and a separately
+proposed V3. The helper retains historical V1/V2 stress cases; it does not
+evaluate V3 or establish independent acceptance. Ordinary prose
 handoffs do not require invented runtime IDs; existing missions keep their guards.
 
-Route a user-facing framework question:
+For references to files in a separate project, use the explicit input origin:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
+  --actor=user --input-repository=/path/to/project --input-source=SUPPORT.md \
+  "Draft an SOP from SUPPORT.md."
+```
+
+`task_inputs` contains project-qualified references, not file contents or access
+approval. `--source` remains doctrine-relative. Missing or excluded required
+inputs fail; receipt mode is rejected until its external-input contract exists.
+
+For a doctrine-only framework question:
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \

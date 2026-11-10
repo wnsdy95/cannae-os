@@ -591,6 +591,7 @@ const ROUTE_HINTS = [
 function usage() {
   console.error("Doctrine binding: --doctrine-root=PATH overrides CANNAE_OS_HOME, the copy marker, the installed source location and then the working directory.");
   console.error("Required inputs: repeat --source=<corpus-relative-path>; unresolved inputs stop routing before a receipt is issued.");
+  console.error("Project input references: --input-repository=<Git-root> --input-source=<exact-relative-file> (repeatable, direct output only; no content or authority is granted).");
   console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=MISSION_OBJECTIVE] [--all] [--limit=N] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE [--write-artifact --target-repository=PATH] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
@@ -945,7 +946,41 @@ function taskReferenceMentions(query) {
   return unique(mentions);
 }
 
-function taskReferences(query, requiredSources, inventory) {
+function resolveInputReferences(options, doctrineRoot) {
+  if (options.inputRepository === null) return null;
+  let root;
+  try {
+    root = fs.realpathSync(path.resolve(options.inputRepository));
+    if (!fs.statSync(root).isDirectory() || root === doctrineRoot) throw new Error();
+  } catch {
+    throw new Error("INPUT_REPOSITORY_INVALID: select a distinct existing project Git root; use --source for doctrine files.");
+  }
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("GIT_")));
+  const git = args => spawnSync("git", ["-C", root, ...args], {
+    encoding: "utf8", env, timeout: 5000, maxBuffer: 1024 * 1024
+  });
+  const top = git(["rev-parse", "--show-toplevel"]);
+  if (top.status !== 0 || !top.stdout.trim() || fs.realpathSync(top.stdout.trim()) !== root) {
+    throw new Error("INPUT_REPOSITORY_INVALID: --input-repository must be the exact Git worktree root.");
+  }
+  const sources = [];
+  for (const relative of unique(options.inputSources)) {
+    if (!relative || /^[a-z][a-z0-9+.-]*:/i.test(relative) || relative.startsWith("~") ||
+        !isCorpusFile(root, relative)) {
+      throw new Error(`INPUT_SOURCE_UNRESOLVED: ${relative} must name an exact existing, non-symlinked project file.`);
+    }
+    const canonical = path.relative(root, fs.realpathSync(path.join(root, relative))).split(path.sep).join("/");
+    if (canonical !== relative) throw new Error(`INPUT_SOURCE_UNRESOLVED: ${relative} is not a canonical project-relative path.`);
+    const ignored = git(["check-ignore", "--no-index", "--quiet", "--", relative]);
+    if (ignored.status === 0) throw new Error(`INPUT_SOURCE_EXCLUDED: ${relative} is ignored by the project.`);
+    if (ignored.status !== 1) throw new Error("INPUT_SOURCE_CHECK_FAILED: project ignore rules could not be checked.");
+    sources.push({ path: relative, exists: true });
+  }
+  return { repository_root: root, sources, delivery_mode: "reference_only",
+    content_loaded: false, authorization_verified: false };
+}
+
+function taskReferences(query, requiredSources, inventory, inputSources = null) {
   const paths = new Set(inventory.map(item => item.path));
   const basenames = new Map();
   for (const file of paths) {
@@ -954,8 +989,14 @@ function taskReferences(query, requiredSources, inventory) {
   }
   const resolved = [];
   const unresolved = [];
+  const inputResolved = [];
   for (const reference of unique([...requiredSources, ...taskReferenceMentions(query)])) {
     const relative = reference.startsWith("./") ? reference.slice(2) : reference;
+    if (inputSources !== null && !requiredSources.includes(reference)) {
+      if (inputSources.includes(relative)) inputResolved.push({ reference, path: relative });
+      else unresolved.push({ reference, reason: "input_source_not_declared" });
+      continue;
+    }
     const parts = relative.split("/");
     let reason = null;
     if (!relative || path.posix.isAbsolute(relative) || relative.includes("\\") ||
@@ -977,7 +1018,7 @@ function taskReferences(query, requiredSources, inventory) {
       resolved.push({ reference, path: candidates[0] });
     }
   }
-  return { resolved, unresolved };
+  return { resolved, unresolved, ...(inputSources !== null ? { input_resolved: inputResolved } : {}) };
 }
 
 function routeCounts(inventory) {
@@ -1036,6 +1077,8 @@ function parseArgs(argv) {
     capabilityQuery: null,
     doctrineRoot: null,
     sources: [],
+    inputRepository: null,
+    inputSources: [],
     receipt: false,
     scope: null,
     mission: null,
@@ -1050,16 +1093,22 @@ function parseArgs(argv) {
     limit: 40
   };
   const queryParts = [];
-  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "doctrine-root", "source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
+  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "doctrine-root", "source", "input-repository", "input-source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
   const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact"]);
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
+    if (arg === "--") { queryParts.push(...argv.slice(index + 1)); break; }
     const equalsMatch = arg.match(/^--([^=]+)=(.*)$/);
 
     if (equalsMatch && valueOptionNames.has(equalsMatch[1])) {
       const key = equalsMatch[1].replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+      if (!equalsMatch[2]) throw new Error(equalsMatch[1] === "source"
+        ? "TASK_SOURCE_UNRESOLVED: empty required doctrine input."
+        : `Missing value for --${equalsMatch[1]}.`);
+      if (key === "inputRepository" && options.inputRepository !== null) throw new Error("Specify --input-repository exactly once.");
       if (key === "source") options.sources.push(equalsMatch[2]);
+      else if (key === "inputSource") options.inputSources.push(equalsMatch[2]);
       else options[key] = equalsMatch[2];
       continue;
     }
@@ -1067,8 +1116,10 @@ function parseArgs(argv) {
     if (arg.startsWith("--") && valueOptionNames.has(arg.slice(2))) {
       const key = arg.slice(2).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
       index += 1;
-      if (index >= argv.length) usage();
+      if (index >= argv.length || !argv[index] || argv[index].startsWith("--")) throw new Error(`Missing value for ${arg}.`);
+      if (key === "inputRepository" && options.inputRepository !== null) throw new Error("Specify --input-repository exactly once.");
       if (key === "source") options.sources.push(argv[index]);
+      else if (key === "inputSource") options.inputSources.push(argv[index]);
       else options[key] = argv[index];
       continue;
     }
@@ -1079,7 +1130,16 @@ function parseArgs(argv) {
       continue;
     }
 
+    if (arg.startsWith("-")) throw new Error(`Unknown router option: ${arg.split("=")[0]}. Use -- before literal query text beginning with -.`);
     queryParts.push(arg);
+  }
+
+  if ((options.inputRepository !== null) !== (options.inputSources.length > 0)) {
+    throw new Error("Project inputs require both --input-repository and at least one --input-source.");
+  }
+  if (options.inputRepository !== null && (options.receipt || options.writeArtifact || options.coverage ||
+      options.targetRepository || options.artifactRoot || options.overwriteArtifact)) {
+    throw new Error("INPUT_REFERENCE_MODE_UNSUPPORTED: project input references cannot be omitted from a receipt, artifact or coverage report. Use direct routing only; guarded input delivery is not implemented.");
   }
 
   const parsedLimit = Number.parseInt(options.limit, 10);
@@ -1184,8 +1244,9 @@ function needsGithubReleaseReading(text) {
 
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
+  const inputs = resolveInputReferences(options, repoRoot);
   const inventory = buildArtifactInventory(repoRoot);
-  const references = taskReferences(query, options.sources, inventory);
+  const references = taskReferences(query, options.sources, inventory, inputs ? inputs.sources.map(item => item.path) : null);
   for (const item of references.unresolved) {
     mode.escalation_required_when.push(
       `Resolve task reference "${item.reference}" (${item.reason}) before treating it as an input; identify proposed outputs separately.`
@@ -1229,7 +1290,7 @@ function route(query, repoRoot, options) {
   }
   docs.push(...mode.mode_documents);
   const githubReleaseReading = needsGithubReleaseReading([
-    query, capabilityQuery, ...references.resolved.map(item => item.path)
+    query, capabilityQuery, ...references.resolved.map(item => item.path), ...(inputs ? inputs.sources.map(item => item.path) : [])
   ].join("\n"));
   for (const rule of selectedRules.slice(0, 4)) {
     // Specialist reading is conditional; route/control selection is unchanged.
@@ -1279,6 +1340,7 @@ function route(query, repoRoot, options) {
     matched_routes: selectedRules.map(rule => ({ id: rule.id, score: rule.score })),
     capability_routing: capability,
     task_references: references,
+    ...(inputs ? { task_inputs: inputs } : {}),
     recommended_documents: recommended,
     supporting_artifacts: visibleSupportingArtifacts,
     supporting_artifact_count: supportingArtifacts.length,
@@ -1376,9 +1438,9 @@ function routingReceipt(routeResult, options) {
   };
 }
 
-const parsed = parseArgs(process.argv.slice(2));
-let repoRoot;
+let parsed, repoRoot;
 try {
+  parsed = parseArgs(process.argv.slice(2));
   repoRoot = resolveDoctrineRoot(parsed.options, parsed.repoRootArg);
 } catch (error) {
   console.error(error.message);

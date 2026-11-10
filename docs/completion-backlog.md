@@ -10,23 +10,34 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G3/G4 evidence: the separately approved native review retry returned
+normally. Source appraisal confirmed detection of all seven deliberately altered
+cases and a genuine no-publication omission in the unedited transferable draft.
+The original self-rating is retained with a correction, and a source-cited V3 is
+now proposed. V3 is author-reviewed only; adoption and receiver acceptance remain
+open. The one-retry consent is consumed. See the review checkpoint below.
+
+Latest G2/G5 work adds explicitly project-qualified input references to both
+direct routers. It does not load content or extend the guarded receipt/context
+contracts. Authorized delivery, current-content binding and receiver evidence
+remain the next dependency; do not substitute doctrine files or omit inputs.
+
 Latest G2/G4 work corrects the existing document-access projection before adding
 cross-repository sources: the consumer now validates the manifest and restricts
 its list to the selected profile. This is not protected file access, actual
-delivery or authenticated delegation. Target-project source binding stays open;
-the separately pending authoring assessment has not been retried.
+delivery or authenticated delegation. Target-project content binding stays open.
 
 Latest G1/G3 preparation: the routed handoff template now separates plain-document
 work from existing runtime missions, and the offline authoring review tool keeps
 author ratings/reference answers out of evaluator input. Its eight cases are
-prepared for assessment, not already semantically validated. The first approved
+now assessed in one advisory run, not certified as semantically complete. The first approved
 attempt ended on an observer misclassification before any review was received;
-the correction and remaining consent boundary are recorded below.
-The actual revision-3 handoff is in `docs/document-authoring-case-study.md`.
+the correction and separately approved retry are recorded below.
+The current corrective V3 handoff is in `docs/document-authoring-case-study.md`.
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded SOP/revision/research/handoff and an actual maintenance work order written before implementation, with a separate result report and revision. | Broader cases and independent/receiver acceptance remain open. The author's review, source hashes and matrices do not prove semantic completeness. |
+| G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded exercise, actual maintenance work order, one approved advisory model review, source appraisal and proposed corrective V3. All seven seeded variants were identified; the original draft also had omissions. | Broader cases, V3 review/adoption and independent/receiver acceptance remain open. One authored case with deliberate variants is not a general detection rate or semantic completeness. |
 | G2. Role-bounded routing and delegation | Both routers resolve named corpus inputs, reject unresolved required `--source` inputs and select GitHub specialist reading by task/mission/source context. Generic support writing preserves its policies and controls with 19 rather than 23 primary documents. Shared-validated document-access projections now enforce profile selection and empty blocked lists. | Actual authorized delivery/receiver use, broader relevance, semantic input/output distinction and target-repository sources remain open. Lexical context selection is not negation understanding; validation-command selection remains conservative. A projection does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
@@ -334,6 +345,95 @@ the other six suite logs are in
 Source files remained fixed while these suites ran. No full aggregate, hosted CI,
 actual-model, browser or protected-access acceptance is claimed. The original
 installed links, pending assessment input and user ignore-file bytes are unchanged.
+
+### Project Input Reference Routing (2026-11-11)
+
+The corpus-only resolver did not bind other-repository inputs. A local negative
+probe also showed misspelled `--input-soruce` accepted as task text with exit 0.
+Both routers now require explicit `--input-repository`/`--input-source` pairs
+for direct project references, keep their physical root separate from doctrine,
+reject unknown options and preserve unresolved undeclared mentions. Inputs must
+be exact regular, non-symlinked, non-ignored project files; missing references
+never fall back to same-named doctrine files. No directory crawl or input-body
+loading is performed; Git reads repository/ignore configuration to check paths.
+
+The first focused run passed 24 cases across both provider bundles with isolated
+Git projects, conflicting filenames, data/space-containing paths, blocked reads
+in the router process, ignored tracked files, links, escaped paths, rejected
+receipt modes and unchanged capability-gap authority. Linked/copied bundles are
+exercised from a different working directory; no native client or model is run.
+The updated option cases and wider checks are recorded after execution.
+
+This is a path-reference milestone, not the completion of cross-repository
+context delivery. Next bind separately authorized raw/summary/reference inputs
+to the real target repository, current contents and recipient, then carry them
+through plan/context/receipt checks without expanding access. Existing guarded
+operations reject these new options until that contract exists. Both skills
+explicitly prohibit dropping inputs or copying private data into doctrine as a
+workaround. The exact historical authoring-review input remains unchanged; the
+later approved retry and original failed attempt are recorded separately below.
+
+The first wider check batch passed input references 24/24, preflight 10/10,
+mandatory controls 6/6, installation 21/21 and mission-controller 32/32, then
+stopped at a routing regression: empty `--source=` still failed closed but lost
+the expected `TASK_SOURCE_UNRESOLVED` code. Restore that code in both providers,
+not weaken the assertion. The rerun passed 208 routing queries, 32 required-source
+rejections and 3 link checks. Packet/doctrine suites after the original failure
+were not run by that stopped batch. Its logs remain under
+`.cannae/maintenance/project-input-checks-1cfceb52-5eba-4fcd-b7a1-0b0a79193451/`.
+Final-tree focused checks are recorded separately after execution.
+
+### Approved Retry And Corrective Authoring (2026-11-11)
+
+Fresh USER consent covered one retry of the unchanged 53,507-byte packet, with
+existing login, default `gpt-6-astra`, read-only/tools-disabled settings and a
+ten-minute bound. It completed normally in about 105 seconds with one review,
+two diagnostic items and zero observed tool items. That consent is now consumed.
+The [case appraisal](document-authoring-case-study.md#approved-review-retry-and-appraisal)
+records exact input/response hashes, timestamps, local evidence and every case.
+
+All seven seeded changes were identified. The model also found a real omitted
+no-publication boundary in the standalone unedited draft: `not adopted` did not
+preserve `Do not publish it`. Its claim that no review matrix was supplied is
+true of its deliberately filtered input, not proof the repository lacked one.
+Its opening six-case count disagrees with its seven detailed defect sections.
+Both limitations remain recorded; no automatic model verdict is adopted.
+
+Corrective V3 is a separate, source-cited proposed draft, retaining V1/V2 and
+the original self-review. Both skills now require the transferred text itself
+to carry prohibitions, and distinguish withheld review history from missing
+repository evidence. Future packet preparation states this scope and fixtures
+reject leakage of later appraisal/correction text. Historical approved input
+and result records are unchanged; no additional model call was made.
+
+The review used a fresh model context, not independent operators/providers or
+native installed-skill consumption. No maintainer adoption, operational receiver
+acceptance, hosted CI or full G1-G5 acceptance follows. Next review V3 and a
+representative handoff under a fresh exact approval if a model is used, while
+continuing the remaining core work without resuming deferred platform work.
+
+Final focused checks passed: project-input references 24/24; packet/observer
+16/16; doctrine consistency 2/2; routing 208 queries, 32 required-source
+rejections and 3 link checks; preflight 10/10; mandatory controls 6/6;
+installation 21/21; both skill validators (210 lines); both inventories (zero
+unrouted); source-map/registry audits and Markdown links (182 files). Logs are
+under `.cannae/maintenance/core-review-final-e1e59aa2-fbff-415f-adf5-24cae19b4485/`.
+After recording results, English-only checks passed for 1,202 tracked files,
+JSON parsing for 666 files, Markdown links for 182 files, source-map audit,
+packet/observer fixtures 16/16 and staged whitespace checks. The three original
+policy hashes, approved prompt hash and user's ignore-file bytes are unchanged.
+The mission-controller 32/32 result belongs to the earlier fixed-source batch,
+before the diagnostic-code restoration and authoring updates; it is not a new
+full lifecycle run on the final tree. No full aggregate or hosted CI was run.
+
+A supplemental byte-for-byte provider comparison failed because existing
+provider command paths/order differ. The diff showed unchanged provider-specific
+lines; comparing only this change's additions/removals confirmed equal updates
+in both routers, entrypoints and routing references. Behavioral fixtures above
+remain the actual behavior check. Installed symlink targets and inodes are
+unchanged. The optional host Python skill validator could not start for either
+bundle because PyYAML is absent; the repository validators passed. No dependency
+or user configuration was changed to hide that unavailable check.
 
 ## Retained Platform Baseline
 

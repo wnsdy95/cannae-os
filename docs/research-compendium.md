@@ -1,5 +1,54 @@
 # Research Compendium
 
+## Source-Grounded Review And Transfer Boundaries (2026-11-11)
+
+The separately approved retry of the unchanged evaluator packet returned a
+normal advisory response. Comparing its actual text with sources and only then
+the withheld reference confirmed findings for all seven deliberate variants.
+The unedited draft also omitted the task's explicit no-publication boundary:
+`draft`/`not adopted` is status, not a prohibition on transmission. This corrects
+the author's earlier R1 rating without erasing the original exercise.
+
+The reviewer was not accepted uncritically. Its opening six-case count conflicts
+with seven detailed defect sections. It also lacked the deliberately withheld
+author matrix and validation history; that absence cannot establish that the
+repository lacks them. Other accepted findings concern transferable source
+citations, explicit handoff unknowns/freshness, escalation steps and qualified
+security-response activities. The exact case-by-case appraisal and source-cited
+corrective V3 are in `docs/document-authoring-case-study.md`.
+
+Both skills now inspect the actual transferred excerpt for exclusions and judge
+findings against the supplied context. Future review preparation discloses
+withheld categories without their verdicts; a fixture verifies later corrections
+and appraisals do not contaminate historical V1/V2 candidates. One authored case
+and an author-reviewed V3 do not establish general semantic performance,
+independent verification, adoption or receiver acceptance. The approved packet
+and both attempts remain unchanged locally; its one-retry consent is consumed.
+
+## Project-Qualified Input References (2026-11-11)
+
+The corpus-only source resolver could not name an input from a separate task
+repository. Inspection also reproduced a misspelled `--input-soruce` being
+accepted as query text with exit 0 instead of rejected as an unsupported option.
+Both routers now accept explicit input-repository/input-source pairs for direct
+reference routing and reject unknown options. They do not infer a target root
+from the working directory or substitute same-named doctrine files.
+
+Project references remain separate from doctrine recommendations. Exact path,
+Git ignore, local-state and symlink checks do not load input bodies into the
+route, hash/copy them or transmit them externally. Git reads repository/ignore
+configuration for these checks. In project-input mode, undeclared
+query mentions remain unresolved rather than falling back to the corpus. This
+does not solve semantic input discovery, authorization or current-content proof.
+
+Both skills teach origin-qualified reading and preserve reference-only delivery.
+Unsupported guarded receipt/artifact combinations fail before publication;
+dropping an input to satisfy an older contract is not a valid workaround.
+Authorized content/summary delivery, digest/freshness binding and actual receiver
+consumption remain open. The historical model-review input is unchanged; the
+separately approved and completed retry is recorded above, not implied by this
+reference-routing change.
+
 ## Profile-Bounded Document Access Projection (2026-11-11)
 
 Inspection of target-repository source handling exposed a prerequisite defect:
@@ -21,8 +70,9 @@ non-authorizing metadata even when structurally valid.
 This corrects historical descriptions below that could imply the runner itself
 enforces filesystem access. It projects a policy list; a protected read path,
 receiver consumption and separately authorized target-repository source binding
-are not implemented by this change. The pending authoring-review packet and
-its one-attempt consent boundary are unchanged.
+are not implemented by this change. At that checkpoint the authoring-review
+packet and its one-attempt consent boundary were unchanged; the later retry
+required its own exact approval.
 
 ## Plain-Document Handoff And Separated Review Input (2026-11-11)
 

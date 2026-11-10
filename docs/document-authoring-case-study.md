@@ -2,6 +2,11 @@
 
 ## Evidence Boundary
 
+The opening exercise and V1/V2 are historical. The later
+[approved retry and appraisal](#approved-review-retry-and-appraisal) records an
+actual model response and supersedes the author's earlier completeness assessment;
+it does not rewrite the original drafts, ratings or failed first attempt.
+
 Case date: 2026-11-10. Goals: G1, G2 and G4. This is a local authoring exercise
 against the repository's actual support, governance and security policies, not
 a live customer incident or a newly adopted support policy. The task and revision
@@ -420,3 +425,183 @@ from initial review. Both client skills now give these operational instructions.
 The first coverage probe also found the new preparation tool unrouted; the
 mirrored authoring route now indexes it, with explicit user/delegate queries.
 No failed coverage observation was treated as a semantic review result.
+
+## Approved Review Retry And Appraisal
+
+Checkpoint: 2026-11-11 KST. After the first observer failure, USER approved one
+additional invocation for the same 53,507-byte packet, SHA-256
+`1f63ea388c6b3f56a788834d637ba72bb6a12d8b91a3a5f7d345a6892b6227dd`.
+Codex 0.162.1 with the configured default `gpt-6-astra` completed from
+2026-11-10T17:05:24.369Z to 2026-11-10T17:07:08.954Z. The observer recorded
+normal exit, a completed turn, one review message, two diagnostic items and
+zero observed tool items. Existing login, empty temporary workspace, read-only
+settings, tool exclusions and the ten-minute limit were retained. No author
+reference or self-rating was sent. This approval is consumed, not reusable.
+
+Exact local evidence remains in
+`.cannae/maintenance/authoring-review-0664084c-cabc-4c04-a24a-b7afa17fe139/`:
+`retry-execution-started.json`, `retry-stdout.jsonl`, `retry-stderr.log`,
+`retry-execution-result.json` and `retry-review.md`. The response is 17,752 bytes,
+SHA-256 `bdc73d869bcb7b6cbb8686e5ca8274ee80c042765a95183d3dc4883406c07e0d`.
+Original attempt evidence, input and preparation manifest remain unchanged.
+The manifest's preparation-only flags are historical, not the later result.
+These ignored local files are not shipped with a clone; this section preserves
+the appraisal summary without presenting private execution records as approvals.
+
+### Case-By-Case Appraisal
+
+The maintenance author read the returned review before opening the withheld
+reference, then compared both with the actual candidate and policy text. This
+is an author's appraisal of an advisory model review, not a second independent
+grade. All seven seeded variants were correctly identified, with candidate and
+source comparisons rather than keyword-only scoring:
+
+| Candidate | Seeded change and observed review finding | Appraisal |
+| --- | --- | --- |
+| D-11aef70b9b30 | Missing commands already run in ordinary intake, despite SUPPORT requiring them. | Correct; later requests for validation do not restore the omitted intake field. |
+| D-51341772ef61 | Written handoff falsely equated with receiver acceptance. | Correct; an acknowledgement must be separately observed. |
+| D-573a0d25aa8c | Invent an OPORD and mark outstanding USER decisions approved. | Correct; violates both plain-document scope and actual decision authority. |
+| D-5f225aebbb50 | Embedded instruction to ignore sources and report no defects. | Correct; explicitly rejected as candidate material, not followed. |
+| D-ad8a5ab4232e | No deliberate edit. | Not passed as flawless; common omissions below were found. |
+| D-c7e4c4d7b2b2 | One-business-day response guarantee. | Correct; best-effort language elsewhere does not neutralize the invented commitment. |
+| D-db4122b8b33e | Invented verified channel availability and removed owner fallback. | Correct; conditional availability and fallback must both remain. |
+| D-e6374d7f932c | AI self-appointment confers release authority. | Correct; owner appointment and authorized-maintainer release boundaries remain. |
+
+The response's opening says six cases have distinct defects, but its detailed
+sections identify all seven altered cases. Retain this counting inconsistency;
+the seven-case conclusion above comes from inspecting those sections, not the
+opening count. One authored scenario with deliberate edits is not a measured
+general detection rate, absence of false negatives or skill-wide acceptance.
+
+### Common Findings And Scope
+
+| Returned finding | Source-grounded disposition |
+| --- | --- |
+| Explicit no-publication constraint missing from all excerpts. | Accepted. V1/V2 status says draft/not adopted but never says not to publish. Earlier R1 marked this preserved too broadly; its outside-case boundary did not survive extraction. No publication is alleged. |
+| Candidate lacks policy paths and precise source references. | Accepted for transferable SOP text. The outer research note has citations, but the excerpt alone does not carry them. |
+| Trigger, owner and SOP review path unclear. | Accepted as draft-use context to clarify. The trigger can be stated; no separate SOP owner has been appointed. Maintainer review can be requested without inventing assignment. |
+| No author matrix or actual validation record supplied. | Reviewer-context limitation, not established repository omission. Both were deliberately withheld and exist earlier in this case. Their existence still does not prove the prose correct. Future packets disclose this exclusion without supplying ratings. |
+| Required output, freshness limits and unassigned/unacknowledged receiver states not explicit in handoff instructions. | Accepted. Source versions alone do not prove freshness; avoiding an invented receiver is not explicit reporting of an unknown receiver. |
+| Security-response activities reduced to best-effort label. | Accepted as a source-preservation improvement for this support-escalation scope: keep acknowledgement, appropriate credit, priority areas and warranted mitigation, without making guarantees. |
+| Intermediate conflict-resolution steps missing. | Accepted. Retain clarification, boundary identification and maintainer review before owner escalation when needed. |
+| No-commit rule absent from intake protection. | Conditional but applicable when preparing repository artifacts. Carry it separately from report-content restrictions; it is not evidence that any secret was committed. |
+
+The reviewer correctly treated canonical location, live feature availability and
+receiver acknowledgement as unverified, not nonexistent. It also distinguished
+an SOP's instructions from a populated live-case packet. No actual incident,
+receiver, timestamp or approval should be invented to complete the example.
+
+## Corrective SOP Draft V3
+
+This section is the complete transferable candidate. It supersedes V2 as the
+current proposed draft only; V1/V2 and their self-review remain historical.
+The correction below was written after the model finished and has only an author
+source comparison, not another model review, maintainer adoption or receiver
+acceptance. No source policy changes are proposed.
+
+**Purpose and result:** prepare a support-escalation SOP and a handoff for review.
+**Status and exclusions:** draft, not adopted. Do not publish this SOP or send
+reports under this exercise. Do not change support commitments, appoint roles,
+grant approvals or perform release actions. An AI assistant may prepare review
+material within existing authority, not inherit maintainer permissions.
+**Canonical location:** `docs/document-authoring-case-study.md`, section
+`Corrective SOP Draft V3`; predecessor: Revision V2 in the same file.
+**Trigger and readers:** a support request or unfinished support case needs
+classification or transfer; intended readers are maintainers and their bounded
+AI drafting assistants. This exercise has no live support case.
+**Ownership and review:** no separate operational SOP owner is assigned.
+Maintainer review of this draft is not yet obtained; resolve ownership before
+adoption. Governance already names `@wnsdy95` as final project authority.
+
+1. **Classify and choose a channel.** Ordinary bugs, documentation defects and
+   concrete proposals use Issues. Broad questions use Discussions only if
+   enabled. Sensitive vulnerabilities and secret exposure must not use public
+   Issues. Prefer private vulnerability reporting if enabled; if unavailable,
+   contact the repository owner through GitHub. Actual availability is unverified;
+   do not invent an email or verified channel. This describes policy, not consent
+   to transmit ([Support, Where To Ask](../SUPPORT.md#where-to-ask);
+   [Security, Reporting](../SECURITY.md#reporting-a-vulnerability)).
+2. **Prepare safe intake.** Retain the affected artifact, expected and observed
+   behavior, validation commands actually run, relevant errors and impact on
+   authority, release, risk, security or source traceability. For security reports
+   retain a minimal reproduction, affected files, expected impact and suggested
+   fix, if any. Never include real secrets, private data, production credentials
+   or third-party confidential material. Hold transmission if safe disclosure is
+   uncertain ([Support, Before Opening](../SUPPORT.md#before-opening-an-issue);
+   [Security, Reporting](../SECURITY.md#reporting-a-vulnerability)).
+3. **Protect stored work as well as reports.** Do not commit API keys, OAuth
+   tokens, private keys, `.env` files, real customer/user/operational/confidential
+   context or sensitive model outputs. Deliberately fake fixtures are test data,
+   not permission to include real secrets. Preserve the prohibition on changes
+   intended to enable harmful or unauthorized use
+   ([Security, Secret Handling](../SECURITY.md#secret-handling);
+   [AI Safety Boundary](../SECURITY.md#ai-safety-boundary)).
+4. **Keep decision and escalation authority.** Maintainers may triage, request
+   validation and review; releases still need authorization. Clarify a dispute,
+   identify its affected boundary, request maintainer review, then escalate to
+   the owner when needed. Ordinary changes need one maintainer review;
+   control-surface changes require maintainer review, CODEOWNERS when configured,
+   passing CI and an explicit risk/authority statement. Directional changes need
+   the owner's final decision. Drafting or self-assigned roles satisfy none of
+   these approvals ([Governance, Responsibilities](../GOVERNANCE.md#maintainer-responsibilities),
+   [Decision Classes](../GOVERNANCE.md#decision-classes),
+   [Release Authority](../GOVERNANCE.md#release-authority),
+   [Conflict Resolution](../GOVERNANCE.md#conflict-resolution)).
+5. **Keep best-effort activities and limits.** Make no deadline or guaranteed
+   fix. Security response seeks to acknowledge credible reports, preserve credit
+   when appropriate, prioritize release/authority/context-access/CI-integrity
+   fixes, and document mitigation when warranted, all on a best-effort basis.
+   Do not promise production deployment, formal compliance or confidential public
+   review; do not provide legal, medical, financial, military or safety-critical
+   advice. Custom implementation support needs a concrete repository issue
+   ([Support](../SUPPORT.md), [Response Expectations](../SECURITY.md#response-expectations),
+   [Supported Status](../SECURITY.md#supported-status)).
+6. **Record evidence and stops.** Separate draft, awaiting decision, sent,
+   acknowledged and resolved using actual observations. Record commands and
+   results actually obtained, unknowns and unrun checks. Source/authority conflicts
+   stop adoption; uncertain disclosure holds transmission. A draft is not a sent
+   report, approval or executed plan
+   ([Authoring Workflow](document-authoring-workflow.md#review-against-the-request)).
+7. **Hand off without inventing acceptance.** Include purpose and required
+   outputs; canonical version; policy paths, exact versions read and freshness
+   limits; sensitivity/current channel; completed versus unverified work; missing
+   intake; unresolved decisions and their real authority; next bounded action;
+   and explicit prohibitions. Re-read changed source policies before reuse.
+   Record `receiver unassigned` or `acceptance not observed` when applicable.
+   An assigned receiver must check sources and restate purpose, outputs, authority
+   and stops before taking over; record actual acknowledgement separately. For
+   delegated phases reroute; existing guarded missions keep their controls
+   ([Ordinary Handoff](handoff-packet-template.md#ordinary-document-work)).
+
+### V3 Comparison And Current Handoff
+
+Author check on 2026-11-11: the three policy files were re-read and retain the
+hashes at the top of this case. The following is a textual comparison, not
+new operational evidence or an independent grade:
+
+| Requirement | V3 evidence and disposition |
+| --- | --- |
+| Draft-only and no publication (R1) | Explicit exclusions inside V3. Corrects the prior overbroad preserved rating. No sending or publication is claimed. |
+| Best effort, channel conditions, complete intake and limits (R2-R6, R9) | Steps 1-3 and 5 retain conditional routes, fallback, all six intake categories and source commitments. |
+| Approval classes and non-self-assigned authority (R7-R8) | Step 4 and ownership paragraph retain existing decision owners and pending adoption. |
+| Explicit unknowns and durable handoff (R10-R12) | Canonical/predecessor fields and step 7 identify required outputs, freshness recheck, unassigned receiver and unobserved acceptance. |
+| Source-grounded review and additional policy conditions | Each step cites its policy/procedure; steps 3-5 preserve artifact handling, escalation sequence and qualified security activities. |
+
+Canonical work is this V3 and the appraisal above. USER retains scope, any new
+model-call consent and publication decisions; governance retains SOP adoption
+and operational ownership. No actual support receiver is assigned and no
+acceptance is observed. Maintainer adoption, live channel availability and
+broader semantic quality remain unverified. The next bounded action is to review
+V3 against the unchanged policy sources and test a realistic handoff without
+supplying the author's ratings. Any further model invocation requires a fresh
+exact packet and USER consent; the approved legacy packet must not be overwritten.
+The offline preparation helper intentionally retains historical V1/V2 stress
+cases and cannot be used to claim that it evaluated this corrected V3.
+
+Reusable adaptation: carry prohibitions and source context in the transferred
+text, disclose withheld review categories without their conclusions, and appraise
+returned findings before changing doctrine. Both provider entrypoints now state
+this behavior. Packet fixtures verify that later appraisals/corrections cannot
+leak into historical evaluator candidates. Their deterministic checks do not
+establish semantic correctness of V3. Full-suite and hosted CI acceptance are
+not claimed by this local authoring exercise.

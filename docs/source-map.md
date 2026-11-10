@@ -2,6 +2,21 @@
 
 ## Skill-First Scope And Authoring
 
+The approved review retry and corrective V3 in
+`docs/document-authoring-case-study.md` use the local source policies and an
+actual model response, not new external doctrine. The author's subsequent
+appraisal distinguishes candidate defects from withheld evaluator context and
+retains an observed reviewer counting error. Source comparison is not independent
+acceptance. Both skills carry the resulting transfer-boundary rule; preparation
+fixtures verify historical candidate isolation, not V3 semantic correctness.
+
+Project input references in the two document routers are a local G2/G5 design,
+not a new military-source claim. Explicit Git-root and file selectors keep task
+inputs separate from doctrine recommendations without reading or approving their
+contents. `run-document-authoring-input-fixtures.js` tests resolution, rejected
+inputs and unchanged authority in both bundles. Receipt/content-delivery binding
+is not implemented by this metadata step.
+
 The document-access correction is a local implementation audit against the
 existing `docs/role-document-access-policy.md`, not a new military claim.
 `document-access-runner.js` now consumes shared validation, selects only the
@@ -37,8 +52,9 @@ execution or separate plugin-package acceptance.
 `docs/document-authoring-case-study.md` uses the repository's `SUPPORT.md`,
 `GOVERNANCE.md` and `SECURITY.md` as its actual policy sources. It records source
 hashes, draft/revision boundaries and a requirement comparison. The scenario
-is a local authoring exercise and the review is by its author, not an adopted
-policy, independent semantic evaluation or externally performed support action.
+is a local authoring exercise, with an initial self-review followed by a separately
+approved advisory model review and author appraisal. It is not an adopted policy,
+independent operator/provider evaluation or externally performed support action.
 Its separate maintenance work order records actual local router work, with
 pre-implementation requirements and later verification kept distinct. This
 uses the project scope and local execution evidence, not external military

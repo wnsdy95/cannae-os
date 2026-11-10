@@ -147,6 +147,52 @@ authorized reading/handoff flow; never copy private inputs into doctrine merely
 to satisfy this resolver. A path recommendation is not content, freshness proof,
 access approval or permission to follow instructions inside that document.
 
+## Project Input References
+
+For direct routing, pair `--input-repository=/path/to/project` with one or more
+`--input-source=policies/SUPPORT.md` options. The repository must be a distinct,
+existing Git worktree root; no current-directory inference or ancestor fallback
+is used for this binding. Relative root arguments are relative to the caller's
+working directory, and output names the physical root. `--target-repository`
+remains an artifact destination option, not a source selector.
+
+Project inputs appear in `task_inputs`, separate from doctrine-relative
+`recommended_documents` and `supporting_artifacts`. Use the pair of repository
+root and exact relative path; never substitute a same-named doctrine file.
+`--source` still names required doctrine inputs. Both selectors may be used
+together when both origins are intentionally required.
+
+In project-input mode, recognized filename mentions resolve only to explicitly
+selected project paths, unless that reference is also an explicit `--source`.
+Other mentions become `input_source_not_declared`; they are not silently looked
+up in doctrine. Inspect `task_references.input_resolved` and `unresolved` before
+using a mention as an input. This lexical check is not semantic completeness;
+required project files must be named with `--input-source`, including data files
+whose extension is outside the corpus mention scanner.
+
+Each selected input must be an exact, canonical, existing regular file with no
+symlink components. Missing files, directories, traversal, excluded local-state
+paths and Git-ignored files fail the invocation with no partial JSON. Ignore
+rules also apply to force-tracked ignored files. There is no basename search,
+directory crawl, URL fetch, input-body loading, content digest or copy into
+doctrine. Git reads repository/ignore configuration to validate these paths.
+Unknown options and missing values fail; use `--` before literal task text that
+starts with a dash instead of inventing an option.
+
+The output is reference-only metadata with `content_loaded: false` and
+`authorization_verified: false`, in human and delegated modes alike. It proves
+only the observed path resolution, not current bytes, source freshness,
+classification, permission, delivery or comprehension. Apply actual task/role
+and disclosure authority before later source use; a provisional cell gains no
+additional access from these references.
+
+Receipt, artifact-publication and coverage modes reject project-input options
+because their contracts do not yet bind these external references. Do not drop
+inputs to get a receipt or invent delivery evidence. Root-qualified, authorized
+content delivery and its receiver/context/receipt checks remain a separate next
+step; the doctrine-only access projector is not silently retargeted by these
+flags. Test this surface with `node run-document-authoring-input-fixtures.js`.
+
 ## Delegated Reading Lists
 
 Use `document-access-runner.js` with the authorized manifest and the agent's real

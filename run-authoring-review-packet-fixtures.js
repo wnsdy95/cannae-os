@@ -54,6 +54,19 @@ try {
     assert(packet.prompt.includes("An already guarded mission must retain its actual machine packet"));
     assert(packet.prompt.includes("say so. An explicit unknown is not a negative fact or an approval."));
   });
+  fixture("later appraisals and corrected drafts do not leak into historical candidate review", () => {
+    const file = path.join(root, "docs/document-authoring-case-study.md"), original = fs.readFileSync(file);
+    try {
+      fs.appendFileSync(file, "\n## Later Appraisal Fixture\nWITHHELD_REVIEW_VERDICT_SENTINEL\n## Corrected Draft Fixture\nWITHHELD_CORRECTION_SENTINEL\n");
+      const changed = buildPacket(root);
+      assert.equal(changed.prompt, packet.prompt);
+      assert.deepEqual(changed.reference, packet.reference);
+      assert.notEqual(changed.manifest.source_sha256["docs/document-authoring-case-study.md"],
+        packet.manifest.source_sha256["docs/document-authoring-case-study.md"]);
+      assert(!changed.prompt.includes("WITHHELD_REVIEW_VERDICT_SENTINEL"));
+      assert(!changed.prompt.includes("WITHHELD_CORRECTION_SENTINEL"));
+    } finally { fs.writeFileSync(file, original); }
+  });
   fixture("identical source bytes produce an identical packet and case order", () => {
     assert.deepEqual(buildPacket(root), packet);
   });
