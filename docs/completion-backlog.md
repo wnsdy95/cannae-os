@@ -10,6 +10,14 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G3 correction: bound doctrine digests were not being rechecked before
+new delegated authority. An isolated reproduction changed SUPPORT.md after open
+and still received an allowed tool admission. The current correction rechecks
+exact routed sets and current bytes at context publication, policy/lease/tool
+gates and completed-report admission, retaining old-result settlement and stops.
+This prerequisite does not deliver project source bodies or close G2; authorized
+project-origin/content/recipient binding and actual client use remain open.
+
 Latest G1/G3/G4 evidence: the separately approved native review retry returned
 normally. Source appraisal confirmed detection of all seven deliberately altered
 cases and a genuine no-publication omission in the unedited transferable draft.
@@ -38,7 +46,7 @@ The current corrective V3 handoff is in `docs/document-authoring-case-study.md`.
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
 | G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded exercise, actual maintenance work order, one approved advisory model review, source appraisal and proposed corrective V3. All seven seeded variants were identified; the original draft also had omissions. | Broader cases, V3 review/adoption and independent/receiver acceptance remain open. One authored case with deliberate variants is not a general detection rate or semantic completeness. |
-| G2. Role-bounded routing and delegation | Both routers resolve named corpus inputs, reject unresolved required `--source` inputs and select GitHub specialist reading by task/mission/source context. Generic support writing preserves its policies and controls with 19 rather than 23 primary documents. Shared-validated document-access projections now enforce profile selection and empty blocked lists. | Actual authorized delivery/receiver use, broader relevance, semantic input/output distinction and target-repository sources remain open. Lexical context selection is not negation understanding; validation-command selection remains conservative. A projection does not authenticate the caller or enforce filesystem access. |
+| G2. Role-bounded routing and delegation | Both routers resolve required corpus and explicitly qualified project-file references. Task-scoped specialist reading retains controls, and access projections enforce profile selection. Issued doctrine sets and current bytes are now rechecked before new authority and completed reports. | Actual authorized project-content delivery/receiver use, physical-origin binding, broader relevance and semantic input/output distinction remain open. Lexical selection is not negation understanding; validation-command selection remains conservative. Neither a projection nor a byte match authenticates the caller or enforces filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
 | G5. Client distribution | Isolated installation fixtures cover link/copy binding, refresh, conflicts and receipt parity. Actual Codex/Claude processes discover both bundle forms in temporary homes; absent and Claude bare-mode negative controls distinguish real discovery from a folder check. | Skill-body consumption, semantic task execution and an independent fresh-session workflow remain unverified. Native metadata under isolated settings does not prove the user's full configuration. Separate plugin packaging is not included. |
@@ -434,6 +442,62 @@ remain the actual behavior check. Installed symlink targets and inodes are
 unchanged. The optional host Python skill validator could not start for either
 bundle because PyYAML is absent; the repository validators passed. No dependency
 or user configuration was changed to hide that unavailable check.
+
+### Issued Document Integrity (2026-11-11)
+
+G2/G3 inspection reproduced a concrete failure: changing copied SUPPORT.md after
+context issuance still allowed a new tool request. The new isolated test failed
+on `allow` versus expected `deny` before implementation. A first implementation
+then failed context publication because its wrapper omitted the existing guard's
+snapshot argument. Forwarding that argument fixed the wrapper; the original
+publication guard was retained, not bypassed.
+
+The shared helper now checks the exact routed set, agent/receipt/plan identity,
+canonical non-symlink regular files and current byte digests. Context publication,
+policy authorization, lease issuance, new tool admission and completed-report
+publication apply the check. Existing results still settle after source drift,
+but do not restore continuation or release. Schema validation also rejects an
+escaping document path with `AGENT_CONTEXT_UNSAFE_DOCUMENT_PATH`.
+
+Both skills turn this into an operator action: stop new work on a document
+mismatch, preserve the old packet, settle already admitted effects and prepare
+reviewed replacement instructions without editing retained hashes. An intentional
+in-place edit also invalidates the old binding; draft the candidate separately.
+This does not impose guarded runtime ceremonies on ordinary prose authoring.
+
+All 14 selected suites passed on a fixed source tree: document integrity 14/14;
+shared validator 503/503; dispatch 27/27; intent continuity 9/9; order adoption
+16/16; order revision 7/7; disciplined initiative 24/24; method control channel
+11/11; mission controller 32/32; routing preflight 10/10; mandatory controls 6/6;
+document routing 208 queries, 32 required-source rejections and 3 link checks;
+installation 21/21; project input references 24/24. Logs are retained under
+`.cannae/maintenance/context-integrity-checks-45ddde8f-823e-47d5-a715-4e8bbaba84f6/`.
+No suite was skipped or timed out in this selected batch. This is not the full
+aggregate, native client/model execution, hosted CI or production acceptance.
+
+After the documentation and mirrored guidance were finalized, the document
+integrity fixtures passed again (14/14). Both skill validators passed at 217
+lines, both inventories had zero unrouted artifacts, and source-map/registry
+audits, Markdown links (182 files), English-only checks (1,205 tracked files)
+and tracked JSON parsing (665 files) passed. Final logs are under
+`.cannae/maintenance/context-integrity-final-9ae2ade9-c2e9-48f4-905b-0adfd682cbb0/`.
+The original three policy hashes, approved prompt hash, installed link targets
+and inodes, and user's ignore-file hash remained unchanged. Skill additions
+match across providers; local evidence and the user's `.gitignore` are excluded
+from this change's staged files. Staged whitespace checks passed.
+
+The check uses the caller-selected doctrine root, not a physical-origin identity
+bound into the existing context. Identical bytes in another root can match.
+It is neither permission to read nor proof of source delivery or consumption;
+it does not monitor every concurrent filesystem event. Restoring exact bytes is
+not a permanent revocation event, and all other scope/time/stop gates still apply.
+No new model call, installed-link replacement, service or authentication change
+was made. The previous one-retry model approval remains consumed.
+
+Next: bind authorized project-origin, content form, exact bytes and recipient,
+then demonstrate actual delivery and receiver use. Reference resolution and this
+integrity prerequisite do not close G2 or any of the five active goals. Keep
+dashboards and separate production infrastructure deferred.
 
 ## Retained Platform Baseline
 

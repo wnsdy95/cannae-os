@@ -80,6 +80,7 @@
       }
     },
     "documents": {
+      "description": "Exact routed doctrine file set plus plan-required method documents. Canonical non-symlink paths and byte digests are rechecked at publication, new authority admission and successful report acceptance; this is not read permission or delivery acknowledgement.",
       "type": "array",
       "minItems": 1,
       "items": {

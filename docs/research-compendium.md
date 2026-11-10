@@ -1,5 +1,28 @@
 # Research Compendium
 
+## Rechecking Issued Document Bindings (2026-11-11)
+
+Inspection for project-source delivery found that context packs stored document
+hashes but the new-authority path did not compare them with current source files.
+An isolated real-controller reproduction changed SUPPORT.md after context issuance
+and still received `allow` for a new tool request. This is a source-freshness gap,
+not evidence that context content had actually been delivered to a native client.
+
+`context-document-integrity.js` now checks exact receipt/agent/plan document sets,
+canonical non-symlink file paths and current digests. Context publication, new
+policy/lease/tool admission and successful report acceptance use this common
+check; actual/late results and revocation retain their separate settlement rules.
+Both skills direct the operator to stop new work, preserve old packets and
+reroute changed instructions instead of editing hashes. The original failure,
+focused regressions and remaining delivery work are recorded in the backlog.
+
+This local correction implements an existing byte-binding promise without new
+approval authority, a new schema version or a protected execution service. The
+shared validator rejects noncanonical context paths while historical records
+remain schema-readable. Current-source checking is not semantic freshness,
+read permission, summary preparation, recipient consumption or continuous host
+monitoring. Cross-repository delivery remains a distinct unfinished requirement.
+
 ## Source-Grounded Review And Transfer Boundaries (2026-11-11)
 
 The separately approved retry of the unchanged evaluator packet returned a

@@ -628,6 +628,12 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
 approval. `--source` remains doctrine-relative. Missing or excluded required
 inputs fail; receipt mode is rejected until its external-input contract exists.
 
+Issued doctrine references are also rechecked against their exact routed set and
+current file digests before new delegated authority and completed reports. Source
+drift stops new work without blocking settlement of already admitted results;
+see [current document integrity](docs/skill-operational-mission-lifecycle.md#current-document-integrity).
+This does not authorize source reads or prove client consumption.
+
 For a doctrine-only framework question:
 
 ```bash

@@ -144,6 +144,13 @@ neither restricted-data access nor tools. Covered tools need their exact approve
 policy and current session-bound lease; resuming chat does not renew authority.
 Existing stop, unknown-effect, delivery and release holds remain in force.
 
+On `CONTEXT_DOCUMENT_*`, stop new work: the routed set or current file bytes no
+longer match the issued context. Do not patch hashes in retained packets. Settle
+already admitted results and use reviewed rerouting/new-wave preparation for
+changed instructions; source integrity is not read permission or receipt of text.
+Draft changes to issued instructions separately until a newly reviewed wave
+binds the revision; ordinary prose work outside that wave needs no such ceremony.
+
 ## Capability Gaps
 
 On `capability_routing.status: gap_detected`, retain the returned mission-scoped

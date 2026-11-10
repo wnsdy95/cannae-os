@@ -258,6 +258,9 @@ function contextBundleInReplay(options, policy, settings) {
   require("./skill-mission-controller").assertAdaptiveCampaignMayContinue(plan.payload, { ...options, artifactRoot: view.artifactRoot });
   require("./order-adoption-controller").assertContextAssignment(context.payload, plan.payload, { ...options, artifactRoot: view.artifactRoot });
   const intent = require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
+  const receipt = loadArtifactRef(view, context.payload.routing_receipt_ref, "routing-receipt");
+  require("./context-document-integrity").assertContextDocuments(context.payload, receipt.payload, plan.payload,
+    require("./skill-mission-controller").resolveDoctrineRoot(options.doctrineRoot || __dirname));
   require("./intent-continuity-contract").assertIntentPolicy(policy, intent);
   require("./method-deviation-contract").assertMethodPolicy(plan.payload, policy);
   require("./method-deviation-gate").assertNoMethodDrift(options, policy.mission_id, view);
@@ -961,10 +964,13 @@ function activeLeaseInReplay(options, identity, at) {
   try {
     const context = loadArtifactRef(view, selected.leaseRecord.payload.context_pack_ref, "agent-context-pack");
     const intent = require("./intent-continuity-contract").assertIntentContext(context.payload, plan.payload);
+    const receipt = loadArtifactRef(view, context.payload.routing_receipt_ref, "routing-receipt");
+    require("./context-document-integrity").assertContextDocuments(context.payload, receipt.payload, plan.payload,
+      require("./skill-mission-controller").resolveDoctrineRoot(options.doctrineRoot || __dirname));
     require("./intent-continuity-contract").assertIntentPolicy(policyForLease(view, selected.leaseRecord).payload, intent);
     require("./method-deviation-gate").assertNoMethodDrift(options, identity.missionId, view);
   } catch (error) {
-    if (!error.message.startsWith("INTENT_") && !error.message.startsWith("METHOD_")) throw error;
+    if (!error.message.startsWith("INTENT_") && !error.message.startsWith("METHOD_") && !error.message.startsWith("CONTEXT_DOCUMENT_")) throw error;
     return { code: error.message, view, ...selected };
   }
   try {

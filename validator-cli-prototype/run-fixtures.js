@@ -1588,6 +1588,12 @@ const fixtures = [
     requiredCodes: ["CONST_MISMATCH"]
   },
   {
+    name: "agent context pack rejects an escaping document path",
+    file: "sample-payloads/invalid-agent-context-pack-document-path.json",
+    type: "agent-context-pack", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: ["AGENT_CONTEXT_UNSAFE_DOCUMENT_PATH"]
+  },
+  {
     name: "valid mandatory control execution receipt",
     file: "sample-payloads/valid-control-execution-receipt.json",
     type: "control-execution-receipt",

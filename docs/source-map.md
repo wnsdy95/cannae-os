@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+`context-document-integrity.js` and its isolated controller/dispatch fixtures
+implement the existing source-binding rule in
+`docs/skill-operational-mission-lifecycle.md`. The observed stale-source admission
+and correction are local execution evidence, not a new military claim or native
+agent-consumption proof. The same rule is mirrored in both client skills; project
+content authorization/delivery and independent receiver acceptance remain open.
+
 The approved review retry and corrective V3 in
 `docs/document-authoring-case-study.md` use the local source policies and an
 actual model response, not new external doctrine. The author's subsequent

@@ -3525,6 +3525,9 @@ function semanticRules(payload, type, options = {}) {
       issues.push(issue("critical", "AGENT_CONTEXT_AI_COMMAND_AUTHORITY", "$.operational_role", "An AI context pack cannot assign USER or COMMANDER final-decision authority."));
     }
     const documentPaths = (payload.documents || []).map(document => document.path);
+    if (documentPaths.some(relative => !require("../context-document-integrity").canonicalDocumentPath(relative))) {
+      issues.push(issue("critical", "AGENT_CONTEXT_UNSAFE_DOCUMENT_PATH", "$.documents", "Bound doctrine documents require canonical relative file paths, without private-state roots or aliases."));
+    }
     if (new Set(documentPaths).size !== documentPaths.length) {
       issues.push(issue("error", "AGENT_CONTEXT_DUPLICATE_DOCUMENT", "$.documents", "Agent context documents must be unique."));
     }
