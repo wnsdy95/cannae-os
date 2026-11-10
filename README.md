@@ -600,6 +600,13 @@ A stale explicit binding fails rather than silently choosing another corpus.
 Copies need a deliberate refresh after source changes and still depend on the
 doctrine checkout. Keep task outputs in the target repository.
 
+Native metadata discovery has a separate, opt-in macOS probe:
+`skill-client-discovery-probe.js --codex /absolute/codex --claude /absolute/claude`
+(run with Node.js). It checks isolated absent/link/copy installations without
+network access or a model prompt. Claude bare mode intentionally omits normal
+user-skill discovery. Metadata discovery is not proof that an agent consumed
+the skill or performed a task; see the [current evidence](docs/completion-backlog.md#native-client-metadata-discovery-2026-11-11).
+
 Route a user-facing framework question:
 
 ```bash

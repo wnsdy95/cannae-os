@@ -2,6 +2,17 @@
 
 ## Skill-First Scope And Authoring
 
+Native metadata inspection uses OpenAI's
+[prompt-input command](https://learn.chatgpt.com/docs/developer-commands#codex-debug-prompt-input),
+Claude's [initialization response](https://code.claude.com/docs/en/agent-sdk/typescript#sdkcontrolinitializeresponse)
+and [bare-mode discovery boundary](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode).
+The initialization-only wire shape was inspected in the official
+[Python SDK source](https://github.com/anthropics/claude-agent-sdk-python/blob/main/src/claude_agent_sdk/_internal/query.py).
+Accessed 2026-11-11. `skill-client-discovery-probe.js` is a local, opt-in macOS
+diagnostic with denied network and writes outside owned temporary state, not
+an upstream SDK, authenticated model test or protected production implementation.
+Native metadata discovery is separate from the installation fixtures below.
+
 `install-ai-cli-skills.sh`, both document routers and
 `run-skill-installation-fixtures.js` provide local installation/binding evidence.
 Temporary homes and stub client binaries isolate failure/replacement checks.

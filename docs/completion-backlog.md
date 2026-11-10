@@ -16,7 +16,7 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 | G2. Role-bounded routing and delegation | Both routers resolve named corpus inputs, reject unresolved required `--source` inputs and select GitHub specialist reading by task/mission/source context. Generic support writing preserves its policies and controls with 19 rather than 23 primary documents. | Broader relevance, semantic input/output distinction and target-repository sources remain open. Lexical context selection is not negation understanding; validation-command selection remains conservative. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Isolated installation fixtures execute both link/copy modes, source binding, refresh, conflict/failure protection and equivalent delegated receipts. Existing installed links also route from another working directory without a root argument. | Native-client discovery/consumption and an independent fresh-session workflow remain unverified. Folder/metadata checks and stub CLI version probes are not those results. Separate plugin packaging is not included. |
+| G5. Client distribution | Isolated installation fixtures cover link/copy binding, refresh, conflicts and receipt parity. Actual Codex/Claude processes discover both bundle forms in temporary homes; absent and Claude bare-mode negative controls distinguish real discovery from a folder check. | Skill-body consumption, semantic task execution and an independent fresh-session workflow remain unverified. Native metadata under isolated settings does not prove the user's full configuration. Separate plugin packaging is not included. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).
@@ -171,6 +171,51 @@ Their help/version commands completed; Codex exposes `debug prompt-input` for
 rendering model-visible input. Neither that renderer nor a Claude model session
 was executed in this checkpoint. Help text is not evidence of skill discovery;
 first isolate any native metadata probe from user configuration and model calls.
+
+### Native Client Metadata Discovery (2026-11-11)
+
+The next G5 check uses actual installed executables, not stub version binaries.
+`skill-client-discovery-probe.js` runs Codex `debug prompt-input` and Claude's
+initialization-only control exchange. It uses fresh temporary homes and an empty
+workspace; it does not attach to an existing conversation or send a model prompt.
+OS network/write denial is checked before each client starts; real client
+credential paths and keychain access are denied. Tools, hooks and MCP are disabled
+for Claude. Each owned process is bounded and awaited before temporary cleanup.
+This is a macOS-only optional diagnostic, not a new server or production gateway.
+
+Observed with Codex 0.162.1 and Claude Code 2.1.319: both native clients found
+the exact skill metadata in link and copy installations, and neither found it
+in an empty installation. Claude bare mode did not find the ordinary user skill,
+consistent with its documented auto-discovery exclusion. These seven cases
+passed; helper fixtures separately check metadata matching and probe construction.
+The final native observation, including entrypoint hashes and the probe digest,
+is retained locally at
+`.cannae/maintenance/skill-client-discovery-949bb7a0-d172-4e09-87c5-981c71a381a8.json`.
+This ignored diagnostic output is not a signed approval or a distributed artifact.
+
+The initial native run failed at Claude link discovery because the diagnostic
+used bare mode. A separate copy check failed for the same reason. After selecting
+ordinary initialization under the same network/write boundary, both were found,
+but exact-description assertions failed on Claude's added ` (user)` annotation.
+The parser now accepts only the source description or that exact observed suffix;
+duplicate commands, changed descriptions and other scope suffixes still fail.
+These were probe-assumption failures, not evidence of broken installed skills;
+retain them rather than presenting the first attempt as successful.
+
+Focused checks passed: helper fixtures 7/7; installation 21/21; routing 200
+queries, 32 required-source rejections and 3 link-inventory cases; both skill
+validators (187 lines each); both route inventories (zero unrouted); source-map
+and registry audits; Markdown local links (182 files) and diff whitespace.
+No full aggregate, hosted CI or platform/browser acceptance was run for this
+diagnostic-only change. The installer checkpoint above retains its separate
+mission-controller results; they were not rerun for this metadata helper.
+
+The reusable lesson in both skills is to verify the effective startup mode and
+separate filesystem installation, native metadata discovery, body consumption
+and task execution. Discovery alone cannot close G5 or G3. No authenticated model
+session, live delegated work, new plugin package or external publication was run.
+Next: evaluate body consumption and representative authoring/handoff behavior
+under an exact approved model packet, while continuing independent G1-G4 work.
 
 
 ## Retained Platform Baseline

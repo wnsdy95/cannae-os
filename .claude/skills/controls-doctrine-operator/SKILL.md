@@ -76,6 +76,10 @@ binding but need explicit refresh after source changes. For the router,
 source and working directory. Invalid explicit bindings stop; do not silently
 adopt another project's corpus. A copy is not the entire corpus or a runtime.
 
+Verify discovery in the client's effective startup mode before diagnosing a
+missing skill. A metadata listing is not body consumption or task execution;
+Claude bare mode skips automatic discovery of the ordinary user skill directory.
+
 ## Write And Maintain Documents
 
 1. Choose an existing canonical document and format: quick task brief, SOP,
@@ -156,6 +160,7 @@ For document and routing changes, run the applicable checks from the repo root:
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node run-document-routing-fixtures.js
 node run-skill-installation-fixtures.js
+node run-skill-client-discovery-fixtures.js
 node validate-controls-skill.js codex-skills/controls-doctrine-operator
 node validate-controls-skill.js .claude/skills/controls-doctrine-operator
 node source-map-linter.js

@@ -58,6 +58,23 @@ selection separate from target output paths. Test with isolated homes using
 `node run-skill-installation-fixtures.js`; fake CLI version probes are not
 native discovery, login, model execution or separately packaged plugin evidence.
 
+Check the effective startup mode when an installed skill is missing. Claude's
+`--bare` skips automatic user-directory discovery; do not diagnose that as a
+broken link or remove permission controls to make a test pass. The ordinary
+initializer and a minimal-mode initializer are different test conditions.
+
+For an opt-in macOS metadata check, run `skill-client-discovery-probe.js` with
+`--codex /absolute/path/to/codex` and/or `--claude /absolute/path/to/claude`.
+It uses temporary homes, checks OS network/write denial before starting each
+client, and sends no user/model prompt. Codex renders prompt metadata; Claude
+receives only its initialization request, with tools/hooks/MCP disabled and
+real client credentials/keychain access denied. The absent/link/copy checks
+and Claude bare-mode negative case must match their expected results.
+`run-skill-client-discovery-fixtures.js` tests the helper without native clients.
+Neither check proves skill-body consumption, semantic work quality, the current
+user's settings, authenticated model access or production isolation. Record
+client versions and keep actual task execution as a separate acceptance step.
+
 ## Specialist Reading
 
 General authority, approval, risk, tool and disclosure policy remains primary

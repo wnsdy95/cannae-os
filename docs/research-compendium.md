@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Native Skill Discovery (2026-11-11)
+
+Actual Codex 0.162.1 and Claude Code 2.1.319 processes discovered linked and
+copied skills under isolated homes. Empty installations were negative controls.
+The initial Claude probe used bare mode and failed because that mode skips
+ordinary user-skill auto-discovery; ordinary initialization found both bundles.
+Its added user-scope description annotation was separately observed and handled
+without allowing arbitrary changed descriptions. The bare-mode negative remains
+a regression, not a failed installation to hide.
+
+The [source map](source-map.md#skill-first-scope-and-authoring) records the
+official command/protocol/discovery references. Seven native metadata cases
+passed with OS network/write checks and no model prompt. Both skills now require
+startup-mode-aware diagnosis and distinguish discovery from body consumption.
+Neither this result nor the helper's deterministic checks establishes semantic
+work quality, actual-user configuration or G5 completion.
+
 ## Skill Installation And Corpus Binding (2026-11-11)
 
 The G5 audit used `install-ai-cli-skills.sh` and isolated installation fixtures.

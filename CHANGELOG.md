@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add an opt-in, network-denied native skill discovery probe for Codex and Claude Code, with temporary client homes, checked write boundaries, no model prompt and bounded process cleanup. Verify absent/link/copy metadata separately from skill consumption. Retain the observed Claude bare-mode discovery suppression and exact user-scope description annotation; both skills now require startup-mode-aware diagnosis instead of treating a missing listing as an installer failure.
+
 - Verify Codex/Claude link and copy installation in isolated homes. Make the document router honor explicit doctrine roots, environment overrides, copy markers and its installed source before working-directory fallback; reject stale bindings and preserve single-filename queries. Preflight both installer destinations, reject source/client overlap, stage replacement copies and keep dry-run from invoking client binaries. Both skills now distinguish corpus binding, target output paths and snapshot refresh; these fixtures do not claim native-client/model execution or a separate plugin package.
 
 - Make GitHub release manuals conditional on applicable task, mission or explicit source context instead of requiring them for every generic publication boundary. Preserve general authority/disclosure policy, route and capability selection, all selected validation commands and issued-packet controls. Test generic, negated, mixed and explicit release requests through both providers and receiver contexts. Both skills distinguish reduced reading from waived controls; the authoring case retains a pre-implementation maintenance order separately from its results and handoff.
