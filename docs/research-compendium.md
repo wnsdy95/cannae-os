@@ -1,5 +1,20 @@
 # Research Compendium
 
+## Skill Installation And Corpus Binding (2026-11-11)
+
+The G5 audit used `install-ai-cli-skills.sh` and isolated installation fixtures.
+It exposed client execution during dry-run; source inspection also found unused
+copy markers in document routing and late destination conflict checks.
+Both routers now honor explicit/install bindings and fail on stale ones;
+the installer preflights both destinations and stages copies before replacement.
+
+The reusable lesson is to distinguish corpus discovery, target output paths
+and snapshot refresh, and to test failure paths without touching actual client
+homes. Twenty-one local fixtures cover installation and receipt parity; stub version
+probes and entrypoint inspection are not native client loading or model execution.
+The two skills remain the selected distribution, with separate plugin packaging
+not included. This is local engineering evidence, not a new military-source claim.
+
 ## Source-Grounded Authoring Exercise (2026-11-10)
 
 `docs/document-authoring-case-study.md` applies the existing support, governance

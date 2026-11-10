@@ -2,6 +2,12 @@
 
 ## Skill-First Scope And Authoring
 
+`install-ai-cli-skills.sh`, both document routers and
+`run-skill-installation-fixtures.js` provide local installation/binding evidence.
+Temporary homes and stub client binaries isolate failure/replacement checks.
+These results do not establish native client discovery, authentication, model
+execution or separate plugin-package acceptance.
+
 `docs/document-authoring-case-study.md` uses the repository's `SUPPORT.md`,
 `GOVERNANCE.md` and `SECURITY.md` as its actual policy sources. It records source
 hashes, draft/revision boundaries and a requirement comparison. The scenario

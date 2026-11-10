@@ -31,9 +31,10 @@ IDs, not universal ranks. Do not treat US doctrine as universal.
 
 ## Start With The Task
 
-1. Locate the doctrine root containing `README.md`, `docs/source-map.md` and
-   `schema-files/README.md`. When operating from another repository, pass the
-   doctrine root explicitly; keep outputs in the target repository.
+1. Keep the doctrine repository separate from the target repository. The router
+   locates its installed source or copy binding even from another project.
+   Use `--doctrine-root=<path>` to select a different corpus deliberately;
+   keep work outputs in the target repository.
 2. Run the bundled router:
 
 ```bash
@@ -69,9 +70,11 @@ Keep reading scope separate from execution controls. Conditional specialist
 manuals need not be read for an unrelated task, but their omission never waives
 an issued validation command, approval or stop condition.
 
-Installed symlinks resolve to the source tree; copy installs retain a
-`.cannae-os-root` marker. Wrappers can also use `CANNAE_OS_HOME`. A copied
-skill is not a copy of the entire doctrine corpus or an independent runtime.
+Installed links follow the source tree; copies retain a `.cannae-os-root`
+binding but need explicit refresh after source changes. For the router,
+`--doctrine-root` overrides `CANNAE_OS_HOME`, then the copy marker, installed
+source and working directory. Invalid explicit bindings stop; do not silently
+adopt another project's corpus. A copy is not the entire corpus or a runtime.
 
 ## Write And Maintain Documents
 
@@ -152,6 +155,7 @@ For document and routing changes, run the applicable checks from the repo root:
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node run-document-routing-fixtures.js
+node run-skill-installation-fixtures.js
 node validate-controls-skill.js codex-skills/controls-doctrine-operator
 node validate-controls-skill.js .claude/skills/controls-doctrine-operator
 node source-map-linter.js

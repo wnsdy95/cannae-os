@@ -587,6 +587,19 @@ Install local AI CLI skills:
 ./install-ai-cli-skills.sh
 ```
 
+Use `--dry-run` to inspect the plan, or `--copy` for a snapshot instead of a
+live link. Node.js is required; existing non-matching destinations need an
+explicit `--force`. Both destinations are checked before installation and
+source-tree overlaps are rejected. Tests use isolated homes; they do not claim
+native client discovery or model execution from folder presence alone.
+
+An installed document router can run from another project without changing
+directory. It uses `--doctrine-root=<path>`, then `CANNAE_OS_HOME`, its copy
+marker, the installed source location, and finally the current directory.
+A stale explicit binding fails rather than silently choosing another corpus.
+Copies need a deliberate refresh after source changes and still depend on the
+doctrine checkout. Keep task outputs in the target repository.
+
 Route a user-facing framework question:
 
 ```bash

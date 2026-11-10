@@ -16,7 +16,7 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 | G2. Role-bounded routing and delegation | Both routers resolve named corpus inputs, reject unresolved required `--source` inputs and select GitHub specialist reading by task/mission/source context. Generic support writing preserves its policies and controls with 19 rather than 23 primary documents. | Broader relevance, semantic input/output distinction and target-repository sources remain open. Lexical context selection is not negation understanding; validation-command selection remains conservative. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Both installed symlink routers resolve the doctrine root; full distribution acceptance is open. | Verify installation/discovery, copy-install path resolution and equivalent Codex/Claude behavior; separately identify and test any optional plugin packaging. |
+| G5. Client distribution | Isolated installation fixtures execute both link/copy modes, source binding, refresh, conflict/failure protection and equivalent delegated receipts. Existing installed links also route from another working directory without a root argument. | Native-client discovery/consumption and an independent fresh-session workflow remain unverified. Folder/metadata checks and stub CLI version probes are not those results. Separate plugin packaging is not included. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).
@@ -115,6 +115,62 @@ Next: verify G5 installation/copy discovery and repository resolution in isolate
 targets, without replacing the current installed skills or starting a server.
 G1/G3 semantic evaluation and a genuinely observed receiver cold start remain
 open; do not claim them from this author-generated handoff.
+
+### Installation And Corpus Binding (2026-11-11)
+
+The G5 audit found that the document router did not consume the copy marker
+written by the installer. It also found that destination conflicts were checked
+sequentially, allowing the first installation to change before the second failed.
+The initial isolated regression failed because dry-run actually invoked the
+stub client binary; that failed observation is retained here, not counted as a pass.
+
+The installer now validates both bundles and route inventories before changes,
+preflights both destinations, rejects source/client path overlap and stages
+replacement copies. Failed staging keeps the previous installation. Dry-run
+prints client probes instead of executing them. This is not an atomic
+multi-client/crash transaction; recovery requires inspecting both destinations
+and any retained staging directory.
+
+Both document routers honor explicit `--doctrine-root`/legacy root, environment,
+copy marker, installed source and then working-directory discovery. Invalid
+explicit bindings stop; a deliberate override can recover a moved checkout.
+Source selection is separate from target output location and grants no new
+authority. Other retained runtime wrappers keep their existing resolver rules.
+
+`node run-skill-installation-fixtures.js` passed 21 fixtures on 2026-11-11.
+They use temporary homes and stub client binaries, validate entrypoint metadata,
+exercise actual installation and generated receipts, preserve user-file sentinels,
+and confirm snapshot refresh and invalid-root rejection. Separate read-only
+probes of both actual installed router links from another directory resolved
+the current corpus without changing either link. No real client/model session,
+authentication ceremony or operator service was started.
+
+The accompanying routing regressions passed 200 queries, 32 required-source
+rejections and 3 link-inventory cases. Routing preflight passed 10/10,
+mandatory-control enforcement 6/6 and mission-controller fixtures 32/32.
+These local results include the new installation check in the routed validation
+commands; they do not establish native-client consumption or hosted CI acceptance.
+Both entrypoints validate at 182 lines, and both inventories have zero unrouted
+artifacts. Source-map/registry audits, Markdown links (182 files), tracked JSON
+parsing (662 files), shell syntax and diff whitespace checks also passed.
+The three source-policy hashes, existing installed link targets and the user's
+pre-existing `.gitignore` content stayed unchanged.
+
+The shipped distribution remains the two client skills. No separate plugin
+package is included; a repository scan found no `plugin.json` or
+`marketplace.json`. Optional thin packaging remains deferred unless needed,
+not silently implemented or part of these test results.
+
+Next: validate native-client discovery/consumption without assuming a folder
+proves loading. Inspect available local read-only client interfaces first.
+Any actual additional model call still needs approval of its exact packet;
+continue independent core document/semantic review work while that is unresolved.
+
+Read-only interface inspection found Codex CLI 0.162.1 and Claude Code 2.1.319.
+Their help/version commands completed; Codex exposes `debug prompt-input` for
+rendering model-visible input. Neither that renderer nor a Claude model session
+was executed in this checkpoint. Help text is not evidence of skill discovery;
+first isolate any native metadata probe from user configuration and model calls.
 
 
 ## Retained Platform Baseline

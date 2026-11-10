@@ -328,6 +328,14 @@ The default installer uses symlinks, so both skill wrappers resolve the live rep
 
 `--copy` installations receive a local `.cannae-os-root` runtime marker. `CANNAE_OS_HOME` is the explicit override when the doctrine repository moves.
 
+The document router also accepts `--doctrine-root` and refuses stale explicit
+bindings instead of silently falling back. Corpus selection is separate from
+`--repository` output isolation. The installer stages replacements and checks
+both destinations/source overlap first; interrupted installation still needs
+inspection of both destinations and any retained recovery directory.
+`run-skill-installation-fixtures.js` checks isolated link/copy installations and
+router parity, not native-client execution or a multi-client crash transaction.
+
 ## 9. Campaign Continuation Gate
 
 An adaptive plan's retained campaign must reconstruct a `ready` supervisor

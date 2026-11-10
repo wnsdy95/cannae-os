@@ -29,6 +29,35 @@ or negated terms; distinguish drafting an instruction from executing it. Do not
 strip required controls from an already issued receipt or context pack. Clarify
 an ambiguous guarded operation before dispatch, not by silently removing gates.
 
+## Installation And Corpus Binding
+
+Use `install-ai-cli-skills.sh --dry-run` before changing destinations; this
+prints the plan without invoking client binaries or writing installations.
+Node.js is required. Codex/Claude binaries are optional at install time; their
+presence or version output does not prove the client has loaded the skill.
+The installer checks both destinations before writes and rejects source-tree
+overlap, overlapping client destinations and non-matching existing targets
+without `--force`. Copies are staged before replacement. This is not a
+multi-client crash transaction: after an interruption, inspect both destinations
+and any retained `.controls-install.*` recovery directory before retrying.
+
+The document router resolves its corpus in this order: explicit
+`--doctrine-root` (or the legacy positional root), `CANNAE_OS_HOME`, a copy's
+`.cannae-os-root`, the physical installed-source ancestry, then working-directory
+ancestry. Do not supply both explicit forms. The flag/environment/marker must
+name the actual corpus root; invalid or stale bindings fail instead of falling
+back. Markers must be regular files with absolute paths. A deliberate explicit
+override can recover a moved corpus without mutating user configuration.
+Other retained runtime wrappers have their own resolver contracts; this stricter
+precedence statement concerns `route_controls_docs.js`.
+
+Copies contain the skill entrypoint, metadata, scripts and references, not the
+whole corpus or runtime. Refresh them deliberately with `--copy --force` after
+reviewing local changes; live links already follow the source. Keep corpus
+selection separate from target output paths. Test with isolated homes using
+`node run-skill-installation-fixtures.js`; fake CLI version probes are not
+native discovery, login, model execution or separately packaged plugin evidence.
+
 ## Specialist Reading
 
 General authority, approval, risk, tool and disclosure policy remains primary

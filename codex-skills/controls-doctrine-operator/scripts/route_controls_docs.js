@@ -357,6 +357,7 @@ const RULES = [
     commands: [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
       "node run-skill-control-enforcement-fixtures.js",
+      "node run-skill-installation-fixtures.js",
       "node run-agent-routing-preflight-fixtures.js",
       "node implementation-candidate-registry.js audit",
       "node validate-controls-skill.js codex-skills/controls-doctrine-operator",
@@ -588,6 +589,7 @@ const ROUTE_HINTS = [
 ];
 
 function usage() {
+  console.error("Doctrine binding: --doctrine-root=PATH overrides CANNAE_OS_HOME, the copy marker, the installed source location and then the working directory.");
   console.error("Required inputs: repeat --source=<corpus-relative-path>; unresolved inputs stop routing before a receipt is issued.");
   console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=MISSION_OBJECTIVE] [--all] [--limit=N] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE [--write-artifact --target-repository=PATH] <query> [repo-root]");
@@ -617,6 +619,47 @@ function countMatches(text, keywords) {
     const needle = String(keyword).toLowerCase();
     return score + (keywordMatches(lower, needle) ? 1 : 0);
   }, 0);
+}
+
+function resolveDoctrineRoot(options, positionalRoot) {
+  const checkedRoot = (value, label, allowAncestor = false) => {
+    let candidate = value && path.resolve(value);
+    if (allowAncestor) {
+      candidate = candidate && fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()
+        ? findRepoRoot(candidate) : null;
+    }
+    if (!candidate || findRepoRoot(candidate) !== candidate) {
+      throw new Error(`${label} does not identify a doctrine repository. Correct the path or reinstall the skill.`);
+    }
+    return fs.realpathSync(candidate);
+  };
+  if (options.doctrineRoot !== null) {
+    if (positionalRoot) throw new Error("Use --doctrine-root or a positional doctrine root, not both.");
+    return checkedRoot(options.doctrineRoot, "--doctrine-root");
+  }
+  if (positionalRoot) return checkedRoot(positionalRoot, "Positional doctrine root", true);
+  if (Object.hasOwn(process.env, "CANNAE_OS_HOME")) {
+    return checkedRoot(process.env.CANNAE_OS_HOME, "CANNAE_OS_HOME");
+  }
+  const location = fs.realpathSync(__dirname);
+  const marker = path.join(location, "..", ".cannae-os-root");
+  let stat;
+  try {
+    stat = fs.lstatSync(marker);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  if (stat) {
+    if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 4096) {
+      throw new Error("Invalid doctrine root marker. Reinstall the skill or set CANNAE_OS_HOME.");
+    }
+    const value = fs.readFileSync(marker, "utf8").trim();
+    if (!path.isAbsolute(value)) throw new Error("Doctrine root marker must name an absolute repository path.");
+    return checkedRoot(value, "Doctrine root marker");
+  }
+  const discovered = findRepoRoot(location) || findRepoRoot(process.cwd());
+  if (!discovered) throw new Error("Could not locate the doctrine repository. Use --doctrine-root or reinstall the skill.");
+  return fs.realpathSync(discovered);
 }
 
 function countSpecificMatches(text, keywords) {
@@ -991,6 +1034,7 @@ function parseArgs(argv) {
     department: null,
     authority: null,
     capabilityQuery: null,
+    doctrineRoot: null,
     sources: [],
     receipt: false,
     scope: null,
@@ -1006,7 +1050,7 @@ function parseArgs(argv) {
     limit: 40
   };
   const queryParts = [];
-  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
+  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "doctrine-root", "source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
   const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact"]);
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -1042,9 +1086,12 @@ function parseArgs(argv) {
   options.limit = Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 40;
 
   let repoRootArg = null;
-  if (queryParts.length > 0) {
+  if (options.coverage || queryParts.length > 1) {
     const last = queryParts[queryParts.length - 1];
-    if (fs.existsSync(last) && findRepoRoot(last)) {
+    const directory = last && fs.existsSync(last) && fs.statSync(last).isDirectory();
+    const explicitPath = last && (path.isAbsolute(last) || last === "." || last === ".." ||
+      last.startsWith("./") || last.startsWith("../"));
+    if (directory || explicitPath) {
       repoRootArg = queryParts.pop();
     }
   }
@@ -1330,11 +1377,11 @@ function routingReceipt(routeResult, options) {
 }
 
 const parsed = parseArgs(process.argv.slice(2));
-const possibleRoot = parsed.repoRootArg ? findRepoRoot(parsed.repoRootArg) : null;
-const repoRoot = possibleRoot || findRepoRoot(process.cwd());
-
-if (!repoRoot) {
-  console.error("Could not find controls repo root. Pass it as the last argument.");
+let repoRoot;
+try {
+  repoRoot = resolveDoctrineRoot(parsed.options, parsed.repoRootArg);
+} catch (error) {
+  console.error(error.message);
   process.exit(2);
 }
 
