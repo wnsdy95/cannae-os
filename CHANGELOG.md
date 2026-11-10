@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Resolve explicitly named corpus inputs into both providers' primary reading lists. Add repeatable `--source` checks that reject unresolved required inputs before receipt publication, while surfacing ordinary ambiguous/missing mentions for input/output clarification. Exclude local-state and symlink paths from the corpus inventory; preserve selected controls, role boundaries and capability-gap decisions. Both skills now distinguish required inputs from proposed outputs and require review of unresolved references. This does not provide semantic source inference, cross-repository access or a mission-wide required-input contract.
+
 - Add a source-grounded authoring case using actual support, governance and security policies, with a review-only SOP revision, requirement comparison, unknowns and receiver-ready handoff. Repair observed routing misses for modified SOP names and continuity templates in both providers. Skills now preserve explicitly supplied sources and review original requirements, prohibitions and unknowns rather than using the draft as its own checklist. Author self-review, lexical over-routing and independent/receiver acceptance remain explicit limits.
 
 - Replace the active eight-outcome platform goal with five explicit skill-first objectives (G1-G5), each with behavioral acceptance and remaining evidence. Separate completed scope/entrypoint groundwork from goal completion; both skills now bind continuation tasks and evidence to the selected active objective. Retain deferred platform requirements and existing controls unchanged.

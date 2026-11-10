@@ -91,14 +91,26 @@ Identify whether the review was an author self-review, an independent reviewer
 or an actual USER decision. A deterministic reference check cannot prove
 semantic completeness or independent acceptance.
 
-Keep source files explicitly named in the request in the reading set even if
-the router does not recommend them. Router doctrine selection is not a source
-resolver or an access grant; apply delegated access rules before opening a
-restricted source. Re-route after task or phase changes and retain the original
+Keep source files explicitly named in the request in the reading set. The
+router now resolves existing corpus-relative names into primary recommendations;
+inspect its `task_references` result rather than assuming every mention resolved.
+Use repeatable `--source=<path>` for required corpus inputs: missing, ambiguous,
+excluded, symlinked or outside-root paths stop that invocation before a receipt.
+Ordinary unresolved names remain explicit escalation items because they may
+refer to proposed outputs; distinguish them from missing inputs before work.
+External repository inputs and URLs need separate authorized resolution.
+The resolver neither reads source contents nor grants access; apply delegated
+access rules before opening a restricted source. Re-route after task or phase changes and retain the original
 mission objective for delegated receipts. Lexical routing does not understand
 negation: "do not publish" may still return release-control references. Do not
 execute publication, omit the prohibition or strip an issued control because
 of that match.
+
+Explicit source flags apply to that router invocation; they do not add a
+required-input contract to an existing mission plan. Generated receipts retain
+the selected paths and command, and the existing context builder binds file
+bytes. Do not claim that these checks establish semantic completeness,
+freshness, approval or an independent review.
 
 See [Source-Grounded Authoring Case](document-authoring-case-study.md) for actual
 repository policies, a draft/revision, a source comparison and a bounded handoff.

@@ -60,6 +60,11 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
 5. A capability gap is not permission to drop a task or proceed as unowned
    general work. Follow the capability-gap rule below.
 
+Keep input files distinct from proposed output paths. For required corpus inputs,
+repeat `--source=<path>`; an unresolved input stops this routing invocation.
+Inspect `task_references.unresolved` for other filename mentions and resolve
+input/output ambiguity before work. References do not grant read or tool access.
+
 Installed symlinks resolve to the source tree; copy installs retain a
 `.cannae-os-root` marker. Wrappers can also use `CANNAE_OS_HOME`. A copied
 skill is not a copy of the entire doctrine corpus or an independent runtime.

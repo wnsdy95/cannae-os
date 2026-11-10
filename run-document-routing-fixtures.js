@@ -13,10 +13,11 @@ const ROUTERS = [
   ".claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js"
 ];
 let routedQueries = 0;
+let rejectedSources = 0;
 
-function route(router, args, query) {
-  const result = spawnSync(process.execPath, [path.join(ROOT, router), ...args, query, ROOT], {
-    cwd: ROOT,
+function route(router, args, query, repository = ROOT) {
+  const result = spawnSync(process.execPath, [path.join(ROOT, router), ...args, query, repository], {
+    cwd: repository,
     encoding: "utf8",
     maxBuffer: 8 * 1024 * 1024
   });
@@ -81,6 +82,15 @@ for (const router of ROUTERS) {
       assert.strictEqual(result.operating_mode.decision_authority,
         delegated ? "bounded_ai_delegate" : "human_user");
       if (delegated) assert.strictEqual(result.operating_mode.authority, "read-only");
+      if (query.includes("SUPPORT.md")) {
+        for (const source of ["SUPPORT.md", "GOVERNANCE.md", "SECURITY.md"]) {
+          assert(result.recommended_documents.some(item => item.path === source), `missing supplied source ${source}`);
+          assert(result.task_references.resolved.some(item => item.path === source));
+        }
+        assert.strictEqual(result.task_references.unresolved.length, 0);
+        assert(result.validation_commands.includes("node run-github-release-publisher-fixtures.js"),
+          "source resolution must not remove a selected release control");
+      }
     }
   }
   const handoff = route(router, ["--actor=user"],
@@ -282,6 +292,87 @@ for (const router of ROUTERS) {
   }
 }
 
+const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "controls-task-sources-"));
+try {
+  const write = (file, content = "# Fixture source\n") => {
+    const destination = path.join(sourceRoot, file);
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.writeFileSync(destination, content);
+  };
+  for (const file of ["README.md", "SUPPORT.md", "docs/source-map.md", "schema-files/README.md",
+    "docs/unique-source.md", "docs/space source.md", "docs/a/shared.md", "docs/b/shared.md",
+    ".cannae/retained.md", ".cxt/retained.md", "ignored-source.md"]) write(file);
+  write(".gitignore", "ignored-source.md\n.cannae/\n.cxt/\n");
+  const git = spawnSync("git", ["init", "-q"], { cwd: sourceRoot, encoding: "utf8" });
+  assert.strictEqual(git.status, 0, git.stderr);
+  // Tracked local-state files must still be excluded from a corpus inventory.
+  const tracked = spawnSync("git", ["add", "-f", ".cxt/retained.md"], { cwd: sourceRoot, encoding: "utf8" });
+  assert.strictEqual(tracked.status, 0, tracked.stderr);
+  fs.symlinkSync("SUPPORT.md", path.join(sourceRoot, "alias.md"));
+  fs.symlinkSync(path.join(ROOT, "SUPPORT.md"), path.join(sourceRoot, "outside.md"));
+  fs.symlinkSync("absent.md", path.join(sourceRoot, "dangling.md"));
+  fs.symlinkSync(path.join(ROOT, "docs"), path.join(sourceRoot, "linked-docs"));
+
+  for (const router of ROUTERS) {
+    const resolved = route(router, ["--actor=user", "--source=SUPPORT.md", "--source", "docs/unique-source.md"],
+      "Draft an SOP from ./SUPPORT.md, unique-source.md:12, `docs/space source.md` and [policy](docs/unique-source.md#section).",
+      sourceRoot);
+    for (const expected of ["SUPPORT.md", "docs/unique-source.md", "docs/space source.md"]) {
+      assert(resolved.recommended_documents.some(item => item.path === expected), `source resolution missed ${expected}`);
+    }
+    const selectedPaths = resolved.recommended_documents.map(item => item.path);
+    assert.strictEqual(new Set(selectedPaths).size, selectedPaths.length);
+    assert.strictEqual(resolved.task_references.unresolved.length, 0);
+    const referenceOnly = route(router, ["--actor=user", "--source=SUPPORT.md"],
+      "Analyze ICP sales targets.", sourceRoot);
+    assert.strictEqual(referenceOnly.capability_routing.status, "gap_detected",
+      "an explicit source cannot supply a capability match");
+    assert.strictEqual(referenceOnly.capability_routing.provisional_organization.authority_expansion_authorized, false);
+
+    const missing = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"],
+      "Draft an SOP in new-output.md; compare shared.md and missing/unique-source.md.", sourceRoot);
+    assert.deepStrictEqual(missing.task_references.unresolved, [
+      { reference: "new-output.md", reason: "not_in_corpus" },
+      { reference: "shared.md", reason: "ambiguous_basename" },
+      { reference: "missing/unique-source.md", reason: "not_in_corpus" }
+    ]);
+    assert(missing.operating_mode.escalation_required_when.some(item => item.includes("new-output.md")));
+    assert(!missing.recommended_documents.some(item => item.path.endsWith("shared.md") || item.path.endsWith("unique-source.md")),
+      "do not guess a basename for an ambiguous or qualified missing path");
+    const external = route(router, ["--actor=user"],
+      "Draft an SOP from https://example.invalid/SUPPORT.md and [external](https://example.invalid/docs/unique-source.md).",
+      sourceRoot);
+    assert.deepStrictEqual(external.task_references, { resolved: [], unresolved: [] });
+    assert(!external.recommended_documents.some(item => item.path === "SUPPORT.md"));
+
+    const invalidSources = [
+      "absent.md", "", "shared.md", "missing/unique-source.md", "../SUPPORT.md",
+      "docs/../SUPPORT.md", path.join(ROOT, "SUPPORT.md"), "C:\\private\\SUPPORT.md",
+      ".cannae/retained.md", ".cxt/retained.md", "ignored-source.md", "alias.md", "outside.md",
+      "dangling.md", "linked-docs/source-map.md", "https://example.invalid/SUPPORT.md"
+    ];
+    for (const source of invalidSources) {
+      const result = spawnSync(process.execPath, [path.join(ROOT, router),
+        "--receipt", "--scope=agent", "--mission=MIS-SOURCE", "--wave=W1", "--agent=source-agent",
+        "--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution",
+        `--source=${source}`, "Draft an SOP.", sourceRoot],
+      { cwd: sourceRoot, encoding: "utf8", maxBuffer: 4 * 1024 * 1024 });
+      assert.strictEqual(result.status, 2, `${source}: expected required-source rejection, ${result.stderr}`);
+      assert(result.stderr.includes("TASK_SOURCE_UNRESOLVED"));
+      assert.strictEqual(result.stdout, "", "an unresolved required input must not emit a receipt");
+      rejectedSources++;
+    }
+    const ignored = route(router, ["--actor=user", "--all"],
+      "Read alias.md, outside.md, dangling.md, linked-docs/source-map.md and .cxt/retained.md.", sourceRoot);
+    assert.strictEqual(ignored.task_references.resolved.length, 0);
+    for (const item of [...ignored.recommended_documents, ...ignored.supporting_artifacts]) {
+      assert(!invalidSources.includes(item.path), "unsafe reference appeared in a reading recommendation");
+    }
+  }
+} finally {
+  fs.rmSync(sourceRoot, { recursive: true, force: true });
+}
+
 const linkRoot = fs.mkdtempSync(path.join(os.tmpdir(), "controls-document-links-"));
 try {
   fs.mkdirSync(path.join(linkRoot, "docs"));
@@ -311,4 +402,4 @@ try {
   fs.rmSync(linkRoot, { recursive: true, force: true });
 }
 
-console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers; 3 link-inventory checks.`);
+console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers; ${rejectedSources} required-source rejections; 3 link-inventory checks.`);

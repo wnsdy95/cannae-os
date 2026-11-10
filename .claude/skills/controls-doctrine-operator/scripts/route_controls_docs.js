@@ -588,6 +588,7 @@ const ROUTE_HINTS = [
 ];
 
 function usage() {
+  console.error("Required inputs: repeat --source=<corpus-relative-path>; unresolved inputs stop routing before a receipt is issued.");
   console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=MISSION_OBJECTIVE] [--all] [--limit=N] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE [--write-artifact --target-repository=PATH] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
@@ -865,11 +866,75 @@ function routeIdsForArtifact(file) {
 }
 
 function buildArtifactInventory(repoRoot) {
-  return walkRoutableFiles(repoRoot).map(file => ({
+  return walkRoutableFiles(repoRoot).filter(file => isCorpusFile(repoRoot, file)).map(file => ({
     path: file,
     type: artifactType(file),
     route_ids: routeIdsForArtifact(file)
   }));
+}
+
+function isCorpusFile(repoRoot, file) {
+  const parts = file.split("/");
+  if (path.isAbsolute(file) || file.includes("\\") ||
+      parts.some(part => !part || part === "." || part === ".." || EXCLUDED_DIRS.has(part))) return false;
+  try {
+    let current = repoRoot;
+    for (const part of parts) {
+      current = path.join(current, part);
+      if (fs.lstatSync(current).isSymbolicLink()) return false;
+    }
+    return fs.statSync(current).isFile();
+  } catch {
+    return false;
+  }
+}
+
+function taskReferenceMentions(query) {
+  const mentions = [];
+  // Backticks and Markdown destinations keep paths containing spaces intact.
+  const tokens = /`([^`\n]+)`|\[[^\]\n]*\]\(([^)\n]+)\)|([^\s`<>"'()[\]{},;]+)/g;
+  for (const match of query.matchAll(tokens)) {
+    let value = (match[1] || match[2] || match[3]).replace(/[.!?]+$/, "");
+    value = value.split("#")[0].replace(/:\d+(?::\d+)?$/, "");
+    if (/^[a-z][a-z0-9+.-]*:/i.test(value) && !/^[a-z]:[\\/]/i.test(value)) continue;
+    if (ROUTABLE_EXTENSIONS.has(path.posix.extname(value).toLowerCase())) mentions.push(value);
+  }
+  return unique(mentions);
+}
+
+function taskReferences(query, requiredSources, inventory) {
+  const paths = new Set(inventory.map(item => item.path));
+  const basenames = new Map();
+  for (const file of paths) {
+    const basename = path.posix.basename(file);
+    basenames.set(basename, [...(basenames.get(basename) || []), file]);
+  }
+  const resolved = [];
+  const unresolved = [];
+  for (const reference of unique([...requiredSources, ...taskReferenceMentions(query)])) {
+    const relative = reference.startsWith("./") ? reference.slice(2) : reference;
+    const parts = relative.split("/");
+    let reason = null;
+    if (!relative || path.posix.isAbsolute(relative) || relative.includes("\\") ||
+        /^[a-z][a-z0-9+.-]*:/i.test(relative) || relative.startsWith("~") ||
+        parts.some(part => !part || part === "." || part === ".." || EXCLUDED_DIRS.has(part))) {
+      reason = "outside_corpus_path";
+    }
+    const candidates = reason ? [] : paths.has(relative) ? [relative] :
+      relative.includes("/") ? [] : basenames.get(relative) || [];
+    if (!reason && candidates.length !== 1) {
+      reason = candidates.length ? "ambiguous_basename" : "not_in_corpus";
+    }
+    if (reason) {
+      if (requiredSources.includes(reference)) {
+        throw new Error(`TASK_SOURCE_UNRESOLVED: ${reference} (${reason}). Use an exact existing corpus-relative input path.`);
+      }
+      unresolved.push({ reference, reason });
+    } else {
+      resolved.push({ reference, path: candidates[0] });
+    }
+  }
+  return { resolved, unresolved };
 }
 
 function routeCounts(inventory) {
@@ -926,6 +991,7 @@ function parseArgs(argv) {
     department: null,
     authority: null,
     capabilityQuery: null,
+    sources: [],
     receipt: false,
     scope: null,
     mission: null,
@@ -940,7 +1006,7 @@ function parseArgs(argv) {
     limit: 40
   };
   const queryParts = [];
-  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
+  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
   const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact"]);
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -949,7 +1015,8 @@ function parseArgs(argv) {
 
     if (equalsMatch && valueOptionNames.has(equalsMatch[1])) {
       const key = equalsMatch[1].replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-      options[key] = equalsMatch[2];
+      if (key === "source") options.sources.push(equalsMatch[2]);
+      else options[key] = equalsMatch[2];
       continue;
     }
 
@@ -957,7 +1024,8 @@ function parseArgs(argv) {
       const key = arg.slice(2).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
       index += 1;
       if (index >= argv.length) usage();
-      options[key] = argv[index];
+      if (key === "source") options.sources.push(argv[index]);
+      else options[key] = argv[index];
       continue;
     }
 
@@ -1057,6 +1125,12 @@ function operatorMode(options) {
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
   const inventory = buildArtifactInventory(repoRoot);
+  const references = taskReferences(query, options.sources, inventory);
+  for (const item of references.unresolved) {
+    mode.escalation_required_when.push(
+      `Resolve task reference "${item.reference}" (${item.reason}) before treating it as an input; identify proposed outputs separately.`
+    );
+  }
   const scoredRules = RULES.map(rule => ({
     ...rule,
     score: countMatches(query, rule.keywords),
@@ -1086,6 +1160,7 @@ function route(query, repoRoot, options) {
     selectedRules.unshift({ ...forceStructureRule, score: 0 });
   }
   const docs = ["README.md", "docs/source-map.md"];
+  docs.push(...references.resolved.map(item => item.path));
   const commands = [];
 
   if (capability.status === "gap_detected") {
@@ -1099,8 +1174,9 @@ function route(query, repoRoot, options) {
   }
 
   // Bound scope by selected routes, not by dropping task docs behind role docs.
+  const inventoryPaths = new Set(inventory.map(item => item.path));
   const recommended = unique(docs)
-    .filter(file => fs.existsSync(path.join(repoRoot, file)))
+    .filter(file => inventoryPaths.has(file))
     .map(file => ({
       path: file,
       exists: true
@@ -1137,6 +1213,7 @@ function route(query, repoRoot, options) {
     operating_mode: mode,
     matched_routes: selectedRules.map(rule => ({ id: rule.id, score: rule.score })),
     capability_routing: capability,
+    task_references: references,
     recommended_documents: recommended,
     supporting_artifacts: visibleSupportingArtifacts,
     supporting_artifact_count: supportingArtifacts.length,
@@ -1249,7 +1326,13 @@ if (parsed.options.coverage) {
   process.exit(report.valid ? 0 : 1);
 }
 
-const routed = route(parsed.query, repoRoot, parsed.options);
+let routed;
+try {
+  routed = route(parsed.query, repoRoot, parsed.options);
+} catch (error) {
+  console.error(error.message);
+  process.exit(2);
+}
 const output = parsed.options.receipt ? routingReceipt(routed, parsed.options) : routed;
 if (parsed.options.writeArtifact) {
   if (!parsed.options.receipt || !parsed.options.targetRepository) {

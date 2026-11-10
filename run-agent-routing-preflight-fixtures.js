@@ -90,6 +90,14 @@ function routeWithSkill(skillRoot, query, args = []) {
 const delegatedArgs = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"];
 const routingCases = [
   {
+    name: "supplied policies survive direct routing and receipt generation",
+    query: "Draft a support SOP from SUPPORT.md and SECURITY.md. Do not publish it.",
+    extra: ["--capability-query=Draft a support SOP.", "--source=GOVERNANCE.md"],
+    required: ["SUPPORT.md", "SECURITY.md", "GOVERNANCE.md", "docs/document-authoring-workflow.md"],
+    command: "node run-release-integration-fixtures.js",
+    gap: false
+  },
+  {
     name: "effect settlement keeps both task documents behind a large role bundle",
     query: "effect settlement exact USER verification evidence",
     required: ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md"],
@@ -136,12 +144,15 @@ for (const fixture of routingCases) {
       assert.deepStrictEqual(receipt.recommended_documents, routed.recommended_documents,
         "receipt or --limit changed the selected documents");
       assert.deepStrictEqual(receipt.validation_commands, routed.validation_commands);
+      for (const sourceOption of extra.filter(arg => arg.startsWith("--source="))) {
+        assert(receipt.router_command.includes(sourceOption), "receipt lost an explicit required input");
+      }
       const validation = validatePayload(receipt, "routing-receipt");
       assert(validation.valid, `generated receipt failed schema validation: ${JSON.stringify(validation.issues)}`);
       assert.strictEqual(routed.operating_mode.decision_authority, "bounded_ai_delegate");
       assert.strictEqual(routed.capability_routing.provisional_organization.authority_expansion_authorized, false);
       assert.strictEqual(routed.capability_routing.provisional_organization.standing_department_activation_authorized, false);
-      if (fixture.extra) assert.strictEqual(routed.capability_routing.status, "gap_detected");
+      if (fixture.extra) assert.strictEqual(routed.capability_routing.status, fixture.gap === false ? "covered" : "gap_detected");
       outputs.push(routed);
     }
     assert.deepStrictEqual(outputs[0].recommended_documents, outputs[1].recommended_documents,

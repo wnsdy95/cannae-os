@@ -13,7 +13,7 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
 | G1. Document authoring and revision quality | Workflow plus a source-grounded support SOP, revision, research note and handoff exist in `document-authoring-case-study.md`; its review is by the author. | Independent/receiver acceptance and broader order/report cases remain open. Do not treat the source hashes or requirement matrix as proof of semantic completeness. |
-| G2. Role-bounded routing and delegation | Realistic support-SOP and handoff requests exposed missing task references; both provider routes now include them, verified in the 146-query regression run. | Address unnecessary release material from negated publication terms and explicit source-path resolution. Preserve role/authority and capability-gap behavior; full relevance acceptance remains open. |
+| G2. Role-bounded routing and delegation | Realistic support-SOP and handoff requests exposed missing references. Both routers now also resolve named corpus inputs and reject unresolved required `--source` inputs before issuing receipts. | Address unnecessary release material from negated publication terms, semantic input/output distinction and target-repository sources. Preserve role/authority and capability-gap behavior; full relevance acceptance remains open. |
 | G3. Complete working flow | Procedures and supporting local controls exist; full observed acceptance is open. | Request -> plan -> review/backbrief -> work -> report/handoff without an application login; check omissions, bounded replanning/method changes, reporting, stop/failure handling, output limits and receiver acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | Index checks and mirrored route improvements exist; the full AAR-driven loop remains open. | Demonstrate an observed gap becoming a tested improvement in both skills with coherent sources, indexes, change history and repository-specific outputs; no self-issued authority. |
 | G5. Client distribution | Both installed symlink routers resolve the doctrine root; full distribution acceptance is open. | Verify installation/discovery, copy-install path resolution and equivalent Codex/Claude behavior; separately identify and test any optional plugin packaging. |
@@ -28,7 +28,7 @@ document authoring/revision cases for G1 and task relevance checks for G2.
 
 Scope documentation, both core-first entrypoints and the dedicated authoring
 route were implemented and locally checked on 2026-11-10. Both entrypoints are
-169 lines; original conditional runtime procedures are retained. Routing covers
+169 lines at that checkpoint; original conditional runtime procedures are retained. Routing covers
 124 queries across both providers and 3 link-inventory cases pass. This is
 completed groundwork, not a sixth goal or proof that G1-G5 are complete.
 
@@ -63,7 +63,28 @@ template, whole-word mismatch and an uncovered mission whose SOP subtask must
 retain its capability cell without increased authority. These are routing and
 control regressions, not an independent grade for the authored prose.
 
-Next: improve task-reference relevance and explicit source resolution for G2,
+The next G2 change resolves existing named corpus inputs and offers repeatable
+`--source` checks without changing receipt schemas, selected controls or authority.
+Ordinary unresolved filenames become escalation items, not automatic failures,
+because a new output need not exist. Other-repository input resolution and a
+mission-plan mandatory-input contract are not implemented by this CLI addition.
+Executed on 2026-11-10: routing 156 queries plus 32 required-source rejections
+across both providers and 3 link-inventory checks; routing preflight 9/9;
+mandatory-control enforcement 6/6; mission-controller fixtures 31/31.
+The context test verifies exact support/governance/security file digests reach
+each agent without granting execution or release. The original support task
+keeps its selected release checks; negated-topic relevance is still open.
+These are local fixture results, not live multi-agent or independent semantic
+acceptance. No extra model call, service or external publication was performed.
+
+Both current entrypoints validate at 174 lines; both inventories have zero
+unrouted artifacts. Source-map/registry audits, links (182 files), English-only
+(1194 tracked files) and JSON parsing (664 files) passed. Installed Codex/Claude
+symlinks also resolved the three required inputs from another working directory.
+The three source policies and the user's pre-existing `.gitignore` hash were
+unchanged. This is not a copy-install, hosted CI or full-platform acceptance run.
+
+Next: reduce unnecessary reading while preserving applicable controls for G2,
 then extend G1/G3 to order/report revisions and an observed receiver cold start.
 No new model invocation, service or external publication was performed.
 

@@ -191,11 +191,35 @@ not establish domain expertise or activate a standing department.
 The reusable skill change is to test realistic format names and verify exact
 task references, then compare the draft against source-derived requirements.
 
+At the first case checkpoint, explicit source paths were not automatically
+resolved into primary recommendations. This case read the named sources directly
+under the authoring procedure; it did not remove required controls from a receipt.
+
+The following G2 improvement adds existing named inputs to primary recommendations
+in both providers. The original request now selects `SUPPORT.md`, `GOVERNANCE.md`
+and `SECURITY.md`. Repeatable `--source` options reject unresolved required inputs
+before receipt publication; ordinary unresolved mentions remain visible for
+input/output clarification. Tests cover exact and unique names, Markdown and
+space-containing paths, ambiguity, traversal, ignored/tracked local state,
+symlink files/directories, and URLs without fetching them.
+
+The reusable operator change is to distinguish source inputs from new output
+paths, explicitly require critical corpus inputs, and resolve remaining ambiguous
+mentions before analysis. Recommendation remains separate from read permission
+and factual source review. Receipt/context tests must prove that selected sources
+reach the receiver; a successful lookup alone is insufficient.
+
+The follow-up local run passed 156 routing queries, 32 required-input rejection
+cases and 3 link-inventory checks across both providers. Preflight passed 9/9,
+mandatory controls 6/6 and mission-controller fixtures 31/31. The context-pack
+regression checks the exact SHA-256 of all three source policies at the receiver,
+with tool execution and release still unauthorized. These fixtures are not a
+new independent authoring review or evidence of a live support operation.
+
 Residual G2 work: lexical matching still treats `do not publish` as a possible
-release topic and can recommend unnecessary release material. Explicit source
-paths are not automatically resolved into primary recommendations. This case
-read the named sources directly under the authoring procedure; it did not
-silently remove required controls from an issued runtime receipt. Both issues
-remain visible for relevance/minimal-context work rather than being called fixed.
+release topic and can recommend unnecessary release material. This change keeps
+all selected release controls. Arbitrary semantic source inference, other
+repositories' inputs, and a plan-level mandatory-input contract remain unproven;
+neither source lookup nor a passed fixture supplies independent case acceptance.
 
 The case is grounded in local project policy, not new external military research.

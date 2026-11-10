@@ -280,7 +280,7 @@ fixture("task documents beyond the old routing cap reach digest-bound context pa
   plan.mission_id = "MIS-ROUTING-DOCUMENTS";
   plan.objective = "effect settlement exact USER verification evidence";
   plan.adaptive_work.campaign_id = "SIC-ROUTING-DOCUMENTS";
-  for (const agent of plan.agents) agent.task = plan.objective;
+  for (const agent of plan.agents) agent.task = `${plan.objective}. Consult SUPPORT.md, GOVERNANCE.md and SECURITY.md.`;
   const result = openWave(plan, {
     repository: repositoryRouting,
     artifactRoot,
@@ -295,7 +295,8 @@ fixture("task documents beyond the old routing cap reach digest-bound context pa
     assert(validatePayload(pack, "agent-context-pack").valid, "routing context pack should validate");
     assert(pack.documents.length > 16, "context pack must exercise the former truncation boundary");
     for (const expected of ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md",
-      "docs/role-document-access-policy.md", "docs/approval-scope-policy.md"]) {
+      "docs/role-document-access-policy.md", "docs/approval-scope-policy.md",
+      "SUPPORT.md", "GOVERNANCE.md", "SECURITY.md"]) {
       const document = pack.documents.find(row => row.path === expected);
       const digest = createHash("sha256").update(fs.readFileSync(path.join(ROOT, expected))).digest("hex");
       assert(document && document.sha256 === digest,
