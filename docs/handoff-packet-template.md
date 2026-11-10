@@ -2,6 +2,36 @@
 
 ## 0. Purpose
 
+### Ordinary Document Work
+
+Choose the handoff form from the work being transferred, not from the template's
+military vocabulary. Under [Skill-First Product Scope](skill-first-product-scope.md),
+an ordinary document draft or local corpus edit can use a plain Markdown handoff.
+It does not need a newly invented mission ID, OPORD, event log, role assignment,
+approval receipt or server. Its canonical documents and observed results are
+the durable record; chat memory is not a substitute.
+
+Include the original purpose and required outputs, current canonical version,
+source paths and freshness limits, completed versus unverified work, unresolved
+decisions and their real decision owner, the next bounded action and what must
+not be done. If no receiver is assigned or acceptance has not been observed,
+say so. An explicit unknown is not a negative fact or an approval.
+
+For a plain-document cold start, the receiver must be able to locate the cited
+files, explain the original purpose and boundaries, distinguish observed results
+from plans, and identify a next action allowed without a new decision. Record
+actual receiver acknowledgement separately; writing this packet is not acceptance.
+No-schema-needed is not no-review-needed: apply these quality checks and the
+request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
+
+### Existing Runtime Missions
+
+The machine-packet fields and runtime procedures in sections 1-9 apply to an
+actual runtime mission, delegated wave or guarded operation. Keep its real
+order, current context, pending approvals and unresolved effects; do not switch
+it to a plain-document handoff to bypass any control. This scope clarification
+does not change the machine schema, admission rules or existing holds.
+
 Conversation history is not the source of truth. The event log, evidence store, decision log, and doctrine docs are. Every long-running task must leave behind a handoff packet and a current projection so that the next operator can resume without any chat history.
 
 The machine contract for a handoff packet already exists in `schema-files/handoff-packet.schema.json`, and `handoff-generator.js` already produces a draft packet from event projections and alert routing. What has been missing is the authoring standard: what each section must and must not contain, when a packet is mandatory, and the quality gate a packet must pass before it counts as a valid context transition.

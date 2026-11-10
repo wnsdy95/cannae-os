@@ -2,6 +2,14 @@
 
 ## Skill-First Scope And Authoring
 
+`authoring-review-packet.js` uses the current local support/governance/security
+policies and the existing authoring case to prepare evaluator input separately
+from the author's reference. Its deliberate variants are test material, not
+new policy or executed incidents. The handoff-template scope clarification
+applies the USER's skill-first decision; it makes no new military-source claim.
+`run-authoring-review-packet-fixtures.js` checks preparation integrity, not
+semantic quality or independent receiver acceptance.
+
 Native metadata inspection uses OpenAI's
 [prompt-input command](https://learn.chatgpt.com/docs/developer-commands#codex-debug-prompt-input),
 Claude's [initialization response](https://code.claude.com/docs/en/agent-sdk/typescript#sdkcontrolinitializeresponse)

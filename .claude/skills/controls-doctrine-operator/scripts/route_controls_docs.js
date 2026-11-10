@@ -8,7 +8,7 @@ const { spawnSync } = require("child_process");
 const RULES = [
   {
     id: "document-authoring",
-    keywords: ["document authoring", "document writing", "document revision", "document-authoring", "write a document", "revise a document", "sop", "standard operating procedure", "research note", "authoring workflow", "handoff document", "draft a handoff", "documentation update"],
+    keywords: ["document authoring", "document writing", "document revision", "document-authoring", "write a document", "revise a document", "sop", "standard operating procedure", "research note", "authoring workflow", "authoring review", "authoring-review", "handoff document", "draft a handoff", "documentation update"],
     docs: [
       "docs/document-authoring-workflow.md",
       "docs/knowledge-management-sop.md",
@@ -510,7 +510,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
-  { id: "document-authoring", keywords: ["document-authoring", "knowledge-management", "prompt-templates", "handoff-packet-template"] },
+  { id: "document-authoring", keywords: ["document-authoring", "authoring-review", "knowledge-management", "prompt-templates", "handoff-packet-template"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
   { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "method-control-baseline", "method-deviation", "initiative-deviation", "degeneration-incident", "check_controls_intent"] },

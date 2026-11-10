@@ -347,6 +347,9 @@ removed or relabeled. Source edits were frozen during lifecycle verification.
 
 ### Current Maintenance Handoff
 
+Historical checkpoint: the later ordinary-document handoff below supersedes this
+section's next-action queue, not its observed results or retained boundaries.
+
 - **Canonical record:** this work order, revision 2; code remains in the two
   `controls-doctrine-operator/scripts/route_controls_docs.js` provider trees.
 - **Completed local work:** conditional specialist reading, mirrored operator
@@ -366,3 +369,54 @@ removed or relabeled. Source edits were frozen during lifecycle verification.
   work, weaken checks, alter credentials or treat a test pass as release approval.
 - **Receiver acceptance:** not obtained. This is an available handoff, not proof
   that a new agent independently resumed the work or approved the prose.
+
+## Ordinary-Document Handoff And Review Preparation
+
+Checkpoint: 2026-11-11, revision 3 of this case's maintenance handoff. This is a
+retrospective result/continuation record, not a work order backdated before the
+changes. The SOP draft and its original source policies remain unchanged.
+
+- **Purpose and required output:** improve and assess source-grounded document
+  revision and handoff. A review must distinguish preserved requirements,
+  omissions, invented facts and unauthorized decisions, not echo the author's
+  R1-R12 ratings. It does not operate support or adopt a policy.
+- **Current state:** the prior G5 next action has been pursued; installation and
+  isolated native metadata discovery are recorded in the active backlog.
+  Skill-body consumption and semantic task execution remain unverified.
+- **Observed documentation conflict:** the authoring workflow allowed ordinary
+  prose, but the routed handoff template required runtime fields/generation for
+  every transfer. Its new opening separates plain-document work from already
+  guarded missions without changing the machine schema or existing holds.
+- **Review inputs:** `authoring-review-packet.js` extracts the original task and
+  SOP V1/V2 with the current support/governance/security sources. It withholds
+  this case's ratings, reports and author reference from evaluator input. Eight
+  opaque candidates include the unchanged draft and seven deliberate variants
+  for omission, invented commitment/availability, authority, acceptance and
+  embedded evaluator instructions. The unchanged draft is not certified correct.
+- **Actual checks so far:** packet preparation fixtures passed 11/11; document
+  routing passed 208 queries, 32 source rejections and 3 link-inventory cases.
+  The source registry audit remained valid. These are local preparation and
+  routing checks, not semantic grades or a model execution result.
+- **Canonical reading:** `docs/skill-first-product-scope.md`,
+  `docs/document-authoring-workflow.md`, `docs/handoff-packet-template.md`, this
+  section and `docs/completion-backlog.md`. Source policies are `SUPPORT.md`,
+  `GOVERNANCE.md` and `SECURITY.md`; recheck their current bytes before reuse.
+- **Next bounded action:** run `node authoring-review-packet.js inspect`, inspect
+  the exact generated evaluator input, and arrange a separately approved
+  evaluation. Do not send `author-reference.json` or the author's ratings before
+  the reviewer has returned findings. Afterward, compare findings with sources
+  and known variants; do not assume all unlisted claims are correct.
+- **Retained decisions:** USER retains model-call consent, policy adoption,
+  scope, authority and publication. A fresh model context is not an independent
+  operator or a new approver. No real incident owner/receiver has been assigned.
+- **Stop conditions:** changed packet bytes require renewed review; missing
+  source inputs stop preparation. No posting, source-policy change, invented
+  approval, runtime hold removal or restoration of deferred platform work.
+- **Receiver acceptance:** not observed. This record is available for transfer;
+  it does not claim a successor read it or completed its next action.
+
+AAR: match the handoff form to actual work, and withhold author self-ratings
+from initial review. Both client skills now give these operational instructions.
+The first coverage probe also found the new preparation tool unrouted; the
+mirrored authoring route now indexes it, with explicit user/delegate queries.
+No failed coverage observation was treated as a semantic review result.

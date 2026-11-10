@@ -52,7 +52,8 @@ for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   for (const query of ["document authoring and document routing",
     "Draft an SOP and handoff document from the supplied policy.",
-    "Revise a document", "docs/document-authoring-workflow.md"]) {
+    "Revise a document", "docs/document-authoring-workflow.md",
+    "Prepare an authoring review", "Inspect the authoring-review packet"]) {
     for (const args of [["--actor=user"],
       ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
       const result = route(router, args, query);
@@ -75,6 +76,9 @@ for (const router of ROUTERS) {
         ["local-operator-console", "runtime-architecture-dashboard", "enforced-dispatch"].includes(item.id)));
       assert(!result.validation_commands.some(command =>
         /operator-console|operator-consent|protected-tool-gateway|github-release/.test(command)));
+      if (query.includes("authoring review") || query.includes("authoring-review")) {
+        assert(result.supporting_artifacts.some(item => item.path === "authoring-review-packet.js"));
+      }
     }
   }
   for (const query of [

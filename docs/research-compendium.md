@@ -1,5 +1,32 @@
 # Research Compendium
 
+## Plain-Document Handoff And Separated Review Input (2026-11-11)
+
+The authoring workflow and handoff template conflicted: ordinary prose could
+avoid runtime forms, while the routed template mandated them for every transfer.
+The template now distinguishes ordinary document work from existing guarded
+missions. It preserves pending decisions, unknowns and receiver acknowledgement
+without inventing mission records, and leaves runtime schema/admission untouched.
+
+The case's self-ratings could also bias a later reviewer. The offline
+`authoring-review-packet.js` packages original requests, current sources and
+candidate text without those ratings. Eight candidates exercise the unedited
+draft and seven deliberate changes; the reference is withheld from evaluator
+input. Preparation checks do not execute semantic evaluation or establish that
+the unedited draft is correct. Both skills teach these two reusable distinctions;
+`docs/document-authoring-case-study.md` contains the actual current handoff and
+`docs/completion-backlog.md` records remaining evaluation.
+
+The first exactly approved native assessment produced no review: the one-off
+observer mistook an item-level CLI diagnostic for tool activity and terminated
+the process. Two diagnostic items and a started turn are observable, but no
+completed review or actual tool call. Transmission cannot be ruled out. The
+original failed record is retained; a separate interpretation corrects its
+tool count without rewriting history. Four added observer fixtures distinguish
+diagnostics, failures, real/unknown tools and quoted tool names. Both skills now
+require structured classification and fresh consent after a consumed attempt;
+this correction is not semantic acceptance or permission to enable tools.
+
 ## Native Skill Discovery (2026-11-11)
 
 Actual Codex 0.162.1 and Claude Code 2.1.319 processes discovered linked and

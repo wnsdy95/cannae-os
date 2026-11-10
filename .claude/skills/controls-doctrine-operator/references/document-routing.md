@@ -75,6 +75,26 @@ Neither check proves skill-body consumption, semantic work quality, the current
 user's settings, authenticated model access or production isolation. Record
 client versions and keep actual task execution as a separate acceptance step.
 
+## Authoring Review Packets
+
+For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
+checks the local evaluation inputs, and `prepare` writes a fresh repository-local
+packet. Both are offline: neither invokes a model nor records consent. Only
+`prompt.md` is evaluator input; `author-reference.json` is withheld until review.
+Compare the exact prompt digest before any separately approved model call.
+The helper's fixtures verify extraction, source binding and separation, not
+semantic detection. Its unedited case is not presumed flawless, and a new
+model context is not independent operator/provider/infrastructure acceptance.
+
+For an approved native review, classify structured events rather than searching
+their text for tool names. Codex item-level `error` diagnostics are not tool
+calls; retain them without treating them as success. Top-level failure events,
+malformed envelopes and actual or unknown tool items still fail the assessment.
+Require a completed turn and a substantive review before evaluating its content.
+An aborted one-use invocation consumes that attempt: keep the original evidence,
+record any observer correction separately and obtain fresh consent before retry.
+Do not enable disabled tools merely to silence a startup diagnostic.
+
 ## Specialist Reading
 
 General authority, approval, risk, tool and disclosure policy remains primary

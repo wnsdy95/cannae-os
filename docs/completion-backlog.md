@@ -10,6 +10,14 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G3 preparation: the routed handoff template now separates plain-document
+work from existing runtime missions, and the offline authoring review tool keeps
+author ratings/reference answers out of evaluator input. Its eight cases are
+prepared for assessment, not already semantically validated. The first approved
+attempt ended on an observer misclassification before any review was received;
+the correction and remaining consent boundary are recorded below.
+The actual revision-3 handoff is in `docs/document-authoring-case-study.md`.
+
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
 | G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded SOP/revision/research/handoff and an actual maintenance work order written before implementation, with a separate result report and revision. | Broader cases and independent/receiver acceptance remain open. The author's review, source hashes and matrices do not prove semantic completeness. |
@@ -217,6 +225,71 @@ session, live delegated work, new plugin package or external publication was run
 Next: evaluate body consumption and representative authoring/handoff behavior
 under an exact approved model packet, while continuing independent G1-G4 work.
 
+
+### Authoring Review Preparation Checkpoint (2026-11-11)
+
+`authoring-review-packet.js inspect|prepare` does not invoke a model. It binds the
+original task, source policies, current authoring/handoff guidance and SOP V1/V2
+to a digest, with eight opaque cases and a separate author-only reference.
+One case has no seeded edit; that does not certify it as correct. Seven cases
+deliberately change intake, commitments, availability, authority, receiver
+acceptance or reviewer instructions. Reference-based self-grading is not used
+as semantic acceptance.
+
+The source discrepancy was an ordinary-prose versus machine-handoff conflict,
+not a missing runtime schema. Its correction preserves existing schema/admission
+rules and holds. Both skills now require a work-appropriate form and source-first
+review without author pass/fail labels. Initial coverage rejected the new tool;
+both authoring routes now cover it and explicit user/delegate review queries.
+
+Executed preparation checks: 11 packet fixtures and 208 routing queries,
+32 required-source rejections and 3 link-inventory cases passed. Registry audit
+remains valid. These results do not establish semantic detection, independent
+review, skill-body consumption or actual receiver acceptance. At that preparation
+checkpoint no model call or external publication had been made. G1-G5 remain open.
+
+Next: review the exact evaluator packet, obtain any required model-call consent,
+run the bounded assessment, inspect actual findings and continue other core
+acceptance work. The author reference must remain outside initial evaluator
+input; an assessment cannot grant adoption, release or execution authority.
+
+### Approved Review Attempt And Observer Correction (2026-11-11)
+
+The USER approved one invocation for the 53,507-byte input with SHA-256
+`1f63ea388c6b3f56a788834d637ba72bb6a12d8b91a3a5f7d345a6892b6227dd`.
+Codex 0.162.1 was started with the configured default model pinned to
+`gpt-6-astra`, an empty temporary workspace, read-only settings and the proposed
+tool exclusions. The observer terminated it at startup after misclassifying
+an item-level `error` diagnostic as a prohibited tool. No review was received.
+
+The retained stream contains two diagnostic items and a started turn, not an
+observed tool call or completed answer. The original result's `tool_events: 1`
+is an observer error, corrected in a separate interpretation rather than edited
+in place. Input transmission cannot be determined from this log. The invocation
+used the one-attempt consent; a retry needs fresh USER consent even with identical
+input and unchanged tool restrictions. Original evidence and the correction are
+retained in `.cannae/maintenance/authoring-review-0664084c-cabc-4c04-a24a-b7afa17fe139/`.
+
+All 15 preparation/observer fixtures passed after adding four structural-event
+regressions. Diagnostics are neither tool activity nor success; actual/unknown
+tool items and malformed/failure events remain rejected. Both provider skills
+teach this distinction and the no-automatic-retry boundary. No semantic grade,
+receiver acceptance, native skill-body consumption or whole-goal completion
+follows from the correction. The approved packet sources remain unchanged.
+
+Final focused checks for this change passed: packet/observer 15/15, document
+routing 208 queries plus 32 required-source rejections and 3 link checks,
+doctrine consistency 2/2, both skill validators (193 lines), both inventories
+(zero unrouted), source-map and registry audits, Markdown links (182 files),
+English-only content (1199 tracked files) and diff whitespace. Earlier in this
+change, preflight 10/10, control enforcement 6/6, installation 21/21 and validator
+494/494 passed before the observer/reference correction. No full aggregate,
+hosted CI or platform/browser acceptance was run.
+
+Next: the separate `retry-proposal.md` in that local directory offers the same
+input/model and restrictions with only the observer correction. Do not execute
+it without a fresh USER decision. Meanwhile retain the failed result and pursue
+other bounded core work without changing the pending assessment's source files.
 
 ## Retained Platform Baseline
 

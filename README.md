@@ -607,6 +607,13 @@ network access or a model prompt. Claude bare mode intentionally omits normal
 user-skill discovery. Metadata discovery is not proof that an agent consumed
 the skill or performed a task; see the [current evidence](docs/completion-backlog.md#native-client-metadata-discovery-2026-11-11).
 
+For offline document-review preparation, run `node authoring-review-packet.js prepare`.
+It separates evaluator input from the author's seeded-defect reference under
+this repository's local maintenance directory; it never calls a model or grants
+consent. The [authoring case](docs/document-authoring-case-study.md#ordinary-document-handoff-and-review-preparation)
+records the actual boundary and remaining semantic evaluation. Ordinary prose
+handoffs do not require invented runtime IDs; existing missions keep their guards.
+
 Route a user-facing framework question:
 
 ```bash

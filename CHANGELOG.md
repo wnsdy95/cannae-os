@@ -6,6 +6,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Separate ordinary document handoffs from existing runtime mission packets without changing schema/admission controls. Prepare source-bound SOP/revision review inputs with author ratings and seeded-defect references kept outside evaluator input; no model invocation or automatic semantic pass is provided. Both skills now require work-appropriate handoffs and source-first review, and both routers index the offline preparation tool.
+
+- Preserve a failed approved review attempt and correct its observer's misclassification of native diagnostic items as tool activity. Add structural-event regressions while retaining failure/unknown-tool rejection; both skills require separate correction records and fresh consent after a consumed attempt. No semantic review result was received.
+
 - Add an opt-in, network-denied native skill discovery probe for Codex and Claude Code, with temporary client homes, checked write boundaries, no model prompt and bounded process cleanup. Verify absent/link/copy metadata separately from skill consumption. Retain the observed Claude bare-mode discovery suppression and exact user-scope description annotation; both skills now require startup-mode-aware diagnosis instead of treating a missing listing as an installer failure.
 
 - Verify Codex/Claude link and copy installation in isolated homes. Make the document router honor explicit doctrine roots, environment overrides, copy markers and its installed source before working-directory fallback; reject stale bindings and preserve single-filename queries. Preflight both installer destinations, reject source/client overlap, stage replacement copies and keep dry-run from invoking client binaries. Both skills now distinguish corpus binding, target output paths and snapshot refresh; these fixtures do not claim native-client/model execution or a separate plugin package.
