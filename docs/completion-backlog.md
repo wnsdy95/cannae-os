@@ -10,6 +10,21 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G2/G3/G4/G5 evidence: three native Claude phases now invoke their own
+router and selected-source reader: author S3/operations (7 reads), receiver
+S6/knowledge under changed V2 policy (10), and current-guidance reviewer (12).
+All 32 native calls/results reconcile with helper logs and source digests; the
+reference-only owner body stays excluded. The reviewer corrected unsupported
+absence/completion claims after both skills gained a headline/assessment/action
+scope check. Findings were appraised rather than adopted wholesale. Inspection
+also reproduced option-like task text replacing a routing setting; the controller
+and both documented entrypoints now separate options with `--`. See
+[agent-invoked phase routing](document-authoring-case-study.md#agent-invoked-phase-routing).
+This is bounded read-only test apparatus, not a shipped plugin or complete client
+parity. Over-broad recommendations, concise transfer, Codex native tool routing
+and broader failure/replanning/reporting coverage remain open. All five goals
+remain open; successful processes are not full semantic or operational acceptance.
+
 Latest G1/G3/G4/G5 evidence: native Claude reviewed the exact two-span correction
 under standing verification consent. After separately diagnosed authentication
 and observer failures, one 72.458-second call returned a source-grounded response
@@ -234,10 +249,10 @@ The historical V3 and current proposed V4 handoffs are in
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
 | G1. Document authoring and revision quality | The support SOP retains findings and a proposed V4. A separate native Codex document chain and Claude correction review preserve policy and expose provenance/work-claim errors; source appraisal separates real defects from packet-scope assumptions. | Broader cases, support-SOP V4 review/adoption and appraisal of the four-span actor/phase follow-up remain open. Bounded document acknowledgement is not operational acceptance or a general detection rate. |
-| G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections enforce profile selection; new authority checks issued doctrine bytes. Offline project packets bind origin/content/recipient without opening reference-only bodies. One USER-approved native exercise demonstrates supplied-source use and rejection of an embedded false-approval instruction. | Authenticated origin/recipient/delegation, actual operational receiver acceptance, guarded project-input integration and broader semantic relevance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
-| G3. Complete working flow | Local maintenance covers plan/backbrief, implementation, verification and handoff. A separate ordinary-document native chain covers author/reviewer/reviser/receiver stages, changed policy and bounded acknowledgements; failed cold-start provenance and subsequent corrections are retained. | Agent-invoked phase routing, broader semantic/method/reporting/stop/failure/output coverage and operational receiver acceptance remain open. Operator-prepared source packets and no-tool document responses are not live guarded multi-agent execution. |
+| G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections restrict selected reading; issued doctrine and project packets bind current bytes. Three native Claude phases perform their own routing and source reads without opening the reference-only body; option-like task text now stays separate from routing settings. | Codex native tool routing, minimal semantic selection, guarded project-input integration and broader receiver acceptance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
+| G3. Complete working flow | Local maintenance and native document chains cover plan/backbrief, authoring/review/revision/handoff and changed policy. The latest Claude chain adds actual phase routing and reading; both raw failures and current-guidance corrections are retained. | Broader semantic/method/reporting/stop/failure/output coverage and operational receiver acceptance remain open. A bounded read-only synthetic chain is not live guarded multi-agent execution or full workflow acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Link/copy installation and literal startup checks, both clients' explicit body captures, native Codex document stages and one native Claude correction review are observed. User-source exclusion and exact-launch login differences are recorded, not repaired by credential copying. | Implicit selection, agent-run routing and broader equivalent semantic behavior remain unverified. One configured invocation per bounded case is not full-client acceptance, independently operated verification or a separate plugin package. |
+| G5. Client distribution | Link/copy installation, literal startup checks, both clients' explicit body captures and native document work are observed. Claude additionally invokes routing/read tools in three synthetic phases. User-source exclusion and exact-launch login differences remain recorded. | Implicit selection, Codex agent-tool routing and broader equivalent semantic behavior remain unverified. Configured invocations are not full-client acceptance, independently operated verification or a separate plugin package. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).

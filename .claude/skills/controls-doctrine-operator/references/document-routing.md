@@ -52,7 +52,7 @@ easy, supported part of a request as its capability scope.
 node "$CONTROLS_SKILL_DIR/scripts/route_controls_docs.js" --actor=user \
   --capability-query="Research ICP and sales targeting using the canonical track view" \
   --capability-query="Maintain the project glossary" \
-  "Research ICP and sales targeting using the canonical track view; maintain the project glossary. Do not publish."
+  -- "Research ICP and sales targeting using the canonical track view; maintain the project glossary. Do not publish."
 ```
 
 The direct result preserves `capability_queries` and one `capability_assessments`
@@ -74,6 +74,12 @@ The returned basis explicitly leaves objective completeness and semantic
 correctness unverified. An individual declaration can still match an irrelevant
 generic keyword, and an undeclared objective cannot be assessed. Preserve those
 questions for the reviewer; `covered` is not proof of expertise or authority.
+
+Keep trusted routing options before `--`, followed by the task as a single
+argument. Quoting or an argv array prevents shell splitting, not the router's
+option parsing. In an adapter with fixed delegation, check the returned actor,
+role, department and authority against that delegation before using its result.
+Neither the delimiter nor a successful comparison authenticates the caller.
 
 ## Installation And Corpus Binding
 

@@ -459,6 +459,7 @@ function invokeRouter(doctrineRoot, routeOptions) {
     `--department=${routeOptions.department}`,
     `--authority=${routeOptions.authority}`,
     `--capability-query=${routeOptions.capabilityQuery}`,
+    "--",
     routeOptions.query,
     doctrineRoot
   ];

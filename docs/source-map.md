@@ -2,6 +2,15 @@
 
 ## Skill-First Scope And Authoring
 
+The [agent-invoked routing case](document-authoring-case-study.md#agent-invoked-phase-routing)
+records three synthetic native Claude phases with reconciled tool arguments,
+delivered results and source digests. It is local engineering evidence, not a
+military claim or a production access guarantee. The observed unsupported
+status assertions motivate the headline/assessment/action review rule in both
+skills. A separately reproduced caller failure motivates the existing `--`
+delimiter in controller calls and documented examples. Current regressions
+exercise actual routing and installed commands; no authority expansion follows.
+
 The [native Claude review](document-authoring-case-study.md#native-claude-cross-client-review)
 records an exact synthetic correction candidate, retained launch/observer failures
 and source appraisal. Declared delivery units and actor/phase-scoped work claims

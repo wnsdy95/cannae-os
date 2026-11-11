@@ -53,7 +53,23 @@ try {
   fixture("ordinary handoff and guarded mission boundaries are both in reviewer context", () => {
     assert(packet.prompt.includes("does not need a newly invented mission ID"));
     assert(packet.prompt.includes("An already guarded mission must retain its actual machine packet"));
-    assert(packet.prompt.includes("say so. An explicit unknown is not a negative fact or an approval."));
+    const guide = section(fs.readFileSync(path.join(root, "docs/handoff-packet-template.md"), "utf8"),
+      "### Ordinary Document Work", "### Existing Runtime Missions");
+    assert(packet.prompt.includes(guide), "Reviewer context must preserve the whole current handoff guide.");
+  });
+  fixture("a handoff guide revision reaches the reviewer without changing historical cases", () => {
+    const file = path.join(root, "docs/handoff-packet-template.md"), original = fs.readFileSync(file, "utf8");
+    const guide = section(original, "### Ordinary Document Work", "### Existing Runtime Missions");
+    const revised = `${guide}\n\nFixture revision: status claims must name their evidence scope.`;
+    try {
+      fs.writeFileSync(file, replaceOnce(original, guide, revised));
+      const changed = buildPacket(root);
+      assert.equal(changed.prompt, replaceOnce(packet.prompt, guide, revised));
+      assert.deepEqual(changed.reference, packet.reference);
+      assert.notEqual(changed.manifest.prompt_sha256, packet.manifest.prompt_sha256);
+      assert.notEqual(changed.manifest.source_sha256["docs/handoff-packet-template.md"],
+        packet.manifest.source_sha256["docs/handoff-packet-template.md"]);
+    } finally { fs.writeFileSync(file, original); }
   });
   fixture("later appraisals and corrected drafts do not leak into historical candidate review", () => {
     const file = path.join(root, "docs/document-authoring-case-study.md"), original = fs.readFileSync(file);

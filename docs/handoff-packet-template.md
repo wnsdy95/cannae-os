@@ -14,8 +14,11 @@ the durable record; chat memory is not a substitute.
 Include the original purpose and required outputs, current canonical version,
 source paths and freshness limits, completed versus unverified work, unresolved
 decisions and their real decision owner, the next bounded action and what must
-not be done. If no receiver is assigned or acceptance has not been observed,
-say so. An explicit unknown is not a negative fact or an approval.
+not be done. State a receiver's assignment only when established; otherwise mark
+it unknown in the supplied records. Distinguish unobserved acceptance from a
+verified rejection. Check these distinctions in status and next-action language
+as well as the unknowns list. An explicit unknown is not a negative fact or an
+approval; the chosen next step is not necessarily the only permitted action.
 
 For a plain-document cold start, the receiver must be able to locate the cited
 files, explain the original purpose and boundaries, distinguish observed results

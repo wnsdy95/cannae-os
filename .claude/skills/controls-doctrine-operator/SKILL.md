@@ -44,7 +44,7 @@ IDs, not universal ranks. Do not treat US doctrine as universal.
 
 ```bash
 node "${CONTROLS_SKILL_DIR:-${CLAUDE_SKILLS_DIR:-${CLAUDE_HOME:-$HOME/.claude}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
-  --actor=user "Draft an SOP and handoff document from the supplied policy."
+  --actor=user -- "Draft an SOP and handoff document from the supplied policy."
 ```
 
 For delegated routing, declare the actual context:
@@ -52,7 +52,7 @@ For delegated routing, declare the actual context:
 ```bash
 node "${CONTROLS_SKILL_DIR:-${CLAUDE_SKILLS_DIR:-${CLAUDE_HOME:-$HOME/.claude}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=ai --role=S3 --department=operations --authority=scoped-execution \
-  "Draft a source-grounded SOP without publication."
+  -- "Draft a source-grounded SOP without publication."
 ```
 
 3. Resolve `recommended_documents[].path` against the returned `repo_root`,
@@ -89,6 +89,8 @@ repeatable `--input-source=<exact-relative-file>`. Keep `task_inputs` separate
 from doctrine recommendations; no content is loaded or approved. Unknown options
 fail instead of becoming task text. Project inputs are not yet supported in
 guarded receipts: do not drop them or copy private data into doctrine to proceed.
+Put all routing options before `--` and task text after it, including in wrappers.
+Quoting alone does not prevent option-like text from replacing a role or authority.
 
 For actual project content, follow `docs/role-document-access-policy.md`'s project
 preparation procedure with `scripts/prepare_controls_documents.js`. Only an
@@ -209,7 +211,10 @@ identifier and applicable stop condition of the work being handed off.
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.
 
-For handoffs, separate confirmed absence from unknown or incomplete records.
+For handoffs, check the headline, assessment and next action as well as the
+unknowns list. Say "not established from these records" when absence or completion
+has not been established; an uncertainty appendix cannot repair a categorical
+claim elsewhere. Distinguish a chosen next step from the only permitted action.
 Use actual source files and, for an existing runtime mission, its actual order;
 never fill gaps with demo IDs or fixed dates. Preserve original requirements and
 quoted source claims, then reconcile

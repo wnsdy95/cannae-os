@@ -73,7 +73,7 @@ function fixture(name, fn) {
   console.log(`PASS ${name}`);
 }
 
-function documentedCommands(env, provider, { loadedDirectory, status = 0 } = {}) {
+function documentedCommands(env, provider, { loadedDirectory, status = 0, query } = {}) {
   const entry = fs.readFileSync(path.join(destination(env, provider), "SKILL.md"), "utf8");
   const section = entry.split("## Start With The Task\n")[1]?.split("\n## ")[0];
   assert(section, "Missing entrypoint startup section");
@@ -82,8 +82,10 @@ function documentedCommands(env, provider, { loadedDirectory, status = 0 } = {})
   const sentinel = fs.readFileSync(path.join(unrelated, "README.md"));
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   for (const [index, command] of blocks.entries()) {
-    const result = spawnSync("/bin/bash", ["-c", command], {
-      cwd: unrelated, env: { ...env, ...(loadedDirectory ? { CONTROLS_SKILL_DIR: loadedDirectory } : {}) },
+    const invocation = query === undefined ? command : command.replace(/"(?:Draft an SOP and handoff document from the supplied policy\.|Draft a source-grounded SOP without publication\.)"/, '"$TASK_QUERY"');
+    if (query !== undefined) assert.notEqual(invocation, command, "Use the actual documented command with variable task text");
+    const result = spawnSync("/bin/bash", ["-c", invocation], {
+      cwd: unrelated, env: { ...env, TASK_QUERY: query, ...(loadedDirectory ? { CONTROLS_SKILL_DIR: loadedDirectory } : {}) },
       encoding: "utf8", timeout: 20000, maxBuffer: 8 * 1024 * 1024
     });
     assert.equal(result.status, status, result.stderr || result.stdout);
@@ -96,7 +98,8 @@ function documentedCommands(env, provider, { loadedDirectory, status = 0 } = {})
       assert.equal(output.operating_mode.authority, "scoped-execution");
       assert.equal(output.capability_routing.provisional_organization.authority_expansion_authorized, false);
     } else assert.equal(output.operating_mode.decision_authority, "human_user");
-    assert(output.recommended_documents.some(item => item.path === "docs/document-authoring-workflow.md"));
+    if (query === undefined) assert(output.recommended_documents.some(item => item.path === "docs/document-authoring-workflow.md"));
+    else assert.equal(output.query, query);
     const readme = output.recommended_documents.find(item => item.path === "README.md");
     assert(readme);
     assert.deepEqual(fs.readFileSync(path.join(output.repo_root, readme.path)), fs.readFileSync(path.join(source, "README.md")));
@@ -202,6 +205,13 @@ try {
   });
   fixture("literal copied entrypoint examples preserve corpus and target origins", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
+  });
+  fixture("documented commands keep option-like task text separate from routing settings", () => {
+    for (const provider of PROVIDERS) {
+      for (const query of ["--actor=user", "--authority=release", "--write-artifact"]) {
+        documentedCommands(env, provider, { query });
+      }
+    }
   });
   fixture("copied providers retain every declared objective from another project", () => declaredObjectives(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {

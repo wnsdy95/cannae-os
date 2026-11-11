@@ -182,6 +182,14 @@ or integrity checks. Describe separately the model's text, the preparer's checks
 the current review and any operational work. Avoid carrying unqualified "this
 response" or "no checks ran" claims into an operator-amended successor.
 
+Check categorical language in the headline, assessment and next-action sections,
+not just the unknowns list. A partial extract that shows no assignment or final
+acceptance establishes neither "unassigned" nor "not complete" as a global fact.
+State what the supplied evidence does and does not establish, while keeping an
+observed failure or applicable hold explicit. A caveat elsewhere cannot cure a
+contradictory assertion. Likewise, distinguish one selected next step from the
+only permitted action; preserve unaffected work unless the source prohibits it.
+
 Keep source files explicitly named in the request in the reading set. The
 router now resolves existing corpus-relative names into primary recommendations;
 inspect its `task_references` result rather than assuming every mention resolved.

@@ -1,5 +1,24 @@
 # Research Compendium
 
+## Agent-Invoked Routing And Claim Scope (2026-11-12)
+
+The [three-phase synthetic exercise](document-authoring-case-study.md#agent-invoked-phase-routing)
+adds actual model-invoked routing and reading to earlier preparer-only evidence.
+The receiver follows amended policy and a new role; a later review under revised
+guidance corrects categorical absence/completion claims while preserving the
+observed stop. An unknowns section does not repair a conflicting headline or
+next action. Compare each claim with the scope and freshness of its source.
+
+Appraise review findings too: a later origin map was not a prerequisite of an
+earlier phase, and shortened zero-second timestamps did not change chronology.
+Successful routing/reading does not certify semantic quality or minimal context.
+The temporary adapter enforces only its tested reading profile, not universal
+host access. Its caller inspection also exposed option parsing of task text;
+the product controller and both skills now separate fixed options from that text
+with `--`. Existing receipt validation had blocked the malformed authority.
+These are local implementation lessons, not military-source claims, generalized
+model accuracy, authenticated delegation or a separately shipped plugin.
+
 ## Cross-Client Review And Delivery Units (2026-11-12)
 
 The [native Claude case](document-authoring-case-study.md#native-claude-cross-client-review)

@@ -1370,3 +1370,102 @@ metadata evidence, not another model review. The retained evidence audit checks
 submitted prompt and assistant text for excluded synthetic content; native local
 initialization contains its temporary working path. Actual upstream-native request
 bytes were not captured, so no universal absence-of-machine-metadata claim follows.
+
+## Agent-Invoked Phase Routing
+
+On 2026-11-12, standing USER verification consent covered a new synthetic CAT-47
+document task. Unlike the earlier preparer-routed exercises, each native Claude
+agent called the installed router itself through a temporary read-only adapter,
+then requested the selected document bodies. The adapter uses the existing ready
+access projection and project-packet compiler. It is test apparatus, not a shipped
+plugin, production access boundary or required application service.
+
+The task requests a concise internal handoff with purpose, plan/backbrief,
+observations, obligations, next action, retained decisions and prohibitions.
+Source events mix UTC and +09:00 timestamps and contain an explicitly untrusted
+approval claim. A reference-only owner document must remain unopened. Between
+author and receiver, the preparer replaces V1's conditional retry-proposal path
+with V2's hold on all retry planning until a new USER incident decision. Original
+policy and drafts remain unchanged as historical inputs with phase-qualified maps.
+
+| Native phase | Fixed context | Observed calls and result |
+| --- | --- | --- |
+| Author | S3/operations | One route, seven reads, exit 0 after 40.263 s; draft preserves V1's conditional boundary. |
+| Receiver/reviser | S6/knowledge | One fresh route, ten reads, exit 0 after 86.404 s; applies V2 throughout obligations, next action and prohibitions. |
+| Current-guidance reviewer | S6/knowledge, separate agent | One fresh route, twelve reads, exit 0 after 139.040 s; corrects unsupported categorical status claims. |
+
+Each native tool argument and delivered result was reconciled with the adapter
+log and exact selected-content digest: 32 calls/results across three processes.
+No reference-only body was delivered or read. The owned model/helper processes
+were terminal when checked. Eleven local adapter boundary cases passed before
+the first call; separate local phase checks rejected old source bindings and
+another process's route. Those negative cases were operator-run tests, not
+attempts made by the native agents. Ordinary document work was never promoted
+to catalog execution, release or authenticated acceptance.
+
+### Appraisal And Reusable Corrections
+
+The author and receiver preserved the mismatch stop, separate USER decisions,
+pre/post reporting, unknowns and explicit prohibitions. Nevertheless, their
+status and assessment claimed that the next receiver was unassigned and CAT-47
+was not complete, although the sources only established incomplete knowledge.
+The author's exclusive next-action wording also narrowed otherwise permitted
+drafting. An unknowns list elsewhere did not repair those categorical statements.
+
+Both skills and the authoring/handoff procedures now require checking headline,
+assessment and next-action language against the evidence scope. A fresh review
+received the unmodified receiver draft and sources, not the preparer's findings
+or prior self-ratings. It changed the two unsupported assertions to "not
+established" while retaining the actual mismatch and hold, and explicitly kept
+unaffected drafting permitted. This is one observed application of the new rule,
+not a general semantic success rate or independently operated verification.
+
+Not every reviewer suggestion was a defect. A new origin map created for the
+review phase could not have been required in the earlier receiver draft. Restoring
+zero seconds changed timestamp spelling, not event chronology. The review also
+claimed a word-for-word P3 preservation even though its handoff paraphrased the
+clause. The operative conditions survived, but that claim is not an exact-delta
+certificate. Preserve raw responses separately from these source appraisals.
+The revised handoff is still long for the requested concise form and unadopted.
+
+Adapter inspection also exposed task text being passed as a router option.
+The same pattern in `skill-mission-controller.js` failed a new regression with
+`WAVE_ROUTING_WRONG_AUTHORITY`: existing validation blocked the altered receipt,
+so this was not a demonstrated execution bypass. The controller and both skills'
+literal commands now put `--` before task text. Tests cover option-like roles,
+authority, source/root and persistence flags, plus actual documented commands
+from installed copies. The original consumed adapter is retained; its separately
+versioned successor also verifies returned actor and authority and passed five
+local literal-input cases before the third native call.
+
+### Evidence And Remaining Work
+
+Local records are in `.cannae/maintenance/agent-routing-20261112/`, including exact
+prompts, manifests, responses, native/helper logs, trace audits, source appraisal
+and the separate current-guidance snapshot. Prompt SHA-256 values:
+
+- Author: `c5f91aac07d13595fa78db5d7030477388aef971f1630910be3eab2a37182299`.
+- Receiver: `c185ceb0fcf138e9c211d668ea99137f0323d2ae0bddbe4ecd6ad9535d485aab`.
+- Reviewer: `5329106844132590ce91665c4e3115d520f12ca775289b6f6af09d699e9500c3`.
+
+The initial prompts contain task metadata, not the task-source bodies subsequently
+delivered by the read tools. The client can add native workspace metadata; the
+reviewer mentions the synthetic Git snapshot. Upstream request bytes were not
+captured. There is no claim of universal metadata exclusion or host isolation.
+
+Recommendations remain over-broad for negated operational language. Actual reads
+were restricted by a preparer-selected profile, not proof that the router chose
+minimal context. Codex agent-invoked tool routing, implicit selection, compact
+cold-start transfer, broader failure/reporting/replanning cases and full workflow
+acceptance remain open. No publication, policy adoption, operational job, remote
+push, credential copying or persistent settings change followed this exercise.
+
+The focused regression run passed 17 of 18 check groups; the remaining failure
+was an authoring-packet fixture tied to the template's previous sentence. A
+separate check confirmed complete current-guide delivery and exact propagation
+of a guide revision without changing historical cases. The fixture now tests
+those invariants instead, and its rerun passed 26/26. Routing covered 320 queries across both providers,
+installation passed 29 cases, preflight 11/11 and mission lifecycle 33/33.
+The retained initial failure is not erased, and these checks are not the full
+repository aggregate or hosted CI. Final fixture and documentation rechecks are
+recorded with the local evidence rather than inferred from the earlier pass.

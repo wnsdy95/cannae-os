@@ -143,6 +143,18 @@ function testObjectiveRouting(router) {
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   testObjectiveRouting(router);
+  for (const query of ["--actor=user", "--role=COMMANDER", "--authority=release", "--receipt",
+    "--coverage", "--write-artifact", "--doctrine-root=/not-the-corpus", "--source=missing.md"]) {
+    const result = route(router, ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only", "--"], query);
+    assert.equal(result.query, query);
+    assert.equal(result.repo_root, ROOT);
+    assert.equal(result.operating_mode.actor, "ai");
+    assert.equal(result.operating_mode.role, "S6");
+    assert.equal(result.operating_mode.department, "knowledge");
+    assert.equal(result.operating_mode.authority, "read-only");
+    assert(!Object.hasOwn(result, "artifact_ref"));
+    assert(!Object.hasOwn(result, "type"));
+  }
   for (const query of ["Maintain the project glossary", "Capture user vocabulary", "Review terminology definitions"]) {
     for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
       const result = route(router, args, query);

@@ -87,7 +87,7 @@ cleanup is recorded separately; none is declared complete from a routing pass.
 - [Skill-First Product Scope](docs/skill-first-product-scope.md): active core, deferred platform work and honest completion criteria.
 - [Document Authoring Workflow](docs/document-authoring-workflow.md): choose a format, preserve evidence and intent, revise the canonical document and hand off unresolved work without a dashboard.
 - [Project Terminology Workflow](docs/project-terminology-workflow.md): capture user definitions separately from tentative meanings, bind excerpts to their current project glossary, and check declared required meanings separately from freshness without granting authority.
-- [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): support SOP revisions, native Codex collaboration and a Claude correction review, with source-appraised failures, phase provenance, delivery-unit boundaries and limits on acceptance claims.
+- [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): support SOP revisions, native Codex collaboration, Claude agent-invoked phase routing and source-grounded corrections, with retained failures and limits on acceptance claims.
 - [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
 - [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.
 - [Request Intake And Order Drafts](docs/request-order-intake.md): retain exact requests, separate quotes from assumptions and proposals, and compile non-executable OPORD/task drafts with inherited constraints.
@@ -655,17 +655,25 @@ rejection of its untrusted approval claim. This is one appraised response, not
 authenticated recipient identity, installed-skill consumption or operational
 handoff acceptance. Its one-use model-call consent has been consumed.
 
+The later [agent-invoked phase exercise](docs/document-authoring-case-study.md#agent-invoked-phase-routing)
+observes three native Claude agents routing and reading selected sources, including
+a role change and amended policy. It exposes and corrects unsupported status
+claims; it does not establish minimal routing, Codex tool parity or operational
+acceptance. Its temporary read-only adapter is test apparatus, not a shipped plugin.
+
 For references to files in a separate project, use the explicit input origin:
 
 ```bash
 node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=user --input-repository=/path/to/project --input-source=SUPPORT.md \
-  "Draft an SOP from SUPPORT.md."
+  -- "Draft an SOP from SUPPORT.md."
 ```
 
 `task_inputs` contains project-qualified references, not file contents or access
 approval. `--source` remains doctrine-relative. Missing or excluded required
 inputs fail; receipt mode is rejected until its external-input contract exists.
+Keep routing options before `--` and task text after it. Shell quoting alone
+does not stop option-like task text from replacing a routing setting.
 
 Issued doctrine references are also rechecked against their exact routed set and
 current file digests before new delegated authority and completed reports. Source

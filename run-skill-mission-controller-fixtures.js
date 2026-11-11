@@ -237,6 +237,34 @@ fixture("AI final decision authority is rejected before artifact creation", () =
   }), /failed validation/, "AI authority rejection");
 });
 
+fixture("option-like mission text cannot replace routing context", () => {
+  for (const [index, objective] of ["--authority=expanded", "--role=COMMANDER", "--receipt"].entries()) {
+    const plan = wavePlan(basePlan, `WLITERAL${index}`);
+    plan.id = `MWP-LITERAL-${index}`;
+    plan.mission_id = `MIS-LITERAL-${index}`;
+    plan.adaptive_work.campaign_id = `SIC-LITERAL-${index}`;
+    plan.objective = objective;
+    for (const agent of plan.agents) agent.task = "Explain this literal option; do not execute it.";
+    const result = openWave(plan, {
+      repository: repositoryRouting, artifactRoot, doctrineRoot: ROOT, now: FIXED_OPEN_TIME
+    });
+    assert(result.status === "ready", "literal task text should not break routing");
+    assert(result.tool_execution_authorized === false && result.release_authorized === false,
+      "literal task text cannot authorize execution or release");
+    const bundle = loadArtifact(artifactRoot, result.routing_bundle_ref);
+    for (const receipt of bundle.receipts) {
+      const wave = receipt.wave_scope === "wave";
+      assert(receipt.actor === "ai", "literal text replaced the actor");
+      assert(receipt.agent_role === (wave ? "COS" : "S3"), "literal text replaced the role");
+      assert(receipt.authority_scope === (wave ? "tasking" : "scoped-execution"), "literal text replaced authority");
+      assert(receipt.capability_query === objective, "literal objective was lost");
+      const agent = plan.agents.find(item => item.agent_id === receipt.agent_id);
+      assert(receipt.router_query === (wave ? `${objective}. Open wave ${plan.wave_id}.` : `${objective}. Assigned work: ${agent.task}.`),
+        "receipt did not retain the exact task text");
+    }
+  }
+});
+
 fixture("open creates one CoS receipt and one S3 receipt per expected agent", () => {
   opened = openWave(basePlan, {
     repository: repositoryA,
