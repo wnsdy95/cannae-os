@@ -141,9 +141,11 @@ try {
     "--role=S3",
     "--department=operations",
     "--authority=scoped-execution",
+    "--capability-query=repository artifact output",
     "--write-artifact",
     "--target-repository", repositoryA,
     "--artifact-root", artifactRoot,
+    "--",
     "repository artifact output",
     "."
   ], { cwd: ROOT, encoding: "utf8" });

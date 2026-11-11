@@ -2,6 +2,12 @@
 
 ## Skill-First Scope And Authoring
 
+The [receipt producer correction](document-authoring-case-study.md#receipt-producer-validation)
+is local evidence from both scripts and isolated artifact stores. Existing
+schema/semantic rules now run before output or persistence; downstream role,
+preflight and execution controls remain independent. This is not proof of
+authentic delegation or actual document delivery.
+
 The [S6 reading correction](document-authoring-case-study.md#s6-default-reading-alignment)
 reconciles both router defaults with the existing S6 row in
 [Role Document Access Policy](role-document-access-policy.md#4-default-document-bundle-by-role).

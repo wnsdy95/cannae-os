@@ -556,14 +556,32 @@ When `capability_routing.status` is `gap_detected`:
 For delegated execution, routing must create a receipt and pass preflight before any agent starts work:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=wave --mission=MIS-... --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking "<wave mission>" .
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --receipt --scope=agent --mission=MIS-... --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution "<agent task>" .
+node "${CONTROLS_SKILL_DIR}/scripts/route_controls_docs.js" --receipt --scope=wave --mission=MIS-example --wave=W2 --agent=chief-of-staff --actor=ai --role=COS --department=coordination --authority=tasking --capability-query="<actual mission objective>" -- "<wave mission>"
+node "${CONTROLS_SKILL_DIR}/scripts/route_controls_docs.js" --receipt --scope=agent --mission=MIS-example --wave=W2 --agent=plans-agent --actor=ai --role=S3 --department=operations --authority=scoped-execution --capability-query="<actual mission objective>" -- "<agent task>"
 node agent-routing-preflight-runner.js <agent-routing-preflight-bundle.json>
 ```
 
 Preflight requires one CoS wave receipt and one S3 operations receipt for each expected agent. A missing, stale, manually claimed, or wrong-role receipt blocks the wave.
 
-Routing preflight proves that the agent received the correct doctrine context.
+Set `CONTROLS_SKILL_DIR` to the actual loaded bundle as described in startup,
+replace example identities with the issued mission/wave/agent identities and
+carry the same original objective through both commands. Run the preflight
+runner from the returned doctrine root against the actual collected bundle.
+The producer validates the complete receipt against that root's existing
+schema and semantic rules before stdout or artifact persistence. Invalid receipts
+exit nonzero without JSON or store changes; unavailable validators, dependencies
+or malformed schemas also stop. Receipt mode requires the full bound checkout
+and its lockfile dependencies, not just a copied skill folder. Direct routing
+remains lightweight, but cannot substitute for a guarded receipt.
+Do not combine `--coverage` with receipt or persistence flags: mixed modes reject
+instead of silently returning an inventory report where a receipt was requested.
+Do not reuse old output after a failed invocation, switch the doctrine root to
+evade its policy, relabel the delegate or discard the objective to pass. Resolve
+the actual declaration/dependency problem and prepare a fresh route. Successful
+emission still requires downstream preflight, current context and applicable
+tool/release gates; it neither authenticates the caller nor proves source reading.
+
+Routing preflight checks recorded doctrine-routing consistency, not actual delivery.
 It does not authorize tool execution. Before opening a dispatch-controlled wave,
 put each exact policy-draft digest and agent/provider/policy tuple in the
 USER-authorized mission plan. After `open`, compile that draft and issue the

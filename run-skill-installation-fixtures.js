@@ -6,6 +6,7 @@ const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const { analyzeRoutingPreflight } = require("./agent-routing-preflight-runner");
 
 const ROOT = __dirname;
 const NAME = "controls-doctrine-operator";
@@ -137,6 +138,69 @@ function declaredObjectives(env) {
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
 }
 
+function documentedReceipts(env) {
+  const query = "Draft a support SOP.";
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const provider of PROVIDERS) {
+    const folder = destination(env, provider);
+    const reference = fs.readFileSync(path.join(folder, "references/document-routing.md"), "utf8");
+    const lines = reference.split("\n").filter(line => line.startsWith('node "${CONTROLS_SKILL_DIR}/scripts/route_controls_docs.js" --receipt'));
+    assert.equal(lines.length, 2, "exercise both documented receipt commands");
+    const receipts = lines.map(line => {
+      const command = line.replace("<actual mission objective>", query)
+        .replace("<wave mission>", query).replace("<agent task>", `${query} Do not publish.`);
+      const run = spawnSync("/bin/bash", ["-c", command], {
+        cwd: unrelated, env: { ...env, CONTROLS_SKILL_DIR: folder },
+        encoding: "utf8", timeout: 20000, maxBuffer: 8 * 1024 * 1024
+      });
+      assert.equal(run.status, 0, run.stderr || run.stdout);
+      const receipt = JSON.parse(run.stdout);
+      assert(validatePayload(receipt, "routing-receipt").valid);
+      assert.equal(receipt.capability_query, query);
+      assert(receipt.router_command.includes(" -- "));
+      return receipt;
+    });
+    const projection = analyzeRoutingPreflight({ type: "AgentRoutingPreflightBundle", mission_id: "MIS-example",
+      wave_id: "W2", expected_agents: ["plans-agent"], receipts });
+    assert.equal(projection.status, "ready", projection.preflight_blocks.join("\n"));
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
+function receiptDependencyFailures(env) {
+  const target = fs.mkdtempSync(path.join(temporary, "receipt-target-"));
+  const init = spawnSync("git", ["init", "-q", target], { encoding: "utf8" });
+  assert.equal(init.status, 0, init.stderr);
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const dependency of ["validator-cli-prototype", "node_modules", "schema-files/routing-receipt.schema.json"]) {
+    const original = path.join(source, dependency);
+    const backup = path.join(target, "withheld-dependency");
+    fs.renameSync(original, backup);
+    try {
+      // A parse failure must close the producer just like an unavailable validator.
+      if (dependency.endsWith(".json")) write(original, "{");
+      for (const provider of PROVIDERS) {
+        route(env, provider);
+        const artifactRoot = path.join(target, "artifacts");
+        const run = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
+          "--receipt", "--scope=agent", "--mission=MIS-DEPENDENCY", "--wave=W1", "--agent=writer",
+          "--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution",
+          "--capability-query=Draft a support SOP.", "--write-artifact", `--target-repository=${target}`,
+          `--artifact-root=${artifactRoot}`, "--", "Draft a support SOP. Do not publish."],
+        { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+        assert.equal(run.status, 2, run.stderr);
+        assert.equal(run.stdout, "");
+        assert(run.stderr.includes("ROUTING_RECEIPT_VALIDATION_FAILED"), run.stderr);
+        assert(!fs.existsSync(artifactRoot), "missing validator dependencies must not initialize a store");
+      }
+    } finally {
+      if (dependency.endsWith(".json")) fs.rmSync(original);
+      fs.renameSync(backup, original);
+    }
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 function comparisonGap(env) {
   const query = "Compare museum attendance by city";
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
@@ -175,9 +239,14 @@ try {
   write(path.join(unrelated, "README.md"), "# Target project, not doctrine\nKeep this source unchanged.\n");
   fs.mkdirSync(bin);
   for (const file of ["install-ai-cli-skills.sh", "validate-controls-skill.js", "README.md", "SUPPORT.md",
-    "docs", "schema-files", `codex-skills/${NAME}`, `.claude/skills/${NAME}`]) {
+    "docs", "schema-files", "validator-cli-prototype", `codex-skills/${NAME}`, `.claude/skills/${NAME}`]) {
     fs.cpSync(path.join(ROOT, file), path.join(source, file), { recursive: true });
   }
+  // Receipt validation uses the bound checkout's real runtime, not a validator stub.
+  for (const file of fs.readdirSync(ROOT, { withFileTypes: true })) {
+    if (file.isFile() && file.name.endsWith(".js")) fs.copyFileSync(path.join(ROOT, file.name), path.join(source, file.name));
+  }
+  fs.symlinkSync(path.join(ROOT, "node_modules"), path.join(source, "node_modules"));
   fs.symlinkSync(process.execPath, path.join(bin, "node"));
   for (const provider of PROVIDERS) {
     const command = path.join(bin, provider);
@@ -216,6 +285,8 @@ try {
   });
   fixture("linked providers retain every declared objective from another project", () => declaredObjectives(env));
   fixture("linked providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
+  fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
+  fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("matching link installation is idempotent", () => {
     const before = PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino);
     install(env);
@@ -248,6 +319,8 @@ try {
   });
   fixture("copied providers retain every declared objective from another project", () => declaredObjectives(env));
   fixture("copied providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
+  fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
+  fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider, { loadedDirectory: sourceSkill(provider) });
   });

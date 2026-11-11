@@ -250,6 +250,11 @@ Give each agent only its own task, allowed references, authority, deliverables,
 reporting duties and stop conditions. Preserve the original mission objective
 through `--capability-query` on every manual receipt while the positional query
 describes the narrower task. Backbrief purpose, expected output and boundaries.
+On `ROUTING_RECEIPT_INVALID` or `ROUTING_RECEIPT_VALIDATION_FAILED`, retain the
+task and delegation, resolve the stated contract error or bound validator setup,
+and reroute. Do not relabel a role, omit the parent objective or remove `--receipt`
+to continue a guarded mission. Direct document routing is not a fallback receipt.
+Keep inventory coverage separate from receipt generation and persistence.
 For mixed-model missions, require registry compilation and integrated preflight;
 model strength never grants permission.
 

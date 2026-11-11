@@ -172,7 +172,7 @@ cleanup is recorded separately; none is declared complete from a routing pass.
 
 - [Schema Files](schema-files/README.md): JSON Schema contracts for missions, orders, authority, approvals, risk, release, readiness, handoffs, routing receipts, and more.
 - [Sample Payloads](sample-payloads/README.md): valid and invalid payloads for validator fixtures.
-- [Validator CLI Prototype](validator-cli-prototype/README.md): dependency-free local schema and semantic validation.
+- [Validator CLI Prototype](validator-cli-prototype/README.md): local schema and semantic validation using the repository's pinned dependencies.
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
@@ -246,8 +246,16 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   --department=operations \
   --authority=scoped-execution \
   --capability-query="Define and validate the target mission capability" \
-  "plans-agent W2 execution planning" .
+  -- "plans-agent W2 execution planning" .
 ```
+
+The producer validates receipts before printing or persisting them. Invalid
+role/authority/objective declarations or unavailable validation fail without
+emitting receipt JSON or changing the artifact store. Receipt mode needs the
+bound checkout's validator and lockfile dependencies; direct routing does not.
+Successful emission is not preflight, source delivery or execution approval.
+See [the producer correction](docs/document-authoring-case-study.md#receipt-producer-validation)
+for the reproduced failure, denial checks and limits.
 
 Routing receipts distinguish document relevance from mission capability
 coverage. If the mission objective has no specific corpus capability route,

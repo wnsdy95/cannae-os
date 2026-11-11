@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const assert = require("assert");
+const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
@@ -78,12 +79,16 @@ for (const fixture of fixtures) {
   }
 }
 
-function routeWithSkill(skillRoot, query, args = []) {
+function routeWithSkill(skillRoot, query, args = [], expectedStatus = 0) {
   const result = spawnSync(process.execPath, [
     path.join(ROOT, skillRoot, "scripts/route_controls_docs.js"),
     ...args, query, ROOT
   ], { cwd: os.tmpdir(), encoding: "utf8", maxBuffer: 4 * 1024 * 1024 });
-  assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+  assert.strictEqual(result.status, expectedStatus, result.stderr || result.stdout);
+  if (expectedStatus) {
+    assert.equal(result.stdout, "", "a rejected receipt must not emit JSON");
+    return result;
+  }
   return JSON.parse(result.stdout);
 }
 
@@ -210,9 +215,10 @@ for (const skillRoot of ["codex-skills/controls-doctrine-operator", ".claude/ski
   const mode = ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only", `--capability-query=${query}`];
   const routed = routeWithSkill(skillRoot, query, mode);
   const scope = ["--receipt", "--mission=MIS-S6-READING", "--wave=W1"];
-  const receipt = routeWithSkill(skillRoot, query, [...mode, ...scope, "--scope=agent", "--agent=reader"]);
-  assert.deepEqual(receipt.recommended_documents, routed.recommended_documents);
-  assert.deepEqual(receipt.validation_commands, routed.validation_commands);
+  const rejected = routeWithSkill(skillRoot, query, [...mode, ...scope, "--scope=agent", "--agent=reader"], 2);
+  for (const code of ["AGENT_ROUTING_NOT_S3", "AGENT_ROUTING_WRONG_DEPARTMENT", "AGENT_ROUTING_WRONG_AUTHORITY"]) {
+    assert(rejected.stderr.includes(code));
+  }
   for (const document of ["docs/knowledge-management-sop.md", "docs/context-releasability-policy.md",
     "docs/opsec-classification-model.md", "docs/approval-scope-policy.md", "docs/event-sourcing-model.md"]) {
     assert(routed.recommended_documents.some(x => x.path === document));
@@ -220,6 +226,10 @@ for (const skillRoot of ["codex-skills/controls-doctrine-operator", ".claude/ski
   for (const document of ["docs/reference-architecture.md", "docs/command-post-dashboard.md"]) {
     assert(!routed.recommended_documents.some(x => x.path === document));
   }
+  const receipt = routeWithSkill(skillRoot, query, [...delegatedArgs, `--capability-query=${query}`,
+    ...scope, "--scope=agent", "--agent=reader"]);
+  // Downstream gates must still reject a hand-edited receipt, even after the producer is hardened.
+  receipt.agent_role = "S6"; receipt.department = "knowledge"; receipt.authority_scope = "read-only";
   const validation = validatePayload(receipt, "routing-receipt");
   assert.equal(validation.valid, false, "ordinary S6 reading cannot replace the mandatory S3 work receipt");
   for (const code of ["AGENT_ROUTING_NOT_S3", "AGENT_ROUTING_WRONG_DEPARTMENT", "AGENT_ROUTING_WRONG_AUTHORITY"]) {
@@ -235,4 +245,57 @@ for (const skillRoot of ["codex-skills/controls-doctrine-operator", ".claude/ski
     "reader: agent routing must use operations department.", "reader: agent routing must use scoped-execution authority."]);
 }
 console.log("PASS S6 reading preserves policy context without bypassing the S3 receipt boundary (both skills)");
-console.log(`Agent routing preflight fixtures: ${passed + routingPassed + 1}/${fixtures.length + routingCases.length + 1} passed`);
+
+const temporary = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "controls-receipt-emission-")));
+try {
+  const target = path.join(temporary, "target"); fs.mkdirSync(target);
+  const init = spawnSync("git", ["init", "-q", target], { encoding: "utf8" });
+  assert.equal(init.status, 0, init.stderr);
+  const query = "Draft a support SOP. Do not publish. SYNTHETIC-PRIVATE-TASK";
+  const common = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution",
+    "--receipt", "--scope=agent", "--mission=MIS-EMISSION", "--wave=W1", "--agent=reader"];
+  const variants = [
+    { args: ["--role=S6"], code: "AGENT_ROUTING_NOT_S3" },
+    { args: ["--department=research"], code: "AGENT_ROUTING_WRONG_DEPARTMENT" },
+    { args: ["--authority=release-review"], code: "AGENT_ROUTING_WRONG_AUTHORITY" },
+    { args: ["--scope=wave"], code: "WAVE_ROUTING_NOT_COS" },
+    { args: ["--scope=wave", "--role=COS"], code: "WAVE_ROUTING_WRONG_DEPARTMENT" },
+    { args: ["--scope=wave", "--role=COS", "--department=coordination"], code: "WAVE_ROUTING_WRONG_AUTHORITY" },
+    { args: ["--mission=invalid"], code: "PATTERN_MISMATCH" },
+    { args: [], omitCapability: true, code: "ROUTING_RECEIPT_CAPABILITY_QUERY_NOT_REPLAYABLE" }
+  ];
+  const snapshot = root => fs.readdirSync(root, { recursive: true, withFileTypes: true })
+    .filter(entry => entry.isFile()).map(entry => {
+      const file = path.join(entry.parentPath, entry.name);
+      return [path.relative(root, file), fs.readFileSync(file).toString("base64")];
+    }).sort((a, b) => a[0].localeCompare(b[0]));
+  for (const [index, skillRoot] of ["codex-skills/controls-doctrine-operator", ".claude/skills/controls-doctrine-operator"].entries()) {
+    const artifactRoot = path.join(temporary, `artifacts-${index}`);
+    const persist = ["--write-artifact", `--target-repository=${target}`, `--artifact-root=${artifactRoot}`];
+    for (const flags of [["--receipt"], ["--write-artifact"], ["--overwrite-artifact"], [...common, ...persist]]) {
+      const result = routeWithSkill(skillRoot, query, ["--coverage", ...flags, "--"], 2);
+      assert(result.stderr.includes("ROUTING_MODE_CONFLICT"));
+      assert(!fs.existsSync(artifactRoot));
+    }
+    for (const variant of variants) {
+      for (const outputMode of [[], persist]) {
+        const result = routeWithSkill(skillRoot, query, [...common,
+          ...(variant.omitCapability ? [] : [`--capability-query=${query}`]), ...variant.args, ...outputMode, "--"], 2);
+        assert(result.stderr.includes("ROUTING_RECEIPT_INVALID"));
+        assert(result.stderr.includes(variant.code), result.stderr);
+        assert(!result.stderr.includes("SYNTHETIC-PRIVATE-TASK"), "validation diagnostics must not echo task contents");
+        assert(!fs.existsSync(artifactRoot), "rejected receipt created an artifact store");
+      }
+    }
+    const accepted = routeWithSkill(skillRoot, query, [...common, `--capability-query=${query}`, ...persist, "--"]);
+    assert(validatePayload(accepted, "routing-receipt").valid);
+    const before = snapshot(artifactRoot);
+    assert(before.length > 0, "valid receipt must actually persist");
+    const deniedOverwrite = routeWithSkill(skillRoot, query, [...common, `--capability-query=${query}`,
+      "--role=S6", ...persist, "--overwrite-artifact", "--"], 2);
+    assert(deniedOverwrite.stderr.includes("AGENT_ROUTING_NOT_S3"));
+    assert.deepEqual(snapshot(artifactRoot), before, "invalid overwrite modified existing evidence or store metadata");
+  }
+} finally { fs.rmSync(temporary, { recursive: true, force: true }); }
+console.log("PASS receipt validation precedes emission, creation and overwrite (both skills, eight invalid variants and mixed-mode rejection)");
+console.log(`Agent routing preflight fixtures: ${passed + routingPassed + 2}/${fixtures.length + routingCases.length + 2} passed`);

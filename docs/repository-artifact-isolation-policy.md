@@ -166,13 +166,18 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   --role=S3 \
   --department=operations \
   --authority=scoped-execution \
+  --capability-query="<actual mission objective>" \
   --write-artifact \
   --target-repository ../target-repo \
   --artifact-root .cannae/artifacts \
-  "Route plans-agent work." .
+  -- "Route plans-agent work." .
 ```
 
 Local target and artifact-root paths are redacted from `router_command` before the receipt is stored.
+The routing producer applies the bound corpus's schema and semantic validator
+before invoking the store. Invalid receipts and unavailable validation stop
+without stdout JSON, store initialization or an overwrite. A valid stored
+receipt still needs current preflight and does not authorize tools or release.
 
 ### 6.2 Model assignment compilation
 

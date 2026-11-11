@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Validate generated routing receipts against the existing full contract before stdout or artifact persistence in both providers. Reject invalid declarations, unavailable validation and malformed schemas without output/store changes; preserve downstream preflight and ordinary direct routing. Update manual examples and both skills to retain exact parent objectives and diagnose denials without relabeling authority. Add no-write/overwrite and linked/copied dependency-failure regressions.
+
 - Align both S6 reading defaults with the existing knowledge-management access policy. Retain technical department/task/input context, required controls and authority boundaries; add dual-provider role, installed-copy/link and negative receipt-admission regressions. Both skills distinguish role labels, task reading and guarded control-plane receipts. Explicit negative-topic matching and producer-side invalid-receipt rejection remain open.
 
 - Separate generic comparison methods from capability coverage in both routers. Preserve unsupported-domain task cells across direct intake, receipts and controller-issued agent context; keep SOP comparisons covered without claiming self-improvement expertise. Make eleven campaign/verifier/transparency manuals conditional on task, parent objective or explicit source context, preserving selected controls and required inputs. Mirror subject-versus-method guidance in both skills and add direct, compound, receipt, installation and controller regressions. Other semantic over-routing remains open.

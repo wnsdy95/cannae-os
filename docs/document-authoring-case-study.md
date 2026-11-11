@@ -1674,8 +1674,9 @@ correctly require S3/operations/scoped-execution for that control-plane role.
 The corrected regression retains valid S6 direct routing but proves the generated
 S6 receipt fails all three role/department/authority checks and cannot pass
 preflight beside a valid CoS receipt. Neither contract nor validator was changed.
-The emitter still returns nonconforming receipt JSON with exit zero; callers must
-not equate emission with admission. Producer-side rejection is remaining work.
+At this checkpoint the emitter still returned nonconforming receipt JSON with
+exit zero; callers could not equate emission with admission. The subsequent
+[producer correction](#receipt-producer-validation) addresses this recorded gap.
 An earlier test expectation also wrongly removed the handoff-required event
 reference; that expectation was corrected without altering the task route.
 
@@ -1698,3 +1699,64 @@ links, English-only and diff checks also passed. No full repository aggregate,
 fresh mission-controller suite, shared-validator aggregate, hosted CI or native
 model acceptance was run for this S6 change. The preceding comparison fix's
 controller and validator results remain separate historical evidence.
+
+## Receipt Producer Validation
+
+The G2/G3/G4/G5 follow-up reproduced the S6 receipt failure through both actual
+provider scripts and isolated Git/artifact roots. Before the fix, each process
+returned exit zero, emitted JSON and created an artifact store even though the
+existing validator rejected the receipt's role, department and authority.
+A new producer-denial regression failed on that actual exit-zero response.
+
+Both producers now call the bound checkout's existing `validatePayload` for the
+complete `RoutingReceipt` before stdout or `writeRepositoryArtifact`. No schema,
+version, permitted role or downstream admission rule changed. Invalid inputs
+exit 2 with issue codes, not the task body or receipt JSON. An unavailable
+validator/dependency or schema parse failure also exits 2. Direct human and
+role-specific document routing does not import this runtime validator.
+
+A final inspection also reproduced `--coverage --receipt` returning an inventory
+report with exit zero instead of the requested receipt. The argument parser now
+rejects coverage combined with receipt, write or overwrite flags. This prevents
+mode precedence from bypassing the producer path; it does not weaken ordinary
+coverage or literal option-like task text after `--`.
+
+The retained after-probe rejected both S6 invocations with empty stdout and no
+artifact root. Focused tests cover eight invalid role/department/authority,
+scope, identifier and missing-parent-objective variants in both output-only
+and persistence modes; a denied overwrite leaves existing store bytes unchanged.
+Valid S3 persistence and CoS generation still work. Downstream validation and
+preflight continue to reject a hand-edited receipt independently of the producer.
+Linked/copied installation cases remove the validator, withhold dependencies
+and corrupt a schema in a temporary checkout; all receipt attempts stop while
+direct routing still works. Tests use the real bound validator and dependencies,
+not a success stub. No actual user installation or credentials are modified.
+
+The stricter producer exposed an omitted capability query in the artifact-store
+fixture and manual examples. These now carry the actual declared objective and
+separate flags from literal task text. Both skills require diagnosis and a fresh
+valid route rather than relabeling a delegate, dropping the objective, removing
+guarded mode or reusing old JSON. A copied skill alone is not a full receipt
+runtime; the bound checkout and its pinned dependencies must be available.
+
+The first fixed-source ladder passed 21/21 groups, including 15 preflight,
+35 installation, five artifact-isolation, 410 routing, 517 shared-validator and
+34 mission-controller cases, plus the document/input/skill/index checks. The
+controller run completed in about 344 seconds. These results precede the final
+mixed-mode parser guard; a separate focused recheck records that final surface.
+Neither run is the full repository aggregate or hosted CI.
+
+The final mixed-mode surface passed all 19 recheck groups on an unchanged source
+fingerprint, including the eight new conflict invocations (four per provider),
+all 410 routing queries, 15 preflight groups and 35 installation cases. This
+recheck also includes artifact isolation, document/input/access checks, both
+skills and coverage, source/index/link/English/diff checks. It does not rerun
+the earlier controller or shared-validator aggregate. A final prose-only result
+append is checked separately; no new native model evaluation is claimed.
+
+Evidence is retained under `.cannae/maintenance/receipt-emission-20261112/`.
+Emission validation establishes contract conformance, not authentic delegation,
+current-wave preflight, semantic relevance, source delivery or tool/release
+permission. Historical invalid artifacts are not rewritten or retroactively
+approved, and downstream gates remain required. No native model call, hosted CI,
+deployment or persistent client-setting change is part of the correction.

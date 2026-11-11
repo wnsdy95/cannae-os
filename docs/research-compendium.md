@@ -1,5 +1,16 @@
 # Research Compendium
 
+## Validate Before Emission (2026-11-12)
+
+The [receipt producer case](document-authoring-case-study.md#receipt-producer-validation)
+showed that downstream rejection did not prevent a misleading success exit or
+invalid artifact creation. Both producers now reuse the existing contract
+validator before either operation, including fail-closed dependency handling.
+Direct role-specific reading stays distinct from guarded work admission. An
+unavailable validator is a setup failure, not permission to skip validation or
+change the delegate's authority. These are local engineering results, not a
+new authorization policy or general assurance of source delivery.
+
 ## Role Policy And Technical Context (2026-11-12)
 
 The [S6 reading alignment](document-authoring-case-study.md#s6-default-reading-alignment)

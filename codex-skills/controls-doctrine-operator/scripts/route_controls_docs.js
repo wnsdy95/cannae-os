@@ -616,7 +616,7 @@ function usage() {
   console.error("Required inputs: repeat --source=<corpus-relative-path>; unresolved inputs stop routing before a receipt is issued.");
   console.error("Project input references: --input-repository=<Git-root> --input-source=<exact-relative-file> (repeatable, direct output only; no content or authority is granted).");
   console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=OBJECTIVE ...] [--all] [--limit=N] <query> [repo-root]");
-  console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE [--write-artifact --target-repository=PATH] <query> [repo-root]");
+  console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE --capability-query=OBJECTIVE [--write-artifact --target-repository=PATH] -- <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
   process.exit(2);
 }
@@ -1178,6 +1178,9 @@ function parseArgs(argv) {
     throw new Error("INPUT_REFERENCE_MODE_UNSUPPORTED: project input references cannot be omitted from a receipt, artifact or coverage report. Use direct routing only; guarded input delivery is not implemented.");
   }
 
+  if (options.coverage && (options.receipt || options.writeArtifact || options.overwriteArtifact)) {
+    throw new Error("ROUTING_MODE_CONFLICT: inventory coverage cannot be combined with receipt generation or persistence.");
+  }
   const parsedLimit = Number.parseInt(options.limit, 10);
   options.limit = Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 40;
 
@@ -1530,6 +1533,19 @@ try {
   process.exit(2);
 }
 const output = parsed.options.receipt ? routingReceipt(routed, parsed.options) : routed;
+if (parsed.options.receipt) {
+  try {
+    const { validatePayload } = require(path.join(repoRoot, "validator-cli-prototype/validate.js"));
+    const validation = validatePayload(output, "routing-receipt");
+    if (validation.valid !== true) {
+      console.error(`ROUTING_RECEIPT_INVALID: ${unique(validation.issues.map(item => item.code)).join(", ")}`);
+      process.exit(2);
+    }
+  } catch (error) {
+    console.error(`ROUTING_RECEIPT_VALIDATION_FAILED (${error.code || error.name}): restore the bound doctrine validator and its dependencies before retrying.`);
+    process.exit(2);
+  }
+}
 if (parsed.options.writeArtifact) {
   if (!parsed.options.receipt || !parsed.options.targetRepository) {
     console.error("--write-artifact requires --receipt and --target-repository <path>.");

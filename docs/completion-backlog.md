@@ -10,6 +10,20 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G3/G4/G5 correction: both receipt producers now invoke the existing
+full schema/semantic validator before stdout or artifact persistence. A real
+invalid S6 receipt previously emitted and persisted with exit zero; both paths
+now reject it without output or a new store. Invalid overwrite also preserves
+existing evidence. Missing validation dependencies and malformed schemas fail
+closed while ordinary direct routing remains available. Examples retain the
+explicit parent objective; both skills prohibit bypassing a receipt rejection
+by changing roles or dropping guarded mode. Coverage cannot be mixed with
+receipt/write/overwrite mode to return a different successful output. See
+[receipt producer validation](document-authoring-case-study.md#receipt-producer-validation).
+This closes the producer gap recorded below, not current preflight, source
+delivery, caller authentication or the wider semantic/client acceptance work.
+All five objectives remain open.
+
 Latest G2/G4/G5 correction: S6 default reading now follows its existing
 knowledge-management/access policy instead of injecting architecture/dashboard
 manuals for every task. Technical departments, task/parent routes and required
@@ -19,9 +33,9 @@ explicit dashboard tasks gained missing S6 policy references. See
 [S6 reading alignment](document-authoring-case-study.md#s6-default-reading-alignment).
 Negative-topic matching and minimal selection remain open. Tests also confirmed
 that ordinary S6 routing cannot replace the required S3 control-plane receipt;
-the emitter can still output invalid receipt JSON before validation rejects it.
-Producer-side rejection, other role-bundle audits and broader behavioral
-acceptance remain work, not permission to relax the existing receipt contract.
+at that checkpoint the emitter could output invalid JSON before rejection.
+The subsequent producer correction above addresses that gap. Other role-bundle
+audits and broader acceptance remain work, not permission to relax the contract.
 All five goals remain open.
 
 Latest G2/G4/G5 correction: generic `compare`, `comparison` and `baseline` no
