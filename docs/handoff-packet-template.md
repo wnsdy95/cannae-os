@@ -38,6 +38,11 @@ that every required predecessor, review and policy is actually included or has
 an explicit unavailable/withheld disposition. Missing history limits the related
 comparison, not necessarily current-policy understanding or permitted drafting.
 
+Declare whether the receiving unit is this whole packet or a detached document.
+Keep required bindings with that unit, without unnecessarily repeating every
+origin-map row in every paragraph. State whose checks ran in which phase;
+model-only non-execution claims must not erase the preparer's actual work.
+
 No-schema-needed is not no-review-needed: apply these quality checks and the
 request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
 

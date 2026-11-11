@@ -124,6 +124,45 @@ function classifyReviewEvent(event) {
   return "prohibited_item";
 }
 
+function classifyClaudeReviewEvent(event) {
+  assert(event && typeof event === "object" && !Array.isArray(event) && typeof event.type === "string",
+    "Invalid Claude review event.");
+  if (event.type === "system" && event.subtype === "init") {
+    assert(Array.isArray(event.tools) && Array.isArray(event.mcp_servers), "Invalid Claude review initialization.");
+    return event.tools.length || event.mcp_servers.length || event.permissionMode !== "dontAsk" ? "prohibited_item" : "lifecycle";
+  }
+  if (event.type === "system" && event.subtype === "thinking_tokens") {
+    const keys = ["type", "subtype", "estimated_tokens", "estimated_tokens_delta", "user_message_uuid", "uuid", "session_id"];
+    assert(Object.keys(event).every(key => keys.includes(key)) &&
+      [event.estimated_tokens, event.estimated_tokens_delta].every(value => Number.isFinite(value) && value >= 0) &&
+      [event.uuid, event.session_id].every(value => typeof value === "string" && value.length) &&
+      (event.user_message_uuid === undefined || typeof event.user_message_uuid === "string"), "Invalid Claude review thinking progress.");
+    return "diagnostic";
+  }
+  if (event.type === "assistant") {
+    assert(Array.isArray(event.message?.content) && event.message.content.length, "Invalid Claude review message.");
+    if (event.message.content.some(item => !item || !["text", "thinking", "redacted_thinking"].includes(item.type))) return "prohibited_item";
+    if (event.error || event.is_api_error_message) return "failure";
+    for (const item of event.message.content) {
+      assert(item.type !== "text" || typeof item.text === "string", "Invalid Claude review text.");
+    }
+    return "message";
+  }
+  if (event.type === "rate_limit_event") {
+    assert(["allowed", "allowed_warning", "rejected"].includes(event.rate_limit_info?.status), "Invalid Claude review rate limit.");
+    return "diagnostic";
+  }
+  if (event.type === "result") {
+    assert(typeof event.is_error === "boolean" && typeof event.subtype === "string", "Invalid Claude review result.");
+    if (event.is_error || event.subtype !== "success") return "failure";
+    assert(Array.isArray(event.permission_denials), "Invalid Claude review permission report.");
+    if (event.permission_denials.length) return "prohibited_item";
+    assert(typeof event.result === "string" && event.result.trim(), "Invalid Claude review result text.");
+    return "result";
+  }
+  throw new Error("Unknown Claude review event.");
+}
+
 if (require.main === module) {
   try {
     assert(process.argv.length === 3 && ["inspect", "prepare"].includes(process.argv[2]),
@@ -133,4 +172,4 @@ if (require.main === module) {
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
 
-module.exports = { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent };
+module.exports = { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent, classifyClaudeReviewEvent };

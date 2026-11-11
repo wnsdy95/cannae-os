@@ -1247,9 +1247,9 @@ problem to the immediate predecessor, and a preservation sentence called v1 the
 actual predecessor. A local operator correction candidate changes only those
 two spans; an exact reverse-delta check verifies every other artifact byte and
 the original V4 source remain unchanged. This is an unadopted correction against
-V4, not a newly accepted version. It has not received a fresh native review.
-The next cross-client case should review that exact candidate and V4 base with
-phase-qualified sources rather than regenerating or approving it from memory.
+V4, not a newly accepted version. At this checkpoint it had no fresh native
+review. The subsequent Claude case below reviews that exact candidate and V4
+base with phase-qualified sources rather than regenerating it from memory.
 
 Both provider entrypoints, the authoring workflow and ordinary handoff guidance
 now distinguish source phase/original recipient from reviewer and receiver;
@@ -1270,3 +1270,103 @@ not independent verification. A document acknowledgement does not accept the
 simulated job, grant publication rights or demonstrate protected tool execution.
 Actual agent-invoked phase routing, guarded project inputs, broader semantic
 coverage and equivalent native Claude behavior remain separate acceptance work.
+
+## Native Claude Cross-Client Review
+
+On 2026-11-12, the standing USER verification consent covered a native Claude
+review of the exact two-span correction, its V4 base, historical artifacts and
+current policy. The input is 202,465 bytes, SHA-256
+`1f7ac4c0b843edf4ca955f48bc3a0a6e27bbcd2a2bce0ca5c471e61f9d2040c6`.
+Thirteen document entries include one reference-only identifier, whose body is
+excluded. Four public authoring guides are supplied. Prior receiver verdicts,
+author ratings, answer keys, private paths and the full glossary are excluded.
+The installed user skill is explicitly selected rather than pasted into the
+prompt. The preparer, not the model, performs routing and packet checks.
+
+Claude Code 2.1.322 uses the existing login and configured `opus[1m]` alias,
+resolved in initialization to `claude-opus-5-5`. Per-invocation settings disable
+tools, hooks, connectors and automatic memory; an OS profile additionally denies
+reading the selected personal settings/context/plugin locations. No credential
+is copied and no persistent setting or installed link is changed. This is a
+bounded local verification configuration, not production isolation or ordinary
+implicit-selection acceptance.
+
+### Failures And Actual Result
+
+| Attempt | Observed result |
+| --- | --- |
+| Initial invocation | Authentication failure before model work, exit 1, reported input/output usage 0. Ordinary-shell login status did not apply to the sanitized environment. |
+| Login-environment correction | Login succeeds, but the observer kills its owned process after 2.335 s because it does not recognize a `system/thinking_tokens` event. No final usage or review is received; usage is unknown, not zero. |
+| Diagnosed observer correction | Exit 0 after 72.458 s; one JSON review, 23 progress diagnostics, no observed tool events, successful non-error terminal result. |
+
+Every attempt retains its exact prompt, manifest, launch environment, observer
+digest and raw events. The same input bytes were used; neither consumed attempt
+was rerun. Read-only diagnosis found that retaining the OS `USER` and leaving
+default config-directory selection implicit restored the existing login under
+the same read-denial profile. This is a local client observation, not a general
+authentication rule. The observer now recognizes the documented progress shape
+without accepting arbitrary system events or tool activity. The initial precheck
+also raced unfinished packet preparation and failed before any model process;
+the later read-only precheck passed after preparation completed.
+
+The successful result reports 2 input, 156,240 cache-creation input, 1,194 cache-read
+input and 8,170 output tokens. These are the client's separate usage counters,
+not a billing invoice. Transport request count is unknown. A real response in
+one configured invocation does not establish all-client equivalence or minimal
+context. The locally captured request-assembly checks separately demonstrated
+full Markdown body delivery with no offered tools and excluded synthetic memory
+canaries, including stdin delivery; those captures invoked no external model.
+
+### Source Appraisal, Not Automatic Acceptance
+
+The review correctly recognized both targeted historical corrections and
+preserved the current checksum stop, retry-planning hold, separate USER decisions,
+pre/post reporting, unknowns and vocabulary. Its acknowledgement explicitly did
+not claim router execution, hash checking, authentication or operational acceptance.
+
+Additional findings were appraised against the actual input, not adopted as a
+single pass/fail verdict. Missing patch identity and missing recipient digests
+were not established for the declared full packet: the task, per-source metadata,
+provenance preface and origin map supply them. Detached text would need those
+bindings before separate delivery. Likewise, an explicitly named predecessor
+need not be repeated in every paragraph. The review's description of the old
+reviser's categorical rejection as accurate was too broad: the reviser's own
+selection did not disprove another phase's different selection.
+
+A genuine residual ambiguity remained: the operator-amended handoff inherited
+an unqualified claim that no tool, router or hash check ran, although the preparer
+did perform local checks. Related `this response` language also blurred historical
+model text and operator-prepared artifacts. A separate four-span correction
+scopes these claims to actor and phase without changing policy or any other text.
+Its SHA-256 is `287546e8ea66d167ab33a029e58d7225da09011f69b4041d9abbd16bc6cb68f6`.
+An exact reverse-delta check preserves the original reviewed candidate. This
+follow-up remains an unadopted patch with explicit base metadata, not a newly
+accepted version, and has not received another native review.
+
+Both skills and the authoring/handoff procedures now require declared delivery
+units and actor/phase-scoped work claims. Their routing references distinguish
+launch-time discovery, actual-login preflight, typed progress and substantive
+completion. `authoring-review-packet.js` has a bounded Claude classifier with
+seven new adversarial fixture groups. The native discovery probe adds a linked
+installation with user sources excluded; all eight Codex/Claude metadata cases
+matched expectations before the new guidance was added. The check is separate
+from model behavior and must not be described as eight successful model tasks.
+
+Local evidence is retained in `.cannae/maintenance/claude-handoff-20261112/`.
+No publication, adoption, operational job execution, remote push or credential
+change followed. The next workflow gap is agent-invoked phase routing, not
+another automatic replay of this growing historical review packet. Broader
+semantic selection, reporting/failure behavior, fresh follow-up appraisal and
+full client equivalence remain open.
+
+The final focused run passed all 17 check groups: authoring-review 25/25,
+document-input 24/24, terminology-handoff 34/34, project-packet 24/24,
+installation 28/28, discovery-helper 7/7 and native metadata 8/8. Routing covered
+304 queries, 32 required-source rejections, 28 objective-declaration rejections
+and three inventory checks. Both skill/coverage checks, source-map/registry
+audits, links, English-only and diff checks passed. This is not the full aggregate,
+shared-validator or hosted-CI suite. New guidance has local regression and native
+metadata evidence, not another model review. The retained evidence audit checks
+submitted prompt and assistant text for excluded synthetic content; native local
+initialization contains its temporary working path. Actual upstream-native request
+bytes were not captured, so no universal absence-of-machine-metadata claim follows.

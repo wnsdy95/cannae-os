@@ -169,6 +169,19 @@ supplied input and source scope; distinguish a candidate defect, absent review
 context, an operational-use prerequisite and an optional improvement. Preserve
 the returned review, including mistakes, separately from that appraisal.
 
+Declare the review/delivery unit. A complete packet can carry its patch/base IDs,
+digests and attribution in an attached manifest or origin map; those are not
+missing merely because every paragraph does not repeat them. If a document or
+excerpt will travel alone, carry its necessary bindings and limits inside that
+unit instead. Do not promote an unadopted patch to a new accepted version solely
+to satisfy a reviewer's assumption about standalone distribution.
+
+Scope both positive and negative work claims to an actor and phase. A historical
+model's no-tool response does not mean the operator ran no router, file preparation
+or integrity checks. Describe separately the model's text, the preparer's checks,
+the current review and any operational work. Avoid carrying unqualified "this
+response" or "no checks ran" claims into an operator-amended successor.
+
 Keep source files explicitly named in the request in the reading set. The
 router now resolves existing corpus-relative names into primary recommendations;
 inspect its `task_references` result rather than assuming every mention resolved.

@@ -1,5 +1,29 @@
 # Research Compendium
 
+## Cross-Client Review And Delivery Units (2026-11-12)
+
+The [native Claude case](document-authoring-case-study.md#native-claude-cross-client-review)
+adds one source-appraised response to the prior Codex document chain. It confirms
+two targeted historical repairs and current-policy boundaries while exposing an
+unscoped non-execution claim. Historical model calls used no tools, but the
+preparer routed documents and checked integrity. Record actor and phase rather
+than carrying a global negative claim into an operator-amended artifact.
+
+Some reviewer findings assumed detached prose even though the input explicitly
+defined a complete packet with patch/base metadata and an origin map. Check the
+declared delivery unit before requiring duplicated bindings or a new version.
+If text later travels alone, its necessary context must travel with it. Preserve
+the raw review and source appraisal separately, including reviewer mistakes.
+The four-span follow-up is unadopted and not yet natively reviewed.
+
+The local launch also exposed source-eligibility and login-environment differences.
+Neither an ordinary-shell login check nor a skill name alone proves the tested
+invocation will work. Authentication failure and an observer progress-event
+misclassification are retained separately from the eventual response. The typed
+Claude classifier recognizes documented progress without accepting tools or
+error-bearing results as success. These are local engineering findings, not
+military doctrine or evidence of universal client equivalence.
+
 ## Phase Provenance In Native Document Work (2026-11-12)
 
 An actual Codex author/reviewer/reviser/receiver exercise preserved an amended

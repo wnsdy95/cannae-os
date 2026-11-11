@@ -2,6 +2,16 @@
 
 ## Skill-First Scope And Authoring
 
+The [native Claude review](document-authoring-case-study.md#native-claude-cross-client-review)
+records an exact synthetic correction candidate, retained launch/observer failures
+and source appraisal. Declared delivery units and actor/phase-scoped work claims
+are local lessons, not new military claims. The bounded classifier uses the
+official [thinking-progress event definition](https://code.claude.com/docs/en/agent-sdk/typescript#sdkthinkingtokensmessage)
+(accessed 2026-11-12); progress estimates are not final usage or completed work.
+Its adversarial fixtures preserve unknown/tool/error rejection. Authentication
+environment and user-source eligibility observations are specific to the tested
+client, not claims that the reference documents prescribe those local settings.
+
 The [native document collaboration case](document-authoring-case-study.md#native-document-collaboration-and-phase-provenance)
 records a synthetic author/reviewer/reviser/receiver chain and its actual errors.
 Phase-qualified source IDs, recipient context, delivered excerpt digests and

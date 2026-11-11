@@ -124,6 +124,9 @@ Check the effective startup mode when an installed skill is missing. Claude's
 `--bare` skips automatic user-directory discovery; do not diagnose that as a
 broken link or remove permission controls to make a test pass. The ordinary
 initializer and a minimal-mode initializer are different test conditions.
+The tested Claude client also omitted a linked user skill when
+`--setting-sources ""` excluded user sources. Do not repair a valid installation
+or change persistent settings to compensate for that launch condition.
 
 For an opt-in macOS metadata check, run `skill-client-discovery-probe.js` with
 `--codex /absolute/path/to/codex` and/or `--claude /absolute/path/to/claude`.
@@ -131,7 +134,7 @@ It uses temporary homes, checks OS network/write denial before starting each
 client, and sends no user/model prompt. Codex renders prompt metadata; Claude
 receives only its initialization request, with tools/hooks/MCP disabled and
 real client credentials/keychain access denied. The absent/link/copy checks
-and Claude bare-mode negative case must match their expected results.
+and Claude bare-mode/user-source-exclusion negative cases must match their expected results.
 `run-skill-client-discovery-fixtures.js` tests the helper without native clients.
 Neither check proves skill-body consumption, semantic work quality, the current
 user's settings, authenticated model access or production isolation. Record
@@ -172,6 +175,21 @@ relaunches before consent; do not claim one provider request from one CLI run.
 For Claude result events, a `success` subtype alone is insufficient: inspect
 `is_error`, process exit, usage and substantive output. An error rendered as an
 assistant message is not a model-authored review or receiver acknowledgement.
+
+Before an approved native model check, test existing login under the exact
+intended launch environment. A login result from the ordinary shell is not
+evidence for a sanitized invocation. Preserve the supported existing user/config
+identity; do not copy tokens into a temporary home or weaken personal-context
+exclusions to obtain a passing result. This is not a requirement to inherit every
+environment variable. Record failed attempts and diagnose before a separate retry.
+
+Observe the provider's typed events, not message-text keywords. Claude
+`system/thinking_tokens` carries progress estimates, not a tool call or final
+usage. The bounded classifier in `authoring-review-packet.js` accepts its known
+shape while rejecting unknown envelopes and tool-bearing messages. Retain raw
+terminal events even after an earlier error. Neither progress nor a parsed
+result substitutes for successful process termination and source appraisal;
+an interrupted call's unreported usage is unknown, not zero.
 
 ## Authoring Review Packets
 

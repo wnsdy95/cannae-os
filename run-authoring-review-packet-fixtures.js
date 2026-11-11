@@ -5,7 +5,7 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent } = require("./authoring-review-packet");
+const { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent, classifyClaudeReviewEvent } = require("./authoring-review-packet");
 
 const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "cannae-authoring-review-")));
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
@@ -166,6 +166,53 @@ try {
     for (const value of [null, {}, { type: 5 }, { type: "future_event" }, { type: "item.completed" }]) {
       assert.throws(() => classifyReviewEvent(value), /native review/);
     }
+  });
+  const progress = { type: "system", subtype: "thinking_tokens", estimated_tokens: 50,
+    estimated_tokens_delta: 50, session_id: "synthetic-session", uuid: "synthetic-frame" };
+  fixture("Claude thinking progress is diagnostic, not a tool or completed review", () => {
+    assert.equal(classifyClaudeReviewEvent(progress), "diagnostic");
+    assert.equal(classifyClaudeReviewEvent({ ...progress, user_message_uuid: "synthetic-input" }), "diagnostic");
+  });
+  fixture("malformed or tool-bearing progress cannot hide behind the diagnostic subtype", () => {
+    for (const changed of [{ estimated_tokens: -1 }, { estimated_tokens_delta: "50" }, { estimated_tokens: Infinity },
+      { session_id: null }, { uuid: "" }, { content: [{ type: "tool_use" }] }, { subtype: "future_notice" }]) {
+      assert.throws(() => classifyClaudeReviewEvent({ ...progress, ...changed }), /Claude review/);
+    }
+  });
+  fixture("Claude startup requires no offered tools or MCP servers", () => {
+    const init = { type: "system", subtype: "init", tools: [], mcp_servers: [], permissionMode: "dontAsk" };
+    assert.equal(classifyClaudeReviewEvent(init), "lifecycle");
+    for (const changed of [{ tools: ["Bash"] }, { mcp_servers: [{ name: "remote" }] }, { permissionMode: "default" }]) {
+      assert.equal(classifyClaudeReviewEvent({ ...init, ...changed }), "prohibited_item");
+    }
+  });
+  fixture("Claude tool calls stay prohibited even inside a mixed assistant response", () => {
+    for (const type of ["tool_use", "server_tool_use", "future_tool"]) {
+      assert.equal(classifyClaudeReviewEvent({ type: "assistant", message: { content: [
+        { type: "text", text: "A review" }, { type, name: "Bash", input: {} }] } }), "prohibited_item");
+    }
+    assert.equal(classifyClaudeReviewEvent({ type: "assistant", message: { content: [
+      { type: "text", text: "Do not call tool_use." }, { type: "redacted_thinking", data: "synthetic" }] } }), "message");
+  });
+  fixture("Claude API errors and error-bearing success subtypes are not model reviews", () => {
+    assert.equal(classifyClaudeReviewEvent({ type: "assistant", error: "authentication_failed",
+      message: { content: [{ type: "text", text: "Not logged in" }] } }), "failure");
+    assert.equal(classifyClaudeReviewEvent({ type: "result", subtype: "success", is_error: true, result: "Not logged in" }), "failure");
+  });
+  fixture("Claude result classification still requires separate process and content appraisal", () => {
+    const result = { type: "result", subtype: "success", is_error: false, permission_denials: [], result: "Draft only" };
+    assert.equal(classifyClaudeReviewEvent(result), "result");
+    assert.equal(classifyClaudeReviewEvent({ ...result, permission_denials: [{ tool_name: "Bash" }] }), "prohibited_item");
+    for (const changed of [{ is_error: undefined }, { permission_denials: null }, { result: "" }]) {
+      assert.throws(() => classifyClaudeReviewEvent({ ...result, ...changed }), /Claude review/);
+    }
+  });
+  fixture("Claude unknown envelopes and malformed messages remain rejected", () => {
+    for (const event of [null, {}, { type: "future_event" }, { type: "assistant", message: { content: [] } },
+      { type: "assistant", message: { content: [{ type: "text" }] } }, { type: "rate_limit_event", rate_limit_info: { status: "unknown" } }]) {
+      assert.throws(() => classifyClaudeReviewEvent(event), /Claude review/);
+    }
+    assert.equal(classifyClaudeReviewEvent({ type: "rate_limit_event", rate_limit_info: { status: "allowed_warning" } }), "diagnostic");
   });
   console.log(JSON.stringify({ valid: true, fixtures, semantic_evaluation_executed: false, native_client_execution: false }));
 } finally {

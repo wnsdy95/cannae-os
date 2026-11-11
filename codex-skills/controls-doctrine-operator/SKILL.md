@@ -121,6 +121,10 @@ adopt another project's corpus. A copy is not the entire corpus or a runtime.
 Verify discovery in the client's effective startup mode before diagnosing a
 missing skill. A metadata listing is not body consumption or task execution;
 Claude bare mode skips automatic discovery of the ordinary user skill directory.
+Excluding user setting sources can also exclude installed user skills. Check
+login in the exact launch environment without copying credentials or changing
+persistent settings. Distinguish documented progress events from tool activity;
+an interrupted or error-bearing response is not a completed review.
 
 ## Write And Maintain Documents
 
@@ -189,6 +193,11 @@ historical attribution to match the current role. Update operative reading and
 comparison steps as well as headers. Before handoff, reconcile its
 required reading with the actual packet: include authorized dependencies or mark
 their absence and hold only the conclusions that depend on them.
+Appraise findings against the declared delivery unit: a full packet is not a
+detached excerpt. Preserve necessary bindings if text will travel alone, but do
+not mistake explicit patch/base metadata for a missing new-version approval.
+Scope claims of checks or non-execution to the actual actor and phase; a no-tool
+model response does not mean its preparer ran no routing or integrity checks.
 
 Compare a revision with its actual predecessor as well as the source policy.
 When compressing rules, preserve named triggers, decision owners, prohibited

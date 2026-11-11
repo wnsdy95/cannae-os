@@ -140,7 +140,7 @@ async function probe(provider, binary, mode) {
     const destination = path.join(provider === "codex" ? env.CODEX_HOME : env.CLAUDE_CONFIG_DIR, "skills", NAME);
     if (mode !== "absent") {
       fs.mkdirSync(path.dirname(destination), { recursive: true });
-      if (mode === "link" || mode === "bare-link") fs.symlinkSync(source, destination);
+      if (["link", "bare-link", "excluded-user-link"].includes(mode)) fs.symlinkSync(source, destination);
       else fs.cpSync(source, destination, { recursive: true });
     }
     verifyContainment(root, env);
@@ -153,13 +153,13 @@ async function probe(provider, binary, mode) {
     } else {
       const result = await runClient(binary, [...(mode === "bare-link" ? ["--bare"] : []), "--print", "--verbose",
         "--input-format", "stream-json", "--output-format", "stream-json", "--no-session-persistence",
-        "--strict-mcp-config", "--mcp-config", '{"mcpServers":{}}', "--setting-sources", "user", "--tools", "",
+        "--strict-mcp-config", "--mcp-config", '{"mcpServers":{}}', "--setting-sources", mode === "excluded-user-link" ? "" : "user", "--tools", "",
         "--settings", '{"disableAllHooks":true}'],
       root, env, { type: "control_request", request_id: "skill-discovery-only",
         request: { subtype: "initialize", hooks: null } });
       found = claudeDiscovery(result.response, description);
     }
-    const expected = mode !== "absent" && mode !== "bare-link";
+    const expected = !["absent", "bare-link", "excluded-user-link"].includes(mode);
     assert.equal(found, expected, `${provider} ${mode} discovery differs from the installed bundle.`);
     return { provider, version, installation: mode, discovered: found, expected,
       containment_verified: true, entry_sha256: createHash("sha256").update(entry).digest("hex") };
@@ -185,7 +185,7 @@ async function main() {
   }
   const results = [];
   for (const { provider, binary } of providers) {
-    for (const mode of ["absent", "link", "copy", ...(provider === "claude" ? ["bare-link"] : [])]) {
+    for (const mode of ["absent", "link", "copy", ...(provider === "claude" ? ["bare-link", "excluded-user-link"] : [])]) {
       try {
         results.push({ valid: true, ...await probe(provider, binary, mode) });
         console.error(`PASS ${provider} ${mode}: native metadata matches the isolated installation`);
