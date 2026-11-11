@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Excluded Work Is Not Domain Capability (2026-11-12)
+
+The [task-reading case](document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
+shows why reading volume alone is an inadequate optimization target. A museum
+analysis plus "do not build a dashboard" was incorrectly treated as covered by
+dashboard doctrine. The correction removes irrelevant specialist reading but
+adds the real capability-gap references, increasing the final document count.
+Preserving ownership and unknown capability is more important than a smaller list.
+
+Both routers now distinguish bounded complete platform exclusions from actual
+review, parent-task context and explicit inputs. Ordinary prose handoff no longer
+requires event-storage architecture by default. Existing matched controls remain
+selected, and ambiguous language retains conservative reading. Both skills teach
+that a forbidden implementation is not a forbidden review, nor evidence of domain
+competence. These local rules and fixtures do not prove general semantic coverage,
+minimal token use or native compliance; historical assignments are not rewritten.
+
 ## Content Screening Is Not Disclosure Judgment (2026-11-12)
 
 The [local diagnostic case](document-authoring-case-study.md#public-policy-content-review-diagnostics)

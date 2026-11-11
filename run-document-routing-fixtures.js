@@ -37,6 +37,10 @@ const IMPROVEMENT_SPECIALIST_DOCS = [
   "docs/verifier-independence-assurance.md", "docs/transparency-operations.md",
   "docs/runtime-automation-roadmap.md"
 ];
+const RUNTIME_SPECIALIST_DOCS = [
+  "docs/reference-architecture.md", "docs/event-sourcing-model.md", "docs/command-post-dashboard.md",
+  "docs/dashboard-wireframes.md", "docs/data-model.sql.md"
+];
 
 function route(router, args, query, repository = ROOT) {
   const result = spawnSync(process.execPath, [path.join(ROOT, router), ...args, query, repository], {
@@ -99,8 +103,8 @@ function testS6Reading(router) {
     "docs/context-releasability-policy.md", "docs/opsec-classification-model.md"];
   assert.deepEqual(output.operating_mode.mode_documents, base, "S6 must use its knowledge-management policy bundle");
   const technical = ["docs/reference-architecture.md", "docs/event-sourcing-model.md", "docs/command-post-dashboard.md"];
-  for (const document of [technical[0], technical[2]]) assert(!output.recommended_documents.some(x => x.path === document));
-  assert(output.recommended_documents.some(x => x.path === technical[1]), "the handoff route still requires event context");
+  for (const document of technical) assert(!output.recommended_documents.some(x => x.path === document),
+    "ordinary prose handoff does not require runtime event architecture");
   const sop = route(router, args, "Draft a support SOP. Do not publish.");
   for (const document of technical) assert(!sop.recommended_documents.some(x => x.path === document));
   const human = route(router, ["--actor=user"], query);
@@ -125,7 +129,7 @@ function testS6Reading(router) {
     assert.equal(explicit.capability_routing.provisional_organization.authority_expansion_authorized, false);
   }
   for (const task of ["Review dashboard architecture and event projection.",
-    "Draft a handoff document. Do not build a dashboard.", "Do not skip dashboard verification."]) {
+    "Do not skip dashboard verification."]) {
     const explicit = route(router, args, task);
     for (const document of technical) assert(explicit.recommended_documents.some(x => x.path === document));
     assert(explicit.validation_commands.includes("node run-maintenance-dashboard-fixtures.js"));
@@ -139,6 +143,82 @@ function testS6Reading(router) {
   const incomplete = route(router, ["--actor=ai", "--role=S6", "--authority=read-only"], query);
   assert(incomplete.operating_mode.escalation_required_when.some(x => x.includes("missing department")));
   assert.equal(incomplete.operating_mode.department, "unspecified");
+}
+
+function testTaskReadingScope(router) {
+  const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    const plain = route(router, args, "Draft a handoff document.");
+    for (const file of RUNTIME_SPECIALIST_DOCS) assert(!plain.recommended_documents.some(row => row.path === file));
+    for (const clause of ["Do not build a dashboard.", "Please do not deploy the dashboard yet.",
+      "Don't create a dashboard.", "Never launch a dashboard.", "Dashboard is out of scope.",
+      "Dashboard development is deferred.", "Dashboard and standalone service development remain deferred.",
+      "DO NOT BUILD A DASHBOARD!"]) {
+      const query = "Draft a handoff document. " + clause;
+      const result = route(router, args, query);
+      assert.equal(result.query, query);
+      assert.equal(result.capability_routing.capability_scope, query);
+      assertRoutes(result, ["continuity-handoff", "runtime-architecture-dashboard"]);
+      for (const file of RUNTIME_SPECIALIST_DOCS) {
+        assert(!result.recommended_documents.some(row => row.path === file), query + ": " + file);
+      }
+      for (const command of [...plain.validation_commands, ...controls]) assert(result.validation_commands.includes(command));
+      for (const file of ["docs/handoff-packet-template.md", "docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md"]) {
+        assert(result.recommended_documents.some(row => row.path === file));
+      }
+      assert(!result.capability_routing.matched_capability_routes.includes("runtime-architecture-dashboard"));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    }
+    for (const task of ["Review dashboard architecture. Do not deploy it.", "Do not skip dashboard verification.",
+      "Do not omit dashboard review.", "Do not build a dashboard but review its design.",
+      "Do not build a dashboard unless the review requires it.", "Compare workflows with and without a dashboard.",
+      "A dashboard is not required, but assess its event projection.", "Build a dashboard later.",
+      "Do not build a dashboard. Review its design.", "Do not build a dashboard; inspect its layout.",
+      "Do not build a dashboard. Unless the assessment requires it.",
+      "Do not build a dashboard; review its architecture.", "Do not build\na dashboard."]) {
+      const result = route(router, args, task);
+      for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file), task + ": " + file);
+      assert(result.capability_routing.matched_capability_routes.includes("runtime-architecture-dashboard"));
+      for (const command of controls) assert(result.validation_commands.includes(command));
+    }
+    const excluded = "Draft a handoff document. Do not build a dashboard.";
+    for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review dashboard architecture"]]) {
+      const result = route(router, [...args, ...extra], excluded);
+      for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file), extra + ": " + file);
+      for (const command of controls) assert(result.validation_commands.includes(command));
+    }
+    const inline = route(router, args, excluded + " Read docs/event-sourcing-model.md.");
+    assert(inline.task_references.resolved.some(row => row.path === "docs/event-sourcing-model.md"));
+    assert(inline.recommended_documents.some(row => row.path === "docs/event-sourcing-model.md"));
+    const domain = "Analyze museum attendance by city. Do not build a dashboard.";
+    const gap = route(router, args, domain);
+    assert.equal(gap.capability_routing.status, "gap_detected", "an excluded platform topic cannot hide a domain gap");
+    assert.equal(gap.capability_routing.provisional_organization.required, true);
+    assert.equal(gap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+    for (const command of [...controls, "node run-force-structure-change-fixtures.js"]) assert(gap.validation_commands.includes(command));
+    const compound = route(router, [...args, "--capability-query=" + domain, "--capability-query=Draft a handoff document"], domain + " Draft a handoff document.");
+    assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    assert.equal(compound.capability_routing.status, "gap_detected");
+  }
+  const technical = route(router, ["--actor=ai", "--role=S6", "--department=systems", "--authority=read-only"],
+    "Draft a handoff document. Do not build a dashboard.");
+  for (const file of ["docs/reference-architecture.md", "docs/event-sourcing-model.md"]) {
+    assert(technical.operating_mode.mode_documents.includes(file));
+    assert(technical.recommended_documents.some(row => row.path === file));
+  }
+  const project = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "controls-runtime-input-")));
+  try {
+    fs.writeFileSync(path.join(project, "dashboard-notes.md"), "PRIVATE-TECHNICAL-INPUT\n");
+    const init = spawnSync("git", ["init", "-q", project], { encoding: "utf8" });
+    assert.equal(init.status, 0, init.stderr);
+    const result = route(router, ["--actor=user", `--input-repository=${project}`, "--input-source=dashboard-notes.md"],
+      "Draft a handoff document. Do not build a dashboard.");
+    assert.deepEqual(result.task_inputs.sources, [{ path: "dashboard-notes.md", exists: true }]);
+    assert.equal(result.task_inputs.content_loaded, false);
+    assert.equal(result.task_inputs.authorization_verified, false);
+    for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file));
+    assert(!JSON.stringify(result).includes("PRIVATE-TECHNICAL-INPUT"));
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
 }
 
 function testComparisonRouting(router) {
@@ -314,6 +394,7 @@ function testObjectiveRouting(router) {
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   testS6Reading(router);
+  testTaskReadingScope(router);
   testOrdinaryAuthoring(router);
   testComparisonRouting(router);
   testObjectiveRouting(router);

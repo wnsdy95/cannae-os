@@ -95,6 +95,22 @@ function routeWithSkill(skillRoot, query, args = [], expectedStatus = 0) {
 const delegatedArgs = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"];
 const routingCases = [
   {
+    name: "excluded dashboard work cannot mask a parent domain gap in receipts",
+    query: "Draft a handoff document. Do not build a dashboard.",
+    extra: ["--capability-query=Analyze museum attendance by city. Do not build a dashboard."],
+    required: ["docs/force-structure-change-policy.md", "docs/handoff-packet-template.md", "docs/approval-scope-policy.md"],
+    absent: ["docs/event-sourcing-model.md", "docs/reference-architecture.md", "docs/command-post-dashboard.md"],
+    command: "node run-maintenance-dashboard-fixtures.js"
+  },
+  {
+    name: "technical review after an exclusion retains specialist reading in receipts",
+    query: "Draft a handoff document. Do not build a dashboard. Review its design.",
+    extra: ["--capability-query=Review dashboard architecture"],
+    required: ["docs/event-sourcing-model.md", "docs/reference-architecture.md", "docs/command-post-dashboard.md"],
+    command: "node run-maintenance-dashboard-fixtures.js",
+    gap: false
+  },
+  {
     name: "generic comparison preserves a capability gap and selected controls in receipts",
     query: "Compare museum attendance by city",
     extra: ["--capability-query=Compare museum attendance by city"],
@@ -220,10 +236,10 @@ for (const skillRoot of ["codex-skills/controls-doctrine-operator", ".claude/ski
     assert(rejected.stderr.includes(code));
   }
   for (const document of ["docs/knowledge-management-sop.md", "docs/context-releasability-policy.md",
-    "docs/opsec-classification-model.md", "docs/approval-scope-policy.md", "docs/event-sourcing-model.md"]) {
+    "docs/opsec-classification-model.md", "docs/approval-scope-policy.md"]) {
     assert(routed.recommended_documents.some(x => x.path === document));
   }
-  for (const document of ["docs/reference-architecture.md", "docs/command-post-dashboard.md"]) {
+  for (const document of ["docs/reference-architecture.md", "docs/command-post-dashboard.md", "docs/event-sourcing-model.md"]) {
     assert(!routed.recommended_documents.some(x => x.path === document));
   }
   const receipt = routeWithSkill(skillRoot, query, [...delegatedArgs, `--capability-query=${query}`,

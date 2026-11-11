@@ -144,6 +144,11 @@ Use the declared department and actual task to select technical context, not a
 role label alone. S6 starts with knowledge, disclosure and classification policy;
 systems duties or explicit inputs can still require architecture/event references.
 Do not erase prohibited actions from the task to shorten its reading list.
+An excluded platform deliverable is not evidence of the actual task's capability.
+Check `capability_routing` even if a retained technical route still lists controls.
+Distinguish "do not build a dashboard" from "review it without deployment": the
+latter still needs technical sources. Explicit inputs, parent tasks and assigned
+technical duties remain prerequisites; a shorter list is not proof of completeness.
 Ordinary role-specific routing is not a guarded work receipt; existing missions
 still require their control-plane roles and successful preflight.
 

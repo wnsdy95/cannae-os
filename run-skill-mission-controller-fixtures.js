@@ -373,7 +373,8 @@ fixture("specialist reading is task-scoped while release controls remain mandato
 
 for (const { tag, name, objective } of [
   { tag: "", name: "unmatched mission capability", objective: "Analyze ICP and rank sales targets from the canonical track view." },
-  { tag: "-COMPARISON", name: "generic comparison capability gap", objective: "Compare museum attendance by city" }
+  { tag: "-COMPARISON", name: "generic comparison capability gap", objective: "Compare museum attendance by city" },
+  { tag: "-EXCLUDED", name: "excluded dashboard cannot cover a domain gap", objective: "Analyze museum attendance by city. Do not build a dashboard." }
 ]) fixture(`${name} creates one bounded cell across every agent context`, () => {
   const plan = wavePlan(basePlan, `WGAP${tag}`);
   plan.id = `MWP-CAPABILITY-GAP-WGAP${tag}`;
@@ -424,6 +425,11 @@ for (const { tag, name, objective } of [
     if (tag === "-COMPARISON") assert(context.required_controls.some(control =>
       control.command === "node run-self-improvement-fixtures.js"),
     "generic comparison must not erase an already selected mandatory control");
+    if (tag === "-EXCLUDED") {
+      for (const command of ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"]) {
+        assert(context.required_controls.some(control => control.command === command), "excluded topic must not erase a selected control");
+      }
+    }
     assert(context.capability_routing.provisional_organization.authority_expansion_authorized === false &&
       context.capability_routing.provisional_organization.standing_department_activation_authorized === false,
     "provisional organization must not expand authority or self-activate a standing department");

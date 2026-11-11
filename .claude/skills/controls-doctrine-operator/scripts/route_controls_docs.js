@@ -398,6 +398,10 @@ const IMPROVEMENT_GENERAL_DOCS = new Set([
   "docs/repository-artifact-isolation-policy.md", "docs/knowledge-management-sop.md",
   "docs/evaluation-metrics.md"
 ]);
+const RUNTIME_SPECIALIST_DOCS = new Set([
+  "docs/reference-architecture.md", "docs/event-sourcing-model.md",
+  "docs/command-post-dashboard.md", "docs/dashboard-wireframes.md", "docs/data-model.sql.md"
+]);
 
 const GENERIC_ROUTE_KEYWORDS = new Set([
   ...COMPARISON_KEYWORDS,
@@ -1297,6 +1301,32 @@ function needsImprovementSpecialistReading(text, sources) {
     countMatches(context, ["runtime control candidate", "runtime control baseline"]) > 0;
 }
 
+function runtimeWorkContext(text) {
+  // Only complete, unambiguous exclusion clauses qualify; mixed/unknown wording stays.
+  const noun = "(?:dashboard|control panel|database|event store|event replay|ui|architecture|standalone service|separate service)s?";
+  const subject = "(?:(?:a|an|the|any|new|operational|production)\\s+)*" + noun;
+  const excluded = new RegExp("^(?:(?:please\\s+)?(?:do not|don't|never)\\s+" +
+    "(?:build|create|implement|develop|deploy|launch|start|operate|modify|change)\\s+" + subject +
+    "(?:\\s+(?:now|yet|for this task))?|" + subject + "(?:\\s+(?:and|or)\\s+" + subject + ")*" +
+    "(?:\\s+(?:development|implementation|work))?\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
+  const clauses = String(text).split(/[;\n]+|(?<=[.!?])\s+/)
+    .map(clause => clause.trim().replace(/[.!?]+$/, ""));
+  const retained = clauses.filter(clause => !excluded.test(clause));
+  const dependentReview = /\b(?:review|inspect|assess|compare|evaluate|audit|verify|check|validate|read)\s+(?:it|its|their|them|that|those|this)\b/i;
+  if (retained.length !== clauses.length && retained.some(clause =>
+    dependentReview.test(clause) || /^(?:but|however|unless|except|instead)\b/i.test(clause))) return String(text);
+  return retained.join("\n");
+}
+
+function needsRuntimeSpecialistReading(text, sources) {
+  const context = normalizeText(runtimeWorkContext(text));
+  return sources.some(file => RUNTIME_SPECIALIST_DOCS.has(file)) || countMatches(context, [
+    "architecture", "architectural", "dashboard", "dashboards", "control panel",
+    "event", "events", "eventing", "replay", "projection", "projected view", "ui",
+    "database", "databases", "runtime mission", "readiness", "preparedness"
+  ]) > 0;
+}
+
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
   const inputs = resolveInputReferences(options, repoRoot);
@@ -1313,7 +1343,7 @@ function route(query, repoRoot, options) {
       ...rule,
       score: countMatches(text, rule.keywords) || authoring ||
         (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
-      specific_score: countSpecificMatches(text, rule.keywords) || authoring
+      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring
     };
   }).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
@@ -1366,11 +1396,13 @@ function route(query, repoRoot, options) {
   const readingContext = [query, ...capabilityQueries, ...sourcePaths].join("\n");
   const githubReleaseReading = needsGithubReleaseReading(readingContext);
   const improvementReading = needsImprovementSpecialistReading(readingContext, sourcePaths);
+  const runtimeReading = needsRuntimeSpecialistReading(readingContext, sourcePaths);
   for (const rule of selectedRules) {
     // Specialist reading is conditional; route/control selection is unchanged.
     docs.push(...rule.docs.filter(file =>
       (rule.id !== "authority-risk-release" || !file.startsWith("docs/github-release-") || githubReleaseReading) &&
-      (rule.id !== "bounded-self-improvement" || IMPROVEMENT_GENERAL_DOCS.has(file) || improvementReading)));
+      (rule.id !== "bounded-self-improvement" || IMPROVEMENT_GENERAL_DOCS.has(file) || improvementReading) &&
+      (!["runtime-architecture-dashboard", "continuity-handoff"].includes(rule.id) || !RUNTIME_SPECIALIST_DOCS.has(file) || runtimeReading)));
     commands.push(...rule.commands);
   }
 

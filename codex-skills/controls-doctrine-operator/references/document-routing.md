@@ -290,7 +290,7 @@ resolved source references. Verifier dependency migration retains its existing
 release-verification reading. A generic support SOP with "do not publish" no
 longer requires those four specialist manuals.
 
-This is positive context selection, not a negation parser. Explicit GitHub
+This GitHub-release selection is positive context matching, not a negation parser. Explicit GitHub
 release prohibitions, mixed clauses and "do not skip verification" still retain
 specialist reading. The route IDs, capability decision, mode/authority and
 selected validation commands are not reduced. Generic publication still needs
@@ -299,6 +299,33 @@ Specialist files remain discoverable as supporting artifacts. Read them when
 their operation applies, not merely because they appear in that inventory.
 Re-route for the new task/phase instead of manually trimming an issued packet.
 Test the direct result, generated receipt and receiver context separately.
+
+### Runtime Reading Scope
+
+An ordinary prose handoff no longer adds event-storage architecture by default.
+Five architecture, event-store, dashboard/wireframe and database-model references
+are conditional in the runtime/dashboard and continuity routes. General maintenance
+readiness remains when that route matches. Other routes, declared technical
+departments, actual technical task/parent context and explicit corpus/project
+inputs still add their references; a prohibition on implementation does not
+cancel an assigned technical review or required source.
+
+The router recognizes a bounded set of complete English exclusions, such as
+"Do not build a dashboard" and "Dashboard development is deferred". Those clauses
+cannot by themselves establish runtime capability or require the five specialist
+manuals. The original task and capability query remain verbatim, and selected
+route IDs and validation commands remain. Thus "Analyze museum attendance; do not
+build a dashboard" keeps its domain gap and provisional cell instead of claiming
+dashboard expertise covers the analysis. This adds the existing gap controls,
+not authority to create a standing department.
+
+Mixed, conditional and unknown wording stays conservative. "Do not skip dashboard
+verification", "do not build it but review its design" and positive parent tasks
+still require reading. This is not general negation parsing, language understanding
+or globally minimal context selection. A technical filename is a relevance hint,
+not content access or domain competence. Check every original objective and the
+actual assigned reading before claiming completeness. Never trim an already issued
+packet to match a new count; follow its currentness/rerouting procedure.
 
 ## Explicit Task Inputs
 
@@ -565,8 +592,9 @@ and event references; task or parent-objective matches and explicit source input
 remain additive. Do not change a department to evade an assigned duty. This is
 reading selection, not access enforcement, a changed role or execution authority.
 Existing issued packets retain their bindings and require the normal fresh-route
-procedure when instructions change. Explicit dashboard prohibitions still match
-conservatively; no negation understanding or exception to controls is implied.
+procedure when instructions change. Complete supported platform exclusions affect
+specialist reading and capability evidence as described above, not role policy,
+selected controls or execution authority. Unknown wording stays conservative.
 
 | Mode | Trigger | Routing Rule | Escalation |
 | --- | --- | --- | --- |

@@ -682,6 +682,12 @@ The [exact-source check](docs/document-authoring-case-study.md#public-policy-con
 identifies the rule behind the public-policy refusal without exposing bodies or
 clearing it. A diagnostic is not a disclosure exception or a prepared packet.
 
+[Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
+now separates ordinary prose handoffs and supported platform exclusions from
+actual technical work. Explicit inputs, assigned technical duties and selected
+controls remain; an excluded dashboard cannot conceal an unsupported domain.
+This bounded correction is not globally minimal context or native acceptance.
+
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
 requires an explicit [source request](schema-files/handoff-generation-request.schema.json).
 It reads the selected OPORD/events, preserves quoted requirements and source

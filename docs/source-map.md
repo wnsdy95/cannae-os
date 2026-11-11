@@ -1,5 +1,12 @@
 # Source Map
 
+The [task-reading correction](document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
+uses local before/after routing, both installed-provider fixtures and guarded
+wave contexts. It conditions five specialist references and prevents supported
+platform exclusions from supplying runtime capability evidence, while retaining
+original requests and selected controls. This is engineering evidence, not a
+military-source claim, universal semantic parsing or new native acceptance.
+
 The [public-policy diagnostic case](document-authoring-case-study.md#public-policy-content-review-diagnostics)
 uses retained exact SOP V3/V4 bodies, `project-document-packet.js` and local packet
 fixtures. It records rule/digest metadata without changing detectors or granting

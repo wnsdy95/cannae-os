@@ -2567,3 +2567,47 @@ This is diagnostic progress, not raw exception clearance or native behavioral
 acceptance. The exact originals remain blocked; the sources and original failure
 record are unchanged. Choosing a supported reviewed-disclosure path, consistent
 reporting, minimal necessary context and the broader goal acceptance remain open.
+
+## Task-Relevant Runtime Reading And Excluded Work
+
+Offline rerouting exposed two distinct problems: a prose handoff always acquired
+the event-storage manual, and an explicitly excluded dashboard deliverable could
+make an otherwise uncovered domain appear supported. The original requests were
+retained, not shortened to obtain better recommendations. Both provider routers
+now condition five runtime specialist manuals on actual technical context while
+preserving department/role defaults, explicit sources, other routes and every
+already selected validation command. A bounded complete exclusion clause no
+longer supplies runtime capability evidence. Ambiguous/mixed wording remains
+conservative; this is not a general language parser.
+
+| Fixed S6/knowledge/read-only query | Before -> after recommendations | Observed disposition |
+| --- | --- | --- |
+| Ordinary prose handoff | 18 -> 17 | Remove only the 11,446-byte event-storage reference. |
+| Handoff; do not build a dashboard | 21 -> 16 | Remove five unrelated technical references, 40,520 bytes; preserve authoring/authority context and selected controls. |
+| Skill-first status; dashboard development deferred | 26 -> 21 | Preserve status/scope context and the original exclusion. |
+| Museum attendance analysis; do not build a dashboard | 15 -> 16 | Remove the five technical references but add the existing capability-gap references. The task now correctly retains a bounded cell, not a false covered verdict. |
+| Actual dashboard architecture/event review | 15 -> 15 | Reading, capability decision and controls are unchanged. |
+| Recorded Codex failure-exercise query | 53 -> 53 | Its wider runtime wording remains conservative. |
+| Recorded Claude failure-exercise query | 48 -> 47 | Remove only the unrelated event-storage reference. |
+
+The last two rows reroute recorded query/objective text in a fixed local context;
+they are not fresh native invocations or changes to the historical read assignment.
+Document counts and source-file bytes are not model tokens or measured delivered
+context. A legitimate gap can increase required reading. Most broad reading and
+large general references remain; neither count reduction nor this lexical fix
+establishes minimality, domain competence or semantic completeness.
+
+Regression cases distinguish actual review and "do not skip verification" from
+supported exclusions, preserve technical parent objectives and corpus/project
+inputs, and retain systems-department defaults. Installed links/copies and guarded
+wave fixtures check the same boundaries: a missing capability creates one shared
+cell across agents, cannot expand authority, and does not waive technical controls.
+Both skills teach excluded-deliverable versus review-task reasoning, preserving
+the actual objective even when matched control routes and capability differ.
+
+Exact before/after outputs and local appraisal are retained under
+`.cannae/maintenance/task-reading-scope-20261112/`. Existing drafts, evaluations
+and issued packets are not rewritten. Current-context checks still require normal
+rerouting after changes. Public-policy clearance, reporting/recovery acceptance,
+broader minimum-context selection and original-request omission checking remain
+open; the active backlog continues to distinguish them.

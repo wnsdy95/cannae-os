@@ -266,6 +266,37 @@ function comparisonGap(env) {
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
 }
 
+function taskReadingScope(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const [query, technical, gap] of [
+    ["Draft a handoff document. Do not build a dashboard.", false, false],
+    ["Draft a handoff document. Do not skip dashboard verification.", true, false],
+    ["Analyze museum attendance by city. Do not build a dashboard.", false, true]
+  ]) {
+    const results = PROVIDERS.map(provider => {
+      const run = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
+        "--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only", "--", query],
+      { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 0, run.stderr);
+      const result = JSON.parse(run.stdout);
+      assert.equal(result.repo_root, fs.realpathSync(source));
+      assert.equal(result.query, query);
+      assert.equal(result.operating_mode.authority, "read-only");
+      assert.equal(result.capability_routing.status, gap ? "gap_detected" : "covered");
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      for (const file of ["docs/reference-architecture.md", "docs/event-sourcing-model.md", "docs/command-post-dashboard.md"]) {
+        assert.equal(result.recommended_documents.some(row => row.path === file), technical, file);
+      }
+      for (const command of ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"]) {
+        assert(result.validation_commands.includes(command));
+      }
+      return result;
+    });
+    assert.deepEqual(results[0], results[1]);
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 try {
   fs.mkdirSync(source);
   fs.mkdirSync(unrelated);
@@ -319,6 +350,7 @@ try {
   });
   fixture("linked providers retain every declared objective from another project", () => declaredObjectives(env));
   fixture("linked providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
+  fixture("linked providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("matching link installation is idempotent", () => {
@@ -354,6 +386,7 @@ try {
   });
   fixture("copied providers retain every declared objective from another project", () => declaredObjectives(env));
   fixture("copied providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
+  fixture("copied providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {
