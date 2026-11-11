@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Valid Links Can Still Select Stale State (2026-11-12)
+
+The [requirement and navigation audit](document-authoring-case-study.md#current-navigation-and-requirement-audit)
+found a current-candidate notice that still selected V4 after proposed V5 was
+recorded. File existence and link coverage could not distinguish current state
+from a valid historical target. Maintain a current pointer and disposition
+separately from append-only evidence, and reconcile the README and active queue
+without rewriting earlier decisions. Both provider maintenance guides now use
+this check. Version order alone grants neither supersession nor adoption.
+
+The same audit separates exact native final text from saved transcript wrappers
+and file bytes. Their digests need not match; verify the original representation
+and bind each artifact separately instead of trimming evidence to fit a hash.
+The four-span follow-up has local targeted source appraisal, not a newly
+successful model run or complete document/workflow acceptance.
+
 ## Receiving Does Not Establish Complete Review (2026-11-12)
 
 The [implicit Claude receiver](document-authoring-case-study.md#native-implicit-claude-receiving)

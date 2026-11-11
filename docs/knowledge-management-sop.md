@@ -181,6 +181,15 @@ Rules:
 - In the compendium, record why the doctrine was created, its LLM application, and its current limit.
 - Keep the machine-audited doctrine output list between the `doctrine-index` markers in `docs/military-operating-deep-research-queue.md`; `node source-map-linter.js` must pass before the changelog may claim closure.
 
+For a document retaining multiple revisions, maintain a current-candidate
+pointer separately from the append-only evidence history. Update its opening
+notice, README entry and current queue together after checking the candidate's
+identity, predecessor and actual disposition. A newer number does not establish
+acceptance or supersede policy. Label earlier next-action statements as history
+so a new operator does not restart consumed work. Preserve the original draft,
+review, failed attempt and source bindings rather than rewriting old claims to
+match the present. Check pointer semantics as well as link existence.
+
 Leave a source anchor at the end of a document whenever possible.
 
 ## 9. Quality gate

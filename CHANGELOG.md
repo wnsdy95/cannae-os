@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reconcile stale current-candidate pointers with proposed support SOP V5 without rewriting earlier drafts or implying adoption. Separate the active requirement-level queue from retained checkpoint next actions, and mirror pointer/history and evidence-representation checks in both maintenance guides. Locally appraise the exact four-span actor/phase follow-up and recheck its seven historical native records and unchanged remainder; this is not a new native review or full goal acceptance.
+
 - Observe native Claude implicit selection and cold-start receipt of the unchanged Codex SOP/handoff unit. Reconcile seven calls and both objective rows; retain missing mandatory reads, a locator overclaim and retrospective reporting instead of declaring complete review acceptance. Mirror required-reading and advance-reporting rules in both skills. Preserve observer failures and a separately recorded retry; add exact native body/argument verification with regression cases, without weakening no-tool review controls or inferring policy adoption.
 
 - Observe native Codex implicit selection from an ordinary SOP/handoff request without pre-injected instructions. Reconcile eleven read/routing calls and appraise preserved policy, explicit unknowns and usable source location; retain controlled-catalog, Claude parity and receiving limits. Separately align the Codex UI starter with document-first work and test installed link/copy delivery plus equivalent direct routing; no native starter execution or full distribution acceptance is inferred.

@@ -144,6 +144,27 @@ try {
     assert.equal(hash(section(text, "## Corrective SOP Draft V3", "### V3 Comparison And Current Handoff")),
       "a94781eb9391573969b4759be9cf9e752ab28ad5f15c19b4a8d0e87076d3f980");
   });
+  fixture("current navigation selects the proposed candidate without rewriting historical cases", () => {
+    const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
+    const notice = section(text, "## Evidence Boundary", "## Task And Backbrief");
+    assert(notice.includes("[V5](#corrective-sop-draft-v5)"));
+    assert(notice.includes("not fresh native")); assert(notice.includes("Other exercises below have separate candidate identities"));
+    const readme = fs.readFileSync(path.join(__dirname, "README.md"), "utf8");
+    assert(readme.includes("current [proposed V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5)"));
+    const backlog = fs.readFileSync(path.join(__dirname, "docs/completion-backlog.md"), "utf8");
+    const current = section(backlog, "## Active Core Work", "## Evidence History");
+    assert(current.includes("Current support-SOP candidate: [V5]"));
+    assert(current.includes("not those historical instructions"));
+    assert(!current.includes("Next: Claude implicit selection"));
+    assert(backlog.includes("Next: Claude implicit selection"), "Retain the original checkpoint rather than rewriting it.");
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const guide = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8");
+      assert(guide.includes("passing link check cannot detect a stale but"));
+      assert(guide.includes("Do not select a version just because its number is highest"));
+      assert(guide.includes("do not trim evidence or replace an expected digest merely to pass"));
+    }
+    assert(!packet.prompt.includes("## Requirement-Level Audit"));
+  });
   fixture("proposed V4 changes only appraised spans and its version lineage", () => {
     const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
     const v3 = section(text, "## Corrective SOP Draft V3", "### V3 Comparison And Current Handoff");

@@ -2,6 +2,12 @@
 
 ## Skill-First Scope And Authoring
 
+The [current-navigation audit](document-authoring-case-study.md#current-navigation-and-requirement-audit)
+found a valid but stale V4 pointer after V5 existed. Current links now name the
+unadopted candidate while original evidence remains historical. The separate
+four-span source appraisal checks retained claims and exact representations,
+not new model behavior, military doctrine, authority or operational acceptance.
+
 The [implicit Claude receiving case](document-authoring-case-study.md#native-implicit-claude-receiving)
 adds observed native loading, current-role routing and actual receipt of a complete
 synthetic unit. Process success is separated from missing required reads, an

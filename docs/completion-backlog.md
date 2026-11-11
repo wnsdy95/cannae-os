@@ -10,6 +10,79 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+This is the current queue, based on the 2026-11-12 requirement audit. The
+[evidence history](#evidence-history) below retains earlier checkpoints verbatim;
+its `Latest` and `Next` statements were current only at their own checkpoints.
+Use this queue and the requirement table, not those historical instructions.
+
+1. **G1/G2/G3:** verify required-reading completion and an actual advance backbrief
+   in a new source-grounded research/report task with a justified minimal profile.
+   Keep findings partial if required input is unread; do not repeat the completed
+   desk-duty review just for a passing grade. Current corrected instructions
+   have local checks, not fresh native behavioral acceptance.
+2. **G1/G3:** retain the now locally appraised four-span actor/phase follow-up and
+   source/delta-checked V5 without inferring fresh native acceptance or adoption.
+   Extend missing method/reporting/failure coverage against the requirements
+   below; do not restart a consumed historical review to clear its old next step.
+3. **G2/G3:** resolve unnecessary reading and the conservative public-policy
+   content-review refusal without dropping explicit inputs, controls or disclosure
+   requirements. Ordinary document work must not bypass an existing guarded
+   mission's unsupported-input rejection.
+4. **G4/G5:** finish current-navigation, history and target-output consistency
+   checks and reconcile both installed clients. Native implicit selection and
+   actual receipt are already observed in bounded cases, not pending from zero.
+
+Current support-SOP candidate: [V5](document-authoring-case-study.md#corrective-sop-draft-v5),
+following the changes-required [V4 review](document-authoring-case-study.md#support-sop-v4-source-review).
+It is proposed, locally source/delta-checked and unadopted; no fresh native V5
+acceptance is claimed. The document-chain four-span patch is a different artifact,
+not another support-SOP version. No next step authorizes publication or policy
+adoption. Dashboards and separate services remain deferred.
+
+### Requirement-Level Audit
+
+The rows derive from the five USER objectives, not from the number of files or
+passing tests. `Verified (bounded)` means the named behavior has inspected local
+or native evidence at the stated scope; it is not universal behavior, authenticated
+authority or final goal closure. `Partial` retains useful evidence with an explicit
+gap. `Open` is not yet demonstrated. Optional packaging is not a missing required
+server. Do not turn these unequal rows into a product-completion percentage.
+
+| ID | Goal requirement | Current disposition and evidence | Remaining decision or work |
+| --- | --- | --- | --- |
+| A01 | G1: SOP, orders, research, reports and handoffs preserve intent, tasks, sources, authority and unknowns | Partial. The [support exercise](document-authoring-case-study.md#task-and-backbrief), [maintenance report](document-authoring-case-study.md#actual-maintenance-work-order), [three-document native chain](document-authoring-case-study.md#native-document-collaboration-and-phase-provenance) and [desk-duty unit](document-authoring-case-study.md#native-implicit-claude-receiving) cover all named formats, but coverage is not complete acceptance. | Close the remaining review defects; verify current required-reading/reporting guidance in a research/report case, not another duplicate SOP exercise. |
+| A02 | G1: revisions preserve unaffected requirements and explicit lineage | Verified (bounded). Exact V1/V3/V4 and proposed V5 delta fixtures preserve historical bodies; [native repair reviews](document-authoring-case-study.md#current-guidance-handoff-repair-review) retain policy and unknowns. The [four-span follow-up](document-authoring-case-study.md#four-span-follow-up-source-appraisal) now has local source appraisal and a rechecked exact delta. | The four-span follow-up and V5 remain unadopted; do not confuse local appraisal with fresh native review. |
+| A03 | G1: current canonical document and change history agree | Verified (bounded). The opening notice, README and current queue now identify proposed V5, and a regression checks that historical candidates and earlier next actions stay unchanged. | Other exercises retain their own IDs and scopes; this correction is not proof that every prose status in the corpus is current. Wider maintenance remains A16. |
+| A04 | G2: human versus delegated role/department/authority routing | Verified (bounded). Dual-provider routing, fixed S6 native routes and access-profile fixtures preserve declarations and deny unlisted or insufficiently authorized content. | Declared roles are not authentication; wider task relevance belongs to A05, not a new authority claim. |
+| A05 | G2: necessary documents arrive with minimal irrelevant context | Open. Required project bodies arrived, but the latest receiver skipped six assigned guide rows; the preparer's all-required guide list was not minimized. | Justify required versus optional sources before assignment; verify actual required reads and task relevance. Do not waive the old list retroactively. |
+| A06 | G2: reroute at phase changes and reject missing/stale/wrong-role context | Verified (bounded). [Native phase routes](document-authoring-case-study.md#agent-invoked-phase-routing), current-byte checks and 15 preflight fixtures cover the retained local boundary. | Guarded project/multi-objective inputs remain explicitly unsupported; rejection must persist, not be relabeled as ordinary work. No protected-host guarantee is inferred. |
+| A07 | G2: uncovered domains get a bounded task cell; standing changes remain USER decisions | Verified (bounded). [Compound intake](project-terminology-workflow.md#native-compound-intake), comparison-gap fixtures and agent context checks retain the provisional cell without standing activation or expanded authority. | Lexical matching is not proof of domain competence or semantic completeness; preserve that limitation. |
+| A08 | G3: detect semantic omissions and missing prerequisites | Partial. Explicit objectives and required terms preserve gaps and actual compiler denials in compound intake. | Caller declarations can still omit work; original-request comparison and missing-read disposition need behavioral coverage beyond declared-list validation. |
+| A09 | G3: request, plan, review/backbrief, work, report and handoff form an observed flow | Partial. Native author/reviewer/reviser/receiver chains exist; the latest receiver supplied its requested advance backbrief only retrospectively. | Observe the requested report before dependent analysis, with actual outcomes and cold-start receiving context. |
+| A10 | G3: bounded replanning and permitted method changes | Partial. Changed-policy cases retain new recovery holds and permit independent drafting without inventing authority. | Verify a permitted method change and a forbidden change distinctly, preserving intent, costs, deadlines and decision owners. |
+| A11 | G3: pre- and post-work reporting | Partial. Reports retain actual reads and separate operator/model activity after corrections; source policies preserve pre/post obligations. | A preserved duty is not an observed advance report. Verify timing and scope, not just a final report section. |
+| A12 | G3: stop conditions and tool-failure response | Partial. A real synthetic read failure and changed recovery policy are [retained and repaired](document-authoring-case-study.md#source-failure-and-changed-policy-handoff). | Combine current mandatory-reading and dependent-stop handling without retrying denied material or claiming unknown effects resolved. |
+| A13 | G3: sensitive-output procedure | Partial. Project packets check raw/summary/reference-only delivery, stale bindings and untrusted approval claims; native reviewers exclude owner-only bodies. | Public security-policy wording still causes a conservative refusal. Diagnose it without an ad hoc bypass or silent removal of required input. |
+| A14 | G3: complete source-locatable reporting/handoff without a dashboard | Partial. The Claude receiver actually reads the whole desk-duty unit and acknowledges document receipt. A bounded Codex repair has source appraisal. | Correct remaining review-quality issues and retain complete current receiving units. Document receipt is not operational acceptance. |
+| A15 | G4: observed failures lead to bounded, mirrored improvements and relevant checks | Verified (bounded). Routing, reporting, provenance and loader failures led to both-provider changes with retained regressions and subsequent native repair evidence. | Newest instruction changes still need their own behavioral acceptance; a test pass cannot expand authority or grant release. |
+| A16 | G4: sources, indexes, canonical state and history stay coherent | Partial. Source-map/registry/link checks pass, but a valid link to a stale current candidate escaped them. | Add semantic pointer checks and finish the current-state/history audit; do not rewrite old verdicts. |
+| A17 | G4: repository-specific outputs remain separated | Verified (bounded). Target-bound packet preparation, output isolation fixtures and recorded operator materialization keep work products in their target project; verification logs are separate maintenance evidence. | Recheck affected boundaries on changes. This is local filesystem behavior, not distributed storage isolation. |
+| A18 | G5: link/copy installation and repository resolution | Verified (bounded). Thirty-seven installation cases exercise both providers, explicit bindings, foreign working roots and missing dependencies. Installed links point to this checkout. | Copies require refresh; neither an installed skill nor its root marker is the entire corpus. |
+| A19 | G5: discovery and actual installed-body use | Verified (bounded). Both native clients have implicit-selection and actual router/read evidence; exact Claude body/arguments are separately checked. | Filtered startup evidence is not universal client configuration support. Preserve native versions and launch limits. |
+| A20 | G5: equivalent useful behavior in both clients | Partial. Both use current routing/access rules and preserve authority in recorded cases. | Complete current required-reading/reporting acceptance and distinguish provider differences from actual policy regressions. |
+| A21 | G5: thin plugin when needed, no mandatory server | Explicitly deferred optional packaging. Both skills are the current distribution; the temporary test adapter is not a shipped plugin. | Do not build a service or claim a plugin exists merely to close this row. |
+
+All five goals remain partial. This audit distinguishes implementation, structural
+checks, source appraisal and observed client behavior; it does not erase the
+broader requirements or substitute advisory review for USER adoption. The current
+queue above owns next actions. The following record owns historical evidence.
+
+## Evidence History
+
+Earlier checkpoint text is retained below, including its original next actions
+and limits. Those instructions do not override the current queue. Candidate
+status and scope must be read at the checkpoint where each claim was made.
+
 Latest G1/G2/G3/G4/G5 evidence: native Claude implicitly selects its installed
 instructions and receives the whole unchanged Codex SOP/handoff unit without
 parent chat. Seven calls reconcile: one load, one two-objective route and five

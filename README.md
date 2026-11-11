@@ -651,10 +651,13 @@ It separates evaluator input from the author's seeded-defect reference under
 this repository's local maintenance directory; it never calls a model or grants
 consent. The [authoring case](docs/document-authoring-case-study.md#approved-review-retry-and-appraisal)
 records the original advisory review and a [separately approved V3 review](docs/document-authoring-case-study.md#approved-v3-review-and-appraisal).
-The latter found seven source/predecessor omissions or ambiguities; the current
-[proposed V4](docs/document-authoring-case-study.md#corrective-sop-draft-v4) restores
-them without policy adoption. The helper retains historical V1/V2 stress cases;
-it does not evaluate V3/V4 or establish independent acceptance. Ordinary prose
+The V3 review found seven source/predecessor omissions or ambiguities; V4 restored
+them and subsequently received a [source review](docs/document-authoring-case-study.md#support-sop-v4-source-review).
+The current [proposed V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5)
+clarifies continuing holds and existing recovery paths. It remains unadopted,
+with a local source/delta check rather than fresh native acceptance. The helper
+retains historical V1/V2 stress cases; it does not evaluate V3/V4/V5 or establish
+independent acceptance. Ordinary prose
 handoffs do not require invented runtime IDs; existing missions keep their guards.
 
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)

@@ -7,10 +7,13 @@ The opening exercise and V1/V2 are historical. The later
 actual model response and supersedes the author's earlier completeness assessment;
 it does not rewrite the original drafts, ratings or failed first attempt.
 
-The current proposed candidate is [V4](#corrective-sop-draft-v4), following the
-[separately approved V3 review](#approved-v3-review-and-appraisal). Earlier claims
-of a current draft or complete preservation remain historical, not acceptance
-of that version. Neither the review nor V4 adopts or changes source policy.
+The current proposed support-SOP candidate is [V5](#corrective-sop-draft-v5),
+following the [V4 source review](#support-sop-v4-source-review). V4's verdict
+remains changes-required; V5 has a local source/delta check, not fresh native
+acceptance or USER adoption. Earlier claims of a current draft or complete
+preservation are historical. Neither the review nor V5 changes source policy.
+Other exercises below have separate candidate identities; their version numbers
+do not select the current support SOP.
 
 Case date: 2026-11-10. Goals: G1, G2 and G4. This is a local authoring exercise
 against the repository's actual support, governance and security policies, not
@@ -2249,3 +2252,62 @@ process for a cleaner grade. Next appraise broader remaining cases and required
 reading/reporting behavior with a justified profile, and complete the
 corpus/history/output audit. G1-G5 remain partial; bounded receipt is now observed
 but general client equivalence and complete review acceptance are not established.
+
+## Current Navigation And Requirement Audit
+
+The 2026-11-12 audit at source HEAD `5af28ab` found a real current-state defect:
+this document's opening notice and README still called V4 the current proposed
+support SOP, although the V4 review and proposed V5 were already retained below.
+All links resolved, so link/inventory coverage did not detect the stale target.
+The active backlog also mixed current work with historical `Next` instructions,
+including a consumed V4 review and already observed client selection.
+
+The opening notice, README and active queue now point to proposed V5 and retain
+its exact status: local source/delta check, no fresh native acceptance and no
+USER adoption. Earlier drafts, review verdicts and next-action records remain
+unchanged under an explicit evidence-history boundary. Other document exercises
+have separate IDs; their version numbers do not select the support SOP. A focused
+fixture checks current pointer semantics as well as preserved historical bodies.
+
+The [requirement-level audit](completion-backlog.md#requirement-level-audit)
+maps all five USER objectives into twenty required assessment rows and one
+optional packaging disposition. It separates bounded verified behavior, partial
+evidence and unverified work. It is not a new scope, a test-count completion
+percentage or a reason to require deferred infrastructure. Both maintenance
+guides now require current-navigation/history reconciliation and selection of
+genuinely missing acceptance rather than another successful-case replay.
+
+### Four-Span Follow-Up Source Appraisal
+
+The retained [actor/phase correction](#native-claude-cross-client-review) was
+appraised locally against its exact reviewed base, the original request, V2
+policy and event extract. All three candidate fields and four changed spans
+were read. A separate read-only check rechecked the seven historical native
+prompt/response records, packet source bindings and exact reverse delta. No
+historical native process or review was rerun.
+
+The changed statements correctly separate historical model text from the
+preparer's routing, packet creation, integrity checks and local artifacts. They
+do not authenticate sources, prove import usability, change policy or supply
+USER approval. Every other document string remains unchanged, including the
+affected-import stop, new recovery-decision requirement, unaffected drafting,
+separate decisions, pre/post reporting and unknowns. No material contradiction
+was found in these four changed claims at the declared full-packet scope.
+
+This closes the local targeted source-appraisal task, not fresh native review,
+full semantic acceptance of the three documents, standalone distribution or
+operational receiving. The patch remains unadopted, bound to base
+`2209ce28674df57ddff24f06006c088c6e7b03ec4b812f33c6b940137e1f9fdc`;
+candidate digest remains
+`287546e8ea66d167ab33a029e58d7225da09011f69b4041d9abbd16bc6cb68f6`.
+The original preparation-time statement that review was unestablished is not
+rewritten by this later appraisal.
+
+Initial audit assertions compared different representations: a saved transcript
+with the native final-message digest, a stored message wrapper with its embedded
+item, and an explicit null reference-only body with an absent property. Diagnosis
+checked the original writers and packet contract. The corrected audit compares
+exact corresponding representations and records separate hashes; it never trims
+or rewrites historical evidence. These failed audit assumptions are retained,
+not reported as source corruption or passing checks. The evidence and local
+appraisal are in `.cannae/maintenance/core-acceptance-audit-20261112/`.

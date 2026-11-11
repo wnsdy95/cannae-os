@@ -57,6 +57,25 @@ entrypoint/scope cleanup separate from behavioral goal acceptance. Do not count
 that preparation as a completed goal or reuse the old eight-outcome list as
 the active queue. A goal remains open until its own evidence is sufficient.
 
+Separate current navigation from retained evidence history. After a proposed
+successor or completed review, reconcile the document's opening current-candidate
+pointer, README and active queue with the actual candidate and disposition.
+Do not select a version just because its number is highest or infer adoption
+from a newer draft. Preserve old next-action statements under an explicitly
+historical section; do not dispatch them as current work or rewrite the old
+review to appear successful. A passing link check cannot detect a stale but
+existing target, so test the current pointer and unchanged historical bodies.
+
+Use the requirement audit in the active backlog to select missing acceptance,
+not another successful-case replay. Keep implementation, source appraisal,
+observed client behavior and final USER adoption distinct. Evidence for one
+format, role or method does not automatically close another requirement.
+
+Compare evidence in its recorded representation. A native final message, a
+transcript containing several messages and a saved file with wrapper/newline
+bytes have different bindings. Check the original writer and bind each artifact
+separately; do not trim evidence or replace an expected digest merely to pass.
+
 After changing a candidate section, compare `scan` with the committed registry,
 review its exact source digest and mappings, and update both in the same change.
 Do not automatically promote status from file presence. Preserve proposed names
