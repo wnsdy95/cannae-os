@@ -1026,13 +1026,24 @@ function dispatchIssuanceLock(view) {
 
 function withDispatchIssuanceLock(options, operation) {
   const lock = dispatchIssuanceLock(storeView(options));
+  let result, failure, failed = false;
   try {
-    const result = operation(lock);
+    result = operation(lock);
     renewRepositoryLease(lock);
-    return result;
-  } finally {
-    releaseRepositoryLease(lock);
+  } catch (error) {
+    failed = true;
+    failure = error;
   }
+  try {
+    releaseRepositoryLease(lock);
+  } catch (cleanupError) {
+    if (!failed) throw cleanupError;
+    // Cleanup must not replace the operation or fencing failure that caused it.
+    const message = failure instanceof Error ? failure.message : "Dispatch issuance operation failed.";
+    throw new AggregateError([failure, cleanupError], `${message} (issuance lock cleanup also failed)`, { cause: failure });
+  }
+  if (failed) throw failure;
+  return result;
 }
 
 function normalizeRelativePath(value) {

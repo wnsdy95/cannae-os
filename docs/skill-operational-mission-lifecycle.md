@@ -312,6 +312,11 @@ issuance/resume, and covered pre-tool admission reject the terminated wave,
 including attempts to backdate a command. Cleanup checkpoints remain available.
 Lifecycle writes are serialized per wave, and termination shares the dispatch
 issuance lock so it cannot race a new lease into an apparently settled wave.
+If operation/renewal and issuance-lock cleanup both fail, retain both errors
+and inspect durable status before retrying. The original failure is preserved
+as the combined error's cause; see the
+[issuance failure procedure](enforced-dispatch-and-resume.md#53-issuance-failure-and-cleanup-evidence).
+Do not infer successful termination or an unstarted operation from a cleanup error.
 
 `status` distinguishes `expired_pending_termination` from a persisted
 `expired`, `aborted`, or `superseded` record. This operation ends only one wave,

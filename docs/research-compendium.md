@@ -1,5 +1,18 @@
 # Research Compendium
 
+## Failure Evidence Before Retry (2026-11-11)
+
+An intermittent lifecycle test exposed only a lock-release error. An observed
+full-sequence rerun passed, so the original cause remains unproven. Separately,
+a deterministic synthetic owner replacement demonstrated that an operation's
+primary error was overwritten by cleanup failure in `withDispatchIssuanceLock`.
+The wrapper now retains both failures, preserving the original as the cause and
+first aggregate entry. Failure still denies a result; ownership, time limits and
+authorization are unchanged. Both skills require keeping full local diagnostics,
+inspecting durable state before retry and preserving the difference between a
+passing reproduction attempt and a proven root cause. This is a local G3/G4
+correction, not a new production-coordination or military-doctrine claim.
+
 ## Project Content And Source-Owner Preparation (2026-11-11)
 
 The existing access projection names eligible doctrine documents but neither

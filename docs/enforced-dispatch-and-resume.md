@@ -391,6 +391,27 @@ cleanup, hook settlement, or a new wave cannot clear it. Gateway-specific effect
 settlement remains open. Commit retry may reuse a checkpoint only when the
 actual provider-result digest, status, execution time and repository state match.
 
+### 5.3 Issuance Failure And Cleanup Evidence
+
+The local issuance-lock wrapper retains an operation or renewal failure even if
+lock release also fails. A combined failure is an `AggregateError`: its `cause`
+and first `errors` entry are the original failure, the second is the cleanup
+failure, and the message identifies both failure phases. A cleanup-only failure
+still rejects the operation; a normal operation failure with successful cleanup
+is rethrown unchanged. A result is not returned after either failure phase.
+These error objects are available to programmatic callers. The ordinary CLI
+prints the primary message and a cleanup-failure indication, not a serialized
+aggregate or a durable incident record; preserve local diagnostics separately.
+
+This changes diagnostic fidelity, not authority or lease duration. Ownership
+checks still reject a different holder and do not delete its lock. Inspect
+durable status and preserve both failures locally before any bounded retry;
+neither cleanup failure nor an exception proves that no effect was persisted.
+Do not forward private diagnostics as agent input. Five deterministic cases in
+`run-dispatch-runtime-fixtures.js` exercise success, original-only failure,
+combined failure, renewal fencing and cleanup-only failure. They do not prove
+the cause of a separately observed intermittent coordination failure.
+
 ## 6. Provider Adapters
 
 Before preparing gateway inspection evidence, use

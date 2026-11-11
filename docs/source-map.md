@@ -2,6 +2,12 @@
 
 ## Skill-First Scope And Authoring
 
+The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
+both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.
+Its deterministic ownership-substitution fixtures are local engineering evidence,
+not proof of the earlier intermittent lifecycle-test failure's cause. Both skill
+maintenance references require durable-state inspection rather than blind retries.
+
 `project-document-packet.js`, the request/packet schemas and
 `run-project-document-packet-fixtures.js` implement local project-content
 preparation under `docs/role-document-access-policy.md`. Source-origin and exact

@@ -10,13 +10,17 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
-Latest G2/G4 correction: project packet preparation now rejects known private
-locations repeated in task/recipient strings or delivered raw/summary content,
-without silently changing the task. Focused checks pass. The broader lifecycle
-rerun is not green: 31/32 passed, then the termination coordination-lock check
-failed; that unchanged case passed alone. Its cause remains unresolved, and the
-prior historical 32/32 result must not be substituted for this run. See the
-location-disclosure checkpoint below before any integration claim.
+Latest G3/G4 correction: issuance cleanup can no longer replace the original
+operation/renewal failure. Five deterministic cases verify preserved causes,
+denied success and retention of a different owner. Fresh ordinary dispatch and
+lifecycle suites both passed 32/32. The earlier intermittent ownership failure
+still has no proven cause; this diagnostic fix must not be presented as its
+resolution. See the primary-failure checkpoint below for all runs and limits.
+
+The preceding G2/G4 packet correction rejects known private locations repeated
+in recipient-facing text without silently changing the task. Its focused checks
+passed, but its lifecycle retry failed at 31/32; that failed run remains retained
+alongside the newer evidence. Neither result closes the full skill-first goal.
 
 Latest G2/G5 implementation: the offline project document packet helper now
 assembles selected raw text or separately prepared summaries with exact local
@@ -645,6 +649,72 @@ clear the broader lifecycle failure above.
 Actual native transfer/receiver use remains separately pending consent. The old
 authoring-review retry consent is already consumed. No model invocation, push,
 policy adoption or G1-G5 completion follows from this local correction.
+
+### Primary Failure And Cleanup Evidence (2026-11-11)
+
+G3/G4 task: investigate the retained lifecycle failure without deleting locks,
+extending authority lifetimes or treating an isolated pass as a root cause.
+The initial audit found only the pre-existing user ignore change on `063210c`;
+all earlier test handles were terminal. The relevant lifecycle, lease and
+dispatch source files were unchanged when the earlier failure occurred.
+
+A local observer recorded issuance acquisition/renewal/release, child termination
+results and wall/monotonic times without overriding clocks, leases or callback results. That
+full-sequence run passed 32/32 in about 376 seconds. Its two contention commands
+returned exit 2 after about 5.35 and 5.22 seconds, with the expected lease-wait
+denials. No observer errors occurred; sampled wall/monotonic difference stayed
+below 23 ms. These observations describe this run only. The earlier failure's
+cause remains unknown; no host-sleep, clock-change or expiry cause was proven.
+Evidence: `.cannae/maintenance/lifecycle-lock-observation-20261111/`.
+
+A separate deterministic reproduction replaced a synthetic fixture's lock owner
+and threw an explicit primary operation error. The original implementation
+returned only `Repository artifact lease ownership changed before release.`:
+the primary cause was lost. `withDispatchIssuanceLock` now keeps both errors in
+an `AggregateError`, with the primary as `cause` and first entry. Single failures
+retain their original objects. No result is returned after operation, renewal
+or cleanup failure, and a different owner is not deleted. No serialized payload,
+lease duration, authority rule, service or installation setting changed.
+
+Both provider maintenance references now require retaining the original and
+cleanup failures locally, inspecting durable status before retry, keeping raw
+diagnostics out of recipient context and not assuming that an error means no
+operation took effect. The ordinary CLI reports the primary message plus a
+cleanup-failure indication; complete error objects are a programmatic interface,
+not an automatically persisted incident log.
+
+The first new test batch passed both skill validators and the first two new
+dispatch cases, then stopped in fixture restoration. The new fixture incorrectly
+passed a lease object instead of its path to `readLeaseOwner`; the corrected
+fixture checks the retained owner before mutation and uses the path explicitly.
+This was a new test-harness error, not evidence that the original intermittent
+failure was explained. Preserve that stopped batch at
+`.cannae/maintenance/issuance-error-checks-021d2957-147a-42d8-97e0-cfe2985c8a83/`;
+its later checks were not run.
+
+The corrected fixed-source batch passed all ten selected checks: both skill
+validators (231 lines), dispatch 32/32 including five new failure cases, ordinary
+lifecycle 32/32 (about 389 seconds, no observer), routing 216 queries with 32
+required-source rejections and 3 link checks, preflight 10/10, mandatory controls
+6/6, installation 21/21, concurrent artifact writing 8/8 and recovery 15/15.
+Every command's source-diff comparison remained unchanged. Logs:
+`.cannae/maintenance/issuance-error-checks-d1eb9de4-81ba-4890-8a88-379cd576faee/`.
+This is a selected regression ladder, not the full aggregate, hosted CI or
+native-model/recipient acceptance. The old failed run remains part of the record.
+
+Final source-map/registry, link, English-only and both inventory checks passed;
+both inventories have zero unrouted artifacts and 674 tracked JSON files parse.
+The added skill paragraphs match exactly. The sole full-reference difference is
+the pre-existing provider-specific coverage command, which remains unchanged.
+Policy hashes, installed link targets/inodes and the user ignore file are intact.
+The pending 4,060-byte recipient prompt re-inspected against its previous exact
+digest without modification or transfer. Local inspection-script corrections are
+recorded in `final-inspection.json` beside the test logs, not hidden as code fixes.
+
+Next acceptance still includes actual authorized recipient use and broader
+document quality/workflow cases. The pending native-packet exercise has no new
+consent from this continuation. No push, model invocation or G1-G5 completion
+is claimed, and the diagnostic correction does not waive any existing hold.
 
 ## Retained Platform Baseline
 

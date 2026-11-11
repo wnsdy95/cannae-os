@@ -83,6 +83,14 @@ from one fixed tree. After an early-stop failure, distinguish tests actually run
 from the unexecuted remainder; neither the old pass count nor an aggregate's
 remaining-failure count proves the final tree.
 
+When an operation and its lock cleanup both fail, retain the original operation
+error and the cleanup error separately in local evidence. A final cleanup message
+alone can hide the actual denial or ownership loss. Inspect durable controller
+status before retrying; never delete another owner's lock, extend authorization
+or assume the operation did nothing. A passing isolated case or an instrumented
+rerun does not establish the cause of a prior full-sequence failure. Keep raw
+diagnostics local and report only disclosure-appropriate details to recipients.
+
 ## Publication Denial And Partial State
 
 For an explicit USER stop, read the stop-intake section of
