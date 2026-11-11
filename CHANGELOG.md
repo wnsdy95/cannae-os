@@ -6,6 +6,10 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Observe native Codex implicit selection from an ordinary SOP/handoff request without pre-injected instructions. Reconcile eleven read/routing calls and appraise preserved policy, explicit unknowns and usable source location; retain controlled-catalog, Claude parity and receiving limits. Separately align the Codex UI starter with document-first work and test installed link/copy delivery plus equivalent direct routing; no native starter execution or full distribution acceptance is inferred.
+
+- Preserve the first starter-fixture failure: ordinary "revise this document" wording missed the authoring route behind supporting matches. Add a bounded writing/document recognizer to both routers, positive/negative and domain-gap regressions, and mirrored exact-starter maintenance guidance. Retain authority and guarded workflow boundaries; lexical coverage does not establish domain expertise or general semantic completeness.
+
 - Exercise current compound intake and required-term handling in native Codex with twelve reconciled routing/read/check calls. Preserve a candidate-only prerequisite denial while completing independent comparison, SOP and glossary-proposal drafts. Retain the temporary adapter's missing per-objective diagnostics and the model handoff's source-location limit; materialize a separate non-transfer-ready local record. Mirror complete-diagnostic and usable-locator guidance in both skills and add four-objective/instruction-delivery regressions without claiming full receiving or client parity.
 
 - Complete the pending native source review of support SOP V4; preserve its changes-required verdict and propose V5 without rewriting the reviewed drafts. Distinguish work-level holds from next-action stops, link existing recovery paths and mirror that lesson in both skills. Add exact-delta/history and reviewer-guidance regressions. Retain a pre-model project-packet refusal on public security-policy wording separately from the bounded supplied-text review; no detector exception, policy adoption or full acceptance is inferred.

@@ -2,6 +2,14 @@
 
 ## Skill-First Scope And Authoring
 
+The [implicit Codex selection case](document-authoring-case-study.md#native-implicit-codex-selection)
+is a synthetic desk-duty exercise in a controlled native catalog. Installed-body
+selection, complete objective routing and source reads are observed, not inferred
+from metadata. The source appraisal supports this draft unit only, not Claude
+parity, globally minimal reading or an operational handoff.
+The subsequent starter fixture exposed a real lexical omission; its correction
+and local regressions are separate from the earlier native execution evidence.
+
 The [native compound-intake case](project-terminology-workflow.md#native-compound-intake)
 is local synthetic evidence, not a museum-domain or military claim. Actual
 routing, selected reads and a required-term compiler denial reconcile with

@@ -74,6 +74,39 @@ function fixture(name, fn) {
   console.log(`PASS ${name}`);
 }
 
+function documentStarter(env) {
+  const starter = "Use $controls-doctrine-operator to draft or revise this document from the supplied sources, preserving my intent, authority boundaries, unknowns, and handoff context.";
+  const relative = "agents/openai.yaml";
+  const metadata = fs.readFileSync(path.join(destination(env, "codex"), relative), "utf8");
+  assert.equal(metadata, fs.readFileSync(path.join(sourceSkill("codex"), relative), "utf8"));
+  assert(metadata.includes(`  default_prompt: ${JSON.stringify(starter)}\n`));
+  assert(metadata.includes('  short_description: "Write and route source-grounded documents"\n'));
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const results = PROVIDERS.map(provider => {
+    const result = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
+      "--actor=user", "--", starter], { cwd: unrelated, env, encoding: "utf8", timeout: 20000 });
+    assert.equal(result.status, 0, result.stderr);
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.query, starter);
+    assert.equal(output.operating_mode.actor, "user");
+    assert(output.matched_routes.some(route => route.id === "document-authoring"));
+    assert(output.recommended_documents.some(doc => doc.path === "docs/document-authoring-workflow.md"));
+    return output;
+  });
+  const normalized = results.map((output, index) => {
+    const prefix = PROVIDERS[index] === "codex" ? "codex-skills" : ".claude/skills";
+    const coverage = `node ${prefix}/${NAME}/scripts/route_controls_docs.js --coverage .`;
+    assert(output.validation_commands.includes(coverage));
+    for (const target of ["codex-skills", ".claude/skills"]) {
+      assert(output.validation_commands.includes(`node validate-controls-skill.js ${target}/${NAME}`));
+    }
+    return { ...output, validation_commands: output.validation_commands.map(command => command === coverage ? "provider coverage" : command).sort() };
+  });
+  assert.deepEqual(normalized[0], normalized[1]);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes, "A starter routing check must not invoke a client or mission");
+  assert(!fs.existsSync(path.join(unrelated, ".cannae")), "Direct starter routing must not create mission artifacts");
+}
+
 function documentedCommands(env, provider, { loadedDirectory, status = 0, query } = {}) {
   const entry = fs.readFileSync(path.join(destination(env, provider), "SKILL.md"), "utf8");
   const section = entry.split("## Start With The Task\n")[1]?.split("\n## ")[0];
@@ -280,6 +313,7 @@ try {
     assert.deepEqual(outputs[0].recommended_documents, outputs[1].recommended_documents);
     assert.deepEqual(outputs[0].validation_commands, outputs[1].validation_commands);
   });
+  fixture("linked Codex starter stays document-first and routes equivalently in both providers", () => documentStarter(env));
   fixture("literal linked entrypoint examples work in fresh target-project shells", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
   });
@@ -302,6 +336,7 @@ try {
       route(env, provider);
     }
   });
+  fixture("copied Codex starter retains its source text and document-first route", () => documentStarter(env));
   fixture("existing copies require force and preserve unrelated user files", () => {
     write(path.join(destination(env, "codex"), "local-note"), "Keep me.\n");
     install(env, ["--copy"], 1);

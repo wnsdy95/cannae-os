@@ -10,7 +10,24 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
-Latest G1/G2/G3/G4/G5 evidence: a native Codex compound-intake case declares four
+Latest G1/G3/G5 evidence: a native Codex process implicitly selected the installed
+entrypoint from an ordinary Korean SOP/handoff request, without its name or body
+in the task. One two-objective route and ten reads reconcile; source appraisal
+finds the synthetic policy, unknowns, continuing holds and USER decisions retained.
+The whole answer includes a usable source location. See [implicit Codex selection](document-authoring-case-study.md#native-implicit-codex-selection).
+This is one privacy-filtered native catalog with bounded read tools, not universal
+selection, Claude parity or actual receiver acceptance. Current instructions
+needed no additional rule for this pass. A separate inspection found and corrected
+the unused Codex UI starter's enforced-mission default. It now requests drafting/
+revision; link/copy fixtures check exact delivery and ordinary routing in both
+providers, not model behavior. The first starter fixture exposed a missing
+authoring route for "revise this document"; both routers now recognize bounded
+writing/document forms while preserving separate domain gaps. Both maintenance
+references require exact-starter checks; the original failed assertion remains.
+Next: Claude implicit selection and a source-locatable
+cold-start receiving unit. Do not replay this successful case for another grade.
+
+Earlier G1/G2/G3/G4/G5 evidence: a native Codex compound-intake case declares four
 objectives, reads eight selected sources and actually checks both required
 meanings. Twelve calls/results reconcile. It computes permitted counts, retains
 the unresolved-term denial and domain gap, drafts the SOP/candidate memo and
@@ -366,7 +383,7 @@ The historical V3 and current proposed V4 handoffs are in
 | G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections restrict selected reading; issued doctrine and project packets bind current bytes. Three Claude phases and a Codex changed-policy receiver invoke their own router and reads without opening the reference-only body; option-like task text stays separate from settings. | Minimal semantic selection, broader role/client cases, guarded project-input integration and receiver acceptance remain open. Public security-policy wording currently triggers a conservative project-packet content-review refusal. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | Native chains cover phase routing/reading, changed policy, source-read failure, reporting and revision. Current intake actually retains a required-term compiler denial while continuing independent draft outputs; operator materialization keeps outputs in their target project. | Complete per-objective diagnostic forwarding, source-locatable receiving units, broader semantic/method/reporting/failure coverage and receiver acceptance remain open. Draft-flow evidence does not establish live guarded operational execution. |
 | G4. Bounded self-improvement and corpus maintenance | Observed routing/prose gaps lead to bounded corrections, mirrored guidance, regression checks and AARs. Two fresh native reviews now demonstrate the known reporting/source-binding repairs; remaining errors are retained instead of counting native success as acceptance. | The improvement loop is demonstrated locally and behaviorally in the recorded case; complete remaining corpus/history/output consistency and adoption-boundary audits. No self-issued authority follows from these checks. |
-| G5. Client distribution | Link/copy installation, literal startup checks, both clients' explicit body captures and native document work are observed. Claude and Codex now invoke routing/read tools in bounded synthetic phases; client-bridge failure and the separate successful retry are retained. | Implicit selection and broader equivalent semantic behavior remain unverified. Configured invocations are not full-client acceptance or independently operated verification. Distribution remains the two skills; the temporary test adapter is not a shipped plugin, and optional plugin packaging is deferred. |
+| G5. Client distribution | Link/copy installation, startup checks, explicit body captures and native work are observed in both clients. Codex additionally selects its installed entrypoint implicitly for an ordinary SOP/handoff request and invokes routing/reads; the bounded final answer passes source appraisal. Its UI starter now matches the document-first scope. | Claude implicit selection, broader equivalent behavior and actual receiving remain unverified. The corrected starter has local routing evidence, not model execution. A privacy-filtered invocation is not universal client acceptance. Distribution remains the two skills; the temporary test adapter is not a shipped plugin, and optional plugin packaging is deferred. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).

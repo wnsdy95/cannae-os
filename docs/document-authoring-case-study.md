@@ -2095,3 +2095,81 @@ proposed V5, its exact V4 predecessor and review appraisal into any later
 authorized SOP adoption or receiving exercise. Do not re-run the same chain
 solely to accumulate a clean model verdict. A local source comparison does not
 establish complete semantic coverage or close any of the five objectives.
+
+## Native Implicit Codex Selection
+
+On 2026-11-12 Korea time, a fresh Codex CLI 0.162.1 process using the existing
+login/default `gpt-6-astra` received an ordinary Korean request to draft a desk-duty
+SOP and handoff from a synthetic policy. The 472-byte task named neither the
+skill nor its instructions. It prohibited file edits, external search/contact,
+operational execution, publication and approval processing. Standing verification
+consent covered the one bounded call; no automatic relaunch was permitted.
+
+A preliminary loopback-only request capture used no model or authentication.
+It verified native discovery metadata without pre-injecting the entrypoint body,
+and checked the offered read-only document tools. The actual process used the
+installed link in a privacy-filtered catalog, not a manually supplied body. The
+temporary helper exposed only frozen public/synthetic sources and the actual
+router in human-directed drafting mode. This apparatus is not a shipped plugin.
+
+### Observed Selection And Drafting
+
+The process completed in 47.523 seconds with exit zero. Eleven calls reconcile:
+one route and ten reads of seven distinct sources. The model read the installed
+entrypoint, supplied policy, authoring workflow, product scope, knowledge SOP,
+handoff template and SOP library. Three guide rereads were successful reads, not
+retries of denied material. Its two declared objectives received their complete
+diagnostic rows. The whole task and every prohibition stayed in the routing query.
+
+| Requirement | Source appraisal of the final answer |
+| --- | --- |
+| Preserve the policy | Log source and receipt time; acknowledgement does not promise resolution or a deadline. |
+| Retain bounded continuation | Conflicting records hold affected conclusions until source-owner clarification; unrelated logging may continue. |
+| Preserve decisions and unknowns | USER retains publication, cost, staffing and deadline decisions. No approval is inferred; reviewer and next duty owner remain unappointed. |
+| Deliver both requested drafts | The answer contains an SOP and handoff, not an operational work claim or a demand to start a separate mission service. |
+| Make the receiving source locatable | The complete answer includes a usable policy path, version and owner; its handoff explicitly references that source link. A detached excerpt would need the link retained. |
+| Report the actual boundary | Reading/routing/drafting are distinguished from file changes, contact, execution and publication. Independent review, operational freshness and actual receiving acceptance remain unverified. |
+
+No material contradiction with the withheld case criteria was found during
+operator source appraisal. The original final message, source bodies and tool
+results remain retained at `.cannae/maintenance/implicit-codex-20261112/`. Response
+SHA-256: `c9bfcff91be66a976ba357200775f092a0aa204f061f8076e135ea76be63c1a4`.
+The observer's process/trace result is separate from that source appraisal.
+
+### Acceptance Limits
+
+This establishes implicit selection and native document behavior for this
+controlled Codex case. It does not establish Claude implicit selection, every
+ambient client configuration, authenticated delegation or actual cold-start
+receiver acceptance. Sixteen recommendations and seven distinct reads do not
+prove a globally minimal reading list. The source policy is synthetic; no live
+desk operation, approval or policy adoption occurred. A startup warning on the
+intentionally excluded personal skill root was retained, not treated as a tool.
+
+Current instructions already supported the observed behavior; no redundant rule
+was added merely to restate the pass. A separate UI starter audit found that
+Codex's default prompt still asked for an enforced mission. Its description and
+starter now prioritize source-grounded drafting/revision; the existing equivalent
+rules in both instruction bodies are unchanged. Link/copy fixtures check the
+installed starter bytes and route that exact text through both providers without
+creating mission artifacts. This is local configuration/routing evidence, not a
+model execution of the starter. Next verify Claude selection and a source-locatable
+receiving unit while retaining the wider five-objective acceptance requirements.
+
+### Starter Routing Correction
+
+The first new link-installation check failed: the exact starter's "draft or
+revise this document" wording did not select `document-authoring`. Existing
+handoff/supporting routes supplied some relevant documents but not the authoring
+route's complete bundle. Preserve this failed assertion; it was a real matcher
+gap, not a failed client launch. The native observation above preceded this change.
+
+Both routers now recognize bounded writing/revision verbs with document or
+documentation forms, including determiners and paired verbs. Positive/negative
+queries check the bundle and reject unrelated verb/noun combinations; a separately
+declared museum objective still retains its capability gap alongside document
+revision. Both maintenance references require checking the exact starter in
+linked/copied installations instead of renaming a task to fit a keyword.
+This adds lexical coverage, not general language/negation understanding, domain
+expertise or new execution authority. Post-change local tests remain separate
+from the retained native source HEAD and its original outputs.

@@ -57,6 +57,30 @@ function assertRoutes(result, expectedRoutes) {
   assert.strictEqual(result.route_inventory.unrouted_artifact_count, 0);
 }
 
+function testOrdinaryAuthoring(router) {
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
+    for (const query of ["Draft this document", "Please revise the document", "Write documents",
+      "Edit our documentation", "Update those documents", "Draft or revise this document", "DRAFT\nTHE DOCUMENT"]) {
+      const result = route(router, args, query);
+      assertRoutes(result, ["document-authoring"]);
+      assert(result.capability_routing.matched_capability_routes.includes("document-authoring"));
+      for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/sop-library.md"]) {
+        assert(result.recommended_documents.some(d => d.path === file), query + ": " + file);
+      }
+      assert(result.validation_commands.includes("node source-map-linter.js"));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    }
+    for (const query of ["Read this document", "Draft a budget", "Document museum visits"]) {
+      const result = route(router, args, query);
+      assert(!result.matched_routes.some(r => r.id === "document-authoring"), query);
+    }
+    const domain = "Analyze museum attendance by city", writing = "Revise this document";
+    const result = route(router, [...args, `--capability-query=${domain}`, `--capability-query=${writing}`], `${domain}; ${writing}`);
+    assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    assert.equal(result.capability_routing.status, "gap_detected", "A writing match must not clear a separately declared domain gap");
+  }
+}
+
 function testS6Reading(router) {
   const args = ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"];
   const query = "Draft a handoff document from supplied policy. Do not publish.";
@@ -281,6 +305,7 @@ function testObjectiveRouting(router) {
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   testS6Reading(router);
+  testOrdinaryAuthoring(router);
   testComparisonRouting(router);
   testObjectiveRouting(router);
   for (const query of ["--actor=user", "--role=COMMANDER", "--authority=release", "--receipt",

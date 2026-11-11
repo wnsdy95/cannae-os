@@ -700,6 +700,13 @@ function keywordMatches(text, keyword) {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
+function isDocumentAuthoringRequest(query) {
+  const verb = "(?:draft|write|revise|edit|update)";
+  const determiner = "(?:(?:a|an|the|this|that|these|those|my|our)\\s+)?";
+  return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
+    .test(String(query || ""));
+}
+
 function isCorpusOrientationRequest(query) {
   const text = String(query || "").toLowerCase().replace(/\s+/g, " ").trim();
   const corpus = "(?:cannae(?: os)?|controls (?:doctrine|framework)|(?:this|the) (?:doctrine|framework|repository|corpus)|(?:the )?operator skill)";
@@ -1299,12 +1306,15 @@ function route(query, repoRoot, options) {
       `Resolve task reference "${item.reference}" (${item.reason}) before treating it as an input; identify proposed outputs separately.`
     );
   }
-  const scoreRules = text => RULES.map(rule => ({
-    ...rule,
-    score: countMatches(text, rule.keywords) ||
-      (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
-    specific_score: countSpecificMatches(text, rule.keywords)
-  })).filter(rule => rule.score > 0)
+  const scoreRules = text => RULES.map(rule => {
+    const authoring = rule.id === "document-authoring" && isDocumentAuthoringRequest(text) ? 1 : 0;
+    return {
+      ...rule,
+      score: countMatches(text, rule.keywords) || authoring ||
+        (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
+      specific_score: countSpecificMatches(text, rule.keywords) || authoring
+    };
+  }).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
   const scoredRules = scoreRules(query);
   const capabilityQueries = options.capabilityQueries.length ? options.capabilityQueries : [query];

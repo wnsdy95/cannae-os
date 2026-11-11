@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Selection Is A Separate Acceptance Layer (2026-11-12)
+
+The [implicit Codex case](document-authoring-case-study.md#native-implicit-codex-selection)
+distinguishes discovered metadata from actual entrypoint reading, route execution
+and source-grounded drafting. The ordinary request supplied no skill invocation
+or instruction body; the native model selected the installed entry and preserved
+the synthetic policy. That bounded result does not establish every client startup
+mode or actual receiving acceptance. A UI starter is another entrypoint and needs
+its own scope check; a successful implicit request does not validate unused text.
+Testing that exact starter exposed a missing authoring match concealed by other
+supporting routes. The corrected verb/document recognizer preserves the real
+request and separately declared domain gaps. It is a local lexical improvement,
+not evidence of general semantic routing or a reason to rename every task to SOP.
+
 ## Partial Work And Complete Receiving Context (2026-11-12)
 
 The [native compound-intake case](project-terminology-workflow.md#native-compound-intake)

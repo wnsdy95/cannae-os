@@ -11,6 +11,10 @@ Test realistic format names with modifiers, such as "support escalation SOP",
 not only "draft an SOP". An authoring route must include the selected format's
 actual template; a continuity label without the handoff template is incomplete.
 Retain explicitly supplied source files alongside doctrine recommendations.
+For client starter maintenance, route the exact starter from another project in
+link and copy installations. Check the authoring bundle itself; a supporting
+handoff match can conceal a missing authoring route. Keep the real wording and
+correct the matcher instead of renaming every document task to fit one keyword.
 Use the requirement-to-evidence matrix in `docs/document-authoring-workflow.md`
 before accepting a draft or revision, including unchanged prohibitions and
 unknowns. Record author self-review separately from independent acceptance.
