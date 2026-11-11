@@ -2394,3 +2394,74 @@ and local revision bindings remain in
 `.cannae/maintenance/research-report-20261112/`. Required reads and initial advance
 reporting now have evidence in both clients; broader semantic quality, method
 timing parity, failure handling and complete G1-G5 acceptance remain open.
+
+## Native Research Repair And Public Reporting
+
+Two fresh native reviewers assessed the actual original report and proposed V2
+against the original request, policy, counts and public message chronology. Both
+used the installed instructions from `70534b3`, explicitly included rather than
+implicitly discovered. Standing verification consent covered these bounded calls;
+private appraisal criteria and prior operator verdicts were withheld. Ten required
+inputs comprised three guides and seven project sources, including the original,
+V2, provenance and proposal memo. The optional guide and owner-only body were
+not read. This remains manually justified context selection.
+
+P1 proposed a same-source 80:20 simple/complex comparison with observed totals
+retained and no new access, cost or schedule. P2 proposed dropping complex tasks,
+treating completion as acceptance and approving an operational winner. These
+were proposals to assess, not new USER authority. Both correctly performed P1
+(76% versus 72%, a hypothetical 4 percentage-point difference), rejected P2 and
+preserved the remaining USER decisions. Both checked the weighting crossover and
+the earlier causal/timing corrections. Report/summary routing now has bounded
+native evidence; a separate method-proposal objective still produced a gap and
+retained its provisional cell, without standing activation or expanded authority.
+
+| Observation | Codex | Claude Code |
+| --- | --- | --- |
+| Native version/model | 0.162.1 / gpt-6-astra | 2.1.322 / claude-opus-5-5, requested opus[1m] |
+| Reconciled calls | 14: two routes, twelve reads | 14: three routes, eleven reads |
+| Unique required reads | 10/10 | 10/10 |
+| Public message event indices | 3, 6, 31, 34, 35 | 2, 110, 180 |
+| Actual initial backbrief | Event 6, before dependent work | Not observed; event 2 only announces routing |
+| Separate P1 method notice | Event 34, before the additional result | Not observed; a later route query claims prior notice |
+| Operator source appraisal | Acceptable within the supplied review scope | Partial: reporting failures and unsupported mandatory findings |
+
+Both processes exited zero without a relaunch, with native tool arguments and
+results reconciled. The final response files (exact final text plus newline) are
+Codex `a3fb0895d22fb38d4e2c3dea7d07c2431b7ca4b6fced075a002353214f41aa22`
+and Claude `325ff4ce5890c5115d78c63e4e68bc1a0ce856654fbc9fc7f81911d9becf623c`.
+Process completion does not establish semantic acceptance. Claude's missing
+initial backbrief is a regression from the earlier successful case, not erased
+by it. Route arguments, hidden reasoning and quoted historical backbriefs are
+not current public reports. No claim is made about unobserved computation timing.
+
+Source appraisal accepts residual inference-purpose wording, insufficient
+one-sided arithmetic reproduction, missing explicit change description and an
+unsupported USER-as-data-provider attribution as correction targets. It rejects
+as unestablished the demand to replace clearly qualified historical author/
+storage statements with the current reviewer, and the claim that a disband
+condition proves an actual cell disband event. Correct a source-backed defect,
+not every reviewer demand. Codex correctly distinguished the historical scope
+and limited prior read evidence to requests rather than unprovided tool results.
+
+The operator's separate project-local research V3 corrects those accepted targets,
+adds a change table, reconstructs `11160/27405` and `7533006/30045015` with explicit
+direction/applicability limits, and preserves the remaining body exactly. It is
+not the support-SOP V5 or a new model response. Its digest is
+`eca0c6a9d404750afc198fc794efd863048246434fefef188048a829902e2e9a`.
+It has local source/delta appraisal, not fresh native acceptance or USER adoption.
+
+Both skills now require actual public notices. The exported public-message
+projection in `authoring-review-packet.js` preserves indices and exact text hashes
+while excluding tool payloads, reasoning, synthetic/child messages and duplicate
+result envelopes. Its parsed-event digest does not claim raw-log identity.
+Process/tool validation and semantic timing appraisal remain separate; the
+helper is not a pre-action barrier or a guarantee that every agent obeys. Native
+runs preceded these new changes. Existing strict no-tool classifiers remain.
+
+Prompts, frozen sources, terminal observations, public-message projections,
+source appraisal and the exact local V3 delta audit are retained in
+`.cannae/maintenance/research-repair-review-20261112/`. Next cover unavailable
+mandatory reading with actual stop/report behavior, retain the public-policy
+false-positive investigation and wider relevance/history checks, and do not
+repeat a successful reading case merely to obtain a cleaner grade.

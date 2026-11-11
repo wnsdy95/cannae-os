@@ -1,5 +1,24 @@
 # Research Compendium
 
+## Public Reporting Is Not A Self-Claim (2026-11-12)
+
+The [research repair review](document-authoring-case-study.md#native-research-repair-and-public-reporting)
+observed both clients read all ten assigned inputs, perform a permitted comparison
+and reject a forbidden proposal. Codex separately reported before dependent work;
+Claude omitted the requested initial backbrief and separate method notice while
+later claiming notice in a route query. Previous successful reporting does not
+establish consistency. Both skills now distinguish actual current public messages
+from tool arguments, hidden reasoning, historical quotations and self-ratings.
+An exact ordered message projection supports appraisal but is not a timing verdict
+or an execution barrier. The new guidance has local checks, not native acceptance.
+
+Source appraisal must also check reviewer claims. Explicit historical attribution
+is not a current appointment, and a disband condition is not a disband event.
+The operator research V3 corrects supported method/reproduction/attribution gaps
+and records its changes without replacing history to satisfy unsupported findings.
+It remains locally appraised and unadopted; broader client parity and stop/report
+acceptance are open. This is local engineering synthesis, not external doctrine.
+
 ## Complete Reading Still Needs Claim Review (2026-11-12)
 
 The [research/report exercise](document-authoring-case-study.md#native-research-report-and-required-reading)

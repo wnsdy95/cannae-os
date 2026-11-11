@@ -163,6 +163,37 @@ function classifyClaudeReviewEvent(event) {
   throw new Error("Unknown Claude review event.");
 }
 
+function collectPublicReviewMessages(provider, events) {
+  assert(["codex", "claude_code"].includes(provider), "Unknown public-message provider.");
+  assert(Array.isArray(events), "Native events must be an array.");
+  const messages = [];
+  const add = (text, eventIndex, contentIndex, id) => {
+    assert(typeof text === "string", "Invalid public review text.");
+    messages.push({ event_index: eventIndex, content_index: contentIndex,
+      native_id: typeof id === "string" ? id : null, text, text_sha256: sha256(text) });
+  };
+  for (const [index, event] of events.entries()) {
+    assert(event && typeof event === "object" && !Array.isArray(event) && typeof event.type === "string",
+      "Invalid native public-message envelope.");
+    if (event.isSynthetic || event.parent_tool_use_id != null || event.error || event.is_api_error_message) continue;
+    if (provider === "codex") {
+      if (event.type === "item.completed" && event.item?.type === "agent_message") {
+        add(event.item.text, index, null, event.item.id);
+      }
+    } else if (event.type === "assistant") {
+      assert(Array.isArray(event.message?.content), "Invalid public review message.");
+      for (const [contentIndex, block] of event.message.content.entries()) {
+        assert(block && typeof block === "object" && typeof block.type === "string", "Invalid public review block.");
+        if (block.type === "text") add(block.text, index, contentIndex, event.uuid);
+      }
+    }
+  }
+  // This projects text only; existing event/permission checks remain separate.
+  return { provider, event_count: events.length, parsed_events_sha256: sha256(JSON.stringify(events)),
+    messages, process_completion_verified: false, timing_obligations_verified: false,
+    semantic_acceptance_established: false, execution_authorized: false, release_authorized: false };
+}
+
 if (require.main === module) {
   try {
     assert(process.argv.length === 3 && ["inspect", "prepare"].includes(process.argv[2]),
@@ -172,4 +203,4 @@ if (require.main === module) {
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
 
-module.exports = { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent, classifyClaudeReviewEvent };
+module.exports = { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent, classifyClaudeReviewEvent, collectPublicReviewMessages };

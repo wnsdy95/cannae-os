@@ -5,7 +5,8 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent, classifyClaudeReviewEvent } = require("./authoring-review-packet");
+const { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent, classifyClaudeReviewEvent,
+  collectPublicReviewMessages } = require("./authoring-review-packet");
 
 const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "cannae-authoring-review-")));
 const hash = value => crypto.createHash("sha256").update(value).digest("hex");
@@ -333,6 +334,90 @@ try {
       assert.throws(() => classifyClaudeReviewEvent(event), /Claude review/);
     }
     assert.equal(classifyClaudeReviewEvent({ type: "rate_limit_event", rate_limit_info: { status: "allowed_warning" } }), "diagnostic");
+  });
+  fixture("Codex public-message evidence excludes reasoning, tool arguments and quoted source results", () => {
+    const events = [
+      { type: "item.completed", item: { type: "reasoning", text: "I will announce the method." } },
+      { type: "item.started", item: { type: "agent_message", id: "brief", text: "Partial text" } },
+      { type: "item.completed", item: { type: "agent_message", id: "brief", text: "Purpose and limits.\n" } },
+      { type: "item.completed", item: { type: "mcp_tool_call", arguments: { query: "I already announced it." },
+        result: { content: [{ type: "text", text: "Historical author: I announce the method." }] } } },
+      { type: "item.completed", item: { type: "agent_message", id: "report", text: "Result, with a retrospective notice." } }
+    ];
+    const result = collectPublicReviewMessages("codex", events);
+    assert.deepEqual(result.messages, [
+      { event_index: 2, content_index: null, native_id: "brief", text: "Purpose and limits.\n", text_sha256: hash("Purpose and limits.\n") },
+      { event_index: 4, content_index: null, native_id: "report", text: "Result, with a retrospective notice.", text_sha256: hash("Result, with a retrospective notice.") }
+    ]);
+    assert.equal(result.event_count, 5);
+    assert.equal(result.parsed_events_sha256, hash(JSON.stringify(events)));
+    assert.equal(classifyReviewEvent(events[3]), "prohibited_item");
+    const changed = structuredClone(events);
+    changed[3].item.arguments.query = "A different claim.";
+    assert.notEqual(collectPublicReviewMessages("codex", changed).parsed_events_sha256, result.parsed_events_sha256);
+  });
+  fixture("both skills and reviewer context require actual public reporting rather than route self-claims", () => {
+    for (const file of ["codex-skills/controls-doctrine-operator/SKILL.md", ".claude/skills/controls-doctrine-operator/SKILL.md"]) {
+      const body = fs.readFileSync(path.join(__dirname, file), "utf8");
+      assert(body.includes("Use a current public assistant message for the notice."));
+      assert(body.includes("arguments, source quotations and later claims of prior reporting do not replace"));
+    }
+    assert(packet.prompt.includes("A current public assistant message carries the notice."));
+    assert(packet.prompt.includes("a route\nquery claiming prior notice"));
+  });
+  fixture("Claude projection retains only public top-level text with original block and event positions", () => {
+    const events = [
+      { type: "user", message: { content: [{ type: "text", text: "Quoted old backbrief." }] } },
+      { type: "assistant", uuid: "current", message: { content: [
+        { type: "thinking", thinking: "I should report first." },
+        { type: "text", text: "Current report." },
+        { type: "tool_use", name: "route_current_task", input: { query: "After advance notice." } },
+        { type: "text", text: "Current report." }
+      ] } },
+      { type: "assistant", isSynthetic: true, message: { content: [{ type: "text", text: "Injected text." }] } },
+      { type: "assistant", parent_tool_use_id: "child", message: { content: [{ type: "text", text: "Another actor." }] } },
+      { type: "result", subtype: "success", is_error: false, result: "Current report." },
+      { type: "user", message: { content: [{ type: "tool_result", content: "Historical author: I announced it." }] } }
+    ];
+    const result = collectPublicReviewMessages("claude_code", events);
+    assert.deepEqual(result.messages, [1, 3].map(content_index => ({ event_index: 1, content_index,
+      native_id: "current", text: "Current report.", text_sha256: hash("Current report.") })));
+    assert.equal(result.parsed_events_sha256, hash(JSON.stringify(events)));
+    assert.equal(classifyClaudeReviewEvent(events[1]), "prohibited_item");
+  });
+  fixture("a final result alone or an error message cannot establish an advance report", () => {
+    assert.deepEqual(collectPublicReviewMessages("claude_code", [
+      { type: "result", subtype: "success", is_error: false, result: "I reported before work." },
+      { type: "assistant", error: "authentication_failed", message: { content: [{ type: "text", text: "Failed." }] } },
+      { type: "assistant", is_api_error_message: true, message: { content: [{ type: "text", text: "Failed." }] } }
+    ]).messages, []);
+    const message = { type: "item.completed", item: { type: "agent_message", text: "Not a current actor report." } };
+    for (const fields of [{ error: "failed" }, { isSynthetic: true }, { parent_tool_use_id: "child" }]) {
+      assert.deepEqual(collectPublicReviewMessages("codex", [{ ...message, ...fields }]).messages, []);
+    }
+  });
+  fixture("message extraction never establishes completion, timing, semantics or authority", () => {
+    for (const provider of ["codex", "claude_code"]) {
+      const result = collectPublicReviewMessages(provider, [{ type: "future_event" }, { type: "turn.failed" }]);
+      assert.deepEqual(result.messages, []);
+      for (const field of ["process_completion_verified", "timing_obligations_verified",
+        "semantic_acceptance_established", "execution_authorized", "release_authorized"]) assert.equal(result[field], false);
+    }
+    assert.throws(() => classifyReviewEvent({ type: "future_event" }), /native review/);
+    assert.throws(() => classifyClaudeReviewEvent({ type: "future_event" }), /Claude review/);
+  });
+  fixture("public-message extraction rejects malformed targeted envelopes without inventing text", () => {
+    assert.throws(() => collectPublicReviewMessages("unknown", []), /provider/);
+    assert.throws(() => collectPublicReviewMessages("codex", {}), /array/);
+    for (const provider of ["codex", "claude_code"]) {
+      for (const event of [null, [], {}, { type: 1 }]) {
+        assert.throws(() => collectPublicReviewMessages(provider, [event]), /envelope/);
+      }
+    }
+    assert.throws(() => collectPublicReviewMessages("codex", [{ type: "item.completed", item: { type: "agent_message" } }]), /text/);
+    for (const content of [undefined, {}, [null], [{ type: "text" }], [{ type: 1 }]]) {
+      assert.throws(() => collectPublicReviewMessages("claude_code", [{ type: "assistant", message: { content } }]), /public review/);
+    }
   });
   console.log(JSON.stringify({ valid: true, fixtures, semantic_evaluation_executed: false, native_client_execution: false }));
 } finally {

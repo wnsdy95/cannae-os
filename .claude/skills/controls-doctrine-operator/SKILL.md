@@ -123,6 +123,9 @@ omission. When an advance backbrief is requested, give it before the dependent
 review or drafting, not only as a retrospective final section.
 Announce a required method change before dependent results, not after a calculated
 headline in the final report. A notice cannot authorize an otherwise forbidden change.
+Use a current public assistant message for the notice. Hidden reasoning, route
+arguments, source quotations and later claims of prior reporting do not replace
+it. Assess the actual message sequence; missing evidence stays unverified.
 See [Document Routing](references/document-routing.md).
 
 Keep reading scope separate from execution controls. Conditional specialist

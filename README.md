@@ -665,6 +665,11 @@ observes both clients reading all six justified prerequisites and reporting befo
 analysis. It also retains a Claude interpretation/timing failure, a separately
 proposed correction and a locally fixed report-wording routing miss. Successful
 document delivery is not complete report quality or policy adoption.
+The [subsequent repair review](docs/document-authoring-case-study.md#native-research-repair-and-public-reporting)
+checks ten required inputs, permitted versus forbidden proposals and actual public
+message order. Both preserve authority; only Codex demonstrates both required
+advance notices in that case. Claude reporting and review-quality gaps remain.
+The separate research V3 is locally corrected, not newly model-accepted or adopted.
 
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
 requires an explicit [source request](schema-files/handoff-generation-request.schema.json).

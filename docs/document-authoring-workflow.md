@@ -190,6 +190,22 @@ permission for a change that needs USER approval. For numerical reports, use the
 [quantitative comparison checks](source-reliability-rubric.md#quantitative-document-comparisons)
 to keep observed differences, hypothetical weights and causal evidence separate.
 
+A current public assistant message carries the notice. Hidden reasoning, a route
+query claiming prior notice, a source's historical backbrief and a final claim of
+compliance are not substitutes. For native review traces, the exported
+`collectPublicReviewMessages(provider, events)` in `authoring-review-packet.js`
+projects completed Codex messages or top-level Claude text blocks with their
+original event/block indices and exact text digests. It excludes tool payloads,
+synthetic/child messages and duplicate result envelopes; it does not interpret a
+quotation inside public text as the current actor's commitment. The event digest
+binds the parsed array's JSON serialization, not the original log bytes.
+Use it only on logs the operator may read; the projection is not automatically
+approved for transfer. Validate process completion, native events and allowed
+tools separately, then appraise message content and order against the actual
+obligation. Extraction establishes neither timing compliance nor semantic
+acceptance, and it does not enforce a pre-action barrier. Preserve a missed
+notice as a failure; do not add a retrospective message to erase it.
+
 State the categories of material withheld from a reviewer without revealing
 their verdicts. A review matrix excluded to avoid priming is not evidence that
 the canonical repository lacks one. Appraise each finding against both the

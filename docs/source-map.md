@@ -1,5 +1,12 @@
 # Source Map
 
+The [native research repair review](document-authoring-case-study.md#native-research-repair-and-public-reporting)
+is local synthetic evidence, not new military doctrine. Both clients read ten
+required inputs and distinguish permitted/forbidden proposals; Claude still
+misses requested public reporting and overstates some mandatory findings. The
+public-message projection and operator research V3 retain evidence and correct
+source-backed defects without claiming universal compliance or policy adoption.
+
 ## Skill-First Scope And Authoring
 
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
