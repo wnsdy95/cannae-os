@@ -10,6 +10,21 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G4/G5 correction: generic `compare`, `comparison` and `baseline` no
+longer establish specialized capability. The reproduced museum-attendance case
+now retains a provisional capability cell through direct routing, receipts and
+every controller-issued agent context. SOP comparisons remain covered by the
+authoring route. Eleven campaign/verifier/transparency manuals become conditional
+on more specific task, parent-objective or explicit source context; selected
+controls and required inputs remain. Local rerouting of the recorded Codex
+receiving query reduced recommendations from 60 to 49 without losing a control.
+Both skills teach subject-versus-method and reading-versus-control distinctions.
+See [the correction and limits](document-authoring-case-study.md#generic-comparison-routing-correction).
+This is not minimal semantic routing: other broad words, negated specialist
+topics, undeclared domain objectives and excessive supporting context remain.
+No native/model chain was replayed to count the local correction as client
+semantic acceptance. All five goals remain open.
+
 Latest G1/G2/G3/G4/G5 evidence: native Codex now invokes the router and document
 reader on the same synthetic V1-to-V2 receiving case used for Claude. A first
 process could see the catalog but could not invoke it because the test launch

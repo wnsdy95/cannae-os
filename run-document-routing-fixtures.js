@@ -29,6 +29,14 @@ const AUTHORITY_CONTROLS = [
   "node run-github-release-integrity-fixtures.js",
   "node run-github-release-independent-verification-fixtures.js"
 ];
+const IMPROVEMENT_SPECIALIST_DOCS = [
+  "docs/bounded-self-improvement-operations.md", "docs/campaign-terminal-reconciliation.md",
+  "docs/campaign-successor-admission.md", "docs/sigstore-verifier-workload-admission.md",
+  "docs/verifier-execution-integrity.md", "docs/github-actions-native-verifier-adapter.md",
+  "docs/gitlab-ci-native-verifier-adapter.md", "docs/verifier-pre-dispatch-challenge.md",
+  "docs/verifier-independence-assurance.md", "docs/transparency-operations.md",
+  "docs/runtime-automation-roadmap.md"
+];
 
 function route(router, args, query, repository = ROOT) {
   const result = spawnSync(process.execPath, [path.join(ROOT, router), ...args, query, repository], {
@@ -49,10 +57,84 @@ function assertRoutes(result, expectedRoutes) {
   assert.strictEqual(result.route_inventory.unrouted_artifact_count, 0);
 }
 
+function testComparisonRouting(router) {
+  const specialist = route(router, ["--actor=user"], "Review self-improvement operations");
+  const checks = specialist.validation_commands;
+  assert.equal(checks.length, 36, "Keep the existing improvement control set");
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    for (const query of ["Compare museum attendance by city", "A comparison of museum attendance by city", "Establish a museum attendance baseline"]) {
+      const output = route(router, args, query);
+      assert.equal(output.query, query);
+      assert.equal(output.capability_routing.status, "gap_detected", `${query}: generic comparison is not domain coverage`);
+      assert.equal(output.capability_routing.provisional_organization.required, true);
+      assert.equal(output.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      assert.equal(output.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+      assertRoutes(output, ["bounded-self-improvement", "force-structure"]);
+      for (const document of IMPROVEMENT_SPECIALIST_DOCS) {
+        assert(!output.recommended_documents.some(x => x.path === document), `${query}: unrelated ${document}`);
+      }
+      for (const command of checks) assert(output.validation_commands.includes(command));
+      assert(output.validation_commands.includes("node run-force-structure-change-fixtures.js"));
+    }
+    const query = "Compare two SOP revisions against source policy";
+    const ordinary = route(router, args, query);
+    assert.equal(ordinary.capability_routing.status, "covered");
+    assert(ordinary.capability_routing.matched_capability_routes.includes("document-authoring"));
+    assert(!ordinary.capability_routing.matched_capability_routes.includes("bounded-self-improvement"));
+    for (const document of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/approval-scope-policy.md"]) {
+      assert(ordinary.recommended_documents.some(x => x.path === document));
+    }
+    for (const document of IMPROVEMENT_SPECIALIST_DOCS) assert(!ordinary.recommended_documents.some(x => x.path === document));
+    for (const command of checks) assert(ordinary.validation_commands.includes(command));
+
+    for (const extra of [["--source=docs/verifier-execution-integrity.md"], ["--source=docs/campaign-terminal-reconciliation.md"],
+      ["--source=docs/runtime-automation-roadmap.md"],
+      ["--capability-query=Review verifier execution integrity before comparative promotion"]]) {
+      const explicit = route(router, [...args, ...extra], query);
+      for (const document of IMPROVEMENT_SPECIALIST_DOCS) assert(explicit.recommended_documents.some(x => x.path === document), document);
+      for (const command of checks) assert(explicit.validation_commands.includes(command));
+      if (!extra[0].startsWith("--capability-query=")) {
+        assert.deepEqual(explicit.matched_routes, ordinary.matched_routes);
+        assert.deepEqual(explicit.validation_commands, ordinary.validation_commands);
+        assert.deepEqual(explicit.capability_routing, ordinary.capability_routing);
+      }
+    }
+    for (const task of [
+      "Compare a runtime-control candidate against an accepted baseline before promotion",
+      "Compare two SOP revisions; also review verifier execution integrity",
+      "Compare two SOP revisions. Do not skip verifier execution integrity checks.",
+      "Compare two SOP revisions. Do not start a self-improvement campaign."
+    ]) {
+      const explicit = route(router, args, task);
+      for (const document of IMPROVEMENT_SPECIALIST_DOCS) assert(explicit.recommended_documents.some(x => x.path === document), task + ': ' + document);
+      for (const command of checks) assert(explicit.validation_commands.includes(command));
+    }
+  }
+  const project = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "controls-comparison-input-")));
+  try {
+    fs.mkdirSync(path.join(project, "inputs"));
+    const source = "inputs/verifier-execution-integrity.md";
+    fs.writeFileSync(path.join(project, source), "PRIVATE-PROJECT-COMPARISON-SOURCE\n");
+    const init = spawnSync("git", ["init", "-q", project], { encoding: "utf8" });
+    assert.equal(init.status, 0, init.stderr);
+    for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+      const result = route(router, [...args, `--input-repository=${project}`, `--input-source=${source}`],
+        "Compare two SOP revisions against source policy");
+      for (const document of IMPROVEMENT_SPECIALIST_DOCS) assert(result.recommended_documents.some(x => x.path === document));
+      for (const command of checks) assert(result.validation_commands.includes(command));
+      assert.deepEqual(result.task_inputs.sources, [{ path: source, exists: true }]);
+      assert.equal(result.task_inputs.content_loaded, false);
+      assert.equal(result.task_inputs.authorization_verified, false);
+      assert(!JSON.stringify(result).includes("PRIVATE-PROJECT-COMPARISON-SOURCE"));
+    }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+}
+
 function testObjectiveRouting(router) {
   const gap = "Research ICP and sales targeting using the canonical track view";
   const glossary = "Maintain the project glossary";
   const cases = [
+    { objectives: ["Compare museum attendance by city", "Draft a handoff document"], statuses: ["gap_detected", "covered"] },
     { objectives: [gap, glossary], statuses: ["gap_detected", "covered"] },
     { objectives: ["Assess ceramic glaze defects", "Draft a research note"], statuses: ["gap_detected", "covered"] },
     { objectives: [gap, "Assess ceramic glaze defects"], statuses: ["gap_detected", "gap_detected"] },
@@ -142,6 +224,7 @@ function testObjectiveRouting(router) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  testComparisonRouting(router);
   testObjectiveRouting(router);
   for (const query of ["--actor=user", "--role=COMMANDER", "--authority=release", "--receipt",
     "--coverage", "--write-artifact", "--doctrine-root=/not-the-corpus", "--source=missing.md"]) {

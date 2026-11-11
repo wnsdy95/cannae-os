@@ -137,6 +137,30 @@ function declaredObjectives(env) {
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
 }
 
+function comparisonGap(env) {
+  const query = "Compare museum attendance by city";
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const results = PROVIDERS.map(provider => {
+    const run = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
+      "--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only", "--", query],
+    { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+    assert.equal(run.status, 0, run.stderr);
+    const result = JSON.parse(run.stdout);
+    assert.equal(result.repo_root, fs.realpathSync(source));
+    assert.equal(result.query, query);
+    assert.equal(result.capability_routing.status, "gap_detected");
+    assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(result.operating_mode.authority, "read-only");
+    assert(!result.recommended_documents.some(x => x.path === "docs/transparency-operations.md"));
+    assert(result.recommended_documents.some(x => x.path === "docs/force-structure-change-policy.md"));
+    assert(result.validation_commands.includes("node run-self-improvement-fixtures.js"));
+    assert(result.validation_commands.includes("node run-force-structure-change-fixtures.js"));
+    return result;
+  });
+  assert.deepEqual(results[0], results[1]);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 try {
   fs.mkdirSync(source);
   fs.mkdirSync(unrelated);
@@ -183,6 +207,7 @@ try {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
   });
   fixture("linked providers retain every declared objective from another project", () => declaredObjectives(env));
+  fixture("linked providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("matching link installation is idempotent", () => {
     const before = PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino);
     install(env);
@@ -214,6 +239,7 @@ try {
     }
   });
   fixture("copied providers retain every declared objective from another project", () => declaredObjectives(env));
+  fixture("copied providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider, { loadedDirectory: sourceSkill(provider) });
   });

@@ -34,6 +34,10 @@ decision or handoff to the smallest useful format:
    reference describes repeated capability queries and their direct-analysis
    limits. Compare the declared objectives with the original request before
    using the result; the router does not verify semantic completeness.
+   For comparative work, assess the subject separately from the method: a
+   comparison keyword is not domain expertise. Retain a reported capability gap
+   even if supporting routes and checks remain selected. Specialist reading may
+   be conditional, but explicit inputs and applicable controls are not optional.
 3. Identify the canonical destination, owner and intended readers. A document
    recommendation does not grant access to restricted underlying evidence.
 4. Draft facts with source references. Label interpretation and proposed action

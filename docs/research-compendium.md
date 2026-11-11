@@ -1,5 +1,22 @@
 # Research Compendium
 
+## Comparison Methods And Domain Capability (2026-11-12)
+
+The [routing correction](document-authoring-case-study.md#generic-comparison-routing-correction)
+reproduced a false capability claim: asking to compare museum attendance matched
+the self-improvement vocabulary. A method word cannot establish knowledge of
+the subject. Both routers now keep that domain gap while retaining the selected
+comparison-related checks. The same bounded cell survives controller-issued
+receipts and agent context; it cannot activate a standing department or gain
+execution/release authority.
+
+Conditional reading removes eleven unrelated campaign/verifier/transparency
+manuals unless task, inherited objective or explicit input context needs them.
+The original text, required sources and selected controls survive. Local rerouting
+of a recorded native query reduced recommendations from 60 to 49, not to a proven
+minimum. This is a lexical correction and local workflow evidence, not general
+semantic decomposition, negation understanding or a new native-agent acceptance.
+
 ## Tool Availability And Actual Reading (2026-11-12)
 
 The [native Codex receiving exercise](document-authoring-case-study.md#native-codex-routing-and-receiving)

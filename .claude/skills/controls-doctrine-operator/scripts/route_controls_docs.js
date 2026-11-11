@@ -392,7 +392,15 @@ const CAPABILITY_GAP_COMMANDS = [
   "node validator-cli-prototype/validate.js sample-payloads/valid-force-structure-change-order.json force-structure-change-order"
 ];
 
+const COMPARISON_KEYWORDS = new Set(["compare", "comparison", "baseline"]);
+const IMPROVEMENT_GENERAL_DOCS = new Set([
+  "docs/agent-roles-and-authority.md", "docs/approval-scope-policy.md",
+  "docs/repository-artifact-isolation-policy.md", "docs/knowledge-management-sop.md",
+  "docs/evaluation-metrics.md"
+]);
+
 const GENERIC_ROUTE_KEYWORDS = new Set([
+  ...COMPARISON_KEYWORDS,
   "agent",
   "approval",
   "artifact",
@@ -1270,6 +1278,14 @@ function needsGithubReleaseReading(text) {
   ]) > 0;
 }
 
+function needsImprovementSpecialistReading(text, sources) {
+  const rule = RULES.find(item => item.id === "bounded-self-improvement");
+  const context = normalizeText(text);
+  return sources.some(file => rule.docs.includes(file) && !IMPROVEMENT_GENERAL_DOCS.has(file)) ||
+    rule.keywords.some(keyword => !COMPARISON_KEYWORDS.has(keyword) && keywordMatches(context, normalizeText(keyword))) ||
+    countMatches(context, ["runtime control candidate", "runtime control baseline"]) > 0;
+}
+
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
   const inputs = resolveInputReferences(options, repoRoot);
@@ -1332,13 +1348,15 @@ function route(query, repoRoot, options) {
     commands.push(...CAPABILITY_GAP_COMMANDS);
   }
   docs.push(...mode.mode_documents);
-  const githubReleaseReading = needsGithubReleaseReading([
-    query, ...capabilityQueries, ...references.resolved.map(item => item.path), ...(inputs ? inputs.sources.map(item => item.path) : [])
-  ].join("\n"));
+  const sourcePaths = [...references.resolved.map(item => item.path), ...(inputs ? inputs.sources.map(item => item.path) : [])];
+  const readingContext = [query, ...capabilityQueries, ...sourcePaths].join("\n");
+  const githubReleaseReading = needsGithubReleaseReading(readingContext);
+  const improvementReading = needsImprovementSpecialistReading(readingContext, sourcePaths);
   for (const rule of selectedRules) {
     // Specialist reading is conditional; route/control selection is unchanged.
-    docs.push(...rule.docs.filter(file => rule.id !== "authority-risk-release" ||
-      !file.startsWith("docs/github-release-") || githubReleaseReading));
+    docs.push(...rule.docs.filter(file =>
+      (rule.id !== "authority-risk-release" || !file.startsWith("docs/github-release-") || githubReleaseReading) &&
+      (rule.id !== "bounded-self-improvement" || IMPROVEMENT_GENERAL_DOCS.has(file) || improvementReading)));
     commands.push(...rule.commands);
   }
 

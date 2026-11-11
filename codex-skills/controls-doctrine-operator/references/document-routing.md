@@ -81,6 +81,29 @@ option parsing. In an adapter with fixed delegation, check the returned actor,
 role, department and authority against that delegation before using its result.
 Neither the delimiter nor a successful comparison authenticates the caller.
 
+### Comparative Tasks
+
+`compare`, `comparison` and `baseline` alone are methods, not evidence of a
+supported domain. A museum-attendance comparison must keep its capability gap;
+an SOP comparison can match authoring without becoming an autonomous improvement
+campaign. `matched_routes` may retain a comparison-related route and its checks
+while `capability_routing` reports a gap. Use the latter for provisional-cell
+handling, and retain both the original domain objective and supporting work.
+
+Generic comparisons omit eleven campaign/verifier/transparency specialist
+manuals from primary recommendations. General authority, evidence, knowledge
+and artifact references remain. Explicit corpus/project inputs, inherited
+capability queries and actual improvement or runtime-control comparison context
+can restore specialist reading. Required sources and selected validation commands
+are not removed. This is conditional reading, not a shortened execution gate;
+do not edit issued receipts or waive controls based on recommendation counts.
+
+This lexical correction is not general negation or domain understanding. Explicit
+specialist terms in prohibitions still retain related reading conservatively.
+Check meaning against the original request; never delete a prohibition or source
+reference to improve the count. Ordinary prose routing still does not authorize
+running every suggested check or starting a campaign.
+
 ## Installation And Corpus Binding
 
 Locate the loaded `SKILL.md` before launching its bundled scripts. Keep the

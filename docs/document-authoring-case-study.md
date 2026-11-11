@@ -1564,3 +1564,73 @@ routing, document-input, project-packet, installation, discovery-helper, both
 skill validators/coverage checks, source map, registry, links, English-only and
 diff checks. This is not the full runtime aggregate, shared validator or hosted
 CI. The existing no-tool review classifiers were not loosened for this exercise.
+
+## Generic Comparison Routing Correction
+
+The next G2/G4/G5 maintenance step reproduced `Compare museum attendance by city`
+as `covered` by `bounded-self-improvement`. The route treated `compare`,
+`comparison` and `baseline` as capability-specific words. These describe methods,
+not expertise in the subject. A new regression failed on the actual `covered`
+result before implementation; it did not fail on a fabricated fixture response.
+
+Both routers now treat those three words as generic for capability assessment.
+The museum case retains a provisional cell and standing-department candidate
+without activating the department or expanding authority. `Compare two SOP
+revisions against source policy` remains covered by authoring; a supporting
+format does not clear a separately declared museum objective in compound intake.
+
+The correction also makes eleven campaign/verifier/transparency manuals
+conditional. General authority, approval, knowledge, artifact and evaluation
+references remain. More specific improvement terms, runtime-control candidate
+or baseline context, parent capability queries and explicit specialist inputs
+can restore the full reading set. Source references are still resolved first;
+neither selected validation commands nor explicitly required documents are
+discarded by this reading filter. Explicit specialist terms in prohibitions are
+conservatively retained; this is not a negation parser.
+
+The local before/after comparison used identical S6/knowledge/read-only arguments
+for both providers. Counts describe recommendations, not actual model reading:
+
+| Task | Capability before -> after | Documents before -> after | Selected controls dropped |
+| --- | --- | --- | --- |
+| Museum-attendance comparison | covered -> gap_detected | 23 -> 18 | 0; two gap controls added |
+| Source-grounded SOP comparison | covered -> covered | 33 -> 22 | 0 |
+| Runtime-control candidate against baseline before promotion | covered -> covered | 28 -> 28 | 0 |
+| Exact recorded CAT-47 native receiving query | covered -> covered | 60 -> 49 | 0 |
+
+The last row reroutes retained task text locally. It does not replay the consumed
+native model process or claim that an agent selected fewer sources. Both provider
+outputs agree on capability, primary reading, matched routes and operator mode.
+Historical native responses and their original source bindings remain unchanged.
+
+Regression coverage includes human/delegated modes; comparison nouns, verbs and
+baseline wording; explicit corpus and project inputs; parent-objective and mixed
+specialist tasks; conservative negative phrasing; independently declared compound
+objectives; direct versus receipt output; linked/copied installation; and actual
+controller-issued agent context. In the controller case, all CoS/agent receipts
+retain the exact unsupported mission objective and one common bounded cell,
+force-structure checks remain mandatory, and tool/release authority stays false.
+The full controller fixture run passed 34/34 before the subsequent guidance edits.
+Focused post-edit checks and exact before/after outputs are retained under
+`.cannae/maintenance/comparison-routing-20261112/`.
+
+The first post-edit ladder passed 17/18 groups. The added project-input fixture
+incorrectly selected the doctrine checkout as its project, and the existing
+input boundary correctly rejected it. The corrected fixture uses a separate
+synthetic Git project; the boundary was not relaxed. The separate seven-group
+recheck passed, including 382 routing queries across both providers and 26
+authoring-review cases. The initial ladder also passed installation (31), receipt
+preflight (13), mandatory-control enforcement (6) and shared validation (517),
+plus both skill/coverage checks, inputs, packets, discovery, sources, registry,
+links, English-only and diff checks. These are focused checks, not the full
+repository aggregate, hosted CI or native-model acceptance of this correction.
+
+Both skills now require assessing the subject separately from the method and
+checking `capability_routing` even when `matched_routes` retains comparison-related
+checks. A recommendation count is not authority or a reason to remove a source,
+alter the mission objective, rewrite an issued receipt or waive a control.
+Other broad keywords, compound-domain masking without declarations, unnecessary
+specialist reading in negated clauses and semantic minimum selection remain open.
+Forty-nine recommendations are an improvement over sixty, not a finished routing
+experience. No model call, deployment, publication, permission expansion or
+persistent client-setting change was required for this correction.

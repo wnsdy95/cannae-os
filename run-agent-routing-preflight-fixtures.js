@@ -90,6 +90,22 @@ function routeWithSkill(skillRoot, query, args = []) {
 const delegatedArgs = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"];
 const routingCases = [
   {
+    name: "generic comparison preserves a capability gap and selected controls in receipts",
+    query: "Compare museum attendance by city",
+    extra: ["--capability-query=Compare museum attendance by city"],
+    required: ["docs/force-structure-change-policy.md", "docs/approval-scope-policy.md", "docs/knowledge-management-sop.md"],
+    absent: ["docs/bounded-self-improvement-operations.md", "docs/transparency-operations.md", "docs/verifier-execution-integrity.md"],
+    command: "node run-self-improvement-fixtures.js"
+  },
+  {
+    name: "comparison reading retains specialist requirements from its parent mission",
+    query: "Compare two SOP revisions against source policy",
+    extra: ["--capability-query=Review verifier execution integrity before comparative promotion"],
+    required: ["docs/document-authoring-workflow.md", "docs/verifier-execution-integrity.md", "docs/transparency-operations.md"],
+    command: "node run-self-improvement-fixtures.js",
+    gap: false
+  },
+  {
     name: "supplied policies survive direct routing and receipt generation",
     query: "Draft a support SOP from SUPPORT.md and SECURITY.md. Do not publish it.",
     extra: ["--capability-query=Draft a support SOP.", "--source=GOVERNANCE.md"],

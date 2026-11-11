@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+The [generic-comparison correction](document-authoring-case-study.md#generic-comparison-routing-correction)
+is local engineering evidence: a red routing regression, both provider outputs,
+source/mission-context preservation and controller-issued context checks.
+Comparison methods do not establish domain expertise. Conditional specialist
+reading does not remove selected controls, modify retained receipts or grant
+authority. No new military or provider-behavior claim follows from these tests.
+
 The [Codex receiving case](document-authoring-case-study.md#native-codex-routing-and-receiving)
 adds local native-tool evidence with a retained client-bridge failure, fourteen
 reconciled calls/results and source appraisal. These observations are specific

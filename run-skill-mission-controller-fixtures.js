@@ -371,13 +371,16 @@ fixture("specialist reading is task-scoped while release controls remain mandato
   }
 });
 
-fixture("unmatched mission capability creates one bounded cell across every agent context", () => {
-  const plan = wavePlan(basePlan, "WGAP");
-  plan.id = "MWP-CAPABILITY-GAP-WGAP";
-  plan.mission_id = "MIS-CAPABILITY-GAP";
+for (const { tag, name, objective } of [
+  { tag: "", name: "unmatched mission capability", objective: "Analyze ICP and rank sales targets from the canonical track view." },
+  { tag: "-COMPARISON", name: "generic comparison capability gap", objective: "Compare museum attendance by city" }
+]) fixture(`${name} creates one bounded cell across every agent context`, () => {
+  const plan = wavePlan(basePlan, `WGAP${tag}`);
+  plan.id = `MWP-CAPABILITY-GAP-WGAP${tag}`;
+  plan.mission_id = `MIS-CAPABILITY-GAP${tag}`;
   plan.title = "Analyze an uncovered commercial capability";
-  plan.objective = "Analyze ICP and rank sales targets from the canonical track view.";
-  plan.adaptive_work.campaign_id = "SIC-CAPABILITY-GAP";
+  plan.objective = objective;
+  plan.adaptive_work.campaign_id = `SIC-CAPABILITY-GAP${tag}`;
   const result = openWave(plan, {
     repository: repositoryGap,
     artifactRoot,
@@ -385,6 +388,8 @@ fixture("unmatched mission capability creates one bounded cell across every agen
     now: FIXED_OPEN_TIME
   });
   assert(result.status === "ready", "capability-gap wave should remain operable through a provisional cell");
+  assert(result.tool_execution_authorized === false && result.release_authorized === false,
+    "a capability-gap task cell must not authorize tools or release");
   const bundle = loadArtifact(artifactRoot, result.routing_bundle_ref);
   const organizationIds = new Set(bundle.receipts.map(receipt =>
     receipt.capability_routing.provisional_organization.organization_id));
@@ -416,6 +421,9 @@ fixture("unmatched mission capability creates one bounded cell across every agen
     assert(context.required_controls.some(control =>
       control.command === "node run-force-structure-change-fixtures.js"),
     "context pack must compile force-structure validation as a mandatory control");
+    if (tag === "-COMPARISON") assert(context.required_controls.some(control =>
+      control.command === "node run-self-improvement-fixtures.js"),
+    "generic comparison must not erase an already selected mandatory control");
     assert(context.capability_routing.provisional_organization.authority_expansion_authorized === false &&
       context.capability_routing.provisional_organization.standing_department_activation_authorized === false,
     "provisional organization must not expand authority or self-activate a standing department");

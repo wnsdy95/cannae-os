@@ -79,6 +79,11 @@ of semantic completeness. Multiple objectives are not supported in guarded
 receipts: do not drop or merge declarations to bypass that rejection. See
 [Document Routing](references/document-routing.md) for intake and handoff limits.
 
+For comparisons, assess the subject separately from the method. Read
+`capability_routing` even when `matched_routes` includes comparison-related
+controls; preserve a reported gap and its provisional cell. Do not remove an
+explicit source, mission objective or control to obtain a shorter reading list.
+
 Keep input files distinct from proposed output paths. For required corpus inputs,
 repeat `--source=<path>`; an unresolved input stops this routing invocation.
 Inspect `task_references.unresolved` for other filename mentions and resolve

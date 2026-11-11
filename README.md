@@ -665,6 +665,10 @@ adds an actual route and thirteen source reads after a diagnosed client-bridge
 failure. It preserves the changed policy and user decisions in that case, not
 general client equivalence. Sixty recommendations and a fixed reading profile
 leave minimal-context routing unresolved.
+The [generic-comparison correction](docs/document-authoring-case-study.md#generic-comparison-routing-correction)
+now preserves unsupported-domain gaps and conditionally omits unrelated specialist
+manuals. Local rerouting of that recorded query recommends 49 documents, still
+not minimal context; required sources and selected controls remain unchanged.
 
 For references to files in a separate project, use the explicit input origin:
 
