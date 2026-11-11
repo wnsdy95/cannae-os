@@ -83,6 +83,10 @@ section of `docs/role-document-access-policy.md`. Preparation reads only the
 explicitly selected project sources under the source owner's authority, binds
 origin/content/recipient, and preserves raw/summary/reference-only distinctions.
 Outputs stay in the project, and only `prompt.md` is proposed recipient input.
+Known withheld-source and repository paths cannot appear in the task, recipient
+or delivered text. Retain the original request locally and review any source-ID
+rephrasing without dropping constraints; the helper does not silently redact.
+Literal-path checks do not detect unknown locations, aliases or encoded secrets.
 Recheck against the previously reviewed packet digest, not a newly invented
 approval. No native transfer or receiver acceptance is provided by this helper.
 

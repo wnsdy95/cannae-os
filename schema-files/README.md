@@ -180,6 +180,8 @@ Recommended validation order:
 22. `document-access-manifest.schema.json`
     Project-specific preparation uses `project-document-packet-request.schema.json`
     and `project-document-packet.schema.json`, both non-authorizing contracts.
+    Semantic checks reject known private locations in recipient-facing strings;
+    valid/invalid path examples preserve original task constraints without redaction.
     See `docs/role-document-access-policy.md` for source-owner read permission,
     recipient scope, raw/summary/reference-only forms and separate transfer consent.
 23. `doctrine-consistency-review.schema.json`

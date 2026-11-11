@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://controls.local/schema-files/project-document-packet-request.schema.json",
   "title": "Project Document Packet Request",
-  "description": "Explicit source-owner preparation input, not authenticated access, a mission order or consent to send content to a model.",
+  "description": "Explicit source-owner preparation input, not authenticated access, a mission order or consent to send content to a model. Semantic checks reject literal withheld-source paths in recipient-facing request strings; use reviewed source-ID references without dropping the original task's requirements.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "type", "id", "task", "recipient", "documents"],

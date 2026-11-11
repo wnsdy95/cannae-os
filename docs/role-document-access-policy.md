@@ -183,6 +183,26 @@ a fixed code and no matched values. These pattern checks may over-block ordinary
 policy wording and cannot prove absence of sensitive data or prompt injection.
 Do not lower classification or bypass a finding to get a packet out.
 
+Removing path fields from document rows is not sufficient: task text, recipient
+fields, source IDs, raw content or a supplied summary can repeat a withheld path.
+The shared semantic checks and prompt renderer reject literal substrings matching
+the selected summary originals or reference-only source paths. Once the source
+origin is known, they also reject its canonical repository and Git-directory
+locations. Preparation checks task/recipient fields before source reads and all
+delivered text before writing a candidate. Errors contain a fixed code, not the
+matched location. Local `packet.json` retains source metadata; it remains private.
+
+On `PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE`, preserve the original request
+locally. Prepare a separately reviewed recipient version using source IDs,
+retaining all requirements and explicit prohibitions, then obtain any necessary
+fresh exact-input consent. Never silently delete a task clause or alter evidence
+to satisfy the check. If the task cannot be expressed without the withheld
+location, hold transfer for an explicit disclosure decision outside this helper.
+The literal check deliberately does not reject ordinary relative raw-source
+citations or every filename. It does not discover unlisted paths, basename-only
+references, aliases, encoded forms or other sensitive information; exact substring
+matches can also over-block. Manual disclosure review remains necessary.
+
 The selected source root must be an existing, separate Git worktree with a HEAD.
 Paths must be exact, unignored regular files with no symlink components or nested
 repository substitution. The packet binds canonical root, filesystem identity,

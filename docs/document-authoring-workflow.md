@@ -53,6 +53,9 @@ When transferring selected files from another project, use the
 to bind the actual task, source bytes, supplied summaries and intended recipient.
 The source owner needs read authority before preparation. A prepared packet is
 not consent to send, and a reference-only input cannot replace required reading.
+Check the task and supplied text for private paths as well as the file metadata.
+If blocked, retain the original locally and review a source-ID-based recipient
+version that preserves its requirements; do not silently redact or reuse consent.
 Keep an already guarded mission on its existing controls rather than using an
 ordinary document packet to evade an unsupported input or hold.
 

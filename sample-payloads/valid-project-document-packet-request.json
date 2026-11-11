@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1", "type": "ProjectDocumentPacketRequest", "id": "PDR-DEMO",
-  "task": "Draft a handoff from SRC-POLICY. Do not publish it.",
+  "task": "Draft a handoff from SRC-POLICY (docs/policy.md). Do not publish it.",
   "recipient": { "agent_id": "writer", "provider": "codex", "role": "S3", "department": "operations", "duty": "operations_planning", "authority_level": "L1" },
   "documents": [{
     "id": "SRC-POLICY", "path": "docs/policy.md", "required": true, "classification": "internal",

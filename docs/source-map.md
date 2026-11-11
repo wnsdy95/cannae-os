@@ -9,6 +9,10 @@ byte checks, non-reading of reference-only files and provider-wrapper parity are
 local engineering evidence, not military claims or authenticated consent/native
 receiver acceptance. Both skill entrypoints and routing references carry the
 source-owner preparation versus recipient-delivery boundary.
+The same helper now rejects literal withheld-source and repository locations
+across recipient-facing strings, not just document metadata. The reproduction
+and limits are local engineering evidence; this is neither semantic secrecy
+detection nor a new source-read/disclosure grant.
 
 `context-document-integrity.js` and its isolated controller/dispatch fixtures
 implement the existing source-binding rule in

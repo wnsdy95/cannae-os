@@ -76,8 +76,12 @@ For actual project content, follow `docs/role-document-access-policy.md`'s proje
 preparation procedure with `scripts/prepare_controls_documents.js`. Only an
 authorized source reader prepares raw text or hashes summary originals. Reuse
 separately reviewed summaries; never open a reference-only source or invent its
-approval. Do not relabel an exact original copy as a summary. Inspect the exact
-candidate again before separately authorized transfer
+approval. Do not relabel an exact original copy as a summary. Check private paths
+in task text and supplied content, not just file
+metadata. On a path-disclosure failure, retain the original request locally and
+review a new source-ID-based candidate with every requirement and prohibition
+preserved; never silently redact the task or reuse approval for changed bytes.
+Inspect the exact candidate again before separately authorized transfer
 of `prompt.md`, not the private `packet.json`. Prepared/current does not mean sent
 or read, and this helper cannot bypass a guarded mission's unsupported inputs.
 

@@ -642,6 +642,9 @@ See [project content preparation](docs/role-document-access-policy.md#project-co
 Preparation is not permission to read or send, and inspection does not prove
 native client use. Only the exact `prompt.md` is proposed for separate transfer
 approval; `packet.json` contains local source metadata and is not recipient input.
+Known withheld-source and repository paths in the task or supplied text also
+stop preparation. Review source-ID wording without dropping original requirements;
+this bounded check is not general sensitive-data detection or disclosure approval.
 
 For a doctrine-only framework question:
 

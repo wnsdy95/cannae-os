@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://controls.local/schema-files/project-document-packet.schema.json",
   "title": "Project Document Packet",
-  "description": "Local review candidate only. Its schema cannot authenticate access, release, receiver identity or consent.",
+  "description": "Local review candidate only. Semantic checks reject known withheld-source and repository-location substrings in recipient-facing strings, without rewriting them. This is not general sensitive-data detection. Its schema cannot authenticate access, release, receiver identity or consent.",
   "type": "object", "additionalProperties": false,
   "required": ["schema_version", "type", "request", "source_repository", "documents", "status", "authorization_verified", "execution_authorized", "release_authorized", "receiver_acceptance_verified"],
   "properties": {

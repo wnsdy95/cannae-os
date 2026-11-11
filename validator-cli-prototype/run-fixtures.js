@@ -11,6 +11,10 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["request", "packet"].map(kind => ({ name: `${kind} cannot disclose known private locations`,
+    file: `sample-payloads/invalid-project-document-packet-private-path${kind === "request" ? "-request" : ""}.json`,
+    type: kind === "request" ? "project-document-packet-request" : "project-document-packet",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"] })),
   { name: "a copied original cannot be delivered as a summary", file: "sample-payloads/invalid-project-document-packet-summary-copy.json",
     type: "project-document-packet-request", exitCode: 1, expectedCanExecute: false, requiredCodes: ["PROJECT_PACKET_SUMMARY_IS_SOURCE"] },
   ...["project-document-packet-request", "project-document-packet"].flatMap(type => ["valid", "invalid"].map(prefix => ({

@@ -80,6 +80,65 @@ try {
         assert.equal(opened, false);
       }
     });
+    check(`${provider}: withheld paths in task or recipient stop before project source reads`, () => {
+      for (const location of [reference.path, "data/notes.txt", root, path.join(root, ".git")]) {
+        for (const field of path.isAbsolute(location) ? ["task"] : ["task", "agent_id"]) {
+          const changed = structuredClone(request);
+          if (field === "task") changed.task += ` Leave ${location} unopened.`;
+          else changed.recipient.agent_id = location;
+          const before = JSON.stringify(changed), open = fs.openSync; let opened = false;
+          fs.openSync = function(file, ...args) { if (String(file).startsWith(root)) opened = true; return open.call(fs, file, ...args); };
+          try { assert.throws(() => packet.compilePacket(changed, root), error => error.message === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"); }
+          finally { fs.openSync = open; }
+          assert.equal(opened, false);
+          assert.equal(JSON.stringify(changed), before, "The original task must not be silently rewritten.");
+          if (!path.isAbsolute(location)) expectInvalid(changed, "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
+        }
+      }
+    });
+    check(`${provider}: raw and summary text cannot smuggle known private paths through preparation or rendering`, () => {
+      for (const [relative, index, originalBody, digestKey] of [["docs/policy.md", 0, raw, "source_sha256"],
+        ["review/notes.md", 1, summary, "summary_sha256"]]) {
+        for (const location of [reference.path, "data/notes.txt", root, path.join(root, ".git")]) {
+          const changed = structuredClone(request), text = `Keep ${location} unopened.\n`;
+          const compiled = packet.compilePacket(request, root);
+          changed.documents[index][digestKey] = packet.sha256(text);
+          compiled.request = changed; compiled.documents[index].content = text;
+          compiled.documents[index].delivered_sha256 = packet.sha256(text);
+          if (index === 0) compiled.documents[index].source_sha256 = packet.sha256(text);
+          const result = validatePayload(compiled, "project-document-packet");
+          assert.equal(result.valid, false); assert.equal(result.can_execute, false);
+          assert(result.issues.some(issue => issue.code === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"));
+          assert(!result.issues.some(issue => issue.code === "PROJECT_PACKET_BINDING_MISMATCH"));
+          assert.throws(() => packet.renderPrompt(compiled), error => error.message === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
+          fs.writeFileSync(path.join(root, relative), text);
+          const output = path.join(root, ".cannae/document-packets"), prior = fs.readdirSync(output);
+          try { assert.throws(() => packet.prepare(changed, root), error => error.message === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"); }
+          finally { fs.writeFileSync(path.join(root, relative), originalBody); }
+          assert.deepEqual(fs.readdirSync(output), prior, "A rejected disclosure must not publish a candidate.");
+        }
+      }
+    });
+    check(`${provider}: source-ID instructions preserve exclusions and ordinary raw-file references`, () => {
+      const changed = structuredClone(request);
+      changed.task = "Draft using SRC-POLICY (docs/policy.md) and SRC-NOTES. Leave SRC-REFERENCE unopened. Do not publish. The filename notes.txt alone is ambiguous.";
+      const before = JSON.stringify(changed), compiled = packet.compilePacket(changed, root);
+      assert.equal(compiled.request.task, changed.task);
+      assert(packet.renderPrompt(compiled).includes(changed.task));
+      assert.equal(JSON.stringify(changed), before);
+      const collision = structuredClone(request);
+      collision.documents[2].path = collision.documents[0].id;
+      expectInvalid(collision, "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
+      const rootAlias = structuredClone(compiled);
+      rootAlias.source_repository.git_directory = "/synthetic/separate-git-dir";
+      rootAlias.request.task += " Origin: /synthetic/separate-git-dir";
+      assert(validatePayload(rootAlias, "project-document-packet").issues.some(issue => issue.code === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"));
+      assert.throws(() => packet.renderPrompt(rootAlias), /PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE/);
+      rootAlias.request.task = changed.task;
+      rootAlias.request.recipient.agent_id = rootAlias.source_repository.git_directory;
+      assert(validatePayload(rootAlias, "project-document-packet").issues.some(issue => issue.code === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"));
+      assert.throws(() => packet.renderPrompt(rootAlias), /PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE/);
+    });
     check(`${provider}: content source or summary changes invalidate the retained candidate`, () => {
       for (const [file, body] of [["docs/policy.md", raw], ["data/notes.txt", original], ["review/notes.md", summary]]) {
         const value = packet.prepare(request, root);

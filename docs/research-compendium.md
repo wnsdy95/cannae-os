@@ -14,6 +14,13 @@ original and summary digests and an asserted review reference. The source owner
 must be authorized to hash the original; the summary-only recipient gets no
 original body. Reference-only sources are never opened or hashed and deliver
 only IDs, not private local paths. Metadata freshness does not prove their bytes.
+An actual local reproduction showed that merely omitting path fields still let
+task and recipient text repeat a withheld location. Preparation, shared semantic
+validation and rendering now reject known withheld-source and repository-location
+substrings across outgoing strings. Raw and supplied-summary text are included.
+Keep the original request locally and review any source-ID rephrasing without
+dropping constraints. This is a bounded literal check, not detection of unknown,
+aliased or encoded paths, semantic redaction or disclosure approval.
 Conservative existing OPSEC/EEFI checks stop suspect outbound content without
 exposing matches, but neither prove safe semantics nor authenticate classification.
 

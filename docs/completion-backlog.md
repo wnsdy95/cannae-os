@@ -10,6 +10,14 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G4 correction: project packet preparation now rejects known private
+locations repeated in task/recipient strings or delivered raw/summary content,
+without silently changing the task. Focused checks pass. The broader lifecycle
+rerun is not green: 31/32 passed, then the termination coordination-lock check
+failed; that unchanged case passed alone. Its cause remains unresolved, and the
+prior historical 32/32 result must not be substituted for this run. See the
+location-disclosure checkpoint below before any integration claim.
+
 Latest G2/G5 implementation: the offline project document packet helper now
 assembles selected raw text or separately prepared summaries with exact local
 origin, content and recipient binding. Reference-only bodies are not opened.
@@ -582,6 +590,61 @@ claimed. Prior review consents remain consumed. A future observed response must
 be appraised for source use, exclusions and unknowns, not marked accepted from
 successful process exit. Installed-skill consumption and independent acceptance
 remain separate from this supplied-packet exercise.
+
+### Project Packet Location Disclosure Correction (2026-11-11)
+
+G2 task: inspect the actual recipient projection for private path disclosure,
+not only body filtering. On the previous implementation, four synthetic variants
+compiled and rendered a withheld reference path, a summary-original path, a
+private path in the recipient ID or the canonical project root. The proposed
+native-review input was not modified or transmitted for this reproduction.
+
+Preparation, shared semantic validation and prompt rendering now use the same
+outgoing projection and reject literal known withheld-source/repository locations
+across its strings. Request checks happen before source reads; delivered-content
+checks precede candidate publication. Fixed diagnostics omit matched values.
+Neither the task nor evidence is silently rewritten. Both provider skills now
+require retaining the original request locally and reviewing source-ID wording
+with all requirements/prohibitions intact before any new exact-input consent.
+Unknown, aliased or encoded paths and general semantic disclosure remain outside
+this bounded check. It does not grant source access or transfer authority.
+
+The first interactive packet test passed two cases, then rejected a synthetic
+recipient ID through the existing length constraint rather than the new path
+rule. A separate check confirmed the temporary Git-directory name was 104
+characters against the 100-character limit. The corrected fixture tests absolute
+paths in the task and a short separate Git location in recipient fields; the
+existing length and disclosure gates were retained. Packet tests then passed 24/24.
+
+The fixed-source batch passed packet preparation 24/24, shared validation 510/510,
+routing 216 queries plus 32 source rejections and 3 link checks, both skill
+validators (231 lines), document access 18/18, preflight 10/10, mandatory controls
+6/6 and installation 21/21. Its lifecycle command exceeded the harness's four-
+minute limit and was terminated; the source diff remained unchanged. Logs:
+`.cannae/maintenance/project-packet-path-checks-86790e61-88a5-4071-b4ee-b0d6d56c2782/`.
+
+A same-source lifecycle retry with a twenty-minute harness limit finished after
+about 519 seconds with 31/32 passing. The final termination CLI coordination-lock
+case failed with `Repository artifact lease ownership changed before release.`
+The lifecycle fixture, lease, dispatch and mission-controller source files have
+no changes from the prior commit. Selecting only that unchanged fixture body in
+memory passed 1/1 in about 19 seconds; this diagnostic is not a full-suite pass or
+proof of the cause. Preserve both failed runs and the focused diagnostic. Do not
+weaken locks, extend authorization lifetimes or claim a green integration gate.
+Investigating the intermittent failure remains open; no runtime-lock fix is
+claimed by the location-disclosure change.
+
+Final inventory checks found zero unrouted artifacts for either provider; source
+map, registry and Markdown-link checks passed. All four original disclosure
+variants now fail with the fixed code and leave the request unchanged. Policy
+hashes, installed symlink targets/inodes and the pre-existing user ignore file
+remain unchanged. The pending synthetic candidate re-inspected successfully with
+the same 4,060-byte prompt and previously recorded hashes. These checks do not
+clear the broader lifecycle failure above.
+
+Actual native transfer/receiver use remains separately pending consent. The old
+authoring-review retry consent is already consumed. No model invocation, push,
+policy adoption or G1-G5 completion follows from this local correction.
 
 ## Retained Platform Baseline
 
