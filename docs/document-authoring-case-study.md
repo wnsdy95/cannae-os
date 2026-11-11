@@ -827,3 +827,81 @@ section records their maintenance evidence, not a new operating policy. The
 next acceptance step is separately scoped actual native body consumption and
 task behavior. No new model invocation or operational receiver acceptance is
 authorized by these local checks; G2/G5 remain open.
+
+## Offline Native Body Delivery
+
+### Purpose And Method (2026-11-11)
+
+G5 follow-up to the installed-entry check: determine whether the native client
+assembles the complete entrypoint, without spending another model-call consent.
+The installed Codex 0.162.1 protocol schema has a typed skill input, but schema
+presence alone cannot establish behavior. The actual observation instead used
+ordinary `codex exec` with explicit `$controls-doctrine-operator` task text.
+
+A transient loopback capture endpoint accepted one first request per case and
+returned HTTP 400 intentionally. It had no model or forwarding code and was
+closed after each native process exited. Temporary client homes, an empty target
+directory, no real login/configuration and a non-existent offline model name
+kept this separate from the user's ordinary client. Before each start, OS checks
+verified denial of external connections, another loopback port and outside-root
+writes, while permitting the exact capture port. The existing policy also denied
+real client credentials/configuration, keychain and operator-state reads.
+No external model request, user-home write, daemon or standing service resulted.
+
+Provider overrides followed the [official custom-provider configuration](https://learn.chatgpt.com/docs/config-file/config-advanced#custom-model-providers).
+No key was needed for the unauthenticated local endpoint; no account setup or
+configuration file was changed. The first containment attempt failed because
+the OS rule required `localhost`, not a numeric host in its rule syntax. It
+stopped before starting Codex. Its failure is retained separately from the
+corrected four-case observation.
+
+### Observations And Limits
+
+| Temporary installation and prompt | Complete entrypoint in first request | Native outcome |
+| --- | --- | --- |
+| No skill installed, explicit name | No | Intentional local HTTP 400, exit 1 |
+| Linked skill, ordinary task text | No | Intentional local HTTP 400, exit 1 |
+| Linked skill, explicit native selection | Yes, separate user-role skill item | Intentional local HTTP 400, exit 1 |
+| Copied skill, explicit native selection | Yes, separate user-role skill item | Intentional local HTTP 400, exit 1 |
+
+The exact full file, including frontmatter, matched in both selected cases;
+the comparison was not a heading or name search. The linked item's path resolved
+to the source entrypoint; the copied item's path resolved to the temporary copy.
+The entrypoint SHA-256 was
+`8c92683555e23a50364a230b51a33760870179dd03984aaa6f075a389b0e3138`
+at source commit `dfb7d56`. Each case produced exactly one local request, no
+authorization header and no retry. The ordinary task's first request contained
+metadata, not the body. This cannot establish failure of implicit selection:
+there was no model response or subsequent authorized source reading to inspect.
+
+Feature switches removed the operational surfaces used by earlier reviews, but
+five built-in tool definitions remained advertised: input request, image view
+and three goal operations. No tool was invoked; the capture returned no model
+output. Do not describe this as an empty-tool or actual-model execution test.
+Neither the HTTP error nor the probe's successful measurement is a successful
+document task. Routed references, model compliance, Claude body delivery and
+operational receiver acceptance remain unverified by this observation.
+
+Evidence stays in `.cannae/maintenance/native-skill-protocol-C91TEi/`:
+the generated native schema, readable observer, initial containment failure and
+`attempt-7yvvSQ/` request/event records. Raw request bodies remain local rather
+than becoming public fixtures. The capture is a one-off acceptance observation,
+not a new runtime, provider adapter or required product service.
+
+Both provider routing references now distinguish discovery, body delivery and
+actual work; they teach deliberate native selection without changing automatic
+selection policy. README explains the Codex invocation and shell-quoting boundary.
+The next acceptance step remains separately scoped skill-driven task behavior,
+not another metadata-only listing. All earlier model consents remain consumed;
+these measurements create no new authority or claim of full G5 completion.
+
+Post-guidance checks passed: installation 26/26, discovery-helper 7/7, routing
+216 queries plus 32 required-source rejections and 3 link-inventory checks,
+preflight 10/10 and mandatory controls 6/6. Both entrypoints validated, both
+coverage reports had zero unrouted artifacts, and source-map/registry audits,
+182 document link checks and the English-only check passed. Four retained
+request appraisals checked exact bytes, distinct skill items, failed native
+turns and absence of observed tool calls. Policies, user `.gitignore` and actual
+installation link targets/inodes stayed unchanged. Logs are in `checks-Cgr6j2/`
+under the evidence directory above. Full aggregate, lifecycle, hosted CI and
+actual-model acceptance were not rerun for this documentation-only change.

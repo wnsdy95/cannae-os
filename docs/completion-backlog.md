@@ -10,6 +10,14 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G5 evidence: an isolated Codex 0.162.1 first-request capture verified the
+complete entrypoint in a separate skill item for explicit linked and copied
+selection. Absent and unselected controls contained no full body. This resolves
+the earlier preview's assembly uncertainty for these Codex cases, not implicit
+selection or model compliance. The local endpoint returned an intentional error;
+no model, routed work or new consent was used. Claude body delivery and actual
+workflow behavior remain open. See [body-delivery evidence](document-authoring-case-study.md#offline-native-body-delivery).
+
 Latest G2/G5 correction: both installed entrypoints' first literal commands
 failed outside the doctrine checkout, even though installation helpers passed.
 The commands now use the loaded skill location and returned corpus root without
@@ -99,7 +107,7 @@ The current corrective V3 handoff is in `docs/document-authoring-case-study.md`.
 | G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections enforce profile selection; new authority checks issued doctrine bytes. Offline project packets bind origin/content/recipient without opening reference-only bodies. One USER-approved native exercise demonstrates supplied-source use and rejection of an embedded false-approval instruction. | Authenticated origin/recipient/delegation, actual operational receiver acceptance, guarded project-input integration and broader semantic relevance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Installation fixtures cover link/copy binding, refresh, conflicts, receipt parity and the literal documented startup commands from another project. Real installed paths also route those commands correctly. Actual Codex/Claude metadata probes discover both bundle forms in temporary homes with absent/bare-mode negative controls. | Installed-skill body consumption, skill-driven semantic execution and an independent fresh-session workflow remain unverified. The tool-disabled recipient exercise deliberately disabled discovery; offline metadata is not body consumption. The user's full client configuration and separate plugin packaging are not established. |
+| G5. Client distribution | Installation fixtures cover link/copy binding, refresh, conflicts, receipt parity and the literal documented startup commands from another project. Real installed paths also route those commands correctly. Actual Codex/Claude metadata probes discover both bundle forms in temporary homes with absent/bare-mode negative controls. A separate offline Codex first-request capture verifies complete entrypoint insertion for explicit linked/copied selection. | Model consumption/compliance, Claude body delivery, skill-driven semantic execution and an independent fresh-session workflow remain unverified. The approved recipient exercise deliberately disabled discovery; offline request assembly is not task execution. The user's full client configuration and separate plugin packaging are not established. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).

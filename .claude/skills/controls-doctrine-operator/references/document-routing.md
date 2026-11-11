@@ -91,6 +91,30 @@ Neither check proves skill-body consumption, semantic work quality, the current
 user's settings, authenticated model access or production isolation. Record
 client versions and keep actual task execution as a separate acceptance step.
 
+### Selection And Body Delivery
+
+Diagnose installation, metadata discovery, full-body delivery and task behavior
+separately. A metadata-only preview is not proof that a real turn omits the body.
+When deliberately selecting this workflow in Codex, use the native
+`$controls-doctrine-operator` selection with the task. Preserve the literal `$`
+with single quotes when passing that prompt through a shell. This is not the
+direct router command, and an ordinary client turn can invoke a model and tools.
+Do not change automatic-selection policy or enable extra tools merely to test
+selection. Claude uses its own discovered command; a Codex observation does not
+establish Claude's body delivery.
+
+For delivery evidence, compare the exact loaded entrypoint with client-inserted
+request content, not a name, metadata description, marker or model's claim that
+it read the instructions. Codex's separate skill item is not a universal payload
+format for other clients. If there is no explicit selection, absence
+from the first request does not prove failure: later authorized source reading
+has not yet been observed. A local request capture can establish assembly, but
+not model consumption, routed document reads, successful work or receiver
+acceptance. An intentional capture-endpoint error is not a completed model turn.
+Record the actual offered tools; feature switches alone do not prove an empty
+tool list. Keep real credentials/configuration unchanged and obtain separate
+scope approval before any actual-model verification.
+
 ## Authoring Review Packets
 
 For task-source delivery rather than an evaluation corpus, use

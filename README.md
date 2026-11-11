@@ -615,6 +615,16 @@ network access or a model prompt. Claude bare mode intentionally omits normal
 user-skill discovery. Metadata discovery is not proof that an agent consumed
 the skill or performed a task; see the [current evidence](docs/completion-backlog.md#native-client-metadata-discovery-2026-11-11).
 
+To deliberately select this workflow in Codex, include
+`$controls-doctrine-operator` with your task. Preserve the literal `$` with
+single quotes when passing the prompt through a shell. An ordinary client turn
+can invoke a model and tools; it is not the offline router shown below.
+A [local request capture](docs/document-authoring-case-study.md#offline-native-body-delivery)
+verified that Codex 0.162.1 inserts the complete entrypoint for explicit selection
+in linked and copied installations. No model ran in that check. Implicit
+selection, semantic compliance and Claude body delivery need separate evidence;
+a metadata-only first request does not prove that later reading will fail.
+
 For offline document-review preparation, run `node authoring-review-packet.js prepare`.
 It separates evaluator input from the author's seeded-defect reference under
 this repository's local maintenance directory; it never calls a model or grants

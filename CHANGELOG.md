@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Verify complete Codex entrypoint insertion through four offline native first-request captures, separating explicit linked/copied selection from absent/unselected controls. Mirror selection, shell-quoting and evidence-layer guidance in both providers. The local endpoint deliberately rejected every request: no model, router work or receiver acceptance is claimed, and Claude body delivery remains unverified. Keep automatic-selection policy, credentials, installation and authority unchanged.
+
 - Fix installed entrypoint commands that failed from other projects by anchoring the router to the loaded skill directory and removing accidental current-directory doctrine overrides. Mirror explicit corpus-versus-task path handling in both providers and test the actual documented commands in fresh shells for linked/copied/custom installations. Native metadata and a skill-name prompt still do not establish skill-body consumption or task execution.
 
 - Record one separately USER-approved native recipient exercise using the unchanged 4,060-byte synthetic project packet. The completed response preserved the backbrief, source distinctions, unknowns, human publication authority and untrusted-comment boundary with zero observed tool calls. Retain its usage, diagnostics, exact input binding and source appraisal; the consumed consent does not prove installed-skill consumption, authenticated recipient identity or operational handoff acceptance.
