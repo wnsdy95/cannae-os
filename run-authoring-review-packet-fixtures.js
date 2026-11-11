@@ -125,6 +125,18 @@ try {
       assert(routing.includes("A request-level gap does not mean every objective is uncovered."));
     }
   });
+  fixture("required-read completion and advance reporting reach both clients and reviewer input", () => {
+    for (const phrase of ["Reconcile assigned required rows with actual current-phase reads",
+      "mark dependent review incomplete", "independent partial findings", "retrospective"]) {
+      assert(packet.prompt.includes(phrase), `Missing current reviewer guidance: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("do not relabel unread requirements as"));
+      assert(skill.includes("An over-broad list needs reviewed reassignment"));
+      assert(skill.includes("not only as a retrospective final section"));
+    }
+  });
   fixture("reviewed V1/V2 and V3 candidates retain their exact historical bytes", () => {
     const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
     assert.equal(hash(section(text, "## SOP Draft V1", "## Requirement Comparison")),

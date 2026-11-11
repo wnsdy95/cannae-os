@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Observe native Claude implicit selection and cold-start receipt of the unchanged Codex SOP/handoff unit. Reconcile seven calls and both objective rows; retain missing mandatory reads, a locator overclaim and retrospective reporting instead of declaring complete review acceptance. Mirror required-reading and advance-reporting rules in both skills. Preserve observer failures and a separately recorded retry; add exact native body/argument verification with regression cases, without weakening no-tool review controls or inferring policy adoption.
+
 - Observe native Codex implicit selection from an ordinary SOP/handoff request without pre-injected instructions. Reconcile eleven read/routing calls and appraise preserved policy, explicit unknowns and usable source location; retain controlled-catalog, Claude parity and receiving limits. Separately align the Codex UI starter with document-first work and test installed link/copy delivery plus equivalent direct routing; no native starter execution or full distribution acceptance is inferred.
 
 - Preserve the first starter-fixture failure: ordinary "revise this document" wording missed the authoring route behind supporting matches. Add a bounded writing/document recognizer to both routers, positive/negative and domain-gap regressions, and mirrored exact-starter maintenance guidance. Retain authority and guarded workflow boundaries; lexical coverage does not establish domain expertise or general semantic completeness.

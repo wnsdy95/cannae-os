@@ -394,6 +394,21 @@ another working directory; it does not import target-project sources. Follow
 `docs/role-document-access-policy.md#projection-boundary` for limits, and test
 changes with `node run-document-access-fixtures.js` before using new projections.
 
+Required means a completion prerequisite for its dependent work, not another
+recommendation rank. Before finalizing that work, reconcile required rows with
+actual current-phase reads. Identify unread or unavailable requirements and
+keep the affected review incomplete; independent partial findings may remain
+useful. The assigning operator should select a minimal justified profile, but
+the recipient cannot silently downgrade that issued profile to shorten reading.
+
+For native discovery diagnostics, distinguish metadata, a Skill invocation,
+its launch acknowledgement and actual body delivery. Documented optional task
+arguments are not an extra tool or an authority grant. The repository helper
+`verifyClaudeSkillBody` checks the exact native loaded-body event, directory and
+observed arguments separately; test it with `run-skill-client-discovery-fixtures.js`.
+It does not reconcile the invoking call or prove comprehension. Keep full event
+history and original failures; an observer correction is not a product pass.
+
 ## Conditional Runtime Maintenance
 
 The following operating notes apply only to a relevant existing guarded

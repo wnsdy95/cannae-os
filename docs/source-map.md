@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+The [implicit Claude receiving case](document-authoring-case-study.md#native-implicit-claude-receiving)
+adds observed native loading, current-role routing and actual receipt of a complete
+synthetic unit. Process success is separated from missing required reads, an
+unsupported mandatory locator finding and retrospective rather than advance
+reporting. Both original observer failures and corrected evidence remain local
+history. This is not a military claim, full semantic acceptance or USER adoption.
+
 The [implicit Codex selection case](document-authoring-case-study.md#native-implicit-codex-selection)
 is a synthetic desk-duty exercise in a controlled native catalog. Installed-body
 selection, complete objective routing and source reads are observed, not inferred

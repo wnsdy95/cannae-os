@@ -171,6 +171,15 @@ authorized dependencies, or explicitly state what is withheld/unavailable and
 leave the dependent historical comparison unverified. Do not open reference-only
 sources, expose restricted history or drop a requirement to complete the map.
 
+At review completion, reconcile the assigned required reading with actual reads,
+not just eligible delivery. Unread required sources leave the dependent review
+incomplete even when some policy comparisons are valid; state those partial
+findings separately. A preparer should justify a minimal reading profile, but
+the recipient cannot reclassify its required rows as optional recommendations.
+When an advance backbrief is requested, provide purpose, work, authority, limits
+and the proposed sequence before dependent analysis. A final retrospective
+section is not evidence that an advance report occurred.
+
 State the categories of material withheld from a reviewer without revealing
 their verdicts. A review matrix excluded to avoid priming is not evidence that
 the canonical repository lacks one. Appraise each finding against both the

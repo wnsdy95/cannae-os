@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const assert = require("node:assert/strict");
-const { environment, profile, textParts, claudeDiscovery } = require("./skill-client-discovery-probe");
+const { environment, profile, textParts, claudeDiscovery, verifyClaudeSkillBody } = require("./skill-client-discovery-probe");
 
 const name = "controls-doctrine-operator";
 const description = "Fixture-only skill description.";
@@ -43,6 +43,44 @@ fixture("duplicate commands cannot satisfy native discovery", () => {
 fixture("missing native command metadata fails instead of guessing from text", () => {
   for (const value of [null, {}, { commands: name }, { result: description }]) {
     assert.throws(() => claudeDiscovery(value, description), /command list/);
+  }
+});
+const directory = "/synthetic/skills/controls-doctrine-operator", body = "# Synthetic Instructions\n\nPreserve USER authority.\n";
+const loadedEvent = args => ({ type: "user", isSynthetic: true, message: { role: "user", content: [{ type: "text",
+  text: `Base directory for this skill: ${directory}\n\n${body}${args ? `\n\nARGUMENTS: ${args}` : ""}` }] } });
+fixture("native body delivery accepts absent or empty documented arguments", () => {
+  for (const args of [undefined, ""]) {
+    const result = verifyClaudeSkillBody(loadedEvent(args), { directory, body, args });
+    assert.equal(result.body_verified, true); assert.equal(result.semantic_execution_verified, false);
+  }
+});
+fixture("native body delivery binds multiline task arguments separately from instructions", () => {
+  const args = "Review the SOP.\nNo publication.\n\nARGUMENTS: literal task text";
+  const withArgs = verifyClaudeSkillBody(loadedEvent(args), { directory, body, args });
+  const withoutArgs = verifyClaudeSkillBody(loadedEvent(), { directory, body });
+  assert.equal(withArgs.body_sha256, withoutArgs.body_sha256);
+  assert.match(withArgs.arguments_sha256, /^[a-f0-9]{64}$/); assert.equal(withoutArgs.arguments_sha256, null);
+});
+fixture("metadata and a Skill launch acknowledgement do not prove body delivery", () => {
+  for (const event of [{ type: "system", subtype: "init", skills: [name] },
+    { type: "user", message: { role: "user", content: [{ type: "tool_result", content: `Launching skill: ${name}` }] } }]) {
+    assert.throws(() => verifyClaudeSkillBody(event, { directory, body }), /native loaded-skill/);
+  }
+});
+fixture("wrong location or changed instructions cannot pass a native load check", () => {
+  assert.throws(() => verifyClaudeSkillBody(loadedEvent(), { directory: directory + "-other", body }), /directory mismatch/);
+  assert.throws(() => verifyClaudeSkillBody(loadedEvent(), { directory, body: body + "Extra permission." }), /body mismatch/);
+});
+fixture("unexpected missing or substituted arguments remain mismatches", () => {
+  assert.throws(() => verifyClaudeSkillBody(loadedEvent("review"), { directory, body }), /body mismatch/);
+  assert.throws(() => verifyClaudeSkillBody(loadedEvent(), { directory, body, args: "review" }), /arguments mismatch/);
+  assert.throws(() => verifyClaudeSkillBody(loadedEvent("publish"), { directory, body, args: "review" }), /arguments mismatch/);
+});
+fixture("malformed native load content and invalid expectations fail closed", () => {
+  const extra = loadedEvent(); extra.message.content.push({ type: "text", text: "extra" });
+  assert.throws(() => verifyClaudeSkillBody(extra, { directory, body }), /content/);
+  for (const options of [{ directory: "relative", body }, { directory, body: "" }, { directory, body, args: {} }]) {
+    assert.throws(() => verifyClaudeSkillBody(loadedEvent(), options));
   }
 });
 console.log(JSON.stringify({ valid: true, fixtures, native_client_execution: false }));

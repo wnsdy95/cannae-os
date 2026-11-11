@@ -1,5 +1,23 @@
 # Research Compendium
 
+## Receiving Does Not Establish Complete Review (2026-11-12)
+
+The [implicit Claude receiver](document-authoring-case-study.md#native-implicit-claude-receiving)
+selected its installed instructions, routed both objectives and actually read
+the four original project sources. That closes the narrower uncertainty about
+document receipt for this unit, not the quality of the whole review. Unread
+required guides were treated as recommendations, an existing locator map was
+discounted in a mandatory edit finding, and a requested advance backbrief appeared
+only at the end. Both skills now distinguish partial findings from completion
+prerequisites and advance reporting from retrospective description. The assigning
+operator must also justify minimal required reading before delegation.
+
+Native loader diagnostics have a separate boundary: optional task arguments are
+valid tool input, but they do not modify authority. Verify exact instruction text
+and observed arguments independently; metadata and a launch acknowledgement are
+not body consumption. Preserve failed observers and client transport retries
+without mistaking them for failed doctrine or completed semantic work.
+
 ## Selection Is A Separate Acceptance Layer (2026-11-12)
 
 The [implicit Codex case](document-authoring-case-study.md#native-implicit-codex-selection)

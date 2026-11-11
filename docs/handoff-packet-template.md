@@ -79,6 +79,13 @@ criterion, not an automatic semantic or integrity check of generated prose.
 No-schema-needed is not no-review-needed: apply these quality checks and the
 request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
 
+Required reading is not satisfied merely because a file was eligible for
+delivery. Reconcile assigned required rows with actual current-phase reads;
+mark dependent review incomplete when a prerequisite remains unread. Preserve
+independent partial findings without silently downgrading the reading list.
+When an advance backbrief was requested, distinguish it from a retrospective
+final section; record the report actually observed, not a reconstructed sequence.
+
 ### Existing Runtime Missions
 
 The machine-packet fields and runtime procedures in sections 1-9 apply to an

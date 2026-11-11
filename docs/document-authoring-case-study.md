@@ -2173,3 +2173,79 @@ linked/copied installations instead of renaming a task to fit a keyword.
 This adds lexical coverage, not general language/negation understanding, domain
 expertise or new execution authority. Post-change local tests remain separate
 from the retained native source HEAD and its original outputs.
+
+## Native Implicit Claude Receiving
+
+On 2026-11-12 Korea time, a new Claude Code 2.1.322 session received an ordinary
+1,022-byte Korean request to review the preceding SOP and handoff without parent
+chat history. It was assigned S6/knowledge/document_review/L1 for document work,
+not appointed as the operational duty successor. USER retained final decisions;
+file changes, external search/contact, operational execution, publication,
+approval, access changes and validation-command execution remained prohibited.
+The task did not name or paste the installed skill. The previously used
+`opus[1m]` alias resolved to `claude-opus-5-5`, not an asserted configured default.
+
+The authorized preparer preserved the exact original request, whole Codex answer
+and synthetic policy in a new target project. A separate lookup mapped the old
+policy location to the current byte-identical source. Neither the old answer nor
+its history was rewritten. The selected project packet compiled and the S6
+access projection was ready before dispatch. No prior appraisal was delivered.
+The unit included all four sources and their actual read helper, not a detached
+handoff paragraph or an old route token.
+
+### Loader Failure And Corrected Observation
+
+Offline loopback-only captures established the native Skill tool and body-load
+event shape without a model or login. The first capture had a positional-input
+error; another incorrectly assumed exactly two requests despite client retries
+after intentional HTTP errors. All outputs remain retained. A forced local
+Skill response is loader evidence, never semantic selection evidence.
+
+The first actual process selected the correct installed skill, but its observer
+incorrectly prohibited the tool's documented optional task arguments. It was
+stopped after 4.992 seconds before a body or final review was received. A distinct
+retry under standing verification consent kept the exact task, sources, role,
+profile and permissions. Only the observer's argument/body checks changed;
+another offline capture checked those arguments before the retry.
+
+The retry completed in 67.578 seconds with exit zero. Seven calls reconcile:
+one native Skill load, one two-objective route and five source reads. The full
+installed body and exact task arguments were observed, not inferred from the
+catalog. Both objective assessments were forwarded intact. The receiver read
+the original request, policy, complete answer, lookup and handoff guide, then
+returned its own document-receiving acknowledgement and source comparison.
+
+### Partial Acceptance And Remaining Defects
+
+| Aspect | Appraisal against the actual receiving unit |
+| --- | --- |
+| Implicit selection | Established for this filtered native invocation, not every ambient configuration. |
+| Current-role routing and receipt | Two objectives, fixed role, full constraints and four project sources were actually processed. This is real document receipt, not operational acceptance. |
+| Policy preservation | The comparison retains logging, acknowledgement limits, conflict-specific holds, unrelated continuation and USER-only decisions. No owner or deadline was invented. |
+| Reading completeness | Six of eleven required source/guide rows were unread. The answer acknowledged unread guides but called them recommendations instead of marking the dependent review incomplete. The preparer's all-required guide list is not proof of minimal selection either. |
+| Source-location finding | Adding a locator to a future standalone excerpt is reasonable. Calling it mandatory for the current full unit is unsupported: the supplied lookup already resolved the source and the receiver successfully read it. |
+| Advance reporting | The requested backbrief appears retrospectively in the final response; a pre-review report was not observed. |
+| Activity and authority | One route and five reads match the report. Supplied hashes are distinguished from hashing by the reviewer. No live operation, appointment, approval, publication or USER adoption follows. |
+
+The original response remains at
+`.cannae/maintenance/implicit-claude-retry-20261112/response.md`, SHA-256
+`b4ec35067aef58deeadefd1ad377c4de403387afb5cb86e185f52fa37ad350d4`.
+The preceding failed attempt is retained separately under
+`.cannae/maintenance/implicit-claude-receiving-20261112/`. Native source HEAD was
+`3a5cafb`; later guidance changes are not attributed to this earlier observation.
+
+Both skills now require reconciling assigned mandatory reading before completing
+dependent review and distinguish advance backbriefs from retrospective reports.
+Independent partial findings remain usable; recipients cannot silently downgrade
+the profile, and preparers must justify minimal reading before assignment.
+Existing full-unit appraisal guidance already covers the locator error, so it
+was not duplicated. The native-body verification helper now checks documented
+arguments separately from exact instructions; metadata/acknowledgements alone
+and changed bodies/arguments remain insufficient.
+
+The local body/guide fixtures and replay of retained native evidence do not
+establish fresh semantic acceptance of these changes. Do not replay the passed
+process for a cleaner grade. Next appraise broader remaining cases and required
+reading/reporting behavior with a justified profile, and complete the
+corpus/history/output audit. G1-G5 remain partial; bounded receipt is now observed
+but general client equivalence and complete review acceptance are not established.

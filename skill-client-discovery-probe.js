@@ -202,6 +202,28 @@ async function main() {
   if (!valid) process.exitCode = 1;
 }
 
+function verifyClaudeSkillBody(event, { directory, body, args } = {}) {
+  assert(typeof directory === "string" && path.isAbsolute(directory), "Expected an explicit skill directory.");
+  assert(typeof body === "string" && body.trim(), "Expected the exact installed instruction body.");
+  assert(args === undefined || typeof args === "string", "Skill arguments must be the observed string, if present.");
+  assert(event?.type === "user" && event.isSynthetic === true && event.message?.role === "user",
+    "Expected the native loaded-skill user event, not discovery metadata.");
+  const content = event.message.content;
+  assert(Array.isArray(content) && content.length === 1 && content[0].type === "text", "Unexpected loaded-skill content.");
+  const prefix = `Base directory for this skill: ${directory}\n\n`;
+  assert(typeof content[0].text === "string" && content[0].text.startsWith(prefix), "Loaded skill directory mismatch.");
+  let loaded = content[0].text.slice(prefix.length);
+  if (args) {
+    const suffix = `\n\nARGUMENTS: ${args}`;
+    assert(loaded.endsWith(suffix), "Loaded skill arguments mismatch.");
+    loaded = loaded.slice(0, -suffix.length);
+  }
+  assert.equal(loaded.trim(), body.trim(), "Loaded skill body mismatch.");
+  return { body_verified: true, body_sha256: createHash("sha256").update(body.trim()).digest("hex"),
+    arguments_sha256: args === undefined ? null : createHash("sha256").update(args).digest("hex"),
+    semantic_execution_verified: false };
+}
+
 if (require.main === module) main().catch(error => { console.error(error.message); process.exitCode = 1; });
 
-module.exports = { environment, profile, textParts, claudeDiscovery };
+module.exports = { environment, profile, textParts, claudeDiscovery, verifyClaudeSkillBody };

@@ -115,7 +115,13 @@ or read, and this helper cannot bypass a guarded mission's unsupported inputs.
 For delegated document access, require a ready manifest projection and its
 profile-selected list; a role match alone is insufficient. Preserve summary and
 reference-only modes. A ready projection does not authenticate authority or
-prove that a recipient read the source. See [Document Routing](references/document-routing.md).
+prove that a recipient read the source. Read the profile's required documents
+before completing dependent review; do not relabel unread requirements as
+recommendations. Report partial findings and missing prerequisites if a required
+read is unavailable. An over-broad list needs reviewed reassignment, not silent
+omission. When an advance backbrief is requested, give it before the dependent
+review or drafting, not only as a retrospective final section.
+See [Document Routing](references/document-routing.md).
 
 Keep reading scope separate from execution controls. Conditional specialist
 manuals need not be read for an unrelated task, but their omission never waives

@@ -10,6 +10,22 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G2/G3/G4/G5 evidence: native Claude implicitly selects its installed
+instructions and receives the whole unchanged Codex SOP/handoff unit without
+parent chat. Seven calls reconcile: one load, one two-objective route and five
+reads. The current source lookup works and policy/authority limits survive.
+See [implicit Claude receiving](document-authoring-case-study.md#native-implicit-claude-receiving).
+The review remains partial: six required guide rows were unread, a portable-source
+addition was incorrectly called mandatory for the already complete unit, and an
+advance backbrief appeared only retrospectively. Both skills now make required
+read completion and advance reporting explicit. Exact loader-body/argument
+verification retains observer failures and changed-source boundaries. These
+local corrections have no fresh native behavioral acceptance. Next audit broader
+remaining case coverage, a justified minimum reading profile and actual advance
+reporting, then corpus/history/output consistency. Do not replay this completed
+case just to obtain a cleaner grade. Actual document receipt is now observed for
+this unit; full client equivalence and G1-G5 closure remain unproven.
+
 Latest G1/G3/G5 evidence: a native Codex process implicitly selected the installed
 entrypoint from an ordinary Korean SOP/handoff request, without its name or body
 in the task. One two-objective route and ten reads reconcile; source appraisal
@@ -379,11 +395,11 @@ The historical V3 and current proposed V4 handoffs are in
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | The support-SOP V4 review and proposed V5 retain their distinct limits. A current compound-intake case produces source-grounded counts, SOP and glossary proposals while holding missing-meaning conclusions. Codex restore-handoff repair has bounded source appraisal; a Claude locator caveat remains. | Broader cases, cold-start/receiver acceptance of corrected drafts and appraisal of the four-span actor/phase follow-up remain open. USER adoption is separate, never inferred from document-quality acceptance. |
+| G1. Document authoring and revision quality | SOP revisions, compound intake and restore-handoff repairs retain their bounded appraisals. Claude now receives the unchanged desk-duty unit and preserves its policy comparison, but its locator finding and incomplete required reading prevent complete review acceptance. | Broader cases, corrected-review acceptance and appraisal of the four-span actor/phase follow-up remain open. USER adoption is separate, never inferred from document-quality acceptance. |
 | G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections restrict selected reading; issued doctrine and project packets bind current bytes. Three Claude phases and a Codex changed-policy receiver invoke their own router and reads without opening the reference-only body; option-like task text stays separate from settings. | Minimal semantic selection, broader role/client cases, guarded project-input integration and receiver acceptance remain open. Public security-policy wording currently triggers a conservative project-packet content-review refusal. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
-| G3. Complete working flow | Native chains cover phase routing/reading, changed policy, source-read failure, reporting and revision. Current intake actually retains a required-term compiler denial while continuing independent draft outputs; operator materialization keeps outputs in their target project. | Complete per-objective diagnostic forwarding, source-locatable receiving units, broader semantic/method/reporting/failure coverage and receiver acceptance remain open. Draft-flow evidence does not establish live guarded operational execution. |
+| G3. Complete working flow | Native chains cover phase routing/reading, changed policy, source-read failure, reporting and revision. Compound intake retains a required-term denial while continuing independent drafts. The Claude desk-duty receiver now gets full objective diagnostics and actually resolves/reads its whole source unit. | Required-reading completion, actual advance reporting and broader semantic/method/reporting/failure coverage remain open. Bounded document receipt does not establish complete review acceptance or live guarded operational execution. |
 | G4. Bounded self-improvement and corpus maintenance | Observed routing/prose gaps lead to bounded corrections, mirrored guidance, regression checks and AARs. Two fresh native reviews now demonstrate the known reporting/source-binding repairs; remaining errors are retained instead of counting native success as acceptance. | The improvement loop is demonstrated locally and behaviorally in the recorded case; complete remaining corpus/history/output consistency and adoption-boundary audits. No self-issued authority follows from these checks. |
-| G5. Client distribution | Link/copy installation, startup checks, explicit body captures and native work are observed in both clients. Codex additionally selects its installed entrypoint implicitly for an ordinary SOP/handoff request and invokes routing/reads; the bounded final answer passes source appraisal. Its UI starter now matches the document-first scope. | Claude implicit selection, broader equivalent behavior and actual receiving remain unverified. The corrected starter has local routing evidence, not model execution. A privacy-filtered invocation is not universal client acceptance. Distribution remains the two skills; the temporary test adapter is not a shipped plugin, and optional plugin packaging is deferred. |
+| G5. Client distribution | Link/copy installation, startup checks, explicit body captures and native work are observed in both clients. Both now have bounded implicit-selection evidence; Claude also receives the unchanged Codex source unit. The Codex UI starter matches the document-first scope. | Broader equivalent behavior and complete required-reading/review acceptance remain unverified. The corrected starter has local routing evidence, not model execution. A privacy-filtered invocation is not universal client acceptance. Distribution remains the two skills; the temporary test adapter is not a shipped plugin, and optional plugin packaging is deferred. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).
