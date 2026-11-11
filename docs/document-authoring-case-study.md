@@ -1155,3 +1155,118 @@ passed. Logs are in `.cannae/maintenance/current-sop-review-fktrHw/checks-wpJMTp
 The original review input/response, source policies, user `.gitignore` and actual
 installation link targets/inodes were checked unchanged. Full aggregate,
 lifecycle, hosted CI and another native/model review were not run for V4.
+
+## Native Document Collaboration And Phase Provenance
+
+This separate exercise ran on 2026-11-12 Korea time under the USER's ongoing
+in-scope verification consent. It is not another review of the support SOP V4
+above. Its synthetic job is `SIM-DOC-27`; its local source/response records are
+in `.cannae/maintenance/native-document-chain-20261112/`.
+
+### Task And Execution Boundary
+
+The source request asks for a task order, short evidence note and shift handoff
+for a twelve-document import incident. A limited extract reports eleven processed,
+one checksum mismatch and a pending source-owner response. Digests, budget,
+deadline, usability evidence and USER acceptance are unknown. `ready` means draft
+review readiness, `complete` requires verified usability plus USER acceptance,
+and `priority` does not increase authority. No actual import or retry is authorized.
+
+The first author receives policy V1. Policy V2 withdraws its conditional one-retry
+proposal and holds all retry planning pending a new job-and-policy-specific USER
+decision. Unaffected drafting, evidence preservation, separate cost/deadline/
+retention/classification decisions and pre/post reporting remain required.
+
+Each native call uses Codex CLI 0.162.1, the existing login/default `gpt-6-astra`
+model, explicit installed-skill selection, a fresh ephemeral context, disabled
+tools and a ten-minute limit. The operator runs role routing and the installed
+packet helper before each call. Original author ratings and reference criteria
+are excluded from review inputs; private synthetic content and the whole ledger
+are never included. Exact transferable model artifacts remain unchanged when
+passed between stages. Native internal transport request counts are unknown.
+
+Initial calls bind committed source `18ab176`; later manifests additionally bind
+the exact uncommitted guidance changes. The entrypoint is selected natively, not
+manually pasted into the task. Public authoring references and project content
+are explicitly supplied. This is ordinary document collaboration, not a guarded
+tool wave, implicit discovery or proof that the agents invoked their routers.
+
+### Observed Chain
+
+| Stage | Input bytes | Duration | Observed result |
+| --- | --- | --- | --- |
+| Author, S3/operations | 60,508 | 112.603 s | Three V1 drafts preserve reported facts, unknowns, vocabulary and explicit prohibitions. |
+| Reviewer, EVALUATOR/quality | 79,585 | 50.254 s | Finds superseded recovery guidance and source-reading instructions, plus a phase-context ambiguity. |
+| Reviser, S3/operations | 87,743 | 140.783 s | Corrects recovery guidance but calls the reviewer's different selection context erroneous. |
+| Receiver, S6/knowledge | 84,657 | 45.620 s | Understands V2; identifies missing historical inputs and reused source labels. Cold-start provenance is incomplete. |
+| Provenance-corrected receiver | 116,475 | 55.882 s | With actual predecessor/review bodies and an origin map, distinguishes historical contexts and appraises both earlier mistakes. |
+| Operator draft V3 receiver | 143,927 | 81.986 s | Finds four operative inconsistencies despite a corrected provenance preface. |
+| Operator draft V4 receiver | 172,993 | 58.379 s | Confirms operative fixes and unchanged policy boundaries; identifies two residual historical-description defects. |
+
+All seven native processes completed with exit 0, one startup diagnostic each
+and zero observed tool items. They returned document responses, not seven
+semantically passing cases. The local integrity audit verified distinct native
+contexts, exact input/response bindings, current local packets and excluded
+private canaries. Recorded usage totals 266,483 input and 20,257 output tokens;
+these counts are not a billing estimate or proof of provider independence.
+
+The provenance-correction observer first stopped before native spawn because its
+temporary workspace name already existed. The started marker and failure remain;
+a separate diagnosed attempt uses a unique workspace and the exact same input.
+That is one observer prelaunch failure, not an extra model response or a retry
+of a consumed attempt. There are no automatic process relaunches.
+
+### Source-Appraised Failure And Correction
+
+The same glossary ledger produced three different delivered excerpts as roles
+changed. The original author's S3/operations attribution was accurate for its
+packet. The reviewer received EVALUATOR/quality; the reviser again received S3/
+operations; the receiver received S6/knowledge. Comparing only the current
+selection made each prior attribution look wrong. A shared ledger digest did
+not establish identical delivered bytes or recipient context.
+
+The test preparer also reused `SRC-CANDIDATE` for predecessor and successor
+artifacts. The receiver correctly found that embedded predecessor citations now
+pointed at the revised text, and that the required prior review was unavailable.
+This was a preparation/prose-continuity failure, not evidence that the packet
+helper modified source bytes or authenticated a recipient incorrectly.
+
+The correction uses distinct artifact IDs, a phase-qualified origin map and an
+explicit included/withheld reading inventory. Prior responses remain retained;
+operator-prepared successors are identified separately from model-authored work.
+The V3 review found that correcting a header was insufficient: operative reading
+steps still cited an absent historical excerpt, predecessor steps named an older
+ancestor, one version sentence still said v2, and a new operator appraisal was
+attributed to previous model work. V4 targets those exact spans and preserves
+the source policy, evidence limitations and authority boundaries.
+
+V4's receiver confirmed the four operative corrections and found no substantive
+policy-boundary regression in its supplied comparison. It still found two true
+historical-description defects: the evidence note attributed the original V1
+problem to the immediate predecessor, and a preservation sentence called v1 the
+actual predecessor. A local operator correction candidate changes only those
+two spans; an exact reverse-delta check verifies every other artifact byte and
+the original V4 source remain unchanged. This is an unadopted correction against
+V4, not a newly accepted version. It has not received a fresh native review.
+The next cross-client case should review that exact candidate and V4 base with
+phase-qualified sources rather than regenerating or approving it from memory.
+
+Both provider entrypoints, the authoring workflow and ordinary handoff guidance
+now distinguish source phase/original recipient from reviewer and receiver;
+require stable IDs or an explicit origin map; reconcile required reading with
+the actual packet; and update operative comparisons, not just headers.
+`run-project-terminology-handoff-fixtures.js` checks that changing recipient
+creates a different excerpt digest without rewriting the historical packet.
+This validates the underlying identity distinction, not semantic understanding.
+
+### Limits And Retained Evidence
+
+Input/output hashes, raw messages, exact stage artifacts, source appraisals,
+failure records and later operator edits remain in the local evidence directory.
+No historical response, source policy, user ignore rule or installed link is
+rewritten to make a result pass. Ordinary source preparation and excerpt mapping
+are not authenticated delegation. Fresh contexts on one provider/operator are
+not independent verification. A document acknowledgement does not accept the
+simulated job, grant publication rights or demonstrate protected tool execution.
+Actual agent-invoked phase routing, guarded project inputs, broader semantic
+coverage and equivalent native Claude behavior remain separate acceptance work.

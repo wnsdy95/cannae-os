@@ -28,6 +28,16 @@ meanings separately. Follow [Project Terminology Workflow](project-terminology-w
 for freshness and recipient selection. Do not attach the private full ledger or
 treat a changed term as permission to change an issued instruction.
 
+Keep the original author, current reviewer and receiving role distinct. Quote
+historical selection metadata as historical, not as the receiver's current
+context. The same ledger digest can yield different role-selected excerpts;
+carry the excerpt's delivered digest and source phase when that distinction
+matters. Preserve stable source IDs, or attach a phase-qualified origin map for
+existing labels without rewriting the original evidence. Before transfer, check
+that every required predecessor, review and policy is actually included or has
+an explicit unavailable/withheld disposition. Missing history limits the related
+comparison, not necessarily current-policy understanding or permitted drafting.
+
 No-schema-needed is not no-review-needed: apply these quality checks and the
 request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
 

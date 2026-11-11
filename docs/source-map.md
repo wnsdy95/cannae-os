@@ -2,6 +2,15 @@
 
 ## Skill-First Scope And Authoring
 
+The [native document collaboration case](document-authoring-case-study.md#native-document-collaboration-and-phase-provenance)
+records a synthetic author/reviewer/reviser/receiver chain and its actual errors.
+Phase-qualified source IDs, recipient context, delivered excerpt digests and
+operative reading updates are local engineering lessons, not new military claims.
+Both skills carry the correction; `run-project-terminology-handoff-fixtures.js`
+preserves historical recipient excerpts while checking new role selections.
+Model response appraisal and local binding checks do not authenticate authority,
+prove independent providers or establish operational acceptance.
+
 `docs/project-terminology-workflow.md`, `project-terminology.js` and its schema,
 samples and fixtures implement a local skill-first design: user-stated versus
 inferred meanings, scoped revisions and recipient selections. This is not a

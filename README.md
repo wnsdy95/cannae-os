@@ -87,7 +87,7 @@ cleanup is recorded separately; none is declared complete from a routing pass.
 - [Skill-First Product Scope](docs/skill-first-product-scope.md): active core, deferred platform work and honest completion criteria.
 - [Document Authoring Workflow](docs/document-authoring-workflow.md): choose a format, preserve evidence and intent, revise the canonical document and hand off unresolved work without a dashboard.
 - [Project Terminology Workflow](docs/project-terminology-workflow.md): capture user definitions separately from tentative meanings, bind excerpts to their current project glossary, and check declared required meanings separately from freshness without granting authority.
-- [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): a policy-grounded support SOP draft/revision and an actual routing-maintenance work order, with separate results, handoff and limits on self-review.
+- [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): support SOP revisions, routing maintenance and a native document collaboration exercise, with observed failures, phase-provenance corrections and limits on acceptance claims.
 - [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
 - [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.
 - [Request Intake And Order Drafts](docs/request-order-intake.md): retain exact requests, separate quotes from assumptions and proposals, and compile non-executable OPORD/task drafts with inherited constraints.

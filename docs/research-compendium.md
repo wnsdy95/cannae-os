@@ -1,5 +1,23 @@
 # Research Compendium
 
+## Phase Provenance In Native Document Work (2026-11-12)
+
+An actual Codex author/reviewer/reviser/receiver exercise preserved an amended
+recovery rule but exposed a different continuity failure: one ledger had several
+role-selected excerpts, and unchanged phase-local labels referred to different
+inputs. A reviewer and reviser each judged the other phase using only their own
+selection. The receiver also lacked history that its handoff told it to inspect.
+
+A preparer-supplied phase/recipient/delivered-digest map and actual historical
+artifacts allowed a later receiver to distinguish those contexts. Operator
+correction then needed to change operative reading/predecessor/version steps,
+not merely add a correct preface. Preserve the observed failures and separate
+operator edits from model work. Both skills carry that reusable procedure; local
+fixtures demonstrate same-ledger/different-excerpt identity without overwriting
+the historical packet. See the [native collaboration case](document-authoring-case-study.md#native-document-collaboration-and-phase-provenance)
+for exact scope. This is one synthetic same-provider workflow, not automatic
+routing, authenticated provenance or a general semantic success rate.
+
 ## Project Terminology Application
 
 `docs/project-terminology-workflow.md` applies the user's common-language request

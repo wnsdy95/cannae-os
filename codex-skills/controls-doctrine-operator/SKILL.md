@@ -181,6 +181,15 @@ it; `draft` or `not adopted` does not mean `do not publish`. Declare excluded
 review history without leaking its verdict. Missing evaluator context is not
 proof of missing repository evidence; appraise findings before changing doctrine.
 
+Across role or phase changes, distinguish an artifact's original source context
+from the current review and intended receiver. A shared ledger digest does not
+make role-selected excerpts identical. Keep source IDs stable or provide an
+explicit origin map with phase, recipient and delivered digest; do not overwrite
+historical attribution to match the current role. Update operative reading and
+comparison steps as well as headers. Before handoff, reconcile its
+required reading with the actual packet: include authorized dependencies or mark
+their absence and hold only the conclusions that depend on them.
+
 Compare a revision with its actual predecessor as well as the source policy.
 When compressing rules, preserve named triggers, decision owners, prohibited
 actions and overlapping approval requirements; a generic owner-authority label

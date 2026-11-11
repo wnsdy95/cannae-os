@@ -48,6 +48,31 @@ try {
       assert(!prompt.includes('"terminology_requirements"'));
       assert.equal(prepared.execution_authorized, false); assert.equal(prepared.release_authorized, false);
     });
+    check(`${provider}: phase recipients share a ledger without rewriting historical excerpt identity`, () => {
+      const author = packet.prepare(request, root);
+      const authorBytes = fs.readFileSync(author.prompt_path);
+      const receiverSelection = terminology.projectSelection(root, { domain: "sales", task: null,
+        actor: "ai", role: "S6", department: "sales", terms: ["ICP"] });
+      const receiverText = terminology.renderSelection(receiverSelection);
+      const receiverRequest = structuredClone(request);
+      receiverRequest.id = "PDR-RECEIVER";
+      receiverRequest.recipient.role = "S6";
+      Object.assign(receiverRequest.documents[0], { path: "review/receiver-terms.json",
+        source_sha256: packet.sha256(receiverText) });
+      fs.writeFileSync(path.join(root, "review/receiver-terms.json"), receiverText);
+      const receiver = packet.prepare(receiverRequest, root);
+      const authorPacket = JSON.parse(fs.readFileSync(author.packet_path));
+      const receiverPacket = JSON.parse(fs.readFileSync(receiver.packet_path));
+      assert.equal(selection.ledger_sha256, receiverSelection.ledger_sha256);
+      assert.deepEqual(selection.confirmed, receiverSelection.confirmed);
+      assert.notEqual(authorPacket.documents[0].delivered_sha256, receiverPacket.documents[0].delivered_sha256);
+      assert.equal(JSON.parse(authorPacket.documents[0].content).selection.role, "S3");
+      assert.equal(JSON.parse(receiverPacket.documents[0].content).selection.role, "S6");
+      assert.equal(packet.inspect(author.packet_path, author.packet_sha256, root).status, "review_candidate_current");
+      assert(fs.readFileSync(author.prompt_path).equals(authorBytes));
+      assert.equal(receiver.execution_authorized, false);
+      assert.equal(receiver.receiver_acceptance_verified, false);
+    });
     check(`${provider}: changing the ledger invalidates an unchanged retained excerpt`, () => {
       const prepared = packet.prepare(request, root), original = fs.readFileSync(file);
       const next = structuredClone(ledger); next.entries.push({ ...structuredClone(next.entries[0]), id: "TERM-ICP-2", version: 2,

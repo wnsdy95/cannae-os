@@ -10,6 +10,23 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G3/G4/G5 evidence: an explicit-native Codex document chain now covers
+task-order/evidence-note authoring, separate-context review, policy revision and
+cold-start receiving. It exposed real phase-provenance confusion and missing
+historical reading, not a fully passing workflow. A corrected origin map lets a
+receiver distinguish author/reviewer/recipient inputs; a later V3 review caught
+operative inconsistencies left behind a corrected header. Both skills now carry
+phase-qualified attribution, actual reading-inventory and operative-step rules.
+The V4 receiver preserved substantive policy boundaries but found two remaining
+historical descriptions; an exact two-span operator correction is retained for
+fresh native Claude review, not treated as accepted. Seven completed native
+calls and 14 passing local check groups are bounded evidence, not seven passes
+of the whole workflow. All original responses and the pre-spawn failure remain.
+See [the native collaboration case](document-authoring-case-study.md#native-document-collaboration-and-phase-provenance)
+for stage-specific results and retained failures. Routing was operator-prepared,
+not agent-invoked; native Claude equivalence and broader workflow acceptance
+remain open. This does not close any goal by counting successful processes.
+
 Latest G1/G3/G4 evidence: one explicitly approved synthetic terminology dialogue
 exercise completed with the actual source entrypoint supplied. The response
 preserved initial records, appended ICP v2, kept inferred meanings tentative,
@@ -202,11 +219,11 @@ The historical V3 and current proposed V4 handoffs are in
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | The case study contains the policy-grounded exercise, maintenance workflow, original advisory review and a separately approved V3 review. Seven seeded variants and seven later unseeded omissions/ambiguities were identified and source-appraised. Proposed V4 preserves history and restores the latter; a separate synthetic recipient response preserved its supplied boundaries. | Broader cases, V4 review/adoption and independent/operational receiver acceptance remain open. These selected reviews are not a general detection rate or semantic completeness. |
+| G1. Document authoring and revision quality | The policy-grounded support SOP retains seeded/unseeded findings and a proposed V4. A separate native task-order/evidence-note/handoff chain now preserves a policy amendment and exposes real provenance errors; source-appraised operator corrections retain all earlier responses. | Broader cases, support-SOP V4 review/adoption and fresh review of the document-chain correction candidate remain open. Bounded document acknowledgement is not operational acceptance or a general detection rate. |
 | G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections enforce profile selection; new authority checks issued doctrine bytes. Offline project packets bind origin/content/recipient without opening reference-only bodies. One USER-approved native exercise demonstrates supplied-source use and rejection of an embedded false-approval instruction. | Authenticated origin/recipient/delegation, actual operational receiver acceptance, guarded project-input integration and broader semantic relevance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
-| G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
+| G3. Complete working flow | Local maintenance covers plan/backbrief, implementation, verification and handoff. A separate ordinary-document native chain covers author/reviewer/reviser/receiver stages, changed policy and bounded acknowledgements; failed cold-start provenance and subsequent corrections are retained. | Agent-invoked phase routing, broader semantic/method/reporting/stop/failure/output coverage and operational receiver acceptance remain open. Operator-prepared source packets and no-tool document responses are not live guarded multi-agent execution. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Installation fixtures cover link/copy binding, refresh, conflicts, receipt parity and literal startup commands from another project. Actual installed paths route correctly. Native metadata probes discover both bundle forms in temporary homes with negative controls. Separate local captures verify full-file insertion in Codex and Markdown-body insertion in Claude for explicit normal-mode linked/copied selection. | Model consumption/compliance, implicit selection, skill-driven semantic execution and an independent fresh-session workflow remain unverified. The approved recipient exercise deliberately disabled discovery; offline request assembly is not task execution. The user's full client configuration and separate plugin packaging are not established. |
+| G5. Client distribution | Installation and literal startup checks cover link/copy forms; offline native captures verify explicit body delivery in both clients. Fresh explicitly selected native Codex document stages now return source-grounded work and observed errors using preparer-supplied references. | Equivalent native Claude behavior, implicit selection, agent-run routing and broader semantic compliance remain unverified. Fresh contexts on one provider are not independent verification; this is not acceptance of the full client configuration or a separate plugin package. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).
