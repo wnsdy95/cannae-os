@@ -91,6 +91,13 @@ When new information arrives:
 6. If it affects execution, raise it as a CCIR alert.
 7. If the knowledge will be reused, reflect it in an SOP or schema.
 
+User/project terminology follows [Project Terminology Workflow](project-terminology-workflow.md).
+Its private target-repository ledger is the canonical language record; source
+excerpts distinguish actual user statements from AI inference. Do not store
+project vocabulary in the shared source-map or compendium under step 5 above.
+Retain corrections and task-bound snapshots, distribute only authorized relevant
+definitions, and keep meaning confirmation separate from operational approval.
+
 ## 5. Decision log SOP
 
 Every significant decision is recorded in the decision log.

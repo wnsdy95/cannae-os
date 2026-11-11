@@ -10,6 +10,22 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G2/G4 implementation: project terminology now has a private target-root
+record, non-authorizing validator, read-only selection helper and equivalent
+provider entrypoints. The procedure captures explicit user definitions, keeps
+inferences tentative, qualifies overlapping scopes and carries revisions through
+handoff. `docs/project-terminology-workflow.md` records the use and limits.
+Natural-language capture, actual receiver understanding and authenticated user
+decisions remain unverified; this does not close any of the five goals.
+Local evidence: 16 terminology cases, 228 routing queries and 514 validator cases
+passed alongside the existing authoring, packet, installation, preflight and
+handoff checks. A same-path repository replacement initially bypassed path-only
+binding; the added regression now rejects it using local directory identity.
+See the workflow's verification checkpoint for exact scope and remaining limits.
+Next terminology acceptance: observe actual user-definition capture, an inferred
+candidate, a correction and a recipient backbrief without silently changing
+meaning or authority. Any additional native model call needs fresh consent.
+
 Latest G1/G3/G4 evidence: USER approved one current-V3 review with the actual
 entrypoint included in the exact 48,049-byte input. The native CLI completed in
 89.112 seconds with zero observed tool events. Source appraisal accepted seven

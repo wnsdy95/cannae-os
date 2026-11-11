@@ -21,6 +21,13 @@ For a plain-document cold start, the receiver must be able to locate the cited
 files, explain the original purpose and boundaries, distinguish observed results
 from plans, and identify a next action allowed without a new decision. Record
 actual receiver acknowledgement separately; writing this packet is not acceptance.
+
+When work depends on user-specific vocabulary, include the relevant confirmed
+definitions, scope, concept/revision IDs and ledger digest, plus unresolved
+meanings separately. Follow [Project Terminology Workflow](project-terminology-workflow.md)
+for freshness and recipient selection. Do not attach the private full ledger or
+treat a changed term as permission to change an issued instruction.
+
 No-schema-needed is not no-review-needed: apply these quality checks and the
 request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
 

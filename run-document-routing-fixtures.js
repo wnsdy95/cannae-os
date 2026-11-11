@@ -50,6 +50,18 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const query of ["Maintain the project glossary", "Capture user vocabulary", "Review terminology definitions"]) {
+    for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+      const result = route(router, args, query);
+      assertRoutes(result, ["project-terminology"]);
+      assert(result.recommended_documents.some(item => item.path === "docs/project-terminology-workflow.md"));
+      assert(result.recommended_documents.some(item => item.path === "docs/glossary.md"));
+      assert(result.validation_commands.includes("node run-project-terminology-fixtures.js"));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      assert(!result.matched_routes.some(item => ["local-operator-console", "enforced-dispatch"].includes(item.id)));
+      if (args.includes("--actor=ai")) assert.equal(result.operating_mode.authority, "read-only");
+    }
+  }
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
     const result = route(router, args, "Prepare a project document packet from the named inputs.");
     assertRoutes(result, ["project-document-delivery"]);

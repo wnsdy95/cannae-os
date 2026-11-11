@@ -139,6 +139,7 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "project-terminology": "project-terminology.schema.json",
   "project-document-packet-request": "project-document-packet-request.schema.json",
   "project-document-packet": "project-document-packet.schema.json",
   "operator-consent-record": "operator-consent-record.schema.json",
@@ -6142,7 +6143,7 @@ function validationResult(issues, type, payload) {
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) &&
-      !["frago", "frago-scope-change", "handoff-packet", "handoff-generation-request"].includes(type) &&
+      !["frago", "frago-scope-change", "handoff-packet", "handoff-generation-request", "project-terminology"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "agent-context-pack" && type !== "document-access-manifest" && !["project-document-packet-request", "project-document-packet"].includes(type) && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
@@ -6198,6 +6199,9 @@ function validatePayloadInSnapshot(payload, type, options) {
   }
   if (schemaResult.valid && type === "project-document-packet-request") {
     issues.push(...require("../project-document-packet").requestIssues(payload).map(item => ({ ...item, layer: "semantic" })));
+  }
+  if (schemaResult.valid && type === "project-terminology") {
+    issues.push(...require("../project-terminology").terminologyIssues(payload).map(item => ({ ...item, layer: "semantic" })));
   }
   if (schemaResult.valid && type === "project-document-packet") {
     issues.push(...require("../project-document-packet").packetIssues(payload).map(item => ({ ...item, layer: "semantic" })));

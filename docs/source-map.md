@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+`docs/project-terminology-workflow.md`, `project-terminology.js` and its schema,
+samples and fixtures implement a local skill-first design: user-stated versus
+inferred meanings, scoped revisions and recipient selections. This is not a
+claim that military terminology has a universal one-word/one-meaning mapping.
+Local checks do not authenticate source statements or demonstrate automatic
+model capture, semantic correctness or recipient acceptance.
+
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.
 Its deterministic ownership-substitution fixtures are local engineering evidence,

@@ -61,6 +61,11 @@ ordinary document packet to evade an unsupported input or hold.
 
 ## Minimum Durable Context
 
+For recurring or ambiguous user terms, follow
+[Project Terminology Workflow](project-terminology-workflow.md). Capture explicit
+definitions locally, keep inferred meanings as candidates, and include relevant
+scopes and versions in the backbrief. Meaning agreement never changes authority.
+
 Use existing schema fields when the artifact already has a contract. For a
 plain Markdown document, include the following when relevant; do not invent
 approvals or populate a large control record for a simple prose edit:

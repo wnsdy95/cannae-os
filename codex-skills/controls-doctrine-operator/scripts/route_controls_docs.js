@@ -7,6 +7,12 @@ const { spawnSync } = require("child_process");
 
 const RULES = [
   {
+    id: "project-terminology",
+    keywords: ["terminology", "glossary", "term definition", "shared vocabulary", "user vocabulary"],
+    docs: ["docs/project-terminology-workflow.md", "docs/glossary.md", "docs/knowledge-management-sop.md", "docs/document-authoring-workflow.md"],
+    commands: ["node run-project-terminology-fixtures.js"]
+  },
+  {
     id: "document-authoring",
     keywords: ["document authoring", "document writing", "document revision", "document-authoring", "write a document", "revise a document", "sop", "standard operating procedure", "research note", "authoring workflow", "authoring review", "authoring-review", "handoff document", "draft a handoff", "documentation update"],
     docs: [
@@ -517,6 +523,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
+  { id: "project-terminology", keywords: ["project-terminology", "project_terminology"] },
   { id: "document-authoring", keywords: ["document-authoring", "authoring-review", "knowledge-management", "prompt-templates", "handoff-packet-template"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
   { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },

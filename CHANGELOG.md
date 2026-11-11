@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add project-local terminology records and scoped selections to both client skills. Preserve user-stated definitions separately from inferred candidates, append revision lineage, check repository/digest bindings and select by domain, task, role and department without execution authority. Link capture, clarification, routing and handoff guidance to the existing authoring process. Local helper checks do not authenticate user statements, provide automatic model capture or prove recipient understanding.
+
 - Record the separately USER-approved current-V3 review with verbatim operating guidance and source policies, retaining its exact input, response, usage and limits. Source appraisal accepts seven unseeded omissions/ambiguities; preserve V1-V3 and propose V4 with only those restorations, explicit community best-effort wording and new version lineage. Both skills now preserve named triggers, overlapping approvals and stop/recovery details during compression. Exact-delta regressions protect the historical candidates without claiming general semantic completeness, V4 acceptance or policy adoption.
 
 - Verify Claude Code's native body delivery for explicit normal-mode linked/copied skills, with ordinary-text, absent and bare-mode controls. Record the body/frontmatter distinction, three local requests per invocation and error results carrying a `success` subtype. Both provider references now distinguish client-specific selection, transport retries and genuine task success. No external model, credential change, policy adoption or receiver acceptance is implied.

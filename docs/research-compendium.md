@@ -1,5 +1,16 @@
 # Research Compendium
 
+## Project Terminology Application
+
+`docs/project-terminology-workflow.md` applies the user's common-language request
+to existing authoring, knowledge capture, routing and handoff procedures. Keep
+private project definitions separate from the shared `docs/glossary.md`;
+explicit user statements and AI candidates have different evidentiary status.
+The local helper checks revision chains and selects relevant role/department
+records without authorizing work or transfer. This is an internal design and
+deterministic implementation, not a new military-source finding or proven
+natural-language adoption rate. Actual model capture and receiver use remain open.
+
 ## Failure Evidence Before Retry (2026-11-11)
 
 An intermittent lifecycle test exposed only a lock-release error. An observed

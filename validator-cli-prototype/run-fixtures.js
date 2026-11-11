@@ -11,6 +11,10 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing project terminology`,
+    file: `sample-payloads/${prefix}-project-terminology.json`, type: "project-terminology",
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : ["TERMINOLOGY_INFERRED_DECISION"] })),
   ...["request", "packet"].map(kind => ({ name: `${kind} cannot disclose known private locations`,
     file: `sample-payloads/invalid-project-document-packet-private-path${kind === "request" ? "-request" : ""}.json`,
     type: kind === "request" ? "project-document-packet-request" : "project-document-packet",
