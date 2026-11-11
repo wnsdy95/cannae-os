@@ -35,22 +35,31 @@ IDs, not universal ranks. Do not treat US doctrine as universal.
    locates its installed source or copy binding even from another project.
    Use `--doctrine-root=<path>` to select a different corpus deliberately;
    keep work outputs in the target repository.
-2. Run the bundled router:
+2. Locate the directory containing the loaded `SKILL.md`. Run its bundled
+   router by absolute path while keeping the target project as your working
+   directory. The examples below use this provider's installer locations.
+   For a project/plugin/custom loaded location, first set `CONTROLS_SKILL_DIR`
+   to that actual directory; this is an invocation variable, not a client setting.
+   Do not guess a project-relative `codex-skills/` or `.claude/skills/` path.
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
-  --actor=user "Draft an SOP and handoff document from the supplied policy." .
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
+  --actor=user "Draft an SOP and handoff document from the supplied policy."
 ```
 
 For delegated routing, declare the actual context:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=ai --role=S3 --department=operations --authority=scoped-execution \
-  "<agent task>" <doctrine-repo>
+  "Draft a source-grounded SOP without publication."
 ```
 
-3. Read `recommended_documents` and only the directly relevant supporting
+3. Resolve `recommended_documents[].path` against the returned `repo_root`,
+   not the target directory or skill directory. Returned validation commands
+   are corpus checks: use that root as their working directory when applicable.
+   Resolve project task inputs against their separately declared repository.
+   Read `recommended_documents` and only the directly relevant supporting
    schema, sample or procedure. For writing/revision, start with
    `docs/document-authoring-workflow.md` and `docs/knowledge-management-sop.md`.
    Choose the task format, then its relevant policy; do not read runtime

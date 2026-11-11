@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Fix installed entrypoint commands that failed from other projects by anchoring the router to the loaded skill directory and removing accidental current-directory doctrine overrides. Mirror explicit corpus-versus-task path handling in both providers and test the actual documented commands in fresh shells for linked/copied/custom installations. Native metadata and a skill-name prompt still do not establish skill-body consumption or task execution.
+
 - Record one separately USER-approved native recipient exercise using the unchanged 4,060-byte synthetic project packet. The completed response preserved the backbrief, source distinctions, unknowns, human publication authority and untrusted-comment boundary with zero observed tool calls. Retain its usage, diagnostics, exact input binding and source appraisal; the consumed consent does not prove installed-skill consumption, authenticated recipient identity or operational handoff acceptance.
 
 - Replace demo-default handoff generation with explicit order/event source selection, byte digests and verbatim requirement/event preservation. Reject missing or conflicting mission/order inputs, unsafe paths, invalid times and classification downgrades. Keep current state and decisions unverified; do not equate recorded successes or AARs with completion. Both legacy handoff packets and new generation requests validate without execution authority. Mirror unknown-versus-absence and source-reconciliation guidance in both provider skills; synthetic regression evidence does not establish receiver acceptance.

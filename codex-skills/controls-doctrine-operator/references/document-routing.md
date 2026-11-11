@@ -31,6 +31,22 @@ an ambiguous guarded operation before dispatch, not by silently removing gates.
 
 ## Installation And Corpus Binding
 
+Locate the loaded `SKILL.md` before launching its bundled scripts. Keep the
+target project as the working directory and use the entrypoint's installed-path
+commands, or set `CONTROLS_SKILL_DIR` to the actual loaded directory for that
+invocation. Installer locations honor the provider's `*_SKILLS_DIR`, then
+`*_HOME`, then the ordinary user directory. These are installer conventions,
+not proof that a client discovered the same location. A plugin/project skill
+may live elsewhere; use the path actually supplied by the client.
+
+Do not append `.` as a doctrine root merely because the target is the current
+directory. After routing, resolve corpus recommendations and corpus-check
+commands against returned `repo_root`; project inputs retain their own origin.
+Same-named files in the target project are not substitutes for corpus policy.
+Changing a command's working directory does not change the target repository
+or authorize writing task outputs into doctrine. Test the literal entrypoint
+commands in fresh shells, not only a test helper's independently built argv.
+
 Use `install-ai-cli-skills.sh --dry-run` before changing destinations; this
 prints the plan without invoking client binaries or writing installations.
 Node.js is required. Codex/Claude binaries are optional at install time; their

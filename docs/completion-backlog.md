@@ -10,6 +10,16 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G5 correction: both installed entrypoints' first literal commands
+failed outside the doctrine checkout, even though installation helpers passed.
+The commands now use the loaded skill location and returned corpus root without
+confusing target-project paths. Actual installed paths passed four human/AI
+command checks; installation fixtures now pass 26/26 including literal examples.
+The offline native preview still exposes metadata rather than the complete body.
+See [startup evidence](document-authoring-case-study.md#installed-entry-command-maintenance).
+This improves first use, not native model compliance or operational acceptance;
+no fresh model call, settings change or authority expansion was performed.
+
 Latest G1/G2/G3 evidence: USER separately approved one native recipient exercise
 for the existing 4,060-byte synthetic project packet after local checks passed.
 The default-model CLI returned one response in about 17.8 seconds with zero tool
@@ -89,7 +99,7 @@ The current corrective V3 handoff is in `docs/document-authoring-case-study.md`.
 | G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections enforce profile selection; new authority checks issued doctrine bytes. Offline project packets bind origin/content/recipient without opening reference-only bodies. One USER-approved native exercise demonstrates supplied-source use and rejection of an embedded false-approval instruction. | Authenticated origin/recipient/delegation, actual operational receiver acceptance, guarded project-input integration and broader semantic relevance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Isolated installation fixtures cover link/copy binding, refresh, conflicts and receipt parity. Actual Codex/Claude processes discover both bundle forms in temporary homes; absent and Claude bare-mode negative controls distinguish real discovery from a folder check. | Installed-skill body consumption, skill-driven semantic execution and an independent fresh-session workflow remain unverified. The separate tool-disabled recipient exercise deliberately disabled discovery. Native metadata under isolated settings does not prove the user's full configuration. Separate plugin packaging is not included. |
+| G5. Client distribution | Installation fixtures cover link/copy binding, refresh, conflicts, receipt parity and the literal documented startup commands from another project. Real installed paths also route those commands correctly. Actual Codex/Claude metadata probes discover both bundle forms in temporary homes with absent/bare-mode negative controls. | Installed-skill body consumption, skill-driven semantic execution and an independent fresh-session workflow remain unverified. The tool-disabled recipient exercise deliberately disabled discovery; offline metadata is not body consumption. The user's full client configuration and separate plugin packaging are not established. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).

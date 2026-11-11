@@ -73,9 +73,44 @@ function fixture(name, fn) {
   console.log(`PASS ${name}`);
 }
 
+function documentedCommands(env, provider, { loadedDirectory, status = 0 } = {}) {
+  const entry = fs.readFileSync(path.join(destination(env, provider), "SKILL.md"), "utf8");
+  const section = entry.split("## Start With The Task\n")[1]?.split("\n## ")[0];
+  assert(section, "Missing entrypoint startup section");
+  const blocks = [...section.matchAll(/^```bash\n([\s\S]*?)\n```/gm)].map(match => match[1]);
+  assert.equal(blocks.length, 2, "Test both human and delegated startup examples literally");
+  const sentinel = fs.readFileSync(path.join(unrelated, "README.md"));
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const [index, command] of blocks.entries()) {
+    const result = spawnSync("/bin/bash", ["-c", command], {
+      cwd: unrelated, env: { ...env, ...(loadedDirectory ? { CONTROLS_SKILL_DIR: loadedDirectory } : {}) },
+      encoding: "utf8", timeout: 20000, maxBuffer: 8 * 1024 * 1024
+    });
+    assert.equal(result.status, status, result.stderr || result.stdout);
+    if (status) { assert.equal(result.stdout, ""); continue; }
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.repo_root, fs.realpathSync(source));
+    assert.equal(output.operating_mode.actor, index ? "ai" : "user");
+    if (index) {
+      assert.equal(output.operating_mode.role, "S3");
+      assert.equal(output.operating_mode.authority, "scoped-execution");
+      assert.equal(output.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    } else assert.equal(output.operating_mode.decision_authority, "human_user");
+    assert(output.recommended_documents.some(item => item.path === "docs/document-authoring-workflow.md"));
+    const readme = output.recommended_documents.find(item => item.path === "README.md");
+    assert(readme);
+    assert.deepEqual(fs.readFileSync(path.join(output.repo_root, readme.path)), fs.readFileSync(path.join(source, "README.md")));
+    assert.notDeepEqual(fs.readFileSync(path.join(output.repo_root, readme.path)), sentinel,
+      "A target-project file must not substitute for the routed corpus file");
+  }
+  assert.deepEqual(fs.readFileSync(path.join(unrelated, "README.md")), sentinel);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes, "Routing examples must not invoke native clients");
+}
+
 try {
   fs.mkdirSync(source);
   fs.mkdirSync(unrelated);
+  write(path.join(unrelated, "README.md"), "# Target project, not doctrine\nKeep this source unchanged.\n");
   fs.mkdirSync(bin);
   for (const file of ["install-ai-cli-skills.sh", "validate-controls-skill.js", "README.md", "SUPPORT.md",
     "docs", "schema-files", `codex-skills/${NAME}`, `.claude/skills/${NAME}`]) {
@@ -114,6 +149,9 @@ try {
     assert.deepEqual(outputs[0].recommended_documents, outputs[1].recommended_documents);
     assert.deepEqual(outputs[0].validation_commands, outputs[1].validation_commands);
   });
+  fixture("literal linked entrypoint examples work in fresh target-project shells", () => {
+    for (const provider of PROVIDERS) documentedCommands(env, provider);
+  });
   fixture("matching link installation is idempotent", () => {
     const before = PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino);
     install(env);
@@ -133,6 +171,17 @@ try {
     write(path.join(destination(env, "codex"), "local-note"), "Keep me.\n");
     install(env, ["--copy"], 1);
     assert.equal(fs.readFileSync(path.join(destination(env, "codex"), "local-note"), "utf8"), "Keep me.\n");
+  });
+  fixture("literal copied entrypoint examples preserve corpus and target origins", () => {
+    for (const provider of PROVIDERS) documentedCommands(env, provider);
+  });
+  fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {
+    for (const provider of PROVIDERS) documentedCommands(env, provider, { loadedDirectory: sourceSkill(provider) });
+  });
+  fixture("an absent explicitly loaded directory fails instead of selecting another skill", () => {
+    for (const provider of PROVIDERS) documentedCommands(env, provider, {
+      loadedDirectory: path.join(temporary, "absent loaded skill"), status: 1
+    });
   });
   fixture("copied providers retain equivalent delegated receipts and bounded authority", () => {
     const receipts = PROVIDERS.map(provider => {
@@ -214,9 +263,16 @@ try {
       CODEX_HOME: path.join(temporary, "custom codex"),
       CLAUDE_SKILLS_DIR: path.join(temporary, "custom claude skills") };
     install(custom, ["--copy"]);
-    for (const provider of PROVIDERS) route(custom, provider);
+    for (const provider of PROVIDERS) { route(custom, provider); documentedCommands(custom, provider); }
     assert(!fs.existsSync(path.join(custom.HOME, ".codex")));
     assert(!fs.existsSync(path.join(custom.HOME, ".claude")));
+  });
+  fixture("literal examples honor the other home and skill-directory overrides", () => {
+    const custom = { ...environment("alternate installation home"),
+      CODEX_SKILLS_DIR: path.join(temporary, "alternate codex skills"),
+      CLAUDE_HOME: path.join(temporary, "alternate claude home") };
+    install(custom);
+    for (const provider of PROVIDERS) documentedCommands(custom, provider);
   });
   fixture("copy snapshots stay unchanged until an explicit refresh", () => {
     for (const provider of PROVIDERS) {

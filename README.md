@@ -600,6 +600,14 @@ A stale explicit binding fails rather than silently choosing another corpus.
 Copies need a deliberate refresh after source changes and still depend on the
 doctrine checkout. Keep task outputs in the target repository.
 
+Use the directory of the `SKILL.md` actually loaded by your client. The installed
+examples below honor the installer's home/skill-directory overrides; for a
+project/plugin/custom location set `CONTROLS_SKILL_DIR` to that loaded directory
+for the invocation. Do not assume the target project contains the source bundle
+or pass its current directory as the doctrine root. Resolve returned corpus
+document paths and corpus-check commands against `repo_root`, while task inputs
+and outputs retain their separate project origin.
+
 Native metadata discovery has a separate, opt-in macOS probe:
 `skill-client-discovery-probe.js --codex /absolute/codex --claude /absolute/claude`
 (run with Node.js). It checks isolated absent/link/copy installations without
@@ -633,7 +641,7 @@ handoff acceptance. Its one-use model-call consent has been consumed.
 For references to files in a separate project, use the explicit input origin:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=user --input-repository=/path/to/project --input-source=SUPPORT.md \
   "Draft an SOP from SUPPORT.md."
 ```
@@ -663,29 +671,30 @@ this bounded check is not general sensitive-data detection or disclosure approva
 For a doctrine-only framework question:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=user \
-  "Draft an SOP and handoff document from the supplied policy." .
+  "Draft an SOP and handoff document from the supplied policy."
 ```
 
 Route a delegated AI operator:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=ai \
   --role=S3 \
   --department=operations \
   --authority=scoped-execution \
-  "Prepare an execution plan for a bounded documentation update." .
+  "Prepare an execution plan for a bounded documentation update."
 ```
 
 Actual delegated execution, unlike a document draft, requires a current wave,
 routing receipts and applicable tool approvals. Read the
 [mission lifecycle](docs/skill-operational-mission-lifecycle.md) before opening
-a wave; sample payloads are examples, not your approval. Its command shape is:
+a wave; sample payloads are examples, not your approval. From the target project,
+using the loaded skill directory, its command shape is:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/operate_controls_mission.js" \
   open <reviewed-mission-wave-plan.json> \
   --repository . \
   --artifact-root .cannae/artifacts

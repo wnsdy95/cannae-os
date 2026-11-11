@@ -749,3 +749,81 @@ After recording the appraisal, generation 28/28, historical review preparation
 checks and 182 current-document link checks passed again. The evidence is in
 `.cannae/maintenance/handoff-closeout-checks-9179617c-6bdb-4ef6-98e1-7ebb07ab1104/`.
 This closing check did not invoke a model or consume another approval.
+
+## Installed Entry Command Maintenance
+
+### Plan And Backbrief (2026-11-11)
+
+G2/G5 next dependency: a discovered skill must give an executable first command
+from the user's target project, not assume the doctrine repository is the current
+directory. Before editing, the first Bash block from each installed entrypoint
+was executed literally in an unrelated temporary directory. Both exited 1 with
+`MODULE_NOT_FOUND`: their project-relative script paths did not exist there.
+Existing installation tests had constructed an absolute script path themselves,
+so they did not exercise the instruction an operator actually receives.
+
+Required correction: anchor invocation to the loaded skill directory, omit an
+accidental positional `.` doctrine override, distinguish returned corpus paths
+from target-project inputs and preserve target-local outputs. Test the actual
+documented blocks for linked/copied installs, custom locations and fresh shells,
+not a rewritten equivalent command. Keep real installations, user settings,
+existing bindings, authority and model-call consent unchanged.
+
+An additional offline Codex `debug prompt-input` observation used an isolated
+home, an explicit skill-name prompt and verified OS network denial. It exposed
+skill metadata but neither the body marker nor full entrypoint body. This is
+not model execution or proof of skill-body consumption. The previous one-use
+model consent remains consumed; no new native model call is part of this fix.
+
+### Observed Correction And Handoff
+
+Both entrypoints now launch the router through the loaded directory, using the
+provider's installer locations only as a documented default. An explicitly
+supplied loaded location takes precedence; an absent one fails rather than
+silently selecting another installation. The examples do not append a positional
+current-directory doctrine override. Corpus documents/checks resolve against
+returned `repo_root`; project inputs and outputs keep their separate origin.
+No router permission logic, installer destination or client setting changed.
+
+The installation suite now executes the actual two startup blocks extracted from
+each entrypoint in fresh shells. It covers link/copy modes, both home and skill
+directory overrides with spaces, explicit loaded locations and an invalid
+location, and prevents a same-named target README from substituting for corpus
+policy. The helper's own hand-built argv is no longer the only startup check.
+
+Actual installed-link observation: the two original human-mode commands from
+commit `300fc83` failed with `MODULE_NOT_FOUND` in another empty directory. The
+four current human/AI commands succeeded through the real installed paths,
+returned this corpus root and preserved the declared mode. Link targets/inodes
+and the empty target directory remained unchanged. These are shell/router
+observations, not native client selection, model execution or delegated work.
+
+The repeated offline native preview required the exact skill name and description
+in one metadata item, not just the name appearing in the supplied prompt. Metadata
+was present; the body marker and complete body were absent in that preview.
+This establishes the limit of this inspection method, not that a real turn can
+never load the body. OS network denial was verified before client startup; the
+probe used a temporary home and did not invoke a model or reuse a consent.
+
+Executed checks: installation 26/26, discovery-helper 7/7, routing 216 queries
+plus 32 required-source rejections and 3 link-inventory checks, preflight 10/10,
+control enforcement 6/6 and historical review preparation 16/16. Both entrypoints
+validated at 248 lines. Both coverage checks had zero unrouted artifacts;
+source-map/registry audits, 182 document link checks, English-only and diff checks
+passed. The full aggregate, lifecycle suite and hosted CI were not rerun for this
+instruction/test-only change; the earlier results retain their original scope.
+
+Evidence: `.cannae/maintenance/installed-entry-command-LNyZTR/`. A preliminary
+shell-eval audit launcher had a syntax error before execution; the retained
+readable observer corrects the launcher, not a product failure. Original
+observations, corrected measurements and test logs are kept separate.
+
+Reusable lesson in both provider instructions: locate the loaded bundle before
+executing a command, and qualify every subsequent document by its actual root.
+An installed folder, metadata listing and an independently assembled test
+command cannot prove that the instructions a new operator receives are usable.
+Canonical startup instructions remain the two entrypoints and README; this
+section records their maintenance evidence, not a new operating policy. The
+next acceptance step is separately scoped actual native body consumption and
+task behavior. No new model invocation or operational receiver acceptance is
+authorized by these local checks; G2/G5 remain open.
