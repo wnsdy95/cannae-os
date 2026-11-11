@@ -174,7 +174,8 @@ Recommended validation order:
 16. `integrated-mission-preflight.schema.json`
 17. `model-usage-event.schema.json`
 18. `ccir-alert.schema.json`
-19. `handoff-packet.schema.json`
+19. `handoff-packet.schema.json` (continuity record, never execution permission)
+    - `handoff-generation-request.schema.json`: explicit local order/event selection for a review-only draft; does not authenticate read access or authorize generation/disclosure.
 20. `continuity-plan.schema.json`
 21. `context-item.schema.json`
 22. `document-access-manifest.schema.json`

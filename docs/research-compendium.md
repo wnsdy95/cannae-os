@@ -3829,7 +3829,7 @@ This tranche converted fifteen previously queued operating concepts into doctrin
 - `context-filter-prototype/`: a generator of per-role raw/summary/redacted/reference/denied context packets.
 - `document-access-runner.js`: checks role/duty/authority against the manifest to generate an allowed/denied document projection.
 - `run-document-access-fixtures.js`: fixtures for S2/Executor/S6 document access and blocking overbroad access.
-- `handoff-generator.js`: generates a handoff packet from the event replay and alert projections.
+- `handoff-generator.js`: reads actual order/event files selected by `schema-files/handoff-generation-request.schema.json` and retains source digests, quoted requirements and unknowns in an unreviewed local draft. `run-handoff-generation-fixtures.js` checks the consumer; neither packet validation nor generation grants execution or establishes receiver acceptance.
 - `decision-packet-linter.js`: a validator for board packet option/risk/evidence/deadline.
 - `event-fixtures/working-group-event-fixtures.json`: the WG opened/prepared/decided/closed event log.
 - `maintenance-readiness-model.md`: a model for tool/resource availability and sustainment readiness.

@@ -520,7 +520,7 @@ Completed:
 - `schema-files/context-item.schema.json`: Context unit carrying classification, EEFI, and releasability metadata.
 - `context-filter-prototype/`: Takes a role and context item and produces a raw/summary/redacted/reference/denied packet.
 - `schema-files/release-review.schema.json`: Final output release decision schema.
-- `handoff-generator.js`: Automatically generates a handoff packet from event projections and current queues.
+- `handoff-generator.js`: Creates an unreviewed local draft from explicitly selected order/event files under `schema-files/handoff-generation-request.schema.json`; `run-handoff-generation-fixtures.js` checks preservation and rejection boundaries, not receiver acceptance.
 - `decision-packet-linter.js`: Automates verification of board packet option/risk/evidence/deadline.
 - `event-fixtures/working-group-event-fixtures.json`: WG opened/prepared/closed event replay fixtures.
 - `maintenance-readiness-model.md`: Tool/resource availability and readiness.

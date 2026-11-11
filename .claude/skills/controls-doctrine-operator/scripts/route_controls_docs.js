@@ -340,7 +340,8 @@ const RULES = [
       "docs/event-sourcing-model.md"
     ],
     commands: [
-      "node run-continuity-drill-fixtures.js"
+      "node run-continuity-drill-fixtures.js",
+      "node run-handoff-generation-fixtures.js"
     ]
   },
   {

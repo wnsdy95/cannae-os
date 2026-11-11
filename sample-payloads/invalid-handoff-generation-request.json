@@ -1,0 +1,8 @@
+{
+  "schema_version": "0.1",
+  "type": "HandoffGenerationRequest",
+  "events_file": "event-fixtures/demo-events.json",
+  "created_by": "S6",
+  "classification": "public",
+  "can_execute": true
+}

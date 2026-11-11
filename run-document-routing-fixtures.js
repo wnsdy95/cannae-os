@@ -188,6 +188,7 @@ for (const router of ROUTERS) {
     "Prepare a receiver-ready handoff for this documentation task.");
   assertRoutes(handoff, ["continuity-handoff"]);
   assert(handoff.recommended_documents.some(item => item.path === "docs/handoff-packet-template.md"));
+  assert(handoff.validation_commands.includes("node run-handoff-generation-fixtures.js"));
   const unrelated = route(router, ["--actor=user"], "Analyze soap sales and rank sales targets");
   assert(!unrelated.matched_routes.some(item => item.id === "document-authoring"));
   assert.strictEqual(unrelated.capability_routing.status, "gap_detected");

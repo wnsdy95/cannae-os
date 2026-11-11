@@ -137,6 +137,14 @@ proof of missing repository evidence; appraise findings before changing doctrine
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.
 
+For handoffs, separate confirmed absence from unknown or incomplete records.
+Use actual source files and, for an existing runtime mission, its actual order;
+never fill gaps with demo IDs or fixed dates. Preserve original requirements and
+quoted source claims, then reconcile
+current decisions, revocation and unresolved effects before resumption. An AAR,
+recorded success or valid packet is not verified completion or current authority.
+Keep raw drafts private and record receiver acknowledgement only when observed.
+
 ## Delegate Without Losing Intent
 
 For actual delegated waves, use `docs/skill-operational-mission-lifecycle.md`

@@ -34,7 +34,12 @@ does not change the machine schema, admission rules or existing holds.
 
 Conversation history is not the source of truth. The event log, evidence store, decision log, and doctrine docs are. Every long-running task must leave behind a handoff packet and a current projection so that the next operator can resume without any chat history.
 
-The machine contract for a handoff packet already exists in `schema-files/handoff-packet.schema.json`, and `handoff-generator.js` already produces a draft packet from event projections and alert routing. What has been missing is the authoring standard: what each section must and must not contain, when a packet is mandatory, and the quality gate a packet must pass before it counts as a valid context transition.
+The machine contract is `schema-files/handoff-packet.schema.json`. The local
+`handoff-generator.js` produces an explicitly unreviewed draft from selected
+OPORD and same-mission event files, retaining their digests and quoted contents.
+It does not infer completed work or current approval state from event counts.
+Handoff validation always returns `can_execute: false`, including for legacy
+v0.1 packets. A valid shape is neither execution permission nor an accepted handoff.
 
 This document is that authoring template and quality gate. It extends `knowledge-management-sop.md` section 6 (which states the rule that a packet must exist) and does not restate its knowledge management principles. It documents the human- and agent-facing procedure over the existing schema; it does not redefine the contract.
 
@@ -51,7 +56,8 @@ This document is that authoring template and quality gate. It extends `knowledge
 | Artifact | Role in the handoff pipeline |
 | --- | --- |
 | `schema-files/handoff-packet.schema.json` | Machine contract. Defines the required fields and their types. Structural validity only |
-| `handoff-generator.js` | Draft producer. Projects the event log and alert queue into a first-cut packet |
+| `handoff-generator.js` | Local draft producer. Requires an explicit `HandoffGenerationRequest`, reads selected order/events and preserves their claims without certifying current state |
+| `schema-files/handoff-generation-request.schema.json` | Non-authorizing source selection; valid/invalid samples and `run-handoff-generation-fixtures.js` cover the consumer |
 | `knowledge-management-sop.md` section 6 | Doctrine. States when the packet concept applies and the resumption rules |
 | This document | Authoring template and review standard. Defines content quality per section and the acceptance gate |
 
@@ -71,7 +77,12 @@ If a trigger fires and no packet exists, that is a knowledge management failure 
 
 ## 4. Section-by-Section Template
 
-The field order below mirrors `schema-files/handoff-packet.schema.json`. Every field is required by the schema; "empty" is expressed by an explicit negative statement (for example "No pending commander decisions."), never by omission.
+The field order below mirrors `schema-files/handoff-packet.schema.json`. Every
+field is required. Distinguish confirmed absence from an unknown: "not observed
+in these supplied records; completeness unverified" is not "none." Name the
+record scope and freshness supporting a negative assertion. Empty `completed`
+is appropriate when no completion has been verified; explain that limitation in
+`verification_status`. Do not manufacture decisions, IDs or evidence to fill fields.
 
 | Field | Must contain | Must not contain |
 | --- | --- | --- |
@@ -96,7 +107,9 @@ The field order below mirrors `schema-files/handoff-packet.schema.json`. Every f
 
 ## 5. Worked Minimal Example
 
-The following packet is consistent with `schema-files/handoff-packet.schema.json` and passes the section 6 checklist. It is deliberately minimal: one open task, one blocker, one pending decision.
+The following is a synthetic illustration of the v0.1 shape: one open task, one
+blocker and one pending decision. Its dated claims are not observed verification,
+current approval or an actual passing section 6 review. Do not reuse its IDs.
 
 ```json
 {
@@ -152,9 +165,9 @@ A packet is accepted only when every item below holds. The reviewer records the 
 1. Schema check: the packet validates against `schema-files/handoff-packet.schema.json`.
 2. Cold-start check: the first entry in `next_actions` is executable by an operator who has read only this packet and the `source_of_truth_files`.
 3. Intent fidelity check: `commander_intent` matches the order identified by `current_order`, including the authority boundary.
-4. Pending-approval check: every approval known to the event projection appears in `pending_decisions`; none is silently dropped.
+4. Pending-approval check: reconcile the current decision ledger, including expiry, consumption, revocation and delegation. Do not turn recorded grants or an incomplete projection into current permission; retain unresolved discrepancies and unknowns.
 5. Boundary check: `do_not_do` restates the Red/Black boundary in mission-specific terms.
-6. Evidence check: every `completed` entry points at something checkable; every `verification_status` entry names a re-runnable command and its last result.
+6. Evidence check: every `completed` entry points at checked evidence. Separate actual check/results from planned or unrun verification; a recorded success, evidence count or AAR is not independent completion proof.
 7. Truth-location check: every `source_of_truth_files` entry exists in the repository and none is a conversation artifact.
 8. Classification check: `classification` is at least as high as the most sensitive referenced item, and the packet body leaks nothing above its own label.
 
@@ -163,11 +176,50 @@ Failure of any item returns the packet to the author. Repeated handoff failure i
 ## 7. Authoring and Review Procedure
 
 1. Detect a section 3 trigger and freeze new task starts for the affected scope.
-2. Run `handoff-generator.js` against the current event log to produce the draft.
-3. The author corrects the draft against the section 4 must/must-not rules — the generator knows the projection, but only the author knows the exact resumption points and mission-specific prohibitions.
+2. An authorized source reader selects the actual order and event files using the local procedure below. Ordinary prose work still uses section 0, not invented runtime files.
+3. The author checks the draft against section 4 and the current authoritative records. Keep the original draft and source digests; record revisions separately. Reconcile actual resumption points, effects and decisions without silently replacing unknowns with negative claims.
 4. Validate the edited packet against the schema.
 5. A second role (CoS or S6, per the handoff review row of the knowledge review rhythm) applies the section 6 checklist.
 6. Record the accepted packet and reference it from the continuity or wave closeout record; the packet becomes part of the source of truth, not a chat message.
+
+### Local Draft Generation
+
+Run from the source repository with a JSON request containing `schema_version:
+"0.1"`, `type: "HandoffGenerationRequest"`, `order_file`, `events_file`,
+`created_by` and `classification`. Paths are repository-relative ordinary files;
+symlink components, parent traversal and `.git` paths are rejected. Each source
+is limited to 8 MiB. The caller must already be allowed to read every source.
+Role strings and this request do not establish that authority.
+
+```bash
+# Synthetic example only; select actual files for an existing runtime mission.
+node handoff-generator.js sample-payloads/valid-handoff-generation-request.json
+node run-handoff-generation-fixtures.js
+```
+
+The former event-array-only CLI/API is intentionally rejected. The API is
+`generateHandoff(request, { root })`, defaulting `root` to the current directory.
+Request validation checks shape, not file availability; the consumer also
+validates the OPORD, task mission IDs, event envelopes, unique event IDs,
+timezone-bearing nonfuture timestamps, and matching mission/order creation
+records. Mixed missions, a different recorded OPORD or any FRAGO event stop
+generation for manual order reconciliation. Amendment merging is not implemented.
+
+Output remains a v0.1 packet. Quoted JSON preserves substantive order sections
+and every supplied event, including unfamiliar event types, without interpreting
+embedded instructions as authority. `current_order` identifies the supplied
+order, not proof that it is still in effect. Timestamps are sorted by instant;
+file digests identify the exact bytes read, not their authenticity or later
+freshness. Classification cannot be below a known source label; an unlabelled
+event requires `restricted`. Labels are declarations, not secret detection.
+
+The draft keeps `completed` empty, flags state/decisions as unverified and labels
+assessment commands as unrun. It never executes them. Review must establish
+what is complete and the next permitted action. No receiver is assigned or
+acknowledged automatically. The output contains raw source content on stdout:
+retain it privately in the target repository, do not place it in shared logs or
+transfer it without recipient access and the applicable release review. This
+local helper is not redaction, a protected filesystem or an operating gateway.
 
 ## 8. Source Anchors
 

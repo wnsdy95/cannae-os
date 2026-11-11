@@ -226,6 +226,7 @@ const TYPE_TO_SCHEMA = {
   "doctrine-consistency-review": "doctrine-consistency-review.schema.json",
   "ccir-alert": "ccir-alert.schema.json",
   "handoff-packet": "handoff-packet.schema.json",
+  "handoff-generation-request": "handoff-generation-request.schema.json",
   "continuity-plan": "continuity-plan.schema.json",
   "context-item": "context-item.schema.json",
   "release-review": "release-review.schema.json",
@@ -6141,7 +6142,7 @@ function validationResult(issues, type, payload) {
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) &&
-      !["frago", "frago-scope-change"].includes(type) &&
+      !["frago", "frago-scope-change", "handoff-packet", "handoff-generation-request"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "agent-context-pack" && type !== "document-access-manifest" && !["project-document-packet-request", "project-document-packet"].includes(type) && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),

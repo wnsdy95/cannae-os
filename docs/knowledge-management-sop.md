@@ -229,7 +229,7 @@ Implemented schemas:
 
 Implemented prototypes:
 
-- `handoff-generator.js`: combines event projection with the README queue to generate a packet.
+- `handoff-generator.js`: reads explicitly selected order/event files and produces an unreviewed local draft with source digests. It does not read the README queue or certify current state; follow `docs/handoff-packet-template.md` for reconciliation and acceptance.
 - `source-map-linter.js`: fails when an official source host is absent from the source map or a doctrine output in the queue's audited index is missing from the README, source map, compendium, or filesystem (verified by `run-source-map-linter-fixtures.js`).
 - `km-review-runner.js`: validates decision-log, source-record, optional handoff, and authority artifacts against their schemas; resolves authority and document references; and reviews stale unresolved decisions. Supply authority evidence with `--authority-artifacts` and constrain local document references with `--repository-root` (verified by `run-km-review-fixtures.js`).
 

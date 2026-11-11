@@ -616,6 +616,20 @@ proposed V3. The helper retains historical V1/V2 stress cases; it does not
 evaluate V3 or establish independent acceptance. Ordinary prose
 handoffs do not require invented runtime IDs; existing missions keep their guards.
 
+For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
+requires an explicit [source request](schema-files/handoff-generation-request.schema.json).
+It reads the selected OPORD/events, preserves quoted requirements and source
+digests, and leaves completion, current decisions and receiver acceptance
+unverified. Both generation-request and handoff-packet validation return
+`can_execute: false`. The old event-array-only call is no longer supported.
+Raw drafts stay private; generation is not recipient delivery or release review.
+
+One [separately approved native recipient exercise](docs/document-authoring-case-study.md#approved-synthetic-project-recipient-exercise)
+now demonstrates use of a synthetic raw/summary/reference-only packet and
+rejection of its untrusted approval claim. This is one appraised response, not
+authenticated recipient identity, installed-skill consumption or operational
+handoff acceptance. Its one-use model-call consent has been consumed.
+
 For references to files in a separate project, use the explicit input origin:
 
 ```bash
@@ -689,6 +703,7 @@ The repository intentionally includes many small runners instead of one large ru
 
 Important examples:
 
+- `run-handoff-generation-fixtures.js`: selected-source fidelity, unknown-state handling, non-authorizing validation and invalid mission/order/time/path/classification rejection; synthetic regressions, not receiver acceptance.
 - `validator-cli-prototype/run-fixtures.js`: schema and semantic validator regression suite.
 - `run-authority-integration-fixtures.js`: scoped approval and risk acceptance composition.
 - `run-release-integration-fixtures.js`: separation between execution approval and release review.

@@ -10,6 +10,25 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G2/G3 evidence: USER separately approved one native recipient exercise
+for the existing 4,060-byte synthetic project packet after local checks passed.
+The default-model CLI returned one response in about 17.8 seconds with zero tool
+events. Source appraisal found the requested backbrief, citations, unknowns,
+source-access distinctions and publication/acceptance boundaries preserved.
+See [the bounded appraisal](document-authoring-case-study.md#approved-synthetic-project-recipient-exercise).
+That one-use approval is consumed. Installed-skill consumption, authenticated
+recipient identity and actual operational handoff acceptance remain unverified.
+
+Latest G1/G3/G4 implementation: the handoff generator no longer fills absent
+sources with demo mission/order IDs, a fixed date or universal negative claims.
+It requires actual selected order/event files, preserves requirements and source
+digests, and leaves current-state decisions for review. Handoff validation is
+non-authorizing. Generation 28/28, shared validator 512/512 and lifecycle 32/32
+passed; the case records all checks, the corrected registry-drift failure and
+the maintenance handoff. This
+does not establish live-state completeness, amendment merging or receiver
+acceptance; all five goals remain open.
+
 Latest G3/G4 correction: issuance cleanup can no longer replace the original
 operation/renewal failure. Five deterministic cases verify preserved causes,
 denied success and retention of a different owner. Fresh ordinary dispatch and
@@ -26,16 +45,18 @@ Latest G2/G5 implementation: the offline project document packet helper now
 assembles selected raw text or separately prepared summaries with exact local
 origin, content and recipient binding. Reference-only bodies are not opened.
 Both provider wrappers support the same preparation/inspection commands without
-a server or model call. Native transfer, authenticated consent/recipient identity
-and receiver use remain open; local compilation is not G2 closure.
+a server or model call. One separately consented native exercise now demonstrates
+supplied-source use. Authenticated consent/recipient identity and actual
+operational receiver acceptance remain open; local compilation is not G2 closure.
 
 Latest G2/G3 correction: bound doctrine digests were not being rechecked before
 new delegated authority. An isolated reproduction changed SUPPORT.md after open
 and still received an allowed tool admission. The current correction rechecks
 exact routed sets and current bytes at context publication, policy/lease/tool
 gates and completed-report admission, retaining old-result settlement and stops.
-This prerequisite does not deliver project source bodies or close G2; authorized
-project-origin/content/recipient binding and actual client use remain open.
+This prerequisite does not deliver project source bodies or close G2. The later
+offline packet and synthetic native exercise add bounded evidence; authenticated
+project-origin/recipient binding and guarded project-input use remain open.
 
 Latest G1/G3/G4 evidence: the separately approved native review retry returned
 normally. Source appraisal confirmed detection of all seven deliberately altered
@@ -64,11 +85,11 @@ The current corrective V3 handoff is in `docs/document-authoring-case-study.md`.
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded exercise, actual maintenance work order, one approved advisory model review, source appraisal and proposed corrective V3. All seven seeded variants were identified; the original draft also had omissions. | Broader cases, V3 review/adoption and independent/receiver acceptance remain open. One authored case with deliberate variants is not a general detection rate or semantic completeness. |
-| G2. Role-bounded routing and delegation | Both routers resolve explicit corpus/project references. Access projections enforce profile selection, and new authority checks issued doctrine sets/current bytes. Offline project packets now bind local origin, source/summary bytes and the intended recipient without opening reference-only bodies. | Actual authorized transfer/receiver use, authenticated origin/delegation, guarded project-input integration, broader relevance and semantic input/output distinction remain open. Lexical selection is not negation understanding. Neither a projection, local filesystem identity nor a byte match authenticates the caller or enforces filesystem access. |
+| G1. Document authoring and revision quality | The case study contains the policy-grounded exercise, maintenance plan/handoff, approved advisory review and proposed corrective V3. All seven seeded variants were identified; the original draft also had omissions. A separate synthetic recipient exercise preserved the supplied intent/source boundaries in one response. | Broader cases, V3 review/adoption and independent/operational receiver acceptance remain open. Deliberate variants and one source-appraised response are not a general detection rate or semantic completeness. |
+| G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections enforce profile selection; new authority checks issued doctrine bytes. Offline project packets bind origin/content/recipient without opening reference-only bodies. One USER-approved native exercise demonstrates supplied-source use and rejection of an embedded false-approval instruction. | Authenticated origin/recipient/delegation, actual operational receiver acceptance, guarded project-input integration and broader semantic relevance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Isolated installation fixtures cover link/copy binding, refresh, conflicts and receipt parity. Actual Codex/Claude processes discover both bundle forms in temporary homes; absent and Claude bare-mode negative controls distinguish real discovery from a folder check. | Skill-body consumption, semantic task execution and an independent fresh-session workflow remain unverified. Native metadata under isolated settings does not prove the user's full configuration. Separate plugin packaging is not included. |
+| G5. Client distribution | Isolated installation fixtures cover link/copy binding, refresh, conflicts and receipt parity. Actual Codex/Claude processes discover both bundle forms in temporary homes; absent and Claude bare-mode negative controls distinguish real discovery from a folder check. | Installed-skill body consumption, skill-driven semantic execution and an independent fresh-session workflow remain unverified. The separate tool-disabled recipient exercise deliberately disabled discovery. Native metadata under isolated settings does not prove the user's full configuration. Separate plugin packaging is not included. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).
@@ -589,8 +610,9 @@ with raw policy/comment text, a supplied summary and a reference-only ID. The
 current candidate passed inspection. The fresh one-use native exercise proposal
 is `.cannae/maintenance/project-packet-native-review-04dcfcc5/proposal.md`; input
 SHA-256 is `3ff9ab34ec32ec15fc2c0949b59dbf54fa31cfcc95d9fb4c8e2f6e649c112ba4`.
-It is awaiting fresh USER consent; no native model call or new approval is
-claimed. Prior review consents remain consumed. A future observed response must
+At that checkpoint it was awaiting fresh USER consent; no native model call or
+new approval was claimed. The later approved attempt is recorded above. Prior
+review consents remain consumed. A future observed response must
 be appraised for source use, exclusions and unknowns, not marked accepted from
 successful process exit. Installed-skill consumption and independent acceptance
 remain separate from this supplied-packet exercise.
@@ -646,7 +668,7 @@ remain unchanged. The pending synthetic candidate re-inspected successfully with
 the same 4,060-byte prompt and previously recorded hashes. These checks do not
 clear the broader lifecycle failure above.
 
-Actual native transfer/receiver use remains separately pending consent. The old
+At that checkpoint, actual native transfer/receiver use was pending consent. The old
 authoring-review retry consent is already consumed. No model invocation, push,
 policy adoption or G1-G5 completion follows from this local correction.
 

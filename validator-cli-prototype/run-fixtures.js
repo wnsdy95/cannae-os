@@ -1966,7 +1966,24 @@ const fixtures = [
     file: "sample-payloads/valid-handoff-packet.json",
     type: "handoff-packet",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
+  },
+  {
+    name: "valid non-authorizing handoff generation request",
+    file: "sample-payloads/valid-handoff-generation-request.json",
+    type: "handoff-generation-request",
+    exitCode: 0,
+    expectedCanExecute: false,
+    requiredCodes: []
+  },
+  {
+    name: "handoff generation request cannot omit the order or assert execution",
+    file: "sample-payloads/invalid-handoff-generation-request.json",
+    type: "handoff-generation-request",
+    exitCode: 1,
+    expectedCanExecute: false,
+    requiredCodes: ["MISSING_REQUIRED", "ADDITIONAL_PROPERTY"]
   },
   {
     name: "valid continuity plan",

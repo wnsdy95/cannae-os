@@ -511,7 +511,7 @@ sample bytes; regenerate only the separately named current sample.
 | Force structure changes | `docs/force-structure-change-policy.md` | `schema-files/force-structure-change-order.schema.json`, `force-structure-change-runner.js` |
 | Unmatched mission capability | `docs/force-structure-change-policy.md`, `docs/interdepartment-collaboration-policy.md`, `docs/b2c2wg-operating-model.md` | routing receipt/context-pack v0.2 `capability_routing`, `run-force-structure-change-fixtures.js`, `skill-mission-controller.js` |
 | Mission-based model allocation and dispatch | `docs/model-force-assignment-policy.md`, `docs/model-force-v0.2-operations.md`, `docs/agent-metl.md`, `docs/agent-readiness-ledger.md` | `schema-files/model-registry.schema.json`, `schema-files/model-assignment-request.schema.json`, `model-assignment-compiler.js`, `integrated-mission-preflight-runner.js`, `run-model-force-v0.2-fixtures.js` |
-| Continuity and handoff | `docs/personnel-continuity-model.md`, `docs/knowledge-management-sop.md`, `docs/handoff-packet-template.md` | `schema-files/continuity-plan.schema.json`, `handoff-generator.js`, `continuity-drill-runner.js` |
+| Continuity and handoff | `docs/personnel-continuity-model.md`, `docs/knowledge-management-sop.md`, `docs/handoff-packet-template.md` | `schema-files/continuity-plan.schema.json`, `schema-files/handoff-generation-request.schema.json`, `handoff-generator.js`, `run-handoff-generation-fixtures.js`, `continuity-drill-runner.js` |
 
 ## Source, Culture, Multinational Use
 
