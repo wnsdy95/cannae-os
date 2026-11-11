@@ -118,6 +118,12 @@ prove that a recipient read the source. See [Document Routing](references/docume
 Keep reading scope separate from execution controls. Conditional specialist
 manuals need not be read for an unrelated task, but their omission never waives
 an issued validation command, approval or stop condition.
+Use the declared department and actual task to select technical context, not a
+role label alone. S6 starts with knowledge, disclosure and classification policy;
+systems duties or explicit inputs can still require architecture/event references.
+Do not erase prohibited actions from the task to shorten its reading list.
+Ordinary role-specific routing is not a guarded work receipt; existing missions
+still require their control-plane roles and successful preflight.
 
 Installed links follow the source tree; copies retain a `.cannae-os-root`
 binding but need explicit refresh after source changes. For the router,

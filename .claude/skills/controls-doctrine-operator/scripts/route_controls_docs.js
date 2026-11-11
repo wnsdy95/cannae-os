@@ -462,9 +462,9 @@ const ROLE_DOCS = {
     "docs/data-model.sql.md"
   ],
   S6: [
-    "docs/reference-architecture.md",
-    "docs/event-sourcing-model.md",
-    "docs/command-post-dashboard.md"
+    "docs/knowledge-management-sop.md",
+    "docs/context-releasability-policy.md",
+    "docs/opsec-classification-model.md"
   ]
 };
 

@@ -2,6 +2,12 @@
 
 ## Skill-First Scope And Authoring
 
+The [S6 reading correction](document-authoring-case-study.md#s6-default-reading-alignment)
+reconciles both router defaults with the existing S6 row in
+[Role Document Access Policy](role-document-access-policy.md#4-default-document-bundle-by-role).
+Local before/after and negative-admission checks establish policy-context
+preservation, not semantic minimality, authenticated access or native acceptance.
+
 The [generic-comparison correction](document-authoring-case-study.md#generic-comparison-routing-correction)
 is local engineering evidence: a red routing regression, both provider outputs,
 source/mission-context preservation and controller-issued context checks.

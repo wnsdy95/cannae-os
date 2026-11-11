@@ -669,6 +669,10 @@ The [generic-comparison correction](docs/document-authoring-case-study.md#generi
 now preserves unsupported-domain gaps and conditionally omits unrelated specialist
 manuals. Local rerouting of that recorded query recommends 49 documents, still
 not minimal context; required sources and selected controls remain unchanged.
+The subsequent [S6 bundle alignment](docs/document-authoring-case-study.md#s6-default-reading-alignment)
+restores knowledge/disclosure/classification policy and makes technical reading
+depend on department, task or input context rather than the S6 label alone.
+Negative-topic matching and broader semantic acceptance remain unresolved.
 
 For references to files in a separate project, use the explicit input origin:
 

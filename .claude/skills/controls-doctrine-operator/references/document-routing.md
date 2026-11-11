@@ -513,6 +513,18 @@ regressions in both provider skill trees, in addition to inventory coverage.
 
 ## Operator Mode
 
+S6's default reading follows the knowledge-management bundle in
+`docs/role-document-access-policy.md`: knowledge management, context releasability
+and OPSEC classification, alongside the common role/access/approval/tool rules.
+Its label alone does not require architecture, event storage or dashboard design.
+The declared systems/platform/architecture department still adds architecture
+and event references; task or parent-objective matches and explicit source inputs
+remain additive. Do not change a department to evade an assigned duty. This is
+reading selection, not access enforcement, a changed role or execution authority.
+Existing issued packets retain their bindings and require the normal fresh-route
+procedure when instructions change. Explicit dashboard prohibitions still match
+conservatively; no negation understanding or exception to controls is implied.
+
 | Mode | Trigger | Routing Rule | Escalation |
 | --- | --- | --- | --- |
 | Human final decision authority | The chat user asks directly, researches, decides, or asks "how should we use this?" | Route for efficiency and evidence, not to restrict the user's visibility. Read the minimum useful docs, then brief options and tradeoffs. | Warn before high-risk, release, or irreversible actions, but the user decides. |

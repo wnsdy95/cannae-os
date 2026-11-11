@@ -10,6 +10,20 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G4/G5 correction: S6 default reading now follows its existing
+knowledge-management/access policy instead of injecting architecture/dashboard
+manuals for every task. Technical departments, task/parent routes and required
+inputs remain additive; controls and authority are unchanged. Local rerouting
+of the recorded receiving query moved from 49 to 48 recommendations, while
+explicit dashboard tasks gained missing S6 policy references. See
+[S6 reading alignment](document-authoring-case-study.md#s6-default-reading-alignment).
+Negative-topic matching and minimal selection remain open. Tests also confirmed
+that ordinary S6 routing cannot replace the required S3 control-plane receipt;
+the emitter can still output invalid receipt JSON before validation rejects it.
+Producer-side rejection, other role-bundle audits and broader behavioral
+acceptance remain work, not permission to relax the existing receipt contract.
+All five goals remain open.
+
 Latest G2/G4/G5 correction: generic `compare`, `comparison` and `baseline` no
 longer establish specialized capability. The reproduced museum-attendance case
 now retains a provisional capability cell through direct routing, receipts and

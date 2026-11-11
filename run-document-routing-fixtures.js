@@ -57,6 +57,57 @@ function assertRoutes(result, expectedRoutes) {
   assert.strictEqual(result.route_inventory.unrouted_artifact_count, 0);
 }
 
+function testS6Reading(router) {
+  const args = ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"];
+  const query = "Draft a handoff document from supplied policy. Do not publish.";
+  const output = route(router, args, query);
+  const base = ["docs/role-document-access-policy.md", "docs/agent-roles-and-authority.md",
+    "docs/approval-scope-policy.md", "docs/tool-use-roe.md", "docs/knowledge-management-sop.md",
+    "docs/context-releasability-policy.md", "docs/opsec-classification-model.md"];
+  assert.deepEqual(output.operating_mode.mode_documents, base, "S6 must use its knowledge-management policy bundle");
+  const technical = ["docs/reference-architecture.md", "docs/event-sourcing-model.md", "docs/command-post-dashboard.md"];
+  for (const document of [technical[0], technical[2]]) assert(!output.recommended_documents.some(x => x.path === document));
+  assert(output.recommended_documents.some(x => x.path === technical[1]), "the handoff route still requires event context");
+  const sop = route(router, args, "Draft a support SOP. Do not publish.");
+  for (const document of technical) assert(!sop.recommended_documents.some(x => x.path === document));
+  const human = route(router, ["--actor=user"], query);
+  const humanWithRole = route(router, ["--actor=user", "--role=S6", "--department=knowledge", "--authority=read-only"], query);
+  assert.deepEqual(humanWithRole.recommended_documents, human.recommended_documents);
+  assert.deepEqual(humanWithRole.validation_commands, human.validation_commands);
+  assert.equal(humanWithRole.operating_mode.decision_authority, "human_user");
+  for (const document of base) assert(output.recommended_documents.some(x => x.path === document));
+  for (const command of AUTHORITY_CONTROLS) assert(output.validation_commands.includes(command));
+  for (const department of ["systems", "platform", "architecture"]) {
+    const systems = route(router, [...args, `--department=${department}`], query);
+    for (const document of technical.slice(0, 2)) assert(systems.recommended_documents.some(x => x.path === document));
+    assert(!systems.recommended_documents.some(x => x.path === technical[2]));
+    assert.deepEqual(systems.matched_routes, output.matched_routes);
+    assert.deepEqual(systems.validation_commands, output.validation_commands);
+    assert.deepEqual(systems.capability_routing, output.capability_routing);
+  }
+  for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review dashboard architecture"]]) {
+    const explicit = route(router, [...args, ...extra], query);
+    assert(explicit.recommended_documents.some(x => x.path === technical[2]));
+    assert.equal(explicit.operating_mode.authority, "read-only");
+    assert.equal(explicit.capability_routing.provisional_organization.authority_expansion_authorized, false);
+  }
+  for (const task of ["Review dashboard architecture and event projection.",
+    "Draft a handoff document. Do not build a dashboard.", "Do not skip dashboard verification."]) {
+    const explicit = route(router, args, task);
+    for (const document of technical) assert(explicit.recommended_documents.some(x => x.path === document));
+    assert(explicit.validation_commands.includes("node run-maintenance-dashboard-fixtures.js"));
+  }
+  const execution = route(router, [...args, "--authority=scoped-execution"], query);
+  for (const document of base) assert(execution.recommended_documents.some(x => x.path === document));
+  for (const document of ["docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
+    "docs/protected-process-execution.md", "docs/production-sandbox-admission.md"]) {
+    assert(execution.recommended_documents.some(x => x.path === document));
+  }
+  const incomplete = route(router, ["--actor=ai", "--role=S6", "--authority=read-only"], query);
+  assert(incomplete.operating_mode.escalation_required_when.some(x => x.includes("missing department")));
+  assert.equal(incomplete.operating_mode.department, "unspecified");
+}
+
 function testComparisonRouting(router) {
   const specialist = route(router, ["--actor=user"], "Review self-improvement operations");
   const checks = specialist.validation_commands;
@@ -224,6 +275,7 @@ function testObjectiveRouting(router) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  testS6Reading(router);
   testComparisonRouting(router);
   testObjectiveRouting(router);
   for (const query of ["--actor=user", "--role=COMMANDER", "--authority=release", "--receipt",

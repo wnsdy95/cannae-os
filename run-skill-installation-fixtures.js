@@ -152,6 +152,14 @@ function comparisonGap(env) {
     assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
     assert.equal(result.operating_mode.authority, "read-only");
     assert(!result.recommended_documents.some(x => x.path === "docs/transparency-operations.md"));
+    for (const document of ["docs/knowledge-management-sop.md", "docs/context-releasability-policy.md",
+      "docs/opsec-classification-model.md"]) {
+      assert(result.operating_mode.mode_documents.includes(document));
+      assert(result.recommended_documents.some(x => x.path === document));
+    }
+    for (const document of ["docs/reference-architecture.md", "docs/event-sourcing-model.md", "docs/command-post-dashboard.md"]) {
+      assert(!result.recommended_documents.some(x => x.path === document));
+    }
     assert(result.recommended_documents.some(x => x.path === "docs/force-structure-change-policy.md"));
     assert(result.validation_commands.includes("node run-self-improvement-fixtures.js"));
     assert(result.validation_commands.includes("node run-force-structure-change-fixtures.js"));

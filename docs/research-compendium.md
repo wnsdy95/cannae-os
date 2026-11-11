@@ -1,5 +1,18 @@
 # Research Compendium
 
+## Role Policy And Technical Context (2026-11-12)
+
+The [S6 reading alignment](document-authoring-case-study.md#s6-default-reading-alignment)
+found implementation drift from the existing knowledge-management role policy.
+A function label does not make every task an infrastructure task. Both routers
+now restore the role's knowledge/disclosure/classification core while preserving
+technical department, task and explicit-input contributions. The useful outcome
+is correct context, not a universally smaller count: dashboard requests gained
+missing policies. Selected controls and authority stayed unchanged in ten local
+comparison cases. Negative-topic interpretation and other role bundles remain
+unverified; ordinary S6 reading cannot bypass the S3 execution-receipt boundary.
+This is local engineering evidence, not a new military-doctrine claim.
+
 ## Comparison Methods And Domain Capability (2026-11-12)
 
 The [routing correction](document-authoring-case-study.md#generic-comparison-routing-correction)

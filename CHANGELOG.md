@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Align both S6 reading defaults with the existing knowledge-management access policy. Retain technical department/task/input context, required controls and authority boundaries; add dual-provider role, installed-copy/link and negative receipt-admission regressions. Both skills distinguish role labels, task reading and guarded control-plane receipts. Explicit negative-topic matching and producer-side invalid-receipt rejection remain open.
+
 - Separate generic comparison methods from capability coverage in both routers. Preserve unsupported-domain task cells across direct intake, receipts and controller-issued agent context; keep SOP comparisons covered without claiming self-improvement expertise. Make eleven campaign/verifier/transparency manuals conditional on task, parent objective or explicit source context, preserving selected controls and required inputs. Mirror subject-versus-method guidance in both skills and add direct, compound, receipt, installation and controller regressions. Other semantic over-routing remains open.
 
 - Verify native Codex routing and source reading for the synthetic changed-policy handoff. Preserve a failed client-bridge invocation separately from the diagnosed retry, reconcile fourteen calls/results across ten distinct sources, and appraise the response against V2 and retained duties. Both skills distinguish catalog visibility, rejected attempts and completed source reads; no-tool review controls remain unchanged. Minimal selection, implicit discovery and broader workflow/client parity remain open; the adapter is still test apparatus, not a distributed plugin.

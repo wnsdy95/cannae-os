@@ -1634,3 +1634,67 @@ specialist reading in negated clauses and semantic minimum selection remain open
 Forty-nine recommendations are an improvement over sixty, not a finished routing
 experience. No model call, deployment, publication, permission expansion or
 persistent client-setting change was required for this correction.
+
+## S6 Default Reading Alignment
+
+The next G2/G4/G5 inspection found a role-policy mismatch independently of keyword
+matching. The S6 row in [Role Document Access Policy](role-document-access-policy.md#4-default-document-bundle-by-role)
+requires knowledge management, context releasability and OPSEC classification,
+along with the common README/source references. Both routers instead attached
+architecture, event storage and dashboard design to every delegated S6 task.
+A new regression failed against that actual mode bundle before implementation.
+
+Both providers now use the existing policy's S6 core. Common access, role,
+approval and tool rules remain. Declared systems/platform/architecture duties
+still add architecture and event references. Selected task routes, parent
+objectives and explicit required sources remain additive; the handoff route
+still contributes event-sourcing context. A role-bundle correction does not
+erase a document required by a different part of the request.
+
+Ten same-argument local before/after cases, five per provider, retained identical
+task text, matched routes, capability decisions, controls and authority fields.
+Only reading changed. The ordinary S6 handoff moved from 19 to 18 recommendations:
+architecture and dashboard were removed, OPSEC classification was restored,
+and the handoff-selected event document remained. A systems handoff stayed at
+19, replacing dashboard with classification. The recorded native receiving query
+moved from 49 to 48, not to a proven minimum. Explicit dashboard work increased
+from 12 to 15 because the missing S6 policies were added. Counts are not the
+acceptance criterion; required context must survive even when a list grows.
+
+The same audit retained a negative result: `Do not build a dashboard` still
+selects dashboard reading. Its list grew from 19 to 21 after restoring missing
+policy. No prohibition-stripping parser was added. Such a parser would need to
+distinguish excluded work from obligations such as `Do not skip verification`,
+conditional restrictions and required source references. Negation and semantic
+minimum selection remain open rather than being disguised by a shorter list.
+
+The first receipt test made an incorrect assumption that ordinary S6 reading
+could produce a valid guarded agent receipt. Existing validation and preflight
+correctly require S3/operations/scoped-execution for that control-plane role.
+The corrected regression retains valid S6 direct routing but proves the generated
+S6 receipt fails all three role/department/authority checks and cannot pass
+preflight beside a valid CoS receipt. Neither contract nor validator was changed.
+The emitter still returns nonconforming receipt JSON with exit zero; callers must
+not equate emission with admission. Producer-side rejection is remaining work.
+An earlier test expectation also wrongly removed the handoff-required event
+reference; that expectation was corrected without altering the task route.
+
+Both entrypoints now distinguish a function label from technical task context
+and ordinary reading from guarded receipt acceptance. Regression coverage spans
+direct human/delegate modes, declared technical departments, required source and
+parent-objective restoration, explicit/negative dashboard tasks, incomplete
+delegation, preserved execution guards, rejected S6 work receipts and installed
+links/copies. Local outputs are retained in
+`.cannae/maintenance/s6-reading-20261112/`. No native model chain was replayed,
+historical packet rewritten, role permission expanded or platform work resumed.
+Other role bundles and broader client behavior are not established by this fix.
+
+The post-edit ladder passed 18/18 focused groups against an unchanged source
+fingerprint. It includes 410 routing queries across both providers, 14 preflight
+cases including S6 rejection, 31 installation cases, 18 document-access cases,
+26 authoring-review cases and six control-enforcement cases. Project inputs and
+packets, discovery helpers, both skill/coverage checks, source map, registry,
+links, English-only and diff checks also passed. No full repository aggregate,
+fresh mission-controller suite, shared-validator aggregate, hosted CI or native
+model acceptance was run for this S6 change. The preceding comparison fix's
+controller and validator results remain separate historical evidence.

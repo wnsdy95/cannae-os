@@ -205,4 +205,34 @@ for (const fixture of routingCases) {
   }
 }
 
-console.log(`Agent routing preflight fixtures: ${passed + routingPassed}/${fixtures.length + routingCases.length} passed`);
+for (const skillRoot of ["codex-skills/controls-doctrine-operator", ".claude/skills/controls-doctrine-operator"]) {
+  const query = "Draft a handoff document from supplied policy. Do not publish.";
+  const mode = ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only", `--capability-query=${query}`];
+  const routed = routeWithSkill(skillRoot, query, mode);
+  const scope = ["--receipt", "--mission=MIS-S6-READING", "--wave=W1"];
+  const receipt = routeWithSkill(skillRoot, query, [...mode, ...scope, "--scope=agent", "--agent=reader"]);
+  assert.deepEqual(receipt.recommended_documents, routed.recommended_documents);
+  assert.deepEqual(receipt.validation_commands, routed.validation_commands);
+  for (const document of ["docs/knowledge-management-sop.md", "docs/context-releasability-policy.md",
+    "docs/opsec-classification-model.md", "docs/approval-scope-policy.md", "docs/event-sourcing-model.md"]) {
+    assert(routed.recommended_documents.some(x => x.path === document));
+  }
+  for (const document of ["docs/reference-architecture.md", "docs/command-post-dashboard.md"]) {
+    assert(!routed.recommended_documents.some(x => x.path === document));
+  }
+  const validation = validatePayload(receipt, "routing-receipt");
+  assert.equal(validation.valid, false, "ordinary S6 reading cannot replace the mandatory S3 work receipt");
+  for (const code of ["AGENT_ROUTING_NOT_S3", "AGENT_ROUTING_WRONG_DEPARTMENT", "AGENT_ROUTING_WRONG_AUTHORITY"]) {
+    assert(validation.issues.some(x => x.code === code));
+  }
+  const wave = routeWithSkill(skillRoot, query, ["--actor=ai", "--role=COS", "--department=coordination",
+    "--authority=tasking", `--capability-query=${query}`, ...scope, "--scope=wave", "--agent=chief-of-staff"]);
+  assert(validatePayload(wave, "routing-receipt").valid);
+  const projection = analyzeRoutingPreflight({ type: "AgentRoutingPreflightBundle", mission_id: "MIS-S6-READING",
+    wave_id: "W1", expected_agents: ["reader"], receipts: [wave, receipt] });
+  assert.equal(projection.status, "blocked");
+  assert.deepEqual(projection.preflight_blocks, ["reader: agent routing must use S3 role.",
+    "reader: agent routing must use operations department.", "reader: agent routing must use scoped-execution authority."]);
+}
+console.log("PASS S6 reading preserves policy context without bypassing the S3 receipt boundary (both skills)");
+console.log(`Agent routing preflight fixtures: ${passed + routingPassed + 1}/${fixtures.length + routingCases.length + 1} passed`);
