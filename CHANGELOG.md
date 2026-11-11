@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Exercise current compound intake and required-term handling in native Codex with twelve reconciled routing/read/check calls. Preserve a candidate-only prerequisite denial while completing independent comparison, SOP and glossary-proposal drafts. Retain the temporary adapter's missing per-objective diagnostics and the model handoff's source-location limit; materialize a separate non-transfer-ready local record. Mirror complete-diagnostic and usable-locator guidance in both skills and add four-objective/instruction-delivery regressions without claiming full receiving or client parity.
+
 - Complete the pending native source review of support SOP V4; preserve its changes-required verdict and propose V5 without rewriting the reviewed drafts. Distinguish work-level holds from next-action stops, link existing recovery paths and mirror that lesson in both skills. Add exact-delta/history and reviewer-guidance regressions. Retain a pre-model project-packet refusal on public security-policy wording separately from the bounded supplied-text review; no detector exception, policy adoption or full acceptance is inferred.
 
 - Verify the previously mirrored reporting/source-binding guidance in two fresh native reviews of the retained synthetic handoff. Reconcile 24 calls and confirm both known repairs without retrying excluded reads. Source-appraise the Codex correction, retain a Claude locator overclaim and distinguish missing current review context from false historical evidence. Update acceptance evidence and the next core queue without adding redundant skill rules or inferring USER adoption.

@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+The [native compound-intake case](project-terminology-workflow.md#native-compound-intake)
+is local synthetic evidence, not a museum-domain or military claim. Actual
+routing, selected reads and a required-term compiler denial reconcile with
+source bytes; operator appraisal separates correct partial drafting from missing
+per-objective adapter output and cold-start source locations. The later local
+lookup is operator work, not original model output or approved transfer.
+
 The [support-SOP V4 review](document-authoring-case-study.md#support-sop-v4-source-review)
 is a native supplied-text comparison against repository policies, not new military
 doctrine or agent-routed acceptance. Its changes-required verdict leads to a

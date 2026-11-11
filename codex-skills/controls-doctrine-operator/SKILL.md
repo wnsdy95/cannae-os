@@ -74,7 +74,9 @@ For compound intake, identify each actual objective before adding glossary/SOP
 housekeeping. In direct analysis, repeat `--capability-query` per objective while
 keeping the complete request and prohibitions as the task query. Check every
 returned assessment against the original request; a supporting match cannot
-clear another objective's gap. Decomposition and lexical matches are not proof
+clear another objective's gap. When forwarding a compound result, retain its
+per-objective assessments as well as the combined gap/cell decision.
+Decomposition and lexical matches are not proof
 of semantic completeness. Multiple objectives are not supported in guarded
 receipts: do not drop or merge declarations to bypass that rejection. See
 [Document Routing](references/document-routing.md) for intake and handoff limits.
@@ -211,6 +213,9 @@ historical attribution to match the current role. Update operative reading and
 comparison steps as well as headers. Before handoff, reconcile its
 required reading with the actual packet: include authorized dependencies or mark
 their absence and hold only the conclusions that depend on them.
+Source IDs, digests and a previous phase's route token are not usable locators.
+Include authorized source bodies or resolvable locations in the declared receiving
+unit; otherwise mark assembly incomplete, not ready for a cold start.
 Appraise findings against the declared delivery unit: a full packet is not a
 detached excerpt. Preserve necessary bindings if text will travel alone, but do
 not mistake explicit patch/base metadata for a missing new-version approval.

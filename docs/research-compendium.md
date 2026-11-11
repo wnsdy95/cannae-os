@@ -1,5 +1,21 @@
 # Research Compendium
 
+## Partial Work And Complete Receiving Context (2026-11-12)
+
+The [native compound-intake case](project-terminology-workflow.md#native-compound-intake)
+applied a confirmed counting definition, retained a candidate-only prerequisite
+and continued independent drafting after an actual compiler denial. A passing
+subset declaration would not establish the whole request's adequacy; here the
+model kept both required meanings. This is bounded behavior, not automatic
+extraction or a general semantic guarantee.
+
+Two transfer details remain important: a combined capability gap cannot replace
+the per-objective diagnostic table, and correct IDs/digests do not locate source
+bodies for a new receiver. Preserve those diagnostics and carry authorized
+reading material or usable locators with the declared unit. An operator's later
+local assembly must remain separate from the model's original work and from
+approval to transfer. Both skills now carry that receiving distinction.
+
 ## Continuing Holds Survive A Permitted Next Step (2026-11-12)
 
 The [support-SOP V4 review](document-authoring-case-study.md#support-sop-v4-source-review)

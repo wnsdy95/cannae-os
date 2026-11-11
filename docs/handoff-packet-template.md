@@ -52,6 +52,13 @@ Keep required bindings with that unit, without unnecessarily repeating every
 origin-map row in every paragraph. State whose checks ran in which phase;
 model-only non-execution claims must not erase the preparer's actual work.
 
+Source IDs and digests identify material but do not tell a cold-start receiver
+how to read it. Include authorized bodies or resolvable source locations with
+the declared unit. A previous phase's route token is not portable read access.
+If the receiver still needs an authorized preparer to assemble those inputs,
+mark the handoff incomplete for receiving and name that prerequisite. Do not
+invent a location or treat an operator's later assembly as work the model did.
+
 Before compressing an activity report, separate successful reads, successful-source
 rereads, failed delivery and operational execution. State the failed source ID,
 whether any body was delivered, the affected conclusion and the applicable retry

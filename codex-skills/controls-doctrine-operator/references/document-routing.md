@@ -63,6 +63,12 @@ or document format cannot clear it. Required reading and controls from covered
 objectives remain present. One declaration keeps the existing single-objective
 output shape. Blank or exactly duplicated declarations fail.
 
+An agent/helper forwarding this result must carry the per-objective query,
+status, reason and matched routes, not only the combined `capability_routing`.
+A request-level gap does not mean every objective is uncovered. Preserve the
+assessment basis and the one request-scoped cell without inventing extra cells
+or dropping the covered objectives' reading and controls.
+
 This is read-only intake analysis, not admission. Multiple declarations cannot
 be used with receipts, artifact persistence, inventory mode or mission/wave
 metadata. These paths fail before emitting an artifact instead of discarding

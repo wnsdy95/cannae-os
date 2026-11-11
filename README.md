@@ -86,7 +86,7 @@ cleanup is recorded separately; none is declared complete from a routing pass.
 
 - [Skill-First Product Scope](docs/skill-first-product-scope.md): active core, deferred platform work and honest completion criteria.
 - [Document Authoring Workflow](docs/document-authoring-workflow.md): choose a format, preserve evidence and intent, revise the canonical document and hand off unresolved work without a dashboard.
-- [Project Terminology Workflow](docs/project-terminology-workflow.md): capture user definitions separately from tentative meanings, bind excerpts to their current project glossary, and check declared required meanings separately from freshness without granting authority.
+- [Project Terminology Workflow](docs/project-terminology-workflow.md): capture user definitions separately from tentative meanings, bind current excerpts and required meanings, with a [native compound-intake case](docs/project-terminology-workflow.md#native-compound-intake) that preserves dependent holds without stopping unrelated drafting.
 - [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): reviewed support SOP V4 and proposed V5, native collaboration, Claude/Codex agent-invoked routing and source-grounded corrections, with retained failures and limits on acceptance claims.
 - [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
 - [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.

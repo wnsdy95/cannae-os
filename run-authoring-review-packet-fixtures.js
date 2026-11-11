@@ -113,6 +113,18 @@ try {
   fixture("identical source bytes produce an identical packet and case order", () => {
     assert.deepEqual(buildPacket(root), packet);
   });
+  fixture("receiving guidance distinguishes source identities from usable locations", () => {
+    for (const phrase of ["Source IDs and digests identify material", "authorized bodies or resolvable source locations",
+      "route token is not portable read access", "mark the handoff incomplete for receiving"]) assert(packet.prompt.includes(phrase));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const directory = path.join(__dirname, provider, "controls-doctrine-operator");
+      const skill = fs.readFileSync(path.join(directory, "SKILL.md"), "utf8");
+      assert(skill.includes("per-objective assessments as well as the combined gap/cell decision"));
+      assert(skill.includes("otherwise mark assembly incomplete, not ready for a cold start"));
+      const routing = fs.readFileSync(path.join(directory, "references/document-routing.md"), "utf8");
+      assert(routing.includes("A request-level gap does not mean every objective is uncovered."));
+    }
+  });
   fixture("reviewed V1/V2 and V3 candidates retain their exact historical bytes", () => {
     const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
     assert.equal(hash(section(text, "## SOP Draft V1", "## Requirement Comparison")),

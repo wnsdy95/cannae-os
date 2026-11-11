@@ -185,6 +185,11 @@ function testObjectiveRouting(router) {
   const gap = "Research ICP and sales targeting using the canonical track view";
   const glossary = "Maintain the project glossary";
   const cases = [
+    { objectives: ["Compare October museum Gallery A and Gallery B visit performance",
+      "Draft next-round preparation priority review based on valid-visit ratio",
+      "Draft a handoff SOP for the next guidance duty owner under current work rules",
+      "Record a field term as an unconfirmed glossary proposal"],
+    statuses: ["gap_detected", "gap_detected", "covered", "covered"] },
     { objectives: ["Compare museum attendance by city", "Draft a handoff document"], statuses: ["gap_detected", "covered"] },
     { objectives: [gap, glossary], statuses: ["gap_detected", "covered"] },
     { objectives: ["Assess ceramic glaze defects", "Draft a research note"], statuses: ["gap_detected", "covered"] },
