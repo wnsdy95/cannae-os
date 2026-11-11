@@ -39,6 +39,42 @@ or negated terms; distinguish drafting an instruction from executing it. Do not
 strip required controls from an already issued receipt or context pack. Clarify
 an ambiguous guarded operation before dispatch, not by silently removing gates.
 
+## Compound Intake
+
+In ordinary intake, declare each domain objective independently with repeated
+`--capability-query` arguments. Keep the full request, supporting work and every
+prohibition in the positional task query. Check the declarations against the
+request before routing; neither keyword matching nor this CLI extracts or
+verifies that list for you. Do not invent additional objectives or use only the
+easy, supported part of a request as its capability scope.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/route_controls_docs.js" --actor=user \
+  --capability-query="Research ICP and sales targeting using the canonical track view" \
+  --capability-query="Maintain the project glossary" \
+  "Research ICP and sales targeting using the canonical track view; maintain the project glossary. Do not publish."
+```
+
+The direct result preserves `capability_queries` and one `capability_assessments`
+row per declaration. In this mode `capability_query` and the combined capability
+scope retain the full task query. Any detected gap preserves one provisional
+cell for that request, regardless of declaration order; a supported glossary
+or document format cannot clear it. Required reading and controls from covered
+objectives remain present. One declaration keeps the existing single-objective
+output shape. Blank or exactly duplicated declarations fail.
+
+This is read-only intake analysis, not admission. Multiple declarations cannot
+be used with receipts, artifact persistence, inventory mode or mission/wave
+metadata. These paths fail before emitting an artifact instead of discarding
+part of the request. Keep the complete assessment for plan/backbrief review;
+guarded multi-objective integration remains unsupported. Do not drop declarations,
+join them into one string to evade the rejection, or alter an issued mission.
+
+The returned basis explicitly leaves objective completeness and semantic
+correctness unverified. An individual declaration can still match an irrelevant
+generic keyword, and an undeclared objective cannot be assessed. Preserve those
+questions for the reviewer; `covered` is not proof of expertise or authority.
+
 ## Installation And Corpus Binding
 
 Locate the loaded `SKILL.md` before launching its bundled scripts. Keep the

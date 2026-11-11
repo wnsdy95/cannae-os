@@ -14,6 +14,7 @@ const ROUTERS = [
 ];
 let routedQueries = 0;
 let rejectedSources = 0;
+let rejectedObjectives = 0;
 const GITHUB_RELEASE_DOCS = [
   "docs/github-release-authorization.md",
   "docs/github-release-immutability.md",
@@ -48,8 +49,100 @@ function assertRoutes(result, expectedRoutes) {
   assert.strictEqual(result.route_inventory.unrouted_artifact_count, 0);
 }
 
+function testObjectiveRouting(router) {
+  const gap = "Research ICP and sales targeting using the canonical track view";
+  const glossary = "Maintain the project glossary";
+  const cases = [
+    { objectives: [gap, glossary], statuses: ["gap_detected", "covered"] },
+    { objectives: ["Assess ceramic glaze defects", "Draft a research note"], statuses: ["gap_detected", "covered"] },
+    { objectives: [gap, "Assess ceramic glaze defects"], statuses: ["gap_detected", "gap_detected"] },
+    { objectives: [glossary, "Prepare an OPORD"], statuses: ["covered", "covered"] },
+    { objectives: ["Explain Cannae OS", "Read the README"], statuses: ["covered", "covered"] },
+    { objectives: ["Explain Cannae OS", gap], statuses: ["covered", "gap_detected"] },
+    { objectives: [gap, "Review GitHub release approval", glossary], statuses: ["gap_detected", "covered", "covered"] }
+  ];
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    for (const test of cases) {
+      const query = `${test.objectives.join("; also ")}. Do not publish.`;
+      const permutations = [test.objectives, [...test.objectives].reverse()];
+      if (test.objectives.length > 2) permutations.push([...test.objectives.slice(1), test.objectives[0]]);
+      let baseline;
+      for (const objectives of permutations) {
+        const flags = objectives.flatMap((objective, index) => index % 2
+          ? ["--capability-query", objective] : [`--capability-query=${objective}`]);
+        const result = route(router, [...args, ...flags, "--limit=1"], query);
+        assert.equal(result.query, query);
+        assert.equal(result.capability_query, query);
+        assert.deepEqual(result.capability_queries, objectives);
+        assert.deepEqual(result.capability_assessments.map(item => item.query), objectives);
+        for (const assessment of result.capability_assessments) {
+          assert.equal(assessment.status, test.statuses[test.objectives.indexOf(assessment.query)]);
+          assert(!Object.hasOwn(assessment, "provisional_organization"), "only the combined request owns a provisional cell");
+        }
+        const hasGap = test.statuses.includes("gap_detected");
+        assert.equal(result.capability_routing.status, hasGap ? "gap_detected" : "covered");
+        assert.equal(result.capability_routing.provisional_organization.required, hasGap);
+        assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+        assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+        assert(result.capability_assessment_basis.includes("unverified"));
+        if (args.includes("--actor=ai")) assert.equal(result.operating_mode.authority, "read-only");
+        else assert.equal(result.operating_mode.decision_authority, "human_user");
+        if (hasGap) assert(result.validation_commands.includes("node run-force-structure-change-fixtures.js"));
+        if (test.objectives.includes(glossary)) {
+          assert(result.recommended_documents.some(item => item.path === "docs/project-terminology-workflow.md"));
+          assert(result.validation_commands.includes("node run-project-terminology-fixtures.js"));
+        }
+        if (test.objectives.includes("Review GitHub release approval")) {
+          for (const document of GITHUB_RELEASE_DOCS) assert(result.recommended_documents.some(item => item.path === document));
+          for (const command of AUTHORITY_CONTROLS) assert(result.validation_commands.includes(command));
+        }
+        assert.equal(result.supporting_artifacts.length, 1);
+        if (baseline) {
+          assert.deepEqual(result.capability_routing, baseline.capability_routing);
+          assert.deepEqual(result.matched_routes, baseline.matched_routes);
+          assert.deepEqual(result.recommended_documents, baseline.recommended_documents);
+          assert.deepEqual(result.validation_commands, baseline.validation_commands);
+        }
+        baseline = result;
+      }
+    }
+    const legacy = route(router, args, glossary);
+    const explicit = route(router, [...args, `--capability-query=${glossary}`], glossary);
+    assert.deepEqual(explicit, legacy);
+    assert(!Object.hasOwn(legacy, "capability_assessments"));
+  }
+
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "controls-objective-rejection-"));
+  try {
+    const objectives = [`--capability-query=${gap}`, `--capability-query=${glossary}`];
+    const blocked = [
+      ["--receipt"], ["--write-artifact"], ["--coverage"], [`--target-repository=${temporary}`],
+      [`--artifact-root=${temporary}`], ["--overwrite-artifact"], ["--scope=agent"],
+      ["--mission=MIS-OBJECTIVES"], ["--wave=W1"], ["--agent=fixture-agent"],
+      ["--receipt", "--write-artifact", `--target-repository=${temporary}`, "--scope=agent", "--mission=MIS-OBJECTIVES", "--wave=W1", "--agent=fixture-agent"]
+    ];
+    const negatives = blocked.map(flags => ({ flags: [...objectives, ...flags], code: "MULTI_OBJECTIVE_MODE_UNSUPPORTED" }));
+    negatives.push({ flags: [`--capability-query=${gap}`, `--capability-query=${gap}`], code: "CAPABILITY_QUERY_DUPLICATE" });
+    negatives.push({ flags: ["--capability-query=   "], code: "CAPABILITY_QUERY_EMPTY" });
+    negatives.push({ flags: ["--capability-query", "\t"], code: "CAPABILITY_QUERY_EMPTY" });
+    for (const { flags, code } of negatives) {
+      const run = spawnSync(process.execPath, [path.join(ROOT, router), "--actor=ai", "--role=S6",
+        "--department=knowledge", "--authority=read-only", ...flags, "Review the original request.", ROOT],
+      { cwd: temporary, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 2, run.stderr || run.stdout);
+      assert(run.stderr.includes(code), run.stderr);
+      assert.equal(run.stdout, "", "a rejected objective declaration must not emit a receipt or routing report");
+      assert.deepEqual(fs.readdirSync(temporary), [], "intake rejection must not publish artifacts");
+      rejectedObjectives++;
+    }
+  } finally {
+    fs.rmSync(temporary, { recursive: true, force: true });
+  }
+}
+
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  testObjectiveRouting(router);
   for (const query of ["Maintain the project glossary", "Capture user vocabulary", "Review terminology definitions"]) {
     for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
       const result = route(router, args, query);
@@ -532,4 +625,4 @@ try {
   fs.rmSync(linkRoot, { recursive: true, force: true });
 }
 
-console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers; ${rejectedSources} required-source rejections; 3 link-inventory checks.`);
+console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers; ${rejectedSources} required-source rejections; ${rejectedObjectives} objective-declaration rejections; 3 link-inventory checks.`);

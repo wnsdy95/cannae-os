@@ -70,6 +70,15 @@ node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skil
 5. A capability gap is not permission to drop a task or proceed as unowned
    general work. Follow the capability-gap rule below.
 
+For compound intake, identify each actual objective before adding glossary/SOP
+housekeeping. In direct analysis, repeat `--capability-query` per objective while
+keeping the complete request and prohibitions as the task query. Check every
+returned assessment against the original request; a supporting match cannot
+clear another objective's gap. Decomposition and lexical matches are not proof
+of semantic completeness. Multiple objectives are not supported in guarded
+receipts: do not drop or merge declarations to bypass that rejection. See
+[Document Routing](references/document-routing.md) for intake and handoff limits.
+
 Keep input files distinct from proposed output paths. For required corpus inputs,
 repeat `--source=<path>`; an unresolved input stops this routing invocation.
 Inspect `task_references.unresolved` for other filename mentions and resolve

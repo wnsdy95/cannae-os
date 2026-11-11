@@ -29,6 +29,11 @@ decision or handoff to the smallest useful format:
 2. Route using the original task and declared operator mode. For a generic
    authoring request, start with this document and the knowledge-management SOP,
    then read only the chosen format and its directly relevant policy.
+   For compound intake, declare the actual objectives separately; glossary/SOP
+   housekeeping cannot establish domain coverage. The skill's document-routing
+   reference describes repeated capability queries and their direct-analysis
+   limits. Compare the declared objectives with the original request before
+   using the result; the router does not verify semantic completeness.
 3. Identify the canonical destination, owner and intended readers. A document
    recommendation does not grant access to restricted underlying evidence.
 4. Draft facts with source references. Label interpretation and proposed action

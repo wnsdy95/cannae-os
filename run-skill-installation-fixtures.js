@@ -107,6 +107,33 @@ function documentedCommands(env, provider, { loadedDirectory, status = 0 } = {})
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes, "Routing examples must not invoke native clients");
 }
 
+function declaredObjectives(env) {
+  const objectives = ["Research ICP and sales targeting using the canonical track view", "Maintain the project glossary"];
+  const query = `${objectives.join("; also ")}. Do not publish.`;
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const outputs = PROVIDERS.map(provider => {
+    const run = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
+      "--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only",
+      ...objectives.map(objective => `--capability-query=${objective}`), query],
+    { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+    assert.equal(run.status, 0, run.stderr);
+    const result = JSON.parse(run.stdout);
+    assert.equal(result.repo_root, fs.realpathSync(source));
+    assert.equal(result.query, query);
+    assert.deepEqual(result.capability_queries, objectives);
+    assert.deepEqual(result.capability_assessments.map(item => item.status), ["gap_detected", "covered"]);
+    assert.equal(result.capability_routing.status, "gap_detected");
+    assert.equal(result.operating_mode.authority, "read-only");
+    assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+    return result;
+  });
+  assert.deepEqual(outputs[0].capability_routing, outputs[1].capability_routing);
+  assert.deepEqual(outputs[0].recommended_documents, outputs[1].recommended_documents);
+  assert.deepEqual(outputs[0].validation_commands, outputs[1].validation_commands);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 try {
   fs.mkdirSync(source);
   fs.mkdirSync(unrelated);
@@ -152,6 +179,7 @@ try {
   fixture("literal linked entrypoint examples work in fresh target-project shells", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
   });
+  fixture("linked providers retain every declared objective from another project", () => declaredObjectives(env));
   fixture("matching link installation is idempotent", () => {
     const before = PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino);
     install(env);
@@ -175,6 +203,7 @@ try {
   fixture("literal copied entrypoint examples preserve corpus and target origins", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
   });
+  fixture("copied providers retain every declared objective from another project", () => declaredObjectives(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider, { loadedDirectory: sourceSkill(provider) });
   });

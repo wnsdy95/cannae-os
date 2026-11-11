@@ -607,7 +607,7 @@ function usage() {
   console.error("Doctrine binding: --doctrine-root=PATH overrides CANNAE_OS_HOME, the copy marker, the installed source location and then the working directory.");
   console.error("Required inputs: repeat --source=<corpus-relative-path>; unresolved inputs stop routing before a receipt is issued.");
   console.error("Project input references: --input-repository=<Git-root> --input-source=<exact-relative-file> (repeatable, direct output only; no content or authority is granted).");
-  console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=MISSION_OBJECTIVE] [--all] [--limit=N] <query> [repo-root]");
+  console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=OBJECTIVE ...] [--all] [--limit=N] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE [--write-artifact --target-repository=PATH] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
   process.exit(2);
@@ -692,9 +692,7 @@ function keywordMatches(text, keyword) {
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
-function isCorpusOrientationRequest(query, scoredRules) {
-  const orientationMatched = scoredRules.some(rule => rule.id === "orientation");
-  if (!orientationMatched) return false;
+function isCorpusOrientationRequest(query) {
   const text = String(query || "").toLowerCase().replace(/\s+/g, " ").trim();
   const corpus = "(?:cannae(?: os)?|controls (?:doctrine|framework)|(?:this|the) (?:doctrine|framework|repository|corpus)|(?:the )?operator skill)";
   return [
@@ -711,8 +709,9 @@ function isCorpusOrientationRequest(query, scoredRules) {
 function capabilityRouting(query, scoredRules, missionId) {
   const capabilityRules = scoredRules.filter(rule =>
     rule.id !== "orientation" && rule.specific_score > 0);
-  if (capabilityRules.length === 0 && isCorpusOrientationRequest(query, scoredRules)) {
-    capabilityRules.push(scoredRules.find(rule => rule.id === "orientation"));
+  const orientationRule = scoredRules.find(rule => rule.id === "orientation");
+  if (capabilityRules.length === 0 && orientationRule && isCorpusOrientationRequest(query)) {
+    capabilityRules.push(orientationRule);
   }
 
   if (capabilityRules.length > 0) {
@@ -1089,7 +1088,7 @@ function parseArgs(argv) {
     role: null,
     department: null,
     authority: null,
-    capabilityQuery: null,
+    capabilityQueries: [],
     doctrineRoot: null,
     sources: [],
     inputRepository: null,
@@ -1124,6 +1123,7 @@ function parseArgs(argv) {
       if (key === "inputRepository" && options.inputRepository !== null) throw new Error("Specify --input-repository exactly once.");
       if (key === "source") options.sources.push(equalsMatch[2]);
       else if (key === "inputSource") options.inputSources.push(equalsMatch[2]);
+      else if (key === "capabilityQuery") options.capabilityQueries.push(equalsMatch[2]);
       else options[key] = equalsMatch[2];
       continue;
     }
@@ -1135,6 +1135,7 @@ function parseArgs(argv) {
       if (key === "inputRepository" && options.inputRepository !== null) throw new Error("Specify --input-repository exactly once.");
       if (key === "source") options.sources.push(argv[index]);
       else if (key === "inputSource") options.inputSources.push(argv[index]);
+      else if (key === "capabilityQuery") options.capabilityQueries.push(argv[index]);
       else options[key] = argv[index];
       continue;
     }
@@ -1147,6 +1148,18 @@ function parseArgs(argv) {
 
     if (arg.startsWith("-")) throw new Error(`Unknown router option: ${arg.split("=")[0]}. Use -- before literal query text beginning with -.`);
     queryParts.push(arg);
+  }
+
+  if (options.capabilityQueries.some(query => !query.trim())) {
+    throw new Error("CAPABILITY_QUERY_EMPTY: every declared objective must contain text.");
+  }
+  if (new Set(options.capabilityQueries).size !== options.capabilityQueries.length) {
+    throw new Error("CAPABILITY_QUERY_DUPLICATE: declare each objective once.");
+  }
+  if (options.capabilityQueries.length > 1 && (options.receipt || options.writeArtifact || options.coverage ||
+      options.targetRepository || options.artifactRoot || options.overwriteArtifact || options.scope ||
+      options.mission || options.wave || options.agent)) {
+    throw new Error("MULTI_OBJECTIVE_MODE_UNSUPPORTED: multiple objectives are direct intake analysis only; do not omit objectives to create a guarded receipt or artifact.");
   }
 
   if ((options.inputRepository !== null) !== (options.inputSources.length > 0)) {
@@ -1267,28 +1280,43 @@ function route(query, repoRoot, options) {
       `Resolve task reference "${item.reference}" (${item.reason}) before treating it as an input; identify proposed outputs separately.`
     );
   }
-  const scoredRules = RULES.map(rule => ({
+  const scoreRules = text => RULES.map(rule => ({
     ...rule,
-    score: countMatches(query, rule.keywords),
-    specific_score: countSpecificMatches(query, rule.keywords)
+    score: countMatches(text, rule.keywords) ||
+      (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
+    specific_score: countSpecificMatches(text, rule.keywords)
   })).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
-
-  const capabilityQuery = options.capabilityQuery || query;
-  const capabilityScoredRules = RULES.map(rule => ({
-    ...rule,
-    score: countMatches(capabilityQuery, rule.keywords),
-    specific_score: countSpecificMatches(capabilityQuery, rule.keywords)
-  })).filter(rule => rule.score > 0)
-    .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
-  const capability = capabilityRouting(capabilityQuery, capabilityScoredRules, options.mission);
+  const scoredRules = scoreRules(query);
+  const capabilityQueries = options.capabilityQueries.length ? options.capabilityQueries : [query];
+  const multipleObjectives = capabilityQueries.length > 1;
+  const assessments = capabilityQueries.map(objective => {
+    const rules = scoreRules(objective);
+    return { query: objective, rules, decision: capabilityRouting(objective, rules, options.mission) };
+  });
+  const capabilityQuery = multipleObjectives ? query : capabilityQueries[0];
+  let capability = assessments[0].decision;
+  if (multipleObjectives) {
+    // A supporting objective cannot clear another objective's capability gap.
+    const hasGap = assessments.some(item => item.decision.status === "gap_detected");
+    const matchedRoutes = unique(assessments.flatMap(item => item.decision.matched_capability_routes)).sort();
+    capability = hasGap ? capabilityRouting(query, [], options.mission) : {
+      ...capability,
+      capability_scope: query,
+      reason_code: matchedRoutes.every(id => id === "orientation") ? "CORPUS_ORIENTATION_REQUEST" : "MATCHED_DOCTRINE_ROUTE",
+      matched_capability_routes: matchedRoutes
+    };
+  }
   const forceStructureRule = RULES.find(rule => rule.id === "force-structure");
   const selectedById = new Map(scoredRules.map(rule => [rule.id, rule]));
-  for (const routeId of capability.matched_capability_routes) {
-    if (!selectedById.has(routeId)) {
-      selectedById.set(routeId, capabilityScoredRules.find(rule => rule.id === routeId));
+  const objectiveRules = new Map();
+  for (const { rules, decision } of assessments) {
+    for (const routeId of decision.matched_capability_routes) {
+      const rule = rules.find(item => item.id === routeId);
+      if (!objectiveRules.has(routeId) || rule.score > objectiveRules.get(routeId).score) objectiveRules.set(routeId, rule);
     }
   }
+  for (const [routeId, rule] of objectiveRules) if (!selectedById.has(routeId)) selectedById.set(routeId, rule);
   const selectedRules = [...selectedById.values()].filter(Boolean)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
   if (capability.status === "gap_detected" &&
@@ -1305,7 +1333,7 @@ function route(query, repoRoot, options) {
   }
   docs.push(...mode.mode_documents);
   const githubReleaseReading = needsGithubReleaseReading([
-    query, capabilityQuery, ...references.resolved.map(item => item.path), ...(inputs ? inputs.sources.map(item => item.path) : [])
+    query, ...capabilityQueries, ...references.resolved.map(item => item.path), ...(inputs ? inputs.sources.map(item => item.path) : [])
   ].join("\n"));
   for (const rule of selectedRules) {
     // Specialist reading is conditional; route/control selection is unchanged.
@@ -1350,6 +1378,14 @@ function route(query, repoRoot, options) {
   return {
     query,
     capability_query: capabilityQuery,
+    ...(multipleObjectives ? {
+      capability_queries: capabilityQueries,
+      capability_assessments: assessments.map(({ query, decision }) => ({
+        query, status: decision.status, reason_code: decision.reason_code,
+        matched_capability_routes: decision.matched_capability_routes
+      })),
+      capability_assessment_basis: "Caller-declared objectives with lexical matching; objective completeness and semantic correctness remain unverified."
+    } : {}),
     repo_root: repoRoot,
     operating_mode: mode,
     matched_routes: selectedRules.map(rule => ({ id: rule.id, score: rule.score })),

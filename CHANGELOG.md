@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Assess repeated capability queries independently during direct intake instead of letting the last declaration overwrite earlier work. Preserve one combined capability gap, all covered objectives' references and controls, the original task and bounded authority; reject blank/duplicate declarations and unsupported guarded/persistence modes. Mirror declaration-versus-semantic-completeness guidance in both skills and test linked/copied clients. Recognize explicit corpus-orientation requests without requiring an unrelated extra keyword. This is not automatic objective extraction, guarded multi-objective admission or proof of domain expertise.
+
 - Preserve applicable documents and validation controls from all selected task routes instead of silently discarding routes ranked below fourth. Keep display limits confined to supporting artifacts and retain role, capability-gap and disclosure boundaries. Both skills distinguish recommendation rank from required work and use the original domain objective separately from glossary/SOP housekeeping. Compound-domain inference and negated-topic over-routing remain unresolved; this correction is not a claim of minimal semantic routing.
 
 - Bind generated terminology excerpts to their originating project ledger during document-packet preparation and inspection. Reject stale meanings behind unchanged copies, recipient/definition substitutions and missing bindings; retain old packets and existing source-access controls. Both skills now distinguish copied-text integrity from current meaning. Recognizable legacy selections require refresh; this is not semantic understanding or authenticated approval.

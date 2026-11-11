@@ -10,6 +10,20 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G4/G5 work separates explicitly declared objectives during direct
+intake. Repeated capability queries no longer silently overwrite earlier ones;
+each gets a diagnostic row, and any detected gap preserves one request-level
+provisional cell while retaining covered objectives' documents and controls.
+Declaration order cannot clear a gap. Multiple declarations reject receipt,
+persistence and mission-bound modes instead of losing scope; existing guarded
+contracts are unchanged. Both skills require original-request/declaration review.
+The CLI does not perform that semantic decomposition or prove domain expertise.
+An audit still reproduced false coverage for a museum attendance comparison
+because of the generic comparison keyword. Negated-topic over-routing and
+actual native behavior remain open. An unambiguous corpus-orientation phrase
+also exposed an independent keyword prerequisite; it now reaches the existing
+orientation recognizer without needing an extra generic keyword.
+
 Latest G2/G4 correction: a compound sales/SOP/authority/artifact/glossary request
 matched seven routes, but the top-four materialization limit omitted required
 terminology and artifact references and their controls. Both routers now retain
