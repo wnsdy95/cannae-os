@@ -905,3 +905,68 @@ turns and absence of observed tool calls. Policies, user `.gitignore` and actual
 installation link targets/inodes stayed unchanged. Logs are in `checks-Cgr6j2/`
 under the evidence directory above. Full aggregate, lifecycle, hosted CI and
 actual-model acceptance were not rerun for this documentation-only change.
+
+## Claude Native Body Delivery
+
+On 2026-11-11, G5's equivalent-client check used installed Claude Code 2.1.322
+with temporary homes, an empty target directory and a local capture endpoint.
+The endpoint returned an intentional HTTP 400 without a model or forwarding
+code. Each process had a 30-second limit, disabled tools/hooks/MCP, no session
+persistence, and checked OS denial of external connections, other loopback
+ports and outside-root writes. Real credentials/configuration/keychain/operator
+state remained excluded. Only a clearly fake credential reached the local
+endpoint. Original installations, user settings and policies were not changed.
+
+The invocation and temporary endpoint variables follow the official
+[skill-selection](https://code.claude.com/docs/en/skills) and
+[connection configuration](https://code.claude.com/docs/en/llm-gateway-connect)
+documentation; their behavior below was observed, not inferred from those pages.
+This transient check is not a new gateway product or operational model service.
+
+| Temporary installation and task | Complete Markdown body delivered | Requests and exit |
+| --- | --- | --- |
+| Linked, explicit slash command | Yes | 3 local requests; exit 1 |
+| Copied, explicit slash command | Yes | 3 local requests; exit 1 |
+| Linked, ordinary task text | No | 3 local requests; exit 1 |
+| Absent, slash command text | No | 3 local requests; exit 1 |
+| Linked, slash command text under bare mode | No | 3 local requests; exit 1 |
+
+Selected input matched the entire parsed Markdown body, not a marker or skill
+name. Claude omitted YAML frontmatter from that text, unlike Codex's full-file
+insertion. The entrypoint SHA-256 was
+`7bfe5398cd76c32e3af3db8b85e426d9c829750354b1e8fb984843000982c58c`;
+the trimmed body SHA-256 was
+`0a17ad57b6a1619bc1dd90790617b9f45cc4107bcd3921e0d25f7442b4b92b4a`
+at source commit `882b0fe`. The actual task remained present in all captured
+requests. Its continued presence without a body is not proof of activation.
+No subsequent model reading occurred, so ordinary-text absence is not an
+implicit-selection failure rate. The bare-mode result applies to this tested
+user installation, not every explicit plugin/additional-directory mechanism.
+
+All 15 requests used the fake local credential, the non-existent offline model
+name and an empty tool list. The native output included an assistant-shaped
+error and a result with `subtype: success`, `is_error: true`, then process exit 1.
+These are not reviews, acknowledgements or successful model turns. One invocation
+did not equal one request. No external model was called and no prior model-call
+consent was reused. Raw requests and events stay under
+`.cannae/maintenance/claude-body-delivery-MQID4d/attempt-HF6Ifz/` with the readable
+observer in its parent. An initial read-only comparison command had a syntax
+error after capture; it did not affect the observations or start another client.
+
+Both provider routing references now teach the actual selection syntax, body
+comparison boundary, explicit retry scope and error-aware result appraisal.
+These changes improve diagnosis and consent precision without altering native
+client behavior or automatic-selection policy. G1-G5 remain open: source-grounded
+task behavior, broader cases and actual handoff acceptance still need evidence.
+The next source-first review concerns the corrective V3, with author self-ratings
+and previous verdicts withheld; preparation alone cannot authorize that call.
+
+Five retained Claude cases and four earlier Codex captures passed exact-content
+appraisal. Current regression checks passed: installation 26/26, discovery helper
+7/7, routing 216 queries plus 32 required-source rejections and 3 link-inventory
+checks, preflight 10/10, mandatory controls 6/6, both skill validators, both
+coverage checks, source-map/registry audits, 182 document link checks and
+English-only. The shared check runner retained this run in
+`.cannae/maintenance/native-skill-protocol-C91TEi/checks-h6dlD8/`;
+the Claude-specific appraisal is in its observation directory's parent.
+Full aggregate, lifecycle, hosted CI and actual-model acceptance were not run.

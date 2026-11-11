@@ -100,8 +100,10 @@ When deliberately selecting this workflow in Codex, use the native
 with single quotes when passing that prompt through a shell. This is not the
 direct router command, and an ordinary client turn can invoke a model and tools.
 Do not change automatic-selection policy or enable extra tools merely to test
-selection. Claude uses its own discovered command; a Codex observation does not
-establish Claude's body delivery.
+selection. In Claude Code, start the task with the discovered
+`/controls-doctrine-operator` command instead. The observed bare-mode user
+installation did not deliver the body even with that text; verify the effective
+mode rather than assuming that a name in a prompt proves activation.
 
 For delivery evidence, compare the exact loaded entrypoint with client-inserted
 request content, not a name, metadata description, marker or model's claim that
@@ -114,6 +116,16 @@ acceptance. An intentional capture-endpoint error is not a completed model turn.
 Record the actual offered tools; feature switches alone do not prove an empty
 tool list. Keep real credentials/configuration unchanged and obtain separate
 scope approval before any actual-model verification.
+
+Claude's selected request contained the complete Markdown body without YAML
+frontmatter; compare the appropriate instruction body rather than demanding
+Codex's full-file envelope. Do not confuse this with proof that every frontmatter
+control was enforced. A single native process can make several transport
+requests, even after HTTP 400. Declare retry scope separately from process
+relaunches before consent; do not claim one provider request from one CLI run.
+For Claude result events, a `success` subtype alone is insufficient: inspect
+`is_error`, process exit, usage and substantive output. An error rendered as an
+assistant message is not a model-authored review or receiver acknowledgement.
 
 ## Authoring Review Packets
 

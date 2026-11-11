@@ -621,9 +621,13 @@ single quotes when passing the prompt through a shell. An ordinary client turn
 can invoke a model and tools; it is not the offline router shown below.
 A [local request capture](docs/document-authoring-case-study.md#offline-native-body-delivery)
 verified that Codex 0.162.1 inserts the complete entrypoint for explicit selection
-in linked and copied installations. No model ran in that check. Implicit
-selection, semantic compliance and Claude body delivery need separate evidence;
-a metadata-only first request does not prove that later reading will fail.
+in linked and copied installations. In Claude Code, start the task with
+`/controls-doctrine-operator`; a [separate local capture](docs/document-authoring-case-study.md#claude-native-body-delivery)
+verified its complete Markdown body for normal-mode linked/copied installations,
+but not the tested bare-mode installation. No model ran in either check.
+Implicit selection and semantic compliance need separate evidence; a metadata-only
+first request does not prove that later reading will fail. One CLI invocation
+also does not establish a single provider request or a successful model result.
 
 For offline document-review preparation, run `node authoring-review-packet.js prepare`.
 It separates evaluator input from the author's seeded-defect reference under
