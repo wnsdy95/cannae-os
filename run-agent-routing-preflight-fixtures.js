@@ -128,6 +128,14 @@ const routingCases = [
     required: ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md",
       "docs/force-structure-change-policy.md", "schema-files/force-structure-change-order.schema.json"],
     command: "node run-force-structure-change-fixtures.js"
+  },
+  {
+    name: "a seventh-ranked terminology route reaches direct output and the receipt",
+    query: "Draft an SOP and handoff document for a multi-agent sales task. Preserve approval scope, authority and release rules. Store outputs as repository artifacts. Maintain the project glossary.",
+    extra: ["--capability-query=Research ICP and sales targeting using the canonical track view"],
+    required: ["docs/project-terminology-workflow.md", "docs/repository-artifact-isolation-policy.md",
+      "docs/handoff-packet-template.md", "docs/force-structure-change-policy.md"],
+    command: "node run-project-terminology-handoff-fixtures.js"
   }
 ];
 

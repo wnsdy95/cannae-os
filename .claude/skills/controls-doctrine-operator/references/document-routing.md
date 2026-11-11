@@ -18,6 +18,16 @@ Finding a document format is not domain expertise. For delegated authoring,
 keep the real mission objective in `--capability-query`; an SOP-shaped subtask
 must not suppress its mission-level capability gap or activate a standing unit.
 
+Apply the same separation to ordinary compound tasks: keep the original domain
+objective in `--capability-query` and the complete requested work, including
+glossary/SOP housekeeping and prohibitions, in the task query. Route distinct
+domain objectives separately rather than omitting one. A glossary or document
+format match does not establish expertise in the work being described. The
+router does not infer this semantic separation; a combined query can still hide
+an uncovered domain behind a supporting route.
+Do not rewrite an issued mission objective or patch its receipts to obtain this
+separation; an existing guarded mission retains its exact rerouting procedure.
+
 Ordinary authoring does not require a dashboard, owner login, server or a full
 platform verification campaign. Preserve original intent, source/interpretation
 boundaries, ownership, supersession and unresolved decisions. Existing runtime
@@ -393,13 +403,15 @@ Keep local archives in `.cannae` and `.cxt` out of current-document link checks;
 their historical relative links are not live corpus failures. Do not ignore
 hidden provider skill trees: broken `.claude/skills` references must still fail.
 The recommendation bundle preserves orientation, role/authority, capability-gap,
-and applicable documents from the top four selected task routes, without a 16-document
-cutoff. `--limit` and `--all` affect only supporting artifacts. Check the exact
+and applicable documents and controls from every selected task route. Ranking
+orders recommendations; it must not discard a lower-ranked required task.
+`--limit` and `--all` affect only supporting artifacts. Check the exact
 task paths in `recommended_documents` and the resulting context pack; a matched
 route or validation command alone is not enough. Do not manually truncate a
 receipt or context pack. Narrow an overly broad request before creating a fresh
-wave, preserve existing evidence, and retain the document-access manifest's
-delivery restrictions: a routing recommendation never grants raw-data access.
+wave without dropping requirements, preserve existing evidence, and retain the
+document-access manifest's delivery restrictions: a routing recommendation never
+grants raw-data access.
 Run `node run-agent-routing-preflight-fixtures.js` for task-level routing
 regressions in both provider skill trees, in addition to inventory coverage.
 

@@ -10,6 +10,19 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G4 correction: a compound sales/SOP/authority/artifact/glossary request
+matched seven routes, but the top-four materialization limit omitted required
+terminology and artifact references and their controls. Both routers now retain
+applicable reading and controls from every selected route; the supporting-list
+display limit cannot truncate required task material. Both provider references
+teach rank-versus-obligation and original-domain-versus-housekeeping separation.
+The same audit found that adding glossary/SOP wording can mask an unsupported
+domain unless the actual domain objective is separately declared. Negated model
+and dashboard wording can also add unnecessary reading. These semantic issues
+remain open; preserving all selected routes is not minimal-context acceptance.
+The unexecuted terminology V2 model proposal was superseded before maintenance;
+no old consent or late response can authorize a changed-source exercise.
+
 Latest G2/G3/G4 correction: actual project-packet preparation now binds typed
 terminology excerpts to the original project ledger and selected recipient.
 The local probe reproduced acceptance of stale meaning behind an unchanged copy;

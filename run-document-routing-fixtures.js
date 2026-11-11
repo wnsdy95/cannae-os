@@ -214,6 +214,32 @@ for (const router of ROUTERS) {
   assert.strictEqual(authoringGap.capability_routing.provisional_organization.authority_expansion_authorized, false);
   assert.strictEqual(authoringGap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
   assert(authoringGap.recommended_documents.some(item => item.path === "docs/document-authoring-workflow.md"));
+  const mixedObjective = "Research ICP and sales targeting using the canonical track view";
+  const mixedTask = "Draft an SOP and handoff document for a multi-agent sales task. Preserve approval scope, authority and release rules. Store outputs as repository artifacts. Maintain the project glossary.";
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    const scoped = [...args, `--capability-query=${mixedObjective}`];
+    const mixed = route(router, scoped, mixedTask);
+    const limited = route(router, [...scoped, "--limit=1"], mixedTask);
+    assertRoutes(mixed, ["force-structure", "authority-risk-release", "document-authoring",
+      "multi-agent-organization", "repository-artifact-isolation", "continuity-handoff", "project-terminology"]);
+    assert.equal(mixed.capability_routing.status, "gap_detected");
+    assert.equal(mixed.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(mixed.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+    assert.equal(mixed.query, mixedTask);
+    if (args.includes("--actor=ai")) assert.equal(mixed.operating_mode.authority, "read-only");
+    for (const document of ["docs/project-terminology-workflow.md", "docs/repository-artifact-isolation-policy.md",
+      "docs/handoff-packet-template.md", "docs/force-structure-change-policy.md", "docs/tool-use-roe.md"]) {
+      assert(mixed.recommended_documents.some(item => item.path === document), `low-ranked route lost ${document}`);
+    }
+    for (const command of ["node run-project-terminology-fixtures.js", "node run-project-terminology-handoff-fixtures.js",
+      "node run-repository-artifact-isolation-fixtures.js", "node run-handoff-generation-fixtures.js", ...AUTHORITY_CONTROLS]) {
+      assert(mixed.validation_commands.includes(command), `low-ranked route lost ${command}`);
+    }
+    assert.deepEqual(limited.recommended_documents, mixed.recommended_documents);
+    assert.deepEqual(limited.validation_commands, mixed.validation_commands);
+    assert.deepEqual(limited.capability_routing, mixed.capability_routing);
+    assert.equal(limited.supporting_artifacts.length, 1);
+  }
   for (const query of ["operator console", "local-operator-console", "evidence api", "viewer invitation", "serve_controls_operator"]) {
     const result = route(router, ["--actor=user"], query);
     assertRoutes(result, ["local-operator-console"]);

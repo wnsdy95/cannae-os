@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Preserve applicable documents and validation controls from all selected task routes instead of silently discarding routes ranked below fourth. Keep display limits confined to supporting artifacts and retain role, capability-gap and disclosure boundaries. Both skills distinguish recommendation rank from required work and use the original domain objective separately from glossary/SOP housekeeping. Compound-domain inference and negated-topic over-routing remain unresolved; this correction is not a claim of minimal semantic routing.
+
 - Bind generated terminology excerpts to their originating project ledger during document-packet preparation and inspection. Reject stale meanings behind unchanged copies, recipient/definition substitutions and missing bindings; retain old packets and existing source-access controls. Both skills now distinguish copied-text integrity from current meaning. Recognizable legacy selections require refresh; this is not semantic understanding or authenticated approval.
 
 - Add project-local terminology records and scoped selections to both client skills. Preserve user-stated definitions separately from inferred candidates, append revision lineage, check repository/digest bindings and select by domain, task, role and department without execution authority. Link capture, clarification, routing and handoff guidance to the existing authoring process. Local helper checks do not authenticate user statements, provide automatic model capture or prove recipient understanding.

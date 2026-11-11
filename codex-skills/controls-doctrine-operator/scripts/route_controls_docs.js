@@ -1307,7 +1307,7 @@ function route(query, repoRoot, options) {
   const githubReleaseReading = needsGithubReleaseReading([
     query, capabilityQuery, ...references.resolved.map(item => item.path), ...(inputs ? inputs.sources.map(item => item.path) : [])
   ].join("\n"));
-  for (const rule of selectedRules.slice(0, 4)) {
+  for (const rule of selectedRules) {
     // Specialist reading is conditional; route/control selection is unchanged.
     docs.push(...rule.docs.filter(file => rule.id !== "authority-risk-release" ||
       !file.startsWith("docs/github-release-") || githubReleaseReading));
