@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Complete the pending native source review of support SOP V4; preserve its changes-required verdict and propose V5 without rewriting the reviewed drafts. Distinguish work-level holds from next-action stops, link existing recovery paths and mirror that lesson in both skills. Add exact-delta/history and reviewer-guidance regressions. Retain a pre-model project-packet refusal on public security-policy wording separately from the bounded supplied-text review; no detector exception, policy adoption or full acceptance is inferred.
+
 - Verify the previously mirrored reporting/source-binding guidance in two fresh native reviews of the retained synthetic handoff. Reconcile 24 calls and confirm both known repairs without retrying excluded reads. Source-appraise the Codex correction, retain a Claude locator overclaim and distinguish missing current review context from false historical evidence. Update acceptance evidence and the next core queue without adding redundant skill rules or inferring USER adoption.
 
 - Exercise a fresh source-delivery failure and changed-policy handoff with native Codex and Claude, reconciling 21 tool calls without retrying the failed source or disclosing its body. Retain fixture-setup and observer failures separately, with offline final-message recovery and no model relaunch. Appraise the receiver's false no-read summary and mixed-revision abbreviated hash; mirror activity-category and exact source-binding review rules in both skills and test their delivery to reviewers. The original handoff is not fully accepted, and the new guidance has not yet received native behavioral acceptance.

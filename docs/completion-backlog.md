@@ -10,7 +10,21 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
-Latest G1/G3/G4/G5 acceptance evidence: both native clients reviewed the original
+Latest G1/G3/G4 evidence: the pending support-SOP V4 native source review completed
+with a changes-required verdict, not a pass. Source appraisal accepts a work-hold
+scope clarification and connects an existing conflict-resolution path rather
+than claiming the whole procedure lacked recovery. A proposed V5 preserves all
+other text; both skills now separate continuing work holds from next-action
+stops. See [the review and V5 disposition](document-authoring-case-study.md#support-sop-v4-source-review).
+The initial project-packet preparation refused public security-policy wording;
+the automatic path remains blocked. The separate supplied-text review is not
+agent routing or a content-control exception. V5 has a local source/delta check,
+not fresh native acceptance or USER adoption. Next: current compound-intake and
+required-term behavior, then implicit client selection. Keep broader role/case
+coverage, conservative content-review handling and corpus/history/output audits
+open. Do not replay a consumed SOP review just to accumulate a clean verdict.
+
+Earlier G1/G3/G4/G5 acceptance evidence: both native clients reviewed the original
 restore handoff with current guidance, their own S6 route and eleven selected
 reads each. All 24 calls/results reconcile; neither excluded source was tried.
 Both repair the read-summary and mixed-digest defects while preserving the full
@@ -332,8 +346,8 @@ The historical V3 and current proposed V4 handoffs are in
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | The support SOP retains findings and a proposed V4. A current-guidance Codex correction passes source appraisal for the restore handoff's declared unit; both clients repair the known read-summary/digest errors, with a Claude locator caveat retained. | Broader cases, support-SOP V4 source review and appraisal of the four-span actor/phase follow-up remain open. USER adoption is a separate decision, never inferred from document-quality acceptance. |
-| G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections restrict selected reading; issued doctrine and project packets bind current bytes. Three Claude phases and a Codex changed-policy receiver invoke their own router and reads without opening the reference-only body; option-like task text stays separate from settings. | Minimal semantic selection, broader role/client cases, guarded project-input integration and receiver acceptance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
+| G1. Document authoring and revision quality | The support-SOP V4 native review is complete, with its changes-required verdict retained. Proposed V5 clarifies hold scope and existing recovery paths; exact-delta/local source checks are not a fresh model pass. A Codex restore-handoff correction passes bounded source appraisal, with a Claude locator caveat retained. | Broader cases, current intake/required terms, receiver acceptance of corrected drafts and appraisal of the four-span actor/phase follow-up remain open. USER adoption is separate, never inferred from document-quality acceptance. |
+| G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections restrict selected reading; issued doctrine and project packets bind current bytes. Three Claude phases and a Codex changed-policy receiver invoke their own router and reads without opening the reference-only body; option-like task text stays separate from settings. | Minimal semantic selection, broader role/client cases, guarded project-input integration and receiver acceptance remain open. Public security-policy wording currently triggers a conservative project-packet content-review refusal. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | Native document chains cover actual phase routing/reading, changed policy, source-read failure, reporting and revision. Both current reviewers preserve the holds and unaffected work without retrying excluded reads. | Broader semantic/method/reporting/stop/failure/output coverage and receiver acceptance remain open. Document-flow evidence does not establish live guarded operational execution, which retains its separate controls. |
 | G4. Bounded self-improvement and corpus maintenance | Observed routing/prose gaps lead to bounded corrections, mirrored guidance, regression checks and AARs. Two fresh native reviews now demonstrate the known reporting/source-binding repairs; remaining errors are retained instead of counting native success as acceptance. | The improvement loop is demonstrated locally and behaviorally in the recorded case; complete remaining corpus/history/output consistency and adoption-boundary audits. No self-issued authority follows from these checks. |
 | G5. Client distribution | Link/copy installation, literal startup checks, both clients' explicit body captures and native document work are observed. Claude and Codex now invoke routing/read tools in bounded synthetic phases; client-bridge failure and the separate successful retry are retained. | Implicit selection and broader equivalent semantic behavior remain unverified. Configured invocations are not full-client acceptance or independently operated verification. Distribution remains the two skills; the temporary test adapter is not a shipped plugin, and optional plugin packaging is deferred. |

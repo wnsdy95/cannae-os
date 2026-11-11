@@ -98,6 +98,18 @@ try {
       assert(!changed.prompt.includes("WITHHELD_CORRECTION_SENTINEL"));
     } finally { fs.writeFileSync(file, original); }
   });
+  fixture("work-level holds stay distinct from next-action stops in both skills and reviewer context", () => {
+    const guide = section(fs.readFileSync(path.join(root, "docs/handoff-packet-template.md"), "utf8"),
+      "### Ordinary Document Work", "### Existing Runtime Missions");
+    assert(packet.prompt.includes(guide));
+    for (const phrase of ["List still-active work holds separately", "existing resolution path and decision owner",
+      "Resolving one hold does not resolve a separate hold"]) assert(guide.includes(phrase));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Carry still-active work holds separately from the selected next action."));
+      assert(skill.includes("each hold to its existing resolution path and decision owner."));
+    }
+  });
   fixture("identical source bytes produce an identical packet and case order", () => {
     assert.deepEqual(buildPacket(root), packet);
   });
@@ -136,6 +148,25 @@ try {
     const prohibition = "Do not submit changes intended to use this project to plan, enable, optimize, or conceal violence, surveillance, coercion, illegal activity, or unauthorized system access";
     assert(body(v4).replace(/\s+/g, " ").includes(prohibition));
     assert(fs.readFileSync(path.join(root, "SECURITY.md"), "utf8").includes(prohibition));
+  });
+  fixture("V5 preserves reviewed V4 bytes and changes only hold scope and existing recovery links", () => {
+    const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
+    const body = value => value.slice(value.indexOf("**Purpose and result:**"));
+    const v4 = body(section(text, "## Corrective SOP Draft V4", "### V4 Change Check And Handoff"));
+    const v5 = section(text, "## Corrective SOP Draft V5", "### V5 Source Check And Handoff");
+    assert.equal(hash(v4), "f10443b4d10d80b2db623cd33f526e6c9ae81f0551144e07fb0dc57d4a50b4b2");
+    const changes = [
+      ["`Corrective SOP Draft V4`; predecessor: Corrective SOP Draft V3 in the same file.",
+        "`Corrective SOP Draft V5`; predecessor: Corrective SOP Draft V4 in the same file."],
+      ["stop adoption; uncertain disclosure holds transmission. A draft is not a sent",
+        "stop adoption. Clarify the conflict against the authoritative sources and use\n   step 4's decision/escalation path; keep adoption on hold until the applicable\n   decision owner resolves the conflict. Uncertain disclosure holds transmission;\n   use step 2's safe-intake recovery without bypassing that hold. A draft is not a sent"],
+      ["intake; unresolved decisions and their real authority; next bounded action\n   and its applicable stop condition;",
+        "intake; unresolved decisions and their real authority; the transferred work's\n   still-active stop conditions, their affected scope and resolution path;\n   next bounded action and any stop applicable to that action;"]
+    ];
+    assert.equal(body(v5), changes.reduce((value, [before, after]) => replaceOnce(value, before, after), v4));
+    assert(v5.includes("not a fresh model review or operational receiver acceptance"));
+    assert(!packet.prompt.includes("## Corrective SOP Draft V5"));
+    assert(!packet.prompt.includes("## Support SOP V4 Source Review"));
   });
   fixture("changed source bytes change the packet binding", () => {
     const file = path.join(root, "SUPPORT.md"), original = fs.readFileSync(file);

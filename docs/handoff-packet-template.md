@@ -25,6 +25,12 @@ files, explain the original purpose and boundaries, distinguish observed results
 from plans, and identify a next action allowed without a new decision. Record
 actual receiver acknowledgement separately; writing this packet is not acceptance.
 
+List still-active work holds separately from the next action's own stop. A
+permitted drafting step does not clear an adoption or transmission hold. Carry
+each hold's affected scope, existing resolution path and decision owner; link
+to the established procedure instead of inventing another approval process.
+Resolving one hold does not resolve a separate hold on the transferred work.
+
 When work depends on user-specific vocabulary, include the relevant confirmed
 definitions, scope, concept/revision IDs and ledger digest, plus unresolved
 meanings separately. Follow [Project Terminology Workflow](project-terminology-workflow.md)

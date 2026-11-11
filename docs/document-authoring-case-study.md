@@ -1907,3 +1907,191 @@ visible. Do not repeat this chain solely for another passing output. Continue
 with the outstanding SOP revision review and current intake/client-selection
 cases. Document quality acceptance and USER policy adoption remain distinct;
 all five product objectives still require their wider acceptance work.
+
+## Support SOP V4 Source Review
+
+On 2026-11-12 Korea time, the outstanding V4 received one fresh native Codex
+review under standing verification consent. The 64,258-byte input bound the
+current guidance, actual V3/V4 operative bodies, original requests and current
+SUPPORT, GOVERNANCE and SECURITY policies. Editorial prefaces, author ratings,
+prior verdicts and local pass claims were withheld. This is a supplied-public-text
+review, not automatic discovery, agent-invoked routing or policy adoption.
+
+### Preparation And Execution
+
+The first tool-assisted preparation stopped before any model invocation:
+`PROJECT_PACKET_CONTENT_REVIEW_REQUIRED`. Default EEFI matching treated the
+public phrase "secret exposure" and Secret Handling link in both candidates as
+sensitive content. OPSEC found no credential assignment in either body. This
+is a conservative content-review refusal, not evidence of an actual secret.
+The blocked automatic packet was not sent or marked ready. No detector,
+classification, approval contract or source prose was weakened to pass it.
+
+A separate, source-reviewed public-corpus input used the established no-tool
+authoring-review method. It is not an exception for private/unknown sources or
+a bypass for guarded work. The project-packet usability limitation remains open.
+Two partial setup roots and the original tool-assisted proposal are retained;
+the metadata ID mismatch was corrected before the observed preparation failure.
+
+The input SHA-256 was
+`32ce423005ec732a5abe647b39b8b0847645ac83b101135b3b30a5251200bae1`.
+Codex CLI 0.162.1, default `gpt-6-astra`, completed in 72.684 seconds with
+exit zero, one final response and zero observed tool events. Three diagnostics
+reported experimental discovery suppression, denied global instructions and the
+disabled tool bridge; an additional skill-directory read denial was in stderr.
+None was counted as tool execution or repaired by expanding access. The
+final-message adjacency and response bytes were checked separately. Native
+usage reported 22,069 input tokens (7,552 cached), 2,189 output and 470 reasoning
+tokens; this is not a price or HTTP-request count.
+
+### Findings And Source Appraisal
+
+The model returned `changes_required`. Its two findings have different weight:
+
+| Finding | Source appraisal and disposition |
+| --- | --- |
+| V4 step 7 names only the next action's stop rather than all applicable stops of the transferred work. | Accept as a handoff-content ambiguity. Step 6 already preserves adoption/transmission holds; the defect is not their total absence. A permitted next drafting action must not erase those holds from the packet. The proposed V5 names work-level stops, scope and resolution separately. |
+| V4 step 6 lacks recovery for its adoption stop. | Accept an explicit connection, not a claim that the whole SOP lacks a resolution procedure. Step 4 already provides clarification, maintainer review and owner escalation. V5 links that existing path and step 2's disclosure recovery; it creates no new decision role or approval. |
+
+The review also compared all seven steps against the source policies and V3.
+Channels and their availability conditions, ordinary/security intake fields,
+stored-work restrictions, explicit prohibited uses, overlapping review/owner
+requirements, best-effort commitments, response priorities, source/status
+discipline and the no-publication/no-execution boundary remained preserved.
+Release-note field requirements and maintainer appointment procedures are not
+new execution steps in this support-only draft, which expressly excludes those
+actions and retains their governing authority.
+
+Optional wrapping and an additional direct authority citation are not treated
+as missing policy. Unknown live channel/owner/receiver status is not filled in.
+Reviewer reservations about withheld historical records are verification limits,
+not proof that the original ownership statement or earlier checks were false.
+No model grade or new review context rewrites that history.
+
+### Corrective Disposition
+
+The following V5 is an operator-proposed successor containing only its version
+lineage and the two bounded clarifications. The exact V3/V4 bodies and native
+review remain unchanged. Both provider instructions and the handoff guide now
+distinguish continuing work holds from the selected next action and reuse the
+existing resolution path. The focused regression checks exact candidate deltas
+and delivery of this guidance; it does not grade semantics.
+
+The operator compared V5's changed clauses to the supplied policies and the
+whole predecessor and found no added authority or lost duty. This is an author
+source check, not a second native review or independent acceptance. The native
+V4 verdict remains `changes_required`; V5 remains proposed, not adopted.
+
+Evidence: `.cannae/maintenance/sop-v4-review-20261112/` retains source snapshots,
+preparation failures, the separate direct proposal/input, native events, response
+and appraisal. Response SHA-256:
+`25b26fa950f4f3047f52e80909baf245d3905bf4b6fecd46e22e76f76ac32b83`.
+The pending V4 review has now actually occurred; do not restart that consumed
+attempt or imply that its successful process was a passing quality verdict.
+
+## Corrective SOP Draft V5
+
+Current proposed support-SOP candidate, not policy adoption. This complete body
+is an operator correction following the V4 review above. It has an exact-delta
+source check, not a fresh model review or operational receiver acceptance.
+Earlier drafts, ratings and review outcomes remain historical evidence.
+
+**Purpose and result:** prepare a support-escalation SOP and a handoff for review.
+**Status and exclusions:** draft, not adopted. Do not publish this SOP or send
+reports under this exercise. Do not change support commitments, appoint roles,
+grant approvals or perform release actions. An AI assistant may prepare review
+material within existing authority, not inherit maintainer permissions.
+**Canonical location:** `docs/document-authoring-case-study.md`, section
+`Corrective SOP Draft V5`; predecessor: Corrective SOP Draft V4 in the same file.
+**Trigger and readers:** a support request or unfinished support case needs
+classification or transfer; intended readers are maintainers and their bounded
+AI drafting assistants. This exercise has no live support case.
+**Ownership and review:** no separate operational SOP owner is assigned.
+Maintainer review of this draft is not yet obtained; resolve ownership before
+adoption. Governance already names `@wnsdy95` as final project authority.
+
+1. **Classify and choose a channel.** Ordinary bugs, documentation defects and
+   concrete proposals use Issues. Broad questions or design exploration use Discussions only if
+   enabled. Sensitive vulnerabilities and secret exposure must not use public
+   Issues. Prefer private vulnerability reporting if enabled; if unavailable,
+   contact the repository owner through GitHub. Actual availability is unverified;
+   do not invent an email or verified channel. This describes policy, not consent
+   to transmit ([Support, Where To Ask](../SUPPORT.md#where-to-ask);
+   [Security, Reporting](../SECURITY.md#reporting-a-vulnerability)).
+2. **Prepare safe intake.** Retain the affected artifact, expected and observed
+   behavior, validation commands actually run, relevant errors and impact on
+   authority, release, risk, security or source traceability. For security reports
+   retain a minimal reproduction, affected files, expected impact and suggested
+   fix, if any. Never include real secrets, private data, production credentials
+   or third-party confidential material. Hold transmission if safe disclosure is
+   uncertain and ask for a safe minimal reproduction ([Support, Before Opening](../SUPPORT.md#before-opening-an-issue);
+   [Security, Reporting](../SECURITY.md#reporting-a-vulnerability)).
+3. **Protect stored work as well as reports.** Do not commit API keys, OAuth
+   tokens, private keys, `.env` files, real customer/user/operational/confidential
+   context or sensitive model outputs. Deliberately fake fixtures are test data,
+   not permission to include real secrets. Do not submit changes intended to use
+   this project to plan, enable, optimize, or conceal violence, surveillance,
+   coercion, illegal activity, or unauthorized system access
+   ([Security, Secret Handling](../SECURITY.md#secret-handling);
+   [AI Safety Boundary](../SECURITY.md#ai-safety-boundary)).
+4. **Keep decision and escalation authority.** Maintainers may triage, request
+   validation and review; releases still need authorization. Clarify a dispute,
+   identify its affected boundary, request maintainer review, then escalate to
+   the owner when needed. Ordinary changes need one maintainer review;
+   control-surface changes require maintainer review, CODEOWNERS when configured,
+   passing CI and an explicit risk/authority statement. Directional changes need
+   the owner's final decision. Security-sensitive policy changes also require
+   the owner's final decision in addition to applicable review requirements.
+   Drafting or self-assigned roles satisfy none of
+   these approvals ([Governance, Responsibilities](../GOVERNANCE.md#maintainer-responsibilities),
+   [Decision Classes](../GOVERNANCE.md#decision-classes),
+   [Release Authority](../GOVERNANCE.md#release-authority),
+   [Conflict Resolution](../GOVERNANCE.md#conflict-resolution)).
+5. **Keep best-effort activities and limits.** Support is community best-effort.
+   Make no deadline or guaranteed
+   fix. Security response seeks to acknowledge credible reports, preserve credit
+   when appropriate, prioritize release/authority/context-access/CI-integrity
+   fixes, and document mitigation in a security advisory or release note when
+   warranted, all on a best-effort basis.
+   Do not promise production deployment, formal compliance or confidential public
+   review; do not provide legal, medical, financial, military or safety-critical
+   advice. Custom implementation support needs a concrete repository issue
+   ([Support](../SUPPORT.md), [Response Expectations](../SECURITY.md#response-expectations),
+   [Supported Status](../SECURITY.md#supported-status)).
+6. **Record evidence and stops.** Separate draft, awaiting decision, sent,
+   acknowledged and resolved using actual observations. Record commands and
+   results actually obtained, unknowns and unrun checks. Source/authority conflicts
+   stop adoption. Clarify the conflict against the authoritative sources and use
+   step 4's decision/escalation path; keep adoption on hold until the applicable
+   decision owner resolves the conflict. Uncertain disclosure holds transmission;
+   use step 2's safe-intake recovery without bypassing that hold. A draft is not a sent
+   report, approval or executed plan
+   ([Authoring Workflow](document-authoring-workflow.md#review-against-the-request)).
+7. **Hand off without inventing acceptance.** Include purpose and required
+   outputs; report or draft identifier when applicable; canonical version; policy paths, exact versions read and freshness
+   limits; sensitivity/current channel; completed versus unverified work; missing
+   intake; unresolved decisions and their real authority; the transferred work's
+   still-active stop conditions, their affected scope and resolution path;
+   next bounded action and any stop applicable to that action;
+   and explicit prohibitions. Re-read changed source policies before reuse.
+   Record `receiver unassigned` or `acceptance not observed` when applicable.
+   An assigned receiver must check sources and restate purpose, outputs, authority
+   and stops before taking over; record actual acknowledgement separately. For
+   delegated phases reroute; existing guarded missions keep their controls
+   ([Ordinary Handoff](handoff-packet-template.md#ordinary-document-work)).
+
+### V5 Source Check And Handoff
+
+V5 changes only its lineage, the explicit connection from an adoption/disclosure
+hold to steps 4/2, and handoff fields for all continuing work holds separately
+from the selected next action. The source policies are unchanged. Maintainer
+adoption, SOP ownership, actual channel availability and operational receiver
+acceptance remain separate unresolved matters; none is required to pretend this
+synthetic case is a live support operation.
+
+Next core acceptance work is the current compound-intake/required-term behavior,
+then implicit client selection and broader document/role cases. Carry this
+proposed V5, its exact V4 predecessor and review appraisal into any later
+authorized SOP adoption or receiving exercise. Do not re-run the same chain
+solely to accumulate a clean model verdict. A local source comparison does not
+establish complete semantic coverage or close any of the five objectives.

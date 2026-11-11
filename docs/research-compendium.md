@@ -1,5 +1,20 @@
 # Research Compendium
 
+## Continuing Holds Survive A Permitted Next Step (2026-11-12)
+
+The [support-SOP V4 review](document-authoring-case-study.md#support-sop-v4-source-review)
+found that a handoff's next-action stop can be narrower than the holds on the
+whole transferred work. Preserve those scopes separately: continued drafting
+does not clear an adoption or disclosure hold. Recovery may already exist in
+another step, so connect that path rather than inventing an approval procedure
+or describing all recovery as absent. Both skills carry this distinction; V5
+is an exact-delta operator proposal, not newly model-accepted or adopted policy.
+
+Preparation also reproduced default EEFI matching on public security-policy
+language. The automatic packet stayed blocked; a separate supplied-public-text
+review does not establish packet readiness or an exception for private sources.
+Keep this usability gap visible instead of deleting safety wording to pass.
+
 ## Review Findings Need Their Own Appraisal (2026-11-12)
 
 The [current-guidance handoff review](document-authoring-case-study.md#current-guidance-handoff-repair-review)

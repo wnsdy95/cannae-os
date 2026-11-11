@@ -129,6 +129,11 @@ actions, conditional channels and the bounded recovery action after a stop.
 For handoffs, distinguish the procedure's version from the transferred work's
 identifier and record that work's applicable stop condition. Source citations
 aid review; they do not restore obligations omitted from operative instructions.
+The next action can be permitted while other parts of the work remain held.
+Preserve those work-level holds separately and connect them to their existing
+resolution paths and decision owners; do not treat the next action's stop as
+the complete set. A cross-reference to an existing conflict procedure can clarify
+recovery without adding a new authority or approval requirement.
 
 Review the artifact actually being handed off, not just its surrounding case
 record. An explicit exclusion such as `do not publish` must survive in that

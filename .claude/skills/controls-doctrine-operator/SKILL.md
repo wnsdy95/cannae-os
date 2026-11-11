@@ -229,6 +229,9 @@ actions and overlapping approval requirements; a generic owner-authority label
 or source citation does not preserve a specific veto. Carry the stop and its
 bounded recovery action together. A procedure identifier does not replace the
 identifier and applicable stop condition of the work being handed off.
+Carry still-active work holds separately from the selected next action. A
+permitted drafting step does not clear adoption or transmission holds; connect
+each hold to its existing resolution path and decision owner.
 
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.

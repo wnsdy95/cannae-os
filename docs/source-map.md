@@ -2,6 +2,14 @@
 
 ## Skill-First Scope And Authoring
 
+The [support-SOP V4 review](document-authoring-case-study.md#support-sop-v4-source-review)
+is a native supplied-text comparison against repository policies, not new military
+doctrine or agent-routed acceptance. Its changes-required verdict leads to a
+proposed V5 that distinguishes continuing work holds from a next action's stop
+and connects existing resolution procedures. The original packet refusal on
+public security wording remains separate; neither a model verdict nor operator
+source appraisal authorizes disclosure, policy adoption or operational work.
+
 The [current-guidance review](document-authoring-case-study.md#current-guidance-handoff-repair-review)
 adds two native responses and 24 reconciled calls on the retained synthetic
 handoff. Both repair the two known errors; source appraisal distinguishes the
