@@ -10,6 +10,19 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G2/G3/G4/G5 evidence: a fresh synthetic restore-evidence case exercises
+an actual source-read failure and a V1-to-V2 recovery-policy change. Codex author
+and Claude receiver invoke their own routes; all 21 calls/results reconcile.
+The receiver preserves the changed hold and unchanged duties but introduces a
+false no-read summary and a mixed-revision abbreviated hash label. Both skills
+now separate activity categories and retain exact source-binding tuples. See
+[source failure and handoff](document-authoring-case-study.md#source-failure-and-changed-policy-handoff).
+Preparation and post-exit observer failures are retained; final-message recovery
+made no additional model call. This is not a fully passing handoff or fresh
+acceptance of the new guidance. Next appraise current delivery units and their
+actual source bindings, then verify the corrected reporting behavior without
+replaying or silently rewriting these consumed attempts. All five goals remain open.
+
 Latest G2/G3/G4/G5 correction: both receipt producers now invoke the existing
 full schema/semantic validator before stdout or artifact persistence. A real
 invalid S6 receipt previously emitted and persisted with exit zero; both paths

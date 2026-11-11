@@ -216,6 +216,12 @@ detached excerpt. Preserve necessary bindings if text will travel alone, but do
 not mistake explicit patch/base metadata for a missing new-version approval.
 Scope claims of checks or non-execution to the actual actor and phase; a no-tool
 model response does not mean its preparer ran no routing or integrity checks.
+Separate successful reads, successful-source rereads, failed delivery and
+operational execution before compressing a work summary. A failed source's
+no-retry boundary does not prohibit rereading other authorized sources.
+Preserve the supplied source-ID/version/full-digest tuple verbatim or carry its
+reviewed map with the delivery unit. Never combine digest fragments or treat
+display abbreviations as integrity bindings. Use the handoff checklist for detail.
 
 Compare a revision with its actual predecessor as well as the source policy.
 When compressing rules, preserve named triggers, decision owners, prohibited

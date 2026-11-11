@@ -185,6 +185,10 @@ model's no-tool response does not mean the operator ran no router, file preparat
 or integrity checks. Describe separately the model's text, the preparer's checks,
 the current review and any operational work. Avoid carrying unqualified "this
 response" or "no checks ran" claims into an operator-amended successor.
+Use the [handoff checklist](handoff-packet-template.md#ordinary-document-work)
+to reconcile successful reads, rereads, unavailable delivery and operational
+non-execution separately. Compare source-ID/version/full-digest tuples with the
+supplied map before shortening a report; a copied label is not a verified binding.
 
 Check categorical language in the headline, assessment and next-action sections,
 not just the unknowns list. A partial extract that shows no assignment or final

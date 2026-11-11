@@ -71,6 +71,20 @@ try {
         packet.manifest.source_sha256["docs/handoff-packet-template.md"]);
     } finally { fs.writeFileSync(file, original); }
   });
+  fixture("activity categories and exact source bindings reach both skills and reviewer context", () => {
+    for (const phrase of ["successful reads, successful-source", "rereads, failed delivery and operational execution",
+      "source-ID/version/full-digest tuple", "never combine fragments from different revisions",
+      "not an automatic semantic or integrity check of generated prose"]) {
+      assert(packet.prompt.includes(phrase), `Missing reviewer instruction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      for (const phrase of ["successful-source rereads, failed delivery", "no-retry boundary does not prohibit rereading other authorized sources",
+        "source-ID/version/full-digest tuple verbatim", "Never combine digest fragments"]) {
+        assert(skill.includes(phrase), `${provider} missing ${phrase}`);
+      }
+    }
+  });
   fixture("later appraisals and corrected drafts do not leak into historical candidate review", () => {
     const file = path.join(root, "docs/document-authoring-case-study.md"), original = fs.readFileSync(file);
     try {

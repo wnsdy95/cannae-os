@@ -1,5 +1,17 @@
 # Research Compendium
 
+## Failure Scope And Exact Source Labels (2026-11-12)
+
+The [source-failure case](document-authoring-case-study.md#source-failure-and-changed-policy-handoff)
+preserved a new policy hold across two clients but exposed errors during prose
+compression: real reads disappeared from a blanket non-execution statement,
+and a shortened V1 source label acquired a V2 digest suffix. Preserve operation
+categories separately and copy exact source/version/digest tuples from their
+reviewed map. Successful reading, failed delivery and operational work are
+different evidence. A valid machine binding does not certify generated prose;
+manual source appraisal remains required. This observation and the resulting
+guidance do not establish a general detection rate or new military doctrine.
+
 ## Validate Before Emission (2026-11-12)
 
 The [receipt producer case](document-authoring-case-study.md#receipt-producer-validation)

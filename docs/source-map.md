@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+The [source-failure handoff](document-authoring-case-study.md#source-failure-and-changed-policy-handoff)
+is local native-client evidence from a synthetic delivery outage and changed
+policy, not a military claim or production recovery test. Twenty-one calls are
+reconciled; the received prose still contains an inaccurate activity summary and
+a mixed-revision abbreviated hash label. New reporting/binding instructions are
+manual review criteria, not automatically enforced semantic guarantees.
+
 The [receipt producer correction](document-authoring-case-study.md#receipt-producer-validation)
 is local evidence from both scripts and isolated artifact stores. Existing
 schema/semantic rules now run before output or persistence; downstream role,

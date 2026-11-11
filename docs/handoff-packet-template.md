@@ -46,6 +46,23 @@ Keep required bindings with that unit, without unnecessarily repeating every
 origin-map row in every paragraph. State whose checks ran in which phase;
 model-only non-execution claims must not erase the preparer's actual work.
 
+Before compressing an activity report, separate successful reads, successful-source
+rereads, failed delivery and operational execution. State the failed source ID,
+whether any body was delivered, the affected conclusion and the applicable retry
+decision. Do not summarize real document reads as "no tools or reads executed".
+A source-specific no-retry result does not prohibit rereading other authorized
+sources; it also does not authorize retrying that failure. Preserve unaffected
+work and any separate policy hold even if the source later becomes readable.
+
+Keep each source-ID/version/full-digest tuple exact. Reuse the supplied reviewed
+origin map rather than reconstructing hashes in prose. If displaying a shortened
+identifier, label it display-only and retain the full binding in the declared
+delivery unit; never combine fragments from different revisions. A correct full
+hash elsewhere does not repair a misleading label. If the map or authorized
+locator is withheld, mark the dependent comparison unresolved instead of claiming
+that a detached note alone is sufficient to resume. This is a manual review
+criterion, not an automatic semantic or integrity check of generated prose.
+
 No-schema-needed is not no-review-needed: apply these quality checks and the
 request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
 

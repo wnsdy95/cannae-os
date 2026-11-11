@@ -257,6 +257,11 @@ Successful emission is not preflight, source delivery or execution approval.
 See [the producer correction](docs/document-authoring-case-study.md#receipt-producer-validation)
 for the reproduced failure, denial checks and limits.
 
+A [native source-failure handoff](docs/document-authoring-case-study.md#source-failure-and-changed-policy-handoff)
+also exercises changed instructions across Codex and Claude. Required holds
+survived, but generated activity summaries and source labels still needed human
+appraisal. Passing tool traces are not proof that a handoff is semantically correct.
+
 Routing receipts distinguish document relevance from mission capability
 coverage. If the mission objective has no specific corpus capability route,
 the router returns `capability_routing.status: gap_detected`, assigns one

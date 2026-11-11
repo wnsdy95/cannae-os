@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Exercise a fresh source-delivery failure and changed-policy handoff with native Codex and Claude, reconciling 21 tool calls without retrying the failed source or disclosing its body. Retain fixture-setup and observer failures separately, with offline final-message recovery and no model relaunch. Appraise the receiver's false no-read summary and mixed-revision abbreviated hash; mirror activity-category and exact source-binding review rules in both skills and test their delivery to reviewers. The original handoff is not fully accepted, and the new guidance has not yet received native behavioral acceptance.
+
 - Validate generated routing receipts against the existing full contract before stdout or artifact persistence in both providers. Reject invalid declarations, unavailable validation and malformed schemas without output/store changes; preserve downstream preflight and ordinary direct routing. Update manual examples and both skills to retain exact parent objectives and diagnose denials without relabeling authority. Add no-write/overwrite and linked/copied dependency-failure regressions.
 
 - Align both S6 reading defaults with the existing knowledge-management access policy. Retain technical department/task/input context, required controls and authority boundaries; add dual-provider role, installed-copy/link and negative receipt-admission regressions. Both skills distinguish role labels, task reading and guarded control-plane receipts. Explicit negative-topic matching and producer-side invalid-receipt rejection remain open.
