@@ -2,6 +2,14 @@
 
 ## Skill-First Scope And Authoring
 
+`project-document-packet.js`, the request/packet schemas and
+`run-project-document-packet-fixtures.js` implement local project-content
+preparation under `docs/role-document-access-policy.md`. Source-origin and exact
+byte checks, non-reading of reference-only files and provider-wrapper parity are
+local engineering evidence, not military claims or authenticated consent/native
+receiver acceptance. Both skill entrypoints and routing references carry the
+source-owner preparation versus recipient-delivery boundary.
+
 `context-document-integrity.js` and its isolated controller/dispatch fixtures
 implement the existing source-binding rule in
 `docs/skill-operational-mission-lifecycle.md`. The observed stale-source admission

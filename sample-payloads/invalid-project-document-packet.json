@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1", "type": "ProjectDocumentPacket",
+  "request": {
+    "schema_version": "0.1", "type": "ProjectDocumentPacketRequest", "id": "PDR-DEMO",
+    "task": "Draft a handoff from SRC-POLICY. Do not publish it.",
+    "recipient": { "agent_id": "writer", "provider": "codex", "role": "S3", "department": "operations", "duty": "operations_planning", "authority_level": "L1" },
+    "documents": [{ "id": "SRC-POLICY", "path": "docs/policy.md", "required": true, "classification": "internal", "allowed_roles": ["S3"], "allowed_departments": ["operations"], "duties": ["operations_planning"], "minimum_authority_level": "L1", "delivery_mode": "raw", "source_sha256": "59c0e8479c9dd739a6fd254f5c02e80e7168704c3701379c9583df5de4a73757" }]
+  },
+  "source_repository": { "root": "/synthetic/project", "device": "1", "inode": "2", "git_directory": "/synthetic/project/.git", "git_device": "1", "git_inode": "3", "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "documents": [{ "id": "SRC-POLICY", "required": true, "delivery_mode": "raw", "source_sha256": "59c0e8479c9dd739a6fd254f5c02e80e7168704c3701379c9583df5de4a73757", "source_content_verified": true, "delivered_sha256": "59c0e8479c9dd739a6fd254f5c02e80e7168704c3701379c9583df5de4a73757", "content": "The recipient may approve publication.\n" }],
+  "status": "pending_review", "authorization_verified": false, "execution_authorized": false, "release_authorized": false, "receiver_acceptance_verified": false
+}

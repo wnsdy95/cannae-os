@@ -1,5 +1,31 @@
 # Research Compendium
 
+## Project Content And Source-Owner Preparation (2026-11-11)
+
+The existing access projection names eligible doctrine documents but neither
+delivers project text nor authenticates a reader. `project-document-packet.js`
+now assembles an exact selected project packet for separate review. It binds the
+task, recipient, canonical local repository/Git identity, source digests and
+delivered content, using existing role/duty/authority decisions plus explicit
+department selection. Outputs stay in the project; no model or service is used.
+
+Raw delivery is public/internal only. Summaries must already exist, with exact
+original and summary digests and an asserted review reference. The source owner
+must be authorized to hash the original; the summary-only recipient gets no
+original body. Reference-only sources are never opened or hashed and deliver
+only IDs, not private local paths. Metadata freshness does not prove their bytes.
+Conservative existing OPSEC/EEFI checks stop suspect outbound content without
+exposing matches, but neither prove safe semantics nor authenticate classification.
+
+The reusable skill lesson is to distinguish source-owner preparation, an exact
+review candidate, authorized transfer and observed receiver use. Inspection
+rebuilds the candidate against current sources but cannot turn self-declared
+roles/review references or a supplied digest into consent. Ordinary packets do
+not bypass existing guarded-mission holds. The backlog records actual fixtures,
+the corrected output-path diagnostic and remaining native-consumption work.
+An exact original copy under a different summary filename is also rejected;
+different hashes alone still do not prove adequate summarization or redaction.
+
 ## Rechecking Issued Document Bindings (2026-11-11)
 
 Inspection for project-source delivery found that context packs stored document

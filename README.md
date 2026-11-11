@@ -634,6 +634,15 @@ drift stops new work without blocking settlement of already admitted results;
 see [current document integrity](docs/skill-operational-mission-lifecycle.md#current-document-integrity).
 This does not authorize source reads or prove client consumption.
 
+To assemble actual project text for a named recipient, use the offline
+`scripts/prepare_controls_documents.js` helper in either skill. It preserves
+raw, separately prepared summary and reference-only modes, binds the project
+origin and current bytes, and writes a private review candidate in that project.
+See [project content preparation](docs/role-document-access-policy.md#project-content-preparation).
+Preparation is not permission to read or send, and inspection does not prove
+native client use. Only the exact `prompt.md` is proposed for separate transfer
+approval; `packet.json` contains local source metadata and is not recipient input.
+
 For a doctrine-only framework question:
 
 ```bash

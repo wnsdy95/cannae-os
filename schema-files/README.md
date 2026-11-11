@@ -178,6 +178,10 @@ Recommended validation order:
 20. `continuity-plan.schema.json`
 21. `context-item.schema.json`
 22. `document-access-manifest.schema.json`
+    Project-specific preparation uses `project-document-packet-request.schema.json`
+    and `project-document-packet.schema.json`, both non-authorizing contracts.
+    See `docs/role-document-access-policy.md` for source-owner read permission,
+    recipient scope, raw/summary/reference-only forms and separate transfer consent.
 23. `doctrine-consistency-review.schema.json`
 24. `release-review.schema.json`
 25. `release-gate-decision-event.schema.json`

@@ -142,6 +142,107 @@ policy/source changes. The exported `documentDecision` primitive checks only a
 single document; it cannot replace full-manifest/profile validation. The human
 USER's visibility is not restricted by an AI role profile.
 
+### Project Content Preparation
+
+For explicitly selected files in another project, use
+`project-document-packet.js` through either skill's
+`scripts/prepare_controls_documents.js`. This is an offline source-owner
+preparation helper for ordinary document work, not a replacement for an already
+guarded mission's context, routing receipts, approvals or stops. It never calls a
+model, opens a browser, sends a packet or starts a service.
+
+Before preparation, the operator must have actual permission to read the named
+inputs and prepare the proposed disclosure. Do not infer that permission from
+this request, a role label, a ready access projection or file readability.
+The request declares recipient agent/provider/role/department/duty/authority,
+the exact task, selected files, their required/optional status and document-level
+role/department/duty/authority rules. Those declarations are policy input, not
+authenticated delegation. The helper rejects a mismatch but cannot authenticate
+the person who wrote them. It does not limit the human USER's visibility.
+
+Use `schema-files/project-document-packet-request.schema.json` and its sample
+as the input format. The sample is synthetic, not permission to read another
+project. Replace it with the actual scoped request and source digests obtained
+under the operator's read authority. No fictional mission or approval is needed.
+
+| Requested form | Preparation and recipient content |
+| --- | --- |
+| raw | Only public/internal content is eligible. Verify its exact supplied SHA-256 and deliver the original UTF-8 text without truncation or normalization. |
+| summary | Require a separately prepared summary, original/summary digests and an asserted review reference. Hash the original to verify lineage, but do not retain or decode its body for the recipient. Read and deliver only the supplied summary; never generate one by opening the source as the recipient. Sensitive originals may use this form. The review reference is not authenticated or semantically appraised by the helper. |
+| reference_only | Inspect file metadata without opening or hashing its body. Deliver its source ID with no original path, original digest or content. It cannot satisfy required reading. Restricted sources use only this form. |
+
+The preparer therefore needs original-source read authority for both raw and
+summary forms; a summary-only recipient must not run preparation on the original.
+If nobody authorized can provide a reviewed summary, hold that input rather than
+silently substituting raw content. An identical source/summary path or digest is
+rejected even when a review reference is supplied. This does not detect all
+near-copies or prove adequate redaction; semantic review is still required.
+The same conservative OPSEC/EEFI detectors
+check outgoing text, task and recipient strings. Findings stop preparation with
+a fixed code and no matched values. These pattern checks may over-block ordinary
+policy wording and cannot prove absence of sensitive data or prompt injection.
+Do not lower classification or bypass a finding to get a packet out.
+
+The selected source root must be an existing, separate Git worktree with a HEAD.
+Paths must be exact, unignored regular files with no symlink components or nested
+repository substitution. The packet binds canonical root, filesystem identity,
+Git directory identity, HEAD and the selected current content. This is local
+origin binding, not cryptographic publisher authentication or a hostile-host
+boundary. Reference-only freshness is metadata-only, explicitly not a content
+digest. Raw/summary payloads are limited to 64 KiB per delivered file and 256 KiB
+combined; hashing an original for a summary is bounded at 64 MiB. At most 16
+sources may be selected. Oversized/binary delivery fails; it is never truncated.
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/prepare_controls_documents.js \
+  prepare --repository /absolute/project --request /absolute/request.json
+```
+
+The Claude wrapper has the same filename under `.claude/skills/controls-doctrine-operator/scripts/`.
+Both use the bundled router's corpus-binding rules, including installed copies.
+No client login or native client process is needed for preparation.
+
+Outputs live only in the selected project's ignored
+`.cannae/document-packets/<unique-directory>/`: private `packet.json` for local
+lineage/policy appraisal and `prompt.md` for the exact proposed recipient input.
+The command prints paths, hashes and non-authorizing metadata, not document
+bodies. It does not edit ignore rules; unignored or symlinked output locations
+fail. Each preparation writes a new candidate without overwriting prior ones.
+An interrupted or failed publication can leave an unapproved local candidate.
+File presence is not completion; inspect it before considering any transfer.
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/prepare_controls_documents.js \
+  inspect --repository /absolute/project --packet /absolute/project/.cannae/document-packets/UUID/packet.json \
+  --packet-sha256 EXACT_PREVIOUS_PACKET_SHA256
+```
+
+Keep the expected digest from the reviewed preparation, not one recomputed from
+an untrusted replacement. Inspect rechecks origin, current source/summary bytes,
+request/recipient binding and exact rendered prompt. Source, HEAD, recipient or
+prompt changes require fresh preparation and any necessary new review/consent.
+It returns `review_candidate_current`; all approval/execution/release/receiver
+acceptance flags stay false. A supplied digest is not proof of USER consent.
+The check is point-in-time, not an atomic transfer or continuous monitor.
+
+Only propose `prompt.md` for the named recipient; never substitute `packet.json`,
+which contains private local paths and preparation metadata. Before an actual
+model/agent transfer, separately confirm current task authority, recipient/session,
+classification, summary review, actual need-to-know and exact outbound prompt
+digest under the applicable consent/release procedure. An old approval is not
+renewed by inspection. Preserve all guarded-mission holds; these packets cannot
+be inserted into unsupported guarded receipt/context fields as a workaround.
+After transfer, retain the real response and evidence of delivery, then assess
+its source use, backbrief and omissions. Local compilation, a schema pass and a
+synthetic receiver are not proof of native client consumption or comprehension.
+
+`run-project-document-packet-fixtures.js` exercises actual temporary project
+files, content assembly, non-reading of reference-only files, root/content
+substitution, disclosure checks and both copied/linked provider wrappers.
+It invokes no native client or model and grants no authority.
+The dedicated `project-document-delivery` route selects this check for explicit
+project packet work; ordinary document-access tasks retain their existing checks.
+
 ## 8. Anti-patterns
 
 - Having every agent read `README.md` and the entirety of `docs/`.

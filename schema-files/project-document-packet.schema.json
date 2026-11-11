@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-document-packet.schema.json",
+  "title": "Project Document Packet",
+  "description": "Local review candidate only. Its schema cannot authenticate access, release, receiver identity or consent.",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "request", "source_repository", "documents", "status", "authorization_verified", "execution_authorized", "release_authorized", "receiver_acceptance_verified"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "ProjectDocumentPacket" },
+    "request": { "$ref": "project-document-packet-request.schema.json" },
+    "source_repository": {
+      "type": "object", "additionalProperties": false,
+      "required": ["root", "device", "inode", "git_directory", "git_device", "git_inode", "head"],
+      "properties": {
+        "root": { "type": "string", "minLength": 1 },
+        "device": { "type": "string", "pattern": "^[0-9]+$" },
+        "inode": { "type": "string", "pattern": "^[0-9]+$" },
+        "git_directory": { "type": "string", "minLength": 1 },
+        "git_device": { "type": "string", "pattern": "^[0-9]+$" },
+        "git_inode": { "type": "string", "pattern": "^[0-9]+$" },
+        "head": { "type": "string", "pattern": "^[a-f0-9]{40,64}$" }
+      }
+    },
+    "documents": {
+      "type": "array", "minItems": 1, "maxItems": 16,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "required", "delivery_mode", "source_content_verified", "content"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "required": { "type": "boolean" },
+          "delivery_mode": { "enum": ["raw", "summary", "reference_only"] },
+          "source_content_verified": { "type": "boolean" },
+          "source_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+          "delivered_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+          "content": { "type": ["string", "null"] },
+          "source_metadata": {
+            "type": "object", "additionalProperties": false,
+            "required": ["dev", "ino", "size", "mtimeNs", "ctimeNs"],
+            "properties": {
+              "dev": { "type": "string", "pattern": "^[0-9]+$" },
+              "ino": { "type": "string", "pattern": "^[0-9]+$" },
+              "size": { "type": "string", "pattern": "^[0-9]+$" },
+              "mtimeNs": { "type": "string", "pattern": "^-?[0-9]+$" },
+              "ctimeNs": { "type": "string", "pattern": "^-?[0-9]+$" }
+            }
+          }
+        },
+        "oneOf": [
+          { "properties": { "delivery_mode": { "enum": ["raw", "summary"] }, "source_content_verified": { "const": true }, "content": { "type": "string" } }, "required": ["source_sha256", "delivered_sha256"], "not": { "required": ["source_metadata"] } },
+          { "properties": { "delivery_mode": { "const": "reference_only" }, "required": { "const": false }, "source_content_verified": { "const": false }, "content": { "type": "null" } }, "required": ["source_metadata"], "not": { "anyOf": [ { "required": ["source_sha256"] }, { "required": ["delivered_sha256"] } ] } }
+        ]
+      }
+    },
+    "status": { "const": "pending_review" },
+    "authorization_verified": { "const": false },
+    "execution_authorized": { "const": false },
+    "release_authorized": { "const": false },
+    "receiver_acceptance_verified": { "const": false }
+  }
+}

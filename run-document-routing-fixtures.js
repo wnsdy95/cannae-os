@@ -50,6 +50,17 @@ function assertRoutes(result, expectedRoutes) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
+    const result = route(router, args, "Prepare a project document packet from the named inputs.");
+    assertRoutes(result, ["project-document-delivery"]);
+    assert(result.recommended_documents.some(item => item.path === "docs/role-document-access-policy.md"));
+    assert(result.validation_commands.includes("node run-project-document-packet-fixtures.js"));
+    assert.strictEqual(result.capability_routing.status, "covered");
+    const ordinary = route(router, args, "Review document access for an existing policy.");
+    assertRoutes(ordinary, ["document-access-context"]);
+    assert(!ordinary.validation_commands.includes("node run-project-document-packet-fixtures.js"),
+      "project content preparation checks must not become mandatory for unrelated document access");
+  }
   for (const query of ["document authoring and document routing",
     "Draft an SOP and handoff document from the supplied policy.",
     "Revise a document", "docs/document-authoring-workflow.md",

@@ -48,6 +48,14 @@ The current lexical router uses English route terms; use a faithful English
 task description to find references, not as a substitute source of user intent.
 Do not interpret a routing miss as permission to omit the task or constraints.
 
+When transferring selected files from another project, use the
+[project content preparation procedure](role-document-access-policy.md#project-content-preparation)
+to bind the actual task, source bytes, supplied summaries and intended recipient.
+The source owner needs read authority before preparation. A prepared packet is
+not consent to send, and a reference-only input cannot replace required reading.
+Keep an already guarded mission on its existing controls rather than using an
+ordinary document packet to evade an unsupported input or hold.
+
 ## Minimum Durable Context
 
 Use existing schema fields when the artifact already has a contract. For a

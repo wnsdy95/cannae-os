@@ -139,6 +139,8 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "project-document-packet-request": "project-document-packet-request.schema.json",
+  "project-document-packet": "project-document-packet.schema.json",
   "operator-consent-record": "operator-consent-record.schema.json",
   "operator-reconciliation-authorization": "operator-reconciliation-authorization.schema.json",
   "operator-reconciliation-record": "operator-reconciliation-record.schema.json",
@@ -6141,7 +6143,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) &&
       !["frago", "frago-scope-change"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "document-access-manifest" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
+      type !== "agent-context-pack" && type !== "document-access-manifest" && !["project-document-packet-request", "project-document-packet"].includes(type) && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6178,6 +6180,7 @@ function validatePayloadInSnapshot(payload, type, options) {
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {
+    "project-document-packet": ["request", "project-document-packet-request"],
     "operator-consent-record": ["request", "order-adoption-decision-request"],
     "order-revision-request": ["successor_plan", "mission-wave-plan"],
     "order-revision-proposal": ["request", "order-revision-request"],
@@ -6191,6 +6194,12 @@ function validatePayloadInSnapshot(payload, type, options) {
     const [field, nestedType] = nested;
     issues.push(...validatePayload(payload[field], nestedType, options).issues
       .map(item => ({ ...item, path: `$.${field}${item.path.slice(1)}` })));
+  }
+  if (schemaResult.valid && type === "project-document-packet-request") {
+    issues.push(...require("../project-document-packet").requestIssues(payload).map(item => ({ ...item, layer: "semantic" })));
+  }
+  if (schemaResult.valid && type === "project-document-packet") {
+    issues.push(...require("../project-document-packet").packetIssues(payload).map(item => ({ ...item, layer: "semantic" })));
   }
   if (schemaResult.valid && type === "operator-reconciliation-authorization") {
     issues.push(...validatePayload(payload.subject.request, "order-adoption-decision-request", options).issues

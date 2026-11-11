@@ -72,6 +72,15 @@ from doctrine recommendations; no content is loaded or approved. Unknown options
 fail instead of becoming task text. Project inputs are not yet supported in
 guarded receipts: do not drop them or copy private data into doctrine to proceed.
 
+For actual project content, follow `docs/role-document-access-policy.md`'s project
+preparation procedure with `scripts/prepare_controls_documents.js`. Only an
+authorized source reader prepares raw text or hashes summary originals. Reuse
+separately reviewed summaries; never open a reference-only source or invent its
+approval. Do not relabel an exact original copy as a summary. Inspect the exact
+candidate again before separately authorized transfer
+of `prompt.md`, not the private `packet.json`. Prepared/current does not mean sent
+or read, and this helper cannot bypass a guarded mission's unsupported inputs.
+
 For delegated document access, require a ready manifest projection and its
 profile-selected list; a role match alone is insufficient. Preserve summary and
 reference-only modes. A ready projection does not authenticate authority or
@@ -188,6 +197,7 @@ For document and routing changes, run the applicable checks from the repo root:
 node .claude/skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 node run-document-routing-fixtures.js
 node run-document-authoring-input-fixtures.js
+node run-project-document-packet-fixtures.js
 node run-authoring-review-packet-fixtures.js
 node run-skill-installation-fixtures.js
 node run-skill-client-discovery-fixtures.js

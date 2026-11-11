@@ -11,6 +11,13 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  { name: "a copied original cannot be delivered as a summary", file: "sample-payloads/invalid-project-document-packet-summary-copy.json",
+    type: "project-document-packet-request", exitCode: 1, expectedCanExecute: false, requiredCodes: ["PROJECT_PACKET_SUMMARY_IS_SOURCE"] },
+  ...["project-document-packet-request", "project-document-packet"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type,
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : [type.endsWith("request") ? "PROJECT_PACKET_DELIVERY_DENIED" : "PROJECT_PACKET_BINDING_MISMATCH"]
+  }))),
   ...["method-control-channel-policy", "method-control-launch-slot", "method-control-session-observation", "method-control-enrollment",
     "method-control-request", "method-control-receipt", "method-control-delivery", "method-control-response"]
     .flatMap(type => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,

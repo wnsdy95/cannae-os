@@ -77,6 +77,15 @@ client versions and keep actual task execution as a separate acceptance step.
 
 ## Authoring Review Packets
 
+For task-source delivery rather than an evaluation corpus, use
+`scripts/prepare_controls_documents.js prepare|inspect` and the project-content
+section of `docs/role-document-access-policy.md`. Preparation reads only the
+explicitly selected project sources under the source owner's authority, binds
+origin/content/recipient, and preserves raw/summary/reference-only distinctions.
+Outputs stay in the project, and only `prompt.md` is proposed recipient input.
+Recheck against the previously reviewed packet digest, not a newly invented
+approval. No native transfer or receiver acceptance is provided by this helper.
+
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local
 packet. Both are offline: neither invokes a model nor records consent. Only

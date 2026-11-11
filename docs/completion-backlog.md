@@ -10,6 +10,13 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G5 implementation: the offline project document packet helper now
+assembles selected raw text or separately prepared summaries with exact local
+origin, content and recipient binding. Reference-only bodies are not opened.
+Both provider wrappers support the same preparation/inspection commands without
+a server or model call. Native transfer, authenticated consent/recipient identity
+and receiver use remain open; local compilation is not G2 closure.
+
 Latest G2/G3 correction: bound doctrine digests were not being rechecked before
 new delegated authority. An isolated reproduction changed SUPPORT.md after open
 and still received an allowed tool admission. The current correction rechecks
@@ -46,7 +53,7 @@ The current corrective V3 handoff is in `docs/document-authoring-case-study.md`.
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
 | G1. Document authoring and revision quality | `document-authoring-case-study.md` contains the policy-grounded exercise, actual maintenance work order, one approved advisory model review, source appraisal and proposed corrective V3. All seven seeded variants were identified; the original draft also had omissions. | Broader cases, V3 review/adoption and independent/receiver acceptance remain open. One authored case with deliberate variants is not a general detection rate or semantic completeness. |
-| G2. Role-bounded routing and delegation | Both routers resolve required corpus and explicitly qualified project-file references. Task-scoped specialist reading retains controls, and access projections enforce profile selection. Issued doctrine sets and current bytes are now rechecked before new authority and completed reports. | Actual authorized project-content delivery/receiver use, physical-origin binding, broader relevance and semantic input/output distinction remain open. Lexical selection is not negation understanding; validation-command selection remains conservative. Neither a projection nor a byte match authenticates the caller or enforces filesystem access. |
+| G2. Role-bounded routing and delegation | Both routers resolve explicit corpus/project references. Access projections enforce profile selection, and new authority checks issued doctrine sets/current bytes. Offline project packets now bind local origin, source/summary bytes and the intended recipient without opening reference-only bodies. | Actual authorized transfer/receiver use, authenticated origin/delegation, guarded project-input integration, broader relevance and semantic input/output distinction remain open. Lexical selection is not negation understanding. Neither a projection, local filesystem identity nor a byte match authenticates the caller or enforces filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
 | G5. Client distribution | Isolated installation fixtures cover link/copy binding, refresh, conflicts and receipt parity. Actual Codex/Claude processes discover both bundle forms in temporary homes; absent and Claude bare-mode negative controls distinguish real discovery from a folder check. | Skill-body consumption, semantic task execution and an independent fresh-session workflow remain unverified. Native metadata under isolated settings does not prove the user's full configuration. Separate plugin packaging is not included. |
@@ -498,6 +505,83 @@ Next: bind authorized project-origin, content form, exact bytes and recipient,
 then demonstrate actual delivery and receiver use. Reference resolution and this
 integrity prerequisite do not close G2 or any of the five active goals. Keep
 dashboards and separate production infrastructure deferred.
+
+### Project Document Packet Preparation (2026-11-11)
+
+G2/G5 now has an actual content assembler, not only file references. An authorized
+source reader can prepare the explicit task and selected project content for one
+declared recipient. Raw text, a supplied summary and reference-only IDs remain
+distinct. Summary originals are streamed only for exact digest verification;
+reference-only bodies are not opened. Local repository/Git identities, HEAD,
+source/summary hashes and recipient fields are bound into a private review packet.
+Inspection rebuilds it before any separately authorized transfer. All authority,
+release and receiver-acceptance flags remain false; this is not authenticated
+delegation, semantic summary review or guarded mission-input support.
+
+Both copied/linked skill wrappers use the router's existing corpus binding and
+write only under the selected project's ignored private output directory. Both
+skills now require source-owner read authority, separate summary preparation,
+exact prior-digest inspection and transfer of only `prompt.md`, not the local
+lineage packet. The human's visibility is not restricted by these delegated
+recipient rules. Existing guarded mission holds and unsupported-input refusals
+are not bypassed by this ordinary document workflow.
+
+Initial focused execution passed 16 cases before the output-symlink case failed
+on the diagnostic: Git ignore checking rejected the path before the expected
+path-specific error. Preparation was blocked, not allowed. Checking existing
+output components before ignore rules produces the precise error without
+weakening either gate; the corrected suite passed 17/17.
+
+The first broader batch passed both skill validators, packet preparation 17/17,
+shared validator 507/507, document access 18/18 and project input references 24/24,
+then stopped at document routing. Adding the new check to the generic access
+route changed an unrelated task's exact control list. A dedicated project packet
+route now selects it only for that task; the original assertion is retained.
+The corrected routing suite passed 216 queries, 32 required-source rejections and
+3 link-inventory checks. Tests after that stopped routing check did not run.
+Logs: `.cannae/maintenance/project-packet-checks-8a6e9f34-36d3-4091-bdd5-b0cb4b87963d/`.
+That launcher's last, unexecuted OPSEC command also had the wrong filename; the
+next batch uses the existing `run-opsec-linter-fixtures.js`. Do not count the
+unexecuted typo as an OPSEC test or carry forward unrun pass counts.
+
+The corrected fixed-source batch completed all 13 selected checks: both skill
+validators (226 lines), packet preparation 17/17, shared validator 507/507,
+document access 18/18, project references 24/24, routing 216 queries with 32
+source rejections and 3 link checks, preflight 10/10, mandatory controls 6/6,
+installation 21/21, mission controller 32/32, EEFI 8/8 and OPSEC 5/5. Logs:
+`.cannae/maintenance/project-packet-final-fb4a738b-972c-4465-a417-1438a8c80994/`.
+This was not the full aggregate, hosted CI or native client execution.
+
+Final appraisal then reproduced an exact-copy summary gap: a sensitive original
+with the same digest under a different summary path was valid for preparation
+(`can_execute` remained false). The new semantic guard rejects identical
+source/summary paths or digests even with a claimed review. Both skills teach
+this boundary. Near-copy detection and semantic summary review remain open, not
+inferred from differing hashes. The final focused rerun passed packet preparation
+18/18, shared validator 508/508, routing 216 queries with 32 rejections and 3
+link checks, and both skill validators at 227 lines. Logs:
+`.cannae/maintenance/project-packet-summary-checks-cc6862ea-9b71-43b2-9660-95d5bff09dff/`.
+The broader mission-controller result above precedes this isolated semantic
+addition; it is not a second full lifecycle run on the final tree.
+
+After recording results, both inventories had zero unrouted artifacts and the
+source-map/registry audits passed. Markdown links (182 files), English-only
+content (1,216 tracked files), tracked JSON parsing (672 files) and staged
+whitespace checks passed. Mirrored skill/router additions and the two new wrappers
+match. The original policy hashes, installed link targets/inodes and user's
+ignore-file hash are unchanged; private evidence and `.gitignore` are not staged.
+Final inspection also retained the exact synthetic prompt/packet digests below.
+
+A separate synthetic project now contains an actual 4,060-byte recipient prompt
+with raw policy/comment text, a supplied summary and a reference-only ID. The
+current candidate passed inspection. The fresh one-use native exercise proposal
+is `.cannae/maintenance/project-packet-native-review-04dcfcc5/proposal.md`; input
+SHA-256 is `3ff9ab34ec32ec15fc2c0949b59dbf54fa31cfcc95d9fb4c8e2f6e649c112ba4`.
+It is awaiting fresh USER consent; no native model call or new approval is
+claimed. Prior review consents remain consumed. A future observed response must
+be appraised for source use, exclusions and unknowns, not marked accepted from
+successful process exit. Installed-skill consumption and independent acceptance
+remain separate from this supplied-packet exercise.
 
 ## Retained Platform Baseline
 
