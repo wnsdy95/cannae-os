@@ -2533,3 +2533,37 @@ Codex `ca1c508bfa95d8c16e2601eaae0777235876f2f217fbdc1d407ded28f195c385`;
 Claude `ac2c5ad7cc92b6bd309491ed10101ee5cc8a9af26729adc8215728da76bda0f3`.
 Next prioritize the public-policy content-review refusal and broader task-context/
 current-state consistency; report/final-handoff parity remains open.
+
+## Public Policy Content Review Diagnostics
+
+The retained support-SOP V3/V4 bodies still reproduce the conservative refusal:
+their exact digests are `43d18c2e62ddded3d1477dd7e7d03686d1c4bf701daa43361148c7d67de5792c`
+and `f10443b4d10d80b2db623cd33f526e6c9ae81f0551144e07fb0dc57d4a50b4b2`.
+Each new, narrowly scoped local diagnostic request reports one
+`EEFI-DEFAULT-SECRET` rule and no OPSEC finding for its delivered body. The prior
+source appraisal identified public policy wording, not actual secret values;
+the diagnostic alone cannot make that semantic judgment. These are targeted
+checks of retained bytes, not a replay or acceptance of the original full task.
+
+The new `review-content` command in `project-document-packet.js` uses the existing
+compiler and both provider wrappers. It returns rule/count metadata, exact parsed
+request and observed source/delivery bindings, and the number of later documents
+not inspected. It never emits source text or paths, writes a packet, runs a model,
+or clears a refusal. Task/recipient findings still stop before source reads;
+reference-only bodies remain unopened, and summary originals are hashed without
+decoding. Validation failures remain failures rather than successful diagnostics.
+See the [content-review procedure](role-document-access-policy.md#content-review-diagnostics).
+
+Both skills now direct an authorized preparer to diagnose a refusal without
+deleting safety language or treating a keyword match as proof of a secret. The
+29 packet fixtures exercise no-write/no-body output, first-block stopping,
+recipient/source changes, stale/invalid inputs, real credential-shaped values,
+summaries and linked/copied wrappers for both providers. The first new fixture
+had an invalid source ID and was corrected without weakening the schema; its
+failed result is retained separately. Exact-source checks and local results are
+under `.cannae/maintenance/content-review-diagnostics-20261112/`.
+
+This is diagnostic progress, not raw exception clearance or native behavioral
+acceptance. The exact originals remain blocked; the sources and original failure
+record are unchanged. Choosing a supported reviewed-disclosure path, consistent
+reporting, minimal necessary context and the broader goal acceptance remain open.

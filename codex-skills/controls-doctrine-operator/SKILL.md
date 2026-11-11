@@ -115,6 +115,12 @@ preserved; never silently redact the task or reuse approval for changed bytes.
 Inspect the exact candidate again before separately authorized transfer
 of `prompt.md`, not the private `packet.json`. Prepared/current does not mean sent
 or read, and this helper cannot bypass a guarded mission's unsupported inputs.
+On a content-review refusal, an authorized source preparer can use the same
+helper's `review-content` command for local rule/count diagnostics. Preserve the
+blocked request and inspect only within existing read authority; later sources
+may remain unchecked. A topic-word match is not proof of a secret, and no match
+is not disclosure approval. Do not delete safety wording or treat the diagnostic
+as an exception. Follow the project-content review procedure for the next decision.
 
 For delegated document access, require a ready manifest projection and its
 profile-selected list; a role match alone is insufficient. Preserve summary and

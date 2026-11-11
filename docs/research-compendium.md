@@ -1,5 +1,19 @@
 # Research Compendium
 
+## Content Screening Is Not Disclosure Judgment (2026-11-12)
+
+The [local diagnostic case](document-authoring-case-study.md#public-policy-content-review-diagnostics)
+reproduces the public-policy refusal against unchanged SOP bodies. A fixed failure
+code did not distinguish a word-rule trigger from a credential-shaped trigger.
+The new read-only report exposes those rule identities and exact input bindings,
+not source bodies, paths or authority. An early refusal leaves later sources and
+checks unassessed; preserve that boundary instead of describing the entire task
+as reviewed. A topic-word match cannot establish an actual secret, and absence
+of findings cannot establish disclosure safety. Both skills now use this evidence
+before escalation without changing classification or removing safety language.
+Raw exception clearance remains unsupported; source appraisal and separate
+disclosure authority are still necessary. No native behavioral pass is inferred.
+
 ## Missing Sources And Separate Decision Scopes (2026-11-12)
 
 The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)

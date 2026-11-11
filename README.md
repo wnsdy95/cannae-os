@@ -676,6 +676,12 @@ unavailable source, while preserving useful partial outputs. It also retains
 Claude's missing reports and conflated approval scopes; process success is not
 complete workflow acceptance. The operator's intake correction remains unadopted.
 
+For a project-content refusal, both installed wrappers now offer read-only
+[`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
+The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)
+identifies the rule behind the public-policy refusal without exposing bodies or
+clearing it. A diagnostic is not a disclosure exception or a prepared packet.
+
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
 requires an explicit [source request](schema-files/handoff-generation-request.schema.json).
 It reads the selected OPORD/events, preserves quoted requirements and source

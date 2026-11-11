@@ -246,7 +246,7 @@ an interrupted call's unreported usage is unknown, not zero.
 ## Authoring Review Packets
 
 For task-source delivery rather than an evaluation corpus, use
-`scripts/prepare_controls_documents.js prepare|inspect` and the project-content
+`scripts/prepare_controls_documents.js prepare|inspect|review-content` and the project-content
 section of `docs/role-document-access-policy.md`. Preparation reads only the
 explicitly selected project sources under the source owner's authority, binds
 origin/content/recipient, and preserves raw/summary/reference-only distinctions.
@@ -257,6 +257,11 @@ rephrasing without dropping constraints; the helper does not silently redact.
 Literal-path checks do not detect unknown locations, aliases or encoded secrets.
 Recheck against the previously reviewed packet digest, not a newly invented
 approval. No native transfer or receiver acceptance is provided by this helper.
+Use `review-content` only as an authorized source preparer when diagnosing a
+content refusal. It prints source-index/digest and rule/count metadata, stops at
+the first blocked scope and never writes a packet or clears a finding. Read
+`docs/role-document-access-policy.md#content-review-diagnostics` before treating
+a partial result as evidence; keep the original request and source bytes intact.
 
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local

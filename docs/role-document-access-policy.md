@@ -305,6 +305,51 @@ It invokes no native client or model and grants no authority.
 The dedicated `project-document-delivery` route selects this check for explicit
 project packet work; ordinary document-access tasks retain their existing checks.
 
+### Content Review Diagnostics
+
+On `PROJECT_PACKET_CONTENT_REVIEW_REQUIRED`, retain the exact request and source
+bytes. An operator already authorized for source preparation may run a read-only
+diagnosis through either installed provider wrapper:
+
+```bash
+node /absolute/loaded-skill/scripts/prepare_controls_documents.js \
+  review-content --repository /absolute/project --request /absolute/request.json
+```
+
+This executes the same compiler, access checks, file/digest limits and conservative
+detectors as preparation, but writes no packet. Task/recipient findings stop
+before source reads; a document finding stops before later sources. Reference-only
+rows are metadata-checked, never opened or hashed. Summary originals are hashed,
+not decoded or screened as recipient text; only the supplied summary is screened.
+
+The local report contains the SHA-256 of `JSON.stringify` of the parsed request
+(not its original file formatting), the repository identity digest, zero-based
+document indices and observed source/delivery digests. Rule identities/counts are
+included; task text, recipient labels, source IDs/paths, bodies, matched values,
+field paths and per-value hashes are not. Current screening source-file digests
+locate the implementation for review; they are not runtime attestation. Keep
+diagnostics private too: metadata and digests are not automatically releasable.
+
+`content_review_required` returns exit 1 and `compilation_completed: false`.
+`uninspected_document_count` counts the untouched suffix; an inspected
+reference-only row still has no content check. Later terminology/private-path and
+packet checks may not have run. Other validation or file failures remain fixed-code
+errors, not an apparently successful diagnostic. No-findings completion returns
+`content_screening_no_findings` and exit 0, not "safe", "approved" or "ready".
+It does not perform output persistence/rendering checks or an actual transfer.
+Observed digests bind the bytes read at that time, not continuously current files.
+
+A default word match can explain a policy-prose refusal without proving a secret
+exists. It also cannot prove a false positive or absence of other sensitive data.
+An authorized reviewer must examine the exact local source and intended recipient
+within existing authority. Do not remove safety wording, relabel classification,
+copy raw text as a summary or drop a required input to evade the refusal. A separately
+reviewed summary is an option only when it satisfies the actual task; an exact-source
+review cannot silently become summary review. Raw exception clearance is not
+implemented: `manual_clearance_supported`, approval/execution/release and receiver
+acceptance remain false. No diagnostic can be supplied to `prepare` as an override.
+Keep dependent transfer on hold pending an applicable decision and supported path.
+
 ## 8. Anti-patterns
 
 - Having every agent read `README.md` and the entirety of `docs/`.

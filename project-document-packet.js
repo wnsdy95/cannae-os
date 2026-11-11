@@ -243,23 +243,38 @@ function textContent(bytes) {
   } catch { fail("PROJECT_PACKET_TEXT_INVALID"); }
 }
 
-function assertOutboundSafe(value) {
-  if (lintPayload(value).length || detectEefi(value, compileEefiItems(DEFAULT_EEFI_ITEMS)).length) {
-    fail("PROJECT_PACKET_CONTENT_REVIEW_REQUIRED");
-  }
+class ContentReviewRequired extends Error {
+  constructor() { super("PROJECT_PACKET_CONTENT_REVIEW_REQUIRED"); }
 }
 
-function compilePacket(request, repository) {
+function assertOutboundSafe(value, scope, observe) {
+  // Diagnostics retain rule identities/counts, never matched text, field paths or value hashes.
+  const rules = new Map();
+  for (const [detector, findings] of [["opsec", lintPayload(value)],
+    ["eefi", detectEefi(value, compileEefiItems(DEFAULT_EEFI_ITEMS))]]) {
+    for (const { code, eefi_id } of findings) {
+      const key = JSON.stringify([detector, code, eefi_id]);
+      if (!rules.has(key)) rules.set(key, { detector, code, ...(eefi_id ? { eefi_id } : {}), count: 0 });
+      rules.get(key).count++;
+    }
+  }
+  observe({ ...scope, status: rules.size ? "content_review_required" : "no_findings", rules: [...rules.values()] });
+  if (rules.size) throw new ContentReviewRequired();
+}
+
+function compileCheckedPacket(request, repository, observe) {
   const validation = require("./validator-cli-prototype/validate").validatePayload(request, TYPE);
   if (!validation.valid) fail(validation.issues.some(issue => issue.code === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE")
     ? "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE" : "PROJECT_PACKET_REQUEST_INVALID");
   const origin = repositoryIdentity(repository);
   if (privatePathIssues(request, [], origin).length) fail("PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
-  assertOutboundSafe({ task: request.task, recipient: request.recipient });
+  assertOutboundSafe({ task: request.task, recipient: request.recipient }, { scope: "task_and_recipient" }, observe);
   let total = 0;
-  const documents = request.documents.map(document => {
+  const documents = request.documents.map((document, index) => {
     if (document.delivery_mode === "reference_only") {
       const source = sourcePath(origin.root, document.path);
+      observe({ scope: "document", document_index: index, delivery_mode: "reference_only",
+        status: "reference_only_not_read", source_content_verified: false });
       return { id: document.id, required: document.required, delivery_mode: "reference_only", source_metadata: snapshot(source.stat),
         source_content_verified: false, content: null };
     }
@@ -269,7 +284,8 @@ function compilePacket(request, repository) {
     const content = textContent(delivered.bytes);
     total += delivered.bytes.length;
     if (total > MAX_CONTENT) fail("PROJECT_PACKET_CONTENT_TOO_LARGE");
-    assertOutboundSafe(content);
+    assertOutboundSafe(content, { scope: "document", document_index: index, delivery_mode: document.delivery_mode,
+      source_sha256: source.sha256, delivered_sha256: delivered.sha256 }, observe);
     return { id: document.id, required: document.required, delivery_mode: document.delivery_mode, source_sha256: source.sha256,
       source_content_verified: true, delivered_sha256: delivered.sha256, content };
   });
@@ -281,6 +297,31 @@ function compilePacket(request, repository) {
   if (privatePathIssues(request, documents, origin).length) fail("PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
   if (!require("./validator-cli-prototype/validate").validatePayload(packet, "project-document-packet").valid) fail("PROJECT_PACKET_OUTPUT_INVALID");
   return packet;
+}
+
+function compilePacket(request, repository) {
+  return compileCheckedPacket(request, repository, () => {});
+}
+
+function reviewContent(request, repository) {
+  const checks = [], origin = repositoryIdentity(repository);
+  const sourceDigests = () => Object.fromEntries(["project-document-packet.js", "opsec-linter.js", "eefi-detector.js"]
+    .map(file => [file, sha256(fs.readFileSync(path.join(__dirname, file)))]));
+  const screeningSources = sourceDigests();
+  let blocked = false;
+  try { compileCheckedPacket(request, repository, check => checks.push(check)); }
+  catch (error) {
+    if (!(error instanceof ContentReviewRequired)) throw error;
+    blocked = true;
+  }
+  if (!equal(origin, repositoryIdentity(repository))) fail("PROJECT_PACKET_ROOT_CHANGED");
+  if (!equal(screeningSources, sourceDigests())) fail("PROJECT_PACKET_SCREENING_SOURCE_CHANGED");
+  return { status: blocked ? "content_review_required" : "content_screening_no_findings",
+    request_sha256: sha256(JSON.stringify(request)), source_repository_sha256: sha256(JSON.stringify(origin)),
+    screening_source_files_sha256: screeningSources, checks,
+    uninspected_document_count: request.documents.length - checks.filter(check => check.scope === "document").length,
+    compilation_completed: !blocked, manual_clearance_supported: false, packet_written: false,
+    authorization_verified: false, execution_authorized: false, release_authorized: false, receiver_acceptance_verified: false };
 }
 
 function renderPrompt(packet) {
@@ -370,7 +411,8 @@ function inspect(packetPath, expectedDigest, repository) {
 function main(argv = process.argv.slice(2)) {
   try {
     const [command, ...args] = argv, values = {};
-    const required = command === "prepare" ? ["repository", "request"] : command === "inspect" ? ["repository", "packet", "packet-sha256"] : [];
+    const required = ["prepare", "review-content"].includes(command) ? ["repository", "request"]
+      : command === "inspect" ? ["repository", "packet", "packet-sha256"] : [];
     if (!required.length || args.length !== required.length * 2) fail("PROJECT_PACKET_USAGE");
     for (let index = 0; index < args.length; index += 2) {
       const name = args[index].slice(2);
@@ -378,15 +420,15 @@ function main(argv = process.argv.slice(2)) {
           !args[index + 1] || args[index + 1].startsWith("--")) fail("PROJECT_PACKET_USAGE");
       values[name] = args[index + 1];
     }
-    const result = command === "prepare"
-      ? prepare(JSON.parse(readOutput(path.resolve(values.request), 128 * 1024)), values.repository)
-      : inspect(values.packet, values["packet-sha256"], values.repository);
+    const result = command === "inspect" ? inspect(values.packet, values["packet-sha256"], values.repository)
+      : (command === "prepare" ? prepare : reviewContent)(JSON.parse(readOutput(path.resolve(values.request), 128 * 1024)), values.repository);
     console.log(JSON.stringify(result, null, 2));
+    if (result.status === "content_review_required") process.exitCode = 1;
   } catch (error) {
     console.error(/^PROJECT_PACKET_[A-Z_]+$/.test(error.message) ? error.message : "PROJECT_PACKET_INPUT_UNAVAILABLE");
     process.exitCode = 1;
   }
 }
 
-module.exports = { TYPE, requestIssues, packetIssues, repositoryIdentity, compilePacket, renderPrompt, prepare, inspect, main, sha256 };
+module.exports = { TYPE, requestIssues, packetIssues, repositoryIdentity, compilePacket, reviewContent, renderPrompt, prepare, inspect, main, sha256 };
 if (require.main === module) main();

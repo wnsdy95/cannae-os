@@ -69,13 +69,48 @@ try {
       assert.equal(packet.inspect(value.packet_path, value.packet_sha256, root).status, "review_candidate_current");
     });
 
+    check(`${provider}: content diagnostics retain summary lineage without inspecting reference-only bodies or writing packets`, () => {
+      const output = path.join(root, ".cannae/document-packets"), before = fs.readdirSync(output);
+      const open = fs.openSync;
+      fs.openSync = function(file, ...args) {
+        assert.notEqual(file, path.join(root, reference.path), "Reference-only source must not be opened.");
+        return open.call(fs, file, ...args);
+      };
+      let result;
+      try { result = packet.reviewContent(request, root); } finally { fs.openSync = open; }
+      assert.equal(result.status, "content_screening_no_findings");
+      assert.equal(result.compilation_completed, true);
+      assert.equal(result.uninspected_document_count, 0);
+      assert.deepEqual(result.checks[2], { scope: "document", document_index: 1, delivery_mode: "summary",
+        source_sha256: packet.sha256(original), delivered_sha256: packet.sha256(summary), status: "no_findings", rules: [] });
+      assert.deepEqual(result.checks[3], { scope: "document", document_index: 2, delivery_mode: "reference_only",
+        status: "reference_only_not_read", source_content_verified: false });
+      assert.equal(result.request_sha256, packet.sha256(JSON.stringify(request)));
+      assert.equal(result.source_repository_sha256, packet.sha256(JSON.stringify(packet.repositoryIdentity(root))));
+      for (const [file, digest] of Object.entries(result.screening_source_files_sha256)) {
+        assert.equal(digest, packet.sha256(fs.readFileSync(path.join(ROOT, file))));
+      }
+      for (const key of ["manual_clearance_supported", "packet_written", "authorization_verified", "execution_authorized",
+        "release_authorized", "receiver_acceptance_verified"]) assert.equal(result[key], false);
+      const serialized = JSON.stringify(result);
+      for (const withheld of [root, original.slice(0, 21), summary.trim(), "never-open-reference", reference.path]) {
+        assert(!serialized.includes(withheld));
+      }
+      assert.deepEqual(fs.readdirSync(output), before);
+      const changed = structuredClone(request); changed.recipient.agent_id += "-next";
+      assert.notEqual(packet.reviewContent(changed, root).request_sha256, result.request_sha256);
+    });
+
     check(`${provider}: role department duty and authority mismatches fail before source reads`, () => {
       for (const [key, value] of [["role", "S2"], ["department", "intelligence"], ["duty", "another_task"], ["authority_level", "L0"]]) {
         const changed = structuredClone(request); changed.recipient[key] = value;
         expectInvalid(changed, "PROJECT_PACKET_DELIVERY_DENIED");
         const open = fs.openSync; let opened = false;
         fs.openSync = function(file, ...args) { if (String(file).startsWith(root)) opened = true; return open.call(fs, file, ...args); };
-        try { assert.throws(() => packet.compilePacket(changed, root), /PROJECT_PACKET_REQUEST_INVALID/); }
+        try {
+          assert.throws(() => packet.compilePacket(changed, root), /PROJECT_PACKET_REQUEST_INVALID/);
+          assert.throws(() => packet.reviewContent(changed, root), /PROJECT_PACKET_REQUEST_INVALID/);
+        }
         finally { fs.openSync = open; }
         assert.equal(opened, false);
       }
@@ -88,7 +123,10 @@ try {
           else changed.recipient.agent_id = location;
           const before = JSON.stringify(changed), open = fs.openSync; let opened = false;
           fs.openSync = function(file, ...args) { if (String(file).startsWith(root)) opened = true; return open.call(fs, file, ...args); };
-          try { assert.throws(() => packet.compilePacket(changed, root), error => error.message === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"); }
+          try {
+            assert.throws(() => packet.compilePacket(changed, root), error => error.message === "PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
+            assert.throws(() => packet.reviewContent(changed, root), /PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE/);
+          }
           finally { fs.openSync = open; }
           assert.equal(opened, false);
           assert.equal(JSON.stringify(changed), before, "The original task must not be silently rewritten.");
@@ -178,6 +216,22 @@ try {
         const inspected = call(["inspect", "--repository", root, "--packet", metadata.packet_path, "--packet-sha256", metadata.packet_sha256]);
         assert.equal(inspected.status, 0, inspected.stderr);
         assert.equal(JSON.parse(inspected.stdout).execution_authorized, false);
+        const reviewArgs = ["review-content", "--repository", root, "--request", requestFile];
+        const reviewed = call(reviewArgs);
+        assert.equal(reviewed.status, 0, reviewed.stderr);
+        assert.equal(JSON.parse(reviewed.stdout).status, "content_screening_no_findings");
+        assert(!reviewed.stdout.includes(root) && !reviewed.stdout.includes(raw));
+        const blocked = structuredClone(request); blocked.task = "Review secret exposure procedures. Do not publish.";
+        fs.writeFileSync(requestFile, JSON.stringify(blocked));
+        try {
+          const denied = call(reviewArgs);
+          assert.equal(denied.status, 1, denied.stderr);
+          assert.equal(denied.stderr, "");
+          assert.equal(JSON.parse(denied.stdout).uninspected_document_count, request.documents.length);
+          assert(!denied.stdout.includes(blocked.task));
+          assert.notEqual(call([...reviewArgs, "--approve", "true"]).status, 0);
+          assert.notEqual(call(args).status, 0, "Diagnostic output is not a preparation exception.");
+        } finally { fs.writeFileSync(requestFile, JSON.stringify(request)); }
         assert.notEqual(call([...args, "--approve", "true"]).status, 0);
         assert.notEqual(call(args, { CANNAE_OS_HOME: path.join(temporary, "absent-doctrine") }).status, 0);
       }
@@ -219,7 +273,67 @@ try {
       write(path.join(root, "check.txt"), text);
       const request = structuredClone(base); request.documents[0].path = "check.txt"; request.documents[0].source_sha256 = packet.sha256(text);
       assert.throws(() => packet.compilePacket(request, root), error => error.message === "PROJECT_PACKET_CONTENT_REVIEW_REQUIRED");
+      const result = packet.reviewContent(request, root);
+      assert.equal(result.status, "content_review_required");
+      assert.equal(result.compilation_completed, false);
+      assert(result.checks[1].rules.some(rule => rule.detector === "opsec"));
+      assert(!JSON.stringify(result).includes(text));
+      assert.equal(result.release_authorized, false);
     }
+  });
+  check("policy-word diagnostics identify the exact screened input and stop before later source reads", () => {
+    const text = "A secret exposure requires escalation. See Secret Handling.\n", request = structuredClone(base);
+    write(path.join(root, "public-policy.md"), text);
+    request.documents[0].path = "public-policy.md";
+    request.documents[0].source_sha256 = packet.sha256(text);
+    request.documents.push({ ...base.documents[0], id: "SRC-LATER", path: "unavailable-later.md" });
+    const result = packet.reviewContent(request, root);
+    assert.equal(result.status, "content_review_required");
+    assert.equal(result.uninspected_document_count, 1);
+    assert.equal(result.compilation_completed, false);
+    assert.deepEqual(result.checks[1], { scope: "document", document_index: 0, delivery_mode: "raw",
+      source_sha256: packet.sha256(text), delivered_sha256: packet.sha256(text), status: "content_review_required",
+      rules: [{ detector: "eefi", code: "EEFI_OUTPUT_FORBIDDEN", eefi_id: "EEFI-DEFAULT-SECRET", count: 1 }] });
+    assert(!JSON.stringify(result).includes(text) && !JSON.stringify(result).includes("public-policy.md"));
+    assert.throws(() => packet.prepare(request, root), /PROJECT_PACKET_CONTENT_REVIEW_REQUIRED/);
+    const changed = text + "Keep the incident on hold.\n";
+    write(path.join(root, "public-policy.md"), changed);
+    assert.throws(() => packet.reviewContent(request, root), /PROJECT_PACKET_SOURCE_DIGEST_MISMATCH/);
+    request.documents[0].source_sha256 = packet.sha256(changed);
+    const revised = packet.reviewContent(request, root);
+    assert.notEqual(revised.request_sha256, result.request_sha256);
+    assert.notEqual(revised.checks[1].delivered_sha256, result.checks[1].delivered_sha256);
+  });
+  check("blocked task or recipient diagnostics stop before opening any project source", () => {
+    for (const field of ["task", "agent_id"]) {
+      const request = structuredClone(base);
+      if (field === "task") request.task = "password=synthetic-context-canary";
+      else request.recipient.agent_id = "password=synthetic-context-canary";
+      const open = fs.openSync; let opened = false;
+      fs.openSync = function(file, ...args) { if (String(file).startsWith(root + path.sep)) opened = true; return open.call(fs, file, ...args); };
+      let result;
+      try { result = packet.reviewContent(request, root); } finally { fs.openSync = open; }
+      assert.equal(opened, false);
+      assert.equal(result.checks.length, 1);
+      assert.equal(result.uninspected_document_count, request.documents.length);
+      assert(!JSON.stringify(result).includes("synthetic-context-canary"));
+      assert(result.checks[0].rules.some(rule => rule.code === "CREDENTIAL_ASSIGNMENT"));
+    }
+  });
+  check("summary diagnostics screen only the delivered summary, while invalid input remains an error", () => {
+    const original = Buffer.from([0, 0xff, 0x41]), summary = "A secret handling procedure.\n";
+    write(path.join(root, "original.bin"), original); write(path.join(root, "summary.md"), summary);
+    const request = structuredClone(base);
+    Object.assign(request.documents[0], { path: "original.bin", source_sha256: packet.sha256(original), classification: "sensitive",
+      delivery_mode: "summary", summary_path: "summary.md", summary_sha256: packet.sha256(summary), summary_review_reference: "Synthetic review" });
+    const result = packet.reviewContent(request, root);
+    assert.equal(result.status, "content_review_required");
+    assert.equal(result.checks[1].source_sha256, packet.sha256(original));
+    assert.equal(result.checks[1].delivered_sha256, packet.sha256(summary));
+    request.documents[0].summary_sha256 = "0".repeat(64);
+    assert.throws(() => packet.reviewContent(request, root), /PROJECT_PACKET_SOURCE_DIGEST_MISMATCH/);
+    request.approved = true;
+    assert.throws(() => packet.reviewContent(request, root), /PROJECT_PACKET_REQUEST_INVALID/);
   });
   check("binary text and oversized raw bodies fail instead of being truncated", () => {
     for (const [bytes, code] of [[Buffer.from([0xc3, 0x28]), "TEXT_INVALID"], [Buffer.from([65, 0, 66]), "TEXT_INVALID"], [Buffer.alloc(65537, 65), "SOURCE_TOO_LARGE"]]) {

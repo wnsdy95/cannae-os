@@ -584,7 +584,7 @@ Completed:
 - `schema-files/force-structure-change-order.schema.json`: Contract for capability gap, DOTMLPF-P, authority, readiness, transition, and documentation update.
 - `force-structure-change-runner.js`: Projects a force structure change order into preflight block, commander queue, transition task, documentation queue, and readiness requirement.
 - `run-force-structure-change-fixtures.js`: Justified organization activation and blocked-unjustified-expansion fixtures.
-- `role-document-access-policy.md`: Need-to-know document access policy that lets each role read only the documents matching its duty and authority.
+- `role-document-access-policy.md`: Need-to-know document access policy that lets each role read only the documents matching its duty and authority; local content-refusal diagnostics retain exact input bindings without granting clearance.
 - `schema-files/document-access-manifest.schema.json`: Document access manifest contract per mission.
 - `document-access-runner.js`: Cross-checks the manifest against role/duty/authority to generate an allowed/denied document projection.
 - `run-document-access-fixtures.js`: S2/Executor/S6 document access and blocked-overbroad-access fixtures.

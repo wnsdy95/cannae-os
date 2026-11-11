@@ -1,5 +1,13 @@
 # Source Map
 
+The [public-policy diagnostic case](document-authoring-case-study.md#public-policy-content-review-diagnostics)
+uses retained exact SOP V3/V4 bodies, `project-document-packet.js` and local packet
+fixtures. It records rule/digest metadata without changing detectors or granting
+clearance. This is local engineering evidence, not military doctrine, semantic
+false-positive certification or native workflow acceptance. The access policy's
+[diagnostic procedure](role-document-access-policy.md#content-review-diagnostics)
+defines the source-reader and partial-inspection limits.
+
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial
 drafting in both clients. It retains Claude reporting/approval-scope defects,
