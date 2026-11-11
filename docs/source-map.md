@@ -8,6 +8,10 @@ inferred meanings, scoped revisions and recipient selections. This is not a
 claim that military terminology has a universal one-word/one-meaning mapping.
 Local checks do not authenticate source statements or demonstrate automatic
 model capture, semantic correctness or recipient acceptance.
+The subsequent project-packet binding addresses a locally reproduced stale-copy
+gap: unchanged excerpt bytes did not prove the glossary remained current.
+`run-project-terminology-handoff-fixtures.js` exercises the actual packet path;
+this evidence is source-binding behavior, not semantic or native-agent acceptance.
 
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.

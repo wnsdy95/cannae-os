@@ -133,6 +133,9 @@ resumption. Do not publish or send a glossary merely because it validates.
 Delegates propose term changes in reports; an authorized single writer merges
 them. A moved, copied or replaced project's ledger needs reviewed rebinding,
 not silent adoption as the current project's vocabulary.
+When handing off a terminology excerpt, use the packet's explicit terminology
+binding and recheck its original ledger as well as the excerpt. Unchanged copied
+text is not evidence of current meaning; never remove the binding to bypass a hold.
 
 1. Choose an existing canonical document and format: quick task brief, SOP,
    OPORD/task order, FRAGO, SITREP/CCIR, research record, AAR or handoff.

@@ -10,6 +10,17 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G3/G4 correction: actual project-packet preparation now binds typed
+terminology excerpts to the original project ledger and selected recipient.
+The local probe reproduced acceptance of stale meaning behind an unchanged copy;
+reinspection now rejects that condition, altered selections and missing bindings.
+This is a source-freshness prerequisite, not actual recipient understanding or
+natural-language capture. The dialogue-based acceptance exercise remains next
+and requires a fresh exact-input decision before any additional native model call.
+Executed locally: 12 terminology-handoff, 16 terminology, 516 validator and 24
+project-packet cases passed with the existing routing/installation/authoring
+checks. Both provider entrypoints carry the source-versus-copy freshness lesson.
+
 Latest G1/G2/G4 implementation: project terminology now has a private target-root
 record, non-authorizing validator, read-only selection helper and equivalent
 provider entrypoints. The procedure captures explicit user definitions, keeps

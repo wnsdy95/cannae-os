@@ -10,6 +10,10 @@ The local helper checks revision chains and selects relevant role/department
 records without authorizing work or transfer. This is an internal design and
 deterministic implementation, not a new military-source finding or proven
 natural-language adoption rate. Actual model capture and receiver use remain open.
+An integration probe subsequently changed the glossary while leaving its excerpt
+untouched; generic packet inspection still reported that excerpt current.
+The explicit terminology binding now checks both source layers for the declared
+recipient, without treating static schema validation as live-source freshness.
 
 ## Failure Evidence Before Retry (2026-11-11)
 

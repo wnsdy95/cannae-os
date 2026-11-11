@@ -37,6 +37,14 @@ function requestIssues(request) {
   const issues = [];
   const add = (code, pointer) => issues.push({ severity: "error", code, path: pointer, message: "Project document packet preparation boundary failed." });
   const recipient = request.recipient;
+  if (request.terminology_binding) {
+    const binding = request.terminology_binding;
+    const source = request.documents.find(document => document.id === binding.source_id);
+    if (!source || source.delivery_mode !== "raw" || !source.required || !binding.domain.trim() ||
+        (binding.task !== null && !binding.task.trim()) || binding.terms.some(term => !term.trim())) {
+      add("PROJECT_PACKET_TERMINOLOGY_BINDING_INVALID", "$.terminology_binding");
+    }
+  }
   if (![request.task, ...Object.values(recipient)].every(value => value.trim())) add("PROJECT_PACKET_CONTEXT_EMPTY", "$.recipient");
   if (["USER", "COMMANDER"].includes(recipient.role)) add("PROJECT_PACKET_AI_FINAL_AUTHORITY", "$.recipient.role");
   const ids = new Set(), paths = new Set();
@@ -71,7 +79,47 @@ function packetIssues(packet) {
   });
   const issues = mismatch ? [{ severity: "error", code: "PROJECT_PACKET_BINDING_MISMATCH", path: "$.documents",
     message: "Delivered rows and exact content must bind to the selected request." }] : [];
-  return [...issues, ...privatePathIssues(packet.request, packet.documents, packet.source_repository)];
+  return [...issues, ...terminologyExcerptIssues(packet.request, packet.documents),
+    ...privatePathIssues(packet.request, packet.documents, packet.source_repository)];
+}
+
+function terminologyExcerptIssues(request, documents) {
+  const binding = request.terminology_binding, recipient = request.recipient, issues = [];
+  const issue = code => issues.push({ severity: "error", code, path: "$.documents",
+    message: "Terminology excerpts require exact recipient and originating-ledger binding." });
+  for (const document of documents) {
+    let selected;
+    try { selected = JSON.parse(document.content); } catch { /* Ordinary prose remains ordinary source text. */ }
+    const marked = selected?.type === "ProjectTerminologySelection";
+    const legacy = selected && typeof selected === "object" && selected.selection &&
+      Object.hasOwn(selected, "ledger_sha256") && Array.isArray(selected.confirmed);
+    if (!marked && !legacy && document.id !== binding?.source_id) continue;
+    if (!binding || document.id !== binding.source_id) {
+      issue("PROJECT_PACKET_TERMINOLOGY_BINDING_REQUIRED"); continue;
+    }
+    const expected = { domain: binding.domain, task: binding.task, actor: "ai", role: recipient.role,
+      department: recipient.department, terms: binding.terms };
+    if (!marked || document.delivery_mode !== "raw" || selected.ledger_sha256 !== binding.ledger_sha256 ||
+        !equal(selected.selection, expected)) issue("PROJECT_PACKET_TERMINOLOGY_EXCERPT_MISMATCH");
+  }
+  return issues;
+}
+
+function assertCurrentTerminology(request, documents, repository) {
+  const issues = terminologyExcerptIssues(request, documents);
+  if (issues.length) fail(issues[0].code);
+  if (!request.terminology_binding) return;
+  const binding = request.terminology_binding, recipient = request.recipient;
+  const terminology = require("./project-terminology");
+  let current;
+  try {
+    current = terminology.projectSelection(repository, { domain: binding.domain, task: binding.task,
+      actor: "ai", role: recipient.role, department: recipient.department, terms: binding.terms }, binding.ledger_sha256);
+  } catch (error) {
+    fail(error.message === "TERMINOLOGY_STALE" ? "PROJECT_PACKET_TERMINOLOGY_STALE" : "PROJECT_PACKET_TERMINOLOGY_UNAVAILABLE");
+  }
+  const excerpt = documents.find(document => document.id === binding.source_id);
+  if (!excerpt || excerpt.content !== terminology.renderSelection(current)) fail("PROJECT_PACKET_TERMINOLOGY_EXCERPT_MISMATCH");
 }
 
 function git(root, args) {
@@ -188,6 +236,7 @@ function compilePacket(request, repository) {
       source_content_verified: true, delivered_sha256: delivered.sha256, content };
   });
   if (!equal(origin, repositoryIdentity(repository))) fail("PROJECT_PACKET_ROOT_CHANGED");
+  assertCurrentTerminology(request, documents, origin.root);
   const packet = { schema_version: "0.1", type: "ProjectDocumentPacket", request, source_repository: origin,
     documents, status: "pending_review", authorization_verified: false, execution_authorized: false,
     release_authorized: false, receiver_acceptance_verified: false };
@@ -197,6 +246,8 @@ function compilePacket(request, repository) {
 }
 
 function renderPrompt(packet) {
+  const terminologyIssues = terminologyExcerptIssues(packet.request, packet.documents);
+  if (terminologyIssues.length) fail(terminologyIssues[0].code);
   if (privatePathIssues(packet.request, packet.documents, packet.source_repository).length) fail("PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
   const data = outboundData(packet.request, packet.documents);
   return ["# Project Document Handoff", "",

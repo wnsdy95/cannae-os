@@ -144,6 +144,14 @@ USER's visibility is not restricted by an AI role profile.
 
 ### Project Content Preparation
 
+Terminology excerpts additionally follow
+[Project Terminology Workflow](project-terminology-workflow.md#routing-and-handoff).
+Use the request's explicit `terminology_binding` for the helper's selected JSON;
+preparation/inspection then rechecks its private originating ledger as well as
+the approved excerpt bytes. This requires the preparing reader's existing
+authority to read that whole ledger. It does not give the recipient raw ledger
+access, waive duty/classification/authority checks or authorize transfer.
+
 For explicitly selected files in another project, use
 `project-document-packet.js` through either skill's
 `scripts/prepare_controls_documents.js`. This is an offline source-owner

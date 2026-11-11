@@ -118,6 +118,25 @@ prepare a separately reviewed excerpt at an authorized source path rather than
 bypassing its ignored-source guard for the private `.cannae` ledger. Existing
 guarded missions retain their current input restrictions and approval rules.
 
+The selection now carries `type: ProjectTerminologySelection`. Save the exact
+`select` output as the separately reviewed excerpt, and include the packet
+request's `terminology_binding`: `source_id`, `ledger_sha256`, `domain`, `task`
+and `terms`. The recipient role and department come from the packet request,
+not a second caller-supplied identity. The selected source must be required raw
+text; existing source classification, duty and authority checks still apply.
+See the [binding sample](../sample-payloads/valid-project-document-packet-terminology-request.json);
+its synthetic hashes demonstrate shape, not an executable source approval.
+
+For this explicit binding, preparation and inspection reread the private ledger
+as the authorized source owner, select for that exact recipient and compare the
+whole excerpt with the current result. `PROJECT_PACKET_TERMINOLOGY_STALE` stops
+reuse even when the copied excerpt file has not changed. Missing/invalid ledgers,
+altered definitions, different recipients and missing bindings also stop reuse.
+Do not manually patch a digest or remove the type/binding: regenerate and review
+a new excerpt and packet while retaining historical ones. Recognizable older
+untyped selections require refresh; ordinary prose is not semantically detected
+as terminology. Static schema validation cannot establish live ledger freshness.
+
 At phase changes or resumption, repeat the selection with
 `--expected-sha256 <retained-ledger-digest>`. Changed bytes fail as
 `TERMINOLOGY_STALE`. Compare the new selection, review changed meanings/access
@@ -165,3 +184,15 @@ tamper-proof. Source policies, existing installed links and the user's ignore
 change stayed untouched. Full aggregate/runtime lifecycle and hosted CI were
 not run for this change. Automatic capture, semantic adequacy and actual
 operational recipient acceptance remain unverified.
+
+The next integration exercise reproduced a stale-copy gap: a generic document
+packet considered an unchanged excerpt current after its originating glossary
+changed. Explicit terminology binding now checks that origin too. The focused
+handoff fixtures exercise real preparation and reinspection for both recipient
+providers without a model; they do not establish natural-language understanding.
+Executed on 2026-11-11 after that correction: 12 terminology-handoff cases,
+16 terminology cases, 516 shared-validator cases and 24 existing project-packet
+cases passed. Routing, project inputs, authoring review, installation, preflight,
+control enforcement, handoff generation, indexes and both provider checks also
+passed (19 check groups, plus whitespace). These are local checks, not full
+aggregate/runtime-lifecycle execution, hosted CI or actual receiver acceptance.

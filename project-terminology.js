@@ -115,11 +115,21 @@ function select(value, options) {
   const conflicts = wanted.filter(term => confirmed.filter(entry => [entry.term, ...entry.aliases].some(name => normalize(name) === term)).length > 1);
   const missing = wanted.filter(term => ![...confirmed, ...candidates, ...retired]
     .some(entry => [entry.term, ...entry.aliases].some(name => normalize(name) === term)));
-  return { status: conflicts.length ? "clarification_required" : "review_candidate",
+  return { type: "ProjectTerminologySelection", status: conflicts.length ? "clarification_required" : "review_candidate",
     selection: { domain, task, actor, role, department, terms }, confirmed, candidates, retired,
     conflicts, unavailable_terms: missing,
     authorization_verified: false, can_execute: false, release_authorized: false,
     receiver_acceptance_verified: false };
+}
+
+function projectSelection(repository, options, expectedDigest) {
+  const { value, digest } = read(repository);
+  if (expectedDigest !== undefined && expectedDigest !== digest) fail("STALE");
+  return { ...select(value, options), ledger_sha256: digest };
+}
+
+function renderSelection(selection) {
+  return JSON.stringify(selection, null, 2) + "\n";
 }
 
 function main(argv = process.argv.slice(2)) {
@@ -139,17 +149,16 @@ function main(argv = process.argv.slice(2)) {
       console.log(JSON.stringify({ schema_version: "0.1", type: "ProjectTerminology", repository: identity(values.repository), entries: [] }, null, 2));
       return;
     }
-    const { value, digest } = read(values.repository);
-    if (values["expected-sha256"] !== undefined && values["expected-sha256"] !== digest) fail("STALE");
-    const result = command === "check" ? { status: "structurally_valid", can_execute: false }
-      : select(value, { domain: values.domain, task: values.task, actor: values.actor,
-        role: values.role, department: values.department, terms });
-    console.log(JSON.stringify({ ...result, ledger_sha256: digest }, null, 2));
+    const result = command === "check"
+      ? { status: "structurally_valid", can_execute: false, ledger_sha256: read(values.repository).digest }
+      : projectSelection(values.repository, { domain: values.domain, task: values.task, actor: values.actor,
+        role: values.role, department: values.department, terms }, values["expected-sha256"]);
+    process.stdout.write(renderSelection(result));
   } catch (error) {
     console.error(/^TERMINOLOGY_[A-Z_]+$/.test(error.message) ? error.message : "TERMINOLOGY_UNAVAILABLE");
     process.exitCode = 1;
   }
 }
 
-module.exports = { terminologyIssues, identity, read, select, main, RELATIVE };
+module.exports = { terminologyIssues, identity, read, select, projectSelection, renderSelection, main, RELATIVE };
 if (require.main === module) main();

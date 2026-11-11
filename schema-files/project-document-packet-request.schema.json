@@ -11,6 +11,17 @@
     "type": { "const": "ProjectDocumentPacketRequest" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "task": { "type": "string", "minLength": 1, "maxLength": 12000 },
+    "terminology_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "ledger_sha256", "domain", "task", "terms"],
+      "properties": {
+        "source_id": { "$ref": "common.schema.json#/$defs/id" },
+        "ledger_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "domain": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "task": { "type": ["string", "null"], "minLength": 1, "maxLength": 100 },
+        "terms": { "type": "array", "minItems": 1, "maxItems": 32, "items": { "type": "string", "minLength": 1, "maxLength": 200 } }
+      }
+    },
     "recipient": {
       "type": "object", "additionalProperties": false,
       "required": ["agent_id", "provider", "role", "department", "duty", "authority_level"],

@@ -11,6 +11,10 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} explicit terminology packet binding`,
+    file: `sample-payloads/${prefix}-project-document-packet-terminology-request.json`,
+    type: "project-document-packet-request", exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : ["PROJECT_PACKET_TERMINOLOGY_BINDING_INVALID"] })),
   ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing project terminology`,
     file: `sample-payloads/${prefix}-project-terminology.json`, type: "project-terminology",
     exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
