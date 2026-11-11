@@ -93,6 +93,25 @@ const fixtures = [
 
 fixtures.push(
   {
+    name: "reading assignments keep allowed optional sources separate from required prerequisites",
+    validate() {
+      const manifest = structuredClone(readJson(BASE));
+      const result = project(manifest);
+      assert.strictEqual(result.status, "ready");
+      assert.deepStrictEqual(result.required_documents.map(item => item.path), manifest.role_profiles[0].required_documents);
+      for (const file of manifest.role_profiles[0].optional_documents) {
+        assert(result.allowed_documents.some(item => item.path === file));
+        assert(!result.required_documents.some(item => item.path === file));
+      }
+      for (const provider of ["codex-skills", ".claude/skills"]) {
+        const guide = fs.readFileSync(path.join(ROOT, provider, "controls-doctrine-operator/references/document-routing.md"), "utf8");
+        assert(guide.includes("map each required source to the task claim or boundary"));
+        assert(guide.includes("do not mark every allowed row required"));
+        assert(guide.includes("changing an issued list or dropping controls to obtain a passing review"));
+      }
+    }
+  },
+  {
     name: "raw summary and optional reference-only modes remain distinct and non-authorizing",
     validate() {
       validate(BASE, 0);

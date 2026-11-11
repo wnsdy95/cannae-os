@@ -121,6 +121,8 @@ recommendations. Report partial findings and missing prerequisites if a required
 read is unavailable. An over-broad list needs reviewed reassignment, not silent
 omission. When an advance backbrief is requested, give it before the dependent
 review or drafting, not only as a retrospective final section.
+Announce a required method change before dependent results, not after a calculated
+headline in the final report. A notice cannot authorize an otherwise forbidden change.
 See [Document Routing](references/document-routing.md).
 
 Keep reading scope separate from execution controls. Conditional specialist
@@ -251,6 +253,9 @@ For handoffs, check the headline, assessment and next action as well as the
 unknowns list. Say "not established from these records" when absence or completion
 has not been established; an uncertainty appendix cannot repair a categorical
 claim elsewhere. Distinguish a chosen next step from the only permitted action.
+For numerical reports, use `docs/source-reliability-rubric.md`'s comparison checks:
+separate observations, hypothetical weights and causal evidence. A few weighting
+examples do not prove a ranking for all weights; check the domain and crossover.
 Use actual source files and, for an existing runtime mission, its actual order;
 never fill gaps with demo IDs or fixed dates. Preserve original requirements and
 quoted source claims, then reconcile

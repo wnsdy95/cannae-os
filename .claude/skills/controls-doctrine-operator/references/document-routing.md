@@ -401,6 +401,19 @@ keep the affected review incomplete; independent partial findings may remain
 useful. The assigning operator should select a minimal justified profile, but
 the recipient cannot silently downgrade that issued profile to shorten reading.
 
+Before assignment, map each required source to the task claim or boundary that
+depends on it; name a trigger for each optional reference. Compare this mapping
+with the original request and explicit inputs, not just router recommendations.
+Preserve the projection's separate required and allowed lists when delivering
+context; do not mark every allowed row required. Follow the minimum-sufficient
+reading procedure in `docs/role-document-access-policy.md`. This does not permit
+changing an issued list or dropping controls to obtain a passing review.
+
+Research/progress/status reports and decision summaries select the authoring
+procedure, not subject-matter expertise. Preserve separately declared domain gaps.
+Check actual per-objective wording from each client; a rewritten query that matches
+does not repair the original miss or prove equivalent native behavior.
+
 For native discovery diagnostics, distinguish metadata, a Skill invocation,
 its launch acknowledgement and actual body delivery. Documented optional task
 arguments are not an extra tool or an authority grant. The repository helper

@@ -1,5 +1,23 @@
 # Research Compendium
 
+## Complete Reading Still Needs Claim Review (2026-11-12)
+
+The [research/report exercise](document-authoring-case-study.md#native-research-report-and-required-reading)
+gave each client a justified six-document required profile and a conditional
+optional guide. Both actually read the prerequisites and reported before analysis.
+This supports the corrected read/backbrief behavior at that scope, not automatic
+minimum context selection. A complete read list and correct core arithmetic did
+not prevent Claude from overstating cause, generalizing selected weighting
+examples and recording late method explanation as advance compliance.
+
+Separate observation, hypothetical reweighting and identified causes. Check a
+claimed ranking over its actual domain, and assess the headline and final summary
+as well as caveats. Method notice timing comes from observed message order, not a
+heading. Both skills incorporate these lessons; their new behavioral acceptance
+remains pending. Preserve original reports and separate an operator-proposed
+correction, which cannot repair historical noncompliance. A simultaneous ordinary
+report-wording routing gap is locally fixed without clearing separate domain gaps.
+
 ## Valid Links Can Still Select Stale State (2026-11-12)
 
 The [requirement and navigation audit](document-authoring-case-study.md#current-navigation-and-requirement-audit)

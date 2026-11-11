@@ -2311,3 +2311,86 @@ exact corresponding representations and records separate hashes; it never trims
 or rewrites historical evidence. These failed audit assumptions are retained,
 not reported as source corruption or passing checks. The evidence and local
 appraisal are in `.cannae/maintenance/core-acceptance-audit-20261112/`.
+
+## Native Research Report And Required Reading
+
+A new synthetic research/report task tested the corrected required-reading and
+advance-backbrief guidance in both native clients. This was not another SOP
+review or discovery test: current installed instructions were explicitly supplied.
+The starting HEAD was `0530cc3`; the working-tree minimum-reading additions and
+all delivered guides were separately digest-bound before either process ran.
+Existing verification consent covered the bounded calls. No publication, policy
+adoption, settings changes or new operational authority was granted.
+
+The preparer mapped the original request to three project inputs (sample scope,
+method policy and four aggregate observation rows) and three required guides
+(authoring, knowledge management and source reliability). A handoff guide was
+optional only for a separately requested operational handoff. The owner-only
+synthetic note remained reference-only. The existing projection and packet
+compiler validated these lists; the temporary delivery bridge preserved required
+versus optional rows rather than marking all allowed documents mandatory. This
+is a justified manual assignment, not proof of globally optimal automatic context.
+
+| Observation | Codex | Claude Code |
+| --- | --- | --- |
+| Native version/model | 0.162.1 / gpt-6-astra | 2.1.322 / claude-opus-5-5, requested opus[1m] |
+| Reconciled calls | 9: one route and eight reads, including two rereads | 7: one route and six reads |
+| Unique required reads | 6/6 | 6/6 |
+| Optional/reference-only reads | None | None |
+| Actual advance backbrief | Before the first source read | Before the first source read |
+| Separate method-change notice before results | Observed | Not observed; final explanation followed computed conclusions |
+| Source appraisal | Bounded report acceptable against supplied policy and counts | Changes required despite correct core arithmetic |
+
+Both processes exited zero without a relaunch, with every native tool argument
+and delivered result reconciled to the local log and selected bytes. Native
+message order, not a final self-rating, establishes the backbrief timing. Codex
+reported truncated initial display as the reason for its two successful rereads;
+the repeated reads are observed, but their internal display cause is not separately
+established. Neither process executed the returned validation commands or read
+the optional/owner-only documents. Operational execution and USER adoption remain
+false. These explicit-instruction runs do not replace earlier discovery evidence.
+
+The core counts were A: 20/30 completed, three retries; B: 16/30 completed, six
+retries. Simple-task rates were 90%/80%, complex-task rates 20%/40%. Both reports
+kept completion distinct from acceptance and retained absent duration/cost data.
+Codex labeled its 50:50 reweighting as a hypothetical scenario and preserved the
+limits. Claude asserted that composition caused the aggregate difference and
+generalized selected scenarios to all common weights, despite caveats elsewhere.
+For common simple-task share `w`, the difference is `A-B = 0.30w - 0.20`:
+at `w=0.9`, A is 83% and B 76%, contradicting the universal ranking. The reported
+one-sided arithmetic values (approximately 0.4072 and 0.2507) were locally
+recomputed; correct arithmetic does not establish inferential applicability.
+The method heading and final self-check also falsely counted retrospective
+explanation as advance notice. Keep these defects in the original response.
+
+Both clients independently exposed a router vocabulary gap: ordinary progress/
+decision-summary objectives became capability gaps. The reports preserved those
+cells without standing activation. Both routers now recognize bounded report/
+decision-summary forms, including the exact observed objective wording. Positive,
+near-match negative and separate-domain-gap regressions preserve conservative
+scope. This later local fix is not part of the earlier native source snapshot.
+
+Both skills now require task-to-source reading rationales, preserve optional rows,
+check actual per-objective formulations, announce method changes before dependent
+results and distinguish observations, weighting assumptions and causal evidence.
+The new quantitative/timing guidance and router fix have local checks, not fresh
+native behavioral acceptance. Do not rerun a successful read case merely for a
+cleaner grade; review the actual defective research artifact and changed guidance.
+
+The operator retained an exact original and proposed a separate V2 in the synthetic
+target project's `.cannae/research-reports/SIM-RESEARCH-41/`, not the doctrine
+corpus. It corrects the unsupported interpretations, adds the crossover and
+records the missed method notice without claiming retroactive compliance. Source
+IDs, full digests, data tables, unknowns and authority boundaries remain. This is
+a locally appraised operator revision, not another model response, fresh native
+review or adopted policy. Native response digests (saved final text plus newline):
+
+- Codex: `0db6709d858627876cb6806a48efc025a43cb0618e3b3da5d1c8e4ad6232bc89`.
+- Claude original: `024fa5bf672328c9ea9b7326c87e549cff2219668136f3f82fb08cd281e183f0`.
+- Operator-proposed Claude V2: `546c72807bd74f1ebc19ba1c166f32181e23ca7dbc154d1e5d379f9b8d7b277f`.
+
+Exact sources, assignment rationales, prompts, tool traces, messages, appraisals
+and local revision bindings remain in
+`.cannae/maintenance/research-report-20261112/`. Required reads and initial advance
+reporting now have evidence in both clients; broader semantic quality, method
+timing parity, failure handling and complete G1-G5 acceptance remain open.

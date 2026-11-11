@@ -60,7 +60,10 @@ function assertRoutes(result, expectedRoutes) {
 function testOrdinaryAuthoring(router) {
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
     for (const query of ["Draft this document", "Please revise the document", "Write documents",
-      "Edit our documentation", "Update those documents", "Draft or revise this document", "DRAFT\nTHE DOCUMENT"]) {
+      "Edit our documentation", "Update those documents", "Draft or revise this document", "DRAFT\nTHE DOCUMENT",
+      "Write an evidence-grounded research report", "Progress report", "STATUS\nREPORTS", "Decision briefs",
+      "Draft a progress and decision summary recording actual source reads and calculations, unknowns, USER decisions, and next permitted work.",
+      "Progress and decision summary: what was actually read and computed, unverified items, items requiring USER judgment, and next permitted action"]) {
       const result = route(router, args, query);
       assertRoutes(result, ["document-authoring"]);
       assert(result.capability_routing.matched_capability_routes.includes("document-authoring"));
@@ -70,7 +73,8 @@ function testOrdinaryAuthoring(router) {
       assert(result.validation_commands.includes("node source-map-linter.js"));
       assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
     }
-    for (const query of ["Read this document", "Draft a budget", "Document museum visits"]) {
+    for (const query of ["Read this document", "Draft a budget", "Document museum visits", "Indecision summary",
+      "Progress reporter configuration", "Research reporting database connection"]) {
       const result = route(router, args, query);
       assert(!result.matched_routes.some(r => r.id === "document-authoring"), query);
     }
@@ -78,6 +82,11 @@ function testOrdinaryAuthoring(router) {
     const result = route(router, [...args, `--capability-query=${domain}`, `--capability-query=${writing}`], `${domain}; ${writing}`);
     assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
     assert.equal(result.capability_routing.status, "gap_detected", "A writing match must not clear a separately declared domain gap");
+    const report = "Write a research report and decision summary";
+    const compound = route(router, [...args, `--capability-query=${domain}`, `--capability-query=${report}`], `${domain}; ${report}`);
+    assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    assert.equal(compound.capability_routing.status, "gap_detected");
+    assert.equal(compound.capability_routing.provisional_organization.authority_expansion_authorized, false);
   }
 }
 

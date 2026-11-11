@@ -703,8 +703,9 @@ function keywordMatches(text, keyword) {
 function isDocumentAuthoringRequest(query) {
   const verb = "(?:draft|write|revise|edit|update)";
   const determiner = "(?:(?:a|an|the|this|that|these|those|my|our)\\s+)?";
+  const report = /\b(?:(?:research|progress|status)\s+reports?|(?:progress\s+and\s+)?decision\s+(?:summar(?:y|ies)|briefs?))\b/i;
   return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
-    .test(String(query || ""));
+    .test(String(query || "")) || report.test(String(query || ""));
 }
 
 function isCorpusOrientationRequest(query) {

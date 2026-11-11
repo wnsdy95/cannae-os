@@ -2,6 +2,14 @@
 
 ## Skill-First Scope And Authoring
 
+The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
+uses synthetic aggregate counts, not external military or statistical evidence.
+Both clients read six required documents and give advance backbriefs; source
+appraisal retains unsupported causal/weighting claims and late method notice in
+one report. Local arithmetic and an operator correction do not establish causal
+inference, fresh native acceptance or policy adoption. The minimum-reading and
+quantitative-review additions are project operating practices.
+
 The [current-navigation audit](document-authoring-case-study.md#current-navigation-and-requirement-audit)
 found a valid but stale V4 pointer after V5 existed. Current links now name the
 unadopted candidate while original evidence remains historical. The separate

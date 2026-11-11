@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Verify six required reads and actual advance backbriefs in fresh native Codex/Claude research-report tasks. Preserve a Claude interpretation and method-timing failure and a separately appraised, project-local operator correction. Add task-to-source reading rationale and quantitative/timing checks to both skills. Fix the observed ordinary report/decision-summary vocabulary gap with exact-query, near-match and separate-domain regressions; later corrections have local checks, not new native acceptance or USER adoption.
+
 - Reconcile stale current-candidate pointers with proposed support SOP V5 without rewriting earlier drafts or implying adoption. Separate the active requirement-level queue from retained checkpoint next actions, and mirror pointer/history and evidence-representation checks in both maintenance guides. Locally appraise the exact four-span actor/phase follow-up and recheck its seven historical native records and unchanged remainder; this is not a new native review or full goal acceptance.
 
 - Observe native Claude implicit selection and cold-start receipt of the unchanged Codex SOP/handoff unit. Reconcile seven calls and both objective rows; retain missing mandatory reads, a locator overclaim and retrospective reporting instead of declaring complete review acceptance. Mirror required-reading and advance-reporting rules in both skills. Preserve observer failures and a separately recorded retry; add exact native body/argument verification with regression cases, without weakening no-tool review controls or inferring policy adoption.

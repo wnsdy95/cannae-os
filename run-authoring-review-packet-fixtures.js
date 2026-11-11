@@ -137,6 +137,20 @@ try {
       assert(skill.includes("not only as a retrospective final section"));
     }
   });
+  fixture("method timing and quantitative comparison guidance remain explicit in both clients", () => {
+    assert(packet.prompt.includes("method section after an already calculated headline is retrospective"));
+    assert(packet.prompt.includes("does not reveal unobserved internal computation"));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Announce a required method change before dependent results"));
+      assert(skill.includes("examples do not prove a ranking for all weights"));
+      assert(skill.includes("docs/source-reliability-rubric.md"));
+    }
+    const rubric = fs.readFileSync(path.join(__dirname, "docs/source-reliability-rubric.md"), "utf8");
+    assert(rubric.includes("Separate observed group differences, arithmetic scenarios and identified"));
+    assert(rubric.includes("formula and crossover before making a universal claim"));
+    assert(rubric.includes("Correct arithmetic cannot repair an unsupported interpretation"));
+  });
   fixture("reviewed V1/V2 and V3 candidates retain their exact historical bytes", () => {
     const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
     assert.equal(hash(section(text, "## SOP Draft V1", "## Requirement Comparison")),

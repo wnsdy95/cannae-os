@@ -84,6 +84,35 @@ Required elements:
 - `documents`: path, classification, owner, allowed roles, duties, minimum authority, delivery mode.
 - `controls`: need-to-know, no bulk read, audit, exception approval, source of truth.
 
+### Minimum Sufficient Reading
+
+Before issuing a profile, map each requested output, explicit input and applicable
+constraint to the source needed to establish it. Use the document's `rationale`
+and a short assignment note; do not add undeclared fields to the manifest.
+Classify each candidate as follows:
+
+- Required: name the task claim, procedure or boundary that cannot be assessed
+  without this document. Include explicitly requested inputs and indispensable
+  policy dependencies even when a recommendation ranks them low.
+- Optional: name the condition that makes this allowed reference useful. A
+  related topic or role-wide recommendation alone does not make it required.
+- Excluded or reference-only: retain the reason and any resulting unknown. A
+  reference-only record cannot supply a fact needed for a completed conclusion.
+
+Check the mapping against the original request, not only the proposed reading
+list. A smaller list is not better if it loses an obligation. Do not automatically
+copy every router recommendation or every default role document into a new
+task-specific required list. Conversely, never remove issued controls or relabel
+an existing required input to obtain a shorter or passing run. A changed task or
+new dependency needs reviewed reassignment and rerouting at the current authority.
+
+Carry the projection's `required_documents` separately from `allowed_documents`;
+allowed optional rows are not mandatory reads. A delivery adapter must preserve
+that distinction instead of marking every allowed row required. Record actual
+reads and unresolved prerequisites in the report. This selection is an operator
+judgment to verify against observed work, not proof of semantic minimality or an
+authorization decision made by the lexical router.
+
 ## 7. Runner Usage
 
 `document-access-runner.js` takes a manifest and projects only the documents that a specific role is permitted to read.

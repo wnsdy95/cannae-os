@@ -174,11 +174,21 @@ sources, expose restricted history or drop a requirement to complete the map.
 At review completion, reconcile the assigned required reading with actual reads,
 not just eligible delivery. Unread required sources leave the dependent review
 incomplete even when some policy comparisons are valid; state those partial
-findings separately. A preparer should justify a minimal reading profile, but
-the recipient cannot reclassify its required rows as optional recommendations.
+findings separately. A preparer should justify a minimal reading profile using
+the [task-to-source mapping](role-document-access-policy.md#minimum-sufficient-reading),
+but the recipient cannot reclassify required rows as optional recommendations.
 When an advance backbrief is requested, provide purpose, work, authority, limits
 and the proposed sequence before dependent analysis. A final retrospective
 section is not evidence that an advance report occurred.
+
+The same timing rule applies when a method change must be announced: report its
+reason and retained boundaries before dependent calculation or drafting. A
+method section after an already calculated headline is retrospective, even if
+titled "before applying". Use the observable message order when assessing this
+duty; it does not reveal unobserved internal computation. A method notice is not
+permission for a change that needs USER approval. For numerical reports, use the
+[quantitative comparison checks](source-reliability-rubric.md#quantitative-document-comparisons)
+to keep observed differences, hypothetical weights and causal evidence separate.
 
 State the categories of material withheld from a reviewer without revealing
 their verdicts. A review matrix excluded to avoid priming is not evidence that

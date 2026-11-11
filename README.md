@@ -660,6 +660,12 @@ retains historical V1/V2 stress cases; it does not evaluate V3/V4/V5 or establis
 independent acceptance. Ordinary prose
 handoffs do not require invented runtime IDs; existing missions keep their guards.
 
+The [native research/report case](docs/document-authoring-case-study.md#native-research-report-and-required-reading)
+observes both clients reading all six justified prerequisites and reporting before
+analysis. It also retains a Claude interpretation/timing failure, a separately
+proposed correction and a locally fixed report-wording routing miss. Successful
+document delivery is not complete report quality or policy adoption.
+
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
 requires an explicit [source request](schema-files/handoff-generation-request.schema.json).
 It reads the selected OPORD/events, preserves quoted requirements and source
