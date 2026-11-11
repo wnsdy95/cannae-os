@@ -9,7 +9,7 @@ explicit user statements and AI candidates have different evidentiary status.
 The local helper checks revision chains and selects relevant role/department
 records without authorizing work or transfer. This is an internal design and
 deterministic implementation, not a new military-source finding or proven
-natural-language adoption rate. Actual model capture and receiver use remain open.
+natural-language adoption rate. Automatic capture and operational receiver use remain open.
 An integration probe subsequently changed the glossary while leaving its excerpt
 untouched; generic packet inspection still reported that excerpt current.
 The explicit terminology binding now checks both source layers for the declared
@@ -21,6 +21,11 @@ meanings cannot satisfy it. Existing packets without that declaration remain
 unassessed. This local design addresses declared input adequacy, not automatic
 requirement extraction; both skills preserve dependent holds and permit unrelated
 drafting with explicit unknowns instead of erasing the missing requirement.
+The [approved dialogue exercise](project-terminology-workflow.md#approved-dialogue-exercise-2026-11-11)
+adds one native supplied-guidance result: initial entries and correction lineage
+were preserved, uncertain meanings remained candidates and owner-only content
+was excluded from recipient prose. Source appraisal and structural validation
+support that case only, not automatic discovery, live delegation or policy adoption.
 
 ## Failure Evidence Before Retry (2026-11-11)
 

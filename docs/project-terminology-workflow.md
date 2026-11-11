@@ -205,9 +205,49 @@ against an editor, provide concurrent-write transactions or prove actual
 recipient understanding. Coordinate a single writer, compare the predecessor
 before saving, and merge delegates' reported candidates under existing write
 authority rather than allowing simultaneous full-ledger edits. Retain history
-and re-read after edits. Actual natural-language
-capture and multi-agent use remain unverified until observed, separately
-authorized exercises are completed. No dashboard or infrastructure claim follows.
+and re-read after edits. The approved synthetic dialogue exercise below observes
+supplied-guidance capture, not automatic collection or actual multi-agent use.
+Those broader behaviors remain unverified. No dashboard or infrastructure claim follows.
+
+## Approved Dialogue Exercise (2026-11-11)
+
+USER approved one 63,934-byte synthetic Korean dialogue input on source
+`55dc466a631190f9f48a30ab7db4410eb8e2a103`. Codex CLI 0.162.1 with the
+configured default `gpt-6-astra` completed in 214.158 seconds, with one JSON
+response, two diagnostic items and zero observed tool events. The author
+reference answers and real customer data were excluded. Raw input, response,
+execution and source-appraisal records are retained in local maintenance evidence.
+
+- Input SHA-256: `ec2beb7e49dd2014cbf8273ae937edcdc86f3b78dc115cf76e2fc12458d1b0f5`.
+- Response SHA-256: `dd3e21fed6f72bd519fb41def27f4bc46b8bc74e966ebfdb97da102cb4e1fc95`.
+
+The response preserved all three original ledger records and appended the ICP
+correction as v2, adding reporting cadence without absorbing persona into ICP.
+The task-scoped ready definition did not become execution approval. Earlier ready
+and activation interpretations remained candidates; repeated team notes did not
+confirm them. Newly added concepts retained only S3/sales eligibility. Owner-only
+details stayed in the private ledger and out of the handoff and other prose.
+
+The eight-entry ledger passed shared validation with `can_execute: false`, and
+all eight source excerpts matched the supplied statements. Local in-memory
+selection produced four confirmed meanings and two candidates for S3/sales,
+without a confirmed conflict or owner-only definition. The synthetic repository
+identity was preserved, not rebound to an actual project. Raw output was not repaired.
+
+Source appraisal found no material contradiction with the seven withheld case
+expectations: revision preservation, current meaning, uncertainty, confidentiality,
+retained decisions, bounded handoff and material questions. Both accounts remained
+unclassified because concrete fit criteria were missing. The SOP/handoff preserved
+contact, CRM-change and publication prohibitions, identified unexecuted checks
+and did not invent digests or receiver acceptance. These are observations for one
+case, not a universal score or independent organizational review.
+
+The complete entrypoint and selected procedures were supplied to the model.
+Automatic skill discovery, native routing, actual delegated delivery, tool use
+and operational receiver understanding were not exercised. Tool-event monitoring
+is not pre-dispatch isolation. The subsequent `required_terms` implementation
+has separate deterministic evidence; this older-source response does not validate
+that new instruction or establish completion of G1-G5.
 
 ## Local Verification Checkpoint
 

@@ -18,6 +18,10 @@ was not a readiness check. The optional `required_terms` packet declaration now
 tests that explicit subset for unique confirmed meanings before publication.
 Legacy bindings stay unassessed. The same handoff fixtures cover the contract;
 operator declarations are not proof of semantic completeness or authority.
+The workflow's [approved dialogue exercise](project-terminology-workflow.md#approved-dialogue-exercise-2026-11-11)
+records one separately consented native response with supplied instructions and
+synthetic sources. Its hashes and scoped appraisal are local execution evidence,
+not new military doctrine, automatic skill selection or operational acceptance.
 
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.

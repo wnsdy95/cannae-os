@@ -10,6 +10,17 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G3/G4 evidence: one explicitly approved synthetic terminology dialogue
+exercise completed with the actual source entrypoint supplied. The response
+preserved initial records, appended ICP v2, kept inferred meanings tentative,
+excluded owner-only details from the recipient text and retained unknown criteria
+and USER decisions. Its eight-entry ledger passed local validation; source
+appraisal found no material contradiction with the seven withheld case criteria.
+See [the approved dialogue exercise](project-terminology-workflow.md#approved-dialogue-exercise-2026-11-11).
+This is one supplied-guidance case on the recorded older source, not automatic
+discovery, native routing, actual tool execution, current required-term behavior
+or operational handoff acceptance. All five objectives remain open.
+
 Latest G2/G3/G4 work distinguishes terminology freshness from declared input
 adequacy. Packets may declare `required_terms`; each must resolve to one confirmed
 accessible meaning before preparation or rendering. Missing, candidate-only,
@@ -52,8 +63,8 @@ terminology excerpts to the original project ledger and selected recipient.
 The local probe reproduced acceptance of stale meaning behind an unchanged copy;
 reinspection now rejects that condition, altered selections and missing bindings.
 This is a source-freshness prerequisite, not actual recipient understanding or
-natural-language capture. The dialogue-based acceptance exercise remains next
-and requires a fresh exact-input decision before any additional native model call.
+natural-language capture. The subsequently approved dialogue exercise adds
+bounded supplied-guidance evidence, not automatic client execution or operational acceptance.
 Executed locally: 12 terminology-handoff, 16 terminology, 516 validator and 24
 project-packet cases passed with the existing routing/installation/authoring
 checks. Both provider entrypoints carry the source-versus-copy freshness lesson.
@@ -70,9 +81,10 @@ passed alongside the existing authoring, packet, installation, preflight and
 handoff checks. A same-path repository replacement initially bypassed path-only
 binding; the added regression now rejects it using local directory identity.
 See the workflow's verification checkpoint for exact scope and remaining limits.
-Next terminology acceptance: observe actual user-definition capture, an inferred
-candidate, a correction and a recipient backbrief without silently changing
-meaning or authority. Any additional native model call needs fresh consent.
+The subsequently approved dialogue exercise observes user-definition capture,
+an inferred candidate, a correction and a drafted recipient backbrief. Actual
+native delegation and receiver acceptance remain open; local validation cannot
+substitute for separately authorized model or operational work.
 
 Latest G1/G3/G4 evidence: USER approved one current-V3 review with the actual
 entrypoint included in the exact 48,049-byte input. The native CLI completed in
