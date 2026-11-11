@@ -127,6 +127,48 @@ text; existing source classification, duty and authority checks still apply.
 See the [binding sample](../sample-payloads/valid-project-document-packet-terminology-request.json);
 its synthetic hashes demonstrate shape, not an executable source approval.
 
+### Declared Task Prerequisites
+
+Current excerpt bytes do not prove the task has every required meaning. At the
+backbrief, identify which selected terms are prerequisites for the requested
+conclusions or actions. Put those terms in `terminology_binding.required_terms`,
+a normalized unique subset of `terms`. Compare that list with the original
+request, not just the available definitions. Optional context and deliberately
+excluded terms need not become prerequisites. Do not drop an actual requirement
+or change access merely to obtain a passing check.
+
+For a nonempty declaration, each required term must match exactly one accessible
+confirmed definition, with no confirmed conflict. Matching uses the selection's
+Unicode NFC, whitespace and case normalization and exact aliases. A newer
+candidate does not displace the last confirmed revision. Candidate-only,
+retired, missing, inaccessible or conflicting terms stop preparation as
+`PROJECT_PACKET_REQUIRED_TERMINOLOGY_UNRESOLVED`; no new packet is published.
+Static validation/rendering checks the delivered rows too, while actual
+preparation/inspection still reselects from the current private ledger.
+
+Preparation/inspection reports a separate `terminology_readiness`:
+
+| Status | Meaning |
+| --- | --- |
+| `not_applicable` | No terminology binding; no terminology completeness claim. |
+| `not_assessed` | Legacy binding without a required-term declaration; freshness only. |
+| `no_required_terms_declared` | An explicit empty list, not proof that no prerequisites exist. |
+| `declared_requirements_satisfied` | Only the declared meanings resolve; not full task completeness or authority. |
+
+New terminology handoffs should carry the reviewed declaration, including `[]`
+when none is needed. Legacy bindings remain readable without changing their
+original prompt bytes; they never silently become assessed. New declarations
+are included in the exact recipient prompt and covered by its digest. Review
+a new packet before transfer; do not edit declarations inside retained packets
+or reuse an old exact-input approval.
+
+If a required meaning is unavailable, hold the dependent conclusion or action
+and report the missing input. Other permitted drafting can retain explicit
+unknowns and questions; do not stop unrelated work unnecessarily. A declaration
+is operator-supplied, not automatically inferred or authenticated. Removing it
+can still produce a non-authorizing legacy candidate, so operators must retain
+the original requirement and cannot treat top-level currentness as clearance.
+
 For this explicit binding, preparation and inspection reread the private ledger
 as the authorized source owner, select for that exact recipient and compare the
 whole excerpt with the current result. `PROJECT_PACKET_TERMINOLOGY_STALE` stops

@@ -70,6 +70,12 @@ For recurring or ambiguous user terms, follow
 [Project Terminology Workflow](project-terminology-workflow.md). Capture explicit
 definitions locally, keep inferred meanings as candidates, and include relevant
 scopes and versions in the backbrief. Meaning agreement never changes authority.
+Separate meanings required for this result from optional or excluded vocabulary.
+For a terminology-bound handoff, declare `required_terms` and check their
+assessment separately from packet freshness. Hold only dependent conclusions
+when an essential meaning is unresolved; preserve other permitted drafting and
+explicit unknowns. Compare the declaration with the original request rather
+than assuming a passing subset is a complete task.
 
 Use existing schema fields when the artifact already has a contract. For a
 plain Markdown document, include the following when relevant; do not invent

@@ -145,6 +145,13 @@ not silent adoption as the current project's vocabulary.
 When handing off a terminology excerpt, use the packet's explicit terminology
 binding and recheck its original ledger as well as the excerpt. Unchanged copied
 text is not evidence of current meaning; never remove the binding to bypass a hold.
+At backbrief, distinguish required meanings from optional or deliberately excluded
+terms. Declare the prerequisites in `terminology_binding.required_terms`; an
+absent assessment or empty declaration does not prove task completeness. Hold
+dependent conclusions when required meanings are unavailable, candidate-only,
+retired or conflicting; continue other permitted drafting with explicit unknowns.
+Do not drop a requirement or change access to obtain a passing packet. Compare
+the declaration with the original request before transfer and on rebrief.
 
 1. Choose an existing canonical document and format: quick task brief, SOP,
    OPORD/task order, FRAGO, SITREP/CCIR, research record, AAR or handoff.

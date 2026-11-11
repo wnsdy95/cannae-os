@@ -10,6 +10,16 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G2/G3/G4 work distinguishes terminology freshness from declared input
+adequacy. Packets may declare `required_terms`; each must resolve to one confirmed
+accessible meaning before preparation or rendering. Missing, candidate-only,
+retired and conflicting required meanings stop publication, while optional terms
+stay separate. Legacy bindings report `not_assessed`, not readiness. Both skills
+require comparing the declaration with the original request, preserving dependent
+holds and continuing other permitted drafting with explicit unknowns. This is
+not automatic prerequisite extraction, authenticated authority or general
+semantic completeness; actual client application remains unverified.
+
 Latest G2/G4/G5 work separates explicitly declared objectives during direct
 intake. Repeated capability queries no longer silently overwrite earlier ones;
 each gets a diagnostic row, and any detected gap preserves one request-level

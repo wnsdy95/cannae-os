@@ -12,6 +12,12 @@ The subsequent project-packet binding addresses a locally reproduced stale-copy
 gap: unchanged excerpt bytes did not prove the glossary remained current.
 `run-project-terminology-handoff-fixtures.js` exercises the actual packet path;
 this evidence is source-binding behavior, not semantic or native-agent acceptance.
+A separate installed-helper exercise produced a current packet after access to
+a task-required term was withdrawn: the missing term was visible, but freshness
+was not a readiness check. The optional `required_terms` packet declaration now
+tests that explicit subset for unique confirmed meanings before publication.
+Legacy bindings stay unassessed. The same handoff fixtures cover the contract;
+operator declarations are not proof of semantic completeness or authority.
 
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.

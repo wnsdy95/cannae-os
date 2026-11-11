@@ -252,6 +252,11 @@ prompt changes require fresh preparation and any necessary new review/consent.
 It returns `review_candidate_current`; all approval/execution/release/receiver
 acceptance flags stay false. A supplied digest is not proof of USER consent.
 The check is point-in-time, not an atomic transfer or continuous monitor.
+For terminology-bound tasks, inspect `terminology_readiness` separately from
+currentness and review the declared prerequisites against the original request.
+Missing declarations remain unassessed. Explicit unresolved prerequisites stop
+preparation; optional or excluded terms do not become required automatically.
+See the terminology workflow's [declared task prerequisites](project-terminology-workflow.md#declared-task-prerequisites).
 
 Only propose `prompt.md` for the named recipient; never substitute `packet.json`,
 which contains private local paths and preparation metadata. Before an actual

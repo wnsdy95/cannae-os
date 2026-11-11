@@ -16,9 +16,41 @@ const OUTPUT = ".cannae/document-packets";
 const sha256 = value => crypto.createHash("sha256").update(value).digest("hex");
 const fail = code => { throw new Error(code); };
 const equal = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const normalizeTerm = value => value.normalize("NFC").trim().toLowerCase();
+
+function requiredTermNames(binding) {
+  const required = binding.required_terms;
+  if (!Array.isArray(required) || required.length > 32 ||
+      required.some(term => typeof term !== "string" || !term.trim() || term.length > 200) ||
+      !Array.isArray(binding.terms) || binding.terms.some(term => typeof term !== "string")) return null;
+  const names = required.map(normalizeTerm), selected = binding.terms.map(normalizeTerm);
+  return new Set(names).size === names.length && names.every(term => selected.includes(term)) ? names : null;
+}
+
+function terminologyReadiness(request, documents) {
+  const binding = request.terminology_binding;
+  if (!binding) return { status: "not_applicable", required_term_count: 0 };
+  if (!Object.hasOwn(binding, "required_terms")) return { status: "not_assessed", required_term_count: null };
+  const required = requiredTermNames(binding);
+  if (required === null) return { status: "invalid", required_term_count: null };
+  if (!required.length) return { status: "no_required_terms_declared", required_term_count: 0 };
+  let selection;
+  try { selection = JSON.parse(documents.find(item => item.id === binding.source_id)?.content); } catch { /* Not a usable selection. */ }
+  const confirmed = Array.isArray(selection?.confirmed) ? selection.confirmed : [];
+  const matches = (entry, term) => entry?.status === "confirmed" && entry.scope?.domain === binding.domain &&
+    (entry.scope.task === null || entry.scope.task === binding.task) && typeof entry.term === "string" &&
+    Array.isArray(entry.aliases) && [entry.term, ...entry.aliases].some(name => typeof name === "string" && normalizeTerm(name) === term);
+  const conflicts = Array.isArray(selection?.conflicts) ? selection.conflicts.filter(term => typeof term === "string").map(normalizeTerm) : [];
+  const unresolved = required.filter(term => conflicts.includes(term) || confirmed.filter(entry => matches(entry, term)).length !== 1);
+  return { status: unresolved.length ? "unresolved" : "declared_requirements_satisfied",
+    required_term_count: required.length, unresolved_term_count: unresolved.length };
+}
 
 function outboundData(request, documents) {
   return { task: request.task, recipient: request.recipient,
+    ...(request.terminology_binding && Object.hasOwn(request.terminology_binding, "required_terms")
+      ? { terminology_requirements: { required_terms: request.terminology_binding.required_terms,
+        ...terminologyReadiness(request, documents) } } : {}),
     documents: documents.map(({ source_metadata, ...document }) => document) };
 }
 
@@ -43,6 +75,9 @@ function requestIssues(request) {
     if (!source || source.delivery_mode !== "raw" || !source.required || !binding.domain.trim() ||
         (binding.task !== null && !binding.task.trim()) || binding.terms.some(term => !term.trim())) {
       add("PROJECT_PACKET_TERMINOLOGY_BINDING_INVALID", "$.terminology_binding");
+    }
+    if (Object.hasOwn(binding, "required_terms") && requiredTermNames(binding) === null) {
+      add("PROJECT_PACKET_REQUIRED_TERMINOLOGY_INVALID", "$.terminology_binding.required_terms");
     }
   }
   if (![request.task, ...Object.values(recipient)].every(value => value.trim())) add("PROJECT_PACKET_CONTEXT_EMPTY", "$.recipient");
@@ -102,6 +137,9 @@ function terminologyExcerptIssues(request, documents) {
     if (!marked || document.delivery_mode !== "raw" || selected.ledger_sha256 !== binding.ledger_sha256 ||
         !equal(selected.selection, expected)) issue("PROJECT_PACKET_TERMINOLOGY_EXCERPT_MISMATCH");
   }
+  const readiness = terminologyReadiness(request, documents);
+  if (readiness.status === "invalid") issue("PROJECT_PACKET_REQUIRED_TERMINOLOGY_INVALID");
+  if (readiness.status === "unresolved") issue("PROJECT_PACKET_REQUIRED_TERMINOLOGY_UNRESOLVED");
   return issues;
 }
 
@@ -324,6 +362,7 @@ function inspect(packetPath, expectedDigest, repository) {
   if (!prompt.equals(Buffer.from(renderPrompt(packet)))) fail("PROJECT_PACKET_PROMPT_MISMATCH");
   return { status: "review_candidate_current", packet_sha256: sha256(bytes), prompt_sha256: sha256(prompt),
     prompt_bytes: prompt.length, recipient: packet.request.recipient,
+    terminology_readiness: terminologyReadiness(packet.request, packet.documents),
     document_count: packet.documents.length, authorization_verified: false, execution_authorized: false,
     release_authorized: false, receiver_acceptance_verified: false };
 }

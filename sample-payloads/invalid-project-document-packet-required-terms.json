@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectDocumentPacketRequest",
+  "id": "PDR-INVALID-REQUIRED-TERMS",
+  "task": "Draft using SRC-TERMS. Do not publish.",
+  "recipient": { "agent_id": "writer", "provider": "codex", "role": "S3", "department": "sales", "duty": "operations_planning", "authority_level": "L1" },
+  "documents": [{
+    "id": "SRC-TERMS", "path": "review/terms.json", "required": true, "classification": "internal",
+    "allowed_roles": ["S3"], "allowed_departments": ["sales"], "duties": ["operations_planning"],
+    "minimum_authority_level": "L1", "delivery_mode": "raw",
+    "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }],
+  "terminology_binding": {
+    "source_id": "SRC-TERMS", "ledger_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "domain": "sales", "task": null, "terms": ["ICP"], "required_terms": ["persona"]
+  }
+}

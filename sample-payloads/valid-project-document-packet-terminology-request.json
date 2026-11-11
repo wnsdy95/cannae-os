@@ -38,6 +38,9 @@
     "task": null,
     "terms": [
       "ICP"
+    ],
+    "required_terms": [
+      "ICP"
     ]
   }
 }

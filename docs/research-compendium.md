@@ -14,6 +14,13 @@ An integration probe subsequently changed the glossary while leaving its excerpt
 untouched; generic packet inspection still reported that excerpt current.
 The explicit terminology binding now checks both source layers for the declared
 recipient, without treating static schema validation as live-source freshness.
+An installed-helper exercise also preserved a missing required term inside a
+current non-authorizing packet. The explicit `required_terms` declaration adds
+a separate prerequisite check: unavailable, candidate-only, retired or conflicting
+meanings cannot satisfy it. Existing packets without that declaration remain
+unassessed. This local design addresses declared input adequacy, not automatic
+requirement extraction; both skills preserve dependent holds and permit unrelated
+drafting with explicit unknowns instead of erasing the missing requirement.
 
 ## Failure Evidence Before Retry (2026-11-11)
 
