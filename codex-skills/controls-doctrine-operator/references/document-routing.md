@@ -172,6 +172,19 @@ Record the actual offered tools; feature switches alone do not prove an empty
 tool list. Keep real credentials/configuration unchanged and obtain separate
 scope approval before any actual-model verification.
 
+For an approved tool-assisted check, inspect client-native tools separately from
+the selected server's allowlist. A read-only server may coexist with native
+resource helpers; inspect exposed resources as well as tool names. Keep the
+required client tool bridge available within the approved invocation, rather
+than treating every disabled feature as a stronger test. Diagnose its failure
+without enabling unrelated actions or changing persistent user settings.
+The [Codex receiving case](../../../docs/document-authoring-case-study.md#native-codex-routing-and-receiving)
+returned a blocked answer with no MCP calls despite an advertised catalog; client
+errors showed a rejected discovery attempt. Its separate retry made actual reads.
+Reconcile call identities, arguments and results with source bindings, allowing
+parallel completions and repeated reads. Such observation is not a pre-call gate,
+proof of minimal context, or permission to weaken a no-tool review's controls.
+
 Claude's selected request contained the complete Markdown body without YAML
 frontmatter; compare the appropriate instruction body rather than demanding
 Codex's full-file envelope. Do not confuse this with proof that every frontmatter

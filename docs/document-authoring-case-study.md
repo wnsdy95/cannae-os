@@ -1469,3 +1469,98 @@ installation passed 29 cases, preflight 11/11 and mission lifecycle 33/33.
 The retained initial failure is not erased, and these checks are not the full
 repository aggregate or hosted CI. Final fixture and documentation rechecks are
 recorded with the local evidence rather than inferred from the earlier pass.
+
+## Native Codex Routing And Receiving
+
+On 2026-11-12, standing USER verification consent covered the same CAT-47
+V1-author/V2-receiver task through native Codex CLI 0.162.1 and the existing
+default model, `gpt-6-astra`. The S6/knowledge/L1 receiver received the actual
+original author draft, both policies and source-origin map through the read tools,
+not the prior Claude receiver's verdict or preparer grades. The exact initial
+prompt was 2,207 bytes, SHA-256
+`c5c351882aca6a91a167560adf2ff1d67a5acdcaaf224bb6693c43579d468aa9`.
+It contained task instructions and the fixed recipient, not source bodies.
+Both attempts bind source commit `48535d9` and retained instruction snapshots.
+
+### Failed Availability Check And Diagnosed Retry
+
+The first process finished after 30.338 seconds with exit 0 and a blocked
+response, not a completed revision. The test invocation had disabled the client
+tool bridge (`code_mode_host`). A loopback capture and local MCP checks showed
+the document catalog, but native startup and stderr reported the unavailable
+bridge. No document-helper call occurred. The response acknowledged unread
+sources, retained the task boundaries and did not fabricate policy findings.
+Its reported discovery attempt and client error mean that zero MCP-call items
+cannot be described as zero attempted tools.
+
+A separate retry retained the normally enabled bridge for that invocation only.
+It preserved the same prompt, model, source/access profile and two permitted
+document operations. No persistent configuration or credentials were changed
+or copied. A new loopback capture, exact-environment login and local profile
+checks preceded execution. One native process was permitted per attempt, with a
+ten-minute/24-call bound and no automatic relaunch. Internal transport-request
+counts were not captured; a process is not a single provider request.
+
+Both local captures offered the two document tools and four native helpers:
+resource listing, resource-template listing, resource reading and user input.
+The configured server advertised no resources; local SDK lists were empty and
+resource reads rejected. The original precheck incorrectly expected listing to
+throw; that test assumption was corrected before model execution. The server's
+tool allowlist did not remove native helpers. An event observer is detection,
+not a pre-dispatch gateway or universal host-access boundary.
+
+### Observed Delivery And Source Appraisal
+
+The retry completed after 67.119 seconds, exit 0: one fresh route and thirteen
+reads of ten distinct sources. Three reads were repeated. All fourteen native
+call arguments and completed results reconcile with helper records, selected
+source IDs and delivered digests, including out-of-order completions. Six local
+audit mutations rejected missing records, altered arguments, failed calls,
+wrong roles, stale route IDs and changed content; these were not native attacks.
+The reference-only owner body was absent from prompt, tool records and response.
+Owned processes were terminal when checked.
+
+| Source requirement | Appraisal of the actual response |
+| --- | --- |
+| Original request and scope | Preserves purpose/backbrief, plan, observations, obligations, next action, decisions and prohibitions; returns a draft, not canonical-file edits. |
+| V2 P3 change | Replaces the one-retry proposal with a hold on all retry planning until USER incident review and a new CAT-47/V2 decision; matching evidence or V1 clearance is insufficient. |
+| Unchanged P1/P2/P4-P7 | Preserves affected-work stop, evidence retention, CAT-R8 reporting, separate cost/deadline/retention/classification decisions and pre/post-action reporting. |
+| Partial evidence and terms | Keeps the seven-of-eight report distinct from verification; normalizes UTC/+09:00 chronology; says completion is not established rather than globally absent. Supplied meanings are not ledger-confirmed entries. |
+| Attribution and permitted work | Separates historical S3 authorship from current S6 review, retains the V1 alias map, permits an unsent evidence request and unaffected drafting, and does not adopt embedded approval text. |
+
+The final JSON text SHA-256 is
+`71b27b6d965d4edcff8fb4fcf64e7f541238b75e1c9f8e3bf2e4610076b69ac7`.
+The handoff is 495 whitespace-delimited words; the full response includes a
+separate change/check/unknowns report. This is source appraisal of one synthetic
+case, not a general semantic detection rate, independent operational review or
+observed adoption by a later receiver. Native usage reported 27,266 input/903
+output tokens for the failed task and 118,206 input/2,255 output for the retry;
+these are client counters, not a bill or independent request count.
+
+### Reusable Change And Remaining Work
+
+Both provider skills now distinguish advertised tools, rejected attempts and
+completed current-route/source calls. Hold source-dependent work when the
+authorized tool path fails; do not invent content or substitute an earlier
+agent's route. Diagnose the actual bridge and catalog before a bounded retry,
+without broadening task authority or weakening a no-tool review's rules.
+
+The router recommended 60 documents. Actual reading was restricted to the ten
+sources in a preparer-selected profile, so this does not prove minimal semantic
+selection. Task relevance, compact cold-start transfer, implicit selection and
+broader failure/replanning/reporting cases remain open. The optional plugin is
+not packaged; the temporary adapter remains test apparatus. No catalog job,
+publication, policy adoption, remote push or authority expansion followed.
+
+Exact inputs, launch records and failure evidence are retained locally under
+`.cannae/maintenance/codex-agent-routing-20261112/`; the separately consumed retry,
+raw events, response, trace audit and source appraisal are under
+`.cannae/maintenance/codex-agent-routing-retry-20261112/`. Product guidance changed
+after these native calls; those calls used the retained earlier snapshots, not
+the subsequently edited text. Focused post-edit checks are recorded separately.
+
+The post-edit run passed all fifteen focused check groups: authoring-review,
+routing, document-input, project-packet, installation, discovery-helper, both
+skill validators/coverage checks, source map, registry, links, English-only and
+diff checks. This is not the full runtime aggregate, shared validator or hosted
+CI. The existing no-tool review classifiers were not loosened for this exercise.

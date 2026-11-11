@@ -10,6 +10,21 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G2/G3/G4/G5 evidence: native Codex now invokes the router and document
+reader on the same synthetic V1-to-V2 receiving case used for Claude. A first
+process could see the catalog but could not invoke it because the test launch
+disabled its client tool bridge; it returned a blocked answer, not a revision.
+The separately diagnosed retry completed one route and thirteen reads of ten
+distinct sources. All fourteen calls/results reconcile with source digests;
+reference-only content stays excluded. Source appraisal confirms the V2 planning
+hold, preserved duties, scoped unknowns and user authority in this case. See
+[Codex routing and receiving](document-authoring-case-study.md#native-codex-routing-and-receiving).
+Both skills now distinguish catalog visibility, rejected attempts and completed
+reads. Recommendations still numbered 60 and reading used a preparer-selected
+profile; minimal routing, implicit selection and broader workflow/client parity
+remain open. Prioritize task-level reading relevance next, retaining required
+inputs and controls. Do not repeat this chain merely to obtain another pass.
+
 Latest G1/G2/G3/G4/G5 evidence: three native Claude phases now invoke their own
 router and selected-source reader: author S3/operations (7 reads), receiver
 S6/knowledge under changed V2 policy (10), and current-guidance reviewer (12).
@@ -248,11 +263,11 @@ The historical V3 and current proposed V4 handoffs are in
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | The support SOP retains findings and a proposed V4. A separate native Codex document chain and Claude correction review preserve policy and expose provenance/work-claim errors; source appraisal separates real defects from packet-scope assumptions. | Broader cases, support-SOP V4 review/adoption and appraisal of the four-span actor/phase follow-up remain open. Bounded document acknowledgement is not operational acceptance or a general detection rate. |
-| G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections restrict selected reading; issued doctrine and project packets bind current bytes. Three native Claude phases perform their own routing and source reads without opening the reference-only body; option-like task text now stays separate from routing settings. | Codex native tool routing, minimal semantic selection, guarded project-input integration and broader receiver acceptance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
-| G3. Complete working flow | Local maintenance and native document chains cover plan/backbrief, authoring/review/revision/handoff and changed policy. The latest Claude chain adds actual phase routing and reading; both raw failures and current-guidance corrections are retained. | Broader semantic/method/reporting/stop/failure/output coverage and operational receiver acceptance remain open. A bounded read-only synthetic chain is not live guarded multi-agent execution or full workflow acceptance. |
+| G1. Document authoring and revision quality | The support SOP retains findings and a proposed V4. Native document chains expose provenance/work-claim errors; a source-appraised Codex receiver under current guidance preserves amended policy and corrects categorical status claims. | Broader cases, support-SOP V4 review/adoption and appraisal of the four-span actor/phase follow-up remain open. Bounded document acknowledgement is not operational acceptance or a general detection rate. |
+| G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections restrict selected reading; issued doctrine and project packets bind current bytes. Three Claude phases and a Codex changed-policy receiver invoke their own router and reads without opening the reference-only body; option-like task text stays separate from settings. | Minimal semantic selection, broader role/client cases, guarded project-input integration and receiver acceptance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
+| G3. Complete working flow | Local maintenance and native document chains cover plan/backbrief, authoring/review/revision/handoff and changed policy. Claude and Codex phases add actual routing/reading; the unavailable-tool response preserves a dependent-work hold, followed by a separately diagnosed successful retry. | Broader semantic/method/reporting/stop/failure/output coverage and operational receiver acceptance remain open. A bounded read-only synthetic chain is not live guarded multi-agent execution or full workflow acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
-| G5. Client distribution | Link/copy installation, literal startup checks, both clients' explicit body captures and native document work are observed. Claude additionally invokes routing/read tools in three synthetic phases. User-source exclusion and exact-launch login differences remain recorded. | Implicit selection, Codex agent-tool routing and broader equivalent semantic behavior remain unverified. Configured invocations are not full-client acceptance, independently operated verification or a separate plugin package. |
+| G5. Client distribution | Link/copy installation, literal startup checks, both clients' explicit body captures and native document work are observed. Claude and Codex now invoke routing/read tools in bounded synthetic phases; client-bridge failure and the separate successful retry are retained. | Implicit selection and broader equivalent semantic behavior remain unverified. Configured invocations are not full-client acceptance or independently operated verification. Distribution remains the two skills; the temporary test adapter is not a shipped plugin, and optional plugin packaging is deferred. |
 
 These are the five objectives in
 [Skill-First Product Scope](skill-first-product-scope.md#active-objectives).

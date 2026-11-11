@@ -2,6 +2,19 @@
 
 ## Skill-First Scope And Authoring
 
+The [Codex receiving case](document-authoring-case-study.md#native-codex-routing-and-receiving)
+adds local native-tool evidence with a retained client-bridge failure, fourteen
+reconciled calls/results and source appraisal. These observations are specific
+to Codex CLI 0.162.1, not military claims or universal access enforcement.
+The official [MCP configuration](https://learn.chatgpt.com/docs/extend/mcp#other-configuration-options)
+describes server-scoped tool lists and startup readiness; the
+[SDK item definitions](https://github.com/openai/codex/blob/main/sdk/typescript/src/items.ts)
+describe MCP call identity, arguments, status and results (accessed 2026-11-12).
+The loopback capture separately observed four native helpers outside that
+server's two-tool list. Local SDK discovery was empty and resource reads rejected;
+no claim of an empty native catalog follows. Client errors, not an absent MCP
+item alone, establish the first attempt's failed discovery path.
+
 The [agent-invoked routing case](document-authoring-case-study.md#agent-invoked-phase-routing)
 records three synthetic native Claude phases with reconciled tool arguments,
 delivered results and source digests. It is local engineering evidence, not a

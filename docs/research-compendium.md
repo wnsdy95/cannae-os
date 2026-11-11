@@ -1,5 +1,24 @@
 # Research Compendium
 
+## Tool Availability And Actual Reading (2026-11-12)
+
+The [native Codex receiving exercise](document-authoring-case-study.md#native-codex-routing-and-receiving)
+separates catalog delivery from callable tools. Disabling the client's tool bridge
+left the two document tools advertised but unusable; the model reported the
+missing sources instead of inventing a revision. A separately recorded retry
+restored only that invocation's normal bridge and completed a route plus thirteen
+reads. Source appraisal found the changed planning hold, unchanged duties,
+authority and incomplete-evidence limits preserved in the response.
+
+A server allowlist is not the whole client catalog, and zero MCP call events do
+not prove zero attempted tools: the first process's client error records a failed
+discovery attempt. Reconcile completed calls by identity/content, not adjacency,
+because parallel reads can finish out of order. The fourteen-call trace includes
+three repeated reads, not thirteen unique sources. Sixty recommendations and a
+preparer-selected reading profile do not establish efficient semantic routing.
+These are local engineering observations, not universal client behavior,
+authenticated authority, operational acceptance or a shipped plugin.
+
 ## Agent-Invoked Routing And Claim Scope (2026-11-12)
 
 The [three-phase synthetic exercise](document-authoring-case-study.md#agent-invoked-phase-routing)

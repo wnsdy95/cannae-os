@@ -87,7 +87,7 @@ cleanup is recorded separately; none is declared complete from a routing pass.
 - [Skill-First Product Scope](docs/skill-first-product-scope.md): active core, deferred platform work and honest completion criteria.
 - [Document Authoring Workflow](docs/document-authoring-workflow.md): choose a format, preserve evidence and intent, revise the canonical document and hand off unresolved work without a dashboard.
 - [Project Terminology Workflow](docs/project-terminology-workflow.md): capture user definitions separately from tentative meanings, bind excerpts to their current project glossary, and check declared required meanings separately from freshness without granting authority.
-- [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): support SOP revisions, native Codex collaboration, Claude agent-invoked phase routing and source-grounded corrections, with retained failures and limits on acceptance claims.
+- [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): support SOP revisions, native collaboration, Claude/Codex agent-invoked routing and source-grounded corrections, with retained failures and limits on acceptance claims.
 - [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
 - [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.
 - [Request Intake And Order Drafts](docs/request-order-intake.md): retain exact requests, separate quotes from assumptions and proposals, and compile non-executable OPORD/task drafts with inherited constraints.
@@ -660,6 +660,11 @@ observes three native Claude agents routing and reading selected sources, includ
 a role change and amended policy. It exposes and corrects unsupported status
 claims; it does not establish minimal routing, Codex tool parity or operational
 acceptance. Its temporary read-only adapter is test apparatus, not a shipped plugin.
+The [subsequent Codex receiving case](docs/document-authoring-case-study.md#native-codex-routing-and-receiving)
+adds an actual route and thirteen source reads after a diagnosed client-bridge
+failure. It preserves the changed policy and user decisions in that case, not
+general client equivalence. Sixty recommendations and a fixed reading profile
+leave minimal-context routing unresolved.
 
 For references to files in a separate project, use the explicit input origin:
 
