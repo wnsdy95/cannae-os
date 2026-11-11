@@ -55,7 +55,11 @@ node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skil
   -- "Draft a source-grounded SOP without publication."
 ```
 
-3. Resolve `recommended_documents[].path` against the returned `repo_root`,
+3. When an advance backbrief is requested, send it now as a separate public
+   message: purpose, outputs, authority, limits and planned reading. Mark unknown
+   policy explicitly; do not invent it to fill the brief. Do this before dependent
+   review or drafting, not only as a retrospective final section.
+4. Resolve `recommended_documents[].path` against the returned `repo_root`,
    not the target directory or skill directory. Returned validation commands
    are corpus checks: use that root as their working directory when applicable.
    Resolve project task inputs against their separately declared repository.
@@ -64,10 +68,10 @@ node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skil
    `docs/document-authoring-workflow.md` and `docs/knowledge-management-sop.md`.
    Choose the task format, then its relevant policy; do not read runtime
    operations just because they appear in the wider inventory.
-4. Preserve original user wording and constraints. The lexical router uses
+5. Preserve original user wording and constraints. The lexical router uses
    English terms; for other languages use a faithful English routing query,
    not a rewritten source of intent.
-5. A capability gap is not permission to drop a task or proceed as unowned
+6. A capability gap is not permission to drop a task or proceed as unowned
    general work. Follow the capability-gap rule below.
 
 For compound intake, identify each actual objective before adding glossary/SOP
@@ -119,8 +123,7 @@ prove that a recipient read the source. Read the profile's required documents
 before completing dependent review; do not relabel unread requirements as
 recommendations. Report partial findings and missing prerequisites if a required
 read is unavailable. An over-broad list needs reviewed reassignment, not silent
-omission. When an advance backbrief is requested, give it before the dependent
-review or drafting, not only as a retrospective final section.
+omission.
 Announce a required method change before dependent results, not after a calculated
 headline in the final report. A notice cannot authorize an otherwise forbidden change.
 Use a current public assistant message for the notice. Hidden reasoning, route
@@ -248,6 +251,9 @@ identifier and applicable stop condition of the work being handed off.
 Carry still-active work holds separately from the selected next action. A
 permitted drafting step does not clear adoption or transmission holds; connect
 each hold to its existing resolution path and decision owner.
+The same decision owner does not make approval scopes interchangeable. Document
+adoption alone cannot clear publication, transmission or operational execution
+holds. Combine them only when the actual decision explicitly covers each scope.
 
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.

@@ -180,6 +180,11 @@ but the recipient cannot reclassify required rows as optional recommendations.
 When an advance backbrief is requested, provide purpose, work, authority, limits
 and the proposed sequence before dependent analysis. A final retrospective
 section is not evidence that an advance report occurred.
+Treat the requested brief as a step after routing, not an item to reconstruct in
+the final completion checklist. If a later source failure changes the work, first
+report the affected conclusions and the independent work that may continue.
+Preserve the failed read and its retry limit; revised drafting cannot imply that
+the missing policy was read. Final reporting must retain any missed notice.
 
 The same timing rule applies when a method change must be announced: report its
 reason and retained boundaries before dependent calculation or drafting. A

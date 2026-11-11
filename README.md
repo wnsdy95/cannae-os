@@ -670,6 +670,11 @@ checks ten required inputs, permitted versus forbidden proposals and actual publ
 message order. Both preserve authority; only Codex demonstrates both required
 advance notices in that case. Claude reporting and review-quality gaps remain.
 The separate research V3 is locally corrected, not newly model-accepted or adopted.
+The [required-source failure exercise](docs/document-authoring-case-study.md#required-source-failure-and-partial-work)
+confirms that both clients hold policy-dependent drafting without retrying the
+unavailable source, while preserving useful partial outputs. It also retains
+Claude's missing reports and conflated approval scopes; process success is not
+complete workflow acceptance. The operator's intake correction remains unadopted.
 
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
 requires an explicit [source request](schema-files/handoff-generation-request.schema.json).

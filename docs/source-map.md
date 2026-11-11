@@ -1,5 +1,11 @@
 # Source Map
 
+The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
+adds local native evidence for no-retry policy holds and independent partial
+drafting in both clients. It retains Claude reporting/approval-scope defects,
+an unadopted operator correction and explicitly unverified behavioral guidance.
+This synthetic case is not external doctrine or permission to waive a failed read.
+
 The [native research repair review](document-authoring-case-study.md#native-research-repair-and-public-reporting)
 is local synthetic evidence, not new military doctrine. Both clients read ten
 required inputs and distinguish permitted/forbidden proposals; Claude still

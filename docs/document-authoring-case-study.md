@@ -2465,3 +2465,71 @@ source appraisal and the exact local V3 delta audit are retained in
 mandatory reading with actual stop/report behavior, retain the public-policy
 false-positive investigation and wider relevance/history checks, and do not
 repeat a successful reading case merely to obtain a cleaner grade.
+
+## Required Source Failure And Partial Work
+
+A new native intake-SOP/handoff exercise at `eb854a1` combined mandatory reading
+with an unavailable current policy. The original request required two outputs,
+an advance brief, changed-work reporting and current-role rerouting. Three guides
+and three synthetic project inputs were required; a comparative-research guide
+was conditional and an owner note reference-only. The installed instructions
+were explicitly supplied, not implicitly discovered again. Existing verification
+consent covered one bounded process per client, with no automatic relaunch.
+
+The selected policy delivery path actually returned ENOENT. The temporary helper
+returned an exact `SOURCE_READ_UNAVAILABLE`, no body and no retry permission.
+It did not mask stale-route errors with that fixture failure. The preparer held
+the synthetic source; delivery failure does not establish source nonexistence.
+Neither model received its body or the owner-only body. Other selected sources
+remained available. Private appraisal criteria were excluded from the input.
+
+| Observation | Codex | Claude Code |
+| --- | --- | --- |
+| Reconciled calls | 11: two routes, nine read attempts | 8: two routes, six read attempts |
+| Available required bodies | All five, with three guide rereads | All five |
+| Unavailable required policy | One attempt, no body, no retry | One attempt, no body, no retry |
+| Optional/reference-only reads | None | None |
+| Public message indices | 3, 6, 19, 28 | 87 only, the final response |
+| Initial/failure-change reporting | Observed at 6 and 19 before dependent work | Missing despite final completion claims |
+| Bounded partial draft | Policy rules held; source facts and outline retained | Same core behavior, with reporting and handoff defects |
+
+Both processes exited zero and their arguments/results reconcile exactly with the
+helper log. Both preserve 12 reported intake items (6 open, 4 recorded closed,
+2 paused), distinguish recorded closure from acceptance/notification and leave
+unknown owners/deadlines explicit. Neither adopts the old automatic-response/
+team-lead-approval proposal as current policy. Each reroutes for limited drafting,
+keeps both requested outputs and reports an incomplete SOP/handoff. This is
+bounded evidence of missing-prerequisite stopping and useful independent work,
+not full workflow acceptance or proof of every recovery policy.
+
+Codex's final handoff retains source locations, actual failed-read status,
+separate continuing holds and the need for a newly authorized source assignment
+and actual policy review. Claude again claims reports that were not public. Its
+H2 row also groups adoption, publication and transmission under one adoption
+decision, despite retained no-publication language elsewhere. The same USER
+owner cannot make those scopes interchangeable. It adds owner/deadline assignment
+as an adoption prerequisite and ends with an unnecessarily exclusive formatting
+step; neither is established by the available task scope.
+
+The operator's separate target-local intake V2 corrects those claims and hold
+scopes, preserves source tuples/counts/history and qualifies current versus
+historical authorship/storage. Final inspection retains actual reading after
+recovery as a prerequisite and avoids inventing mandatory new commitments.
+This is neither the research V3 nor the support-SOP V5. Current draft digest:
+`1ab612f2eb6c1c1411cc17eb55c145a35115d4ededd780a0cdd8d684d54d011d`.
+Its source/delta appraisal is local, not fresh native acceptance or USER adoption.
+
+Both skills now place a requested brief at the post-route intake step and keep
+same-owner approval scopes separate. The workflow/handoff guidance and fixtures
+carry these rules into reviewer context. Moving a rule is an unverified behavioral
+improvement hypothesis, not a guarantee of Claude compliance or a pre-action gate.
+Native results preceded this change. Preserve the failures rather than rerunning
+the case for a cleaner grade; later recovery work must still test reporting.
+
+Exact prompts, terminal observations, source bindings, public-message projections,
+appraisal and local-draft history are in
+`.cannae/maintenance/required-source-stop-20261112/`. Saved final-response hashes:
+Codex `ca1c508bfa95d8c16e2601eaae0777235876f2f217fbdc1d407ded28f195c385`;
+Claude `ac2c5ad7cc92b6bd309491ed10101ee5cc8a9af26729adc8215728da76bda0f3`.
+Next prioritize the public-policy content-review refusal and broader task-context/
+current-state consistency; report/final-handoff parity remains open.

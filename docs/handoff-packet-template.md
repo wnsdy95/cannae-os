@@ -30,6 +30,11 @@ permitted drafting step does not clear an adoption or transmission hold. Carry
 each hold's affected scope, existing resolution path and decision owner; link
 to the established procedure instead of inventing another approval process.
 Resolving one hold does not resolve a separate hold on the transferred work.
+The same USER may own several decisions without making their scopes identical.
+Keep document adoption separate from publication, transmission and operational
+execution unless an actual decision explicitly covers all those actions. A table
+row grouping them under "adoption decision" does not grant the missing scopes.
+Source restoration also does not establish policy review, adoption or release.
 
 When work depends on user-specific vocabulary, include the relevant confirmed
 definitions, scope, concept/revision IDs and ledger digest, plus unresolved

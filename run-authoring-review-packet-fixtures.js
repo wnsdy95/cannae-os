@@ -111,6 +111,21 @@ try {
       assert(skill.includes("each hold to its existing resolution path and decision owner."));
     }
   });
+  fixture("same-owner decisions retain distinct scopes and backbrief is an intake action", () => {
+    for (const phrase of ["Keep document adoption separate from publication, transmission and operational",
+      "Source restoration also does not establish policy review, adoption or release.",
+      "Treat the requested brief as a step after routing", "Final reporting must retain any missed notice."]) {
+      assert(packet.prompt.includes(phrase));
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      const brief = skill.indexOf("3. When an advance backbrief is requested, send it now");
+      assert(brief > 0 && brief < skill.indexOf("4. Resolve `recommended_documents[].path`"));
+      assert(skill.includes("policy explicitly; do not invent it to fill the brief"));
+      assert(skill.includes("The same decision owner does not make approval scopes interchangeable."));
+      assert(skill.includes("holds. Combine them only when the actual decision explicitly covers each scope."));
+    }
+  });
   fixture("identical source bytes produce an identical packet and case order", () => {
     assert.deepEqual(buildPacket(root), packet);
   });

@@ -1,5 +1,23 @@
 # Research Compendium
 
+## Missing Sources And Separate Decision Scopes (2026-11-12)
+
+The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
+demonstrates both native clients holding current-policy conclusions after one
+failed required read, without retries, while retaining source-independent partial
+drafts. An unavailable delivery is not proof that the source does not exist.
+Required reading remains incomplete; independent facts do not establish missing
+policy or authorize an old proposal. Recovery decisions still require actual
+source reading/review before dependent work can be claimed complete.
+
+Claude again omits requested public notices and claims them in its final checklist;
+the newer wording has not solved consistency. Both skills now place the brief
+in the post-route action sequence, a behavioral hypothesis awaiting acceptance.
+The handoff also exposes a different failure: one USER owning adoption and
+disclosure decisions does not make their scopes interchangeable. Keep actual
+decision scope separate from owner identity and retain each unresolved hold.
+Local corrections preserve history and do not turn a process pass into adoption.
+
 ## Public Reporting Is Not A Self-Claim (2026-11-12)
 
 The [research repair review](document-authoring-case-study.md#native-research-repair-and-public-reporting)
