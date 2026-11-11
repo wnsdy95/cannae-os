@@ -1832,3 +1832,78 @@ are not edited or adopted. Routing recommended 47 documents for the author and
 those counts are not a controlled comparison or evidence of minimum selection.
 Full behavior after the new guidance, broader role/client equivalence, implicit
 selection, standalone receiver acceptance and all five goal closures remain open.
+
+## Current-Guidance Handoff Repair Review
+
+Two new bounded native reviews tested the preceding reporting/source-binding
+guidance without replaying either consumed process. Codex used its default
+`gpt-6-astra`; Claude used `opus[1m]`. Both received the same synthetic original
+request, V1/V2 policies, exact prior responses, observed call history and a
+preparer-generated lookup. Current provider entrypoints were explicitly supplied.
+Neither received the prior appraisal or answer key. They reviewed the candidate's
+`handoff_md`, not its self-ratings, and proposed new text without overwriting it.
+
+Each reviewer independently routed as S6/knowledge and read eleven selected
+bodies: eight project inputs and three current guides. All 24 calls/results
+reconcile with helper logs and selected source bytes. Neither attempted the
+excluded export or owner body. Codex completed in 144.318 seconds and Claude
+in 163.431 seconds, both with exit zero. The observer retained intermediate
+messages separately and selected the completed final response; no model relaunch
+or post-exit recovery was needed. This is still explicit, profile-selected test
+apparatus, not automatic skill discovery or an operational restore workflow.
+
+### Source Appraisal
+
+Both proposed corrections fixed the false no-read summary and mixed-revision
+digest fragment. They distinguished successful reads, successful-source rereads,
+unavailable delivery and operational work; narrowed the blanket read-retry
+restriction; and separated historical guide bindings from current ones. All
+P1 acceptance criteria, P2's partial hold, V2 P3's new USER decision requirement,
+P4's separate decisions, P5 reporting duties and P6 preservation rules survived.
+Unknown evidence remained unknown. Unaffected drafting and the unsent status
+question remained permitted. Neither proposal granted operational acceptance.
+
+The Codex correction had no material contradiction found against this case's
+original requirements and delivered sources. It uses the handoff, lookup and
+selected files as one unit, explicitly identifying a historical log that is not
+currently delivered. Its two full policy hashes match the corresponding source
+revisions. This is a source-appraised example, not USER adoption or a general
+detection rate.
+
+After review, the operator materialized that exact proposed text under the
+synthetic target repository's private `.cannae/handoff-review/` directory, not
+the proposed canonical destination. A separate check bound its lookup to the
+original review request, rechecked all ten lookup entries and selected source
+bytes, and confirmed unchanged proposal text. This was post-review operator
+work, not a model file write, policy adoption or additional model invocation.
+
+The Claude correction fixed the same two defects, and its fourteen full hash
+tokens and source/phase associations were checked. A remaining sentence says
+paths for the origin-table IDs are listed in the lookup, but that table also
+contains historical/excluded sources without a current path entry. Earlier
+caveats do not make that blanket locator statement accurate. The whole candidate
+is therefore not marked fully accepted; the original output remains unchanged.
+
+Reviewer findings also require appraisal. A historical log or detailed error
+omitted from the new review unit is a current verification limit, not proof that
+the original recipient lacked it or made a false claim. The original receiver
+did have those inputs. A newly supplied lookup changes the current delivery
+unit, not historical authority. Synthetic event timestamps and actual helper
+timestamps likewise do not establish a real-world operational chronology.
+
+### Evidence And Disposition
+
+The exact inputs, native outputs, source membership/association checks and
+appraisal are retained in `.cannae/maintenance/handoff-repair-review-20261112/`.
+An initial pre-model fixture attempt incorrectly bound nonexistent reference
+paths and was rejected. The corrected preparation used a separate target and
+listed the missing sources as excluded references, without invented file bindings.
+No product contract changed; the failed preparation record is preserved.
+
+This checkpoint verifies previously mirrored instructions; it adds no new skill
+rule merely to restate the result. Both known corrections now have bounded
+behavioral evidence, while the locator caveat and broader acceptance remain
+visible. Do not repeat this chain solely for another passing output. Continue
+with the outstanding SOP revision review and current intake/client-selection
+cases. Document quality acceptance and USER policy adoption remain distinct;
+all five product objectives still require their wider acceptance work.

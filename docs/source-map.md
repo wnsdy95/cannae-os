@@ -2,6 +2,13 @@
 
 ## Skill-First Scope And Authoring
 
+The [current-guidance review](document-authoring-case-study.md#current-guidance-handoff-repair-review)
+adds two native responses and 24 reconciled calls on the retained synthetic
+handoff. Both repair the two known errors; source appraisal distinguishes the
+Codex correction from a remaining Claude locator overclaim. An omitted historical
+input limits the new review, not necessarily the truth of the old record. This
+is local behavior evidence, not military doctrine, USER adoption or general parity.
+
 The [source-failure handoff](document-authoring-case-study.md#source-failure-and-changed-policy-handoff)
 is local native-client evidence from a synthetic delivery outage and changed
 policy, not a military claim or production recovery test. Twenty-one calls are

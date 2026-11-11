@@ -1,5 +1,16 @@
 # Research Compendium
 
+## Review Findings Need Their Own Appraisal (2026-11-12)
+
+The [current-guidance handoff review](document-authoring-case-study.md#current-guidance-handoff-repair-review)
+demonstrates both known reporting/digest repairs in two native clients. The
+remaining locator overclaim shows that correct hashes do not make every table
+row currently findable. A new review packet can omit history the original actor
+actually received; classify that as a current verification limit instead of
+retroactively rewriting the old record. Source appraisal supports one corrected
+delivery unit while retaining the other proposal's caveat. These results verify
+the existing mirrored guidance, not a new policy or general semantic guarantee.
+
 ## Failure Scope And Exact Source Labels (2026-11-12)
 
 The [source-failure case](document-authoring-case-study.md#source-failure-and-changed-policy-handoff)

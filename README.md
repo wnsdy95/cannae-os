@@ -261,6 +261,9 @@ A [native source-failure handoff](docs/document-authoring-case-study.md#source-f
 also exercises changed instructions across Codex and Claude. Required holds
 survived, but generated activity summaries and source labels still needed human
 appraisal. Passing tool traces are not proof that a handoff is semantically correct.
+The [current-guidance follow-up](docs/document-authoring-case-study.md#current-guidance-handoff-repair-review)
+shows both clients repairing those two errors, with a remaining locator caveat
+recorded separately. Proposed document quality does not imply USER adoption.
 
 Routing receipts distinguish document relevance from mission capability
 coverage. If the mission objective has no specific corpus capability route,
