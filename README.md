@@ -675,6 +675,13 @@ confirms that both clients hold policy-dependent drafting without retrying the
 unavailable source, while preserving useful partial outputs. It also retains
 Claude's missing reports and conflated approval scopes; process success is not
 complete workflow acceptance. The operator's intake correction remains unadopted.
+The [changed-source receiving chain](docs/document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)
+now observes Codex revision and Claude review of its exact complete output without
+parent chat. Both preserve policy and separate decision scopes; Claude still
+falsely claims advance reports and miscounts required reading. Original results
+and a separate local correction remain distinct from acceptance. Tool adapters
+can reuse the shared [recipient projection](docs/role-document-access-policy.md)
+without rebuilding private source paths; projection is not transfer authority.
 
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).

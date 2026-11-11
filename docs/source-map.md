@@ -1,5 +1,12 @@
 # Source Map
 
+The [changed-source receiving case](document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)
+uses two actual native phases, unchanged candidate bytes and synthetic policy
+sources. It supports the bounded revision/receiving comparison while retaining
+Claude's false reporting claims and wrong total. Catalog preparation led to a
+shared structured recipient view and both-provider guidance; this is engineering
+evidence, not new military doctrine, authenticated authority or universal compliance.
+
 The [task-reading correction](document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 uses local before/after routing, both installed-provider fixtures and guarded
 wave contexts. It conditions five specialist references and prevents supported

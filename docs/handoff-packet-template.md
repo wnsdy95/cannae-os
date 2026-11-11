@@ -88,6 +88,9 @@ Required reading is not satisfied merely because a file was eligible for
 delivery. Reconcile assigned required rows with actual current-phase reads;
 mark dependent review incomplete when a prerequisite remains unread. Preserve
 independent partial findings without silently downgrading the reading list.
+Count by source ID, including the candidate when it is a required row. A useful
+breakdown into reference readings and reviewed artifacts must still reconcile to
+the full required total; rereads are separate from unique sources.
 When an advance backbrief was requested, distinguish it from a retrospective
 final section; record the report actually observed, not a reconstructed sequence.
 

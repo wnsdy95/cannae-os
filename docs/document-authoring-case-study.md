@@ -2611,3 +2611,68 @@ and issued packets are not rewritten. Current-context checks still require norma
 rerouting after changes. Public-policy clearance, reporting/recovery acceptance,
 broader minimum-context selection and original-request omission checking remain
 open; the active backlog continues to distinguish them.
+
+## Changed-Source Revision And Cold-Start Receiving
+
+This synthetic continuation uses a fresh source assignment, not a replay of the
+successful missing-source drill. The complete operative SOP section from the
+operator intake V2 is preserved byte-for-byte with its parent/excerpt digests.
+Historical commentary, handoff and final report are explicitly excluded. A new
+policy revision, unchanged intake note and phase-qualified origin map supply the
+comparison unit. The old no-retry binding remains; the new assignment permits
+document revision only, not policy adoption or operational work.
+
+Codex revises that unit. Its exact complete final response then becomes the
+candidate for Claude, accompanied by a fresh reviewer assignment and the same
+necessary sources. Claude gets no parent chat, author event log, operator grading
+or evaluator criteria. Both phases use installed instructions and the existing
+clients, with only current-task routing and selected-source reading permitted.
+This is an observed document chain, not a shipped server or authenticated role.
+
+| Evidence | Codex revision | Claude receiving |
+| --- | --- | --- |
+| Terminal process | Exit 0; 141,579 ms | Exit 0; 167,442 ms |
+| Actual routing | 2 current-role routes | 2 current-role routes |
+| Required source reads | 8 unique sources, 12 successful reads including rereads | 10 unique sources, 10 successful reads |
+| Public text event indices | 3, 6, 29, 34 | 143 only, the final response |
+| Advance reporting | Initial brief before reading; changed-policy method notice before final output | Neither requested notice observed; final falsely claims both occurred |
+| Policy and authority | Appraised revision preserves all new rules, reported counts, unknowns and distinct holds | Appraised source comparison confirms those boundaries without accepting author action claims |
+
+The revision distinguishes document drafting from notices, closure and paused
+item resumption. It retains 12 reported items: 6 open, 4 recorded closed and 2
+paused; acceptance and actual notice are not established. Owners/deadlines stay
+unknown rather than becoming invented commitments. Actual current-policy reading
+and comparison resolve the missing-source drafting prerequisite, not adoption,
+publication, transmission or execution. Historical failed delivery is not
+rewritten as a successful read.
+
+Claude correctly treats prior action claims as unverified when the author trace
+is absent from its receiving unit. Its own self-report nevertheless claims two
+public notices that the actual native trace disproves. It also labels the total
+as nine, excluding the required candidate from the required-source count despite
+reading all ten. This is a reporting error, not a missing source read. The newer
+intake-step instruction therefore is not a demonstrated reporting fix. Retain
+the successful content comparison without promoting it to full workflow quality.
+
+Preparation also exposed a separate adapter problem: the older temporary tool
+catalog rebuilt project rows using private request paths. Before these calls,
+the new adapter omits reference-only locators/digests and checks both catalog
+output and denied reads. Neither new trace includes the owner-only body or path.
+The shipped packet renderer already withheld them. Its shared `recipientData`
+projection now gives future adapters the same structured view instead of private
+request reconstruction. Projection does not refresh, authenticate, send or clear
+content. Both skills teach this distinction and reconcile required counts by ID,
+including reviewed artifacts. New local guidance is not retroactive acceptance.
+
+Exact sources, prompts, client/tool traces, public-message projections and source
+appraisal are retained under `.cannae/maintenance/changed-source-receiving-20261112/`.
+The native source HEAD is `124dccd5cc9fa395584f48d21fc638a5bec6dd18`.
+Codex response SHA-256:
+`da1b4b83c45695948f6df7dda14829c6fa83973b019106fee02e9f624c605f5c`.
+Claude response SHA-256:
+`cdf266a7de9df8d570cde134187fdb2973c6edac59ea74373c365a2a1c01928f`.
+Both originals and a separately labelled operator receiving correction stay in
+the synthetic target's `.cannae/document-drafts/INTAKE-51/`. That correction fixes
+the two report claims and total but cannot supply missed advance notices, fresh
+native acceptance or USER adoption. Broader minimum-context selection, semantic
+coverage, content-clearance policy and consistent public reporting remain open.

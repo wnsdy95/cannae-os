@@ -214,6 +214,19 @@ If nobody authorized can provide a reviewed summary, hold that input rather than
 silently substituting raw content. An identical source/summary path or digest is
 rejected even when a review reference is supplied. This does not detect all
 near-copies or prove adequate redaction; semantic review is still required.
+
+For an authorized tool/client adapter, `project-document-packet.js` exports
+`recipientData(packet)`, the same structured recipient view used by `renderPrompt`.
+Use a current compiled or inspected packet, not an arbitrary object. The function
+checks the existing terminology and known-private-path constraints, returns a
+detached copy, and performs no reads, writes, refresh, authentication or transfer.
+Reference-only rows contain no original locator, digest or filesystem metadata.
+Do not merge private `request.documents` or `source_repository` fields back into
+a tool catalog: blocking the later read cannot undo an earlier listing disclosure.
+Raw-source locators, if needed, require their own reviewed receiving-unit context;
+this projection does not add locations, shorten required inputs or authorize use.
+The existing literal path checks and semantic-review limits still apply.
+
 The same conservative OPSEC/EEFI detectors
 check outgoing text, task and recipient strings. Findings stop preparation with
 a fixed code and no matched values. These pattern checks may over-block ordinary

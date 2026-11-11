@@ -129,6 +129,15 @@ try {
   fixture("identical source bytes produce an identical packet and case order", () => {
     assert.deepEqual(buildPacket(root), packet);
   });
+  fixture("required candidate counts remain in the full handoff reading inventory", () => {
+    assert(packet.prompt.includes("Count by source ID, including the candidate when it is a required row."));
+    assert(packet.prompt.includes("the full required total; rereads are separate from unique sources."));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Reconcile totals by source ID, including a candidate marked required."));
+      assert(skill.includes("a denied read does not prevent a path leak in the listing."));
+    }
+  });
   fixture("receiving guidance distinguishes source identities from usable locations", () => {
     for (const phrase of ["Source IDs and digests identify material", "authorized bodies or resolvable source locations",
       "route token is not portable read access", "mark the handoff incomplete for receiving"]) assert(packet.prompt.includes(phrase));

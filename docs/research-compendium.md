@@ -1,5 +1,23 @@
 # Research Compendium
 
+## Receiving Content Is Not Verifying Prior Actions (2026-11-12)
+
+The [changed-source chain](document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)
+preserves the exact Codex response for a fresh Claude receiving review. Source
+comparison supports its policy revision and separate approval scopes. Without
+author events, the receiver correctly leaves prior action claims unverified;
+its own actual events still contradict its claimed advance notices. A model's
+careful source comparison is not evidence that its self-reported process occurred.
+Likewise, a candidate marked required remains part of the total even if grouped
+separately from references. Count IDs and preserve the observed message order.
+
+Adapter output is a disclosure surface too. Denying a reference-only read does
+not repair a private path already exposed in a catalog. The shared structured
+recipient view follows the existing renderer boundary, not private preparation
+metadata; copying that view is not freshness verification or transfer approval.
+These local improvements and the proposed receiving correction do not erase
+historical failures or complete the five objectives.
+
 ## Excluded Work Is Not Domain Capability (2026-11-12)
 
 The [task-reading case](document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)

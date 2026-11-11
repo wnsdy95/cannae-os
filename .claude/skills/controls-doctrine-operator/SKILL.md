@@ -115,6 +115,10 @@ preserved; never silently redact the task or reuse approval for changed bytes.
 Inspect the exact candidate again before separately authorized transfer
 of `prompt.md`, not the private `packet.json`. Prepared/current does not mean sent
 or read, and this helper cannot bypass a guarded mission's unsupported inputs.
+For a tool/client adapter, use `project-document-packet.js`'s `recipientData` on
+a current compiled/inspected packet. Never rebuild its catalog from the private
+request: a denied read does not prevent a path leak in the listing. Projection
+does not refresh sources or grant transfer authority; preserve those checks.
 On a content-review refusal, an authorized source preparer can use the same
 helper's `review-content` command for local rule/count diagnostics. Preserve the
 blocked request and inspect only within existing read authority; later sources
@@ -130,6 +134,8 @@ before completing dependent review; do not relabel unread requirements as
 recommendations. Report partial findings and missing prerequisites if a required
 read is unavailable. An over-broad list needs reviewed reassignment, not silent
 omission.
+Reconcile totals by source ID, including a candidate marked required. Separating
+reviewed artifacts from reference documents must not remove them from the total.
 Announce a required method change before dependent results, not after a calculated
 headline in the final report. A notice cannot authorize an otherwise forbidden change.
 Use a current public assistant message for the notice. Hidden reasoning, route

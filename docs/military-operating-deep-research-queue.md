@@ -602,7 +602,7 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
-- `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases; local content-refusal and task-relevant reading checks preserve historical failures, excluded-work gaps and receiver-acceptance limits.
+- `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases; the changed-source receiving chain preserves exact candidate delivery, successful policy comparison and failed reporting/count claims. Local content-refusal and reading checks retain their limits.
 - `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, revision history, recipient selection and freshness; no automatic promotion or authority expansion.
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
 - `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.
