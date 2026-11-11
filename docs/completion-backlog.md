@@ -10,6 +10,17 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+Latest G1/G3/G4 evidence: USER approved one current-V3 review with the actual
+entrypoint included in the exact 48,049-byte input. The native CLI completed in
+89.112 seconds with zero observed tool events. Source appraisal accepted seven
+unseeded omissions/ambiguities; a proposed V4 restores them plus explicit
+community best-effort wording, while V1-V3 and original ratings remain retained.
+Both skills now preserve specific triggers, overlapping approvals and stop/
+recovery details during revision. See [the review and bounded corrections](document-authoring-case-study.md#approved-v3-review-and-appraisal).
+The one-process consent is consumed. V4 has not received another model review,
+maintainer adoption or actual operational receiver acceptance; this was not an
+automatic installed-skill or multi-agent workflow test.
+
 Latest G5 evidence: Claude Code 2.1.322 delivered the complete Markdown body for
 explicit normal-mode linked/copied selection in an isolated local capture.
 Ordinary text, an absent installation and the tested bare-mode installation did
@@ -17,8 +28,8 @@ not. The five processes each made three local requests and returned an error
 despite a `success` result subtype; no model ran. Both providers now have bounded
 request-assembly evidence, not semantic workflow acceptance. See
 [Claude body delivery](document-authoring-case-study.md#claude-native-body-delivery).
-The next G1/G3 step is source-first review of the corrective V3 with the actual
-entrypoint supplied, separately consented and without claiming policy adoption.
+That checkpoint led to the separately consented V3 review recorded above;
+policy adoption remains a separate decision.
 
 Latest G5 evidence: an isolated Codex 0.162.1 first-request capture verified the
 complete entrypoint in a separate skill item for explicit linked and copied
@@ -89,9 +100,10 @@ project-origin/recipient binding and guarded project-input use remain open.
 Latest G1/G3/G4 evidence: the separately approved native review retry returned
 normally. Source appraisal confirmed detection of all seven deliberately altered
 cases and a genuine no-publication omission in the unedited transferable draft.
-The original self-rating is retained with a correction, and a source-cited V3 is
-now proposed. V3 is author-reviewed only; adoption and receiver acceptance remain
-open. The one-retry consent is consumed. See the review checkpoint below.
+The original self-rating was retained with a correction and a source-cited V3
+proposal. At that checkpoint V3 had only author review; the subsequent V3 review
+and proposed V4 are recorded above. Adoption and receiver acceptance remain open.
+The earlier one-retry consent is consumed. See the historical checkpoint below.
 
 Latest G2/G5 work adds explicitly project-qualified input references to both
 direct routers. It does not load content or extend the guarded receipt/context
@@ -109,11 +121,12 @@ author ratings/reference answers out of evaluator input. Its eight cases are
 now assessed in one advisory run, not certified as semantically complete. The first approved
 attempt ended on an observer misclassification before any review was received;
 the correction and separately approved retry are recorded below.
-The current corrective V3 handoff is in `docs/document-authoring-case-study.md`.
+The historical V3 and current proposed V4 handoffs are in
+`docs/document-authoring-case-study.md`.
 
 | Goal | Current evidence | Remaining acceptance |
 | --- | --- | --- |
-| G1. Document authoring and revision quality | The case study contains the policy-grounded exercise, maintenance plan/handoff, approved advisory review and proposed corrective V3. All seven seeded variants were identified; the original draft also had omissions. A separate synthetic recipient exercise preserved the supplied intent/source boundaries in one response. | Broader cases, V3 review/adoption and independent/operational receiver acceptance remain open. Deliberate variants and one source-appraised response are not a general detection rate or semantic completeness. |
+| G1. Document authoring and revision quality | The case study contains the policy-grounded exercise, maintenance workflow, original advisory review and a separately approved V3 review. Seven seeded variants and seven later unseeded omissions/ambiguities were identified and source-appraised. Proposed V4 preserves history and restores the latter; a separate synthetic recipient response preserved its supplied boundaries. | Broader cases, V4 review/adoption and independent/operational receiver acceptance remain open. These selected reviews are not a general detection rate or semantic completeness. |
 | G2. Role-bounded routing and delegation | Both routers resolve corpus/project references. Access projections enforce profile selection; new authority checks issued doctrine bytes. Offline project packets bind origin/content/recipient without opening reference-only bodies. One USER-approved native exercise demonstrates supplied-source use and rejection of an embedded false-approval instruction. | Authenticated origin/recipient/delegation, actual operational receiver acceptance, guarded project-input integration and broader semantic relevance remain open. Lexical selection is not negation understanding. A projection, local filesystem identity or byte match does not authenticate the caller or enforce filesystem access. |
 | G3. Complete working flow | The actual local maintenance order now has plan/backbrief, implementation, verification, report and handoff without a dashboard; local context/stop tests pass. | Full semantic omission, bounded replanning, method/reporting/stop/failure/output coverage and receiver acceptance remain open. A self-run local maintenance case is not live multi-agent acceptance. |
 | G4. Bounded self-improvement and corpus maintenance | The maintenance case now records observed over-routing, its cause, a bounded correction, mirrored operating guidance, regression results and an AAR. | One local loop is demonstrated; audit remaining corpus/history/output consistency and applicable adoption boundaries before declaring the full objective complete. No self-issued authority follows from these checks. |
@@ -460,6 +473,9 @@ were not run by that stopped batch. Its logs remain under
 Final-tree focused checks are recorded separately after execution.
 
 ### Approved Retry And Corrective Authoring (2026-11-11)
+
+This retained checkpoint precedes the separately approved V3 review and proposed
+V4 described in the active queue; its next-action statements are historical.
 
 Fresh USER consent covered one retry of the unchanged 53,507-byte packet, with
 existing login, default `gpt-6-astra`, read-only/tools-disabled settings and a

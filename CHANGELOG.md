@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record the separately USER-approved current-V3 review with verbatim operating guidance and source policies, retaining its exact input, response, usage and limits. Source appraisal accepts seven unseeded omissions/ambiguities; preserve V1-V3 and propose V4 with only those restorations, explicit community best-effort wording and new version lineage. Both skills now preserve named triggers, overlapping approvals and stop/recovery details during compression. Exact-delta regressions protect the historical candidates without claiming general semantic completeness, V4 acceptance or policy adoption.
+
 - Verify Claude Code's native body delivery for explicit normal-mode linked/copied skills, with ordinary-text, absent and bare-mode controls. Record the body/frontmatter distinction, three local requests per invocation and error results carrying a `success` subtype. Both provider references now distinguish client-specific selection, transport retries and genuine task success. No external model, credential change, policy adoption or receiver acceptance is implied.
 
 - Verify complete Codex entrypoint insertion through four offline native first-request captures, separating explicit linked/copied selection from absent/unselected controls. Mirror selection, shell-quoting and evidence-layer guidance in both providers. The local endpoint deliberately rejected every request: no model, router work or receiver acceptance is claimed, and Claude body delivery remains unverified. Keep automatic-selection policy, credentials, installation and authority unchanged.

@@ -633,9 +633,11 @@ For offline document-review preparation, run `node authoring-review-packet.js pr
 It separates evaluator input from the author's seeded-defect reference under
 this repository's local maintenance directory; it never calls a model or grants
 consent. The [authoring case](docs/document-authoring-case-study.md#approved-review-retry-and-appraisal)
-records one approved advisory review, its source appraisal and a separately
-proposed V3. The helper retains historical V1/V2 stress cases; it does not
-evaluate V3 or establish independent acceptance. Ordinary prose
+records the original advisory review and a [separately approved V3 review](docs/document-authoring-case-study.md#approved-v3-review-and-appraisal).
+The latter found seven source/predecessor omissions or ambiguities; the current
+[proposed V4](docs/document-authoring-case-study.md#corrective-sop-draft-v4) restores
+them without policy adoption. The helper retains historical V1/V2 stress cases;
+it does not evaluate V3/V4 or establish independent acceptance. Ordinary prose
 handoffs do not require invented runtime IDs; existing missions keep their guards.
 
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)

@@ -102,6 +102,14 @@ Identify whether the review was an author self-review, an independent reviewer
 or an actual USER decision. A deterministic reference check cannot prove
 semantic completeness or independent acceptance.
 
+Compare the actual predecessor, not a paraphrase of its intent. Compression can
+drop a named decision trigger even when a generic final-authority statement
+survives. Preserve overlapping approval requirements, explicit prohibited
+actions, conditional channels and the bounded recovery action after a stop.
+For handoffs, distinguish the procedure's version from the transferred work's
+identifier and record that work's applicable stop condition. Source citations
+aid review; they do not restore obligations omitted from operative instructions.
+
 Review the artifact actually being handed off, not just its surrounding case
 record. An explicit exclusion such as `do not publish` must survive in that
 artifact; `draft` and `not adopted` describe status, not a publication prohibition.

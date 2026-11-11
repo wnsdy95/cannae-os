@@ -143,6 +143,13 @@ it; `draft` or `not adopted` does not mean `do not publish`. Declare excluded
 review history without leaking its verdict. Missing evaluator context is not
 proof of missing repository evidence; appraise findings before changing doctrine.
 
+Compare a revision with its actual predecessor as well as the source policy.
+When compressing rules, preserve named triggers, decision owners, prohibited
+actions and overlapping approval requirements; a generic owner-authority label
+or source citation does not preserve a specific veto. Carry the stop and its
+bounded recovery action together. A procedure identifier does not replace the
+identifier and applicable stop condition of the work being handed off.
+
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.
 

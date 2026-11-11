@@ -33,7 +33,8 @@ try {
     assert(packet.prompt.includes("## SOP Draft V1"));
     assert(packet.prompt.includes("## Revision V2"));
     for (const excluded of ["## Requirement Comparison", "Result: the author found no remaining contradiction",
-      "M1-M7", "146 queries", "WO-ROUTING-READING-20261110", "seeded_defects"]) {
+      "M1-M7", "146 queries", "WO-ROUTING-READING-20261110", "seeded_defects",
+      "## Approved V3 Review And Appraisal", "## Corrective SOP Draft V4"]) {
       assert(!packet.prompt.includes(excluded), `Evaluator received ${excluded}`);
     }
     for (const item of packet.reference.cases) {
@@ -69,6 +70,42 @@ try {
   });
   fixture("identical source bytes produce an identical packet and case order", () => {
     assert.deepEqual(buildPacket(root), packet);
+  });
+  fixture("reviewed V1/V2 and V3 candidates retain their exact historical bytes", () => {
+    const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
+    assert.equal(hash(section(text, "## SOP Draft V1", "## Requirement Comparison")),
+      "ad8a5ab4232eb8b647ef8c3edeb7b54d1cddd80cd62e8f2070d5ad0a7ab3c9da");
+    assert.equal(hash(section(text, "## Corrective SOP Draft V3", "### V3 Comparison And Current Handoff")),
+      "a94781eb9391573969b4759be9cf9e752ab28ad5f15c19b4a8d0e87076d3f980");
+  });
+  fixture("proposed V4 changes only appraised spans and its version lineage", () => {
+    const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
+    const v3 = section(text, "## Corrective SOP Draft V3", "### V3 Comparison And Current Handoff");
+    const v4 = section(text, "## Corrective SOP Draft V4", "### V4 Change Check And Handoff");
+    const body = value => value.slice(value.indexOf("**Purpose and result:**"));
+    const changes = [
+      ["`Corrective SOP Draft V3`; predecessor: Revision V2 in the same file.",
+        "`Corrective SOP Draft V4`; predecessor: Corrective SOP Draft V3 in the same file."],
+      ["Broad questions use Discussions only if", "Broad questions or design exploration use Discussions only if"],
+      ["uncertain ([Support, Before Opening]", "uncertain and ask for a safe minimal reproduction ([Support, Before Opening]"],
+      ["Preserve the prohibition on changes\n   intended to enable harmful or unauthorized use",
+        "Do not submit changes intended to use\n   this project to plan, enable, optimize, or conceal violence, surveillance,\n   coercion, illegal activity, or unauthorized system access"],
+      ["the owner's final decision. Drafting or self-assigned roles satisfy none of",
+        "the owner's final decision. Security-sensitive policy changes also require\n   the owner's final decision in addition to applicable review requirements.\n   Drafting or self-assigned roles satisfy none of"],
+      ["**Keep best-effort activities and limits.** Make no deadline or guaranteed",
+        "**Keep best-effort activities and limits.** Support is community best-effort.\n   Make no deadline or guaranteed"],
+      ["fixes, and document mitigation when warranted, all on a best-effort basis.",
+        "fixes, and document mitigation in a security advisory or release note when\n   warranted, all on a best-effort basis."],
+      ["outputs; canonical version; policy paths", "outputs; report or draft identifier when applicable; canonical version; policy paths"],
+      ["next bounded action;\n   and explicit prohibitions.",
+        "next bounded action\n   and its applicable stop condition;\n   and explicit prohibitions."]
+    ];
+    const expected = changes.reduce((candidate, [before, after]) => replaceOnce(candidate, before, after), body(v3));
+    assert.equal(body(v4), expected);
+    assert(v4.includes("has not received another model review, maintainer adoption or operational"));
+    const prohibition = "Do not submit changes intended to use this project to plan, enable, optimize, or conceal violence, surveillance, coercion, illegal activity, or unauthorized system access";
+    assert(body(v4).replace(/\s+/g, " ").includes(prohibition));
+    assert(fs.readFileSync(path.join(root, "SECURITY.md"), "utf8").includes(prohibition));
   });
   fixture("changed source bytes change the packet binding", () => {
     const file = path.join(root, "SUPPORT.md"), original = fs.readFileSync(file);

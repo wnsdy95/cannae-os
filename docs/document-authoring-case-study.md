@@ -7,6 +7,11 @@ The opening exercise and V1/V2 are historical. The later
 actual model response and supersedes the author's earlier completeness assessment;
 it does not rewrite the original drafts, ratings or failed first attempt.
 
+The current proposed candidate is [V4](#corrective-sop-draft-v4), following the
+[separately approved V3 review](#approved-v3-review-and-appraisal). Earlier claims
+of a current draft or complete preservation remain historical, not acceptance
+of that version. Neither the review nor V4 adopts or changes source policy.
+
 Case date: 2026-11-10. Goals: G1, G2 and G4. This is a local authoring exercise
 against the repository's actual support, governance and security policies, not
 a live customer incident or a newly adopted support policy. The task and revision
@@ -970,3 +975,183 @@ English-only. The shared check runner retained this run in
 `.cannae/maintenance/native-skill-protocol-C91TEi/checks-h6dlD8/`;
 the Claude-specific appraisal is in its observation directory's parent.
 Full aggregate, lifecycle, hosted CI and actual-model acceptance were not run.
+
+## Approved V3 Review And Appraisal
+
+On 2026-11-11, USER approved one native process, including its internal transport
+retries within ten minutes, for the frozen 48,049-byte current-V3 input:
+SHA-256 `b179b03ed75a348f75af62d9e22f8968bbdcbffc5452310d804c3bd6cdbfcf58`.
+It contained the actual Codex entrypoint, original/revision requests, V1/V2,
+V3, authoring/handoff guidance and the three unchanged policies. Author ratings,
+previous verdicts and seeded answers were withheld. The preparing operator had
+routed the task and run all four selected local checks; those results do not
+grade document semantics.
+
+Codex 0.162.1 with the configured default `gpt-6-astra` ran from
+2026-11-11T05:30:04.543Z to 2026-11-11T05:31:33.655Z, 89.112 seconds. It exited 0
+with a completed turn, one brief backbrief and one substantive review, two startup
+diagnostics and zero observed tool events. Reported usage was 20,536 input tokens
+(8,320 cached), 2,538 output tokens and 188 reasoning-output tokens. This is the
+native usage record, not a price calculation or captured transport-request count.
+The diagnostics concerned experimental discovery suppression and disabled code
+mode; neither was treated as a tool call or fixed by enabling extra features.
+
+The existing login, empty temporary directory, read-only execution and disabled
+operational surfaces were retained. Automatic discovery was disabled: the exact
+entrypoint was supplied inside the input, so this is a guidance-informed review,
+not native automatic selection or a complete autonomous workflow test. The CLI
+also supplied its normal system/protocol context. This one-process approval is
+consumed; no automatic relaunch or further review is authorized.
+
+Local evidence: `.cannae/maintenance/current-sop-review-fktrHw/` retains proposal,
+input, source manifest, routing/check records, one-use start, raw events, result
+and the 12,707-byte combined backbrief/review. Its response SHA-256 is
+`335006d345fb7a6639ae8434db9f9cfb10dc91860bc5351e5a580633aeef484b`.
+The preparation manifest's false approval/execution flags remain historical;
+the later execution record documents the separately approved operation.
+
+The maintenance author compared all seven findings with the unchanged policies
+and the actual V1/V2 predecessor, not just the candidate's intent. All seven are
+accepted as bounded source-preservation corrections, not seven runtime security
+vulnerabilities or a general measured recall rate:
+
+| Finding | Source comparison and disposition |
+| --- | --- |
+| Security-sensitive policy changes lost their explicit owner-decision trigger. | GOVERNANCE Project Authority and V1 step 4 name it. V3's generic final-authority label and approval classes do not clearly retain the overlapping requirement. Restore it without removing other applicable reviews. |
+| The AI safety prohibition became an undefined harmful/unauthorized-use summary. | SECURITY names the prohibited actions and activity categories. Restore its exact rule; a citation alone does not preserve the operative scope. |
+| Handoff contents did not expressly require the work's applicable stop. | V2 names next action and stop condition. V3's general stops and receiver restatement are not a clear packet-content requirement. Restore that field; do not claim stops were wholly absent. |
+| Handoff contents lost the report/draft identifier. | V2 distinguishes it from the canonical procedure/version. Restore it when applicable, without inventing a live case identifier. |
+| Discussions lost the design-exploration use case. | SUPPORT and V1 name it alongside broad questions. Restore both while retaining the enabled-only condition. |
+| The disclosure hold lost its safe-reproduction recovery action. | V1 requires holding transmission and asking for a safe minimal reproduction. Restore the bounded next action; this exercise still authorizes no contact. |
+| Mitigation documentation lost the advisory/release-note outlet. | SECURITY specifies those outlets when warranted. Restore the conditional outlet without authorizing publication. |
+
+An optional clarity suggestion, explicitly naming community best-effort support,
+is accepted separately from those seven findings. The review appropriately kept
+unknown ownership/channel availability, unassigned receivers, withheld evidence
+and later operational prerequisites distinct from candidate defects. It did not
+claim the earlier local checks or source freshness were independently verified.
+The author's V3 preservation assessment above was too broad, particularly its
+authority, channel and handoff rows; preserve that assessment with this correction.
+
+Cause and adaptation: rewriting a policy summary introduced losses despite
+retained citations, a generic owner label and a self-check. Both skills and the
+authoring workflow now require predecessor comparison and preservation of named
+triggers, overlapping approvals, stop/recovery pairs and work identity. The
+following V4 is a new proposed draft, not an edit of the reviewed V3 or source
+policies. Its exact-delta check protects unchanged text; it cannot prove that all
+possible semantic omissions have been found.
+
+## Corrective SOP Draft V4
+
+This is the complete transferable proposed V4. It replaces V3 as the current
+review candidate only; V1-V3, their ratings and the received reviews are retained.
+The author applied seven source-appraised restorations and one clarity change.
+V4 has not received another model review, maintainer adoption or operational
+receiver acceptance. No source policy changes are proposed.
+
+**Purpose and result:** prepare a support-escalation SOP and a handoff for review.
+**Status and exclusions:** draft, not adopted. Do not publish this SOP or send
+reports under this exercise. Do not change support commitments, appoint roles,
+grant approvals or perform release actions. An AI assistant may prepare review
+material within existing authority, not inherit maintainer permissions.
+**Canonical location:** `docs/document-authoring-case-study.md`, section
+`Corrective SOP Draft V4`; predecessor: Corrective SOP Draft V3 in the same file.
+**Trigger and readers:** a support request or unfinished support case needs
+classification or transfer; intended readers are maintainers and their bounded
+AI drafting assistants. This exercise has no live support case.
+**Ownership and review:** no separate operational SOP owner is assigned.
+Maintainer review of this draft is not yet obtained; resolve ownership before
+adoption. Governance already names `@wnsdy95` as final project authority.
+
+1. **Classify and choose a channel.** Ordinary bugs, documentation defects and
+   concrete proposals use Issues. Broad questions or design exploration use Discussions only if
+   enabled. Sensitive vulnerabilities and secret exposure must not use public
+   Issues. Prefer private vulnerability reporting if enabled; if unavailable,
+   contact the repository owner through GitHub. Actual availability is unverified;
+   do not invent an email or verified channel. This describes policy, not consent
+   to transmit ([Support, Where To Ask](../SUPPORT.md#where-to-ask);
+   [Security, Reporting](../SECURITY.md#reporting-a-vulnerability)).
+2. **Prepare safe intake.** Retain the affected artifact, expected and observed
+   behavior, validation commands actually run, relevant errors and impact on
+   authority, release, risk, security or source traceability. For security reports
+   retain a minimal reproduction, affected files, expected impact and suggested
+   fix, if any. Never include real secrets, private data, production credentials
+   or third-party confidential material. Hold transmission if safe disclosure is
+   uncertain and ask for a safe minimal reproduction ([Support, Before Opening](../SUPPORT.md#before-opening-an-issue);
+   [Security, Reporting](../SECURITY.md#reporting-a-vulnerability)).
+3. **Protect stored work as well as reports.** Do not commit API keys, OAuth
+   tokens, private keys, `.env` files, real customer/user/operational/confidential
+   context or sensitive model outputs. Deliberately fake fixtures are test data,
+   not permission to include real secrets. Do not submit changes intended to use
+   this project to plan, enable, optimize, or conceal violence, surveillance,
+   coercion, illegal activity, or unauthorized system access
+   ([Security, Secret Handling](../SECURITY.md#secret-handling);
+   [AI Safety Boundary](../SECURITY.md#ai-safety-boundary)).
+4. **Keep decision and escalation authority.** Maintainers may triage, request
+   validation and review; releases still need authorization. Clarify a dispute,
+   identify its affected boundary, request maintainer review, then escalate to
+   the owner when needed. Ordinary changes need one maintainer review;
+   control-surface changes require maintainer review, CODEOWNERS when configured,
+   passing CI and an explicit risk/authority statement. Directional changes need
+   the owner's final decision. Security-sensitive policy changes also require
+   the owner's final decision in addition to applicable review requirements.
+   Drafting or self-assigned roles satisfy none of
+   these approvals ([Governance, Responsibilities](../GOVERNANCE.md#maintainer-responsibilities),
+   [Decision Classes](../GOVERNANCE.md#decision-classes),
+   [Release Authority](../GOVERNANCE.md#release-authority),
+   [Conflict Resolution](../GOVERNANCE.md#conflict-resolution)).
+5. **Keep best-effort activities and limits.** Support is community best-effort.
+   Make no deadline or guaranteed
+   fix. Security response seeks to acknowledge credible reports, preserve credit
+   when appropriate, prioritize release/authority/context-access/CI-integrity
+   fixes, and document mitigation in a security advisory or release note when
+   warranted, all on a best-effort basis.
+   Do not promise production deployment, formal compliance or confidential public
+   review; do not provide legal, medical, financial, military or safety-critical
+   advice. Custom implementation support needs a concrete repository issue
+   ([Support](../SUPPORT.md), [Response Expectations](../SECURITY.md#response-expectations),
+   [Supported Status](../SECURITY.md#supported-status)).
+6. **Record evidence and stops.** Separate draft, awaiting decision, sent,
+   acknowledged and resolved using actual observations. Record commands and
+   results actually obtained, unknowns and unrun checks. Source/authority conflicts
+   stop adoption; uncertain disclosure holds transmission. A draft is not a sent
+   report, approval or executed plan
+   ([Authoring Workflow](document-authoring-workflow.md#review-against-the-request)).
+7. **Hand off without inventing acceptance.** Include purpose and required
+   outputs; report or draft identifier when applicable; canonical version; policy paths, exact versions read and freshness
+   limits; sensitivity/current channel; completed versus unverified work; missing
+   intake; unresolved decisions and their real authority; next bounded action
+   and its applicable stop condition;
+   and explicit prohibitions. Re-read changed source policies before reuse.
+   Record `receiver unassigned` or `acceptance not observed` when applicable.
+   An assigned receiver must check sources and restate purpose, outputs, authority
+   and stops before taking over; record actual acknowledgement separately. For
+   delegated phases reroute; existing guarded missions keep their controls
+   ([Ordinary Handoff](handoff-packet-template.md#ordinary-document-work)).
+
+### V4 Change Check And Handoff
+
+Canonical candidate: the complete V4 section above. V3 remains byte-identical to
+the reviewed candidate, with its source comparison and limitations preserved.
+The proposed delta consists only of the seven accepted restorations, explicit
+community best-effort wording and the V4/predecessor identifier. No policy,
+approval or live-case state changed. The regression compares this exact intended
+delta with V3 and retains the V1/V2 evaluator's separation from later verdicts.
+
+Next bounded action: review this exact revised candidate against the policies
+and predecessor, covering both changed and unchanged obligations. Any new model
+call requires a fresh reviewed packet and decision; the V3 consent is consumed.
+SOP ownership, maintainer adoption, channel availability and actual receiver
+acceptance remain unresolved. Do not publish, transmit a support report, appoint
+roles, grant approvals or treat the draft/checks as operational acceptance.
+
+Executed after the correction: authoring review fixtures 18/18 (including exact
+V1/V2/V3 preservation and the intended V4 delta), installation 26/26, discovery
+helper 7/7, routing 216 queries plus 32 required-source rejections and 3 inventory
+checks, preflight 10/10, mandatory controls 6/6 and handoff generation 28/28.
+Both entrypoints validated at 255 lines. Both coverage checks had zero unrouted
+artifacts; source-map/registry audits, 182 document link checks and English-only
+passed. Logs are in `.cannae/maintenance/current-sop-review-fktrHw/checks-wpJMTp/`.
+The original review input/response, source policies, user `.gitignore` and actual
+installation link targets/inodes were checked unchanged. Full aggregate,
+lifecycle, hosted CI and another native/model review were not run for V4.
