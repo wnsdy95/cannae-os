@@ -71,6 +71,8 @@ node "${CONTROLS_SKILL_DIR:-${CLAUDE_SKILLS_DIR:-${CLAUDE_HOME:-$HOME/.claude}/s
 5. Preserve original user wording and constraints. The lexical router uses
    English terms; for other languages use a faithful English routing query,
    not a rewritten source of intent.
+   Describe a translation as a translation, not verbatim forwarding. Keep the
+   original request separately; claim exact reproduction only after comparing it.
 6. A capability gap is not permission to drop a task or proceed as unowned
    general work. Follow the capability-gap rule below.
 
@@ -255,6 +257,8 @@ their absence and hold only the conclusions that depend on them.
 Source IDs, digests and a previous phase's route token are not usable locators.
 Include authorized source bodies or resolvable locations in the declared receiving
 unit; otherwise mark assembly incomplete, not ready for a cold start.
+Check that every "above", "attached" or original-request reference exists in
+that unit or its actual supplied lookup. Prompt context is not an attachment.
 Appraise findings against the declared delivery unit: a full packet is not a
 detached excerpt. Preserve necessary bindings if text will travel alone, but do
 not mistake explicit patch/base metadata for a missing new-version approval.
@@ -263,6 +267,9 @@ model response does not mean its preparer ran no routing or integrity checks.
 Separate successful reads, successful-source rereads, failed delivery and
 operational execution before compressing a work summary. A failed source's
 no-retry boundary does not prohibit rereading other authorized sources.
+A source preparer's reading/delivery authority does not confer power to change
+a retry prohibition. Preserve its actual decision owner; restored access, a new
+route or a proposed recovery step does not clear the hold.
 Preserve the supplied source-ID/version/full-digest tuple verbatim or carry its
 reviewed map with the delivery unit. Never combine digest fragments or treat
 display abbreviations as integrity bindings. Use the handoff checklist for detail.

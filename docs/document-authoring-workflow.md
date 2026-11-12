@@ -62,6 +62,10 @@ For non-English requests, preserve the original wording when analyzing intent.
 The current lexical router uses English route terms; use a faithful English
 task description to find references, not as a substitute source of user intent.
 Do not interpret a routing miss as permission to omit the task or constraints.
+Describe a translation as a translation, not verbatim forwarding. Retain the
+original task separately and compare exact text before claiming it was forwarded
+unchanged. Semantic fidelity and byte identity are different claims; neither
+requires duplicating every full request in every routing query.
 
 When transferring selected files from another project, use the
 [project content preparation procedure](role-document-access-policy.md#project-content-preparation)
@@ -191,6 +195,11 @@ the final completion checklist. If a later source failure changes the work, firs
 report the affected conclusions and the independent work that may continue.
 Preserve the failed read and its retry limit; revised drafting cannot imply that
 the missing policy was read. Final reporting must retain any missed notice.
+The preparer's authority to locate or deliver a source does not authorize
+changing the instruction owner's retry prohibition. A new route, restored
+source or proposed recovery does not clear it. Name the actual decision owner
+and require the applicable explicit change before any otherwise forbidden retry;
+permitted independent drafting can continue without inventing another approval.
 
 The same timing rule applies when a method change must be announced: report its
 reason and retained boundaries before dependent calculation or drafting. A
@@ -251,6 +260,10 @@ This fallback costs another phase and parent action; it is not automatic native
 progress delivery, a general client-parity guarantee or a new service requirement.
 The [bounded native case](document-authoring-case-study.md#parent-delivered-brief-before-native-work)
 records what was actually observed and what remains unverified.
+The [method-failure follow-up](document-authoring-case-study.md#method-failure-reporting-and-handoff)
+observes this boundary after a failed required read with current full guidance.
+It also retains handoff defects; successful notice timing is not complete
+source provenance, recovery authority or receiver acceptance.
 
 State the categories of material withheld from a reviewer without revealing
 their verdicts. A review matrix excluded to avoid priming is not evidence that
@@ -265,6 +278,11 @@ missing merely because every paragraph does not repeat them. If a document or
 excerpt will travel alone, carry its necessary bindings and limits inside that
 unit instead. Do not promote an unadopted patch to a new accepted version solely
 to satisfy a reviewer's assumption about standalone distribution.
+Check every "above", "below", "attached" and original-request reference against
+that declared unit. Input supplied in a model prompt is not automatically part
+of its output. Include the authorized text or an actual resolvable reference;
+otherwise name the missing assembly step. A parent's later source-map assembly
+is separate operator work, not evidence that the original response contained it.
 
 Scope both positive and negative work claims to an actor and phase. A historical
 model's no-tool response does not mean the operator ran no router, file preparation

@@ -1,5 +1,12 @@
 # Source Map
 
+The [method-failure reporting case](document-authoring-case-study.md#method-failure-reporting-and-handoff)
+uses synthetic policy/counts and exact installed guidance, not external military
+evidence. It verifies a parent-mediated notice boundary after a failed read while
+retaining source-provenance and recovery-owner defects. The new wording about
+preparer authority, translated queries and actual attachments is local operating
+guidance, not a new approval or independently accepted correction.
+
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
 State: proposed; review: local-source-delta-checked; adoption: not-adopted.

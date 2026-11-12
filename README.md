@@ -703,6 +703,14 @@ a separately rerouted reading/work phase with correct actor accounting. This
 requires parent action; it is not automatic native progress delivery or proof
 that a message tool named in CLI help is available in the current session.
 
+The [method-failure follow-up](docs/document-authoring-case-study.md#method-failure-reporting-and-handoff)
+uses current full guidance across three native phases. Actual parent notices
+precede source reading and permitted aggregate-only work after a failed required
+read; the full item-level objective stays blocked. Correct read counts and actor
+attribution do not repair its handoff's conflicting retry decision owners or
+missing original-request reference. Those remain recorded beside a separate
+operator correction, not a fully accepted handoff.
+
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)

@@ -162,6 +162,34 @@ try {
       assert(skill.includes("not only as a retrospective final section"));
     }
   });
+  fixture("translated routing and exact reproduction remain distinct claims", () => {
+    assert(packet.prompt.includes("Describe a translation as a translation, not verbatim forwarding."));
+    assert(packet.prompt.includes("Semantic fidelity and byte identity are different claims"));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Describe a translation as a translation, not verbatim forwarding."));
+      assert(skill.includes("claim exact reproduction only after comparing it."));
+    }
+  });
+  fixture("handoff references belong to the actual receiving unit, not hidden prompt context", () => {
+    assert(packet.prompt.includes("A model's prompt is not an attachment to its response."));
+    assert(packet.prompt.includes("original request is reproduced when only a purpose summary is present"));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes('Check that every "above", "attached" or original-request reference exists in'));
+      assert(skill.includes("Prompt context is not an attachment."));
+    }
+  });
+  fixture("source preparation and rerouting cannot change a retry prohibition", () => {
+    assert(packet.prompt.includes("A preparer's reading/delivery authority does not include changing the instruction"));
+    assert(packet.prompt.includes("Avoid granting a different"));
+    assert(packet.prompt.includes("owner this power in the summary while naming the correct owner elsewhere."));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("A source preparer's reading/delivery authority does not confer power to change"));
+      assert(skill.includes("route or a proposed recovery step does not clear the hold."));
+    }
+  });
   fixture("method timing and quantitative comparison guidance remain explicit in both clients", () => {
     assert(packet.prompt.includes("method section after an already calculated headline is retrospective"));
     assert(packet.prompt.includes("does not reveal unobserved internal computation"));

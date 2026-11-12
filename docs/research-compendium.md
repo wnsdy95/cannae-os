@@ -20,6 +20,23 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Reporting Success Does Not Transfer Recovery Authority (2026-11-12)
+
+The [method-failure case](document-authoring-case-study.md#method-failure-reporting-and-handoff)
+observes current full guidance, actual parent-delivered notices and a permitted
+partial result after one failed required read. The worker preserves the original
+goal, separate adoption/transmission decisions and accurate unique/read/reread
+counts. Nevertheless its handoff lets a source preparer change a retry prohibition
+and claims an original request is present only in the input, not the output.
+
+Authority to locate or deliver data is not authority to change its governing stop.
+Likewise, a prompt is not an attachment and a faithful translation is not verbatim
+forwarding. Review summary and next-action claims as well as detailed caveats.
+Both skills now encode these distinctions. A separate operator-built correction
+and source map preserve original outputs but do not establish fresh model review,
+receiver acceptance or USER adoption. Conditional notice timing has bounded
+acceptance; the full workflow and stable phase-to-phase cell identity remain open.
+
 ## A Reporting Boundary Can Be A Phase Boundary (2026-11-12)
 
 The [parent-delivered brief exercise](document-authoring-case-study.md#parent-delivered-brief-before-native-work)

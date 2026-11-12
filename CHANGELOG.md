@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Verify current full guidance through parent-delivered advance and method-change notices, one failed required read and bounded partial work without retry or false full completion. Retain the native handoff's conflicting recovery authority and absent original-request reference, plus a separate project-local six-span correction and source map. Both skills now distinguish source preparation from retry-decision authority, actual output attachments from prompt context, and translation from verbatim forwarding. Notice timing is bounded-verified; full handoff acceptance and the new correction's native review remain open.
+
 - Bind current support-SOP navigation across six entry points to one declared candidate/disposition and exact candidate/appraisal sections. Extend the existing source-map gate with stale-target, state, source-drift and misplaced/dropped-reference rejection while preserving historical bodies. Distinguish current task navigation from metadata-only and platform-history checkpoints, and mirror source-first maintenance in both skills. This is local declared-state integrity, not semantic review, authenticated adoption or full goal closure.
 
 - Verify a route-only native brief, actual parent delivery and separately rerouted source-reading/work phase with correct actor accounting. Preserve the failed native-message-tool availability probe and earlier false reporting claims. Put requested backbrief delivery before dependent reading/drafting in the authoring sequence, and mirror the conditional phase-separated procedure in both skills without granting approval or claiming automatic reporting, stable mission-level cell identity or full client parity.

@@ -2853,3 +2853,100 @@ candidate families and unregistered narrative claims keep A16 partial. The curre
 queue still owns next work, and all five objectives remain partial. No hosted CI,
 full repository aggregate, new native-client evaluation, publication, persistent
 client setting or platform service is part of this change.
+
+## Method-Failure Reporting And Handoff
+
+The G1/G2/G3/G5 follow-up uses native source HEAD `3ce5041` and the complete
+current installed Claude entrypoint, not just its reporting excerpt. Three
+fresh Claude Code 2.1.322 processes use the existing `opus[1m]` alias; native
+initialization reports `claude-opus-5-5`. This tests explicitly supplied guidance,
+not implicit selection. Each process has a five-minute/call bound, no built-in
+tools and no automatic relaunch under the standing USER verification consent.
+
+The synthetic METHOD-61 task requires an item-level document-readiness review
+and handoff. Its policy permits P1 aggregate-only partial reporting after a
+required ledger delivery failure and a real method-change notice. It forbids
+retrying that source, fabricating records, inferring acceptance from labels or
+declaring full readiness. Adoption and transmission remain separate USER decisions;
+cost, deadline, risk and operational changes are forbidden. All three phases
+retain the exact same original task, recipient and seven required source rows.
+
+Four public guides cover scope, authoring, knowledge management and handoff.
+The three synthetic task sources are policy, ledger and aggregate counts. The
+preparer's ledger fixture exists for binding, but the adapter attempts a deliberately
+missing delivery path and sends no ledger body. This is a delivery simulation,
+not a missing real repository document or a restored production source. A separate
+reference-only owner source and its path remain withheld.
+
+### Observed Sequence
+
+| Phase | Observed result |
+| --- | --- |
+| Brief | 38.007 seconds; one native route, zero source reads. All seven readings remain pending. The parent actually delivers the unchanged brief before continuing. |
+| Diagnosis | 47.690 seconds; a fresh route, five successful reads (four guides and policy), then one ledger delivery failure. No retry or counts read. The parent actually delivers the returned method notice before continuing. |
+| Work | 79.118 seconds; a fresh route and six successful reads: the same five sources plus counts. No ledger retry. The response produces only the permitted partial result and a handoff, attributing earlier delivery to the parent. |
+
+All 15 native calls/results reconcile with helper logs and exact source bytes.
+Partial and completed text match in every phase. The phase adapter withholds
+all reading during the brief and counts reading during diagnosis; it rejects
+later ledger retry, wrong-route and reference-only reads. This is a temporary
+controlled adapter, not a shipped plugin or protected operating gateway.
+
+The final report correctly gives 12 aggregate records labeled draft 7, reviewed
+4 and deferred 1. It treats the sum as an inventory consistency check, not
+item-level proof. It retains the full objective as blocked, reconciles six of
+seven unique required sources, distinguishes five cross-phase rereads from the
+one failed attempt, and preserves separate adoption/transmission holds. All
+three outputs are Korean. The parent gives a separate public closeout after
+reviewing the final response. A11 has bounded evidence for this conditional
+parent-mediated sequence, not automatic in-run reporting or a human read receipt.
+
+### Findings And Correction
+
+The whole handoff does not pass acceptance:
+
+- The first brief claims verbatim routing, but its query is an English translation
+  of the Korean request. The parent explicitly corrects this alongside the delivered
+  original. Later phases actually include the original text and an English gloss.
+- The handoff says the original request is preserved above in the declared whole
+  response, but only its purpose summary is present. The actual original lives in
+  the input. A model prompt is not an attachment to its output.
+- The recovery summary lets either USER or an authorized source preparer decide
+  whether to retry the prohibited ledger. Naming USER alone elsewhere does not
+  repair that conflicting grant. No such retry actually occurs, but the proposed
+  next-owner procedure is unsafe within the assignment.
+- The model correctly reports that its source-location assembly is incomplete.
+  The controlled catalog supplies relative locations and hashes, not a portable
+  repository lookup. That apparatus/input limit is distinct from the false claim
+  that the original task is present; it is not evidence of a complete cold start.
+- The fixed assignment/recipient produces three different provisional cell IDs
+  as phase queries change. No standing department or expanded authority is granted,
+  but stable mission-level organization identity is still unverified. The first
+  brief is also much longer than the requested concise notice.
+
+The operator retains all three original responses in the synthetic target's
+`.cannae/document-drafts/METHOD-61/`, then prepares a separate six-span correction,
+the actual original-task file, source lookup and exact snapshots of the six delivered
+sources. It includes neither the failed ledger body nor the reference-only body/path.
+The correction removes preparer retry-change power, binds the real original request,
+and declares the assembled unit and historical-source limits. Its exact replacements,
+source hashes and original-response copies are checked locally. This is operator
+work, not a new model response, accepted policy or observed receiver acceptance.
+
+Both skills and the authoring/handoff guides now require accurate translation
+claims, checking every attachment/above reference in the actual receiving unit,
+and preserving the actual retry decision owner. Source restoration, rerouting
+and preparation authority cannot clear that hold. Three new reviewer-context
+fixtures bring the authoring suite to 52 cases; those checks deliver the guidance
+but do not prove its semantic effectiveness in a fresh model run.
+
+Exact inputs, process records, notices, results and appraisal remain under
+`.cannae/maintenance/method-failure-reporting-20261112/`. Prompt byte lengths are
+27,607 / 33,558 / 41,424 for brief / diagnosis / work. The saved final response
+SHA-256 is `9cce452560f5a1d64397f6792f10fd43e3c55faafe9ba54a2314ed595a7bf833`;
+the operator correction is `f522d5fc562941e2adc0f4b1847e55e7c83fdd9308cc63ed280d530fc7468559`.
+Saved response bindings include their wrapper newline. Earlier failures and
+source-policy holds are unchanged. All five objectives remain partial; full
+handoff/recovery quality and cross-client equivalence are not established by
+successful process exits or notice timing. No new Codex call, hosted CI,
+full aggregate, publication, settings change or platform service is claimed.

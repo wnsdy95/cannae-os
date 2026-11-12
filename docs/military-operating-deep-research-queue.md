@@ -611,7 +611,7 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
-- `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases; preserve failed reporting/count claims and stream diagnosis. A parent-delivered brief between native phases has bounded evidence, not automatic reporting or full parity; the unavailable native-message-tool probe remains a separate failure. Local content-refusal and reading checks retain their limits.
+- `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases; preserve failed reporting/count claims and stream diagnosis. Current-guidance parent notices now cover a required-source failure and permitted partial work, while handoff recovery-owner and missing-original defects remain. Operator corrections are separate and unaccepted; no automatic reporting or full parity is claimed.
 - `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, revision history, recipient selection and freshness; no automatic promotion or authority expansion.
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
 - `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.

@@ -56,6 +56,10 @@ Declare whether the receiving unit is this whole packet or a detached document.
 Keep required bindings with that unit, without unnecessarily repeating every
 origin-map row in every paragraph. State whose checks ran in which phase;
 model-only non-execution claims must not erase the preparer's actual work.
+Check every "above", "below", "attached" and original-request reference against
+that declared unit. A model's prompt is not an attachment to its response.
+Include the authorized text or an actual supplied lookup; do not claim the
+original request is reproduced when only a purpose summary is present.
 
 Source IDs and digests identify material but do not tell a cold-start receiver
 how to read it. Include authorized bodies or resolvable source locations with
@@ -71,6 +75,11 @@ decision. Do not summarize real document reads as "no tools or reads executed".
 A source-specific no-retry result does not prohibit rereading other authorized
 sources; it also does not authorize retrying that failure. Preserve unaffected
 work and any separate policy hold even if the source later becomes readable.
+A preparer's reading/delivery authority does not include changing the instruction
+owner's retry prohibition. Name that owner and the applicable explicit change
+needed before an otherwise forbidden retry. Restored access, a new route or a
+proposed recovery action does not clear the hold. Avoid granting a different
+owner this power in the summary while naming the correct owner elsewhere.
 
 Keep each source-ID/version/full-digest tuple exact. Reuse the supplied reviewed
 origin map rather than reconstructing hashes in prose. If displaying a shortened
