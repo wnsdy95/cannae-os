@@ -171,6 +171,10 @@ Check `capability_routing` even if a retained technical route still lists contro
 Distinguish "do not build a dashboard" from "review it without deployment": the
 latter still needs technical sources. Explicit inputs, parent tasks and assigned
 technical duties remain prerequisites; a shorter list is not proof of completeness.
+Distinguish a document's drafting readiness from unit/tool readiness. Keep the
+whole request, including supported exclusion lists, and check that real format
+names with modifiers or plurals still receive their templates. A new match does
+not remove selected controls or permit trimming an issued context.
 Ordinary role-specific routing is not a guarded work receipt; existing missions
 still require their control-plane roles and successful preflight.
 

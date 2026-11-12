@@ -20,6 +20,21 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Readiness Context And Format Selection (2026-11-12)
+
+The [document-readiness routing case](document-authoring-case-study.md#document-readiness-and-format-routing)
+separates ordinary drafting readiness from operational preparedness and recognizes
+complete known exclusion lists without altering the stored task. The same actual
+query also exposed missed format modifiers and plurals: removing irrelevant
+manuals alone would not restore the needed authoring procedure and handoff template.
+
+Evaluate additions as well as removals. For the recorded human request, five
+runtime manuals leave and five authoring/handoff references enter, so the total
+remains 18. All 12 previous checks remain and two continuity checks are added.
+Required inputs, parent objectives, technical duties and ambiguous reviews stay
+relevant. This is bounded lexical selection, not automatic semantic completeness,
+authority to trim issued context or a new native-model acceptance result.
+
 ## Decision Ownership And Completion Claims (2026-11-12)
 
 The [outgoing revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)

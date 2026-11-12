@@ -1,5 +1,11 @@
 # Source Map
 
+The [document-readiness routing case](document-authoring-case-study.md#document-readiness-and-format-routing)
+uses the exact earlier maintenance query, retained before/after CLI output and
+counterexamples for both providers. It supports bounded relevance and restored
+format selection, not new military claims, model understanding or authority.
+All prior commands remain; retained ambiguous wording limits the conclusion.
+
 The [outgoing handoff revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
 adds native source/predecessor comparison and exact selected-unit checks. It
 supports bounded limit/decision-owner retention, not new military research or

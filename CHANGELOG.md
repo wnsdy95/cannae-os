@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Distinguish document drafting readiness and complete known exclusion lists from runtime work in both routers, while recognizing authoring modifiers and plural handoffs. Replay the actual maintenance request with restored templates, five fewer unrelated specialist manuals and every prior control retained. Mirror reusable guidance and cover direct, installed and guarded routing; preserve ambiguous technical cases and capability gaps. This is bounded local relevance, not global semantic minimality, native acceptance or expanded authority.
+
 - Separate established decision ownership from an unknown operational assignee, and completed reporting from completed underlying work, in both provider skills and the handoff guide. Two native outgoing revisions retain current restrictions and USER recovery authority; exact source inclusion and selected units are checked separately. Accept the bounded Codex advisory revision while retaining Claude's proposal/requirement and completion-language gaps. Record an actual maintenance-query over-selection for the next routing correction; no private-source or platform scope expansion follows.
 
 - Observe fresh Codex and Claude sessions continuing the exact prior handoff into useful verification worksheets without old chat or tools. Preserve their different declared receiving units, a field-only extraction counterexample and outgoing report/scope defects. Both skills now recheck successor unit boundaries and current assignment restrictions, with structured inclusion evidence and reviewer-context regression coverage. Receiving is not full outgoing acceptance, authenticated authority or private-source policy clearance.

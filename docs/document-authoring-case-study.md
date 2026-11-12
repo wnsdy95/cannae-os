@@ -3643,3 +3643,71 @@ that over-selects runtime/dashboard reading despite document-readiness context
 and a mixed exclusion clause. Preserve the full query, explicit/parent inputs
 and genuine runtime counterexamples while investigating. This observation does
 not authorize platform development or resolve the separate private-draft policy.
+
+## Document Readiness And Format Routing
+
+On 2026-11-12, the exact maintenance query from the outgoing-revision case exposed
+two independent problems. "Revise outgoing document handoffs" missed the writing
+predicate and singular-only handoff keyword. "Clarify document readiness" and
+"no publication, private-source exception, dashboard or service work" instead
+added runtime expertise and five unrelated technical manuals. Removing those
+manuals alone would still leave the missing format guidance unresolved.
+
+Both routers now recognize bounded authoring modifiers and plural handoffs,
+complete known exclusion lists, and qualified document-readiness wording inside
+an authoring task. The relevance-only view does not alter the original task,
+capability query, selected controls or authority. Both skills instruct operators
+to check restored templates as well as reduced irrelevant reading and to preserve
+actual technical inputs and duties. See the [routing procedure](../codex-skills/controls-doctrine-operator/references/document-routing.md#runtime-reading-scope).
+
+### Retained Local Comparison
+
+Evidence lives in `.cannae/maintenance/document-readiness-routing-20261112/`.
+Before and after snapshots each contain 28 full CLI outputs: seven requests,
+two providers and user versus S6/knowledge/read-only routing. Source HEAD was
+`eb9d524030e0d9eb1a8833564e26649e515ccfda`; snapshot source digests bind each
+working-tree version. No model was invoked or earlier raw response changed.
+
+| Recorded query | Before | After |
+| --- | --- | --- |
+| Exact maintenance request, user | 18 documents; five runtime manuals; writing route and handoff template absent; 12 commands | 18 documents; no conditional runtime manuals; writing route and template present; all 12 commands plus two continuity checks |
+| Exact maintenance request, delegated knowledge reader | 25 documents with the same relevance defects | 24 documents; required mode documents retained; restored writing route/template and all prior commands |
+| Qualified drafting readiness | 15 documents including five runtime manuals | 10 documents, no conditional runtime manuals |
+| Reverse wording: readiness of the drafts | Eight documents including five runtime manuals, no writing route | Nine documents with writing route/template, no conditional runtime manuals |
+| Complete mixed exclusion list | 17 documents including five runtime manuals | 12 documents, no conditional runtime manuals |
+| Actual tool readiness, dependent design review or unknown list wording | Five runtime manuals | All five remain |
+
+The exact human request swaps five runtime references for the handoff template,
+personnel-continuity model, knowledge-management SOP, SOP library and prompt
+templates. The delegated reader already had the knowledge-management SOP. Both
+provider results agree within each declared mode; total document count alone
+does not measure useful context or prove that every remaining reference is needed.
+
+The regression covers explicit corpus/project inputs, inline source references,
+technical parent objectives, systems-department duties, guarded receipt context,
+compound domain gaps and unchanged no-authority-expansion flags. Project input
+contents remain unread. Linked and copied installation cases use foreign working
+directories and preserve the two providers' own commands/root bindings.
+
+The retained red run reproduces the missing writing route. The first correction
+missed "Draft a handoff document" because the readiness filter did not consult
+the authoring rule's keywords; that defect was fixed before acceptance. A later
+fixture failed by reading a guarded receipt's query from the direct-result field;
+the assertion now checks the contract's `router_query`, without dropping original-
+query retention. The final focused routing run passes 1,012 routed queries across
+both providers. These are CLI checks, not 1,012 native-model reviews.
+
+### Limits And Next Work
+
+General maintenance-readiness material remains when its route matches. Unknown
+mixed clauses, technical imperatives such as "Document readiness failures",
+conditions and dependent reviews stay conservative. The status-query wording
+"Dashboard and service development remain deferred" also lies outside this
+bounded exclusion grammar and still selects technical reading; this is not a
+general negation parser or automatic minimal-context claim.
+
+The separate private-draft delivery refusal, Claude's proposal/requirement
+ambiguity and broader source-currentness checks remain open. There is no new
+native document acceptance, authenticated authority, policy adoption or release.
+Do not replay accepted document revisions just to accumulate passes; target an
+unresolved requirement and preserve the original task and disclosure controls.

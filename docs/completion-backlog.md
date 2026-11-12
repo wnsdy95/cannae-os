@@ -81,10 +81,14 @@ Use this queue and the requirement table, not those historical instructions.
    Codex's exact revision is accepted for advisory drafting; Claude still mixes
    proposed ordering with a mandatory prerequisite and leaves completion wording
    ambiguous. Preserve those limits instead of replaying an accepted repair.
-   Next correct the observed maintenance-query over-selection: document readiness
-   and a mixed platform-exclusion clause still select runtime/dashboard manuals.
-   Retain the full request, genuine runtime counterexamples and parent/explicit
-   inputs. The separate internal-draft delivery refusal remains unresolved;
+   The [document-readiness correction](document-authoring-case-study.md#document-readiness-and-format-routing)
+   now removes that query's unrelated runtime reading and restores missing
+   authoring/handoff references. Retained before/after outputs preserve the full
+   request and every prior control; genuine runtime tasks and parent/explicit
+   inputs still receive technical reading. Broader unsupported wording, semantic
+   completeness and Claude's repaired-document ambiguity remain open. Do not
+   replay an accepted case merely to raise a pass count.
+   The separate internal-draft delivery refusal remains unresolved;
    successful synthetic text revision does not bypass it.
    The [source-topic correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
    now conditions national specialist recommendations and separates bounded
@@ -144,7 +148,7 @@ server. Do not turn these unequal rows into a product-completion percentage.
 | A02 | G1: revisions preserve unaffected requirements and explicit lineage | Verified (bounded). Exact V1/V3/V4 and proposed V5 delta fixtures preserve historical bodies; [native repair reviews](document-authoring-case-study.md#current-guidance-handoff-repair-review) retain policy and unknowns. Native V5 source/predecessor comparison now accepts the bounded hold/recovery changes. The [four-span follow-up](document-authoring-case-study.md#four-span-follow-up-source-appraisal) retains separate local appraisal. | The four-span follow-up has no fresh native review. V5's scoped review is not policy adoption, independent infrastructure or complete receiving acceptance; both remain unadopted. |
 | A03 | G1: current canonical document and change history agree | Verified (bounded). The opening notice, README and current queue now identify proposed V5, and a regression checks that historical candidates and earlier next actions stay unchanged. | Other exercises retain their own IDs and scopes; this correction is not proof that every prose status in the corpus is current. Wider maintenance remains A16. |
 | A04 | G2: human versus delegated role/department/authority routing | Verified (bounded). Dual-provider routing, fixed S6 native routes and access-profile fixtures preserve declarations and deny unlisted or insufficiently authorized content. | Declared roles are not authentication; wider task relevance belongs to A05, not a new authority claim. |
-| A05 | G2: necessary documents arrive with minimal irrelevant context | Partial. Both clients read six justified prerequisites in the first research case and all ten in the repair review. Local runtime-reading, [source-topic checks](document-authoring-case-study.md#source-topic-and-delivery-language-reading) and [skill-use selection](document-authoring-case-study.md#skill-use-and-maintenance-reading) condition specialist references without dropping explicit/parent inputs, role duties or controls. Ordinary client use is distinct from corpus maintenance; guarded skill-operations reading is preserved. | Manual profiles and bounded lexical matching are not globally minimal automatic routing. Preserve earlier missing-read failures and the separate method-proposal gap; verify broader relevance and semantic completeness without dropping requirements. |
+| A05 | G2: necessary documents arrive with minimal irrelevant context | Partial. Both clients read six justified prerequisites in the first research case and all ten in the repair review. Local runtime-reading, [source-topic checks](document-authoring-case-study.md#source-topic-and-delivery-language-reading), [skill-use selection](document-authoring-case-study.md#skill-use-and-maintenance-reading) and [document-readiness/format correction](document-authoring-case-study.md#document-readiness-and-format-routing) condition specialist references and restore missing templates without dropping explicit/parent inputs, role duties or controls. Ordinary client use is distinct from corpus maintenance; guarded skill-operations reading is preserved. | Manual profiles and bounded lexical matching are not globally minimal automatic routing. Preserve earlier missing-read failures and the separate method-proposal gap; verify broader relevance and semantic completeness without dropping requirements. |
 | A06 | G2: reroute at phase changes and reject missing/stale/wrong-role context | Verified (bounded). [Native phase routes](document-authoring-case-study.md#agent-invoked-phase-routing), current-byte checks and 15 preflight fixtures cover the retained local boundary. | Guarded project/multi-objective inputs remain explicitly unsupported; rejection must persist, not be relabeled as ordinary work. No protected-host guarantee is inferred. |
 | A07 | G2: uncovered domains get a bounded task cell; standing changes remain USER decisions | Verified (bounded). [Compound intake](project-terminology-workflow.md#native-compound-intake), comparison-gap fixtures and agent context checks retain the provisional cell without standing activation or expanded authority. Explicit identity stabilizes the local cell across queries/roles; the [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity) now observes actual Codex ID retention with an adapter-checked root across two phases. | Native query bodies are identical and the same role/process continues. Other clients, changed-role native continuity and semantic completeness remain separate; identity is not authenticated ownership, a registry or guarded admission. |
 | A08 | G3: detect semantic omissions and missing prerequisites | Verified (bounded). Both clients recognize missing required policy in the earlier failure case. In the [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair), both detect all six seeded omission/contradiction families from the original request and sources, with separate operator appraisal rather than a route match or author self-grade. | Same-case detection does not prove universal recall/precision, automatic objective extraction or a successful repair. Retain speculative extra findings and the repaired-plan/assembly defects under A01/A09/A10/A14; client contexts are not independent infrastructure. |
@@ -172,6 +176,14 @@ queue above owns next actions. The following record owns historical evidence.
 Earlier checkpoint text is retained below, including its original next actions
 and limits. Those instructions do not override the current queue. Candidate
 status and scope must be read at the checkpoint where each claim was made.
+
+Document-readiness checkpoint: local before/after routing removes five unrelated
+runtime references and restores missing format references in the observed query.
+Original wording, parent/explicit inputs, technical duties and every prior command
+are retained. Both skills carry the distinction, with direct and installed cases.
+This closes the recorded lexical defect, not general minimality, semantic quality
+or native parity. Twelve required rows remain bounded-verified and eight partial;
+all five goals remain partial. See the current queue for the remaining work.
 
 Outgoing-revision checkpoint: both native clients retain current phase limits
 and established USER recovery ownership, with source-complete selected units.

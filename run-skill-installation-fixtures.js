@@ -383,6 +383,10 @@ function taskReadingScope(env) {
   for (const [query, technical, gap] of [
     ["Draft a handoff document. Do not build a dashboard.", false, false],
     ["Draft a handoff document. Do not skip dashboard verification.", true, false],
+    ["Revise outgoing document handoffs. Clarify document readiness; no publication, dashboard or service work.", false, false],
+    ["Revise outgoing document handoffs. Review unit readiness; no dashboard or service work.", true, false],
+    ["Revise outgoing document handoffs; no dashboard or service work. Review its design.", true, false],
+    ["Analyze museum attendance; no publication, dashboard or service work.", false, true],
     ["Analyze museum attendance by city. Do not build a dashboard.", false, true]
   ]) {
     const results = PROVIDERS.map(provider => {

@@ -412,16 +412,33 @@ inputs still add their references; a prohibition on implementation does not
 cancel an assigned technical review or required source.
 
 The router recognizes a bounded set of complete English exclusions, such as
-"Do not build a dashboard" and "Dashboard development is deferred". Those clauses
-cannot by themselves establish runtime capability or require the five specialist
+"Do not build a dashboard", "Dashboard development is deferred", and complete
+noun lists like "no publication, dashboard or service work". The list accepts
+the known platform nouns, publication, transmission, deployment and private-source
+exceptions; unknown items, review qualifications and conditions remain relevant.
+Those clauses cannot by themselves establish runtime capability or require the
+five specialist
 manuals. The original task and capability query remain verbatim, and selected
 route IDs and validation commands remain. Thus "Analyze museum attendance; do not
 build a dashboard" keeps its domain gap and provisional cell instead of claiming
 dashboard expertise covers the analysis. This adds the existing gap controls,
 not authority to create a standing department.
 
-Mixed, conditional and unknown wording stays conservative. "Do not skip dashboard
-verification", "do not build it but review its design" and positive parent tasks
+In a recognized authoring task, "clarify document readiness" and "readiness of
+the draft" describe the document, not unit/tool preparedness. These bounded
+qualified forms no longer add the five runtime manuals or runtime capability
+evidence. "Document readiness failures" can instead be an instruction to report
+operational conditions and stays conservative. Positive task/parent context,
+technical duties and explicit inputs still retain their references.
+
+Check the full authoring bundle for modifiers and plural formats: "revise outgoing
+document handoffs" must retain the writing procedure and handoff template, not
+only lose unrelated manuals. General maintenance reading and selected commands
+remain available; fewer or differently composed recommendations are not proof
+of globally minimal or semantically complete context.
+
+Unsupported mixed, conditional and unknown wording stays conservative. "Do not
+skip dashboard verification", "do not build it but review its design" and positive parent tasks
 still require reading. This is not general negation parsing, language understanding
 or globally minimal context selection. A technical filename is a relevance hint,
 not content access or domain competence. Check every original objective and the

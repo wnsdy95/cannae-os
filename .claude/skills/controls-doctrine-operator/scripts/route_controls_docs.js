@@ -337,7 +337,7 @@ const RULES = [
   },
   {
     id: "continuity-handoff",
-    keywords: ["continuity", "handoff", "rotation", "succession", "knowledge", "km", "handover", "succession planning", "replacement", "cycling", "knowledge transfer"],
+    keywords: ["continuity", "handoff", "handoffs", "rotation", "succession", "knowledge", "km", "handover", "handovers", "succession planning", "replacement", "cycling", "knowledge transfer"],
     docs: [
       "docs/handoff-packet-template.md",
       "docs/document-authoring-workflow.md",
@@ -717,7 +717,8 @@ function keywordMatches(text, keyword) {
 
 function isDocumentAuthoringRequest(query) {
   const verb = "(?:draft|write|revise|edit|update)";
-  const determiner = "(?:(?:a|an|the|this|that|these|those|my|our)\\s+)?";
+  const determiner = "(?:(?:a|an|the|this|that|these|those|my|our)\\s+)?" +
+    "(?:(?:incoming|outgoing|current|proposed|revised|existing)\\s+)*";
   const report = /\b(?:(?:research|progress|status)\s+reports?|(?:progress\s+and\s+)?decision\s+(?:summar(?:y|ies)|briefs?))\b/i;
   return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
     .test(String(query || "")) || report.test(String(query || ""));
@@ -1345,7 +1346,7 @@ function needsImprovementSpecialistReading(text, sources) {
 }
 
 function runtimeWorkContext(text) {
-  // Only complete, unambiguous exclusion clauses qualify; mixed/unknown wording stays.
+  // This view affects relevance only; original tasks and selected controls remain intact.
   const noun = "(?:dashboard|control panel|database|event store|event replay|ui|architecture|standalone service|separate service)s?";
   const subject = "(?:(?:a|an|the|any|new|operational|production)\\s+)*" + noun;
   const excluded = new RegExp("^(?:(?:please\\s+)?(?:do not|don't|never)\\s+" +
@@ -1354,11 +1355,28 @@ function runtimeWorkContext(text) {
     "(?:\\s+(?:development|implementation|work))?\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
   const clauses = String(text).split(/[;\n]+|(?<=[.!?])\s+/)
     .map(clause => clause.trim().replace(/[.!?]+$/, ""));
-  const retained = clauses.filter(clause => !excluded.test(clause));
+  const listedItem = "(?:" + subject + "(?:\\s+work)?|services?(?:\\s+work)?|" +
+    "publication|transmission|deployment|private-source exceptions?)";
+  const separator = "(?:\\s*,\\s*(?:(?:and|or)\\s+)?|\\s+(?:and|or)\\s+)";
+  const excludedList = new RegExp("^no\\s+" + listedItem + "(?:" + separator + listedItem + ")*$", "i");
+  const retained = clauses.filter(clause => !excluded.test(clause) && !excludedList.test(clause));
   const dependentReview = /\b(?:review|inspect|assess|compare|evaluate|audit|verify|check|validate|read)\s+(?:it|its|their|them|that|those|this)\b/i;
   if (retained.length !== clauses.length && retained.some(clause =>
     dependentReview.test(clause) || /^(?:but|however|unless|except|instead)\b/i.test(clause))) return String(text);
-  return retained.join("\n");
+  let context = retained.join("\n");
+  const authoring = RULES.find(rule => rule.id === "document-authoring");
+  if (isDocumentAuthoringRequest(context) || countMatches(context, authoring.keywords) > 0) {
+    // A noun-qualified draft check is not unit/tool readiness. Keep ambiguous imperatives.
+    const document = "(?:documents?|drafts?|worksheets?|reports?|handoff documents?)";
+    const readiness = "(?:readiness|preparedness)";
+    const assessment = "(?:assess|check|clarify|compare|evaluate|review|verify)";
+    const qualifier = "(?:(?:the|this|these|those|our|my|a|an)\\s+)?";
+    const modifier = "(?:(?:incoming|outgoing|current|proposed|revised|existing)\\s+)*";
+    const forward = new RegExp("(\\b" + assessment + "\\s+" + qualifier + modifier + document + "\\s+)" + readiness + "\\b", "gi");
+    const reverse = new RegExp("\\b" + readiness + "(\\s+of\\s+" + qualifier + modifier + document + "\\b)", "gi");
+    context = context.replace(forward, "$1").replace(reverse, "$1");
+  }
+  return context;
 }
 
 function needsRuntimeSpecialistReading(text, sources) {

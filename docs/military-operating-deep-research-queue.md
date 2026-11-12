@@ -38,9 +38,11 @@ now observes that receiving and useful worksheet drafting in both clients. The
 [outgoing revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
 preserves current restrictions and recovery ownership in both; Codex's exact
 unit is accepted for advisory drafting, while Claude retains proposal/requirement
-and completion-criterion ambiguity. Next address the recorded maintenance-query
-over-selection without dropping genuine runtime duties or explicit/parent inputs.
-Preserve the differing units and separate internal-draft delivery refusal.
+and completion-criterion ambiguity. The [document-readiness correction](document-authoring-case-study.md#document-readiness-and-format-routing)
+now addresses that query's over-selection and restores missing format references,
+without dropping prior controls, genuine runtime duties or explicit/parent inputs.
+Broader task relevance, actual repaired-document parity and the separate internal-
+draft delivery refusal remain open. Preserve the differing receiving units.
 
 The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
 reduces ordinary direct maintenance-manual over-selection while retaining parent

@@ -222,6 +222,99 @@ function testTaskReadingScope(router) {
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 }
 
+function testDocumentReadinessScope(router) {
+  const observed = "Revise outgoing document handoffs and verification worksheets against their original request, current assignment, supplied sources and predecessor. Preserve explicit restrictions, USER decision ownership, unknown operational assignees and useful allowed drafting. Clarify document readiness versus operational completion without adding an unsupported quality threshold. Maintain mirrored Codex and Claude guidance and regression evidence; no publication, private-source exception, dashboard or service work.";
+  const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
+  const check = (result, technical, query) => {
+    assert.equal(result.type === "RoutingReceipt" ? result.router_query : result.query, query);
+    for (const file of RUNTIME_SPECIALIST_DOCS) {
+      assert.equal(result.recommended_documents.some(row => row.path === file), technical, query + ": " + file);
+    }
+    for (const command of controls) assert(result.validation_commands.includes(command));
+    assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+  };
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    const actual = route(router, args, observed);
+    assertRoutes(actual, ["document-authoring", "continuity-handoff"]);
+    check(actual, false, observed);
+    for (const file of ["docs/handoff-packet-template.md", "docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md"]) {
+      assert(actual.recommended_documents.some(row => row.path === file));
+    }
+    assert(!actual.capability_routing.matched_capability_routes.includes("runtime-architecture-dashboard"));
+    for (const query of [
+      "Draft a handoff document. Clarify document readiness.",
+      "Revise the outgoing documents. Assess the readiness of the drafts.",
+      "Update the current documentation. Check worksheet preparedness.",
+      "Write a proposed document. Review the preparedness of this report.",
+      "Draft a handoff document; no publication, private-source exception, dashboard or service work.",
+      "Draft a handoff document; no dashboard, database, or standalone service work.",
+      "Draft a handoff document; no dashboard and database work.",
+      "Draft a handoff document; no publication or dashboard work."
+    ]) {
+      const result = route(router, args, query);
+      check(result, false, query);
+      assertRoutes(result, ["document-authoring"]);
+      assert(result.recommended_documents.some(row => row.path === "docs/handoff-packet-template.md"));
+      assert(!result.capability_routing.matched_capability_routes.includes("runtime-architecture-dashboard"));
+    }
+    for (const query of [
+      "Draft a handoff document. Review tool readiness and dashboard architecture.",
+      "Revise outgoing documents. Clarify document readiness. Review unit readiness.",
+      "Draft a handoff document. Document readiness failures.",
+      "Document readiness failures.",
+      "Draft readiness documentation.",
+      "Draft a handoff document. Review readiness of the dashboard.",
+      "Draft a handoff document; no publication, dashboard or service work. Review its design.",
+      "Draft a handoff document; no dashboard or service work unless the review requires it.",
+      "Draft a handoff document; no dashboard review omission.",
+      "Draft a handoff document; no skipped dashboard verification.",
+      "Draft a handoff document; no dashboard, unknown task or service work."
+    ]) {
+      const result = route(router, args, query);
+      check(result, true, query);
+      assert(result.capability_routing.matched_capability_routes.includes("runtime-architecture-dashboard"));
+    }
+    const prose = "Revise outgoing document handoffs. Clarify document readiness; no publication, dashboard or service work.";
+    for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review tool readiness and dashboard architecture"]]) {
+      const result = route(router, [...args, ...extra], prose);
+      check(result, true, prose);
+    }
+    const inline = prose + " Read docs/event-sourcing-model.md.";
+    check(route(router, args, inline), true, inline);
+    const domain = "Analyze museum attendance by city; no publication, dashboard or service work.";
+    const gap = route(router, args, domain);
+    check(gap, false, domain);
+    assert.equal(gap.capability_routing.status, "gap_detected");
+    assert(gap.validation_commands.includes("node run-force-structure-change-fixtures.js"));
+    const combined = domain + " " + prose;
+    const compound = route(router, [...args, "--capability-query=" + domain, "--capability-query=" + prose], combined);
+    check(compound, false, combined);
+    assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+  }
+  const query = "Revise outgoing document handoffs. Clarify document readiness; no dashboard or service work.";
+  const technical = route(router, ["--actor=ai", "--role=S6", "--department=systems", "--authority=read-only"], query);
+  for (const file of ["docs/reference-architecture.md", "docs/event-sourcing-model.md"]) {
+    assert(technical.recommended_documents.some(row => row.path === file));
+  }
+  const args = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution",
+    "--capability-query=Review tool readiness and dashboard architecture"];
+  const direct = route(router, args, query);
+  const receipt = route(router, [...args, "--receipt", "--scope=agent", "--mission=MIS-DOCUMENT-READINESS",
+    "--wave=W1", "--agent=writer"], query);
+  check(receipt, true, query);
+  for (const key of ["matched_routes", "validation_commands", "capability_routing"]) assert.deepEqual(receipt[key], direct[key]);
+  const project = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "controls-readiness-input-")));
+  try {
+    fs.writeFileSync(path.join(project, "dashboard-review.md"), "PRIVATE-READINESS-INPUT\n");
+    assert.equal(spawnSync("git", ["init", "-q", project]).status, 0);
+    const result = route(router, ["--actor=user", `--input-repository=${project}`, "--input-source=dashboard-review.md"], query);
+    check(result, true, query);
+    assert.equal(result.task_inputs.content_loaded, false);
+    assert.equal(result.task_inputs.authorization_verified, false);
+    assert(!JSON.stringify(result).includes("PRIVATE-READINESS-INPUT"));
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+}
+
 function testSourceReadingScope(router) {
   const korean = ["docs/korean-military-sources.md", "docs/korean-org-culture.md"];
   const multinational = "docs/multinational-doctrine-consistency-review.md";
@@ -642,6 +735,7 @@ function testDirectTaskIdentity(router) {
 
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  testDocumentReadinessScope(router);
   testDirectTaskIdentity(router);
   testS6Reading(router);
   testTaskReadingScope(router);

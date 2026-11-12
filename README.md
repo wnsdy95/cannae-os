@@ -759,6 +759,14 @@ Codex's exact revised unit is source-appraised for advisory work; Claude still
 mixes a proposed ordering with a mandatory prerequisite in its summary. Keep
 usable drafting, completed reporting and completed underlying work distinct.
 
+The [document-readiness routing correction](docs/document-authoring-case-study.md#document-readiness-and-format-routing)
+replays the actual maintenance request: five unrelated runtime references are
+replaced with missing authoring/handoff material, preserving every prior control.
+Both routers distinguish bounded document-readiness phrases and complete exclusion
+lists from actual technical duties. The human-mode total stays at 18 documents;
+better composition, not a smaller count, is the evidence. Broader relevance and
+fresh native acceptance remain open.
+
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)
