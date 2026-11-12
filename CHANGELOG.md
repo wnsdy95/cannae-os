@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record a fresh source/predecessor review accepting the exact support-SOP V5 operative body as a draft, with no required correction. Preserve historical candidate/preface bytes and V4's changes-required verdict, bind the new appraisal to all six current entry points, and mirror reviewed-selection versus whole-section handling in both maintenance references. This is not policy adoption, complete receiving acceptance, internal-path clearance or full goal closure.
+
 - Add paired project-root/task-ID context for ordinary direct routing, preserving one capability cell across phase wording and roles without changing reading, authority or guarded mission identity. Reject incomplete/conflicting identity and mixed admission modes; mirror the procedure in both skills and exercise actual linked/copied commands. Record the separate corrected-handoff preparation refusal without invoking a model, bypassing internal-path controls or claiming receiving acceptance.
 
 - Verify current full guidance through parent-delivered advance and method-change notices, one failed required read and bounded partial work without retry or false full completion. Retain the native handoff's conflicting recovery authority and absent original-request reference, plus a separate project-local six-span correction and source map. Both skills now distinguish source preparation from retry-decision authority, actual output attachments from prompt context, and translation from verbatim forwarding. Notice timing is bounded-verified; full handoff acceptance and the new correction's native review remain open.

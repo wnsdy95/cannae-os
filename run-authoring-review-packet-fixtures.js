@@ -215,7 +215,9 @@ try {
     const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
     const notice = section(text, "## Evidence Boundary", "## Task And Backbrief");
     assert(notice.includes("[Support SOP V5](#corrective-sop-draft-v5)"));
-    assert(notice.includes("not fresh native")); assert(notice.includes("Other exercises below have separate candidate identities"));
+    assert(notice.includes("State: proposed; review: native-reviewed; adoption: not-adopted."));
+    assert(notice.includes("accepts V5's exact operative body as a draft"));
+    assert(notice.includes("Other exercises below have separate candidate identities"));
     const readme = fs.readFileSync(path.join(__dirname, "README.md"), "utf8");
     assert(readme.includes("Current document: [Support SOP V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5)"));
     const backlog = fs.readFileSync(path.join(__dirname, "docs/completion-backlog.md"), "utf8");
@@ -281,6 +283,33 @@ try {
     assert(v5.includes("not a fresh model review or operational receiver acceptance"));
     assert(!packet.prompt.includes("## Corrective SOP Draft V5"));
     assert(!packet.prompt.includes("## Support SOP V4 Source Review"));
+  });
+  fixture("scoped V5 review preserves the full historical section and separate operative binding", () => {
+    const { span } = require("./source-map-navigation");
+    const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
+    const registry = JSON.parse(fs.readFileSync(path.join(__dirname, "docs/source-map-navigation.json"), "utf8"));
+    const entry = registry.documents.find(document => document.id === "support-sop");
+    const whole = span(text, entry.candidate.start, entry.candidate.end);
+    const selected = section(text, entry.candidate.start, entry.candidate.end);
+    const operative = selected.slice(selected.indexOf("**Purpose and result:**"));
+    assert.equal(hash(whole), "651320fb6b50253825be34790b5a9009cd5634a87a3b532bd998ac3d53808136");
+    assert.equal(hash(operative), "3cf242f6fc5dd50ae2445c76d9742f1c5673909ffb779ba22d6c9a8be334f121");
+    assert.notEqual(hash(whole), hash(operative));
+    assert(whole.includes("not a fresh model review or operational receiver acceptance"));
+    assert.deepEqual(entry.disposition, { status: "proposed", review: "native-reviewed", adoption: "not-adopted" });
+    const basis = entry.basis.find(row => row.start === "## Support SOP V5 Source Review");
+    assert(basis, "The new review must be a bound source, not just a changed label.");
+    const appraisal = span(text, basis.start, basis.end);
+    assert.equal(hash(appraisal), basis.sha256);
+    assert(appraisal.includes(hash(operative)) && appraisal.includes(hash(whole)));
+    assert(appraisal.includes("Only the exact operative body"));
+    assert(appraisal.includes("not a complete source packet"));
+    assert(!packet.prompt.includes(basis.start), "Do not contaminate retained historical reviewer inputs.");
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const guide = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8");
+      assert(guide.includes("record its exact selection and digest"));
+      assert(guide.includes("A later wording refinement is new"));
+    }
   });
   fixture("changed source bytes change the packet binding", () => {
     const file = path.join(root, "SUPPORT.md"), original = fs.readFileSync(file);

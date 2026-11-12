@@ -2,7 +2,7 @@
 
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
-State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+State: proposed; review: native-reviewed; adoption: not-adopted.
 <!-- current-document:support-sop:end -->
 
 `docs/source-map-navigation.json` binds maintained pointers and disposition to
@@ -19,6 +19,21 @@ The entries below are retained findings, not the current task queue. Their
 completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
+
+## Review Scope Is Not Whole-Packet Acceptance (2026-11-12)
+
+The [support-SOP V5 review](document-authoring-case-study.md#support-sop-v5-source-review)
+accepts its exact operative body as a draft after source/predecessor comparison.
+The containing section still includes the original pre-review preface, preserved
+as history rather than rewritten to manufacture earlier acceptance. Separate
+whole-section and reviewed-selection digests describe distinct representations.
+Both maintenance references now require carrying this distinction into current
+navigation; a review state cannot expand to excluded material or USER adoption.
+
+The returned review report also marks standalone receiving assembly incomplete
+instead of treating its prompt as attached sources. This is bounded correct
+reporting, not actual receipt of a complete unit. No mandatory SOP correction was
+found. Broader receiving, relevance and client-equivalence gaps remain open.
 
 ## Task Continuity And Receiving Boundaries (2026-11-12)
 

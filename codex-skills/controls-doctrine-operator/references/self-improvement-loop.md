@@ -76,6 +76,13 @@ blocks outside historical/code sections. Unregistered prose still needs review;
 consistent labels cannot prove semantic acceptance or USER authority. Follow
 `docs/knowledge-management-sop.md`'s current-document navigation procedure.
 
+When a review covers only operative text, record its exact selection and digest
+separately from the containing registered section. Preserve historical prefaces;
+explain their earlier scope in the new appraisal rather than rewriting them.
+Limit current acceptance to the reviewed selection, not excluded history,
+attachments or the complete receiving unit. A later wording refinement is new
+candidate text, not part of the earlier accepted bytes.
+
 Use the requirement audit in the active backlog to select missing acceptance,
 not another successful-case replay. Keep implementation, source appraisal,
 observed client behavior and final USER adoption distinct. Evidence for one

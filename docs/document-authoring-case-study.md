@@ -9,13 +9,14 @@ it does not rewrite the original drafts, ratings or failed first attempt.
 
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](#corrective-sop-draft-v5).
-State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+State: proposed; review: native-reviewed; adoption: not-adopted.
 <!-- current-document:support-sop:end -->
 
 This candidate follows the [V4 source review](#support-sop-v4-source-review). V4's verdict
-remains changes-required; V5 has a local source/delta check, not fresh native
-acceptance or USER adoption. Earlier claims of a current draft or complete
-preservation are historical. Neither the review nor V5 changes source policy.
+remains changes-required. The [V5 source review](#support-sop-v5-source-review)
+accepts V5's exact operative body as a draft, not an adopted policy or complete
+receiving packet. Its original pre-review preface and source check remain
+historical. Neither review changes source policy or establishes USER adoption.
 Other exercises below have separate candidate identities; their version numbers
 do not select the current support SOP.
 
@@ -3023,3 +3024,71 @@ The implementation and local-check records are tracked separately under
 `.cannae/maintenance/task-identity-20261112/`. Earlier native results and decision
 limits remain unchanged. All five goals stay partial; no deployment, push,
 publication, persistent client setting or authority expansion is part of this work.
+
+## Support SOP V5 Source Review
+
+On 2026-11-12 Korea time, one new native Codex review compared the proposed V5
+operative body with the actual V4 predecessor, original request/revision,
+SUPPORT, GOVERNANCE and SECURITY policies, and current authoring/handoff guidance.
+It used standing verification consent and the existing login/default model.
+This was missing acceptance of a corrected candidate, not a replay of consumed
+V4 or the blocked internal-draft receiving exercise.
+
+The supplied-public-corpus method allowed no tools, edits or external actions.
+Prior findings, author grades and matrices were withheld. The parent routed the
+task and passed all four assigned checks plus the authoring-review-packet suite;
+the model did not run them. Codex CLI 0.162.1, `gpt-6-astra`, completed in 82.371
+seconds with exit zero, one final response, three known diagnostics and zero
+observed tool events. Exact input/source bytes, final-message adjacency and the
+three full bindings reproduced in its handoff were checked separately.
+
+### Findings And Appraisal
+
+The verdict was `acceptable_as_draft`, with no required correction. Operator
+source appraisal agrees at the supplied operative-body scope:
+
+| Requirement | Observed comparison and disposition |
+| --- | --- |
+| Preserve the original request and policy | All seven steps retain best-effort support, conditional channels, intake fields, stored-data restrictions, prohibited uses, overlapping approval requirements and explicit no-publication/no-transmission boundaries. |
+| Preserve unaffected requirements | The actual V4-to-V5 delta is lineage plus the bounded recovery links in step 6 and continuing-work holds in step 7. No new approval power or source-policy change was found. |
+| Keep stops and their recovery owners | Step 6 uses existing steps 4/2 without lifting adoption/transmission holds. Step 7 separates continuing work holds from a selected next action's stop. |
+| Treat unknowns as unknowns | Channel availability, ownership, assignment and acknowledgement are not invented. More explicit unknown-assignment wording and another direct authority citation are optional, not missing policy. |
+| Report the actual delivery unit | The model identifies its JSON as a review report, not a complete source packet. It requires authorized assembly or resolvable access before cold-start use and does not call prompt inputs attachments. |
+| Preserve actor and decision scope | The model separates its text comparison from parent checks. Quality acceptance is not USER adoption, publication, transmission or operational acceptance. |
+
+This supports the preceding hold/recovery clarification and the report's bounded
+source-accounting behavior. It does not establish automatic discovery, agent
+routing, advance reporting, independent infrastructure or full cross-client
+parity. The review handoff is correctly marked incomplete for standalone
+receiving; no actual operational receiver acceptance is claimed.
+
+Only the exact operative body, from `**Purpose and result:**` through step 7,
+was reviewed. Its SHA-256 is
+`3cf242f6fc5dd50ae2445c76d9742f1c5673909ffb779ba22d6c9a8be334f121`.
+The navigation registry still pins the unchanged whole candidate section,
+including its historical pre-review preface, at
+`651320fb6b50253825be34790b5a9009cd5634a87a3b532bd998ac3d53808136`.
+Those are different representations, not conflicting hashes. The new review is
+recorded here instead of rewriting that preface or the V4 verdict. V5 remains
+proposed and unadopted; no optional wording change is silently included in the
+reviewed bytes.
+
+### V5 Review Evidence
+
+Source HEAD: `0724df9b8351f36a4663fb523660ad21b0f33405`. The 80,329-byte input
+SHA-256 is `1caec49f6d7872581170374dc91f1c6ef0ff55322cda07c7f44cf53bd1d91166`.
+Saved response SHA-256, including its final newline:
+`e189be8d3988861d235ef12b6abcbe0bdac8215b5fdb434fe996e427356382a6`.
+Exact proposal, preparation checks, manifest, native events, response, binding
+check and appraisal remain in `.cannae/maintenance/sop-v5-review-20261112/`.
+Native usage reported 25,130 input tokens (7,552 cached), 2,049 output and 109
+reasoning tokens; these are not a price or request-count claim.
+
+Both maintenance references now require recording reviewed selections separately
+from their containing historical sections and delivery units. Current navigation
+uses the new scoped appraisal while retaining candidate/history bytes. The local
+fixtures check that distinction, not the model's semantics. All five goals remain
+partial; broader source selection, omission detection, receiving/disclosure and
+client-equivalence work stays in the active backlog. Do not replay this accepted
+candidate just to accumulate another clean verdict or bypass the unresolved
+internal-draft preparation boundary.

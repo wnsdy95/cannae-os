@@ -88,6 +88,11 @@ and private project records are not automatically covered.
    from the active backlog, not a prior review's next step or a completed platform
    checkpoint. Check narrative claims as well as registered blocks.
 
+If a review selects only operative text, record that selection and its digest
+separately from the whole registered section. Preserve historical prefaces and
+explain their date/scope in the current appraisal. A new review label does not
+extend acceptance to excluded history, attachments or a complete receiving unit.
+
 This is a read-only consistency check of declared state, not a semantic evaluator,
 signature, permission gate or proof of human adoption. A coherent forged record
 and rewritten sources cannot establish authority. Recording adoption still needs

@@ -12,7 +12,7 @@
       },
       "disposition": {
         "status": "proposed",
-        "review": "local-source-delta-checked",
+        "review": "native-reviewed",
         "adoption": "not-adopted"
       },
       "basis": [
@@ -27,6 +27,12 @@
           "start": "### V5 Source Check And Handoff",
           "end": "## Native Implicit Codex Selection",
           "sha256": "3f048982a880f56f22dab10f27dc9f33b159df390b121f7cc99bbd4ae9a3ea5c"
+        },
+        {
+          "file": "docs/document-authoring-case-study.md",
+          "start": "## Support SOP V5 Source Review",
+          "end": "### V5 Review Evidence",
+          "sha256": "01b7287ca2ec761e49be710a4360db3359667fa0e90d7afc39e5521211f3e98f"
         }
       ],
       "references": [

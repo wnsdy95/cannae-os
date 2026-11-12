@@ -656,11 +656,13 @@ The V3 review found seven source/predecessor omissions or ambiguities; V4 restor
 them and subsequently received a [source review](docs/document-authoring-case-study.md#support-sop-v4-source-review).
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5).
-State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+State: proposed; review: native-reviewed; adoption: not-adopted.
 <!-- current-document:support-sop:end -->
 
-This candidate clarifies continuing holds and existing recovery paths. It remains unadopted,
-with a local source/delta check rather than fresh native acceptance. The helper
+This candidate clarifies continuing holds and existing recovery paths. Its
+[operative-body source review](docs/document-authoring-case-study.md#support-sop-v5-source-review)
+found no required correction; it remains unadopted and is not an accepted receiving
+packet. The original pre-review preface stays historical. The helper
 retains historical V1/V2 stress cases; it does not evaluate V3/V4/V5 or establish
 independent acceptance. Ordinary prose
 handoffs do not require invented runtime IDs; existing missions keep their guards.

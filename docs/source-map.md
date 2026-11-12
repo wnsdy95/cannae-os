@@ -1,5 +1,10 @@
 # Source Map
 
+The [V5 source review](document-authoring-case-study.md#support-sop-v5-source-review)
+uses exact public repository text and a native Codex comparison, not new military
+evidence. Draft-quality acceptance covers the operative body, not its historical
+preface, a complete receiving packet or USER policy adoption.
+
 The [direct-task identity correction](document-authoring-case-study.md#direct-task-organization-identity)
 is based on inspected local router behavior, not a military-source claim. Its
 project/task binding is distinct from authenticated ownership or admission.
@@ -15,7 +20,7 @@ guidance, not a new approval or independently accepted correction.
 
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
-State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+State: proposed; review: native-reviewed; adoption: not-adopted.
 <!-- current-document:support-sop:end -->
 
 `docs/source-map-navigation.json` and `source-map-navigation.js` bind maintained

@@ -7,12 +7,15 @@ not the active implementation queue. Select current work from the active
 
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
-State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+State: proposed; review: native-reviewed; adoption: not-adopted.
 <!-- current-document:support-sop:end -->
 
 The maintained pointer uses `docs/source-map-navigation.json`; see
 [navigation maintenance](knowledge-management-sop.md#current-document-navigation).
 It does not replace the active backlog or turn a candidate into adopted policy.
+The [V5 review](document-authoring-case-study.md#support-sop-v5-source-review)
+accepts the exact operative body as a draft, not its historical preface or a
+complete receiving packet. The broader core acceptance queue remains open.
 
 ## 0. Purpose
 
