@@ -46,6 +46,11 @@ Use this queue and the requirement table, not those historical instructions.
    source/assignment claims and reassessment prerequisites. Preserve that response;
    its corrected draft and a fresh receiver-bound handoff remain work, not a pass
    inferred from two successful client processes.
+   The [operator correction](document-authoring-case-study.md#compound-draft-correction-and-receiving-proposal)
+   now materializes R1 with twelve explicit changes and exact unchanged-content
+   checks. It remains a review candidate with residual navigation/version labels,
+   not an accepted repair. Its seven-source receiving proposal requires its own
+   exact USER decision; no cleared packet or native continuation is inferred.
    The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
    is complete: both clients hold dependent drafting and avoid retries, but Claude
    still misses public reports and conflates approval scopes. Preserve that result.

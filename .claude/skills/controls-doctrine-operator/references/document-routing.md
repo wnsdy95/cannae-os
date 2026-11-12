@@ -22,6 +22,12 @@ Keep "identity not supplied" distinct from "nobody appointed". A source assignin
 one step to a function does not assign the whole SOP to it. Reappraising a draft
 from new evidence is separate from changing its canonical source record; do not
 invent a record-write prerequisite or claim that an unchanged record was corrected.
+When repairing that claim, trace its uses in work queues, inquiry text, holds and
+successor actions. A corrected unknown in the SOP does not fix a plan that still
+orders a new appointment. Record each affected location and compare the unchanged
+requirements too. Preserve old tool history and author self-ratings as historical;
+an operator's exact-span correction is neither a new model response nor a fresh
+review verdict. Exact edit accounting does not prove semantic correctness.
 Finding a document format is not domain expertise. For delegated authoring,
 keep the real mission objective in `--capability-query`; an SOP-shaped subtask
 must not suppress its mission-level capability gap or activate a standing unit.

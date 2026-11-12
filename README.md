@@ -821,6 +821,10 @@ now exercises that adapter in both native clients with a current/proposed policy
 row-level review and actual drafts. Both read every assigned source in two phases;
 Claude's source-fidelity defects remain open. This is not automatic minimum-context
 selection or clearance of the separately pending document-review proposals.
+Its [operator correction](docs/document-authoring-case-study.md#compound-draft-correction-and-receiving-proposal)
+preserves the original response and enumerates changed versus unchanged text.
+The corrected candidate still needs receiving review; exact edit accounting is
+not semantic acceptance or permission to send an internal draft.
 
 [Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 now separates ordinary prose handoffs and supported platform exclusions from

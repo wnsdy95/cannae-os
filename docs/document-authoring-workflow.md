@@ -153,6 +153,23 @@ Review the proposed repair too: it must cover the missing work without adding
 unsupported facts, changing authority or deferring feasible assigned drafting.
 Keep defect detection separate from acceptance of the repaired deliverable.
 
+For a repeated defect, extend the same review matrix with affected locations and
+the actual correction in each. Follow the claim into work queues, inquiry text,
+holds and successor actions, not only its first occurrence. For example, correcting
+an unknown coordinator in the SOP still leaves an unsupported appointment task
+if the plan says "appoint the coordinator". Ask for evidence of the existing
+assignment before proposing a new one; do not silently assign that authority.
+Similarly, remove an unsupported record-write prerequisite from every affected
+draft-review step without weakening the source's recorded-evidence conditions.
+
+Use an exact predecessor and enumerate the changed spans when the repair is
+bounded. Check that the candidate contains only those changes and separately
+compare unchanged requirements, row results, original request and prohibitions.
+An exact delta proves edit scope, not the truth or adequacy of each replacement.
+Preserve old tool histories, author self-ratings and source tuples as historical;
+label the operator's correction separately. Do not turn the old author's
+"reflected" checklist into a new review verdict by copying it into the successor.
+
 ## Review Against The Request
 
 Before calling a draft complete, build a short requirement-to-evidence matrix.

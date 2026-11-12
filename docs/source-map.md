@@ -176,6 +176,10 @@ for the committed session adapter. Its synthetic policy is not military doctrine
 or real policy adoption. Natural terminology phrases exposed a lexical routing
 miss in both clients; retained before/after CLI outputs and routing/installation
 fixtures support the correction, not fresh native acceptance of new guidance.
+The [operator R1 correction](document-authoring-case-study.md#compound-draft-correction-and-receiving-proposal)
+adds exact predecessor reconstruction and a pending seven-source receiving
+proposal. Those records establish edit scope and proposed source bindings only;
+the candidate retains navigation issues and has no fresh native acceptance.
 
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial

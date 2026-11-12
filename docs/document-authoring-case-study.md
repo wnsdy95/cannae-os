@@ -4269,3 +4269,55 @@ settings change, deployment, standing service or power change is made. There is
 no new advance-report timing claim, globally minimal context proof, independent
 infrastructure or closure of all five objectives. Preserve the useful results and
 the remaining corrected-draft/receiving work separately.
+
+## Compound Draft Correction And Receiving Proposal
+
+The subsequent CS91 operator correction preserves the exact Claude response and
+creates a separate R1 derivative in the same synthetic target project's internal
+draft area. Twelve enumerated span changes address lexical/source confusion,
+step-specific versus whole-procedure assignment, unspecified appointment status,
+draft reassessment prerequisites, historical self-review and source attribution.
+It also corrects the claim that unexecuted routed controls were irrelevant:
+unperformed checks remain unperformed, not waived by unavailable tools.
+
+Tracing the assignment claim beyond its first occurrence matters. Repairing the
+SOP's unknown identity alone would leave W4 ordering an unsupported appointment;
+the correction instead asks for existing assignment evidence. W1/W2, the inquiry,
+the hold table and successor action are checked together. The original five
+record conditions remain intact. New evidence may support a qualified draft
+comparison, not an assertion that unchanged source fields have been corrected.
+
+The exact-span check reconstructs the predecessor from R1's edited body. It
+separately preserves the policy comparison, all row findings, terms and decisions,
+original request and prohibitions. Four negative checks reject an extra trailing
+edit, an altered operative deadline, a changed failure count and a removed source
+mutation prohibition. All ten historical source tuples match the actual original
+tool returns. These are edit-accounting checks, not automated semantic acceptance.
+Both provider guides now require following a corrected claim through dependent
+work queues and handoff actions while preserving historical reviews as historical.
+
+R1 is a review candidate, not an accepted native repair. Local rereading also
+finds the retained section 4-1 handoff reference points to section 8 instead of 9,
+and the embedded SOP still carries its original r0 title within the R1 derivative.
+Those navigation/version labels need review before declaring the complete unit
+ready. Do not turn correction of the source-fidelity findings into a blanket pass.
+
+| Binding | SHA-256 |
+| --- | --- |
+| Preserved Claude response | `43b04d1bdbf3f5fabf0643f2a74a561018e57f71851b48c000f138a94ecdd273` |
+| Operator R1 candidate | `bc1467789323f1db6d0b3ba9e19588f008e0b74990843a6567abbe223eeb4c1b` |
+| Exact receiving-preparation proposal | `fb188ee5881ec41b94e5a3912e7fcce294ac03b8f6782c3b16a9e517cffa79bc` |
+
+The proposal binds R1 and the six original synthetic inputs, 35,799 source-text
+bytes, to a fresh Claude Code S6/knowledge/document_review/L1 recipient. R1 uses
+the existing reviewed `representation` mode. Its text needs no location changes,
+but identical bytes do not relabel it as raw delivery or remove review requirements.
+The predecessor is neither relocated nor overwritten. A current source packet
+and the four required corpus guides are still needed for actual receiving.
+
+No decision file, cleared receiving packet or native invocation is created by
+this preparation. The exact USER decision is pending; standing verification
+consent is not substituted for it. The three earlier real proposals remain
+unchanged and outside this task. Local evidence is under
+`.cannae/maintenance/compound-source-repair-20261113/`. No acceptance-audit row or
+global completion claim follows from this local correction and proposal.

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record a separate, exact-span CS91 operator correction and pending receiving proposal without rewriting the native response or inferring approval. Extend both provider procedures to trace corrected claims through work queues, inquiry text and successor actions; preserve historical ratings separately from current review. Retain residual navigation/version issues and the distinction between edit-accounting checks and semantic acceptance.
+
 - Record dual-client native use of the committed document-session adapter on an unseeded compound request, with two routes and all ten required reads per phase. Preserve useful drafting and Claude's source-fidelity defects separately. Route scoped USER definitions and user-defined terms to terminology guidance; retain other domain gaps and controls. Add link/copy regressions and mirrored guidance distinguishing lexical misses from absent doctrine, unknown appointments from nonappointments, and draft reappraisal from source-record changes. No native rerun, adoption or global semantic-completeness claim follows from the correction.
 
 - Connect the bound document reader to actual installed routing and an opt-in, bounded stdio tool adapter. Preserve the full assignment, declared objectives, fixed role/task identity, all required sources and source-specific holds; retire stale route IDs even after failed reroutes. Reconcile returned IDs without claiming comprehension. Exercise actual local router/transport calls for both provider bindings, with no model invocation or real document approval. Mirror the procedure and keep server, plugin-packaging and protected-host claims out of scope.

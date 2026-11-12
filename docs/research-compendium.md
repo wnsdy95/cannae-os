@@ -373,6 +373,13 @@ write. Source-based appraisal must check those claims even when counts, hashes
 and tool completion are correct. The bounded corrections do not prove universal
 semantic coverage, source completeness or native instruction adherence.
 
+The [CS91 correction](document-authoring-case-study.md#compound-draft-correction-and-receiving-proposal)
+shows why repair review must follow a claim into dependent actions. An unknown
+identity can be stated accurately in the SOP while the plan still orders a new
+appointment without evidence. Check the work queue, inquiry, holds and successor
+action together. Exact predecessor reconstruction bounds the edit; it does not
+establish semantic quality or turn historical author ratings into current review.
+
 The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 demonstrates both native clients holding current-policy conclusions after one
 failed required read, without retries, while retaining source-independent partial
