@@ -101,6 +101,14 @@ or completed review. Retain unknown-event and permission-change stops; extend a
 classifier only for an inspected event shape, with rejection tests and a separately
 recorded retry. A successful diagnostic process is not a repaired reporting workflow.
 
+Distinguish a client's internal transport retry from relaunching a review. Accept
+only an inspected, validated diagnostic shape; retain unknown-event, permission
+and tool stops. Keep the original wall-clock deadline and output limit across
+internal retries. A retry notice is not a new invocation, user report or successful review.
+Check the actual process handle before calling it terminal. After a terminal stop,
+retain the failed input and result. Diagnose and record a separately authorized retry
+with fresh source bindings; do not reset the old attempt or silently resume it.
+
 After changing a candidate section, compare `scan` with the committed registry,
 review its exact source digest and mappings, and update both in the same change.
 Do not automatically promote status from file presence. Preserve proposed names

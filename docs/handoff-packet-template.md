@@ -131,6 +131,13 @@ locator is withheld, mark the dependent comparison unresolved instead of claimin
 that a detached note alone is sufficient to resume. This is a manual review
 criterion, not an automatic semantic or integrity check of generated prose.
 
+Prefer an already supplied display label. When none is supplied, cite the stable
+source ID and its existing full binding map rather than regenerating a shortened
+digest in prose. Display-only status limits what a label proves; it does not
+excuse an incorrect prefix or suffix. A parent preparing a derivative brief may
+check its copied labels deterministically without attributing that check to the
+no-tool reviewer. Keep the raw response and corrected derivative distinct.
+
 No-schema-needed is not no-review-needed: apply these quality checks and the
 request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
 

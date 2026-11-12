@@ -99,6 +99,17 @@ try {
       assert(!changed.prompt.includes("WITHHELD_CORRECTION_SENTINEL"));
     } finally { fs.writeFileSync(file, original); }
   });
+  fixture("display-only labels cannot excuse inaccurate source bindings", () => {
+    assert(packet.prompt.includes("cite the stable"));
+    assert(packet.prompt.includes("source ID and its existing full binding map"));
+    assert(packet.prompt.includes("excuse an incorrect prefix or suffix"));
+    assert(packet.prompt.includes("Keep the raw response and corrected derivative distinct"));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const body = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(body.includes("instead of regenerating a shortened digest in prose"));
+      assert(body.includes("Calling an abbreviation display-only does not make an incorrect value accurate"));
+    }
+  });
   fixture("work-level holds stay distinct from next-action stops in both skills and reviewer context", () => {
     const guide = section(fs.readFileSync(path.join(root, "docs/handoff-packet-template.md"), "utf8"),
       "### Ordinary Document Work", "### Existing Runtime Missions");
@@ -492,6 +503,45 @@ try {
   fixture("Claude thinking progress is diagnostic, not a tool or completed review", () => {
     assert.equal(classifyClaudeReviewEvent(progress), "diagnostic");
     assert.equal(classifyClaudeReviewEvent({ ...progress, user_message_uuid: "synthetic-input" }), "diagnostic");
+  });
+  const apiRetry = { type: "system", subtype: "api_retry", attempt: 1, max_retries: 10,
+    retry_delay_ms: 599, error_status: null, error: "unknown", session_id: "synthetic-session", uuid: "synthetic-retry" };
+  fixture("Claude API retries remain diagnostic without creating a report or completion", () => {
+    assert.equal(classifyClaudeReviewEvent(apiRetry), "diagnostic");
+    for (const error of ["authentication_failed", "oauth_org_not_allowed", "account_on_hold", "verification_required",
+      "billing_error", "rate_limit", "overloaded", "invalid_request", "model_not_found", "server_error",
+      "unknown", "max_output_tokens", "cloud_credential_error"]) {
+      assert.equal(classifyClaudeReviewEvent({ ...apiRetry, error, error_status: 429 }), "diagnostic");
+    }
+    assert.equal(classifyClaudeReviewEvent({ ...apiRetry, no_response: { waited_ms: 15000, retry_wait_ms: 30000 } }), "diagnostic");
+    const collected = collectPublicReviewMessages("claude_code", [apiRetry]);
+    assert.deepEqual(collected.messages, []);
+    assert.equal(collected.process_completion_verified, false);
+    assert.equal(collected.semantic_acceptance_established, false);
+  });
+  fixture("malformed retries cannot hide tools, permission changes or new event shapes", () => {
+    for (const changed of [{ attempt: 0 }, { attempt: 1.5 }, { attempt: "1" }, { attempt: Infinity },
+      { max_retries: -1 }, { max_retries: Number.MAX_SAFE_INTEGER + 1 }, { retry_delay_ms: -1 },
+      { retry_delay_ms: Infinity }, { retry_delay_ms: "599" }, { error_status: undefined },
+      { error_status: 200 }, { error_status: 600 }, { error_status: "429" }, { error_status: 429.5 },
+      { error: "future_error" }, { error: {} }, { uuid: "" }, { session_id: null },
+      { content: [{ type: "tool_use" }] }, { tools: ["Bash"] }, { permissionMode: "dontAsk" },
+      { permissionMode: "bypassPermissions" }, { subtype: "future_retry" }, { no_response: null },
+      { no_response: [] }, { no_response: {} }, { no_response: { waited_ms: 0 } },
+      { no_response: { waited_ms: -1, retry_wait_ms: 1 } },
+      { no_response: { waited_ms: 1, retry_wait_ms: Infinity } },
+      { no_response: { waited_ms: 1, retry_wait_ms: 2, tool: "Bash" } }]) {
+      assert.throws(() => classifyClaudeReviewEvent({ ...apiRetry, ...changed }), /Claude review/);
+    }
+  });
+  fixture("both maintenance guides separate internal transport retry from a new invocation", () => {
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const body = fs.readFileSync(path.join(__dirname, provider,
+        "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8");
+      assert(body.includes("Keep the original wall-clock deadline and output limit"));
+      assert(body.includes("not a new invocation, user report or successful review"));
+      assert(body.includes("Diagnose and record a separately authorized retry"));
+    }
   });
   fixture("malformed or tool-bearing progress cannot hide behind the diagnostic subtype", () => {
     for (const changed of [{ estimated_tokens: -1 }, { estimated_tokens_delta: "50" }, { estimated_tokens: Infinity },

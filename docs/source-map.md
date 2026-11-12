@@ -1,5 +1,16 @@
 # Source Map
 
+The [exact repaired-unit receiving case](document-authoring-case-study.md#exact-repaired-unit-receiving)
+uses the exact synthetic OP1, native response and separate source appraisal. It
+establishes bounded receipt/use, not blanket review acceptance or new military
+claims. Claude's [TypeScript message reference](https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage)
+lists `SDKAPIRetryMessage`; the official
+[@anthropic-ai/claude-agent-sdk 0.3.322 package](https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.322.tgz)
+defines its fields in `sdk.d.ts:3718-3738` and error values at line 3832.
+Inspected 2026-11-12. The retained observed event and that declaration support
+diagnostic classification; the field validation, fixed deadline and rejection
+policy are local controls, not claims of native review success.
+
 The [operative-condition review](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
 compares exact synthetic current/predecessor units, assignments and guidance.
 It separates useful native repairs from unsupported findings and a separately

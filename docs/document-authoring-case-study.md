@@ -3783,3 +3783,90 @@ source appraisal accepts the listed corrections within that scope, not a general
 quality score. This successor has no fresh native review or actual receiver
 acknowledgement. Next review/continue the exact bounded unit, preserving the
 separate delivery-policy refusal and broader G1-G5 requirements.
+
+## Exact Repaired Unit Receiving
+
+On 2026-11-12, a fresh Claude reader received the exact 42,212-byte
+`DOCMOVE-47-HANDOFF-OP1` and three parent-selected current guides, without earlier
+chat or the separate operator appraisal. Its embedded correction record remained
+untrusted candidate material; this is not a blind defect-detection experiment.
+The requested continuation was a useful USER decision brief, not another complete
+rewrite or outgoing source packet. No tool, lookup, record population, operation,
+publication or adoption was permitted. The accepted Codex unit was not replayed.
+
+### Transport Failure And Diagnosed Retry
+
+Local preparation first stopped before model invocation because a 115,000-byte
+sanity bound was below the 126,540 bytes of required source bodies alone. Those
+preparation outputs remain retained; no source was removed. The resulting input
+is 131,022 bytes, SHA-256
+`b9f50cfc2f46160944b2565e0a47da92a4f964500b53096ee7944e539d83c17f`.
+
+The first native attempt ended after 199,968 ms when the observer rejected a
+previously unknown `system/api_retry` event. It had no assistant message or review
+result. The official Anthropic SDK 0.3.322 declaration and retained event establish
+the diagnostic shape. The shared classifier now validates that shape, including
+optional first-byte timing, without accepting extra tool/permission fields or
+unknown events. It grants no completion and never extends the caller's deadline.
+Raw replay yields one lifecycle event, 15 diagnostics and zero public messages.
+The original failure is not retroactively converted to success.
+
+A separately recorded retry under standing verification consent sent the identical
+input with fresh source bindings. It retained the existing login/default, fixed
+ten-minute bound, output limit and no-tool settings. An early auth-status check
+ran before preparation had finished and found no manifest; after preparation was
+confirmed terminal, the same read-only check passed. Neither preflight invoked
+a model. No settings, credentials, power controls or dependencies were changed.
+
+| Evidence | Observed result |
+| --- | --- |
+| Source HEAD | `f7970c6`, with exact manifest-bound classifier/maintenance changes |
+| Native client | Claude Code 2.1.322; `claude-opus-5-5` |
+| Retry result | Exit 0; valid JSON; 168,021 ms; zero observed tool events |
+| Response SHA-256 | `481cf8e6852128fafdb5976cf66264598661cb471bd1fe8fc18ffea4f1b71dfe` |
+| Received unit | Exact OP1 binding and substantive comparisons of its actual sources/sections |
+| Useful continuation | A 6,824-byte draft decision brief, not a new standalone receiving packet |
+| Native verdict | `changes_required`, retained unchanged |
+
+The successful process contained no API-retry event, so it does not itself prove
+live recovery from a second interruption. The raw-event replay and malformed-event
+fixtures verify the classifier change separately. Evidence lives in
+`.cannae/maintenance/repaired-unit-receiving-20261112/` and
+`.cannae/maintenance/repaired-unit-receiving-retry-20261112/`.
+
+### Source Appraisal And Bounded Corrections
+
+The reader preserves all four procedures, estimate/verification distinctions,
+USER selection/recovery authority, unknown assignees, separate decision scopes,
+appendix restrictions and current limits. It recognizes the corrected conditional
+completion question and does not introduce the earlier post-change trigger limit.
+This supports actual bounded receipt/use, not proof from a receipt self-claim alone.
+
+Actionable presentation findings concern the stale Phase 4 origin-map entry and
+one wrong above/below reference. Local actor/copy-limit clarification is useful,
+but the opening record already scopes historical claims; some contradiction
+labels overstate the evidence. Mandatory inline edit markers are not required.
+The premise that a proposed T2 evidence reference can exist only after adoption
+is not established, nor is the assumption that every mechanism record necessarily
+requires a new migration. Do not convert those findings into new policy or erase
+current holds. The native verdict and operator appraisal remain distinct.
+
+The review also generates two inaccurate shortened digest suffixes. A correct
+full binding elsewhere and a display-only label do not repair those references.
+Both provider instructions now prefer supplied labels or stable IDs/full maps
+instead of regenerating short hashes. This adaptation follows the observed
+response; it was not tested by that earlier call. A focused fixture checks delivery
+of the instruction, not universal model compliance.
+
+Seven exact presentation replacements create `DOCMOVE-47-HANDOFF-OP2`, 43,965
+bytes, SHA-256 `fef94c71ddfef42ae3d62eaf08f3727b3aef3e62ebccab70a9a06f83bac6960f`.
+The entire operative worksheet, original request and PH1/source/historical-guide
+tail remain unchanged. A separate brief derivative replaces the inaccurate label
+with the full supplied binding and adds the operator's appraisal scope. OP1 and
+both raw native outputs remain exact. Neither derivative gains fresh native
+review, receipt, USER adoption or transmission authority.
+
+This removes the missing-OP1-receipt gap, not all G1/G3/G5 gaps. Do not replay the
+same case to increase a pass count. Broader automatic task relevance, the separate
+internal-draft delivery refusal and current-state/source consistency remain open;
+the requirement audit stays 12 bounded-verified and eight partial.

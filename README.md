@@ -762,6 +762,14 @@ adds an unsupported trigger qualification. A separate, source-appraised operator
 correction preserves the stable predecessor; it has no fresh native acceptance.
 Keep usable drafting, completed reporting and completed underlying work distinct.
 
+The [exact repaired-unit receiving case](docs/document-authoring-case-study.md#exact-repaired-unit-receiving)
+now observes actual receipt and useful decision-brief drafting, with a retained
+changes-required verdict rather than blanket acceptance. Source appraisal separates
+actionable provenance corrections from unsupported mandatory edits. A clarified
+operator successor preserves the full worksheet and sources; it is not newly
+native-reviewed. A diagnosed transport-retry event also improves bounded review
+observation without changing permissions or extending the deadline.
+
 The [document-readiness routing correction](docs/document-authoring-case-study.md#document-readiness-and-format-routing)
 replays the actual maintenance request: five unrelated runtime references are
 replaced with missing authoring/handoff material, preserving every prior control.

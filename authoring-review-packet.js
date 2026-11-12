@@ -147,6 +147,28 @@ function classifyClaudeReviewEvent(event) {
       (event.user_message_uuid === undefined || typeof event.user_message_uuid === "string"), "Invalid Claude review thinking progress.");
     return "diagnostic";
   }
+  if (event.type === "system" && event.subtype === "api_retry") {
+    const keys = ["type", "subtype", "attempt", "max_retries", "retry_delay_ms", "error_status", "error",
+      "no_response", "uuid", "session_id"];
+    const errors = ["authentication_failed", "oauth_org_not_allowed", "account_on_hold", "verification_required",
+      "billing_error", "rate_limit", "overloaded", "invalid_request", "model_not_found", "server_error",
+      "unknown", "max_output_tokens", "cloud_credential_error"];
+    const duration = value => Number.isFinite(value) && value >= 0;
+    assert(Object.keys(event).every(key => keys.includes(key)) &&
+      Number.isSafeInteger(event.attempt) && event.attempt >= 1 &&
+      Number.isSafeInteger(event.max_retries) && event.max_retries >= 0 && duration(event.retry_delay_ms) &&
+      (event.error_status === null || (Number.isSafeInteger(event.error_status) && event.error_status >= 400 && event.error_status <= 599)) &&
+      errors.includes(event.error) && [event.uuid, event.session_id].every(value => typeof value === "string" && value.length),
+    "Invalid Claude review API retry.");
+    if (Object.hasOwn(event, "no_response")) {
+      const wait = event.no_response;
+      assert(wait && typeof wait === "object" && !Array.isArray(wait) &&
+        Object.keys(wait).every(key => ["waited_ms", "retry_wait_ms"].includes(key)) &&
+        duration(wait.waited_ms) && duration(wait.retry_wait_ms), "Invalid Claude review API retry wait.");
+    }
+    // Transport retries neither complete the review nor reset its caller-owned deadline.
+    return "diagnostic";
+  }
   if (event.type === "assistant") {
     assert(Array.isArray(event.message?.content) && event.message.content.length, "Invalid Claude review message.");
     if (event.message.content.some(item => !item || !["text", "thinking", "redacted_thinking"].includes(item.type))) return "prohibited_item";

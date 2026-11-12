@@ -22,6 +22,21 @@ historical platform completion does not complete the five skill-first objectives
 
 ## Mixed Conditions Need Separate Status (2026-11-12)
 
+The later [exact-unit receiving case](document-authoring-case-study.md#exact-repaired-unit-receiving)
+demonstrates fresh use of that operator correction and a useful decision brief.
+Keep receipt, source appraisal and adoption separate: a changes-required review
+can contain useful observations, optional clarifications and unsupported premises.
+Patch only source-supported issues. Its inaccurate display hashes also show why
+display-only labels are not exempt from accuracy; reuse supplied labels or stable
+source IDs with the full binding map instead of reconstructing short hashes.
+
+An observed transport-retry event interrupted the first attempt. Validate the
+inspected event shape and retain the fixed deadline, rather than treating every
+diagnostic as failure or every retry as success. Diagnose a terminal stop before
+a separately recorded retry; do not overwrite the failed evidence. The successful
+retry has no transport-retry event, so raw-event replay and rejection fixtures,
+not that success alone, establish the classifier correction.
+
 The [operative-condition review](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
 shows why a gate's shared label cannot substitute for checking each condition.
 An existing authorization and a proposed extra prerequisite can occur in one

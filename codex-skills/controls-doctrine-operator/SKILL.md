@@ -311,6 +311,9 @@ route or a proposed recovery step does not clear the hold.
 Preserve the supplied source-ID/version/full-digest tuple verbatim or carry its
 reviewed map with the delivery unit. Never combine digest fragments or treat
 display abbreviations as integrity bindings. Use the handoff checklist for detail.
+Reuse an already supplied display label; otherwise cite the stable source ID and
+its full binding map instead of regenerating a shortened digest in prose.
+Calling an abbreviation display-only does not make an incorrect value accurate.
 
 Compare a revision with its actual predecessor as well as the source policy.
 When compressing rules, preserve named triggers, decision owners, prohibited
