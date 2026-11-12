@@ -1,5 +1,11 @@
 # Source Map
 
+The [skill-use reading case](document-authoring-case-study.md#skill-use-and-maintenance-reading)
+uses a retained local before/after baseline, a prior native task's CLI arguments
+and installed/guarded regression checks. It adds no external doctrine claim or
+permission. A replay of routing is not a replay of the model or evidence that
+every remaining document is necessary; retain the initial maintenance-phrase miss.
+
 The [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity)
 uses a fresh synthetic assignment, exact installed guidance and reconciled local
 client/tool records. It observes caller identity and objective retention without

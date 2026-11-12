@@ -20,6 +20,22 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Skill Use Is Not Corpus Maintenance (2026-11-12)
+
+The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
+separates an ordinary task's client/method wording from work on the skill itself.
+The prior native task had 46 recommendations but a manually selected seven-source
+profile, including three doctrine guides. Its useful result therefore did not
+prove automatic minimum context. Local replay now removes eight unrelated
+manuals without changing its objectives, gap decision or 58 selected controls.
+
+Relevant maintenance work, explicit sources, parent objectives and guarded
+contexts retain their manuals. The first regression caught a missed installation
+noun phrase inside a no-skip requirement: preserve that failure and fix relevance,
+not the requirement. Both skills now teach the distinction. This is bounded
+reading selection and local delivery evidence, not fresh model acceptance,
+authority expansion or proof of semantic completeness.
+
 ## Caller Identity Needs A Capable Interface (2026-11-12)
 
 The [native direct-task exercise](document-authoring-case-study.md#native-direct-task-continuity)

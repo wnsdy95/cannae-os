@@ -153,6 +153,12 @@ delivery procedure in `docs/document-authoring-workflow.md`; do not silently
 enable another tool or invent delivery to continue.
 See [Document Routing](references/document-routing.md).
 
+Distinguish using a skill from maintaining it. Ordinary drafting through a client
+does not require installation or corpus-maintenance manuals solely because the
+query mentions that client, routing or inventory. Check the actual maintenance
+task, parent objectives and assigned inputs before narrowing reading; guarded
+receipts retain their full selected skill-operations context. See Document Routing.
+
 Keep reading scope separate from execution controls. Conditional specialist
 manuals need not be read for an unrelated task, but their omission never waives
 an issued validation command, approval or stop condition.

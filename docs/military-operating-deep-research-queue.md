@@ -24,6 +24,11 @@ semantic completeness or resolve the separate internal-draft receiving boundary.
 
 ## 0. Purpose
 
+The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
+reduces ordinary direct maintenance-manual over-selection while retaining parent
+and explicit requirements, guarded context and selected controls. Its local replay
+does not establish native semantic acceptance or resolve the receiving policy.
+
 For the active product, the [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity)
 adds actual Codex identity/objective retention through two phases and seven
 required sources per phase. Keep changed-query/role behavior, Claude parity and

@@ -729,6 +729,13 @@ not the model; the handoff explicitly depends on authorized recipient bindings.
 This is same-process evidence with identical query text, not Claude parity,
 changed-role continuity, automatic minimal context or completed receiving.
 
+[Skill-use reading](docs/document-authoring-case-study.md#skill-use-and-maintenance-reading)
+now separates ordinary client use from installation and corpus maintenance.
+A local replay of the earlier task removes eight unrelated manuals while retaining
+its objectives, capability decisions and every selected control. Explicit/parent
+requirements and guarded contexts remain intact; this is not fresh native model
+acceptance or a globally minimal reading list.
+
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)

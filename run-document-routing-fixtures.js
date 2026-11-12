@@ -306,6 +306,102 @@ function testSourceReadingScope(router) {
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 }
 
+function testSkillOperationsReading(router) {
+  const general = ["docs/skill-first-product-scope.md", "docs/document-authoring-workflow.md",
+    "codex-skills/controls-doctrine-operator/references/document-routing.md"];
+  const specialists = ["docs/implementation-candidate-registry.md", "docs/completion-backlog.md",
+    "install-ai-cli-skills.sh", "docs/skill-operational-mission-lifecycle.md",
+    ...["codex-skills", ".claude/skills"].flatMap(provider => [
+      `${provider}/controls-doctrine-operator/SKILL.md`,
+      `${provider}/controls-doctrine-operator/references/self-improvement-loop.md`])];
+  const controls = ["node run-skill-control-enforcement-fixtures.js", "node run-skill-installation-fixtures.js",
+    "node run-agent-routing-preflight-fixtures.js", "node implementation-candidate-registry.js audit"];
+  const ordinary = "Use document routing to draft a support SOP. Do not publish.";
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    for (const [query, maintenance] of [
+      [ordinary, false], ["Use the Codex skill to draft a handoff document.", false],
+      ["Draft an inventory SOP using Claude Code.", false], ["Draft a coverage report for the corpus.", true],
+      ["Use CLI routing to write this document.", false], ["Write a skill-based training SOP.", false],
+      ["Use the operator skill to review the support SOP.", false],
+      ["Install the Codex and Claude skills.", true], ["Update both skill instructions.", true],
+      ["Review our Codex and Claude skills.", true], ["Improve document routing.", true],
+      ["Update Codex CLI skills.", true], ["Modify the Claude Code skill.", true],
+      ["Upgrade our routing rules.", true], ["Change the existing skill.", true],
+      ["Revise both Codex CLI and Claude Code CLI skills.", true],
+      ["Use Codex CLI to revise a support SOP.", false],
+      ["Fix routing rules.", true], ["Audit the installed skill.", true],
+      ["Check skill discovery and configuration.", true],
+      ["Inventory the corpus and assess routing coverage.", true],
+      ["Draft a skill maintenance note.", true], ["Open a wave and prepare the context pack.", true],
+      ["Use routing to draft a support SOP. Do not skip skill installation review.", true]
+    ]) {
+      const result = route(router, [...args, "--all"], query), paths = result.recommended_documents.map(row => row.path);
+      assertRoutes(result, ["skill-operations"]);
+      assert.equal(result.query, query); assert.equal(result.capability_query, query);
+      for (const file of [...general, ...result.operating_mode.mode_documents]) assert(paths.includes(file), query + ": " + file);
+      for (const file of specialists) {
+        assert.equal(paths.includes(file), maintenance, query + ": " + file);
+        assert([...result.recommended_documents, ...result.supporting_artifacts].some(row => row.path === file),
+          "Conditional manuals must remain discoverable: " + file);
+      }
+      for (const command of controls) assert(result.validation_commands.includes(command));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    }
+    const plain = route(router, args, ordinary);
+    for (const file of specialists) {
+      const result = route(router, [...args, "--source=" + file], ordinary);
+      assert(result.task_references.resolved.some(row => row.path === file));
+      for (const required of specialists) assert(result.recommended_documents.some(row => row.path === required));
+      for (const key of ["query", "matched_routes", "validation_commands", "capability_routing", "operating_mode"]) {
+        assert.deepEqual(result[key], plain[key], "Explicit input changed " + key);
+      }
+    }
+    for (const extra of [["--capability-query=Review skill installation"],
+      ["--capability-query=Review skill installation", "--capability-query=Draft a support SOP"]]) {
+      const result = route(router, [...args, ...extra], ordinary);
+      for (const file of specialists) assert(result.recommended_documents.some(row => row.path === file));
+    }
+    const compound = route(router, [...args, "--capability-query=Compare archival digitization offers",
+      "--capability-query=Draft an inventory SOP"], "Compare archival digitization offers and draft an inventory SOP using Claude.");
+    assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    assert.equal(compound.capability_routing.status, "gap_detected");
+    for (const file of specialists) assert(!compound.recommended_documents.some(row => row.path === file));
+    for (const command of [...controls, "node run-force-structure-change-fixtures.js"]) assert(compound.validation_commands.includes(command));
+  }
+  const ai = ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"];
+  const plain = route(router, ai, ordinary);
+  const department = route(router, [...ai, "--department=skill-maintenance"], ordinary);
+  for (const file of specialists) assert(department.recommended_documents.some(row => row.path === file));
+  for (const key of ["matched_routes", "validation_commands", "capability_routing"]) assert.deepEqual(department[key], plain[key]);
+  const human = route(router, ["--actor=user"], ordinary);
+  const humanMetadata = route(router, ["--actor=user", "--department=skill-maintenance"], ordinary);
+  assert.deepEqual(humanMetadata.recommended_documents, human.recommended_documents);
+  const inline = route(router, ["--actor=user"], ordinary + " Read docs/completion-backlog.md.");
+  assert(inline.task_references.resolved.some(row => row.path === "docs/completion-backlog.md"));
+  for (const file of specialists) assert(inline.recommended_documents.some(row => row.path === file));
+  const guarded = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution", "--capability-query=Draft a support SOP"];
+  const direct = route(router, guarded, ordinary);
+  const receipt = route(router, [...guarded, "--receipt", "--scope=agent", "--mission=MIS-SKILL-READING",
+    "--wave=W1", "--agent=writer"], ordinary);
+  for (const file of specialists) {
+    assert(!direct.recommended_documents.some(row => row.path === file));
+    assert(receipt.recommended_documents.some(row => row.path === file), "Guarded reading was narrowed: " + file);
+  }
+  for (const file of direct.recommended_documents) assert(receipt.recommended_documents.some(row => row.path === file.path));
+  for (const key of ["matched_routes", "validation_commands", "capability_routing"]) assert.deepEqual(receipt[key], direct[key]);
+  const project = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "controls-skill-input-")));
+  try {
+    fs.writeFileSync(path.join(project, "skill-instructions.md"), "PRIVATE-SKILL-INPUT\n");
+    const init = spawnSync("git", ["init", "-q", project], { encoding: "utf8" });
+    assert.equal(init.status, 0, init.stderr);
+    const result = route(router, ["--actor=user", `--input-repository=${project}`, "--input-source=skill-instructions.md"], ordinary);
+    assert.deepEqual(result.task_inputs.sources, [{ path: "skill-instructions.md", exists: true }]);
+    assert.equal(result.task_inputs.content_loaded, false); assert.equal(result.task_inputs.authorization_verified, false);
+    for (const file of specialists) assert(result.recommended_documents.some(row => row.path === file));
+    assert(!JSON.stringify(result).includes("PRIVATE-SKILL-INPUT"));
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+}
+
 function testComparisonRouting(router) {
   const specialist = route(router, ["--actor=user"], "Review self-improvement operations");
   const checks = specialist.validation_commands;
@@ -550,6 +646,7 @@ for (const router of ROUTERS) {
   testS6Reading(router);
   testTaskReadingScope(router);
   testSourceReadingScope(router);
+  testSkillOperationsReading(router);
   testOrdinaryAuthoring(router);
   testComparisonRouting(router);
   testObjectiveRouting(router);

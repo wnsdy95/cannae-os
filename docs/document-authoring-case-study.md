@@ -3257,3 +3257,70 @@ native continuity, general semantic completeness, private-draft receiving policy
 or all format coverage. All five goals and the 11 bounded-verified / nine partial
 required-row counts remain unchanged. No policy adoption, publication or new
 service follows; do not replay this accepted case solely for another pass.
+
+## Skill Use And Maintenance Reading
+
+Date: 2026-11-12. This is a local routing correction, not another native model
+invocation or proof of general semantic selection. The previous DG74 exercise
+returned 46 doctrine recommendations even though its manually reviewed access
+profile assigned only three doctrine guides. Mentioning a client, routing or an
+inventory task selected installation, entrypoint and corpus-maintenance manuals.
+That profile's successful seven-source reading did not validate the wider list.
+
+### Change And Preserved Boundaries
+
+Both routers now distinguish ordinary direct skill use from maintenance within
+the existing skill-operations route. Ordinary use keeps product scope, authoring
+and document-routing guidance. Installation, skill/router editing, corpus
+inventory/coverage, explicit specialist sources and applicable parent objectives
+retain the fuller bundle. Delegated AI department and declared project input names
+also inform relevance; human-mode metadata does not constrain USER visibility.
+Other routes and role requirements contribute their documents independently.
+
+The selector changes only that route's primary reading contribution. Original
+queries, per-objective capability assessments, task identity, provisional cells,
+authority and selected validation commands remain unchanged. Conditional manuals
+remain discoverable in supporting inventory. No source content is opened by the
+selector and no read, execution or disclosure permission follows from a filename.
+
+Guarded receipts retain the full selected skill-operations bundle, including
+ordinary-looking task wording. Their issued context documents and controls cannot
+be replaced with the shorter direct result. Both skill entrypoints and routing
+references teach this distinction instead of telling operators to delete gates.
+
+### Local Evidence
+
+The retained baseline binds nine scenarios in each provider to source HEAD
+`2df65367d147183de73a1cfde3aef2233baf666a`. Replaying the actual earlier DG74
+router arguments locally reduces its recommendations from 46 to 38; its 58
+selected commands and four-objective capability decisions are unchanged. This
+is a CLI replay, not a rerun of the accepted model response. Three smaller
+ordinary tasks likewise lose eight unrelated manuals. Installation, maintenance,
+parent-maintenance, explicit-source and guarded scenarios retain their lists.
+
+The first expanded regression failed: "Do not skip skill installation review"
+did not retain its manuals because `installation` was not the `install` keyword.
+The correction recognizes the scoped maintenance noun phrase without removing
+the prohibition or weakening the expectation. A separate wording probe then found
+missed CLI-qualified updates, skill modification and routing-rule upgrades in both
+providers, despite the first integrated test set passing. Recognize those edit
+forms and test a genuine ordinary CLI-use counterexample. Both failed records
+remain separate from later checks; an existing green suite is not completeness.
+
+Local regression coverage includes ordinary client/method wording, actual edits,
+explicit sources, parent and compound objectives, AI versus human metadata,
+project filenames without content loading, linked/copied instruction delivery,
+receipt validation and digest-bound guarded context. Tests preserve independent
+domain gaps and every selected control; a shorter list alone is not the oracle.
+Preparation, baseline, failed and successful checks are retained separately under
+`.cannae/maintenance/skill-reading-scope-20261112/`.
+
+### Remaining Acceptance
+
+The selector is bounded lexical matching, not automatic objective extraction,
+universal minimum context or proof that every remaining recommendation is useful.
+Conservative maintenance hints can still over-select reading. Neither local
+installation parity nor the old native response establishes fresh behavioral
+acceptance of these instructions. Keep the separate receiving-policy and
+cross-client task-quality gaps open. A05 remains partial and the eleven
+bounded-verified / nine partial required-row counts do not change.

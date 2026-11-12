@@ -335,6 +335,49 @@ function sourceReadingScope(env) {
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
 }
 
+function skillOperationsReading(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const query = "Use the Codex and Claude skills to draft a support SOP. Do not publish.";
+  for (const [extra, maintenance] of [[[], false], [["--capability-query=Review skill installation"], true],
+    [["--source=docs/completion-backlog.md"], true]]) {
+    const results = PROVIDERS.map(provider => {
+      const installed = destination(env, provider);
+      const entry = fs.readFileSync(path.join(installed, "SKILL.md"), "utf8");
+      assert(entry.includes("Distinguish using a skill from maintaining it"));
+      const reference = fs.readFileSync(path.join(installed, "references/document-routing.md"), "utf8");
+      assert(reference.includes("### Using A Skill Versus Maintaining It"));
+      assert(reference.includes("Guarded receipts retain the full selected skill-operations reading"));
+      const run = spawnSync(process.execPath, [path.join(installed, "scripts/route_controls_docs.js"),
+        "--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only", ...extra, "--", query],
+      { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 0, run.stderr);
+      const result = JSON.parse(run.stdout);
+      assert.equal(result.repo_root, fs.realpathSync(source)); assert.equal(result.query, query);
+      assert.equal(result.operating_mode.authority, "read-only");
+      for (const file of ["docs/completion-backlog.md", "install-ai-cli-skills.sh", "docs/skill-operational-mission-lifecycle.md"]) {
+        assert.equal(result.recommended_documents.some(row => row.path === file), maintenance, file);
+      }
+      for (const file of ["docs/skill-first-product-scope.md", "docs/document-authoring-workflow.md",
+        "codex-skills/controls-doctrine-operator/references/document-routing.md", ...result.operating_mode.mode_documents]) {
+        assert(result.recommended_documents.some(row => row.path === file));
+      }
+      for (const command of ["node run-skill-installation-fixtures.js", "node run-agent-routing-preflight-fixtures.js"]) {
+        assert(result.validation_commands.includes(command));
+      }
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      return result;
+    });
+    assert.deepEqual(results[0].recommended_documents, results[1].recommended_documents);
+    for (const key of ["query", "capability_query", "operating_mode", "matched_routes", "capability_routing"]) {
+      assert.deepEqual(results[0][key], results[1][key]);
+    }
+    const commands = result => result.validation_commands.map(command => command.replace(
+      /(?:codex-skills|\.claude\/skills)\/controls-doctrine-operator\/scripts\/route_controls_docs/, "PROVIDER/router")).sort();
+    assert.deepEqual(commands(results[0]), commands(results[1]));
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 function taskReadingScope(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   for (const [query, technical, gap] of [
@@ -422,6 +465,7 @@ try {
   fixture("linked providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("linked providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("linked providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
+  fixture("linked providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("matching link installation is idempotent", () => {
@@ -460,6 +504,7 @@ try {
   fixture("copied providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("copied providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("copied providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
+  fixture("copied providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {

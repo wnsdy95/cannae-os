@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Separate ordinary direct skill use from skill/corpus maintenance reading in both routers while retaining explicit and parent requirements, role duties, guarded context and every selected control. Mirror the distinction in both skills and exercise linked/copied delivery, compound gaps and actual context generation. Preserve the initial missed installation-review phrase and the old native evidence; local replay with eight fewer manuals is not fresh model acceptance or globally minimal routing.
+
 - Observe native Codex retaining an explicit project/task identity, the original compound request, all four objectives and one capability cell through intake and review. Reconcile sixteen calls and exact reads while preserving separate USER decisions and conditional receiving limits. Mirror adapter-field ownership, withheld-root attribution and launch-context checks in both skills, with linked/copied instruction and real-router coverage. Preserve the unused first preparation; same-process identical-query evidence is not changed-role continuity, Claude parity, authenticated delegation or complete receiving.
 
 - Condition national specialist recommendations on source subject, inherited objectives, explicit inputs and delegated AI duties while preserving generic source discipline and every selected control. Distinguish bounded Korean delivery-language phrases from Korean military/organizational topics, retain conservative ambiguous clauses and human-mode behavior, mirror both skills and exercise direct, installed and guarded-context paths. Record the initial selector/test failures; local relevance checks do not prove semantic minimality or authorize disclosure.

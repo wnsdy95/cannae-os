@@ -406,6 +406,13 @@ const KOREAN_SOURCE_DOCS = new Set([
   "docs/korean-military-sources.md", "docs/korean-org-culture.md"
 ]);
 const MULTINATIONAL_SOURCE_DOC = "docs/multinational-doctrine-consistency-review.md";
+const SKILL_GENERAL_DOCS = new Set([
+  "docs/skill-first-product-scope.md", "docs/document-authoring-workflow.md",
+  "codex-skills/controls-doctrine-operator/references/document-routing.md"
+]);
+const SKILL_USE_KEYWORDS = new Set([
+  "skill", "skills", "skillset", "routing", "operator", "inventory", "coverage", "cli", "codex", "claude"
+]);
 
 const GENERIC_ROUTE_KEYWORDS = new Set([
   ...COMPARISON_KEYWORDS,
@@ -1383,6 +1390,24 @@ function sourceSpecialistReading(text, sources) {
   return { korean, multinational };
 }
 
+function needsSkillOperationsReading(text, sources, guarded) {
+  if (guarded) return true;
+  const rule = RULES.find(item => item.id === "skill-operations"), context = normalizeText(text);
+  const client = "(?:codex|claude(?:\\s+code)?|controls|cannae(?:\\s+os)?)(?:\\s+cli)?";
+  const edit = new RegExp(
+    "\\b(?:author|create|write|edit|modify|change|update|upgrade|revise|fix|debug|repair|configure|maintain|extend|improve|optimize|optimise|validate|test|audit|review)\\s+" +
+    "(?:(?:a|an|the|this|these|those|our|my|both|installed|new|existing)\\s+)*" +
+    `(?:${client}(?:\\s+(?:and|or)\\s+${client})?\\s+)?` +
+    "(?:skills?|skillset|skill instructions|skill entrypoints?|(?:document\\s+)?(?:router|routing(?: rules)?))\\b(?![-_])", "i");
+  return sources.some(file => rule.docs.includes(file) && !SKILL_GENERAL_DOCS.has(file)) ||
+    isCorpusOrientationRequest(text) || edit.test(String(text)) ||
+    rule.keywords.some(keyword => !SKILL_USE_KEYWORDS.has(keyword) && keywordMatches(context, normalizeText(keyword))) ||
+    countMatches(context, ["skill maintenance", "skill development", "skill installation", "skill configuration", "skill discovery", "skill instructions", "skill entrypoint",
+      "router implementation", "router bug", "routing bug", "routing coverage", "route coverage", "skill coverage",
+      "coverage audit", "corpus inventory", "inventory the corpus", "documentation inventory", "inventory coverage",
+      "route controls docs", "install ai cli skills", "skill operations"]) > 0;
+}
+
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
   const inputs = resolveInputReferences(options, repoRoot);
@@ -1457,6 +1482,8 @@ function route(query, repoRoot, options) {
   const improvementReading = needsImprovementSpecialistReading(readingContext, sourcePaths);
   const runtimeReading = needsRuntimeSpecialistReading(readingContext, sourcePaths);
   const sourceReading = sourceSpecialistReading([readingContext, mode.actor === "ai" ? mode.department : ""].join("\n"), sourcePaths);
+  const skillOperationsReading = needsSkillOperationsReading(
+    [readingContext, mode.actor === "ai" ? mode.department : ""].join("\n"), sourcePaths, options.receipt);
   for (const rule of selectedRules) {
     // Specialist reading is conditional; route/control selection is unchanged.
     docs.push(...rule.docs.filter(file =>
@@ -1464,7 +1491,8 @@ function route(query, repoRoot, options) {
       (rule.id !== "bounded-self-improvement" || IMPROVEMENT_GENERAL_DOCS.has(file) || improvementReading) &&
       (!["runtime-architecture-dashboard", "continuity-handoff"].includes(rule.id) || !RUNTIME_SPECIALIST_DOCS.has(file) || runtimeReading) &&
       (rule.id !== "sources-research" || !KOREAN_SOURCE_DOCS.has(file) || sourceReading.korean) &&
-      (rule.id !== "sources-research" || file !== MULTINATIONAL_SOURCE_DOC || sourceReading.multinational)));
+      (rule.id !== "sources-research" || file !== MULTINATIONAL_SOURCE_DOC || sourceReading.multinational) &&
+      (rule.id !== "skill-operations" || SKILL_GENERAL_DOCS.has(file) || skillOperationsReading)));
     commands.push(...rule.commands);
   }
 

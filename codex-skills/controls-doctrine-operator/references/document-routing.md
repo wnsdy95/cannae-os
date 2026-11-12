@@ -43,6 +43,27 @@ or negated terms; distinguish drafting an instruction from executing it. Do not
 strip required controls from an already issued receipt or context pack. Clarify
 an ambiguous guarded operation before dispatch, not by silently removing gates.
 
+### Using A Skill Versus Maintaining It
+
+For ordinary direct work, a mention of Codex, Claude, CLI, skill, routing,
+operator, inventory or coverage alone does not require installation and corpus
+maintenance manuals. The selected skill-operations route keeps the product-scope,
+authoring and document-routing guides. Its route/capability decisions and all
+selected validation commands remain unchanged; supporting inventory still exposes
+the conditional manuals. Other routes and role duties keep their own references.
+
+Retain the full bundle for actual skill/router editing, installation, corpus
+inventory/coverage, lifecycle work or an explicit specialist source. Check parent
+objectives, supplied input names and delegated AI department as well as the local
+query. Human-mode role metadata does not narrow the user's reading. This bounded
+selector is not general intent parsing; ambiguous maintenance hints remain
+conservative, and project filenames neither load content nor grant access.
+
+Guarded receipts retain the full selected skill-operations reading. Do not replace
+a receipt with a shorter direct route or alter an issued document profile. A
+smaller list is not semantic completeness: preserve the original objectives,
+independent domain gaps, assigned sources and every approval or stop condition.
+
 ## Compound Intake
 
 In ordinary intake, declare each domain objective independently with repeated

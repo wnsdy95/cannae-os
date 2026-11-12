@@ -371,6 +371,38 @@ fixture("specialist reading is task-scoped while release controls remain mandato
   }
 });
 
+fixture("ordinary skill wording does not narrow guarded receipts or digest-bound context", () => {
+  const plan = wavePlan(basePlan, "WSKILLREADING");
+  plan.id = "MWP-SKILL-READING";
+  plan.mission_id = "MIS-SKILL-READING";
+  plan.objective = "Draft a support SOP. Do not publish.";
+  plan.adaptive_work.campaign_id = "SIC-SKILL-READING";
+  for (const agent of plan.agents) agent.task = "Use document routing to draft a support SOP. Do not publish.";
+  const result = openWave(plan, {
+    repository: repositoryRouting, artifactRoot, doctrineRoot: ROOT, now: FIXED_OPEN_TIME
+  });
+  assert(result.status === "ready", "skill-reading wave should open");
+  assert(result.tool_execution_authorized === false && result.release_authorized === false);
+  for (const item of result.context_packs) {
+    const pack = loadArtifact(artifactRoot, item.context_pack_ref);
+    assert(validatePayload(pack, "agent-context-pack").valid);
+    for (const file of ["docs/document-authoring-workflow.md", "docs/approval-scope-policy.md",
+      "docs/implementation-candidate-registry.md", "docs/completion-backlog.md", "install-ai-cli-skills.sh",
+      "docs/skill-operational-mission-lifecycle.md", "codex-skills/controls-doctrine-operator/SKILL.md",
+      ".claude/skills/controls-doctrine-operator/SKILL.md",
+      "codex-skills/controls-doctrine-operator/references/self-improvement-loop.md",
+      ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md"]) {
+      const document = pack.documents.find(row => row.path === file);
+      const digest = createHash("sha256").update(fs.readFileSync(path.join(ROOT, file))).digest("hex");
+      assert(document && document.sha256 === digest, `guarded skill reading lost ${file}`);
+    }
+    for (const command of ["node run-skill-control-enforcement-fixtures.js", "node run-skill-installation-fixtures.js",
+      "node run-agent-routing-preflight-fixtures.js", "node run-release-integration-fixtures.js"]) {
+      assert(pack.required_controls.some(control => control.command === command), `lost mandatory control: ${command}`);
+    }
+  }
+});
+
 for (const { tag, name, objective } of [
   { tag: "", name: "unmatched mission capability", objective: "Analyze ICP and rank sales targets from the canonical track view." },
   { tag: "-COMPARISON", name: "generic comparison capability gap", objective: "Compare museum attendance by city" },
