@@ -1,5 +1,12 @@
 # Source Map
 
+The [coordinated-exclusion case](document-authoring-case-study.md#coordinated-platform-exclusions)
+uses exact local before/after route results, an observed maintenance query and
+focused counterexamples in both bundles. It supports bounded reading/capability
+correction with retained controls, not new military doctrine, access permission
+or native-model acceptance. An explicit source is required reading, not proof
+that an excluded platform topic covers the actual task's domain.
+
 The [exact repaired-unit receiving case](document-authoring-case-study.md#exact-repaired-unit-receiving)
 uses the exact synthetic OP1, native response and separate source appraisal. It
 establishes bounded receipt/use, not blanket review acceptance or new military

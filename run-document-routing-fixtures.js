@@ -222,6 +222,58 @@ function testTaskReadingScope(router) {
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 }
 
+function testPlatformExclusionLists(router) {
+  const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
+  const noWork = "No publication, external operations, dashboard or server development.";
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    const plain = route(router, args, "Draft a handoff document.");
+    for (const clause of [noWork, "Dashboard and service development remain deferred.",
+      "No dashboard implementation, database development, or server work.",
+      "The dashboard, a separate server and service implementation are out of scope.",
+      "Do not build a dashboard or a server.", "No publication and external operation or dashboard implementation."]) {
+      const query = "Draft a handoff document. " + clause, result = route(router, args, query);
+      assert.equal(result.query, query); assert.equal(result.capability_query, query);
+      for (const file of RUNTIME_SPECIALIST_DOCS) assert(!result.recommended_documents.some(row => row.path === file), query + ": " + file);
+      for (const command of [...plain.validation_commands, ...controls]) assert(result.validation_commands.includes(command));
+      for (const row of plain.recommended_documents) assert(result.recommended_documents.some(d => d.path === row.path));
+      assert(!result.capability_routing.matched_capability_routes.includes("runtime-architecture-dashboard"));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    }
+    for (const clause of [noWork + " Review its design.", noWork + " Inspect the server design.",
+      "Dashboard and service development remain deferred. Review service contracts.",
+      "No dashboard or server development unless the review requires it.",
+      "No publication, dashboard or unknown work.", "No external operations or dashboard review omission.",
+      "Do not build a dashboard or a server but review the design.",
+      "No dashboard implementation approval is needed."]) {
+      const query = "Draft a handoff document. " + clause, result = route(router, args, query);
+      for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file), query + ": " + file);
+      for (const command of controls) assert(result.validation_commands.includes(command));
+    }
+    const query = "Draft a handoff document. " + noWork;
+    for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review dashboard architecture."]]) {
+      const result = route(router, [...args, ...extra], query);
+      for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file));
+    }
+    const domain = "Analyze museum attendance. " + noWork, gap = route(router, args, domain);
+    assert.equal(gap.query, domain); assert.equal(gap.capability_routing.status, "gap_detected");
+    assert(gap.capability_routing.provisional_organization.required);
+    assert.equal(gap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+    for (const command of [...controls, "node run-force-structure-change-fixtures.js"]) assert(gap.validation_commands.includes(command));
+    const compound = route(router, [...args, "--capability-query=" + domain, "--capability-query=Draft a handoff document."], query + " " + domain);
+    assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+  }
+  const task = "Draft a handoff document. " + noWork;
+  const systems = route(router, ["--actor=ai", "--role=S6", "--department=systems", "--authority=read-only"], task);
+  for (const file of ["docs/reference-architecture.md", "docs/event-sourcing-model.md"]) {
+    assert(systems.recommended_documents.some(row => row.path === file));
+  }
+  const args = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution", "--capability-query=Review dashboard architecture."];
+  const direct = route(router, args, task);
+  const receipt = route(router, [...args, "--receipt", "--scope=agent", "--mission=MIS-EXCLUSION-READING", "--wave=W1", "--agent=writer"], task);
+  assert.equal(receipt.router_query, task);
+  for (const key of ["matched_routes", "validation_commands", "capability_routing", "recommended_documents"]) assert.deepEqual(receipt[key], direct[key]);
+}
+
 function testDocumentReadinessScope(router) {
   const observed = "Revise outgoing document handoffs and verification worksheets against their original request, current assignment, supplied sources and predecessor. Preserve explicit restrictions, USER decision ownership, unknown operational assignees and useful allowed drafting. Clarify document readiness versus operational completion without adding an unsupported quality threshold. Maintain mirrored Codex and Claude guidance and regression evidence; no publication, private-source exception, dashboard or service work.";
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
@@ -734,6 +786,7 @@ function testDirectTaskIdentity(router) {
 }
 
 for (const router of ROUTERS) {
+  testPlatformExclusionLists(router);
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   testDocumentReadinessScope(router);
   testDirectTaskIdentity(router);

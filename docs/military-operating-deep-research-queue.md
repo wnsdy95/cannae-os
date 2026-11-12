@@ -58,6 +58,13 @@ it has no fresh native review. Do not replay the same receiving case solely to
 increase pass counts. Wider task relevance and the separate delivery-policy
 boundary remain active requirements.
 
+The [coordinated-exclusion correction](document-authoring-case-study.md#coordinated-platform-exclusions)
+now covers that maintenance query's complete no-development list and related
+coordinated forms. Local comparisons remove five unrelated manuals while
+retaining all prior controls and actual technical requirements. An excluded
+topic no longer conceals the museum-analysis gap. Broader semantic relevance
+and the separate disclosure boundary remain open; no new military claim follows.
+
 The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
 reduces ordinary direct maintenance-manual over-selection while retaining parent
 and explicit requirements, guarded context and selected controls. Its local replay

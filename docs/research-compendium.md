@@ -20,6 +20,21 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Coordinated Exclusions And Capability (2026-11-12)
+
+The [coordinated-exclusion case](document-authoring-case-study.md#coordinated-platform-exclusions)
+extends the earlier bounded reading correction to complete development/work
+lists. Judge the whole exclusion and subsequent work together: "no server
+development" does not waive a later server-design inspection. Keep explicit
+sources, parent objectives, technical duties and every selected control.
+
+The same reading error can conceal a capability gap. An excluded dashboard
+does not establish expertise for museum analysis, and an explicit technical
+source does not turn that excluded subject into the actual objective. Correct
+the capability assessment without deleting the source or granting authority.
+These local comparisons establish only the tested lexical forms, not general
+language understanding, minimum context or fresh native acceptance.
+
 ## Mixed Conditions Need Separate Status (2026-11-12)
 
 The later [exact-unit receiving case](document-authoring-case-study.md#exact-repaired-unit-receiving)

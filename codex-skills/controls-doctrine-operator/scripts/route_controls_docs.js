@@ -1347,20 +1347,22 @@ function needsImprovementSpecialistReading(text, sources) {
 
 function runtimeWorkContext(text) {
   // This view affects relevance only; original tasks and selected controls remain intact.
-  const noun = "(?:dashboard|control panel|database|event store|event replay|ui|architecture|standalone service|separate service)s?";
+  const noun = "(?:dashboard|control panel|database|event store|event replay|ui|architecture|(?:(?:standalone|separate)\\s+)?(?:service|server))s?";
   const subject = "(?:(?:a|an|the|any|new|operational|production)\\s+)*" + noun;
+  const separator = "(?:\\s*,\\s*(?:(?:and|or)\\s+)?|\\s+(?:and|or)\\s+)";
+  const platformItem = subject + "(?:\\s+(?:development|implementation|work))?";
+  const platformList = platformItem + "(?:" + separator + platformItem + ")*";
   const excluded = new RegExp("^(?:(?:please\\s+)?(?:do not|don't|never)\\s+" +
-    "(?:build|create|implement|develop|deploy|launch|start|operate|modify|change)\\s+" + subject +
-    "(?:\\s+(?:now|yet|for this task))?|" + subject + "(?:\\s+(?:and|or)\\s+" + subject + ")*" +
-    "(?:\\s+(?:development|implementation|work))?\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
+    "(?:build|create|implement|develop|deploy|launch|start|operate|modify|change)\\s+" + platformList +
+    "(?:\\s+(?:now|yet|for this task))?|" + platformList +
+    "\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
   const clauses = String(text).split(/[;\n]+|(?<=[.!?])\s+/)
     .map(clause => clause.trim().replace(/[.!?]+$/, ""));
-  const listedItem = "(?:" + subject + "(?:\\s+work)?|services?(?:\\s+work)?|" +
-    "publication|transmission|deployment|private-source exceptions?)";
-  const separator = "(?:\\s*,\\s*(?:(?:and|or)\\s+)?|\\s+(?:and|or)\\s+)";
+  const listedItem = "(?:" + platformItem + "|publication|transmission|deployment|private-source exceptions?|external operations?)";
   const excludedList = new RegExp("^no\\s+" + listedItem + "(?:" + separator + listedItem + ")*$", "i");
   const retained = clauses.filter(clause => !excluded.test(clause) && !excludedList.test(clause));
-  const dependentReview = /\b(?:review|inspect|assess|compare|evaluate|audit|verify|check|validate|read)\s+(?:it|its|their|them|that|those|this)\b/i;
+  const dependentReview = new RegExp("\\b(?:review|inspect|assess|compare|evaluate|audit|verify|check|validate|read)\\s+" +
+    "(?:(?:it|its|their|them|that|those|this)\\b|" + subject + "\\b)", "i");
   if (retained.length !== clauses.length && retained.some(clause =>
     dependentReview.test(clause) || /^(?:but|however|unless|except|instead)\b/i.test(clause))) return String(text);
   let context = retained.join("\n");

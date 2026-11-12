@@ -3870,3 +3870,57 @@ This removes the missing-OP1-receipt gap, not all G1/G3/G5 gaps. Do not replay t
 same case to increase a pass count. Broader automatic task relevance, the separate
 internal-draft delivery refusal and current-state/source consistency remain open;
 the requirement audit stays 12 bounded-verified and eight partial.
+
+## Coordinated Platform Exclusions
+
+On 2026-11-12, the next actual document-maintenance request ended with
+"No publication, external operations, dashboard or server development." Both
+routers nevertheless recommended five runtime specialist manuals. The same
+complete exclusion appended to "Analyze museum attendance" incorrectly made
+that unsupported objective appear covered by dashboard expertise.
+
+The correction recognizes bounded complete lists with coordinated service/server
+nouns and development, implementation or work suffixes. It also preserves a
+later named-object review, such as "Inspect the server design": excluding
+construction does not exclude that review. Both provider routing references
+now require checking the complete clause and subsequent work, not dropping a
+technical subject merely because implementation is prohibited.
+
+### Retained Comparisons
+
+The local evidence directory is
+`.cannae/maintenance/platform-exclusion-reading-20261112/`. Before and after
+snapshots retain 32 results each: eight cases, two providers and human versus
+S6 knowledge/read-only modes. Source HEAD was `ceb94f5`. The new regression
+first failed on the observed irrelevant reference, then the corrected full
+routing suite passed 1,094 queries across both providers.
+
+| Case | Observed change |
+| --- | --- |
+| Actual maintenance request | Human reading: 24 to 19 documents; knowledge role: 26 to 21. All 19 prior commands remain. |
+| Coordinated deferred-development and per-item suffix lists | Exactly five unrelated technical references leave; all prior documents outside that set and all commands remain. |
+| Positive review, unknown list item, technical parent objective | Complete prior route results remain unchanged. |
+| Explicit technical source | All reading and commands remain. The excluded topic no longer establishes runtime capability by itself. |
+| Museum analysis with the complete exclusion | Domain gap and bounded provisional cell replace the false covered decision; existing commands remain and force-structure checks are added. Standing activation and authority expansion stay false. |
+
+The original task, capability query, operator declarations and task references
+remain exact. Raw route selection is retained for the corrected exclusion cases;
+reading relevance and task capability are distinct from selected controls.
+One initial comparison assertion wrongly required the explicit-source case's
+capability matches to stay identical. Its correction permits only the excluded
+runtime capability match to leave, while checking every other field unchanged.
+This audit-harness error and the original snapshots remain recorded.
+
+Regression cases cover complete lists, unknown/conditional wording, pronoun and
+named-object review, explicit and parent inputs, technical department duties,
+compound domain gaps and guarded receipt consistency. Installation fixtures
+exercise the same behavior through isolated linked/copied bundles in foreign
+working directories; they do not modify actual client settings or logins.
+
+This supersedes the earlier limitation for these exact coordinated forms, not
+for arbitrary English or other languages. It is local CLI evidence, not another
+native review, semantic completeness or globally minimal context selection.
+Issued sources and controls cannot be trimmed to match a smaller count. The
+separate internal-draft delivery refusal and wider task-quality gaps remain;
+A05 and all five goals stay partial, with 12 bounded-verified and eight partial
+required rows. No platform work, publication or authority change is included.

@@ -770,6 +770,13 @@ operator successor preserves the full worksheet and sources; it is not newly
 native-reviewed. A diagnosed transport-retry event also improves bounded review
 observation without changing permissions or extending the deadline.
 
+The [coordinated-exclusion correction](docs/document-authoring-case-study.md#coordinated-platform-exclusions)
+removes five unrelated technical manuals from that maintenance request while
+retaining all 19 checks. Complete platform exclusions cannot disguise an unsupported
+domain as covered; positive reviews, explicit sources and parent duties remain.
+Both bundles retain the original request. This is bounded local routing evidence,
+not universal semantic selection or a new native-review result.
+
 The [document-readiness routing correction](docs/document-authoring-case-study.md#document-readiness-and-format-routing)
 replays the actual maintenance request: five unrelated runtime references are
 replaced with missing authoring/handoff material, preserving every prior control.

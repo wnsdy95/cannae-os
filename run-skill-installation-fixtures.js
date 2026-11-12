@@ -382,6 +382,11 @@ function taskReadingScope(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   for (const [query, technical, gap] of [
     ["Draft a handoff document. Do not build a dashboard.", false, false],
+    ["Draft a handoff document. No publication, external operations, dashboard or server development.", false, false],
+    ["Draft a handoff document. Dashboard and service development remain deferred.", false, false],
+    ["Draft a handoff document. No dashboard implementation, database development, or server work.", false, false],
+    ["Draft a handoff document. No dashboard or server development. Inspect the server design.", true, false],
+    ["Analyze museum attendance. No publication, external operations, dashboard or server development.", false, true],
     ["Draft a handoff document. Do not skip dashboard verification.", true, false],
     ["Revise outgoing document handoffs. Clarify document readiness; no publication, dashboard or service work.", false, false],
     ["Revise outgoing document handoffs. Review unit readiness; no dashboard or service work.", true, false],

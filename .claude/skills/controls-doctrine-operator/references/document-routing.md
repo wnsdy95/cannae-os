@@ -413,12 +413,15 @@ cancel an assigned technical review or required source.
 
 The router recognizes a bounded set of complete English exclusions, such as
 "Do not build a dashboard", "Dashboard development is deferred", and complete
-noun lists like "no publication, dashboard or service work". The list accepts
-the known platform nouns, publication, transmission, deployment and private-source
-exceptions; unknown items, review qualifications and conditions remain relevant.
+noun lists like "no publication, dashboard or service work". Platform items may
+carry development, implementation or work suffixes, including coordinated
+service/server nouns: "Dashboard and service development remain deferred" and
+"No publication, external operations, dashboard or server development".
+Publication, transmission, deployment, private-source exceptions and external
+operations are recognized non-platform items in these complete exclusion lists.
+Unknown items, review qualifications and conditions remain relevant.
 Those clauses cannot by themselves establish runtime capability or require the
-five specialist
-manuals. The original task and capability query remain verbatim, and selected
+five specialist manuals. The original task and capability query remain verbatim, and selected
 route IDs and validation commands remain. Thus "Analyze museum attendance; do not
 build a dashboard" keeps its domain gap and provisional cell instead of claiming
 dashboard expertise covers the analysis. This adds the existing gap controls,
@@ -430,6 +433,13 @@ qualified forms no longer add the five runtime manuals or runtime capability
 evidence. "Document readiness failures" can instead be an instruction to report
 operational conditions and stays conservative. Positive task/parent context,
 technical duties and explicit inputs still retain their references.
+
+Check the whole coordinated clause and later work before dropping conditional
+reading. "Do not build a dashboard or a server" excludes construction, but a
+following "Inspect the server design" still requires technical context. A later
+review of a named platform object is treated conservatively, like a pronoun
+reference. Do not delete the prohibition from the task or use it to clear a
+positive parent objective, explicit source, technical duty or selected control.
 
 Check the full authoring bundle for modifiers and plural formats: "revise outgoing
 document handoffs" must retain the writing procedure and handoff template, not
