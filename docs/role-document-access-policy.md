@@ -234,7 +234,9 @@ this projection does not add locations, shorten required inputs or authorize use
 The existing literal path checks and semantic-review limits still apply.
 
 The same conservative OPSEC/EEFI detectors
-check outgoing text, task and recipient strings. Findings stop preparation with
+check outgoing text, task and recipient strings, source IDs and declared required-term
+labels. Recipient catalogs are delivered content even for reference-only rows.
+Findings stop preparation with
 a fixed code and no matched values. These pattern checks may over-block ordinary
 policy wording and cannot prove absence of sensitive data or prompt injection.
 Do not lower classification or bypass a finding to get a packet out.
@@ -336,10 +338,16 @@ node /absolute/loaded-skill/scripts/prepare_controls_documents.js \
 ```
 
 This executes the same compiler, access checks, file/digest limits and conservative
-detectors as preparation, but writes no packet. Task/recipient findings stop
-before source reads; a document finding stops before later sources. Reference-only
+detectors as preparation, but writes no packet. Task/recipient and outbound-metadata
+findings stop before source reads; a document finding stops before later sources. Reference-only
 rows are metadata-checked, never opened or hashed. Summary originals are hashed,
 not decoded or screened as recipient text; only the supplied summary is screened.
+After task/recipient checks, `outbound_metadata` screens source IDs and declared
+required terms. Select report rows by `scope` and `document_index`, not a fixed
+position. This additional stage does not change detector rules or grant exceptions.
+The structured recipient projection and prompt renderer also screen their complete
+outbound view without reading files. Inspect retained packets before reuse: source
+digests and an earlier preparation do not waive current screening.
 
 The local report contains the SHA-256 of `JSON.stringify` of the parsed request
 (not its original file formatting), the repository identity digest, zero-based

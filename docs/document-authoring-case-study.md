@@ -4015,3 +4015,30 @@ bundles; reviewer-input checks verify delivery of the rules, not universal model
 compliance. The new instructions postdate these native runs. This closes the
 missing native Claude changed-role evidence, not broader relevance, document
 quality or the independent delivery-policy refusal. All five goals stay partial.
+
+## Recipient Catalog Screening
+
+A follow-up to `5d4e185` separated two policy limits from a screening defect.
+The public-policy word refusal and excluded internal-draft paths remain explicit
+boundaries. Neither is cleared by standing verification consent. In contrast,
+a schema-valid source ID carrying a synthetic token-shaped value returned
+`content_screening_no_findings`: the compiler screened task/recipient strings
+and source bodies, but not the identifiers it delivered in the catalog.
+The failing local regression is retained, not reported as a successful check.
+
+The compiler now screens source IDs and declared required-term labels before
+any project source read. A separate `outbound_metadata` diagnostic stage retains
+only rule/count metadata; reference-only bodies remain unopened. The structured
+recipient projection and renderer screen the complete outgoing view as well.
+No detector rule, classification, source eligibility or approval flag changes.
+Retained packet inspection recompiles under current screening; even a matching
+supplied packet digest cannot exempt its catalog from those checks.
+
+Both provider routing guides now treat labels as recipient content, preserve
+refused bindings and read diagnostics by scope/index rather than array position.
+Local fixtures cover raw, summary and reference-only IDs, required-term metadata,
+projection/rendering, retained inspection and linked/copied wrappers. They use
+synthetic canaries, not real credentials; no native model is invoked. Evidence
+is retained in `.cannae/maintenance/document-delivery-boundary-20261112/`.
+This closes a specific screening omission, not A13's disclosure-policy decision,
+the independent METHOD-61 receiving gap or overall skill-first acceptance.

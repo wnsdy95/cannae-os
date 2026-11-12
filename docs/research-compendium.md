@@ -321,6 +321,11 @@ of findings cannot establish disclosure safety. Both skills now use this evidenc
 before escalation without changing classification or removing safety language.
 Raw exception clearance remains unsupported; source appraisal and separate
 disclosure authority are still necessary. No native behavioral pass is inferred.
+The [catalog-screening correction](document-authoring-case-study.md#recipient-catalog-screening)
+shows why body-only checks are insufficient: a schema-valid source ID can itself
+carry token-shaped text. Screen recipient metadata before reads and the complete
+recipient view before rendering, without treating identifier syntax as disclosure
+approval. The existing conservative refusals remain separate policy decisions.
 
 ## Missing Sources And Separate Decision Scopes (2026-11-12)
 

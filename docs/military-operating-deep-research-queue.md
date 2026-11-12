@@ -84,6 +84,8 @@ now supplies actual Claude S6-to-S2 continuity and complete-draft receipt with
 fresh required reading. The shared task identity does not authenticate roles.
 Retain the review's source-quality defects and separately corrected derivative;
 broader relevance and the independent delivery-policy refusal remain open.
+The [recipient-catalog regression](document-authoring-case-study.md#recipient-catalog-screening)
+closes metadata screening gaps without clearing those independent refusals.
 
 The OPORD, mission command, CCIR, authority, battle rhythm, risk, assessment, training, sustainment, targeting, and ROE material already organized form the framework's primary skeleton. The next step is to extract, in finer detail, the detailed operating mechanisms that actually let the military move a massive organization without distortion.
 

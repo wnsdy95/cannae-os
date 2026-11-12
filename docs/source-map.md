@@ -148,6 +148,9 @@ clearance. This is local engineering evidence, not military doctrine, semantic
 false-positive certification or native workflow acceptance. The access policy's
 [diagnostic procedure](role-document-access-policy.md#content-review-diagnostics)
 defines the source-reader and partial-inspection limits.
+The [catalog-screening regression](document-authoring-case-study.md#recipient-catalog-screening)
+closes a separate token-shaped source-ID bypass with unchanged detector rules.
+Its synthetic local cases are not clearance of the retained SOP or internal drafts.
 
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial

@@ -348,6 +348,11 @@ content refusal. It prints source-index/digest and rule/count metadata, stops at
 the first blocked scope and never writes a packet or clears a finding. Read
 `docs/role-document-access-policy.md#content-review-diagnostics` before treating
 a partial result as evidence; keep the original request and source bytes intact.
+Source IDs and required-term labels are recipient content, not harmless catalog
+metadata. Inspect findings by scope and document_index, not fixed array positions;
+an outbound-metadata refusal leaves every source unread. Keep refused bindings
+unchanged pending review, and never silently rename an ID to evade screening.
+Rescreen retained packets with `inspect`; an older digest is not a screening waiver.
 
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local

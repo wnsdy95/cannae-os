@@ -798,6 +798,9 @@ For a project-content refusal, both installed wrappers now offer read-only
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)
 identifies the rule behind the public-policy refusal without exposing bodies or
 clearing it. A diagnostic is not a disclosure exception or a prepared packet.
+The [catalog-screening correction](docs/document-authoring-case-study.md#recipient-catalog-screening)
+also checks source IDs and required-term labels before source reads; reference-only
+metadata is still delivered content. Existing disclosure refusals remain in force.
 
 [Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 now separates ordinary prose handoffs and supported platform exclusions from

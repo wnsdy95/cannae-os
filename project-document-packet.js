@@ -269,6 +269,8 @@ function compileCheckedPacket(request, repository, observe) {
   const origin = repositoryIdentity(repository);
   if (privatePathIssues(request, [], origin).length) fail("PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
   assertOutboundSafe({ task: request.task, recipient: request.recipient }, { scope: "task_and_recipient" }, observe);
+  assertOutboundSafe({ source_ids: request.documents.map(document => document.id),
+    required_terms: request.terminology_binding?.required_terms || [] }, { scope: "outbound_metadata" }, observe);
   let total = 0;
   const documents = request.documents.map((document, index) => {
     if (document.delivery_mode === "reference_only") {
@@ -328,7 +330,9 @@ function recipientData(packet) {
   const terminologyIssues = terminologyExcerptIssues(packet.request, packet.documents);
   if (terminologyIssues.length) fail(terminologyIssues[0].code);
   if (privatePathIssues(packet.request, packet.documents, packet.source_repository).length) fail("PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE");
-  return structuredClone(outboundData(packet.request, packet.documents));
+  const data = outboundData(packet.request, packet.documents);
+  assertOutboundSafe(data, { scope: "recipient_projection" }, () => {});
+  return structuredClone(data);
 }
 
 function renderPrompt(packet) {

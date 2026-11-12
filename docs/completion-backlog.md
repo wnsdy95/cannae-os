@@ -21,6 +21,9 @@ Use this queue and the requirement table, not those historical instructions.
    [Read-only diagnostics](document-authoring-case-study.md#public-policy-content-review-diagnostics)
    now identify rule/count and exact input bindings while retaining the refusal;
    reviewed raw exception clearance remains unsupported, not silently approved.
+   The [catalog-screening correction](document-authoring-case-study.md#recipient-catalog-screening)
+   separately blocks token-shaped source IDs before reads and checks the complete
+   recipient view. This closes a screening omission, not the disclosure decision.
    The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
    is complete: both clients hold dependent drafting and avoid retries, but Claude
    still misses public reports and conflates approval scopes. Preserve that result.

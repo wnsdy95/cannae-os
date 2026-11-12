@@ -108,9 +108,10 @@ try {
       assert.equal(result.status, "content_screening_no_findings");
       assert.equal(result.compilation_completed, true);
       assert.equal(result.uninspected_document_count, 0);
-      assert.deepEqual(result.checks[2], { scope: "document", document_index: 1, delivery_mode: "summary",
+      assert.deepEqual(result.checks[1], { scope: "outbound_metadata", status: "no_findings", rules: [] });
+      assert.deepEqual(result.checks[3], { scope: "document", document_index: 1, delivery_mode: "summary",
         source_sha256: packet.sha256(original), delivered_sha256: packet.sha256(summary), status: "no_findings", rules: [] });
-      assert.deepEqual(result.checks[3], { scope: "document", document_index: 2, delivery_mode: "reference_only",
+      assert.deepEqual(result.checks[4], { scope: "document", document_index: 2, delivery_mode: "reference_only",
         status: "reference_only_not_read", source_content_verified: false });
       assert.equal(result.request_sha256, packet.sha256(JSON.stringify(request)));
       assert.equal(result.source_repository_sha256, packet.sha256(JSON.stringify(packet.repositoryIdentity(root))));
@@ -126,6 +127,69 @@ try {
       assert.deepEqual(fs.readdirSync(output), before);
       const changed = structuredClone(request); changed.recipient.agent_id += "-next";
       assert.notEqual(packet.reviewContent(changed, root).request_sha256, result.request_sha256);
+    });
+
+    check(`${provider}: outbound source identifiers are screened before any source read`, () => {
+      const compiled = packet.compilePacket(request, root);
+      for (const index of [0, 1, 2]) {
+        for (const [id, code] of [["SRC-ghp_" + "A".repeat(24), "TOKEN_LIKE_VALUE"],
+          ["SRC-secret-canary", "EEFI_OUTPUT_FORBIDDEN"]]) {
+          const changed = structuredClone(request); changed.documents[index].id = id;
+          assert.equal(validatePayload(changed, "project-document-packet-request").valid, true);
+          const before = JSON.stringify(changed), open = fs.openSync;
+          let opened = false, result;
+          fs.openSync = function(file, ...args) {
+            if (String(file).startsWith(root + path.sep)) opened = true;
+            return open.call(fs, file, ...args);
+          };
+          try {
+            result = packet.reviewContent(changed, root);
+            assert.equal(result.status, "content_review_required");
+            assert.throws(() => packet.prepare(changed, root), /PROJECT_PACKET_CONTENT_REVIEW_REQUIRED/);
+          } finally { fs.openSync = open; }
+          assert.equal(opened, false, "Unsafe catalog metadata must stop before reading any project source.");
+          assert.equal(result.uninspected_document_count, changed.documents.length);
+          assert.equal(result.checks.at(-1).scope, "outbound_metadata");
+          assert(result.checks.at(-1).rules.some(rule => rule.code === code));
+          assert.equal(result.packet_written, false);
+          assert(!JSON.stringify(result).includes(id));
+          assert.equal(JSON.stringify(changed), before, "Do not silently rename an unsafe source ID.");
+          const substituted = structuredClone(compiled);
+          substituted.request.documents[index].id = id;
+          substituted.documents[index].id = id;
+          assert.throws(() => packet.recipientData(substituted), /PROJECT_PACKET_CONTENT_REVIEW_REQUIRED/);
+          assert.throws(() => packet.renderPrompt(substituted), /PROJECT_PACKET_CONTENT_REVIEW_REQUIRED/);
+        }
+      }
+    });
+
+    check(`${provider}: declared terminology metadata is screened without opening its source`, () => {
+      const changed = structuredClone(request), term = "password=synthetic-metadata-canary";
+      changed.terminology_binding = { source_id: changed.documents[0].id, ledger_sha256: "0".repeat(64),
+        domain: "review", task: null, terms: [term], required_terms: [term] };
+      assert.equal(validatePayload(changed, "project-document-packet-request").valid, true);
+      const open = fs.openSync; let opened = false, result;
+      fs.openSync = function(file, ...args) {
+        if (String(file).startsWith(root + path.sep)) opened = true;
+        return open.call(fs, file, ...args);
+      };
+      try { result = packet.reviewContent(changed, root); } finally { fs.openSync = open; }
+      assert.equal(opened, false);
+      assert.equal(result.status, "content_review_required");
+      assert.equal(result.uninspected_document_count, changed.documents.length);
+      assert(result.checks.at(-1).rules.some(rule => rule.code === "CREDENTIAL_ASSIGNMENT"));
+      assert(!JSON.stringify(result).includes(term));
+    });
+
+    check(`${provider}: retained metadata is rescreened even with a matching supplied packet digest`, () => {
+      const prepared = packet.prepare(request, root);
+      const value = JSON.parse(fs.readFileSync(prepared.packet_path));
+      const id = "SRC-ghp_" + "C".repeat(24);
+      value.request.documents[2].id = id; value.documents[2].id = id;
+      const bytes = Buffer.from(JSON.stringify(value));
+      fs.writeFileSync(prepared.packet_path, bytes);
+      assert.throws(() => packet.inspect(prepared.packet_path, packet.sha256(bytes), root),
+        /PROJECT_PACKET_CONTENT_REVIEW_REQUIRED/);
     });
 
     check(`${provider}: role department duty and authority mismatches fail before source reads`, () => {
@@ -228,6 +292,9 @@ try {
     });
     check(`${provider}: both linked and copied wrappers prepare and inspect from outside the doctrine checkout`, () => {
       const bundle = path.join(ROOT, provider === "codex" ? "codex-skills/controls-doctrine-operator" : ".claude/skills/controls-doctrine-operator");
+      const instructions = fs.readFileSync(path.join(bundle, "references/document-routing.md"), "utf8");
+      assert(instructions.includes("Source IDs and required-term labels are recipient content"));
+      assert(instructions.includes("scope and document_index"));
       const requestFile = path.join(temporary, provider + "-request.json"); fs.writeFileSync(requestFile, JSON.stringify(request));
       for (const mode of ["linked", "copied"]) {
         const installed = path.join(temporary, provider + "-" + mode);
@@ -248,17 +315,22 @@ try {
         assert.equal(reviewed.status, 0, reviewed.stderr);
         assert.equal(JSON.parse(reviewed.stdout).status, "content_screening_no_findings");
         assert(!reviewed.stdout.includes(root) && !reviewed.stdout.includes(raw));
-        const blocked = structuredClone(request); blocked.task = "Review secret exposure procedures. Do not publish.";
-        fs.writeFileSync(requestFile, JSON.stringify(blocked));
-        try {
-          const denied = call(reviewArgs);
-          assert.equal(denied.status, 1, denied.stderr);
-          assert.equal(denied.stderr, "");
-          assert.equal(JSON.parse(denied.stdout).uninspected_document_count, request.documents.length);
-          assert(!denied.stdout.includes(blocked.task));
-          assert.notEqual(call([...reviewArgs, "--approve", "true"]).status, 0);
-          assert.notEqual(call(args).status, 0, "Diagnostic output is not a preparation exception.");
-        } finally { fs.writeFileSync(requestFile, JSON.stringify(request)); }
+        for (const field of ["task", "source_id"]) {
+          const blocked = structuredClone(request);
+          if (field === "task") blocked.task = "Review secret exposure procedures. Do not publish.";
+          else blocked.documents[2].id = "SRC-ghp_" + "B".repeat(24);
+          fs.writeFileSync(requestFile, JSON.stringify(blocked));
+          try {
+            const denied = call(reviewArgs);
+            assert.equal(denied.status, 1, denied.stderr);
+            assert.equal(denied.stderr, "");
+            assert.equal(JSON.parse(denied.stdout).uninspected_document_count, request.documents.length);
+            assert(!denied.stdout.includes(blocked.task));
+            assert(!denied.stdout.includes(blocked.documents[2].id));
+            assert.notEqual(call([...reviewArgs, "--approve", "true"]).status, 0);
+            assert.notEqual(call(args).status, 0, "Diagnostic output is not a preparation exception.");
+          } finally { fs.writeFileSync(requestFile, JSON.stringify(request)); }
+        }
         assert.notEqual(call([...args, "--approve", "true"]).status, 0);
         assert.notEqual(call(args, { CANNAE_OS_HOME: path.join(temporary, "absent-doctrine") }).status, 0);
       }
@@ -303,7 +375,7 @@ try {
       const result = packet.reviewContent(request, root);
       assert.equal(result.status, "content_review_required");
       assert.equal(result.compilation_completed, false);
-      assert(result.checks[1].rules.some(rule => rule.detector === "opsec"));
+      assert(result.checks[2].rules.some(rule => rule.detector === "opsec"));
       assert(!JSON.stringify(result).includes(text));
       assert.equal(result.release_authorized, false);
     }
@@ -318,7 +390,7 @@ try {
     assert.equal(result.status, "content_review_required");
     assert.equal(result.uninspected_document_count, 1);
     assert.equal(result.compilation_completed, false);
-    assert.deepEqual(result.checks[1], { scope: "document", document_index: 0, delivery_mode: "raw",
+    assert.deepEqual(result.checks[2], { scope: "document", document_index: 0, delivery_mode: "raw",
       source_sha256: packet.sha256(text), delivered_sha256: packet.sha256(text), status: "content_review_required",
       rules: [{ detector: "eefi", code: "EEFI_OUTPUT_FORBIDDEN", eefi_id: "EEFI-DEFAULT-SECRET", count: 1 }] });
     assert(!JSON.stringify(result).includes(text) && !JSON.stringify(result).includes("public-policy.md"));
@@ -329,7 +401,7 @@ try {
     request.documents[0].source_sha256 = packet.sha256(changed);
     const revised = packet.reviewContent(request, root);
     assert.notEqual(revised.request_sha256, result.request_sha256);
-    assert.notEqual(revised.checks[1].delivered_sha256, result.checks[1].delivered_sha256);
+    assert.notEqual(revised.checks[2].delivered_sha256, result.checks[2].delivered_sha256);
   });
   check("blocked task or recipient diagnostics stop before opening any project source", () => {
     for (const field of ["task", "agent_id"]) {
@@ -355,8 +427,8 @@ try {
       delivery_mode: "summary", summary_path: "summary.md", summary_sha256: packet.sha256(summary), summary_review_reference: "Synthetic review" });
     const result = packet.reviewContent(request, root);
     assert.equal(result.status, "content_review_required");
-    assert.equal(result.checks[1].source_sha256, packet.sha256(original));
-    assert.equal(result.checks[1].delivered_sha256, packet.sha256(summary));
+    assert.equal(result.checks[2].source_sha256, packet.sha256(original));
+    assert.equal(result.checks[2].delivered_sha256, packet.sha256(summary));
     request.documents[0].summary_sha256 = "0".repeat(64);
     assert.throws(() => packet.reviewContent(request, root), /PROJECT_PACKET_SOURCE_DIGEST_MISMATCH/);
     request.approved = true;
