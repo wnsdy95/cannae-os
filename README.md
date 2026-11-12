@@ -721,6 +721,14 @@ phase routes can now carry an explicit project-root/task-ID pair to keep one
 despite changed wording. This grants no access, standing organization or execution
 authority and cannot replace guarded mission metadata.
 
+The [native direct-task case](docs/document-authoring-case-study.md#native-direct-task-continuity)
+now observes Codex carrying that task ID through intake and review while retaining
+the original request, all four objectives and one bounded capability cell. Both
+phases read all seven assigned sources. The private root is checked by the adapter,
+not the model; the handoff explicitly depends on authorized recipient bindings.
+This is same-process evidence with identical query text, not Claude parity,
+changed-role continuity, automatic minimal context or completed receiving.
+
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)

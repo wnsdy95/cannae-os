@@ -1,5 +1,12 @@
 # Source Map
 
+The [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity)
+uses a fresh synthetic assignment, exact installed guidance and reconciled local
+client/tool records. It observes caller identity and objective retention without
+exposing the private source root in the inspected outgoing text. Adapter checks,
+model self-review and parent source appraisal are distinct evidence; this is not
+military doctrine, authenticated delegation or complete receiver acceptance.
+
 The [source-topic selection case](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 uses local CLI comparisons, retained implementation failures and the existing
 purposes of the Korean/multinational reference documents. It adds no military

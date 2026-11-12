@@ -24,6 +24,13 @@ semantic completeness or resolve the separate internal-draft receiving boundary.
 
 ## 0. Purpose
 
+For the active product, the [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity)
+adds actual Codex identity/objective retention through two phases and seven
+required sources per phase. Keep changed-query/role behavior, Claude parity and
+actual recipient assembly distinct from this same-process evidence. Adapter
+interface and launch-context checks now belong to both skills; the internal-draft
+receiving decision remains open and the existing refusal is unchanged.
+
 This document is the research backlog that manages the areas requiring deeper investigation going forward, in order to translate how the military operates into an LLM operating framework.
 
 The OPORD, mission command, CCIR, authority, battle rhythm, risk, assessment, training, sustainment, targeting, and ROE material already organized form the framework's primary skeleton. The next step is to extract, in finer detail, the detailed operating mechanisms that actually let the military move a massive organization without distortion.

@@ -3157,3 +3157,103 @@ Evidence and retained intermediate candidates are under
 evidence, not a new military claim or native model acceptance. The internal draft
 receiving-policy decision is still separate and unresolved. All five objectives
 remain partial; no new access, standing department, publication or service follows.
+
+## Native Direct-Task Continuity
+
+On 2026-11-12, a new synthetic exhibition-digitization assignment `DG74` exercised
+the current direct-task identity in a native Codex process. It is independent of
+the blocked METHOD-61 receiving unit: no refused file was relocated or transmitted.
+The task asks for vendor comparison, an intake SOP, a project-specific USER term
+memo and a handoff, with intake and draft-review phases. Selection, purchase,
+publication, transmission and draft adoption remain separate unapproved decisions.
+
+### Interface And Source Binding
+
+The older METHOD-61 adapter accepts only query/objectives and neither passes nor
+returns direct-task identity. Reusing it would test an obsolete interface, not
+whether the model can retain the new pair. A separately bound, read-only adapter
+accepts the actual task ID and phase plus the model's query/objectives. It supplies
+the private canonical project root and verifies the router's unprojected return.
+The model receives an explicitly projected task context: ID, reviewed project
+handle and adapter-check attribution, not the root. The current packet compiler,
+access projection, source digests and current-route checks remain in force.
+
+The first preparation passed local interface checks but was not invoked: its
+planned client working directory was inside the private project. A client can
+include that directory in context even if tool results omit it. The retained V2
+launch instead uses a separate empty directory. The unchanged assignment and
+fresh synthetic sources pass preparation without changing disclosure policy.
+Raw relative source locators have a separately reviewed receiving map; the
+reference-only source has no body, original locator or digest in recipient output.
+
+The exact initial prompt contains 29,314 bytes of full current installed guidance,
+the original Korean request and interface explanation. It does not seed the
+objective decomposition or answer key. Seven sources are assigned: authoring,
+terminology and handoff guidance plus original request, policy, offers and terms.
+This is explicit body supply, not an implicit-discovery test. The adapter is test
+apparatus, not a shipped plugin or authenticated authority service.
+
+### Observed Task And Review
+
+Codex CLI 0.162.1, using the existing default `gpt-6-astra`, completed one process
+in 132.845 seconds with exit zero. The ten-minute, 24-call limit was not reached;
+there was no automatic relaunch. Sixteen calls/results reconcile: two routes and
+fourteen successful reads, seven unique sources and seven rereads, no failed read.
+Each phase reads every assigned source using its own current route token.
+
+Both actual route inputs supply `DG74`. Local argv and unprojected results bind
+the same canonical root. Both include the original Korean request byte-for-byte
+and the same four separate objectives. The vendor-comparison objective remains a
+gap while SOP, terminology and handoff work remain covered; one combined cell and
+department candidate survive both phases without standing activation or expanded
+authority. The native query bodies are identical: phase changes are explicit tool
+arguments. Changed wording/role continuity remains local-fixture evidence, not a
+newly observed native result from this case.
+
+Source appraisal of the final report finds:
+
+| Requirement | Observed result |
+| --- | --- |
+| Compare supplied offers without selecting a vendor | Correct 1,200 versus 1,560 fees, 360 difference, 30% relative increase, and 18 versus 12 estimated work days; scope difference is not falsely treated as the sole cause of price. |
+| Preserve source limitations | Shipping, restoration, quality, rights, contractual availability, tax, budget and deadline remain unknown; estimated work days are not a committed delivery date. |
+| Draft the requested SOP | Six proposed steps retain accession/custodian, count reconciliation, missing/damaged items, metadata, rights evidence and original-request review; no original handling or digitization is claimed. |
+| Preserve project terminology | The explicit USER definition remains scoped and distinct from rights, quality acceptance and purchasing; the undefined publication term remains unresolved, not confirmed by repetition. No ledger write is claimed. |
+| Preserve decisions and authority | Draft adoption, selection/purchase and publication/transmission remain separate USER decisions; rights and meaning prerequisites do not become approval. The provisional cell is described as ending at handoff, not as a persisted department deletion. |
+| Report actual evidence | Correct two-phase read/reread totals, all seven exact delivered digests, reference-only non-reading and adapter-versus-model root-check attribution. The report calls its final comparison author self-review, not independent acceptance. |
+| Leave an honest handoff | The report locates the original request and all sources relative to the declared project/doctrine bindings. It does not reproduce the full request or claim to attach it. Missing recipient binding/access explicitly prevents receiving readiness; preparer assembly remains required in that case. |
+
+The original request is exact in both route queries, not in the final report.
+That report supplies its actual reviewed locator and conditional receiving limit;
+do not describe it as verbatim final forwarding or an observed cold-start receipt.
+No public advance-report timing was assigned or accepted by this case. Native
+transport success and a useful self-review are not independent semantic validation.
+
+### Evidence And Remaining Scope
+
+Initial prompt SHA-256:
+`9ee881a3682a18818867ffccfd3c638761b8788ca66c96c0ecb8935c3e80ebae`.
+Final response with retained newline SHA-256:
+`776414da069892453007bba4e0f76e8b95f78932fa63f512075224492d4dc898`.
+Source HEAD: `1d7c26062035cb38fdb07447910b0c79e6500a02`.
+
+Exact preparation, tool/client streams, input/output reconciliation and appraisal
+are retained under `.cannae/maintenance/native-task-continuity-v2-20261112/`.
+The unconsumed first preparation is retained separately. The audit finds no
+private target root or reference-only marker in the observed outgoing prompt,
+native stream or final response; it is not a universal information-flow proof.
+Reported token usage includes cached input and multiple turns, not a request count
+or price. Source materials were synthetic and current public guidance only.
+
+Both skills now require inspecting adapter identity support, attributing withheld
+root checks correctly and checking launch context rather than inferring source
+identity from cwd. Linked/copied installation checks verify delivery of those
+instructions and execute the actual direct-router command. The native run used
+the prior full guidance plus its declared interface; it is not fresh behavioral
+acceptance of every subsequently added sentence.
+
+This closes the missing actual Codex caller evidence for the explicit identity
+pair in a bounded same-process task. It does not close Claude parity, changed-role
+native continuity, general semantic completeness, private-draft receiving policy
+or all format coverage. All five goals and the 11 bounded-verified / nine partial
+required-row counts remain unchanged. No policy adoption, publication or new
+service follows; do not replay this accepted case solely for another pass.

@@ -20,6 +20,25 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Caller Identity Needs A Capable Interface (2026-11-12)
+
+The [native direct-task exercise](document-authoring-case-study.md#native-direct-task-continuity)
+observes Codex carrying an explicit task ID through intake and review, preserving
+the original request and four objectives, reading seven sources in each phase,
+and retaining separate USER decisions. Its query text stays identical; only the
+phase argument changes. Local changed-query tests and native same-process evidence
+answer different questions. The handoff's explicit receiving prerequisite is not
+a completed cold-start receipt.
+
+An older tool interface omitted the identity fields entirely. Inspect the actual
+argument/return path before attributing a missing binding to the model. When a
+root is withheld, the bound adapter verifies it locally and the recipient checks
+the disclosed ID/handle with honest attribution. A launch directory can reveal
+what the tool response hides, so the preparer must inspect that context too.
+Both skills now encode this procedure without adding a runtime or lifting source
+restrictions. The unused initial preparation and exact successful run remain
+separate; no new military claim or generalized information-flow proof follows.
+
 ## Delivery Language Does Not Select National Doctrine (2026-11-12)
 
 The [source-topic reading case](document-authoring-case-study.md#source-topic-and-delivery-language-reading)

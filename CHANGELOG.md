@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Observe native Codex retaining an explicit project/task identity, the original compound request, all four objectives and one capability cell through intake and review. Reconcile sixteen calls and exact reads while preserving separate USER decisions and conditional receiving limits. Mirror adapter-field ownership, withheld-root attribution and launch-context checks in both skills, with linked/copied instruction and real-router coverage. Preserve the unused first preparation; same-process identical-query evidence is not changed-role continuity, Claude parity, authenticated delegation or complete receiving.
+
 - Condition national specialist recommendations on source subject, inherited objectives, explicit inputs and delegated AI duties while preserving generic source discipline and every selected control. Distinguish bounded Korean delivery-language phrases from Korean military/organizational topics, retain conservative ambiguous clauses and human-mode behavior, mirror both skills and exercise direct, installed and guarded-context paths. Record the initial selector/test failures; local relevance checks do not prove semantic minimality or authorize disclosure.
 
 - Record a fresh source/predecessor review accepting the exact support-SOP V5 operative body as a draft, with no required correction. Preserve historical candidate/preface bytes and V4's changes-required verdict, bind the new appraisal to all six current entry points, and mirror reviewed-selection versus whole-section handling in both maintenance references. This is not policy adoption, complete receiving acceptance, internal-path clearance or full goal closure.

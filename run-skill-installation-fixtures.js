@@ -177,6 +177,17 @@ function continuingTask(env) {
     const folder = destination(env, provider);
     const reference = fs.readFileSync(path.join(folder, "references/document-routing.md"), "utf8");
     const section = reference.split("### Continuing Direct Tasks\n")[1]?.split("\n### ")[0];
+    assert.equal(reference, fs.readFileSync(path.join(sourceSkill(provider), "references/document-routing.md"), "utf8"));
+    assert(section.includes("hold identity-dependent continuation"));
+    assert(section.includes("verify whether it binds the pair"));
+    assert(section.includes("instead of assuming support or failure from its input shape alone"));
+    assert(section.includes("actual router argv and unprojected return locally"));
+    assert(section.includes("attributes the root check to the adapter"));
+    assert(section.includes("client may disclose its working"));
+    assert(section.includes("do not relocate refused inputs or relax disclosure controls"));
+    const entrypoint = fs.readFileSync(path.join(folder, "SKILL.md"), "utf8");
+    assert(entrypoint.includes("check who supplies and verifies each"));
+    assert(entrypoint.includes("Do not claim you inspected a withheld root"));
     const command = section?.match(/^```bash\n([\s\S]*?)\n```/m)?.[1];
     assert(command && command.includes('--task-root="/absolute/target-project"'));
     for (const next of [false, true]) {

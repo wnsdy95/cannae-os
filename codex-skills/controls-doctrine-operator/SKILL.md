@@ -349,6 +349,9 @@ these fields stabilize cell identity, not intent, access or approval. Check the
 returned `task_context`, and follow the direct-task procedure in
 [Document Routing](references/document-routing.md). Do not use this mode to
 replace a guarded mission, receipt or unsupported multi-objective admission.
+When a tool adapter mediates routing, first check who supplies and verifies each
+identity field. Do not claim you inspected a withheld root or infer it from the
+client's working directory; use the adapter-bound identity procedure in that reference.
 
 On `capability_routing.status: gap_detected`, retain the returned mission-scoped
 `CELL-*` and standing `DEPT-*` candidate across agents and context packs.

@@ -128,6 +128,25 @@ Project input references, when supplied, must use the same root and retain all
 their source/access checks. The identity pair loads no content or artifacts and
 does not create a standing organization, shared registry or distributed lock.
 
+For adapter-mediated tasks, inspect the actual argument and return contract before
+delegation: who provides the task ID, who binds the canonical root, and who checks
+the returned identity? For a query-only tool, verify whether it binds the pair
+internally instead of assuming support or failure from its input shape alone.
+Preserve the original assignment and hold identity-dependent continuation
+until a supported binding exists; do not silently fall back to query-derived cells.
+
+When the source root must stay private, an authorized preparer can bind it inside
+the adapter and expose a reviewed project handle with the task ID. Check the
+actual router argv and unprojected return locally; the recipient checks its ID
+and handle and attributes the root check to the adapter. Never reconstruct the
+hidden root from a working directory or claim the recipient authenticated it.
+The preparer must also inspect launch context: a client may disclose its working
+directory even when a tool response omits paths. Use a separate launch directory
+when necessary; do not relocate refused inputs or relax disclosure controls.
+This is an interface procedure, not a built-in private-root API or a distributed
+identity service. Keep source freshness, objective comparison and current-route
+checks separate. A valid ID does not make an inaccessible handoff receiver-ready.
+
 ### Comparative Tasks
 
 `compare`, `comparison` and `baseline` alone are methods, not evidence of a
