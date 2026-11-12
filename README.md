@@ -808,6 +808,10 @@ drafts without changing originals. Source/recipient changes, expiry or revocatio
 invalidate reuse. This is local preparation, not authenticated identity, automatic
 transmission or publication. See `project-document-review.js` and its fixtures;
 approval of the design is not approval of a particular proposal.
+The [bound recipient reader](docs/role-document-access-policy.md#bound-recipient-reader)
+lets an authorized adapter list and read packet source IDs without reconstructing
+private paths. Every call reinspects current bindings and preserves raw, summary
+or representation mode. This local utility is not a native receiving result.
 
 [Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 now separates ordinary prose handoffs and supported platform exclusions from

@@ -158,6 +158,12 @@ contracts and `run-project-document-review-fixtures.js` implement local exact-in
 decision binding and reinspection. These are engineering decisions, not military
 source claims or authenticated human consent. Exact retained sources still need
 their own USER review; synthetic fixture decisions do not clear them.
+The [bound-reader correction](document-authoring-case-study.md#bound-source-id-reader)
+adds `project-document-reader.js` and `run-project-document-reader-fixtures.js`.
+It reuses existing inspection and recipient projection for ID-only catalog/reads,
+preserving representation modes and current decision checks. This is local
+engineering evidence, not a new disclosure decision, authenticated recipient,
+native receiving result or separate service.
 
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial

@@ -459,6 +459,52 @@ claim this workflow prevents that. Checks are point-in-time, not atomic sending
 or continuous revocation enforcement. Any actual transfer retains its separate
 recipient, disclosure and consent checks.
 
+### Bound Recipient Reader
+
+For an authorized preparer's file-backed tool adapter, `project-document-reader.js`
+exports `createDocumentReader`. It accepts a prepared packet's absolute path,
+separately expected digest, exact target repository and expected recipient.
+Those are trusted preparer inputs, never model-selected paths or authority claims.
+It supports ordinary and reviewed packets using the existing inspection path:
+
+```javascript
+const { createDocumentReader } = require("/absolute/doctrine/project-document-reader");
+const reader = createDocumentReader({
+  repository: "/absolute/project",
+  packet_path: "/absolute/project/.cannae/document-packets/UUID/packet.json",
+  packet_sha256: expectedPacketDigest,
+  recipient: exactAssignedRecipient
+});
+const catalog = reader.catalog();
+const response = reader.read("SRC-POLICY");
+```
+
+The catalog preserves the exact task, recipient, terminology readiness and
+required-source count. It excludes source bodies, private locators and review
+records. Reads return only selected readable IDs and keep raw/summary/representation
+mode, required status, original/delivered digests and representation metadata.
+Reference-only IDs have no readable body, locator or original digest. A summary
+read cannot open its original for the recipient. The preparer still rehashes the
+original under its own existing authority; this is not a recipient file reader.
+
+Every call rechecks the retained packet and prompt, source freshness, repository
+binding and, when applicable, exact current review decision. Recipient substitution,
+source drift, expiry and revocation fail rather than returning cached text.
+Failures return code-only exceptions, not raw filesystem paths or source values.
+The caller must not replace the expected digest, rebind the recipient or restore
+old decision bytes to bypass a hold. Original source and screening contracts are
+unchanged; this helper itself is not attested by a proposal's screening digest.
+
+This is an in-process adapter utility, not a server, plugin installation, route
+receipt, human authentication or native-client acceptance test. Keep actual route,
+read-only tool allowlists, per-phase holds and separately applicable transfer
+consent in the host adapter. Do not reconstruct a source catalog from private
+request rows or add repository paths to the public response. A listed source is
+not a completed read; a returned body is not proof of client receipt, comprehension
+or adoption. Calls are point-in-time and do not provide atomic sending, continuous
+revocation or protected-host guarantees. Execution/release/verified-authority and
+receiver-acceptance flags remain false.
+
 ## 8. Anti-patterns
 
 - Having every agent read `README.md` and the entirety of `docs/`.

@@ -344,6 +344,14 @@ authentication, a digest is not rollback protection, and preparation is not
 permission to transmit. The design decision does not approve any particular
 retained proposal. No separate approval server, keys or gateway are introduced.
 
+The subsequent [bound source-ID reader](document-authoring-case-study.md#bound-source-id-reader)
+addresses adapter drift: listing approved metadata once is not authority to read
+cached bodies later, and reconstructing paths from the private request can undo
+the projection's disclosure boundary. The trusted preparer binds one packet and
+recipient; each list/read reinspects sources and any canonical decision while
+preserving summary/representation modes. Synthetic local tests do not establish
+human consent, actual client receipt, route completion or semantic understanding.
+
 ## Missing Sources And Separate Decision Scopes (2026-11-12)
 
 The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)

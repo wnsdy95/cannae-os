@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add an in-process, exact-packet/recipient-bound source reader for authorized adapters. Reinspect every catalog/read, preserve raw/summary/representation metadata, deny reference-only and unlisted bodies, and avoid exposing private locators or review records. Cover stale sources, prompt/packet drift, recipient substitution, expiry and revocation with both-provider local cases. Mirror the non-caching and trusted-preparer procedure in both skills; no model transfer, route receipt, authentication or new approval is inferred.
+
 - Implement the USER-approved bounded document-review design: private exact-source proposals, canonical USER decision records, expiry/revocation and current-source reinspection. Preserve default refusal and all execution/release limits. Add v0.2 internal-draft representations with original/delivered digests and location-only mapping, without relocating originals or inventing approval. Keep credential values non-waivable, including quoted keys. Mirror both provider guidance and routing; document trusted-preparer and host-rollback limits explicitly. Synthetic tests do not approve real retained proposals or establish native receipt.
 
 - Screen recipient catalog IDs and required-term metadata before project source reads, and rescreen the complete structured recipient view before rendering. Retain fixed-value-free diagnostics, reference-only non-reading and current detector rules. Both provider guides now treat labels as delivered content and select diagnostic rows by scope/index. Token-shaped IDs no longer bypass body-only screening; public-policy exception and internal-draft delivery decisions remain unresolved.

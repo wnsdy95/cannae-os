@@ -366,6 +366,15 @@ source and delivered digests. An adapter that cannot preserve that mode must sto
 not relabel it. No new tool, publication, authenticated identity or host protection
 is supplied by this local review procedure.
 
+For file-backed source tools, use the access policy's `bound-recipient-reader`
+procedure instead of assembling a catalog from private packet fields. The trusted
+preparer binds the exact packet digest and recipient once; each catalog/read
+rechecks the current sources and any reviewed decision. Preserve `representation`
+and `summary` modes and both digests in tool responses. Do not retain a successful
+catalog as later read authority, infer reading from listed IDs or pass model-chosen
+paths/recipients to the reader factory. Its calls do not replace current routing,
+phase holds, consent or actual client-delivery evidence.
+
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local
 packet. Both are offline: neither invokes a model nor records consent. Only

@@ -4076,3 +4076,33 @@ decision are retained in `.cannae/maintenance/reviewed-delivery-20261112/`.
 Synthetic fixture decisions are not actual consent. The exact retained proposals
 still need USER review and receiving evidence; no native model is invoked by
 these commands, and every execution/release/identity claim remains false.
+
+## Bound Source-ID Reader
+
+After bounded reviewed preparation, the retained METHOD-61 receiving adapter was
+still unsuitable: it required `delivery_mode: raw`, rebuilt target paths from
+private request rows and put repository roots into its public route response.
+Using that unchanged adapter would either refuse the new representation or undo
+its private-location boundary. The historical adapter and refusal remain intact.
+
+`project-document-reader.js` now provides an in-process utility for an authorized
+preparer to bind an exact prepared packet, expected digest and recipient. Catalogs
+and selected ID reads use the existing inspection and recipient-view path on every
+call. They preserve task, required counts, original/delivered digests and explicit
+summary/representation modes without returning private locators or review records.
+The helper cannot authorize a role, create an approval, clear a phase hold or
+prove that a model read a returned body. It does not start a server or native client.
+
+Both provider routing references now require this binding for file-backed adapters,
+retain current-route and transfer checks, and prohibit using a cached catalog as
+later read authority. Local fixtures cover both recipient providers, exact body
+selection, reference-only non-reading, configuration/returned-object mutation,
+source/prompt/packet drift, recipient substitution, expiry and changed/revoked
+decisions. The first development run used an unsupported synthetic classification;
+the fixture was corrected to the existing `sensitive` value without changing policy.
+
+Evidence is retained in `.cannae/maintenance/bound-document-reader-20261113/`.
+Real retained proposals still await their own USER decision; neither synthetic
+fixture approvals nor this reader clear them. Their original proposal/source
+bindings remain unchanged. Actual adapter integration and native receiving are
+separate remaining evidence, not results established by these local fixtures.

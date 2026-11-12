@@ -28,6 +28,11 @@ Use this queue and the requirement table, not those historical instructions.
    The [catalog-screening correction](document-authoring-case-study.md#recipient-catalog-screening)
    separately blocks token-shaped source IDs before reads and checks the complete
    recipient view. This closes a screening omission, not the disclosure decision.
+   The [bound-reader correction](document-authoring-case-study.md#bound-source-id-reader)
+   now provides current, ID-only catalog/reads with explicit representation modes
+   for trusted adapters. Its local cases do not approve the retained proposals or
+   exercise a native receiver. Integrate it without copying private locators or
+   treating listed IDs as completed required reads; keep the original phase holds.
    The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
    is complete: both clients hold dependent drafting and avoid retries, but Claude
    still misses public reports and conflates approval scopes. Preserve that result.
