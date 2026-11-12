@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { navigationAudit } = require("./source-map-navigation");
 
 const DOCTRINE_QUEUE = "docs/military-operating-deep-research-queue.md";
 const DOCTRINE_INDEX_TARGETS = [
@@ -208,11 +209,14 @@ function lint() {
 
   const doctrineAudit = doctrineIndexAudit();
   findings.push(...doctrineAudit.findings);
+  const navigation = navigationAudit();
+  findings.push(...navigation.findings);
 
   return {
     valid: findings.length === 0,
     checked_hosts: official.size,
     indexed_doctrine_outputs: doctrineAudit.doctrine_outputs.length,
+    document_navigation: navigation,
     finding_count: findings.length,
     findings
   };
@@ -247,6 +251,8 @@ function coverageReport() {
 
   const doctrineAudit = doctrineIndexAudit();
   findings.push(...doctrineAudit.findings);
+  const navigation = navigationAudit();
+  findings.push(...navigation.findings);
 
   return {
     report_type: "source-map-url-coverage",
@@ -255,6 +261,7 @@ function coverageReport() {
     valid: findings.length === 0,
     checked_hosts: official.size,
     indexed_doctrine_outputs: doctrineAudit.doctrine_outputs.length,
+    document_navigation: navigation,
     finding_count: findings.length,
     covered_hosts: [...official.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
@@ -280,4 +287,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { coverageReport, doctrineIndexAudit, lint };
+module.exports = { coverageReport, doctrineIndexAudit, lint, navigationAudit };

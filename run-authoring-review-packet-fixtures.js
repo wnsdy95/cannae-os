@@ -186,13 +186,13 @@ try {
   fixture("current navigation selects the proposed candidate without rewriting historical cases", () => {
     const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
     const notice = section(text, "## Evidence Boundary", "## Task And Backbrief");
-    assert(notice.includes("[V5](#corrective-sop-draft-v5)"));
+    assert(notice.includes("[Support SOP V5](#corrective-sop-draft-v5)"));
     assert(notice.includes("not fresh native")); assert(notice.includes("Other exercises below have separate candidate identities"));
     const readme = fs.readFileSync(path.join(__dirname, "README.md"), "utf8");
-    assert(readme.includes("current [proposed V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5)"));
+    assert(readme.includes("Current document: [Support SOP V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5)"));
     const backlog = fs.readFileSync(path.join(__dirname, "docs/completion-backlog.md"), "utf8");
     const current = section(backlog, "## Active Core Work", "## Evidence History");
-    assert(current.includes("Current support-SOP candidate: [V5]"));
+    assert(current.includes("Current document: [Support SOP V5]"));
     assert(current.includes("not those historical instructions"));
     assert(!current.includes("Next: Claude implicit selection"));
     assert(backlog.includes("Next: Claude implicit selection"), "Retain the original checkpoint rather than rewriting it.");
@@ -201,6 +201,8 @@ try {
       assert(guide.includes("passing link check cannot detect a stale but"));
       assert(guide.includes("Do not select a version just because its number is highest"));
       assert(guide.includes("do not trim evidence or replace an expected digest merely to pass"));
+      assert(guide.includes("do not merely replace its digest, delete an index registration"));
+      assert(guide.includes("node run-source-map-linter-fixtures.js"));
     }
     assert(!packet.prompt.includes("## Requirement-Level Audit"));
   });

@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "documents": [
+    {
+      "id": "support-sop",
+      "label": "Support SOP V5",
+      "candidate": {
+        "file": "docs/document-authoring-case-study.md",
+        "start": "## Corrective SOP Draft V5",
+        "end": "### V5 Source Check And Handoff",
+        "sha256": "651320fb6b50253825be34790b5a9009cd5634a87a3b532bd998ac3d53808136"
+      },
+      "disposition": {
+        "status": "proposed",
+        "review": "local-source-delta-checked",
+        "adoption": "not-adopted"
+      },
+      "basis": [
+        {
+          "file": "docs/document-authoring-case-study.md",
+          "start": "## Support SOP V4 Source Review",
+          "end": "## Corrective SOP Draft V5",
+          "sha256": "a6e8ef094c5fea7239f4f6e7a5092d3798d5844a663afc65c3d2cae603ea60f0"
+        },
+        {
+          "file": "docs/document-authoring-case-study.md",
+          "start": "### V5 Source Check And Handoff",
+          "end": "## Native Implicit Codex Selection",
+          "sha256": "3f048982a880f56f22dab10f27dc9f33b159df390b121f7cc99bbd4ae9a3ea5c"
+        }
+      ],
+      "references": [
+        { "file": "README.md", "start": "## Quick Start", "end": "## Validation Surfaces" },
+        { "file": "docs/document-authoring-case-study.md", "start": "## Evidence Boundary", "end": "## Task And Backbrief" },
+        { "file": "docs/completion-backlog.md", "start": "## Active Core Work", "end": "## Evidence History" },
+        { "file": "docs/source-map.md", "start": "# Source Map", "end": "## Skill-First Scope And Authoring" },
+        { "file": "docs/research-compendium.md", "start": "# Research Compendium", "end": "## Recorded Research" },
+        { "file": "docs/military-operating-deep-research-queue.md", "start": "# Military Operating Deep Research Queue", "end": "## 0. Purpose" }
+      ]
+    }
+  ]
+}

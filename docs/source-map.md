@@ -1,5 +1,19 @@
 # Source Map
 
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+`docs/source-map-navigation.json` and `source-map-navigation.js` bind maintained
+current-document blocks to exact candidate and appraisal sections. The existing
+`source-map-linter.js` checks their declared consistency without granting adoption.
+See [navigation maintenance](knowledge-management-sop.md#current-document-navigation).
+The [navigation integrity case](document-authoring-case-study.md#declared-navigation-integrity)
+records the local audit and its unregistered-prose and authority limits.
+Evidence entries below retain their original scope and limits; the active
+[completion queue](completion-backlog.md#active-core-work) owns next work.
+
 The [parent-delivered brief case](document-authoring-case-study.md#parent-delivered-brief-before-native-work)
 uses installed CLI help/code, exact initialization and two normal-output native
 phases. The [CLI reference](https://code.claude.com/docs/en/cli-reference) and

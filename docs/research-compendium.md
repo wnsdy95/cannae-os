@@ -1,5 +1,25 @@
 # Research Compendium
 
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+`docs/source-map-navigation.json` binds maintained pointers and disposition to
+exact candidate/appraisal sections. See [navigation maintenance](knowledge-management-sop.md#current-document-navigation).
+This local integrity check cannot judge the appraisal or authorize adoption.
+The [navigation integrity case](document-authoring-case-study.md#declared-navigation-integrity)
+shows why an existing target and a passing index check are not enough: candidate
+identity, disposition and the exact scope of its appraisal must agree. Keep old
+next actions as history instead of rewriting prior reviews to match the present.
+
+## Recorded Research
+
+The entries below are retained findings, not the current task queue. Their
+completion and next-action statements apply only to each recorded scope.
+Use the [active backlog](completion-backlog.md#active-core-work) for current work;
+historical platform completion does not complete the five skill-first objectives.
+
 ## A Reporting Boundary Can Be A Phase Boundary (2026-11-12)
 
 The [parent-delivered brief exercise](document-authoring-case-study.md#parent-delivered-brief-before-native-work)

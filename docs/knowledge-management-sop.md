@@ -58,6 +58,45 @@ Conversation history is not a source of truth. Conversation is task instruction 
 
 Durable AI outputs for different Git repositories must not share a flat directory. Apply `repository-artifact-isolation-policy.md` so each receipt, projection, report, and deliverable remains under its target repository identity.
 
+### Current Document Navigation
+
+For a versioned document advertised as current in several corpus entry points,
+maintain one reviewed identity and disposition in
+[`source-map-navigation.json`](source-map-navigation.json). The registered
+`current-document` blocks are projections of that record, not separate decisions.
+The initial registered family is the support SOP across README, its case opening,
+the active backlog, source map, compendium and research queue. Other artifacts
+and private project records are not automatically covered.
+
+1. Read the actual candidate and its appraisal. Distinguish a predecessor's
+   review from acceptance of its successor. Preserve separate exercise identities;
+   a larger version number does not select the current document.
+2. For a real successor, retain old bodies and verdicts, then update the record's
+   exact candidate, reviewed disposition and evidence locators. Hash the UTF-8
+   span including its start heading and excluding its end heading, with original
+   whitespace and newlines. Do not hash a trimmed or rendered representation.
+3. Update every registered visible block together. `renderNavigation` in
+   `source-map-navigation.js` derives its relative link and separate proposal,
+   review and adoption labels. Keep blocks inside their declared current sections,
+   not in a code fence or evidence history. This helper does not write files.
+4. Run `node source-map-linter.js` and `node run-source-map-linter-fixtures.js`.
+   A missing registry, changed candidate/appraisal, inconsistent state or target,
+   missing/duplicate block, or dropped index registration is an error. Diagnose
+   a changed source before updating its binding; never refresh a hash or remove
+   a reference solely to clear the failure.
+5. Keep earlier next-action statements explicitly historical. Select new work
+   from the active backlog, not a prior review's next step or a completed platform
+   checkpoint. Check narrative claims as well as registered blocks.
+
+This is a read-only consistency check of declared state, not a semantic evaluator,
+signature, permission gate or proof of human adoption. A coherent forged record
+and rewritten sources cannot establish authority. Recording adoption still needs
+the actual authorized decision; editing these labels grants no permission.
+The checker uses the corpus's exact whole-line heading/marker convention, not a
+general Markdown renderer. New candidate start headings use plain ASCII letters,
+numbers, spaces and hyphens so the generated fragment is unambiguous. Evidence
+must remain within regular, non-symlinked repository files.
+
 ## 3. S6 Knowledge responsibilities
 
 S6 is not merely a document author. S6 is the operator of knowledge flow.

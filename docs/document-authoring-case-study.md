@@ -7,8 +7,12 @@ The opening exercise and V1/V2 are historical. The later
 actual model response and supersedes the author's earlier completeness assessment;
 it does not rewrite the original drafts, ratings or failed first attempt.
 
-The current proposed support-SOP candidate is [V5](#corrective-sop-draft-v5),
-following the [V4 source review](#support-sop-v4-source-review). V4's verdict
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](#corrective-sop-draft-v5).
+State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+This candidate follows the [V4 source review](#support-sop-v4-source-review). V4's verdict
 remains changes-required; V5 has a local source/delta check, not fresh native
 acceptance or USER adoption. Earlier claims of a current draft or complete
 preservation are historical. Neither the review nor V5 changes source policy.
@@ -2800,3 +2804,52 @@ Work response SHA-256:
 `9b7c89ab093b85fda3a19e36038b03908601942159a4533591246425860e8974`.
 Each binding includes its saved wrapper newline. Earlier failed reports and
 their separate corrections remain unchanged; all five objectives remain partial.
+
+## Declared Navigation Integrity
+
+The G4 follow-up starts from `bcfcfcd` and the retained stale-but-existing V4
+pointer failure. The existing link/source checks could not verify a current
+candidate's identity or disposition. Hard-coded V5 assertions covered one fix,
+not a reusable maintenance rule. No model call or new adoption is part of this
+local consistency exercise.
+
+`docs/source-map-navigation.json` now names the support-SOP candidate, its separate
+proposal/review/adoption labels, exact candidate and appraisal spans, and six
+maintained reference sections. Their visible blocks point to proposed V5, locally
+source/delta-checked and not adopted. The basis preserves the V4 changes-required
+review separately from V5's local check. Selection is explicit, not the highest
+version or the most recently appended exercise. `source-map-navigation.js` is
+read-only and is invoked by both normal and report modes of the existing linter.
+
+The index/navigation suite passed 47 cases, including an existing old anchor,
+false review/adoption labels, exact-byte source changes, missing/reversed/duplicate
+boundaries, ambiguous fragments, misplaced/fenced current blocks, dropped index
+registration, unsafe paths and symlinks. Independent document IDs and unrelated
+higher versions remain valid. Actual CLI checks reject stale targets with exit
+one in normal and report modes, not merely in an imported helper. Historical
+candidate fixtures still compare their original bytes and exact revision deltas.
+
+The broader entry-point audit also found a README "current evidence" link leading
+only to the older metadata-discovery checkpoint. It now distinguishes that record
+from the active requirement audit. The compendium's retained completion/next-action
+claims are explicitly historical; its old platform-complete statement is not
+rewritten into skill-first completion. The current installation tally was refreshed
+from a completed 39-case run; earlier checkpoint totals remain unchanged. The case
+history, backlog evidence history and prior compendium findings retain their bytes.
+
+Both maintenance guides now require reading the registered candidate/appraisal,
+updating all current blocks together and diagnosing source drift before rebinding.
+Replacing a digest, deleting a reference or rewriting a verdict to clear a check
+is not accepted maintenance. The knowledge-management procedure documents this
+record and its narrow heading/marker convention. Outputs and verification evidence
+remain in their original projects; this audit adds only local maintenance evidence
+under `.cannae/maintenance/navigation-integrity-20261112/`.
+
+The check establishes consistency of declared state, not truth of its appraisal,
+authentic USER authority, native comprehension or adoption. A coherently rewritten
+registry and source can still make a false claim; human/source review remains
+necessary. Only this registered document family is bound automatically. Other
+candidate families and unregistered narrative claims keep A16 partial. The current
+queue still owns next work, and all five objectives remain partial. No hosted CI,
+full repository aggregate, new native-client evaluation, publication, persistent
+client setting or platform service is part of this change.

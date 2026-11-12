@@ -66,6 +66,16 @@ historical section; do not dispatch them as current work or rewrite the old
 review to appear successful. A passing link check cannot detect a stale but
 existing target, so test the current pointer and unchanged historical bodies.
 
+For registered versioned corpus documents, read `docs/source-map-navigation.json`
+and its candidate/appraisal before changing any current-state block. Update all
+registered projections together, then run `node source-map-linter.js` and
+`node run-source-map-linter-fixtures.js`. On changed evidence, diagnose the source
+and decision scope; do not merely replace its digest, delete an index registration
+or mark a local correction adopted. Preserve exact section bytes and keep current
+blocks outside historical/code sections. Unregistered prose still needs review;
+consistent labels cannot prove semantic acceptance or USER authority. Follow
+`docs/knowledge-management-sop.md`'s current-document navigation procedure.
+
 Use the requirement audit in the active backlog to select missing acceptance,
 not another successful-case replay. Keep implementation, source appraisal,
 observed client behavior and final USER adoption distinct. Evidence for one

@@ -54,9 +54,18 @@ Use this queue and the requirement table, not those historical instructions.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.
+   [Declared navigation integrity](document-authoring-case-study.md#declared-navigation-integrity)
+   now checks six current-candidate entry points against exact candidate/appraisal
+   sections; historical metadata and platform checkpoints no longer masquerade
+   as the active queue. Other document families and narrative status still need
+   source appraisal; consistent projections do not establish adoption.
 
-Current support-SOP candidate: [V5](document-authoring-case-study.md#corrective-sop-draft-v5),
-following the changes-required [V4 review](document-authoring-case-study.md#support-sop-v4-source-review).
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+This follows the changes-required [V4 review](document-authoring-case-study.md#support-sop-v4-source-review).
 It is proposed, locally source/delta-checked and unadopted; no fresh native V5
 acceptance is claimed. The document-chain four-span patch is a different artifact,
 not another support-SOP version. No next step authorizes publication or policy
@@ -88,9 +97,9 @@ server. Do not turn these unequal rows into a product-completion percentage.
 | A13 | G3: sensitive-output procedure | Partial. Packets retain raw/summary/reference-only boundaries and content-refusal diagnostics. The shared structured recipient view now lets adapters reuse the rendered disclosure boundary without reconstructing private request paths; the new native exercise exposes no owner-only path/body. | The old temporary catalog issue and public-policy conservative refusal remain recorded. Projection does not refresh sources or authorize transfer; resolve reviewed disclosure without bypassing controls. |
 | A14 | G3: complete source-locatable reporting/handoff without a dashboard | Partial. Actual changed-source receiving preserves source locations/digests, historical context, unknown commitments and separate approval scopes. Claude correctly distinguishes candidate self-claims from observed author actions. | Its own reporting claims and required-source total are wrong. A separate operator receiving correction is local only; source-locatable receipt is not complete handoff quality or operational acceptance. |
 | A15 | G4: observed failures lead to bounded, mirrored improvements and relevant checks | Verified (bounded). Routing, reporting, provenance and loader failures led to both-provider changes with retained regressions and subsequent native repair evidence. | Newest instruction changes still need their own behavioral acceptance; a test pass cannot expand authority or grant release. |
-| A16 | G4: sources, indexes, canonical state and history stay coherent | Partial. Source-map/registry/link checks pass, but a valid link to a stale current candidate escaped them. | Add semantic pointer checks and finish the current-state/history audit; do not rewrite old verdicts. |
+| A16 | G4: sources, indexes, canonical state and history stay coherent | Partial. The [navigation integrity case](document-authoring-case-study.md#declared-navigation-integrity) binds six current entry points to the support-SOP candidate, disposition and exact appraisal bytes. The existing linter now rejects stale-but-existing targets, status/source drift and misplaced or dropped references; current/history prose was reconciled without rewriting evidence. | Other artifact families and unregistered narrative claims still require source appraisal. The declared-state check is not semantic judgment or authenticated adoption; preserve that limit and register real successors deliberately. |
 | A17 | G4: repository-specific outputs remain separated | Verified (bounded). Target-bound packet preparation, output isolation fixtures and recorded operator materialization keep work products in their target project; verification logs are separate maintenance evidence. | Recheck affected boundaries on changes. This is local filesystem behavior, not distributed storage isolation. |
-| A18 | G5: link/copy installation and repository resolution | Verified (bounded). Thirty-seven installation cases exercise both providers, explicit bindings, foreign working roots and missing dependencies. Installed links point to this checkout. | Copies require refresh; neither an installed skill nor its root marker is the entire corpus. |
+| A18 | G5: link/copy installation and repository resolution | Verified (bounded). Thirty-nine installation cases exercise both providers, explicit bindings, foreign working roots and missing dependencies. Installed links point to this checkout. | Copies require refresh; neither an installed skill nor its root marker is the entire corpus. |
 | A19 | G5: discovery and actual installed-body use | Verified (bounded). Both native clients have implicit-selection and actual router/read evidence; exact Claude body/arguments are separately checked. | Filtered startup evidence is not universal client configuration support. Preserve native versions and launch limits. |
 | A20 | G5: equivalent useful behavior in both clients | Partial. Both route/read in the new revision/receiving chain and preserve separate scopes. Claude's earlier approval conflation is not repeated here, but its missing reports and incorrect total remain distinct from Codex's bounded pass. | Intake-sequence guidance failed to produce the requested Claude notices. Preserve the provider difference and existing discovery evidence; newest projection/count guidance has local checks, not native acceptance. |
 | A21 | G5: thin plugin when needed, no mandatory server | Explicitly deferred optional packaging. Both skills are the current distribution; the temporary test adapter is not a shipped plugin. | Do not build a service or claim a plugin exists merely to close this row. |

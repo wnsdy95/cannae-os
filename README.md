@@ -630,7 +630,8 @@ Native metadata discovery has a separate, opt-in macOS probe:
 (run with Node.js). It checks isolated absent/link/copy installations without
 network access or a model prompt. Claude bare mode intentionally omits normal
 user-skill discovery. Metadata discovery is not proof that an agent consumed
-the skill or performed a task; see the [current evidence](docs/completion-backlog.md#native-client-metadata-discovery-2026-11-11).
+the skill or performed a task; see the [recorded metadata check](docs/completion-backlog.md#native-client-metadata-discovery-2026-11-11)
+and the [current requirement audit](docs/completion-backlog.md#requirement-level-audit).
 
 To deliberately select this workflow in Codex, include
 `$controls-doctrine-operator` with your task. Preserve the literal `$` with
@@ -653,12 +654,22 @@ consent. The [authoring case](docs/document-authoring-case-study.md#approved-rev
 records the original advisory review and a [separately approved V3 review](docs/document-authoring-case-study.md#approved-v3-review-and-appraisal).
 The V3 review found seven source/predecessor omissions or ambiguities; V4 restored
 them and subsequently received a [source review](docs/document-authoring-case-study.md#support-sop-v4-source-review).
-The current [proposed V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5)
-clarifies continuing holds and existing recovery paths. It remains unadopted,
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: local-source-delta-checked; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+This candidate clarifies continuing holds and existing recovery paths. It remains unadopted,
 with a local source/delta check rather than fresh native acceptance. The helper
 retains historical V1/V2 stress cases; it does not evaluate V3/V4/V5 or establish
 independent acceptance. Ordinary prose
 handoffs do not require invented runtime IDs; existing missions keep their guards.
+
+The [navigation registry](docs/source-map-navigation.json) binds this current pointer
+and its disposition to exact candidate/review sections across six maintained entry
+points. `node source-map-linter.js` checks those bindings, not just file existence.
+See [navigation maintenance](docs/knowledge-management-sop.md#current-document-navigation);
+a consistent record is not approval or semantic acceptance.
 
 The [native research/report case](docs/document-authoring-case-study.md#native-research-report-and-required-reading)
 observes both clients reading all six justified prerequisites and reporting before
