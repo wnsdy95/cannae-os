@@ -79,6 +79,12 @@ receiving decision remains open and the existing refusal is unchanged.
 
 This document is the research backlog that manages the areas requiring deeper investigation going forward, in order to translate how the military operates into an LLM operating framework.
 
+The later [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
+now supplies actual Claude S6-to-S2 continuity and complete-draft receipt with
+fresh required reading. The shared task identity does not authenticate roles.
+Retain the review's source-quality defects and separately corrected derivative;
+broader relevance and the independent delivery-policy refusal remain open.
+
 The OPORD, mission command, CCIR, authority, battle rhythm, risk, assessment, training, sustainment, targeting, and ROE material already organized form the framework's primary skeleton. The next step is to extract, in finer detail, the detailed operating mechanisms that actually let the military move a massive organization without distortion.
 
 Core questions:

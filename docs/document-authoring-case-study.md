@@ -3924,3 +3924,94 @@ Issued sources and controls cannot be trimmed to match a smaller count. The
 separate internal-draft delivery refusal and wider task-quality gaps remain;
 A05 and all five goals stay partial, with 12 bounded-verified and eight partial
 required rows. No platform work, publication or authority change is included.
+
+## Native Cross-Role Continuation
+
+On 2026-11-12, synthetic library task `RG86` assigned S6 drafting followed by
+a fresh S2 review. Two Claude Code 2.1.322 processes used the existing default
+`claude-opus-5-5`, full installed guidance and newly authored sources. Each had
+a ten-minute deadline and 16-call bound, with only the selected routing/reading
+tools and no automatic relaunch. Separate empty launch directories withheld the
+private project root. Standing verification consent covered these calls, not
+policy changes, operations, publication or source exceptions. The accepted Codex
+DG74 case and refused METHOD-61 input were not replayed or repackaged.
+
+| Evidence | S6 intake | S2 review |
+| --- | --- | --- |
+| Initial prompt bytes | 33,019 | 33,181 |
+| Initial prompt SHA-256 | `6bf2ba313935a7e711fb9ea23b80c5e11c676bae6ab89bcdbcb810b86d7cb086` | `d0017be3b835fd277c86cfa6a086ca84c3d2137de3430c872e90db9433c41148` |
+| Elapsed time | 118,390 ms | 189,926 ms |
+| Calls | One route, seven successful reads | One route, nine successful reads |
+| Whole response bytes | 20,104 | 27,947 |
+| Response SHA-256 | `96603ca57c2c1a433e74ddfd288b1f2c5cc668d192fbcb5cb95ca16fc7a9e11f` | `fbe3ab31ecd537160e300c80592f7857eb4434567fb59c218d9db8c2fff6a1e0` |
+
+Source HEAD was `bbba9cf`. Exact preparations, streams, tool reconciliation,
+source appraisals and local comparisons are retained in
+`.cannae/maintenance/role-change-native-20261112/`. Both processes exited zero;
+that result is separate from the partial semantic appraisal below.
+
+### Identity And Receiving Evidence
+
+The actual native queries differ and name their current roles. Both preserve
+the original four objectives; S2 adds the assigned review step. The fixed
+adapter binds the same canonical target and `RG86`, while S6 knowledge and S2
+research get separate profiles and route tokens. The cell and department
+candidate remain identical without standing activation or expanded authority.
+The receiving model reads every source with its own token, including the exact
+whole S6 response and an additional comparison guide. Local negative checks
+reject wrong tasks, self-assigned roles, phase substitution, old tokens and
+reference-only reading. They are not observed native attacks or authentication.
+
+The parent stored the unchanged S6 response at its predesignated draft location
+and compiled a fresh S2 packet after disclosure review. The private source
+appraisal was not supplied to S2. There were 16 reads, nine unique source IDs
+across the chain and no within-phase rereads/failures. Each final response has
+the original Korean request and every delivered full binding; S2's appendix
+preserves all four source bodies. Both correctly attribute the hidden-root
+check to the adapter. A fresh process does not establish independent operator,
+provider or infrastructure failure domains, and no cell registry was mutated.
+
+### Useful Review And Remaining Defects
+
+Both outputs contain the comparison, SOP, terminology memo and handoff. The
+800/1,040 fee comparison, 240 difference, 30 percent increase and 12/9 estimated
+days are correct, with no causal price attribution or vendor selection. S2
+distinguishes author provenance from its current role, repairs the extra
+approval claim in the operative decision table, and connects contradictory
+record-readiness statements to an unresolved source criterion. Permitted S2
+document review remains distinct from operational readiness and USER adoption.
+
+However, both outputs wrongly assert that unspecified tax/shipping are excluded.
+S2 retains a four-approval heading despite correcting the table to three, erases
+known project context because a term's meaning is unresolved, and again asserts
+that physical reconciliation did not occur rather than that it is unestablished
+from the supplied records. These defects prevent whole-document acceptance.
+Do not let correct arithmetic, a fresh reader or a detailed finding list erase
+unsupported claims in the actual revised result.
+
+A local operator derivative corrects those four clear spans and labels retained
+native findings as history. `RG86-OP1` is 28,970 bytes, SHA-256
+`e33f37a3ddf9a3afbdbb0e0dfece8e9c5d8b3950259ae58378fd6505c1ee7ed8`.
+The complete original-source appendix is unchanged. This derivative has no fresh
+native review, receiving acknowledgement, USER adoption or blanket acceptance;
+the source criterion about unknown placeholders remains unresolved.
+
+### Product And Skill Adaptation
+
+S2's fifth objective exposed another real gap: comparing a named role's draft
+against the original request missed ordinary authoring. Both routers now match
+bounded forms of that operation, with counterexamples for unrelated domain
+review. Eight local before/after comparisons fix the standalone false gap and
+the combined task's fifth assessment while retaining the supplier-comparison
+gap and every combined-task source/control. This does not rewrite the old native
+result or waive an already issued control.
+
+Both routing guides now distinguish stable task identity from the receiving
+assignment, fresh token and current reading profile. Both skills and authoring
+guidance separate evidence checks from approvals, known term provenance from
+unknown meaning, and unspecified quote coverage from confirmed exclusion.
+Installation checks exercise changed-role continuity in both linked/copied
+bundles; reviewer-input checks verify delivery of the rules, not universal model
+compliance. The new instructions postdate these native runs. This closes the
+missing native Claude changed-role evidence, not broader relevance, document
+quality or the independent delivery-policy refusal. All five goals stay partial.

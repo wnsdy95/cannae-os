@@ -1,5 +1,12 @@
 # Source Map
 
+The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
+uses a new synthetic assignment, actual Claude tool/client records and separate
+operator source appraisal. It establishes bounded changed-role continuity and
+receiving, not authenticated authority or independent infrastructure. The draft
+review routing fix and uncertainty/approval distinctions are local engineering
+and authoring rules, not new military claims. Preserve the partial review result.
+
 The [coordinated-exclusion case](document-authoring-case-study.md#coordinated-platform-exclusions)
 uses exact local before/after route results, an observed maintenance query and
 focused counterexamples in both bundles. It supports bounded reading/capability

@@ -185,6 +185,8 @@ function continuingTask(env) {
     assert(section.includes("attributes the root check to the adapter"));
     assert(section.includes("client may disclose its working"));
     assert(section.includes("do not relocate refused inputs or relax disclosure controls"));
+    assert(section.includes("compare two bindings separately"));
+    assert(section.includes("sender's route token, successful reads or reading profile"));
     const entrypoint = fs.readFileSync(path.join(folder, "SKILL.md"), "utf8");
     assert(entrypoint.includes("check who supplies and verifies each"));
     assert(entrypoint.includes("Do not claim you inspected a withheld root"));
@@ -192,13 +194,16 @@ function continuingTask(env) {
     assert(command && command.includes('--task-root="/absolute/target-project"'));
     for (const next of [false, true]) {
       let invocation = command.replace("/absolute/target-project", "$TARGET_PROJECT");
-      if (next) invocation = invocation.replace("Compare the next museum inventory and revise the SOP.", "Review the museum figures and draft the next SOP.");
+      if (next) invocation = invocation.replace("Compare the next museum inventory and revise the SOP.", "Review the museum figures and draft the next SOP.")
+        .replace("--role=S6 --department=knowledge", "--role=S2 --department=research");
       const run = spawnSync("/bin/bash", ["-c", invocation], { cwd: next ? temporary : unrelated,
         env: { ...env, CONTROLS_SKILL_DIR: folder, TARGET_PROJECT: unrelated }, encoding: "utf8", timeout: 20000, maxBuffer: 8 * 1024 * 1024 });
       assert.equal(run.status, 0, run.stderr); const result = JSON.parse(run.stdout);
       assert.equal(result.repo_root, source); assert.equal(result.task_context.root, unrelated);
       assert.equal(result.task_context.id, "TASK-61"); assert.equal(result.task_context.authorization_verified, false);
-      assert.equal(result.operating_mode.role, "S6"); assert.equal(result.operating_mode.authority, "read-only");
+      assert.equal(result.operating_mode.role, next ? "S2" : "S6");
+      assert.equal(result.operating_mode.department, next ? "research" : "knowledge");
+      assert.equal(result.operating_mode.authority, "read-only");
       assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
       assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
       outputs.push(result.capability_routing.provisional_organization.organization_id);
@@ -381,6 +386,7 @@ function skillOperationsReading(env) {
 function taskReadingScope(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   for (const [query, technical, gap] of [
+    ["Review the S6 draft (SRC-DRAFT) against the original request and sources. No dashboard or server development.", false, false],
     ["Draft a handoff document. Do not build a dashboard.", false, false],
     ["Draft a handoff document. No publication, external operations, dashboard or server development.", false, false],
     ["Draft a handoff document. Dashboard and service development remain deferred.", false, false],

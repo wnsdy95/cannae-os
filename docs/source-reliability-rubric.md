@@ -165,6 +165,11 @@ These are document-review practices, not additional military-source claims.
 - Bind every reported rate to its numerator, denominator, unit and source.
   Keep tasks, attempts, completions and acceptance separate; absent measurements
   are unknown rather than zero.
+- Distinguish confirmed inclusion, confirmed exclusion and unspecified coverage.
+  An unknown tax or shipping amount does not prove it is absent from a quote.
+  State that the total payable amount is not established, not that extra charges
+  necessarily apply. Check the summary and corrected prose as well as the table;
+  an unchanged unknowns column cannot repair a categorical exclusion elsewhere.
 - Separate observed group differences, arithmetic scenarios and identified
   causes. Reweighting shows how a chosen composition changes an aggregate; it
   does not establish why the original groups differed or what would happen in

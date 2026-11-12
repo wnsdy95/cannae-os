@@ -720,8 +720,12 @@ function isDocumentAuthoringRequest(query) {
   const determiner = "(?:(?:a|an|the|this|that|these|those|my|our)\\s+)?" +
     "(?:(?:incoming|outgoing|current|proposed|revised|existing)\\s+)*";
   const report = /\b(?:(?:research|progress|status)\s+reports?|(?:progress\s+and\s+)?decision\s+(?:summar(?:y|ies)|briefs?))\b/i;
+  const draftReview = new RegExp("\\b(?:review|check|compare)\\s+" + determiner +
+    "(?:(?:s[1-9]|cos|commander|author|writer)(?:'s)?\\s+)?drafts?" +
+    "(?:\\s*\\([a-z][a-z0-9._-]*\\))?\\s+(?:against|with|to)\\s+" +
+    "(?:(?:the|its|their)\\s+)?(?:original|initial)\\s+(?:requests?|requirements?)\\b", "i");
   return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
-    .test(String(query || "")) || report.test(String(query || ""));
+    .test(String(query || "")) || report.test(String(query || "")) || draftReview.test(String(query || ""));
 }
 
 function isCorpusOrientationRequest(query) {

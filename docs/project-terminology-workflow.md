@@ -21,6 +21,11 @@ same concept; the same spelling can name different concepts in different scopes.
 5. At closeout, append accepted corrections and note remaining candidates.
    Carry unresolved meanings into the handoff, not silently into established fact.
 
+An unresolved mention can still have a known project and source context. Keep
+that binding in the memo or handoff; an undefined meaning is not evidence that
+the record is unscoped. Do not infer a universal definition or invent a confirmed
+ledger entry merely because the mention's origin is known.
+
 Use [Document Authoring Workflow](document-authoring-workflow.md) and
 [Knowledge Management SOP](knowledge-management-sop.md), not a separate service
 or background collector. The agent performs capture through ordinary authorized

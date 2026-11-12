@@ -110,6 +110,20 @@ try {
       assert(body.includes("Calling an abbreviation display-only does not make an incorrect value accurate"));
     }
   });
+  fixture("review instructions keep evidence, approval, known scope and unknown coverage distinct", () => {
+    assert(packet.prompt.includes("separate evidence checks from approvals"));
+    assert(packet.prompt.includes("Do not replace unspecified coverage with confirmed exclusion."));
+    const workflow = fs.readFileSync(path.join(root, "docs/document-authoring-workflow.md"), "utf8");
+    assert(workflow.includes("does not make\nchecking another USER approval"));
+    const rubric = fs.readFileSync(path.join(__dirname, "docs/source-reliability-rubric.md"), "utf8");
+    assert(rubric.includes("confirmed inclusion, confirmed exclusion and unspecified coverage"));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const body = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(body.includes("An unresolved meaning can still have a known project/source scope"));
+      assert(body.includes("Separate evidence checking from approval in decision tables and their headings."));
+      assert(body.includes("Unknown inclusion or scope is not confirmed exclusion"));
+    }
+  });
   fixture("work-level holds stay distinct from next-action stops in both skills and reviewer context", () => {
     const guide = section(fs.readFileSync(path.join(root, "docs/handoff-packet-template.md"), "utf8"),
       "### Ordinary Document Work", "### Existing Runtime Missions");

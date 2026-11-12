@@ -20,6 +20,22 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## A New Role Needs Its Own Reading (2026-11-12)
+
+The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
+observes stable task/cell identity across separate S6 and S2 processes, different
+queries and seven-versus-nine source profiles. Identity continuity does not carry
+the sender's token, access or completed reads. Check the receiving assignment
+separately, retain original objectives and deliver the complete selected unit.
+
+Fresh review still leaves shared semantic errors. Unknown tax/shipping coverage
+is not confirmed exclusion; an unresolved term meaning does not erase its known
+project provenance; evidence checking does not become another approval merely
+because the task distinguishes it from approval. Check the repaired summary and
+table headings, not just the finding list. Preserve raw outputs and bounded
+operator corrections separately. A source-bound draft review is an authoring
+operation, while its underlying domain can still require a provisional cell.
+
 ## Coordinated Exclusions And Capability (2026-11-12)
 
 The [coordinated-exclusion case](document-authoring-case-study.md#coordinated-platform-exclusions)

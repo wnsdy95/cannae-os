@@ -142,6 +142,15 @@ The same ID cannot make a changed purpose approved; keep every objective and
 prohibition and review changed assignments separately. After a project move,
 record the old/new binding explicitly instead of silently claiming continuity.
 
+At a role transition, compare two bindings separately: the task/project pair
+should persist, while the current role, department, authority and selected
+reading must match the receiving assignment. A stable cell ID does not carry
+the sender's route token, successful reads or reading profile into the receiver.
+Retain original objectives alongside the new review step. Source-grounded draft
+comparison against the original request is authoring work, not a new specialty
+merely because it names the former role. This does not establish expertise for
+the subject being reviewed; preserve any separate domain gap and issued controls.
+
 Do not invent a runtime mission to stabilize a plain document task. This pair
 is rejected with receipt, persistence, coverage or mission/wave/agent metadata;
 existing guarded missions keep their mission-ID binding and exact gates.

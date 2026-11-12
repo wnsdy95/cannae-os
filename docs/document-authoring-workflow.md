@@ -130,6 +130,14 @@ resolution path and decision owner. An unknown dependency is a question, not
 proof that all work depends on it. A proposed precaution or extra approval stays
 a recommendation in every summary and handoff until an authorized decision makes
 it binding. Do not manufacture USER decisions for choices already delegated.
+In a decision table, separate evidence checks from approvals and retain the
+actual approval scopes. "Do not confuse checking with approval" does not make
+checking another USER approval. Reconcile the table's heading and summary after
+repairing its rows. Likewise, an undefined term can retain a known project and
+source scope; uncertainty in meaning does not erase that established binding.
+Do not replace unspecified coverage with confirmed exclusion. For example,
+unknown shipping or tax does not establish that a quote excludes those costs.
+Apply that distinction in the corrected summary, not only the unknowns table.
 Likewise, recommending a method is not selecting it or authorizing its execution.
 
 Review the proposed repair too: it must cover the missing work without adding

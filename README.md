@@ -770,6 +770,14 @@ operator successor preserves the full worksheet and sources; it is not newly
 native-reviewed. A diagnosed transport-retry event also improves bounded review
 observation without changing permissions or extending the deadline.
 
+The [native cross-role case](docs/document-authoring-case-study.md#native-cross-role-continuation)
+observes fresh S6 drafting and S2 review with the same task identity, separate
+reading profiles and 16 actual source reads. The receiver uses its own route
+and the complete draft. Useful corrections coexist with retained source-quality
+defects; a separate operator revision is not fresh native acceptance. Both
+bundles now recognize source-bound draft review and preserve unknown coverage,
+known term context and the distinction between evidence checks and approvals.
+
 The [coordinated-exclusion correction](docs/document-authoring-case-study.md#coordinated-platform-exclusions)
 removes five unrelated technical manuals from that maintenance request while
 retaining all 19 checks. Complete platform exclusions cannot disguise an unsupported

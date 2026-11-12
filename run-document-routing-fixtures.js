@@ -222,6 +222,35 @@ function testTaskReadingScope(router) {
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 }
 
+function testSourceBoundDraftReview(router) {
+  const observed = "Review the S6 draft (SRC-DRAFT) against the original request and sources and produce a corrected follow-on result in Korean, preserving S6 provenance and current S2 role.";
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S2", "--department=research", "--authority=read-only"]]) {
+    for (const query of [observed, "Check the writer's draft against its original requirements.",
+      "Compare current drafts to the initial request.", "Review a draft against original requirements."]) {
+      const result = route(router, args, query);
+      assert.equal(result.query, query); assert.equal(result.capability_query, query);
+      assert.equal(result.capability_routing.status, "covered", query);
+      assert(result.capability_routing.matched_capability_routes.includes("document-authoring"));
+      for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/handoff-packet-template.md"]) {
+        assert(result.recommended_documents.some(row => row.path === file), query + ": " + file);
+      }
+      assert(result.validation_commands.includes("node source-map-linter.js"));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    }
+    for (const query of ["Review supplier quality.", "Review the draft statute for legal enforceability.",
+      "Compare library digitization supplier estimates."]) {
+      const result = route(router, args, query);
+      assert.equal(result.capability_routing.status, "gap_detected", query);
+      assert(!result.capability_routing.matched_capability_routes.includes("document-authoring"));
+    }
+    const result = route(router, [...args, "--capability-query=Compare library digitization supplier estimates.", "--capability-query=" + observed], observed);
+    assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    assert.equal(result.capability_routing.status, "gap_detected");
+    assert(result.validation_commands.includes("node run-force-structure-change-fixtures.js"));
+    assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+  }
+}
+
 function testPlatformExclusionLists(router) {
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
   const noWork = "No publication, external operations, dashboard or server development.";
@@ -786,6 +815,7 @@ function testDirectTaskIdentity(router) {
 }
 
 for (const router of ROUTERS) {
+  testSourceBoundDraftReview(router);
   testPlatformExclusionLists(router);
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   testDocumentReadinessScope(router);

@@ -209,6 +209,8 @@ Keep the target project's terminology ledger, not a personal cross-project cache
 Capture explicit user definitions with their source and scope; inferred meanings
 remain candidates. Repetition or agent agreement cannot confirm them. Preserve
 original language and ask only when ambiguity changes the result or a boundary.
+An unresolved meaning can still have a known project/source scope. Preserve that
+binding; do not turn an undefined term into an unscoped record during review.
 Use the loaded bundle's `scripts/project_terminology.js` for local checks and
 scoped selections. Only a reader authorized for the whole ledger may run it;
 delegates receive reviewed excerpts, never the private ledger by default.
@@ -332,6 +334,11 @@ does not make an established decision owner provisional. Likewise, a complete
 worksheet or report of unresolved items is not completed underlying work.
 Use the handoff guide's distinctions and supplied acceptance criteria; do not
 invent an all-Pass threshold or block unrelated permitted drafting.
+
+Separate evidence checking from approval in decision tables and their headings.
+An instruction not to equate them does not create another USER approval gate.
+Unknown inclusion or scope is not confirmed exclusion; check operative claims
+as well as unknowns tables, including whether quoted fees cover unspecified costs.
 
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.
