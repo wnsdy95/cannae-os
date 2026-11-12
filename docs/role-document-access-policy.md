@@ -225,7 +225,9 @@ For an authorized tool/client adapter, `project-document-packet.js` exports
 `recipientData(packet)`, the same structured recipient view used by `renderPrompt`.
 Use a current compiled or inspected packet, not an arbitrary object. The function
 checks the existing terminology and known-private-path constraints, returns a
-detached copy, and performs no reads, writes, refresh, authentication or transfer.
+detached copy. Ordinary packets require no reads; reviewed packets recheck their
+canonical decision and exact source proposal, including source reads under the
+preparer's authority. Neither path writes, authenticates a person or transfers data.
 Reference-only rows contain no original locator, digest or filesystem metadata.
 Do not merge private `request.documents` or `source_repository` fields back into
 a tool catalog: blocking the later read cannot undo an earlier listing disclosure.
@@ -372,10 +374,90 @@ An authorized reviewer must examine the exact local source and intended recipien
 within existing authority. Do not remove safety wording, relabel classification,
 copy raw text as a summary or drop a required input to evade the refusal. A separately
 reviewed summary is an option only when it satisfies the actual task; an exact-source
-review cannot silently become summary review. Raw exception clearance is not
-implemented: `manual_clearance_supported`, approval/execution/release and receiver
-acceptance remain false. No diagnostic can be supplied to `prepare` as an override.
-Keep dependent transfer on hold pending an applicable decision and supported path.
+review cannot silently become summary review. Diagnostics cannot clear a finding:
+`manual_clearance_supported`, approval/execution/release and receiver acceptance
+remain false. No diagnostic can be supplied to ordinary `prepare` as an override.
+The separate procedure below requires its own exact USER decision; general test
+consent and the USER's approval of this procedure are not that decision.
+
+### Reviewed Document Preparation
+
+The USER approved this bounded design on 2026-11-12. It supports local preparation
+after exact document review, not automatic transfer, public release or expanded
+authority. Existing ordinary preparation and guarded-mission restrictions remain.
+
+1. An authorized source preparer preserves the original request, classifications,
+   role/department/duty/authority and every required source. Run `propose-review`
+   through the same installed wrapper. It reads selected sources, verifies exact
+   original digests and writes private `review.json` and `review.md` beneath the
+   target project's ignored `.cannae/document-reviews/<UUID>/`. It creates no
+   decision, cleared packet or native invocation.
+2. The USER reviews that exact proposal, recipient, purpose, source versions,
+   findings and any representation. Confirm that matches are policy wording,
+   not actual secret values, and that requirements, prohibitions and source
+   relationships survive. Keep the original files available to this authorized
+   reviewer. Unknown confidentiality or source fidelity keeps preparation on hold.
+3. Only after an actual decision, record `ProjectDocumentReviewDecision` as
+   `decision.json` beside that proposal. Bind the proposal file SHA-256, the actual
+   decision reference, exact-proposal scope and a finite validity interval of at
+   most 24 hours. Preserve a separately expected decision-file digest. A sample,
+   generated role string, prior verdict or approval of the design is not consent.
+4. Run `prepare-reviewed` with both expected digests. It checks the canonical
+   decision, scope, expiry, origin, sources, representations and recorded screening
+   files. The resulting v0.2 packet retains the review binding privately; the
+   recipient receives no decision file or original private path. Its execution,
+   release, authenticated-authority and receiver-acceptance flags remain false.
+5. Reuse the ordinary `inspect` command before separately authorized use. Changed
+   source/request/recipient/code bindings, a missing or changed decision, expiry
+   or `decision: revoked` stop inspection and projection. Do not recompute an
+   expected digest or restore a previous decision to bypass that hold. A new
+   decision requires a new actual USER review, not automatic renewal.
+
+```bash
+node /absolute/loaded-skill/scripts/prepare_controls_documents.js \
+  propose-review --repository /absolute/project --request /absolute/request.json
+
+node /absolute/loaded-skill/scripts/prepare_controls_documents.js \
+  prepare-reviewed --repository /absolute/project \
+  --proposal /absolute/project/.cannae/document-reviews/UUID/review.json \
+  --proposal-sha256 EXPECTED_PROPOSAL_SHA256 --decision-sha256 EXPECTED_DECISION_SHA256
+```
+
+Only document-body matches of the selected default EEFI word rules are eligible
+for this procedure. OPSEC findings, token-pattern findings, task/recipient/catalog
+findings, restricted raw delivery, access mismatches and private-path leaks remain
+non-waivable. Quoted credential keys are checked too. Pattern checks still cannot
+prove absence of every secret; the exact-source semantic review is necessary.
+
+For internal drafts, request v0.2 `delivery_mode: representation` with
+`representation: {method: source_id_locations, project_handle: PROJECT-...}`.
+Only exact regular files below `.cannae/document-drafts/` are eligible, with no
+symlink, traversal, nested-repository or other excluded-directory components.
+The preparer reads the original under existing read authority and preserves it
+in place. No relocation, classification downgrade or summary relabeling is used.
+
+The deterministic representation replaces selected absolute/private relative
+locations with `source:ID`, the canonical target root with the declared project
+handle, and this bound doctrine root with `CORPUS-CONTROLS`. Other bytes, including
+requirements, prohibitions and historical digests, are unchanged. Literal mapping
+is not general redaction or semantic equivalence. Review aliases and unlisted
+locations separately. `source_sha256` binds the original; `delivered_sha256` binds
+the distinct represented text. An identity representation is still labeled as
+such. The recipient must preserve the mode and bindings; unsupported adapters
+must stop rather than pretend they received an unchanged raw original.
+
+The contracts are `project-document-review-proposal.schema.json` and
+`project-document-review-decision.schema.json`; their validator results always
+have `can_execute: false`. Fixtures use explicitly synthetic decisions, not
+fabricated real USER approvals. Ordinary v0.1 packets remain supported.
+
+Trust limit: the local preparer must verify the actual USER decision outside this
+helper. Digests bind the recorded bytes; they do not authenticate a human. There
+is no login server, protected key, unforgeable approval UI or rollback-resistant
+host here. An actor controlling these files can forge or restore records; do not
+claim this workflow prevents that. Checks are point-in-time, not atomic sending
+or continuous revocation enforcement. Any actual transfer retains its separate
+recipient, disclosure and consent checks.
 
 ## 8. Anti-patterns
 

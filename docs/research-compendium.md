@@ -327,6 +327,23 @@ carry token-shaped text. Screen recipient metadata before reads and the complete
 recipient view before rendering, without treating identifier syntax as disclosure
 approval. The existing conservative refusals remain separate policy decisions.
 
+## Exact Document Review And Representations (2026-11-12)
+
+The USER approved a bounded local procedure for exact version/recipient/purpose
+review. [Reviewed preparation](role-document-access-policy.md#reviewed-document-preparation)
+keeps ordinary refusal intact while a separate proposal records complete source
+bindings and eligible word findings. A canonical decision, expected digests,
+expiry and source rechecks govern preparation. Credential-shaped values and
+access violations are not eligible exceptions. Internal drafts stay in place;
+source-ID representations replace only declared locations and retain distinct
+original/delivered digests. The review must assess whether source relationships
+and requirements remain meaningful, not merely whether string replacement passed.
+
+This is a skill-level trusted-preparer procedure. A recorded USER label is not
+authentication, a digest is not rollback protection, and preparation is not
+permission to transmit. The design decision does not approve any particular
+retained proposal. No separate approval server, keys or gateway are introduced.
+
 ## Missing Sources And Separate Decision Scopes (2026-11-12)
 
 The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)

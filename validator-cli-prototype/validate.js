@@ -142,6 +142,8 @@ const TYPE_TO_SCHEMA = {
   "project-terminology": "project-terminology.schema.json",
   "project-document-packet-request": "project-document-packet-request.schema.json",
   "project-document-packet": "project-document-packet.schema.json",
+  "project-document-review-proposal": "project-document-review-proposal.schema.json",
+  "project-document-review-decision": "project-document-review-decision.schema.json",
   "operator-consent-record": "operator-consent-record.schema.json",
   "operator-reconciliation-authorization": "operator-reconciliation-authorization.schema.json",
   "operator-reconciliation-record": "operator-reconciliation-record.schema.json",
@@ -6145,7 +6147,7 @@ function validationResult(issues, type, payload) {
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) &&
       !["frago", "frago-scope-change", "handoff-packet", "handoff-generation-request", "project-terminology"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
-      type !== "agent-context-pack" && type !== "document-access-manifest" && !["project-document-packet-request", "project-document-packet"].includes(type) && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
+      type !== "agent-context-pack" && type !== "document-access-manifest" && !["project-document-packet-request", "project-document-packet", "project-document-review-proposal", "project-document-review-decision"].includes(type) && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
     max_severity: severity,
     issue_count: issues.length,
@@ -6183,6 +6185,7 @@ function validatePayloadInSnapshot(payload, type, options) {
   ];
   const nested = {
     "project-document-packet": ["request", "project-document-packet-request"],
+    "project-document-review-proposal": ["request", "project-document-packet-request"],
     "operator-consent-record": ["request", "order-adoption-decision-request"],
     "order-revision-request": ["successor_plan", "mission-wave-plan"],
     "order-revision-proposal": ["request", "order-revision-request"],
@@ -6199,6 +6202,9 @@ function validatePayloadInSnapshot(payload, type, options) {
   }
   if (schemaResult.valid && type === "project-document-packet-request") {
     issues.push(...require("../project-document-packet").requestIssues(payload).map(item => ({ ...item, layer: "semantic" })));
+  }
+  if (schemaResult.valid && ["project-document-review-proposal", "project-document-review-decision"].includes(type)) {
+    issues.push(...require("../project-document-review").reviewIssues(payload, type).map(item => ({ ...item, layer: "semantic" })));
   }
   if (schemaResult.valid && type === "project-terminology") {
     issues.push(...require("../project-terminology").terminologyIssues(payload).map(item => ({ ...item, layer: "semantic" })));

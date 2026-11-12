@@ -20,7 +20,11 @@ Use this queue and the requirement table, not those historical instructions.
    a word, relabel a source or bypass a guarded mission's unsupported-input denial.
    [Read-only diagnostics](document-authoring-case-study.md#public-policy-content-review-diagnostics)
    now identify rule/count and exact input bindings while retaining the refusal;
-   reviewed raw exception clearance remains unsupported, not silently approved.
+   the subsequent USER-approved [reviewed-preparation procedure](role-document-access-policy.md#reviewed-document-preparation)
+   now supports eligible exact-source word findings under a separately recorded
+   USER decision. The design approval and synthetic fixture decisions do not
+   approve the retained SOP or a native transfer. Finish exact-source appraisal
+   and actual receiving evidence without weakening other findings or source checks.
    The [catalog-screening correction](document-authoring-case-study.md#recipient-catalog-screening)
    separately blocks token-shaped source IDs before reads and checks the complete
    recipient view. This closes a screening omission, not the disclosure decision.
@@ -109,8 +113,10 @@ Use this queue and the requirement table, not those historical instructions.
    inputs still receive technical reading. Broader unsupported wording, semantic
    completeness and Claude's repaired-document ambiguity remain open. Do not
    replay an accepted case merely to raise a pass count.
-   The separate internal-draft delivery refusal remains unresolved;
-   successful synthetic text revision does not bypass it.
+   The internal-draft path now has an explicit source-ID representation procedure
+   under that same bounded review policy. Preserve the original refusal and source
+   files. A representation proposal is not an approved packet or successful native
+   receiving; those exact-source decisions and receiving evidence remain open.
    The [source-topic correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
    now conditions national specialist recommendations and separates bounded
    delivery-language wording from the actual subject. Local direct, installation

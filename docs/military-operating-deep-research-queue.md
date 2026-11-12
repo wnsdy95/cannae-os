@@ -86,6 +86,10 @@ Retain the review's source-quality defects and separately corrected derivative;
 broader relevance and the independent delivery-policy refusal remain open.
 The [recipient-catalog regression](document-authoring-case-study.md#recipient-catalog-screening)
 closes metadata screening gaps without clearing those independent refusals.
+The USER-approved [exact review procedure](role-document-access-policy.md#reviewed-document-preparation)
+now implements a bounded preparation path for eligible policy words and internal
+draft representations. Validate exact-source use separately; synthetic decisions
+are not USER approval, native receiving or authentication evidence.
 
 The OPORD, mission command, CCIR, authority, battle rhythm, risk, assessment, training, sustainment, targeting, and ROE material already organized form the framework's primary skeleton. The next step is to extract, in finer detail, the detailed operating mechanisms that actually let the military move a massive organization without distortion.
 
@@ -663,6 +667,10 @@ Completed:
 - `force-structure-change-runner.js`: Projects a force structure change order into preflight block, commander queue, transition task, documentation queue, and readiness requirement.
 - `run-force-structure-change-fixtures.js`: Justified organization activation and blocked-unjustified-expansion fixtures.
 - `role-document-access-policy.md`: Need-to-know document access policy that lets each role read only the documents matching its duty and authority; local content-refusal diagnostics retain exact input bindings without granting clearance.
+- `project-document-review.js`: Exact local review proposals, bounded USER decision records and source-preserving internal-draft representations; never automatic transfer or authenticated authority.
+- `schema-files/project-document-review-proposal.schema.json`: Private exact-source review proposal, not a cleared packet.
+- `schema-files/project-document-review-decision.schema.json`: Recorded USER decision bound to proposal, scope and bounded validity; the caller must verify the actual decision.
+- `run-project-document-review-fixtures.js`: Synthetic exact-review, revocation, mutation, representation and dual-provider installed-wrapper checks.
 - `schema-files/document-access-manifest.schema.json`: Document access manifest contract per mission.
 - `document-access-runner.js`: Cross-checks the manifest against role/duty/authority to generate an allowed/denied document projection.
 - `run-document-access-fixtures.js`: S2/Executor/S6 document access and blocked-overbroad-access fixtures.

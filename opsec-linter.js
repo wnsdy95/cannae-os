@@ -12,7 +12,7 @@ const SECRET_PATTERNS = [
   },
   {
     code: "CREDENTIAL_ASSIGNMENT",
-    pattern: /\b(secret|token|credential|password|passwd|api[_-]?key|private[_ -]?key)\b\s*[:=]\s*(?:"[^"\r\n]+"|'[^'\r\n]+'|[^\s"',;}\]]+)/i,
+    pattern: /\b(secret|token|credential|password|passwd|api[_-]?key|private[_ -]?key)\b["']?\s*[:=]\s*(?:"[^"\r\n]+"|'[^'\r\n]+'|[^\s"',;}\]]+)/i,
     message: "Value assigns a secret, token, credential, password, or private key."
   },
   {

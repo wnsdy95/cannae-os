@@ -1,0 +1,6 @@
+{
+  "schema_version": "0.2", "type": "ProjectDocumentPacketRequest", "id": "PDR-REPRESENTATION",
+  "task": "Review SRC-DRAFT using its source-ID representation. Do not publish or execute the draft.",
+  "recipient": { "agent_id": "reviewer", "provider": "claude_code", "role": "S6", "department": "knowledge", "duty": "document_review", "authority_level": "L1" },
+  "documents": [{ "id": "SRC-DRAFT", "path": ".cannae/document-drafts/TASK-EXAMPLE/draft.md", "required": true, "classification": "internal", "allowed_roles": ["S6"], "allowed_departments": ["knowledge"], "duties": ["document_review"], "minimum_authority_level": "L1", "delivery_mode": "representation", "source_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "representation": { "method": "source_id_locations", "project_handle": "PROJECT-EXAMPLE" } }]
+}

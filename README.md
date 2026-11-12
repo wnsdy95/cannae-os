@@ -801,6 +801,13 @@ clearing it. A diagnostic is not a disclosure exception or a prepared packet.
 The [catalog-screening correction](docs/document-authoring-case-study.md#recipient-catalog-screening)
 also checks source IDs and required-term labels before source reads; reference-only
 metadata is still delivered content. Existing disclosure refusals remain in force.
+The USER-approved [reviewed-preparation procedure](docs/role-document-access-policy.md#reviewed-document-preparation)
+adds private exact-source proposals and bounded USER decision records. It supports
+reviewed policy-word exceptions and distinct source-ID representations of internal
+drafts without changing originals. Source/recipient changes, expiry or revocation
+invalidate reuse. This is local preparation, not authenticated identity, automatic
+transmission or publication. See `project-document-review.js` and its fixtures;
+approval of the design is not approval of a particular proposal.
 
 [Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 now separates ordinary prose handoffs and supported platform exclusions from

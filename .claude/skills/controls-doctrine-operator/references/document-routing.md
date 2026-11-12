@@ -353,6 +353,18 @@ metadata. Inspect findings by scope and document_index, not fixed array position
 an outbound-metadata refusal leaves every source unread. Keep refused bindings
 unchanged pending review, and never silently rename an ID to evade screening.
 Rescreen retained packets with `inspect`; an older digest is not a screening waiver.
+For the USER-approved bounded review design, follow the access policy's
+`reviewed-document-preparation` procedure. `propose-review` writes private review
+material, not a cleared packet. Only record `decision.json` after the actual USER
+has reviewed the exact version, recipient and purpose; retain its reference and
+separately expected digest. Never mint that decision from a role label, general
+verification consent or a model's review. `prepare-reviewed` rechecks the exact
+proposal, current sources, screening implementation, expiry and canonical decision.
+Inspect again before separately authorized use; changed or revoked records hold
+delivery. A `representation` is distinct from raw/summary content and retains
+source and delivered digests. An adapter that cannot preserve that mode must stop,
+not relabel it. No new tool, publication, authenticated identity or host protection
+is supplied by this local review procedure.
 
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local

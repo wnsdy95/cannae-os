@@ -127,6 +127,10 @@ blocked request and inspect only within existing read authority; later sources
 may remain unchecked. A topic-word match is not proof of a secret, and no match
 is not disclosure approval. Do not delete safety wording or treat the diagnostic
 as an exception. Follow the project-content review procedure for the next decision.
+The separate reviewed-preparation procedure requires an actual USER decision on
+the exact proposal, recipient and purpose. Policy-design or standing test consent
+is not that decision. Preserve original internal drafts and their distinct
+source-ID representations; never relabel them as exact raw copies or summaries.
 
 For delegated document access, require a ready manifest projection and its
 profile-selected list; a role match alone is insufficient. Preserve summary and

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-document-review-proposal.schema.json",
+  "title": "Project Document Review Proposal",
+  "description": "Private exact-source review material. Not an approved packet or permission to send.",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "request", "source_repository", "documents", "checks", "screening_sources", "authorization_verified", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "ProjectDocumentReviewProposal" },
+    "id": { "type": "string", "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$" },
+    "request": { "$ref": "project-document-packet-request.schema.json" },
+    "source_repository": { "$ref": "project-document-packet.schema.json#/properties/source_repository" },
+    "documents": { "$ref": "project-document-packet.schema.json#/properties/documents" },
+    "checks": {
+      "type": "array", "minItems": 3, "maxItems": 18,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["scope", "status"],
+        "properties": {
+          "scope": { "enum": ["task_and_recipient", "outbound_metadata", "document"] },
+          "status": { "enum": ["no_findings", "content_review_required", "reference_only_not_read"] },
+          "document_index": { "type": "integer", "minimum": 0, "maximum": 15 },
+          "delivery_mode": { "enum": ["raw", "summary", "reference_only", "representation"] },
+          "source_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+          "delivered_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+          "source_content_verified": { "const": false },
+          "rules": { "type": "array", "items": {
+            "type": "object", "additionalProperties": false, "required": ["detector", "code", "eefi_id", "count"],
+            "properties": {
+              "detector": { "const": "eefi" }, "code": { "const": "EEFI_OUTPUT_FORBIDDEN" },
+              "eefi_id": { "enum": ["EEFI-DEFAULT-SECRET", "EEFI-DEFAULT-CREDENTIAL", "EEFI-DEFAULT-PASSWORD", "EEFI-DEFAULT-PRIVATE-KEY", "EEFI-DEFAULT-EEFI", "EEFI-DEFAULT-RESTRICTED"] },
+              "count": { "type": "integer", "minimum": 1 }
+            }
+          } }
+        }
+      }
+    },
+    "screening_sources": {
+      "type": "object", "minProperties": 1, "additionalProperties": { "$ref": "common.schema.json#/$defs/sha256" }
+    },
+    "authorization_verified": { "const": false },
+    "release_authorized": { "const": false }
+  }
+}

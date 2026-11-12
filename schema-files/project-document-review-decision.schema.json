@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-document-review-decision.schema.json",
+  "title": "Project Document Review Decision",
+  "description": "Recorded USER decision with exact local proposal binding. The caller must verify the actual USER decision; a role string is not authenticated identity.",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "proposal_sha256", "decision_maker", "decision", "decision_reference", "created_at", "expires_at", "scope", "no_secret_values_confirmed", "requirements_preserved", "release_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "ProjectDocumentReviewDecision" },
+    "proposal_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "decision_maker": { "const": "USER" },
+    "decision": { "enum": ["approve_preparation", "revoked"] },
+    "decision_reference": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "expires_at": { "type": "string", "format": "date-time" },
+    "scope": { "const": "exact_proposal_only" },
+    "no_secret_values_confirmed": { "const": true },
+    "requirements_preserved": { "const": true },
+    "release_authorized": { "const": false }
+  }
+}

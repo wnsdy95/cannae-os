@@ -4042,3 +4042,37 @@ synthetic canaries, not real credentials; no native model is invoked. Evidence
 is retained in `.cannae/maintenance/document-delivery-boundary-20261112/`.
 This closes a specific screening omission, not A13's disclosure-policy decision,
 the independent METHOD-61 receiving gap or overall skill-first acceptance.
+
+## Bounded Reviewed Preparation
+
+After the catalog-screening correction, the USER explicitly approved a bounded
+review design: exact document version, recipient and purpose must receive their
+own USER decision; internal drafts may have a separately reviewed representation
+that preserves originals, requirements and source connections. This did not
+approve the retained SOPs, METHOD-61 packet or any particular model transfer.
+
+The existing local wrapper now has `propose-review` and `prepare-reviewed`.
+Proposals are private, complete source-bound review material, not cleared packets.
+Preparation checks a canonical decision with separately expected hashes, finite
+validity, exact scope and current sources. Changed or revoked decisions also stop
+later inspection/projection. Default preparation still refuses word findings and
+internal drafts. Credential findings cannot be waived; quoted JSON keys now
+receive the same non-waivable assignment detection as unquoted keys.
+
+The representation mode keeps internal originals in place and binds both original
+and delivered bytes. It replaces only selected locations and the target/doctrine
+roots with source IDs or declared handles. An in-memory check uses all 14 original
+METHOD-61 inputs; a further source inspection exposed a doctrine-root locator in
+its map, which is now included in the explicit transformation. No source is dropped
+or relabeled as an unchanged raw copy or summary. Literal substitution still needs
+semantic and disclosure review; it cannot authenticate human approval.
+
+Both provider guides and routing maps carry this procedure. New local fixtures
+exercise canonical records, expiry/revocation, source/recipient substitutions,
+non-waivable values, internal-path restrictions and linked/copied installations.
+The first development run stopped at missing router inventory registration; the
+maps were corrected without weakening coverage. Evidence and the actual design
+decision are retained in `.cannae/maintenance/reviewed-delivery-20261112/`.
+Synthetic fixture decisions are not actual consent. The exact retained proposals
+still need USER review and receiving evidence; no native model is invoked by
+these commands, and every execution/release/identity claim remains false.

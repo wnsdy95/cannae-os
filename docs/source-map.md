@@ -151,6 +151,13 @@ defines the source-reader and partial-inspection limits.
 The [catalog-screening regression](document-authoring-case-study.md#recipient-catalog-screening)
 closes a separate token-shaped source-ID bypass with unchanged detector rules.
 Its synthetic local cases are not clearance of the retained SOP or internal drafts.
+The USER subsequently approved the bounded
+[reviewed-preparation design](role-document-access-policy.md#reviewed-document-preparation).
+`project-document-review.js`, its proposal/decision schemas, v0.2 representation
+contracts and `run-project-document-review-fixtures.js` implement local exact-input
+decision binding and reinspection. These are engineering decisions, not military
+source claims or authenticated human consent. Exact retained sources still need
+their own USER review; synthetic fixture decisions do not clear them.
 
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial
