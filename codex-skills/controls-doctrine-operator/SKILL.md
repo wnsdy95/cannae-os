@@ -280,6 +280,13 @@ unit; otherwise mark assembly incomplete, not ready for a cold start.
 When supplied text is authorized for this output, assemble the required draft
 and source material now instead of deferring feasible work to the next agent.
 Real access/disclosure limits still stop assembly; preparation is not sending.
+Recheck each successor's declared unit before extracting it. A familiar handoff
+field may depend on sibling worksheet, source or limit fields; parse and retain
+the declared structure, or review a newly assembled standalone unit. Carry the
+current assignment's stricter limits as well as inherited project rules; a
+past-tense activity report does not replace a current prohibition.
+An authorized successor assignment can change a phase-specific limit; record
+that change and scope rather than silently dropping or perpetuating it.
 Check that every "above", "attached" or original-request reference exists in
 that unit or its actual supplied lookup. Prompt context is not an attachment.
 Appraise findings against the declared delivery unit: a full packet is not a

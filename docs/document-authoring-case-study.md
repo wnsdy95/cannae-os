@@ -3478,3 +3478,96 @@ another detection-only replay. A08 is bounded-verified from inspected semantic
 detection and previous missing-prerequisite evidence; repair, receiving and
 client-parity gaps remain under A01/A09/A10/A14/A20. The internal-draft receiving
 policy decision is still separate and unresolved.
+
+## Cold-Start Document Continuation
+
+### Exact Incoming Unit
+
+On 2026-11-12, fresh Codex and Claude sessions received only the previous Codex
+repair's exact decoded `handoff_md`, plus current guidance and a bounded new
+assignment. Neither received the previous chat, other response fields, author
+answer key or operator appraisal. The 15,027-byte incoming unit has SHA-256
+`34eb129aae30b0a45763cc5c272c88214842e28a9430a92d4e2f6c82a40d3206`.
+Its four embedded project bodies are exact matches to the synthetic sources.
+
+The assigned S6 knowledge-management work was advisory text at L0: make a useful
+verification worksheet for a later authorized migration, then a handoff for
+further document work. Preserve canonical inventory, links/aliases, history,
+rollback, the original task-scoped term, unknowns and separate USER decisions.
+No tools, external lookup, actual record population, operational verification,
+migration, adoption, publication or transmission was authorized to the model.
+The parent separately delivered this synthetic verification input under standing
+consent; that delivery did not change the exercise's permissions.
+
+The parent routed the role/task and checked a selected guidance manifest, then
+supplied the full provider entrypoint, authoring workflow and handoff template.
+That metadata is not authenticated delegation or worker-invoked routing. Full
+guides include conditional material and do not establish automatic minimum
+context. No runtime mission, discovery or advance-report timing was tested.
+
+| Receiver | Prompt bytes / SHA-256 | Response-file SHA-256 | Duration |
+| --- | --- | --- | --- |
+| Codex 0.162.1, gpt-6-astra | 98,762 / `909f35d91d751f6e21d5da88940652f2b93c33e28559315f1423f5f0e3633802` | `2799223bb19b1c1dddf5a5e06812c2343a8e56378c22ddc48351accc681333be` | 219.567 seconds |
+| Claude Code 2.1.322, claude-opus-5-5 | 98,780 / `b0edfafbdc38da6d594e84fab017bf7c69b84647bd3e79d80172b188f0021ba0` | `ee7157dc5694eac3167581123f238f1e7cb490efa37f5bcd2cf1c075f00383cf` | 280.641 seconds |
+
+Both terminal results were exit 0, valid JSON and zero tool events. Records are
+retained under `.cannae/maintenance/cold-start-continuation-20261112/`, with source
+HEAD `e7c3ddae5e2d9b5c68713c9dff522db8ee3ef66f`. No automatic relaunch, credentials
+change, sleep prevention, private-source relocation or delivery-policy exception
+occurred. The separate internal-draft receiving refusal remains unchanged.
+
+### Observed Work And New Unit Boundaries
+
+Both receivers explain the purpose and source limitations, then draft concrete
+table fields and proposed completion/recovery checks for all four procedures.
+They retain the 40-entry, three-pair, twelve-URL and estimated-effort limitations,
+USER method selection, separate approval scopes and appendix no-retry ownership.
+Neither claims actual migration, filled project records or independently verified
+parent preparation. This supports actual bounded textual continuation, including
+cross-client receiving, not merely a ready label or a schema pass.
+
+The outgoing units differ despite using the same response keys:
+
+- Codex explicitly declares the whole JSON object. Its worksheet is the sibling
+  `continuation_md`; source bindings are in `input_inventory`. Extracting only
+  `handoff_md` would omit both. The exact whole-response unit is 33,909 bytes with
+  the response-file digest above. Internal sibling references are valid in that
+  unit, not evidence of a missing attachment.
+- Claude explicitly declares `handoff_md` alone. It includes the project bodies,
+  full bindings, corrected predecessor procedure and a worksheet copy. That
+  28,169-byte decoded string has SHA-256
+  `8464eec69cb93f3c4dde6b40a2141999ffe1b391c2f4f205a51e6ff5713d0994`.
+  Heading levels and opening text differ from its sibling worksheet; do not
+  convert its unverified "intended identical copy" into byte-identity evidence.
+
+The first inclusion check inspected only each handoff field. The separate
+operator-selected unit audit uses a JSON parser and each actual declaration;
+both correctly selected units contain all four project source bodies and full
+digests. The Codex field-only counterexample demonstrably loses the worksheet
+and bindings. These checks establish inclusion, not permission or semantic quality.
+
+### Retained Quality Limits
+
+Codex's H3 description overcounts policy/observation bodies as three; the actual
+pair is P1 and O1, alongside R1 and C1. Its inventory and embedded sources are
+correct. This is report wording drift, not a missing source.
+
+Claude's outgoing text carries original project restrictions but does not
+explicitly preserve the current no-tool, no-browse, no-file-read and no-validation
+limits. A text-only next action and a past-tense no-tool report are not the full
+current prohibition. It also makes inherited USER recovery ownership provisional
+and overstates the old procedures as lacking all completion/recovery checks.
+Its worksheet is useful without those overclaims. C3.6/W8 additionally need clear
+separation between recording an unresolved row and finishing the required
+reconciliation. This is prose ambiguity, not a reproduced executable gate
+bypass; no unprovided all-Pass quality threshold is imposed by this appraisal.
+
+Receiving and useful continuation are observed; full outgoing acceptance and
+client equivalence remain separate. Do not replay the successful receiving act
+just to count another pass. The [handoff guide](handoff-packet-template.md#ordinary-document-work)
+and both skills now require rechecking each successor's declared unit, retaining
+needed sibling fields and carrying current assignment limits as well as inherited
+rules. An actual authorized successor assignment can change phase-specific
+limits; do not silently discard them or make every historical limit permanent.
+The new instruction has local delivery/regression checks, not fresh native
+acceptance inferred from these earlier responses.

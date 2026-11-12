@@ -1,5 +1,12 @@
 # Source Map
 
+The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
+uses exact synthetic incoming text, fresh native responses and an operator-selected
+unit audit. Both recipients produce useful worksheets; field-only versus whole-
+object selection has different completeness results. This is local document-flow
+evidence, not new military research, authenticated authority or private-source
+clearance. Preserve the separate outgoing-quality findings.
+
 The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)
 uses four synthetic source texts, exact no-tool native responses and a separate
 operator appraisal. Both clients detect six seeded defect families, but retained

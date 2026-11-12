@@ -744,7 +744,14 @@ receiving assembly belongs to the current writer. Detection is not acceptance
 of the repair, permission to disclose sources or completion of the whole workflow.
 The same-case follow-up produces both source-complete receiving units; Codex's
 repair is source-appraised as a usable draft, while Claude retains factual/status
-defects. Actual cold-start continuation is a separate next check.
+defects. That review did not yet observe actual cold-start continuation.
+
+The subsequent [cold-start continuation](docs/document-authoring-case-study.md#cold-start-document-continuation)
+now observes both fresh clients drafting verification worksheets from the exact
+received unit without old chat. Their next units differ: whole JSON versus a
+detached handoff field. Selection must preserve actual sibling dependencies and
+current restrictions. Receiving success does not erase retained report/scope drift
+or establish full outgoing acceptance.
 
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).

@@ -20,6 +20,23 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## A Successor Can Change The Receiving Unit (2026-11-12)
+
+The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
+observes both fresh clients using the exact prior handoff to draft practical
+verification worksheets. The next Codex unit is the whole response JSON, with
+worksheet and bindings in sibling fields; the next Claude unit is its detached
+handoff field. Blindly reusing the previous field extractor would lose necessary
+Codex material even though the field name did not change.
+
+Inspect the declared unit, parse structured output, bind the exact selection and
+check dependencies against that selection. Retain current assignment restrictions
+alongside inherited project policy; historical no-tool claims do not carry a
+current no-tool prohibition. Authorized successor changes remain possible within
+their actual scope. Both source assemblies are demonstrable, but report wording,
+restriction retention and completion-criterion clarity still require appraisal;
+useful receiving is not full semantic or operational acceptance.
+
 ## Detecting A Defect Does Not Complete Its Repair (2026-11-12)
 
 The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)

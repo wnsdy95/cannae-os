@@ -31,8 +31,12 @@ not a need to replay successful detection. Both skills now check pre-work plan
 coverage and keep proposed precautions separate from binding holds. Verify the
 repaired outcome without bypassing the separate internal-draft delivery refusal.
 The follow-up produces source-complete units and an operator-accepted Codex
-repair; Claude's absence/status claims still need correction. Continue with an
-actual receiving task, not another replay of successful omission detection.
+repair; Claude's absence/status claims remain recorded. That review alone did
+not observe actual receiving or close the repaired-deliverable requirements.
+The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
+now observes that receiving and useful worksheet drafting in both clients. Next
+target retained outgoing restrictions and completion-criterion clarity, while
+respecting the differing declared units and the separate internal-draft refusal.
 
 The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
 reduces ordinary direct maintenance-manual over-selection while retaining parent

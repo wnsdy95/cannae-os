@@ -155,6 +155,22 @@ try {
       assert(skill.includes("Real access/disclosure limits still stop assembly; preparation is not sending."));
     }
   });
+  fixture("successor unit selection preserves sibling content and current restrictions", () => {
+    for (const phrase of ["Recheck the receiving-unit declaration after every continuation",
+      "keep required sibling fields", "Parse the structure instead of copying only a familiar",
+      "a valid extraction is not semantic acceptance", "current assignment's stricter limits",
+      "A past-tense activity report does not carry that prohibition",
+      "An actual successor assignment may change a phase-specific limit within its"]) {
+      assert(packet.prompt.includes(phrase), `Missing receiving selection guidance: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Recheck each successor's declared unit before extracting it."));
+      assert(skill.includes("field may depend on sibling worksheet, source or limit fields"));
+      assert(skill.includes("past-tense activity report does not replace a current prohibition."));
+      assert(skill.includes("rather than silently dropping or perpetuating it."));
+    }
+  });
   fixture("required candidate counts remain in the full handoff reading inventory", () => {
     assert(packet.prompt.includes("Count by source ID, including the candidate when it is a required row."));
     assert(packet.prompt.includes("the full required total; rereads are separate from unique sources."));

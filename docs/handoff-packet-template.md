@@ -78,6 +78,20 @@ status. Text assembly is not transfer, integrity verification or acknowledgement
 Keep proposed precautions separate from active holds in the receiving summary;
 a recommendation must not become a new restriction while being shortened.
 
+Recheck the receiving-unit declaration after every continuation; the same output
+field name does not guarantee the same boundary. If a structured response declares
+the whole object, keep required sibling fields such as the worksheet, source
+inventory and limits. Parse the structure instead of copying only a familiar
+handoff field. For a detached document, assemble those dependencies explicitly
+and review the changed unit before any separately authorized transfer. Record the
+exact selection and its binding; a valid extraction is not semantic acceptance.
+Carry the current assignment's stricter limits as well as the inherited project
+rules. A historical no-file-change rule does not replace a current no-tool or
+no-lookup restriction. A past-tense activity report does not carry that prohibition.
+An actual successor assignment may change a phase-specific limit within its
+authority; cite that change and scope instead of silently discarding the limit
+or treating every historical restriction as permanent.
+
 Before compressing an activity report, separate successful reads, successful-source
 rereads, failed delivery and operational execution. State the failed source ID,
 whether any body was delivered, the affected conclusion and the applicable retry
