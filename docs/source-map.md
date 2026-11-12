@@ -164,6 +164,12 @@ It reuses existing inspection and recipient projection for ID-only catalog/reads
 preserving representation modes and current decision checks. This is local
 engineering evidence, not a new disclosure decision, authenticated recipient,
 native receiving result or separate service.
+The [routed-session integration](document-authoring-case-study.md#routed-receiving-integration)
+adds `project-document-session.js`, its optional stdio adapter and integration
+fixtures. It uses the existing pinned MCP client/server packages from
+`package.json`, not a new service dependency. Actual local router/protocol calls
+support phase and source-binding checks; they are not native model acceptance,
+complete semantic source selection or authenticated authority.
 
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial

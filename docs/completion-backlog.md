@@ -33,6 +33,12 @@ Use this queue and the requirement table, not those historical instructions.
    for trusted adapters. Its local cases do not approve the retained proposals or
    exercise a native receiver. Integrate it without copying private locators or
    treating listed IDs as completed required reads; keep the original phase holds.
+   The [routed-session integration](document-authoring-case-study.md#routed-receiving-integration)
+   now connects that primitive to installed routing and opt-in stdio tools. Local
+   protocol tests preserve all 18 required fixture sources, phase/source holds,
+   representations and fresh route IDs. Actual native receiving of the retained
+   proposals still depends on their exact USER decisions; do not infer it from
+   local transport calls or fabricate approval to run that next step.
    The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
    is complete: both clients hold dependent drafting and avoid retries, but Claude
    still misses public reports and conflates approval scopes. Preserve that result.

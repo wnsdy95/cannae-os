@@ -352,6 +352,14 @@ recipient; each list/read reinspects sources and any canonical decision while
 preserving summary/representation modes. Synthetic local tests do not establish
 human consent, actual client receipt, route completion or semantic understanding.
 
+The [routed receiving integration](document-authoring-case-study.md#routed-receiving-integration)
+retains the whole assignment while assigning a fresh read context to each actual
+route. An attempted reroute must retire the preceding context even on failure;
+otherwise a new task can silently reuse old reading authority. Source-specific
+holds remain separate from unaffected permitted work. Local router and stdio
+checks establish this bounded transport behavior, not model comprehension, global
+semantic minimality or approval to transfer the retained real documents.
+
 ## Missing Sources And Separate Decision Scopes (2026-11-12)
 
 The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)

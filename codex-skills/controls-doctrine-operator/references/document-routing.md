@@ -374,6 +374,19 @@ and `summary` modes and both digests in tool responses. Do not retain a successf
 catalog as later read authority, infer reading from listed IDs or pass model-chosen
 paths/recipients to the reader factory. Its calls do not replace current routing,
 phase holds, consent or actual client-delivery evidence.
+For a tool-assisted receiving phase, the access policy's `routed-receiving-tools`
+procedure binds the same reader to actual installed routing. Keep the complete
+original assignment alongside the current query and every declared objective.
+A failed reroute cannot fall back to the old read context, including one rejected
+for invalid tool arguments. Correct the request and obtain a fresh route before
+reading; never retry the previous read ID as recovery. A source-specific hold
+does not bar unaffected permitted reading, but must remain pending in the report.
+Count returned source IDs separately from model comprehension. Use the stdio
+adapter only as an explicitly assigned, bounded client child process; do not
+install it globally or turn a transport check into native acceptance or consent.
+Recipient delivery holds do not authorize the preparer to reread a prohibited
+source. If that source cannot be rechecked within existing authority, stop before
+creating the session rather than using the hold list to bypass the prerequisite.
 
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local

@@ -505,6 +505,91 @@ or adoption. Calls are point-in-time and do not provide atomic sending, continuo
 revocation or protected-host guarantees. Execution/release/verified-authority and
 receiver-acceptance flags remain false.
 
+### Routed Receiving Tools
+
+`project-document-session.js` composes the bound reader with the selected installed
+router for an ordinary, read-only receiving assignment. It is not a guarded
+mission adapter. A trusted preparer supplies this local configuration:
+
+```javascript
+const { createDocumentSession } = require("/absolute/doctrine/project-document-session");
+const session = createDocumentSession({
+  reader: exactPacketReaderBinding,
+  skill_directory: "/absolute/loaded-skill",
+  doctrine_root: "/absolute/doctrine",
+  task_id: "PROJECT-TASK",
+  phase: "review",
+  access_manifest: assignedCorpusAccessManifest,
+  corpus_sha256: expectedCorpusFileDigests,
+  held_source_ids: [],
+  max_calls: 32,
+  max_route_calls: 2,
+  deadline_ms: 300000
+});
+const route = session.execute("route_current_task", {
+  query: currentTaskDescription,
+  objectives: separatelyDeclaredObjectives
+});
+const result = session.execute("read_document", {
+  route_id: route.route_id,
+  source_id: "SRC-POLICY"
+});
+```
+
+The preparer must retain established phase holds in `held_source_ids`; an empty
+list is not permission to omit them. These holds restrict recipient delivery;
+the preparer still needs authority to recheck every packet source. If the preparer
+is forbidden to reread a source, do not instantiate this session or treat a delivery
+hold as permission to retry it. Keep that prerequisite unresolved. `brief` exposes
+routing only, with all source
+delivery held. `review` permits selected readable IDs except configured holds.
+Corpus profiles currently require raw delivery and exact digests for all selected
+guides; unsupported modes stop instead of becoming raw. Packet sources retain
+their own raw/summary/representation/reference-only modes. Required rows are never
+removed because a delivery is held. No tool argument can change the recipient,
+phase, profile, root, packet, task identity, authority or hold list.
+
+Each route calls the installed router with the fixed role/department, document-only
+scope and target-bound task identity. It keeps the original assignment alongside
+the current description and preserves every caller-declared objective assessment.
+Project source IDs come from the separately inspected packet, not reconstructed
+private file paths or a claim of router filesystem-input admission. Assigned corpus
+sources remain explicit router inputs. Recommended documents and all selected
+validation commands remain visible; the helper does not run those commands or
+prove that the assigned profile contains every semantically necessary source.
+
+A new route retires the old route ID, even if the new attempt fails. The stdio
+adapter retires it before argument validation, including extra, missing or wrongly
+typed arguments. A pending earlier route cannot reopen access after a later request.
+Each successful
+route starts fresh returned-source accounting. `returned_required_source_ids` and
+`pending_required_source_ids` count actual handler returns, not native receipt or
+comprehension. A held/unlisted read cannot clear a hold, but leaves unaffected
+permitted reads available. Source/decision/router drift invalidates the context;
+there is no cached fallback. Both supplied aliases and canonical private roots
+remain withheld from catalogs
+and body responses. Call/route budgets and a maximum ten-minute session bound
+are enforced, including elapsed wall time after suspension.
+
+For an explicitly assigned client tool process, serialize that configuration
+privately and bind its file digest. The optional stdio adapter uses the repository's
+existing pinned MCP dependencies:
+
+```bash
+node /absolute/doctrine/project-document-session-mcp.js \
+  /absolute/session.json EXPECTED_CONFIG_SHA256
+```
+
+It exposes only `route_current_task` and, in review phase, `read_document`, with
+strict arguments and code-only operation errors. It creates no network listener,
+global client setting, authentication service or persistent daemon. The client
+owns the child process; stdin closure or the configured deadline closes its
+transport. Do not install it as an always-running service. Configuration and
+packet hashes are trusted local bindings, not authentication or protected code
+attestation. This is an optional tool adapter, not separately packaged plugin
+distribution or automatic consent to send documents to a model. Inspect sources,
+actual client settings and transfer authority before any native use.
+
 ## 8. Anti-patterns
 
 - Having every agent read `README.md` and the entirety of `docs/`.

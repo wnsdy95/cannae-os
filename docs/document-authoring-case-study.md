@@ -4106,3 +4106,57 @@ Real retained proposals still await their own USER decision; neither synthetic
 fixture approvals nor this reader clear them. Their original proposal/source
 bindings remain unchanged. Actual adapter integration and native receiving are
 separate remaining evidence, not results established by these local fixtures.
+
+## Routed Receiving Integration
+
+The next step connects the bound reader to the actual installed router and an
+optional stdio tool process. The historical METHOD-61 adapter remains unchanged.
+The new session keeps the full original task beside the phase query, passes every
+declared objective, and fixes recipient, task identity, profile and source holds
+outside model-controlled arguments. It neither reintroduces private target paths
+nor relabels source-ID representations as raw originals.
+
+Local integration fixtures use 14 synthetic represented sources, one optional
+reference-only source and four current corpus guides. Both provider bindings
+run their actual router; all 18 required sources remain selected. An uncovered
+objective retains its bounded task cell across different phase queries. New and
+failed routes retire old read IDs, and source-specific holds leave unrelated
+permitted reading available. Returned-source counts remain distinct from native
+receipt, comprehension and the original task's completion.
+
+The pinned MCP client and stdio adapter also perform actual local tool discovery
+and calls. Brief-only sessions expose no read tool; review sessions return exact
+representation metadata/body and reject stale read IDs. Tests close the child
+processes and check that their process IDs no longer exist. No model, authentication
+flow, global setting or network listener is involved. This is not a separately
+packaged plugin or an always-running service.
+
+The first development fixture used an invalid source ID and was corrected without
+changing the schema. A later timeout case found that a deadline-exceeded router
+call was labeled as generic routing failure. Explicit pre/post-call elapsed-time
+checks now distinguish that stop; no deadline was extended. Redundant packet
+inspection during one source read was removed while retaining one complete
+current packet inspection, corpus/router checks and all existing source holds.
+
+A separate source review then reproduced a path-alias omission despite the first
+34-check frozen run passing: a target selected through a symlink could echo its
+canonical root in a phase query. The original probe and pre-correction source are
+retained. The exclusion set now binds both supplied and canonical target, corpus,
+skill and packet locations, checked before per-call source refresh. Both provider
+regressions cover these aliases; success from the earlier tree is not substituted
+for the correction's own verification. Preparer read authority also stays separate
+from recipient delivery holds; neither procedure authorizes a forbidden reread.
+
+The alias correction passed 17 selected checks, but another protocol probe found
+that SDK argument rejection bypassed the session's reroute handler: extra or
+missing arguments left the preceding read ID usable. The before-result remains
+recorded. The adapter now retires that context at the SDK's public transport
+boundary without weakening its strict schema, and rejects an earlier pending
+route superseded by a later request. Both provider transport regressions cover
+invalid arguments, stale reads, fresh recovery and overlapping requests.
+
+Evidence is retained in `.cannae/maintenance/routed-document-session-20261113/`.
+Synthetic local decisions do not clear the three retained real proposals, whose
+source and screening bindings remain unchanged. Native receiving and semantic
+appraisal are still outstanding. Both provider guides carry these bounded
+integration rules without promoting an acceptance-audit row from protocol checks.

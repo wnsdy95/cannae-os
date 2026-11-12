@@ -812,6 +812,10 @@ The [bound recipient reader](docs/role-document-access-policy.md#bound-recipient
 lets an authorized adapter list and read packet source IDs without reconstructing
 private paths. Every call reinspects current bindings and preserves raw, summary
 or representation mode. This local utility is not a native receiving result.
+The [routed receiving tools](docs/role-document-access-policy.md#routed-receiving-tools)
+connect that reader to the installed router with phase-local read IDs and fixed
+source holds. An opt-in stdio adapter exposes only routing and selected reads;
+local protocol tests do not establish model receipt or grant transfer authority.
 
 [Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 now separates ordinary prose handoffs and supported platform exclusions from
