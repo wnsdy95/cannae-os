@@ -129,6 +129,32 @@ try {
   fixture("identical source bytes produce an identical packet and case order", () => {
     assert.deepEqual(buildPacket(root), packet);
   });
+  fixture("plan coverage and repair limits reach both skills and the current reviewer", () => {
+    for (const phrase of ["## Check Plan Coverage", "A named goal without the",
+      "An unknown dependency is a question", "recommendation in every summary and handoff",
+      "recommending a method is not selecting it", "Keep defect detection separate from acceptance"]) {
+      assert(packet.prompt.includes(phrase), `Missing plan review guidance: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("before\ndependent work and after material replanning"));
+      assert(skill.includes("distinguish sourced holds from proposed precautions"));
+      assert(skill.includes("successful defect detection is not a completed deliverable"));
+    }
+    const workflow = fs.readFileSync(path.join(root, "docs/document-authoring-workflow.md"), "utf8");
+    assert(workflow.indexOf("4. For multi-step work, apply") < workflow.indexOf("5. Check that every required task"));
+  });
+  fixture("receiving assembly completes permitted work without granting access or transfer", () => {
+    for (const phrase of ["assemble the requested receiving unit now", "never bypass\naccess/disclosure controls",
+      "Text assembly is not transfer", "proposed precautions separate from active holds"]) {
+      assert(packet.prompt.includes(phrase), `Missing receiving guidance: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("instead of deferring feasible work to the next agent"));
+      assert(skill.includes("Real access/disclosure limits still stop assembly; preparation is not sending."));
+    }
+  });
   fixture("required candidate counts remain in the full handoff reading inventory", () => {
     assert(packet.prompt.includes("Count by source ID, including the candidate when it is a required row."));
     assert(packet.prompt.includes("the full required total; rereads are separate from unique sources."));
@@ -491,8 +517,9 @@ try {
   fixture("the authoring sequence places requested backbrief delivery before drafting", () => {
     const workflow = fs.readFileSync(path.join(root, "docs/document-authoring-workflow.md"), "utf8");
     const brief = workflow.indexOf("Deliver a requested advance backbrief before dependent reading or drafting");
-    const draft = workflow.indexOf("4. Draft facts with source references.");
-    assert(brief >= 0 && draft > brief);
+    const plan = workflow.indexOf("4. For multi-step work, apply");
+    const draft = workflow.indexOf("Then draft facts with source");
+    assert(brief >= 0 && plan > brief && draft > plan);
     assert(workflow.includes("Read task sources only after any required advance report has been delivered."));
     assert(workflow.includes("Do not defer a required pre-work backbrief until this retrospective check."));
   });

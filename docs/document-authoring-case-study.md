@@ -3324,3 +3324,157 @@ installation parity nor the old native response establishes fresh behavioral
 acceptance of these instructions. Keep the separate receiving-policy and
 cross-client task-quality gaps open. A05 remains partial and the eleven
 bounded-verified / nine partial required-row counts do not change.
+
+## Request-First Plan Review And Repair
+
+### Assignment And Evidence Boundary
+
+On 2026-11-12, both native clients reviewed synthetic DOCMOVE-47 against an
+original Korean request, operating policy, observations and flawed proposed plan.
+The user requested a migration plan and handoff, not an actual migration. Four
+separate procedures were required: canonical inventory, links/aliases, retained
+history and rollback. Method selection remained a USER decision. A task-scoped
+completion term did not imply content verification or publication, and the
+unavailable private appendix was not to be opened or retried.
+
+Each input supplied current provider guidance, the authoring procedure and the
+ordinary handoff guide explicitly. All four synthetic source bodies were present;
+author answers, self-ratings and the other client's response were excluded.
+The detached handoff, not the review prompt, was the receiving unit under test.
+The preparing operator ran routing and four local checks. The reviewers had no
+tools; neither invocation tested discovery, actual agent routing, advance-report
+timing or independent operator/infrastructure assurance.
+
+Standing verification consent covered one bounded invocation per client. Both
+returned exit 0 and parsed responses without tool activity or automatic relaunch:
+
+| Client | Prompt bytes / SHA-256 | Response-file SHA-256 | Duration |
+| --- | --- | --- | --- |
+| Codex 0.162.1, gpt-6-astra | 68,795 / `b9697a37e2ade287ead0e99a4fc392bd6d49bc98e1fc6f1b539b5b58697eec90` | `03f37dcf1eef8c815676bb5333b9be35b378218c936901205c63d19dda88b717` | 180.340 seconds |
+| Claude Code 2.1.322, claude-opus-5-5 | 68,809 / `554b6f50e711bd09ad6d2d5f4d275cd8872dd0067fa8c5d172c0bf4bff95b2ce` | `7100c06460acb8657a8244b643f61c63a3ef14833eb1589be2f4aa25c344fc58` | 204.730 seconds |
+
+Exact inputs, native records, binding checks and the separate operator appraisal
+are retained under `.cannae/maintenance/request-plan-review-20261112/`.
+Source HEAD was `81010823e9d2ec818d0fdb293ccb453ea867c619`. This local synthetic
+review did not transfer the separately blocked internal draft or clear its policy.
+
+### Source Appraisal
+
+Both reviewers returned `changes_required` and identified all six seeded defect
+families from the actual sources:
+
+| Defect family | Codex finding | Claude finding |
+| --- | --- | --- |
+| Missing rollback procedure | 4 | 7 |
+| Twelve unchecked URLs substituted for complete link/alias reconciliation | 3 | 4, 5 |
+| Estimated effort treated as equivalent coverage and readiness | 1 | 1, 2, 3 |
+| Custodian or restored access allowed to lift USER's no-retry restriction | 5 | 8 |
+| Draft adoption redefines the completion term and permits publication | 6, 9 | 10, 11 |
+| Detached handoff claims attachments that are only in the review prompt | 8 | 12 |
+
+Finding numbers are one-based in each retained JSON. All 25 finding-source
+quotes match their sources; that mechanical fact does not validate interpretation.
+Both retain correct 40-entry and three-hour/25%-relative-to-A arithmetic without
+claiming measured performance. Additional history-procedure and missing explicit
+unknown findings are useful. C1 already contained inventory/history intentions;
+more precise identity fields and procedures improve them rather than establish
+that the whole workstream was absent. The author reference is not a perfect oracle.
+
+### Detection Is Not A Completed Repair
+
+Codex drafts useful separate procedures and preserves independent drafting, but
+its handoff explicitly defers assembly despite having the source text and new
+plan. No complete source body, current-plan body or actual locator is in that
+detached unit. This is honest incompleteness, not a ready cold start. The original
+evaluation prompt allowed stating missing assembly prerequisites; the shortfall
+is against the usable requested outcome, not an undisclosed format test.
+
+Claude includes the original request exactly and policy/observation prose, but
+omits their original heading bytes and leaves the proposed plan outside the
+detached handoff. It correctly marks assembly and byte checking unfinished.
+Its revised plan also proposes broad appendix-related precautions, then its
+handoff promotes them into active holds. No source establishes that all draft
+completion depends on the unavailable appendix. Requiring a new USER decision
+just to propose link-discovery methods likewise narrows permitted drafting.
+The singular next action does not itself prohibit other actions; that portion
+of finding 14 is speculative. Its source-to-consolidated-target description also
+reverses the mapping direction as "one-to-many". An interpretation label does
+not cure an inaccurate explanation.
+
+Both preserve USER control of retries and separate approval scopes, but neither
+initial response is accepted as a fully usable repaired handoff. Correct omission
+detection, source attribution, document assembly, semantic quality and receiving
+acceptance remain separate judgments.
+
+### Reusable Procedure Change
+
+The [authoring workflow](document-authoring-workflow.md#check-plan-coverage) now
+checks multi-step plans before dependent work and after material replanning, not
+only at final-draft review. Map requested procedures to actual steps/results,
+retain permitted drafting and distinguish unknown dependencies or proposed
+precautions from active holds. Simple edits need no additional form.
+
+Both skills and the [handoff guide](handoff-packet-template.md#ordinary-document-work)
+now direct the writer to complete feasible authorized assembly from supplied
+material rather than pass avoidable work to the next agent. Missing access or
+disclosure authority still stops assembly. Preparation never becomes transfer,
+integrity verification, USER adoption or a receiving acknowledgement.
+
+Two new reviewer-context regressions cover the mirrored instructions. The first
+local run exposed an older ordering assertion tied to the previous step-4 text;
+it now verifies actual backbrief-before-plan-before-draft ordering. All 55 local
+review-packet fixtures then passed. Instruction presence is not native acceptance
+of the updated behavior; record any follow-up separately from these original runs.
+
+### Current-Guidance Repair Follow-Up
+
+One separately recorded invocation per client then reviewed the same synthetic
+assignment with the updated guidance. Comparing the exact prompts shows only
+the three instruction bodies changed; source, task and response-format bytes
+are unchanged. Neither previous response, operator appraisal nor answer key was
+included. This is a same-case diagnostic, not evidence of generalization or
+proof that the instructions alone caused a difference.
+
+| Client | Prompt bytes / SHA-256 | Response-file SHA-256 | Duration |
+| --- | --- | --- | --- |
+| Codex 0.162.1, gpt-6-astra | 71,868 / `9b28add6b641b7d14c9b64347b72ba44494b9fe6881be5065b9ca7fee2ec33da` | `6f9a6eec8a07c89acdab5c89820b35e04d55ae977a968f747e3944a0933fbc12` | 206.092 seconds |
+| Claude Code 2.1.322, claude-opus-5-5 | 71,882 / `95c756b0c05f9bedfd49a2e8012ec8c7c37add5dcfbc04f7761e213ed80778a7` | `90a666e6c0ca7786779e02e5798f3c43103922503fe28652f8511e941f29e615` | 214.331 seconds |
+
+Both returned exit 0, valid JSON and zero tool events. They again identify the
+six original defect families, now with 9 and 11 findings respectively. All
+finding-source quotes match; this does not establish exactness of every matrix
+quotation. Codex uses a marked ellipsis in one request quote, and Claude's final
+requirement quote paraphrases part of P1. Preserve that distinction.
+
+Both handoffs now carry all four original source bodies exactly, including their
+headings and supplied full bindings. They contain compressed procedural drafts
+rather than referring to an unassembled external plan. Those procedures are not
+byte-identical copies of `revised_plan_md`; semantic comparison, not an exact
+substring test, establishes their coverage. Neither claims to recompute hashes,
+open the appendix, obtain USER decisions or send the document.
+
+The operator's source appraisal accepts the Codex repaired draft and assembled
+unit for a next textual review: all four requested procedures, unknowns, bounded
+appendix hold, USER retry ownership, independent drafting and separate decision
+scopes survive compression. Source IDs are backed by actual embedded bodies.
+This is draft-quality acceptance, not USER adoption or an observed recipient
+continuing work from the unit.
+
+Claude no longer promotes its proposed rollback precaution into an active hold
+and does not block overall draft adoption on an unestablished appendix dependency.
+Its assembly improves, but full acceptance remains withheld. The plan says no
+accepted rollback baseline exists, and its handoff says none is accepted, where
+P1 establishes only that none is provided. Its declared Parts A-G end at F. All
+required source bodies are present, so the bad label is not evidence of an unseen
+missing source. It also obscures C1's retained USER duplicate-resolution owner
+and still overstates recommendation as selection in a finding. The actual
+adoption/execution coupling remains invalid without banning recommendations.
+
+Records and the separate appraisal are retained under
+`.cannae/maintenance/request-plan-repair-20261112/`. No automatic retry, credential
+change, sleep prevention, policy exception or publication occurred. The next
+useful step is actual cold-start continuation from an exact usable unit, not
+another detection-only replay. A08 is bounded-verified from inspected semantic
+detection and previous missing-prerequisite evidence; repair, receiving and
+client-parity gaps remain under A01/A09/A10/A14/A20. The internal-draft receiving
+policy decision is still separate and unresolved.

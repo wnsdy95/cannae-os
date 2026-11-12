@@ -65,6 +65,15 @@ Use this queue and the requirement table, not those historical instructions.
    removes unrelated event/dashboard manuals in bounded prose/exclusion cases and
    prevents an excluded platform deliverable from masking a domain gap. Broader
    relevance and semantic completeness remain open, including large general inputs.
+   The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)
+   now has two source-appraised native reviews detecting six seeded defect
+   families. Detection is bounded-verified, but the initial repairs leave feasible
+   assembly undone and introduce unsupported precaution holds. Target usable
+   repairs and declared receiving units, not another detection-only pass.
+   The current-guidance follow-up now assembles both units; operator source
+   appraisal accepts Codex's repaired draft but retains Claude's false baseline
+   absence and unit-label defects. Next observe a fresh recipient continuing
+   from the exact usable unit, without old chat or inferred sending permission.
    The [source-topic correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
    now conditions national specialist recommendations and separates bounded
    delivery-language wording from the actual subject. Local direct, installation
@@ -126,7 +135,7 @@ server. Do not turn these unequal rows into a product-completion percentage.
 | A05 | G2: necessary documents arrive with minimal irrelevant context | Partial. Both clients read six justified prerequisites in the first research case and all ten in the repair review. Local runtime-reading, [source-topic checks](document-authoring-case-study.md#source-topic-and-delivery-language-reading) and [skill-use selection](document-authoring-case-study.md#skill-use-and-maintenance-reading) condition specialist references without dropping explicit/parent inputs, role duties or controls. Ordinary client use is distinct from corpus maintenance; guarded skill-operations reading is preserved. | Manual profiles and bounded lexical matching are not globally minimal automatic routing. Preserve earlier missing-read failures and the separate method-proposal gap; verify broader relevance and semantic completeness without dropping requirements. |
 | A06 | G2: reroute at phase changes and reject missing/stale/wrong-role context | Verified (bounded). [Native phase routes](document-authoring-case-study.md#agent-invoked-phase-routing), current-byte checks and 15 preflight fixtures cover the retained local boundary. | Guarded project/multi-objective inputs remain explicitly unsupported; rejection must persist, not be relabeled as ordinary work. No protected-host guarantee is inferred. |
 | A07 | G2: uncovered domains get a bounded task cell; standing changes remain USER decisions | Verified (bounded). [Compound intake](project-terminology-workflow.md#native-compound-intake), comparison-gap fixtures and agent context checks retain the provisional cell without standing activation or expanded authority. Explicit identity stabilizes the local cell across queries/roles; the [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity) now observes actual Codex ID retention with an adapter-checked root across two phases. | Native query bodies are identical and the same role/process continues. Other clients, changed-role native continuity and semantic completeness remain separate; identity is not authenticated ownership, a registry or guarded admission. |
-| A08 | G3: detect semantic omissions and missing prerequisites | Partial. Explicit objectives and required terms preserve gaps and compiler denials. Both native clients recognize an unread required policy and hold dependent rules. Local excluded-dashboard cases retain an otherwise masked domain gap. The new direct-task case retains the original request in both queries and produces a source-appraised four-objective self-review. | One correct decomposition/self-review is not independent semantic validation. Caller declarations can still omit work; extend original-request comparison beyond these bounded cases without treating a route match as completeness. |
+| A08 | G3: detect semantic omissions and missing prerequisites | Verified (bounded). Both clients recognize missing required policy in the earlier failure case. In the [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair), both detect all six seeded omission/contradiction families from the original request and sources, with separate operator appraisal rather than a route match or author self-grade. | Same-case detection does not prove universal recall/precision, automatic objective extraction or a successful repair. Retain speculative extra findings and the repaired-plan/assembly defects under A01/A09/A10/A14; client contexts are not independent infrastructure. |
 | A09 | G3: request, plan, review/backbrief, work, report and handoff form an observed flow | Partial. The [current-guidance method-failure case](document-authoring-case-study.md#method-failure-reporting-and-handoff) now observes three routed phases, parent delivery of both advance notices, a failed required read and permitted partial work with the full objective retained. | Handoff recovery authority and a missing original-request reference prevent full acceptance. The separate operator correction and receiving map are not native author work or receiver acceptance. |
 | A10 | G3: bounded replanning and permitted method changes | Partial. Both earlier repair reviewers preserve method boundaries; the new Claude case performs P1 only after actual parent notice and never retries the failed ledger or infers readiness from counts. | The later handoff incorrectly lets a source preparer change the retry prohibition, despite naming USER elsewhere. Verify the corrected recovery boundary rather than treating a successful immediate method switch as complete replanning quality. |
 | A11 | G3: pre- and post-work reporting | Verified (bounded). Codex notices and the [current-guidance parent-mediated failure case](document-authoring-case-study.md#method-failure-reporting-and-handoff) provide actual before-work and before-method notices, a final report and a parent closeout. Source reads are phase-gated and current-worker versus parent attribution is preserved. | This verifies the conditional parent-mediated procedure, not automatic in-run delivery, authenticated receipt or universally correct prose. Retain the earlier false notices and the new brief's inaccurate verbatim-routing claim; source/handoff quality remains A01/A14. |
@@ -151,6 +160,15 @@ queue above owns next actions. The following record owns historical evidence.
 Earlier checkpoint text is retained below, including its original next actions
 and limits. Those instructions do not override the current queue. Candidate
 status and scope must be read at the checkpoint where each claim was made.
+
+Request-first plan review checkpoint: both native clients detect the six seeded
+defect families, while repaired deliverables remain separately appraised. A08
+advances to bounded-verified; twelve required rows are bounded-verified and eight
+are partial. This unequal-row ratio is not a product or remaining-effort estimate.
+The separate internal-draft receiving-policy decision is still unresolved.
+The current-guidance follow-up adds complete source assembly in both handoffs
+and operator acceptance of the Codex repaired draft. Claude's residual factual
+and unit-label defects remain; no actual receiving or USER adoption is inferred.
 
 Latest G2/G4/G5 correction: [skill-use reading](document-authoring-case-study.md#skill-use-and-maintenance-reading)
 distinguishes ordinary direct work from installation and corpus maintenance.

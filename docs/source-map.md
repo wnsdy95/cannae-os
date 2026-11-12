@@ -1,5 +1,14 @@
 # Source Map
 
+The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)
+uses four synthetic source texts, exact no-tool native responses and a separate
+operator appraisal. Both clients detect six seeded defect families, but retained
+repair/assembly defects prevent full handoff acceptance. This is local workflow
+evidence, not a new military fact or an exception to source-delivery policy.
+Its separately bound current-guidance follow-up carries exact source bodies in
+both outputs; operator acceptance covers the Codex draft, not USER adoption,
+Claude equivalence or actual receiving behavior.
+
 The [skill-use reading case](document-authoring-case-study.md#skill-use-and-maintenance-reading)
 uses a retained local before/after baseline, a prior native task's CLI arguments
 and installed/guarded regression checks. It adds no external doctrine claim or

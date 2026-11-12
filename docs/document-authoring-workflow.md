@@ -45,7 +45,9 @@ decision or handoff to the smallest useful format:
    preserve unknown policy rather than reading it in advance of that obligation.
    Use the [reporting delivery procedure](#reporting-delivery-boundaries) when
    the client cannot reliably emit the required notice during a work phase.
-4. Draft facts with source references. Label interpretation and proposed action
+4. For multi-step work, apply the [plan coverage check](#check-plan-coverage)
+   before dependent work and after a material replan. Then draft facts with source
+   references. Label interpretation and proposed action
    separately; mark assumptions and unknowns rather than filling gaps with
    plausible details. A valid template cannot guarantee factual truth.
 5. Check that every required task and constraint survived. For delegation,
@@ -111,6 +113,28 @@ Only mark `approved` when an actual authorized decision exists and name its
 scope. A role label, reviewer signature string or generated approval example
 does not establish that decision. File dates and model confidence do not
 establish evidence freshness or correctness.
+
+## Check Plan Coverage
+
+For multi-step work, compare the proposed plan with the original request before
+dependent work, not only after producing the final document. Use the same short
+requirement matrix below: map each required output, procedure, constraint and
+decision to an actual planned step and expected result. A named goal without the
+requested procedure is not coverage. Recheck after material replanning while
+retaining unaffected work. A simple self-contained edit needs no extra form.
+
+Classify gaps before repairing them. Add missing permitted drafting now; keep
+unknown values explicit; hold only work with a demonstrated missing prerequisite
+or an actual instruction to stop. Identify each hold's source, affected work,
+resolution path and decision owner. An unknown dependency is a question, not
+proof that all work depends on it. A proposed precaution or extra approval stays
+a recommendation in every summary and handoff until an authorized decision makes
+it binding. Do not manufacture USER decisions for choices already delegated.
+Likewise, recommending a method is not selecting it or authorizing its execution.
+
+Review the proposed repair too: it must cover the missing work without adding
+unsupported facts, changing authority or deferring feasible assigned drafting.
+Keep defect detection separate from acceptance of the repaired deliverable.
 
 ## Review Against The Request
 

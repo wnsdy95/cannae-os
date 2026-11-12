@@ -20,6 +20,27 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Detecting A Defect Does Not Complete Its Repair (2026-11-12)
+
+The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)
+observes both clients finding missing rollback, incomplete link/alias coverage,
+unsupported readiness, wrong retry ownership, approval conflation and false
+attachments. Each correctly keeps the supplied review input distinct from the
+detached handoff. Yet both defer feasible assembly, and Claude promotes proposed
+precautions into active holds. Accurate detection is not accepted output.
+
+Apply source-derived plan coverage before multi-step work as well as final review.
+Map procedures to steps/results, preserve unknowns without manufacturing global
+dependencies, and carry a recommendation's nonbinding status into summaries.
+Complete authorized assembly when the material is already supplied. These rules
+improve usefulness without granting access, transfer or operational permission;
+source-appraised findings and native acceptance of changed guidance stay separate.
+The same-case follow-up assembles all four source bodies in both handoffs and
+preserves proposed-versus-active holds more accurately. Codex's draft passes
+operator source appraisal; Claude still converts an unavailable baseline into
+an assertion of nonexistence. Do not trade that retained failure for a green
+both-client label. Actual cold-start continuation remains the next evidence gap.
+
 ## Skill Use Is Not Corpus Maintenance (2026-11-12)
 
 The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)

@@ -68,6 +68,16 @@ If the receiver still needs an authorized preparer to assemble those inputs,
 mark the handoff incomplete for receiving and name that prerequisite. Do not
 invent a location or treat an operator's later assembly as work the model did.
 
+When the necessary text is already supplied and authorized for this output,
+assemble the requested receiving unit now, including the current draft and its
+required sources. Do not delegate avoidable assembly merely to report an honest
+incomplete status. Use source bodies or actual authorized locators; never bypass
+access/disclosure controls, retrieve excluded sources or invent a path. If a
+real prerequisite prevents completion, identify it and retain the incomplete
+status. Text assembly is not transfer, integrity verification or acknowledgement.
+Keep proposed precautions separate from active holds in the receiving summary;
+a recommendation must not become a new restriction while being shortened.
+
 Before compressing an activity report, separate successful reads, successful-source
 rereads, failed delivery and operational execution. State the failed source ID,
 whether any body was delivered, the affected conclusion and the applicable retry

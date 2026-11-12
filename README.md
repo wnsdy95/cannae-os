@@ -736,6 +736,16 @@ its objectives, capability decisions and every selected control. Explicit/parent
 requirements and guarded contexts remain intact; this is not fresh native model
 acceptance or a globally minimal reading list.
 
+The [request-first plan review](docs/document-authoring-case-study.md#request-first-plan-review-and-repair)
+shows both clients detecting six seeded omission/authority defects while their
+repaired handoffs still need work. Plan coverage now precedes multi-step work;
+proposed precautions stay distinct from actual holds, and feasible authorized
+receiving assembly belongs to the current writer. Detection is not acceptance
+of the repair, permission to disclose sources or completion of the whole workflow.
+The same-case follow-up produces both source-complete receiving units; Codex's
+repair is source-appraised as a usable draft, while Claude retains factual/status
+defects. Actual cold-start continuation is a separate next check.
+
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)
