@@ -171,6 +171,20 @@ try {
       assert(skill.includes("rather than silently dropping or perpetuating it."));
     }
   });
+  fixture("handoff distinguishes decision owners and reported versus completed work", () => {
+    for (const phrase of ["unknown operational assignee does not make an established decision owner",
+      "an older policy's silence does not erase a later authorized assignment",
+      "Recording an unresolved item can complete its reporting obligation without",
+      "acceptance criteria rather than inventing a universal all-Pass threshold"]) {
+      assert(packet.prompt.includes(phrase), `Missing handoff decision/completion distinction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("does not make an established decision owner provisional."));
+      assert(skill.includes("worksheet or report of unresolved items is not completed underlying work."));
+      assert(skill.includes("invent an all-Pass threshold or block unrelated permitted drafting."));
+    }
+  });
   fixture("required candidate counts remain in the full handoff reading inventory", () => {
     assert(packet.prompt.includes("Count by source ID, including the candidate when it is a required row."));
     assert(packet.prompt.includes("the full required total; rereads are separate from unique sources."));

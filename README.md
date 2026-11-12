@@ -753,6 +753,12 @@ detached handoff field. Selection must preserve actual sibling dependencies and
 current restrictions. Receiving success does not erase retained report/scope drift
 or establish full outgoing acceptance.
 
+The [outgoing revision](docs/document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+now preserves current limits and USER recovery ownership in both clients.
+Codex's exact revised unit is source-appraised for advisory work; Claude still
+mixes a proposed ordering with a mandatory prerequisite in its summary. Keep
+usable drafting, completed reporting and completed underlying work distinct.
+
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)

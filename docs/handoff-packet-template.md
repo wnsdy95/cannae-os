@@ -36,6 +36,19 @@ execution unless an actual decision explicitly covers all those actions. A table
 row grouping them under "adoption decision" does not grant the missing scopes.
 Source restoration also does not establish policy review, adoption or release.
 
+Separate decision authority from the person who will perform an operation. An
+unknown operational assignee does not make an established decision owner
+provisional. Preserve the assignment or decision that establishes each boundary;
+an older policy's silence does not erase a later authorized assignment. A proposed
+procedure, baseline or quality threshold remains a proposal without making an
+already retained decision right optional.
+
+Distinguish a usable worksheet, a complete status report and completed underlying
+work. Recording an unresolved item can complete its reporting obligation without
+completing the required reconciliation. Name what remains unresolved and which
+completion claim it prevents; retain independent permitted drafting. Use supplied
+acceptance criteria rather than inventing a universal all-Pass threshold.
+
 When work depends on user-specific vocabulary, include the relevant confirmed
 definitions, scope, concept/revision IDs and ledger digest, plus unresolved
 meanings separately. Follow [Project Terminology Workflow](project-terminology-workflow.md)

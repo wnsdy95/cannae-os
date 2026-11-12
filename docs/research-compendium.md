@@ -20,6 +20,23 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Decision Ownership And Completion Claims (2026-11-12)
+
+The [outgoing revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+observes both clients preserve current restrictions and an established USER
+decision owner while leaving the operational assignee unknown. A proposed
+baseline or trigger does not make that retained decision authority provisional.
+Both skills and the handoff guide now state this distinction explicitly.
+
+Completing a worksheet or discrepancy report does not complete the underlying
+reconciliation. Codex's revised source-complete unit expresses that distinction
+and is locally accepted for advisory text work. Claude repairs its phase limits
+and recovery ownership but still turns proposed ordering into a categorical
+prerequisite in a summary. Review operative summaries as well as the main table;
+do not promote a proposal or invent an all-Pass policy to resolve ambiguous
+completion wording. Native response success and exact inclusion are separate
+from source appraisal, USER adoption and actual operational completion.
+
 ## A Successor Can Change The Receiving Unit (2026-11-12)
 
 The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)

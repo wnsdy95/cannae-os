@@ -3571,3 +3571,75 @@ rules. An actual authorized successor assignment can change phase-specific
 limits; do not silently discard them or make every historical limit permanent.
 The new instruction has local delivery/regression checks, not fresh native
 acceptance inferred from these earlier responses.
+
+## Outgoing Handoff Revision And Decision Ownership
+
+On 2026-11-12, one fresh native revision per client targeted the outgoing
+worksheet/handoff, not another receiving-only replay. Each received its exact
+previously declared unit, the original 15,027-byte incoming text, exact prior
+assignment header and three current guides. Codex's candidate was its whole
+response; Claude's was its detached handoff. No previous chat, operator appraisal
+or expected-answer criteria were sent. The parent selected the reading profile;
+this is not automatic minimal routing, discovery or worker-invoked tool evidence.
+
+The [handoff guide](handoff-packet-template.md#ordinary-document-work) and both
+skills now separate decision authority from an unknown operational assignee,
+and completed reporting from completed underlying reconciliation. Supplied
+acceptance criteria govern; neither an invented all-Pass threshold nor a blanket
+drafting hold follows. A focused fixture checks that this guidance reaches the
+review prompt and both installed-provider instruction trees.
+
+| Receiver | Prompt bytes / SHA-256 | Response-file SHA-256 | Duration |
+| --- | --- | --- | --- |
+| Codex 0.162.1, gpt-6-astra | 138,484 / `f5fe244f17990903caf15ca19d210b9eeb20da8965a56e206a045ebe558c2d16` | `47177d6ae271d3afd2199eaed5d5fa89d8ce8b755468f4b2318e9146a3a67452` | 251.679 seconds |
+| Claude Code 2.1.322, claude-opus-5-5 | 132,761 / `505a92b818f3edfebff9b19e7c17b20d681c5d6a50d4a8ff28862058f6fc1410` | `42b54aa83949cd3bd7f7ed22863ed53d8fd14565233db2fd299359edb888631a` | 347.124 seconds |
+
+Both terminal results were exit 0 with valid structured output and zero observed
+tool events. Records are retained in
+`.cannae/maintenance/outgoing-handoff-repair-20261112/`, source HEAD
+`2b9bbba7775d959c8ba62cdb2b703ecb8d8ca15e` plus exact current-guide bindings.
+No retry, operational action, private-source exception, credential change or
+sleep-prevention change occurred. Standing consent authorized synthetic review,
+not adoption or release.
+
+### Source-Appraised Results
+
+Both revisions carry the active no-tool/no-browse/no-file-read/no-validation
+limits and retain USER recovery decision authority while leaving the operational
+assignee and accepted baseline unknown. They preserve all four project bodies,
+full bindings, estimate limitations, appendix restrictions and separate approval
+scopes. Historical guidance hashes remain historical, not overwritten with the
+current selection. Useful worksheet fields and the four required procedures remain.
+
+Codex declares its entire 44,868-byte response as the next unit; its worksheet
+and bindings are available through sibling fields. W3/W4 distinguish reporting
+unknowns from completed reconciliation; W7 preserves the original completion
+meaning without adding operational approval. H3 corrects the source-category
+overcount. Operator source appraisal accepts this exact unit for advisory text
+work, with no required correction found in the assigned scope. That is not USER
+adoption, universal behavior or an observed receiver of this new revision.
+
+Claude declares its 38,947-byte decoded `handoff_md`, SHA-256
+`6aeea6e7326988736435c7265d34b204e7a3a63e94cf63b3e7a774ae27b36f1f`.
+The local unit audit confirms all source bodies/bindings and the complete exact
+15,252-byte worksheet copy. The parent performed that byte comparison; the model
+correctly did not claim to have executed it. Its previously missing phase limits
+and provisional USER recovery ownership are repaired.
+
+Claude's full outgoing acceptance remains partial. Section 4d/W0 mark baseline-
+before-change ordering G0b as proposed, but section 7 lists baseline acceptance
+as a categorical prerequisite for any change. Its report also describes the
+old proposed G0 as a requirement and groups historical guidance-hash changes
+among defects, although the origin map correctly distinguishes their phases.
+Q1 leaves completion with unrecovered Fail rows open; W8 needs a clearer link
+between that applicable uncertainty and any actual completion claim. These are
+document consistency and interpretation limits, not a demonstrated executable
+authorization bypass. Do not manufacture an all-Pass policy to close the question.
+
+The accepted Codex revision and partial Claude revision remain separate raw
+artifacts. Do not replay the accepted repair merely to obtain another pass.
+The next independent relevance check comes from a recorded maintenance query
+that over-selects runtime/dashboard reading despite document-readiness context
+and a mixed exclusion clause. Preserve the full query, explicit/parent inputs
+and genuine runtime counterexamples while investigating. This observation does
+not authorize platform development or resolve the separate private-draft policy.

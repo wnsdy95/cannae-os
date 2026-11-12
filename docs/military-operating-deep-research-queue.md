@@ -34,9 +34,13 @@ The follow-up produces source-complete units and an operator-accepted Codex
 repair; Claude's absence/status claims remain recorded. That review alone did
 not observe actual receiving or close the repaired-deliverable requirements.
 The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
-now observes that receiving and useful worksheet drafting in both clients. Next
-target retained outgoing restrictions and completion-criterion clarity, while
-respecting the differing declared units and the separate internal-draft refusal.
+now observes that receiving and useful worksheet drafting in both clients. The
+[outgoing revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+preserves current restrictions and recovery ownership in both; Codex's exact
+unit is accepted for advisory drafting, while Claude retains proposal/requirement
+and completion-criterion ambiguity. Next address the recorded maintenance-query
+over-selection without dropping genuine runtime duties or explicit/parent inputs.
+Preserve the differing units and separate internal-draft delivery refusal.
 
 The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
 reduces ordinary direct maintenance-manual over-selection while retaining parent

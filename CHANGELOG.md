@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Separate established decision ownership from an unknown operational assignee, and completed reporting from completed underlying work, in both provider skills and the handoff guide. Two native outgoing revisions retain current restrictions and USER recovery authority; exact source inclusion and selected units are checked separately. Accept the bounded Codex advisory revision while retaining Claude's proposal/requirement and completion-language gaps. Record an actual maintenance-query over-selection for the next routing correction; no private-source or platform scope expansion follows.
+
 - Observe fresh Codex and Claude sessions continuing the exact prior handoff into useful verification worksheets without old chat or tools. Preserve their different declared receiving units, a field-only extraction counterexample and outgoing report/scope defects. Both skills now recheck successor unit boundaries and current assignment restrictions, with structured inclusion evidence and reviewer-context regression coverage. Receiving is not full outgoing acceptance, authenticated authority or private-source policy clearance.
 
 - Appraise two native request-first plan reviews: both detect six seeded defect families, but honest incomplete assembly and unsupported added holds prevent full repair acceptance. Check multi-step plans before dependent work, keep proposals distinct from active restrictions, and complete feasible authorized handoff assembly. Mirror both skills and preserve actual source/response bindings, false positives and unchanged delivery controls; detection is not USER adoption or complete workflow acceptance.

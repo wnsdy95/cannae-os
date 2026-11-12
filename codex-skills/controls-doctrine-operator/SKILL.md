@@ -316,6 +316,11 @@ each hold to its existing resolution path and decision owner.
 The same decision owner does not make approval scopes interchangeable. Document
 adoption alone cannot clear publication, transmission or operational execution
 holds. Combine them only when the actual decision explicitly covers each scope.
+Separate decision authority from operational assignment: an unknown assignee
+does not make an established decision owner provisional. Likewise, a complete
+worksheet or report of unresolved items is not completed underlying work.
+Use the handoff guide's distinctions and supplied acceptance criteria; do not
+invent an all-Pass threshold or block unrelated permitted drafting.
 
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.

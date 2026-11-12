@@ -1,5 +1,10 @@
 # Source Map
 
+The [outgoing handoff revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+adds native source/predecessor comparison and exact selected-unit checks. It
+supports bounded limit/decision-owner retention, not new military research or
+operational acceptance. Preserve the partial Claude appraisal and actual scope.
+
 The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
 uses exact synthetic incoming text, fresh native responses and an operator-selected
 unit audit. Both recipients produce useful worksheets; field-only versus whole-
