@@ -185,6 +185,26 @@ try {
       assert(skill.includes("invent an all-Pass threshold or block unrelated permitted drafting."));
     }
   });
+  fixture("mixed-condition guidance changes reviewer input without rewriting candidates or grades", () => {
+    const file = path.join(root, "docs/document-authoring-workflow.md"), original = fs.readFileSync(file, "utf8");
+    const start = "For a procedure or handoff with mixed conditions, audit the operative sentences";
+    const guide = original.slice(original.indexOf(start), original.indexOf("When another reviewer evaluates a draft"));
+    assert(guide.startsWith(start) && packet.prompt.includes(guide));
+    const addition = "\nFixture: an existing approval, proposed ordering and unresolved completion meaning are distinct conditions.\n";
+    try {
+      fs.writeFileSync(file, replaceOnce(original, guide, guide + addition));
+      const changed = buildPacket(root);
+      assert.equal(changed.prompt, replaceOnce(packet.prompt, guide, guide + addition));
+      assert.deepEqual(changed.reference, packet.reference);
+      assert.deepEqual(changed.manifest.case_ids, packet.manifest.case_ids);
+      assert.notEqual(changed.manifest.source_sha256["docs/document-authoring-workflow.md"],
+        packet.manifest.source_sha256["docs/document-authoring-workflow.md"]);
+    } finally { fs.writeFileSync(file, original); }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("For mixed conditions, compare each condition's source, phase and status across"));
+    }
+  });
   fixture("required candidate counts remain in the full handoff reading inventory", () => {
     assert(packet.prompt.includes("Count by source ID, including the candidate when it is a required row."));
     assert(packet.prompt.includes("the full required total; rereads are separate from unique sources."));

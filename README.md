@@ -755,9 +755,12 @@ or establish full outgoing acceptance.
 
 The [outgoing revision](docs/document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
 now preserves current limits and USER recovery ownership in both clients.
-Codex's exact revised unit is source-appraised for advisory work; Claude still
-mixes a proposed ordering with a mandatory prerequisite in its summary. Keep
-usable drafting, completed reporting and completed underlying work distinct.
+Codex's exact revised unit is source-appraised for advisory work. The later
+[operative-condition review](docs/document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+repairs Claude's proposed-ordering summary but retains completion ambiguity and
+adds an unsupported trigger qualification. A separate, source-appraised operator
+correction preserves the stable predecessor; it has no fresh native acceptance.
+Keep usable drafting, completed reporting and completed underlying work distinct.
 
 The [document-readiness routing correction](docs/document-authoring-case-study.md#document-readiness-and-format-routing)
 replays the actual maintenance request: five unrelated runtime references are

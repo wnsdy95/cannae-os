@@ -20,6 +20,21 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Mixed Conditions Need Separate Status (2026-11-12)
+
+The [operative-condition review](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+shows why a gate's shared label cannot substitute for checking each condition.
+An existing authorization and a proposed extra prerequisite can occur in one
+sentence. Preserve the former without silently promoting the latter, and check
+the actual summary and procedure rather than only the definition table.
+
+A fresh native revision fixes the baseline summary and historical-input report,
+but adds an unsupported post-change trigger restriction and leaves a completion
+question unresolved. Full source inclusion is not semantic acceptance. A separate
+operator repair uses the stable predecessor and exact replacements, leaving both
+native outputs intact. This limits repair scope and makes changes reviewable;
+it does not establish fresh model acceptance or permission to transmit the result.
+
 ## Readiness Context And Format Selection (2026-11-12)
 
 The [document-readiness routing case](document-authoring-case-study.md#document-readiness-and-format-routing)

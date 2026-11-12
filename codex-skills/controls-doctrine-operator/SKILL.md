@@ -264,6 +264,10 @@ unknowns explicit and distinguish sourced holds from proposed precautions in
 every summary. Do not turn an unknown dependency into a blanket hold or create
 new USER decisions for already delegated choices. Review the repair as well as
 the findings; successful defect detection is not a completed deliverable.
+For mixed conditions, compare each condition's source, phase and status across
+the summary and operative steps using the authoring workflow's matrix. Preserve
+existing approvals without promoting adjacent proposals; link material completion
+ambiguity to the affected claim instead of treating an open-question list as resolution.
 
 Review the exact excerpt being transferred: retain explicit prohibitions inside
 it; `draft` or `not adopted` does not mean `do not publish`. Declare excluded

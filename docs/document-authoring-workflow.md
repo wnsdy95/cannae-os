@@ -175,6 +175,25 @@ artifact; `draft` and `not adopted` describe status, not a publication prohibiti
 Keep source references, applicable conditions and unresolved decisions with the
 transferable text. Check the proposed revision against the source before adoption.
 
+For a procedure or handoff with mixed conditions, audit the operative sentences
+as well as their definitions. Use the same requirement matrix; a separate form
+is unnecessary. For each condition, record its source/phase, whether it is a
+binding instruction, a proposed precaution or an unresolved interpretation, and
+the summary, next action and procedure that use it. Split a mixed sentence into
+its distinct conditions: labeling an entire gate "proposed" must not weaken an
+existing authorization requirement, and citing a proposal must not make its
+additional prerequisite binding. Repair the operative sentence itself; a correct
+status table or cross-reference elsewhere does not resolve the contradiction.
+
+When an unresolved interpretation affects a completion claim, connect that
+specific claim to the question and its decision owner. Until clarified, report
+the observed work and the unresolved completion meaning without certifying the
+disputed state. Do not invent an all-Pass threshold or stop independent drafting.
+In the change report, distinguish an actual source contradiction from a revised
+recommendation or a new phase's inputs. Different historical guidance digests
+alone do not establish an earlier error; retain the original attribution and
+state what the available comparison actually proves.
+
 When another reviewer evaluates a draft, give them the original request, current
 source policies and candidate text before the author's self-ratings or prior
 pass/fail conclusions. Keep a seeded-defect reference separate from evaluator

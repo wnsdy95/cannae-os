@@ -44,6 +44,12 @@ without dropping prior controls, genuine runtime duties or explicit/parent input
 Broader task relevance, actual repaired-document parity and the separate internal-
 draft delivery refusal remain open. Preserve the differing receiving units.
 
+The [operative-condition follow-up](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+repairs the native baseline summary and historical-input attribution, but retains
+completion ambiguity and an unsupported trigger change. Its exact operator
+correction has source appraisal, not new native acceptance. Review/continue that
+bounded unit without replaying accepted Codex work or bypassing delivery controls.
+
 The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
 reduces ordinary direct maintenance-manual over-selection while retaining parent
 and explicit requirements, guarded context and selected controls. Its local replay

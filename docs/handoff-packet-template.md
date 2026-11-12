@@ -90,6 +90,10 @@ real prerequisite prevents completion, identify it and retain the incomplete
 status. Text assembly is not transfer, integrity verification or acknowledgement.
 Keep proposed precautions separate from active holds in the receiving summary;
 a recommendation must not become a new restriction while being shortened.
+For mixed gates, compare each condition's source and status with its wording in
+the next-action summary and procedure. Preserve existing approval requirements
+without promoting an adjacent proposed prerequisite. Apply the operative-condition
+check in the authoring workflow; repair contradictory sentences, not just labels.
 
 Recheck the receiving-unit declaration after every continuation; the same output
 field name does not guarantee the same boundary. If a structured response declares

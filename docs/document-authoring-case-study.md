@@ -3711,3 +3711,75 @@ ambiguity and broader source-currentness checks remain open. There is no new
 native document acceptance, authenticated authority, policy adoption or release.
 Do not replay accepted document revisions just to accumulate passes; target an
 unresolved requirement and preserve the original task and disclosure controls.
+
+## Operative Condition Review And Bounded Repair
+
+On 2026-11-12, one fresh Claude revision received the exact partial Phase 3 unit,
+its actual Phase 2 predecessor, original incoming unit, historical assignments
+and three current guides. The accepted Codex revision was not replayed. Both
+provider skills and the authoring workflow now audit each operative condition's
+source, phase and status across summaries and procedures, including material
+completion ambiguity. The existing requirement matrix is reused, not a new
+authority form. A focused packet fixture checks guidance delivery and changed
+bindings while preserving historical candidates and withheld reference answers.
+
+The parent selected the three-guide profile. No operator appraisal or answer key
+was sent; candidate-embedded self-reviews remained untrusted review material.
+This tests source-grounded revision, not native discovery, worker routing or
+advance-report timing. Standing verification consent covers this synthetic case,
+not the separate blocked METHOD-61 private-draft delivery.
+
+| Evidence | Binding |
+| --- | --- |
+| Source HEAD | `c9aace00b32ead0acb0cc6bca59ca906648b9d19`, with exact working-guide digests |
+| Input | 177,441 bytes; SHA-256 `2c3df58f791e74875b4d1e46d576d992e3907b652fc2bffd685aa52600c1afa8` |
+| Native client | Claude Code 2.1.322, actual model `claude-opus-5-5` |
+| Terminal result | Exit 0, valid structure, zero observed tool events, 405.740 seconds |
+| Response | 73,497 bytes; SHA-256 `37042de323f73b4c8a453c7feef91236a145195bdd1aff22bb937464d005668b` |
+| Declared detached handoff | 45,939 bytes; SHA-256 `20368acd6c9fe0281649e36a9481a6b76a69201a8e71376a7a52c3dd1cd985bc` |
+
+Records are retained in `.cannae/maintenance/operative-condition-review-20261112/`.
+No relaunch, operational action, credential/settings change or sleep prevention
+occurred. Local inclusion checks find all four exact source bodies/full bindings
+and the complete 17,740-byte worksheet inside the declared handoff. These checks
+belong to the parent, not the no-tool model.
+
+### Source-Appraised Native Result
+
+The next-action summary now separates existing execution/method decisions from
+proposed baseline ordering and makes the latter conditional on USER adoption.
+Historical G0 is recognized as a proposal, and changed guidance digests are not
+treated as sufficient proof of an earlier defect. Current action limits, USER
+recovery ownership, unknown assignees, independent drafting and all four required
+procedures remain in the detached unit.
+
+Full acceptance remains partial. W8 allows a completion record with unresolved
+Fail rows if they are listed and preservation success is not claimed. That does
+not answer Q1: whether the task-defined completion state is established in that
+case. Separately, the recovery links add an unsupported "after a change" condition
+to T1/T2 while W5 retains the unqualified trigger definitions. Clarifying how to
+handle a preexisting failure is not permission to narrow the inherited trigger.
+Additional defect labels about inspection identifiers, baseline fields and draft
+status are not established merely by their wording. Retain useful revisions
+separately from those unsupported findings; no runtime bypass was reproduced.
+
+### Separate Operator Successor
+
+Rather than adopting the broad native rewrite, the operator materialized
+`DOCMOVE-47-HANDOFF-OP1` from the previously appraised Phase 3 base. Fourteen exact
+span replacements cover successor identity/attribution and the bounded repairs:
+separate the mixed gate in both procedure and summary, qualify the historical
+proposal, distinguish a phase-input update from an error, and connect Q1 to the
+affected completion claim only when material. No all-Pass policy, operational
+permission or new assignee follows. The unsupported Phase 4 trigger change is
+not imported. Both raw native responses remain unchanged.
+
+The complete operator Markdown, including its correction record and W-2/OP1,
+is 42,212 bytes, SHA-256
+`14467ecabede16b4e1aeb2076126f33f050e73a26651dc1776f6aa177dd84f74`.
+All four source bodies/full bindings and the complete PH1/source/historical-guide
+tail remain exact. The local edit audit binds each replacement and its basis;
+source appraisal accepts the listed corrections within that scope, not a general
+quality score. This successor has no fresh native review or actual receiver
+acknowledgement. Next review/continue the exact bounded unit, preserving the
+separate delivery-policy refusal and broader G1-G5 requirements.

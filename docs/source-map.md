@@ -1,5 +1,11 @@
 # Source Map
 
+The [operative-condition review](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+compares exact synthetic current/predecessor units, assignments and guidance.
+It separates useful native repairs from unsupported findings and a separately
+materialized operator correction. This is local source appraisal, not new military
+research, authenticated authority or acceptance inferred from process success.
+
 The [document-readiness routing case](document-authoring-case-study.md#document-readiness-and-format-routing)
 uses the exact earlier maintenance query, retained before/after CLI output and
 counterexamples for both providers. It supports bounded relevance and restored
