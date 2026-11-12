@@ -20,6 +20,22 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Task Continuity And Receiving Boundaries (2026-11-12)
+
+The [METHOD-61 follow-up](document-authoring-case-study.md#corrected-receiving-preparation-boundary)
+shows why source-locatable local assembly and an actually deliverable unit are
+different acceptance claims. Existing internal-path and repository-disclosure
+boundaries remain in force; a planned native receiving review was not executed.
+Relocating inputs or dropping their origin context to pass would not resolve the
+actual requirement. A usable reviewed receiving representation remains work.
+
+An independent [router correction](document-authoring-case-study.md#direct-task-organization-identity)
+separates ordinary task identity from changing phase wording. An explicit target
+root and task ID preserve a bounded cell across roles and objective order while
+retaining query-based capability assessment. Identity is not intent equivalence,
+authority, source freshness or admission. Guarded mission identity and unsupported
+compound receipt boundaries remain unchanged. No new military claim is made.
+
 ## Reporting Success Does Not Transfer Recovery Authority (2026-11-12)
 
 The [method-failure case](document-authoring-case-study.md#method-failure-reporting-and-handoff)

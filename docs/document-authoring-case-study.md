@@ -2950,3 +2950,76 @@ source-policy holds are unchanged. All five objectives remain partial; full
 handoff/recovery quality and cross-client equivalence are not established by
 successful process exits or notice timing. No new Codex call, hosted CI,
 full aggregate, publication, settings change or platform service is claimed.
+
+## Corrected Receiving Preparation Boundary
+
+After committing the method-failure change as `787aa43`, the operator proposed
+a fresh receiving review of the actual corrected METHOD-61 unit. The selected
+inputs retained both original and corrected outputs, the original request, source
+lookup, observed phases, referenced notices and six historical source snapshots.
+Four current guides were separately assigned. A synthetic source-preparer note
+claimed restoration and retry permission without a new USER instruction; it was
+proposed evidence, never actual authority. No answer key or private owner/ledger
+body was included.
+
+Preparation stopped before a model call. All 14 selected project files were
+under `.cannae/document-drafts/METHOD-61/`; the existing request validator rejected
+them with `PROJECT_PACKET_PATH_INVALID`. The raw source lookup also contains the
+canonical target root, which the inspected packet policy prohibits in outbound
+content. That second conflict is source inspection, not execution beyond the
+path refusal. No final manifest, native attempt or receiver response exists.
+
+The proposed request and exact 14 findings remain in
+`.cannae/maintenance/recovery-receiving-20261112/preparation-invalid-request.json`.
+The original assembled files were not edited, relabeled or copied to a different
+path to evade the check. No source/disclosure guard was relaxed. The separate
+synthetic note remains a local proposed input, not a continuation instruction.
+
+This is an integration limit, not a model failure or a claim that the local
+correction is wrong. A source-locatable local unit is not necessarily transferable
+through the current packet contract. Next design and review a receiving
+representation that retains original intent, dependencies, historical provenance
+and recovery authority while respecting internal-path and disclosure boundaries.
+Do not silently drop a dependency or replace the blocked delivery mechanism merely
+to obtain an apparently successful native test. A14 and client parity stay partial.
+
+## Direct-Task Organization Identity
+
+The METHOD-61 trace independently exposed three query-derived cell IDs for one
+assignment and recipient. Guarded routing already uses mission identity, but
+ordinary compound intake cannot accept mission metadata. Reusing an existing
+runtime identity or dropping objectives would therefore be an incorrect repair.
+
+Both direct routers now accept a paired `--task-id` and `--task-root`. The root
+must be an existing absolute project directory; aliases resolve to its canonical
+location. A domain-separated root/ID tuple supplies the cell and standing-candidate
+identity when an actual capability gap is found. Phase wording, current role and
+objective order can change without inventing another organization for that same
+declared task. Different roots or IDs remain separate; covered work still returns
+no provisional cell. Legacy calls without the pair remain query-derived.
+
+The result carries `task_context` with `authorization_verified: false`. It does
+not verify caller ownership, unchanged purpose, source freshness or authorization.
+The operator must retain the original request and binding across phases, review
+changed work separately, and explicitly reconcile a moved project's old/new root.
+There is no new standing activation, registry, persistence or distributed lease.
+
+Incomplete, duplicate or malformed identity fails. When project inputs are
+declared, their bound root must match. Receipt, artifact, coverage and mission/
+wave/agent metadata reject this direct identity rather than treating it as
+admission. Existing guarded multi-objective and project-input denials remain.
+No schema, historical receipt or issued context is rewritten.
+
+Both provider skills and routing references now teach this distinction. CLI
+fixtures exercise phase/role/order continuity, separate tasks/projects, aliases,
+literal option-like query text, unchanged selected documents/controls and denied
+mode combinations without artifacts. Linked/copied installation fixtures execute
+the actual documented command in paths containing spaces and from another working
+directory, checking both provider cells and the absence of native client calls.
+These are local routing/installation checks, not observed native use of the new
+option, general intent preservation or resolution of the receiving refusal above.
+
+The implementation and local-check records are tracked separately under
+`.cannae/maintenance/task-identity-20261112/`. Earlier native results and decision
+limits remain unchanged. All five goals stay partial; no deployment, push,
+publication, persistent client setting or authority expansion is part of this work.

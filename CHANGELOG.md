@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add paired project-root/task-ID context for ordinary direct routing, preserving one capability cell across phase wording and roles without changing reading, authority or guarded mission identity. Reject incomplete/conflicting identity and mixed admission modes; mirror the procedure in both skills and exercise actual linked/copied commands. Record the separate corrected-handoff preparation refusal without invoking a model, bypassing internal-path controls or claiming receiving acceptance.
+
 - Verify current full guidance through parent-delivered advance and method-change notices, one failed required read and bounded partial work without retry or false full completion. Retain the native handoff's conflicting recovery authority and absent original-request reference, plus a separate project-local six-span correction and source map. Both skills now distinguish source preparation from retry-decision authority, actual output attachments from prompt context, and translation from verbatim forwarding. Notice timing is bounded-verified; full handoff acceptance and the new correction's native review remain open.
 
 - Bind current support-SOP navigation across six entry points to one declared candidate/disposition and exact candidate/appraisal sections. Extend the existing source-map gate with stale-target, state, source-drift and misplaced/dropped-reference rejection while preserving historical bodies. Distinguish current task navigation from metadata-only and platform-history checkpoints, and mirror source-first maintenance in both skills. This is local declared-state integrity, not semantic review, authenticated adoption or full goal closure.

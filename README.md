@@ -711,6 +711,14 @@ attribution do not repair its handoff's conflicting retry decision owners or
 missing original-request reference. Those remain recorded beside a separate
 operator correction, not a fully accepted handoff.
 
+The [receiving preparation](docs/document-authoring-case-study.md#corrected-receiving-preparation-boundary)
+stops at the existing internal-path boundary before a model call; a locally
+assembled source map is not automatically transferable. Separately, ordinary
+phase routes can now carry an explicit project-root/task-ID pair to keep one
+[provisional cell](docs/document-authoring-case-study.md#direct-task-organization-identity)
+despite changed wording. This grants no access, standing organization or execution
+authority and cannot replace guarded mission metadata.
+
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
 The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)

@@ -1,5 +1,11 @@
 # Source Map
 
+The [direct-task identity correction](document-authoring-case-study.md#direct-task-organization-identity)
+is based on inspected local router behavior, not a military-source claim. Its
+project/task binding is distinct from authenticated ownership or admission.
+The [receiving preparation refusal](document-authoring-case-study.md#corrected-receiving-preparation-boundary)
+is local contract evidence, not a native model verdict or completed handoff.
+
 The [method-failure reporting case](document-authoring-case-study.md#method-failure-reporting-and-handoff)
 uses synthetic policy/counts and exact installed guidance, not external military
 evidence. It verifies a parent-mediated notice boundary after a failed read while

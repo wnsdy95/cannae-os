@@ -338,6 +338,13 @@ binds the revision; ordinary prose work outside that wave needs no such ceremony
 
 ## Capability Gaps
 
+For a continuing ordinary project task, carry one `--task-id` and absolute
+`--task-root` through phase/agent routes. Keep the original objectives separately;
+these fields stabilize cell identity, not intent, access or approval. Check the
+returned `task_context`, and follow the direct-task procedure in
+[Document Routing](references/document-routing.md). Do not use this mode to
+replace a guarded mission, receipt or unsupported multi-objective admission.
+
 On `capability_routing.status: gap_detected`, retain the returned mission-scoped
 `CELL-*` and standing `DEPT-*` candidate across agents and context packs.
 The cell may analyze and draft reversibly within existing authority.

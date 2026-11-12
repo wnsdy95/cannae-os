@@ -619,7 +619,7 @@ function usage() {
   console.error("Doctrine binding: --doctrine-root=PATH overrides CANNAE_OS_HOME, the copy marker, the installed source location and then the working directory.");
   console.error("Required inputs: repeat --source=<corpus-relative-path>; unresolved inputs stop routing before a receipt is issued.");
   console.error("Project input references: --input-repository=<Git-root> --input-source=<exact-relative-file> (repeatable, direct output only; no content or authority is granted).");
-  console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=OBJECTIVE ...] [--all] [--limit=N] <query> [repo-root]");
+  console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=OBJECTIVE ...] [--task-id=ID --task-root=ABSOLUTE_PROJECT_DIRECTORY] [--all] [--limit=N] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE --capability-query=OBJECTIVE [--write-artifact --target-repository=PATH] -- <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
   process.exit(2);
@@ -726,7 +726,7 @@ function isCorpusOrientationRequest(query) {
   ].some(pattern => pattern.test(text));
 }
 
-function capabilityRouting(query, scoredRules, missionId) {
+function capabilityRouting(query, scoredRules, scopeIdentity) {
   const capabilityRules = scoredRules.filter(rule =>
     rule.id !== "orientation" && rule.specific_score > 0);
   const orientationRule = scoredRules.find(rule => rule.id === "orientation");
@@ -768,7 +768,7 @@ function capabilityRouting(query, scoredRules, missionId) {
   }
 
   const digest = crypto.createHash("sha256")
-    .update(String(missionId || query || "unscoped-capability-gap"))
+    .update(String(scopeIdentity || query || "unscoped-capability-gap"))
     .digest("hex")
     .slice(0, 12)
     .toUpperCase();
@@ -1014,6 +1014,22 @@ function resolveInputReferences(options, doctrineRoot) {
     content_loaded: false, authorization_verified: false };
 }
 
+function directTaskContext(options, inputs) {
+  if (options.taskId === null) return null;
+  let root;
+  try {
+    if (!path.isAbsolute(options.taskRoot)) throw new Error();
+    root = fs.realpathSync(options.taskRoot);
+    if (!fs.statSync(root).isDirectory()) throw new Error();
+  } catch {
+    throw new Error("TASK_CONTEXT_ROOT_INVALID: select an existing absolute target project directory.");
+  }
+  if (inputs && inputs.repository_root !== root) {
+    throw new Error("TASK_CONTEXT_ROOT_MISMATCH: task identity and project inputs must name the same root.");
+  }
+  return { id: options.taskId, root, basis: "caller_declared_project_task", authorization_verified: false };
+}
+
 function taskReferences(query, requiredSources, inventory, inputSources = null) {
   const paths = new Set(inventory.map(item => item.path));
   const basenames = new Map();
@@ -1109,6 +1125,8 @@ function parseArgs(argv) {
     department: null,
     authority: null,
     capabilityQueries: [],
+    taskId: null,
+    taskRoot: null,
     doctrineRoot: null,
     sources: [],
     inputRepository: null,
@@ -1127,7 +1145,7 @@ function parseArgs(argv) {
     limit: 40
   };
   const queryParts = [];
-  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "doctrine-root", "source", "input-repository", "input-source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
+  const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "task-id", "task-root", "doctrine-root", "source", "input-repository", "input-source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
   const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact"]);
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -1141,6 +1159,7 @@ function parseArgs(argv) {
         ? "TASK_SOURCE_UNRESOLVED: empty required doctrine input."
         : `Missing value for --${equalsMatch[1]}.`);
       if (key === "inputRepository" && options.inputRepository !== null) throw new Error("Specify --input-repository exactly once.");
+      if (["taskId", "taskRoot"].includes(key) && options[key] !== null) throw new Error("TASK_CONTEXT_DUPLICATE: specify each task identity option once.");
       if (key === "source") options.sources.push(equalsMatch[2]);
       else if (key === "inputSource") options.inputSources.push(equalsMatch[2]);
       else if (key === "capabilityQuery") options.capabilityQueries.push(equalsMatch[2]);
@@ -1153,6 +1172,7 @@ function parseArgs(argv) {
       index += 1;
       if (index >= argv.length || !argv[index] || argv[index].startsWith("--")) throw new Error(`Missing value for ${arg}.`);
       if (key === "inputRepository" && options.inputRepository !== null) throw new Error("Specify --input-repository exactly once.");
+      if (["taskId", "taskRoot"].includes(key) && options[key] !== null) throw new Error("TASK_CONTEXT_DUPLICATE: specify each task identity option once.");
       if (key === "source") options.sources.push(argv[index]);
       else if (key === "inputSource") options.inputSources.push(argv[index]);
       else if (key === "capabilityQuery") options.capabilityQueries.push(argv[index]);
@@ -1170,6 +1190,18 @@ function parseArgs(argv) {
     queryParts.push(arg);
   }
 
+  if ((options.taskId !== null) !== (options.taskRoot !== null)) {
+    throw new Error("TASK_CONTEXT_INCOMPLETE: --task-id and --task-root are required together.");
+  }
+  if (options.taskId !== null) {
+    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(options.taskId)) {
+      throw new Error("TASK_CONTEXT_ID_INVALID: use 1-100 ASCII letters, digits, dots, underscores or hyphens, starting with a letter or digit.");
+    }
+    if (options.receipt || options.writeArtifact || options.coverage || options.targetRepository ||
+        options.artifactRoot || options.overwriteArtifact || options.scope || options.mission || options.wave || options.agent) {
+      throw new Error("TASK_CONTEXT_MODE_UNSUPPORTED: direct task identity cannot replace guarded mission metadata, receipts or artifacts.");
+    }
+  }
   if (options.capabilityQueries.some(query => !query.trim())) {
     throw new Error("CAPABILITY_QUERY_EMPTY: every declared objective must contain text.");
   }
@@ -1330,6 +1362,9 @@ function needsRuntimeSpecialistReading(text, sources) {
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
   const inputs = resolveInputReferences(options, repoRoot);
+  const taskContext = directTaskContext(options, inputs);
+  const scopeIdentity = taskContext
+    ? JSON.stringify(["controls-direct-task-v1", taskContext.root, taskContext.id]) : options.mission;
   const inventory = buildArtifactInventory(repoRoot);
   const references = taskReferences(query, options.sources, inventory, inputs ? inputs.sources.map(item => item.path) : null);
   for (const item of references.unresolved) {
@@ -1352,7 +1387,7 @@ function route(query, repoRoot, options) {
   const multipleObjectives = capabilityQueries.length > 1;
   const assessments = capabilityQueries.map(objective => {
     const rules = scoreRules(objective);
-    return { query: objective, rules, decision: capabilityRouting(objective, rules, options.mission) };
+    return { query: objective, rules, decision: capabilityRouting(objective, rules, scopeIdentity) };
   });
   const capabilityQuery = multipleObjectives ? query : capabilityQueries[0];
   let capability = assessments[0].decision;
@@ -1360,7 +1395,7 @@ function route(query, repoRoot, options) {
     // A supporting objective cannot clear another objective's capability gap.
     const hasGap = assessments.some(item => item.decision.status === "gap_detected");
     const matchedRoutes = unique(assessments.flatMap(item => item.decision.matched_capability_routes)).sort();
-    capability = hasGap ? capabilityRouting(query, [], options.mission) : {
+    capability = hasGap ? capabilityRouting(query, [], scopeIdentity) : {
       ...capability,
       capability_scope: query,
       reason_code: matchedRoutes.every(id => id === "orientation") ? "CORPUS_ORIENTATION_REQUEST" : "MATCHED_DOCTRINE_ROUTE",
@@ -1451,6 +1486,7 @@ function route(query, repoRoot, options) {
       capability_assessment_basis: "Caller-declared objectives with lexical matching; objective completeness and semantic correctness remain unverified."
     } : {}),
     repo_root: repoRoot,
+    ...(taskContext ? { task_context: taskContext } : {}),
     operating_mode: mode,
     matched_routes: selectedRules.map(rule => ({ id: rule.id, score: rule.score })),
     capability_routing: capability,

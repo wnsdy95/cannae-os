@@ -171,6 +171,33 @@ function declaredObjectives(env) {
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
 }
 
+function continuingTask(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG), outputs = [];
+  for (const provider of PROVIDERS) {
+    const folder = destination(env, provider);
+    const reference = fs.readFileSync(path.join(folder, "references/document-routing.md"), "utf8");
+    const section = reference.split("### Continuing Direct Tasks\n")[1]?.split("\n### ")[0];
+    const command = section?.match(/^```bash\n([\s\S]*?)\n```/m)?.[1];
+    assert(command && command.includes('--task-root="/absolute/target-project"'));
+    for (const next of [false, true]) {
+      let invocation = command.replace("/absolute/target-project", "$TARGET_PROJECT");
+      if (next) invocation = invocation.replace("Compare the next museum inventory and revise the SOP.", "Review the museum figures and draft the next SOP.");
+      const run = spawnSync("/bin/bash", ["-c", invocation], { cwd: next ? temporary : unrelated,
+        env: { ...env, CONTROLS_SKILL_DIR: folder, TARGET_PROJECT: unrelated }, encoding: "utf8", timeout: 20000, maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 0, run.stderr); const result = JSON.parse(run.stdout);
+      assert.equal(result.repo_root, source); assert.equal(result.task_context.root, unrelated);
+      assert.equal(result.task_context.id, "TASK-61"); assert.equal(result.task_context.authorization_verified, false);
+      assert.equal(result.operating_mode.role, "S6"); assert.equal(result.operating_mode.authority, "read-only");
+      assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+      assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+      outputs.push(result.capability_routing.provisional_organization.organization_id);
+    }
+  }
+  assert.equal(new Set(outputs).size, 1, "Both installed providers and changed phase queries must retain one task cell");
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+  assert(!fs.existsSync(path.join(unrelated, ".cannae")), "Task identity must not open a mission or persist artifacts");
+}
+
 function documentedReceipts(env) {
   const query = "Draft a support SOP.";
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
@@ -349,6 +376,7 @@ try {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
   });
   fixture("linked providers retain every declared objective from another project", () => declaredObjectives(env));
+  fixture("linked providers keep one direct-task cell across phases using the documented command", () => continuingTask(env));
   fixture("linked providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("linked providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
@@ -385,6 +413,7 @@ try {
     }
   });
   fixture("copied providers retain every declared objective from another project", () => declaredObjectives(env));
+  fixture("copied providers keep one direct-task cell across phases using the documented command", () => continuingTask(env));
   fixture("copied providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("copied providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));

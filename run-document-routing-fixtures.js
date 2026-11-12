@@ -15,6 +15,7 @@ const ROUTERS = [
 let routedQueries = 0;
 let rejectedSources = 0;
 let rejectedObjectives = 0;
+let taskIdentityChecks = 0;
 const GITHUB_RELEASE_DOCS = [
   "docs/github-release-authorization.md",
   "docs/github-release-immutability.md",
@@ -391,8 +392,77 @@ function testObjectiveRouting(router) {
   }
 }
 
+function testDirectTaskIdentity(router) {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "controls-task-identity-")));
+  const other = path.join(root, "other"), alias = path.join(root, "alias");
+  fs.mkdirSync(other); fs.symlinkSync(other, alias);
+  const fixed = ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"];
+  const binding = ["--task-id=TASK-61", `--task-root=${root}`];
+  const objectives = ["--capability-query=Analyze museum attendance", "--capability-query=Draft an SOP"];
+  const call = (flags, query, cwd = ROOT) => {
+    const run = spawnSync(process.execPath, [path.join(ROOT, router), ...fixed, ...flags,
+      `--doctrine-root=${ROOT}`, "--", query], { cwd, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+    taskIdentityChecks++;
+    return run;
+  };
+  const positive = (flags, query, cwd) => {
+    const run = call(flags, query, cwd); assert.equal(run.status, 0, run.stderr);
+    return JSON.parse(run.stdout);
+  };
+  const cell = result => result.capability_routing.provisional_organization.organization_id;
+  try {
+    const first = positive([...binding, ...objectives], "Analyze museum attendance and draft an SOP. Do not publish.");
+    const next = positive([...binding, ...objectives.slice().reverse()], "Compare the next museum inventory and revise the SOP. Do not publish.", other);
+    const peer = positive([...binding, ...objectives, "--role=S2", "--department=intelligence"], "Review the museum findings. Do not publish.");
+    assert.equal(cell(next), cell(first)); assert.equal(cell(peer), cell(first));
+    assert.equal(next.capability_routing.force_structure_review.candidate_department_id, first.capability_routing.force_structure_review.candidate_department_id);
+    assert.deepEqual(first.task_context, { id: "TASK-61", root, basis: "caller_declared_project_task", authorization_verified: false });
+    assert.equal(peer.operating_mode.role, "S2"); assert.equal(peer.operating_mode.authority, "read-only");
+    assert.deepEqual(next.capability_assessments.map(row => row.status), ["covered", "gap_detected"]);
+    assert.equal(first.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(first.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+    const legacy = positive(objectives, first.query);
+    assert(!Object.hasOwn(legacy, "task_context"));
+    for (const key of ["recommended_documents", "validation_commands", "operating_mode", "capability_assessments", "task_references"]) assert.deepEqual(first[key], legacy[key]);
+    const distinct = positive(["--task-id=TASK-62", `--task-root=${root}`, ...objectives], first.query);
+    const separate = positive(["--task-id=TASK-61", `--task-root=${other}`, ...objectives], first.query);
+    const canonical = positive(["--task-id", "TASK-61", "--task-root", alias, ...objectives], first.query);
+    assert.notEqual(cell(distinct), cell(first)); assert.notEqual(cell(separate), cell(first));
+    assert.equal(cell(canonical), cell(separate)); assert.equal(canonical.task_context.root, other);
+    const covered = positive(binding, "Draft an SOP");
+    assert.equal(covered.capability_routing.status, "covered"); assert.equal(cell(covered), "none");
+    const literal = positive(binding, "--task-id=REPLACEMENT"); assert.equal(literal.task_context.id, "TASK-61");
+    const blocked = [
+      [["--task-id=TASK-61"], "TASK_CONTEXT_INCOMPLETE"], [[`--task-root=${root}`], "TASK_CONTEXT_INCOMPLETE"],
+      [["--task-id= ../bad", `--task-root=${root}`], "TASK_CONTEXT_ID_INVALID"],
+      [["--task-id=" + "A".repeat(101), `--task-root=${root}`], "TASK_CONTEXT_ID_INVALID"],
+      [["--task-id=TASK-61", "--task-root=relative"], "TASK_CONTEXT_ROOT_INVALID"],
+      [["--task-id=TASK-61", `--task-root=${root}/missing`], "TASK_CONTEXT_ROOT_INVALID"],
+      [[...binding, "--task-id", "OTHER"], "TASK_CONTEXT_DUPLICATE"],
+      [[...binding, "--task-root", other], "TASK_CONTEXT_DUPLICATE"],
+      ...[["--receipt"], ["--coverage"], ["--write-artifact"], ["--overwrite-artifact"],
+        ["--mission=MIS-61"], ["--wave=W1"], ["--agent=a"], ["--scope=agent"],
+        [`--target-repository=${root}`], [`--artifact-root=${root}`]].map(flags => [[...binding, ...flags], "TASK_CONTEXT_MODE_UNSUPPORTED"])
+    ];
+    for (const [flags, code] of blocked) {
+      const run = call(flags, "Analyze museum attendance"); assert.equal(run.status, 2, run.stderr);
+      assert(run.stderr.includes(code), run.stderr); assert.equal(run.stdout, "");
+    }
+    assert.deepEqual(fs.readdirSync(root).sort(), ["alias", "other"]);
+    const init = spawnSync("git", ["init", "-q", other], { encoding: "utf8" }); assert.equal(init.status, 0, init.stderr);
+    fs.writeFileSync(path.join(other, "input.md"), "# Synthetic input\n");
+    const input = [`--input-repository=${other}`, "--input-source=input.md"];
+    const mismatch = call([...binding, ...input], "Analyze museum attendance");
+    assert.equal(mismatch.status, 2); assert(mismatch.stderr.includes("TASK_CONTEXT_ROOT_MISMATCH")); assert.equal(mismatch.stdout, "");
+    const matching = positive(["--task-id=TASK-61", `--task-root=${other}`, ...input, ...objectives], first.query);
+    assert.equal(cell(matching), cell(separate)); assert.equal(matching.task_inputs.content_loaded, false);
+    assert.equal(matching.task_inputs.authorization_verified, false);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
 for (const router of ROUTERS) {
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
+  testDirectTaskIdentity(router);
   testS6Reading(router);
   testTaskReadingScope(router);
   testOrdinaryAuthoring(router);
@@ -892,4 +962,4 @@ try {
   fs.rmSync(linkRoot, { recursive: true, force: true });
 }
 
-console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers; ${rejectedSources} required-source rejections; ${rejectedObjectives} objective-declaration rejections; 3 link-inventory checks.`);
+console.log(`Document routing fixtures passed: ${routedQueries} routed queries across ${ROUTERS.length} providers; ${taskIdentityChecks} direct-task identity checks; ${rejectedSources} required-source rejections; ${rejectedObjectives} objective-declaration rejections; 3 link-inventory checks.`);

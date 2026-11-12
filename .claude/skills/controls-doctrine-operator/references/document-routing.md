@@ -91,6 +91,43 @@ option parsing. In an adapter with fixed delegation, check the returned actor,
 role, department and authority against that delegation before using its result.
 Neither the delimiter nor a successful comparison authenticates the caller.
 
+### Continuing Direct Tasks
+
+For a continuing ordinary task, preserve one caller-declared task ID and the
+actual target project's absolute root. Pass both `--task-id` and `--task-root`
+on each phase/agent route, including compound intake:
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/route_controls_docs.js" --actor=ai \
+  --role=S6 --department=knowledge --authority=read-only \
+  --task-id=TASK-61 --task-root="/absolute/target-project" \
+  --capability-query="Analyze museum attendance" \
+  --capability-query="Draft an SOP" \
+  -- "Compare the next museum inventory and revise the SOP. Do not publish."
+```
+
+The selected root must exist; aliases resolve to its real directory. The ID is
+1-100 ASCII letters/digits/dots/underscores/hyphens, starting with a letter or
+digit. Neither field is derived from the current wording or a role. When a gap
+exists, their namespaced pair determines one cell and department candidate across
+phases, agents and objective order. Another ID or root is a different identity;
+covered work still needs no provisional cell. Without this pair, legacy direct
+routing remains query-derived and cannot promise phase continuity.
+
+Retain `task_context` with the original request in the handoff. Check its ID/root
+against the assignment before reusing an organization. It is caller-declared,
+not authenticated ownership, source currentness, task completeness or permission.
+The same ID cannot make a changed purpose approved; keep every objective and
+prohibition and review changed assignments separately. After a project move,
+record the old/new binding explicitly instead of silently claiming continuity.
+
+Do not invent a runtime mission to stabilize a plain document task. This pair
+is rejected with receipt, persistence, coverage or mission/wave/agent metadata;
+existing guarded missions keep their mission-ID binding and exact gates.
+Project input references, when supplied, must use the same root and retain all
+their source/access checks. The identity pair loads no content or artifacts and
+does not create a standing organization, shared registry or distributed lock.
+
 ### Comparative Tasks
 
 `compare`, `comparison` and `baseline` alone are methods, not evidence of a
