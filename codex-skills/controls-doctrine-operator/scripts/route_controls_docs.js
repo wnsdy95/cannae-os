@@ -402,6 +402,10 @@ const RUNTIME_SPECIALIST_DOCS = new Set([
   "docs/reference-architecture.md", "docs/event-sourcing-model.md",
   "docs/command-post-dashboard.md", "docs/dashboard-wireframes.md", "docs/data-model.sql.md"
 ]);
+const KOREAN_SOURCE_DOCS = new Set([
+  "docs/korean-military-sources.md", "docs/korean-org-culture.md"
+]);
+const MULTINATIONAL_SOURCE_DOC = "docs/multinational-doctrine-consistency-review.md";
 
 const GENERIC_ROUTE_KEYWORDS = new Set([
   ...COMPARISON_KEYWORDS,
@@ -1359,6 +1363,26 @@ function needsRuntimeSpecialistReading(text, sources) {
   ]) > 0;
 }
 
+function sourceSpecialistReading(text, sources) {
+  // Language of delivery is not a national subject. Keep all other wording,
+  // including prohibitions and ambiguous clauses, as conservative relevance hints.
+  const subject = String(text || "").toLowerCase().replace(/\b(?:(?:in|into)\s+korean(?=$|[.,;:!?]|\s+(?:and|but|without|using|with|for|from|only)\b)|korean(?:-|\s+)language|korean\s+(?:translation|wording))\b/g, " ");
+  const context = normalizeText(subject).replace(/[-_/]/g, " ");
+  const military = countMatches(context, ["military", "doctrine", "doctrinal", "armed forces", "army",
+    "navy", "air force", "marine corps", "defense", "defence", "mission command", "warfighting"]) > 0;
+  const organization = countMatches(context, ["organization", "organizations", "organizational",
+    "organisation", "organisations", "organisational", "org culture", "culture", "hierarchy", "reporting"]) > 0;
+  const korean = sources.some(file => KOREAN_SOURCE_DOCS.has(file)) ||
+    (countMatches(context, ["korea", "korean", "rok"]) > 0 && (military || organization)) ||
+    countMatches(context, ["all military", "all armed forces", "all source families", "all national doctrines",
+      "worldwide military", "cross national", "multinational doctrine", "multinational military",
+      "multinational consistency"]) > 0;
+  const multinational = korean || military || sources.includes(MULTINATIONAL_SOURCE_DOC) ||
+    countMatches(context, ["nato", "coalition", "allied", "multinational", "role alias", "jurisdiction",
+      "source family", "source families"]) > 0;
+  return { korean, multinational };
+}
+
 function route(query, repoRoot, options) {
   const mode = operatorMode(options);
   const inputs = resolveInputReferences(options, repoRoot);
@@ -1432,12 +1456,15 @@ function route(query, repoRoot, options) {
   const githubReleaseReading = needsGithubReleaseReading(readingContext);
   const improvementReading = needsImprovementSpecialistReading(readingContext, sourcePaths);
   const runtimeReading = needsRuntimeSpecialistReading(readingContext, sourcePaths);
+  const sourceReading = sourceSpecialistReading([readingContext, mode.actor === "ai" ? mode.department : ""].join("\n"), sourcePaths);
   for (const rule of selectedRules) {
     // Specialist reading is conditional; route/control selection is unchanged.
     docs.push(...rule.docs.filter(file =>
       (rule.id !== "authority-risk-release" || !file.startsWith("docs/github-release-") || githubReleaseReading) &&
       (rule.id !== "bounded-self-improvement" || IMPROVEMENT_GENERAL_DOCS.has(file) || improvementReading) &&
-      (!["runtime-architecture-dashboard", "continuity-handoff"].includes(rule.id) || !RUNTIME_SPECIALIST_DOCS.has(file) || runtimeReading)));
+      (!["runtime-architecture-dashboard", "continuity-handoff"].includes(rule.id) || !RUNTIME_SPECIALIST_DOCS.has(file) || runtimeReading) &&
+      (rule.id !== "sources-research" || !KOREAN_SOURCE_DOCS.has(file) || sourceReading.korean) &&
+      (rule.id !== "sources-research" || file !== MULTINATIONAL_SOURCE_DOC || sourceReading.multinational)));
     commands.push(...rule.commands);
   }
 

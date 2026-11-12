@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Condition national specialist recommendations on source subject, inherited objectives, explicit inputs and delegated AI duties while preserving generic source discipline and every selected control. Distinguish bounded Korean delivery-language phrases from Korean military/organizational topics, retain conservative ambiguous clauses and human-mode behavior, mirror both skills and exercise direct, installed and guarded-context paths. Record the initial selector/test failures; local relevance checks do not prove semantic minimality or authorize disclosure.
+
 - Record a fresh source/predecessor review accepting the exact support-SOP V5 operative body as a draft, with no required correction. Preserve historical candidate/preface bytes and V4's changes-required verdict, bind the new appraisal to all six current entry points, and mirror reviewed-selection versus whole-section handling in both maintenance references. This is not policy adoption, complete receiving acceptance, internal-path clearance or full goal closure.
 
 - Add paired project-root/task-ID context for ordinary direct routing, preserving one capability cell across phase wording and roles without changing reading, authority or guarded mission identity. Reject incomplete/conflicting identity and mixed admission modes; mirror the procedure in both skills and exercise actual linked/copied commands. Record the separate corrected-handoff preparation refusal without invoking a model, bypassing internal-path controls or claiming receiving acceptance.

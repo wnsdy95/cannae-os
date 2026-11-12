@@ -733,6 +733,13 @@ actual technical work. Explicit inputs, assigned technical duties and selected
 controls remain; an excluded dashboard cannot conceal an unsupported domain.
 This bounded correction is not globally minimal context or native acceptance.
 
+[Source-topic reading](docs/document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+also separates ordinary source evaluation from national specialist references.
+The requested output language does not establish a national subject. Explicit
+inputs, parent objectives, AI department duties and all selected controls remain;
+positive subject hints in ambiguous prohibitions stay conservative. This improves
+bounded CLI selection, not semantic completeness or read authorization.
+
 For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
 requires an explicit [source request](schema-files/handoff-generation-request.schema.json).
 It reads the selected OPORD/events, preserves quoted requirements and source

@@ -3092,3 +3092,68 @@ partial; broader source selection, omission detection, receiving/disclosure and
 client-equivalence work stays in the active backlog. Do not replay this accepted
 candidate just to accumulate another clean verdict or bypass the unresolved
 internal-draft preparation boundary.
+
+## Source Topic And Delivery Language Reading
+
+The source-reading follow-up started from ten actual direct CLI results, five
+requests in each provider. General source review and support/security research
+both received Korean military/culture references and the multinational consistency
+guide. A U.S.-only military task also received both Korean-specific documents.
+Inspection found these specialist references unconditionally bundled with the
+source map, compendium and reliability rubric in `sources-research`.
+
+Both routers now condition only that bundle's specialist recommendations on the
+actual task, inherited objectives, resolved corpus/project references and declared
+AI department. Korean military/organizational subjects and whole-family or
+multinational-doctrine work retain Korean references. Military/doctrine and
+role-alias/jurisdiction context retain the multinational guide. Other routes keep
+their own dependencies; role documents and explicit inputs remain additive.
+
+| Inspected request class | Original recommendations | Revised recommendations | Scope preserved |
+| --- | --- | --- | --- |
+| Ordinary SOP source review | 14 | 11 | Remove three unrelated specialists; keep source discipline and controls. |
+| Support/security research note | 16 | 13 | Same bounded reduction; comparison and authority controls remain. |
+| U.S. military doctrine | 20 | 18 | Remove two Korean-specific manuals, not the multinational consistency guard. |
+| Korean doctrine and organizational culture | 7 | 7 | Keep all applicable source references. |
+| Ordinary review with an explicit Korean source | 13 | 13 | The explicit input and conservative related reading remain. |
+
+The paired baseline comparison verifies unchanged matched routes, capability
+decisions, explicit-source resolution and validation commands. These are
+recommendation counts, not required-read totals, authorization or measured model
+context savings. Removed recommendations remain in the supporting inventory.
+
+### Delivery Language And Retained Failures
+
+Language-only phrases such as `in Korean` at a sentence boundary and
+`Korean-language` do not imply a Korean military subject. Conversely, `reporting
+in Korean military organizations` retains that subject. Language recognition
+precedes common punctuation/filename normalization; the original task and parent
+queries are never rewritten.
+
+Three preliminary fixture failures are retained. One test expected research
+routing without actually requesting source review; its corrected request names
+the intended source comparison. The initial implementation also dropped a national
+subject after `in Korean`; a separately reproduced case and positive regressions
+now preserve it. The second failure exposed punctuation removal before language
+recognition. The third exposed human-mode department metadata incorrectly changing
+recommendations; departmental relevance now applies only to delegated AI mode.
+No old fixture, source requirement or control was removed to obtain a pass.
+
+Both skill entrypoints and routing references now distinguish source subject from
+delivery language. Direct tests cover ordinary, national, multinational, translated,
+ambiguous and explicit-input cases in both providers, preserving query text,
+controls, role documents, capability boundaries and source discoverability.
+Project filename hints load no private body. Linked/copied command cases and
+direct/receipt/context comparisons cover parent and explicit-input retention.
+
+This is bounded positive relevance matching, not general language understanding
+or globally minimal context. National subjects in prohibitions and ambiguous
+clauses remain conservative hints; no lexical match certifies domain competence.
+Required access-profile reading, current-byte checks and guarded unsupported-input
+denials remain. Do not trim an issued packet to match a new recommendation count.
+
+Evidence and retained intermediate candidates are under
+`.cannae/maintenance/source-reading-followup-20261112/`. This is local engineering
+evidence, not a new military claim or native model acceptance. The internal draft
+receiving-policy decision is still separate and unresolved. All five objectives
+remain partial; no new access, standing department, publication or service follows.

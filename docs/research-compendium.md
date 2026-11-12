@@ -20,6 +20,21 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Delivery Language Does Not Select National Doctrine (2026-11-12)
+
+The [source-topic reading case](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+separates general source evaluation from national specialist recommendations in
+both clients. A requested Korean output is not evidence of a Korean military
+subject, while an actual national task, inherited objective or explicit source
+must retain its dependencies. Preserve human-mode routing independently of a
+supplied department label; delegated AI duties remain relevant.
+
+Retained failures show why language boundaries must precede destructive punctuation
+normalization and why a recommendation count alone cannot prove correctness.
+The paired baseline loses only unrelated specialists; capabilities and selected
+controls stay unchanged. Both skills carry the distinction. This is bounded local
+selection, not globally minimal context, source access or native behavior acceptance.
+
 ## Review Scope Is Not Whole-Packet Acceptance (2026-11-12)
 
 The [support-SOP V5 review](document-authoring-case-study.md#support-sop-v5-source-review)

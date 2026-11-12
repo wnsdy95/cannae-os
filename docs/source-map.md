@@ -1,5 +1,10 @@
 # Source Map
 
+The [source-topic selection case](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+uses local CLI comparisons, retained implementation failures and the existing
+purposes of the Korean/multinational reference documents. It adds no military
+fact or access permission; positive relevance matching is not semantic minimality.
+
 The [V5 source review](document-authoring-case-study.md#support-sop-v5-source-review)
 uses exact public repository text and a native Codex comparison, not new military
 evidence. Draft-quality acceptance covers the operative body, not its historical

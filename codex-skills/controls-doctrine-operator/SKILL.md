@@ -168,6 +168,11 @@ technical duties remain prerequisites; a shorter list is not proof of completene
 Ordinary role-specific routing is not a guarded work receipt; existing missions
 still require their control-plane roles and successful preflight.
 
+Distinguish a source's national subject from the language of the requested output.
+General source review retains source discipline but need not load national manuals.
+Check task, parent, department and explicit-input relevance before narrowing reading;
+reduced recommendations never waive assigned sources or issued controls.
+
 Installed links follow the source tree; copies retain a `.cannae-os-root`
 binding but need explicit refresh after source changes. For the router,
 `--doctrine-root` overrides `CANNAE_OS_HOME`, then the copy marker, installed

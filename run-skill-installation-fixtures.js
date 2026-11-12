@@ -293,6 +293,37 @@ function comparisonGap(env) {
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
 }
 
+function sourceReadingScope(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const specialists = ["docs/korean-military-sources.md", "docs/korean-org-culture.md", "docs/multinational-doctrine-consistency-review.md"];
+  for (const [query, extra, expected] of [
+    ["Draft a support SOP from source policy in Korean. Do not publish.", [], []],
+    ["Write a research note about reporting in Korean military organizations.", [], specialists],
+    ["Draft a support SOP from source policy.", ["--capability-query=Research Korean military doctrine"], specialists],
+    ["Draft a support SOP from source policy.", ["--source=docs/korean-org-culture.md"], specialists]
+  ]) {
+    const results = PROVIDERS.map(provider => {
+      const run = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
+        "--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only", ...extra, "--", query],
+      { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 0, run.stderr);
+      const result = JSON.parse(run.stdout);
+      assert.equal(result.repo_root, fs.realpathSync(source));
+      assert.equal(result.query, query);
+      assert.equal(result.operating_mode.authority, "read-only");
+      for (const file of specialists) assert.equal(result.recommended_documents.some(row => row.path === file), expected.includes(file), query + ": " + file);
+      for (const file of ["docs/source-map.md", "docs/source-reliability-rubric.md", ...result.operating_mode.mode_documents]) {
+        assert(result.recommended_documents.some(row => row.path === file));
+      }
+      assert(result.validation_commands.includes("node run-doctrine-consistency-fixtures.js"));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      return result;
+    });
+    assert.deepEqual(results[0], results[1]);
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 function taskReadingScope(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   for (const [query, technical, gap] of [
@@ -379,6 +410,7 @@ try {
   fixture("linked providers keep one direct-task cell across phases using the documented command", () => continuingTask(env));
   fixture("linked providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("linked providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
+  fixture("linked providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("matching link installation is idempotent", () => {
@@ -416,6 +448,7 @@ try {
   fixture("copied providers keep one direct-task cell across phases using the documented command", () => continuingTask(env));
   fixture("copied providers preserve generic comparison gaps and conditional reading", () => comparisonGap(env));
   fixture("copied providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
+  fixture("copied providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {

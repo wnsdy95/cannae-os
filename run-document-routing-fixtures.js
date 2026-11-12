@@ -222,6 +222,90 @@ function testTaskReadingScope(router) {
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 }
 
+function testSourceReadingScope(router) {
+  const korean = ["docs/korean-military-sources.md", "docs/korean-org-culture.md"];
+  const multinational = "docs/multinational-doctrine-consistency-review.md";
+  const specialists = [...korean, multinational];
+  const general = ["docs/source-map.md", "docs/research-compendium.md", "docs/source-reliability-rubric.md"];
+  const controls = ["node source-map-linter.js", "node run-doctrine-consistency-fixtures.js"];
+  const scenarios = [
+    ["Review the source quality of a support SOP. Do not publish.", []],
+    ["Write a research note comparing the support and security reporting rules.", []],
+    ["Write a source-grounded support SOP in Korean. Do not publish.", []],
+    ["Draft a Korean-language research note about support reporting.", []],
+    ["Review the Korean translation of a support reporting SOP against source policy.", []],
+    ["Review Korean wording in this support SOP against its source policy.", []],
+    ["Research U.S. military mission command doctrine using official sources.", [multinational]],
+    ["Research NATO and UK military doctrine using official sources.", [multinational]],
+    ["Research military doctrine without selecting a national source family yet.", [multinational]],
+    ["Research Korean military doctrine and organizational culture using official sources.", specialists],
+    ["Research ROK military reporting and backbriefs.", specialists],
+    ["Review Korea's organizational culture and its reporting sources.", specialists],
+    ["Compare Korean and U.S. military doctrine.", specialists],
+    ["Review multinational doctrine consistency using all source families.", specialists],
+    ["Write a source review of all military systems.", specialists],
+    ["Do not skip Korean military source review.", specialists],
+    ["Review a support SOP. Do not research Korean military doctrine.", specialists],
+    ["Translate Korean military doctrine into English and record sources.", specialists],
+    ["Write a research note about reporting in Korean military organizations.", specialists],
+    ["Research terminology translated into Korean military doctrine.", specialists],
+    ["Translate U.S. military source notes into Korean.", [multinational]],
+    ["Draft a source note in Korean.\nReview U.S. military doctrine.", [multinational]],
+    ["Research military reporting for a Korean-language document.", [multinational]]
+  ];
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S2", "--department=intelligence", "--authority=read-only"]]) {
+    for (const [query, expected] of scenarios) {
+      const result = route(router, [...args, "--all"], query);
+      assert.equal(result.query, query); assert.equal(result.capability_query, query);
+      assert(result.matched_routes.some(row => row.id === "sources-research"), "Missing research route: " + query);
+      const paths = result.recommended_documents.map(row => row.path);
+      for (const file of specialists) {
+        assert.equal(paths.includes(file), expected.includes(file), query + ": " + file);
+        assert([...result.recommended_documents, ...result.supporting_artifacts].some(row => row.path === file), "Specialist remains discoverable: " + file);
+      }
+      for (const file of [...general, ...result.operating_mode.mode_documents]) assert(paths.includes(file));
+      for (const command of controls) assert(result.validation_commands.includes(command));
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    }
+    const query = "Review source quality for a support SOP. Do not publish.";
+    const plain = route(router, args, query);
+    for (const file of specialists) {
+      const result = route(router, [...args, "--source=" + file], query);
+      assert(result.recommended_documents.some(row => row.path === file));
+      assert(result.task_references.resolved.some(row => row.path === file));
+      assert.deepEqual(result.matched_routes, plain.matched_routes);
+      assert.deepEqual(result.validation_commands, plain.validation_commands);
+      assert.deepEqual(result.capability_routing, plain.capability_routing);
+    }
+    for (const extra of [["--capability-query=Research Korean military doctrine"],
+      ["--capability-query=Research Korean military doctrine", "--capability-query=Draft a support SOP"]]) {
+      const result = route(router, [...args, ...extra], query);
+      for (const file of specialists) assert(result.recommended_documents.some(row => row.path === file));
+    }
+    const inline = route(router, args, query + " Read docs/korean-org-culture.md.");
+    assert(inline.task_references.resolved.some(row => row.path === korean[1]));
+    for (const file of specialists) assert(inline.recommended_documents.some(row => row.path === file));
+  }
+  const department = route(router, ["--actor=ai", "--role=S2", "--department=korean-doctrine", "--authority=read-only"], "Review source quality for a support SOP.");
+  for (const file of specialists) assert(department.recommended_documents.some(row => row.path === file));
+  const human = route(router, ["--actor=user", "--department=korean-doctrine"], "Review source quality for a support SOP.");
+  for (const file of specialists) assert(!human.recommended_documents.some(row => row.path === file));
+  const force = route(router, ["--actor=user"], "Review force structure sources for a capability gap.");
+  assert(force.recommended_documents.some(row => row.path === multinational), "Other routes retain their own doctrine requirements.");
+  const project = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "controls-national-input-")));
+  try {
+    fs.writeFileSync(path.join(project, "korean-doctrine-notes.md"), "PRIVATE-NATIONAL-INPUT\n");
+    const init = spawnSync("git", ["init", "-q", project], { encoding: "utf8" });
+    assert.equal(init.status, 0, init.stderr);
+    const result = route(router, ["--actor=user", `--input-repository=${project}`, "--input-source=korean-doctrine-notes.md"], "Review the source quality of a support SOP.");
+    assert.deepEqual(result.task_inputs.sources, [{ path: "korean-doctrine-notes.md", exists: true }]);
+    assert.equal(result.task_inputs.content_loaded, false);
+    assert.equal(result.task_inputs.authorization_verified, false);
+    for (const file of specialists) assert(result.recommended_documents.some(row => row.path === file));
+    assert(!JSON.stringify(result).includes("PRIVATE-NATIONAL-INPUT"));
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+}
+
 function testComparisonRouting(router) {
   const specialist = route(router, ["--actor=user"], "Review self-improvement operations");
   const checks = specialist.validation_commands;
@@ -465,6 +549,7 @@ for (const router of ROUTERS) {
   testDirectTaskIdentity(router);
   testS6Reading(router);
   testTaskReadingScope(router);
+  testSourceReadingScope(router);
   testOrdinaryAuthoring(router);
   testComparisonRouting(router);
   testObjectiveRouting(router);

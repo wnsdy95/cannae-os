@@ -337,6 +337,30 @@ their operation applies, not merely because they appear in that inventory.
 Re-route for the new task/phase instead of manually trimming an issued packet.
 Test the direct result, generated receipt and receiver context separately.
 
+### Source Reading Scope
+
+General source review keeps the source map, compendium and reliability rubric.
+The `sources-research` bundle adds Korean military/culture references for Korean
+military or organizational subjects, explicit national inputs and whole-family or
+multinational-doctrine reviews. Military/doctrine, role-alias/jurisdiction and multinational context retain the
+multinational consistency guide. A U.S.-only military topic does not by itself
+require Korean-specific manuals. Other routes keep their own requirements.
+
+Use the actual task, inherited objectives, declared AI department and resolved
+corpus/project input references. Delivery-language wording such as `in Korean`
+at a sentence end or `Korean-language` is not a national subject. Conversely,
+`in Korean military organizations` remains subject context. The original request
+and explicit inputs are unchanged; filename hints do not load or authorize content.
+All selected validation commands and role requirements remain, and specialist
+documents stay discoverable in the supporting inventory.
+
+This is bounded positive relevance matching, not a general negation parser,
+semantic decomposition or a globally minimal reading profile. National subjects
+in prohibitions and ambiguous clauses remain conservative hints. A shorter list
+does not establish domain competence or let an agent discard already assigned
+reading. Resolve uncertainty against the original task and use reviewed rerouting
+for changed requirements rather than trimming an issued receipt or context.
+
 ### Runtime Reading Scope
 
 An ordinary prose handoff no longer adds event-storage architecture by default.

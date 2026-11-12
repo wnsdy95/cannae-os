@@ -17,6 +17,11 @@ The [V5 review](document-authoring-case-study.md#support-sop-v5-source-review)
 accepts the exact operative body as a draft, not its historical preface or a
 complete receiving packet. The broader core acceptance queue remains open.
 
+The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+conditions national specialist recommendations without weakening explicit sources,
+parent objectives or selected controls. Its local cases do not establish general
+semantic completeness or resolve the separate internal-draft receiving boundary.
+
 ## 0. Purpose
 
 This document is the research backlog that manages the areas requiring deeper investigation going forward, in order to translate how the military operates into an LLM operating framework.

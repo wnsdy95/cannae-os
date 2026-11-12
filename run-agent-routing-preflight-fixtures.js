@@ -95,6 +95,31 @@ function routeWithSkill(skillRoot, query, args = [], expectedStatus = 0) {
 const delegatedArgs = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"];
 const routingCases = [
   {
+    name: "ordinary source review keeps controls without national specialist reading",
+    query: "Draft a support SOP from source policy in Korean. Do not publish.",
+    extra: ["--capability-query=Draft a support SOP from source policy."],
+    required: ["docs/source-map.md", "docs/source-reliability-rubric.md", "docs/document-authoring-workflow.md"],
+    absent: ["docs/korean-military-sources.md", "docs/korean-org-culture.md", "docs/multinational-doctrine-consistency-review.md"],
+    command: "node run-doctrine-consistency-fixtures.js",
+    gap: false
+  },
+  {
+    name: "a narrow source task retains its national parent objective in receipt and context",
+    query: "Draft a support SOP from source policy. Do not publish.",
+    extra: ["--capability-query=Research reporting in Korean military organizations."],
+    required: ["docs/korean-military-sources.md", "docs/korean-org-culture.md", "docs/multinational-doctrine-consistency-review.md"],
+    command: "node run-doctrine-consistency-fixtures.js",
+    gap: false
+  },
+  {
+    name: "explicit national input survives ordinary source review and receipt generation",
+    query: "Draft a support SOP from source policy in Korean. Do not publish.",
+    extra: ["--capability-query=Draft a support SOP.", "--source=docs/korean-org-culture.md"],
+    required: ["docs/korean-org-culture.md", "docs/korean-military-sources.md", "docs/multinational-doctrine-consistency-review.md"],
+    command: "node source-map-linter.js",
+    gap: false
+  },
+  {
     name: "excluded dashboard work cannot mask a parent domain gap in receipts",
     query: "Draft a handoff document. Do not build a dashboard.",
     extra: ["--capability-query=Analyze museum attendance by city. Do not build a dashboard."],

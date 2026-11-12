@@ -113,6 +113,12 @@ reads and unresolved prerequisites in the report. This selection is an operator
 judgment to verify against observed work, not proof of semantic minimality or an
 authorization decision made by the lexical router.
 
+Treat delivery language separately from the subject of a source. A Korean output
+does not by itself require Korean military references; an actual national task,
+inherited objective, declared AI duty or explicit source still may. Conditional
+router recommendations do not reclassify an already issued required reading or
+waive any validation command. Check the original request before revising a profile.
+
 ## 7. Runner Usage
 
 `document-access-runner.js` takes a manifest and projects only the documents that a specific role is permitted to read.
