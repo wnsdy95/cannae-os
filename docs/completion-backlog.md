@@ -39,6 +39,13 @@ Use this queue and the requirement table, not those historical instructions.
    representations and fresh route IDs. Actual native receiving of the retained
    proposals still depends on their exact USER decisions; do not infer it from
    local transport calls or fabricate approval to run that next step.
+   The separate [compound-source case](document-authoring-case-study.md#native-compound-source-planning)
+   now observes actual use of the committed session adapter by both clients on
+   permitted synthetic inputs. It does not clear the retained proposals. Both
+   preserve the row criteria and separate decisions, but Claude adds unsupported
+   source/assignment claims and reassessment prerequisites. Preserve that response;
+   its corrected draft and a fresh receiver-bound handoff remain work, not a pass
+   inferred from two successful client processes.
    The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
    is complete: both clients hold dependent drafting and avoid retries, but Claude
    still misses public reports and conflates approval scopes. Preserve that result.
@@ -154,6 +161,11 @@ Use this queue and the requirement table, not those historical instructions.
    source-quality defects, local four-span correction and unresolved record
    criterion distinct from successful receipt. Next target broader relevance
    and operative-source fidelity, not another accepted role-continuity replay.
+   CS91 also exposes terminology false negatives for scoped USER definitions and
+   user-defined terms. The bounded router correction retains every original
+   objective, other gap and selected control; local replay is not a native rerun
+   or proof of automatic globally minimal context. Both skills now require
+   reporting lexical/source contradictions without asserting doctrine is absent.
    No authenticated ownership or guarded multi-objective admission follows.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and

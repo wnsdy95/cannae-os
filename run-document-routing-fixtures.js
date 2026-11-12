@@ -839,18 +839,36 @@ for (const router of ROUTERS) {
     assert(!Object.hasOwn(result, "artifact_ref"));
     assert(!Object.hasOwn(result, "type"));
   }
-  for (const query of ["Maintain the project glossary", "Capture user vocabulary", "Review terminology definitions"]) {
+  for (const query of ["Maintain the project glossary", "Capture user vocabulary", "Review terminology definitions",
+    "Preserve project-scoped user definitions from SRC-TERMS and leave unconfirmed meanings unresolved.",
+    "Preserve SRC-TERMS user-defined terms within project scope and leave undefined expressions unconfirmed",
+    "Keep project-specific USER definitions scoped to this assignment", "Review user defined terms without confirming inferred meanings",
+    "Preserve a user-defined term within its original scope"]) {
     for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
       const result = route(router, args, query);
       assertRoutes(result, ["project-terminology"]);
       assert(result.recommended_documents.some(item => item.path === "docs/project-terminology-workflow.md"));
       assert(result.recommended_documents.some(item => item.path === "docs/glossary.md"));
       assert(result.validation_commands.includes("node run-project-terminology-fixtures.js"));
+      assert.equal(result.capability_routing.status, "covered");
       assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
       assert(!result.matched_routes.some(item => ["local-operator-console", "enforced-dispatch"].includes(item.id)));
       if (args.includes("--actor=ai")) assert.equal(result.operating_mode.authority, "read-only");
     }
   }
+  for (const query of ["Check authentication user definitions", "Inspect a user-defined function", "Review the general project definition",
+    "Inspect user-defined terminal settings", "Inspect user defined termination hooks", "Check project-scoped user definitional metadata"]) {
+    const result = route(router, ["--actor=user"], query);
+    assert(!result.matched_routes.some(item => item.id === "project-terminology"), query);
+  }
+  const termObjective = "Preserve project-scoped user definitions from SRC-TERMS and leave unconfirmed meanings unresolved.";
+  const domainObjective = "Analyze museum attendance by city";
+  const compoundTerms = route(router, ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only",
+    `--capability-query=${domainObjective}`, `--capability-query=${termObjective}`], `${domainObjective}; ${termObjective}`);
+  assert.deepEqual(compoundTerms.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+  assert.equal(compoundTerms.capability_routing.status, "gap_detected");
+  assert.equal(compoundTerms.operating_mode.authority, "read-only");
+  assert.equal(compoundTerms.capability_routing.provisional_organization.authority_expansion_authorized, false);
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
     const result = route(router, args, "Prepare a project document packet from the named inputs.");
     assertRoutes(result, ["project-document-delivery"]);

@@ -170,6 +170,12 @@ fixtures. It uses the existing pinned MCP client/server packages from
 `package.json`, not a new service dependency. Actual local router/protocol calls
 support phase and source-binding checks; they are not native model acceptance,
 complete semantic source selection or authenticated authority.
+The [compound-source case](document-authoring-case-study.md#native-compound-source-planning)
+adds exact native client streams, source-bound tool returns and operator appraisal
+for the committed session adapter. Its synthetic policy is not military doctrine
+or real policy adoption. Natural terminology phrases exposed a lexical routing
+miss in both clients; retained before/after CLI outputs and routing/installation
+fixtures support the correction, not fresh native acceptance of new guidance.
 
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial

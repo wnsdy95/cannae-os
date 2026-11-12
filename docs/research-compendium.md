@@ -362,6 +362,17 @@ semantic minimality or approval to transfer the retained real documents.
 
 ## Missing Sources And Separate Decision Scopes (2026-11-12)
 
+The later [compound-source case](document-authoring-case-study.md#native-compound-source-planning)
+distinguishes missing routing coverage from absent source material: both clients
+read the terminology guide, but their natural definition objectives missed its
+keyword rule. Claude then incorrectly reported no relevant guidance. Preserve
+the trace and describe the contradiction rather than treating a lexical gap as
+an inventory fact. Likewise, unspecified appointment information is not evidence
+that nobody is appointed, and a new-evidence draft review is not a source-record
+write. Source-based appraisal must check those claims even when counts, hashes
+and tool completion are correct. The bounded corrections do not prove universal
+semantic coverage, source completeness or native instruction adherence.
+
 The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 demonstrates both native clients holding current-policy conclusions after one
 failed required read, without retries, while retaining source-independent partial

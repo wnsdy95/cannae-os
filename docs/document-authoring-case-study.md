@@ -4160,3 +4160,112 @@ Synthetic local decisions do not clear the three retained real proposals, whose
 source and screening bindings remain unchanged. Native receiving and semantic
 appraisal are still outstanding. Both provider guides carry these bounded
 integration rules without promoting an acceptance-audit row from protocol checks.
+
+## Native Compound Source Planning
+
+On 2026-11-13, new synthetic assignment CS91 exercised the committed receiving
+adapter in both native clients. It asks for operative/proposed policy comparison,
+row-level checking, an actual SOP draft, dependency-aware plan, unsent inquiry,
+scoped terminology memo and whole-response handoff. The original Korean request
+also requires distinct intake and final self-review, fresh routing and all assigned
+source reads in each stage. No objective decomposition or author answer key is
+supplied to either model.
+
+The manually reviewed profile assigns six synthetic inputs and four corpus guides.
+The guides address authoring, knowledge management, terminology and handoff.
+Both receive their complete current installed entrypoint explicitly; this is not
+implicit-discovery or automatic minimum-context selection evidence. A separate
+empty client working directory prevents exposing the target root through cwd.
+The new task does not reuse or clear any retained exact-source review proposal.
+
+### Native Calls And Source Appraisal
+
+| Evidence | Codex | Claude Code |
+| --- | --- | --- |
+| Client and model | 0.162.1, current default gpt-6-astra | 2.1.322, opus[1m] |
+| Time and terminal state | 276,954 ms, exit 0 | 234,394 ms, exit 0 |
+| Original objective decomposition | Eight declarations | Seven declarations, grouping self-review and handoff |
+| Actual calls | Two routes and 20 successful reads | Two routes and 20 successful reads |
+| Required reading | All ten sources in each route | All ten sources in each route |
+| Failed reads or automatic relaunch | None | None |
+| Operative draft appraisal | Accepted at this bounded source scope | Changes required despite useful correct work |
+
+Both objective lists cover the requested outputs. Both actually produce the
+comparison, 12-row result, SOP, plan, inquiry, term memo and handoff rather than
+only offering to write them later. They correctly identify satisfied rows D01,
+D06, D08, D10 and D11; failures D02, D03, D05, D07 and D12; and unknowns D04 and
+D09. Excess evidence remains a mismatch, missing expected counts remain unknown,
+and draft/retired rows remain in the audit. The 24-hour acknowledgement measured
+from receipt remains operative; the unadopted 12-hour proposal stays separate.
+Neither invents a real receipt timestamp, due date, budget or staffing availability.
+
+Both preserve distinct USER adoption, material-transfer and publication decisions.
+All ten reported source/digest pairs match actual tool returns. Each final report
+contains the original request after its explicit quotation/code-block presentation
+wrapping is removed; this check is not raw response-byte identity. Neither falsely
+claims to include every source body or establish a new receiver's access. A fresh
+receiver-bound packet and actual receiving remain separate work.
+
+Claude's response nevertheless has source-fidelity defects. It treats the lexical
+terminology miss as absence of relevant guidance, although it read that guide twice.
+It converts an unspecified coordinator identity into a claim that nobody is yet
+assigned, and labels the entire SOP's performer without distinguishing the source's
+explicit acknowledgement duty from broader inferred duties. Its work plan also
+adds corrected records as a prerequisite to every D04/D09 reassessment. Retain
+canonical row conditions and unchanged source data, but distinguish permitted draft
+reappraisal from actual record mutation. Do not remove legitimate source conditions
+in the name of repairing that extra prerequisite. Its following nonexclusive-work
+sentence also remains evidence; do not recast an ambiguous next step as a clear
+ban on every other permitted action.
+
+### Observed Routing Correction
+
+Both independently generated terminology objectives missed the lexical rule:
+one uses scoped USER definitions and the other user-defined terms. The profile
+still supplied the guide, so successful manual-profile reading did not prove the
+router selected it. Both routers now recognize these bounded phrase families.
+Direct and installed link/copy regressions cover both actual formulations, nearby
+non-terminology requests and a compound task whose separate domain remains a gap.
+
+Retained CLI before/after replays keep the original full queries, all objective
+declarations, role/authority, task/cell identity and every previous selected control.
+Only the terminology objective changes from gap to covered. Codex's declaration
+set retains 27 controls; Claude's grows from 62 to 64 with terminology checks.
+Other objective gaps remain. These are local replays, not repeated model calls
+or fresh native acceptance of the correction.
+
+Review of the first alias patch found a neighboring-word false positive:
+user-defined terminal settings also matched. The incomplete regression run was
+intentionally stopped after 19 completed checks, not treated as a full pass.
+The retained probe and source show that defect. The new aliases now require word
+boundaries with singular/plural handling; prior keyword semantics are unchanged.
+Terminal, termination and definitional-metadata counterexamples are regressions.
+
+Both provider guides now distinguish a lexical/source contradiction from proof
+that doctrine is absent, missing appointment information from a nonappointment,
+and draft reappraisal from canonical-record mutation. The general authoring
+procedure carries the same source-fidelity distinctions. Their behavioral effect
+still needs later evidence; the original Claude response is not overwritten.
+
+### Evidence And Limits
+
+Source HEAD: `79994635917d0d7262611c387c04fb4c503d773d`.
+
+| Binding | Codex | Claude Code |
+| --- | --- | --- |
+| Initial prompt SHA-256 | `6ebbe2b6e75283607a6d2b4f9c4bfb6e88052d76326bbd57cd5c24dd36dcc282` | `99474983841c217712ad3641e371168c322a6f36fef5a850856e13a78cec801b` |
+| Final response SHA-256, including newline | `7cd9b9c828eac3a7b31a6ea7206a97ecf60d8e3a8f95a82a117f6302756ace4f` | `43b04d1bdbf3f5fabf0643f2a74a561018e57f71851b48c000f138a94ecdd273` |
+
+Exact preparation, client streams, input/output checks, source appraisal and
+routing replay records are under `.cannae/maintenance/compound-source-plan-20261113/`.
+The first synthetic-target setup was incorrectly nested inside the doctrine root;
+the existing root gate refused it before any model invocation. That failure is
+retained. The independent temporary target uses identical new synthetic fixture
+bytes; no refused real draft was relocated and no policy was relaxed.
+
+Standing verification consent covers these bounded calls, not a new document
+exception or adoption decision. No source-review decision, real source transfer,
+settings change, deployment, standing service or power change is made. There is
+no new advance-report timing claim, globally minimal context proof, independent
+infrastructure or closure of all five objectives. Preserve the useful results and
+the remaining corrected-draft/receiving work separately.

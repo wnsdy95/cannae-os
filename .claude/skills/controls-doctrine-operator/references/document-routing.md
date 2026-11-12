@@ -18,6 +18,10 @@ correct the matcher instead of renaming every document task to fit one keyword.
 Use the requirement-to-evidence matrix in `docs/document-authoring-workflow.md`
 before accepting a draft or revision, including unchanged prohibitions and
 unknowns. Record author self-review separately from independent acceptance.
+Keep "identity not supplied" distinct from "nobody appointed". A source assigning
+one step to a function does not assign the whole SOP to it. Reappraising a draft
+from new evidence is separate from changing its canonical source record; do not
+invent a record-write prerequisite or claim that an unchanged record was corrected.
 Finding a document format is not domain expertise. For delegated authoring,
 keep the real mission objective in `--capability-query`; an SOP-shaped subtask
 must not suppress its mission-level capability gap or activate a standing unit.
@@ -93,6 +97,12 @@ status, reason and matched routes, not only the combined `capability_routing`.
 A request-level gap does not mean every objective is uncovered. Preserve the
 assessment basis and the one request-scoped cell without inventing extra cells
 or dropping the covered objectives' reading and controls.
+
+Scoped USER definitions and user-defined terms are terminology work even without
+the word "glossary". If an assigned guide covers a declared objective but its
+lexical assessment reports a gap, report that mismatch with the guide's evidence;
+do not claim the guide does not exist. Retain the returned assessment and other
+domain gaps for review rather than silently rewriting receipts or activating a unit.
 
 This is read-only intake analysis, not admission. Multiple declarations cannot
 be used with receipts, artifact persistence, inventory mode or mission/wave

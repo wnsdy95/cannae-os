@@ -145,30 +145,34 @@ function documentedCommands(env, provider, { loadedDirectory, status = 0, query 
 }
 
 function declaredObjectives(env) {
-  const objectives = ["Research ICP and sales targeting using the canonical track view", "Maintain the project glossary"];
-  const query = `${objectives.join("; also ")}. Do not publish.`;
-  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
-  const outputs = PROVIDERS.map(provider => {
-    const run = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
-      "--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only",
-      ...objectives.map(objective => `--capability-query=${objective}`), query],
-    { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
-    assert.equal(run.status, 0, run.stderr);
-    const result = JSON.parse(run.stdout);
-    assert.equal(result.repo_root, fs.realpathSync(source));
-    assert.equal(result.query, query);
-    assert.deepEqual(result.capability_queries, objectives);
-    assert.deepEqual(result.capability_assessments.map(item => item.status), ["gap_detected", "covered"]);
-    assert.equal(result.capability_routing.status, "gap_detected");
-    assert.equal(result.operating_mode.authority, "read-only");
-    assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
-    assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
-    return result;
-  });
-  assert.deepEqual(outputs[0].capability_routing, outputs[1].capability_routing);
-  assert.deepEqual(outputs[0].recommended_documents, outputs[1].recommended_documents);
-  assert.deepEqual(outputs[0].validation_commands, outputs[1].validation_commands);
-  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+  for (const termObjective of ["Maintain the project glossary",
+    "Preserve project-scoped user definitions from SRC-TERMS and leave unconfirmed meanings unresolved.",
+    "Preserve SRC-TERMS user-defined terms within project scope and leave undefined expressions unconfirmed"]) {
+    const objectives = ["Research ICP and sales targeting using the canonical track view", termObjective];
+    const query = `${objectives.join("; also ")}. Do not publish.`;
+    const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+    const outputs = PROVIDERS.map(provider => {
+      const run = spawnSync(process.execPath, [path.join(destination(env, provider), "scripts/route_controls_docs.js"),
+        "--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only",
+        ...objectives.map(objective => `--capability-query=${objective}`), query],
+      { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 0, run.stderr);
+      const result = JSON.parse(run.stdout);
+      assert.equal(result.repo_root, fs.realpathSync(source));
+      assert.equal(result.query, query);
+      assert.deepEqual(result.capability_queries, objectives);
+      assert.deepEqual(result.capability_assessments.map(item => item.status), ["gap_detected", "covered"]);
+      assert.equal(result.capability_routing.status, "gap_detected");
+      assert.equal(result.operating_mode.authority, "read-only");
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+      return result;
+    });
+    assert.deepEqual(outputs[0].capability_routing, outputs[1].capability_routing);
+    assert.deepEqual(outputs[0].recommended_documents, outputs[1].recommended_documents);
+    assert.deepEqual(outputs[0].validation_commands, outputs[1].validation_commands);
+    assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+  }
 }
 
 function continuingTask(env) {

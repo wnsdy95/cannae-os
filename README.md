@@ -816,6 +816,11 @@ The [routed receiving tools](docs/role-document-access-policy.md#routed-receivin
 connect that reader to the installed router with phase-local read IDs and fixed
 source holds. An opt-in stdio adapter exposes only routing and selected reads;
 local protocol tests do not establish model receipt or grant transfer authority.
+The [compound-source case](docs/document-authoring-case-study.md#native-compound-source-planning)
+now exercises that adapter in both native clients with a current/proposed policy,
+row-level review and actual drafts. Both read every assigned source in two phases;
+Claude's source-fidelity defects remain open. This is not automatic minimum-context
+selection or clearance of the separately pending document-review proposals.
 
 [Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 now separates ordinary prose handoffs and supported platform exclusions from

@@ -139,6 +139,15 @@ Do not replace unspecified coverage with confirmed exclusion. For example,
 unknown shipping or tax does not establish that a quote excludes those costs.
 Apply that distinction in the corrected summary, not only the unknowns table.
 Likewise, recommending a method is not selecting it or authorizing its execution.
+An identity absent from the supplied material is not proof that nobody has been
+appointed. Preserve step-specific assignments: responsibility for acknowledging
+receipt does not imply ownership of every SOP step. Mark broader assignments as
+unknown or proposed rather than claiming they are unchanged source policy.
+Separate canonical-record mutation from permitted draft reappraisal. New evidence
+may support a qualified comparison without changing the original record; neither
+invent a record-write prerequisite for every review nor claim unchanged source
+fields were corrected. Preserve the original acceptance conditions and identify
+which evidence actually supports any revised draft judgment.
 
 Review the proposed repair too: it must cover the missing work without adding
 unsupported facts, changing authority or deferring feasible assigned drafting.

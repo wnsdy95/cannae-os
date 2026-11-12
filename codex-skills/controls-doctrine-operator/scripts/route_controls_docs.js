@@ -5,10 +5,12 @@ const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
+const DEFINITION_KEYWORDS = ["user-defined term", "user defined term", "project-scoped user definition", "project-specific user definition"];
+
 const RULES = [
   {
     id: "project-terminology",
-    keywords: ["terminology", "glossary", "term definition", "shared vocabulary", "user vocabulary"],
+    keywords: ["terminology", "glossary", "term definition", "shared vocabulary", "user vocabulary", ...DEFINITION_KEYWORDS],
     docs: ["docs/project-terminology-workflow.md", "docs/glossary.md", "docs/knowledge-management-sop.md", "docs/document-authoring-workflow.md"],
     commands: ["node run-project-terminology-fixtures.js", "node run-project-terminology-handoff-fixtures.js"]
   },
@@ -710,8 +712,9 @@ function countSpecificMatches(text, keywords) {
 
 function keywordMatches(text, keyword) {
   if (!keyword) return false;
-  if (!/^[a-z0-9]+$/.test(keyword)) return text.includes(keyword);
   const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if (DEFINITION_KEYWORDS.includes(keyword)) return new RegExp(`(^|[^a-z0-9])${escaped}s?([^a-z0-9]|$)`).test(text);
+  if (!/^[a-z0-9]+$/.test(keyword)) return text.includes(keyword);
   return new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`).test(text);
 }
 
