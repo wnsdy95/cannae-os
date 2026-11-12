@@ -1,5 +1,16 @@
 # Research Compendium
 
+## Diagnostic Success Is Not Reporting Success (2026-11-12)
+
+The [public-report stream case](document-authoring-case-study.md#claude-public-report-stream-diagnosis)
+retains a first observer failure and a separately diagnosed retry. Incremental
+text matches completed text, yet the final answer falsely claims an advance
+notice absent from both. This narrows a collection hypothesis for one launch;
+it does not reveal provider internals or repair earlier failures. Inspect actual
+event shape and version before changing a guard. Keep status diagnostics separate
+from reports and completion, and retain unknown-event and permission-change stops.
+Both maintenance guides encode that procedure. The five objectives remain partial.
+
 ## Receiving Content Is Not Verifying Prior Actions (2026-11-12)
 
 The [changed-source chain](document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)

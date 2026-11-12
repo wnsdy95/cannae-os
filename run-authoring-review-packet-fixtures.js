@@ -314,6 +314,46 @@ try {
   });
   const progress = { type: "system", subtype: "thinking_tokens", estimated_tokens: 50,
     estimated_tokens_delta: 50, session_id: "synthetic-session", uuid: "synthetic-frame" };
+  const status = { type: "system", subtype: "status", status: "requesting",
+    session_id: "synthetic-session", uuid: "synthetic-status" };
+  fixture("known Claude status messages are diagnostics, not reports or completion", () => {
+    for (const value of [null, "requesting", "compacting"]) {
+      assert.equal(classifyClaudeReviewEvent({ ...status, status: value }), "diagnostic");
+      assert.equal(classifyClaudeReviewEvent({ ...status, status: value, permissionMode: "dontAsk" }), "diagnostic");
+    }
+  });
+  fixture("malformed and tool-bearing status messages cannot hide as diagnostics", () => {
+    for (const changed of [{ status: undefined }, { status: "future_status" }, { status: {} },
+      { session_id: null }, { session_id: "" }, { uuid: "" }, { uuid: 1 }, { permissionMode: null },
+      { content: [{ type: "tool_use" }] }, { tools: ["Bash"] }, { subtype: "future_notice" }]) {
+      assert.throws(() => classifyClaudeReviewEvent({ ...status, ...changed }), /Claude review/);
+    }
+  });
+  fixture("Claude status cannot change the review permission mode", () => {
+    for (const permissionMode of ["default", "acceptEdits", "bypassPermissions", "plan", "auto", "future_mode", ""]) {
+      assert.equal(classifyClaudeReviewEvent({ ...status, permissionMode }), "prohibited_item");
+    }
+  });
+  fixture("status and partial text do not become duplicate or invented public messages", () => {
+    const events = [status, { type: "stream_event", event: { type: "content_block_delta",
+      delta: { type: "text_delta", text: "Final only." } } },
+    { type: "assistant", uuid: "final", message: { content: [{ type: "text", text: "Final only." }] } }];
+    assert.deepEqual(collectPublicReviewMessages("claude_code", [status]).messages, []);
+    const result = collectPublicReviewMessages("claude_code", events);
+    assert.equal(result.messages.length, 1);
+    assert.equal(result.messages[0].event_index, 2);
+    assert.equal(result.timing_obligations_verified, false);
+    assert.throws(() => classifyClaudeReviewEvent(events[1]), /Unknown Claude review event/);
+  });
+  fixture("both maintenance guides require channel diagnosis without weakening review guards", () => {
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const body = fs.readFileSync(path.join(__dirname, provider,
+        "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8");
+      assert.match(body, /compare partial text with completed public\s+messages/);
+      assert(body.includes("A status diagnostic is not a user report"));
+      assert(body.includes("Retain unknown-event and permission-change stops"));
+    }
+  });
   fixture("Claude thinking progress is diagnostic, not a tool or completed review", () => {
     assert.equal(classifyClaudeReviewEvent(progress), "diagnostic");
     assert.equal(classifyClaudeReviewEvent({ ...progress, user_message_uuid: "synthetic-input" }), "diagnostic");

@@ -76,6 +76,14 @@ transcript containing several messages and a saved file with wrapper/newline
 bytes have different bindings. Check the original writer and bind each artifact
 separately; do not trim evidence or replace an expected digest merely to pass.
 
+For a missing native progress report, compare partial text with completed public
+messages before blaming collection or strengthening the prompt. Bind client
+version, launch mode and source bytes; do not infer a report from tool arguments,
+private reasoning or the final self-claim. A status diagnostic is not a user report
+or completed review. Retain unknown-event and permission-change stops; extend a
+classifier only for an inspected event shape, with rejection tests and a separately
+recorded retry. A successful diagnostic process is not a repaired reporting workflow.
+
 After changing a candidate section, compare `scan` with the committed registry,
 review its exact source digest and mappings, and update both in the same change.
 Do not automatically promote status from file presence. Preserve proposed names

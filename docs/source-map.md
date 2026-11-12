@@ -1,5 +1,15 @@
 # Source Map
 
+The [Claude report-stream diagnostic](document-authoring-case-study.md#claude-public-report-stream-diagnosis)
+uses the official [CLI streaming](https://code.claude.com/docs/en/headless#stream-responses),
+[SDK streaming](https://code.claude.com/docs/en/agent-sdk/streaming-output) and
+[status type](https://code.claude.com/docs/en/agent-sdk/typescript#sdkstatusmessage)
+references. The installed 2.1.322 binary and native records additionally establish
+`requesting`, absent from the public status union at inspection. Partial/completed
+text agreement narrows the reporting diagnosis for this launch, not every client.
+The observer correction retains unknown-event and permission-change denial;
+local evidence is not new military doctrine or a repaired reporting workflow.
+
 The [changed-source receiving case](document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)
 uses two actual native phases, unchanged candidate bytes and synthetic policy
 sources. It supports the bounded revision/receiving comparison while retaining

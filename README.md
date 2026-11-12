@@ -682,6 +682,10 @@ falsely claims advance reports and miscounts required reading. Original results
 and a separate local correction remain distinct from acceptance. Tool adapters
 can reuse the shared [recipient projection](docs/role-document-access-policy.md)
 without rebuilding private source paths; projection is not transfer authority.
+The [report-stream diagnostic](docs/document-authoring-case-study.md#claude-public-report-stream-diagnosis)
+now compares incremental and completed Claude text: both lack the claimed advance
+notice. Known status alerts no longer cause the observed false observer stop;
+that correction does not repair reporting behavior or complete client parity.
 
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).

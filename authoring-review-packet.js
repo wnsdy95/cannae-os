@@ -131,6 +131,14 @@ function classifyClaudeReviewEvent(event) {
     assert(Array.isArray(event.tools) && Array.isArray(event.mcp_servers), "Invalid Claude review initialization.");
     return event.tools.length || event.mcp_servers.length || event.permissionMode !== "dontAsk" ? "prohibited_item" : "lifecycle";
   }
+  if (event.type === "system" && event.subtype === "status") {
+    const keys = ["type", "subtype", "status", "uuid", "session_id", "permissionMode"];
+    assert(Object.keys(event).every(key => keys.includes(key)) &&
+      [null, "requesting", "compacting"].includes(event.status) &&
+      [event.uuid, event.session_id].every(value => typeof value === "string" && value.length) &&
+      (event.permissionMode === undefined || typeof event.permissionMode === "string"), "Invalid Claude review status.");
+    return event.permissionMode !== undefined && event.permissionMode !== "dontAsk" ? "prohibited_item" : "diagnostic";
+  }
   if (event.type === "system" && event.subtype === "thinking_tokens") {
     const keys = ["type", "subtype", "estimated_tokens", "estimated_tokens_delta", "user_message_uuid", "uuid", "session_id"];
     assert(Object.keys(event).every(key => keys.includes(key)) &&

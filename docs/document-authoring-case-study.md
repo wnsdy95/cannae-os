@@ -2676,3 +2676,66 @@ the synthetic target's `.cannae/document-drafts/INTAKE-51/`. That correction fix
 the two report claims and total but cannot supply missed advance notices, fresh
 native acceptance or USER adoption. Broader minimum-context selection, semantic
 coverage, content-clearance policy and consistent public reporting remain open.
+
+## Claude Public-Report Stream Diagnosis
+
+On 2026-11-12, a small channel diagnostic distinguished an absent public report
+from text discarded by a completed-message collector. This is not another full
+SOP review or an installed-skill acceptance test: the 1,598-byte prompt includes
+only the current reporting excerpts, a fixed S6/knowledge assignment and two
+required reads. The scope guide and a synthetic seven-item queue note are
+authorized; an owner-only source remains reference-only. Existing login,
+Claude Code 2.1.322 and the `opus[1m]` alias are retained. Only current-role routing
+and selected-source reading are offered, with a three-minute/six-call limit.
+
+The diagnostic adds partial-message output, as described by the official
+[CLI streaming guide](https://code.claude.com/docs/en/headless#stream-responses).
+The [SDK streaming contract](https://code.claude.com/docs/en/agent-sdk/streaming-output)
+distinguishes incremental events from completed assistant messages; both are
+retained and compared. This does not enable another tool or change persistent
+client settings. Before native execution, preparation correctly rejected an
+empty required-corpus profile; assigning the genuinely required scope guide
+resolved it without weakening the access validator.
+
+The first process stops after 464 ms because the observer rejects
+`system/status: requesting`, before tool use or a model response. This is an
+observer failure, not a model refusal or free execution. The public
+[status type](https://code.claude.com/docs/en/agent-sdk/typescript#sdkstatusmessage)
+documents `compacting` and null, while the inspected installed binary and exact
+native record additionally establish `requesting` for this version. A separately
+recorded retry accepts that exact envelope, preserving session, permission,
+unknown-event and tool checks. The original failure remains unchanged.
+
+| Retry evidence | Observation |
+| --- | --- |
+| Terminal process | Exit 0 after 23,430 ms; no observer error |
+| Actual tools | One current-role route and both required reads; all three calls/results reconcile |
+| Output | 404 native events, including 364 partial-stream events |
+| Public text | One final block; partial text exactly matches the completed assistant message |
+| Ordering | Source delivery at zero-based events 190 and 209 precedes first public text at 217; completed text appears at 399 |
+| Reporting claim | Final says an English advance notice was sent; neither output representation contains it |
+| Disclosure | No owner-only body or path appears in the native trace |
+
+Within this launch and task, completed-text collection did not lose an advance
+notice present in the emitted partial text. This does not establish what happened
+inside the provider, explain every previous run or prove interactive-client
+behavior. The read count is correctly two here; broader count and semantic
+acceptance are not inferred. Process success is not reporting success.
+
+The shared no-tool review classifier now recognizes only the inspected/documented
+status envelopes as diagnostics. Extra fields, unknown statuses and permission
+changes still stop; status is never a public report, review result or tool grant.
+Partial streams remain outside that no-tool classifier until separately validated;
+the temporary tool-assisted diagnostic does not expand its contract. Both
+maintenance guides require this channel comparison and separately recorded retries.
+The missing reporting behavior remains open, not repaired by this classification.
+
+Original and retry evidence are retained in
+`.cannae/maintenance/claude-report-stream-20261112/` and
+`.cannae/maintenance/claude-report-stream-retry-20261112/`.
+Native source HEAD: `2cc1486e9b10393f1a5762d3c60a77ae85404ea8`.
+Exact prompt SHA-256:
+`c91c41eb4a0660d64590b2508410cf6d5e0dae04ddf7ce7ea5c9bfaf58909ca9`.
+Saved response SHA-256 (including the observer's wrapper newline):
+`8852555803b0c72856bf4f462d5b2eb6407448bb5caebed1b8f0238145408704`.
+No new USER adoption, publication, plugin or full goal closure follows.
