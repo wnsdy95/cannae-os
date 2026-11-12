@@ -1,5 +1,18 @@
 # Research Compendium
 
+## A Reporting Boundary Can Be A Phase Boundary (2026-11-12)
+
+The [parent-delivered brief exercise](document-authoring-case-study.md#parent-delivered-brief-before-native-work)
+first retains a missing native-message-tool failure despite an advertised CLI
+flag. The alternative ends a route-only phase with a brief, has the parent
+actually deliver it, then starts a separately routed work phase. Source reads
+remain unavailable before that boundary, and the worker correctly attributes
+the prior report to the parent. The complete task, sources and authority survive.
+This costs an extra phase and parent action; it is not evidence that single-phase
+reporting is fixed. No notice or locally written declaration grants approval.
+Both skills now carry this conditional procedure; broader workflow acceptance,
+stable mission-level cell identity and language consistency remain unproven.
+
 ## Diagnostic Success Is Not Reporting Success (2026-11-12)
 
 The [public-report stream case](document-authoring-case-study.md#claude-public-report-stream-diagnosis)

@@ -141,6 +141,14 @@ headline in the final report. A notice cannot authorize an otherwise forbidden c
 Use a current public assistant message for the notice. Hidden reasoning, route
 arguments, source quotations and later claims of prior reporting do not replace
 it. Assess the actual message sequence; missing evidence stays unverified.
+Check the actual client channel, not only its help or a requested flag. If no
+reliable in-run report channel is available, finish a report-only phase with
+dependent reading/work unavailable. An authorized parent must actually deliver
+the exact brief before a separately continued phase reroutes. Preserve the
+original task, source assignment, ownership and holds; parent delivery is not
+worker self-report, USER approval or a human read receipt. See the reporting
+delivery procedure in `docs/document-authoring-workflow.md`; do not silently
+enable another tool or invent delivery to continue.
 See [Document Routing](references/document-routing.md).
 
 Keep reading scope separate from execution controls. Conditional specialist

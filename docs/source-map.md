@@ -1,5 +1,14 @@
 # Source Map
 
+The [parent-delivered brief case](document-authoring-case-study.md#parent-delivered-brief-before-native-work)
+uses installed CLI help/code, exact initialization and two normal-output native
+phases. The [CLI reference](https://code.claude.com/docs/en/cli-reference) and
+[hook contract](https://code.claude.com/docs/en/hooks#pretooluse) inform the bounded
+failed message-tool probe, not a claim of available tools or delivered reports.
+The successful alternative is parent-mediated and preserves original task/source
+bindings. Its operator delivery record is not authenticated proof or USER approval;
+this is local workflow evidence, not a new military claim or universal reporting fix.
+
 The [Claude report-stream diagnostic](document-authoring-case-study.md#claude-public-report-stream-diagnosis)
 uses the official [CLI streaming](https://code.claude.com/docs/en/headless#stream-responses),
 [SDK streaming](https://code.claude.com/docs/en/agent-sdk/streaming-output) and

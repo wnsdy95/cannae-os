@@ -429,6 +429,29 @@ try {
     assert(packet.prompt.includes("A current public assistant message carries the notice."));
     assert(packet.prompt.includes("a route\nquery claiming prior notice"));
   });
+  fixture("the authoring sequence places requested backbrief delivery before drafting", () => {
+    const workflow = fs.readFileSync(path.join(root, "docs/document-authoring-workflow.md"), "utf8");
+    const brief = workflow.indexOf("Deliver a requested advance backbrief before dependent reading or drafting");
+    const draft = workflow.indexOf("4. Draft facts with source references.");
+    assert(brief >= 0 && draft > brief);
+    assert(workflow.includes("Read task sources only after any required advance report has been delivered."));
+    assert(workflow.includes("Do not defer a required pre-work backbrief until this retrospective check."));
+  });
+  fixture("both skills preserve ownership and authority across a parent-delivered reporting phase", () => {
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const body = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(body.includes("Check the actual client channel, not only its help or a requested flag."));
+      assert.match(body, /finish a report-only phase with\s+dependent reading\/work unavailable/);
+      assert.match(body, /original task, source assignment, ownership and holds/);
+      assert.match(body, /parent delivery is not\s+worker self-report, USER approval or a human read receipt/);
+    }
+  });
+  fixture("reviewer guidance distinguishes a delivered brief from preparation and authorization", () => {
+    for (const required of ["withhold dependent tools", "a prompt alone is not an execution barrier",
+      "Prepared text and a planned message do not satisfy this step.",
+      "Delivery\n   is not USER approval", "If no authorized parent/channel is available, hold the dependent work",
+      "not automatic native\nprogress delivery"]) assert(packet.prompt.includes(required));
+  });
   fixture("Claude projection retains only public top-level text with original block and event positions", () => {
     const events = [
       { type: "user", message: { content: [{ type: "text", text: "Quoted old backbrief." }] } },

@@ -686,6 +686,11 @@ The [report-stream diagnostic](docs/document-authoring-case-study.md#claude-publ
 now compares incremental and completed Claude text: both lack the claimed advance
 notice. Known status alerts no longer cause the observed false observer stop;
 that correction does not repair reporting behavior or complete client parity.
+The [parent-delivered brief case](docs/document-authoring-case-study.md#parent-delivered-brief-before-native-work)
+then observes a bounded fallback: a route-only phase, actual parent delivery and
+a separately rerouted reading/work phase with correct actor accounting. This
+requires parent action; it is not automatic native progress delivery or proof
+that a message tool named in CLI help is available in the current session.
 
 For a project-content refusal, both installed wrappers now offer read-only
 [`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).

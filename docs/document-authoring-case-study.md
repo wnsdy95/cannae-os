@@ -2739,3 +2739,64 @@ Exact prompt SHA-256:
 Saved response SHA-256 (including the observer's wrapper newline):
 `8852555803b0c72856bf4f462d5b2eb6407448bb5caebed1b8f0238145408704`.
 No new USER adoption, publication, plugin or full goal closure follows.
+
+## Parent-Delivered Brief Before Native Work
+
+The next diagnostic tests an actual reporting boundary, not another stronger
+wording of the failed single-phase request. Installed Claude Code 2.1.322 help
+advertises `--brief` and its binary contains `SendUserMessage`. A bounded probe
+requests that tool plus the two existing routing/read helpers, with text-only
+pre-tool checks. Initialization nevertheless exposes only the two helpers. The
+observer stops after 487 ms, before a model response or tool call. No hidden
+feature or permission override is used to force availability. The exact failed
+launch remains under `.cannae/maintenance/claude-public-message-20261112/`.
+This establishes absence in that launch, not absence from every client or account.
+The public [CLI reference](https://code.claude.com/docs/en/cli-reference) does not
+document that flag at inspection; installed help alone was insufficient evidence.
+
+A separate normal-output exercise uses two phases and an actual parent message:
+
+| Step | Observed evidence |
+| --- | --- |
+| Brief-only native phase | Exit 0 in 13,397 ms; one role-bound route, no source reads. Only routing is advertised; the helper separately rejects attempted reads in local checks. |
+| Parent delivery | The parent inspects the exact terminal brief and reproduces it in a public message in the current chat before preparing the work phase. The local delivery record is an operator declaration, not authenticated delivery or a human read receipt. |
+| Work native phase | Exit 0 in 16,299 ms; fresh role-bound route and both required reads. The complete original task, recipient and source assignment match the first phase exactly. |
+| Work accounting | Explicitly attributes the earlier report to the parent, says this worker sent no additional notice, and distinguishes delivery from USER approval and human reading. |
+| Disclosure | Neither native trace exposes the reference-only owner path or body. No operational work, publication or policy adoption occurs. |
+
+The brief preserves purpose, expected summary/accounting, authority, restrictions
+and pending reading without inventing the source policy. The second phase reads
+the scope guide and synthetic seven-item queue note, keeps individual acceptance
+unknown and produces a review-only summary. All four native tool calls/results
+reconcile with helper records and exact source bytes. Partial/completed text
+also agrees in both phases. Public native text occurs only at each phase's end;
+the parent delivery between phases, not an invented intermediate worker message,
+meets this case's advance-report obligation.
+
+Limitations remain explicit. The work response is English after a Korean brief;
+this is not a language-consistency acceptance. The phase queries produce distinct
+provisional cell IDs; unchanged ownership/authority and source assignment are
+checked, not stable mission-level organization identity. No standing organization
+is activated. This channel fallback does not prove automatic progress reporting,
+method-change notices, failure recovery, general relevance or client parity.
+The phase prompts explicitly request this protocol; automatic selection of the
+new installed guidance has not been demonstrated. Human adoption is not inferred.
+
+The authoring sequence now places requested backbrief delivery before dependent
+reading/drafting, rather than leaving timing only in its later review guidance.
+Both skills route an unavailable in-run channel to a report-only phase, actual
+authorized-parent delivery and separately rerouted continuation with all original
+requirements and holds intact. No parent/channel means dependent work remains
+held; a prompt or operator-written record is not an unbypassable gate.
+
+Exact inputs, records and appraisal remain under
+`.cannae/maintenance/phased-reporting-20261112/`. Native source HEAD is
+`170a65b` and both phases use the existing `opus[1m]` alias without changing
+persistent settings. The two original outputs are retained in the synthetic
+target's `.cannae/document-drafts/REPORT-54/`, not the doctrine directory.
+Brief response SHA-256:
+`79f72b751603d8f42353fbc72058bd4c9b8d61bd374d1f9a3a8d2a73f1fe6bf6`.
+Work response SHA-256:
+`9b7c89ab093b85fda3a19e36038b03908601942159a4533591246425860e8974`.
+Each binding includes its saved wrapper newline. Earlier failed reports and
+their separate corrections remain unchanged; all five objectives remain partial.

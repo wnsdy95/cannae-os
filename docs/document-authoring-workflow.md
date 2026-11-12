@@ -28,7 +28,8 @@ decision or handoff to the smallest useful format:
    and exclusions. Ask only for missing information that changes the work.
 2. Route using the original task and declared operator mode. For a generic
    authoring request, start with this document and the knowledge-management SOP,
-   then read only the chosen format and its directly relevant policy.
+   then select the chosen format and directly relevant policy references.
+   Read task sources only after any required advance report has been delivered.
    For compound intake, declare the actual objectives separately; glossary/SOP
    housekeeping cannot establish domain coverage. The skill's document-routing
    reference describes repeated capability queries and their direct-analysis
@@ -40,12 +41,17 @@ decision or handoff to the smallest useful format:
    be conditional, but explicit inputs and applicable controls are not optional.
 3. Identify the canonical destination, owner and intended readers. A document
    recommendation does not grant access to restricted underlying evidence.
+   Deliver a requested advance backbrief before dependent reading or drafting;
+   preserve unknown policy rather than reading it in advance of that obligation.
+   Use the [reporting delivery procedure](#reporting-delivery-boundaries) when
+   the client cannot reliably emit the required notice during a work phase.
 4. Draft facts with source references. Label interpretation and proposed action
    separately; mark assumptions and unknowns rather than filling gaps with
    plausible details. A valid template cannot guarantee factual truth.
 5. Check that every required task and constraint survived. For delegation,
-   require the receiver to restate purpose, output, authority and stop points
-   using [Backbrief And Rehearsal SOP](backbrief-and-rehearsal-sop.md).
+   compare the receiver's work with the earlier purpose, output, authority and
+   stop-point backbrief from [Backbrief And Rehearsal SOP](backbrief-and-rehearsal-sop.md).
+   Do not defer a required pre-work backbrief until this retrospective check.
 6. Validate the changed surface. Record which checks actually ran and what
    remains unverified. A draft, a sample approval or a passed schema is not
    permission to execute, publish or increase authority.
@@ -210,6 +216,41 @@ tools separately, then appraise message content and order against the actual
 obligation. Extraction establishes neither timing compliance nor semantic
 acceptance, and it does not enforce a pre-action barrier. Preserve a missed
 notice as a failure; do not add a retrospective message to erase it.
+
+### Reporting Delivery Boundaries
+
+Check the active client's actual delivery channel and offered tools. A help entry
+or requested flag does not prove a tool is available. Where the host uses a
+message tool, a matching successful result and the intended text are needed;
+tool arguments alone are not delivery. Do not enable hidden features, attachments
+or broader tools simply to obtain a passing report. Preserve each channel's
+limitations, including the difference between client output and a human read receipt.
+
+If an explicit advance-report obligation cannot reliably be met inside the work
+phase, use a bounded parent-mediated sequence rather than skipping the notice:
+
+1. **Brief only:** retain the complete original task, owner, source assignment,
+   authority and holds. Route the phase, state purpose, outputs, limits and planned
+   reading, then end with the brief. Do not read sources or perform work whose
+   prerequisite is that notice. In a controlled adapter, withhold dependent tools
+   and reject their invocation; a prompt alone is not an execution barrier.
+2. **Actual delivery:** the authorized parent inspects and sends the exact brief
+   through its real user-facing channel before continuing. Keep its source and
+   digest. Label an operator delivery record as a declaration, not authenticated
+   delivery proof. Prepared text and a planned message do not satisfy this step.
+3. **Separate continuation:** carry the original task and exact brief forward,
+   preserve required sources and pending decisions, and reroute for the current
+   phase. Attribute parent delivery to the parent, not the new worker. Delivery
+   is not USER approval; obtain any required decision before dependent work.
+
+Apply the same boundary if an allowed method change requires a fresh notice.
+Keep it separate from authorization to change scope, cost, deadlines or risk.
+If no authorized parent/channel is available, hold the dependent work and retain
+the unfinished report. Do not rewrite an earlier missed notice as delivered.
+This fallback costs another phase and parent action; it is not automatic native
+progress delivery, a general client-parity guarantee or a new service requirement.
+The [bounded native case](document-authoring-case-study.md#parent-delivered-brief-before-native-work)
+records what was actually observed and what remains unverified.
 
 State the categories of material withheld from a reviewer without revealing
 their verdicts. A review matrix excluded to avoid priming is not evidence that
