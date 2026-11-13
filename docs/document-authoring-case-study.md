@@ -4377,3 +4377,13 @@ passes, two lease-expiry failures and seventy-four suites without a completed
 result. Repeated host sleep was observed during that run; it is not proof of the
 cause of either individual failure. Keep lease-expiry enforcement intact and
 retain the interrupted runs rather than claiming a completed regression pass.
+
+A subsequent per-suite continuation on implementation commit `7469579` completed
+all eighteen outstanding checks: the seventeen unfinished suites and the gateway
+review recheck. Every process exited successfully, with matching source snapshots
+and unchanged pending proposal bindings. The earlier disciplined-initiative
+recheck had already passed all twenty-four cases. This closes that remaining
+regression list, not a fresh 106-suite aggregate or an explanation of the earlier
+lease-expiry failures. No lease rule, approval, client setting or power setting
+was changed, and no native model was invoked. The five product objectives and
+semantic/native acceptance gaps remain open at their previously recorded scope.

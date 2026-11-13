@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record successful per-suite completion of the seventeen unfinished regression suites and the gateway-review recheck following reading-selection provenance. Preserve interrupted aggregate history and exact source bindings; do not count this verification maintenance as new native acceptance or goal completion.
+
 - Add opt-in direct reading-selection provenance to both routers and carry it through the bounded document reader. Record source, role, objective and conditional-selection origins without changing recommendations, controls or required access. Reject incompatible guarded modes; exercise direct, installed and actual local transport paths. Mirror guidance distinguishing algorithm provenance from semantic relevance and read authority.
 - Restore installed validation dependencies in the temporary doctrine copy used by context-document integrity fixtures, matching the installation fixture setup. Keep missing-dependency receipt rejection and all source-integrity checks intact.
 

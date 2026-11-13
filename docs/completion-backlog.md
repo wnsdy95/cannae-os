@@ -178,6 +178,10 @@ Use this queue and the requirement table, not those historical instructions.
    checks keep recommendations, controls and assigned access distinct. This makes
    profile appraisal inspectable; it does not select a semantically minimal profile
    or close A05's broader relevance requirement.
+   Its remaining regression list now has eighteen successful per-suite results
+   on unchanged implementation sources. Preserve the interrupted aggregates and
+   their failures; this is regression evidence, not additional semantic relevance
+   or native receiving acceptance.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.
