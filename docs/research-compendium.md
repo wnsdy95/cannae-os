@@ -20,6 +20,31 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Optional Reading And Temporal Source Claims (2026-11-13)
+
+The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+observes both clients select two of seven optional guides while completing every
+assigned required read. Selection and exact source appendices are separately
+observable from semantic fidelity: Claude still infers timer history from a
+current failed condition and cites a generated heading as a source-policy section.
+The reported byte difference covers delivered source bodies only, not token use,
+cost, comprehension or globally minimal context. Its native runs precede the
+bounded `project terms` routing fix.
+
+The [operator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+supports a reusable review rule: distinguish current readiness, historical trigger
+evidence and continuing deadlines. Preserve a deadline established by policy and
+history even if current readiness changes; where history is absent, do not invent
+a start, reset or cancellation. Check every locator against the cited source and
+version, not the generated document's headings. A correct digest cannot repair an
+incorrect inline attribution.
+
+These are local engineering lessons from synthetic inputs, not general model
+reliability estimates or new military claims. Fifteen reversible edits and source
+appraisal establish the bounded operator delta; they do not establish a fresh
+native review, USER adoption or an approved receiving transfer. Keep the exact
+preparation decision separate from standing verification consent.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

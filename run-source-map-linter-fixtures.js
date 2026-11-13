@@ -72,10 +72,51 @@ function run() {
       item.files.includes("docs/method-control-channel.md")), "the official SDK source must be checked, not silently ignored");
 
     const navigationCases = runNavigationFixtures();
-    process.stdout.write(`PASS source-map doctrine/index/navigation fixtures (${6 + navigationCases}/${6 + navigationCases})\n`);
+    const orientationCases = runOrientationFixtures();
+    const total = 6 + navigationCases + orientationCases;
+    process.stdout.write(`PASS source-map doctrine/index/navigation fixtures (${total}/${total})\n`);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+}
+
+function runOrientationFixtures() {
+  const read = file => fs.readFileSync(path.join(__dirname, file), "utf8");
+  const readme = read("README.md");
+  const active = span(readme, "### Active Skill Status", "### Retained Guarded Prototypes");
+  assert(active.includes("All five") && active.includes("remain partial.") &&
+    active.includes("docs/skill-first-product-scope.md#active-objectives") &&
+    active.includes("docs/completion-backlog.md#active-core-work"),
+  "Maturity must orient readers to active acceptance and the current queue.");
+  const deferred = span(readme, "### Deferred Platform Work", "## Limitations And Safety Notes");
+  assert(deferred.includes("not the active") && deferred.includes("new USER scope") &&
+    deferred.includes("docs/skill-first-product-scope.md#deferred-platform-work") &&
+    deferred.includes("automatic hallucination elimination are not"),
+  "Deferred platform inventory and non-claims must not become skill acceptance.");
+  const cases = read("docs/document-authoring-case-study.md");
+  for (const [heading, anchor] of [
+    ["## Native Optional Reading And Source Appraisal", "native-optional-reading-and-source-appraisal"],
+    ["## OR72 Snapshot And Locator Correction", "or72-snapshot-and-locator-correction"]
+  ]) {
+    assert(cases.split("\n").filter(line => line === heading).length === 1, "Case anchor must have one actual target.");
+    for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {
+      const target = `${file === "README.md" ? "docs/" : ""}document-authoring-case-study.md#${anchor}`;
+      assert(read(file).includes(`](${target})`), `${file} lost its exact case pointer.`);
+    }
+  }
+  const lesson = "Check unregistered maturity/roadmap prose as well as the opening scope notice.\n" +
+    "Separate active acceptance gaps from retained implementation and deferred work.\n" +
+    "After a durable lesson within an existing document, link its exact case and\n" +
+    "limits from the source map and compendium; unchanged filenames do not mean\n" +
+    "unchanged knowledge. Prefer concise pointers over duplicating the case log,\n" +
+    "preserve historical bytes and keep private project evidence out of public indexes.";
+  for (const provider of ["codex-skills", ".claude/skills"]) {
+    assert(read(`${provider}/controls-doctrine-operator/references/self-improvement-loop.md`).includes(lesson),
+      `${provider} lost narrative and same-file lesson maintenance guidance.`);
+  }
+  assert(read("docs/knowledge-management-sop.md").includes("File-index coverage alone will not catch that gap."));
+  // These assertions protect declared orientation and links, not semantic truth.
+  return 4;
 }
 
 function runNavigationFixtures() {

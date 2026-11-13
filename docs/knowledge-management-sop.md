@@ -88,6 +88,15 @@ and private project records are not automatically covered.
    from the active backlog, not a prior review's next step or a completed platform
    checkpoint. Check narrative claims as well as registered blocks.
 
+For a scope change or durable lesson, also review unregistered orientation such
+as README maturity and roadmap sections. Separate active acceptance gaps from
+retained implementation and deferred work; a correct opening notice does not
+repair contradictory status further down the page. Link a new reusable lesson
+to its exact case and limitations in the source map and compendium even when it
+changes no doctrine filename. File-index coverage alone will not catch that gap.
+Keep historical candidate/appraisal bytes intact; do not copy a growing case log
+into every entry point or add private project details to public indexes.
+
 If a review selects only operative text, record that selection and its digest
 separately from the whole registered section. Preserve historical prefaces and
 explain their date/scope in the current appraisal. A new review label does not

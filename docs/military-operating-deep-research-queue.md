@@ -17,6 +17,13 @@ The [V5 review](document-authoring-case-study.md#support-sop-v5-source-review)
 accepts the exact operative body as a draft, not its historical preface or a
 complete receiving packet. The broader core acceptance queue remains open.
 
+The [optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+and [OR72 operator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+add bounded reading and source-appraisal evidence, not global minimality or
+fresh acceptance of the corrected draft. Their [reusable lessons](research-compendium.md#optional-reading-and-temporal-source-claims-2026-11-13)
+are indexed separately from current work. Exact receiving decisions remain with
+USER; an index entry or standing test consent does not approve preparation.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

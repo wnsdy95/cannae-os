@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reconcile README maturity with the active skill-first scope, separating remaining skill acceptance from retained guarded prototypes and deferred platform work. Index the OR72 reading and temporal/source-locator lessons in the public entry points without rewriting evidence. Mirror maintenance guidance for unregistered narrative status and durable lessons within existing files; keep partial goal dispositions and pending receiving decisions unchanged.
+
 - Correct the retained OR72 Claude draft in a separately traced operator derivative without rewriting original evidence. Mirror snapshot/history and source-locator review guidance in both skills and the authoring workflow; verify delivery to review input without altering historical cases. Preserve the initial fixture-boundary error, exact edit checks and pending eight-source receiving proposal. No preparation approval or fresh native acceptance is inferred.
 
 - Observe both native clients choosing two of seven optional guides without dropping mandatory reads, with exact source appendices and separately appraised output. Preserve Claude's lexical, temporal and source-locator defects. Recognize `project term/terms` in both bundled routers, with direct and installed regressions and four retained-query comparisons that preserve other gaps, documents, controls and authority. Local replay is not fresh native acceptance or global minimal-context selection.

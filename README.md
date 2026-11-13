@@ -1012,9 +1012,33 @@ codex-skills/                 Codex Controls Doctrine Operator skill
 
 ## Current Maturity
 
-Cannae OS is currently a doctrine and prototype repository.
+Cannae OS is a skill-first doctrine and prototype repository. The current
+[requirement-level audit](docs/completion-backlog.md#requirement-level-audit)
+owns acceptance status; the implementation inventory below is not a completion
+score or evidence of current production operation.
 
-Working today:
+### Active Skill Status
+
+All five [active objectives](docs/skill-first-product-scope.md#active-objectives)
+remain partial. Bounded evidence covers document revisions, role-based routing,
+required reading, source-bound handoffs and installation/discovery in both clients.
+Broader context relevance, repaired-document quality, receiving and client parity
+still have recorded gaps. Separate plugin packaging remains optional and deferred.
+
+The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+observes both clients choosing useful guides while retaining assigned sources.
+It does not prove globally minimal context. The subsequent
+[OR72 correction](docs/document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+preserves original evidence and fixes bounded source claims in an operator draft;
+it is not fresh native acceptance or an approved receiving packet.
+Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
+
+### Retained Guarded Prototypes
+
+These implemented contracts and validation surfaces remain available. They do
+not make a service or dashboard mandatory for ordinary skill use, establish
+production isolation, or clear an existing hold. Their individual documentation
+and retained evidence define the tested scope:
 
 - mandatory plan-bound intent commitments and multi-echelon boundary checks in context generation, report admission, policy compilation, leases and covered-tool admission; legacy contexts remain historical rather than silently upgraded;
 
@@ -1040,16 +1064,22 @@ Working today:
 - short-lived exact GitHub release authorization and independently attestation-bound terminal receipts, with all lower runtime artifacts retaining release false;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
-Not complete yet:
+### Deferred Platform Work
+
+The following unfinished platform capabilities are retained, not the active
+skill completion queue. Resuming their development requires a new USER scope
+decision under the [product scope](docs/skill-first-product-scope.md#deferred-platform-work):
 
 - production-grade orchestrator;
 - persistent event store;
 - production approval UI;
 - provider-operated managed-exclusive tool gateway adapters and side-path isolation for real external systems;
 - authenticated multi-user permissions;
-- operation of a production SPIFFE Workload API, Fulcio, Rekor, CT log, TUF root service, monitor, witness, or gossip network;
-- formal compliance certification;
-- automatic hallucination elimination.
+- operation of a production SPIFFE Workload API, Fulcio, Rekor, CT log, TUF root service, monitor, witness, or gossip network.
+
+Formal compliance certification and automatic hallucination elimination are not
+claimed outcomes. See the limitations below; neither is a missing skill feature
+that a passing fixture can establish.
 
 ## Limitations And Safety Notes
 

@@ -200,6 +200,16 @@ source-backed defects without claiming universal compliance or policy adoption.
 
 ## Skill-First Scope And Authoring
 
+The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+binds native route/read records, delivered source bytes and separate operator
+appraisal. Optional-guide selection is observed; source-body byte counts are not
+token savings or global minimality. The later
+[snapshot/locator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+binds fifteen explicit operator edits and preserved sources/history. It supports
+bounded repair scope, not fresh model acceptance or delivery approval. These are
+local synthetic observations, not external military doctrine. The reusable
+lessons are recorded in the [compendium](research-compendium.md#optional-reading-and-temporal-source-claims-2026-11-13).
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

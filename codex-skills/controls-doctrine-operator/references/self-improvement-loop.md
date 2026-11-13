@@ -66,6 +66,13 @@ historical section; do not dispatch them as current work or rewrite the old
 review to appear successful. A passing link check cannot detect a stale but
 existing target, so test the current pointer and unchanged historical bodies.
 
+Check unregistered maturity/roadmap prose as well as the opening scope notice.
+Separate active acceptance gaps from retained implementation and deferred work.
+After a durable lesson within an existing document, link its exact case and
+limits from the source map and compendium; unchanged filenames do not mean
+unchanged knowledge. Prefer concise pointers over duplicating the case log,
+preserve historical bytes and keep private project evidence out of public indexes.
+
 For registered versioned corpus documents, read `docs/source-map-navigation.json`
 and its candidate/appraisal before changing any current-state block. Update all
 registered projections together, then run `node source-map-linter.js` and

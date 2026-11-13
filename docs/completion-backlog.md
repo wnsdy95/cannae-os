@@ -203,6 +203,13 @@ Use this queue and the requirement table, not those historical instructions.
    sections; historical metadata and platform checkpoints no longer masquerade
    as the active queue. Other document families and narrative status still need
    source appraisal; consistent projections do not establish adoption.
+   The README maturity audit now separates active skill gaps from retained
+   guarded prototypes and deferred platform work. OR72's optional-reading and
+   snapshot/locator lessons are linked from all four public research/entry
+   surfaces without rewriting the case history. Both maintenance references
+   require checking narrative status and new lessons within existing files;
+   file-index coverage alone does not establish either. This closes the observed
+   orientation/index omissions, not every narrative or A16 as a whole.
 
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
