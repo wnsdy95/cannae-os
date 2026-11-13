@@ -90,6 +90,15 @@ Limit current acceptance to the reviewed selection, not excluded history,
 attachments or the complete receiving unit. A later wording refinement is new
 candidate text, not part of the earlier accepted bytes.
 
+Before carrying a predecessor's "not delivered" claim into a new report, compare
+its original phase with actual current receipt evidence. Preserve the old status
+as history; distinguish authorized representation receipt from raw-source access
+and from delivery to a future recipient. Scope negative delivery claims by
+artifact, representation, recipient and phase; do not erase observed input reads.
+Conversely, preserve explicit historical and next-recipient qualifiers when
+appraising a negative claim. Current receipt alone does not refute those scoped
+statements; distinguish optional clarification from an actual contradiction.
+
 Use the requirement audit in the active backlog to select missing acceptance,
 not another successful-case replay. Keep implementation, source appraisal,
 observed client behavior and final USER adoption distinct. Evidence for one

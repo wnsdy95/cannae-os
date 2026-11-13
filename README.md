@@ -1031,6 +1031,10 @@ It does not prove globally minimal context. The subsequent
 [OR72 correction](docs/document-authoring-case-study.md#or72-snapshot-and-locator-correction)
 preserves original evidence and fixes bounded source claims in an operator draft;
 it is not fresh native acceptance or an approved receiving packet.
+Its subsequent [exactly approved receiving case](docs/document-authoring-case-study.md#approved-or72-representation-receiving)
+now observes actual Claude receipt and preservation of those operative repairs.
+The full review retains finding errors; phase-specific wording must be appraised
+in context. Receipt is not blanket acceptance, successor delivery or adoption.
 Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
 
 ### Retained Guarded Prototypes

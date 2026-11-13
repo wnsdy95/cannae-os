@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record exact USER-approved OR72 representation preparation and one native Claude receiving/review run. Preserve required reads, original bodies, current bindings and operative repairs alongside unsupported review findings. Correct an initially overstated operator finding by respecting historical and successor context. Mirror phase/recipient-specific appraisal guidance and verify its presence in review input without rewriting prior evidence or inferring adoption, another proposal's approval or a second model run.
+
 - Reconcile README maturity with the active skill-first scope, separating remaining skill acceptance from retained guarded prototypes and deferred platform work. Index the OR72 reading and temporal/source-locator lessons in the public entry points without rewriting evidence. Mirror maintenance guidance for unregistered narrative status and durable lessons within existing files; keep partial goal dispositions and pending receiving decisions unchanged.
 
 - Correct the retained OR72 Claude draft in a separately traced operator derivative without rewriting original evidence. Mirror snapshot/history and source-locator review guidance in both skills and the authoring workflow; verify delivery to review input without altering historical cases. Preserve the initial fixture-boundary error, exact edit checks and pending eight-source receiving proposal. No preparation approval or fresh native acceptance is inferred.

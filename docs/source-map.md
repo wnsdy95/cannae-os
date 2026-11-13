@@ -210,6 +210,12 @@ bounded repair scope, not fresh model acceptance or delivery approval. These are
 local synthetic observations, not external military doctrine. The reusable
 lessons are recorded in the [compendium](research-compendium.md#optional-reading-and-temporal-source-claims-2026-11-13).
 
+The [approved OR72 receiving case](document-authoring-case-study.md#approved-or72-representation-receiving)
+adds actual exact-decision-bound representation reads and native review. Current
+receiving does not retroactively alter the predecessor's nondelivery history or
+authorize another recipient. Separate source appraisal retains incorrect finding
+premises alongside preserved operative repairs; no new military claim follows.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

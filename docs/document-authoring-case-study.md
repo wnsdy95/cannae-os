@@ -4507,3 +4507,58 @@ Current corpus guides and the actual approval must be bound before continuation;
 standing verification consent does not substitute for the preparation decision.
 Evidence is under `.cannae/maintenance/or72-repair-20261113/`. The active objectives
 and requirement dispositions remain unchanged.
+
+## Approved OR72 Representation Receiving
+
+On 2026-11-14, USER approved only the exact OR72 R1 preparation proposal recorded
+above. A canonical, time-bounded decision and separately expected digest enabled
+reviewed preparation and current inspection. Standing verification consent then
+covered one native Claude process with eight project inputs and four current
+guides. The original proposal, R1 and predecessor remain unchanged; the four
+earlier proposals are not approved. No publication, adoption or authority change
+follows from this preparation decision.
+
+At source commit `efeb462`, Claude Code 2.1.322 used its current default model,
+reported as `claude-opus-5-5`, with only route/read tools. It completed normally
+in 296,969 ms including observer reconciliation. Two routes and 24 successful
+reads cover all twelve required inputs in each phase. Queries summarize the
+assignment while the adapter retains its exact original task, recipient and OR72
+identity. The full final response includes the six exact project bodies, exact
+continuation assignment and twelve full current source digests. This is actual
+receiving, not implicit discovery, global minimality or independent infrastructure.
+No byte-bound pre-review draft was retained, so rereading is not lineage proof.
+
+Source appraisal confirms the temporal and source-locator corrections survived:
+OR-2's current failure does not establish historical timer inactivity, and draft
+A7 is not a source-policy section. Six row verdicts, scoped terms, 48-hour current
+versus 24-hour proposed reporting, USER ownership and prohibitions remain intact.
+
+The full review still needs correction. D2 conflates completed draft outputs with
+complete receiving preparation. D4 wrongly locates A4/A5 in the source-basis
+column; they actually appear in the separate report-state column. D5 treats an
+explicit historical guide table as a defect under new receiving requirements,
+despite separately delivered current guides. Useful actor/review clarifications
+must not promote those unsupported premises into mandatory source corrections.
+
+An initial operator appraisal also overstated the nondelivery wording as a false
+current claim. The actual row is in an explicitly historical work table, and the
+later recipient claim is in successor-readiness context. Those qualifiers matter:
+current input receipt does not refute a historical or next-recipient statement.
+The public correction and original appraisal remain recorded. Wording can be
+clarified without inventing a contradiction. Both maintenance references and
+the authoring workflow now require checking receipt phase in both directions.
+The local review-packet fixture checks guidance delivery, not fresh native
+compliance. No second model invocation follows from that change.
+
+The original native response SHA-256 is
+`3ee5d40e8a70915fb61f6c7d0d314b85fb1e62efca6b138a398566bb4595ebae`.
+Its exact target-local copy is `.cannae/document-drafts/or72-native-r2.md` in the
+synthetic project, not an adopted or newly delivered successor. Evidence, separate
+operator appraisal and a retained local precheck sequencing error are under
+`.cannae/maintenance/or72-receiving-20261114/`. The early check failed before its
+prerequisite file existed; the original precheck later passed before the single
+native invocation. No gate was weakened or attempt silently relaunched.
+
+The next recipient still needs separately prepared dependencies. This case adds
+bounded receiving and operative-fidelity evidence without accepting every finding
+or closing any whole objective. All existing requirement dispositions remain.

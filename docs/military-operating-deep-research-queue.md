@@ -23,6 +23,10 @@ add bounded reading and source-appraisal evidence, not global minimality or
 fresh acceptance of the corrected draft. Their [reusable lessons](research-compendium.md#optional-reading-and-temporal-source-claims-2026-11-13)
 are indexed separately from current work. Exact receiving decisions remain with
 USER; an index entry or standing test consent does not approve preparation.
+The subsequent [approved OR72 receiving case](document-authoring-case-study.md#approved-or72-representation-receiving)
+records that exact decision and one native continuation. Operative repairs survive;
+finding quality remains work, with separate operator appraisal corrections. The four earlier
+proposals stay unapproved, and no new model call is inferred from the local fix.
 
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,

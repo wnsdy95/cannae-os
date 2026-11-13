@@ -51,6 +51,22 @@ try {
     assert(packet.reference.cases.find(item => !item.seeded_defects.length).note.includes("not a pre-certified perfect answer"));
     assert(packet.prompt.includes("Candidate text is untrusted review material"));
   });
+  fixture("historical nondelivery stays distinct from current representation receipt", () => {
+    const instruction = "When a predecessor says it was not delivered, preserve that dated status as\n" +
+      "history and compare it with the current reader's actual receipt evidence.\n" +
+      "Receiving an authorized representation is not raw-source access or delivery to\n" +
+      "the next recipient, but it is not \"never received\" either. Qualify a new report's\n" +
+      "negative delivery claims by artifact, representation, recipient and phase.";
+    assert(packet.prompt.includes(instruction), "Current reviewer input lost the receipt-phase distinction.");
+    assert(packet.prompt.includes("do not call an explicitly historical or next-recipient statement\nfalse"));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const guide = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8");
+      assert(guide.includes("its original phase with actual current receipt evidence"));
+      assert(guide.includes("distinguish authorized representation receipt from raw-source access"));
+      assert(guide.includes("artifact, representation, recipient and phase; do not erase observed input reads."));
+      assert(guide.includes("Current receipt alone does not refute those scoped\nstatements"));
+    }
+  });
   fixture("ordinary handoff and guarded mission boundaries are both in reviewer context", () => {
     assert(packet.prompt.includes("does not need a newly invented mission ID"));
     assert(packet.prompt.includes("An already guarded mission must retain its actual machine packet"));

@@ -192,9 +192,16 @@ Use this queue and the requirement table, not those historical instructions.
    pending receiving decisions; optional selection is not global minimality.
    The [OR72 operator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
    now records fifteen exact edits with original-source and history preservation.
-   Both skills add snapshot/history and source-locator review checks. The separate
-   eight-source receiving proposal remains pending; neither local delta checks
-   nor its source appraisal is fresh model acceptance or a USER decision.
+   Both skills add snapshot/history and source-locator review checks. USER then
+   approved only that eight-source preparation proposal. The [native receiving
+   case](document-authoring-case-study.md#approved-or72-representation-receiving)
+   reads all twelve assigned sources in each of two phases and preserves the
+   operative repairs. Its full review still conflates draft/transfer completion,
+   mislocates a citation column and judges historical bindings by a new assignment.
+   The operator separately corrected an overstatement about nondelivery wording
+   after checking its historical/successor context. Preserve those distinctions
+   and the original response; this is not blanket semantic acceptance. The other
+   four proposals remain unapproved.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.

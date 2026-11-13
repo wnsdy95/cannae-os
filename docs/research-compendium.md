@@ -45,6 +45,24 @@ appraisal establish the bounded operator delta; they do not establish a fresh
 native review, USER adoption or an approved receiving transfer. Keep the exact
 preparation decision separate from standing verification consent.
 
+## Historical Nondelivery And Current Receipt (2026-11-14)
+
+The [approved OR72 receiving exercise](document-authoring-case-study.md#approved-or72-representation-receiving)
+observes an exact USER preparation decision followed by two native routes and all
+required reads. The draft preserves operative corrections but its review still
+confuses some completion predicates. An initial operator appraisal also overstated
+historical nondelivery wording as a current contradiction; its correction retains
+the actual history and successor-context qualifiers. Receiving a representation
+is neither raw access nor future delivery. Check the asserted phase before
+accepting or rejecting any negative receipt claim.
+
+Appraise the actual candidate and table cells before adopting review findings.
+Completed drafts can coexist with incomplete transfer preparation; historical
+guide bindings do not become errors merely because the new assignment requires
+current guides. These are local synthetic observations, not universal model
+reliability claims. Current receipt does not adopt the draft or clear another
+proposal, and the new guidance has local instruction-delivery checks only.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

@@ -379,6 +379,15 @@ of its output. Include the authorized text or an actual resolvable reference;
 otherwise name the missing assembly step. A parent's later source-map assembly
 is separate operator work, not evidence that the original response contained it.
 
+When a predecessor says it was not delivered, preserve that dated status as
+history and compare it with the current reader's actual receipt evidence.
+Receiving an authorized representation is not raw-source access or delivery to
+the next recipient, but it is not "never received" either. Qualify a new report's
+negative delivery claims by artifact, representation, recipient and phase.
+Conversely, do not call an explicitly historical or next-recipient statement
+false merely because the current reviewer received inputs. Read the whole
+declared unit; distinguish optional clarification from a demonstrated contradiction.
+
 Scope both positive and negative work claims to an actor and phase. A historical
 model's no-tool response does not mean the operator ran no router, file preparation
 or integrity checks. Describe separately the model's text, the preparer's checks,
