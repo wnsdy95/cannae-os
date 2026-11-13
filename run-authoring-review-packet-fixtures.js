@@ -99,6 +99,29 @@ try {
       assert(!changed.prompt.includes("WITHHELD_CORRECTION_SENTINEL"));
     } finally { fs.writeFileSync(file, original); }
   });
+  fixture("snapshot history and exact source locators reach the review without rewriting historical cases", () => {
+    const file = path.join(root, "docs/document-authoring-workflow.md"), original = fs.readFileSync(file, "utf8");
+    const guide = section(original,
+      "When a report uses a state snapshot, separate the observation time, earlier",
+      "Compare the actual predecessor, not a paraphrase of its intent. Compression can");
+    assert(packet.prompt.includes(guide));
+    assert(guide.includes("Check what period"));
+    assert(guide.includes("do not invent either"));
+    assert(guide.includes("Retain a start or deadline already"));
+    assert(guide.includes("not a section of the source"));
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const body = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(body.includes("Current failure does not prove a timer never started"));
+      assert(body.includes("Verify each citation's locator in its actual source/version"));
+    }
+    try {
+      const revised = guide + "\nFixture-only source review marker.\n";
+      fs.writeFileSync(file, replaceOnce(original, guide, revised));
+      const changed = buildPacket(root);
+      assert.equal(changed.prompt, replaceOnce(packet.prompt, guide, revised));
+      assert.deepEqual(changed.reference, packet.reference);
+    } finally { fs.writeFileSync(file, original); }
+  });
   fixture("display-only labels cannot excuse inaccurate source bindings", () => {
     assert(packet.prompt.includes("cite the stable"));
     assert(packet.prompt.includes("source ID and its existing full binding map"));

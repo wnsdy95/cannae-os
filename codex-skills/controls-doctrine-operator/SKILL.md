@@ -345,6 +345,12 @@ Separate evidence checking from approval in decision tables and their headings.
 An instruction not to equate them does not create another USER approval gate.
 Unknown inclusion or scope is not confirmed exclusion; check operative claims
 as well as unknowns tables, including whether quoted fees cover unspecified costs.
+For snapshot reports, separate current state from earlier triggers and continuing
+deadlines. Current failure does not prove a timer never started. Use supported
+history and applicable reset rules; do not discard an established deadline merely
+because current state differs. Follow the authoring workflow's check.
+Verify each citation's locator in its actual source/version. A draft's own section
+number is not a source-policy section, even when the full source is attached.
 
 Do not claim a document draft executed its plan. Tool use, disclosure, external
 publication, risk acceptance and irreversible actions retain their own approvals.

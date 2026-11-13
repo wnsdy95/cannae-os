@@ -190,6 +190,24 @@ Identify whether the review was an author self-review, an independent reviewer
 or an actual USER decision. A deterministic reference check cannot prove
 semantic completeness or independent acceptance.
 
+When a report uses a state snapshot, separate the observation time, earlier
+trigger events and any resulting deadline or continuing obligation. A current
+failed condition does not prove that it never passed or that an earlier timer
+never started. Conversely, a past success does not establish current readiness.
+Check what period the source actually covers and whether the policy defines a
+reset or cancellation; do not invent either. Retain a start or deadline already
+established by event history and policy, even if current readiness differs.
+Leave only unsupported historical/timer claims unresolved; do not erase observed
+facts or block unrelated drafting. Use the same requirement matrix to trace the
+claim through row notes, summaries, holds and next actions.
+
+Verify a citation's locator in the cited source/version, not just that a source
+ID exists. A heading introduced by the draft is not a section of the source
+policy. If the source has no numbered section, cite its actual heading or a
+distinctive passage with the source ID. Keep draft cross-references labeled as
+draft navigation. An exact source attachment or matching digest does not repair
+an incorrect in-text locator or prove that the source supports the claim.
+
 Compare the actual predecessor, not a paraphrase of its intent. Compression can
 drop a named decision trigger even when a generic final-authority statement
 survives. Preserve overlapping approval requirements, explicit prohibited

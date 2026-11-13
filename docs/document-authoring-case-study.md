@@ -4450,3 +4450,60 @@ Evidence and separate operator appraisal are retained under
 `a15a83b`. The four earlier exact-source receiving proposals remain unchanged and
 unapproved. Broader relevance, source-fidelity and receiving gaps remain open;
 no requirement row or overall product goal is promoted by this exercise.
+
+## OR72 Snapshot And Locator Correction
+
+The next G1/G3/G4 step corrects the retained Claude output rather than replaying
+the accepted Codex draft. The original response remains unchanged; a proposed
+operator R1 and an exact predecessor copy live in the same synthetic target's
+internal draft area. Fifteen enumerated edits distinguish current non-readiness
+from unobserved timer history, replace the false source-section locator, preserve
+lexical gaps as historical diagnostics and clarify evidence/approval and source
+preparation boundaries. Revision metadata and historical review labels prevent
+the old author's self-rating from becoming a new R1 review.
+
+The source policy supplies a 48-hour trigger but the snapshot does not establish
+past qualifying events or a report deadline. R1 therefore does not claim that
+the timer never started, nor does it invent a prior start, reset or lateness.
+It cites the actual unnumbered drafting-continuity paragraph and identifies A7
+as draft navigation, not a section of the source policy. These corrections leave
+the operative SOP, proposal separation and six current case verdicts intact.
+
+Exact reversal of the fifteen edits reconstructs the original response. Five
+negative mutations reject an extra edit, altered interval, changed row verdict,
+dropped prohibition and substituted digest. Six project bodies, ten historical
+source tuples, the original self-review body, terminology/review-request sections
+and prohibitions remain preserved. These checks establish edit scope and bindings;
+separate source appraisal supports the listed corrections, not blanket semantic
+acceptance of the complete receiving unit.
+
+Both provider entrypoints and the authoring workflow now require reviewing a
+snapshot's covered period, earlier triggers and continuing deadlines before
+making historical claims. They also require checking a locator in the actual
+cited source/version. The review-packet fixture confirms that these instructions
+reach current reviewer input without rewriting historical candidates or the
+withheld reference. Its initial test incorrectly supplied sentence prefixes to
+an exact-line section extractor; correcting the test boundaries retained the
+extractor's uniqueness rule. This is an observed fixture error, not a weakened
+review contract or successful native reasoning test.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Original Claude response and exact predecessor copy | `65046cec0b9b8723cbe7611018ecf9a1eddbc7119c2a90cfe54ead956e0d7cd3` |
+| Proposed operator R1 | `de565c76bc6072fe4ad7cc950c05f11f38f1f09a3de931970f0f95c73d1f73b0` |
+| Exact receiving-preparation proposal | `302c47938c6ae1e9a86ee5f1e89353a394b7e3ba8e60177c75491af1ff4ce1a2` |
+
+The eight-source proposal binds the two internal drafts and six unchanged
+project sources, 60,731 source-text bytes, to a new Claude S3/operations/
+procedure_authoring/L1 recipient. Original source access declarations are
+unchanged. Both drafts retain reviewed representation mode even where the text
+is identical; copying a predecessor for comparison does not grant raw delivery.
+The proposal requires its own exact USER decision. A real CLI preparation probe
+without that decision fails without creating a packet or decision file. The
+four earlier proposals remain untouched and unapproved.
+
+No native call or fresh receiver acceptance follows from this local correction.
+Current corpus guides and the actual approval must be bound before continuation;
+standing verification consent does not substitute for the preparation decision.
+Evidence is under `.cannae/maintenance/or72-repair-20261113/`. The active objectives
+and requirement dispositions remain unchanged.

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Correct the retained OR72 Claude draft in a separately traced operator derivative without rewriting original evidence. Mirror snapshot/history and source-locator review guidance in both skills and the authoring workflow; verify delivery to review input without altering historical cases. Preserve the initial fixture-boundary error, exact edit checks and pending eight-source receiving proposal. No preparation approval or fresh native acceptance is inferred.
+
 - Observe both native clients choosing two of seven optional guides without dropping mandatory reads, with exact source appendices and separately appraised output. Preserve Claude's lexical, temporal and source-locator defects. Recognize `project term/terms` in both bundled routers, with direct and installed regressions and four retained-query comparisons that preserve other gaps, documents, controls and authority. Local replay is not fresh native acceptance or global minimal-context selection.
 
 - Record successful per-suite completion of the seventeen unfinished regression suites and the gateway-review recheck following reading-selection provenance. Preserve interrupted aggregate history and exact source bindings; do not count this verification maintenance as new native acceptance or goal completion.

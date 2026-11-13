@@ -190,6 +190,11 @@ Use this queue and the requirement table, not those historical instructions.
    lexical gaps, infers an unsupported timing history and cites a generated label
    as a source section. Preserve those defects, the complete native outputs and
    pending receiving decisions; optional selection is not global minimality.
+   The [OR72 operator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+   now records fifteen exact edits with original-source and history preservation.
+   Both skills add snapshot/history and source-locator review checks. The separate
+   eight-source receiving proposal remains pending; neither local delta checks
+   nor its source appraisal is fresh model acceptance or a USER decision.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.
