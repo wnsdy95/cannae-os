@@ -172,6 +172,12 @@ Use this queue and the requirement table, not those historical instructions.
    or proof of automatic globally minimal context. Both skills now require
    reporting lexical/source contradictions without asserting doctrine is absent.
    No authenticated ownership or guarded multi-objective admission follows.
+   [Reading-selection provenance](document-authoring-case-study.md#reading-selection-provenance)
+   now exposes each recommendation's contributing origins and conditional omissions
+   in both routers and the bounded reader. Local direct, installed and transport
+   checks keep recommendations, controls and assigned access distinct. This makes
+   profile appraisal inspectable; it does not select a semantically minimal profile
+   or close A05's broader relevance requirement.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.

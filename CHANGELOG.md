@@ -6,6 +6,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add opt-in direct reading-selection provenance to both routers and carry it through the bounded document reader. Record source, role, objective and conditional-selection origins without changing recommendations, controls or required access. Reject incompatible guarded modes; exercise direct, installed and actual local transport paths. Mirror guidance distinguishing algorithm provenance from semantic relevance and read authority.
+- Restore installed validation dependencies in the temporary doctrine copy used by context-document integrity fixtures, matching the installation fixture setup. Keep missing-dependency receipt rejection and all source-integrity checks intact.
+
 - Record a separate, exact-span CS91 operator correction and pending receiving proposal without rewriting the native response or inferring approval. Extend both provider procedures to trace corrected claims through work queues, inquiry text and successor actions; preserve historical ratings separately from current review. Retain residual navigation/version issues and the distinction between edit-accounting checks and semantic acceptance.
 
 - Record dual-client native use of the committed document-session adapter on an unseeded compound request, with two routes and all ten required reads per phase. Preserve useful drafting and Claude's source-fidelity defects separately. Route scoped USER definitions and user-defined terms to terminology guidance; retain other domain gaps and controls. Add link/copy regressions and mirrored guidance distinguishing lexical misses from absent doctrine, unknown appointments from nonappointments, and draft reappraisal from source-record changes. No native rerun, adoption or global semantic-completeness claim follows from the correction.

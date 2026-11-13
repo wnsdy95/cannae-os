@@ -62,6 +62,77 @@ function assertRoutes(result, expectedRoutes) {
   assert.strictEqual(result.route_inventory.unrouted_artifact_count, 0);
 }
 
+function testReadingProvenance(router) {
+  const query = "Draft a handoff document. Do not build a dashboard.";
+  const modes = [[], ["--role=S4", "--department=knowledge", "--authority=read-only"]];
+  const explained = (args, task = query) => {
+    const legacy = route(router, args, task);
+    const result = route(router, [...args, "--explain-reading"], task);
+    const { reading_selection: reading, ...rest } = result;
+    assert.deepEqual(rest, legacy, "Explanation must not change any existing result field");
+    for (const flag of ["semantic_relevance_verified", "access_authorized", "required_reading_assessed", "source_content_read"]) assert.equal(reading[flag], false);
+    assert.deepEqual(reading.objective_queries, result.capability_queries || [result.capability_query]);
+    assert.equal(new Set(reading.documents.map(row => row.path)).size, reading.documents.length);
+    assert.deepEqual(reading.documents.filter(row => row.recommended).map(row => row.path).sort(), result.recommended_documents.map(row => row.path).sort());
+    for (const row of reading.documents) {
+      assert.equal(row.recommended, row.in_inventory && row.reasons.some(reason => reason.selected));
+      for (const reason of row.reasons.filter(item => item.kind === "route")) {
+        assert.equal(reason.selected, reason.excluded_by.length === 0);
+        assert(result.matched_routes.some(item => item.id === reason.route_id));
+        for (const index of reason.objective_indexes) assert(Number.isInteger(index) && index >= 0 && index < reading.objective_queries.length);
+      }
+    }
+    return result;
+  };
+  for (const extra of modes) {
+    const actor = extra.length ? "ai" : "user", result = explained([`--actor=${actor}`, ...extra]);
+    const row = result.reading_selection.documents.find(d => d.path === "docs/data-model.sql.md");
+    assert.equal(row.recommended, actor === "ai");
+    assert(row.reasons.some(r => r.kind === "route" && !r.selected && r.excluded_by.includes("runtime_specialist")));
+    assert.equal(row.reasons.some(r => r.kind === "role" && r.value === "S4" && r.selected), actor === "ai");
+  }
+  const withReference = explained(["--actor=user", "--source=docs/data-model.sql.md"]);
+  assert(withReference.reading_selection.documents.find(d => d.path === "docs/data-model.sql.md").reasons.some(r => r.kind === "source_argument" && r.reference === "docs/data-model.sql.md"));
+  const inline = explained(["--actor=user"], "Draft an SOP from docs/knowledge-management-sop.md.");
+  assert(inline.reading_selection.documents.find(d => d.path === "docs/knowledge-management-sop.md").reasons.some(r => r.kind === "task_reference"));
+  const compound = explained(["--actor=user", "--capability-query=Analyze museum attendance", "--capability-query=Maintain project terminology"], "Write the bounded comparison.");
+  const term = compound.reading_selection.documents.find(d => d.path === "docs/project-terminology-workflow.md");
+  assert(term.reasons.some(r => r.kind === "route" && r.route_id === "project-terminology" && !r.task_match && r.objective_indexes.includes(1)));
+  const force = compound.reading_selection.documents.find(d => d.path === "docs/force-structure-change-policy.md");
+  assert(force.reasons.some(r => r.kind === "capability_gap"));
+  assert(force.reasons.some(r => r.kind === "route" && r.gap_fallback));
+  for (const [task, file, exclusion] of [
+    ["Draft an SOP with approval boundaries.", "docs/github-release-authorization.md", "github_release_specialist"],
+    ["Compare two proposed SOP drafts.", "docs/bounded-self-improvement-operations.md", "improvement_specialist"],
+    ["Review source policies and write a report in Korean.", "docs/korean-military-sources.md", "korean_subject"],
+    ["Review source policies and write a report in Korean.", "docs/multinational-doctrine-consistency-review.md", "multinational_subject"],
+    ["Use the Codex skill to draft a support SOP.", "docs/completion-backlog.md", "skill_maintenance"]
+  ]) {
+    const row = explained(["--actor=user"], task).reading_selection.documents.find(d => d.path === file);
+    assert(row, file);
+    assert(row.reasons.some(r => r.kind === "route" && !r.selected && r.excluded_by.includes(exclusion)), exclusion);
+    if (exclusion === "multinational_subject") {
+      assert(row.recommended);
+      assert(row.reasons.some(r => r.kind === "route" && r.route_id === "force-structure" && r.selected && r.gap_fallback));
+    } else assert(!row.recommended, file);
+  }
+  const human = explained(["--actor=user", "--role=S3", "--department=systems", "--authority=execution"]);
+  assert(!human.reading_selection.documents.some(d => d.reasons.some(r => ["role", "department", "authority", "delegation_boundary"].includes(r.kind))));
+  const delegated = explained(["--actor=ai", "--role=S6", "--department=systems", "--authority=release"]);
+  assert(delegated.reading_selection.documents.find(d => d.path === "docs/reference-architecture.md").reasons.some(r => r.kind === "department"));
+  assert(delegated.reading_selection.documents.find(d => d.path === "docs/context-releasability-policy.md").reasons.some(r => r.kind === "authority"));
+  const short = route(router, ["--actor=user", "--explain-reading", "--limit=1"], query);
+  const all = route(router, ["--actor=user", "--explain-reading", "--all"], query);
+  assert.deepEqual(short.reading_selection, all.reading_selection);
+  for (const flags of [["--receipt"], ["--coverage"], ["--write-artifact"], ["--overwrite-artifact"], ["--scope=wave"],
+    ["--mission=synthetic"], ["--wave=W1"], ["--agent=S3"], ["--artifact-root=unused"], [`--target-repository=${ROOT}`]]) {
+    const result = spawnSync(process.execPath, [path.join(ROOT, router), "--explain-reading", ...flags, "--", query], { cwd: ROOT, encoding: "utf8" });
+    assert.equal(result.status, 2); assert.equal(result.stdout, ""); assert(result.stderr.includes("READING_EXPLANATION_MODE_UNSUPPORTED"));
+  }
+  const literal = route(router, ["--actor=user", "--"], "Explain --explain-reading in this document.");
+  assert(!Object.hasOwn(literal, "reading_selection"));
+}
+
 function testOrdinaryAuthoring(router) {
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
     for (const query of ["Draft this document", "Please revise the document", "Write documents",
@@ -825,6 +896,7 @@ for (const router of ROUTERS) {
   testSourceReadingScope(router);
   testSkillOperationsReading(router);
   testOrdinaryAuthoring(router);
+  testReadingProvenance(router);
   testComparisonRouting(router);
   testObjectiveRouting(router);
   for (const query of ["--actor=user", "--role=COMMANDER", "--authority=release", "--receipt",

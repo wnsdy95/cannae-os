@@ -75,7 +75,7 @@ function createDocumentSession(options) {
         if (++routeCalls > config.max_route_calls) fail("PROJECT_SESSION_ROUTE_LIMIT");
         if (withheld.some(p => JSON.stringify(input).includes(p))) fail("PROJECT_SESSION_PRIVATE_LOCATION");
         const state = snapshot(), query = state.data.task + "\n\nCurrent routing description (not a replacement assignment):\n" + input.query;
-        const args = [router, "--doctrine-root=" + root, "--actor=ai", "--role=" + recipient.role,
+        const args = [router, "--explain-reading", "--doctrine-root=" + root, "--actor=ai", "--role=" + recipient.role,
           "--department=" + recipient.department, "--authority=document-only-verification",
           "--task-id=" + config.task_id, "--task-root=" + config.reader.repository,
           ...state.guides.filter(row => row.required).map(row => "--source=" + row.id.slice("corpus:".length)),
@@ -99,6 +99,7 @@ function createDocumentSession(options) {
           ...(routed.capability_queries ? { capability_queries: routed.capability_queries, capability_assessments: routed.capability_assessments,
             capability_assessment_basis: routed.capability_assessment_basis } : {}),
           task_references: routed.task_references, recommended_documents: routed.recommended_documents, validation_commands: routed.validation_commands,
+          reading_selection: routed.reading_selection,
           ...(state.data.terminology_requirements ? { terminology_requirements: state.data.terminology_requirements } : {}),
           documents, required_source_count: documents.filter(row => row.required).length,
           source_binding: "Prepared packet source IDs and assigned corpus profile; not router filesystem-input or guarded-mission admission.",

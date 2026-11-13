@@ -632,6 +632,7 @@ function usage() {
   console.error("Doctrine binding: --doctrine-root=PATH overrides CANNAE_OS_HOME, the copy marker, the installed source location and then the working directory.");
   console.error("Required inputs: repeat --source=<corpus-relative-path>; unresolved inputs stop routing before a receipt is issued.");
   console.error("Project input references: --input-repository=<Git-root> --input-source=<exact-relative-file> (repeatable, direct output only; no content or authority is granted).");
+  console.error("Reading provenance: --explain-reading adds selection reasons for direct analysis only; it does not assign required reading or grant access.");
   console.error("Usage: node scripts/route_controls_docs.js [--actor=user|ai] [--role=ROLE] [--department=DEPT] [--authority=SCOPE] [--capability-query=OBJECTIVE ...] [--task-id=ID --task-root=ABSOLUTE_PROJECT_DIRECTORY] [--all] [--limit=N] <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --receipt --scope=wave|agent --mission=MISSION_ID --wave=WAVE_ID --agent=AGENT_ID --actor=ai --role=ROLE --department=DEPT --authority=SCOPE --capability-query=OBJECTIVE [--write-artifact --target-repository=PATH] -- <query> [repo-root]");
   console.error("       node scripts/route_controls_docs.js --coverage [repo-root]");
@@ -1151,6 +1152,7 @@ function parseArgs(argv) {
     inputRepository: null,
     inputSources: [],
     receipt: false,
+    explainReading: false,
     scope: null,
     mission: null,
     wave: null,
@@ -1165,7 +1167,7 @@ function parseArgs(argv) {
   };
   const queryParts = [];
   const valueOptionNames = new Set(["actor", "role", "department", "authority", "capability-query", "task-id", "task-root", "doctrine-root", "source", "input-repository", "input-source", "scope", "mission", "wave", "agent", "limit", "target-repository", "artifact-root"]);
-  const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact"]);
+  const booleanOptionNames = new Set(["coverage", "all", "receipt", "write-artifact", "overwrite-artifact", "explain-reading"]);
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -1209,6 +1211,11 @@ function parseArgs(argv) {
     queryParts.push(arg);
   }
 
+  if (options.explainReading && (options.receipt || options.writeArtifact || options.coverage ||
+      options.targetRepository || options.artifactRoot || options.overwriteArtifact || options.scope ||
+      options.mission || options.wave || options.agent)) {
+    throw new Error("READING_EXPLANATION_MODE_UNSUPPORTED: reading provenance is direct analysis, not guarded receipt or artifact metadata.");
+  }
   if ((options.taskId !== null) !== (options.taskRoot !== null)) {
     throw new Error("TASK_CONTEXT_INCOMPLETE: --task-id and --task-root are required together.");
   }
@@ -1264,7 +1271,7 @@ function parseArgs(argv) {
   return { query, repoRootArg, options };
 }
 
-function operatorMode(options) {
+function operatorMode(options, noteDocument = () => {}) {
   const hasDelegationFields = Boolean(options.role || options.department || options.authority);
   const actor = String(options.actor || (hasDelegationFields ? "ai" : "user")).toLowerCase();
 
@@ -1298,9 +1305,14 @@ function operatorMode(options) {
   ];
 
   const roleKey = String(options.role || "").toUpperCase();
-  if (ROLE_DOCS[roleKey]) modeDocs.push(...ROLE_DOCS[roleKey]);
-  modeDocs.push(...collectKeywordDocs(options.department, DEPARTMENT_DOCS));
-  modeDocs.push(...collectKeywordDocs(options.authority, AUTHORITY_DOCS));
+  for (const file of modeDocs) noteDocument(file, { kind: "delegation_boundary", selected: true });
+  const addModeDocs = (files, kind, value) => {
+    modeDocs.push(...files);
+    for (const file of files) noteDocument(file, { kind, value, selected: true });
+  };
+  if (ROLE_DOCS[roleKey]) addModeDocs(ROLE_DOCS[roleKey], "role", roleKey);
+  addModeDocs(collectKeywordDocs(options.department, DEPARTMENT_DOCS), "department", options.department);
+  addModeDocs(collectKeywordDocs(options.authority, AUTHORITY_DOCS), "authority", options.authority);
 
   const missingDelegationFields = ["role", "department", "authority"]
     .filter(field => !options[field]);
@@ -1436,7 +1448,13 @@ function needsSkillOperationsReading(text, sources, guarded) {
 }
 
 function route(query, repoRoot, options) {
-  const mode = operatorMode(options);
+  const readingOrigins = new Map();
+  const noteDocument = (file, reason) => {
+    if (!options.explainReading) return;
+    if (!readingOrigins.has(file)) readingOrigins.set(file, []);
+    readingOrigins.get(file).push(reason);
+  };
+  const mode = operatorMode(options, noteDocument);
   const inputs = resolveInputReferences(options, repoRoot);
   const taskContext = directTaskContext(options, inputs);
   const scopeIdentity = taskContext
@@ -1490,16 +1508,23 @@ function route(query, repoRoot, options) {
   for (const [routeId, rule] of objectiveRules) if (!selectedById.has(routeId)) selectedById.set(routeId, rule);
   const selectedRules = [...selectedById.values()].filter(Boolean)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
-  if (capability.status === "gap_detected" &&
-      !selectedRules.some(rule => rule.id === "force-structure")) {
+  const forceStructureFallback = capability.status === "gap_detected" &&
+    !selectedRules.some(rule => rule.id === "force-structure");
+  if (forceStructureFallback) {
     selectedRules.unshift({ ...forceStructureRule, score: 0 });
   }
   const docs = ["README.md", "docs/source-map.md"];
+  for (const file of docs) noteDocument(file, { kind: "baseline_navigation", selected: true });
   docs.push(...references.resolved.map(item => item.path));
+  for (const item of references.resolved) noteDocument(item.path, {
+    kind: options.sources.includes(item.reference) ? "source_argument" : "task_reference",
+    reference: item.reference, selected: true
+  });
   const commands = [];
 
   if (capability.status === "gap_detected") {
     docs.push(...CAPABILITY_GAP_DOCS);
+    for (const file of CAPABILITY_GAP_DOCS) noteDocument(file, { kind: "capability_gap", selected: true });
     commands.push(...CAPABILITY_GAP_COMMANDS);
   }
   docs.push(...mode.mode_documents);
@@ -1513,13 +1538,20 @@ function route(query, repoRoot, options) {
     [readingContext, mode.actor === "ai" ? mode.department : ""].join("\n"), sourcePaths, options.receipt);
   for (const rule of selectedRules) {
     // Specialist reading is conditional; route/control selection is unchanged.
-    docs.push(...rule.docs.filter(file =>
-      (rule.id !== "authority-risk-release" || !file.startsWith("docs/github-release-") || githubReleaseReading) &&
-      (rule.id !== "bounded-self-improvement" || IMPROVEMENT_GENERAL_DOCS.has(file) || improvementReading) &&
-      (!["runtime-architecture-dashboard", "continuity-handoff"].includes(rule.id) || !RUNTIME_SPECIALIST_DOCS.has(file) || runtimeReading) &&
-      (rule.id !== "sources-research" || !KOREAN_SOURCE_DOCS.has(file) || sourceReading.korean) &&
-      (rule.id !== "sources-research" || file !== MULTINATIONAL_SOURCE_DOC || sourceReading.multinational) &&
-      (rule.id !== "skill-operations" || SKILL_GENERAL_DOCS.has(file) || skillOperationsReading)));
+    for (const file of rule.docs) {
+      const excludedBy = [];
+      if (rule.id === "authority-risk-release" && file.startsWith("docs/github-release-") && !githubReleaseReading) excludedBy.push("github_release_specialist");
+      if (rule.id === "bounded-self-improvement" && !IMPROVEMENT_GENERAL_DOCS.has(file) && !improvementReading) excludedBy.push("improvement_specialist");
+      if (["runtime-architecture-dashboard", "continuity-handoff"].includes(rule.id) && RUNTIME_SPECIALIST_DOCS.has(file) && !runtimeReading) excludedBy.push("runtime_specialist");
+      if (rule.id === "sources-research" && KOREAN_SOURCE_DOCS.has(file) && !sourceReading.korean) excludedBy.push("korean_subject");
+      if (rule.id === "sources-research" && file === MULTINATIONAL_SOURCE_DOC && !sourceReading.multinational) excludedBy.push("multinational_subject");
+      if (rule.id === "skill-operations" && !SKILL_GENERAL_DOCS.has(file) && !skillOperationsReading) excludedBy.push("skill_maintenance");
+      if (!excludedBy.length) docs.push(file);
+      noteDocument(file, { kind: "route", route_id: rule.id, selected: excludedBy.length === 0,
+        task_match: scoredRules.some(item => item.id === rule.id),
+        objective_indexes: assessments.flatMap((item, index) => item.decision.matched_capability_routes.includes(rule.id) ? [index] : []),
+        gap_fallback: rule.id === "force-structure" && forceStructureFallback, excluded_by: excludedBy });
+    }
     commands.push(...rule.commands);
   }
 
@@ -1575,6 +1607,17 @@ function route(query, repoRoot, options) {
     task_references: references,
     ...(inputs ? { task_inputs: inputs } : {}),
     recommended_documents: recommended,
+    ...(options.explainReading ? { reading_selection: {
+      basis: "Observed lexical selection paths, not semantic relevance, access approval or an assigned reading profile.",
+      semantic_relevance_verified: false, access_authorized: false, required_reading_assessed: false, source_content_read: false,
+      objective_queries: capabilityQueries,
+      documents: [...readingOrigins].map(([file, reasons]) => ({
+        path: file, in_inventory: inventoryPaths.has(file), recommended: recommendedPaths.has(file), reasons
+      })),
+      project_inputs: inputs ? inputs.sources.map(item => ({
+        path: item.path, kind: "declared_project_input", delivery_mode: "reference_only", content_loaded: false
+      })) : []
+    } } : {}),
     supporting_artifacts: visibleSupportingArtifacts,
     supporting_artifact_count: supportingArtifacts.length,
     supporting_artifacts_truncated: !options.all && supportingArtifacts.length > visibleSupportingArtifacts.length,

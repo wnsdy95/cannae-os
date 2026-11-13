@@ -113,6 +113,22 @@ reads and unresolved prerequisites in the report. This selection is an operator
 judgment to verify against observed work, not proof of semantic minimality or an
 authorization decision made by the lexical router.
 
+For inspectable selection origins, use the installed router's direct
+`--explain-reading` option. Its `reading_selection` separates baseline navigation,
+source arguments, inline references, delegated context, capability-gap handling
+and route selections. Per-route conditional omissions remain visible even if
+another origin retains the same file. The final `recommended` flag describes the
+combined result, not permission or mandatory reading. Objective indexes refer to
+the returned declaration list; no semantic decomposition is inferred.
+
+The bound receiving adapter also carries these origins. Its source arguments
+come from the preparer's required profile, not necessarily a direct USER request.
+Do not merge the diagnostic's candidate paths into that profile or treat an
+unlisted recommendation as an accessible source. Use actual task requirements
+to justify a newly reviewed profile; issued sources, holds and controls stay in
+force. The option reads no document bodies and changes no selected commands.
+It is not supported in guarded receipts, artifact persistence or coverage mode.
+
 Treat delivery language separately from the subject of a source. A Korean output
 does not by itself require Korean military references; an actual national task,
 inherited objective, declared AI duty or explicit source still may. Conditional

@@ -180,6 +180,10 @@ The [operator R1 correction](document-authoring-case-study.md#compound-draft-cor
 adds exact predecessor reconstruction and a pending seven-source receiving
 proposal. Those records establish edit scope and proposed source bindings only;
 the candidate retains navigation issues and has no fresh native acceptance.
+The [reading-selection diagnostic](document-authoring-case-study.md#reading-selection-provenance)
+is supported by same-request before/after outputs and actual local CLI/transport
+fixtures. These establish selection provenance and unchanged boundaries, not
+automatic relevance, required-reading authority or new native acceptance.
 
 The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 adds local native evidence for no-retry policy holds and independent partial

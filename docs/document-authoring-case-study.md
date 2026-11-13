@@ -4321,3 +4321,59 @@ consent is not substituted for it. The three earlier real proposals remain
 unchanged and outside this task. Local evidence is under
 `.cannae/maintenance/compound-source-repair-20261113/`. No acceptance-audit row or
 global completion claim follows from this local correction and proposal.
+
+## Reading Selection Provenance
+
+The next G2 improvement addresses an inspectability gap: the router returned paths
+and matched routes, but not which selection path contributed each document.
+This made a conditional omission difficult to distinguish from retention by a
+role, explicit source argument or a separate objective. A smaller list alone
+could not establish that all issued inputs and controls were preserved.
+
+Both provider routers now support optional `--explain-reading` for direct analysis.
+The `reading_selection` report is recorded at the actual selection points. It
+retains all contributing origins and per-route conditional exclusions; the final
+per-path `recommended` flag is the combined result. A role can still retain a
+document omitted by a route-specific specialist selector. This is an explanation
+of the existing algorithm, not a new relevance score, access grant or required
+reading assignment. Normal direct output and guarded receipt contracts are unchanged.
+Incompatible receipt/artifact/mission/coverage options fail before output.
+
+Five retained requests through both provider trees preserve every original result
+field after the optional explanation is removed, including full task wording,
+objectives, capability gaps, recommendations and validation commands. Direct
+fixtures exercise the six specialist exclusion families, source and role retention,
+objective-only routes, project-input separation and invalid option combinations.
+An initial local probe incorrectly expected a multinational reference to disappear
+when the source-topic selector omitted it. Its actual origins show that the
+capability-gap route retained it. The corrected regression checks both reasons
+and their combined result; no selection or control is removed to satisfy the test.
+Installed link/copy fixtures invoke the actual bundled router from another project
+without invoking either model client.
+
+The existing bounded receiving adapter carries the same diagnostic through actual
+local router and stdio calls. Its fixed profile and eighteen required fixture
+sources remain separate from recommendations. An extra recommended but unassigned
+source is still unreadable, and explanation does not clear source holds, stale
+route IDs, changed source/decision bindings or recipient boundaries.
+
+Both provider entrypoints and guides explain how to review these origins without
+reclassifying issued required reading. `source_argument` identifies an invocation
+argument, possibly added by the preparer, not authenticated USER intent. A false
+router-body-read flag does not deny the preparer's or another phase's actual reads.
+No automatic semantic completeness, globally minimal reading, native comprehension
+or new exact-document consent follows. Local before/after and validation evidence
+is retained under `.cannae/maintenance/reading-provenance-20261113/`.
+
+The first aggregate attempt hit its one-hour limit after 87 passes and one failed
+suite, leaving eighteen suites without a completed result. The failed context
+integrity fixture reproduced separately: its copied doctrine lacked installed
+validator dependencies, including `@sigstore/protobuf-specs`. The fixture now
+connects those existing dependencies, as the installation fixture already does;
+receipt validation and source-change rejection are not bypassed. Preserve that
+initial failure and timeout separately from any subsequent verification results.
+The next aggregate passed that repaired fixture but also timed out, with thirty
+passes, two lease-expiry failures and seventy-four suites without a completed
+result. Repeated host sleep was observed during that run; it is not proof of the
+cause of either individual failure. Keep lease-expiry enforcement intact and
+retain the interrupted runs rather than claiming a completed regression pass.

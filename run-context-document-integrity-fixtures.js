@@ -33,6 +33,8 @@ try {
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.copyFileSync(path.join(ROOT, file), target);
   }
+  // The copied validator still needs the repository's installed dependencies.
+  fs.symlinkSync(path.join(ROOT, "node_modules"), path.join(doctrine, "node_modules"));
   initialize(doctrine);
   const source = path.join(doctrine, "SUPPORT.md"), original = fs.readFileSync(source);
   for (const provider of ["codex", "claude_code"]) {

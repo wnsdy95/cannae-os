@@ -94,6 +94,12 @@ fs.readFileSync=function(file,...args){if(typeof file==="string" && roots.some(r
         assert.equal(result.task_inputs.repository_root, root);
       }
     });
+    fixture(`${prefix}: explanation keeps project references separate without opening their bodies`, () => {
+      const result = invoke(router, ["--actor=user", "--explain-reading", ...inputs(), "Draft an SOP from SUPPORT.md."], { nodeArgs: ["--require", noRead] });
+      assert.deepEqual(result.reading_selection.project_inputs, [{ path: "SUPPORT.md", kind: "declared_project_input", delivery_mode: "reference_only", content_loaded: false }]);
+      assert(!result.reading_selection.documents.some(row => row.path === "SUPPORT.md"));
+      assert.equal(result.task_inputs.content_loaded, false);
+    });
     fixture(`${prefix}: explicit doctrine sources and project sources can coexist without substitution`, () => {
       const result = invoke(router, ["--actor=user", "--source=SUPPORT.md", ...inputs(), "Compare the two selected policies for an SOP."]);
       assert(result.recommended_documents.some(item => item.path === "SUPPORT.md"));

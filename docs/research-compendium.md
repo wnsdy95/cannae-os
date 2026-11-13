@@ -380,6 +380,13 @@ appointment without evidence. Check the work queue, inquiry, holds and successor
 action together. Exact predecessor reconstruction bounds the edit; it does not
 establish semantic quality or turn historical author ratings into current review.
 
+The [selection-provenance improvement](document-authoring-case-study.md#reading-selection-provenance)
+separates the source of a recommendation from its meaning for a task. Conditional
+route omission does not imply global exclusion when another role or named input
+retains the same document. Report every origin and the combined outcome; then
+appraise the proposed profile against actual requirements. Lexical provenance is
+inspectable evidence, not a semantic justification or permission to read a source.
+
 The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
 demonstrates both native clients holding current-policy conclusions after one
 failed required read, without retries, while retaining source-independent partial

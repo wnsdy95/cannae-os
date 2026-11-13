@@ -68,6 +68,13 @@ try {
       for (const value of [root, __dirname, skill, ".cannae/document-drafts", "reference-only.md", "synthetic-unread-value"]) assert(!JSON.stringify(route).includes(value), value);
       assert(route.documents.every(row => !Object.hasOwn(row, "content")));
       assert(route.documents.filter(row => row.id.startsWith("UNIT-")).every(row => row.delivery_mode === "representation"));
+      assert.equal(route.reading_selection.access_authorized, false);
+      assert.equal(route.reading_selection.required_reading_assessed, false);
+      assert.deepEqual(route.reading_selection.project_inputs, []);
+      for (const file of guides) assert(route.reading_selection.documents.find(row => row.path === file).reasons.some(r => r.kind === "source_argument"));
+      const extra = route.reading_selection.documents.find(row => row.recommended && !guides.includes(row.path));
+      assert(extra, "Fixture needs a recommendation outside the assigned profile");
+      assert.equal(session.execute("read_document", { route_id: route.route_id, source_id: "corpus:" + extra.path }).error, "PROJECT_SESSION_SOURCE_NOT_READABLE");
     });
     test(`${provider}: selected tool reads preserve representations and reconcile delivered IDs, not claimed comprehension`, () => {
       let result;
@@ -168,6 +175,9 @@ try {
         const result = await client.callTool({ name: "route_current_task", arguments: routeInput });
         assert(!result.isError); const routed = result.structuredContent;
         assert.equal(routed.required_source_count, 18); assert(!JSON.stringify(result).includes(root));
+        assert.equal(routed.reading_selection.access_authorized, false);
+        assert.equal(routed.reading_selection.required_reading_assessed, false);
+        assert(routed.reading_selection.documents.some(row => row.reasons.some(reason => reason.kind === "source_argument")));
         if (phase === "review") {
           const body = await client.callTool({ name: "read_document", arguments: { route_id: routed.route_id, source_id: "UNIT-1" } });
           assert(!body.isError); assert.equal(body.structuredContent.document.delivery_mode, "representation");

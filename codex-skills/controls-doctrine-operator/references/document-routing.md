@@ -53,6 +53,34 @@ or negated terms; distinguish drafting an instruction from executing it. Do not
 strip required controls from an already issued receipt or context pack. Clarify
 an ambiguous guarded operation before dispatch, not by silently removing gates.
 
+### Inspecting Reading Selection
+
+For direct analysis, add `--explain-reading` before `--` while retaining the exact
+task, all objectives and the declared delegation. The optional `reading_selection`
+reports the actual selection paths without changing recommendations or commands.
+It is unavailable with guarded receipt/artifact/mission metadata or coverage mode;
+do not drop those controls to get a diagnostic.
+
+Inspect all reasons for a path. A route can conditionally omit a specialist manual
+while a role or source argument still retains it. Use the row's `recommended`
+value for the combined outcome, not one reason's `selected` flag. Route
+`objective_indexes` are zero-based into `objective_queries`; they describe the
+caller's declarations, not automatic objective extraction or semantic coverage.
+An omitted route recommendation is neither missing doctrine nor denied access.
+
+`source_argument` means an actual `--source` argument, potentially supplied by
+an adapter from its assigned profile, not necessarily a direct USER instruction.
+An inline `task_reference` can still need input/output clarification. Project
+inputs stay separate metadata-only references; no body is read by this diagnostic.
+Do not infer that the preparer or another phase performed no reads from that flag.
+
+Use the evidence to review a proposed reading profile against the original task,
+not to remove an issued prerequisite or control. Reasons do not establish required
+reading, need-to-know or authorization. The bound receiving tool includes this
+diagnostic, but only its separately assigned `documents` and current read results
+establish eligible delivery and observed reading; a recommended unlisted source
+still cannot be opened.
+
 ### Using A Skill Versus Maintaining It
 
 For ordinary direct work, a mention of Codex, Claude, CLI, skill, routing,

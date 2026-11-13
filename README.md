@@ -825,6 +825,10 @@ Its [operator correction](docs/document-authoring-case-study.md#compound-draft-c
 preserves the original response and enumerates changed versus unchanged text.
 The corrected candidate still needs receiving review; exact edit accounting is
 not semantic acceptance or permission to send an internal draft.
+The [reading-selection explanation](docs/document-authoring-case-study.md#reading-selection-provenance)
+shows why each candidate was retained or conditionally omitted, without changing
+recommendations or granting access. Use it to review context selection, not to
+discard assigned sources or infer that the reading list is semantically complete.
 
 [Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
 now separates ordinary prose handoffs and supported platform exclusions from

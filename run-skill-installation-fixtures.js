@@ -387,6 +387,30 @@ function skillOperationsReading(env) {
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
 }
 
+function readingProvenance(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const outputs = PROVIDERS.map(provider => {
+    const router = path.join(destination(env, provider), "scripts/route_controls_docs.js");
+    const args = ["--actor=ai", "--role=S4", "--department=knowledge", "--authority=read-only"];
+    const query = "Draft a handoff document. Do not build a dashboard.";
+    const run = extra => {
+      const result = spawnSync(process.execPath, [router, ...args, ...extra, "--", query],
+        { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout);
+    };
+    const legacy = run([]), { reading_selection, ...rest } = run(["--explain-reading"]);
+    assert.deepEqual(rest, legacy);
+    const row = reading_selection.documents.find(d => d.path === "docs/data-model.sql.md");
+    assert(row.recommended && row.reasons.some(r => r.kind === "role" && r.value === "S4"));
+    assert(row.reasons.some(r => r.kind === "route" && !r.selected));
+    assert.equal(reading_selection.access_authorized, false);
+    assert.equal(reading_selection.source_content_read, false);
+    return reading_selection;
+  });
+  assert.deepEqual(outputs[0], outputs[1]);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 function taskReadingScope(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   for (const [query, technical, gap] of [
@@ -485,6 +509,7 @@ try {
   fixture("linked providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("linked providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
   fixture("linked providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
+  fixture("linked providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("matching link installation is idempotent", () => {
@@ -524,6 +549,7 @@ try {
   fixture("copied providers separate excluded platform work from actual reading requirements", () => taskReadingScope(env));
   fixture("copied providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
   fixture("copied providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
+  fixture("copied providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {
