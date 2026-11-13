@@ -915,7 +915,10 @@ for (const router of ROUTERS) {
     "Preserve project-scoped user definitions from SRC-TERMS and leave unconfirmed meanings unresolved.",
     "Preserve SRC-TERMS user-defined terms within project scope and leave undefined expressions unconfirmed",
     "Keep project-specific USER definitions scoped to this assignment", "Review user defined terms without confirming inferred meanings",
-    "Preserve a user-defined term within its original scope"]) {
+    "Preserve a user-defined term within its original scope",
+    "Record two project terms with original language and scope, distinguishing confirmed definition from undefined expression.",
+    "Organize two project terms from SRC-TERMS distinguishing confirmed definitions from expressions needing meaning confirmation, preserving original language and scope",
+    "Clarify this project term before drawing a conclusion"]) {
     for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
       const result = route(router, args, query);
       assertRoutes(result, ["project-terminology"]);
@@ -929,7 +932,8 @@ for (const router of ROUTERS) {
     }
   }
   for (const query of ["Check authentication user definitions", "Inspect a user-defined function", "Review the general project definition",
-    "Inspect user-defined terminal settings", "Inspect user defined termination hooks", "Check project-scoped user definitional metadata"]) {
+    "Inspect user-defined terminal settings", "Inspect user defined termination hooks", "Check project-scoped user definitional metadata",
+    "Inspect project terminal settings", "Inspect project termination hooks", "Review payment terms", "Review subproject terms"]) {
     const result = route(router, ["--actor=user"], query);
     assert(!result.matched_routes.some(item => item.id === "project-terminology"), query);
   }
@@ -941,6 +945,16 @@ for (const router of ROUTERS) {
   assert.equal(compoundTerms.capability_routing.status, "gap_detected");
   assert.equal(compoundTerms.operating_mode.authority, "read-only");
   assert.equal(compoundTerms.capability_routing.provisional_organization.authority_expansion_authorized, false);
+  const projectTerms = "Organize two project terms from SRC-TERMS distinguishing confirmed definitions from expressions needing meaning confirmation, preserving original language and scope";
+  const mixedTerms = route(router, ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only",
+    `--capability-query=${domainObjective}`, `--capability-query=${projectTerms}`], `${domainObjective}; ${projectTerms}. Do not publish or create a standing organization.`);
+  assert.deepEqual(mixedTerms.capability_queries, [domainObjective, projectTerms]);
+  assert.deepEqual(mixedTerms.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+  assert.equal(mixedTerms.capability_routing.status, "gap_detected");
+  assert.equal(mixedTerms.operating_mode.authority, "read-only");
+  assert.equal(mixedTerms.capability_routing.provisional_organization.authority_expansion_authorized, false);
+  assert.equal(mixedTerms.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+  assert(mixedTerms.query.endsWith("Do not publish or create a standing organization."));
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
     const result = route(router, args, "Prepare a project document packet from the named inputs.");
     assertRoutes(result, ["project-document-delivery"]);

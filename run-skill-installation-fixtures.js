@@ -147,7 +147,8 @@ function documentedCommands(env, provider, { loadedDirectory, status = 0, query 
 function declaredObjectives(env) {
   for (const termObjective of ["Maintain the project glossary",
     "Preserve project-scoped user definitions from SRC-TERMS and leave unconfirmed meanings unresolved.",
-    "Preserve SRC-TERMS user-defined terms within project scope and leave undefined expressions unconfirmed"]) {
+    "Preserve SRC-TERMS user-defined terms within project scope and leave undefined expressions unconfirmed",
+    "Organize two project terms from SRC-TERMS distinguishing confirmed definitions from expressions needing meaning confirmation, preserving original language and scope"]) {
     const objectives = ["Research ICP and sales targeting using the canonical track view", termObjective];
     const query = `${objectives.join("; also ")}. Do not publish.`;
     const probes = fs.readFileSync(env.CLI_PROBE_LOG);

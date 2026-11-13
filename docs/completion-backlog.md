@@ -182,6 +182,14 @@ Use this queue and the requirement table, not those historical instructions.
    on unchanged implementation sources. Preserve the interrupted aggregates and
    their failures; this is regression evidence, not additional semantic relevance
    or native receiving acceptance.
+   The [optional-reading exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+   now observes both clients selecting two of seven optional guides while reading
+   all eight mandatory inputs at each phase and preserving six exact source
+   appendices. The local `project terms` routing repair retains other gaps and
+   controls. Codex's bounded draft is source-appraised; Claude still misstates
+   lexical gaps, infers an unsupported timing history and cites a generated label
+   as a source section. Preserve those defects, the complete native outputs and
+   pending receiving decisions; optional selection is not global minimality.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.
@@ -235,6 +243,12 @@ server. Do not turn these unequal rows into a product-completion percentage.
 | A19 | G5: discovery and actual installed-body use | Verified (bounded). Both native clients have implicit-selection and actual router/read evidence; exact Claude body/arguments are separately checked. | Filtered startup evidence is not universal client configuration support. Preserve native versions and launch limits. |
 | A20 | G5: equivalent useful behavior in both clients | Partial. Both clients route/read and draft useful cold-start worksheets. Exact OP1 receiving adds useful Claude continuation; the [cross-role case](document-authoring-case-study.md#native-cross-role-continuation) now verifies Claude task-identity use and fresh required reading after S6-to-S2 transition. Different output structures are not inherently a parity defect. | Preserve earlier reporting/count defects and known source-quality limitations. The accepted Codex advisory unit is not replayed. The new Claude revision retains unsupported cost and scope claims; the operator correction is not fresh native acceptance. This does not retest discovery or universal behavior. |
 | A21 | G5: thin plugin when needed, no mandatory server | Explicitly deferred optional packaging. Both skills are the current distribution; the temporary test adapter is not a shipped plugin. | Do not build a service or claim a plugin exists merely to close this row. |
+
+The later [OR72 optional-reading appraisal](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+adds bounded evidence to A01/A05/A09/A14/A20 without changing their dispositions:
+both clients preserve required reads and source bodies, but Claude's full draft
+still needs source-claim corrections. This is not fresh receiving of any pending
+candidate, a global minimum-context proof or an advance-report timing test.
 
 All five goals remain partial. This audit distinguishes implementation, structural
 checks, source appraisal and observed client behavior; it does not erase the

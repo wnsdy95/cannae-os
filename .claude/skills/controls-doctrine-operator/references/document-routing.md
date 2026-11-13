@@ -132,9 +132,9 @@ A request-level gap does not mean every objective is uncovered. Preserve the
 assessment basis and the one request-scoped cell without inventing extra cells
 or dropping the covered objectives' reading and controls.
 
-Scoped USER definitions and user-defined terms are terminology work even without
-the word "glossary". If an assigned guide covers a declared objective but its
-lexical assessment reports a gap, report that mismatch with the guide's evidence;
+Scoped USER definitions, user-defined terms and project terms are terminology
+work even without the word "glossary". If an assigned guide covers a declared
+objective but its lexical assessment reports a gap, report that mismatch with the guide's evidence;
 do not claim the guide does not exist. Retain the returned assessment and other
 domain gaps for review rather than silently rewriting receipts or activating a unit.
 

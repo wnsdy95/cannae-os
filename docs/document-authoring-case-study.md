@@ -4387,3 +4387,66 @@ regression list, not a fresh 106-suite aggregate or an explanation of the earlie
 lease-expiry failures. No lease rule, approval, client setting or power setting
 was changed, and no native model was invoked. The five product objectives and
 semantic/native acceptance gaps remain open at their previously recorded scope.
+
+## Native Optional Reading And Source Appraisal
+
+OR72 tests a previously unobserved choice: selecting useful optional guides while
+retaining every assigned prerequisite. Two fresh native clients receive the same
+fictional shared-equipment task, six mandatory project sources, two mandatory
+authoring/knowledge guides and seven optional guides with task-specific reasons.
+The current installed skill body is explicitly supplied; this is not a discovery
+test. The operator reference is withheld. Each client has only bounded route/read
+tools, a ten-minute limit and no automatic relaunch. Both finish normally.
+
+Each client makes two routes and eighteen successful reads: eight required sources
+in each phase and the terminology/handoff guides once each. Both use those optional
+guides in their outputs. Their complete final responses contain all six exact
+project source bodies and every actually read guide ID/full digest. These checks
+establish returned text and output bindings, not comprehension or USER acceptance.
+
+The optional menu contains 126,577 source-body bytes; each client selects 51,076,
+leaving 75,501 unreturned. The first phase returns 105,462 body bytes including
+mandatory inputs, and the second returns 54,386 mandatory reread bytes. This is
+not a token/cost saving estimate or proof of globally minimal context: router
+metadata, the supplied skill body and cumulative client context are separate.
+The preparer's hash validation also reads all guides locally without sending
+all their bodies to the model. No mandatory input is omitted to reduce volume.
+
+Source appraisal finds both clients preserve the six row verdicts, the distinction
+between unknown and failed criteria, current 48-hour versus proposed 24-hour
+reporting, scoped terms, USER decisions and original prohibitions. Both produce
+useful drafts and distinguish document work from actual handling completion.
+Codex's exact response is acceptable for this bounded advisory exercise. Neither
+response is a completed handoff to a fresh recipient; the guide references still
+need separately bound delivery. No byte-bound pre-review draft was persisted,
+so the observed reroutes and author reports are not revision-lineage proof.
+
+Claude's response remains changes-required. It again turns lexical gaps into a
+claim that relevant guidance does not exist, despite reading the terminology
+guide. Its OR-2 cell infers that the reporting period has not started from a current
+failed criterion, although the source snapshot supplies no historical trigger
+time. Its summary also cites an A7 section in the source policy that exists only
+in its generated SOP. Preserve these source-interpretation and locator defects
+separately from successful routing, correct row verdicts and complete appendices.
+The native self-review did not catch them; no silent output correction follows.
+
+The observed terminology objectives also expose a bounded router miss for
+`project terms`. Both skill bundles now recognize singular/plural `project term`
+at word boundaries. Replaying the four actual route queries retains the original
+queries, all objectives, prior documents/controls, role/task/cell identity and
+every other objective assessment. Only the terminology objective changes from
+gap to covered; the combined gap remains. Direct and installed link/copy tests
+cover this executable skill adaptation without adding authority or changing the
+assigned source profiles. The native runs precede this fix; local replay is not
+a new model review or a repair of Claude's prose.
+
+| Retained output | SHA-256 |
+| --- | --- |
+| Codex OR72 response | `bed692be0f6ce85566838b49a944e6cfd7aaf6d08f792b32ae02defad1a4d151` |
+| Claude OR72 response | `65046cec0b9b8723cbe7611018ecf9a1eddbc7119c2a90cfe54ead956e0d7cd3` |
+
+Evidence and separate operator appraisal are retained under
+`.cannae/maintenance/optional-reading-20261113/`, bound to native source commit
+`a15a83b`. The four earlier exact-source receiving proposals remain unchanged and
+unapproved. Broader relevance, source-fidelity and receiving gaps remain open;
+no requirement row or overall product goal is promoted by this exercise.

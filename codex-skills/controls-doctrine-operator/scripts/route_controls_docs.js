@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
-const DEFINITION_KEYWORDS = ["user-defined term", "user defined term", "project-scoped user definition", "project-specific user definition"];
+const DEFINITION_KEYWORDS = ["user-defined term", "user defined term", "project term", "project-scoped user definition", "project-specific user definition"];
 
 const RULES = [
   {
