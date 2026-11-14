@@ -101,7 +101,8 @@ function runOrientationFixtures() {
     ["## Role And Format Reading Correction", "role-and-format-reading-correction"],
     ["## Declared Routing Reference Integrity", "declared-routing-reference-integrity"],
     ["## Current Authoring Families", "current-authoring-families"],
-    ["## Artifact Family State Audit", "artifact-family-state-audit"]
+    ["## Artifact Family State Audit", "artifact-family-state-audit"],
+    ["## Mapped Replanning And Compressed Reports", "mapped-replanning-and-compressed-reports"]
   ]) {
     assert(cases.split("\n").filter(line => line === heading).length === 1, "Case anchor must have one actual target.");
     for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {
@@ -167,7 +168,7 @@ function runOrientationFixtures() {
     current.includes("**A16, partial -> verified (bounded):**"),
   "Family-state evidence must update the inventory without closing native quality gaps or inventing a product percentage.");
   // These assertions protect declared orientation and links, not semantic truth.
-  return 11;
+  return 12;
 }
 
 function runNavigationFixtures() {

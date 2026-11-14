@@ -312,6 +312,20 @@ population and source-ID mapping. Without that relationship, report the observed
 items and aggregate separately; do not assign a remainder count or an "all
 remaining items" status. Check the revised plan and inquiry wording as well as
 the result table: a correct unknowns note does not repair an assumed membership.
+For compound deliverables, enumerate every requested output in the review matrix,
+including the FRAGO situation, SITREP summary, decision-question heading and
+handoff next action. Derive repeated counts and relationships from the same
+source-ID table, then compare each compressed statement with it; citing only the
+correct detailed table is not a check of the other outputs. Retain established
+many-to-one mappings while leaving unlinked items unknown. Do not turn a warning
+against unsupported joins into refusal to use relationships the source proves.
+Separate future source assignment from an access-policy change. A closed catalog
+prohibits unassigned reads; it does not prove that every future assignment is a
+USER-only permission change. Identify the actual decision scope and owner, or
+leave assignment authority unresolved. Preserve authorized preparation and
+selection requirements, and do not read a new source merely because it exists.
+Keep evidence questions and optional policy proposals out of mandatory-decision
+headings unless their governing source actually makes them approval gates.
 Reconcile the handoff's required reading with the actual receiver packet. Include
 authorized dependencies, or explicitly state what is withheld/unavailable and
 leave the dependent historical comparison unverified. Do not open reference-only

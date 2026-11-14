@@ -225,6 +225,25 @@ acceptance alongside previous improvements and output isolation. They do not
 adopt drafts, certify all prose, cure the remaining native quality gaps or establish
 a new military claim. G1/G2/G3/G5 remain partial.
 
+## Compressed Outputs Need Their Own Review (2026-11-15)
+
+The [MP96 case](document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+combines known many-to-one mapping with an unresolved event link. Both clients
+use valid partial evidence rather than refusing every relationship. Claude's
+FRAGO nevertheless misstates a count that its detailed tables handle correctly.
+Review coverage must enumerate the requested outputs as well as source rules:
+compare the compact situation, status summary, question headings and handoff
+actions with the same ID-level assessment. An adjacent correct table is not proof
+that those statements were checked.
+
+Its second defect is an unnecessary approval gate. A source catalog limits reads,
+but does not prove that every future source assignment changes access rights or
+requires USER's decision. Preserve actual authorized preparation/selection and
+USER-owned changes; do not promote evidence questions or optional policy proposals
+into mandatory decisions. The separate eleven-span correction retains originals
+and remains unreviewed by a new native recipient. These are bounded engineering
+observations, not a general model score or military claim; broader quality stays open.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

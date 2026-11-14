@@ -89,6 +89,13 @@ A16 and G4 have bounded maintenance acceptance; G1/G2/G3/G5 remain partial.
 Historical bodies and four pending proposals remain unchanged; no new review,
 adoption, model run or military-source claim follows.
 
+The [MP96 case](document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+adds two actual compound-plan/self-review runs with correct detailed mappings but
+a remaining Claude summary contradiction and unsupported approval gates. Its
+[review-coverage lesson](research-compendium.md#compressed-outputs-need-their-own-review-2026-11-15)
+keeps useful partial evidence, exact source bodies and separate operator correction.
+Current behavioral goals remain partial; no new military claim or approval follows.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

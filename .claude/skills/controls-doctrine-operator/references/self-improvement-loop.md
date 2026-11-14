@@ -169,6 +169,16 @@ Appraise set relationships in residual-work plans: separate observed items from
 aggregate records until their membership and mapping are established. Repair the
 operative question and next action, not just an adjacent unknowns statement.
 
+For a compound output, list each requested artifact in the review coverage map,
+not just each source requirement. Check compressed FRAGO/SITREP statements,
+decision headings and handoff actions against the same source-ID assessment.
+Use both known many-to-one and unresolved mappings in a regression; blocking
+every join is not a correct repair. Keep valid partial work as a positive control.
+Trace a new approval gate to its actual policy scope: source assignment is not
+automatically an access-policy change. Preserve required authorized preparation
+and selected reads without inventing a USER decision for every evidence question.
+An instruction check proves the rule is supplied, not that a native report obeys it.
+
 Distinguish a client's internal transport retry from relaunching a review. Accept
 only an inspected, validated diagnostic shape; retain unknown-event, permission
 and tool stops. Keep the original wall-clock deadline and output limit across

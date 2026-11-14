@@ -104,6 +104,27 @@ try {
     assert(rubric.includes("assign a status to an invented remainder in the plan or follow-up question."));
     assert.equal(packet.manifest.semantic_acceptance_established, false);
   });
+  fixture("compound-output coverage and actual approval scope reach both skills and review input", () => {
+    for (const phrase of ["enumerate every requested output in the review matrix,",
+      "including the FRAGO situation, SITREP summary, decision-question heading",
+      "same\nsource-ID table", "Retain established\nmany-to-one mappings",
+      "Separate future source assignment from an access-policy change.",
+      "prohibits unassigned reads", "leave assignment authority unresolved",
+      "Keep evidence questions and optional policy proposals out of mandatory-decision"]) {
+      assert(packet.prompt.includes(phrase), `Missing compound-output instruction: ${phrase}`);
+    }
+    const lessons = ["codex-skills", ".claude/skills"].map(provider => section(
+      fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8"),
+      "For a compound output, list each requested artifact in the review coverage map,",
+      "Distinguish a client's internal transport retry from relaunching a review. Accept"));
+    assert.equal(lessons[0], lessons[1]);
+    assert(lessons[0].includes("Keep valid partial work as a positive control."));
+    assert(lessons[0].includes("source assignment is not\nautomatically an access-policy change"));
+    const template = fs.readFileSync(path.join(__dirname, "docs/prompt-templates.md"), "utf8");
+    const frago = section(template, "## 4. FRAGO: Fragmentary Order", "## 5. SITREP: Situation Report");
+    assert(frago.includes("A correct worksheet\ndoes not validate a contradictory FRAGO summary"));
+    assert.equal(packet.manifest.semantic_acceptance_established, false);
+  });
   fixture("historical nondelivery stays distinct from current representation receipt", () => {
     const instruction = "When a predecessor says it was not delivered, preserve that dated status as\n" +
       "history and compare it with the current reader's actual receipt evidence.\n" +
@@ -467,7 +488,7 @@ try {
     const rows = map.split("\n").filter(line => line.startsWith("| ")).slice(2);
     assert.deepEqual(rows.map(line => line.split("|")[1].trim()), [
       "Support SOP", "Document chain", "Research report", "METHOD61", "DOCMOVE47",
-      "CS91", "OR72", "QL93", "RH94", "RP95"
+      "CS91", "OR72", "QL93", "RH94", "RP95", "MP96"
     ]);
     const row = family => rows.find(line => line.startsWith(`| ${family} |`));
     assert(row("Research report").includes("V2 review does not become a V3 review"));
@@ -475,6 +496,7 @@ try {
     assert(row("METHOD61").includes("has no exact USER decision"));
     assert(row("OR72").includes("proposal was approved and received") && row("OR72").includes("window is now expired"));
     assert(row("RP95").includes("not native-reviewed or transmitted"));
+    assert(row("MP96").includes("eleven-span operator correction") && row("MP96").includes("not native-reviewed"));
     assert(map.includes("SOP V3, SOP V4, METHOD61 and\nCS91"));
     assert(map.includes("All listed drafts remain unadopted."));
     assert(!/\/Users\/|\/private\/|\/tmp\/|file:\/\//.test(map), "Public map must not expose private evidence paths.");

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record MP96's two native compound-plan reviews with fresh routing, nine required reads per phase and exact source appendices. Preserve correct record-level assessments beside a Claude FRAGO mapping contradiction and unsupported approval gates, plus a separate eleven-span operator correction. Mirror output-specific review coverage and source-assignment versus access-change guidance; retain partial behavioral goals without a replay, automatic adoption or claim of a native cure.
+
 - Audit ten maintained authoring families against exact artifact, review, receiving and decision records. Add a current family map, correct stale METHOD61 summary scope and retain historical bodies, four pending proposals and OR72's expired in-window evidence. Mirror version/representation/phase-specific maintenance in both skills. A16 and G4 gain bounded maintenance acceptance; G1/G2/G3/G5 remain partial, with no new native run, adoption or authority change.
 
 - Record RP95's four bounded native notice/continuation processes: actual parent delivery, seven required reads per work phase, truthful attribution and preserved USER holds. Retain a Claude residual-population inference and its separate four-span operator correction. Mirror aggregate/item mapping and recipient-projection checks in both skills; preserve the unexecuted appraisal-bearing preparations and distinguish local instruction checks from a native cure or overall completion.

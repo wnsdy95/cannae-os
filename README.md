@@ -1093,6 +1093,13 @@ records and observed items when planning the remainder. The original, separate
 operator correction and mirrored guidance remain distinct; successful notice
 timing is not whole-report acceptance or overall completion.
 
+The [mapped-replanning follow-up](docs/document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+observes both clients using known record/event links while preserving unresolved
+work and USER decisions. Claude's detailed table is correct, but its FRAGO summary
+misstates the mapping and its report invents broader approval gates. The separate
+operator correction and output-specific review guidance do not constitute a native
+cure. G1/G3/G5 remain partial; source fidelity must survive compressed reports too.
+
 ### Retained Guarded Prototypes
 
 These implemented contracts and validation surfaces remain available. They do

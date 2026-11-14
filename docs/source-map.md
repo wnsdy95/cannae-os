@@ -290,6 +290,13 @@ keeps local successors distinct from predecessor reviews, preserves four pending
 decisions and scopes OR72's expired grant to its historical in-window event.
 This is source/status appraisal, not a new model review or military-source claim.
 
+The [MP96 compound-report case](document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+binds two native runs to synthetic record/event sources and exact installed guides.
+Its [output-coverage lesson](research-compendium.md#compressed-outputs-need-their-own-review-2026-11-15)
+distinguishes correct detailed tables from contradictory summaries and unsupported
+approval gates. The local operator derivative is not a new native review, policy
+adoption or external military-source claim.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

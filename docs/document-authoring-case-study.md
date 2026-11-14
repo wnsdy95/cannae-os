@@ -41,9 +41,9 @@ correct. Re-read changed sources before reusing the draft.
 
 ## Current Authoring Families
 
-Audited 2026-11-15 against retained artifact bytes, review records and exact
-preparation decisions. This map covers the ten maintained authoring families
-exposed by current corpus summaries; it is not a new review of every document.
+The initial 2026-11-15 audit checked ten authoring families against retained
+artifact bytes, review records and exact preparation decisions. The separately
+bound MP96 case below adds an eleventh family; this is not a new review of every document.
 Each linked case retains its original dates, verdicts and historical next steps.
 Select work from the [active queue](completion-backlog.md#active-core-work), not
 those older instructions. All listed drafts remain unadopted.
@@ -60,6 +60,7 @@ those older instructions. All listed drafts remain unadopted.
 | QL93 | [Claude operator R1](#native-quote-review-and-decision-ownership), with native SOP V2 unchanged | Three-span local report correction; native operative V2 appraisal remains separately scoped. | No fresh native review or successor receipt of the corrected report. |
 | RH94 | [Two author units and two fresh receiving outputs](#cross-client-recovery-handoff) | Both unchanged predecessor units were received; useful repairs and unsupported findings coexist. | Receiving is not blanket semantic acceptance; no third recipient or adoption is inferred. |
 | RP95 | [Claude operator correction](#parent-delivered-replanning-and-residual-scope) | Four native notice/work phases; a separate four-span residual-scope correction. | The correction is not native-reviewed or transmitted. The successful notice boundary is not whole-report acceptance. |
+| MP96 | [Codex native W2 and Claude operator R1](#mapped-replanning-and-compressed-reports) | Two native planning/self-review runs; both preserve useful record assessments, but Claude's compact report repeats a mapping error and adds unsupported approval gates. | The eleven-span operator correction plus labeled preface is locally appraised, not native-reviewed, transmitted or adopted. |
 
 The four unresolved exact preparation proposals are SOP V3, SOP V4, METHOD61 and
 CS91. They are distinct from already observed delivery mechanisms and remain
@@ -5064,3 +5065,66 @@ at that scope; G1/G2/G3/G5 retain their behavioral gaps. Ongoing maintenance rem
 required when artifacts change. A pass does not adopt any draft, close a pending
 decision, invoke a model, enable a service or complete the whole product.
 Evidence: `.cannae/maintenance/authoring-family-audit-20261115/`.
+
+## Mapped Replanning And Compressed Reports
+
+MP96 tests the remaining residual-scope defect with a new compound plan, FRAGO,
+status report, unsent questions and complete handoff. At source `8e75f4a`, both
+existing clients receive current installed guidance and five newly authored
+public synthetic sources, with four required guides. The assignment includes
+both known many-to-one relationships and an unresolved link, rather than making
+every relationship unknown. The acceptance plan and withheld operator reference
+precede both calls. Standing verification consent covers them; no retained exact
+preparation proposal or expired OR72 decision is reused.
+
+| Observation | Codex | Claude Code |
+| --- | --- | --- |
+| Native version/model | 0.162.1 / gpt-6-astra | 2.1.322 / claude-opus-5-5 |
+| One bounded process | 219.339 seconds, exit 0 | 210.921 seconds, exit 0 |
+| Actual routing/reading | Two routes, nine required reads per phase | Two routes, nine required reads per phase |
+| Whole-unit material | Five exact original project bodies and nine full source bindings | Five exact original project bodies and nine full source bindings |
+| Complete-output appraisal | No material operative source error found at this scope | Changes required despite correct detailed tables |
+
+Seven of eight inventory records are active; the eighth is already withdrawn.
+E21 and E22 both explicitly identify R102 and supply its two readiness conditions.
+E23 has no established inventory membership or relationship to R102. Both clients
+provisionally assess R102, preserve six unresolved active records and distinguish
+unknown evidence from actual nonperformance. They retain the unavailable ledger's
+no-retry rule while using permitted alternative evidence and drafting. Neither
+claims operational execution, adoption or actual successor receipt.
+
+Codex carries those distinctions through its complete plan, change note, report,
+questions and handoff. Claude's FRAGO instead says three events link to R102;
+the correct event table and adjacent unresolved-E23 clause do not repair that
+claim. Its self-review cites the detailed tables but omits the compressed FRAGO.
+Claude also equates all new source assignment with a USER access change, propagates
+that gate through Q3/SITREP/H5, and groups factual questions and an optional policy
+proposal under required decisions. Authorized preparation and actual access
+changes remain necessary where applicable; their scope cannot be generalized to
+every assignment or delegated evidence check. The reading catalog remains closed.
+
+A separate operator R1 corrects eleven locations and adds a labeled preface.
+It also clarifies optional future policy wording, unknown owner assignment and
+the distinction between all supplied events and an unassigned complete event log.
+Reversing the exact edits restores the native response. Five original bodies,
+source bindings and every other body byte remain. Both native outputs and the
+derivative are materialized in the synthetic target repository; this later
+operator action is not a file write by either native worker. R1 has no new native
+review, transfer or adoption, and the original author's self-review remains history.
+
+Both maintenance guides now require output-specific review coverage, with known
+relationships as positive controls beside unknown ones. The authoring procedure
+and FRAGO template require checking compressed claims against the same source-ID
+assessment and tracing added approval gates to actual policy. These changes follow
+the runs: local tests establish instruction delivery, not a demonstrated native cure.
+The two routes prove current source rereading, not an immutable exact pre-review
+draft, independent review or forced semantic compliance. The observer's liveness
+probe saw Claude already exited; the same session confirmed completion without
+a restart. Models' internal transport requests are not counted as new invocations.
+
+A01/A10/A20 remain partial on compressed-output fidelity and unsupported gates;
+G2's reading relevance remains separate. The observed capability-gap decisions
+are retained rather than relabeled covered. Existing notice and receiving evidence
+need not be replayed, and no recursive recipient is required solely for a cleaner
+score. Exact inputs, messages, source comparisons, structural audit and correction
+bindings: `.cannae/maintenance/mapped-replan-20261115/`.

@@ -122,6 +122,11 @@ BACKBRIEF
 
 ## 4. FRAGO: Fragmentary Order
 
+For a document-only draft, keep this format proposed rather than issued. Compare
+its compressed situation and approval statements with the source-ID assessment
+and actual decision scopes, not only the detailed report. A correct worksheet
+does not validate a contradictory FRAGO summary; retain unknown relationships.
+
 ```text
 FRAGO [Number]: [Task Name]
 
