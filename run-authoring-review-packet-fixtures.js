@@ -488,7 +488,7 @@ try {
     const rows = map.split("\n").filter(line => line.startsWith("| ")).slice(2);
     assert.deepEqual(rows.map(line => line.split("|")[1].trim()), [
       "Support SOP", "Document chain", "Research report", "METHOD61", "DOCMOVE47",
-      "CS91", "OR72", "QL93", "RH94", "RP95", "MP96"
+      "CS91", "OR72", "QL93", "RH94", "RP95", "MP96", "PR97"
     ]);
     const row = family => rows.find(line => line.startsWith(`| ${family} |`));
     assert(row("Research report").includes("V2 review does not become a V3 review"));
@@ -497,6 +497,9 @@ try {
     assert(row("OR72").includes("proposal was approved and received") && row("OR72").includes("window is now expired"));
     assert(row("RP95").includes("not native-reviewed or transmitted"));
     assert(row("MP96").includes("eleven-span operator correction") && row("MP96").includes("not native-reviewed"));
+    assert(row("PR97").includes("complete outputs are source-appraised") && row("PR97").includes("Unsent, unadopted drafts"));
+    assert(row("Document chain").includes("temporary candidate and base bodies are no longer available") &&
+      row("Document chain").includes("not a current reread or deliverable source unit"));
     assert(map.includes("SOP V3, SOP V4, METHOD61 and\nCS91"));
     assert(map.includes("All listed drafts remain unadopted."));
     assert(!/\/Users\/|\/private\/|\/tmp\/|file:\/\//.test(map), "Public map must not expose private evidence paths.");

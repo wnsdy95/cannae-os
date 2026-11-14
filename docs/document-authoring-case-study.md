@@ -43,7 +43,7 @@ correct. Re-read changed sources before reusing the draft.
 
 The initial 2026-11-15 audit checked ten authoring families against retained
 artifact bytes, review records and exact preparation decisions. The separately
-bound MP96 case below adds an eleventh family; this is not a new review of every document.
+bound MP96 and PR97 cases below add two families; this is not a new review of every document.
 Each linked case retains its original dates, verdicts and historical next steps.
 Select work from the [active queue](completion-backlog.md#active-core-work), not
 those older instructions. All listed drafts remain unadopted.
@@ -51,7 +51,7 @@ those older instructions. All listed drafts remain unadopted.
 | Family | Current retained artifact | Review and receiving scope | Decision or remaining boundary |
 | --- | --- | --- | --- |
 | Support SOP | [V5](#corrective-sop-draft-v5) | Native review accepts only its operative draft; the full receiving unit is separate. | No adoption. The separate V3/V4 preparation proposals remain unapproved. |
-| Document chain | [DRAFT-SCOPED-CLAIMS-FOLLOWUP](#four-span-follow-up-source-appraisal) | Four-span local source/delta appraisal of the exact three-string patch/base unit. | No fresh native review or operational receipt of this patch; it is not support SOP V5. |
+| Document chain | [DRAFT-SCOPED-CLAIMS-FOLLOWUP](#four-span-follow-up-source-appraisal) historical record | Retained four-span patch/appraisal; temporary candidate and base bodies are no longer available at their recorded paths on 2026-11-15. | Historical appraisal is not a current reread or deliverable source unit. Do not reconstruct or transmit from hashes alone; this is not support SOP V5. |
 | Research report | [SIM-RESEARCH-41 operator V3](#native-research-repair-and-public-reporting) | Local source/delta appraisal follows native review of V2. | The V2 review does not become a V3 review or USER adoption. |
 | METHOD61 | [Corrected whole unit](#corrected-receiving-preparation-boundary) | Original native phases completed; the operator correction is locally appraised. | A later reviewed-preparation proposal exists but has no exact USER decision; no corrected-unit receiver run. |
 | DOCMOVE47 | [DOCMOVE-47-HANDOFF-OP2](#exact-repaired-unit-receiving) and corrected decision brief | OP1 was actually received; OP2 is a seven-edit local successor. | OP1 receipt does not establish OP2 review or receipt. |
@@ -61,8 +61,9 @@ those older instructions. All listed drafts remain unadopted.
 | RH94 | [Two author units and two fresh receiving outputs](#cross-client-recovery-handoff) | Both unchanged predecessor units were received; useful repairs and unsupported findings coexist. | Receiving is not blanket semantic acceptance; no third recipient or adoption is inferred. |
 | RP95 | [Claude operator correction](#parent-delivered-replanning-and-residual-scope) | Four native notice/work phases; a separate four-span residual-scope correction. | The correction is not native-reviewed or transmitted. The successful notice boundary is not whole-report acceptance. |
 | MP96 | [Codex native W2 and Claude operator R1](#mapped-replanning-and-compressed-reports) | Two native planning/self-review runs; both preserve useful record assessments, but Claude's compact report repeats a mapping error and adds unsupported approval gates. | The eleven-span operator correction plus labeled preface is locally appraised, not native-reviewed, transmitted or adopted. Two exact receiving-preparation proposals remain pending after the raw internal-path attempt was rejected. |
+| PR97 | [Both complete native W2/report units](#whole-output-fidelity-and-useful-reading) | Both clients' complete outputs are source-appraised; exact originals and useful optional reading are checked. | Unsent, unadopted drafts. No successor receiving, general model reliability or replay approval follows. |
 
-The four unresolved exact preparation proposals are SOP V3, SOP V4, METHOD61 and
+The four earlier unresolved exact preparation proposals are SOP V3, SOP V4, METHOD61 and
 CS91. They are distinct from already observed delivery mechanisms and remain
 attached to their original bytes and recipients. OR72's expired decision still
 supports its historical in-window receiving; expiry neither erases that event nor
@@ -5248,3 +5249,95 @@ reading. No model call, new preparation approval or native acceptance is implied
 The reading profile itself is unchanged, so these results do not prove fewer
 actual model source reads; broader A05/G2 relevance appraisal remains partial.
 Evidence: `.cannae/maintenance/session-reading-20261115/`.
+
+## Whole-Output Fidelity And Useful Reading
+
+PR97 is a new synthetic S4/logistics/document_review/L1 assignment at `b640e23`,
+not another review of MP96's pending internal drafts. Acceptance is declared
+before the two native runs: revise W1 into W2, a compact FRAGO, status report,
+unsent questions and a complete unsent receiving unit. Every output must preserve
+the source facts, original objectives, unresolved work and distinct decision
+scopes. Standing verification consent covers these synthetic tests; it does not
+approve any of the six retained preparation proposals or reuse OR72's old grant.
+
+The policy snapshot has five active records and one inactive record. R-41 and
+R-42 share G-17's fully supported inspection. R-43 maps to G-18, whose quantity
+is known unmet, provenance unknown and acknowledgement recorded. R-44 maps to
+G-19, whose acknowledgement is explicitly pending. R-45 has no established
+mapping; R-46 is inactive. Thus the active classifications are two Supported,
+two Not met and one Unassessed, plus one excluded inactive record. All three
+inspections require assessment. The flawed predecessor mixes these units,
+invents USER-only ordinary-assignment gates and treats service availability as
+retry permission. The rule already permits offline drafting and ordinary CoS
+assignments; USER retains actual permission changes, adoption, transmission and
+the specific ledger-retry decision.
+
+| Observed run | Model and CLI | Routes / source reads | Final response SHA-256 |
+| --- | --- | --- | --- |
+| Codex | gpt-6-astra; codex-cli 0.162.1 | 2 / 15 | `d1a62f8da521f934b458f729c864e743ab48a5e0b91ea2246e0adab13e9b3b36` |
+| Claude Code | claude-opus-5-5; 2.1.322 | 2 / 15 | `0cb872222c17d9a0130cff5a6755cf5e2e7e103ceb216a4bb46442c1c3b27197` |
+
+Each process finishes once within ten minutes, without automatic relaunch. Only
+the read-only route/read tools are offered. The installed skill body is explicitly
+supplied, so this is not another implicit-discovery test. The grading reference
+and other client's answer are withheld. Exact scripts, CLI binaries, prompts,
+guides, source files and returned tool bodies are bound and unchanged during
+execution. No shell, source edit, external lookup, contact, ledger attempt,
+adoption or operational execution is observed.
+
+### Source Appraisal
+
+The operator compares both complete responses with the originals, not their
+self-ratings or just their detailed tables:
+
+| Output | Bounded result in both clients |
+| --- | --- |
+| W1 review and W2 | Repair the five defective steps while preserving both objectives, inactive scope and unresolved work. |
+| Compact FRAGO | Keep the same 5 active / 2-2-1 classification / 1 exclusion and the ordinary-assignment versus USER-decision boundary. |
+| Status report | Assess every record and inspection; preserve known unmet, unknown and recorded fields separately. Report completion is not underlying completion. |
+| Questions and next actions | Keep questions unsent; do not require a new USER decision for already delegated work, infer exclusive proof, or clear ledger/adoption/transmission holds. |
+| Receiving unit | Carry all five exact original bodies with correct ID/version/full-digest bindings and locations, required and used optional guide references, and current limitations. No future recipient or transfer is claimed. |
+
+No material source contradiction is found against the predeclared criteria.
+Exact appendix checks separately confirm their byte identity. Claude correctly
+states it did not itself recompute those hashes; the operator's later check is
+not attributed to the model. Both reroute and reread all seven mandatory inputs
+for self-review. Their final matrices address the requested outputs; a persisted
+intermediate draft or private reasoning trace is not claimed. Codex additionally
+announces its permitted method switch publicly; Claude's visible messages cover
+routing/reading. This task directly instructs offline work and does not retest
+advance-method reporting. RP95's actual parent-mediated notices remain separate
+evidence, not an action retroactively attributed to PR97.
+
+### Reading And Acceptance Limits
+
+The five project originals and authoring/handoff guides are required for this
+task. Of six optional guides, Codex reads only the source-reliability rubric for
+units/mappings; Claude reads only prompt templates for FRAGO/SITREP. Both choices
+are useful. Neither reads database implementation, protected execution or Korean
+national doctrine solely because of a role label or output language. Optional
+guides remain optional on the second phase; all required sources are reread.
+
+This observed S4 profile complements earlier S3 and S6/S2 native cases, human and
+six-role format comparisons, source-topic corrections and explicit/parent/guarded
+counterexamples. It supports representative useful reading, not automatic profile
+generation or globally minimal routing. A heading-prefixed task can still retain
+conservative lexical overrecommendations; this exact assignment is not shortened
+to hide that limit. Recommendations do not override the reviewed access profile.
+
+Together with prior SOP/research/revision, discovery, stop/recovery, receiving and
+maintenance evidence, PR97 supplies the remaining bounded A01/A05/A10/A20 evidence.
+The [current audit](completion-backlog.md#requirement-level-audit) owns the combined
+five-goal acceptance. Earlier failures, operator derivatives and six pending
+artifact decisions remain intact. These two runs do not prove universal quality,
+causal improvement, authenticated authority, protected-host enforcement or USER
+adoption. This is verification/status maintenance of existing mirrored guidance,
+not a new skill behavior or permission policy. Evidence and full source appraisal:
+`.cannae/maintenance/profile-report-20261115/`.
+
+During closeout, 139 of 141 retained private evidence bindings are still readable
+and unchanged. Two old document-chain temporary bodies are unavailable; their
+patch, digests and historical appraisal remain. The current family map records
+that distinction instead of presenting them as freshly readable candidates.
+No source is reconstructed, relabeled or retransmitted. This does not invalidate
+the earlier observed event or the separate current PR97 sources.

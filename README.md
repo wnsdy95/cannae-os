@@ -75,6 +75,10 @@ The [five active objectives](docs/skill-first-product-scope.md#active-objectives
 are authoring quality, role-bounded routing/delegation, a complete working flow,
 bounded improvement/corpus maintenance, and client distribution. Preparatory
 cleanup is recorded separately; none is declared complete from a routing pass.
+The [2026-11-15 acceptance audit](docs/completion-backlog.md#five-goal-acceptance)
+now records bounded completion of all five through source-appraised actual use
+and local checks. This is not a guarantee of hallucination-free work or production
+security; the limitations and deferred scope remain.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
@@ -1022,11 +1026,15 @@ score or evidence of current production operation.
 ### Active Skill Status
 
 Of the five [active objectives](docs/skill-first-product-scope.md#active-objectives),
-G4 has bounded maintenance acceptance; G1/G2/G3/G5 remain partial.
-Bounded evidence covers document revisions, role-based routing,
-required reading, source-bound handoffs and installation/discovery in both clients.
-Broader context relevance, complete-report quality, replanning and client parity
-still have recorded gaps. Separate plugin packaging remains optional and deferred.
+all five now have bounded acceptance. The fixed inventory has twenty verified
+required rows and no remaining partial row. This combines representative document
+work, role-based routing, actual reads, source-bound handoffs, maintenance and
+installation/discovery in both clients, not a general reliability percentage.
+The [PR97 whole-output case](docs/document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+supplies the final complete-report, replanning, useful-reading and client-equivalence
+evidence. Historical failures remain visible below. New work still needs source
+review; lexical overrecommendation and manually reviewed profiles remain limitations.
+Separate plugin packaging remains optional and deferred.
 
 The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 observes both clients choosing useful guides while retaining assigned sources.
@@ -1061,17 +1069,17 @@ review repairs coexist with a false method-notice claim and unsupported source
 inferences. Both skills address those lessons without claiming a demonstrated cure.
 
 The [2026-11-15 requirement audit](docs/completion-backlog.md#audit-basis-and-disposition-changes)
-counts bounded drafting flow, exactly approved representation delivery and actual
-cross-client handoff and maintained artifact-state reconciliation. Sixteen required rows
-are verified at their stated scope; four remain partial, not a product percentage.
-Remaining work targets replanning and report fidelity, complete-output quality
-across clients and relevant reading. Individual unapproved proposals remain held,
-but do not mean the delivery mechanism is untested. No draft adoption follows.
+combines bounded drafting flow, exactly approved representation delivery, actual
+cross-client handoff, maintained artifact states and PR97's source-appraised work.
+Twenty required rows are verified at their stated scope; no partial rows remain
+in this fixed inventory. Six individual unapproved proposals stay held, but do
+not mean the delivery mechanism is untested. No draft adoption follows.
 The [ten-family audit](docs/document-authoring-case-study.md#artifact-family-state-audit)
 binds current summaries to original artifacts, reviews and decisions. Together
 with observed mirrored improvements and target-output isolation, it supports G4
 at that bounded scope, not permanent correctness or a complete corpus prose audit.
-Ongoing maintenance remains required; the other four objectives stay open.
+Ongoing maintenance remains required. PR97 supplies the later bounded evidence
+for the other four objectives without rewriting that earlier audit.
 
 The [role/format reading correction](docs/document-authoring-case-study.md#role-and-format-reading-correction)
 adds missing authoring guidance for formal order drafts and narrows unrelated S3
@@ -1098,7 +1106,8 @@ observes both clients using known record/event links while preserving unresolved
 work and USER decisions. Claude's detailed table is correct, but its FRAGO summary
 misstates the mapping and its report invents broader approval gates. The separate
 operator correction and output-specific review guidance do not constitute a native
-cure. G1/G3/G5 remain partial; source fidelity must survive compressed reports too.
+cure. G1/G3/G5 remained partial at that checkpoint; PR97 subsequently checks
+source fidelity across compressed reports as well as detailed tables.
 R1's [receiving preparation](docs/document-authoring-case-study.md#r1-receiving-preparation-boundary)
 stopped on internal-path raw delivery before a model call. Two exact review
 proposals remain pending; unchanged text is not permission to bypass that boundary.
@@ -1112,6 +1121,9 @@ The [bound-session follow-up](docs/document-authoring-case-study.md#bound-sessio
 connects that selection to the adapter's unchanged document-only descriptor.
 Thirty-two local session comparisons preserve assigned profiles and authority;
 recommendation changes do not prove fewer native source reads.
+PR97 then observes seven mandatory inputs at both phases and one relevant optional
+guide in each client. It does not prove automatic profile generation, globally
+minimal context, every client configuration or protected-host enforcement.
 
 ### Retained Guarded Prototypes
 

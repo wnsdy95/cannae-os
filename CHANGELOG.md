@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record PR97's two bounded native whole-output reviews under existing mirrored guidance: seven mandatory reads per phase, one useful optional guide per client, exact source appendices and separately appraised W2/FRAGO/status/question/handoff fidelity. Reconcile the final A01/A05/A10/A20 acceptance with prior cases: twenty required rows and all five skill-first goals now have bounded evidence. Preserve historical failures, six pending preparation proposals, unadopted drafts and deferred infrastructure/plugin packaging. This is verification/status maintenance, not new permission, universal reliability or a shipped plugin.
+
 - Recognize the existing document-only receiving descriptor in S3/S4 relevance selection without renaming authority or changing profiles. Compare 32 actual session routes, retain technical/required/ambiguous counterexamples, and cover assigned/optional/denied reads, holds, rerouting and local stdio transport. Mirror descriptor-versus-profile guidance in both skills; do not infer smaller native reading or new preparation approval.
 
 - Route source-bound report/document comparisons to authoring/KM guidance and omit the unrelated S4 SQL role default only for direct explicitly read-only prose work. Preserve real storage subjects, technical duties, explicit/parent inputs, controls and guarded contracts. Compare 58 local outcomes, extend direct and installed regressions, and mirror the lesson without claiming native reading or semantic-routing completion.

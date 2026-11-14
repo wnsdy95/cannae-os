@@ -10,83 +10,36 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
-Current audit: 2026-11-15 (Asia/Seoul), including RH94 two-way receiving and
-RP95 parent-delivered replanning, the ten-family source/status audit and MP96
-compound-plan review.
-The five USER objectives and their acceptance
-criteria are unchanged.
-The [requirement table](#requirement-level-audit) owns current dispositions;
-[dated history](#superseded-active-queue-2026-11-14) preserves the former queue
-and table, including their superseded next actions. They are not dispatch orders.
+Current audit: 2026-11-15 (Asia/Seoul), after
+[PR97 whole-output and reading appraisal](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading).
+All five USER objectives now have bounded acceptance against their unchanged
+criteria. Twenty required rows are verified at their stated scope; optional
+plugin packaging remains deferred. This is a completed representative skill
+acceptance milestone, not universal correctness, production enforcement or
+adoption of any draft. The [requirement table](#requirement-level-audit) owns
+the evidence and residual limits.
 
-1. **Replanning and report fidelity (A10; G3):** [MP96](document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
-   follows RP95 with two native compound plans. Both use established many-to-one
-   mappings, preserve unresolved records and keep permitted work moving without
-   ledger retry. Claude's compact FRAGO nevertheless contradicts its correct table
-   and its Q3/SITREP/handoff create overly broad USER approval gates. Reconcile
-   each requested output with the same source-ID and decision-scope assessment;
-   source-appraise the complete corrected unit, not just the detailed worksheet.
-   Its eleven-span operator correction is not fresh native acceptance. Preserve
-   known mapping as a positive control, not a reason to reject all joins. Do not
-   replay accepted notice phases, require recursive RH94 receiving or reuse
-   pending METHOD61 consent.
-2. **Document and cross-client quality (A01/A20; G1/G5):** source-appraise the
-   complete output, including reports and next actions, not only the operative
-   SOP. Cover authority verbs, numeric citations, source conditions, unchanged
-   requirements and explicit unknowns. MP96 adds a source-appraised Codex whole
-   unit and correct detailed work in both clients, but Claude's condensed report
-   still changes facts and decision scope. A self-review matrix that cites only
-   correct tables misses those requested outputs. Fresh recipients do not
-   universally certify predecessors. Define acceptance before the response.
-   Retain supported and unsupported review findings separately. Do not
-   demand a fresh model verdict on every historical operator derivative, replay
-   the accepted V5/QL93 bodies for a cleaner score, or infer universal reliability.
-3. **Task-relevant reading (A05; G2):** appraise necessary and irrelevant reading
-   across additional representative task/role combinations against the original
-   objectives and actual source content. Explain each required/optional choice
-   and retain explicit inputs, inherited duties, genuine domain gaps and controls.
-   Existing profiles, optional-guide selection, provenance and bounded lexical
-   repairs are useful evidence, not a globally minimal selector. The acceptance
-   target is justified useful context with tested omissions/counterexamples, not
-   mathematical optimality or elimination of every conceivable wording error.
-   The [role/format comparison](document-authoring-case-study.md#role-and-format-reading-correction)
-   adds 56 local before/after cases for missing order-authoring guidance and
-   unrelated read-only S3 execution manuals. It appraises those two boundaries,
-   not every reference in every profile; technical/guarded counterexamples remain
-   necessary and no post-change native source consumption is claimed.
-   A [further 58-result comparison](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
-   corrects missing source-bound report-review guidance and unnecessary S4 SQL
-   defaults. It preserves storage/technical/explicit/parent/guarded cases and
-   independent domain gaps; broader useful-profile appraisal remains open.
-   The [bound-session follow-up](document-authoring-case-study.md#bound-session-reading-context)
-   now recognizes its unchanged `document-only-verification` descriptor. Thirty-two
-   actual local session comparisons preserve original/current tasks, required and
-   optional profiles, technical cases and domain gaps. This narrows recommendations,
-   not assigned reading or authority; local handler/transport tests do not establish
-   fresh model reading or finish broader useful-profile appraisal.
+The [dated history](#superseded-active-queue-2026-11-14) retains superseded queues
+and their original next actions. They are not dispatch orders.
 
-**Ongoing maintenance (A15-A17; G4):** the [family audit](document-authoring-case-study.md#artifact-family-state-audit)
-reconciles ten maintained outputs with original artifact, review, receiving and
-decision records. Its [current map](document-authoring-case-study.md#current-authoring-families)
-separates predecessors, local successors, actual receiving and pending decisions.
-Together with mirrored failure-driven fixes, source-navigation checks and target
-output isolation, this supplies bounded G4 acceptance, not an audit of every prose
-sentence or permanent correctness. Recheck affected sources, indexes and history
-on each change; preserve the remaining behavioral work above.
+No unmet required item remains in this fixed acceptance inventory. Continue
+ordinary maintenance when actual use exposes a new defect: preserve its evidence,
+make a bounded mirrored improvement and check the affected behavior. Do not
+invent another native exercise solely to obtain a cleaner score, recursively
+review every successor, or reactivate deferred platform work.
 
-Implementation, observed native use, source appraisal and USER adoption remain
-separate. No new model invocation is needed solely to refresh this audit. The
-four retained SOP V3/V4, METHOD61 and CS91 preparation proposals are still
-unapproved artifact decisions, not evidence that the reviewed-preparation
-mechanism has never worked. They cannot be transferred or abandoned by this
-status update. OR72's exact approval and one completed run authorize no replay.
-MP96 R1 now has two additional exact receiving-preparation proposals, one per
-client, after an ordinary raw internal-path request failed before model invocation.
-They remain pending; the [preparation record](document-authoring-case-study.md#r1-receiving-preparation-boundary)
-does not change A01/A10/A20 or expand any previous approval. Continue unrelated
-authorized work while awaiting those decisions rather than weakening delivery rules.
-See [audit basis](#audit-basis-and-disposition-changes) for the initial two changes
-and the subsequent A14 receiving evidence.
+Six exact artifact-preparation proposals remain unapproved: SOP V3/V4, METHOD61,
+CS91 and the two MP96 R1 recipient proposals. Their original bytes, recipients
+and decisions are unchanged. They are optional artifact-specific continuations,
+not missing product mechanisms, and cannot be sent under this acceptance.
+OR72's consumed, expired grant supports its historical authorized run only.
+No push, release, publication, policy adoption or new permission follows.
+
+The [family map](document-authoring-case-study.md#current-authoring-families)
+distinguishes the twelve retained families, including PR97's new unsent native
+drafts. Historical defects and operator corrections remain visible. Current
+source/index/navigation and repository-output maintenance continue under the
+existing skills; a passing check does not renew old decisions.
 
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
@@ -110,35 +63,63 @@ required server. These unequal rows are not a product-completion percentage.
 
 | ID | Goal requirement | Current disposition and evidence | Remaining decision or work |
 | --- | --- | --- | --- |
-| A01 | G1: SOP, orders, research, reports and handoffs preserve intent, tasks, sources, authority and unknowns | Partial. Representative formats include accepted V5 operative text, Codex research/advisory work, cold-start handoffs and QL93/RH94 reviews. [MP96](document-authoring-case-study.md#mapped-replanning-and-compressed-reports) adds a source-appraised Codex plan/FRAGO/report/handoff and useful detailed work in both clients. | Claude's compressed FRAGO and approval headings still contradict source facts or scopes. Its separate eleven-span correction is not newly native-reviewed. Appraise all requested outputs, not only the correct table or every old draft's adoption; universal perfection is not required. |
+| A01 | G1: SOP, orders, research, reports and handoffs preserve intent, tasks, sources, authority and unknowns | Verified (bounded). Accepted SOP V5 operative text, research/advisory and revision cases, cold-start handoffs and QL93/RH94 supply representative formats. [PR97](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading) adds source-appraised complete W2, FRAGO, status, questions and receiving units in both clients. | Historical defective drafts remain defective; acceptance is not universal accuracy, independent review of every successor or USER adoption. Review new work against its own sources. |
 | A02 | G1: revisions preserve unaffected requirements and explicit lineage | Verified (bounded). Exact V1/V3/V4/V5 delta checks and native predecessor comparisons retain historical bodies and required intent. OR72 and QL93 operator corrections separately bind precise replacements and unchanged source content. | Local derivatives remain distinct from native reviews and USER adoption. A bounded delta check proves only its selected bytes; any later edit needs its own comparison, not retroactive acceptance. |
 | A03 | G1: current canonical document and change history agree | Verified (bounded). The opening notice, README and current queue identify proposed V5. Regression checks protect the registered current candidate and unchanged historical bodies. | Other exercises retain their own IDs and scopes; this is not proof that every prose status in the corpus is current. Wider maintenance remains A16. |
 | A04 | G2: human versus delegated role/department/authority routing | Verified (bounded). Dual-provider routing, fixed S6 native routes and access-profile fixtures preserve declarations and deny unlisted or insufficiently authorized content. | Declared roles are not authentication; wider task relevance belongs to A05, not a new authority claim. |
-| A05 | G2: necessary documents arrive with minimal irrelevant context | Partial. Local runtime, source-topic, skill-use, format and exclusion corrections retain explicit/parent inputs and controls. [Optional reading](document-authoring-case-study.md#native-optional-reading-and-source-appraisal) observes both clients selecting two of seven optional guides without losing eight mandatory inputs. Reading-selection provenance and the [review-workflow correction](document-authoring-case-study.md#review-workflow-routing-correction) expose and repair bounded relevance errors. | Appraise further representative task/role profiles against actual requirements and sources, with omission and irrelevant-reading counterexamples. Manual profiles and lexical coverage do not prove semantic completeness; global mathematical minimality is not an added USER acceptance gate. |
+| A05 | G2: necessary documents arrive with minimal irrelevant context | Verified (bounded). Native S3 and S6/S2 profiles, role/format and source-topic comparisons, explicit/parent/guarded counterexamples and actual-session checks are complemented by [PR97](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)'s S4 profile: all seven required inputs per phase and one relevant optional guide per client, with irrelevant guides unread. | Profiles remain reviewed assignments; the lexical router can overrecommend, including heading-prefixed tasks. This is representative useful reading, not automatic profile generation, universal semantic completeness or mathematical minimality. |
 | A06 | G2: reroute at phase changes and reject missing/stale/wrong-role context | Verified (bounded). Native phase routes, current-byte checks and preflight fixtures cover the retained local boundary. | Guarded project/multi-objective inputs remain explicitly unsupported; rejection must persist, not be relabeled as ordinary work. No protected-host guarantee is inferred. |
 | A07 | G2: uncovered domains get a bounded task cell; standing changes remain USER decisions | Verified (bounded). Compound intake, comparison-gap fixtures and agent context checks retain the provisional cell without standing activation or expanded authority. Codex retains its ID through two phases; the [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation) adds fresh Claude S6/S2 processes with different queries, stable task/cell identity and separately bound reading. | Semantic completeness remains separate; identity is not authenticated ownership, a persisted registry, independent failure domains or guarded admission. |
 | A08 | G3: detect semantic omissions and missing prerequisites | Verified (bounded). Both clients recognize missing required policy in the earlier failure case. In the [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair), both detect all six seeded omission/contradiction families from the original request and sources, with separate operator appraisal. | Same-case detection does not prove universal recall/precision, automatic objective extraction or successful repair. Retain speculative extra findings and assembly defects under A01/A09/A10/A14; client contexts are not independent infrastructure. |
-| A09 | G3: request, plan, review/backbrief, work, report and handoff form an observed flow | Verified (bounded). [QL93](document-authoring-case-study.md#native-quote-review-and-decision-ownership) records the original request, public planned backbrief before tools, routed required reading, finding appraisal, repaired V2, fresh self-review route/reads, work report and declared successor unit in both clients. Codex's complete bounded output is separately source-appraised. | This flow ends at prepared successor material, not observed QL93 successor receipt. Earlier cold-start/cross-role and later RH94 receiving are separate cases, not a fabricated single combined run. Whole-report and replanning defects remain A01/A10/A20; this does not close G3. |
-| A10 | G3: bounded replanning and permitted method changes | Partial. Native plan reviews and RP95 preserve USER recovery decisions, actual parent notices and permitted partial work. [MP96](document-authoring-case-study.md#mapped-replanning-and-compressed-reports) correctly uses established mappings and retains unresolved work in both detailed plans without ledger retry. | Claude's FRAGO reintroduces a wrong mapping and Q3/SITREP/handoff generalize evidence assignment into USER-only access changes. Verify the complete corrected output and real decision scopes; do not repeat successful notice checks or treat pending artifact decisions as missing mechanisms. |
+| A09 | G3: request, plan, review/backbrief, work, report and handoff form an observed flow | Verified (bounded). [QL93](document-authoring-case-study.md#native-quote-review-and-decision-ownership) records the original request, public planned backbrief before tools, routed required reading, finding appraisal, repaired V2, fresh self-review route/reads, work report and declared successor unit in both clients. Codex's complete bounded output is separately source-appraised. | This flow ends at prepared successor material, not observed QL93 successor receipt. Earlier cold-start/cross-role and later RH94 receiving are separate cases, not a fabricated single combined run. Earlier whole-report defects remain historical evidence; G3 acceptance uses the combined cases, not this flow alone. |
+| A10 | G3: bounded replanning and permitted method changes | Verified (bounded). RP95 supplies actual parent-mediated notices and permitted partial work; [PR97](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading) preserves the permitted method, unresolved objectives, correct mappings and decision scopes across both complete plans and compressed outputs without ledger retry. | PR97 does not retest identical public advance notices. Retain RP95's actor/phase attribution, earlier report failures and unreviewed operator derivatives. No pending artifact decision is silently granted. |
 | A11 | G3: pre- and post-work reporting | Verified (bounded). Codex notices and the current-guidance parent-mediated failure case provide actual before-work and before-method notices, a final report and parent closeout. Source reads are phase-gated and worker versus parent attribution is preserved. QL93 separately observes both clients' public pre-tool backbriefs. | The conditional parent-mediated procedure is not automatic in-run delivery, authenticated receipt or universally correct prose. Retain earlier false notices and the METHOD61 brief's inaccurate verbatim-routing claim. |
 | A12 | G3: stop conditions and tool-failure response | Verified (bounded). Both clients hold dependent drafting after the synthetic mandatory-read failure without retrying it. The later changed-source case uses a fresh assignment and actually delivered policy, preserving the old no-retry binding and separate approval holds. | This is synthetic new-source recovery, not restoration of a production mount, every outage or operational containment. Reporting/handoff quality remains separate. |
-| A13 | G3: sensitive-output procedure | Verified (bounded). Raw/summary/reference-only, secret-value refusal, catalog screening and stale/changed/revoked decision cases have local evidence. [Approved OR72 receiving](document-authoring-case-study.md#approved-or72-representation-receiving) adds an exact actual USER preparation decision and one native Claude run: six raw project sources, two internal-draft representations and four guides, all twelve read per phase, without owner-only locators. | This is the trusted-preparer, synthetic, exact-recipient boundary, not authenticated USER identity or a protected host. Preparation and transfer authority remain separate; the other four proposals remain unapproved. Native finding quality and future successor receipt are separate, and the completed run is not reusable consent. |
-| A14 | G3: complete source-locatable reporting/handoff without a dashboard | Verified (bounded). [RH94](document-authoring-case-study.md#cross-client-recovery-handoff) adds actual whole-unit Codex-to-Claude and Claude-to-Codex receiving: four original bodies, the unchanged predecessor output, current assignment and three exact guide versions are read by each fresh S3 recipient after its own route and again for review. Useful W2, inquiry and receiving reports need no old chat or dashboard. | Receiving is not blanket semantic acceptance, adoption, exact persisted self-review lineage or independent infrastructure. Author/reviewer defects remain A01/A10/A20. The assignment needs no recursive third handoff; unrelated proposal holds and historical failed transfers remain unchanged. |
+| A13 | G3: sensitive-output procedure | Verified (bounded). Raw/summary/reference-only, secret-value refusal, catalog screening and stale/changed/revoked decision cases have local evidence. [Approved OR72 receiving](document-authoring-case-study.md#approved-or72-representation-receiving) adds an exact actual USER preparation decision and one native Claude run: six raw project sources, two internal-draft representations and four guides, all twelve read per phase, without owner-only locators. | This is the trusted-preparer, synthetic, exact-recipient boundary, not authenticated USER identity or a protected host. Preparation and transfer authority remain separate; all six currently pending proposals remain unapproved. Native finding quality and future successor receipt are separate, and the completed run is not reusable consent. |
+| A14 | G3: complete source-locatable reporting/handoff without a dashboard | Verified (bounded). [RH94](document-authoring-case-study.md#cross-client-recovery-handoff) adds actual whole-unit Codex-to-Claude and Claude-to-Codex receiving: four original bodies, the unchanged predecessor output, current assignment and three exact guide versions are read by each fresh S3 recipient after its own route and again for review. Useful W2, inquiry and receiving reports need no old chat or dashboard. | Receiving is not blanket semantic acceptance, adoption, exact persisted self-review lineage or independent infrastructure. Earlier author/reviewer defects remain historical evidence, separate from PR97 acceptance. The assignment needs no recursive third handoff; unrelated proposal holds and historical failed transfers remain unchanged. |
 | A15 | G4: observed failures lead to bounded, mirrored improvements and relevant checks | Verified (bounded). Routing, reporting, source appraisal and loader failures led to both-provider changes with retained regressions and native evidence at recorded revisions. This audit also turns a superseded active queue into an explicit current/history distinction in both maintenance references. | Local instruction checks establish delivery, not causal behavioral improvement. Require additional native evidence where the remaining acceptance actually depends on it; a model rerun is not a universal prerequisite for every prose change, and no pass expands authority. |
 | A16 | G4: sources, indexes, canonical state and history stay coherent | Verified (bounded). [Family-state appraisal](document-authoring-case-study.md#artifact-family-state-audit) checks ten maintained outputs against original artifact, review, receiving and decision records, corrects current summaries and preserves history. Registered navigation separately binds six support-SOP entry points to exact candidate/appraisal sections. | Recheck affected families on changes. This is bounded source/status maintenance, not semantic acceptance of every output, USER adoption or a complete corpus prose audit. Preserve pending decisions and register actual successors deliberately. |
 | A17 | G4: repository-specific outputs remain separated | Verified (bounded). Target-bound packet preparation, output isolation fixtures and recorded operator materialization keep work products in their target project; verification logs are separate maintenance evidence. | Recheck affected boundaries on changes. This is local filesystem behavior, not distributed storage isolation. |
 | A18 | G5: link/copy installation and repository resolution | Verified (bounded). Installation cases exercise both providers, explicit bindings, foreign working roots, missing dependencies, phase-stable task identity and source-topic selection. Installed links point to this checkout. | Copies require refresh; neither an installed skill nor its root marker is the entire corpus. |
 | A19 | G5: discovery and actual installed-body use | Verified (bounded). Both native clients have implicit-selection and actual router/read evidence; exact Claude body/arguments are separately checked. | Filtered startup evidence is not universal client configuration support. Preserve native versions and launch limits. |
-| A20 | G5: equivalent useful behavior in both clients | Partial. Both clients install/discover, route/read and produce useful outputs. RH94 adds two-way receiving and RP95 equivalent parent attribution. MP96 adds two-route/nine-source planning and accurate detailed ID assessments in both clients. | Codex preserves the complete report's source boundaries while Claude's compressed outputs change mapping or approval scope. Different lengths are not the defect. New mirrored instructions and an operator derivative are not a demonstrated native cure or universal parity. |
+| A20 | G5: equivalent useful behavior in both clients | Verified (bounded). Installation/discovery, routing/reading, RH94 two-way receiving and RP95 parent attribution are complemented by [PR97](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)'s separately source-appraised complete work in both native clients under current mirrored guidance. | Output lengths and optional choices differ without losing required work. Versions and launch settings bound the observations; this is not general reliability, causal improvement, every client configuration or automatic semantic enforcement. |
 | A21 | G5: thin plugin when needed, no mandatory server | Explicitly deferred optional packaging. Both skills are the current distribution; the temporary test adapter is not a shipped plugin. | Do not build a service or claim a plugin exists merely to close this row. |
 
-Sixteen required rows are bounded-verified and four remain partial; A21 is optional
-and deferred. This is a requirement inventory, not 80% product completion.
-G4 has bounded acceptance from observed improvement and maintenance cases;
-G1/A01, G2/A05, G3/A10 and G5/A20 remain partial and need the evidence above.
-Ongoing maintenance remains required. USER adoption is not inferred from draft review.
+Twenty required rows are bounded-verified; none remains partial in this fixed
+inventory. A21 is optional and deferred. The 20/20 count describes checked
+acceptance requirements, not a product reliability percentage or a claim that
+all possible work is finished.
+
+### Five-Goal Acceptance
+
+| Goal | Combined acceptance basis | Continuing limit |
+| --- | --- | --- |
+| G1 | A01-A03: representative source-grounded formats, complete PR97 outputs, revision lineage and canonical-state checks. | New documents still require source review; historical failures and unadopted drafts remain. |
+| G2 | A04-A07: human/delegated routes, useful profiles and actual reads, negative freshness/role cases and bounded capability cells. | Declarations are not authentication; manually reviewed profiles and lexical overrecommendation remain explicit. |
+| G3 | A08-A14: observed request-to-handoff flow, omission detection, PR97 replanning, actual reporting, source-failure holds, approved OR72 delivery and RH94 receiving. | These are separate recorded cases, not one invented end-to-end run or protected operational gateway. |
+| G4 | A15-A17: observed failure-driven mirrored changes, source/family/index/history appraisal and repository-specific outputs. | Ongoing maintenance and regression checking are required; self-improvement grants no new authority. |
+| G5 | A18-A20: both clients' installation/discovery/root resolution and equivalent useful native work. | Tested versions/configurations only; optional A21 plugin package remains deferred, not silently shipped. |
 
 ### Audit Basis And Disposition Changes
+
+The PR97 checkpoint changes **A01, A05, A10 and A20 from partial to verified
+(bounded)** on the predeclared whole-output and reading criteria. Both native
+responses preserve facts and authority across every requested output; the operator
+also checks the exact original appendices, actual per-phase reads and relevant
+optional choices. Combined with the retained evidence above, all five unchanged
+goals have bounded acceptance. This is not a claim that a green trace proves
+semantics or that PR97 alone tests every objective.
+
+Verification/status maintenance adds no new skill rule: it appraises the existing
+mirrored guidance. Preserve the original native failures, all six pending
+proposals and the limits recorded in the [case](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading).
+The current-tree regression results accompany the local closeout; older test
+results do not stand in for a current full-suite claim.
+
+#### Retained Earlier Audit Checkpoints
+
+The paragraphs below describe earlier counts and dispositions before PR97.
+Their historical use of "current" is not the active inventory above.
 
 The initial 2026-11-15 audit reused recorded runs without invoking a model or
 amending a decision. It moved the prior twelve verified/eight partial required

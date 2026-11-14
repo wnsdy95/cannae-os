@@ -223,7 +223,8 @@ a public summary hash cannot substitute for its private artifact binding.
 Mirrored maintenance guidance and source/index/history checks support bounded G4
 acceptance alongside previous improvements and output isolation. They do not
 adopt drafts, certify all prose, cure the remaining native quality gaps or establish
-a new military claim. G1/G2/G3/G5 remain partial.
+a new military claim. G1/G2/G3/G5 remained partial at this checkpoint; the later
+PR97 appraisal below supplies the remaining bounded acceptance evidence.
 
 ## Compressed Outputs Need Their Own Review (2026-11-15)
 
@@ -276,6 +277,26 @@ access is independent of recommendation: an unneeded default can disappear while
 an assigned optional guide stays readable, and no unlisted guide gains access.
 The 32 before/after cases and local transport regressions establish that bounded
 integration, not a smaller delivered profile or fresh native comprehension.
+
+## Whole-Output Acceptance Is Bounded (2026-11-15)
+
+The [PR97 case](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+applies the existing mirrored output-review guidance to a new synthetic S4 task.
+Both native clients preserve the same mapping, counts, unknowns and authority
+scopes throughout W2, FRAGO, status, questions and complete source units. Actual
+calls show all seven mandatory reads in each phase and one task-relevant optional
+guide per client. Source appraisal and exact-byte checks are separate from a green
+tool trace or the model's self-review claim.
+
+Combined with the earlier representative formats, role/negative cases, reporting,
+stop/recovery, receiving, installation and maintenance evidence, this supports
+the unchanged five-goal acceptance. It does not retroactively fix failed drafts,
+estimate reliability from two runs or prove causality. Reviewed profiles still
+mediate lexical recommendations; conservative overrecommendation can remain.
+Six exact artifact proposals stay unapproved and optional plugin packaging stays
+deferred. Verification/status maintenance needs no invented new skill rule or
+recursive model verdict. Use the [current audit](completion-backlog.md#five-goal-acceptance)
+for the combined scope and retain each case's actual actor, version and limits.
 
 ## A New Role Needs Its Own Reading (2026-11-12)
 

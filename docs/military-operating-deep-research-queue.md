@@ -15,7 +15,8 @@ The maintained pointer uses `docs/source-map-navigation.json`; see
 It does not replace the active backlog or turn a candidate into adopted policy.
 The [V5 review](document-authoring-case-study.md#support-sop-v5-source-review)
 accepts the exact operative body as a draft, not its historical preface or a
-complete receiving packet. The broader core acceptance queue remains open.
+complete receiving packet. The later [five-goal audit](completion-backlog.md#five-goal-acceptance)
+records bounded core acceptance without adopting this SOP or reopening platform work.
 
 The [optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 and [OR72 operator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
@@ -85,7 +86,8 @@ The [family-state audit](document-authoring-case-study.md#artifact-family-state-
 reconciles ten maintained outputs in a [current map](document-authoring-case-study.md#current-authoring-families).
 Its [maintenance lesson](research-compendium.md#artifact-state-is-phase-specific-2026-11-15)
 separates exact versions, representations, review/receiving phases and decisions.
-A16 and G4 have bounded maintenance acceptance; G1/G2/G3/G5 remain partial.
+A16 and G4 gained bounded maintenance acceptance; G1/G2/G3/G5 remained partial
+at that checkpoint.
 Historical bodies and four pending proposals remain unchanged; no new review,
 adoption, model run or military-source claim follows.
 
@@ -104,7 +106,15 @@ The [bound-session follow-up](document-authoring-case-study.md#bound-session-rea
 checks the real adapter descriptor and assigned profiles; its
 [integration lesson](research-compendium.md#routing-descriptor-and-assigned-profile-2026-11-15)
 keeps recommendations distinct from read authority and actual model consumption.
-Current behavioral goals remain partial; no new military claim or approval follows.
+That local checkpoint did not close the behavioral goals; no new military claim
+or approval follows from it.
+
+The later [PR97 whole-output case](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+adds actual complete source-appraised work and useful optional reading in both
+clients. Its [bounded acceptance synthesis](research-compendium.md#whole-output-acceptance-is-bounded-2026-11-15)
+closes the four remaining required audit rows in combination with earlier evidence.
+All five core goals now have bounded acceptance. Historical failures, six pending
+artifact decisions, ordinary maintenance and deferred platform scope remain.
 
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,

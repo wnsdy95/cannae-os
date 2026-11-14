@@ -314,6 +314,13 @@ Its [descriptor/profile distinction](research-compendium.md#routing-descriptor-a
 preserves exact access profiles and old evidence without a military-source claim
 or inferred native reading.
 
+The [PR97 whole-output case](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+binds two current-guidance native runs to exact synthetic sources and appraises
+every requested output, actual required reads and useful optional choices.
+Its [acceptance synthesis](research-compendium.md#whole-output-acceptance-is-bounded-2026-11-15)
+supports the final four required audit rows alongside earlier evidence, not a
+military claim, universal reliability, draft adoption or new preparation authority.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source
