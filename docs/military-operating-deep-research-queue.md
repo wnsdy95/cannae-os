@@ -73,6 +73,13 @@ Its [maintenance lesson](research-compendium.md#declared-references-and-survivin
 is local engineering evidence, not a new military claim, source-reading proof or
 reason to restore deferred UI.
 
+The [RP95 continuation](document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+observes parent-delivered notices and correctly attributed partial work in both
+clients, with seven required sources each. Its [residual-scope lesson](research-compendium.md#notice-delivery-and-residual-scope-2026-11-15)
+retains a Claude aggregate/item mapping error and a pre-transfer preparation
+mistake rather than treating successful reporting as whole-output acceptance.
+Both skills gain the corresponding rules; wider quality remains partial.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

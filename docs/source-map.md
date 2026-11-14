@@ -271,6 +271,15 @@ routers. Reverse declaration checks and selected-reference refusal repair that
 local availability gap; the [maintenance lesson](research-compendium.md#declared-references-and-surviving-files-2026-11-15)
 does not infer source reading, semantic acceptance or an external military claim.
 
+The [RP95 parent-delivered replanning case](document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+records four native processes with route-only notices, actual parent relay and
+seven-source continuations. Its [lesson](research-compendium.md#notice-delivery-and-residual-scope-2026-11-15)
+separates successful reporting boundaries from unsupported aggregate/item mapping.
+An operator catches an appraisal-bearing preparation before transfer and retains
+it alongside the corrected input. Original responses, four-span local correction
+and later mirrored instruction checks are distinct evidence; none grants adoption,
+new source access or an external military doctrine claim.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

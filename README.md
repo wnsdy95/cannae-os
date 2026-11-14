@@ -1078,6 +1078,14 @@ Selected missing references stop routing before receipt/artifact output; a green
 inventory of surviving files alone is insufficient. This is availability, not
 source consumption, authority or semantic validation.
 
+The [RP95 replanning case](docs/document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+observes route-only notices, actual parent delivery and fresh seven-source work
+in both clients. Both retain truthful attribution and USER-owned holds while
+performing permitted drafts. Claude still assumes a relationship between inventory
+records and observed items when planning the remainder. The original, separate
+operator correction and mirrored guidance remain distinct; successful notice
+timing is not whole-report acceptance or overall completion.
+
 ### Retained Guarded Prototypes
 
 These implemented contracts and validation surfaces remain available. They do

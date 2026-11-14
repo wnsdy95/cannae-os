@@ -374,6 +374,10 @@ claim elsewhere. Distinguish a chosen next step from the only permitted action.
 For numerical reports, use `docs/source-reliability-rubric.md`'s comparison checks:
 separate observations, hypothetical weights and causal evidence. A few weighting
 examples do not prove a ranking for all weights; check the domain and crossover.
+Before subtracting reviewed items from an aggregate, establish matching units,
+population and source-ID mapping. Unknown membership permits neither a remainder
+count nor an "all remaining items" verdict. Check plans and inquiry wording too;
+an unknowns note does not repair an assumed relationship elsewhere.
 Use actual source files and, for an existing runtime mission, its actual order;
 never fill gaps with demo IDs or fixed dates. Preserve original requirements and
 quoted source claims, then reconcile

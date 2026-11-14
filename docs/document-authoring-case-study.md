@@ -4922,3 +4922,73 @@ and reader checks retain those distinct responsibilities. This bounded G2/G4
 correction does not close the whole A05/A16 requirements, approve a retained
 proposal or invoke a model. Reproduction and final checks are retained under
 `.cannae/maintenance/routing-reference-integrity-20261115/`.
+
+## Parent-Delivered Replanning And Residual Scope
+
+RP95 declares acceptance before four bounded native processes at source
+`cf02e8ce5ed7442e7166d8a3449e82b90f41459b`. Each provider first produces a
+notice with routing as its only offered tool. The authorized parent then sends
+the exact complete notice in the current chat before a separate work process.
+The temporary adapter also rejects source reads during the notice phase; the
+barrier is not just a prompt. Current installed skill bodies are supplied
+explicitly, with three manually justified guides and four synthetic project
+sources. This is not implicit discovery or automatic minimum-context selection.
+
+| Process | Actual client/model | Observed work | Duration |
+| --- | --- | --- | --- |
+| Codex notice | 0.162.1 / gpt-6-astra | One route, no reads | 42 seconds |
+| Claude notice | Code 2.1.322 / claude-opus-5-5 | One route, no reads | 25 seconds |
+| Codex continuation | Same installed client/default | One fresh route, seven required reads | 146 seconds |
+| Claude continuation | Same installed client/default | One fresh route, seven required reads | 147 seconds |
+
+All four return normally with reconciled tool traces and no relaunch. The parent
+delivery records are declarations, not authenticated proof, human acknowledgement
+or approval. Both continuations accurately distinguish that parent action from
+their own current reads and from the supplied historical ledger-failure/restoration
+fixture. Neither attempts the held ledger, retrieves extra sources or claims
+an actual outage. Both perform the already permitted offline P1 draft without
+inventing another approval gate, retain the unfinished item-level objective and
+keep USER-only retry, adoption, transmission and operational decisions separate.
+
+Both correctly preserve M21's known role acknowledgement and unknown provenance,
+M22's known count mismatch and unknown acknowledgement, and the fact that inventory
+labels prove no acceptance. They do not repeat RH94's exclusive-proof or false
+notice claims. Both give complete source bindings, a fresh-route access method
+and a declared successor unit. Claude additionally includes the four unchanged
+project bodies; Codex gives a source-locatable summary. No next recipient is
+invoked or claimed, and no recursive review is required by this assignment.
+
+Whole-output appraisal nevertheless finds a Claude defect. After correctly saying
+that the nine inventory records have no established mapping to M21/M22, its report
+subtracts those items from the records and labels the remainder unevaluated. The
+plan and follow-up question carry the same assumed relationship. It does not
+state a numeric seven-remaining result or perform an unauthorized action, but the
+inferred residual scope is unsupported. Adjacent unknowns cannot repair that
+operative assumption. Codex leaves the mapping and remaining statuses unresolved.
+
+A separate operator derivative changes four spans, retains all other bytes and
+all four exact source appendices, and remains proposed, untransmitted and not
+native-reviewed. The original Claude response is unchanged. Both skills and the
+authoring/rate-comparison guidance now require matching units, population and ID
+mapping before subtracting observations or assigning residual-work status.
+Local instruction-delivery checks are not a demonstrated post-change model cure.
+
+Preparation also exposed an operator error before either work process: serializing
+the entire local delivery record included its appraisal. Neither initial work
+preparation was transmitted. The corrected preparer keeps those inputs and the
+original record, but forwards only necessary delivery identity/digest/declaration
+fields, the exact notice and observed prior operations. Actual prompt checks
+confirm the appraisal text is absent and the required notice is unchanged. Both
+maintenance skills now require inspecting that recipient projection rather than
+trusting an operational-looking record name. No native retry was needed for this
+pre-transfer correction.
+
+The parent-notice and attribution boundary has bounded success in both clients;
+full plan/report fidelity remains partial. A01/A10/A20 retain the concrete
+membership/residual-scope defect, while A05/A16 have separate remaining work.
+Do not replay the successful notice phases merely for another pass. These are
+synthetic local observations, not production recovery, independent infrastructure,
+authority expansion, adoption or approval of any retained proposal. Evidence:
+`.cannae/maintenance/parent-replan-20261115/`, including the predeclared plan,
+four exact inputs/results, native messages and source returns, delivery declarations,
+withheld preparations, structural audit and separate appraisal/correction records.

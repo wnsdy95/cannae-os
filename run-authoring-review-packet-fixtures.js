@@ -74,6 +74,36 @@ try {
       assert(guide.includes("do not make that conditional procedure mandatory for unrelated edits."));
     }
   });
+  fixture("continuation projection instructions reach review input and both maintenance guides", () => {
+    for (const phrase of ["Project delivery evidence deliberately when preparing the continuation.",
+      "operator appraisal or reference verdict", "Inspect the actual\nrecipient input",
+      "Withholding an evaluation key is not permission to edit the source notice."]) {
+      assert(packet.prompt.includes(phrase), `Missing continuation-review instruction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const guide = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8");
+      assert(guide.includes("not unassigned operator appraisals or reference verdicts embedded beside them."));
+      assert(guide.includes("test the actual prepared input for both required"));
+      assert(guide.includes("a successful notice does not certify the whole report."));
+    }
+    assert.equal(packet.manifest.model_call_performed, false);
+  });
+  fixture("aggregate membership limits reach plans, questions and both provider skills", () => {
+    for (const phrase of ["Before subtracting reviewed items from an aggregate, establish matching units,",
+      "population and source-ID mapping.", "Check the revised plan and inquiry wording",
+      "a correct unknowns note does not repair an assumed membership."]) {
+      assert(packet.prompt.includes(phrase), `Missing membership instruction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Unknown membership permits neither a remainder"));
+      assert(skill.includes('count nor an "all remaining items" verdict. Check plans and inquiry wording too;'));
+    }
+    const rubric = fs.readFileSync(path.join(__dirname, "docs/source-reliability-rubric.md"), "utf8");
+    assert(rubric.includes("membership and mapping are\n  established"));
+    assert(rubric.includes("assign a status to an invented remainder in the plan or follow-up question."));
+    assert.equal(packet.manifest.semantic_acceptance_established, false);
+  });
   fixture("historical nondelivery stays distinct from current representation receipt", () => {
     const instruction = "When a predecessor says it was not delivered, preserve that dated status as\n" +
       "history and compare it with the current reader's actual receipt evidence.\n" +

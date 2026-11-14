@@ -182,6 +182,30 @@ map. Empty replacements, ignored-path exceptions and resurrecting deferred UI do
 not preserve the intended prerequisite. The local mutation checks verify
 availability and refusal, not content fidelity or a native model outcome.
 
+## Notice Delivery And Residual Scope (2026-11-15)
+
+The [RP95 case](document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+uses the existing report-only/parent-delivery procedure after a repeated missed
+notice. Both clients then attribute the parent action accurately, read all seven
+assigned sources and perform permitted partial drafting without clearing USER
+holds. This is an observed alternative boundary, not repaired automatic in-run
+delivery or a requirement for unrelated work.
+
+A correct unknowns sentence does not prevent an unsupported join elsewhere.
+Claude leaves the relation between nine records and two observed items unknown,
+then subtracts the items and characterizes the remainder in its report/plan.
+Verify units, population membership and source-ID mapping before that operation;
+until then, preserve the separate sets and frame a mapping question without
+assuming its answer. Its proposed four-span operator correction is not another
+native review, while the other useful item findings and authority limits remain.
+
+Inspect operational metadata before using it as review input. The first work
+preparations copied local appraisal fields from a delivery declaration; neither
+was executed. An explicit recipient projection retains the exact notice and
+necessary action/binding evidence without those unassigned evaluation fields.
+Keep the full local record and required task context. These observed failures
+support mirrored skill guidance, not proof that new instructions cure all models.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

@@ -150,6 +150,16 @@ report-only/parent-delivery boundary for the next dependent workflow instead of
 treating another instruction-only run as enforced reporting. Preserve the missed
 notice, and do not make that conditional procedure mandatory for unrelated edits.
 
+For a parent-mediated continuation, inspect the recipient projection of any local
+delivery record. Carry the exact notice, required bindings and observed actions,
+not unassigned operator appraisals or reference verdicts embedded beside them.
+Retain the complete local record; test the actual prepared input for both required
+context and excluded evaluation fields before launch. A corrected preparation is
+not a new native result, and a successful notice does not certify the whole report.
+Appraise set relationships in residual-work plans: separate observed items from
+aggregate records until their membership and mapping are established. Repair the
+operative question and next action, not just an adjacent unknowns statement.
+
 Distinguish a client's internal transport retry from relaunching a review. Accept
 only an inspected, validated diagnostic shape; retain unknown-event, permission
 and tool stops. Keep the original wall-clock deadline and output limit across

@@ -165,6 +165,11 @@ These are document-review practices, not additional military-source claims.
 - Bind every reported rate to its numerator, denominator, unit and source.
   Keep tasks, attempts, completions and acceptance separate; absent measurements
   are unknown rather than zero.
+- Establish matching units, population and source-ID relationships before joining
+  an aggregate to individual observations. Two reviewed items do not imply seven
+  remaining items in a nine-record inventory unless membership and mapping are
+  established. Keep the sets separate when that relationship is unknown; do not
+  assign a status to an invented remainder in the plan or follow-up question.
 - Distinguish confirmed inclusion, confirmed exclusion and unspecified coverage.
   An unknown tax or shipping amount does not prove it is absent from a quote.
   State that the total payable amount is not established, not that extra charges

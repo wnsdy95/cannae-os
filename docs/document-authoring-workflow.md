@@ -307,6 +307,11 @@ this assignment, not the only possible way to establish a fact. Replace an
 unsupported "only source" claim with the actual current evidence gap. Do not
 invent alternative evidence, read outside the catalog or clear a source-specific
 retry hold; any proposed alternative retains its real access and authority limits.
+Before subtracting reviewed items from an aggregate, establish matching units,
+population and source-ID mapping. Without that relationship, report the observed
+items and aggregate separately; do not assign a remainder count or an "all
+remaining items" status. Check the revised plan and inquiry wording as well as
+the result table: a correct unknowns note does not repair an assumed membership.
 Reconcile the handoff's required reading with the actual receiver packet. Include
 authorized dependencies, or explicitly state what is withheld/unavailable and
 leave the dependent historical comparison unverified. Do not open reference-only
@@ -382,6 +387,14 @@ phase, use a bounded parent-mediated sequence rather than skipping the notice:
    preserve required sources and pending decisions, and reroute for the current
    phase. Attribute parent delivery to the parent, not the new worker. Delivery
    is not USER approval; obtain any required decision before dependent work.
+
+Project delivery evidence deliberately when preparing the continuation. A local
+record may also contain an operator appraisal or reference verdict. Retain that
+record unchanged, but pass only the exact notice and necessary identity, digest,
+phase, observed actions and delivery-declaration boundaries. Inspect the actual
+recipient input, not just the record's filename. Do not silently remove required
+task context, source bindings, holds or a legitimately assigned prior review.
+Withholding an evaluation key is not permission to edit the source notice.
 
 Apply the same boundary if an allowed method change requires a fresh notice.
 Keep it separate from authorization to change scope, cost, deadlines or risk.
