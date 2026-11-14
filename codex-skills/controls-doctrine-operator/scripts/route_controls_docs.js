@@ -303,9 +303,9 @@ const RULES = [
   },
   {
     id: "project-document-delivery",
-    keywords: ["project document packet", "project-document-packet", "project-document-review", "project-document-reader", "project-document-session", "reviewed document preparation", "internal draft representation", "prepare_controls_documents", "project content preparation"],
+    keywords: ["project document packet", "project-document-packet", "project-document-review", "project-document-reader", "project-document-session", "project-document-quote", "exact quote lookup", "reviewed document preparation", "internal draft representation", "prepare_controls_documents", "project content preparation"],
     docs: ["docs/role-document-access-policy.md", "docs/context-releasability-policy.md", "docs/document-authoring-workflow.md"],
-    commands: ["node run-project-document-packet-fixtures.js", "node run-project-document-review-fixtures.js", "node run-project-document-reader-fixtures.js", "node run-project-document-session-fixtures.js"]
+    commands: ["node run-project-document-packet-fixtures.js", "node run-project-document-review-fixtures.js", "node run-project-document-reader-fixtures.js", "node run-project-document-session-fixtures.js", "node run-project-document-quote-fixtures.js"]
   },
   {
     id: "runtime-validation",
@@ -613,7 +613,7 @@ const ROUTE_HINTS = [
     id: "document-access-context",
     keywords: ["document-access", "context", "classification", "opsec", "eefi", "releasability", "sensitive-output", "evidence-redactor", "context-filter", "handoff-packet"]
   },
-  { id: "project-document-delivery", keywords: ["project-document-packet", "project-document-review", "project-document-reader", "project-document-session", "prepare_controls_documents"] },
+  { id: "project-document-delivery", keywords: ["project-document-packet", "project-document-review", "project-document-reader", "project-document-session", "project-document-quote", "prepare_controls_documents"] },
   {
     id: "runtime-validation",
     keywords: ["validation-stack", ".github", "github", "workflow", "workflows", "pull-request-template", "issue-template", "bug-report", "docs-change", "dependabot", "check-json", "check-markdown", "schema-files", "sample-payloads", "fixture", "fixtures", "validator", "validate", "linter", "runner", "run-", "prototype", "payloads", "evaluation-metrics"]

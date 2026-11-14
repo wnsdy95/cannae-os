@@ -961,10 +961,19 @@ for (const router of ROUTERS) {
     assert(result.recommended_documents.some(item => item.path === "docs/role-document-access-policy.md"));
     assert(result.validation_commands.includes("node run-project-document-packet-fixtures.js"));
     assert.strictEqual(result.capability_routing.status, "covered");
+    for (const query of ["Maintain project-document-quote.js.", "Use exact quote lookup for a disputed source citation."]) {
+      const quoted = route(router, args, query);
+      assertRoutes(quoted, ["project-document-delivery"]);
+      assert(quoted.recommended_documents.some(item => item.path === "docs/role-document-access-policy.md"));
+      assert(quoted.validation_commands.includes("node run-project-document-quote-fixtures.js"));
+      assert.strictEqual(quoted.capability_routing.status, "covered");
+      assert.strictEqual(quoted.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    }
     const ordinary = route(router, args, "Review document access for an existing policy.");
     assertRoutes(ordinary, ["document-access-context"]);
     assert(!ordinary.validation_commands.includes("node run-project-document-packet-fixtures.js"),
       "project content preparation checks must not become mandatory for unrelated document access");
+    assert(!ordinary.validation_commands.includes("node run-project-document-quote-fixtures.js"));
   }
   for (const query of ["document authoring and document routing",
     "Draft an SOP and handoff document from the supplied policy.",

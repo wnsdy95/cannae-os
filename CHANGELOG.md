@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add opt-in exact quote lookup to the existing read-only document session. Require a current-route full read, exact delivered digest and unique literal passage; preserve freshness, holds, budgets and representation modes. Return UTF-8 byte/line context without claiming semantic support or authority. Mirror both skills, route the helper and test local boundaries and stdio behavior; no new model run or automatic interpretation is implied.
+
 - Record exact USER-approved OR72 representation preparation and one native Claude receiving/review run. Preserve required reads, original bodies, current bindings and operative repairs alongside unsupported review findings. Correct an initially overstated operator finding by respecting historical and successor context. Mirror phase/recipient-specific appraisal guidance and verify its presence in review input without rewriting prior evidence or inferring adoption, another proposal's approval or a second model run.
 
 - Reconcile README maturity with the active skill-first scope, separating remaining skill acceptance from retained guarded prototypes and deferred platform work. Index the OR72 reading and temporal/source-locator lessons in the public entry points without rewriting evidence. Mirror maintenance guidance for unregistered narrative status and durable lessons within existing files; keep partial goal dispositions and pending receiving decisions unchanged.

@@ -432,6 +432,18 @@ Recipient delivery holds do not authorize the preparer to reread a prohibited
 source. If that source cannot be rechecked within existing authority, stop before
 creating the session rather than using the hold list to bypass the prerequisite.
 
+When a tool-assisted review disputes a source locator, use `locate_quote` only
+if the trusted preparer enabled it for that review session. First complete the
+source's current-route full read, then supply its delivered digest and a unique
+literal passage; do not enable tools or search arbitrary files yourself. Inspect
+the returned line context against the actual heading/table cell and historical
+or recipient qualifiers. A literal match proves location, not semantic support.
+Missing or ambiguous quotes require a better supported selection, not a guessed
+occurrence. Summary/representation positions are not original-source positions.
+Rerouting requires a new full read; lookup does not clear other required reads
+or holds. Follow the access policy's `exact-quote-lookup` limits. Ordinary drafting
+does not require this tool, and no native acceptance follows from local fixtures.
+
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local
 packet. Both are offline: neither invokes a model nor records consent. Only

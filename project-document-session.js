@@ -5,6 +5,7 @@ const { createDocumentReader } = require("./project-document-reader");
 const { sha256, readOutput } = require("./project-document-packet");
 const { projectDocumentAccess } = require("./document-access-runner");
 const { canonicalDocumentPath } = require("./context-document-integrity");
+const { locateQuote, validateSelection } = require("./project-document-quote");
 const fail = code => { throw new Error(code); };
 const flags = () => ({ authorization_verified: false, execution_authorized: false,
   release_authorized: false, receiver_acceptance_verified: false });
@@ -13,8 +14,10 @@ const keys = (value, expected) => value && typeof value === "object" && !Array.i
 
 function createDocumentSession(options) {
   const fields = ["reader", "skill_directory", "doctrine_root", "task_id", "phase", "access_manifest",
-    "corpus_sha256", "held_source_ids", "max_calls", "max_route_calls", "deadline_ms"];
+    "corpus_sha256", "held_source_ids", "max_calls", "max_route_calls", "deadline_ms",
+    ...(Object.hasOwn(options || {}, "allow_quote_lookup") ? ["allow_quote_lookup"] : [])];
   if (!keys(options, fields) || !["brief", "review"].includes(options.phase) ||
+      (Object.hasOwn(options, "allow_quote_lookup") && typeof options.allow_quote_lookup !== "boolean") ||
       !/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(options.task_id || "") ||
       ![options.skill_directory, options.doctrine_root].every(p => typeof p === "string" && path.isAbsolute(p)) ||
       !Array.isArray(options.held_source_ids) || options.held_source_ids.some(id => typeof id !== "string") ||
@@ -109,23 +112,38 @@ function createDocumentSession(options) {
         current = { token, documents, returned: new Set() };
         return structuredClone(value);
       }
-      if (operation !== "read_document" || !keys(input, ["route_id", "source_id"])) fail("PROJECT_SESSION_ARGUMENTS_INVALID");
+      const lookup = operation === "locate_quote";
+      if (lookup && config.allow_quote_lookup !== true) fail("PROJECT_SESSION_QUOTE_LOOKUP_DISABLED");
+      const inputFields = ["route_id", "source_id", ...(lookup ? ["delivered_sha256", "quote",
+        ...(Object.hasOwn(input || {}, "context_lines") ? ["context_lines"] : [])] : [])];
+      if ((!lookup && operation !== "read_document") || !keys(input, inputFields)) fail("PROJECT_SESSION_ARGUMENTS_INVALID");
+      const selection = lookup && { delivered_sha256: input.delivered_sha256, quote: input.quote,
+        ...(Object.hasOwn(input, "context_lines") ? { context_lines: input.context_lines } : {}) };
+      if (lookup) validateSelection(selection);
       if (!current || input.route_id !== current.token) fail("PROJECT_SESSION_CURRENT_ROUTE_REQUIRED");
       if (config.phase === "brief" || config.held_source_ids.includes(input.source_id)) fail("PROJECT_SESSION_SOURCE_HELD");
       const selected = current.documents.find(row => row.id === input.source_id);
       if (!selected || selected.delivery_mode === "reference_only") fail("PROJECT_SESSION_SOURCE_NOT_READABLE");
+      if (lookup && !current.returned.has(input.source_id)) fail("PROJECT_SESSION_FULL_READ_REQUIRED");
       rechecking = true;
       const guide = boundCorpus().find(row => row.id === input.source_id);
       const document = guide ? (currentPacket(), guide) : reader.read(input.source_id).document;
       if (document.delivered_sha256 !== selected.delivered_sha256 || document.delivery_mode !== selected.delivery_mode) fail("PROJECT_SESSION_SOURCE_CHANGED");
       if (withheld.some(p => JSON.stringify(document).includes(p))) fail("PROJECT_SESSION_PRIVATE_LOCATION");
       if (elapsed() >= config.deadline_ms) fail("PROJECT_SESSION_LIMIT");
+      if (lookup) {
+        // A quote mismatch does not retire a successfully rechecked source context.
+        rechecking = false;
+        const result = locateQuote(document, selection);
+        if (elapsed() >= config.deadline_ms) fail("PROJECT_SESSION_LIMIT");
+        return { route_id: current.token, ...result, ...flags() };
+      }
       current.returned.add(document.id);
       return { route_id: current.token, document, returned_required_source_ids: current.documents.filter(row => row.required && current.returned.has(row.id)).map(row => row.id),
         pending_required_source_ids: current.documents.filter(row => row.required && !current.returned.has(row.id)).map(row => row.id), ...flags() };
     } catch (error) {
       if (rechecking) current = null;
-      return { error: /^PROJECT_(?:PACKET|REVIEW|READER|SESSION)_[A-Z_]+$/.test(error.message)
+      return { error: /^PROJECT_(?:PACKET|REVIEW|READER|SESSION|QUOTE)_[A-Z_]+$/.test(error.message)
         ? error.message : "PROJECT_SESSION_INPUT_UNAVAILABLE", ...flags() };
     }
   }

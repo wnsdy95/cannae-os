@@ -1035,6 +1035,11 @@ Its subsequent [exactly approved receiving case](docs/document-authoring-case-st
 now observes actual Claude receipt and preservation of those operative repairs.
 The full review retains finding errors; phase-specific wording must be appraised
 in context. Receipt is not blanket acceptance, successor delivery or adoption.
+The optional [exact quote lookup](docs/role-document-access-policy.md#exact-quote-lookup)
+now checks literal source locations inside an already-read, current document
+session. Its [local regression case](docs/document-authoring-case-study.md#exact-quote-location-checks)
+preserves read/access boundaries; it does not establish semantic review quality
+or new native acceptance.
 Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
 
 ### Retained Guarded Prototypes

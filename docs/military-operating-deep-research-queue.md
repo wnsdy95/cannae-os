@@ -28,6 +28,12 @@ records that exact decision and one native continuation. Operative repairs survi
 finding quality remains work, with separate operator appraisal corrections. The four earlier
 proposals stay unapproved, and no new model call is inferred from the local fix.
 
+The [exact-quote location follow-up](document-authoring-case-study.md#exact-quote-location-checks)
+adds opt-in local citation lookup after required full reading, with unchanged
+freshness and delivery limits. Its [operating lesson](research-compendium.md#quote-location-is-not-semantic-support-2026-11-14)
+separates literal location from interpretation. Actual model use and repaired
+review quality remain unverified; this is not another receiving run or approval.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

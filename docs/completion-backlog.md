@@ -202,6 +202,13 @@ Use this queue and the requirement table, not those historical instructions.
    after checking its historical/successor context. Preserve those distinctions
    and the original response; this is not blanket semantic acceptance. The other
    four proposals remain unapproved.
+   The [exact-quote lookup follow-up](document-authoring-case-study.md#exact-quote-location-checks)
+   now supplies optional literal location/context checks after current-route full
+   reading, with source/decision freshness and unchanged access limits. Local
+   router and stdio fixtures do not establish interpretation or native adoption
+   of the tool. The next behavioral check should evaluate a disputed finding's
+   actual source support, not replay already successful receiving or count a
+   literal match as semantic acceptance. No requirement disposition changes.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.

@@ -596,7 +596,7 @@ node /absolute/doctrine/project-document-session-mcp.js \
   /absolute/session.json EXPECTED_CONFIG_SHA256
 ```
 
-It exposes only `route_current_task` and, in review phase, `read_document`, with
+By default it exposes only `route_current_task` and, in review phase, `read_document`, with
 strict arguments and code-only operation errors. It creates no network listener,
 global client setting, authentication service or persistent daemon. The client
 owns the child process; stdin closure or the configured deadline closes its
@@ -605,6 +605,52 @@ packet hashes are trusted local bindings, not authentication or protected code
 attestation. This is an optional tool adapter, not separately packaged plugin
 distribution or automatic consent to send documents to a model. Inspect sources,
 actual client settings and transfer authority before any native use.
+
+### Exact Quote Lookup
+
+For a review whose finding depends on a disputed citation, a trusted preparer
+may set `allow_quote_lookup: true` in a newly assigned session configuration.
+The default remains disabled; callers cannot enable it through tool arguments
+or by mutating the original configuration after construction. In review phase,
+the optional stdio tool and session operation are both named `locate_quote`:
+
+```javascript
+const location = session.execute("locate_quote", {
+  route_id: route.route_id,
+  source_id: result.document.id,
+  delivered_sha256: result.document.delivered_sha256,
+  quote: exactPassageFromTheReturnedDocument,
+  context_lines: 2
+});
+```
+
+The source must already have been fully returned by `read_document` in this
+route. Lookup rechecks the packet, reviewed decision, sources, corpus and router;
+it cannot access a held, unlisted or reference-only source, change the profile,
+clear required reading or survive a reroute without a new full read. The same
+session call/deadline limits apply. Brief phase still exposes routing only.
+
+Select one unique, nonblank literal passage of at most 4096 UTF-16 code units.
+No case, whitespace, newline or Unicode normalization is performed. Zero or
+multiple matches return `PROJECT_QUOTE_NOT_FOUND` or `PROJECT_QUOTE_AMBIGUOUS`;
+use a distinctive passage, not a guessed occurrence. These selection failures
+leave a successfully rechecked context usable; source/decision drift retires it.
+Malformed arguments and mismatched digests fail without falling back to search.
+
+The result retains source and delivered digests, delivery mode, the exact quote
+and its digest, zero-based UTF-8 byte offsets (exclusive end), one-based inclusive
+line bounds and surrounding complete lines. `context_lines` is 0-5, default 2;
+LF separates lines and CRLF bytes remain intact. Locations in a summary or
+representation refer to that delivered body, not its withheld original.
+`location_verified: true` means only a unique literal match in those bytes.
+`semantic_support_assessed` and all authorization/acceptance flags remain false.
+
+Inspect the actual heading, table header/cell and historical/recipient qualifier
+before accepting a finding. Nearby lines may omit a distant header; use the full
+already-read source, not an inferred column label. This helper does not parse
+Markdown, judge interpretation, certify comprehension or create a disclosure
+decision. `project-document-quote.js` is the pure locator; use the session boundary
+for delegated tools rather than exposing arbitrary local-file lookup.
 
 ## 8. Anti-patterns
 

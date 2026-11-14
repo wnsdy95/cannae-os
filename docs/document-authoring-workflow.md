@@ -208,6 +208,15 @@ distinctive passage with the source ID. Keep draft cross-references labeled as
 draft navigation. An exact source attachment or matching digest does not repair
 an incorrect in-text locator or prove that the source supports the claim.
 
+For a disputed citation in a tool-assisted review, the optional
+[exact quote lookup](role-document-access-policy.md#exact-quote-lookup) can locate
+a unique passage in an already-read source with its delivered digest. Check the
+surrounding heading, table header/cell and phase qualifiers yourself; an exact
+quote does not establish the finding's interpretation. A missing or ambiguous
+match calls for checking the cited passage, not inventing a location or treating
+the source as invalid. This optional aid neither replaces required full reads
+nor adds a tool prerequisite to ordinary drafting.
+
 Compare the actual predecessor, not a paraphrase of its intent. Compression can
 drop a named decision trigger even when a generic final-authority statement
 survives. Preserve overlapping approval requirements, explicit prohibited

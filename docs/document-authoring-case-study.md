@@ -4562,3 +4562,58 @@ native invocation. No gate was weakened or attempt silently relaunched.
 The next recipient still needs separately prepared dependencies. This case adds
 bounded receiving and operative-fidelity evidence without accepting every finding
 or closing any whole objective. All existing requirement dispositions remain.
+
+## Exact Quote Location Checks
+
+The approved OR72 receiving exercise left a specific source-appraisal gap: a
+finding assigned A4/A5 to the wrong column even though the complete source had
+been read. The existing tool returned source bodies and digests but did not
+offer a bound, repeatable way to locate the cited passage. This follow-up adds
+that narrow aid, not an automatic interpretation engine or a new application.
+
+`project-document-quote.js` locates one unique exact quote in delivered bytes.
+The existing document session exposes it only with trusted configuration
+`allow_quote_lookup: true`, after that source's full read in the current route.
+The optional stdio tool keeps the same packet, recipient, corpus profile, holds,
+freshness and call/deadline limits. Defaults remain route/read, and brief phase
+still offers routing only. Rerouting discards previous read eligibility. The
+[access procedure](role-document-access-policy.md#exact-quote-lookup) documents
+selectors, returned byte/line ranges and representation-relative locations.
+
+Local fixtures cover exact UTF-8/CRLF offsets, multiline context, ambiguous and
+overlapping matches, normalization refusal, invalid selectors and digest drift.
+Both provider configurations exercise actual copied routers and stdio tools,
+full-read prerequisites, holds, budgets, expiry and stale-context rejection.
+They use isolated synthetic decisions and a small copied corpus, not native
+models or authenticated USER approvals. The existing full-corpus session suite
+remains a separate regression. An initial fixture expected a nonexistent reader
+error code; it was corrected to the existing packet digest error without changing
+the gate. That failed run remains in the local evidence.
+
+A separate offline check uses the exact retained OR72 `SRC-REVISED` tool body,
+not a renewed delivery session. It locates `(A5).` and `(A4).` at lines 120 and
+122 with the table header in the returned context. Operator inspection places
+both in the report-state column; the helper does not perform that column
+interpretation. This corroborates the prior bounded appraisal without modifying
+the source, reusing an old route token or authorizing a new transfer.
+
+Both provider routing references now require checking the returned context's
+actual heading, cell and phase qualifiers before accepting a disputed finding.
+A distant table header may require consulting the full already-read source.
+`location_verified` does not make `semantic_support_assessed` true, certify
+comprehension or authorize release. This is optional review support, not another
+mandatory tool for ordinary drafting. The authoring workflow and public indexes
+retain this distinction. No native rerun or source revision was performed.
+
+The initial generic maintenance query reported a lexical capability gap. After
+the actual existing session modules were identified, a faithful query naming
+them selected the existing delivery route with all original constraints retained.
+Both diagnostics are preserved; no standing department or authority was created.
+New helper identifiers and the specific `exact quote lookup` phrase now route
+to the existing delivery procedure and focused checks, not a new capability area.
+
+Evidence is under `.cannae/maintenance/quote-location-20261114-l3n5T7/`. This bounded
+implementation supports G1-G4 and local provider parity without completing any
+whole objective. Native tool use, interpretation quality and repaired-review
+acceptance remain separate unverified behavior; existing proposal decisions and
+historical native outputs are unchanged.

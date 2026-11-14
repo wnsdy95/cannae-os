@@ -216,6 +216,14 @@ receiving does not retroactively alter the predecessor's nondelivery history or
 authorize another recipient. Separate source appraisal retains incorrect finding
 premises alongside preserved operative repairs; no new military claim follows.
 
+The [exact-quote location case](document-authoring-case-study.md#exact-quote-location-checks)
+adds `project-document-quote.js` and `run-project-document-quote-fixtures.js` to the
+existing routed session. Its opt-in operation returns byte/line context only
+after a current full read and fresh source checks. Local Node/string and actual
+stdio tests support binding and access behavior, not Markdown interpretation,
+semantic support, native compliance or a new military source claim. The
+[access procedure](role-document-access-policy.md#exact-quote-lookup) defines its limits.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

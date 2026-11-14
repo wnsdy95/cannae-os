@@ -63,6 +63,21 @@ current guides. These are local synthetic observations, not universal model
 reliability claims. Current receipt does not adopt the draft or clear another
 proposal, and the new guidance has local instruction-delivery checks only.
 
+## Quote Location Is Not Semantic Support (2026-11-14)
+
+The [exact-quote location case](document-authoring-case-study.md#exact-quote-location-checks)
+responds to the retained wrong-column finding without assuming every native
+criticism is correct. A unique literal passage can be checked against delivered
+bytes and shown with nearby lines, but its heading, table column and historical
+scope still require appraisal. A missing or repeated passage is not evidence
+that the source is invalid or that a guessed occurrence supports the finding.
+
+The optional session operation requires an already completed current-route read
+and rechecks access bindings and freshness. It does not reduce required reading
+or authorize another transfer. Synthetic local router/stdio tests support those
+boundaries, not a new native outcome or automatic interpretation. These are local
+engineering observations, not external doctrine or general reliability estimates.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

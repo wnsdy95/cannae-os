@@ -43,6 +43,12 @@ function createServer(options) {
     ["read_document", z.object({ route_id: z.string(), source_id: z.string() }).strict(),
       "Read an assigned source ID in the current route. Preserve delivery mode and source bindings. A held or reference-only source is not readable; no arbitrary file access is provided."]
   ];
+  if (options.allow_quote_lookup === true && options.phase === "review") {
+    tools.push(["locate_quote", z.object({ route_id: z.string(), source_id: z.string(),
+      delivered_sha256: z.string().regex(/^[a-f0-9]{64}$/), quote: z.string().min(1).max(4096),
+      context_lines: z.number().int().min(0).max(5).optional() }).strict(),
+    "Locate one exact unique quote in a source already fully returned in this route. Bind the delivered digest and inspect line context; this does not prove interpretation, table-column semantics, comprehension or approval. No normalization or arbitrary file access."]);
+  }
   for (const [name, inputSchema, description] of tools) {
     if (options.phase === "brief" && name === "read_document") continue;
     server.registerTool(name, { inputSchema, description,
