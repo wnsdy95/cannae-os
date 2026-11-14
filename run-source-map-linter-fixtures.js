@@ -96,7 +96,8 @@ function runOrientationFixtures() {
   const cases = read("docs/document-authoring-case-study.md");
   for (const [heading, anchor] of [
     ["## Native Optional Reading And Source Appraisal", "native-optional-reading-and-source-appraisal"],
-    ["## OR72 Snapshot And Locator Correction", "or72-snapshot-and-locator-correction"]
+    ["## OR72 Snapshot And Locator Correction", "or72-snapshot-and-locator-correction"],
+    ["## Cross-Client Recovery Handoff", "cross-client-recovery-handoff"]
   ]) {
     assert(cases.split("\n").filter(line => line === heading).length === 1, "Case anchor must have one actual target.");
     for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {
@@ -142,8 +143,17 @@ function runOrientationFixtures() {
   assert(auditLesson("codex-skills") === auditLesson(".claude/skills") &&
     auditLesson("codex-skills").includes("not every prose update needs a model rerun."),
   "Both skills must retain the same requirement/artifact audit procedure.");
+  const rows = current.split("\n").filter(line => /^\| A\d\d \|/.test(line));
+  const verified = rows.filter(line => line.split("|")[3].trim().startsWith("Verified (bounded)."));
+  const partial = rows.filter(line => line.split("|")[3].trim().startsWith("Partial."));
+  assert(verified.length === 15 && partial.length === 5 &&
+    verified.some(line => line.startsWith("| A14 |")) &&
+    partial.map(line => line.split("|")[1].trim()).join(",") === "A01,A05,A10,A16,A20" &&
+    active.includes("Fifteen required rows") && active.includes("five remain partial") &&
+    current.includes("not 75% product completion") && current.includes("**A14, partial -> verified (bounded):**"),
+  "Receiving evidence must update the declared inventory without closing quality gaps or inventing a product percentage.");
   // These assertions protect declared orientation and links, not semantic truth.
-  return 8;
+  return 9;
 }
 
 function runNavigationFixtures() {

@@ -127,6 +127,30 @@ dated history and current dispositions in one live table. Both maintenance skill
 now carry this distinction. Local binding/navigation checks are not semantic
 certification, causal improvement, a new native run or an overall completion rate.
 
+## Available Evidence Is Not Exclusive Proof (2026-11-15)
+
+The [RH94 two-way handoff](document-authoring-case-study.md#cross-client-recovery-handoff)
+observes fresh recipients actually reading whole predecessor units and every
+assigned dependency. Useful repairs do not make all reviewer findings correct:
+an operator initially misses an unsupported nonappointment claim, while another
+review overstates a row-level clarification despite adjacent authority controls.
+Appraise the complete operative unit, not a finding's confidence or label.
+
+Different role labels do not establish different people. An unnamed custodian
+does not prove that a named preparer is not that custodian. Likewise, missing
+proof in the assigned catalog does not establish the only possible source or
+method of proof. Preserve current unknowns without inventing identity, exclusive
+evidence, another approval gate or authority to retrieve unassigned material.
+
+Notice claims need actual public messages. A before-reading brief can follow
+routing; it is not automatically a before-any-tool requirement. A final caveat
+that the successor cannot verify chronology does not repair the author's false
+claim of prior reporting. For a launch mode that repeatedly omits a required
+notice, select the existing report-only/parent-delivery procedure for the next
+dependent workflow. Do not turn that conditional procedure into a gate for
+unrelated drafting. These local synthetic observations support mirrored guidance,
+not universal accuracy, post-update native compliance or production recovery.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

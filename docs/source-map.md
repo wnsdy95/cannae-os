@@ -246,6 +246,16 @@ structural presence checks. The previous queue/table remain verbatim history.
 This is local engineering evidence, not a new source claim, transfer approval or
 native rerun. Pending individual proposals are not new product prerequisites.
 
+The subsequent [RH94 cross-client recovery handoff](document-authoring-case-study.md#cross-client-recovery-handoff)
+records four bounded native processes, unchanged whole-unit transfers and fresh
+recipient route/read evidence in both directions. Separate operator appraisal
+retains author errors, useful reviewer repairs and an overstated finding; the
+initial operator miss is corrected explicitly. Its [reusable lesson](research-compendium.md#available-evidence-is-not-exclusive-proof-2026-11-15)
+distinguishes unknown identity, current missing proof and public notice evidence.
+The new instruction checks are local, not causal behavior evidence. This advances
+bounded receiving without adopting policy, approving other proposals or claiming
+a production outage/recovery test or external military source.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

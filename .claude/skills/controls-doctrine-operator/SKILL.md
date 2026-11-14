@@ -350,6 +350,11 @@ Separate evidence checking from approval in decision tables and their headings.
 An instruction not to equate them does not create another USER approval gate.
 Unknown inclusion or scope is not confirmed exclusion; check operative claims
 as well as unknowns tables, including whether quoted fees cover unspecified costs.
+Different role labels do not prove different people. If a custodian's identity
+is unknown, do not assert that a named preparer is not that custodian.
+Missing proof in the assigned sources does not establish the only possible proof
+or method. State the current evidence gap without inventing exclusivity, a new
+approval gate or permission to retrieve another source.
 For snapshot reports, separate current state from earlier triggers and continuing
 deadlines. Current failure does not prove a timer never started. Use supported
 history and applicable reset rules; do not discard an established deadline merely

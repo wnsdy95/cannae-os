@@ -134,6 +134,14 @@ or completed review. Retain unknown-event and permission-change stops; extend a
 classifier only for an inspected event shape, with rejection tests and a separately
 recorded retry. A successful diagnostic process is not a repaired reporting workflow.
 
+Assess the required boundary: a before-reading brief may follow routing; it is
+not necessarily a before-any-tool requirement. A failed method notice is not
+repaired by a final disclaimer that its timing is unverified by a successor.
+When the same launch mode again omits a required notice, use the existing
+report-only/parent-delivery boundary for the next dependent workflow instead of
+treating another instruction-only run as enforced reporting. Preserve the missed
+notice, and do not make that conditional procedure mandatory for unrelated edits.
+
 Distinguish a client's internal transport retry from relaunching a review. Accept
 only an inspected, validated diagnostic shape; retain unknown-event, permission
 and tool stops. Keep the original wall-clock deadline and output limit across

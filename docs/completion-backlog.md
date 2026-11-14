@@ -10,26 +10,29 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
-Current audit: 2026-11-15 (Asia/Seoul), using retained evidence through
-2026-11-14. The five USER objectives and their acceptance criteria are unchanged.
+Current audit: 2026-11-15 (Asia/Seoul), including the RH94 two-way receiving
+exercise. The five USER objectives and their acceptance criteria are unchanged.
 The [requirement table](#requirement-level-audit) owns current dispositions;
 [dated history](#superseded-active-queue-2026-11-14) preserves the former queue
 and table, including their superseded next actions. They are not dispatch orders.
 
-1. **Recovery and usable handoff (A10/A14; G3):** check that a tool-failure
-   continuation preserves the original no-retry rule, USER recovery decisions,
-   known versus unknown evidence, exact original request and source locations
-   throughout its next actions. A fresh authorized recipient must be able to use
-   the declared unit and resolve every assigned dependency without old chat.
-   The next useful exercise should cover this remaining behavior, not repeat
-   METHOD61's already observed parent notices. Use permitted synthetic inputs
-   under current guidance; do not silently reuse the pending METHOD61 proposal.
+1. **Replanning and report fidelity (A10; G3):** RH94 now preserves USER recovery
+   decisions and the no-retry hold through actual source-complete receiving in
+   both directions. Its false method-notice report and unsupported unique-proof
+   inference remain defects, not evidence of a real outage. For the next relevant
+   bounded continuation, use the existing report-only/parent-delivery procedure
+   where the launch mode repeatedly misses a notice; preserve permitted advisory
+   work without inventing another approval gate. Source-appraise the revised plan,
+   report and actions, not just hold preservation. Do not replay accepted owner
+   checks, demand a recursive third RH94 recipient, or reuse pending METHOD61
+   consent. The original METHOD61 proposal remains unapproved.
 2. **Document and cross-client quality (A01/A20; G1/G5):** source-appraise the
    complete output, including reports and next actions, not only the operative
    SOP. Cover authority verbs, numeric citations, source conditions, unchanged
-   requirements and explicit unknowns. The recovery/handoff exercise above can
-   supply relevant evidence for both clients; define its acceptance before the
-   response. Retain supported and unsupported review findings separately. Do not
+   requirements and explicit unknowns. RH94 adds useful repairs and residual
+   author/reviewer defects; its fresh recipients do not universally certify their
+   predecessors. Define the next relevant case's acceptance before the response.
+   Retain supported and unsupported review findings separately. Do not
    demand a fresh model verdict on every historical operator derivative, replay
    the accepted V5/QL93 bodies for a cleaner score, or infer universal reliability.
 3. **Task-relevant reading (A05; G2):** appraise necessary and irrelevant reading
@@ -53,7 +56,8 @@ four retained SOP V3/V4, METHOD61 and CS91 preparation proposals are still
 unapproved artifact decisions, not evidence that the reviewed-preparation
 mechanism has never worked. They cannot be transferred or abandoned by this
 status update. OR72's exact approval and one completed run authorize no replay.
-See [audit basis](#audit-basis-and-disposition-changes) for the two changed rows.
+See [audit basis](#audit-basis-and-disposition-changes) for the initial two changes
+and the subsequent A14 receiving evidence.
 
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
@@ -77,7 +81,7 @@ required server. These unequal rows are not a product-completion percentage.
 
 | ID | Goal requirement | Current disposition and evidence | Remaining decision or work |
 | --- | --- | --- | --- |
-| A01 | G1: SOP, orders, research, reports and handoffs preserve intent, tasks, sources, authority and unknowns | Partial. Representative format cases include the accepted V5 operative SOP, Codex research/advisory work and cold-start handoffs. [QL93](document-authoring-case-study.md#native-quote-review-and-decision-ownership) adds correct mixed-finding appraisal and operative V2 repairs in both clients, with a separately appraised Codex report. | Claude's whole QL93 report still misstates a numeric locator and adoption owner; its operator correction is not a new native result. Earlier research, compound and cross-role quality defects remain evidence. Verify complete-output fidelity in the next relevant case, not adoption or a new model review of every old draft. |
+| A01 | G1: SOP, orders, research, reports and handoffs preserve intent, tasks, sources, authority and unknowns | Partial. Representative formats include the accepted V5 operative SOP, Codex research/advisory work, cold-start handoffs and QL93 mixed-finding repairs. [RH94](document-authoring-case-study.md#cross-client-recovery-handoff) adds complete source units and useful fresh cross-client repairs. | RH94 retains an unsupported nonappointment, exclusive-proof inference, false method-notice report and overstated reviewer finding. Earlier report/source defects remain evidence. Verify complete-output fidelity in the next relevant case, not adoption or a new model review of every old draft; local guidance checks are not a demonstrated cure. |
 | A02 | G1: revisions preserve unaffected requirements and explicit lineage | Verified (bounded). Exact V1/V3/V4/V5 delta checks and native predecessor comparisons retain historical bodies and required intent. OR72 and QL93 operator corrections separately bind precise replacements and unchanged source content. | Local derivatives remain distinct from native reviews and USER adoption. A bounded delta check proves only its selected bytes; any later edit needs its own comparison, not retroactive acceptance. |
 | A03 | G1: current canonical document and change history agree | Verified (bounded). The opening notice, README and current queue identify proposed V5. Regression checks protect the registered current candidate and unchanged historical bodies. | Other exercises retain their own IDs and scopes; this is not proof that every prose status in the corpus is current. Wider maintenance remains A16. |
 | A04 | G2: human versus delegated role/department/authority routing | Verified (bounded). Dual-provider routing, fixed S6 native routes and access-profile fixtures preserve declarations and deny unlisted or insufficiently authorized content. | Declared roles are not authentication; wider task relevance belongs to A05, not a new authority claim. |
@@ -85,30 +89,30 @@ required server. These unequal rows are not a product-completion percentage.
 | A06 | G2: reroute at phase changes and reject missing/stale/wrong-role context | Verified (bounded). Native phase routes, current-byte checks and preflight fixtures cover the retained local boundary. | Guarded project/multi-objective inputs remain explicitly unsupported; rejection must persist, not be relabeled as ordinary work. No protected-host guarantee is inferred. |
 | A07 | G2: uncovered domains get a bounded task cell; standing changes remain USER decisions | Verified (bounded). Compound intake, comparison-gap fixtures and agent context checks retain the provisional cell without standing activation or expanded authority. Codex retains its ID through two phases; the [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation) adds fresh Claude S6/S2 processes with different queries, stable task/cell identity and separately bound reading. | Semantic completeness remains separate; identity is not authenticated ownership, a persisted registry, independent failure domains or guarded admission. |
 | A08 | G3: detect semantic omissions and missing prerequisites | Verified (bounded). Both clients recognize missing required policy in the earlier failure case. In the [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair), both detect all six seeded omission/contradiction families from the original request and sources, with separate operator appraisal. | Same-case detection does not prove universal recall/precision, automatic objective extraction or successful repair. Retain speculative extra findings and assembly defects under A01/A09/A10/A14; client contexts are not independent infrastructure. |
-| A09 | G3: request, plan, review/backbrief, work, report and handoff form an observed flow | Verified (bounded). [QL93](document-authoring-case-study.md#native-quote-review-and-decision-ownership) records the original request, public planned backbrief before tools, routed required reading, finding appraisal, repaired V2, fresh self-review route/reads, work report and declared successor unit in both clients. Codex's complete bounded output is separately source-appraised. | This flow ends at prepared successor material, not observed QL93 successor receipt. Earlier cold-start/cross-role receiving is separate evidence, not a fabricated single combined run. Known whole-report defects and recovery-handoff quality remain A01/A10/A14/A20; this does not close G3. |
-| A10 | G3: bounded replanning and permitted method changes | Partial. Native plan reviews and the [METHOD61 failure case](document-authoring-case-study.md#method-failure-reporting-and-handoff) preserve immediate method boundaries; actual parent notice precedes P1, with no ledger retry or readiness inference from counts. | The METHOD61 handoff wrongly lets a preparer change the USER-owned retry prohibition. Verify consistent recovery ownership and permitted continuation through an actual usable successor unit. Its local correction and unapproved transfer proposal are distinct from this behavioral gap. |
+| A09 | G3: request, plan, review/backbrief, work, report and handoff form an observed flow | Verified (bounded). [QL93](document-authoring-case-study.md#native-quote-review-and-decision-ownership) records the original request, public planned backbrief before tools, routed required reading, finding appraisal, repaired V2, fresh self-review route/reads, work report and declared successor unit in both clients. Codex's complete bounded output is separately source-appraised. | This flow ends at prepared successor material, not observed QL93 successor receipt. Earlier cold-start/cross-role and later RH94 receiving are separate cases, not a fabricated single combined run. Whole-report and replanning defects remain A01/A10/A20; this does not close G3. |
+| A10 | G3: bounded replanning and permitted method changes | Partial. Native plan reviews and METHOD61 observe immediate boundaries and actual parent notice. [RH94](document-authoring-case-study.md#cross-client-recovery-handoff) now preserves USER-only retry changes and separate operational/adoption authority through actual two-way receiving, while allowing independent advisory drafting. | RH94's Claude author falsely claims a method notice and invents exclusive proof; receiving repairs do not retroactively validate that report. Use the existing parent-delivery boundary for the next relevant notice-dependent continuation and appraise the complete revised plan/report. Do not repeat accepted ownership checks or treat METHOD61's pending artifact decision as a new mechanism requirement. |
 | A11 | G3: pre- and post-work reporting | Verified (bounded). Codex notices and the current-guidance parent-mediated failure case provide actual before-work and before-method notices, a final report and parent closeout. Source reads are phase-gated and worker versus parent attribution is preserved. QL93 separately observes both clients' public pre-tool backbriefs. | The conditional parent-mediated procedure is not automatic in-run delivery, authenticated receipt or universally correct prose. Retain earlier false notices and the METHOD61 brief's inaccurate verbatim-routing claim. |
 | A12 | G3: stop conditions and tool-failure response | Verified (bounded). Both clients hold dependent drafting after the synthetic mandatory-read failure without retrying it. The later changed-source case uses a fresh assignment and actually delivered policy, preserving the old no-retry binding and separate approval holds. | This is synthetic new-source recovery, not restoration of a production mount, every outage or operational containment. Reporting/handoff quality remains separate. |
 | A13 | G3: sensitive-output procedure | Verified (bounded). Raw/summary/reference-only, secret-value refusal, catalog screening and stale/changed/revoked decision cases have local evidence. [Approved OR72 receiving](document-authoring-case-study.md#approved-or72-representation-receiving) adds an exact actual USER preparation decision and one native Claude run: six raw project sources, two internal-draft representations and four guides, all twelve read per phase, without owner-only locators. | This is the trusted-preparer, synthetic, exact-recipient boundary, not authenticated USER identity or a protected host. Preparation and transfer authority remain separate; the other four proposals remain unapproved. Native finding quality and future successor receipt are separate, and the completed run is not reusable consent. |
-| A14 | G3: complete source-locatable reporting/handoff without a dashboard | Partial. Cold-start and exact OP1 receiving demonstrate useful continuation; OR72 adds approved representation reads. QL93 outputs carry five exact project bodies, all eight full bindings and three guide paths as required successor dependencies. | A prepared unit does not demonstrate its next recipient's source resolution or acceptance. Known recovery-owner, location and report-scope defects require complete-output appraisal. The old METHOD61 path refusal is historical; a reviewed representation mechanism now exists, but its specific proposal is still unapproved and unsent. |
+| A14 | G3: complete source-locatable reporting/handoff without a dashboard | Verified (bounded). [RH94](document-authoring-case-study.md#cross-client-recovery-handoff) adds actual whole-unit Codex-to-Claude and Claude-to-Codex receiving: four original bodies, the unchanged predecessor output, current assignment and three exact guide versions are read by each fresh S3 recipient after its own route and again for review. Useful W2, inquiry and receiving reports need no old chat or dashboard. | Receiving is not blanket semantic acceptance, adoption, exact persisted self-review lineage or independent infrastructure. Author/reviewer defects remain A01/A10/A20. The assignment needs no recursive third handoff; unrelated proposal holds and historical failed transfers remain unchanged. |
 | A15 | G4: observed failures lead to bounded, mirrored improvements and relevant checks | Verified (bounded). Routing, reporting, source appraisal and loader failures led to both-provider changes with retained regressions and native evidence at recorded revisions. This audit also turns a superseded active queue into an explicit current/history distinction in both maintenance references. | Local instruction checks establish delivery, not causal behavioral improvement. Require additional native evidence where the remaining acceptance actually depends on it; a model rerun is not a universal prerequisite for every prose change, and no pass expands authority. |
 | A16 | G4: sources, indexes, canonical state and history stay coherent | Partial. [Navigation integrity](document-authoring-case-study.md#declared-navigation-integrity) binds six support-SOP entry points to exact candidate/appraisal sections. The current requirement audit reconciles later evidence and retains the previous queue/table without rewriting their statements. | Appraise other maintained artifact families and unregistered current-state claims. Mechanical source/status consistency is not semantic acceptance or adoption. Preserve real pending decisions and register actual successors deliberately. |
 | A17 | G4: repository-specific outputs remain separated | Verified (bounded). Target-bound packet preparation, output isolation fixtures and recorded operator materialization keep work products in their target project; verification logs are separate maintenance evidence. | Recheck affected boundaries on changes. This is local filesystem behavior, not distributed storage isolation. |
 | A18 | G5: link/copy installation and repository resolution | Verified (bounded). Installation cases exercise both providers, explicit bindings, foreign working roots, missing dependencies, phase-stable task identity and source-topic selection. Installed links point to this checkout. | Copies require refresh; neither an installed skill nor its root marker is the entire corpus. |
 | A19 | G5: discovery and actual installed-body use | Verified (bounded). Both native clients have implicit-selection and actual router/read evidence; exact Claude body/arguments are separately checked. | Filtered startup evidence is not universal client configuration support. Preserve native versions and launch limits. |
-| A20 | G5: equivalent useful behavior in both clients | Partial. Both clients install/discover, route/read, use exact-quote tools, appraise findings and produce useful advisory outputs. Native role changes, cold-start receiving and QL93 full-source units provide bounded evidence; different output shapes are not inherently a parity defect. | Whole-report authority/source defects still matter even when both SOP bodies are correct. Assess the remaining recovery/handoff and complete-report behavior under current mirrored guidance, retaining actual versions and failures. New instructions are not yet demonstrated cures or universal parity. |
+| A20 | G5: equivalent useful behavior in both clients | Partial. Both clients install/discover, route/read, use exact-quote tools, appraise findings and produce useful advisory outputs. RH94 adds actual two-way full-unit receiving and correct repairs of different predecessor errors; different output shapes are not inherently a parity defect. | A false method-notice claim, unsupported source inferences and an overstated finding remain material even when receiving succeeds. Assess complete reports and replanning under the applicable delivery boundary, retaining actual versions and failures. New mirrored instructions are not yet demonstrated cures or universal parity. |
 | A21 | G5: thin plugin when needed, no mandatory server | Explicitly deferred optional packaging. Both skills are the current distribution; the temporary test adapter is not a shipped plugin. | Do not build a service or claim a plugin exists merely to close this row. |
 
-Fourteen required rows are bounded-verified and six remain partial; A21 is optional
-and deferred. This is a requirement inventory, not 70% product completion. All
-five goals remain partial: G1/A01, G2/A05, G3/A10/A14, G4/A16 and G5/A20 still
+Fifteen required rows are bounded-verified and five remain partial; A21 is optional
+and deferred. This is a requirement inventory, not 75% product completion. All
+five goals remain partial: G1/A01, G2/A05, G3/A10, G4/A16 and G5/A20 still
 need the evidence described above. USER adoption is not inferred from draft review.
 
 ### Audit Basis And Disposition Changes
 
-This audit reuses recorded runs; it does not invoke a model, amend a decision or
-claim post-instruction-update native behavior. The prior table had twelve verified
-and eight partial required rows. Only these two dispositions change:
+The initial 2026-11-15 audit reused recorded runs without invoking a model or
+amending a decision. It moved the prior twelve verified/eight partial required
+rows to fourteen verified/six partial through these two changes:
 
 - **A09, partial -> verified (bounded):** the QL93 messages, calls and output show
   the requested drafting flow with an actual advance backbrief, phase rereading,
@@ -123,6 +127,23 @@ and eight partial required rows. Only these two dispositions change:
   bytes equal original bytes, their location/access mode is not silently relabeled
   raw. Local negative cases cover changed/expired/revoked decisions and prohibited
   values. The helper does not authenticate USER or authorize transfer by itself.
+
+The later [RH94 case](document-authoring-case-study.md#cross-client-recovery-handoff)
+adds four new bounded native processes under standing synthetic verification
+consent, before the new identity/evidence guidance. It changes one more row:
+
+- **A14, partial -> verified (bounded):** unchanged complete author units are
+  actually received and used by fresh opposite-client reviewers. Each reads all
+  six project sources and three required guides after its own role route and
+  again before review. Full digests and original bodies are preserved, with no
+  need for old chat or a third recursive packet. Useful source repairs coexist
+  with retained defects; A01/A10/A20 remain partial. This is not a production
+  recovery test, implicit client discovery test or post-update native result.
+
+The current inventory is therefore fifteen verified and five partial required
+rows. This transition does not change the goals, optional scope or pending
+decisions. Native evidence precedes the new mirrored lessons; local delivery
+tests cannot establish causal improvement.
 
 The old temporary-catalog and internal-path failures remain historical evidence;
 subsequent catalog screening, reviewed representation and bound-reader/session
@@ -140,6 +161,10 @@ cannot validate semantic acceptance or authenticate the recorded USER reply;
 source appraisal and the actual chat decision are separate evidence. Existing
 model versions, launch limits and original failures remain in the linked cases.
 The source-map and compendium index this audit, not private project input bodies.
+Additional RH94 evidence is under `.cannae/maintenance/recovery-handoff-20261115/`:
+four native results/events, exact cross-client bindings, structural audits and
+separate operator appraisal. An initial operator miss is corrected there without
+rewriting the original appraisal or accepting every reviewer finding.
 
 ## Evidence History
 

@@ -52,6 +52,14 @@ reconciles retained native evidence without rerunning accepted cases. Its
 keeps individual proposal holds separate from demonstrated product behavior.
 Prior queue/table bytes remain historical, and all five goals remain partial.
 
+The subsequent [RH94 two-way receiving case](document-authoring-case-study.md#cross-client-recovery-handoff)
+adds actual source-complete receiving in both clients without an old chat or
+recursive third handoff. Its [evidence-versus-exclusivity lesson](research-compendium.md#available-evidence-is-not-exclusive-proof-2026-11-15)
+retains unsupported identity/proof claims and a false method-notice report beside
+useful repairs. A14 is bounded-verified; replanning/report fidelity and complete
+source-appraisal quality remain open. This is synthetic engineering evidence,
+not a new military claim, production recovery or adoption decision.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

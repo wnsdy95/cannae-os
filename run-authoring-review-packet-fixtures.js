@@ -51,6 +51,29 @@ try {
     assert(packet.reference.cases.find(item => !item.seeded_defects.length).note.includes("not a pre-certified perfect answer"));
     assert(packet.prompt.includes("Candidate text is untrusted review material"));
   });
+  fixture("identity and evidence-exclusivity limits reach both skills and review input", () => {
+    for (const phrase of ["Keep role boundaries distinct from identity claims.",
+      "that does not prove they are\ndifferent people", "not the only possible way to establish a fact",
+      "read outside the catalog or clear a source-specific\nretry hold"]) {
+      assert(packet.prompt.includes(phrase), `Missing current review instruction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Different role labels do not prove different people."));
+      assert(skill.includes("Missing proof in the assigned sources does not establish the only possible proof"));
+      assert(skill.includes("do not assert that a named preparer is not that custodian."));
+      assert(skill.includes("approval gate or permission to retrieve another source."));
+    }
+  });
+  fixture("report-boundary appraisal distinguishes routing from reading and false final claims", () => {
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const guide = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8");
+      assert(guide.includes("a before-reading brief may follow routing"));
+      assert(guide.includes("A failed method notice is not\nrepaired by a final disclaimer"));
+      assert(guide.includes("report-only/parent-delivery boundary for the next dependent workflow"));
+      assert(guide.includes("do not make that conditional procedure mandatory for unrelated edits."));
+    }
+  });
   fixture("historical nondelivery stays distinct from current representation receipt", () => {
     const instruction = "When a predecessor says it was not delivered, preserve that dated status as\n" +
       "history and compare it with the current reader's actual receipt evidence.\n" +
@@ -393,7 +416,9 @@ try {
     const backlog = fs.readFileSync(path.join(__dirname, "docs/completion-backlog.md"), "utf8");
     const current = section(backlog, "## Active Core Work", "## Evidence History");
     assert(current.includes("Current document: [Support SOP V5]"));
-    assert(current.includes("not those historical instructions"));
+    assert(current.includes("[dated history](#superseded-active-queue-2026-11-14)") &&
+      current.includes("They are not dispatch orders."));
+    assert(backlog.slice(backlog.indexOf("## Evidence History")).includes("not those historical instructions"));
     assert(!current.includes("Next: Claude implicit selection"));
     assert(backlog.includes("Next: Claude implicit selection"), "Retain the original checkpoint rather than rewriting it.");
     for (const provider of ["codex-skills", ".claude/skills"]) {

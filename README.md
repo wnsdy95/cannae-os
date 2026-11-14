@@ -1022,7 +1022,7 @@ score or evidence of current production operation.
 All five [active objectives](docs/skill-first-product-scope.md#active-objectives)
 remain partial. Bounded evidence covers document revisions, role-based routing,
 required reading, source-bound handoffs and installation/discovery in both clients.
-Broader context relevance, repaired-document quality, receiving and client parity
+Broader context relevance, complete-report quality, replanning and client parity
 still have recorded gaps. Separate plugin packaging remains optional and deferred.
 
 The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
@@ -1051,14 +1051,20 @@ separately declared domain gaps and authority limits. Its evidence is local, not
 a fresh native review or globally minimal context selection.
 Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
 
+The [cross-client recovery handoff](docs/document-authoring-case-study.md#cross-client-recovery-handoff)
+now observes fresh receiving in both directions, with complete source units and
+all assigned guides read at each phase. USER recovery authority survives; useful
+review repairs coexist with a false method-notice claim and unsupported source
+inferences. Both skills address those lessons without claiming a demonstrated cure.
+
 The [2026-11-15 requirement audit](docs/completion-backlog.md#audit-basis-and-disposition-changes)
-now counts the observed drafting flow and exactly approved representation delivery
-as bounded-verified. Fourteen required rows are verified at their stated scope;
-six remain partial, not a product percentage. Remaining work targets recovery
-and usable handoff, full-report quality across clients, relevant reading and
+counts bounded drafting flow, exactly approved representation delivery and actual
+cross-client handoff. Fifteen required rows are verified at their stated scope;
+five remain partial, not a product percentage. Remaining work targets replanning
+and report fidelity, complete-output quality across clients, relevant reading and
 source/status coherence. Individual unapproved proposals remain held, but do not
-mean the delivery mechanism is untested. No new native run or adoption follows
-from this audit, and all five broader objectives remain partial.
+mean the delivery mechanism is untested. No adoption follows, and all five
+broader objectives remain partial.
 
 ### Retained Guarded Prototypes
 

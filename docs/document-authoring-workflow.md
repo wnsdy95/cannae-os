@@ -297,6 +297,16 @@ belongs to. A source ID is not globally unique just because one packet validates
 Update operative reading lists, comparison steps and version descriptions as
 well as headers; a provenance preface does not correct a contradictory step.
 Separate an operator's new appraisal from the model work it describes.
+Keep role boundaries distinct from identity claims. A named preparer and an
+unnamed custodian have different responsibilities; that does not prove they are
+different people or that the preparer was never appointed custodian. Preserve
+the established duties and explicit unknown identity without inventing either
+an appointment or a nonappointment.
+Likewise, a closed reading catalog establishes which evidence is available in
+this assignment, not the only possible way to establish a fact. Replace an
+unsupported "only source" claim with the actual current evidence gap. Do not
+invent alternative evidence, read outside the catalog or clear a source-specific
+retry hold; any proposed alternative retains its real access and authority limits.
 Reconcile the handoff's required reading with the actual receiver packet. Include
 authorized dependencies, or explicitly state what is withheld/unavailable and
 leave the dependent historical comparison unverified. Do not open reference-only
