@@ -60,7 +60,7 @@ those older instructions. All listed drafts remain unadopted.
 | QL93 | [Claude operator R1](#native-quote-review-and-decision-ownership), with native SOP V2 unchanged | Three-span local report correction; native operative V2 appraisal remains separately scoped. | No fresh native review or successor receipt of the corrected report. |
 | RH94 | [Two author units and two fresh receiving outputs](#cross-client-recovery-handoff) | Both unchanged predecessor units were received; useful repairs and unsupported findings coexist. | Receiving is not blanket semantic acceptance; no third recipient or adoption is inferred. |
 | RP95 | [Claude operator correction](#parent-delivered-replanning-and-residual-scope) | Four native notice/work phases; a separate four-span residual-scope correction. | The correction is not native-reviewed or transmitted. The successful notice boundary is not whole-report acceptance. |
-| MP96 | [Codex native W2 and Claude operator R1](#mapped-replanning-and-compressed-reports) | Two native planning/self-review runs; both preserve useful record assessments, but Claude's compact report repeats a mapping error and adds unsupported approval gates. | The eleven-span operator correction plus labeled preface is locally appraised, not native-reviewed, transmitted or adopted. |
+| MP96 | [Codex native W2 and Claude operator R1](#mapped-replanning-and-compressed-reports) | Two native planning/self-review runs; both preserve useful record assessments, but Claude's compact report repeats a mapping error and adds unsupported approval gates. | The eleven-span operator correction plus labeled preface is locally appraised, not native-reviewed, transmitted or adopted. Two exact receiving-preparation proposals remain pending after the raw internal-path attempt was rejected. |
 
 The four unresolved exact preparation proposals are SOP V3, SOP V4, METHOD61 and
 CS91. They are distinct from already observed delivery mechanisms and remain
@@ -5128,3 +5128,30 @@ are retained rather than relabeled covered. Existing notice and receiving eviden
 need not be replayed, and no recursive recipient is required solely for a cleaner
 score. Exact inputs, messages, source comparisons, structural audit and correction
 bindings: `.cannae/maintenance/mapped-replan-20261115/`.
+
+### R1 Receiving Preparation Boundary
+
+A later whole-unit receiving preparation at `ab89c16` fails before any model
+invocation: the preparer incorrectly requests raw delivery of the review assignment
+and two draft artifacts from ignored internal paths. The request validator identifies
+three `PROJECT_PACKET_PATH_INVALID` rows. This is an operator preparation error,
+not a failed native review or a defect in the existing path boundary.
+
+The failed request and all original files remain unchanged. Two separate exact
+review proposals bind the same eight synthetic sources to Codex and Claude Code
+EVALUATOR/evaluation/document_review/L1 recipients. The current assignment has a
+separately retained eligible draft copy, while predecessor and R1 stay in place.
+Three sources use identity representations; no ordinary-path relocation or raw
+mode waiver is used. Each proposal contains 66,480 bytes of project text. They
+remain pending actual USER preparation decisions; standing test consent and the
+expired OR72 approval do not substitute for them. No native review, adoption or
+goal promotion follows from proposal creation.
+
+Both skill routing guides now require path/mode preflight and distinguish request
+rejection from screening and client execution. Local cases for both provider
+bindings cover a clean identity draft: raw delivery fails before source reads,
+ordinary represented preparation requires USER review, a no-findings proposal
+creates no decision, and only an explicitly synthetic fixture decision permits
+fixture preparation while retaining representation mode and false execution,
+release and reception flags. This does not approve these real pending proposals.
+Evidence: `.cannae/maintenance/mapped-replan-review-20261115/`.

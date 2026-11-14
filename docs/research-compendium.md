@@ -244,6 +244,14 @@ into mandatory decisions. The separate eleven-span correction retains originals
 and remains unreviewed by a new native recipient. These are bounded engineering
 observations, not a general model score or military claim; broader quality stays open.
 
+The later [R1 preparation attempt](document-authoring-case-study.md#r1-receiving-preparation-boundary)
+also shows why source path/mode validation precedes client setup. Internal drafts
+cannot become ordinary raw inputs merely because their text is synthetic or their
+representation is byte-identical. The failed request is retained, two exact review
+proposals await USER decisions, and no native call follows from their creation.
+Local fixtures exercise the existing boundary; this is preparation discipline,
+not a new permission policy or proof that the corrected report has been accepted.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

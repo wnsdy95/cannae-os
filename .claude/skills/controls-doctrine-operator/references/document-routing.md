@@ -453,6 +453,14 @@ source and delivered digests. An adapter that cannot preserve that mode must sto
 not relabel it. No new tool, publication, authenticated identity or host protection
 is supplied by this local review procedure.
 
+Before building a client manifest, validate source paths and delivery modes.
+For `PROJECT_PACKET_REQUEST_INVALID`, inspect the local request validator's
+document indices; distinguish a path rejection from content screening or a model
+failure. Keep the rejected request and originals. Do not copy an internal draft
+to an ordinary path to obtain raw delivery. Eligible drafts require exact reviewed
+preparation even with no screening findings and an identity representation;
+equal source/delivered digests do not create approval or change the delivery mode.
+
 For file-backed source tools, use the access policy's `bound-recipient-reader`
 procedure instead of assembling a catalog from private packet fields. The trusted
 preparer binds the exact packet digest and recipient once; each catalog/read

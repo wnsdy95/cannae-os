@@ -452,6 +452,15 @@ symlink, traversal, nested-repository or other excluded-directory components.
 The preparer reads the original under existing read authority and preserves it
 in place. No relocation, classification downgrade or summary relabeling is used.
 
+Preflight each source path and delivery mode before building a client manifest.
+If ordinary preparation reports `PROJECT_PACKET_REQUEST_INVALID`, use the local
+request validator to identify the rejected document indices. A path rejection is
+not a content-screen verdict or a native-client failure. Do not copy an existing
+internal draft to an ordinary path merely to obtain raw delivery. An eligible
+internal draft follows this exact-review procedure even when screening finds
+nothing and its representation changes no bytes; equal digests do not remove the
+decision requirement. Preserve the rejected request and originals separately.
+
 The deterministic representation replaces selected absolute/private relative
 locations with `source:ID`, the canonical target root with the declared project
 handle, and this bound doctrine root with `CORPUS-CONTROLS`. Other bytes, including

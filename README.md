@@ -1099,6 +1099,9 @@ work and USER decisions. Claude's detailed table is correct, but its FRAGO summa
 misstates the mapping and its report invents broader approval gates. The separate
 operator correction and output-specific review guidance do not constitute a native
 cure. G1/G3/G5 remain partial; source fidelity must survive compressed reports too.
+R1's [receiving preparation](docs/document-authoring-case-study.md#r1-receiving-preparation-boundary)
+stopped on internal-path raw delivery before a model call. Two exact review
+proposals remain pending; unchanged text is not permission to bypass that boundary.
 
 ### Retained Guarded Prototypes
 

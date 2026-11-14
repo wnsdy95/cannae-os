@@ -106,6 +106,46 @@ try {
         const r = structuredClone(request); change(r); assert.throws(() => review.proposeReview(r, root));
       }
     });
+    test(`${provider}: clean identity drafts still require exact review before recipient preparation`, () => {
+      const relative = ".cannae/document-drafts/IDENTITY/draft.md";
+      const content = "# Synthetic draft\nTwo observations identify one record. The third relation is unknown.\nDraft review only; do not adopt or execute.\n";
+      write(path.join(root, relative), content);
+      const raw = structuredClone(request);
+      raw.documents = [{ ...raw.documents[0], path: relative, classification: "internal", source_sha256: packet.sha256(content) }];
+      const errors = validatePayload(raw, "project-document-packet-request").issues.filter(row => row.severity === "error");
+      assert.deepEqual(errors.map(row => [row.code, row.path]), [["PROJECT_PACKET_PATH_INVALID", "$.documents[0]"]]);
+      const represented = structuredClone(raw);
+      represented.schema_version = "0.2";
+      Object.assign(represented.documents[0], { delivery_mode: "representation",
+        representation: { method: "source_id_locations", project_handle: "PROJECT-IDENTITY" } });
+      const open = fs.openSync;
+      let sourceOpened = false;
+      fs.openSync = function(file, ...args) {
+        if (file === path.join(root, relative)) sourceOpened = true;
+        return open.call(fs, file, ...args);
+      };
+      try {
+        assert.throws(() => packet.prepare(raw, root), /PROJECT_PACKET_REQUEST_INVALID/);
+        assert.throws(() => packet.prepare(represented, root), /PROJECT_PACKET_USER_REVIEW_REQUIRED/);
+      } finally { fs.openSync = open; }
+      assert.equal(sourceOpened, false, "Rejected modes must not open the draft.");
+      const p = review.proposeReview(represented, root);
+      const data = JSON.parse(fs.readFileSync(p.proposal_path));
+      assert.equal(p.finding_scope_count, 0);
+      assert.equal(p.representation_count, 1);
+      assert.equal(p.packet_written, false);
+      assert(!fs.existsSync(p.decision_path));
+      assert.equal(data.documents[0].content, content);
+      assert.equal(data.documents[0].source_sha256, data.documents[0].delivered_sha256);
+      assert.throws(() => review.prepareReviewed(root, { proposal_path: path.relative(root, p.proposal_path),
+        proposal_sha256: p.proposal_sha256, decision_sha256: "0".repeat(64) }));
+      const b = record(root, p), result = review.prepareReviewed(root, b);
+      const projected = packet.recipientData(JSON.parse(fs.readFileSync(result.packet_path)));
+      assert.equal(projected.documents[0].delivery_mode, "representation");
+      assert.equal(projected.documents[0].content, content);
+      assert.equal(fs.readFileSync(path.join(root, relative), "utf8"), content);
+      for (const flag of ["execution_authorized", "release_authorized", "receiver_acceptance_verified"]) assert.equal(result[flag], false);
+    });
     test(`${provider}: internal representation preserves originals and all non-location text`, () => {
       const r = structuredClone(request), relative = ".cannae/document-drafts/TASK-R/draft.md";
       const original = `# Draft\n${body}\nOriginal: ${root}/${relative}\nReference: private-reference.md\nRoot: ${root}\nDoctrine: ${__dirname}\nUSER retains purchase and release.\n`;

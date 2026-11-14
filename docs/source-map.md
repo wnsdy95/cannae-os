@@ -297,6 +297,11 @@ distinguishes correct detailed tables from contradictory summaries and unsupport
 approval gates. The local operator derivative is not a new native review, policy
 adoption or external military-source claim.
 
+Its [R1 preparation boundary](document-authoring-case-study.md#r1-receiving-preparation-boundary)
+retains a rejected raw request and two pending exact review proposals. Mirrored
+path/mode preflight and identity-representation fixtures document the existing
+boundary; they do not establish a new native review or grant preparation approval.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

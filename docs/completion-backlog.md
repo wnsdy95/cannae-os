@@ -70,6 +70,11 @@ four retained SOP V3/V4, METHOD61 and CS91 preparation proposals are still
 unapproved artifact decisions, not evidence that the reviewed-preparation
 mechanism has never worked. They cannot be transferred or abandoned by this
 status update. OR72's exact approval and one completed run authorize no replay.
+MP96 R1 now has two additional exact receiving-preparation proposals, one per
+client, after an ordinary raw internal-path request failed before model invocation.
+They remain pending; the [preparation record](document-authoring-case-study.md#r1-receiving-preparation-boundary)
+does not change A01/A10/A20 or expand any previous approval. Continue unrelated
+authorized work while awaiting those decisions rather than weakening delivery rules.
 See [audit basis](#audit-basis-and-disposition-changes) for the initial two changes
 and the subsequent A14 receiving evidence.
 
