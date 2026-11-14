@@ -97,6 +97,15 @@ changes no doctrine filename. File-index coverage alone will not catch that gap.
 Keep historical candidate/appraisal bytes intact; do not copy a growing case log
 into every entry point or add private project details to public indexes.
 
+Check routing declarations in the reverse direction as well: a file-to-category
+inventory cannot detect an absent file still named by a route or role. Both
+routers' `--coverage` checks include unavailable declared references. A selected
+unavailable document stops direct routing and receipt persistence; an unselected
+one remains a corpus maintenance finding, not an automatic hold on every task.
+Review a real retirement/replacement before editing the mapping, preserve
+historical evidence and reroute affected work. Do not restore a deferred UI or
+weaken an assigned reading profile simply to make coverage green.
+
 If a review selects only operative text, record that selection and its digest
 separately from the whole registered section. Preserve historical prefaces and
 explain their date/scope in the current appraisal. A new review label does not

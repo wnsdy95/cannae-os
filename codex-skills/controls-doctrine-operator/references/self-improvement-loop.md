@@ -66,6 +66,14 @@ historical section; do not dispatch them as current work or rewrite the old
 review to appear successful. A passing link check cannot detect a stale but
 existing target, so test the current pointer and unchanged historical bodies.
 
+Check the reverse mapping too: every declared routing reference must remain an
+eligible corpus file. A green count over surviving files can hide deleted,
+ignored or symlink-replaced prerequisites. Review the actual intended successor
+or retirement before changing a declaration; do not create an empty replacement
+or resurrect deferred UI merely to satisfy coverage. Test a selected missing
+reference's rejection and an unrelated task's preservation, including installed
+copies. Keep recipe availability separate from source currentness and authority.
+
 Check unregistered maturity/roadmap prose as well as the opening scope notice.
 Separate active acceptance gaps from retained implementation and deferred work.
 After a durable lesson within an existing document, link its exact case and

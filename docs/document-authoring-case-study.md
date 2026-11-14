@@ -4885,3 +4885,40 @@ the wider goals remain partial. No native run, pending proposal approval, policy
 adoption or platform service is introduced. Evidence:
 `.cannae/maintenance/role-reading-20261115/`, including fixed queries, full route
 results, comparison bindings, source appraisal and regression records.
+
+## Declared Routing Reference Integrity
+
+At source `3dc9d26`, both routers still declared the removed HTML skill explainer.
+Coverage returned valid because it classified surviving files, not the references
+that should exist. A separate isolated reproduction deleted the real authoring
+workflow: a support-SOP route still succeeded, with the selected prerequisite
+silently filtered out. This is an availability defect, not a semantic model error
+or evidence that an agent read an unauthorized file.
+
+Both coverage reports now audit baseline, delegation, role, department, authority,
+task-route and capability-gap declarations against the same eligible inventory.
+They report `declared_document_count`, `unavailable_declared_document_count` and
+`unavailable_declared_documents`; unavailable references make coverage invalid.
+The stale HTML declaration is removed without restoring a deferred UI.
+
+An actual selected missing, ignored, symlinked or non-file reference now stops
+with `ROUTING_DOCUMENT_UNAVAILABLE`, before a direct result, receipt or artifact
+write. Unselected missing references still fail the corpus audit without imposing
+a new global prerequisite on unrelated direct document work. Existing explicit
+source rejection, delegated authority, assigned profiles and guarded gates remain.
+The receipt shape is unchanged; these new diagnostic fields belong to coverage.
+
+Regressions exercise both source routers and linked/copied installations from
+another project, including role/department/authority/gap inputs, failed creation
+or overwrite, restoration and an unaffected task. The source-reference fixture
+now includes the real doctrine prerequisites instead of relying on silent omission
+in a deliberately sparse corpus. Both skill references teach repair or reviewed
+retirement, not empty replacement files, requirement removal or changing the task
+to evade the failure.
+
+Availability at routing time is not reading, content-digest freshness, semantic
+quality, authorization or protection from a subsequent mutation. Existing context
+and reader checks retain those distinct responsibilities. This bounded G2/G4
+correction does not close the whole A05/A16 requirements, approve a retained
+proposal or invoke a model. Reproduction and final checks are retained under
+`.cannae/maintenance/routing-reference-integrity-20261115/`.

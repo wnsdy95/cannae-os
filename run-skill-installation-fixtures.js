@@ -74,6 +74,35 @@ function fixture(name, fn) {
   console.log(`PASS ${name}`);
 }
 
+function missingRoutedDocuments(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const relative = "docs/document-authoring-workflow.md", file = path.join(source, relative), bytes = fs.readFileSync(file);
+  try {
+    fs.unlinkSync(file);
+    for (const provider of PROVIDERS) {
+      const denied = route(env, provider, [], 2);
+      assert(denied.stderr.includes("ROUTING_DOCUMENT_UNAVAILABLE") && denied.stderr.includes(relative));
+      const script = path.join(destination(env, provider), "scripts/route_controls_docs.js");
+      const coverage = spawnSync(process.execPath, [script, "--coverage"], { cwd: unrelated, env, encoding: "utf8" });
+      assert.equal(coverage.status, 1);
+      const result = JSON.parse(coverage.stdout);
+      assert.equal(result.valid, false);
+      assert.equal(result.unavailable_declared_document_count, 1);
+      assert.deepEqual(result.unavailable_declared_documents, [relative]);
+      const guarded = spawnSync(process.execPath, [script, "--receipt", "--scope=agent", "--mission=MIS-MISSING",
+        "--wave=W1", "--agent=writer", "--actor=ai", "--role=S3", "--department=operations",
+        "--authority=scoped-execution", "--capability-query=Draft a support SOP.", "--write-artifact",
+        "--overwrite-artifact", `--target-repository=${unrelated}`, "--", "Draft a support SOP."],
+      { cwd: unrelated, env, encoding: "utf8" });
+      assert.equal(guarded.status, 2); assert.equal(guarded.stdout, "");
+      assert(guarded.stderr.includes("ROUTING_DOCUMENT_UNAVAILABLE"));
+    }
+    assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+    assert(!fs.existsSync(path.join(unrelated, ".cannae")));
+  } finally { fs.writeFileSync(file, bytes); }
+  for (const provider of PROVIDERS) route(env, provider);
+}
+
 function readOnlyOperationsDocuments(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   const specialist = ["docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
@@ -501,7 +530,7 @@ try {
   write(path.join(unrelated, "README.md"), "# Target project, not doctrine\nKeep this source unchanged.\n");
   fs.mkdirSync(bin);
   for (const file of ["install-ai-cli-skills.sh", "validate-controls-skill.js", "README.md", "SUPPORT.md",
-    "docs", "schema-files", "validator-cli-prototype", `codex-skills/${NAME}`, `.claude/skills/${NAME}`]) {
+    "docs", "schema-files", "sample-payloads/README.md", "validator-cli-prototype", `codex-skills/${NAME}`, `.claude/skills/${NAME}`]) {
     fs.cpSync(path.join(ROOT, file), path.join(source, file), { recursive: true });
   }
   // Receipt validation uses the bound checkout's real runtime, not a validator stub.
@@ -554,6 +583,7 @@ try {
   fixture("linked providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("linked providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("linked providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
+  fixture("linked providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("matching link installation is idempotent", () => {
@@ -595,6 +625,7 @@ try {
   fixture("copied providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("copied providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("copied providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
+  fixture("copied providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {

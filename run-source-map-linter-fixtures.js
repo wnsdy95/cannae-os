@@ -98,7 +98,8 @@ function runOrientationFixtures() {
     ["## Native Optional Reading And Source Appraisal", "native-optional-reading-and-source-appraisal"],
     ["## OR72 Snapshot And Locator Correction", "or72-snapshot-and-locator-correction"],
     ["## Cross-Client Recovery Handoff", "cross-client-recovery-handoff"],
-    ["## Role And Format Reading Correction", "role-and-format-reading-correction"]
+    ["## Role And Format Reading Correction", "role-and-format-reading-correction"],
+    ["## Declared Routing Reference Integrity", "declared-routing-reference-integrity"]
   ]) {
     assert(cases.split("\n").filter(line => line === heading).length === 1, "Case anchor must have one actual target.");
     for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {
@@ -117,6 +118,14 @@ function runOrientationFixtures() {
       `${provider} lost narrative and same-file lesson maintenance guidance.`);
   }
   assert(read("docs/knowledge-management-sop.md").includes("File-index coverage alone will not catch that gap."));
+  for (const provider of ["codex-skills", ".claude/skills"]) {
+    assert(read(`${provider}/controls-doctrine-operator/references/self-improvement-loop.md`)
+      .includes("Check the reverse mapping too: every declared routing reference must remain an"));
+    const routing = read(`${provider}/controls-doctrine-operator/references/document-routing.md`);
+    assert(routing.includes("unavailable_declared_document_count") &&
+      routing.includes("On `ROUTING_DOCUMENT_UNAVAILABLE`") &&
+      routing.includes("An unrelated unselected reference can fail the whole-corpus audit without"));
+  }
   const backlog = read("docs/completion-backlog.md");
   const current = span(backlog, "## Active Core Work", "## Evidence History");
   const history = backlog.slice(backlog.indexOf("## Evidence History"));

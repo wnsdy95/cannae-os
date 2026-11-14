@@ -16,6 +16,7 @@ let routedQueries = 0;
 let rejectedSources = 0;
 let rejectedObjectives = 0;
 let taskIdentityChecks = 0;
+let referenceIntegrityChecks = 0;
 const GITHUB_RELEASE_DOCS = [
   "docs/github-release-authorization.md",
   "docs/github-release-immutability.md",
@@ -1481,6 +1482,10 @@ for (const router of ROUTERS) {
 
 const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "controls-task-sources-"));
 try {
+  for (const file of ["docs", "schema-files", "codex-skills", ".claude/skills", "install-ai-cli-skills.sh",
+    "sample-payloads/README.md", "validator-cli-prototype/README.md"]) {
+    fs.cpSync(path.join(ROOT, file), path.join(sourceRoot, file), { recursive: true });
+  }
   const write = (file, content = "# Fixture source\n") => {
     const destination = path.join(sourceRoot, file);
     fs.mkdirSync(path.dirname(destination), { recursive: true });
@@ -1555,10 +1560,78 @@ try {
     for (const item of [...ignored.recommended_documents, ...ignored.supporting_artifacts]) {
       assert(!invalidSources.includes(item.path), "unsafe reference appeared in a reading recommendation");
     }
+    const invoke = (args, status) => {
+      const result = spawnSync(process.execPath, [path.join(ROOT, router), `--doctrine-root=${sourceRoot}`, ...args],
+        { cwd: sourceRoot, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(result.status, status, result.stderr || result.stdout);
+      referenceIntegrityChecks++;
+      return result;
+    };
+    const coverage = status => JSON.parse(invoke(["--coverage"], status).stdout);
+    const good = coverage(1);
+    assert.deepEqual(good.unrouted_artifacts.map(item => item.path).sort(), ["docs/a/shared.md", "docs/b/shared.md"]);
+    assert.equal(good.unavailable_declared_document_count, 0, JSON.stringify(good.unavailable_declared_documents));
+    assert(good.declared_document_count > 90);
+    assert.deepEqual(good.unavailable_declared_documents, []);
+    const task = "Draft a support SOP. Do not publish.";
+    const checkUnavailable = file => {
+      const report = coverage(1);
+      assert.equal(report.valid, false);
+      assert(report.unavailable_declared_documents.includes(file));
+      assert.equal(report.unavailable_declared_document_count, report.unavailable_declared_documents.length);
+      for (const extra of [["--actor=user"], ["--receipt", "--scope=agent", "--mission=MIS-REFERENCE",
+        "--wave=W1", "--agent=writer", "--actor=ai", "--role=S3", "--department=operations",
+        "--authority=scoped-execution", `--capability-query=${task}`, "--write-artifact", "--overwrite-artifact",
+        `--target-repository=${sourceRoot}`]]) {
+        const denied = invoke([...extra, "--", task], 2);
+        assert.equal(denied.stdout, "");
+        assert(denied.stderr.includes("ROUTING_DOCUMENT_UNAVAILABLE") && denied.stderr.includes(file));
+      }
+      assert.deepEqual(fs.readdirSync(path.join(sourceRoot, ".cannae")), ["retained.md"]);
+    };
+    const file = "docs/document-authoring-workflow.md", absolute = path.join(sourceRoot, file), original = fs.readFileSync(absolute);
+    try {
+      fs.unlinkSync(absolute);
+      checkUnavailable(file);
+      const unrelated = JSON.parse(invoke(["--actor=user", "--", "Explain the doctrine corpus."], 0).stdout);
+      assert(!unrelated.recommended_documents.some(d => d.path === file));
+      fs.mkdirSync(absolute);
+      checkUnavailable(file);
+      fs.rmdirSync(absolute);
+      fs.symlinkSync(path.join(ROOT, file), absolute);
+      checkUnavailable(file);
+      fs.unlinkSync(absolute);
+      fs.writeFileSync(absolute, original);
+      fs.appendFileSync(path.join(sourceRoot, ".gitignore"), file + "\n");
+      checkUnavailable(file);
+    } finally {
+      fs.rmSync(absolute, { force: true, recursive: true });
+      fs.writeFileSync(absolute, original);
+      write(".gitignore", "ignored-source.md\n.cannae/\n.cxt/\n");
+    }
+    // The same denial must apply to role, department, authority and fallback selection.
+    for (const [selected, flags, query] of [
+      ["docs/role-document-access-policy.md", ["--actor=ai", "--role=S2", "--department=intelligence", "--authority=read-only"], task],
+      ["docs/agent-battle-rhythm.md", ["--actor=ai", "--role=COS", "--department=coordination", "--authority=read-only"], task],
+      ["docs/reference-architecture.md", ["--actor=ai", "--role=S2", "--department=systems", "--authority=read-only"], task],
+      ["docs/risk-acceptance-authority.md", ["--actor=ai", "--role=S2", "--department=intelligence", "--authority=risk"], task],
+      ["docs/force-structure-change-policy.md", ["--actor=user"], "Analyze museum attendance."]
+    ]) {
+      const target = path.join(sourceRoot, selected), bytes = fs.readFileSync(target);
+      try {
+        fs.unlinkSync(target);
+        const denied = invoke([...flags, "--", query], 2);
+        assert.equal(denied.stdout, "");
+        assert(denied.stderr.includes("ROUTING_DOCUMENT_UNAVAILABLE") && denied.stderr.includes(selected));
+        assert(coverage(1).unavailable_declared_documents.includes(selected));
+      } finally { fs.writeFileSync(target, bytes); }
+    }
+    assert.deepEqual(coverage(1).unavailable_declared_documents, []);
   }
 } finally {
   fs.rmSync(sourceRoot, { recursive: true, force: true });
 }
+console.log(`Declared-reference integrity checks passed: ${referenceIntegrityChecks}.`);
 
 const linkRoot = fs.mkdtempSync(path.join(os.tmpdir(), "controls-document-links-"));
 try {

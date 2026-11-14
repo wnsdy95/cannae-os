@@ -842,7 +842,20 @@ Run coverage after adding, renaming, deleting, or moving any corpus artifact:
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
 ```
 
-The report must return `valid: true` and `unrouted_artifact_count: 0`. If it does not, update `ROUTE_HINTS`, `RULES`, or the artifact naming so the item has a clear route.
+The report must return `valid: true`, `unrouted_artifact_count: 0` and
+`unavailable_declared_document_count: 0`. It checks both existing artifacts'
+categories and the availability of baseline, role, department, authority, route
+and capability-gap references. A missing, ignored, symlinked or non-file target
+is unavailable even when every remaining file has a category.
+
+On `ROUTING_DOCUMENT_UNAVAILABLE`, preserve the task, delegation and failed
+invocation. Restore the intended file or review its real replacement/retirement
+in both bundles, then reroute; do not remove a requirement to get a pass.
+No direct result or receipt is emitted, and artifact creation/overwrite does not
+run. An unrelated unselected reference can fail the whole-corpus audit without
+blocking this direct task. That distinction does not waive an assigned profile
+or an existing guarded mission's checks. Successful inventory is not a source
+read, semantic review, content digest or disclosure authorization.
 
 Inventory coverage does not prove that a specific task received its documents.
 Keep local archives in `.cannae` and `.cxt` out of current-document link checks;

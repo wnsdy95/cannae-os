@@ -67,6 +67,12 @@ corrects missing order-authoring guidance and unrelated read-only S3 specialist
 defaults without changing authority or controls. Wider relevance remains partial;
 no new military research, model call or platform expansion follows.
 
+The [declared-reference check](document-authoring-case-study.md#declared-routing-reference-integrity)
+adds reverse inventory validation and rejects unavailable selected prerequisites.
+Its [maintenance lesson](research-compendium.md#declared-references-and-surviving-files-2026-11-15)
+is local engineering evidence, not a new military claim, source-reading proof or
+reason to restore deferred UI.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

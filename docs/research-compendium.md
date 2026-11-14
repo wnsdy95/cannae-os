@@ -170,6 +170,18 @@ whole authoring/revision procedure or expertise in the underlying mission domain
 The fixed local comparisons support the bounded correction, not automatic context
 optimality, semantic completeness or a new native-client outcome.
 
+## Declared References And Surviving Files (2026-11-15)
+
+The [routing-reference case](document-authoring-case-study.md#declared-routing-reference-integrity)
+shows a one-way inventory's blind spot: every surviving file can have a route
+while a route's prerequisite has disappeared. Check declarations against eligible
+files as well as files against categories. Distinguish a missing selected guide
+from an intentionally unselected specialist reference; neither is a read receipt.
+Repair the source or review an actual replacement/retirement before changing the
+map. Empty replacements, ignored-path exceptions and resurrecting deferred UI do
+not preserve the intended prerequisite. The local mutation checks verify
+availability and refusal, not content fidelity or a native model outcome.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

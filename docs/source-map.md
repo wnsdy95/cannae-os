@@ -265,6 +265,12 @@ separates role, task and authority without redefining the assigned reading profi
 This is local source appraisal and routing evidence, not an external military
 claim, current source consumption by a native model or universal minimality.
 
+The [declared-reference integrity case](document-authoring-case-study.md#declared-routing-reference-integrity)
+reproduces a green inventory after loss of a selected authoring guide in both
+routers. Reverse declaration checks and selected-reference refusal repair that
+local availability gap; the [maintenance lesson](research-compendium.md#declared-references-and-surviving-files-2026-11-15)
+does not infer source reading, semantic acceptance or an external military claim.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

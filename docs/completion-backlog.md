@@ -54,6 +54,9 @@ and table, including their superseded next actions. They are not dispatch orders
    it does not certify every narrative. Preserve historical bytes and pending
    decisions, check the registered navigation and changed indexes, and record
    source-appraisal limits as well as mechanical checks.
+   The [declared-reference correction](document-authoring-case-study.md#declared-routing-reference-integrity)
+   now checks the reverse inventory and denies selected missing prerequisites;
+   this fixes silent document loss, not the remaining narrative/source appraisal.
 
 Implementation, observed native use, source appraisal and USER adoption remain
 separate. No new model invocation is needed solely to refresh this audit. The

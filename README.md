@@ -1072,6 +1072,12 @@ execution manuals only for direct, explicitly read-only document tasks. Technica
 duties, explicit/parent sources, guarded work and controls remain. Its 56-case
 local comparison is not new model behavior or a globally minimal reading profile.
 
+The [declared-reference check](docs/document-authoring-case-study.md#declared-routing-reference-integrity)
+also detects missing or ineligible files still named by routes and roles.
+Selected missing references stop routing before receipt/artifact output; a green
+inventory of surviving files alone is insufficient. This is availability, not
+source consumption, authority or semantic validation.
+
 ### Retained Guarded Prototypes
 
 These implemented contracts and validation surfaces remain available. They do

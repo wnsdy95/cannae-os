@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Audit declared routing references as well as surviving files in both providers. Reject unavailable selected guides before direct output, receipt creation or artifact overwrite; retain unrelated direct work, reviewed retirement and existing authority/source boundaries. Remove the obsolete HTML explainer declaration, cover missing/ignored/symlink/directory cases and installed links/copies, and mirror repair guidance without claiming source reading or semantic acceptance.
+
 - Correct two role/format reading gaps in both routers: formal order/report drafting receives the authoring/KM procedure and templates, while direct explicitly read-only S3 document work omits five unrelated protected-execution role defaults. Preserve technical duties, parent/source inputs, execution or unclear authority, guarded contexts and every prior control. Compare 56 fixed role/format routes, add direct and installed regressions, and mirror guidance without claiming automatic access, minimal context or new native behavior.
 
 - Record four bounded native RH94 author/recipient processes with unchanged whole-unit handoff, fresh role routing and all assigned source reads in both client directions. Mark A14 bounded-verified while retaining report/replanning and source-quality gaps, including an operator's initial missed finding. Mirror role-versus-identity, current-evidence-versus-exclusive-proof and notice-boundary lessons; test instruction delivery without claiming post-update native compliance, production recovery, adoption or approval of other retained proposals.

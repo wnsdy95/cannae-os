@@ -366,8 +366,7 @@ const RULES = [
       "codex-skills/controls-doctrine-operator/SKILL.md",
       "codex-skills/controls-doctrine-operator/references/document-routing.md",
       "codex-skills/controls-doctrine-operator/references/self-improvement-loop.md",
-      "docs/skill-operational-mission-lifecycle.md",
-      "docs/controls-doctrine-operator-skill.html"
+      "docs/skill-operational-mission-lifecycle.md"
     ],
     commands: [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
@@ -451,6 +450,12 @@ const GENERIC_ROUTE_KEYWORDS = new Set([
   "unit",
   "use"
 ]);
+
+const BASE_DOCUMENTS = ["README.md", "docs/source-map.md"];
+const DELEGATION_DOCUMENTS = [
+  "docs/role-document-access-policy.md", "docs/agent-roles-and-authority.md",
+  "docs/approval-scope-policy.md", "docs/tool-use-roe.md"
+];
 
 const ROLE_DOCS = {
   COMMANDER: [
@@ -1129,16 +1134,25 @@ function typeCounts(inventory) {
   return Object.fromEntries(Object.entries(counts).sort(([left], [right]) => left.localeCompare(right)));
 }
 
-function coverageReport(repoRoot) {
-  const inventory = buildArtifactInventory(repoRoot);
+function coverageReport(repoRoot, inventory = buildArtifactInventory(repoRoot)) {
   const unrouted = inventory.filter(artifact => artifact.route_ids.length === 0);
+  const inventoryPaths = new Set(inventory.map(artifact => artifact.path));
+  const declared = unique([
+    ...BASE_DOCUMENTS, ...DELEGATION_DOCUMENTS, ...CAPABILITY_GAP_DOCS,
+    ...RULES.flatMap(rule => rule.docs), ...Object.values(ROLE_DOCS).flat(),
+    ...DEPARTMENT_DOCS.flatMap(rule => rule.docs), ...AUTHORITY_DOCS.flatMap(rule => rule.docs)
+  ]).sort();
+  const unavailable = declared.filter(file => !inventoryPaths.has(file));
 
   return {
-    valid: unrouted.length === 0,
+    valid: unrouted.length === 0 && unavailable.length === 0,
     repo_root: repoRoot,
     routable_artifact_count: inventory.length,
     routed_artifact_count: inventory.length - unrouted.length,
     unrouted_artifact_count: unrouted.length,
+    declared_document_count: declared.length,
+    unavailable_declared_document_count: unavailable.length,
+    unavailable_declared_documents: unavailable,
     route_counts: routeCounts(inventory),
     type_counts: typeCounts(inventory),
     unrouted_artifacts: unrouted
@@ -1317,12 +1331,7 @@ function operatorMode(options, noteDocument = () => {}, query = "") {
     };
   }
 
-  const modeDocs = [
-    "docs/role-document-access-policy.md",
-    "docs/agent-roles-and-authority.md",
-    "docs/approval-scope-policy.md",
-    "docs/tool-use-roe.md"
-  ];
+  const modeDocs = [...DELEGATION_DOCUMENTS];
 
   const roleKey = String(options.role || "").toUpperCase();
   for (const file of modeDocs) noteDocument(file, { kind: "delegation_boundary", selected: true });
@@ -1562,7 +1571,7 @@ function route(query, repoRoot, options) {
   if (forceStructureFallback) {
     selectedRules.unshift({ ...forceStructureRule, score: 0 });
   }
-  const docs = ["README.md", "docs/source-map.md"];
+  const docs = [...BASE_DOCUMENTS];
   for (const file of docs) noteDocument(file, { kind: "baseline_navigation", selected: true });
   docs.push(...references.resolved.map(item => item.path));
   for (const item of references.resolved) noteDocument(item.path, {
@@ -1606,8 +1615,11 @@ function route(query, repoRoot, options) {
 
   // Bound scope by selected routes, not by dropping task docs behind role docs.
   const inventoryPaths = new Set(inventory.map(item => item.path));
+  const unavailable = unique(docs).filter(file => !inventoryPaths.has(file));
+  if (unavailable.length) {
+    throw new Error(`ROUTING_DOCUMENT_UNAVAILABLE: restore or review the selected corpus references before rerouting: ${unavailable.join(", ")}`);
+  }
   const recommended = unique(docs)
-    .filter(file => inventoryPaths.has(file))
     .map(file => ({
       path: file,
       exists: true
@@ -1635,7 +1647,7 @@ function route(query, repoRoot, options) {
   const visibleSupportingArtifacts = options.all
     ? supportingArtifacts
     : supportingArtifacts.slice(0, options.limit);
-  const coverage = coverageReport(repoRoot);
+  const coverage = coverageReport(repoRoot, inventory);
 
   return {
     query,
