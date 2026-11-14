@@ -461,6 +461,46 @@ try {
     }
     assert(!packet.prompt.includes("## Requirement-Level Audit"));
   });
+  fixture("current family map separates predecessors, local successors and exact decisions", () => {
+    const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
+    const map = section(text, "## Current Authoring Families", "## Task And Backbrief");
+    const rows = map.split("\n").filter(line => line.startsWith("| ")).slice(2);
+    assert.deepEqual(rows.map(line => line.split("|")[1].trim()), [
+      "Support SOP", "Document chain", "Research report", "METHOD61", "DOCMOVE47",
+      "CS91", "OR72", "QL93", "RH94", "RP95"
+    ]);
+    const row = family => rows.find(line => line.startsWith(`| ${family} |`));
+    assert(row("Research report").includes("V2 review does not become a V3 review"));
+    assert(row("DOCMOVE47").includes("OP1 receipt does not establish OP2 review or receipt"));
+    assert(row("METHOD61").includes("has no exact USER decision"));
+    assert(row("OR72").includes("proposal was approved and received") && row("OR72").includes("window is now expired"));
+    assert(row("RP95").includes("not native-reviewed or transmitted"));
+    assert(map.includes("SOP V3, SOP V4, METHOD61 and\nCS91"));
+    assert(map.includes("All listed drafts remain unadopted."));
+    assert(!/\/Users\/|\/private\/|\/tmp\/|file:\/\//.test(map), "Public map must not expose private evidence paths.");
+    for (const heading of ["## Current Authoring Families", "## Artifact Family State Audit"]) {
+      assert(!packet.prompt.includes(heading), "Current operator dispositions must not leak into historical review input.");
+    }
+    const file = path.join(root, "docs/document-authoring-case-study.md");
+    try {
+      fs.writeFileSync(file, text.replace(map, map + "WITHHELD_FAMILY_DISPOSITION_SENTINEL\n"));
+      assert.equal(buildPacket(root).prompt, packet.prompt);
+    } finally { fs.writeFileSync(file, text); }
+  });
+  fixture("both maintenance guides bind family status to exact artifact and phase", () => {
+    const guides = ["codex-skills", ".claude/skills"].map(provider =>
+      fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/references/self-improvement-loop.md"), "utf8"));
+    const lesson = text => section(text, "For multiple maintained outputs, track each family, exact version/representation,",
+      "For registered versioned corpus documents, read `docs/source-map-navigation.json`");
+    assert.equal(lesson(guides[0]), lesson(guides[1]));
+    for (const phrase of ["Compare original records\nand artifact bytes", "Never inherit predecessor review or receipt",
+      "An expired decision supports historical in-window", "not register a public summary's hash as the private"]) {
+      assert(lesson(guides[0]).includes(phrase), `Missing family-state instruction: ${phrase}`);
+    }
+    const km = fs.readFileSync(path.join(__dirname, "docs/knowledge-management-sop.md"), "utf8");
+    assert(km.includes("document-authoring-case-study.md#current-authoring-families"));
+    assert(km.includes("Pending artifact decisions do not imply an unimplemented delivery mechanism."));
+  });
   fixture("proposed V4 changes only appraised spans and its version lineage", () => {
     const text = fs.readFileSync(path.join(root, "docs/document-authoring-case-study.md"), "utf8");
     const v3 = section(text, "## Corrective SOP Draft V3", "### V3 Comparison And Current Handoff");

@@ -39,6 +39,36 @@ Source checkout before the exercise: `0f429bf89ba4c0ef3321756dad7e3a3e36c3e4c8`.
 Hashes identify what was read; they do not prove that the interpretation is
 correct. Re-read changed sources before reusing the draft.
 
+## Current Authoring Families
+
+Audited 2026-11-15 against retained artifact bytes, review records and exact
+preparation decisions. This map covers the ten maintained authoring families
+exposed by current corpus summaries; it is not a new review of every document.
+Each linked case retains its original dates, verdicts and historical next steps.
+Select work from the [active queue](completion-backlog.md#active-core-work), not
+those older instructions. All listed drafts remain unadopted.
+
+| Family | Current retained artifact | Review and receiving scope | Decision or remaining boundary |
+| --- | --- | --- | --- |
+| Support SOP | [V5](#corrective-sop-draft-v5) | Native review accepts only its operative draft; the full receiving unit is separate. | No adoption. The separate V3/V4 preparation proposals remain unapproved. |
+| Document chain | [DRAFT-SCOPED-CLAIMS-FOLLOWUP](#four-span-follow-up-source-appraisal) | Four-span local source/delta appraisal of the exact three-string patch/base unit. | No fresh native review or operational receipt of this patch; it is not support SOP V5. |
+| Research report | [SIM-RESEARCH-41 operator V3](#native-research-repair-and-public-reporting) | Local source/delta appraisal follows native review of V2. | The V2 review does not become a V3 review or USER adoption. |
+| METHOD61 | [Corrected whole unit](#corrected-receiving-preparation-boundary) | Original native phases completed; the operator correction is locally appraised. | A later reviewed-preparation proposal exists but has no exact USER decision; no corrected-unit receiver run. |
+| DOCMOVE47 | [DOCMOVE-47-HANDOFF-OP2](#exact-repaired-unit-receiving) and corrected decision brief | OP1 was actually received; OP2 is a seven-edit local successor. | OP1 receipt does not establish OP2 review or receipt. |
+| CS91 | [Operator R1](#compound-draft-correction-and-receiving-proposal) | Twelve-span local correction; retained navigation/version issues remain. | Exact preparation decision absent; no fresh native review of R1. |
+| OR72 | [Native R2 after R1 representation receiving](#approved-or72-representation-receiving) | The exact R1 proposal was approved and received; R2 retains appraised review defects. | The original preparation window is now expired. It authorizes no new preparation, rerun or successor delivery. |
+| QL93 | [Claude operator R1](#native-quote-review-and-decision-ownership), with native SOP V2 unchanged | Three-span local report correction; native operative V2 appraisal remains separately scoped. | No fresh native review or successor receipt of the corrected report. |
+| RH94 | [Two author units and two fresh receiving outputs](#cross-client-recovery-handoff) | Both unchanged predecessor units were received; useful repairs and unsupported findings coexist. | Receiving is not blanket semantic acceptance; no third recipient or adoption is inferred. |
+| RP95 | [Claude operator correction](#parent-delivered-replanning-and-residual-scope) | Four native notice/work phases; a separate four-span residual-scope correction. | The correction is not native-reviewed or transmitted. The successful notice boundary is not whole-report acceptance. |
+
+The four unresolved exact preparation proposals are SOP V3, SOP V4, METHOD61 and
+CS91. They are distinct from already observed delivery mechanisms and remain
+attached to their original bytes and recipients. OR72's expired decision still
+supports its historical in-window receiving; expiry neither erases that event nor
+extends permission. Private target paths and decision files remain in authorized
+local evidence, not this public index. See the [state audit](#artifact-family-state-audit)
+for the source checks and limits.
+
 ## Task And Backbrief
 
 Initial task:
@@ -4992,3 +5022,45 @@ authority expansion, adoption or approval of any retained proposal. Evidence:
 `.cannae/maintenance/parent-replan-20261115/`, including the predeclared plan,
 four exact inputs/results, native messages and source returns, delivery declarations,
 withheld preparations, structural audit and separate appraisal/correction records.
+
+## Artifact Family State Audit
+
+At source `36d8e34`, the support-SOP navigation registry covered one document
+family, while current summaries referred to many unrelated candidates and reviews.
+The research queue's generic authoring index still described follow-up preparation
+as stopped at an internal-path boundary. That description was correct for the
+original METHOD61 attempt, but omitted its later exact reviewed-preparation
+proposal and the separate successful OR72 receiving mechanism. It was not a
+current summary of all corrections.
+
+A read-only audit checks the ten families in the [current map](#current-authoring-families).
+It recomputes retained candidate/response digests, inspects historical terminal
+events, rechecks the four-span document-chain reversal and separates predecessor
+review/receipt from each later derivative. Source appraisals, not process exit
+codes, establish the reported review scope. The support-SOP registry remains
+unchanged; no summary is substituted for the exact artifact it describes.
+
+All four unapproved preparation proposals still lack decisions; their original
+and screening-source bindings remain intact. OR72's actual decision, exact
+proposal and R2 target copy remain bound. Its recorded run began and ended inside
+the decision window; that window is now expired. Historical approval and receiving
+remain valid evidence, not fresh execution or successor-transfer permission.
+The first audit probe assumed every native response used a Markdown filename.
+Two older writers use `response.txt`; inspecting those writers and selecting the
+exact recorded representation fixed the audit without renaming files or changing
+expected digests. No evidence corruption or new native failure is inferred.
+
+The map, README and doctrine index now distinguish local correction, scoped native
+review, predecessor receiving, pending exact decisions and unadopted successors.
+Older case bodies and backlog history are unchanged. Both maintenance skills now
+require a family-specific artifact/representation/phase map instead of a blanket
+"unaccepted" label, and prohibit inheriting a predecessor's review or receipt.
+Local checks protect current navigation and history, not semantic correctness of
+every past output or authentication of USER decisions.
+
+Together with the existing mirrored-improvement, source-navigation and target-output
+evidence, this supplies bounded G4 maintenance acceptance. A16 moves to verified
+at that scope; G1/G2/G3/G5 retain their behavioral gaps. Ongoing maintenance remains
+required when artifacts change. A pass does not adopt any draft, close a pending
+decision, invoke a model, enable a service or complete the whole product.
+Evidence: `.cannae/maintenance/authoring-family-audit-20261115/`.

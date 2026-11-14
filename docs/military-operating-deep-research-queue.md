@@ -50,7 +50,8 @@ The [current requirement audit](completion-backlog.md#audit-basis-and-dispositio
 reconciles retained native evidence without rerunning accepted cases. Its
 [requirements-versus-decisions lesson](research-compendium.md#requirements-and-artifact-decisions-2026-11-15)
 keeps individual proposal holds separate from demonstrated product behavior.
-Prior queue/table bytes remain historical, and all five goals remain partial.
+Prior queue/table bytes remain historical. Current goal dispositions follow the
+active backlog, including the later bounded G4 family-state acceptance below.
 
 The subsequent [RH94 two-way receiving case](document-authoring-case-study.md#cross-client-recovery-handoff)
 adds actual source-complete receiving in both clients without an old chat or
@@ -79,6 +80,14 @@ clients, with seven required sources each. Its [residual-scope lesson](research-
 retains a Claude aggregate/item mapping error and a pre-transfer preparation
 mistake rather than treating successful reporting as whole-output acceptance.
 Both skills gain the corresponding rules; wider quality remains partial.
+
+The [family-state audit](document-authoring-case-study.md#artifact-family-state-audit)
+reconciles ten maintained outputs in a [current map](document-authoring-case-study.md#current-authoring-families).
+Its [maintenance lesson](research-compendium.md#artifact-state-is-phase-specific-2026-11-15)
+separates exact versions, representations, review/receiving phases and decisions.
+A16 and G4 have bounded maintenance acceptance; G1/G2/G3/G5 remain partial.
+Historical bodies and four pending proposals remain unchanged; no new review,
+adoption, model run or military-source claim follows.
 
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
@@ -751,7 +760,7 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
-- `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases; preserve failed reporting/count claims and stream diagnosis. Parent notices cover a required-source failure and partial work; operator corrections remain unaccepted and follow-up preparation stops at the internal-path boundary. Explicit project/task identity stabilizes ordinary phase cells without guarded admission or native-use claims.
+- `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases. The current authoring-family map distinguishes operative review, actual receiving, local successors and pending decisions; original failures remain historical. METHOD61's original path refusal and later unapproved proposal do not negate OR72's separately approved receiving. Neither native use nor local correction establishes adoption or universal quality.
 - `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, revision history, recipient selection and freshness; no automatic promotion or authority expansion.
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
 - `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.

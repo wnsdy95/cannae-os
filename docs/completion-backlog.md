@@ -11,7 +11,8 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 ## Active Core Work
 
 Current audit: 2026-11-15 (Asia/Seoul), including RH94 two-way receiving and
-RP95 parent-delivered replanning. The five USER objectives and their acceptance
+RP95 parent-delivered replanning and the ten-family source/status audit.
+The five USER objectives and their acceptance
 criteria are unchanged.
 The [requirement table](#requirement-level-audit) owns current dispositions;
 [dated history](#superseded-active-queue-2026-11-14) preserves the former queue
@@ -50,15 +51,15 @@ and table, including their superseded next actions. They are not dispatch orders
    unrelated read-only S3 execution manuals. It appraises those two boundaries,
    not every reference in every profile; technical/guarded counterexamples remain
    necessary and no post-change native source consumption is claimed.
-4. **Current source and status coherence (A16; G4):** reconcile remaining maintained
-   artifact families and unregistered entry-point claims with their actual source,
-   derivative, review and decision records. This audit corrects the active queue;
-   it does not certify every narrative. Preserve historical bytes and pending
-   decisions, check the registered navigation and changed indexes, and record
-   source-appraisal limits as well as mechanical checks.
-   The [declared-reference correction](document-authoring-case-study.md#declared-routing-reference-integrity)
-   now checks the reverse inventory and denies selected missing prerequisites;
-   this fixes silent document loss, not the remaining narrative/source appraisal.
+
+**Ongoing maintenance (A15-A17; G4):** the [family audit](document-authoring-case-study.md#artifact-family-state-audit)
+reconciles ten maintained outputs with original artifact, review, receiving and
+decision records. Its [current map](document-authoring-case-study.md#current-authoring-families)
+separates predecessors, local successors, actual receiving and pending decisions.
+Together with mirrored failure-driven fixes, source-navigation checks and target
+output isolation, this supplies bounded G4 acceptance, not an audit of every prose
+sentence or permanent correctness. Recheck affected sources, indexes and history
+on each change; preserve the remaining behavioral work above.
 
 Implementation, observed native use, source appraisal and USER adoption remain
 separate. No new model invocation is needed solely to refresh this audit. The
@@ -106,17 +107,18 @@ required server. These unequal rows are not a product-completion percentage.
 | A13 | G3: sensitive-output procedure | Verified (bounded). Raw/summary/reference-only, secret-value refusal, catalog screening and stale/changed/revoked decision cases have local evidence. [Approved OR72 receiving](document-authoring-case-study.md#approved-or72-representation-receiving) adds an exact actual USER preparation decision and one native Claude run: six raw project sources, two internal-draft representations and four guides, all twelve read per phase, without owner-only locators. | This is the trusted-preparer, synthetic, exact-recipient boundary, not authenticated USER identity or a protected host. Preparation and transfer authority remain separate; the other four proposals remain unapproved. Native finding quality and future successor receipt are separate, and the completed run is not reusable consent. |
 | A14 | G3: complete source-locatable reporting/handoff without a dashboard | Verified (bounded). [RH94](document-authoring-case-study.md#cross-client-recovery-handoff) adds actual whole-unit Codex-to-Claude and Claude-to-Codex receiving: four original bodies, the unchanged predecessor output, current assignment and three exact guide versions are read by each fresh S3 recipient after its own route and again for review. Useful W2, inquiry and receiving reports need no old chat or dashboard. | Receiving is not blanket semantic acceptance, adoption, exact persisted self-review lineage or independent infrastructure. Author/reviewer defects remain A01/A10/A20. The assignment needs no recursive third handoff; unrelated proposal holds and historical failed transfers remain unchanged. |
 | A15 | G4: observed failures lead to bounded, mirrored improvements and relevant checks | Verified (bounded). Routing, reporting, source appraisal and loader failures led to both-provider changes with retained regressions and native evidence at recorded revisions. This audit also turns a superseded active queue into an explicit current/history distinction in both maintenance references. | Local instruction checks establish delivery, not causal behavioral improvement. Require additional native evidence where the remaining acceptance actually depends on it; a model rerun is not a universal prerequisite for every prose change, and no pass expands authority. |
-| A16 | G4: sources, indexes, canonical state and history stay coherent | Partial. [Navigation integrity](document-authoring-case-study.md#declared-navigation-integrity) binds six support-SOP entry points to exact candidate/appraisal sections. The current requirement audit reconciles later evidence and retains the previous queue/table without rewriting their statements. | Appraise other maintained artifact families and unregistered current-state claims. Mechanical source/status consistency is not semantic acceptance or adoption. Preserve real pending decisions and register actual successors deliberately. |
+| A16 | G4: sources, indexes, canonical state and history stay coherent | Verified (bounded). [Family-state appraisal](document-authoring-case-study.md#artifact-family-state-audit) checks ten maintained outputs against original artifact, review, receiving and decision records, corrects current summaries and preserves history. Registered navigation separately binds six support-SOP entry points to exact candidate/appraisal sections. | Recheck affected families on changes. This is bounded source/status maintenance, not semantic acceptance of every output, USER adoption or a complete corpus prose audit. Preserve pending decisions and register actual successors deliberately. |
 | A17 | G4: repository-specific outputs remain separated | Verified (bounded). Target-bound packet preparation, output isolation fixtures and recorded operator materialization keep work products in their target project; verification logs are separate maintenance evidence. | Recheck affected boundaries on changes. This is local filesystem behavior, not distributed storage isolation. |
 | A18 | G5: link/copy installation and repository resolution | Verified (bounded). Installation cases exercise both providers, explicit bindings, foreign working roots, missing dependencies, phase-stable task identity and source-topic selection. Installed links point to this checkout. | Copies require refresh; neither an installed skill nor its root marker is the entire corpus. |
 | A19 | G5: discovery and actual installed-body use | Verified (bounded). Both native clients have implicit-selection and actual router/read evidence; exact Claude body/arguments are separately checked. | Filtered startup evidence is not universal client configuration support. Preserve native versions and launch limits. |
 | A20 | G5: equivalent useful behavior in both clients | Partial. Both clients install/discover, route/read, use exact-quote tools and produce useful outputs. RH94 adds actual two-way receiving; RP95 adds equivalent parent-notice attribution, seven-source work and preserved authority under the explicit delivery boundary. | Codex leaves aggregate/item mapping unresolved while Claude's operative residual plan assumes it. Different output lengths are not the defect; the unsupported relationship is. New mirrored instructions and a local derivative are not a demonstrated native cure or universal parity. |
 | A21 | G5: thin plugin when needed, no mandatory server | Explicitly deferred optional packaging. Both skills are the current distribution; the temporary test adapter is not a shipped plugin. | Do not build a service or claim a plugin exists merely to close this row. |
 
-Fifteen required rows are bounded-verified and five remain partial; A21 is optional
-and deferred. This is a requirement inventory, not 75% product completion. All
-five goals remain partial: G1/A01, G2/A05, G3/A10, G4/A16 and G5/A20 still
-need the evidence described above. USER adoption is not inferred from draft review.
+Sixteen required rows are bounded-verified and four remain partial; A21 is optional
+and deferred. This is a requirement inventory, not 80% product completion.
+G4 has bounded acceptance from observed improvement and maintenance cases;
+G1/A01, G2/A05, G3/A10 and G5/A20 remain partial and need the evidence above.
+Ongoing maintenance remains required. USER adoption is not inferred from draft review.
 
 ### Audit Basis And Disposition Changes
 
@@ -150,10 +152,27 @@ consent, before the new identity/evidence guidance. It changes one more row:
   with retained defects; A01/A10/A20 remain partial. This is not a production
   recovery test, implicit client discovery test or post-update native result.
 
-The current inventory is therefore fifteen verified and five partial required
-rows. This transition does not change the goals, optional scope or pending
+That receiving checkpoint left fifteen verified and five partial required
+rows. This transition did not change the goals, optional scope or pending
 decisions. Native evidence precedes the new mirrored lessons; local delivery
 tests cannot establish causal improvement.
+
+The subsequent [family-state audit](document-authoring-case-study.md#artifact-family-state-audit)
+checks ten current artifact families using retained original bytes and records,
+without new model calls or decision changes:
+
+- **A16, partial -> verified (bounded):** the current family map distinguishes
+  operative review, whole-unit receiving, local successors and exact preparation
+  decisions. It corrects a stale generic METHOD61 summary, preserves all previous
+  case bodies and keeps four proposals pending. OR72's expired grant supports its
+  past in-window event, not new preparation. Mirrored operating guidance and
+  source/index/history regressions support continuing maintenance.
+
+The current inventory is sixteen verified and four partial required rows. With
+A15's observed failure-driven mirrored improvements and A17's target-isolation
+evidence, A16 supplies bounded G4 acceptance. It is not merely file existence,
+a promise of permanent correctness, acceptance of the listed drafts or closure
+of G1/G2/G3/G5. Their outstanding behavior and unchanged criteria remain above.
 
 The old temporary-catalog and internal-path failures remain historical evidence;
 subsequent catalog screening, reviewed representation and bound-reader/session

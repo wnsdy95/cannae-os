@@ -84,7 +84,7 @@ function runOrientationFixtures() {
   const read = file => fs.readFileSync(path.join(__dirname, file), "utf8");
   const readme = read("README.md");
   const active = span(readme, "### Active Skill Status", "### Retained Guarded Prototypes");
-  assert(active.includes("All five") && active.includes("remain partial.") &&
+  assert(active.includes("G4 has bounded maintenance acceptance; G1/G2/G3/G5 remain partial.") &&
     active.includes("docs/skill-first-product-scope.md#active-objectives") &&
     active.includes("docs/completion-backlog.md#active-core-work"),
   "Maturity must orient readers to active acceptance and the current queue.");
@@ -99,7 +99,9 @@ function runOrientationFixtures() {
     ["## OR72 Snapshot And Locator Correction", "or72-snapshot-and-locator-correction"],
     ["## Cross-Client Recovery Handoff", "cross-client-recovery-handoff"],
     ["## Role And Format Reading Correction", "role-and-format-reading-correction"],
-    ["## Declared Routing Reference Integrity", "declared-routing-reference-integrity"]
+    ["## Declared Routing Reference Integrity", "declared-routing-reference-integrity"],
+    ["## Current Authoring Families", "current-authoring-families"],
+    ["## Artifact Family State Audit", "artifact-family-state-audit"]
   ]) {
     assert(cases.split("\n").filter(line => line === heading).length === 1, "Case anchor must have one actual target.");
     for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {
@@ -156,14 +158,16 @@ function runOrientationFixtures() {
   const rows = current.split("\n").filter(line => /^\| A\d\d \|/.test(line));
   const verified = rows.filter(line => line.split("|")[3].trim().startsWith("Verified (bounded)."));
   const partial = rows.filter(line => line.split("|")[3].trim().startsWith("Partial."));
-  assert(verified.length === 15 && partial.length === 5 &&
+  assert(verified.length === 16 && partial.length === 4 &&
     verified.some(line => line.startsWith("| A14 |")) &&
-    partial.map(line => line.split("|")[1].trim()).join(",") === "A01,A05,A10,A16,A20" &&
-    active.includes("Fifteen required rows") && active.includes("five remain partial") &&
-    current.includes("not 75% product completion") && current.includes("**A14, partial -> verified (bounded):**"),
-  "Receiving evidence must update the declared inventory without closing quality gaps or inventing a product percentage.");
+    verified.some(line => line.startsWith("| A16 |")) &&
+    partial.map(line => line.split("|")[1].trim()).join(",") === "A01,A05,A10,A20" &&
+    active.includes("Sixteen required rows") && active.includes("four remain partial") &&
+    current.includes("not 80% product completion") && current.includes("**A14, partial -> verified (bounded):**") &&
+    current.includes("**A16, partial -> verified (bounded):**"),
+  "Family-state evidence must update the inventory without closing native quality gaps or inventing a product percentage.");
   // These assertions protect declared orientation and links, not semantic truth.
-  return 9;
+  return 11;
 }
 
 function runNavigationFixtures() {

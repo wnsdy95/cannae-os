@@ -206,6 +206,25 @@ necessary action/binding evidence without those unassigned evaluation fields.
 Keep the full local record and required task context. These observed failures
 support mirrored skill guidance, not proof that new instructions cure all models.
 
+## Artifact State Is Phase-Specific (2026-11-15)
+
+The [family-state audit](document-authoring-case-study.md#artifact-family-state-audit)
+reconciles ten maintained outputs in one [current map](document-authoring-case-study.md#current-authoring-families).
+Checking original bytes and records reveals distinctions that a generic
+"unaccepted" label loses: operative draft review, whole-unit receiving, a local
+successor, a pending exact preparation decision and policy adoption are separate.
+Neither a predecessor's review nor its receipt transfers to changed bytes.
+
+Preserve historical case bodies while correcting current summaries. OR72's expired
+decision remains evidence of its past authorized receiving, not permission for
+another action. Four other artifact proposals remain unapproved despite the
+delivery mechanism's observed success. Keep private target paths in local evidence;
+a public summary hash cannot substitute for its private artifact binding.
+Mirrored maintenance guidance and source/index/history checks support bounded G4
+acceptance alongside previous improvements and output isolation. They do not
+adopt drafts, certify all prose, cure the remaining native quality gaps or establish
+a new military claim. G1/G2/G3/G5 remain partial.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

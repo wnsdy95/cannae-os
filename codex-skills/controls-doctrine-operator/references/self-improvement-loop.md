@@ -81,6 +81,15 @@ limits from the source map and compendium; unchanged filenames do not mean
 unchanged knowledge. Prefer concise pointers over duplicating the case log,
 preserve historical bytes and keep private project evidence out of public indexes.
 
+For multiple maintained outputs, track each family, exact version/representation,
+review or receiving phase, recipient and decision scope. Compare original records
+and artifact bytes before updating the current map; metadata alone is insufficient.
+Never inherit predecessor review or receipt for an unreviewed successor, or collapse
+distinct states into "unaccepted". An expired decision supports historical in-window
+evidence, not a new action. Pending artifact decisions are not missing mechanisms.
+Keep private paths local and do not register a public summary's hash as the private
+artifact's hash. Preserve historical bodies; follow the KM family-map procedure.
+
 For registered versioned corpus documents, read `docs/source-map-navigation.json`
 and its candidate/appraisal before changing any current-state block. Update all
 registered projections together, then run `node source-map-linter.js` and

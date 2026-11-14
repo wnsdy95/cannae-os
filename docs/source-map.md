@@ -85,7 +85,10 @@ The [direct-task identity correction](document-authoring-case-study.md#direct-ta
 is based on inspected local router behavior, not a military-source claim. Its
 project/task binding is distinct from authenticated ownership or admission.
 The [receiving preparation refusal](document-authoring-case-study.md#corrected-receiving-preparation-boundary)
-is local contract evidence, not a native model verdict or completed handoff.
+is historical local contract evidence, not a native model verdict or completed
+handoff. METHOD61's later exact preparation proposal remains unapproved; the
+[current family map](document-authoring-case-study.md#current-authoring-families)
+separates that artifact decision from successful receiving in other cases.
 
 The [method-failure reporting case](document-authoring-case-study.md#method-failure-reporting-and-handoff)
 uses synthetic policy/counts and exact installed guidance, not external military
@@ -279,6 +282,13 @@ An operator catches an appraisal-bearing preparation before transfer and retains
 it alongside the corrected input. Original responses, four-span local correction
 and later mirrored instruction checks are distinct evidence; none grants adoption,
 new source access or an external military doctrine claim.
+
+The [artifact-family audit](document-authoring-case-study.md#artifact-family-state-audit)
+checks ten maintained outputs against original artifact, review, receiving and
+decision records. Its [maintenance lesson](research-compendium.md#artifact-state-is-phase-specific-2026-11-15)
+keeps local successors distinct from predecessor reviews, preserves four pending
+decisions and scopes OR72's expired grant to its historical in-window event.
+This is source/status appraisal, not a new model review or military-source claim.
 
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.

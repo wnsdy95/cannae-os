@@ -713,9 +713,11 @@ attribution do not repair its handoff's conflicting retry decision owners or
 missing original-request reference. Those remain recorded beside a separate
 operator correction, not a fully accepted handoff.
 
-The [receiving preparation](docs/document-authoring-case-study.md#corrected-receiving-preparation-boundary)
-stops at the existing internal-path boundary before a model call; a locally
-assembled source map is not automatically transferable. Separately, ordinary
+The original [METHOD61 preparation](docs/document-authoring-case-study.md#corrected-receiving-preparation-boundary)
+stopped at the internal-path boundary before a model call. Its later exact
+reviewed-preparation proposal remains unapproved; a locally assembled source map
+is not automatically transferable. The [family map](docs/document-authoring-case-study.md#current-authoring-families)
+distinguishes this artifact hold from observed receiving in other cases. Separately, ordinary
 phase routes can now carry an explicit project-root/task-ID pair to keep one
 [provisional cell](docs/document-authoring-case-study.md#direct-task-organization-identity)
 despite changed wording. This grants no access, standing organization or execution
@@ -1019,8 +1021,9 @@ score or evidence of current production operation.
 
 ### Active Skill Status
 
-All five [active objectives](docs/skill-first-product-scope.md#active-objectives)
-remain partial. Bounded evidence covers document revisions, role-based routing,
+Of the five [active objectives](docs/skill-first-product-scope.md#active-objectives),
+G4 has bounded maintenance acceptance; G1/G2/G3/G5 remain partial.
+Bounded evidence covers document revisions, role-based routing,
 required reading, source-bound handoffs and installation/discovery in both clients.
 Broader context relevance, complete-report quality, replanning and client parity
 still have recorded gaps. Separate plugin packaging remains optional and deferred.
@@ -1059,12 +1062,16 @@ inferences. Both skills address those lessons without claiming a demonstrated cu
 
 The [2026-11-15 requirement audit](docs/completion-backlog.md#audit-basis-and-disposition-changes)
 counts bounded drafting flow, exactly approved representation delivery and actual
-cross-client handoff. Fifteen required rows are verified at their stated scope;
-five remain partial, not a product percentage. Remaining work targets replanning
-and report fidelity, complete-output quality across clients, relevant reading and
-source/status coherence. Individual unapproved proposals remain held, but do not
-mean the delivery mechanism is untested. No adoption follows, and all five
-broader objectives remain partial.
+cross-client handoff and maintained artifact-state reconciliation. Sixteen required rows
+are verified at their stated scope; four remain partial, not a product percentage.
+Remaining work targets replanning and report fidelity, complete-output quality
+across clients and relevant reading. Individual unapproved proposals remain held,
+but do not mean the delivery mechanism is untested. No draft adoption follows.
+The [ten-family audit](docs/document-authoring-case-study.md#artifact-family-state-audit)
+binds current summaries to original artifacts, reviews and decisions. Together
+with observed mirrored improvements and target-output isolation, it supports G4
+at that bounded scope, not permanent correctness or a complete corpus prose audit.
+Ongoing maintenance remains required; the other four objectives stay open.
 
 The [role/format reading correction](docs/document-authoring-case-study.md#role-and-format-reading-correction)
 adds missing authoring guidance for formal order drafts and narrows unrelated S3

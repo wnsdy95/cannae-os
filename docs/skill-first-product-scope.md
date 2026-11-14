@@ -11,9 +11,10 @@ separates active core work from the retained platform program.
 ## Active Objectives
 
 The USER confirmed these five remaining objectives on 2026-11-10. They replace
-the previous eight-outcome program as the active goal. All five still require
-behavioral acceptance; the completed scope and entrypoint cleanup is supporting
-work, not completion of any objective.
+the previous eight-outcome program as the active goal. Each requires its own
+behavioral acceptance; scope and entrypoint cleanup alone cannot complete an
+objective. The [requirement audit](completion-backlog.md#requirement-level-audit)
+owns current evidence and dispositions without changing these criteria.
 
 1. **G1 - Document authoring and revision quality:** verify representative SOP,
    order, research and handoff tasks preserve intent, required work, sources,

@@ -68,6 +68,18 @@ The initial registered family is the support SOP across README, its case opening
 the active backlog, source map, compendium and research queue. Other artifacts
 and private project records are not automatically covered.
 
+For a case collection with several maintained outputs, use a family-specific map
+such as [Current Authoring Families](document-authoring-case-study.md#current-authoring-families).
+Identify the exact artifact/version and representation, who reviewed or received
+which phase, the decision scope and any successor still unreviewed. Do not inherit
+review or receipt from a predecessor or compress every state into "unaccepted".
+Check the original record and artifact bytes before updating a current summary;
+keep private target paths out of public indexes. An expired preparation decision
+can support a historical in-window event but cannot authorize a fresh action.
+Pending artifact decisions do not imply an unimplemented delivery mechanism.
+This map summarizes evidence; do not register its digest as the private artifact's
+digest or treat it as a new source of approval. Preserve historical case sections.
+
 1. Read the actual candidate and its appraisal. Distinguish a predecessor's
    review from acceptance of its successor. Preserve separate exercise identities;
    a larger version number does not select the current document.
