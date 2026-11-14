@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record two bounded native quote-review runs with full required reads and source-appraised findings. Preserve Claude's report-level locator and decision-owner errors alongside correct SOP repairs, and keep its three-span operator correction separate. Mirror exact numeric-citation, next-action ownership and artifact-specific self-review checks in both skills; verify instruction delivery without claiming post-update native compliance or closing the active objectives.
+
 - Add opt-in exact quote lookup to the existing read-only document session. Require a current-route full read, exact delivered digest and unique literal passage; preserve freshness, holds, budgets and representation modes. Return UTF-8 byte/line context without claiming semantic support or authority. Mirror both skills, route the helper and test local boundaries and stdio behavior; no new model run or automatic interpretation is implied.
 
 - Record exact USER-approved OR72 representation preparation and one native Claude receiving/review run. Preserve required reads, original bodies, current bindings and operative repairs alongside unsupported review findings. Correct an initially overstated operator finding by respecting historical and successor context. Mirror phase/recipient-specific appraisal guidance and verify its presence in review input without rewriting prior evidence or inferring adoption, another proposal's approval or a second model run.

@@ -32,7 +32,13 @@ The [exact-quote location follow-up](document-authoring-case-study.md#exact-quot
 adds opt-in local citation lookup after required full reading, with unchanged
 freshness and delivery limits. Its [operating lesson](research-compendium.md#quote-location-is-not-semantic-support-2026-11-14)
 separates literal location from interpretation. Actual model use and repaired
-review quality remain unverified; this is not another receiving run or approval.
+review quality were unverified at that implementation checkpoint.
+The subsequent [native quote-review case](document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+now observes both clients using it and correctly appraising six inherited findings.
+Residual report errors are preserved and corrected separately. Its
+[decision-ownership lesson](research-compendium.md#report-actions-retain-decision-ownership-2026-11-14)
+checks operative actor/verb pairs, precise numeric citations and review phases;
+the new guidance is locally checked, not newly native-accepted or adopted.
 
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,

@@ -1040,6 +1040,11 @@ now checks literal source locations inside an already-read, current document
 session. Its [local regression case](docs/document-authoring-case-study.md#exact-quote-location-checks)
 preserves read/access boundaries; it does not establish semantic review quality
 or new native acceptance.
+The subsequent [native quote-review case](docs/document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+observes both clients using the tool and correctly appraising six mixed-quality
+findings. Claude's report still misstates one line number and a next-action
+decision owner; a separate operator correction preserves its accepted draft body.
+Actual tool use is not automatic semantic enforcement or overall completion.
 Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
 
 ### Retained Guarded Prototypes

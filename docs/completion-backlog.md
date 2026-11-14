@@ -205,10 +205,17 @@ Use this queue and the requirement table, not those historical instructions.
    The [exact-quote lookup follow-up](document-authoring-case-study.md#exact-quote-location-checks)
    now supplies optional literal location/context checks after current-route full
    reading, with source/decision freshness and unchanged access limits. Local
-   router and stdio fixtures do not establish interpretation or native adoption
-   of the tool. The next behavioral check should evaluate a disputed finding's
-   actual source support, not replay already successful receiving or count a
-   literal match as semantic acceptance. No requirement disposition changes.
+   router and stdio fixtures alone do not establish interpretation or native use
+   of the tool. The subsequent [native quote-review case](document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+   now observes both clients using it, correctly appraising six mixed findings
+   and repairing the operative SOP. Claude's report still needs numeric-locator
+   and decision-owner corrections, plus artifact-specific review labeling; the
+   separate operator derivative preserves its draft and all original sources.
+   New mirrored instructions have local delivery checks, not fresh native
+   acceptance. Next address the observed lexical gaps for ordinary core review,
+   self-review and handoff objectives without concealing genuinely unsupported
+   domains or rewriting retained routes. Do not replay the accepted source
+   comparison merely for another pass. No requirement disposition changes.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.

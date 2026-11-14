@@ -224,6 +224,14 @@ stdio tests support binding and access behavior, not Markdown interpretation,
 semantic support, native compliance or a new military source claim. The
 [access procedure](role-document-access-policy.md#exact-quote-lookup) defines its limits.
 
+The subsequent [native quote-review case](document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+records both clients' actual calls against new synthetic sources. Original events,
+full bodies and source bindings support the bounded observation; operator appraisal
+separates correct finding dispositions from a report's wrong numeric locator and
+decision owner. Local instruction-delivery checks do not establish post-update
+model compliance. This is engineering evidence, not new military doctrine or
+an independent reliability estimate.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

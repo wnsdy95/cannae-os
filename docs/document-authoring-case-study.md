@@ -4617,3 +4617,83 @@ implementation supports G1-G4 and local provider parity without completing any
 whole objective. Native tool use, interpretation quality and repaired-review
 acceptance remain separate unverified behavior; existing proposal decisions and
 historical native outputs are unchanged.
+
+## Native Quote Review And Decision Ownership
+
+A new synthetic QL93 exercise tests actual use of the optional quote tool, not
+another OR72 receiving replay. Normal preparation accepts five fictional archive
+desk sources without a disclosure exception. Both existing logged-in clients
+receive the current skill explicitly and three justified required corpus guides.
+The operator reference is withheld. Standing verification consent covers these
+two bounded invocations; none of the four retained preparation proposals is
+approved or reused. Source commit: `37a2452d16c1b46b81e2cea15c89196ef04c4676`.
+
+| Observation | Codex CLI 0.162.1 | Claude Code 2.1.322 |
+| --- | --- | --- |
+| Observed model | `gpt-6-astra`, current configured default pinned for the isolated launch | `claude-opus-5-5`, existing default reported by initialization |
+| Process | One invocation, exit 0, about 254 seconds | One invocation, exit 0, about 226 seconds |
+| Routing and reading | Three routes; the first is superseded unread, then eight required full reads in each of two phases | Two routes, eight required full reads in each phase |
+| Quote calls | Fourteen successful calls, seven per reading phase | Fifteen calls in the first phase: twelve successful, three rejected selectors |
+| Advance report | Public backbrief before any tool call | Public backbrief before any tool call |
+| Successor material | Five exact project bodies and all eight full source bindings present | Five exact project bodies and all eight full source bindings present |
+
+Each actual reading phase returns 112,646 source-body bytes. That is not token
+usage, comprehension or minimum-context proof. Both outputs designate a complete
+review unit and separately bind the three guide paths as required successor
+dependencies. Neither observes that successor's reads or acceptance. The observer
+reconciles actual route/read/quote calls and recomputes returned quote positions;
+the structural audit checks presence, not semantics or source-tuple association.
+Operator appraisal separately compares the source mappings and review claims.
+
+Both clients correctly accept two of six inherited findings: replace a 48-hour
+report interval with the policy's 36 hours, and replace a nonexistent source
+`Rule 7` with its real heading. They reject wrong-column attribution, deletion of
+explicitly historical nondelivery, a new wording-change approval gate, and
+cancellation of an established deadline after a later failure. Both complete SOP
+V2 bodies retain duties, unknowns, historical wording and USER decisions. The
+derived L-1 deadline, `2026-11-02T21:00:00Z`, follows the supplied event plus 36
+hours; missing report records do not establish absence or lateness. Optional
+clarifications remain distinct from confirmed errors.
+
+The full Claude report nevertheless needs repair:
+
+- It cites the table header as line 15; the exact source header is line 16.
+  Successful cell lookups returned lines 18/19 without header context. This is
+  an unchecked neighboring numeric citation, not an incorrect helper position;
+  the evidence does not establish why the model produced that number.
+- Its next action gives "USER or a designated reviewer" a shared review-and-adopt
+  verb. Policy reserves adoption to USER alone. Correct authority elsewhere and
+  an acceptable SOP body do not repair that operative report instruction.
+- Its generic "not author self-review" limitation needs artifact/phase scope:
+  review of supplied V1 is delegated; final checking of its own V2 is author
+  self-review. This clarification is not proof of a deliberately false claim.
+
+A separately labeled operator derivative makes exactly those three replacements.
+It preserves every other byte, all five original bodies and the native SOP V2.
+The original response remains intact; the derivative has not received a new
+native review, USER adoption or successor delivery. Codex's bounded source
+appraisal finds no comparable operative defect. Neither result is a general
+reliability claim or independent operator/infrastructure verification.
+
+Claude's rejected quotes are an ambiguous repeated phrase and two absent exact
+selectors, including a newline mismatch. It resolves the repeated-phrase and
+newline selectors without changing sources; the nonexistent source section is
+assessed from the full body.
+Its second phase rereads all sources and labels quote locations as first-phase
+evidence on unchanged bytes. The task does not require repeating every lookup;
+historical location evidence is not new-route authority or a new call.
+
+Both skills and the authoring workflow now check numeric citations for the exact
+passage, next-action actor/verb ownership and artifact-specific review roles.
+Local packet fixtures check delivery of those instructions, not whether a model
+will obey them. The native runs precede this instruction update. Their ordinary
+review/self-review/handoff objectives also expose lexical capability gaps despite
+available core guidance; retained cell/department candidates gain no authority.
+That relevance issue remains separate G2 work, not a reason to erase the gaps or
+replay this source-comparison exercise for another pass.
+
+Evidence: `.cannae/maintenance/quote-native-20261114/`, including frozen inputs,
+native events, calls, structural audits, source appraisal and operator delta.
+All five goal dispositions remain partial; this adds bounded actual tool-use and
+repair evidence without claiming global selection, causal improvement, automatic
+interpretation, discovery, policy adoption or full-suite validation.

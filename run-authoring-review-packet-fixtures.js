@@ -138,6 +138,36 @@ try {
       assert.deepEqual(changed.reference, packet.reference);
     } finally { fs.writeFileSync(file, original); }
   });
+  fixture("reviewer input preserves next-action ownership and artifact-specific review roles", () => {
+    for (const phrase of ["Check each operative actor/verb pair, including the final next action.",
+      "Separate review/recommendation from the\nretained USER decision.",
+      "Do not create a USER gate\nfor wording or layout already delegated by the actual policy.",
+      "followed by author self-review of the reviewer's own V2."]) {
+      assert(packet.prompt.includes(phrase), `Missing reviewer instruction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Check each next-action actor/verb pair"));
+      assert(skill.includes("cannot inherit a decision retained by USER through a shared sentence subject."));
+      assert(skill.includes("review of your own new V2 independent or non-author review."));
+    }
+    assert.equal(packet.manifest.model_call_performed, false);
+    assert.equal(packet.manifest.semantic_acceptance_established, false);
+  });
+  fixture("numeric quote instructions reach both providers without claiming semantic enforcement", () => {
+    for (const phrase of ["version, counting blank lines.", "locate the header separately or check it in the full source.",
+      "do not report them as new-route tool calls", "not as an invented prerequisite."]) {
+      assert(packet.prompt.includes(phrase), `Missing reviewer instruction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const base = path.join(__dirname, provider, "controls-doctrine-operator");
+      assert(fs.readFileSync(path.join(base, "SKILL.md"), "utf8").includes("Cite numeric lines only for the passage actually checked"));
+      const guide = fs.readFileSync(path.join(base, "references/document-routing.md"), "utf8");
+      assert(guide.includes("cell location does not verify the header's line."));
+      assert(guide.includes("not its route authority or proof of a new call."));
+    }
+    assert.equal(packet.manifest.semantic_acceptance_established, false);
+  });
   fixture("display-only labels cannot excuse inaccurate source bindings", () => {
     assert(packet.prompt.includes("cite the stable"));
     assert(packet.prompt.includes("source ID and its existing full binding map"));

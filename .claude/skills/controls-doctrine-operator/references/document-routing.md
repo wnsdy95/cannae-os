@@ -440,9 +440,14 @@ the returned line context against the actual heading/table cell and historical
 or recipient qualifiers. A literal match proves location, not semantic support.
 Missing or ambiguous quotes require a better supported selection, not a guessed
 occurrence. Summary/representation positions are not original-source positions.
+Verify numeric citations for the exact passage, including blank lines: a returned
+cell location does not verify the header's line. Locate that header or check its
+line in the full source; otherwise use a checked heading or unique passage.
 Rerouting requires a new full read; lookup does not clear other required reads
 or holds. Follow the access policy's `exact-quote-lookup` limits. Ordinary drafting
 does not require this tool, and no native acceptance follows from local fixtures.
+Keep prior-phase lookup evidence attributed to that phase. Unchanged delivered
+bytes can preserve its location, not its route authority or proof of a new call.
 
 For a source-grounded authoring assessment, `authoring-review-packet.js inspect`
 checks the local evaluation inputs, and `prepare` writes a fresh repository-local

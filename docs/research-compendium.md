@@ -78,6 +78,24 @@ or authorize another transfer. Synthetic local router/stdio tests support those
 boundaries, not a new native outcome or automatic interpretation. These are local
 engineering observations, not external doctrine or general reliability estimates.
 
+## Report Actions Retain Decision Ownership (2026-11-14)
+
+The [native quote-review exercise](document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+observes successful source-appraisal and operative SOP repair in both clients,
+while one report still names an incorrect table-header line and assigns adoption
+to a reviewer through a shared sentence subject. Inspect the final action's
+actor and verb, not just its authority header or corrected draft. Review and
+recommendation do not inherit a decision retained by USER; do not add a new gate
+for choices already delegated. Scope self-review to the actual artifact/phase.
+
+Exact cell positions do not verify a nearby header's numeric citation. Check
+that passage and its blank lines, or use a verified heading/unique quote without
+an invented line number. Unchanged delivered bytes can retain a prior location,
+but not route authority or evidence of a new call. These bounded observations
+support mirrored review guidance, not causal improvement or universal accuracy.
+Preserve native originals and separately checked operator corrections; a local
+instruction-delivery pass does not establish fresh model acceptance.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

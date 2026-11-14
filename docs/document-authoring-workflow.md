@@ -189,6 +189,9 @@ can be handed off as a draft. Do not infer approval from a filled-in matrix.
 Identify whether the review was an author self-review, an independent reviewer
 or an actual USER decision. A deterministic reference check cannot prove
 semantic completeness or independent acceptance.
+Name the artifact and phase separately: delegated review of supplied V1 can be
+followed by author self-review of the reviewer's own V2. A role label or a single
+"not self-review" statement cannot describe both activities accurately.
 
 When a report uses a state snapshot, separate the observation time, earlier
 trigger events and any resulting deadline or continuing obligation. A current
@@ -216,6 +219,14 @@ quote does not establish the finding's interpretation. A missing or ambiguous
 match calls for checking the cited passage, not inventing a location or treating
 the source as invalid. This optional aid neither replaces required full reads
 nor adds a tool prerequisite to ordinary drafting.
+Check every numeric line citation against that exact passage and delivered
+version, counting blank lines. A located table cell does not verify its header's
+line number; locate the header separately or check it in the full source. If a
+numeric locator is unverified, cite a checked heading or unique passage instead.
+Previously bound quote locations remain historical evidence when unchanged
+delivered bytes are rechecked; do not report them as new-route tool calls or
+use them to replace required current reads. Repeat lookup only when the task or
+changed evidence calls for it, not as an invented prerequisite.
 
 Compare the actual predecessor, not a paraphrase of its intent. Compression can
 drop a named decision trigger even when a generic final-authority statement
@@ -229,6 +240,12 @@ Preserve those work-level holds separately and connect them to their existing
 resolution paths and decision owners; do not treat the next action's stop as
 the complete set. A cross-reference to an existing conflict procedure can clarify
 recovery without adding a new authority or approval requirement.
+Check each operative actor/verb pair, including the final next action. If policy
+reserves adoption to USER, "USER or a reviewer will review and adopt" incorrectly
+gives the reviewer that decision too. Separate review/recommendation from the
+retained USER decision. An accurate authority header or a correct draft body
+does not repair a contradictory report instruction. Do not create a USER gate
+for wording or layout already delegated by the actual policy.
 
 Review the artifact actually being handed off, not just its surrounding case
 record. An explicit exclusion such as `do not publish` must survive in that
