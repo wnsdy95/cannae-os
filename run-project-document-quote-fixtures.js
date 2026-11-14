@@ -79,7 +79,13 @@ try {
     const root = path.join(parent, provider), corpus = path.join(parent, provider + "-corpus");
     const skill = path.join(parent, provider + "-skill");
     fs.cpSync(path.join(__dirname, provider === "codex" ? "codex-skills/controls-doctrine-operator" : ".claude/skills/controls-doctrine-operator"), skill, { recursive: true });
-    for (const file of ["README.md", "docs/source-map.md", "schema-files/README.md", guide]) write(path.join(corpus, file), fs.readFileSync(path.join(__dirname, file)));
+    // Corpus availability is separate from the receiver's one-guide access profile.
+    fs.cpSync(path.join(__dirname, "docs"), path.join(corpus, "docs"), { recursive: true });
+    fs.cpSync(path.join(__dirname, "schema-files"), path.join(corpus, "schema-files"), { recursive: true });
+    for (const file of ["README.md", "codex-skills/controls-doctrine-operator/references/document-routing.md",
+      ".claude/skills/controls-doctrine-operator/references/document-routing.md"]) {
+      write(path.join(corpus, file), fs.readFileSync(path.join(__dirname, file)));
+    }
     write(path.join(root, ".gitignore"), ".cannae/\n");
     write(path.join(root, "reference-only.md"), "password=synthetic-unread-value");
     const git = args => execFileSync("git", ["-C", root, ...args], { env, encoding: "utf8" });
@@ -122,6 +128,22 @@ try {
         assert.equal(session.execute("locate_quote", {}).error, enabled === true ? "PROJECT_SESSION_ARGUMENTS_INVALID" : "PROJECT_SESSION_QUOTE_LOOKUP_DISABLED");
       }
       for (const invalid of [{ allow_quote_lookup: "true" }, { arbitrary_option: true }]) assert.throws(() => createDocumentSession({ ...config, ...invalid }), /PROJECT_SESSION_CONFIG_INVALID/);
+    });
+    test(`${provider}: available recommendations do not expand access and missing references invalidate the route`, () => {
+      const state = fresh(), extra = "docs/knowledge-management-sop.md";
+      assert(state.route.recommended_documents.some(row => row.path === extra));
+      assert.equal(state.route.required_source_count, 2);
+      assert(!state.route.documents.some(row => row.id === "corpus:" + extra));
+      assert.equal(state.session.execute("read_document", { route_id: state.route.route_id, source_id: "corpus:" + extra }).error,
+        "PROJECT_SESSION_SOURCE_NOT_READABLE");
+      const file = path.join(corpus, extra), original = fs.readFileSync(file);
+      fs.unlinkSync(file);
+      try {
+        assert.equal(state.session.execute("route_current_task", routeInput).error, "PROJECT_SESSION_ROUTING_FAILED");
+        assert.equal(state.session.execute("read_document", { route_id: state.route.route_id, source_id: source.id }).error,
+          "PROJECT_SESSION_CURRENT_ROUTE_REQUIRED");
+      } finally { write(file, original); }
+      read(fresh());
     });
     test(`${provider}: lookup requires current full read and does not clear remaining required reads`, () => {
       const state = fresh();

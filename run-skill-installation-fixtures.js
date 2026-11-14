@@ -141,6 +141,41 @@ function readOnlyOperationsDocuments(env) {
   assert(!fs.existsSync(path.join(unrelated, ".cannae")));
 }
 
+function sourceReviewAndLogistics(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const query = "Review the proposed report against the original sources.", sql = "docs/data-model.sql.md";
+  const outputs = PROVIDERS.map(provider => {
+    const router = path.join(destination(env, provider), "scripts/route_controls_docs.js");
+    const run = extra => {
+      const result = spawnSync(process.execPath, [router, "--actor=ai", "--role=S4", "--department=logistics",
+        "--authority=read-only", ...extra, "--", query], { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout);
+    };
+    const ordinary = run(["--explain-reading"]);
+    assert.equal(ordinary.repo_root, fs.realpathSync(source));
+    assert.equal(ordinary.query, query);
+    assert.equal(ordinary.capability_routing.status, "covered");
+    assert(!ordinary.recommended_documents.some(d => d.path === sql));
+    for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md",
+      "docs/maintenance-readiness-model.md", "docs/agent-readiness-ledger.md", "docs/role-document-access-policy.md"]) {
+      assert(ordinary.recommended_documents.some(d => d.path === file), file);
+    }
+    for (const extra of [["--source=" + sql], ["--capability-query=Draft a document about SQL tables."],
+      ["--authority=L1"], ["--department=systems"], ["--mission=MIS-INSTALLED-S4"]]) {
+      assert(run(extra).recommended_documents.some(d => d.path === sql), String(extra));
+    }
+    const compound = run(["--capability-query=Analyze museum attendance", "--capability-query=" + query]);
+    assert.deepEqual(compound.capability_assessments.map(x => x.status), ["gap_detected", "covered"]);
+    assert.equal(compound.capability_routing.status, "gap_detected");
+    assert.equal(compound.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(ordinary.operating_mode.authority, "read-only");
+    return ordinary;
+  });
+  assert.deepEqual(outputs[0], outputs[1]);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+  assert(!fs.existsSync(path.join(unrelated, ".cannae")));
+}
+
 function documentStarter(env) {
   const starter = "Use $controls-doctrine-operator to draft or revise this document from the supplied sources, preserving my intent, authority boundaries, unknowns, and handoff context.";
   const relative = "agents/openai.yaml";
@@ -473,7 +508,8 @@ function readingProvenance(env) {
     const legacy = run([]), { reading_selection, ...rest } = run(["--explain-reading"]);
     assert.deepEqual(rest, legacy);
     const row = reading_selection.documents.find(d => d.path === "docs/data-model.sql.md");
-    assert(row.recommended && row.reasons.some(r => r.kind === "role" && r.value === "S4"));
+    assert(!row.recommended && row.reasons.some(r => r.kind === "role" && r.value === "S4" &&
+      !r.selected && r.excluded_by.includes("read_only_document_role")));
     assert(row.reasons.some(r => r.kind === "route" && !r.selected));
     assert.equal(reading_selection.access_authorized, false);
     assert.equal(reading_selection.source_content_read, false);
@@ -583,6 +619,7 @@ try {
   fixture("linked providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("linked providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("linked providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
+  fixture("linked providers route source-bound reports and omit unrelated S4 SQL defaults", () => sourceReviewAndLogistics(env));
   fixture("linked providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
@@ -625,6 +662,7 @@ try {
   fixture("copied providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("copied providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("copied providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
+  fixture("copied providers route source-bound reports and omit unrelated S4 SQL defaults", () => sourceReviewAndLogistics(env));
   fixture("copied providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));

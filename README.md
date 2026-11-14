@@ -1103,6 +1103,11 @@ R1's [receiving preparation](docs/document-authoring-case-study.md#r1-receiving-
 stopped on internal-path raw delivery before a model call. Two exact review
 proposals remain pending; unchanged text is not permission to bypass that boundary.
 
+The [source-bound review/S4 follow-up](docs/document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+corrects missed report-review guidance and an irrelevant SQL role default in
+58 local comparisons. Technical, explicit-source and guarded counterexamples
+remain; this is not fresh native reading or completion of semantic routing.
+
 ### Retained Guarded Prototypes
 
 These implemented contracts and validation surfaces remain available. They do

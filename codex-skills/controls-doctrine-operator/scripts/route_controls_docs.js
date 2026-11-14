@@ -735,11 +735,11 @@ function isDocumentAuthoringRequest(query) {
   const determiner = "(?:(?:a|an|the|this|that|these|those|my|our|your)\\s+)?" +
     "(?:(?:incoming|outgoing|current|proposed|revised|existing)\\s+)*";
   const report = /\b(?:(?:research|progress|status|work|review)\s+reports?|(?:progress\s+and\s+)?decision\s+(?:summar(?:y|ies)|briefs?))\b/i;
-  const draftReview = new RegExp("\\b(?:review|check|compare)\\s+" + determiner +
-    "(?:(?:s[1-9]|cos|commander|author|writer)(?:'s)?\\s+)?drafts?" +
+  const draftReview = new RegExp("\\b(?:review|check|compare|appraise|assess)\\s+" + determiner +
+    "(?:(?:s[1-9]|cos|commander|author|writer)(?:'s)?\\s+)?(?:drafts?|documents?|reports?)" +
     "(?:\\s*\\([a-z][a-z0-9._-]*\\))?\\s+(?:against|with|to)\\s+" +
     "(?:(?:the|its|their)\\s+)?(?:(?:original|initial)\\s+(?:requests?|requirements?)|" +
-    "(?:supplied|actual|source)\\s+(?:policy|policies|sources?|records?))\\b", "i");
+    "(?:supplied|actual|source|original|assigned)\\s+(?:policy|policies|sources?|records?|evidence))\\b", "i");
   // Recognize document review work, not review/appraisal as a generic domain.
   const findings = /\b(?:appraise|assess|review|check)\s+(?:(?:the|each|every|all)\s+)?(?:(?:inherited|supplied|previous)\s+)?(?:src-[a-z0-9_-]+\s+)?findings?\b[^.;\n]*\b(?:source[- ](?:grounded|bound)|(?:supplied|actual|assigned)\s+(?:policy|policies|sources?|records?))\b/i;
   const selfReview = new RegExp("\\bself[- ]reviews?\\s+(?:of\\s+)?" + determiner +
@@ -1340,9 +1340,14 @@ function operatorMode(options, noteDocument = () => {}, query = "") {
     for (const file of files) noteDocument(file, { kind, value, selected: true });
   };
   const roleDocs = ROLE_DOCS[roleKey] || [];
-  const omitExecutionDefaults = roleKey === "S3" && isReadOnlyDocumentRole(options, query);
+  const documentRole = ["S3", "S4"].includes(roleKey) && isReadOnlyDocumentRole(options, query);
+  const storageContext = [query, ...options.capabilityQueries, options.department, ...options.sources, ...options.inputSources]
+    .join("\n").replace(/[-_/]/g, " ");
+  const storageDesign = /\b(?:sql|relational|storage schemas?|schema migrations?)\b/i.test(storageContext);
   for (const file of roleDocs) {
-    if (omitExecutionDefaults && EXECUTION_SPECIALIST_DOCS.has(file)) {
+    const unrelatedDefault = (roleKey === "S3" && EXECUTION_SPECIALIST_DOCS.has(file)) ||
+      (roleKey === "S4" && file === "docs/data-model.sql.md" && !storageDesign);
+    if (documentRole && unrelatedDefault) {
       noteDocument(file, { kind: "role", value: roleKey, selected: false, excluded_by: ["read_only_document_role"] });
     } else addModeDocs([file], "role", roleKey);
   }

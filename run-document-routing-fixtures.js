@@ -88,9 +88,10 @@ function testReadingProvenance(router) {
   for (const extra of modes) {
     const actor = extra.length ? "ai" : "user", result = explained([`--actor=${actor}`, ...extra]);
     const row = result.reading_selection.documents.find(d => d.path === "docs/data-model.sql.md");
-    assert.equal(row.recommended, actor === "ai");
+    assert.equal(row.recommended, false);
     assert(row.reasons.some(r => r.kind === "route" && !r.selected && r.excluded_by.includes("runtime_specialist")));
-    assert.equal(row.reasons.some(r => r.kind === "role" && r.value === "S4" && r.selected), actor === "ai");
+    assert.equal(row.reasons.some(r => r.kind === "role" && r.value === "S4" && !r.selected &&
+      r.excluded_by.includes("read_only_document_role")), actor === "ai");
   }
   const withReference = explained(["--actor=user", "--source=docs/data-model.sql.md"]);
   assert(withReference.reading_selection.documents.find(d => d.path === "docs/data-model.sql.md").reasons.some(r => r.kind === "source_argument" && r.reference === "docs/data-model.sql.md"));
@@ -302,6 +303,44 @@ function testOrderDocumentFormats(router) {
   }
 }
 
+function testReadOnlyLogisticsDocuments(router) {
+  const args = ["--actor=ai", "--role=S4", "--department=logistics", "--authority=read-only"];
+  const sql = "docs/data-model.sql.md", query = "Draft a support SOP from supplied policy. Do not publish.";
+  const ordinary = route(router, [...args, "--explain-reading"], query);
+  assert(!ordinary.recommended_documents.some(d => d.path === sql));
+  assert(!ordinary.operating_mode.mode_documents.includes(sql));
+  const reason = ordinary.reading_selection.documents.find(d => d.path === sql);
+  assert(reason.reasons.some(r => r.kind === "role" && !r.selected && r.excluded_by.includes("read_only_document_role")));
+  for (const file of ["docs/maintenance-readiness-model.md", "docs/agent-readiness-ledger.md",
+    "docs/role-document-access-policy.md", "docs/approval-scope-policy.md", "docs/tool-use-roe.md",
+    "docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md"]) {
+    assert(ordinary.recommended_documents.some(d => d.path === file), file);
+  }
+  for (const extra of [["--source=" + sql], ["--department=systems"], ["--authority=L1"],
+    ["--authority=scoped-execution"], ["--mission=MIS-S4-PROSE"], ["--wave=W1"],
+    ["--capability-query=Draft a document about SQL tables."],
+    ["--capability-query=Analyze museum attendance."]]) {
+    const retained = route(router, [...args, ...extra], query);
+    assert(retained.recommended_documents.some(d => d.path === sql), String(extra));
+  }
+  for (const task of ["Draft a document about SQL tables.", "Review the proposed report against the supplied database records.",
+    "Draft a document about relational storage.", "Draft a document about the storage schema.",
+    "Draft a document about schema migrations.", "Draft an SOP using docs/data-model.sql.md.",
+    "Draft an SOP and run the assigned command.", "Inspect the current situation."]) {
+    assert(route(router, args, task).recommended_documents.some(d => d.path === sql), task);
+  }
+  const incomplete = route(router, ["--actor=ai", "--role=S4", "--authority=read-only"], query);
+  assert(incomplete.recommended_documents.some(d => d.path === sql));
+  assert(incomplete.operating_mode.escalation_required_when.some(x => x.includes("missing department")));
+  const rejected = spawnSync(process.execPath, [path.join(ROOT, router), ...args, "--authority=scoped-execution",
+    "--receipt", "--scope=agent", "--mission=MIS-S4-READING", "--wave=W1", "--agent=writer",
+    `--capability-query=${query}`, "--", query], { cwd: ROOT, encoding: "utf8" });
+  assert.equal(rejected.status, 2); assert.equal(rejected.stdout, "");
+  assert(rejected.stderr.includes("AGENT_ROUTING_NOT_S3"));
+  const baseline = route(router, [...args, "--mission=MIS-S4-PROSE"], query);
+  for (const key of ["matched_routes", "validation_commands", "capability_routing"]) assert.deepEqual(ordinary[key], baseline[key]);
+}
+
 function testTaskReadingScope(router) {
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
@@ -382,7 +421,10 @@ function testSourceBoundDraftReview(router) {
   const observed = "Review the S6 draft (SRC-DRAFT) against the original request and sources and produce a corrected follow-on result in Korean, preserving S6 provenance and current S2 role.";
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S2", "--department=research", "--authority=read-only"]]) {
     for (const query of [observed, "Check the writer's draft against its original requirements.",
-      "Compare current drafts to the initial request.", "Review a draft against original requirements."]) {
+      "Compare current drafts to the initial request.", "Review a draft against original requirements.",
+      "Review the proposed report against the original sources.", "Check these documents against the assigned evidence.",
+      "Compare reports with supplied records.", "Appraise the revised document against its original requirements.",
+      "Assess the current report against actual policy."]) {
       const result = route(router, args, query);
       assert.equal(result.query, query); assert.equal(result.capability_query, query);
       assert.equal(result.capability_routing.status, "covered", query);
@@ -398,6 +440,12 @@ function testSourceBoundDraftReview(router) {
       const result = route(router, args, query);
       assert.equal(result.capability_routing.status, "gap_detected", query);
       assert(!result.capability_routing.matched_capability_routes.includes("document-authoring"));
+    }
+    for (const query of ["Review revenue against supplied records.", "Compare reports per day against supplied records.",
+      "Read the proposed document.", "Approve the proposed report against the original sources.",
+      "Review the reporting database against the supplied records."]) {
+      const result = route(router, args, query);
+      assert(!result.matched_routes.some(row => row.id === "document-authoring"), query);
     }
     const result = route(router, [...args, "--capability-query=Compare library digitization supplier estimates.", "--capability-query=" + observed], observed);
     assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
@@ -1047,6 +1095,7 @@ for (const router of ROUTERS) {
   testDirectTaskIdentity(router);
   testS6Reading(router);
   testReadOnlyOperationsDocuments(router);
+  testReadOnlyLogisticsDocuments(router);
   testOrderDocumentFormats(router);
   testTaskReadingScope(router);
   testSourceReadingScope(router);

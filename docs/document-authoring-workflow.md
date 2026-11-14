@@ -491,6 +491,14 @@ For an ordinary prose handoff, use the plain-document path at the beginning of
 Do not fabricate runtime identifiers to satisfy a machine form. Existing
 guarded missions still require their original machine packet and controls.
 
+For source-bound report/document review, retain the same authoring and KM
+procedure used for draft review; compare the candidate with the actual original
+requirements and supplied evidence. Keep domain analysis as a separate capability
+assessment. A read-only S4 document task retains resource/readiness policy but
+does not by itself require the SQL implementation model. Technical subjects,
+inherited objectives, explicit inputs and issued profiles still take precedence;
+this relevance distinction changes neither access nor execution authority.
+
 Explicit source flags apply to that router invocation; they do not add a
 required-input contract to an existing mission plan. Generated receipts retain
 the selected paths and command, and the existing context builder binds file

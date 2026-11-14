@@ -252,6 +252,19 @@ proposals await USER decisions, and no native call follows from their creation.
 Local fixtures exercise the existing boundary; this is preparation discipline,
 not a new permission policy or proof that the corrected report has been accepted.
 
+## Review Method And Storage Relevance (2026-11-15)
+
+The [source-bound review/S4 comparison](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+finds both omission and excess: a report compared against original sources needs
+the authoring/KM comparison procedure, while S4 prose work does not automatically
+need runtime SQL implementation. Read the manuals' actual scope rather than
+treating a format name or role default as sufficient relevance evidence.
+Retain resource/readiness policy and all real storage subjects, technical duties,
+explicit inputs, inherited objectives and guarded contexts. A source-review method
+match is not domain expertise or permission to read an unassigned source.
+The 58 local comparisons and installed regressions preserve those boundaries;
+they do not establish global minimality, native consumption or new authority.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

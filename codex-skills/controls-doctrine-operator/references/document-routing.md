@@ -83,6 +83,13 @@ still cannot be opened.
 
 ### Document Tasks And Execution Roles
 
+Reviewing a report or document against supplied policy, original requirements or
+assigned evidence is source-bound document work, even when the request does not
+call it a draft or SOP. Retain the authoring/KM comparison procedure and actual
+source inputs; a format name alone does not establish the subject's capability.
+Route separately declared domain analysis independently. Ordinary review wording
+does not authorize adoption, execution or a new source read.
+
 Drafting or revising WARNO, OPORD, FRAGO, SITREP or AAR documents needs the
 authoring/KM procedure as well as the order templates. A template match alone
 does not cover source appraisal, unchanged constraints or revision history.
@@ -95,6 +102,13 @@ omit five execution-specialist role defaults while retaining core access,
 authority, tool-use, order and policy guidance. Inspect `--explain-reading` for
 the `read_only_document_role` reason. This is conditional recommendation, not
 denied access, permission to omit an assigned guide or removal of a control.
+
+Likewise, S4 prose work needs its resource/readiness policies, not automatically
+the runtime SQL storage design. For direct explicitly read-only document work,
+the router can omit that SQL role default. Retain it for SQL/relational storage,
+database or schema-migration subjects, technical duties, explicit inputs or
+inherited objectives. Apply the same guarded/unclear-authority limits below;
+do not trim an issued reading profile because the direct recommendation shrank.
 
 Keep the full defaults for guarded metadata, execution/unclear authority,
 technical duties or parent/source requirements. Do not relabel L1 or an issued
@@ -864,6 +878,12 @@ run. An unrelated unselected reference can fail the whole-corpus audit without
 blocking this direct task. That distinction does not waive an assigned profile
 or an existing guarded mission's checks. Successful inventory is not a source
 read, semantic review, content digest or disclosure authorization.
+
+For copied test corpora, restore selected provider reference files as well as
+ordinary doctrine documents. Keep that availability repair separate from the
+receiver's assigned profile: an existing recommendation is not readable merely
+because routing succeeds. Test both denied unassigned reads and stale-route
+rejection after a selected reference disappears; do not expand access to fix setup.
 
 Inventory coverage does not prove that a specific task received its documents.
 Keep local archives in `.cannae` and `.cxt` out of current-document link checks;

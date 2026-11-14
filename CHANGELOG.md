@@ -6,6 +6,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Route source-bound report/document comparisons to authoring/KM guidance and omit the unrelated S4 SQL role default only for direct explicitly read-only prose work. Preserve real storage subjects, technical duties, explicit/parent inputs, controls and guarded contracts. Compare 58 local outcomes, extend direct and installed regressions, and mirror the lesson without claiming native reading or semantic-routing completion.
+  Restore the pre-existing incomplete quote fixture corpus, including provider reference files, without widening its one-guide access profile. Test denied unassigned reads and stale-route invalidation; retain bounded-run interruptions and failed fixture setup separately from subsequent per-suite results.
+
 - Preserve MP96 R1's failed raw internal-path preparation and two pending exact receiving proposals without invoking a model or reusing OR72 consent. Mirror path/mode preflight guidance and test clean identity representations for both clients: no findings or equal digests never replace exact preparation approval. Existing policy and partial goal dispositions remain unchanged.
 
 - Record MP96's two native compound-plan reviews with fresh routing, nine required reads per phase and exact source appendices. Preserve correct record-level assessments beside a Claude FRAGO mapping contradiction and unsupported approval gates, plus a separate eleven-span operator correction. Mirror output-specific review coverage and source-assignment versus access-change guidance; retain partial behavioral goals without a replay, automatic adoption or claim of a native cure.

@@ -302,6 +302,12 @@ retains a rejected raw request and two pending exact review proposals. Mirrored
 path/mode preflight and identity-representation fixtures document the existing
 boundary; they do not establish a new native review or grant preparation approval.
 
+The [source-bound review and S4 case](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+compares 58 local route results with the authoring procedure and storage/readiness
+manual scopes. Its [relevance lesson](research-compendium.md#review-method-and-storage-relevance-2026-11-15)
+preserves actual task sources, specialist counterexamples and existing authority;
+it is engineering evidence, not new military doctrine or native acceptance.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

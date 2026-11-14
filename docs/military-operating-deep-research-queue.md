@@ -94,6 +94,12 @@ adds two actual compound-plan/self-review runs with correct detailed mappings bu
 a remaining Claude summary contradiction and unsupported approval gates. Its
 [review-coverage lesson](research-compendium.md#compressed-outputs-need-their-own-review-2026-11-15)
 keeps useful partial evidence, exact source bodies and separate operator correction.
+
+The [source-bound review/S4 follow-up](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+compares further task/role combinations against the authoring and storage manual
+scopes. Its [relevance lesson](research-compendium.md#review-method-and-storage-relevance-2026-11-15)
+repairs two bounded selection defects with retained technical/guarded cases;
+broader profile appraisal remains open and no native run or military claim follows.
 Current behavioral goals remain partial; no new military claim or approval follows.
 
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)

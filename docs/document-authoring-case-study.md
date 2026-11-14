@@ -5155,3 +5155,60 @@ creates no decision, and only an explicitly synthetic fixture decision permits
 fixture preparation while retaining representation mode and false execution,
 release and reception flags. This does not approve these real pending proposals.
 Evidence: `.cannae/maintenance/mapped-replan-review-20261115/`.
+
+## Source-Bound Review And Logistics Reading
+
+At `e92336b`, two source-appraised selection defects remain. A plain S4 SOP or
+handoff receives `data-model.sql.md` through its role even though that manual's
+purpose is database implementation. Conversely, "Review the proposed report
+against the original sources" misses authoring/KM guidance and falls back to a
+capability gap. The authoring procedure's requirement/source comparison applies
+to that review regardless of whether its candidate is called a draft or SOP.
+
+A fixed 58-result comparison covers both providers: seven human/delegated review
+modes, three ordinary S4 document cases, thirteen retention counterexamples, five
+non-document comparisons and one compound-domain request per provider. Retained
+before/after/final outputs bind their exact router and source bytes. The S4 prose
+correction removes only the SQL recommendation and role-list entry; routes,
+commands, authority, capability and task references stay unchanged. S4 resource
+and readiness policies remain. Real SQL/relational/schema-migration/DB subjects,
+technical duties, explicit/inline inputs, parent tasks, guarded metadata and
+unclear or execution authority retain specialist context.
+
+Source-bound report/document comparisons now receive the authoring/KM procedure
+and templates. Other declared domain analysis still has its own gap assessment;
+the compound case remains a bounded provisional cell without standing activation
+or expanded authority. Non-document comparisons retain their original outcomes.
+Direct and installed link/copy regressions also retain the S3-only guarded agent
+receipt contract. An ordinary S4 recommendation is not an execution receipt.
+
+Both skill references explain the task-versus-format and S4-versus-storage
+distinctions. Existing provenance fixtures now expect the deliberately omitted
+role default while retaining both exclusion reasons; they do not erase the trace.
+Setup records preserve an empty-argument rejection, a prevented local evidence
+overwrite and a too-broad negative fixture assertion. None required weakening a
+product guard or modifying old evidence. No model was invoked. Local selection
+and installation checks do not prove fresh native consumption, global minimality
+or source comprehension; A05/G2 and other behavioral goals remain partial.
+The existing bound document session uses `document-only-verification`, so these
+direct `read-only` cases do not prove that its S4 recommendation is reduced.
+That actual authority/task/profile integration remains separate work; do not
+relabel its delegation or discard assigned guides merely to reproduce this list.
+
+Broader regression testing also exposes a pre-existing quote-fixture setup defect:
+its temporary corpus has only four documents, so the selected-reference guard
+rejects routing before quotation is tested. The same invocation fails identically
+with both baseline and current provider routers. Restore doctrine and provider
+reference files in that synthetic corpus, not in the receiver's access profile.
+The first repair misses the provider references and remains a recorded failure.
+The complete repair passes 24 quote cases, including unassigned-read denial and
+old-route invalidation after a selected reference disappears; the one-guide
+profile and all production guards are unchanged.
+
+Verification records distinguish bounded-run interruptions from test failures
+and retain every attempt. Passing suites are reconciled by exact inventory and
+source snapshots rather than called a single successful aggregate run. Between
+batches, the only executable change is that fixture repair; subsequent skill and
+case notes receive their own final-tree checks. These local results do not prove
+fresh model behavior or close the remaining authority/profile integration gap.
+Evidence: `.cannae/maintenance/role-reading-followup-20261115/`.

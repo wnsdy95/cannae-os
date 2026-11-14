@@ -54,6 +54,13 @@ and table, including their superseded next actions. They are not dispatch orders
    unrelated read-only S3 execution manuals. It appraises those two boundaries,
    not every reference in every profile; technical/guarded counterexamples remain
    necessary and no post-change native source consumption is claimed.
+   A [further 58-result comparison](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+   corrects missing source-bound report-review guidance and unnecessary S4 SQL
+   defaults. It preserves storage/technical/explicit/parent/guarded cases and
+   independent domain gaps; broader useful-profile appraisal remains open.
+   The bound document session declares `document-only-verification`, not
+   `read-only`; verify its actual original-task/profile context separately rather
+   than claiming the direct selector now reduces native-session reading.
 
 **Ongoing maintenance (A15-A17; G4):** the [family audit](document-authoring-case-study.md#artifact-family-state-audit)
 reconciles ten maintained outputs with original artifact, review, receiving and
