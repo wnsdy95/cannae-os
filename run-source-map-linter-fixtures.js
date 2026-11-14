@@ -97,7 +97,8 @@ function runOrientationFixtures() {
   for (const [heading, anchor] of [
     ["## Native Optional Reading And Source Appraisal", "native-optional-reading-and-source-appraisal"],
     ["## OR72 Snapshot And Locator Correction", "or72-snapshot-and-locator-correction"],
-    ["## Cross-Client Recovery Handoff", "cross-client-recovery-handoff"]
+    ["## Cross-Client Recovery Handoff", "cross-client-recovery-handoff"],
+    ["## Role And Format Reading Correction", "role-and-format-reading-correction"]
   ]) {
     assert(cases.split("\n").filter(line => line === heading).length === 1, "Case anchor must have one actual target.");
     for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {

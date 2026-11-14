@@ -43,6 +43,11 @@ and table, including their superseded next actions. They are not dispatch orders
    repairs are useful evidence, not a globally minimal selector. The acceptance
    target is justified useful context with tested omissions/counterexamples, not
    mathematical optimality or elimination of every conceivable wording error.
+   The [role/format comparison](document-authoring-case-study.md#role-and-format-reading-correction)
+   adds 56 local before/after cases for missing order-authoring guidance and
+   unrelated read-only S3 execution manuals. It appraises those two boundaries,
+   not every reference in every profile; technical/guarded counterexamples remain
+   necessary and no post-change native source consumption is claimed.
 4. **Current source and status coherence (A16; G4):** reconcile remaining maintained
    artifact families and unregistered entry-point claims with their actual source,
    derivative, review and decision records. This audit corrects the active queue;

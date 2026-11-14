@@ -217,6 +217,90 @@ function testS6Reading(router) {
   assert.equal(incomplete.operating_mode.department, "unspecified");
 }
 
+function testReadOnlyOperationsDocuments(router) {
+  const specialist = ["docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
+    "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md", "docs/production-sandbox-admission.md"];
+  const args = ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"];
+  const core = ["docs/role-document-access-policy.md", "docs/agent-roles-and-authority.md", "docs/approval-scope-policy.md",
+    "docs/tool-use-roe.md", "docs/policy-engine-rules.md", "docs/orders-production-pipeline.md",
+    "docs/information-to-operations-cycle.md", "docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md"];
+  const query = "Draft a handoff document from supplied policy. Do not publish.";
+  for (const task of [query, "Draft a support SOP. Do not publish.", "Write a research report from supplied sources.",
+    "Draft an OPORD. Do not execute it."]) {
+    const ordinary = route(router, [...args, "--explain-reading"], task);
+    for (const file of core) assert(ordinary.recommended_documents.some(doc => doc.path === file), file);
+    for (const file of specialist) {
+      assert(!ordinary.recommended_documents.some(doc => doc.path === file));
+      assert(!ordinary.operating_mode.mode_documents.includes(file));
+      const reason = ordinary.reading_selection.documents.find(doc => doc.path === file);
+      assert.equal(reason.recommended, false);
+      assert(reason.reasons.some(r => r.kind === "role" && !r.selected && r.excluded_by.includes("read_only_document_role")));
+    }
+    const retained = route(router, [...args, "--mission=MIS-READING-CONTEXT"], task);
+    for (const file of specialist) assert(retained.recommended_documents.some(doc => doc.path === file));
+    assert.deepEqual(retained.matched_routes, ordinary.matched_routes);
+    assert.deepEqual(retained.validation_commands, ordinary.validation_commands);
+    assert.equal(ordinary.operating_mode.authority, "read-only");
+    assert.equal(ordinary.capability_routing.provisional_organization.authority_expansion_authorized, false);
+  }
+  for (const extra of [["--authority=scoped-execution"], ["--authority=L1"], ["--department=systems"],
+    ["--source=docs/protected-process-execution.md"], ["--capability-query=Review production sandbox admission"],
+    ["--capability-query=Analyze museum attendance"], ["--wave=W1"], ["--scope=agent"], ["--agent=writer"],
+    [`--target-repository=${ROOT}`], ["--artifact-root=unused-reading-artifacts"]]) {
+    const result = route(router, [...args, ...extra], query);
+    for (const file of specialist) assert(result.recommended_documents.some(doc => doc.path === file), `${extra}: ${file}`);
+  }
+  for (const task of ["Inspect the current situation.", "Review the protected process contract.",
+    "Execute the support SOP.", "Publish the research report.", "Draft a document and run the assigned command.",
+    "Draft an OPORD. Do not execute it; run the inspection instead.",
+    "Draft an SOP for gateway recovery.", "Draft a handoff document from docs/protected-process-execution.md.",
+    "Draft a handoff document about event replay."]) {
+    const result = route(router, args, task);
+    for (const file of specialist) assert(result.recommended_documents.some(doc => doc.path === file), `${task}: ${file}`);
+  }
+  const receiptArgs = ["--receipt", "--scope=agent", "--mission=MIS-READONLY-DOCUMENT",
+    "--wave=W1", "--agent=writer", `--capability-query=${query}`];
+  const rejected = spawnSync(process.execPath, [path.join(ROOT, router), ...args, ...receiptArgs, "--", query],
+    { cwd: ROOT, encoding: "utf8" });
+  assert.equal(rejected.status, 2);
+  assert.equal(rejected.stdout, "");
+  assert(rejected.stderr.includes("AGENT_ROUTING_WRONG_AUTHORITY"));
+  const guarded = route(router, [...args, ...receiptArgs, "--authority=scoped-execution"], query);
+  for (const file of specialist) assert(guarded.recommended_documents.some(doc => doc.path === file));
+  assert.equal(guarded.authority_scope, "scoped-execution");
+  const incomplete = route(router, ["--actor=ai", "--role=S3", "--authority=read-only"], query);
+  for (const file of specialist) assert(incomplete.recommended_documents.some(doc => doc.path === file));
+  assert(incomplete.operating_mode.escalation_required_when.some(text => text.includes("missing department")));
+  const human = route(router, ["--actor=user"], query);
+  const humanRole = route(router, [...args, "--actor=user"], query);
+  assert.deepEqual(humanRole.recommended_documents, human.recommended_documents);
+  assert.deepEqual(humanRole.validation_commands, human.validation_commands);
+  const mixed = route(router, [...args, "--capability-query=Analyze museum attendance", "--capability-query=Draft an OPORD"], query);
+  assert.deepEqual(mixed.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+  assert.equal(mixed.capability_routing.status, "gap_detected");
+  assert.equal(mixed.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+}
+
+function testOrderDocumentFormats(router) {
+  for (const query of ["Draft an OPORD from the approved objective. Do not execute it.",
+    "Write a WARNO.", "Revise the current FRAGO.", "Edit these SITREPs.", "Update our AARs.",
+    "Draft or revise proposed project OPORDs."]) {
+    for (const mode of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"]]) {
+      const result = route(router, mode, query);
+      assertRoutes(result, ["document-authoring", "orders"]);
+      for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/prompt-templates.md"]) {
+        assert(result.recommended_documents.some(doc => doc.path === file));
+      }
+      assert.equal(result.query, query);
+    }
+  }
+  for (const query of ["Execute the OPORD.", "Read the AAR.", "Approve the FRAGO.",
+    "Draft a purchase order.", "Draft an OPORDish plan.", "Update the AARON biography."]) {
+    const result = route(router, ["--actor=user"], query);
+    assert(!result.matched_routes.some(row => row.id === "document-authoring"), query);
+  }
+}
+
 function testTaskReadingScope(router) {
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
@@ -961,6 +1045,8 @@ for (const router of ROUTERS) {
   testDocumentReadinessScope(router);
   testDirectTaskIdentity(router);
   testS6Reading(router);
+  testReadOnlyOperationsDocuments(router);
+  testOrderDocumentFormats(router);
   testTaskReadingScope(router);
   testSourceReadingScope(router);
   testSkillOperationsReading(router);

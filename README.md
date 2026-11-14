@@ -1066,6 +1066,12 @@ source/status coherence. Individual unapproved proposals remain held, but do not
 mean the delivery mechanism is untested. No adoption follows, and all five
 broader objectives remain partial.
 
+The [role/format reading correction](docs/document-authoring-case-study.md#role-and-format-reading-correction)
+adds missing authoring guidance for formal order drafts and narrows unrelated S3
+execution manuals only for direct, explicitly read-only document tasks. Technical
+duties, explicit/parent sources, guarded work and controls remain. Its 56-case
+local comparison is not new model behavior or a globally minimal reading profile.
+
 ### Retained Guarded Prototypes
 
 These implemented contracts and validation surfaces remain available. They do

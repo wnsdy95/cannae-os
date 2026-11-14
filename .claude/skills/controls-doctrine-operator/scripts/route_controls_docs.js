@@ -404,6 +404,11 @@ const RUNTIME_SPECIALIST_DOCS = new Set([
   "docs/reference-architecture.md", "docs/event-sourcing-model.md",
   "docs/command-post-dashboard.md", "docs/dashboard-wireframes.md", "docs/data-model.sql.md"
 ]);
+const EXECUTION_SPECIALIST_DOCS = new Set([
+  "docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
+  "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md",
+  "docs/production-sandbox-admission.md"
+]);
 const KOREAN_SOURCE_DOCS = new Set([
   "docs/korean-military-sources.md", "docs/korean-org-culture.md"
 ]);
@@ -736,7 +741,11 @@ function isDocumentAuthoringRequest(query) {
     "(?:(?:actual|own)\\s+)?(?:drafts?|documents?|v[0-9]+(?:\\.[0-9]+)*\\s+and\\s+findings?)" +
     "(?=$|[.,;:!?]|\\s+(?:and|before|after|against|with|for|without|using)\\b)", "i");
   return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
-    .test(text) || report.test(text) || draftReview.test(text) || findings.test(text) || selfReview.test(text);
+    .test(text) || isOrderDocumentRequest(text) || report.test(text) || draftReview.test(text) || findings.test(text) || selfReview.test(text);
+}
+
+function isOrderDocumentRequest(query) {
+  return /\b(?:draft|write|revise|edit|update)\s+(?:(?:or|and)\s+(?:draft|write|revise|edit|update)\s+)?(?:(?:a|an|the|this|these|those|our|current|proposed|revised|support|mission|project)\s+)*(?:warno|opord|frago|sitrep|aar)s?\b/i.test(String(query || ""));
 }
 
 function isDocumentHandoffRequest(query) {
@@ -1282,7 +1291,7 @@ function parseArgs(argv) {
   return { query, repoRootArg, options };
 }
 
-function operatorMode(options, noteDocument = () => {}) {
+function operatorMode(options, noteDocument = () => {}, query = "") {
   const hasDelegationFields = Boolean(options.role || options.department || options.authority);
   const actor = String(options.actor || (hasDelegationFields ? "ai" : "user")).toLowerCase();
 
@@ -1321,7 +1330,13 @@ function operatorMode(options, noteDocument = () => {}) {
     modeDocs.push(...files);
     for (const file of files) noteDocument(file, { kind, value, selected: true });
   };
-  if (ROLE_DOCS[roleKey]) addModeDocs(ROLE_DOCS[roleKey], "role", roleKey);
+  const roleDocs = ROLE_DOCS[roleKey] || [];
+  const omitExecutionDefaults = roleKey === "S3" && isReadOnlyDocumentRole(options, query);
+  for (const file of roleDocs) {
+    if (omitExecutionDefaults && EXECUTION_SPECIALIST_DOCS.has(file)) {
+      noteDocument(file, { kind: "role", value: roleKey, selected: false, excluded_by: ["read_only_document_role"] });
+    } else addModeDocs([file], "role", roleKey);
+  }
   addModeDocs(collectKeywordDocs(options.department, DEPARTMENT_DOCS), "department", options.department);
   addModeDocs(collectKeywordDocs(options.authority, AUTHORITY_DOCS), "authority", options.authority);
 
@@ -1420,6 +1435,27 @@ function needsRuntimeSpecialistReading(text, sources) {
   ]) > 0;
 }
 
+function isReadOnlyDocumentRole(options, query) {
+  if (options.authority !== "read-only" || !options.department || options.receipt || options.scope ||
+      options.mission || options.wave || options.agent || options.writeArtifact || options.overwriteArtifact ||
+      options.targetRepository || options.artifactRoot) return false;
+  const tasks = [query, ...options.capabilityQueries];
+  const authoring = RULES.find(rule => rule.id === "document-authoring");
+  const documentAction = /^\s*(?:please\s+)?(?:draft|write|revise|edit|update|review|check|compare|appraise|assess|self[- ]review)\b/i;
+  if (!tasks.every(text => documentAction.test(text) && (isDocumentAuthoringRequest(text) ||
+      isDocumentHandoffRequest(text) || countMatches(text, authoring.keywords) > 0))) return false;
+  const actions = tasks.join("\n").replace(/\b(?:do not|don't|never)\s+(?:execute|run|deploy|launch|invoke|operate)\b/gi, "");
+  if (/\b(?:execute|run|deploy|launch|invoke|operate)\b/i.test(actions)) return false;
+  const sources = [...options.sources, ...options.inputSources];
+  const context = [...tasks, options.department, ...sources].join("\n").replace(/[-_/]/g, " ");
+  if (needsRuntimeSpecialistReading(context, sources) ||
+      collectKeywordDocs(options.department, DEPARTMENT_DOCS).some(file => RUNTIME_SPECIALIST_DOCS.has(file))) return false;
+  // A document can itself concern execution. Preserve specialist context for that subject.
+  const executionRoutes = RULES.filter(rule => rule.docs.some(file => EXECUTION_SPECIALIST_DOCS.has(file)));
+  return !sources.some(file => EXECUTION_SPECIALIST_DOCS.has(file)) &&
+    !executionRoutes.some(rule => countMatches(context, rule.keywords) > 0);
+}
+
 function sourceSpecialistReading(text, sources) {
   // Language of delivery is not a national subject. Keep all other wording,
   // including prohibitions and ambiguous clauses, as conservative relevance hints.
@@ -1465,7 +1501,7 @@ function route(query, repoRoot, options) {
     if (!readingOrigins.has(file)) readingOrigins.set(file, []);
     readingOrigins.get(file).push(reason);
   };
-  const mode = operatorMode(options, noteDocument);
+  const mode = operatorMode(options, noteDocument, query);
   const inputs = resolveInputReferences(options, repoRoot);
   const taskContext = directTaskContext(options, inputs);
   const scopeIdentity = taskContext
@@ -1480,11 +1516,12 @@ function route(query, repoRoot, options) {
   const scoreRules = text => RULES.map(rule => {
     const authoring = rule.id === "document-authoring" && isDocumentAuthoringRequest(text) ? 1 : 0;
     const handoff = rule.id === "continuity-handoff" && isDocumentHandoffRequest(text) ? 1 : 0;
+    const order = rule.id === "orders" && isOrderDocumentRequest(text) ? 1 : 0;
     return {
       ...rule,
-      score: countMatches(text, rule.keywords) || authoring || handoff ||
+      score: countMatches(text, rule.keywords) || authoring || handoff || order ||
         (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
-      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring || handoff
+      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring || handoff || order
     };
   }).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));

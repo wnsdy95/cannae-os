@@ -60,6 +60,13 @@ useful repairs. A14 is bounded-verified; replanning/report fidelity and complete
 source-appraisal quality remain open. This is synthetic engineering evidence,
 not a new military claim, production recovery or adoption decision.
 
+The [role/format reading follow-up](document-authoring-case-study.md#role-and-format-reading-correction)
+compares human and six delegated roles across four formats in both providers.
+Its [task-versus-role lesson](research-compendium.md#role-defaults-and-format-prerequisites-2026-11-15)
+corrects missing order-authoring guidance and unrelated read-only S3 specialist
+defaults without changing authority or controls. Wider relevance remains partial;
+no new military research, model call or platform expansion follows.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

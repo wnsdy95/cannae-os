@@ -256,6 +256,15 @@ The new instruction checks are local, not causal behavior evidence. This advance
 bounded receiving without adopting policy, approving other proposals or claiming
 a production outage/recovery test or external military source.
 
+The [role/format reading case](document-authoring-case-study.md#role-and-format-reading-correction)
+compares 56 fixed queries against both routers before and after a bounded change.
+The authoring workflow and prompt templates establish the missing drafting
+procedure; the five execution manuals' stated scope supports conditional S3
+recommendations. The [lesson](research-compendium.md#role-defaults-and-format-prerequisites-2026-11-15)
+separates role, task and authority without redefining the assigned reading profile.
+This is local source appraisal and routing evidence, not an external military
+claim, current source consumption by a native model or universal minimality.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

@@ -74,6 +74,44 @@ function fixture(name, fn) {
   console.log(`PASS ${name}`);
 }
 
+function readOnlyOperationsDocuments(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  const specialist = ["docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
+    "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md", "docs/production-sandbox-admission.md"];
+  const query = "Draft an OPORD from supplied policy. Do not execute it.";
+  const results = PROVIDERS.map(provider => {
+    const script = path.join(destination(env, provider), "scripts/route_controls_docs.js");
+    const run = (extra, status = 0) => {
+      const result = spawnSync(process.execPath, [script, "--actor=ai", "--role=S3", "--department=operations",
+        "--authority=read-only", ...extra, "--", query], { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(result.status, status, result.stderr);
+      if (status) { assert.equal(result.stdout, ""); return result; }
+      return JSON.parse(result.stdout);
+    };
+    const ordinary = run(["--explain-reading"]);
+    assert.equal(ordinary.repo_root, fs.realpathSync(source));
+    for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/prompt-templates.md",
+      "docs/role-document-access-policy.md", "docs/tool-use-roe.md"]) assert(ordinary.recommended_documents.some(d => d.path === file));
+    for (const file of specialist) assert(!ordinary.recommended_documents.some(d => d.path === file));
+    for (const extra of [["--authority=scoped-execution"], ["--department=systems"],
+      ["--source=docs/protected-process-execution.md"], ["--capability-query=Review production sandbox admission"],
+      ["--receipt", "--scope=agent", "--mission=MIS-INSTALLED-READONLY", "--wave=W1", "--agent=writer",
+        `--capability-query=${query}`, "--authority=scoped-execution"]]) {
+      const retained = run(extra);
+      for (const file of specialist) assert(retained.recommended_documents.some(d => d.path === file), `${provider}: ${extra}: ${file}`);
+    }
+    assert.equal(ordinary.operating_mode.authority, "read-only");
+    assert.equal(ordinary.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    const rejected = run(["--receipt", "--scope=agent", "--mission=MIS-INSTALLED-READONLY", "--wave=W1",
+      "--agent=writer", `--capability-query=${query}`], 2);
+    assert(rejected.stderr.includes("AGENT_ROUTING_WRONG_AUTHORITY"));
+    return ordinary;
+  });
+  assert.deepEqual(results[0], results[1]);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+  assert(!fs.existsSync(path.join(unrelated, ".cannae")));
+}
+
 function documentStarter(env) {
   const starter = "Use $controls-doctrine-operator to draft or revise this document from the supplied sources, preserving my intent, authority boundaries, unknowns, and handoff context.";
   const relative = "agents/openai.yaml";
@@ -515,6 +553,7 @@ try {
   fixture("linked providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
   fixture("linked providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("linked providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
+  fixture("linked providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("matching link installation is idempotent", () => {
@@ -555,6 +594,7 @@ try {
   fixture("copied providers distinguish national source subjects from delivery language", () => sourceReadingScope(env));
   fixture("copied providers distinguish skill use from maintenance without changing controls", () => skillOperationsReading(env));
   fixture("copied providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
+  fixture("copied providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
   fixture("an explicit loaded skill directory overrides unrelated installer defaults", () => {

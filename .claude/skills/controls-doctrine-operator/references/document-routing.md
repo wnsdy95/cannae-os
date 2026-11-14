@@ -81,6 +81,32 @@ diagnostic, but only its separately assigned `documents` and current read result
 establish eligible delivery and observed reading; a recommended unlisted source
 still cannot be opened.
 
+### Document Tasks And Execution Roles
+
+Drafting or revising WARNO, OPORD, FRAGO, SITREP or AAR documents needs the
+authoring/KM procedure as well as the order templates. A template match alone
+does not cover source appraisal, unchanged constraints or revision history.
+Keep drafting distinct from executing, approving or adopting that document;
+the underlying mission objective still needs its own capability assessment.
+
+An S3 label does not make a plain document task protected process execution.
+For direct document work with explicit `read-only` authority, the router can
+omit five execution-specialist role defaults while retaining core access,
+authority, tool-use, order and policy guidance. Inspect `--explain-reading` for
+the `read_only_document_role` reason. This is conditional recommendation, not
+denied access, permission to omit an assigned guide or removal of a control.
+
+Keep the full defaults for guarded metadata, execution/unclear authority,
+technical duties or parent/source requirements. Do not relabel L1 or an issued
+delegation as read-only merely to get a smaller list. Actual task/authority/source
+selection may still retain a document omitted by one reason. When role or phase
+changes, reroute the real assignment; do not inherit the author's shorter list.
+The lexical selector is conservative, not a substitute for reviewing the actual
+required reading profile against the whole request.
+Direct read-only routing is not a guarded agent receipt. Those receipts retain
+their actual S3/operations/scoped-execution contract; do not change a delegation
+merely to satisfy that contract or reinterpret its rejection as authorization.
+
 ### Using A Skill Versus Maintaining It
 
 For ordinary direct work, a mention of Codex, Claude, CLI, skill, routing,

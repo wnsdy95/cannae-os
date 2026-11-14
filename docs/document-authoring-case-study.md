@@ -4830,3 +4830,58 @@ do not establish post-update native compliance. No new service or gateway is add
 Evidence: `.cannae/maintenance/recovery-handoff-20261115/`, including original
 inputs, four manifests/results, native events and source returns, unchanged
 cross-client packet bindings, structural audits and separate operator appraisal.
+
+## Role And Format Reading Correction
+
+A fixed local matrix compares four document tasks (SOP, OPORD, research report
+and handoff) in human mode and six delegated roles (COMMANDER, COS, S2, S3, S4,
+S6), using both installed-source routers: 56 routes before and 56 after.
+Delegations are explicitly read-only; original wording and flags are unchanged.
+Base commit: `5e0c0a48bb3c9731de225caf9ba6ec5e42b92d2e`.
+
+Two source-appraised errors occur. Every OPORD draft receives order templates but
+omits the authoring workflow, even though that procedure explicitly covers
+coordinated task orders, source discipline, unchanged constraints and revisions.
+Every S3 format also inherits five manuals for leases, protected gateways/processes,
+OCI execution and production admission solely from its role. Their implementation
+subjects are not prerequisites for these plain read-only document assignments.
+Core access, authority, policy and tool-use guidance still applies.
+
+| S3 read-only task | Before | After | Change |
+| --- | --- | --- | --- |
+| Support SOP | 22 references | 17 references | Remove five unrelated execution defaults |
+| OPORD draft | 20 references | 20 references | Replace five execution defaults with the authoring bundle |
+| Research report | 24 references | 19 references | Remove five unrelated execution defaults |
+| Handoff document | 25 references | 20 references | Remove five unrelated execution defaults |
+
+Formal WARNO/OPORD/FRAGO/SITREP/AAR drafting and revision now receive authoring/KM
+guidance as well as templates, including the tested modified/plural forms.
+Executing, reading or approving an order does not become authoring merely because
+its name matches; a generic purchase order is not the military-style format.
+The underlying mission still needs its separate capability assessment.
+
+Only direct S3 document work with explicit `read-only` authority can narrow these
+role defaults. Guarded metadata, execution or unclear authority (including L1),
+technical duties, technical parent/source requirements and ambiguous tasks retain
+them. Original inputs, core role references and all prior controls remain; added
+order authoring carries its own source-map check. Other roles' existing defaults
+are unchanged. Reading provenance records `read_only_document_role`, not denial
+of access or a waiver of an assigned reading requirement.
+
+Direct regressions cover positive formats, non-authoring counterexamples, role
+omission provenance, input/parent/department retention, unclear delegation,
+execution authority, guarded receipts and genuine domain gaps. Link/copy cases
+retain rejection of a direct read-only label in an execution receipt, rather than
+changing its existing S3/operations/scoped-execution contract. They
+exercise both providers from another project without invoking a client or writing
+mission outputs. Existing stale-source and guarded-context tests remain required.
+Both routing references now instruct the operator to distinguish the actual
+document assignment from its role and retain format prerequisites.
+
+This appraises two concrete boundaries, not the necessity of every reference in
+all 56 profiles. Manual required lists, conservative lexical matching, actual
+native source consumption and semantic completeness remain separate. A05/G2 and
+the wider goals remain partial. No native run, pending proposal approval, policy
+adoption or platform service is introduced. Evidence:
+`.cannae/maintenance/role-reading-20261115/`, including fixed queries, full route
+results, comparison bindings, source appraisal and regression records.

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Correct two role/format reading gaps in both routers: formal order/report drafting receives the authoring/KM procedure and templates, while direct explicitly read-only S3 document work omits five unrelated protected-execution role defaults. Preserve technical duties, parent/source inputs, execution or unclear authority, guarded contexts and every prior control. Compare 56 fixed role/format routes, add direct and installed regressions, and mirror guidance without claiming automatic access, minimal context or new native behavior.
+
 - Record four bounded native RH94 author/recipient processes with unchanged whole-unit handoff, fresh role routing and all assigned source reads in both client directions. Mark A14 bounded-verified while retaining report/replanning and source-quality gaps, including an operator's initial missed finding. Mirror role-versus-identity, current-evidence-versus-exclusive-proof and notice-boundary lessons; test instruction delivery without claiming post-update native compliance, production recovery, adoption or approval of other retained proposals.
 
 - Reconcile the active requirement audit with retained native evidence: bounded drafting flow and exactly approved representation delivery are now verified at their stated scope. Preserve the former queue/table verbatim under history, keep six behavioral gaps and all five goals partial, and distinguish four unapproved artifact proposals from untested product mechanisms. Mirror that audit discipline in both skills and check historical bindings/navigation without a new model run, adoption or authority change.

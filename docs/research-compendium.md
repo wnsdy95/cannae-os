@@ -151,6 +151,25 @@ dependent workflow. Do not turn that conditional procedure into a gate for
 unrelated drafting. These local synthetic observations support mirrored guidance,
 not universal accuracy, post-update native compliance or production recovery.
 
+## Role Defaults And Format Prerequisites (2026-11-15)
+
+The [role/format comparison](document-authoring-case-study.md#role-and-format-reading-correction)
+finds two different context errors: formal order drafts omit authoring/KM guidance,
+while an explicitly read-only S3 document task inherits five protected-execution
+manuals from its role alone. The same reference count can conceal both errors:
+the corrected S3 OPORD route replaces five unrelated manuals with five relevant
+authoring-bundle references, leaving the count unchanged.
+
+Judge task prerequisites and source scope, not only list length or role labels.
+An execution-oriented role may receive a read-only document assignment; conversely,
+a document may concern execution and still require specialist sources. Preserve
+the actual authority, technical duties, inherited tasks, explicit sources and
+guarded controls. Do not relabel L1 as read-only or turn a recommendation omission
+into permission to skip an assigned guide. A template supplies a format, not the
+whole authoring/revision procedure or expertise in the underlying mission domain.
+The fixed local comparisons support the bounded correction, not automatic context
+optimality, semantic completeness or a new native-client outcome.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
