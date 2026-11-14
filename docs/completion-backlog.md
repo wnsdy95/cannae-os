@@ -212,10 +212,14 @@ Use this queue and the requirement table, not those historical instructions.
    and decision-owner corrections, plus artifact-specific review labeling; the
    separate operator derivative preserves its draft and all original sources.
    New mirrored instructions have local delivery checks, not fresh native
-   acceptance. Next address the observed lexical gaps for ordinary core review,
-   self-review and handoff objectives without concealing genuinely unsupported
-   domains or rewriting retained routes. Do not replay the accepted source
-   comparison merely for another pass. No requirement disposition changes.
+   acceptance. The [review-workflow routing correction](document-authoring-case-study.md#review-workflow-routing-correction)
+   now recognizes those bounded ordinary review, self-review and successor-unit
+   forms in both bundles, with exact retained-query comparisons and mixed-domain
+   counterexamples. Only gap-specific change-order preparation disappears from
+   the five fresh results; issued obligations and historical routes remain intact.
+   Broader context relevance and semantic completeness remain open. Do not replay
+   the accepted source comparison merely for another pass. No requirement
+   disposition changes.
 4. **G4/G5:** finish current-navigation, history and target-output consistency
    checks and reconcile both installed clients. Native implicit selection and
    actual receipt are already observed in bounded cases, not pending from zero.

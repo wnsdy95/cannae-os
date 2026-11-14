@@ -720,16 +720,27 @@ function keywordMatches(text, keyword) {
 }
 
 function isDocumentAuthoringRequest(query) {
+  const text = String(query || "");
   const verb = "(?:draft|write|revise|edit|update)";
-  const determiner = "(?:(?:a|an|the|this|that|these|those|my|our)\\s+)?" +
+  const determiner = "(?:(?:a|an|the|this|that|these|those|my|our|your)\\s+)?" +
     "(?:(?:incoming|outgoing|current|proposed|revised|existing)\\s+)*";
-  const report = /\b(?:(?:research|progress|status)\s+reports?|(?:progress\s+and\s+)?decision\s+(?:summar(?:y|ies)|briefs?))\b/i;
+  const report = /\b(?:(?:research|progress|status|work|review)\s+reports?|(?:progress\s+and\s+)?decision\s+(?:summar(?:y|ies)|briefs?))\b/i;
   const draftReview = new RegExp("\\b(?:review|check|compare)\\s+" + determiner +
     "(?:(?:s[1-9]|cos|commander|author|writer)(?:'s)?\\s+)?drafts?" +
     "(?:\\s*\\([a-z][a-z0-9._-]*\\))?\\s+(?:against|with|to)\\s+" +
-    "(?:(?:the|its|their)\\s+)?(?:original|initial)\\s+(?:requests?|requirements?)\\b", "i");
+    "(?:(?:the|its|their)\\s+)?(?:(?:original|initial)\\s+(?:requests?|requirements?)|" +
+    "(?:supplied|actual|source)\\s+(?:policy|policies|sources?|records?))\\b", "i");
+  // Recognize document review work, not review/appraisal as a generic domain.
+  const findings = /\b(?:appraise|assess|review|check)\s+(?:(?:the|each|every|all)\s+)?(?:(?:inherited|supplied|previous)\s+)?(?:src-[a-z0-9_-]+\s+)?findings?\b[^.;\n]*\b(?:source[- ](?:grounded|bound)|(?:supplied|actual|assigned)\s+(?:policy|policies|sources?|records?))\b/i;
+  const selfReview = new RegExp("\\bself[- ]reviews?\\s+(?:of\\s+)?" + determiner +
+    "(?:(?:actual|own)\\s+)?(?:drafts?|documents?|v[0-9]+(?:\\.[0-9]+)*\\s+and\\s+findings?)" +
+    "(?=$|[.,;:!?]|\\s+(?:and|before|after|against|with|for|without|using)\\b)", "i");
   return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
-    .test(String(query || "")) || report.test(String(query || "")) || draftReview.test(String(query || ""));
+    .test(text) || report.test(text) || draftReview.test(text) || findings.test(text) || selfReview.test(text);
+}
+
+function isDocumentHandoffRequest(query) {
+  return /\b(?:successor|follow[- ]on|next[- ]recipient)\s+(?:document\s+)?review\s+(?:unit|packet|bundle)s?\b/i.test(String(query || ""));
 }
 
 function isCorpusOrientationRequest(query) {
@@ -1468,11 +1479,12 @@ function route(query, repoRoot, options) {
   }
   const scoreRules = text => RULES.map(rule => {
     const authoring = rule.id === "document-authoring" && isDocumentAuthoringRequest(text) ? 1 : 0;
+    const handoff = rule.id === "continuity-handoff" && isDocumentHandoffRequest(text) ? 1 : 0;
     return {
       ...rule,
-      score: countMatches(text, rule.keywords) || authoring ||
+      score: countMatches(text, rule.keywords) || authoring || handoff ||
         (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
-      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring
+      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring || handoff
     };
   }).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));

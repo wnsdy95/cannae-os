@@ -1045,6 +1045,10 @@ observes both clients using the tool and correctly appraising six mixed-quality
 findings. Claude's report still misstates one line number and a next-action
 decision owner; a separate operator correction preserves its accepted draft body.
 Actual tool use is not automatic semantic enforcement or overall completion.
+The [review-workflow routing correction](docs/document-authoring-case-study.md#review-workflow-routing-correction)
+now recognizes those bounded review/report/successor objectives while retaining
+separately declared domain gaps and authority limits. Its evidence is local, not
+a fresh native review or globally minimal context selection.
 Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
 
 ### Retained Guarded Prototypes

@@ -232,6 +232,12 @@ decision owner. Local instruction-delivery checks do not establish post-update
 model compliance. This is engineering evidence, not new military doctrine or
 an independent reliability estimate.
 
+The [review-workflow routing correction](document-authoring-case-study.md#review-workflow-routing-correction)
+uses the exact retained QL93 queries for a local before/after comparison. It adds
+bounded vocabulary to existing routes, with separate domain-gap, installed-client
+and guarded-parent regressions. The unchanged query/body bindings support the
+comparison, not a new model call, comprehension claim or external military source.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

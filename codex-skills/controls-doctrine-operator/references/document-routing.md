@@ -244,6 +244,23 @@ Check meaning against the original request; never delete a prohibition or source
 reference to improve the count. Ordinary prose routing still does not authorize
 running every suggested check or starting a campaign.
 
+### Review And Successor Work
+
+Source-grounded finding appraisal, document self-review and work/review reports
+are authoring work. A successor review unit or follow-on review packet uses the
+handoff procedure even when its name omits `handoff`. Describe these actual
+outputs without replacing the original domain objective with a method label.
+Keep every declared objective: a covered review/report cannot clear an uncovered
+domain assessment. Generic review, findings or unit wording alone proves neither
+domain coverage nor sufficient context; check the returned per-objective decision.
+
+A corrected lexical match changes a fresh recommendation, not an issued receipt.
+Gap-only change-order preparation may disappear when all declared objectives
+match, but required inputs and independently selected controls remain. Do not
+rewrite old routes, retire an existing cell or waive its obligations from that
+new result. Use the existing mission/task continuation rules. Recommendations
+do not prove source comprehension, read permission or semantic completeness.
+
 ## Installation And Corpus Binding
 
 Locate the loaded `SKILL.md` before launching its bundled scripts. Keep the

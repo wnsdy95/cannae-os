@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Recognize bounded source-grounded appraisal, document self-review, work/review reports and successor review units in both routers. Keep independent objective assessments, underlying domain gaps, explicit inputs and authority limits. Compare retained native queries locally, distinguish gap-only preparation from issued controls, mirror the operating lesson and extend direct, installed and guarded regressions without claiming a new model review.
+
 - Record two bounded native quote-review runs with full required reads and source-appraised findings. Preserve Claude's report-level locator and decision-owner errors alongside correct SOP repairs, and keep its three-span operator correction separate. Mirror exact numeric-citation, next-action ownership and artifact-specific self-review checks in both skills; verify instruction delivery without claiming post-update native compliance or closing the active objectives.
 
 - Add opt-in exact quote lookup to the existing read-only document session. Require a current-route full read, exact delivered digest and unique literal passage; preserve freshness, holds, budgets and representation modes. Return UTF-8 byte/line context without claiming semantic support or authority. Mirror both skills, route the helper and test local boundaries and stdio behavior; no new model run or automatic interpretation is implied.

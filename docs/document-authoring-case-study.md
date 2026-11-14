@@ -4697,3 +4697,55 @@ native events, calls, structural audits, source appraisal and operator delta.
 All five goal dispositions remain partial; this adds bounded actual tool-use and
 repair evidence without claiming global selection, causal improvement, automatic
 interpretation, discovery, policy adoption or full-suite validation.
+
+## Review Workflow Routing Correction
+
+The QL93 native outputs exposed six distinct objective formulations that the
+lexical router treated as unsupported despite existing authoring/handoff guidance.
+Two of four Codex objectives and four of six Claude objectives missed: bounded
+finding appraisal, work reporting, draft self-review and successor review units.
+The complete task could match SOP guidance while these independently evaluated
+objectives still required a provisional cell. That independence is intentional;
+the missing bounded vocabulary is not.
+
+Both bundled routers now recognize source-qualified finding appraisal and draft
+comparison, document self-review, work/review reports and successor/follow-on
+review units, packets or bundles. They select existing authoring or handoff
+routes rather than a new department. Generic review, clinical findings, supplier
+quality, unrelated units and legal-enforceability requests do not acquire those
+new matches. These are bounded lexical forms, not semantic domain understanding.
+
+Local before/after comparison retains all five native routing invocations,
+including the superseded Codex route and Claude's distinct second-phase query.
+The exact complete assignment, native wording, objective arrays, task/root pair,
+three explicit source paths and declared role/department/authority are unchanged.
+All ten objective entries across the two original lists now match; repeated
+phase evaluations are not additional independent examples. No model is invoked,
+old packet reused or historical tool result replaced by this comparison.
+
+The observed recommendation delta is exactly one gap-only schema and its sample
+validation command: `schema-files/force-structure-change-order.schema.json` and
+`node validator-cli-prototype/validate.js sample-payloads/valid-force-structure-change-order.json force-structure-change-order`.
+All other selected documents, matched routes and commands are retained in these
+five comparisons. Gap-prefixed documents and commands return to their ordinary route
+positions. An initial comparison incorrectly required identical array order;
+the corrected check verifies exact membership and records the ordering change
+separately, without changing routing or waiving a control. This is a fresh direct
+recommendation after a false gap is resolved, not permission to waive an issued
+receipt, control or existing cell
+obligation. An independently declared unsupported objective still retains the
+gap, provisional cell and change-order controls without authority expansion.
+
+Focused fixtures cover the observed forms, varied supported phrasing and
+unsupported counterexamples for human/delegated modes in both providers. Mixed
+objectives retain original text, explicit technical inputs, per-objective reading
+provenance and authority controls. Installation cases exercise linked/copied
+bundles from another project; guarded cases retain the real parent objective.
+The source-change regression checks that old context cannot authorize later work.
+These local checks do not demonstrate new native behavior or global relevance.
+
+Both skills' routing references now distinguish a recognized document method
+from its underlying domain and a fresh lexical result from issued obligations.
+Evidence is under `.cannae/maintenance/review-routing-20261114/`. This advances
+G2/G4/G5 without changing partial goal dispositions, approving any pending
+preparation proposal, retesting accepted SOP bodies or adding a platform service.

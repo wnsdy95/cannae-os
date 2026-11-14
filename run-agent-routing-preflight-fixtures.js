@@ -95,6 +95,21 @@ function routeWithSkill(skillRoot, query, args = [], expectedStatus = 0) {
 const delegatedArgs = ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"];
 const routingCases = [
   {
+    name: "document self-review reaches guarded receipts without inventing a capability gap",
+    query: "Reroute and reread all required sources for final self-review of the draft and findings. Do not publish.",
+    extra: ["--capability-query=Self-review the draft and findings."],
+    required: ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/handoff-packet-template.md"],
+    command: "node source-map-linter.js",
+    gap: false
+  },
+  {
+    name: "successor review packaging retains an unsupported parent domain and force-structure checks",
+    query: "Prepare a successor review unit with the original request and source bodies. Do not publish.",
+    extra: ["--capability-query=Analyze museum attendance by city."],
+    required: ["docs/handoff-packet-template.md", "docs/force-structure-change-policy.md", "schema-files/force-structure-change-order.schema.json"],
+    command: "node run-handoff-generation-fixtures.js"
+  },
+  {
     name: "ordinary source review keeps controls without national specialist reading",
     query: "Draft a support SOP from source policy in Korean. Do not publish.",
     extra: ["--capability-query=Draft a support SOP from source policy."],

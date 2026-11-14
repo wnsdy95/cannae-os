@@ -40,6 +40,12 @@ Residual report errors are preserved and corrected separately. Its
 checks operative actor/verb pairs, precise numeric citations and review phases;
 the new guidance is locally checked, not newly native-accepted or adopted.
 
+The [review-workflow routing follow-up](document-authoring-case-study.md#review-workflow-routing-correction)
+now recognizes the observed core review/report/successor formulations. Its
+[method-versus-domain lesson](research-compendium.md#recognized-review-work-is-not-domain-coverage-2026-11-14)
+preserves independent objective assessment and existing authority. Retained-query
+replay is local routing evidence, not a new receiving run or semantic acceptance.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

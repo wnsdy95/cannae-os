@@ -96,6 +96,20 @@ support mirrored review guidance, not causal improvement or universal accuracy.
 Preserve native originals and separately checked operator corrections; a local
 instruction-delivery pass does not establish fresh model acceptance.
 
+## Recognized Review Work Is Not Domain Coverage (2026-11-14)
+
+The [review-workflow correction](document-authoring-case-study.md#review-workflow-routing-correction)
+fixes missing ordinary authoring/handoff matches without inheriting coverage from
+the complete task. Each declared objective still receives its own assessment.
+Recognize a document method from specific source/format language, but keep the
+underlying domain objective and any genuine gap; generic review is not expertise.
+
+The local retained-query comparison removes only gap-specific change-order
+preparation while retaining other selected controls and inputs. A new lexical
+result does not rewrite issued obligations or authorize retiring a previous cell.
+The bound forms and counterexamples support this correction, not general semantic
+completeness, automatic minimum reading or post-change native acceptance.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

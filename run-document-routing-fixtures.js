@@ -322,6 +322,74 @@ function testSourceBoundDraftReview(router) {
   }
 }
 
+function testDocumentReviewWorkflow(router) {
+  const authoring = [
+    "Appraise every SRC-REVIEW finding with source-grounded disposition and exact-quote location checks",
+    "Produce a change/unchanged-requirement map and a work report with limits and next bounded action",
+    "Reroute and reread all required sources for final self-review of the draft and findings",
+    "Reroute and reread all required sources for final self-review of actual V2 and findings.",
+    "Assess the supplied findings against actual policy.",
+    "Check each finding with source bound evidence.",
+    "Review current drafts against the supplied records.",
+    "Compare your draft with source policy.",
+    "Self review your revised documents before returning them.",
+    "Prepare review reports with unresolved source questions."
+  ];
+  const handoffs = [
+    "Declare one successor review unit with V2, review, five verbatim project bodies, full digest bindings and three guide dependencies",
+    "Prepare follow-on review packets with the original request and sources.",
+    "Assemble next recipient document review bundles without sending them."
+  ];
+  const unsupported = ["Appraise supplier quality.", "Assess clinical findings against medical sources.",
+    "Assess findings about neutron scattering.", "Inspect self-review settings.",
+    "Self-review the draft statute for legal enforceability.",
+    "Review the draft statute for legal enforceability.", "Inspect work reporting hours.",
+    "Identify successors for semiconductor units.", "Appraise findings. Read sources later."];
+  for (const mode of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    for (const [queries, routeId, command] of [[authoring, "document-authoring", "node source-map-linter.js"],
+      [handoffs, "continuity-handoff", "node run-handoff-generation-fixtures.js"]]) {
+      for (const query of queries) {
+        const result = route(router, mode, query);
+        assert.equal(result.query, query);
+        assert.equal(result.capability_query, query);
+        assert.equal(result.capability_routing.status, "covered", query);
+        assert(result.capability_routing.matched_capability_routes.includes(routeId), query);
+        for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/handoff-packet-template.md"]) {
+          assert(result.recommended_documents.some(doc => doc.path === file), query + ": " + file);
+        }
+        assert(result.validation_commands.includes(command));
+        assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+        assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+        if (mode.includes("--actor=ai")) assert.equal(result.operating_mode.authority, "read-only");
+      }
+    }
+    for (const query of unsupported) {
+      const result = route(router, mode, query);
+      assert.equal(result.capability_routing.status, "gap_detected", query);
+      assert(!result.capability_routing.matched_capability_routes.includes("document-authoring"), query);
+      assert(!result.capability_routing.matched_capability_routes.includes("continuity-handoff"), query);
+    }
+    const domain = "Research ICP and sales targeting using the canonical track view";
+    const objectives = [domain, authoring[0], authoring[1], authoring[2], handoffs[0]];
+    const query = objectives.join("; ") + ". Preserve authority, approval and release limits. Do not publish.";
+    const result = route(router, [...mode, ...objectives.map(q => "--capability-query=" + q),
+      "--source=docs/reference-architecture.md", "--explain-reading"], query);
+    assert.deepEqual(result.capability_queries, objectives);
+    assert.equal(result.query, query);
+    assert.deepEqual(result.capability_assessments.map(item => item.status), ["gap_detected", "covered", "covered", "covered", "covered"]);
+    assert.equal(result.capability_routing.status, "gap_detected");
+    assert(result.recommended_documents.some(doc => doc.path === "docs/reference-architecture.md"));
+    assert(result.reading_selection.documents.find(doc => doc.path === "docs/handoff-packet-template.md").reasons
+      .some(reason => reason.kind === "route" && reason.route_id === "continuity-handoff" && reason.objective_indexes.includes(4)));
+    for (const command of [...AUTHORITY_CONTROLS, "node run-force-structure-change-fixtures.js",
+      "node validator-cli-prototype/validate.js sample-payloads/valid-force-structure-change-order.json force-structure-change-order"]) {
+      assert(result.validation_commands.includes(command));
+    }
+    assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+  }
+}
+
 function testPlatformExclusionLists(router) {
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
   const noWork = "No publication, external operations, dashboard or server development.";
@@ -887,6 +955,7 @@ function testDirectTaskIdentity(router) {
 
 for (const router of ROUTERS) {
   testSourceBoundDraftReview(router);
+  testDocumentReviewWorkflow(router);
   testPlatformExclusionLists(router);
   validateSkill(path.posix.dirname(path.posix.dirname(router)));
   testDocumentReadinessScope(router);
