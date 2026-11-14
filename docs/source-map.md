@@ -238,6 +238,14 @@ bounded vocabulary to existing routes, with separate domain-gap, installed-clien
 and guarded-parent regressions. The unchanged query/body bindings support the
 comparison, not a new model call, comprehension claim or external military source.
 
+The [2026-11-15 requirement audit](completion-backlog.md#audit-basis-and-disposition-changes)
+reconciles these retained observations with the unchanged skill-first criteria.
+Exact response/source bindings and the approved OR72 decision window support
+bounded flow and delivery dispositions; source appraisal remains separate from
+structural presence checks. The previous queue/table remain verbatim history.
+This is local engineering evidence, not a new source claim, transfer approval or
+native rerun. Pending individual proposals are not new product prerequisites.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

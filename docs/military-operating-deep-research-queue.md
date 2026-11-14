@@ -46,6 +46,12 @@ now recognizes the observed core review/report/successor formulations. Its
 preserves independent objective assessment and existing authority. Retained-query
 replay is local routing evidence, not a new receiving run or semantic acceptance.
 
+The [current requirement audit](completion-backlog.md#audit-basis-and-disposition-changes)
+reconciles retained native evidence without rerunning accepted cases. Its
+[requirements-versus-decisions lesson](research-compendium.md#requirements-and-artifact-decisions-2026-11-15)
+keeps individual proposal holds separate from demonstrated product behavior.
+Prior queue/table bytes remain historical, and all five goals remain partial.
+
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
 conditions national specialist recommendations without weakening explicit sources,
 parent objectives or selected controls. Its local cases do not establish general

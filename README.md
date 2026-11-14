@@ -1051,6 +1051,15 @@ separately declared domain gaps and authority limits. Its evidence is local, not
 a fresh native review or globally minimal context selection.
 Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
 
+The [2026-11-15 requirement audit](docs/completion-backlog.md#audit-basis-and-disposition-changes)
+now counts the observed drafting flow and exactly approved representation delivery
+as bounded-verified. Fourteen required rows are verified at their stated scope;
+six remain partial, not a product percentage. Remaining work targets recovery
+and usable handoff, full-report quality across clients, relevant reading and
+source/status coherence. Individual unapproved proposals remain held, but do not
+mean the delivery mechanism is untested. No new native run or adoption follows
+from this audit, and all five broader objectives remain partial.
+
 ### Retained Guarded Prototypes
 
 These implemented contracts and validation surfaces remain available. They do

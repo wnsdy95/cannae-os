@@ -104,6 +104,23 @@ not another successful-case replay. Keep implementation, source appraisal,
 observed client behavior and final USER adoption distinct. Evidence for one
 format, role or method does not automatically close another requirement.
 
+Audit the requirement separately from individual artifact decisions. An approved
+receiving exercise can verify a bounded delivery procedure while its report still
+needs correction and another proposal remains unapproved. Preserve all three
+states; do not make every old draft's fresh model review a new product prerequisite.
+Name the unresolved behavior and its acceptance evidence before scheduling another
+run. Reuse applicable inspected evidence, but do not combine unrelated phases into
+one observed workflow or attribute an older pass to newer instructions. Keep actual
+holds and exact-source decisions attached to their artifacts. Neither a pending
+proposal nor its age authorizes transfer, expiry extension or abandonment.
+
+When the current queue accumulates superseded next actions, retain its exact body
+and prior requirement table under dated history, then reconcile the live queue and
+entry points. State each disposition change and its evidence. Do not weaken the
+USER criteria, invent universal perfection or automatic mathematical minimality,
+or convert unequal evidence rows into a product percentage. Scope regression and
+native checks to the changed behavior; not every prose update needs a model rerun.
+
 Compare evidence in its recorded representation. A native final message, a
 transcript containing several messages and a saved file with wrapper/newline
 bytes have different bindings. Check the original writer and bind each artifact

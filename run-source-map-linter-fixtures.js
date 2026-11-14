@@ -115,8 +115,35 @@ function runOrientationFixtures() {
       `${provider} lost narrative and same-file lesson maintenance guidance.`);
   }
   assert(read("docs/knowledge-management-sop.md").includes("File-index coverage alone will not catch that gap."));
+  const backlog = read("docs/completion-backlog.md");
+  const current = span(backlog, "## Active Core Work", "## Evidence History");
+  const history = backlog.slice(backlog.indexOf("## Evidence History"));
+  const oldQueue = span(history, "This is the current queue, based on the 2026-11-12 requirement audit. The", "### Superseded Requirement Table (2026-11-14)");
+  const oldAudit = span(history, "The rows derive from the five USER objectives, not from the number of files or", "### Earlier Checkpoints");
+  assert(sha256(oldQueue) === "ada611245dcf968bbd8ec9fc88dc4fcef38bf84c3395146171a9c3d0c2e28c96" &&
+    sha256(oldAudit) === "6bf66b3d38617cc435d2d25f96c1f029ecd131c9754460492684729d1f4c1762",
+  "Superseded queue and audit must retain their exact historical bodies.");
+  const requirements = text => text.split("\n").filter(line => /^\| A\d\d \|/.test(line))
+    .map(line => line.split("|").slice(1, 3).map(value => value.trim()));
+  const currentRequirements = requirements(current);
+  assert(currentRequirements.length === 21 && new Set(currentRequirements.map(row => row[0])).size === 21 &&
+    JSON.stringify(currentRequirements) === JSON.stringify(requirements(oldAudit)),
+  "Reconciliation must not silently add, drop or redefine the audited USER requirements.");
+  assert(!current.includes("This is the current queue, based on the 2026-11-12") &&
+    current.includes("### Audit Basis And Disposition Changes"),
+  "Superseded instructions must be historical, with current disposition changes explained.");
+  for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {
+    const target = `${file === "README.md" ? "docs/" : ""}completion-backlog.md#audit-basis-and-disposition-changes`;
+    assert(read(file).includes(`](${target})`), `${file} lost the current audit basis.`);
+  }
+  const auditLesson = provider => span(read(`${provider}/controls-doctrine-operator/references/self-improvement-loop.md`),
+    "Audit the requirement separately from individual artifact decisions. An approved",
+    "Compare evidence in its recorded representation. A native final message, a");
+  assert(auditLesson("codex-skills") === auditLesson(".claude/skills") &&
+    auditLesson("codex-skills").includes("not every prose update needs a model rerun."),
+  "Both skills must retain the same requirement/artifact audit procedure.");
   // These assertions protect declared orientation and links, not semantic truth.
-  return 4;
+  return 8;
 }
 
 function runNavigationFixtures() {

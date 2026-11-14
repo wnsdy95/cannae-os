@@ -110,6 +110,23 @@ result does not rewrite issued obligations or authorize retiring a previous cell
 The bound forms and counterexamples support this correction, not general semantic
 completeness, automatic minimum reading or post-change native acceptance.
 
+## Requirements And Artifact Decisions (2026-11-15)
+
+The [requirement audit](completion-backlog.md#audit-basis-and-disposition-changes)
+found that the live queue still carried superseded mechanism failures after
+bounded receiving had been observed. An actual exact approval, a successful
+source transfer and the quality of the resulting report are separate facts.
+Other proposals can remain unapproved without negating that observed behavior.
+Conversely, receiving success cannot accept incorrect findings or grant adoption.
+
+Audit the USER requirement, its actual evidence and remaining behavioral gap
+before scheduling another evaluation. Preserve old failures and exact decisions;
+do not impose a fresh model verdict on every historical derivative or stitch
+unrelated phases into a single observed flow. Keep superseded next actions in
+dated history and current dispositions in one live table. Both maintenance skills
+now carry this distinction. Local binding/navigation checks are not semantic
+certification, causal improvement, a new native run or an overall completion rate.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
