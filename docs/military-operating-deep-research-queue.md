@@ -100,6 +100,10 @@ compares further task/role combinations against the authoring and storage manual
 scopes. Its [relevance lesson](research-compendium.md#review-method-and-storage-relevance-2026-11-15)
 repairs two bounded selection defects with retained technical/guarded cases;
 broader profile appraisal remains open and no native run or military claim follows.
+The [bound-session follow-up](document-authoring-case-study.md#bound-session-reading-context)
+checks the real adapter descriptor and assigned profiles; its
+[integration lesson](research-compendium.md#routing-descriptor-and-assigned-profile-2026-11-15)
+keeps recommendations distinct from read authority and actual model consumption.
 Current behavioral goals remain partial; no new military claim or approval follows.
 
 The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)

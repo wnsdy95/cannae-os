@@ -1450,7 +1450,8 @@ function needsRuntimeSpecialistReading(text, sources) {
 }
 
 function isReadOnlyDocumentRole(options, query) {
-  if (options.authority !== "read-only" || !options.department || options.receipt || options.scope ||
+  // The bound document session keeps its own descriptor; this selects reading, not authority.
+  if (!["read-only", "document-only-verification"].includes(options.authority) || !options.department || options.receipt || options.scope ||
       options.mission || options.wave || options.agent || options.writeArtifact || options.overwriteArtifact ||
       options.targetRepository || options.artifactRoot) return false;
   const tasks = [query, ...options.capabilityQueries];

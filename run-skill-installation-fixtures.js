@@ -119,6 +119,9 @@ function readOnlyOperationsDocuments(env) {
     };
     const ordinary = run(["--explain-reading"]);
     assert.equal(ordinary.repo_root, fs.realpathSync(source));
+    const bounded = run(["--explain-reading", "--authority=document-only-verification"]);
+    const expected = structuredClone(ordinary); expected.operating_mode.authority = "document-only-verification";
+    assert.deepEqual(bounded, expected);
     for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/prompt-templates.md",
       "docs/role-document-access-policy.md", "docs/tool-use-roe.md"]) assert(ordinary.recommended_documents.some(d => d.path === file));
     for (const file of specialist) assert(!ordinary.recommended_documents.some(d => d.path === file));
@@ -153,6 +156,9 @@ function sourceReviewAndLogistics(env) {
     };
     const ordinary = run(["--explain-reading"]);
     assert.equal(ordinary.repo_root, fs.realpathSync(source));
+    const bounded = run(["--explain-reading", "--authority=document-only-verification"]);
+    const expected = structuredClone(ordinary); expected.operating_mode.authority = "document-only-verification";
+    assert.deepEqual(bounded, expected);
     assert.equal(ordinary.query, query);
     assert.equal(ordinary.capability_routing.status, "covered");
     assert(!ordinary.recommended_documents.some(d => d.path === sql));

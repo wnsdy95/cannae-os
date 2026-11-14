@@ -497,6 +497,16 @@ Recipient delivery holds do not authorize the preparer to reread a prohibited
 source. If that source cannot be rechecked within existing authority, stop before
 creating the session rather than using the hold list to bypass the prerequisite.
 
+Keep the session's `document-only-verification` descriptor and the recipient's
+separate L-level/profile unchanged. The router recognizes that exact descriptor
+for ordinary S3/S4 document relevance; it is not a new read or execution grant.
+Check the original assignment, current task, objectives and assigned sources
+before narrowing recommendations. A required guide still stays required; an
+allowed optional guide can remain readable even when it is not recommended.
+Do not relabel authority, trim the original task or remove profile entries to
+make a shorter list. Test the actual session and transport, not only a direct CLI
+query; local handler returns still do not prove native reading or comprehension.
+
 When a tool-assisted review disputes a source locator, use `locate_quote` only
 if the trusted preparer enabled it for that review session. First complete the
 source's current-route full read, then supply its delivered digest and a unique

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Recognize the existing document-only receiving descriptor in S3/S4 relevance selection without renaming authority or changing profiles. Compare 32 actual session routes, retain technical/required/ambiguous counterexamples, and cover assigned/optional/denied reads, holds, rerouting and local stdio transport. Mirror descriptor-versus-profile guidance in both skills; do not infer smaller native reading or new preparation approval.
+
 - Route source-bound report/document comparisons to authoring/KM guidance and omit the unrelated S4 SQL role default only for direct explicitly read-only prose work. Preserve real storage subjects, technical duties, explicit/parent inputs, controls and guarded contracts. Compare 58 local outcomes, extend direct and installed regressions, and mirror the lesson without claiming native reading or semantic-routing completion.
   Restore the pre-existing incomplete quote fixture corpus, including provider reference files, without widening its one-guide access profile. Test denied unassigned reads and stale-route invalidation; retain bounded-run interruptions and failed fixture setup separately from subsequent per-suite results.
 

@@ -1108,6 +1108,11 @@ corrects missed report-review guidance and an irrelevant SQL role default in
 58 local comparisons. Technical, explicit-source and guarded counterexamples
 remain; this is not fresh native reading or completion of semantic routing.
 
+The [bound-session follow-up](docs/document-authoring-case-study.md#bound-session-reading-context)
+connects that selection to the adapter's unchanged document-only descriptor.
+Thirty-two local session comparisons preserve assigned profiles and authority;
+recommendation changes do not prove fewer native source reads.
+
 ### Retained Guarded Prototypes
 
 These implemented contracts and validation surfaces remain available. They do

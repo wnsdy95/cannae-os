@@ -583,6 +583,18 @@ sources remain explicit router inputs. Recommended documents and all selected
 validation commands remain visible; the helper does not run those commands or
 prove that the assigned profile contains every semantically necessary source.
 
+The fixed routing descriptor is `document-only-verification`; the recipient's
+manifest authority remains its separate L-level. Ordinary S3/S4 document tasks
+can use the same relevance selection as direct read-only work without renaming
+either declaration. Original and current task subjects, objectives, technical
+duties and explicit required guides still retain their specialist context.
+Unclear or execution descriptors and guarded metadata do not qualify. This is
+recommendation selection only: it cannot add or remove assigned documents,
+promote optional rows to required, clear holds or grant execution. An optional
+guide can stay readable even when omitted from recommendations. Test these
+distinctions with `node run-project-document-session-reading-fixtures.js`;
+local routing/transport success is not native receipt or semantic acceptance.
+
 A new route retires the old route ID, even if the new attempt fails. The stdio
 adapter retires it before argument validation, including extra, missing or wrongly
 typed arguments. A pending earlier route cannot reopen access after a later request.

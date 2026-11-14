@@ -103,7 +103,8 @@ function runOrientationFixtures() {
     ["## Current Authoring Families", "current-authoring-families"],
     ["## Artifact Family State Audit", "artifact-family-state-audit"],
     ["## Mapped Replanning And Compressed Reports", "mapped-replanning-and-compressed-reports"],
-    ["## Source-Bound Review And Logistics Reading", "source-bound-review-and-logistics-reading"]
+    ["## Source-Bound Review And Logistics Reading", "source-bound-review-and-logistics-reading"],
+    ["## Bound Session Reading Context", "bound-session-reading-context"]
   ]) {
     assert(cases.split("\n").filter(line => line === heading).length === 1, "Case anchor must have one actual target.");
     for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {

@@ -308,6 +308,12 @@ manual scopes. Its [relevance lesson](research-compendium.md#review-method-and-s
 preserves actual task sources, specialist counterexamples and existing authority;
 it is engineering evidence, not new military doctrine or native acceptance.
 
+The [bound-session reading case](document-authoring-case-study.md#bound-session-reading-context)
+tests the actual adapter's role, descriptor and original/current task composition.
+Its [descriptor/profile distinction](research-compendium.md#routing-descriptor-and-assigned-profile-2026-11-15)
+preserves exact access profiles and old evidence without a military-source claim
+or inferred native reading.
+
 The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
 uses synthetic aggregate counts, not external military or statistical evidence.
 Both clients read six required documents and give advance backbriefs; source

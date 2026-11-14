@@ -265,6 +265,18 @@ match is not domain expertise or permission to read an unassigned source.
 The 58 local comparisons and installed regressions preserve those boundaries;
 they do not establish global minimality, native consumption or new authority.
 
+## Routing Descriptor And Assigned Profile (2026-11-15)
+
+The [bound-session comparison](document-authoring-case-study.md#bound-session-reading-context)
+shows why a direct-route improvement must be checked through its actual adapter.
+The session's document-only descriptor and recipient L-level serve different
+purposes; neither should be renamed to trigger a relevance shortcut. Its whole
+assignment, objectives and required profile remain inputs to selection. Optional
+access is independent of recommendation: an unneeded default can disappear while
+an assigned optional guide stays readable, and no unlisted guide gains access.
+The 32 before/after cases and local transport regressions establish that bounded
+integration, not a smaller delivered profile or fresh native comprehension.
+
 ## A New Role Needs Its Own Reading (2026-11-12)
 
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)

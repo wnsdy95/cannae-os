@@ -58,9 +58,12 @@ and table, including their superseded next actions. They are not dispatch orders
    corrects missing source-bound report-review guidance and unnecessary S4 SQL
    defaults. It preserves storage/technical/explicit/parent/guarded cases and
    independent domain gaps; broader useful-profile appraisal remains open.
-   The bound document session declares `document-only-verification`, not
-   `read-only`; verify its actual original-task/profile context separately rather
-   than claiming the direct selector now reduces native-session reading.
+   The [bound-session follow-up](document-authoring-case-study.md#bound-session-reading-context)
+   now recognizes its unchanged `document-only-verification` descriptor. Thirty-two
+   actual local session comparisons preserve original/current tasks, required and
+   optional profiles, technical cases and domain gaps. This narrows recommendations,
+   not assigned reading or authority; local handler/transport tests do not establish
+   fresh model reading or finish broader useful-profile appraisal.
 
 **Ongoing maintenance (A15-A17; G4):** the [family audit](document-authoring-case-study.md#artifact-family-state-audit)
 reconciles ten maintained outputs with original artifact, review, receiving and

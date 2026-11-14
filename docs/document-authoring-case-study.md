@@ -5212,3 +5212,39 @@ batches, the only executable change is that fixture repair; subsequent skill and
 case notes receive their own final-tree checks. These local results do not prove
 fresh model behavior or close the remaining authority/profile integration gap.
 Evidence: `.cannae/maintenance/role-reading-followup-20261115/`.
+
+## Bound Session Reading Context
+
+At `b7ca165`, the direct S3/S4 relevance correction does not apply to the actual
+receiving adapter: it declares `document-only-verification`, while the selector
+recognizes only `read-only`. The access policy already describes that adapter as
+an ordinary read-only receiving session. Its fixed descriptor, recipient L1,
+original assignment and exact profile are distinct declarations, not strings to
+rewrite for a passing route. No adapter authority or profile is changed.
+
+A fixed before/after comparison invokes the actual session and both bundled
+routers for 32 cases: two roles, two providers and eight task/profile variants.
+Plain and optional-profile document work lose only unrelated role recommendations
+and their mode-list entries, with explicit exclusion provenance. Required
+specialist inputs, technical original/current tasks, systems duties, ambiguous
+original work and independent domain objectives retain their complete prior
+outputs. Assigned source lists, required counts, authority, task identity,
+capability decisions and validation commands are unchanged. These comparisons
+test the full original/current assignment composition, not a shortened query.
+
+The reusable regression exercises actual assigned reads, optional reads that do
+not satisfy required inputs, denied unlisted recommendations, brief/source holds,
+rerouting and attempted authority substitution. Its local stdio cases carry the
+same exact role/profile results through the client tool transport. Existing
+guarded receipts still reject the document-only descriptor. Installed link/copy
+checks retain that descriptor rather than silently replacing it with read-only.
+
+The first audit setup incorrectly nests a synthetic project inside doctrine and
+omits a committed Git HEAD; the repository-identity guard rejects it before any
+route. The corrected setup uses separate temporary repositories, preserving that
+failure rather than weakening the guard. Both skill references now distinguish
+routing descriptors from profile authority and recommendations from assigned
+reading. No model call, new preparation approval or native acceptance is implied.
+The reading profile itself is unchanged, so these results do not prove fewer
+actual model source reads; broader A05/G2 relevance appraisal remains partial.
+Evidence: `.cannae/maintenance/session-reading-20261115/`.

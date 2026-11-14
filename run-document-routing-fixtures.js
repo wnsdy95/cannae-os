@@ -341,6 +341,27 @@ function testReadOnlyLogisticsDocuments(router) {
   for (const key of ["matched_routes", "validation_commands", "capability_routing"]) assert.deepEqual(ordinary[key], baseline[key]);
 }
 
+function testDocumentSessionAuthority(router) {
+  const query = "Review the supplied handoff against its original requirements. Do not publish.";
+  for (const role of ["S3", "S4"]) {
+    const args = ["--actor=ai", "--role=" + role, "--department=" + (role === "S3" ? "operations" : "logistics")];
+    const ordinary = route(router, [...args, "--authority=read-only"], query);
+    const bounded = route(router, [...args, "--authority=document-only-verification"], query);
+    const expected = structuredClone(ordinary); expected.operating_mode.authority = "document-only-verification";
+    assert.deepEqual(bounded, expected);
+    const specialist = role === "S3" ? "docs/protected-process-execution.md" : "docs/data-model.sql.md";
+    for (const extra of [["--authority=document-only-verification-and-execution"], ["--authority=L1"],
+      ["--mission=MIS-READING"], ["--scope=agent"], ["--source=" + specialist]]) {
+      assert(route(router, [...args, "--authority=document-only-verification", ...extra], query).recommended_documents.some(row => row.path === specialist));
+    }
+    const rejected = spawnSync(process.execPath, [path.join(ROOT, router), ...args, "--authority=document-only-verification",
+      "--receipt", "--scope=agent", "--mission=MIS-DOCUMENT-SESSION", "--wave=W1", "--agent=reader", `--capability-query=${query}`, "--", query],
+    { cwd: ROOT, encoding: "utf8" });
+    assert.equal(rejected.status, 2); assert.equal(rejected.stdout, "");
+    assert(rejected.stderr.includes(role === "S3" ? "AGENT_ROUTING_WRONG_AUTHORITY" : "AGENT_ROUTING_NOT_S3"));
+  }
+}
+
 function testTaskReadingScope(router) {
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
@@ -1096,6 +1117,7 @@ for (const router of ROUTERS) {
   testS6Reading(router);
   testReadOnlyOperationsDocuments(router);
   testReadOnlyLogisticsDocuments(router);
+  testDocumentSessionAuthority(router);
   testOrderDocumentFormats(router);
   testTaskReadingScope(router);
   testSourceReadingScope(router);
