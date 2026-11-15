@@ -7,6 +7,7 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 ## Unreleased
 
 - Integrate the skill-first branch with retained mainline controls without replacing either history. Preserve document-context integrity together with readiness revocation, combine non-executing validator types and both routing inventories, and retain captured-request, workload and registry procedures in both conditional skill references. Prior native acceptance remains bound to its recorded revisions; merge validation is not a new model review or permission grant.
+  Keep the installation refresh fixture within the source's existing line count and explicitly reject oversized skill replacements without modifying either installation. The 500-line limit is unchanged.
 
 - Record PR97's two bounded native whole-output reviews under existing mirrored guidance: seven mandatory reads per phase, one useful optional guide per client, exact source appendices and separately appraised W2/FRAGO/status/question/handoff fidelity. Reconcile the final A01/A05/A10/A20 acceptance with prior cases: twenty required rows and all five skill-first goals now have bounded evidence. Preserve historical failures, six pending preparation proposals, unadopted drafts and deferred infrastructure/plugin packaging. This is verification/status maintenance, not new permission, universal reliability or a shipped plugin.
 

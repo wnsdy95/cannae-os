@@ -739,15 +739,18 @@ try {
     assert(!fs.existsSync(destination(invalid, "codex")));
     assert.equal(fs.readFileSync(invalid.CLAUDE_SKILLS_DIR, "utf8"), "Keep this file.\n");
   });
-  fixture("invalid source metadata or router blocks both replacements", () => {
-    for (const [relative, content] of [["SKILL.md", "Missing required frontmatter.\n"],
+  fixture("invalid source metadata, length or router blocks both replacements", () => {
+    for (const [relative, content, expectedIssue] of [["SKILL.md", "Missing required frontmatter.\n"],
+      ["SKILL.md", fs.readFileSync(path.join(sourceSkill("claude"), "SKILL.md"), "utf8") + "\n".repeat(500),
+        "500-line progressive-disclosure limit"],
       ["scripts/route_controls_docs.js", "invalid JavaScript syntax\n"]]) {
       const file = path.join(sourceSkill("claude"), relative);
       const original = fs.readFileSync(file);
       const before = PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino);
       try {
         write(file, content);
-        install(env, ["--copy", "--force"], 1);
+        const rejected = install(env, ["--copy", "--force"], 1);
+        if (expectedIssue) assert(`${rejected.stdout}\n${rejected.stderr}`.includes(expectedIssue));
         assert.deepEqual(PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino), before);
         assert.equal(fs.readFileSync(path.join(destination(env, "codex"), "local-note"), "utf8"), "Keep me.\n");
       } finally {
@@ -774,7 +777,10 @@ try {
   fixture("copy snapshots stay unchanged until an explicit refresh", () => {
     for (const provider of PROVIDERS) {
       const original = fs.readFileSync(path.join(sourceSkill(provider), "SKILL.md"), "utf8");
-      write(path.join(sourceSkill(provider), "SKILL.md"), original + "\nFixture-only source update.\n");
+      const updated = original.replace("# Controls Doctrine Operator", "# Controls Doctrine Operator (fixture-only update)");
+      assert.notEqual(updated, original);
+      assert.equal(updated.split("\n").length, original.split("\n").length);
+      write(path.join(sourceSkill(provider), "SKILL.md"), updated);
       assert.equal(fs.readFileSync(path.join(destination(env, provider), "SKILL.md"), "utf8"), original);
     }
     install(env, ["--copy", "--force"]);
