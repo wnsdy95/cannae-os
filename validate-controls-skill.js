@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { TOPICS, readInstructions } = require("./codex-skills/controls-doctrine-operator/scripts/read_controls_instructions");
 
 const ROOT = __dirname;
 const ALLOWED_TARGETS = new Set([
@@ -44,13 +45,20 @@ function validateSkill(target) {
   if (!body.trim()) throw new Error("SKILL.md instruction body is empty.");
   const lineCount = content.split("\n").length;
   if (lineCount > 500) throw new Error(`SKILL.md exceeds the 500-line progressive-disclosure limit (${lineCount}).`);
-  for (const requiredPath of ["scripts/route_controls_docs.js", "references/document-routing.md"]) {
-    const candidate = path.join(skillRoot, requiredPath);
-    if (!fs.existsSync(candidate) || !fs.lstatSync(candidate).isFile()) {
+  for (const requiredPath of ["scripts/route_controls_docs.js", "scripts/read_controls_instructions.js", "references/document-routing.md"]) {
+    let candidate = skillRoot;
+    for (const segment of requiredPath.split("/")) {
+      candidate = path.join(candidate, segment);
+      if (fs.lstatSync(candidate).isSymbolicLink()) throw new Error(`Skill support path is a symlink: ${requiredPath}.`);
+    }
+    if (!fs.lstatSync(candidate).isFile()) {
       throw new Error(`Skill is missing required support file ${requiredPath}.`);
     }
   }
-  return { target, name: values.name, description_length: values.description.length, line_count: lineCount };
+  const instructions = readInstructions(skillRoot, Object.keys(TOPICS));
+  if (instructions.documents.some(document => !document.content.trim())) throw new Error("Skill instruction file is empty.");
+  return { target, name: values.name, description_length: values.description.length, line_count: lineCount,
+    entrypoint_bytes: Buffer.byteLength(content), instruction_document_count: instructions.documents.length };
 }
 
 function main() {

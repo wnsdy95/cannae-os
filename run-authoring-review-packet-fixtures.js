@@ -5,6 +5,10 @@ const crypto = require("node:crypto");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
+const { readInstructions } = require("./codex-skills/controls-doctrine-operator/scripts/read_controls_instructions");
+function projectGuidance(directory) {
+  return readInstructions(directory, ["project-content"]).documents.map(document => document.content).join("\n");
+}
 const { INPUTS, section, replaceOnce, buildPacket, writePacket, classifyReviewEvent, classifyClaudeReviewEvent,
   collectPublicReviewMessages } = require("./authoring-review-packet");
 
@@ -261,7 +265,8 @@ try {
     const rubric = fs.readFileSync(path.join(__dirname, "docs/source-reliability-rubric.md"), "utf8");
     assert(rubric.includes("confirmed inclusion, confirmed exclusion and unspecified coverage"));
     for (const provider of ["codex-skills", ".claude/skills"]) {
-      const body = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      const body = readInstructions(path.join(__dirname, provider, "controls-doctrine-operator"), ["project-terms"])
+        .documents.map(document => document.content).join("\n");
       assert(body.includes("An unresolved meaning can still have a known project/source scope"));
       assert(body.includes("Separate evidence checking from approval in decision tables and their headings."));
       assert(body.includes("Unknown inclusion or scope is not confirmed exclusion"));
@@ -377,7 +382,7 @@ try {
     assert(packet.prompt.includes("Count by source ID, including the candidate when it is a required row."));
     assert(packet.prompt.includes("the full required total; rereads are separate from unique sources."));
     for (const provider of ["codex-skills", ".claude/skills"]) {
-      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      const skill = projectGuidance(path.join(__dirname, provider, "controls-doctrine-operator"));
       assert(skill.includes("Reconcile totals by source ID, including a candidate marked required."));
       assert(skill.includes("a denied read does not prevent a path leak in the listing."));
     }
@@ -405,7 +410,7 @@ try {
       assert(packet.prompt.includes(phrase), `Missing current reviewer guidance: ${phrase}`);
     }
     for (const provider of ["codex-skills", ".claude/skills"]) {
-      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      const skill = projectGuidance(path.join(__dirname, provider, "controls-doctrine-operator"));
       assert(skill.includes("do not relabel unread requirements as"));
       assert(skill.includes("An over-broad list needs reviewed reassignment"));
       assert(skill.includes("not only as a retrospective final section"));
@@ -443,7 +448,7 @@ try {
     assert(packet.prompt.includes("method section after an already calculated headline is retrospective"));
     assert(packet.prompt.includes("does not reveal unobserved internal computation"));
     for (const provider of ["codex-skills", ".claude/skills"]) {
-      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      const skill = projectGuidance(path.join(__dirname, provider, "controls-doctrine-operator"));
       assert(skill.includes("Announce a required method change before dependent results"));
       assert(skill.includes("examples do not prove a ranking for all weights"));
       assert(skill.includes("docs/source-reliability-rubric.md"));
@@ -815,7 +820,7 @@ try {
   });
   fixture("both skills and reviewer context require actual public reporting rather than route self-claims", () => {
     for (const file of ["codex-skills/controls-doctrine-operator/SKILL.md", ".claude/skills/controls-doctrine-operator/SKILL.md"]) {
-      const body = fs.readFileSync(path.join(__dirname, file), "utf8");
+      const body = projectGuidance(path.join(__dirname, path.dirname(file)));
       assert(body.includes("Use a current public assistant message for the notice."));
       assert(body.includes("arguments, source quotations and later claims of prior reporting do not replace"));
     }
@@ -833,7 +838,7 @@ try {
   });
   fixture("both skills preserve ownership and authority across a parent-delivered reporting phase", () => {
     for (const provider of ["codex-skills", ".claude/skills"]) {
-      const body = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      const body = projectGuidance(path.join(__dirname, provider, "controls-doctrine-operator"));
       assert(body.includes("Check the actual client channel, not only its help or a requested flag."));
       assert.match(body, /finish a report-only phase with\s+dependent reading\/work unavailable/);
       assert.match(body, /original task, source assignment, ownership and holds/);

@@ -74,6 +74,24 @@ function fixture(name, fn) {
   console.log(`PASS ${name}`);
 }
 
+function installedInstructions(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const provider of PROVIDERS) {
+    const script = path.join(destination(env, provider), "scripts/read_controls_instructions.js");
+    const result = spawnSync(process.execPath, [script, "--all"], { cwd: unrelated, env, encoding: "utf8" });
+    assert.equal(result.status, 0, result.stderr);
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.documents.length, 5);
+    assert.equal(output.native_read_verified, false);
+    assert.equal(output.transfer_authorized, false);
+    for (const document of output.documents) {
+      assert.equal(document.content, fs.readFileSync(path.join(sourceSkill(provider), document.path), "utf8"));
+      assert.equal(document.bytes, Buffer.byteLength(document.content));
+    }
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 function missingRoutedDocuments(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   const relative = "docs/document-authoring-workflow.md", file = path.join(source, relative), bytes = fs.readFileSync(file);
@@ -653,6 +671,7 @@ try {
     assert.deepEqual(outputs[0].recommended_documents, outputs[1].recommended_documents);
     assert.deepEqual(outputs[0].validation_commands, outputs[1].validation_commands);
   });
+  fixture("linked conditional instruction reader works without native clients", () => installedInstructions(env));
   fixture("linked Codex starter stays document-first and routes equivalently in both providers", () => documentStarter(env));
   fixture("literal linked entrypoint examples work in fresh target-project shells", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
@@ -686,6 +705,7 @@ try {
     }
   });
   fixture("copied Codex starter retains its source text and document-first route", () => documentStarter(env));
+  fixture("copied conditional instruction reader preserves all source bytes", () => installedInstructions(env));
   fixture("existing copies require force and preserve unrelated user files", () => {
     write(path.join(destination(env, "codex"), "local-note"), "Keep me.\n");
     install(env, ["--copy"], 1);
@@ -785,7 +805,10 @@ try {
     for (const [relative, content, expectedIssue] of [["SKILL.md", "Missing required frontmatter.\n"],
       ["SKILL.md", fs.readFileSync(path.join(sourceSkill("claude"), "SKILL.md"), "utf8") + "\n".repeat(500),
         "500-line progressive-disclosure limit"],
-      ["scripts/route_controls_docs.js", "invalid JavaScript syntax\n"]]) {
+      ["scripts/route_controls_docs.js", "invalid JavaScript syntax\n"],
+      ["references/project-content.md", "", "SKILL_INSTRUCTION_EMPTY"],
+      ["SKILL.md", fs.readFileSync(path.join(sourceSkill("claude"), "SKILL.md"), "utf8")
+        .replace("](references/project-content.md)", "](unlinked.md)"), "SKILL_INSTRUCTION_NOT_LINKED"]]) {
       const file = path.join(sourceSkill("claude"), relative);
       const original = fs.readFileSync(file);
       const before = PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino);

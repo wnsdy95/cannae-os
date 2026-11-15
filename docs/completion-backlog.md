@@ -16,9 +16,10 @@ Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
 keep dashboards, servers and production infrastructure deferred. R1-R6 in the
 [scope](skill-first-product-scope.md#active-objectives) are the new active goal.
 The completed G1-G5/A01-A20 baseline below remains intact. New status:
-**1/18 required criteria verified**; this is a work inventory, not an accuracy
+**2/18 required criteria verified**; this is a work inventory, not an accuracy
 or product-completion percentage. Registration and the initial probes closed none;
-the frozen evaluation and recorded baseline below close SR01 only.
+the frozen evaluation closes SR01 and the conditional-instruction checkpoint
+below closes SR04. Actual context savings and native quality remain open.
 
 #### Observed Skill Limits
 
@@ -68,9 +69,9 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR01 | R1 | Freeze 24 original requests, expected objectives/documents, exclusions and the baseline revision; record development outputs in both providers. Label withheld cases and keep them out of tuning until the candidate is frozen. | Verified (bounded) |
 | SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | In progress |
 | SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | In progress |
-| SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Planned |
-| SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | Planned |
-| SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | Planned |
+| SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Verified (bounded) |
+| SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | In progress |
+| SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | In progress |
 | SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress |
 | SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | Planned |
 | SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
@@ -233,6 +234,83 @@ still need review. Linked/copied and actual local receiving regression results
 do not establish native-client comprehension or actual loaded-context savings.
 SR02/SR03 stay in progress until the reserved candidate evaluation, with 1/18
 criteria verified. R2 loaded-context savings and R3/R5 native evidence remain open.
+
+#### Conditional Instruction Delivery (2026-11-15)
+
+R2 moves four existing procedure bodies from `ea1a951` into mirrored linked
+guides: project content/reporting, client operation, project terminology and
+delegated waves. Body comparison permits only the required sibling Markdown-link
+adjustment. The entrypoint retains applicability and stop conditions; shortening
+does not delete a control or combine lines to evade the line limit.
+
+| Provider | Frozen entry bytes (`9331ff5`) | Candidate entry bytes | Reduction | Validator lines |
+| --- | --- | --- | --- | --- |
+| Codex | 32,902 | 25,198 | 23.415% | 392 |
+| Claude | 32,916 | 25,212 | 23.405% | 392 |
+
+The bundled local reader emits the entrypoint plus explicitly named linked
+guides, with full content, byte/hash bindings and no model call, project-source
+read or authority grant. Duplicate/unknown topics and missing, unlinked, empty,
+invalid UTF-8 or symlinked instruction files fail before stdout. Its JSON framing
+is additional output, not included in the content-body sum. A tool-disabled
+recipient still needs applicable bodies in its authorized input; a link is not
+delivery and a router recommendation cannot expand an assigned read profile.
+
+Direct task reading selects applicable guides; explicit conditional inputs do
+not automatically request all skill-maintenance procedures. Skill maintenance
+and guarded context retain all four guides in both provider trees. Context
+integrity tests change each moved guide and reject the old binding; no existing
+authority, source requirement or issued control is removed.
+
+Initial focused fixtures passed for 15 progressive-disclosure cases, 74 authoring
+packet checks and 16 context-integrity cases. A new probe found generic
+`Draft an order from the supplied policy.` remains a capability gap in both
+baseline and candidate; format-specific OPORD discovery is not universal intake.
+The first authoring test still looked for a relocated term rule in the entrypoint
+only; it now reads the explicitly linked term guide without dropping the assertion.
+
+The first aggregate stopped at the twentieth command: preflight still expected
+direct and guarded document sets to be identical. The corrected test requires
+exactly the direct set plus all eight mirrored conditional files, unchanged
+controls and separate guarded `--limit` invariance. It passed 22/22 afterward.
+Preserved initial report under `.cannae/maintenance/skill-progressive-r2-20261115/`:
+`verification-cd40912c-fac7-4e4d-a5e7-a03dea27dd23.json`, SHA-256
+`7407506fa02ecbda8ca8d23a094664e881a17e6f4bb4eae2ed502ea2eb80d989`.
+Its suffix did not execute and is not counted as a pass.
+
+A second aggregate stopped at its third command because a new project-input
+fixture reused the doctrine root; the existing distinct-project rule correctly
+rejected it. The fixture now uses a separate synthetic Git project without
+weakening that rule. Retained report: `verification-073f5f6b-6600-43e6-9ce2-7f02f55c482e.json`,
+SHA-256 `9841c2e6ed0ddbe09b8773d00928a4887f9db0e70149bb79319ec945d6b2adac`.
+
+The final affected-surface gate passed all 24 commands without source drift:
+`verification-c1f8b0dd-35cd-4b82-a709-06f569c39819.json` in the same R2 root,
+SHA-256 `00cc6f9b32b79b71dc85eb4cfcab8380a204fb56c8096efb71889a375c94f2b5`.
+It retains exact moved-body/entry comparisons and 30 staged-file bindings,
+including both bundled readers and routers. Checks include 15 progressive-
+disclosure cases, 57 isolated link/copy installation cases, 22 preflight cases,
+16 context-integrity cases, 1,776 routing queries, 36 mission-controller cases,
+74 authoring-packet cases and the metadata/source/index gates. These are local
+checks, not fresh native reading or a full-repository integration run.
+
+The unchanged frozen development requests still match 24/24, with no new
+expectation failure: `development-e68e074c-1527-42d9-b297-2a65245bf046.json`
+under the R1A observation root, SHA-256
+`9d558313220ac0886596beb19061082cc0f2eb4abef3aa6d6256b8b716311872`.
+Its router bindings pair with the R2 gate's reader bindings. The earlier Korean
+false-gap fallback removal remains unchanged; issued controls are not waived.
+The final status/evidence-index edits receive separate documentation checks.
+
+SR04 is bounded-verified by exact entry reduction, body preservation, linked
+discovery, installation and guarded-context checks. SR05/SR06 remain in progress
+pending actual client evidence. Six-case client-delivery counts remain null;
+neither entry shrinkage nor local emitted bytes closes SR05. The all-topic local
+reader emits 35,296/35,310 content bytes (Codex/Claude), more than the old entries;
+conditional selection, repeats and JSON framing must be measured in real use.
+No native model call, withheld execution or new transfer consent occurred.
+The new goal has 2/18 verified criteria, not a claim of overall product accuracy.
+Dashboards and servers stay deferred.
 
 #### Execution Order And Boundaries
 

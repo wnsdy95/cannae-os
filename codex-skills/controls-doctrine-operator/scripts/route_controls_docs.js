@@ -4,6 +4,9 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const { TOPICS } = require("./read_controls_instructions");
+const SKILL_DIRECTORIES = ["codex-skills/controls-doctrine-operator", ".claude/skills/controls-doctrine-operator"];
+const instructionPaths = topic => SKILL_DIRECTORIES.map(directory => directory + "/" + TOPICS[topic]);
 
 const DEFINITION_KEYWORDS = ["user-defined term", "user defined term", "project term", "project-scoped user definition", "project-specific user definition"];
 
@@ -444,12 +447,14 @@ const RULES = [
       "codex-skills/controls-doctrine-operator/SKILL.md",
       "codex-skills/controls-doctrine-operator/references/document-routing.md",
       "codex-skills/controls-doctrine-operator/references/self-improvement-loop.md",
-      "docs/skill-operational-mission-lifecycle.md"
+      "docs/skill-operational-mission-lifecycle.md",
+      ...Object.keys(TOPICS).flatMap(instructionPaths)
     ],
     commands: [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
       "node run-skill-control-enforcement-fixtures.js",
       "node run-skill-installation-fixtures.js",
+      "node run-skill-progressive-disclosure-fixtures.js",
       "node run-agent-routing-preflight-fixtures.js",
       "node implementation-candidate-registry.js audit",
       "node validate-controls-skill.js codex-skills/controls-doctrine-operator",
@@ -1688,7 +1693,8 @@ function needsSkillOperationsReading(text, sources, guarded) {
     "(?:(?:a|an|the|this|these|those|our|my|both|installed|new|existing)\\s+)*" +
     `(?:${client}(?:\\s+(?:and|or)\\s+${client})?\\s+)?` +
     "(?:skills?|skillset|skill instructions|skill entrypoints?|(?:document\\s+)?(?:router|routing(?: rules)?))\\b(?![-_])", "i");
-  return sources.some(file => rule.docs.includes(file) && !SKILL_GENERAL_DOCS.has(file)) ||
+  return sources.some(file => rule.docs.includes(file) && !SKILL_GENERAL_DOCS.has(file) &&
+    !Object.keys(TOPICS).some(topic => instructionPaths(topic).includes(file))) ||
     isCorpusOrientationRequest(text) || edit.test(String(text)) ||
     rule.keywords.some(keyword => !SKILL_USE_KEYWORDS.has(keyword) && keywordMatches(context, normalizeText(keyword))) ||
     countMatches(context, ["skill maintenance", "skill development", "skill installation", "skill configuration", "skill discovery", "skill instructions", "skill entrypoint",
@@ -1814,6 +1820,26 @@ function route(query, repoRoot, options) {
         gap_fallback: rule.id === "force-structure" && forceStructureFallback, excluded_by: excludedBy });
     }
     commands.push(...rule.commands);
+  }
+
+  // Moved entrypoint controls stay bound in guarded packs; direct reading is conditional.
+  const routeIds = new Set(selectedRules.map(rule => rule.id));
+  for (const topic of Object.keys(TOPICS)) {
+    const triggers = [];
+    if (guardedRouting(options)) triggers.push("guarded_context");
+    if (skillOperationsReading) triggers.push("skill_maintenance");
+    if (sourcePaths.some(file => instructionPaths(topic).includes(file))) triggers.push("explicit_input");
+    if (topic === "project-terms" && routeIds.has("project-terminology")) triggers.push("project_terminology");
+    if (topic === "project-content" && (inputs || routeIds.has("project-document-delivery") ||
+        routeIds.has("document-access-context"))) triggers.push("project_content");
+    if (topic === "client-operation" && countMatches(readingContext,
+      ["client discovery", "native cli", "native client", "tool-channel", "tool channel", "tool failure", "cli diagnosis"])) {
+      triggers.push("client_operation");
+    }
+    if (triggers.length) for (const file of instructionPaths(topic)) {
+      docs.push(file);
+      noteDocument(file, { kind: "conditional_instruction", topic, triggers, selected: true });
+    }
   }
 
   // Bound scope by selected routes, not by dropping task docs behind role docs.

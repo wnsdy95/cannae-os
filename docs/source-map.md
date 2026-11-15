@@ -235,6 +235,14 @@ source and authority bindings remain distinct. The record explains removal of
 false-gap fallback commands without waiving any issued control. Reserved/native
 evaluation and broader semantic coverage remain open.
 
+The [conditional instruction split](completion-backlog.md#conditional-instruction-delivery-2026-11-15)
+preserves four procedure bodies from `ea1a951` in mirrored linked references,
+with only relative Markdown-link adjustments inside relocated bodies. Entry
+bytes are compared with frozen `9331ff5`; guarded contexts retain digest-bound
+guidance. The bundled `read_controls_instructions.js` emits local full bodies
+without invoking clients or granting access. This is repository engineering
+evidence, not a military-source claim or observed native delivery.
+
 The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 binds native route/read records, delivered source bytes and separate operator
 appraisal. Optional-guide selection is observed; source-body byte counts are not

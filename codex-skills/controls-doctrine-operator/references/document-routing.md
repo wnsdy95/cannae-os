@@ -54,6 +54,45 @@ or negated terms; distinguish drafting an instruction from executing it. Do not
 strip required controls from an already issued receipt or context pack. Clarify
 an ambiguous guarded operation before dispatch, not by silently removing gates.
 
+### Conditional Instruction Delivery
+
+The entrypoint links four phase-specific guides: [Project Content And Reporting](project-content.md),
+[Client Operation](client-operation.md), [Project Terms](project-terms.md) and
+[Delegated Waves](delegated-waves.md). Read the applicable body before its phase.
+For a tool-disabled recipient, an authorized preparer must include those exact
+bytes in the reviewed input; a link, catalog row or digest is not body delivery.
+Do not silently add an unassigned guide to a manifest-governed read profile.
+Missing assigned guidance holds dependent work, not unrelated permitted drafting.
+
+The bundled helper emits local instruction content, not project sources:
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_instructions.js" --topic=project-content
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_instructions.js" --topic project-terms
+```
+
+Use the actual loaded skill directory established in the entrypoint. No topic
+emits only the entrypoint; repeated topics select distinct named guides.
+`--all` emits all four, without invoking a client, sending content or granting
+permission. Unknown/duplicate topics and missing, unlinked, empty, invalid UTF-8
+or symlinked instruction files fail without partial stdout. Installed root links
+are resolved; child instruction paths must be ordinary local files.
+
+The result binds each full body to its UTF-8 bytes and SHA-256; the content-set
+digest binds their ordered path/byte/hash list. JSON framing adds bytes beyond
+`emitted_content_bytes`. Count what the recipient actually receives, including
+entrypoints, references, repeats and framing; do not report selection or helper
+stdout as native-client reading. The helper cannot infer all semantic dependencies.
+
+Direct terminology/content/client routes recommend the relevant modules, and
+explicit inputs remain selected. Skill maintenance and guarded context select
+all four in both provider trees so moved controls remain digest-bound.
+`--explain-reading` records `conditional_instruction` reasons and triggers.
+Recommendation does not assign reading, grant access, clear a hold or prove use.
+Guarded packs are not shortened to meet an ordinary-work size target.
+Run `node run-skill-progressive-disclosure-fixtures.js` for a bundle change,
+then the affected installation, routing and context-integrity checks.
+
 ### Inspecting Reading Selection
 
 Direct `request_intake` records matching-only views for a recognized leading

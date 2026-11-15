@@ -7,6 +7,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const { analyzeRoutingPreflight } = require("./agent-routing-preflight-runner");
 const { validatePayload } = require("./validator-cli-prototype/validate");
+const { TOPICS } = require("./codex-skills/controls-doctrine-operator/scripts/read_controls_instructions");
 
 const ROOT = __dirname;
 
@@ -240,8 +241,15 @@ for (const fixture of routingCases) {
       assert.strictEqual(routed.supporting_artifacts.length, 1, "supporting artifact limit must still apply");
       assert(routed.supporting_artifacts_truncated, "supporting truncation must remain explicit");
       assert(routed.supporting_artifacts.every(item => !paths.includes(item.path)), "duplicate supporting document");
-      assert.deepStrictEqual(receipt.recommended_documents, routed.recommended_documents,
-        "receipt or --limit changed the selected documents");
+      const conditional = Object.values(TOPICS).flatMap(file =>
+        ["codex-skills", ".claude/skills"].map(directory => directory + "/controls-doctrine-operator/" + file));
+      const expectedPaths = [...new Set([...paths, ...conditional])].sort();
+      assert.deepStrictEqual(receipt.recommended_documents.map(row => row.path).sort(), expectedPaths,
+        "guarded context must retain direct documents and every moved instruction, without unrelated additions");
+      const limitedReceipt = routeWithSkill(skillRoot, fixture.query, [...delegatedArgs, ...extra,
+        "--receipt", "--scope=agent", "--mission=MIS-ROUTING", "--wave=W1", "--agent=fixture-agent", "--limit=1"]);
+      assert.deepStrictEqual(limitedReceipt.recommended_documents, receipt.recommended_documents,
+        "--limit must not truncate required guarded documents");
       assert.deepStrictEqual(receipt.validation_commands, routed.validation_commands);
       for (const sourceOption of extra.filter(arg => arg.startsWith("--source="))) {
         assert(receipt.router_command.includes(sourceOption), "receipt lost an explicit required input");

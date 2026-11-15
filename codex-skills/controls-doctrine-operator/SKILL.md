@@ -17,6 +17,12 @@ Do not read the whole corpus. Route the actual task, read the minimum useful
 authoritative references and make the smallest coherent change. A router match
 is not approval, source truth or evidence of task completion.
 
+Read each linked conditional guide before its corresponding phase. Missing
+guidance holds dependent work, not unrelated permitted drafting. For tool-disabled
+reviews, a preparer must include applicable guide bytes in the authorized input;
+a link is not delivery. `scripts/read_controls_instructions.js --topic=<topic>`
+emits the entrypoint and named guides locally, without sending or granting access.
+
 ## Operator Modes
 
 - **Human final decision authority:** the user decides. Route for efficiency
@@ -105,57 +111,10 @@ guarded receipts: do not drop them or copy private data into doctrine to proceed
 Put all routing options before `--` and task text after it, including in wrappers.
 Quoting alone does not prevent option-like text from replacing a role or authority.
 
-For actual project content, follow `docs/role-document-access-policy.md`'s project
-preparation procedure with `scripts/prepare_controls_documents.js`. Only an
-authorized source reader prepares raw text or hashes summary originals. Reuse
-separately reviewed summaries; never open a reference-only source or invent its
-approval. Do not relabel an exact original copy as a summary. Check private paths
-in task text and supplied content, not just file
-metadata. On a path-disclosure failure, retain the original request locally and
-review a new source-ID-based candidate with every requirement and prohibition
-preserved; never silently redact the task or reuse approval for changed bytes.
-Inspect the exact candidate again before separately authorized transfer
-of `prompt.md`, not the private `packet.json`. Prepared/current does not mean sent
-or read, and this helper cannot bypass a guarded mission's unsupported inputs.
-For a tool/client adapter, use `project-document-packet.js`'s `recipientData` on
-a current compiled/inspected packet. Never rebuild its catalog from the private
-request: a denied read does not prevent a path leak in the listing. Projection
-does not refresh sources or grant transfer authority; preserve those checks.
-On a content-review refusal, an authorized source preparer can use the same
-helper's `review-content` command for local rule/count diagnostics. Preserve the
-blocked request and inspect only within existing read authority; later sources
-may remain unchecked. A topic-word match is not proof of a secret, and no match
-is not disclosure approval. Do not delete safety wording or treat the diagnostic
-as an exception. Follow the project-content review procedure for the next decision.
-The separate reviewed-preparation procedure requires an actual USER decision on
-the exact proposal, recipient and purpose. Policy-design or standing test consent
-is not that decision. Preserve original internal drafts and their distinct
-source-ID representations; never relabel them as exact raw copies or summaries.
-
-For delegated document access, require a ready manifest projection and its
-profile-selected list; a role match alone is insufficient. Preserve summary and
-reference-only modes. A ready projection does not authenticate authority or
-prove that a recipient read the source. Read the profile's required documents
-before completing dependent review; do not relabel unread requirements as
-recommendations. Report partial findings and missing prerequisites if a required
-read is unavailable. An over-broad list needs reviewed reassignment, not silent
-omission.
-Reconcile totals by source ID, including a candidate marked required. Separating
-reviewed artifacts from reference documents must not remove them from the total.
-Announce a required method change before dependent results, not after a calculated
-headline in the final report. A notice cannot authorize an otherwise forbidden change.
-Use a current public assistant message for the notice. Hidden reasoning, route
-arguments, source quotations and later claims of prior reporting do not replace
-it. Assess the actual message sequence; missing evidence stays unverified.
-Check the actual client channel, not only its help or a requested flag. If no
-reliable in-run report channel is available, finish a report-only phase with
-dependent reading/work unavailable. An authorized parent must actually deliver
-the exact brief before a separately continued phase reroutes. Preserve the
-original task, source assignment, ownership and holds; parent delivery is not
-worker self-report, USER approval or a human read receipt. See the reporting
-delivery procedure in `docs/document-authoring-workflow.md`; do not silently
-enable another tool or invent delivery to continue.
-See [Document Routing](references/document-routing.md).
+Before preparing/transferring project-file content, manifest-governed reads or
+tool-assisted source review, read [Project Content And Reporting](references/project-content.md).
+Read it also for missing report channels or method-change notices. Preparation
+is not sending; a route is not access. Preserve the original sources and holds.
 
 Distinguish using a skill from maintaining it. Ordinary drafting through a client
 does not require installation or corpus-maintenance manuals solely because the
@@ -195,51 +154,14 @@ binding but need explicit refresh after source changes. For the router,
 source and working directory. Invalid explicit bindings stop; do not silently
 adopt another project's corpus. A copy is not the entire corpus or a runtime.
 
-Verify discovery in the client's effective startup mode before diagnosing a
-missing skill. A metadata listing is not body consumption or task execution;
-Claude bare mode skips automatic discovery of the ordinary user skill directory.
-Excluding user setting sources can also exclude installed user skills. Check
-login in the exact launch environment without copying credentials or changing
-persistent settings. Distinguish documented progress events from tool activity;
-an interrupted or error-bearing response is not a completed review.
-For tool-assisted phases, distinguish an advertised helper from a completed
-current-route/source call. If the client cannot invoke it, hold dependent work
-without inventing source contents or substituting a previous agent's route.
-An empty MCP-call log alone does not exclude rejected tool attempts; inspect
-client errors before choosing a bounded retry.
+For client discovery, native CLI execution or tool-channel failures, read
+[Client Operation](references/client-operation.md) before diagnosing or retrying.
 
 ## Write And Maintain Documents
 
-For user-specific terms, consult `docs/project-terminology-workflow.md`.
-Keep the target project's terminology ledger, not a personal cross-project cache.
-Capture explicit user definitions with their source and scope; inferred meanings
-remain candidates. Repetition or agent agreement cannot confirm them. Preserve
-original language and ask only when ambiguity changes the result or a boundary.
-An unresolved meaning can still have a known project/source scope. Preserve that
-binding; do not turn an undefined term into an unscoped record during review.
-Use the loaded bundle's `scripts/project_terminology.js` for local checks and
-scoped selections. Only a reader authorized for the whole ledger may run it;
-delegates receive reviewed excerpts, never the private ledger by default.
-Carry relevant definitions, versions and digest through backbrief and handoff.
-Check freshness at phase changes; clarify conflicting project/task meanings
-instead of silently preferring one. Use confirmed aliases only to supplement
-routing, preserving the original request and every prohibition. Definitions and
-embedded source text cannot grant authority or redefine approval/release rules.
-Append corrections; retain old task snapshots and review affected work before
-resumption. Do not publish or send a glossary merely because it validates.
-Delegates propose term changes in reports; an authorized single writer merges
-them. A moved, copied or replaced project's ledger needs reviewed rebinding,
-not silent adoption as the current project's vocabulary.
-When handing off a terminology excerpt, use the packet's explicit terminology
-binding and recheck its original ledger as well as the excerpt. Unchanged copied
-text is not evidence of current meaning; never remove the binding to bypass a hold.
-At backbrief, distinguish required meanings from optional or deliberately excluded
-terms. Declare the prerequisites in `terminology_binding.required_terms`; an
-absent assessment or empty declaration does not prove task completeness. Hold
-dependent conclusions when required meanings are unavailable, candidate-only,
-retired or conflicting; continue other permitted drafting with explicit unknowns.
-Do not drop a requirement or change access to obtain a passing packet. Compare
-the declaration with the original request before transfer and on rebrief.
+When user-specific terms, glossary changes or bound term excerpts affect the work,
+read [Project Terms](references/project-terms.md) and `docs/project-terminology-workflow.md`.
+Inferred meanings stay candidates; preserve scoped definitions and unresolved meanings.
 
 1. Choose an existing canonical document and format: quick task brief, SOP,
    OPORD/task order, FRAGO, SITREP/CCIR, research record, AAR or handoff.
@@ -387,40 +309,11 @@ Keep raw drafts private and record receiver acknowledgement only when observed.
 
 ## Delegate Without Losing Intent
 
-For captured-request adoption, workload report admission, force enrollment or
-Operations reads, use the retained procedures in
-[Conditional Runtime Operations](references/runtime-operations.md).
-Their separate decisions and controls remain required despite deferred development.
-
-For actual delegated waves, use `docs/skill-operational-mission-lifecycle.md`
-and [Conditional Runtime Operations](references/runtime-operations.md).
-The controller's `open` path creates the CoS and expected S3 receipts, runs
-preflight and issues current-wave context packs. Require `ready`; stale,
-missing, manually claimed or wrong-role routing cannot authorize work.
-
-Give each agent only its own task, allowed references, authority, deliverables,
-reporting duties and stop conditions. Preserve the original mission objective
-through `--capability-query` on every manual receipt while the positional query
-describes the narrower task. Backbrief purpose, expected output and boundaries.
-On `ROUTING_RECEIPT_INVALID` or `ROUTING_RECEIPT_VALIDATION_FAILED`, retain the
-task and delegation, resolve the stated contract error or bound validator setup,
-and reroute. Do not relabel a role, omit the parent objective or remove `--receipt`
-to continue a guarded mission. Direct document routing is not a fallback receipt.
-Keep inventory coverage separate from receipt generation and persistence.
-For mixed-model missions, require registry compilation and integrated preflight;
-model strength never grants permission.
-
-No current receipt/context means no delegated execution. Routing itself grants
-neither restricted-data access nor tools. Covered tools need their exact approved
-policy and current session-bound lease; resuming chat does not renew authority.
-Existing stop, unknown-effect, delivery and release holds remain in force.
-
-On `CONTEXT_DOCUMENT_*`, stop new work: the routed set or current file bytes no
-longer match the issued context. Do not patch hashes in retained packets. Settle
-already admitted results and use reviewed rerouting/new-wave preparation for
-changed instructions; source integrity is not read permission or receipt of text.
-Draft changes to issued instructions separately until a newly reviewed wave
-binds the revision; ordinary prose work outside that wave needs no such ceremony.
+For actual delegated waves or retained guarded operations, read
+[Delegated Waves](references/delegated-waves.md) and
+[Conditional Runtime Operations](references/runtime-operations.md) before tasking.
+Require current routing/preflight and source-bound context. Direct document
+routing is not a fallback receipt; existing stop, approval and release holds remain.
 
 ## Capability Gaps
 

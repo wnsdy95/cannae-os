@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Split conditional content/reporting, client-operation, terminology and delegated-wave instructions into mirrored linked guides, preserving their bodies and reducing both entrypoints by 23.4%. Add a non-authorizing local instruction reader, required-module installation validation and guarded-context digest coverage. Keep actual native delivery savings and semantic acceptance open.
+
 - Add bounded Korean intake views to both skills while preserving original requests, clauses, sources and authority. Keep conditional technical context, explicit parents and guarded controls; distinguish lexical hints from operator translations. Add Korean/mixed-language and Unicode regressions plus installed/local receiving coverage. Frozen development matches reach 24/24, not a native-quality or withheld-evaluation claim; the new goal remains open.
 
 - Improve bounded English intake in both routers: preserve original requests while exposing heading/exclusion views and inferred task-clause provenance. Keep compound capability gaps, source-policy review, draft readiness, dependent technical reading and declared role/authority distinct. Reject unsupported automatic compound receipts; retain explicit sources and selected controls. Preserve intake metadata through the document session without granting reads. Add direct, linked/copied and local receiving regressions and mirror operator appraisal guidance. Frozen development matches improve from 14/24 to 22/24; Korean, reserved evaluation and native acceptance remain open, with no additional acceptance criterion closed.

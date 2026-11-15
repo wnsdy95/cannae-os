@@ -39,6 +39,16 @@ Move procedure detail into the linked reference or doctrine document; do not rai
 the limit or omit the routed control. Routing fixtures execute this check so a
 valid route cannot conceal an invalid entrypoint.
 
+Before splitting an entrypoint, preserve the old procedure bodies and compare
+the relocated text, accounting for changed relative links. Verify each entry
+link names its applicability, both installations carry the helper/references,
+and guarded context binds the moved files. Test missing/unlinked modules and
+changed-context rejection; a smaller entrypoint is not enough. For tool-disabled
+reviews, inspect the actual authorized input for applicable guide bytes instead
+of assuming a link will be opened. Keep local emitted bytes, selected catalog
+bytes and observed recipient delivery separate. Record ambiguous wording as
+an open intake limit, not a reason to replace the user's original with a keyword.
+
 When extending validator CLI cases, declare `requiredCodes` explicitly, including
 `[]` for valid cases, and run `node validator-cli-prototype/run-fixtures.js`
 before expensive producer/browser ladders. The harness preflights definitions;

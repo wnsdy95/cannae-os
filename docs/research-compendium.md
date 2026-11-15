@@ -66,6 +66,15 @@ verified translation. Unicode normalization, term recognition and source fidelit
 are separate claims. Unknown clauses and operator translations still need review;
 no native quality, withheld-case pass or authority follows from the local result.
 
+The [conditional instruction split](completion-backlog.md#conditional-instruction-delivery-2026-11-15)
+separates entry length from procedural coverage. Moving guidance requires a
+discoverable phase condition, exact body preservation, copied/linked availability
+and binding in guarded context. A tool-disabled recipient cannot open an omitted
+link: its authorized preparer must supply applicable bodies. Local content
+emission, selected catalog size and observed native reading remain different
+measurements. A regression also retains generic `Draft an order...` as a known
+lexical gap; recognizing OPORD does not establish universal document intent.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

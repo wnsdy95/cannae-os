@@ -95,6 +95,11 @@ The [bounded Korean intake follow-up](docs/completion-backlog.md#korean-intake-d
 resolves the remaining development request in both providers while preserving
 original wording and explicit limits. Reserved and native evaluation remain open.
 
+The [conditional instruction split](docs/completion-backlog.md#conditional-instruction-delivery-2026-11-15)
+reduces both entrypoints by 23.4% while retaining linked content/reporting, client,
+terminology and delegated-wave procedures. Protected contexts bind all moved
+guides. Local emission is not native reading or measured end-to-end context savings.
+
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
 </p>
@@ -1066,7 +1071,7 @@ review; lexical overrecommendation and manually reviewed profiles remain limitat
 Separate plugin packaging remains optional and deferred.
 
 The [active objectives](docs/skill-first-product-scope.md#active-objectives) are
-now R1-R6, with a separate [1/18 verified acceptance inventory](docs/completion-backlog.md#skill-reliability-acceptance).
+now R1-R6, with a separate [2/18 verified acceptance inventory](docs/completion-backlog.md#skill-reliability-acceptance).
 The completed twenty-row baseline is not a completion score for this new cycle.
 
 The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

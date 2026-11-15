@@ -6,6 +6,7 @@ const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const { validateSkill } = require("./validate-controls-skill");
+const { TOPICS } = require("./codex-skills/controls-doctrine-operator/scripts/read_controls_instructions");
 
 const ROOT = __dirname;
 const ROUTERS = [
@@ -658,7 +659,11 @@ function testPlatformExclusionLists(router) {
   const direct = route(router, args, task);
   const receipt = route(router, [...args, "--receipt", "--scope=agent", "--mission=MIS-EXCLUSION-READING", "--wave=W1", "--agent=writer"], task);
   assert.equal(receipt.router_query, task);
-  for (const key of ["matched_routes", "validation_commands", "capability_routing", "recommended_documents"]) assert.deepEqual(receipt[key], direct[key]);
+  for (const key of ["matched_routes", "validation_commands", "capability_routing"]) assert.deepEqual(receipt[key], direct[key]);
+  const conditional = Object.values(TOPICS).flatMap(file =>
+    ["codex-skills", ".claude/skills"].map(directory => directory + "/controls-doctrine-operator/" + file));
+  assert.deepEqual(receipt.recommended_documents.map(row => row.path).sort(),
+    [...new Set([...direct.recommended_documents.map(row => row.path), ...conditional])].sort());
 }
 
 function testDocumentReadinessScope(router) {
