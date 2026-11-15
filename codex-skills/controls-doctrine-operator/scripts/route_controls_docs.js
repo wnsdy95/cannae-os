@@ -1495,25 +1495,91 @@ function needsImprovementSpecialistReading(text, sources) {
 }
 
 function taskHeadingView(text) {
-  return String(text || "").replace(/^\s*(?:#{1,6}\s+)?(?:\*\*)?(?:task|request|assignment|objective)(?:\*\*)?\s*:\s*(?:\*\*)?\s*/i, "");
+  return String(text || "").replace(/^\s*(?:#{1,6}\s+)?(?:\*\*)?(?:task|request|assignment|objective|\uc694\uccad|\uc791\uc5c5|\uacfc\uc5c5|\ubaa9\ud45c)(?:\*\*)?\s*:\s*(?:\*\*)?\s*/i, "");
+}
+
+const KOREAN_ACTIONS = {
+  "\uc791\uc131": "write", "\uac80\ud1a0": "review", "\ubd84\uc11d": "analyze", "\ube44\uad50": "compare",
+  "\uc870\uc0ac": "research", "\uc5f0\uad6c": "research", "\uc218\uc815": "revise", "\uac31\uc2e0": "update",
+  "\uc815\ub9ac": "summarize", "\uc124\uacc4": "design", "\uad6c\ud604": "implement", "\uac1c\ubc1c": "build",
+  "\uc804\uc1a1": "transmit", "\uacf5\uac1c": "publish", "\uac8c\uc2dc": "publish",
+  "\uc2e4\ud589": "execute", "\ubc30\ud3ec": "deploy", "\uc2dc\uc791": "start", "\uc6b4\uc601": "operate", "\ud638\ucd9c": "invoke", "\uc0ad\uc81c": "delete"
+};
+const KOREAN_TERMS = {
+  "\ud45c\uc900 \uc6b4\uc601 \uc808\ucc28\uc11c": "SOP", "\uc808\ucc28\uc11c": "SOP", "\uc6b4\uc601 \uc808\ucc28": "SOP",
+  "\uc778\uc218\uc778\uacc4 \ubb38\uc11c": "handoff document", "\uc778\uc218\uc778\uacc4": "handoff document",
+  "\uc870\uc0ac \ubcf4\uace0\uc11c": "research report", "\uc5f0\uad6c \ubcf4\uace0\uc11c": "research report",
+  "\uc9c4\ud589 \ubcf4\uace0\uc11c": "progress report", "\ud604\ud669 \ubcf4\uace0\uc11c": "status report",
+  "\uc0c1\ud669 \ubcf4\uace0\uc11c": "SITREP", "\uc791\uc804 \uba85\ub839": "OPORD", "\ubcc0\uacbd \uba85\ub839": "FRAGO",
+  "\uc0ac\ud6c4 \uac80\ud1a0": "AAR", "\uc6a9\uc5b4\uc9d1": "glossary", "\ubb38\uc11c": "document", "\ucd08\uc548": "draft",
+  "\uc6d0\ubcf8 \uc815\ucc45": "source policy", "\uc815\ucc45": "policy", "\ucd9c\ucc98": "source", "\uadfc\uac70": "evidence",
+  "\ub300\uc2dc\ubcf4\ub4dc": "dashboard", "\uc11c\ubc84": "server", "\ub370\uc774\ud130\ubca0\uc774\uc2a4": "database",
+  "\uc544\ud0a4\ud14d\ucc98": "architecture", "\uc124\uacc4": "design", "\uc2b9\uc778": "approval", "\uad8c\ud55c": "authority",
+  "\ud55c\uad6d\uc5b4": "in Korean language", "\ud55c\uad6d\uad70": "Korean military", "\ubbf8\uad70": "U.S. military", "\uad50\ub9ac": "doctrine",
+  "\uadf8\uac83": "it", "\uc774\uac83": "this", "\ud574\ub2f9": "that", "\uadf8": "that"
+};
+const HAS_KOREAN = /[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]/;
+const KOREAN_TERM_PATTERN = new RegExp("(?<![\\p{L}\\p{N}_])(" +
+  Object.keys(KOREAN_TERMS).sort((a, b) => b.length - a.length).join("|") +
+  ")(\uc73c\ub85c|\uc5d0\uc11c|\uc5d0\uac8c|\ub85c|\uc744|\ub97c|\uc740|\ub294|\uc774|\uac00|\uc640|\uacfc|\uc758)?(?=$|[^\\p{L}\\p{N}_])", "gu");
+const KOREAN_ACTION_END = "(?:\ud574(?:\\s*(?:\uc918|\uc8fc\uc138\uc694|\uc694))?|\ud558\ub77c|\ud558\uc138\uc694|\ud558\uc2ed\uc2dc\uc624|\ud558\uace0|\ud55c\\s+(?:\ub4a4|\ud6c4))";
+const KOREAN_ACTION_PATTERN = new RegExp("^(.+?)\\s+(" + Object.keys(KOREAN_ACTIONS).join("|") + ")" + KOREAN_ACTION_END + "$", "u");
+const KOREAN_CLAUSE_BREAK = new RegExp("(?<=(?:" + Object.keys(KOREAN_ACTIONS)
+  .flatMap(action => ["\ud558\uace0", "\ud55c \ub4a4", "\ud55c \ud6c4"].flatMap(end => [action + end, (action + end).normalize("NFD")]))
+  .join("|") + "))\\s+", "u");
+
+function taskClauses(text) {
+  return String(text).split(/[;\n]+|(?<=[.!?])\s+/).flatMap(clause => clause.split(KOREAN_CLAUSE_BREAK));
+}
+
+function koreanMatchingView(text) {
+  const original = String(text || "");
+  if (!HAS_KOREAN.test(original)) return original;
+  // These bounded lexical hints are not a translation or a replacement assignment.
+  return taskClauses(taskHeadingView(original.normalize("NFC"))).map(clause => {
+    const raw = clause.trim().replace(/[.!?]+$/, "");
+    const action = raw.match(KOREAN_ACTION_PATTERN);
+    const aliased = raw.replace(KOREAN_TERM_PATTERN, (_, term, particle) =>
+      KOREAN_TERMS[term] + (["\uc640", "\uacfc"].includes(particle) ? " and" : ""));
+    const platform = "(?:dashboard|server|database|architecture)";
+    const prohibited = "(?:\uacf5\uac1c\ud558|\uac8c\uc2dc\ud558|\uc804\uc1a1\ud558|" + platform + "\\s+(?:\ub9cc\ub4e4|\uad6c\ucd95\ud558|\uac1c\ubc1c\ud558|\uc2dc\uc791\ud558|\uc6b4\uc601\ud558))";
+    if (new RegExp("^" + prohibited + "(?:\uac70\ub098\\s+" + prohibited + ")*\uc9c0\\s*\ub9c8(?:\uc138\uc694|\ub77c)?$").test(aliased)) {
+      const actions = aliased.replace(/\uc9c0\s*\ub9c8(?:\uc138\uc694|\ub77c)?$/, "").split(/\uac70\ub098\s+/).map(part => {
+        if (/^(?:\uacf5\uac1c\ud558|\uac8c\uc2dc\ud558)$/.test(part)) return "publish";
+        if (part === "\uc804\uc1a1\ud558") return "transmit";
+        const [noun, verb] = part.split(/\s+/);
+        return (/\uc2dc\uc791\ud558/.test(verb) ? "start " : /\uc6b4\uc601\ud558/.test(verb) ? "operate " : "build ") + noun;
+      });
+      return "Do not " + actions.join(" or ");
+    }
+    const list = aliased.match(new RegExp("^(" + platform + "(?:\\s*(?:and|,)\\s*" + platform +
+      ")*)\\s+(?:\ubcf4\ub958|\uc81c\uc678)(?:" + KOREAN_ACTION_END + ")?$"));
+    if (list) return list[1] + " remain deferred";
+    if (!action) return aliased;
+    const body = action[1].replace(KOREAN_TERM_PATTERN, (_, term, particle) =>
+      KOREAN_TERMS[term] + (["\uc640", "\uacfc"].includes(particle) ? " and" : ""));
+    const verb = KOREAN_ACTIONS[action[2]];
+    const authoring = ["write", "revise", "update"].includes(verb) && /\b(?:document|draft)\b/.test(body);
+    return verb + " " + body + (authoring ? " (document authoring)" : "");
+  }).join("\n");
 }
 
 function inferredObjectives(query) {
   const text = taskHeadingView(query);
   // Do not interpret quoted source text as top-level tasking.
   if (/["`\u201c\u201d]|(?:^|\s)'/.test(text)) return [];
-  const action = "(?:compare|analyze|analyse|assess|research|draft|write|revise|edit|update|review|check|appraise|prepare|evaluate|maintain|record|summarize|inspect|read|design|build|create|implement|audit|verify)";
+  const action = "(?:compare|analyze|analyse|assess|research|draft|write|revise|edit|update|review|check|appraise|prepare|evaluate|maintain|record|summarize|inspect|read|design|build|create|implement|audit|verify|execute|run|deploy|launch|start|operate|invoke|delete)";
   const start = new RegExp("^(?:please\\s+)?" + action + "\\s+\\S", "i");
   const coordination = new RegExp("\\s+(?:and(?:\\s+then)?|then|also)\\s+(?=" + action + "\\s+\\S)", "i");
-  const clauses = text.split(/[;\n]+|(?<=[.!?])\s+/);
+  const clauses = taskClauses(text);
   const objectives = clauses.flatMap(clause => {
     const task = clause.trim().replace(/^(?:also|then)\s+/i, "");
-    if (!start.test(task)) return [];
+    if (!start.test(koreanMatchingView(task))) return [];
     const parts = task.split(coordination).map(part => part.trim());
-    return parts.every(part => start.test(part)) ? parts : [task];
+    return parts.every(part => start.test(koreanMatchingView(part))) ? parts : [task];
   });
   const dependent = new RegExp("^(?:please\\s+)?" + action + "\\s+(?:it|its|them|their|that|those|this)\\b", "i");
-  if (objectives.some(task => dependent.test(task))) return [];
+  if (objectives.some(task => dependent.test(koreanMatchingView(task)))) return [];
   return unique(objectives).length > 1 ? unique(objectives) : [];
 }
 
@@ -1548,7 +1614,7 @@ function runtimeWorkContext(text) {
     prohibitedAction + "(?:" + separator + prohibitedAction + ")*" +
     "(?:\\s+(?:now|yet|for this task))?|" + platformList +
     "\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
-  const clauses = taskHeadingView(text).split(/[;\n]+|(?<=[.!?])\s+/)
+  const clauses = koreanMatchingView(taskHeadingView(text)).split(/[;\n]+|(?<=[.!?])\s+/)
     .map(clause => clause.trim().replace(/[.!?]+$/, ""));
   const listedItem = "(?:" + platformItem + "|publication|transmission|deployment|private-source exceptions?|external operations?)";
   const excludedList = new RegExp("^(?:no|exclude|omit|defer)\\s+" + listedItem + "(?:" + separator + listedItem + ")*" +
@@ -1576,13 +1642,13 @@ function isReadOnlyDocumentRole(options, query) {
   if (!["read-only", "document-only-verification"].includes(options.authority) || !options.department || options.receipt || options.scope ||
       options.mission || options.wave || options.agent || options.writeArtifact || options.overwriteArtifact ||
       options.targetRepository || options.artifactRoot) return false;
-  const tasks = [query, ...options.capabilityQueries].map(taskHeadingView);
+  const tasks = [query, ...options.capabilityQueries].map(text => koreanMatchingView(taskHeadingView(text)));
   const authoring = RULES.find(rule => rule.id === "document-authoring");
   const documentAction = /^\s*(?:please\s+)?(?:draft|write|revise|edit|update|review|check|compare|appraise|assess|self[- ]review)\b/i;
   if (!tasks.every(text => documentAction.test(text) && (isDocumentAuthoringRequest(text) ||
       isDocumentHandoffRequest(text) || countMatches(text, authoring.keywords) > 0))) return false;
   const actions = runtimeWorkContext(tasks.join("\n")).replace(/\b(?:do not|don't|never)\s+(?:execute|run|deploy|launch|invoke|operate)\b/gi, "");
-  if (/\b(?:execute|run|deploy|launch|invoke|operate)\b/i.test(actions)) return false;
+  if (/\b(?:execute|run|deploy|launch|start|invoke|operate|delete)\b/i.test(actions)) return false;
   const sources = [...options.sources, ...options.inputSources];
   const context = [runtimeWorkContext(tasks.join("\n")), options.department, ...sources].join("\n").replace(/[-_/]/g, " ");
   if (needsRuntimeSpecialistReading(context, sources) ||
@@ -1654,7 +1720,9 @@ function route(query, repoRoot, options) {
       `Resolve task reference "${item.reference}" (${item.reason}) before treating it as an input; identify proposed outputs separately.`
     );
   }
-  const scoreRules = text => RULES.map(rule => {
+  const scoreRules = sourceText => {
+    const text = koreanMatchingView(sourceText);
+    return RULES.map(rule => {
     const authoring = rule.id === "document-authoring" && isDocumentAuthoringRequest(text) ? 1 : 0;
     const handoff = rule.id === "continuity-handoff" && isDocumentHandoffRequest(text) ? 1 : 0;
     const order = rule.id === "orders" && isOrderDocumentRequest(text) ? 1 : 0;
@@ -1668,6 +1736,7 @@ function route(query, repoRoot, options) {
     };
   }).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
+  };
   const scoredRules = scoreRules(query);
   const capabilityQueries = options.capabilityQueries.length ? options.capabilityQueries : inferred.length ? inferred : [query];
   const multipleObjectives = capabilityQueries.length > 1;
@@ -1721,7 +1790,7 @@ function route(query, repoRoot, options) {
   }
   docs.push(...mode.mode_documents);
   const sourcePaths = [...references.resolved.map(item => item.path), ...(inputs ? inputs.sources.map(item => item.path) : [])];
-  const readingContext = [query, ...capabilityQueries, ...sourcePaths].join("\n");
+  const readingContext = koreanMatchingView([query, ...capabilityQueries, ...sourcePaths].join("\n"));
   const githubReleaseReading = needsGithubReleaseReading(readingContext);
   const improvementReading = needsImprovementSpecialistReading(readingContext, sourcePaths);
   const runtimeReading = needsRuntimeSpecialistReading(readingContext, sourcePaths);
@@ -1782,15 +1851,23 @@ function route(query, repoRoot, options) {
     ? supportingArtifacts
     : supportingArtifacts.slice(0, options.limit);
   const coverage = coverageReport(repoRoot, inventory);
+  const normalization = [query, ...capabilityQueries].some(text => HAS_KOREAN.test(text)) ? {
+    kind: "bounded_korean_lexical_view_v1", matching_query: koreanMatchingView(query),
+    complete_translation: false, source_language: "Korean or mixed task/objective text",
+    original_text_in: "query", original_objectives_in: multipleObjectives ? "capability_queries" : "capability_query",
+    objective_views: capabilityQueries.flatMap((objective, index) => HAS_KOREAN.test(objective)
+      ? [{ objective_index: index, matching_query: koreanMatchingView(objective) }] : [])
+  } : null;
 
   return {
     query,
-    ...(!guardedRouting(options) && (taskHeadingView(query) !== query || runtimeWorkContext(query) !== query || inferred.length) ? {
+    ...(!guardedRouting(options) && (normalization || taskHeadingView(query) !== query || runtimeWorkContext(query) !== query || inferred.length) ? {
       request_intake: {
         basis: "Bounded lexical task/exclusion views; not translation, semantic completeness or authorization.",
         task_query: taskHeadingView(query),
         runtime_relevance_query: runtimeWorkContext(query),
         objectives: multipleObjectives ? (inferred.length ? "inferred_task_clauses" : "caller_declared") : "single",
+        ...(normalization ? { normalization } : {}),
         original_constraints_in: "query",
         semantic_completeness_verified: false,
         authority_changed: false

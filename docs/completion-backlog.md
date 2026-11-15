@@ -180,6 +180,60 @@ completeness and the reserved evaluation remain open. No withheld case or native
 model was run. Actual delivered bytes remain unmeasured; R2/R3/R5 acceptance and
 all authority/consent decisions are unchanged. The verified count remains 1/18.
 
+#### Korean Intake Development (2026-11-15)
+
+Both routers now add bounded Korean format/source aliases, action-clause views
+and complete platform exclusions. They retain the exact original query, parent
+objectives, source references and authority. The direct normalization record
+explicitly denies complete translation; inferred clauses remain original-language
+suggestions. Conditional/unknown clauses, actual technical review and assigned
+sources stay conservative. Both skills require comparing hints with each original
+purpose and prohibition and labeling any later operator translation separately.
+
+The same twelve frozen development requests now match in both providers (24/24),
+up from 22/24 after the English change and 14/24 at the clean baseline. These are
+local routing observations only. In RD-05, resolving the false capability gap
+removes the two gap-only force-structure fallback commands from each direct
+result; release controls remain selected. No issued receipt or context is edited
+or excused. Do not describe this as zero command removals or verified semantic
+coverage. Fifty-six focused checks include compounds, source/parent retention,
+guarded rejection, guarded single-parent controls and original Unicode bytes.
+
+The private observation is retained in the same intake evidence root:
+`development-fdd72e21-cf9d-42a4-8ccc-b8d03d93945d.json`, SHA-256
+`627e5f975cbc9109a26f8a101b4187630f1cd70e4ea5d5aebfcf165faac3cc8e`.
+It binds router bytes before this index update, not a final frozen candidate.
+The earlier Korean development reports remain historical. Initial focused tests
+correctly lacked the new metadata; an added receipt assertion then used `query`
+instead of the existing `router_query` field and was corrected without changing
+the receipt contract. No native call or withheld evaluation occurred.
+
+Additional probes caught an unmapped Korean execution clause being narrowed to
+document work and a Korean parent lacking provenance under an English task.
+The local verification was deliberately stopped before accepting those results;
+owned process group 30414 exited 143 and no member remained. Its incremental
+report and terminal reconciliation are retained under
+`.cannae/maintenance/skill-intake-r1b-20261115/`; a historical `running` field is
+not a live handle or completed check. The fixes retain separate operational
+objectives and execution reading without changing authority, and expose indexed
+original-parent matching views. New Korean/English and guarded regressions pass.
+
+The final source-bound 22-command run passed with unchanged source bindings.
+It includes 56 Korean/mixed-language checks, 1,776 existing routed queries,
+55 installation fixtures, 22 preflight fixtures and sixteen direct/actual-stdio
+document-session fixtures with the new Korean observations. Its report is
+`verification-575ab110-5f44-4d5e-83b0-76175dcf17e4.json` under the R1B root above,
+SHA-256 `82812ca9ffbbad4d2e78344c16ca79eba1385be0b609c61f496921e66191bfd3`.
+This is focused routing/instruction/receiving validation, not a new full
+repository integration, mission dispatch or native-model acceptance run.
+
+The bounded grammar is not a Korean parser. Unknown words, unsupported spacing,
+dependent or unrecognized clauses and operator-declared objective completeness
+still need review. Linked/copied and actual local receiving regression results
+do not establish native-client comprehension or actual loaded-context savings.
+SR02/SR03 stay in progress until the reserved candidate evaluation, with 1/18
+criteria verified. R2 loaded-context savings and R3/R5 native evidence remain open.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

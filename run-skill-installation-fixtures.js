@@ -146,8 +146,12 @@ function readOnlyOperationsDocuments(env) {
 
 function taskIntakeViews(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
-  for (const query of ["Task: Draft a support SOP. Do not publish or build a dashboard.",
-    "Request: Compare ICP sales targeting and draft a support SOP. Do not contact customers."]) {
+  for (const [query, expected] of [
+    ["Task: Draft a support SOP. Do not publish or build a dashboard.", "covered"],
+    ["Request: Compare ICP sales targeting and draft a support SOP. Do not contact customers.", "gap_detected"],
+    ["\uc694\uccad: \uc9c0\uc6d0 \uc808\ucc28\uc11c\ub97c \uc791\uc131\ud574. \uacf5\uac1c\ud558\uac70\ub098 \ub300\uc2dc\ubcf4\ub4dc\ub97c \ub9cc\ub4e4\uc9c0 \ub9c8.", "covered"],
+    ["\uacfc\uc5c5: \uace0\uac1d \uc2dc\uc7a5\uc744 \ubd84\uc11d\ud558\uace0 \uc9c0\uc6d0 \uc808\ucc28\uc11c\ub97c \uc791\uc131\ud574. \uacf5\uac1c\ud558\uc9c0 \ub9c8.", "gap_detected"]
+  ]) {
     const outputs = PROVIDERS.map(provider => {
       const router = path.join(destination(env, provider), "scripts/route_controls_docs.js");
       const run = spawnSync(process.execPath, [router, "--actor=ai", "--role=S3", "--department=operations",
@@ -158,7 +162,7 @@ function taskIntakeViews(env) {
       assert.equal(result.operating_mode.authority, "read-only");
       assert.equal(result.request_intake.semantic_completeness_verified, false);
       assert(result.recommended_documents.some(row => row.path === "docs/document-authoring-workflow.md"));
-      if (query.startsWith("Task:")) {
+      if (expected === "covered") {
         assert.equal(result.capability_routing.status, "covered");
         for (const file of ["docs/reference-architecture.md", "docs/protected-process-execution.md"]) {
           assert(!result.recommended_documents.some(row => row.path === file));
@@ -167,6 +171,10 @@ function taskIntakeViews(env) {
         assert.equal(result.capability_routing.status, "gap_detected");
         assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
         assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      }
+      if (/[\uac00-\ud7a3]/.test(query)) {
+        assert.equal(result.request_intake.normalization.complete_translation, false);
+        assert.equal(result.request_intake.normalization.original_text_in, "query");
       }
       return result;
     });

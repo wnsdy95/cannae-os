@@ -61,8 +61,11 @@ decision or handoff to the smallest useful format:
    change, and leave a receiver-ready handoff when work remains.
 
 For non-English requests, preserve the original wording when analyzing intent.
-The current lexical router uses English route terms; use a faithful English
-task description to find references, not as a substitute source of user intent.
+The router adds bounded Korean lexical hints to its English route terms.
+Inspect `request_intake.normalization` and compare every original objective and
+prohibition; its matching view is not a complete translation. For unsupported
+wording, use a faithful English task description to find references, not as a
+substitute source of user intent. Preserve its operator-translation provenance.
 Do not interpret a routing miss as permission to omit the task or constraints.
 Describe a translation as a translation, not verbatim forwarding. Retain the
 original task separately and compare exact text before claiming it was forwarded

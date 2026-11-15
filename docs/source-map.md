@@ -228,6 +228,13 @@ references require operator appraisal of inferred objectives. Local expectations
 improve from 14/24 to 22/24; Korean and reserved evaluation remain open, with no
 new native or independent semantic-coverage claim.
 
+The [Korean intake follow-up](completion-backlog.md#korean-intake-development-2026-11-15)
+binds the same frozen development set at 24/24 local expectation matches. Its
+bounded lexical view is explicitly not a complete translation; original task,
+source and authority bindings remain distinct. The record explains removal of
+false-gap fallback commands without waiving any issued control. Reserved/native
+evaluation and broader semantic coverage remain open.
+
 The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 binds native route/read records, delivered source bytes and separate operator
 appraisal. Optional-guide selection is observed; source-body byte counts are not

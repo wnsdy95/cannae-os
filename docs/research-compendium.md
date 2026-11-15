@@ -58,6 +58,14 @@ checking inferred clauses and their constraints before forwarding. The 22/24
 development expectation matches are local paired routing evidence only; literal
 Korean, withheld evaluation and actual-client behavior remain unverified here.
 
+The [Korean intake follow-up](completion-backlog.md#korean-intake-development-2026-11-15)
+adds bounded lexical aliases and original-language compound assessments, bringing
+the same development requests to 24/24 local matches. Its reusable lesson is to
+inspect the matching view without forwarding it as the complete original or a
+verified translation. Unicode normalization, term recognition and source fidelity
+are separate claims. Unknown clauses and operator translations still need review;
+no native quality, withheld-case pass or authority follows from the local result.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

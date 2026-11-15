@@ -68,16 +68,16 @@ node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skil
    `docs/document-authoring-workflow.md` and `docs/knowledge-management-sop.md`.
    Choose the task format, then its relevant policy; do not read runtime
    operations just because they appear in the wider inventory.
-5. Preserve original user wording and constraints. The lexical router uses
-   English terms; for other languages use a faithful English routing query,
-   not a rewritten source of intent.
+5. Preserve original wording and constraints; inspect `request_intake.normalization`.
+   Korean lexical hints are not translations; review each original objective.
+   Use faithful English routing for unsupported wording; keep original intent.
    Describe a translation as a translation, not verbatim forwarding. Keep the
    original request separately; claim exact reproduction only after comparing it.
 6. A capability gap is not permission to drop a task or proceed as unowned
    general work. Follow the capability-gap rule below.
 
 For compound intake, inspect `request_intake` and each objective assessment.
-Bounded English clause extraction is a suggestion, not semantic completeness.
+English/Korean clause extraction is a suggestion, not semantic completeness.
 Check every objective against the original request before forwarding. Correct
 missing or misgrouped objectives with repeatable `--capability-query` in direct
 analysis, keeping the full request and prohibitions as the task query. A support

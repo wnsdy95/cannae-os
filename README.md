@@ -91,6 +91,9 @@ servers and optional plugin packaging remain deferred.
 The [first English intake improvement](docs/completion-backlog.md#english-intake-development-2026-11-15)
 resolves eight of those paired routing failures; Korean intake and reserved
 evaluation remain open. This is local routing evidence, not native model quality.
+The [bounded Korean intake follow-up](docs/completion-backlog.md#korean-intake-development-2026-11-15)
+resolves the remaining development request in both providers while preserving
+original wording and explicit limits. Reserved and native evaluation remain open.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

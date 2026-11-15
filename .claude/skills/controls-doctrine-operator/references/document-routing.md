@@ -37,7 +37,7 @@ objective in `--capability-query` and the complete requested work, including
 glossary/SOP housekeeping and prohibitions, in the task query. Route distinct
 domain objectives separately rather than omitting one. A glossary or document
 format match does not establish expertise in the work being described. The
-router now suggests bounded English task-clause separation when no objectives
+router now suggests bounded English/Korean task-clause separation when no objectives
 are declared. It does not establish semantic completeness; unrecognized or
 context-dependent wording can still hide a domain behind a supporting route.
 Do not rewrite an issued mission objective or patch its receipts to obtain this
@@ -73,13 +73,47 @@ prohibition before forwarding; a covered SOP cannot clear an uncovered analysis.
 Source-policy review and explicitly qualified draft-readiness checks remain
 document/source work, not unsupported domains or unit readiness.
 Quoted text and deictic steps such as "Review its design" are not independently
-split because their meaning depends on context. Other languages still require
-the documented faithful English-query path. If extraction is absent or wrong,
+split because their meaning depends on context. Unsupported wording still needs
+the faithful English-query path below. If extraction is absent or wrong,
 review explicit per-objective declarations without deleting the original request.
 Detected automatic compound intake cannot issue a guarded receipt or artifact;
 use the original mission's reviewed tasking process, not an omitted objective
 or single merged declaration. Existing caller declarations retain their exact
 parent/mission meaning and still require completeness review.
+
+### Korean Matching Views
+
+Keep the actual Korean or mixed-language request in the task query. The router
+recognizes bounded format/source terms, action endings, leading task labels and
+complete platform exclusion clauses. It handles common nouns for SOP, handoff,
+research/progress reports and glossary; it is not a Korean parser or translator.
+`request_intake.normalization.matching_query` exposes the lexical view and
+`complete_translation: false`. The original `query`, declared objectives, source
+references and authority remain unchanged. Normalized Unicode and stripped
+particles in that view do not establish byte-identical forwarding.
+`objective_views` uses zero-based indices into the original `capability_queries`
+or the single `capability_query`; inspect it even when an English task has a
+Korean parent. A document clause cannot make a separate execution/deployment
+clause read-only document work. Keep its operational context and original
+authority limit; recognizing an action does not authorize it.
+
+Review every purpose and prohibition against the original before assigning work.
+Supported action conjunctions can yield separate original-language assessments;
+an uncovered analysis must retain its gap even beside a covered SOP. Conditional
+or unrecognized exclusions stay conservative. Explicit inputs, technical parent
+objectives and actual design review still retain their technical references.
+The output language alone is not a request for national military doctrine.
+Unknown vocabulary, omitted spacing, dependent clauses and exclusions outside
+the bounded grammar can still misroute or conceal work. A matched format is not
+evidence that those clauses were understood.
+
+For unsupported wording, preserve the exact original locally and route a faithful
+English task description with the original purposes and prohibitions. Label it
+as an operator translation, not a router translation or USER-confirmed meaning.
+Compare that description and each declared objective with the original before
+handoff; carry both at an authorized boundary. Do not introduce new access,
+publish a glossary or rewrite a policy because a lexical view matched. Guarded
+multi-objective rejection and existing receipt/mission controls still apply.
 
 For direct analysis, add `--explain-reading` before `--` while retaining the exact
 task, all objectives and the declared delegation. The optional `reading_selection`
