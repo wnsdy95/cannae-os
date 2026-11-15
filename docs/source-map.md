@@ -515,6 +515,13 @@ historical claims, and keeps source appraisal separate from authenticated USER
 identity. These contracts and process fixtures are local engineering evidence,
 not new military-source claims, a protected-host guarantee or native acceptance.
 
+The [registered-dependency procedure](project-terminology-workflow.md#registered-dependency-impact)
+connects local document/task declarations to exact source bytes, scoped term views
+and upstream records. `project-knowledge-dependencies.js` and its request/record
+contracts retain old versions and distinguish required holds from unrelated work
+and binding-only changes. This is engineering evidence for declared dependencies,
+not a military claim, automatic semantic discovery or authenticated review.
+
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.
 Its deterministic ownership-substitution fixtures are local engineering evidence,

@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectKnowledgeDependencyRequest",
+  "work_id": "WORK-SOP",
+  "subject": { "document": "drafts/sop.md", "task": "Draft the policy SOP" },
+  "previous_sha256": null,
+  "review_reference": "Synthetic invalid private source path.",
+  "sources": [
+    { "id": "SOURCE-POLICY", "path": ".env", "sha256": "5d5f64d30d0d73a4f77becf82ac508bcb093ad84a9a09a604fb1720759a6b880", "required": true }
+  ],
+  "terminology": null,
+  "upstream": []
+}

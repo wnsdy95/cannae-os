@@ -363,6 +363,95 @@ Binding includes local directory device/inode identities, so replacing the Git
 repository at the same path also requires review. This is local identity
 checking, not cryptographic repository authentication or portable synchronization.
 
+## Registered Dependency Impact
+
+The local `project-knowledge-dependencies.js` helper is available through both
+installed `scripts/project_terminology.js` wrappers. It records declared document,
+task, source, term and upstream-work dependencies without a server or background
+collector. It does not discover unregistered semantic uses. Only a caller already
+authorized for all inputs, the registry and the whole terminology ledger may use
+it; private paths and hashes are metadata, not approved outbound content.
+
+Use [ProjectKnowledgeDependencyRequest](../schema-files/project-knowledge-dependency-request.schema.json)
+and its [synthetic sample](../sample-payloads/valid-project-knowledge-dependency-request.json).
+Keep the request under `.cannae/knowledge/dependency-requests/<name>.json` in the
+target Git root. The subject identifies a document and/or task; a planned document
+path is not automatically read as an input. List exact source hashes and whether
+each is required. Ordinary non-hidden project documents and explicitly selected
+`.cannae/document-drafts/` files are supported, with a 4 MiB limit per source.
+Hidden credential locations, symbolic/hard links, nested repositories and paths
+outside this root are rejected. This path policy is not universal secret detection
+or proof that the caller may read an otherwise valid file.
+
+Optional terminology binding declares the exact ledger hash (null only for known
+absence), domain, task, reader context, original spellings and `required_terms`.
+An empty required list is a declaration, not proof the task needs no meanings.
+Compare it with the original request. Denied definitions are not retained in the
+record; selected views are hashed with their scope, revision and operative state.
+Use upstream work IDs and exact record hashes when a downstream task depends on
+another registered work item, not just on a file that has not yet been revised.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" register-dependencies \
+  --repository /absolute/project --request .cannae/knowledge/dependency-requests/sop.json \
+  --request-sha256 <exact-reviewed-request-sha256>
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-dependencies \
+  --repository /absolute/project
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" prepare-dependency-refresh \
+  --repository /absolute/project --work-id WORK-SOP --record-sha256 <current-record-sha256>
+```
+
+`register-dependencies` requires a nonempty `review_reference` describing the real
+appraisal. This is attribution, not authenticated approval or semantic review by
+the CLI. Initial registration uses null `previous_sha256`; refresh binds the exact
+current predecessor. A successful write creates the next exclusive numeric record
+under `.cannae/knowledge/dependencies/<WORK-ID>/000001.json`, never overwrites it.
+The exact output must already be ignored and untracked. The
+[record contract](../schema-files/project-knowledge-dependency-record.schema.json)
+retains the request, local repository identity, version and term observations.
+No definition bodies or source contents are copied into the registry.
+
+`inspect-dependencies` optionally takes `--work-id`. It reports only registered
+work, not a scan of project prose. Recheck before dependent work and handoff:
+
+| Status | Required operator action |
+| --- | --- |
+| `registered_inputs_current` | Inputs match their recorded versions. Still review the work itself and original task; this is not permission to execute or transfer. |
+| `binding_refresh_required` | Appraise a changed ledger binding, pending candidate or upstream notice. An unchanged confirmed meaning is not silently replaced; exact packet checks still apply. |
+| `review_needed` | Optional dependency changed or is unavailable. Record the uncertainty and preserve permitted independent work. |
+| `held` | A required source/meaning/upstream changed or is unavailable, or the local record is invalid. Hold affected conclusions and appraise the actual cause. |
+
+Required candidate-only, retired, conflicting or denied meanings stay held even
+after registering their observed state. A candidate after an operative confirmed
+definition does not replace that definition. Unrelated ledger edits and formatting
+changes trigger binding refresh, not a global halt. An upstream hold propagates
+to its required dependents before any dependent document changes. A fresh upstream
+record does not prove its document is repaired, so downstream record changes still
+need their own appraisal. No result grants authority, confirms completeness or
+claims source truth, work correctness or receiver acceptance.
+
+Refresh preparation writes a separate request with `review_reference: null` and
+current explicit hashes; it does not change the registered record. Unavailable
+sources, including optional ones, prevent creating that draft rather than being
+dropped. Optional work may still continue with a reported limitation. Review
+the actual revised inputs against the original task, repair the work where needed,
+then record the appraisal and pass the edited request's new hash to registration.
+Changing requirements, source identities/paths, reader/scope, subject or upstream
+membership in a refresh is rejected. Legitimate scope changes require replanning
+and an explicitly separate replacement work ID; retain and link the old history.
+This registry does not authenticate that replacement decision or retire old work.
+
+Keep prior reports, packets and records unchanged. Prepare a new scoped excerpt
+and packet through the existing recipient/disclosure procedure; registry refresh
+is not transmission clearance and does not make an old packet current. On missing,
+malformed, partial or gapped records, preserve evidence for owner appraisal. Never
+fall back to an older version or delete a competing write to obtain a pass. There
+is no automatic repair, expiry-based recovery, protected storage, portable identity
+or transactional snapshot of all source files. Rechecks detect bounded changes;
+an editor ignoring this cooperative local procedure can alter state. The bounded
+registry supports 128 work items per inspection, 256 revisions per work item,
+16 sources, 16 upstream dependencies and 32 selected terms per request.
+
 ## Evidence And Limits
 
 `run-project-terminology-fixtures.js` exercises fresh-process reuse, inferred
@@ -380,6 +469,11 @@ reviewed-append path instead of simultaneous full-ledger edits; preserve history
 and re-read after updates. The approved synthetic dialogue exercise below observes
 supplied-guidance capture, not automatic collection or actual multi-agent use.
 Those broader behaviors remain unverified. No dashboard or infrastructure claim follows.
+
+`run-project-knowledge-dependency-fixtures.js` exercises registered impact,
+required/optional and independent work, scoped term states, reviewed refresh,
+history preservation, unsafe/unavailable files and both installed wrappers. These
+are local synthetic checks, not fresh native-agent use or semantic discovery.
 
 ## Approved Dialogue Exercise (2026-11-11)
 

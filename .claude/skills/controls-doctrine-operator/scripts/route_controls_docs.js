@@ -13,10 +13,11 @@ const DEFINITION_KEYWORDS = ["user-defined term", "user defined term", "project 
 const RULES = [
   {
     id: "project-terminology",
-    keywords: ["terminology", "glossary", "term definition", "shared vocabulary", "user vocabulary", ...DEFINITION_KEYWORDS],
+    keywords: ["terminology", "glossary", "term definition", "shared vocabulary", "user vocabulary", "registered dependencies", "dependency impact", "dependency refresh", ...DEFINITION_KEYWORDS],
     docs: ["docs/project-terminology-workflow.md", "docs/glossary.md", "docs/knowledge-management-sop.md", "docs/document-authoring-workflow.md"],
     commands: ["node run-project-terminology-fixtures.js", "node run-project-terminology-handoff-fixtures.js",
-      "node run-project-terminology-change-fixtures.js", "node run-project-terminology-writer-fixtures.js"]
+      "node run-project-terminology-change-fixtures.js", "node run-project-terminology-writer-fixtures.js",
+      "node run-project-knowledge-dependency-fixtures.js"]
   },
   {
     id: "document-authoring",
@@ -642,7 +643,7 @@ const EXCLUDED_DIRS = new Set([
 ]);
 
 const ROUTE_HINTS = [
-  { id: "project-terminology", keywords: ["project-terminology", "project_terminology"] },
+  { id: "project-terminology", keywords: ["project-terminology", "project_terminology", "project-knowledge-dependenc"] },
   { id: "document-authoring", keywords: ["document-authoring", "authoring-review", "knowledge-management", "prompt-templates", "handoff-packet-template"] },
   { id: "cli-model-selection", keywords: ["codex-model-selection", "codex-default-model-binding"] },
   { id: "advisory-dependency", keywords: ["ip-zone", "pre-zone", "github-release-independent-verification"] },

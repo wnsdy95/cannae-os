@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add local registered document/task dependencies for exact sources, scoped terminology and upstream work. Preserve historical records, distinguish required holds from independent work and binding-only changes, and prepare unreviewed refresh requests for actual appraisal. Keep reader/requirement scope fixed during refresh, reject unsafe inputs and retain incomplete writes. Both skills teach the procedure without claiming automatic semantic discovery, authenticated review, native acceptance or transfer authority.
+
 - Add explicit reviewed terminology append, exact before/after snapshots and a non-expiring cooperative writer lock. Recheck source/review/base before atomic replacement; observe interrupted local writers without automatically reapplying definitions, stealing live locks or rewriting history. Keep authorization, source authenticity, native use and registered dependency impact separate from local checks.
 
 - Add private source-bound terminology change proposals and fresh inspection through both installed skill wrappers. Bind exact source bytes, expected ledger, repository identity and predecessor; preserve access and canonical history without automatic confirmation or transfer. Reject inferred promotions, stale bases, unsafe files and credential-shaped content. Canonical single-writer adoption and impact tracking remain open R4 work.

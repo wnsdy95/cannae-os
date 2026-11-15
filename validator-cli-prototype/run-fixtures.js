@@ -11,6 +11,13 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["request", "record"].flatMap(kind => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing knowledge dependency ${kind}`,
+    file: `sample-payloads/${prefix}-project-knowledge-dependency-${kind}.json`,
+    type: `project-knowledge-dependency-${kind}`, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] :
+      [kind === "request" ? "KNOWLEDGE_DEPENDENCY_SOURCE_PATH_INVALID" : "KNOWLEDGE_DEPENDENCY_REQUEST_BINDING_MISMATCH"]
+  }))),
   ...["review", "transaction"].flatMap(kind => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-authorizing terminology change ${kind}`,
     file: `sample-payloads/${prefix}-project-terminology-change-${kind}.json`,

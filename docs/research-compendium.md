@@ -1025,6 +1025,13 @@ age alone. It cannot authenticate the claimed USER source or stop an editor
 ignoring the lock. Registered impact reconciliation and native behavior remain
 separate acceptance work.
 
+The later [registered-dependency procedure](project-terminology-workflow.md#registered-dependency-impact)
+adds explicit source, scoped term and upstream-work bindings to local document/task
+records. It preserves old versions and independent work, and prepares an unreviewed
+refresh rather than silently replacing evidence. Review references are attribution,
+not authenticated appraisal; matching hashes do not establish work quality or
+discover unregistered semantic uses. Native receiving behavior remains separate.
+
 An integration probe subsequently changed the glossary while leaving its excerpt
 untouched; generic packet inspection still reported that excerpt current.
 The explicit terminology binding now checks both source layers for the declared

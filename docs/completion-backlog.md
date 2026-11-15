@@ -16,10 +16,11 @@ Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
 keep dashboards, servers and production infrastructure deferred. R1-R6 in the
 [scope](skill-first-product-scope.md#active-objectives) are the new active goal.
 The completed G1-G5/A01-A20 baseline below remains intact. New status:
-**2/18 required criteria verified**; this is a work inventory, not an accuracy
+**3/18 required criteria verified**; this is a work inventory, not an accuracy
 or product-completion percentage. Registration and the initial probes closed none;
 the frozen evaluation closes SR01 and the conditional-instruction checkpoint
-below closes SR04. Actual context savings and native quality remain open.
+below closes SR04. Registered local dependency impact closes SR11 at its bounded
+scope. Actual context savings and native quality remain open.
 
 #### Observed Skill Limits
 
@@ -76,7 +77,7 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | Planned |
 | SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
 | SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | In progress |
-| SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Planned |
+| SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
 | SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | In progress |
 | SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | Planned |
 | SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
@@ -428,6 +429,58 @@ impact reconciliation and reviewed refresh with unaffected work preserved.
 Source authenticity and actual agent compliance are not established by a review
 label or these fixtures. No new native model call or withheld evaluation occurred;
 the verified count remains 2/18. Dashboards and servers remain deferred.
+
+#### Registered Dependency Impact (2026-11-16)
+
+The R4C implementation adds `register-dependencies`, `inspect-dependencies` and
+`prepare-dependency-refresh` through both installed wrappers. Explicit document/task
+records bind source bytes, scoped term observations and upstream work versions.
+Required changes hold affected work; optional issues and binding-only changes are
+separate from independent work. Candidates do not replace an operative confirmed
+meaning. Refresh preserves the declared subject, reader, requirements and history;
+it starts with a null review reference and cannot be registered until appraisal
+is recorded. That reference is not authenticated review or work correctness.
+
+The first local run passed twenty cases, then failed the first installed-wrapper
+case because the new runner was not included in the artifact routing inventory.
+The missing classification was added to both routers; the full 22-case rerun
+passed. This was a real packaging defect, not waived by calling the helper directly.
+Additional cases connect the actual reviewed terminology writer to source revision,
+SOP repair and a new dependency record, and cover internal draft inputs, replaced
+Git roots and metadata secret refusal. Synthetic appraisal remains distinct from
+native source understanding or real USER authentication.
+
+All 28 affected-surface commands passed with the 22 source files unchanged in
+`.cannae/maintenance/dependency-impact-r4c-20261116/verification-7fbf84c2-517d-4fa9-91ec-c37c338dd56d.json`,
+SHA-256 `0aefc81fbddbb97ee5ef7b81f13badf265f1fc9fcd2ac5cb4ce75f642e99797e`.
+This includes 25 dependency cases, 29 writer cases, 16 terminology cases,
+18 change-proposal cases, 34 handoff cases, all 617 validator cases and 57
+installation cases. The eighteen-case same-corpus router comparison preserves
+the existing intake, documents, authority and controls while covering the new
+topic/artifact mappings; it is not the frozen withheld evaluation. The remaining
+instruction, authoring, preflight, context-integrity and documentation checks
+also passed. Retained maintenance/event unit checks do not reopen dashboard work.
+
+SR11 is bounded-verified by the local sequence, not the test count alone: exact
+source/term changes produce affected bindings; independent work remains current;
+the real terminology writer feeds a held SOP context; a repaired synthetic SOP
+and explicit recorded appraisal produce a fresh version without altering old
+records. Unresolved required meanings remain held even after re-registration.
+The helper cannot authenticate the appraisal or prove the repair's semantics;
+native chain behavior is still SR13-SR15 work. Partial/concurrent publication
+coverage here is deterministic fault injection, not protected-host concurrency.
+
+The verified count is 3/18. SR10/SR12 retain their separate remaining appraisal
+work; no native R3/R5 criterion is closed. No model call or withheld execution
+occurred, and this was not a full-repository integration run. Final evidence-index
+edits receive separate documentation checks before commit. The first closure check
+rejected a new free-text status label instead of the inventory's existing
+`Verified (bounded)` value. The label was corrected without changing the accepted
+status vocabulary; the failed closure is retained as
+`closure-d41f13b1-e514-4477-95ec-d9ede9476ff6.json` in the same evidence root,
+SHA-256 `3751af4c57bf04b287774e67d3f8710718148dd66e578bedce98756a1ff07fbe`.
+Dashboards and servers
+remain deferred; unrelated `.gitignore`, lockfile and frozen evaluation are unchanged.
 
 #### Execution Order And Boundaries
 

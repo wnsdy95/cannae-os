@@ -49,8 +49,8 @@ its exact proposal hash. Changed sources, changed ledgers or repository identity
 require a fresh proposal and appraisal, not patched retained hashes. Compare the
 proposed meaning with the actual user statement; local validity does not prove
 that the text was written by USER or that the interpretation is correct. Preserve
-the canonical ledger and other pending proposals. Registered affected-document
-reconciliation remains an unfinished workflow step.
+the canonical ledger and other pending proposals. Use the registered-dependency
+procedure below for affected-document reconciliation; do not infer unlisted uses.
 Do not route or hand off a pending proposal as the current confirmed glossary.
 Do not transmit its private source path or excerpt merely because local checks
 pass. Existing packet disclosure and recipient checks still apply independently.
@@ -78,3 +78,35 @@ process; it observes snapshots and releases the lock without applying a definiti
 A live, foreign, malformed or divergent state remains held for owner appraisal.
 An incomplete journal is not a successful append. Preserve it and any staged file;
 prepare a fresh reviewed change when an earlier review was consumed or inputs changed.
+
+For document/task dependency tracking, register only authorized, explicitly known
+source files, scoped terms and upstream work IDs with `register-dependencies`.
+Use the workflow's request contract and exact request hash; distinguish planned
+output paths from sources that must actually be read. The caller must already
+be authorized for every listed source and the whole private registry/term ledger.
+Neither a reader label nor a locally recorded review reference grants that access.
+Record actual appraisal against the original request; an agent-generated reference
+is not evidence that someone reviewed the sources or approved the result.
+
+At a phase change, source/term update or handoff, run `inspect-dependencies`.
+Hold only work with a changed/unavailable required dependency; preserve unrelated
+permitted work. Optional issues need explicit review, not an invented global stop.
+An unrelated ledger edit, formatting change or pending candidate may need a fresh
+binding while the last confirmed selected meaning remains intact. Packet freshness
+still uses its exact original ledger digest; a non-held registry status cannot
+waive packet checks or a guarded mission's stop condition.
+
+Use `prepare-dependency-refresh` with the current record hash to prepare a private
+unreviewed request. Compare revised sources and meanings with the original task,
+repair affected work, then record the real appraisal and register the new version.
+Do not just fill the reference field to clear a hold. Never drop requirements,
+switch readers or edit old hashes/history to pass; scope changes need explicit
+replanning and a separately identified replacement, not disguised refresh.
+Reappraise downstream work separately even after its upstream context is current.
+Keep old reports and transfer packets, then prepare independently checked successors.
+
+Missing/corrupt/gapped records, incomplete writes or unsafe files remain held for
+owner appraisal. Preserve them; do not delete a competing version, auto-select
+an older record, infer recovery from age or retry automatically. This cooperative
+local registry records declared dependencies only; current inputs do not prove
+work quality, complete semantic discovery, protected storage or permission to send.
