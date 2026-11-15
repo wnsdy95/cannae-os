@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectTerminologyChangeReview",
+  "proposal_sha256": "87f6f8302a1f3406edac6c7bc78a05e18858f8776d7abb0cd97e493f602b51b5",
+  "writer_id": "WRITER-S3-SALES",
+  "decision": "append",
+  "source_assessment": "explicit_user_definition",
+  "review_reference": "Synthetic USER definition and authorized writer appraisal; fixture only.",
+  "created_at": "2026-11-15T00:00:00Z",
+  "expires_at": "2026-11-16T00:00:00Z",
+  "authorization_verified": false,
+  "source_authenticity_verified": false,
+  "policy_adoption_authorized": false,
+  "transfer_authorized": false
+}

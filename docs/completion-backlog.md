@@ -369,12 +369,65 @@ preflight, control, context-integrity and routing results remain version-specifi
 they are not relabeled as new runs or a full-repository integration pass. Final
 evidence-index edits receive a separate documentation check before commit.
 
-SR10/SR12 remain in progress, and SR11 is still planned. Next: an explicit
-reviewed single-writer append path and registered document/task/term impact
+At this checkpoint, SR10/SR12 remained in progress and SR11 was still planned.
+The next steps were an explicit reviewed single-writer append path and registered document/task/term impact
 reconciliation, including simultaneous proposals, unrelated changes and allowed
 partial work. The pending proposal path does not substitute for either outcome.
 No new native call or withheld evaluation occurred; the verified count remains
 2/18. Dashboards, servers and policy/authority expansion remain deferred.
+
+#### Reviewed Terminology Append (2026-11-15)
+
+The next R4 implementation provides explicit `adopt-change`, historical
+`inspect-adoption`, `inspect-writer` and exited-process `recover-adoption` commands
+through both skill bundles. An exact recorded review, fresh source and expected
+ledger are checked under a non-expiring cooperative local lock. Before/after and
+proposal/review snapshots are retained; exactly one entry is atomically appended.
+The helper does not decide meanings, authenticate writer/USER labels, grant write
+or release authority, bypass recipient access or apply a pending proposal itself.
+
+The implementation distinguishes before/after observations from actual additional
+revisions and formatting-only changes. Failed or interrupted attempts retain their
+evidence. Recovery releases only an unchanged, exited local writer's lock after
+state appraisal; it never reapplies a definition, rewrites history or infers exit
+from age. Live, foreign, malformed, missing-after-publication or divergent states
+remain held. This is not protected storage against an editor ignoring the lock.
+
+Initial development exposed two test/setup issues: the synthetic writer ID did
+not meet the existing common ID pattern, and an ownership-substitution injection
+ran during lock acquisition instead of during journal writing. The ID was made
+conformant; the injection now exercises the intended primary-plus-cleanup failure,
+while acquisition still refuses a substituted lock. The subsequent 26-case local
+run passed, including actual competing processes and six exit points across new
+and existing ledgers. Formatting-only and missing-after-publication cases were
+then added. The final fixtures also retain separate pending proposals and use
+source-coherent synthetic correction/retirement statements; this is not native
+source appraisal or authenticated USER input.
+
+The final affected-surface gate passed all 27 commands without source drift,
+binding 23 staged files in
+`.cannae/maintenance/terminology-writer-r4b-20261115/verification-20bc6c69-1b7a-4f60-9c22-4e96dc7df4a9.json`,
+SHA-256 `4e7817dd65b42e25e9c9dd6508a1bb2cc38854074d2aaf5142b9b979e02bac65`.
+It includes 29 writer cases, 16 original terminology cases, 18 proposal cases,
+34 handoff cases, all 613 validator cases, 57 installation cases, 22 preflight
+cases, 6 control cases, 16 context-integrity cases and source/index checks. An
+actual reviewed append invalidates the retained old handoff; only a fresh scoped
+selection prepares a current replacement, without changing the old packet or
+granting execution/receiver acceptance.
+
+A twelve-case same-corpus differential across both routers confirms that the
+only output change is the added writer validation command where applicable.
+It compares router code from `e35a577` with the candidate on the same current
+corpus, not the frozen R1 evaluation or a fresh 1,776-query full routing run.
+Issued retained maintenance/event projection checks also passed; this is neither
+dashboard development nor a full-repository integration run. The final evidence
+index edits receive separate documentation checks before commit.
+
+SR10/SR12 remain in progress; SR11 still requires registered document/task/term
+impact reconciliation and reviewed refresh with unaffected work preserved.
+Source authenticity and actual agent compliance are not established by a review
+label or these fixtures. No new native model call or withheld evaluation occurred;
+the verified count remains 2/18. Dashboards and servers remain deferred.
 
 #### Execution Order And Boundaries
 

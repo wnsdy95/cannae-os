@@ -49,8 +49,32 @@ its exact proposal hash. Changed sources, changed ledgers or repository identity
 require a fresh proposal and appraisal, not patched retained hashes. Compare the
 proposed meaning with the actual user statement; local validity does not prove
 that the text was written by USER or that the interpretation is correct. Preserve
-the canonical ledger and other pending proposals. Single-writer adoption and
-affected-document reconciliation remain separate unfinished workflow steps.
+the canonical ledger and other pending proposals. Registered affected-document
+reconciliation remains an unfinished workflow step.
 Do not route or hand off a pending proposal as the current confirmed glossary.
 Do not transmit its private source path or excerpt merely because local checks
 pass. Existing packet disclosure and recipient checks still apply independently.
+
+Only the designated writer, with existing authority to read and amend the whole
+ledger, may invoke `adopt-change`. Delegates report proposals instead of racing
+full-ledger edits. First record the actual appraisal in `review.json` beside the
+exact proposal, following the reviewed-append section of the terminology workflow.
+Keep an inferred or ambiguous meaning `candidate_only`; confirmed definitions
+and retirement require the corresponding actual USER statement, not a generated
+assessment label or the model's confidence. A writer ID is attribution, not access.
+Pass the exact proposal/review hashes; do not turn a defer/reject into an append,
+reuse an expired review or borrow unrelated model-verification consent.
+
+After a successful append, retain its transaction reference and obtain a fresh
+scoped selection. Keep earlier reports and packets unchanged; an append or a
+format-only digest change requires dependency appraisal, not patched evidence.
+Historical `inspect-adoption` output is not proof that sources or task inputs are
+current. It does not authorize transfer or confirm recipient understanding.
+
+If an append is interrupted, inspect the writer and transaction before retrying.
+Do not steal a lock by age, kill another writer or invent an exit observation.
+`recover-adoption` requires the exact lock ID/transaction hash and an exited local
+process; it observes snapshots and releases the lock without applying a definition.
+A live, foreign, malformed or divergent state remains held for owner appraisal.
+An incomplete journal is not a successful append. Preserve it and any staged file;
+prepare a fresh reviewed change when an earlier review was consumed or inputs changed.

@@ -508,6 +508,13 @@ Local fixtures cover stale sources/bases, separate repositories, unsafe paths,
 secret-shaped values and installed wrappers; they do not authenticate USER
 statements or complete single-writer adoption, impact tracking or native use.
 
+The later [reviewed canonical append](project-terminology-workflow.md#reviewed-canonical-append)
+implements explicit local single-writer updates and exited-process reconciliation.
+It retains exact before/after snapshots, distinguishes current observations from
+historical claims, and keeps source appraisal separate from authenticated USER
+identity. These contracts and process fixtures are local engineering evidence,
+not new military-source claims, a protected-host guarantee or native acceptance.
+
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.
 Its deterministic ownership-substitution fixtures are local engineering evidence,

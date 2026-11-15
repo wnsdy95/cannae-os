@@ -11,6 +11,13 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["review", "transaction"].flatMap(kind => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing terminology change ${kind}`,
+    file: `sample-payloads/${prefix}-project-terminology-change-${kind}.json`,
+    type: `project-terminology-change-${kind}`, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] :
+      [kind === "review" ? "TERMINOLOGY_WRITER_VALIDITY_INVALID" : "TERMINOLOGY_WRITER_TRANSACTION_ID_MISMATCH"]
+  }))),
   ...["request", "proposal"].flatMap(kind => ["valid", "invalid"].map(prefix => ({
     name: `${prefix} non-adopting terminology change ${kind}`,
     file: `sample-payloads/${prefix}-project-terminology-change-${kind}.json`,

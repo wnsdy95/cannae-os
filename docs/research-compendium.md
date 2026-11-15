@@ -1016,6 +1016,15 @@ unrelated ledger edit invalidates the proposal base but does not invalidate all
 unrelated work. The [checkpoint](completion-backlog.md#terminology-change-proposals-2026-11-15)
 keeps single-writer adoption and registered impact reconciliation open.
 
+The subsequent [reviewed-append procedure](project-terminology-workflow.md#reviewed-canonical-append)
+adds cooperative single-writer serialization and immutable transaction snapshots.
+Its distinction is operational: recording an appraisal and applying a definition
+are separate commands; observing a crashed writer is not permission to retry it.
+Recovery checks the actual local process and canonical bytes, never the lock's
+age alone. It cannot authenticate the claimed USER source or stop an editor
+ignoring the lock. Registered impact reconciliation and native behavior remain
+separate acceptance work.
+
 An integration probe subsequently changed the glossary while leaving its excerpt
 untouched; generic packet inspection still reported that excerpt current.
 The explicit terminology binding now checks both source layers for the declared

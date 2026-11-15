@@ -16,7 +16,7 @@ const RULES = [
     keywords: ["terminology", "glossary", "term definition", "shared vocabulary", "user vocabulary", ...DEFINITION_KEYWORDS],
     docs: ["docs/project-terminology-workflow.md", "docs/glossary.md", "docs/knowledge-management-sop.md", "docs/document-authoring-workflow.md"],
     commands: ["node run-project-terminology-fixtures.js", "node run-project-terminology-handoff-fixtures.js",
-      "node run-project-terminology-change-fixtures.js"]
+      "node run-project-terminology-change-fixtures.js", "node run-project-terminology-writer-fixtures.js"]
   },
   {
     id: "document-authoring",

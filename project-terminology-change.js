@@ -185,5 +185,5 @@ function main(argv = process.argv.slice(2)) {
   }
 }
 
-module.exports = { changeIssues, compile, prepare, inspect, main, OUTPUT };
+module.exports = { changeIssues, compile, prepare, inspect, main, OUTPUT, currentLedger, validate, parse };
 if (require.main === module) main();

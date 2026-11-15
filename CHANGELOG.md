@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add explicit reviewed terminology append, exact before/after snapshots and a non-expiring cooperative writer lock. Recheck source/review/base before atomic replacement; observe interrupted local writers without automatically reapplying definitions, stealing live locks or rewriting history. Keep authorization, source authenticity, native use and registered dependency impact separate from local checks.
+
 - Add private source-bound terminology change proposals and fresh inspection through both installed skill wrappers. Bind exact source bytes, expected ledger, repository identity and predecessor; preserve access and canonical history without automatic confirmation or transfer. Reject inferred promotions, stale bases, unsafe files and credential-shaped content. Canonical single-writer adoption and impact tracking remain open R4 work.
 
 - Split conditional content/reporting, client-operation, terminology and delegated-wave instructions into mirrored linked guides, preserving their bodies and reducing both entrypoints by 23.4%. Add a non-authorizing local instruction reader, required-module installation validation and guarded-context digest coverage. Keep actual native delivery savings and semantic acceptance open.

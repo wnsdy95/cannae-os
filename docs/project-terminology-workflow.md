@@ -29,9 +29,9 @@ ledger entry merely because the mention's origin is known.
 Use [Document Authoring Workflow](document-authoring-workflow.md) and
 [Knowledge Management SOP](knowledge-management-sop.md), not a separate service
 or background collector. The agent performs capture through ordinary authorized
-file edits; the local helper validates/selects records and prepares source-bound
-change proposals, but does not listen to conversations or write definitions
-automatically. Actual model compliance
+file work; the local helper validates/selects records, prepares source-bound
+proposals and explicitly appends reviewed changes. It does not listen to
+conversations or decide definitions automatically. Actual model compliance
 with this procedure still needs behavioral evaluation.
 
 ## Canonical Record And Boundaries
@@ -84,7 +84,8 @@ node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" select --repository "$
 
 `init` prints an empty root-bound candidate; it creates or overwrites nothing.
 When a reusable term is actually observed and local writing is allowed, the
-agent creates the private ledger from that identity and appends sourced records.
+designated writer uses the proposal and reviewed-append path below to create the
+private ledger or append a sourced revision under existing write authority.
 Do not initialize empty ledgers in every visited project. Check repository
 exclusions before storing private material; never commit the ledger by default.
 No command fetches source references, invokes a model, installs a client or
@@ -172,12 +173,105 @@ an automatic exception. Passing this local check is not disclosure clearance.
 Do not send private proposals or use them as current recipient selections.
 The existing packet screening and required-term checks still govern handoffs.
 
-This is the capture/proposal part of R4, not its completed workflow. The canonical
-append remains an authorized single-writer operation under the earlier procedure;
-the helper has no apply, confirm, retire or access-change command. Transactional
-single-writer adoption and registered document/task impact tracking remain open.
+These two proposal commands never apply, confirm or retire a definition. The
+separate reviewed-append path below handles a designated writer's explicit
+canonical update. Registered document/task impact tracking remains open R4 work.
 The checks do not claim a protected host, automatic semantic dependency discovery,
 authenticated human decisions or actual model use.
+
+## Reviewed Canonical Append
+
+Only the designated writer with existing read/write authority for the whole
+ledger uses this path. Delegates submit proposals; a role string, writer ID or
+valid JSON file cannot appoint that writer or grant source access. The helper
+does not authenticate the operator or prevent a filesystem owner from editing
+files directly. It coordinates cooperating local processes, not a protected host.
+
+Before writing, inspect the exact proposal and compare its meaning with the
+actual source. Record that appraisal in `review.json` beside `proposal.json`,
+using [ProjectTerminologyChangeReview](../schema-files/project-terminology-change-review.schema.json).
+The [synthetic example](../sample-payloads/valid-project-terminology-change-review.json)
+is not a real appraisal, USER decision, source-access grant or reusable consent.
+Do not create an `append` record merely because preparation or tests passed.
+
+The record binds the proposal SHA-256, writer attribution, review reference,
+decision and source assessment. `candidate_only` preserves uncertainty;
+`explicit_user_definition` and `explicit_user_retirement` require the corresponding
+actual USER statement. These labels are the writer's recorded assessment, not
+authenticated proof. AI inference cannot become confirmed or retired. Existing
+capture authority can cover recording a clear USER definition; do not invent a
+new approval requirement for every word. Ask when meaning or authority is unclear.
+`defer` and `reject` never append. A review is valid for at most 24 hours and is
+checked again immediately before writing; this local bound is not military doctrine
+or a renewal of unrelated execution/model-transfer consent.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" adopt-change --repository "$TARGET_REPOSITORY" --proposal .cannae/knowledge/changes/<proposal-id>/proposal.json --proposal-sha256 <exact-proposal-sha256> --review-sha256 <exact-review-sha256>
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-adoption --repository "$TARGET_REPOSITORY" --transaction .cannae/knowledge/transactions/<transaction-id>/transaction.json --transaction-sha256 <exact-transaction-sha256>
+```
+
+The writer rechecks source, proposal, review, repository identity and expected
+ledger under an exclusive non-expiring `terminology-write.lock.json`. It writes
+private, hash-bound proposal/review and before/after snapshots under
+`.cannae/knowledge/transactions/<transaction-id>/`, governed by
+[ProjectTerminologyChangeTransaction](../schema-files/project-terminology-change-transaction.schema.json).
+The ID derives from the proposal/review hashes. An existing transaction directory
+prevents reuse of that exact review, including after a failed partial preparation.
+Do not delete the directory or change an old hash to obtain another attempt.
+Retain it and prepare a fresh reviewed change if another append is still needed.
+
+Every actual output must already be ignored by Git. The helper changes no ignore
+rule and publishes nothing. It preserves the complete earlier ledger as a private
+snapshot, appends exactly one validated entry, syncs the staged file and atomically
+renames it into place. It checks the resulting ledger and releases only its own
+unchanged lock. Source/review changes, expiry or changed exact ignore rules before publication stop the write;
+new concepts still have no delegated readers and corrections cannot widen access.
+No automatic adoption follows from `propose-change` or `inspect-change`.
+
+On success, retain the returned transaction path/hash and current ledger digest.
+Obtain a fresh scoped selection for subsequent work. Earlier reports, excerpts,
+packets and source snapshots remain unchanged. A successful append is not task
+resumption, policy adoption, execution permission, disclosure clearance or proof
+that another agent received or understood the new meaning.
+
+`inspect-adoption` appraises retained snapshots against the current canonical
+ledger, not the current source conversation. `matches_before` observes the old
+bytes or expected absence; it does not prove the append never occurred before an
+external rollback. `matches_after` observes the exact result. `extends_after`
+requires additional entries with the earlier prefix unchanged. A formatting-only
+rewrite is `after_content_reencoded`, not a new term revision; its changed ledger
+digest still invalidates old packet bindings. Divergent history is refused rather
+than reconstructed from a snapshot. Historical review expiry does not erase a
+recorded append or authorize another one.
+
+### Interrupted Writer Reconciliation
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-writer --repository "$TARGET_REPOSITORY"
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" recover-adoption --repository "$TARGET_REPOSITORY" --lock-id <observed-lock-id> --transaction-sha256 <observed-transaction-sha256>
+```
+
+No timeout or age automatically steals a lock. `inspect-writer` checks the
+recorded local process; a different host, permission uncertainty or reused live
+PID is not proof of exit. Do not terminate another writer merely to proceed.
+Recovery requires the exact lock/transaction binding and an exited local process,
+then rechecks ownership and snapshots before releasing the lock. It never applies
+the staged definition, rewrites the ledger, renews a review or retries the append.
+
+An incomplete transaction may be released only while the ledger still matches
+the recorded before state. Missing evidence after publication, divergent history,
+malformed locks, root replacement or unobservable ownership remain held for manual
+owner appraisal. Preserve staged files and partial records; do not invent a pass
+or silently clear them. If a process exits after a completed write, observe its
+actual result before proposing another append. If a later release/directory-sync
+error leaves no active lock, use the retained transaction to inspect the result;
+absence of a lock is not proof of success or permission to repeat it.
+
+This is local cooperative serialization with process-interruption checks. It does
+not enforce append-only history against an editor that ignores the lock, provide
+filesystem compare-and-swap against such an editor, guarantee storage behavior
+under power loss, authenticate human decisions or synchronize distributed hosts.
+Registered impact reconciliation and native agent use are evaluated separately.
 
 ## Routing And Handoff
 
@@ -277,13 +371,13 @@ filtering, multilingual aliases, repository separation, stale digests, unsafe
 paths and both linked/copied provider wrappers. The shared validator always
 returns `can_execute: false` for this contract.
 
-These are deterministic local checks. They do not authenticate the claimed user
-source, prove an inferred definition is correct, enforce append-only storage
-against an editor, provide concurrent-write transactions or prove actual
-recipient understanding. Coordinate a single writer, compare the predecessor
-before saving, and merge delegates' reported candidates under existing write
-authority rather than allowing simultaneous full-ledger edits. Retain history
-and re-read after edits. The approved synthetic dialogue exercise below observes
+`run-project-terminology-writer-fixtures.js` additionally exercises reviewed
+append, actual competing local processes and interrupted-writer reconciliation.
+These local checks do not authenticate the claimed user source, prove an inferred
+definition correct, enforce storage against an editor ignoring the lock or prove
+actual recipient understanding. Coordinate the designated writer through the
+reviewed-append path instead of simultaneous full-ledger edits; preserve history
+and re-read after updates. The approved synthetic dialogue exercise below observes
 supplied-guidance capture, not automatic collection or actual multi-agent use.
 Those broader behaviors remain unverified. No dashboard or infrastructure claim follows.
 

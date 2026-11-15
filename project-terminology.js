@@ -150,6 +150,7 @@ function renderSelection(selection) {
 
 function main(argv = process.argv.slice(2)) {
   if (["propose-change", "inspect-change"].includes(argv[0])) return require("./project-terminology-change").main(argv);
+  if (["adopt-change", "inspect-adoption", "inspect-writer", "recover-adoption"].includes(argv[0])) return require("./project-terminology-writer").main(argv);
   try {
     const [command, ...args] = argv, values = {}, terms = [];
     const names = command === "init" || command === "check" ? ["repository"] : command === "select"
