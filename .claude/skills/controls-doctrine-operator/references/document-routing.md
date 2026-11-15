@@ -445,6 +445,21 @@ selection separate from target output paths. Test with isolated homes using
 `node run-skill-installation-fixtures.js`; fake CLI version probes are not
 native discovery, login, model execution or separately packaged plugin evidence.
 
+For a read-only copy/version diagnosis, run the trusted corpus's
+`skill-installation-inspector.js --provider codex|claude --installed <absolute-path>`.
+Do not ask an old installed router to certify itself. The inspector compares the
+tracked/non-ignored source bundle inventory and current working-tree bytes,
+executable bits and the default marker/source-ancestry binding. It records the
+source HEAD separately; matching hashes do not mean the source is committed,
+trusted or compatible with every runtime/client version. Missing, changed, unsafe
+or unexpected installed entries require appraisal. Unknown entry contents are
+not read or executed. Explicit/environment corpus overrides and client startup
+settings are not assessed, and no settings or installed files are changed.
+Keep intentional local edits until reviewed; a difference is not automatically
+an obsolete copy. Follow the existing dry-run/replacement procedure only after
+choosing the intended source and preserving changes. Native discovery, delivered
+bodies and successful task behavior still need their own evidence.
+
 Check the effective startup mode when an installed skill is missing. Claude's
 `--bare` skips automatic user-directory discovery; do not diagnose that as a
 broken link or remove permission controls to make a test pass. The ordinary

@@ -594,6 +594,13 @@ Temporary homes and stub client binaries isolate failure/replacement checks.
 These results do not establish native client discovery, authentication, model
 execution or separate plugin-package acceptance.
 
+`skill-installation-inspector.js` compares declared installed paths with the
+trusted checkout's current bundle inventory, bytes, executable modes and default
+root binding. `run-skill-installation-inspector-fixtures.js` exercises changed,
+missing and unsafe copies without executing their code or reading unknown entry
+contents. These are local version/packaging observations, not upstream client
+behavior, code trust, authentication, automatic repair or native task acceptance.
+
 `docs/document-authoring-case-study.md` uses the repository's `SUPPORT.md`,
 `GOVERNANCE.md` and `SECURITY.md` as its actual policy sources. It records source
 hashes, draft/revision boundaries and a requirement comparison. The scenario

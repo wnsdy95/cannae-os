@@ -456,6 +456,7 @@ const RULES = [
       "node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .",
       "node run-skill-control-enforcement-fixtures.js",
       "node run-skill-installation-fixtures.js",
+      "node run-skill-installation-inspector-fixtures.js",
       "node run-skill-progressive-disclosure-fixtures.js",
       "node run-agent-routing-preflight-fixtures.js",
       "node implementation-candidate-registry.js audit",

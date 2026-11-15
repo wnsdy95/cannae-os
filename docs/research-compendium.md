@@ -1251,6 +1251,14 @@ probes and entrypoint inspection are not native client loading or model executio
 The two skills remain the selected distribution, with separate plugin packaging
 not included. This is local engineering evidence, not a new military-source claim.
 
+The R6 successor adds `skill-installation-inspector.js`: compare a loaded path
+from a trusted checkout before executing a possibly stale copy. File/guide/script
+hashes, executable modes and default corpus binding distinguish a current bundle
+from differences that need appraisal. Current working-tree bytes and source HEAD
+are separate observations; intentional edits are not automatically obsolete.
+The check neither reads client settings nor rewrites markers, installs a skill,
+invokes native clients or proves body delivery. Unknown entry bodies stay unread.
+
 ## Source-Grounded Authoring Exercise (2026-11-10)
 
 `docs/document-authoring-case-study.md` applies the existing support, governance

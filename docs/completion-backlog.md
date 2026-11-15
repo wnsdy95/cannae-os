@@ -16,11 +16,12 @@ Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
 keep dashboards, servers and production infrastructure deferred. R1-R6 in the
 [scope](skill-first-product-scope.md#active-objectives) are the new active goal.
 The completed G1-G5/A01-A20 baseline below remains intact. New status:
-**3/18 required criteria verified**; this is a work inventory, not an accuracy
+**4/18 required criteria verified**; this is a work inventory, not an accuracy
 or product-completion percentage. Registration and the initial probes closed none;
 the frozen evaluation closes SR01 and the conditional-instruction checkpoint
 below closes SR04. Registered local dependency impact closes SR11 at its bounded
-scope. Actual context savings and native quality remain open.
+scope, and the installation/diagnostic compatibility matrix closes SR16 for its
+tested configurations. Actual context savings and native quality remain open.
 
 #### Observed Skill Limits
 
@@ -82,7 +83,7 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | Planned |
 | SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
 | SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
-| SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Planned |
+| SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Verified (bounded) |
 | SR17 | R6 | Map affected surfaces to focused checks and retain full integration validation before merge. Keep a non-authorizing local evidence index with exact source/result versions and unavailable-evidence states; no temporary-file loss may be presented as a fresh pass. | Planned |
 | SR18 | R6 | Demonstrate one bounded gap -> candidate -> both-skill adaptation -> regression/source appraisal -> accepted change cycle. Preserve review/adoption distinctions, historical evidence and unrelated edits; reconcile scope, indexes, backlog and actual goal status at closure. | Planned |
 
@@ -481,6 +482,54 @@ status vocabulary; the failed closure is retained as
 SHA-256 `3751af4c57bf04b287774e67d3f8710718148dd66e578bedce98756a1ff07fbe`.
 Dashboards and servers
 remain deferred; unrelated `.gitignore`, lockfile and frozen evaluation are unchanged.
+
+#### Installed Copy Diagnosis (2026-11-16)
+
+Following R4C commit `d21c4e0`, R6 work adds a read-only inspector invoked from
+the trusted checkout, not from a possibly stale installation. It compares current
+bundle bytes, executable modes and the default marker/source ancestry without
+running installed scripts. The source HEAD is recorded separately from current
+working-tree content; differences may be intentional local edits, not just age.
+Unknown entry contents remain unread. No native client, model, settings change,
+automatic reinstall or marker repair is part of this helper.
+
+The initial fixture's read guard matched `/private` anywhere in a path, accidentally
+rejecting macOS's legitimate `/private/var` temporary root after five passing cases.
+The guard was narrowed to the exact synthetic private target and unexpected entry;
+the actual no-read boundary is preserved.
+
+All 25 affected-surface commands passed with the 14 source files unchanged:
+`.cannae/maintenance/skill-installation-r6a-20261116/verification-6001bc68-e7cc-48ab-bdf2-f4e76951f53d.json`,
+SHA-256 `58f68c99a9304661fb41441f5ddd6cbad5bcdc3340200d19f96af0a74aa93d8e`.
+The gate includes 18 inspector, 13 discovery-helper and 57 installation fixtures;
+instruction, preflight, control, context-integrity, authoring-packet and index
+regressions also passed. Twelve same-corpus router comparisons change only the
+added inspector validation command, not the selected documents or authority.
+Both actual installed paths were inspected from a separate temporary Git root
+without executing their scripts. Each resolved to this checkout and matched its
+current bundle bytes. These paths remain links; no user copy was overwritten.
+
+| Layer/configuration | Observed result | Boundary |
+| --- | --- | --- |
+| Actual Codex and Claude user skill links, inspected from another Git root | Both match current source inventory, bytes, executable modes and source ancestry | Read-only filesystem diagnosis, not current personal startup/settings inspection |
+| Local link/copy fixtures, foreign working directory | Positive routing and changed/missing/unsafe copy/root cases pass | Synthetic temporary homes; no real reinstall or settings changes |
+| Codex CLI 0.162.1, isolated absent/link/copy startup | Absent not discovered; link and copy discovered | Native `debug prompt-input` metadata, no model prompt or body-consumption claim |
+| Claude Code 2.1.322, isolated absent/link/copy startup | Absent not discovered; link and copy discovered | Native initialization metadata, tools/hooks/MCP disabled |
+| Claude Code 2.1.322, bare linked skill / user setting sources excluded | Both correctly not discovered | Different launch conditions, not broken installation |
+
+The eight native metadata observations verified OS network/write containment
+before each startup. Real credential/keychain locations were denied; no user/model
+prompt or real-home setting write occurred. Entry hashes bind the observed bundle
+metadata. These are the installed binaries under isolated configurations, not
+authenticated sessions, personal settings, full-body delivery, semantic quality
+or a production-host guarantee. Metadata listing and task execution stay distinct.
+
+SR16 is bounded-verified for this installation/diagnosis matrix; the goal now has
+4/18 verified criteria. SR05 and R3/R5 still require actual delivered-context and
+source-appraised work/receiving evidence under new applicable model-call consent.
+No withheld case or full-repository integration was executed. Final evidence-index
+edits receive separate documentation checks before commit; dashboard/server work
+and unrelated `.gitignore` remain deferred/preserved respectively.
 
 #### Execution Order And Boundaries
 
