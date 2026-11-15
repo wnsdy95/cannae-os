@@ -159,6 +159,64 @@ pass = candidate meets absolute target
 
 Every declared dimension must appear exactly once. Candidate fixtures must all pass. The baseline and candidate observations must come from the same sealed evaluation-set hash, fixture order, harness hash, exact argv, and independent evaluator plan. Missing or uncomparable evidence is `inconclusive`; a valid threshold failure is `rollback`; only a complete pass is `promotable` for a controller working-state decision.
 
+### 8.2 Skill-only evaluation protocol
+
+The [R1-R6 cycle](completion-backlog.md#skill-reliability-acceptance) uses a local,
+non-authorizing evaluation distinct from the guarded controller above. It does
+not need a campaign server, dashboard, release gate or a new approval service.
+`skill-evaluation-runner.js` inspects a frozen bundle and measures development
+routing against a clean pinned checkout. It does not call a model, execute the
+withheld split, adopt a candidate or grant authority.
+
+Freeze before tuning:
+
+- Twenty-four original routing requests: twelve development and twelve withheld,
+  with expected capability, required/absent documents, declared context and exact
+  guarded rejection. Keep options before `--`; preserve the original task text.
+- Eight source-grounded authoring tasks: four development and four withheld,
+  covering SOP, research, order/report and handoff. Keep task sources separate
+  from evaluator references. Bind every reference check to an exact source ID.
+- Seven appraisal dimensions: required tasks, source fidelity, authority and
+  disclosure, unsupported findings, source locators, uncertainty and consistency
+  between complete and compressed outputs. Record pass/fail/not-assessed against
+  actual source/output evidence, not a model's self-rating or digest alone.
+- Six fixed development routing IDs for the later context comparison. Record
+  entrypoint bytes, selected document bytes and actual delivered instruction/
+  reference bytes separately. Selection is not reading, tokens, cost or quality.
+- SHA-256 and byte size for each bundle member, baseline commit, harness hash,
+  command arguments and source bindings. Never silently rewrite the manifest
+  after an error or edit expectations to fit the observed output.
+
+```bash
+node skill-evaluation-runner.js inspect --bundle /absolute/frozen-bundle
+node skill-evaluation-runner.js baseline --bundle /absolute/frozen-bundle \
+  --repository /absolute/clean-pinned-checkout
+node run-skill-evaluation-fixtures.js
+```
+
+The baseline command records raw stdout/stderr and discrepancies in a new report;
+exit zero means the measurement completed, not that the product passed. Reports
+retain `semantic_acceptance: false`, `promotion_authorized: false` and null loaded
+instruction bytes. A changed harness gets a separately hashed report; preserve
+the earlier run. A dirty/wrong baseline or changed bundle is an inspection error.
+Inspection returns split counts, not withheld inputs/answers; malformed JSON
+errors must not print those bodies. This is procedural separation, not protected
+storage or an independent evaluator.
+
+Freeze the candidate before executing either revision against withheld inputs.
+Do not inspect those bodies during tuning; a disclosed case becomes an exposed
+regression on a later attempt. Record who designed the templates: author-aware
+templates cannot be represented as independently blind evaluation. Matching the
+fixed cases is bounded evidence, not universal semantic coverage.
+
+Native baseline/candidate artifacts remain a separate step requiring applicable
+new consent. Use the same exact task sources and record client/model/configuration
+differences. Preserve all failures, seeded misses, false findings and extra claims;
+inspect every required output. Any authority/disclosure/prohibited-operation or
+mandatory-task regression is critical. No automatic retry, approval renewal,
+policy adoption or promotion follows from a local pass. See the
+[dated freeze checkpoint](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15).
+
 ## 9. Case Study Evaluation Sheet
 
 ```text

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Freeze the skill-only routing/authoring evaluation before behavior changes. Add a non-authorizing local inspection/baseline helper with split/hash/path checks and thirteen synthetic regressions. Preserve all clean-baseline reports, including ten failing routing observations; close SR01 only and keep native authoring, withheld execution and loaded-context savings open. Mirror measurement-versus-acceptance guidance in both skills and index the exact checkpoint without renewing consent or reopening platform work.
+
 - Define the USER-requested skill reliability successor goal from current routing probes and retained limits. Separate six objectives and eighteen planned criteria from the completed twenty-row baseline; preserve deferred dashboard/server/plugin work and exact pending decisions. Mirror cycle-specific evidence, withheld-case and consent guidance in both skills. Goal registration and local probes are not implementation or new native acceptance.
 
 - Integrate the skill-first branch with retained mainline controls without replacing either history. Preserve document-context integrity together with readiness revocation, combine non-executing validator types and both routing inventories, and retain captured-request, workload and registry procedures in both conditional skill references. Prior native acceptance remains bound to its recorded revisions; merge validation is not a new model review or permission grant.

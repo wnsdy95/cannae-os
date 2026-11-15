@@ -16,8 +16,9 @@ Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
 keep dashboards, servers and production infrastructure deferred. R1-R6 in the
 [scope](skill-first-product-scope.md#active-objectives) are the new active goal.
 The completed G1-G5/A01-A20 baseline below remains intact. New status:
-**0/18 required criteria verified**; this is a work inventory, not an accuracy
-or product-completion percentage. Registration and baseline probes close none.
+**1/18 required criteria verified**; this is a work inventory, not an accuracy
+or product-completion percentage. Registration and the initial probes closed none;
+the frozen evaluation and recorded baseline below close SR01 only.
 
 #### Observed Skill Limits
 
@@ -64,13 +65,13 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 
 | ID | Objective | Required evidence for closure | Status |
 | --- | --- | --- | --- |
-| SR01 | R1 | Freeze 24 original requests, expected objectives/documents, exclusions and the baseline revision; record development outputs in both providers. Label withheld cases and keep them out of tuning until the candidate is frozen. | Planned |
+| SR01 | R1 | Freeze 24 original requests, expected objectives/documents, exclusions and the baseline revision; record development outputs in both providers. Label withheld cases and keep them out of tuning until the candidate is frozen. | Verified (bounded) |
 | SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | Planned |
 | SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | Planned |
 | SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Planned |
 | SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | Planned |
 | SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | Planned |
-| SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | Planned |
+| SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress |
 | SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | Planned |
 | SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
 | SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Planned |
@@ -82,6 +83,44 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Planned |
 | SR17 | R6 | Map affected surfaces to focused checks and retain full integration validation before merge. Keep a non-authorizing local evidence index with exact source/result versions and unavailable-evidence states; no temporary-file loss may be presented as a fresh pass. | Planned |
 | SR18 | R6 | Demonstrate one bounded gap -> candidate -> both-skill adaptation -> regression/source appraisal -> accepted change cycle. Preserve review/adoption distinctions, historical evidence and unrelated edits; reconcile scope, indexes, backlog and actual goal status at closure. | Planned |
+
+#### Evaluation Freeze Checkpoint (2026-11-15)
+
+SR01 is bounded-verified: the fixed 24-request inventory includes exact original
+text, context, objectives, sources, exclusions and guarded failure expectations.
+Both providers ran the twelve development cases at clean commit
+`9331ff5c613f60cb30bd61e853c78d3d0e9440fb`. Fourteen of twenty-four observations
+matched; ten did not. In each provider RD-02 retained five execution guides;
+RD-03/04 retained execution and platform guides; RD-05 missed Korean authoring
+coverage; RD-06 hid a compound capability gap. These are measured defects, not
+reasons to lower expectations or call the baseline a product pass.
+
+The eight authoring tasks and seven-dimensional source-bound rubric are also
+frozen, but SR07 remains in progress: neither client's native baseline/candidate
+artifacts exist for this evaluation. Context cases are RD-01/02/03/04/08/09;
+all actual loaded-instruction counts remain null. The local reports cannot close
+SR02-SR06 or establish comprehension, instruction savings or authoring quality.
+
+Private evidence root: `.cannae/maintenance/skill-reliability-evaluation-20261115/bundle/`.
+The public [protocol](evaluation-metrics.md#82-skill-only-evaluation-protocol)
+and runner explain reproduction; absence of the private bundle must be reported,
+not replaced with invented evidence. Exact bindings:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Frozen `manifest.json`, binding seven split/protocol members | `ea1dbb99f3acc3f46ab79bb167765724b95706aa204aea4faab5b22cf6f6eac4` |
+| Initial `baseline-5dd32c07-ec2d-4f7f-9b6d-2a6b21ca63cc.json` | `b1a26ed6099704e8c35edf3643550babbbc33dd25db24f86d0d0aa082e71926b` |
+| Parse/ID-hardened `baseline-fac11505-ef0c-4ece-91eb-c2a123bda976.json` | `c2a667d1377e0edbae9da3131fad1d1eeafe49982e84d411a93adb28837ed76b` |
+| Final exact-error harness `baseline-8a45e7fe-61d7-4c58-9d8d-7bd420bda204.json` | `ec4dd1d773a47c7943e3d596cca53d1a43cb55d754c24f27c5c0b46ab52b6601` |
+
+The later measurements follow helper-only parse-error privacy, duplicate-ID and
+exact error-code checks, not router tuning; all reports retain identical case
+outcomes and their own harness hashes. Thirteen synthetic helper fixtures passed. No native model
+call or withheld execution occurred. Withheld templates were designed by the
+same operator, not an independent evaluator; their rendered inputs remain outside
+tuning. This is author-aware procedural separation, not a blind benchmark or
+protected host. Candidate behavior, native consent and later acceptance remain
+open; no model transfer, adoption or authority follows from this checkpoint.
 
 #### Execution Order And Boundaries
 

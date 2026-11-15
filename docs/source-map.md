@@ -207,9 +207,18 @@ The [Skill Reliability And Efficiency queue](completion-backlog.md#skill-reliabi
 records the USER's next skill-only goal and local probes at `21a90d8`: wording-
 sensitive overreading, Korean-query fallback, manual objective declaration and
 instruction/reference size. These observations do not establish model accuracy
-or grant access. Its eighteen planned criteria are separate from the completed
+or grant access. Its eighteen criteria are separate from the completed
 baseline. See the [compendium](research-compendium.md#skill-reliability-successor-goal-2026-11-15);
 no new external military-source claim or platform work is introduced.
+
+The [frozen skill evaluation](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15)
+binds 24 routing requests, eight authoring tasks and separate source-based
+references to baseline `9331ff5`. The [local protocol](evaluation-metrics.md#82-skill-only-evaluation-protocol),
+`skill-evaluation-runner.js` and `run-skill-evaluation-fixtures.js` distinguish a
+completed measurement from product acceptance. Both providers retain five failing
+development cases; no withheld/native execution or loaded-byte claim is added.
+The templates are author-aware, not independently blind. SR01 closes only the
+freeze/baseline criterion; the source-bound authoring evaluation remains open.
 
 The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 binds native route/read records, delivered source bytes and separate operator

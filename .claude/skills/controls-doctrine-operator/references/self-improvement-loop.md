@@ -115,6 +115,16 @@ pending artifact decisions and obtain applicable new consent before native calls
 Do not reuse the old eight-outcome list as the active queue. A goal remains open
 until its own evidence is sufficient; absence of an app goal is not proof of it.
 
+For skill-only comparisons, use `docs/evaluation-metrics.md`'s frozen local
+protocol and `skill-evaluation-runner.js`, not a new campaign service. Inspect
+the bundle before measurement; use a clean pinned baseline and keep failed runs
+with their harness/source hashes. Exit zero means measurement completed, not
+product acceptance. Keep selected bytes separate from actual loaded instructions;
+a null delivery count cannot prove context savings. Do not inspect withheld
+bodies during tuning or call author-aware templates independently blind. Never
+refresh expected results silently to fit a candidate. Native comparison still
+needs its own applicable consent and source-appraised artifacts.
+
 Separate current navigation from retained evidence history. After a proposed
 successor or completed review, reconcile the document's opening current-candidate
 pointer, README and active queue with the actual candidate and disposition.

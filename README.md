@@ -84,7 +84,9 @@ The next USER-requested cycle is [Skill Reliability And Efficiency](docs/skill-f
 robust intake, smaller useful context, withheld-case quality, terminology/change
 impact, repeatable cross-client workflows and reproducible maintenance. Its
 [eighteen new criteria](docs/completion-backlog.md#skill-reliability-acceptance)
-start planned; prior acceptance does not count as their completion. Dashboards,
+started planned; prior acceptance does not count as their completion. The
+[frozen evaluation checkpoint](docs/completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15)
+closes SR01 only and retains ten failing development observations. Dashboards,
 servers and optional plugin packaging remain deferred.
 
 <p align="center">
@@ -1058,7 +1060,7 @@ review; lexical overrecommendation and manually reviewed profiles remain limitat
 Separate plugin packaging remains optional and deferred.
 
 The [active objectives](docs/skill-first-product-scope.md#active-objectives) are
-now R1-R6, with a separate [0/18 planned acceptance inventory](docs/completion-backlog.md#skill-reliability-acceptance).
+now R1-R6, with a separate [1/18 verified acceptance inventory](docs/completion-backlog.md#skill-reliability-acceptance).
 The completed twenty-row baseline is not a completion score for this new cycle.
 
 The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

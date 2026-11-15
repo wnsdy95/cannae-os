@@ -38,6 +38,16 @@ twenty accepted rows remain historical acceptance. Both maintenance skills now
 require cycle-specific evidence rather than carried-forward completion. New
 native calls need applicable consent; pending artifact decisions are unchanged.
 
+The subsequent [evaluation freeze](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15)
+closes SR01 with exact bundle/report hashes, 24 fixed routing cases and both-provider
+development outputs. Fourteen observations match expectations and ten fail; the
+runner reports measurement completion without product acceptance. Eight authoring
+tasks have separate source-bound references, but their native artifacts remain
+unexecuted, so SR07 is still open. The [protocol](evaluation-metrics.md#82-skill-only-evaluation-protocol)
+keeps selection, actual delivery and semantic quality separate. Withheld templates
+are operator-authored, not independently blind; no withheld execution, native
+transfer or operational authority is inferred from these local engineering checks.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

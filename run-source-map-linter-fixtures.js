@@ -195,7 +195,9 @@ function runOrientationFixtures() {
   assert(cycleLesson("codex-skills") === cycleLesson(".claude/skills") &&
     cycleLesson("codex-skills").includes("R1-R6 and SR01-SR18") &&
     cycleLesson("codex-skills").includes("Registration is not implementation or model-transfer consent.") &&
-    cycleLesson("codex-skills").includes("absence of an app goal is not proof"),
+    cycleLesson("codex-skills").includes("absence of an app goal is not proof") &&
+    cycleLesson("codex-skills").includes("Exit zero means measurement completed") &&
+    cycleLesson("codex-skills").includes("a null delivery count cannot prove context savings"),
   "Both provider skills must preserve cycle-specific acceptance and consent boundaries.");
   // These assertions protect declared orientation and links, not semantic truth.
   return 14;

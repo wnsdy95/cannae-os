@@ -35,7 +35,8 @@ it does not reopen or reinterpret its twenty accepted requirements.
    bounded compatibility in existing clients without changing host settings.
 
 The [new acceptance inventory](completion-backlog.md#skill-reliability-acceptance)
-has eighteen required criteria, separate from A01-A21. All start planned; audit
+has eighteen required criteria, separate from A01-A21. They started planned;
+the backlog records evidence-backed changes, not inherited acceptance. Audit
 and registration are not implementation. Ordinary CLI helpers and existing local
 file workflows are in scope. A new service, dashboard, orchestration backend,
 authenticated application or production infrastructure is not. Optional plugin
