@@ -75,9 +75,9 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress |
 | SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | Planned |
 | SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
-| SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Planned |
+| SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | In progress |
 | SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Planned |
-| SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Planned |
+| SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | In progress |
 | SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | Planned |
 | SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
 | SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
@@ -305,12 +305,76 @@ The final status/evidence-index edits receive separate documentation checks.
 SR04 is bounded-verified by exact entry reduction, body preservation, linked
 discovery, installation and guarded-context checks. SR05/SR06 remain in progress
 pending actual client evidence. Six-case client-delivery counts remain null;
-neither entry shrinkage nor local emitted bytes closes SR05. The all-topic local
-reader emits 35,296/35,310 content bytes (Codex/Claude), more than the old entries;
+neither entry shrinkage nor local emitted bytes closes SR05. At the R2 checkpoint,
+the all-topic local reader emitted 35,296/35,310 content bytes (Codex/Claude),
+more than the old entries; later reference additions change those totals, and
 conditional selection, repeats and JSON framing must be measured in real use.
 No native model call, withheld execution or new transfer consent occurred.
 The new goal has 2/18 verified criteria, not a claim of overall product accuracy.
 Dashboards and servers stay deferred.
+
+#### Terminology Change Proposals (2026-11-15)
+
+The first R4 implementation adds `propose-change` and `inspect-change` to the
+existing local terminology helper and both installed wrapper paths. A request
+binds a minimal exact excerpt to its UTF-8 byte range and whole-source hash,
+an expected ledger digest or verified absence, and a concept/scope. The private
+proposal derives its revision ID/version/predecessor and inherits access for a
+correction; new concepts have no delegated readers. It writes no canonical
+ledger and cannot confirm, retire, publish or transfer a definition automatically.
+The requested status is explicitly different from the current glossary.
+
+The shared bounded-file reader now verifies regular non-symlink, single-link
+files and detects size/identity changes during the read. Sources and requests
+remain within the exact target project; output must already be ignored. The
+new contracts retain `can_execute: false`. OPSEC findings block proposal
+publication without returning the value or silently clearing a false positive.
+These local conditions are not authentication, semantic accuracy or a protected
+host guarantee.
+
+Eighteen new local fixtures cover preparation and fresh inspection, inference
+refusal, unchanged current selection, source/ledger changes, scope/access,
+separate repositories, original Unicode, unsafe/changed files, credential-shaped
+content and linked/copied wrappers. The first unsafe-output fixture expected
+a path error but received the earlier ignore-check refusal; validation now rejects
+unsafe ancestors before consulting Git and still checks ignore rules before
+creating directories. The original 16 terminology cases also passed after the
+shared read change.
+
+The first affected-surface gate passed its first 24 commands, including 609
+validator cases, 34 terminology handoff cases and 1,776 routing queries. Command
+25, staged whitespace checking, rejected extra trailing blank lines in six new
+JSON files; command 26 did not execute. The failed report preserves unchanged
+22-file source bindings under `.cannae/maintenance/terminology-change-r4a-20261115/`:
+`verification-a7e68bfe-5ad9-482e-a6e0-1eb8037ab1ca.json`, SHA-256
+`66dc3be2a60d2e49eecf874eb624d315ee3b2b8fbc9a1130921bce553b7660ef`.
+Trailing blank lines were removed without changing parsed contract/sample values.
+
+A separate source-bound probe reproduced rejection of a correction whose
+domain/task values were unchanged but JSON keys were reordered:
+`scope-order-probe-ba2eea8d-536b-4e6a-905c-edd82e1c6984.json`, SHA-256
+`6630ad2cd297069534e14dd2f91de1d9bf2e8b798472240e91ab092069e98408`.
+Scope checks now compare values; exact request/proposal digests remain separate
+serialization bindings. The correction fixture includes that positive case and
+retains real scope-change rejection. The fixed probe reports no reordered-scope
+error; its result and original failure remain separate.
+
+All 19 follow-up commands passed without source drift:
+`followup-52069d9e-64ae-4fc2-a941-5cbb1f879e15.json` in the same R4A root, SHA-256
+`f8f5ae5fdd1d136ad20989ed12530e7af5d59a8b72ce86025a09388a62de1cb7`.
+This reruns the 18 proposal cases, the exact ordering probe, all 609 validator
+cases, instruction/document consumers and metadata/index checks. It also proves
+the six JSON edits only removed a final blank line. Prior handoff, installation,
+preflight, control, context-integrity and routing results remain version-specific;
+they are not relabeled as new runs or a full-repository integration pass. Final
+evidence-index edits receive a separate documentation check before commit.
+
+SR10/SR12 remain in progress, and SR11 is still planned. Next: an explicit
+reviewed single-writer append path and registered document/task/term impact
+reconciliation, including simultaneous proposals, unrelated changes and allowed
+partial work. The pending proposal path does not substitute for either outcome.
+No new native call or withheld evaluation occurred; the verified count remains
+2/18. Dashboards, servers and policy/authority expansion remain deferred.
 
 #### Execution Order And Boundaries
 

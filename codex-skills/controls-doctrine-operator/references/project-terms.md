@@ -33,3 +33,24 @@ dependent conclusions when required meanings are unavailable, candidate-only,
 retired or conflicting; continue other permitted drafting with explicit unknowns.
 Do not drop a requirement or change access to obtain a passing packet. Compare
 the declaration with the original request before transfer and on rebrief.
+
+For a new capture or correction, preserve a minimal authorized original excerpt
+in the target project and prepare a source-bound change request through the same
+helper's `propose-change` command. Use the actual byte range and full source hash,
+not a translated quote or a claimed USER label as authentication. Set the expected
+current ledger hash, or null only when no ledger exists. This helper prepares an
+ignored private proposal; it never writes or confirms the canonical definition.
+Even an entry with proposed status `confirmed` is not adopted by preparation.
+Inferred meanings must request `candidate`; new concepts start without delegated
+access, and corrections inherit rather than widen existing access lists.
+
+Before an authorized writer reviews a proposed append, use `inspect-change` with
+its exact proposal hash. Changed sources, changed ledgers or repository identity
+require a fresh proposal and appraisal, not patched retained hashes. Compare the
+proposed meaning with the actual user statement; local validity does not prove
+that the text was written by USER or that the interpretation is correct. Preserve
+the canonical ledger and other pending proposals. Single-writer adoption and
+affected-document reconciliation remain separate unfinished workflow steps.
+Do not route or hand off a pending proposal as the current confirmed glossary.
+Do not transmit its private source path or excerpt merely because local checks
+pass. Existing packet disclosure and recipient checks still apply independently.

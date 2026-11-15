@@ -1,0 +1,28 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectTerminologyChangeRequest",
+  "expected_ledger_sha256": null,
+  "change": {
+    "concept_id": "CONCEPT-ICP",
+    "scope": {
+      "domain": "sales",
+      "task": null
+    },
+    "term": "ICP",
+    "aliases": [],
+    "definition": "Company-level fit, not a contact role.",
+    "not_meaning": "A contact role or execution approval.",
+    "status": "confirmed",
+    "basis": {
+      "kind": "ai_inference",
+      "reference": "Synthetic user statement, turn 1.",
+      "excerpt": "For this project, ICP means company-level fit, not a contact role."
+    }
+  },
+  "source": {
+    "path": "notes/user-definition.md",
+    "sha256": "dc8ff418954e6930ff81b165dfdc4c5723c1fddcb0df9756f8a9163267f7e5bd",
+    "start_byte": 0,
+    "end_byte": 66
+  }
+}

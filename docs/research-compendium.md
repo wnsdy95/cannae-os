@@ -1006,6 +1006,16 @@ The local helper checks revision chains and selects relevant role/department
 records without authorizing work or transfer. This is an internal design and
 deterministic implementation, not a new military-source finding or proven
 natural-language adoption rate. Automatic capture and operational receiver use remain open.
+
+The later [source-bound proposal path](project-terminology-workflow.md#source-bound-change-proposals)
+preserves a minimal exact user/inference excerpt and its byte/hash location,
+the current ledger digest and predecessor before preparing a private revision.
+Its reusable lesson is that a proposed `confirmed` field is not canonical
+confirmation, and source-kind labels do not authenticate their author. An
+unrelated ledger edit invalidates the proposal base but does not invalidate all
+unrelated work. The [checkpoint](completion-backlog.md#terminology-change-proposals-2026-11-15)
+keeps single-writer adoption and registered impact reconciliation open.
+
 An integration probe subsequently changed the glossary while leaving its excerpt
 untouched; generic packet inspection still reported that excerpt current.
 The explicit terminology binding now checks both source layers for the declared

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add private source-bound terminology change proposals and fresh inspection through both installed skill wrappers. Bind exact source bytes, expected ledger, repository identity and predecessor; preserve access and canonical history without automatic confirmation or transfer. Reject inferred promotions, stale bases, unsafe files and credential-shaped content. Canonical single-writer adoption and impact tracking remain open R4 work.
+
 - Split conditional content/reporting, client-operation, terminology and delegated-wave instructions into mirrored linked guides, preserving their bodies and reducing both entrypoints by 23.4%. Add a non-authorizing local instruction reader, required-module installation validation and guarded-context digest coverage. Keep actual native delivery savings and semantic acceptance open.
 
 - Add bounded Korean intake views to both skills while preserving original requests, clauses, sources and authority. Keep conditional technical context, explicit parents and guarded controls; distinguish lexical hints from operator translations. Add Korean/mixed-language and Unicode regressions plus installed/local receiving coverage. Frozen development matches reach 24/24, not a native-quality or withheld-evaluation claim; the new goal remains open.

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-terminology-change-proposal.schema.json",
+  "title": "Project Terminology Change Proposal",
+  "description": "A source-bound pending change; static validity does not establish freshness, source authenticity, semantic accuracy or adoption.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "type",
+    "repository",
+    "request",
+    "request_sha256",
+    "predecessor",
+    "entry",
+    "authorization_verified",
+    "canonical_ledger_written",
+    "confirmation_adopted",
+    "transfer_authorized"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "ProjectTerminologyChangeProposal"
+    },
+    "repository": {
+      "$ref": "project-terminology.schema.json#/properties/repository"
+    },
+    "request": {
+      "$ref": "project-terminology-change-request.schema.json"
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "predecessor": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "project-terminology.schema.json#/properties/entries/items"
+        }
+      ]
+    },
+    "entry": {
+      "$ref": "project-terminology.schema.json#/properties/entries/items"
+    },
+    "authorization_verified": {
+      "const": false
+    },
+    "canonical_ledger_written": {
+      "const": false
+    },
+    "confirmation_adopted": {
+      "const": false
+    },
+    "transfer_authorized": {
+      "const": false
+    }
+  }
+}

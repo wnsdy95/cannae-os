@@ -59,27 +59,43 @@ function identity(repository) {
   } catch { fail("ROOT_INVALID"); }
 }
 
-function read(repository) {
-  const origin = identity(repository);
-  let file = origin.root, fd;
+function readBoundFile(root, relative, maximum = 4 * 1024 * 1024) {
+  if (typeof relative !== "string" || !relative || /[\\\\:\x00-\x1f]/.test(relative) ||
+      relative.startsWith("/") || relative.split("/").some(part => !part || [".", ".."].includes(part))) fail("PATH_INVALID");
+  let file = root, fd;
   try {
-    for (const component of RELATIVE.split("/")) {
+    for (const component of relative.split("/")) {
       file = path.join(file, component);
       if (fs.lstatSync(file).isSymbolicLink()) fail("PATH_INVALID");
     }
     fd = fs.openSync(file, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW | fs.constants.O_NONBLOCK);
     const before = fs.fstatSync(fd, { bigint: true });
-    if (!before.isFile() || before.nlink !== 1n || before.size > 4n * 1024n * 1024n) fail("FILE_INVALID");
-    const bytes = fs.readFileSync(fd), after = fs.fstatSync(fd, { bigint: true });
-    if (["dev", "ino", "size", "mtimeNs", "ctimeNs"].some(key => before[key] !== after[key])) fail("FILE_CHANGED");
-    const value = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
-    validate(value);
-    if (Object.keys(origin).some(key => value.repository[key] !== origin[key])) fail("ROOT_MISMATCH");
-    return { value, digest: hash(bytes) };
+    if (!before.isFile() || before.nlink !== 1n || before.size > BigInt(maximum)) fail("FILE_INVALID");
+    const buffer = Buffer.alloc(Number(before.size) + 1);
+    let size = 0, count;
+    do { count = fs.readSync(fd, buffer, size, buffer.length - size, null); size += count; }
+    while (count && size < buffer.length);
+    if (size > maximum) fail("FILE_INVALID");
+    if (size !== Number(before.size)) fail("FILE_CHANGED");
+    const after = fs.fstatSync(fd, { bigint: true }), named = fs.lstatSync(file, { bigint: true });
+    if (["dev", "ino", "nlink", "size", "mtimeNs", "ctimeNs"].some(key => before[key] !== after[key] || after[key] !== named[key]) ||
+        named.isSymbolicLink() || fs.realpathSync(file) !== file) fail("FILE_CHANGED");
+    const bytes = buffer.subarray(0, size);
+    return { bytes, digest: hash(bytes) };
   } catch (error) {
     if (/^TERMINOLOGY_[A-Z_]+$/.test(error.message)) throw error;
     fail(error.code === "ENOENT" ? "MISSING" : "UNAVAILABLE");
   } finally { if (fd !== undefined) fs.closeSync(fd); }
+}
+
+function read(repository) {
+  const origin = identity(repository), { bytes, digest } = readBoundFile(origin.root, RELATIVE);
+  let value;
+  try { value = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)); }
+  catch { fail("UNAVAILABLE"); }
+  validate(value);
+  if (Object.keys(origin).some(key => value.repository[key] !== origin[key])) fail("ROOT_MISMATCH");
+  return { value, digest };
 }
 
 function select(value, options) {
@@ -133,6 +149,7 @@ function renderSelection(selection) {
 }
 
 function main(argv = process.argv.slice(2)) {
+  if (["propose-change", "inspect-change"].includes(argv[0])) return require("./project-terminology-change").main(argv);
   try {
     const [command, ...args] = argv, values = {}, terms = [];
     const names = command === "init" || command === "check" ? ["repository"] : command === "select"
@@ -160,5 +177,5 @@ function main(argv = process.argv.slice(2)) {
   }
 }
 
-module.exports = { terminologyIssues, identity, read, select, projectSelection, renderSelection, main, RELATIVE };
+module.exports = { terminologyIssues, identity, read, readBoundFile, select, projectSelection, renderSelection, main, RELATIVE };
 if (require.main === module) main();

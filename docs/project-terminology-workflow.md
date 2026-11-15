@@ -29,8 +29,9 @@ ledger entry merely because the mention's origin is known.
 Use [Document Authoring Workflow](document-authoring-workflow.md) and
 [Knowledge Management SOP](knowledge-management-sop.md), not a separate service
 or background collector. The agent performs capture through ordinary authorized
-file edits; the local helper validates and selects records but does not listen
-to conversations or write definitions automatically. Actual model compliance
+file edits; the local helper validates/selects records and prepares source-bound
+change proposals, but does not listen to conversations or write definitions
+automatically. Actual model compliance
 with this procedure still needs behavioral evaluation.
 
 ## Canonical Record And Boundaries
@@ -105,6 +106,78 @@ Role and department must both match. A user selection is not artificially
 restricted by an assistant role, but still requires source read authority.
 Inspect selected text for sensitive information before transfer. Do not ship
 the private ledger or treat syntactic validity as disclosure clearance.
+
+## Source-Bound Change Proposals
+
+For an observed term, the authorized source reader preserves the minimal original
+statement in the target project, not a global conversation cache. Do not collect
+unrelated messages. Create a request using
+[ProjectTerminologyChangeRequest](../schema-files/project-terminology-change-request.schema.json);
+the [synthetic sample](../sample-payloads/valid-project-terminology-change-request.json)
+is shape guidance, not an actual user statement or runnable source approval.
+
+The request supplies the exact existing ledger SHA-256, or null when it does not
+exist; the concept and scope; proposed spelling, aliases, meaning and status; and
+source kind/reference/excerpt. Its source binding names an exact relative UTF-8
+file, whole-file SHA-256 and zero-based half-open byte range for that excerpt.
+Offsets are UTF-8 bytes, not characters or lines. Preserve original language;
+normalization used for matching is not exact source reproduction.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" propose-change --repository "$TARGET_REPOSITORY" --request .cannae/knowledge/change-requests/one.json
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-change --repository "$TARGET_REPOSITORY" --proposal .cannae/knowledge/changes/<proposal-id>/proposal.json --proposal-sha256 <exact-sha256>
+```
+
+Use a regular project source file or the private
+`.cannae/knowledge/observations/` subtree. The helper does not fetch URLs, inspect
+other conversations or interpret the source text. Inputs stay within the exact
+target repository; traversal, hidden configuration paths, symlinks, hardlinks,
+invalid UTF-8 and changed/incomplete reads are rejected. The source is bounded to
+128 KiB; minimize an authorized observation rather than silently truncating it.
+Only an operator allowed to read the whole selected source and private ledger
+may invoke this path. A CLI argument is not a new source-access grant.
+
+`propose-change` validates the complete proposed append against the old ledger,
+assigns its revision ID/version/predecessor and writes only
+`.cannae/knowledge/changes/<proposal-id>/proposal.json`. That destination must
+already be ignored by the project; the helper neither changes ignore rules nor
+commits anything. It creates no canonical ledger, even when none existed.
+New concepts have no delegated access by default; a correction preserves the
+predecessor's domain/task and role/department lists. A changed scope requires a
+separate concept, not rewriting prior meaning. Term capture cannot widen access.
+Scope equality compares domain/task values, not JSON object-key order. Exact
+request and proposal digests still bind their serialization independently.
+
+The [proposal contract](../schema-files/project-terminology-change-proposal.schema.json)
+binds the exact request, repository identity, proposed entry and predecessor.
+An AI inference may request only `candidate`. A user-sourced request may propose
+`confirmed` or an existing concept's retirement, but these are proposed states,
+not current definitions: `canonical_ledger_written`, `confirmation_adopted`
+and `transfer_authorized` remain false. Source-kind labels and exact quotes do
+not authenticate who said them or establish semantic accuracy. Review the actual
+USER statement and proposed interpretation before any canonical append.
+
+`inspect-change` requires the exact proposal digest, rereads the current ledger
+and source, and reconstructs the expected append. Any ledger change, including
+an unrelated new term, invalidates its old base. Source edits or repository
+replacement likewise stop reuse. Preserve the old proposal and prepare a new
+one for review; do not patch hashes or silently choose the last competing draft.
+A final-inspection failure may leave a private pending file, never an adopted
+entry. An unrelated valid draft need not stop merely because this proposal is stale.
+
+The local OPSEC checker rejects credential-shaped values and other configured
+findings before proposal publication; diagnostics do not echo their contents.
+A refusal needs authorized source review, not deletion of real restrictions or
+an automatic exception. Passing this local check is not disclosure clearance.
+Do not send private proposals or use them as current recipient selections.
+The existing packet screening and required-term checks still govern handoffs.
+
+This is the capture/proposal part of R4, not its completed workflow. The canonical
+append remains an authorized single-writer operation under the earlier procedure;
+the helper has no apply, confirm, retire or access-change command. Transactional
+single-writer adoption and registered document/task impact tracking remain open.
+The checks do not claim a protected host, automatic semantic dependency discovery,
+authenticated human decisions or actual model use.
 
 ## Routing And Handoff
 

@@ -1,0 +1,70 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectTerminologyChangeProposal",
+  "repository": {
+    "root": "/synthetic/project",
+    "git_directory": "/synthetic/project/.git",
+    "device": "1",
+    "inode": "2",
+    "git_device": "1",
+    "git_inode": "3"
+  },
+  "request": {
+    "schema_version": "0.1",
+    "type": "ProjectTerminologyChangeRequest",
+    "expected_ledger_sha256": null,
+    "change": {
+      "concept_id": "CONCEPT-ICP",
+      "scope": {
+        "domain": "sales",
+        "task": null
+      },
+      "term": "ICP",
+      "aliases": [],
+      "definition": "Company-level fit, not a contact role.",
+      "not_meaning": "A contact role or execution approval.",
+      "status": "confirmed",
+      "basis": {
+        "kind": "user_statement",
+        "reference": "Synthetic user statement, turn 1.",
+        "excerpt": "For this project, ICP means company-level fit, not a contact role."
+      }
+    },
+    "source": {
+      "path": "notes/user-definition.md",
+      "sha256": "dc8ff418954e6930ff81b165dfdc4c5723c1fddcb0df9756f8a9163267f7e5bd",
+      "start_byte": 0,
+      "end_byte": 66
+    }
+  },
+  "request_sha256": "78dbf5270f2dd71b0cf60ed9a0f934dca28d928e761c88c89be5aba1f1647d59",
+  "predecessor": null,
+  "entry": {
+    "id": "TERM-31d8b41e6a03ad5a87d6edff4ca39a66",
+    "concept_id": "CONCEPT-ICP",
+    "version": 1,
+    "supersedes": null,
+    "scope": {
+      "domain": "sales",
+      "task": null
+    },
+    "term": "ICP",
+    "aliases": [],
+    "definition": "Company-level fit, not a contact role.",
+    "not_meaning": "A contact role or execution approval.",
+    "status": "confirmed",
+    "basis": {
+      "kind": "user_statement",
+      "reference": "Synthetic user statement, turn 1.",
+      "excerpt": "For this project, ICP means company-level fit, not a contact role."
+    },
+    "allowed_roles": [
+      "S3"
+    ],
+    "allowed_departments": []
+  },
+  "authorization_verified": false,
+  "canonical_ledger_written": false,
+  "confirmation_adopted": false,
+  "transfer_authorized": false
+}

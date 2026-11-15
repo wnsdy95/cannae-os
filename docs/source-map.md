@@ -500,6 +500,14 @@ records one separately consented native response with supplied instructions and
 synthetic sources. Its hashes and scoped appraisal are local execution evidence,
 not new military doctrine, automatic skill selection or operational acceptance.
 
+The [source-bound change proposal path](project-terminology-workflow.md#source-bound-change-proposals)
+adds a local request/proposal contract and helper for exact excerpts, expected
+ledger versions and unchanged predecessor scope/access. The [R4 checkpoint](completion-backlog.md#terminology-change-proposals-2026-11-15)
+distinguishes preparing a requested confirmed state from adopting that definition.
+Local fixtures cover stale sources/bases, separate repositories, unsafe paths,
+secret-shaped values and installed wrappers; they do not authenticate USER
+statements or complete single-writer adoption, impact tracking or native use.
+
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.
 Its deterministic ownership-substitution fixtures are local engineering evidence,

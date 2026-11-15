@@ -792,7 +792,7 @@ Completed:
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
 - `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases. The current authoring-family map distinguishes operative review, actual receiving, local successors and pending decisions; original failures remain historical. METHOD61's original path refusal and later unapproved proposal do not negate OR72's separately approved receiving. Neither native use nor local correction establishes adoption or universal quality.
-- `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, revision history, recipient selection and freshness; no automatic promotion or authority expansion.
+- `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, source-bound change proposals, revision history, recipient selection and freshness; no automatic adoption, promotion or authority expansion.
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
 - `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.
 - `implementation-candidate-registry.md`: Source-bound requirements, mapped implementations, executable checks, and explicit remaining work.

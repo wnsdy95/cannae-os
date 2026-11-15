@@ -149,6 +149,8 @@ function controlExecutionDescriptor(command) {
 
 const TYPE_TO_SCHEMA = {
   "project-terminology": "project-terminology.schema.json",
+  "project-terminology-change-request": "project-terminology-change-request.schema.json",
+  "project-terminology-change-proposal": "project-terminology-change-proposal.schema.json",
   "project-document-packet-request": "project-document-packet-request.schema.json",
   "project-document-packet": "project-document-packet.schema.json",
   "project-document-review-proposal": "project-document-review-proposal.schema.json",
@@ -6179,6 +6181,7 @@ function validationResult(issues, type, payload) {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
       !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !["frago", "frago-scope-change", "handoff-packet", "handoff-generation-request", "project-terminology", "project-document-packet-request", "project-document-packet", "project-document-review-proposal", "project-document-review-decision", "document-access-manifest", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification", "codex-model-selection"].includes(type) &&
+      !["project-terminology-change-request", "project-terminology-change-proposal"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "readiness-event" && type !== "readiness-drop-reconciliation" && type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
@@ -6223,6 +6226,7 @@ function validatePayloadInSnapshot(payload, type, options) {
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {
+    "project-terminology-change-proposal": ["request", "project-terminology-change-request"],
     "project-document-packet": ["request", "project-document-packet-request"],
     "project-document-review-proposal": ["request", "project-document-packet-request"],
     "operator-consent-record": ["request", "order-adoption-decision-request"],
@@ -6247,6 +6251,9 @@ function validatePayloadInSnapshot(payload, type, options) {
   }
   if (schemaResult.valid && type === "project-terminology") {
     issues.push(...require("../project-terminology").terminologyIssues(payload).map(item => ({ ...item, layer: "semantic" })));
+  }
+  if (schemaResult.valid && ["project-terminology-change-request", "project-terminology-change-proposal"].includes(type)) {
+    issues.push(...require("../project-terminology-change").changeIssues(payload, type).map(item => ({ ...item, layer: "semantic" })));
   }
   if (schemaResult.valid && type === "project-document-packet") {
     issues.push(...require("../project-document-packet").packetIssues(payload).map(item => ({ ...item, layer: "semantic" })));
