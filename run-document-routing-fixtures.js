@@ -219,6 +219,71 @@ function testS6Reading(router) {
   assert.equal(incomplete.operating_mode.department, "unspecified");
 }
 
+function testTaskIntakeViews(router) {
+  const args = ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"];
+  const specialists = ["docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
+    "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md", "docs/production-sandbox-admission.md", ...RUNTIME_SPECIALIST_DOCS];
+  const original = "Draft a support SOP from supplied policy. Do not publish. Do not build a dashboard.";
+  const baseline = route(router, args, original);
+  for (const heading of ["", "Task: ", "Request: ", "### Assignment: ", "**Objective:**\n"]) {
+    for (const exclusion of ["Do not publish or build a dashboard.", "Exclude dashboard and server work.",
+      "Never build a dashboard or transmit the document.", "Omit dashboard and server implementation from this task."]) {
+      const query = heading + "Draft a support SOP from supplied policy. Do not publish. " + exclusion;
+      const result = route(router, args, query);
+      assert.equal(result.query, query); assert.equal(result.capability_routing.status, "covered");
+      assert.equal(result.request_intake.original_constraints_in, "query");
+      assert.equal(result.request_intake.semantic_completeness_verified, false);
+      assert.equal(result.request_intake.authority_changed, false);
+      assert.equal(result.operating_mode.authority, "read-only");
+      for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md"]) {
+        assert(result.recommended_documents.some(row => row.path === file));
+      }
+      for (const file of specialists) assert(!result.recommended_documents.some(row => row.path === file), query + file);
+      for (const command of baseline.validation_commands) assert(result.validation_commands.includes(command));
+    }
+  }
+  const excluded = "Request: Draft a support SOP. Exclude dashboard and server work.";
+  for (const extra of [["--source=docs/event-sourcing-model.md"], ["--department=systems"],
+    ["--capability-query=Review dashboard architecture."]]) {
+    const result = route(router, [...args, ...extra], excluded);
+    assert(result.recommended_documents.some(row => row.path === "docs/event-sourcing-model.md"));
+  }
+  for (const query of ["Task: Review dashboard architecture without deployment.",
+    "Task: Draft an SOP. Exclude dashboard implementation. Review its design.",
+    "Draft an SOP. Do not build a dashboard unless its review requires it.",
+    "Draft an SOP. Exclude skipped dashboard verification."]) {
+    assert(route(router, args, query).recommended_documents.some(row => row.path === "docs/reference-architecture.md"), query);
+  }
+  for (const join of [" and ", "; also ", ". ", " and then "]) {
+    const query = "Task: Compare ICP sales targeting" + join + "Draft a support SOP. Do not contact customers.";
+    const result = route(router, args, query);
+    assert.equal(result.query, query); assert.equal(result.capability_routing.status, "gap_detected");
+    assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    assert.equal(result.request_intake.objectives, "inferred_task_clauses");
+    assert(result.capability_assessment_basis.includes("unverified"));
+    assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+    const declared = route(router, [...args, ...result.capability_queries.map(value => "--capability-query=" + value)], query);
+    for (const field of ["operating_mode", "recommended_documents", "validation_commands", "capability_routing"]) {
+      assert.deepEqual(result[field], declared[field], "Inferred and declared clauses need the same conservative context");
+    }
+    const guarded = spawnSync(process.execPath, [path.join(ROOT, router), ...args,
+      "--receipt", "--scope=agent", "--mission=MIS-INTAKE", "--wave=W1", "--agent=writer", "--", query], { encoding: "utf8" });
+    assert.equal(guarded.status, 2); assert.equal(guarded.stdout, "");
+    assert(guarded.stderr.startsWith("MULTI_OBJECTIVE_MODE_UNSUPPORTED:"));
+    rejectedObjectives++;
+  }
+  for (const query of ["Review source policies and write a research report in Korean. Do not publish.",
+    "Revise the outgoing documents. Assess the readiness of the drafts."]) {
+    const result = route(router, args, query);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.capability_assessments.every(row => row.status === "covered"));
+    assert(!result.recommended_documents.some(row => row.path === "docs/reference-architecture.md"));
+  }
+  const quoted = route(router, args, 'Review "Compare ICP targeting and draft a support SOP" against source policy.');
+  assert(!Object.hasOwn(quoted, "capability_assessments"), "Quoted source text must not become extracted tasking");
+}
+
 function testReadOnlyOperationsDocuments(router) {
   const specialist = ["docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
     "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md", "docs/production-sandbox-admission.md"];
@@ -1108,6 +1173,7 @@ function testDirectTaskIdentity(router) {
 }
 
 for (const router of ROUTERS) {
+  testTaskIntakeViews(router);
   testSourceBoundDraftReview(router);
   testDocumentReviewWorkflow(router);
   testPlatformExclusionLists(router);

@@ -144,6 +144,38 @@ function readOnlyOperationsDocuments(env) {
   assert(!fs.existsSync(path.join(unrelated, ".cannae")));
 }
 
+function taskIntakeViews(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const query of ["Task: Draft a support SOP. Do not publish or build a dashboard.",
+    "Request: Compare ICP sales targeting and draft a support SOP. Do not contact customers."]) {
+    const outputs = PROVIDERS.map(provider => {
+      const router = path.join(destination(env, provider), "scripts/route_controls_docs.js");
+      const run = spawnSync(process.execPath, [router, "--actor=ai", "--role=S3", "--department=operations",
+        "--authority=read-only", "--", query], { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 0, run.stderr);
+      const result = JSON.parse(run.stdout);
+      assert.equal(result.repo_root, fs.realpathSync(source)); assert.equal(result.query, query);
+      assert.equal(result.operating_mode.authority, "read-only");
+      assert.equal(result.request_intake.semantic_completeness_verified, false);
+      assert(result.recommended_documents.some(row => row.path === "docs/document-authoring-workflow.md"));
+      if (query.startsWith("Task:")) {
+        assert.equal(result.capability_routing.status, "covered");
+        for (const file of ["docs/reference-architecture.md", "docs/protected-process-execution.md"]) {
+          assert(!result.recommended_documents.some(row => row.path === file));
+        }
+      } else {
+        assert.equal(result.capability_routing.status, "gap_detected");
+        assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+        assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      }
+      return result;
+    });
+    assert.deepEqual(outputs[0], outputs[1]);
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+  assert(!fs.existsSync(path.join(unrelated, ".cannae")));
+}
+
 function sourceReviewAndLogistics(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   const query = "Review the proposed report against the original sources.", sql = "docs/data-model.sql.md";
@@ -626,6 +658,7 @@ try {
   fixture("linked providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("linked providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
   fixture("linked providers route source-bound reports and omit unrelated S4 SQL defaults", () => sourceReviewAndLogistics(env));
+  fixture("linked providers preserve task headings, exclusions and inferred objective gaps", () => taskIntakeViews(env));
   fixture("linked providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
@@ -669,6 +702,7 @@ try {
   fixture("copied providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("copied providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
   fixture("copied providers route source-bound reports and omit unrelated S4 SQL defaults", () => sourceReviewAndLogistics(env));
+  fixture("copied providers preserve task headings, exclusions and inferred objective gaps", () => taskIntakeViews(env));
   fixture("copied providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));

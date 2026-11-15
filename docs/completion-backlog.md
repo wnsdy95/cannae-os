@@ -66,8 +66,8 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | ID | Objective | Required evidence for closure | Status |
 | --- | --- | --- | --- |
 | SR01 | R1 | Freeze 24 original requests, expected objectives/documents, exclusions and the baseline revision; record development outputs in both providers. Label withheld cases and keep them out of tuning until the candidate is frozen. | Verified (bounded) |
-| SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | Planned |
-| SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | Planned |
+| SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | In progress |
+| SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | In progress |
 | SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Planned |
 | SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | Planned |
 | SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | Planned |
@@ -121,6 +121,64 @@ same operator, not an independent evaluator; their rendered inputs remain outsid
 tuning. This is author-aware procedural separation, not a blind benchmark or
 protected host. Candidate behavior, native consent and later acceptance remain
 open; no model transfer, adoption or authority follows from this checkpoint.
+
+#### English Intake Development (2026-11-15)
+
+The first R1 implementation separates leading task labels and bounded exclusion
+views from the unchanged original query. It suggests English action clauses when
+no objectives were declared, retaining each capability assessment and a combined
+gap. Declared and inferred clauses use the same conservative role-reading context.
+Actual technical subjects, explicit/parent sources and all selected controls stay
+applicable. Quoted text and deictic steps are not independently split; inspect the
+original request and declare missing objectives rather than treating inference
+as complete. Guarded automatic compound intake fails without issuing a receipt.
+
+Both routers ran the same frozen twelve development requests. Expected matches
+increased from 14/24 to 22/24, with no new expectation failure or removed validation
+command. RD-02/03/04/06 now match in both providers; literal Korean RD-05 still
+fails. These are paired local router observations, not independent model samples,
+native reading or a quality percentage. Source-policy review and noun-qualified
+draft-readiness checks remain covered after decomposition; dependent design review
+retains technical context. Separate regressions cover quoted text, authority,
+technical sources/departments and linked/copied use from another repository.
+
+Private observation root: `.cannae/maintenance/skill-intake-r1a-20261115/`.
+`development-2343bef7-cb19-4d0b-80e1-30bd2067193a.json` has SHA-256
+`07d91c292065aa78a1dfb6b7f758f0960366aaa1b9d4ac1d6d62e06c69ea2880`.
+It binds exact router/source bytes before this index update, original outputs,
+baseline comparison and the evaluator; it is not a frozen final candidate.
+The earlier development report is retained, not overwritten. Both skills now
+require inspecting inference provenance and correcting missing/misgrouped
+objectives before forwarding, while preserving the complete original constraints.
+The document-session projection also returns the intake views alongside its
+explicit objective assessments; these do not authorize reads or replace the
+prepared assignment. Direct and local stdio receiving checks retain private-path
+refusal and the original source profile.
+
+The first source-bound 22-gate verification retained one failing gate: mission
+report admission correctly stopped at independent release verification. A separate
+diagnostic found local `ip-address` 10.7.2 against locked 10.7.4, including four
+failing parser checks. This dependency drift is not a reason to waive a control
+or lower an expected version. Preserve the failed report and verify the exact
+locked install before retrying affected gates; do not describe the initial run
+as fully passed.
+
+After `npm ci --ignore-scripts --no-audit --no-fund` restored locked 10.7.4
+without changing the lockfile, independent verification passed 140/140 and all
+22 follow-up commands passed, including mission admission and sixteen direct/
+stdio document-session fixtures. Exact source bindings remained unchanged during
+that run. Its private report is
+`verification-followup-9536a0c8-e02f-46e6-9faf-0f254e049d82.json`, SHA-256
+`7ab711e85a3d7f01320f7620a380e8541803b1629f9d3d3598c8625db904e24a`.
+The follow-up retains the prior failure and reuses only the earlier routing check
+whose two router/fixture hashes are unchanged (1,776 routed queries); it reruns
+the changed session projection and instruction checks. This is focused validation,
+not the full repository integration gate or native receiving acceptance.
+
+SR02 and SR03 remain in progress. Korean intake, broader explicit-objective
+completeness and the reserved evaluation remain open. No withheld case or native
+model was run. Actual delivered bytes remain unmeasured; R2/R3/R5 acceptance and
+all authority/consent decisions are unchanged. The verified count remains 1/18.
 
 #### Execution Order And Boundaries
 

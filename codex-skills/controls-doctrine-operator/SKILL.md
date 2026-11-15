@@ -76,16 +76,16 @@ node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skil
 6. A capability gap is not permission to drop a task or proceed as unowned
    general work. Follow the capability-gap rule below.
 
-For compound intake, identify each actual objective before adding glossary/SOP
-housekeeping. In direct analysis, repeat `--capability-query` per objective while
-keeping the complete request and prohibitions as the task query. Check every
-returned assessment against the original request; a supporting match cannot
-clear another objective's gap. When forwarding a compound result, retain its
+For compound intake, inspect `request_intake` and each objective assessment.
+Bounded English clause extraction is a suggestion, not semantic completeness.
+Check every objective against the original request before forwarding. Correct
+missing or misgrouped objectives with repeatable `--capability-query` in direct
+analysis, keeping the full request and prohibitions as the task query. A support
+document match cannot clear another objective's gap. When forwarding, retain
 per-objective assessments as well as the combined gap/cell decision.
-Decomposition and lexical matches are not proof
-of semantic completeness. Multiple objectives are not supported in guarded
-receipts: do not drop or merge declarations to bypass that rejection. See
-[Document Routing](references/document-routing.md) for intake and handoff limits.
+Multiple objectives remain unsupported in guarded receipts; do not omit or merge
+declarations to bypass that rejection. See [Document Routing](references/document-routing.md)
+for heading, exclusion, inferred-clause and receiving limits.
 
 For comparisons, assess the subject separately from the method. Read
 `capability_routing` even when `matched_routes` includes comparison-related

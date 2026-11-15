@@ -88,6 +88,9 @@ started planned; prior acceptance does not count as their completion. The
 [frozen evaluation checkpoint](docs/completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15)
 closes SR01 only and retains ten failing development observations. Dashboards,
 servers and optional plugin packaging remain deferred.
+The [first English intake improvement](docs/completion-backlog.md#english-intake-development-2026-11-15)
+resolves eight of those paired routing failures; Korean intake and reserved
+evaluation remain open. This is local routing evidence, not native model quality.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

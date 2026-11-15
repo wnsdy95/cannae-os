@@ -401,7 +401,7 @@ const RULES = [
   },
   {
     id: "runtime-architecture-dashboard",
-    keywords: ["architecture", "dashboard", "event", "projection", "ui", "database", "maintenance", "readiness", "architectural", "control panel", "eventing", "projected view", "upkeep", "preparedness"],
+    keywords: ["architecture", "dashboard", "event", "projection", "ui", "database", "maintenance", "readiness", "architectural", "control panel", "eventing", "projected view", "upkeep", "preparedness", "server design", "service design"],
     docs: [
       "docs/reference-architecture.md",
       "docs/event-sourcing-model.md",
@@ -835,7 +835,8 @@ function isDocumentAuthoringRequest(query) {
     "(?:(?:actual|own)\\s+)?(?:drafts?|documents?|v[0-9]+(?:\\.[0-9]+)*\\s+and\\s+findings?)" +
     "(?=$|[.,;:!?]|\\s+(?:and|before|after|against|with|for|without|using)\\b)", "i");
   return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
-    .test(text) || isOrderDocumentRequest(text) || report.test(text) || draftReview.test(text) || findings.test(text) || selfReview.test(text);
+    .test(text) || isOrderDocumentRequest(text) || report.test(text) || draftReview.test(text) || findings.test(text) || selfReview.test(text) ||
+    documentReadinessView(text) !== text;
 }
 
 function isOrderDocumentRequest(query) {
@@ -1493,6 +1494,47 @@ function needsImprovementSpecialistReading(text, sources) {
     countMatches(context, ["runtime control candidate", "runtime control baseline"]) > 0;
 }
 
+function taskHeadingView(text) {
+  return String(text || "").replace(/^\s*(?:#{1,6}\s+)?(?:\*\*)?(?:task|request|assignment|objective)(?:\*\*)?\s*:\s*(?:\*\*)?\s*/i, "");
+}
+
+function inferredObjectives(query) {
+  const text = taskHeadingView(query);
+  // Do not interpret quoted source text as top-level tasking.
+  if (/["`\u201c\u201d]|(?:^|\s)'/.test(text)) return [];
+  const action = "(?:compare|analyze|analyse|assess|research|draft|write|revise|edit|update|review|check|appraise|prepare|evaluate|maintain|record|summarize|inspect|read|design|build|create|implement|audit|verify)";
+  const start = new RegExp("^(?:please\\s+)?" + action + "\\s+\\S", "i");
+  const coordination = new RegExp("\\s+(?:and(?:\\s+then)?|then|also)\\s+(?=" + action + "\\s+\\S)", "i");
+  const clauses = text.split(/[;\n]+|(?<=[.!?])\s+/);
+  const objectives = clauses.flatMap(clause => {
+    const task = clause.trim().replace(/^(?:also|then)\s+/i, "");
+    if (!start.test(task)) return [];
+    const parts = task.split(coordination).map(part => part.trim());
+    return parts.every(part => start.test(part)) ? parts : [task];
+  });
+  const dependent = new RegExp("^(?:please\\s+)?" + action + "\\s+(?:it|its|them|their|that|those|this)\\b", "i");
+  if (objectives.some(task => dependent.test(task))) return [];
+  return unique(objectives).length > 1 ? unique(objectives) : [];
+}
+
+function guardedRouting(options) {
+  return Boolean(options.receipt || options.writeArtifact || options.coverage ||
+    options.targetRepository || options.artifactRoot || options.overwriteArtifact || options.scope ||
+    options.mission || options.wave || options.agent);
+}
+
+function documentReadinessView(text) {
+  const document = "(?:documents?|drafts?|worksheets?|reports?|handoff documents?)";
+  const readiness = "(?:readiness|preparedness)";
+  const assessment = "(?:assess|check|clarify|compare|evaluate|review|verify)";
+  const qualifier = "(?:(?:the|this|these|those|our|my|a|an)\\s+)?";
+  const modifier = "(?:(?:incoming|outgoing|current|proposed|revised|existing)\\s+)*";
+  const forward = new RegExp("(\\b" + assessment + "\\s+" + qualifier + modifier + document + "\\s+)" + readiness + "\\b", "gi");
+  const reverse = new RegExp("(\\b" + assessment + "\\s+)(?:the\\s+)?" + readiness +
+    "(\\s+of\\s+" + qualifier + modifier + document + "\\b)", "gi");
+  return String(text).replace(forward, "$1").replace(reverse, "$1$2");
+}
+
 function runtimeWorkContext(text) {
   // This view affects relevance only; original tasks and selected controls remain intact.
   const noun = "(?:dashboard|control panel|database|event store|event replay|ui|architecture|(?:(?:standalone|separate)\\s+)?(?:service|server))s?";
@@ -1500,33 +1542,24 @@ function runtimeWorkContext(text) {
   const separator = "(?:\\s*,\\s*(?:(?:and|or)\\s+)?|\\s+(?:and|or)\\s+)";
   const platformItem = subject + "(?:\\s+(?:development|implementation|work))?";
   const platformList = platformItem + "(?:" + separator + platformItem + ")*";
+  const prohibitedAction = "(?:(?:publish|transmit|release)(?:\\s+(?:it|them|the (?:draft|document|output)s?))?|" +
+    "(?:build|create|implement|develop|deploy|launch|start|operate|modify|change)\\s+" + platformList + ")";
   const excluded = new RegExp("^(?:(?:please\\s+)?(?:do not|don't|never)\\s+" +
-    "(?:build|create|implement|develop|deploy|launch|start|operate|modify|change)\\s+" + platformList +
+    prohibitedAction + "(?:" + separator + prohibitedAction + ")*" +
     "(?:\\s+(?:now|yet|for this task))?|" + platformList +
     "\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
-  const clauses = String(text).split(/[;\n]+|(?<=[.!?])\s+/)
+  const clauses = taskHeadingView(text).split(/[;\n]+|(?<=[.!?])\s+/)
     .map(clause => clause.trim().replace(/[.!?]+$/, ""));
   const listedItem = "(?:" + platformItem + "|publication|transmission|deployment|private-source exceptions?|external operations?)";
-  const excludedList = new RegExp("^no\\s+" + listedItem + "(?:" + separator + listedItem + ")*$", "i");
+  const excludedList = new RegExp("^(?:no|exclude|omit|defer)\\s+" + listedItem + "(?:" + separator + listedItem + ")*" +
+    "(?:\\s+(?:for|from) this task)?$", "i");
   const retained = clauses.filter(clause => !excluded.test(clause) && !excludedList.test(clause));
   const dependentReview = new RegExp("\\b(?:review|inspect|assess|compare|evaluate|audit|verify|check|validate|read)\\s+" +
     "(?:(?:it|its|their|them|that|those|this)\\b|" + subject + "\\b)", "i");
   if (retained.length !== clauses.length && retained.some(clause =>
     dependentReview.test(clause) || /^(?:but|however|unless|except|instead)\b/i.test(clause))) return String(text);
-  let context = retained.join("\n");
-  const authoring = RULES.find(rule => rule.id === "document-authoring");
-  if (isDocumentAuthoringRequest(context) || countMatches(context, authoring.keywords) > 0) {
-    // A noun-qualified draft check is not unit/tool readiness. Keep ambiguous imperatives.
-    const document = "(?:documents?|drafts?|worksheets?|reports?|handoff documents?)";
-    const readiness = "(?:readiness|preparedness)";
-    const assessment = "(?:assess|check|clarify|compare|evaluate|review|verify)";
-    const qualifier = "(?:(?:the|this|these|those|our|my|a|an)\\s+)?";
-    const modifier = "(?:(?:incoming|outgoing|current|proposed|revised|existing)\\s+)*";
-    const forward = new RegExp("(\\b" + assessment + "\\s+" + qualifier + modifier + document + "\\s+)" + readiness + "\\b", "gi");
-    const reverse = new RegExp("\\b" + readiness + "(\\s+of\\s+" + qualifier + modifier + document + "\\b)", "gi");
-    context = context.replace(forward, "$1").replace(reverse, "$1");
-  }
-  return context;
+  // A noun-qualified draft check is not unit/tool readiness, even as its own objective.
+  return documentReadinessView(retained.join("\n"));
 }
 
 function needsRuntimeSpecialistReading(text, sources) {
@@ -1534,7 +1567,7 @@ function needsRuntimeSpecialistReading(text, sources) {
   return sources.some(file => RUNTIME_SPECIALIST_DOCS.has(file)) || countMatches(context, [
     "architecture", "architectural", "dashboard", "dashboards", "control panel",
     "event", "events", "eventing", "replay", "projection", "projected view", "ui",
-    "database", "databases", "runtime mission", "readiness", "preparedness"
+    "database", "databases", "runtime mission", "readiness", "preparedness", "server design", "service design"
   ]) > 0;
 }
 
@@ -1543,15 +1576,15 @@ function isReadOnlyDocumentRole(options, query) {
   if (!["read-only", "document-only-verification"].includes(options.authority) || !options.department || options.receipt || options.scope ||
       options.mission || options.wave || options.agent || options.writeArtifact || options.overwriteArtifact ||
       options.targetRepository || options.artifactRoot) return false;
-  const tasks = [query, ...options.capabilityQueries];
+  const tasks = [query, ...options.capabilityQueries].map(taskHeadingView);
   const authoring = RULES.find(rule => rule.id === "document-authoring");
   const documentAction = /^\s*(?:please\s+)?(?:draft|write|revise|edit|update|review|check|compare|appraise|assess|self[- ]review)\b/i;
   if (!tasks.every(text => documentAction.test(text) && (isDocumentAuthoringRequest(text) ||
       isDocumentHandoffRequest(text) || countMatches(text, authoring.keywords) > 0))) return false;
-  const actions = tasks.join("\n").replace(/\b(?:do not|don't|never)\s+(?:execute|run|deploy|launch|invoke|operate)\b/gi, "");
+  const actions = runtimeWorkContext(tasks.join("\n")).replace(/\b(?:do not|don't|never)\s+(?:execute|run|deploy|launch|invoke|operate)\b/gi, "");
   if (/\b(?:execute|run|deploy|launch|invoke|operate)\b/i.test(actions)) return false;
   const sources = [...options.sources, ...options.inputSources];
-  const context = [...tasks, options.department, ...sources].join("\n").replace(/[-_/]/g, " ");
+  const context = [runtimeWorkContext(tasks.join("\n")), options.department, ...sources].join("\n").replace(/[-_/]/g, " ");
   if (needsRuntimeSpecialistReading(context, sources) ||
       collectKeywordDocs(options.department, DEPARTMENT_DOCS).some(file => RUNTIME_SPECIALIST_DOCS.has(file))) return false;
   // A document can itself concern execution. Preserve specialist context for that subject.
@@ -1599,13 +1632,17 @@ function needsSkillOperationsReading(text, sources, guarded) {
 }
 
 function route(query, repoRoot, options) {
+  const inferred = options.capabilityQueries.length ? [] : inferredObjectives(query);
+  if (inferred.length > 1 && guardedRouting(options)) {
+    throw new Error("MULTI_OBJECTIVE_MODE_UNSUPPORTED: inferred compound tasking needs explicit objective review; do not omit objectives to create a guarded receipt or artifact.");
+  }
   const readingOrigins = new Map();
   const noteDocument = (file, reason) => {
     if (!options.explainReading) return;
     if (!readingOrigins.has(file)) readingOrigins.set(file, []);
     readingOrigins.get(file).push(reason);
   };
-  const mode = operatorMode(options, noteDocument, query);
+  const mode = operatorMode(inferred.length ? { ...options, capabilityQueries: inferred } : options, noteDocument, query);
   const inputs = resolveInputReferences(options, repoRoot);
   const taskContext = directTaskContext(options, inputs);
   const scopeIdentity = taskContext
@@ -1621,16 +1658,18 @@ function route(query, repoRoot, options) {
     const authoring = rule.id === "document-authoring" && isDocumentAuthoringRequest(text) ? 1 : 0;
     const handoff = rule.id === "continuity-handoff" && isDocumentHandoffRequest(text) ? 1 : 0;
     const order = rule.id === "orders" && isOrderDocumentRequest(text) ? 1 : 0;
+    const sourceAppraisal = rule.id === "sources-research" &&
+      /\b(?:review|check|read|appraise|assess)\s+(?:(?:the|all|supplied|assigned|original)\s+)*(?:source\s+(?:policy|policies|documents?)|source\s+quality)\b/i.test(text) ? 1 : 0;
     return {
       ...rule,
-      score: countMatches(text, rule.keywords) || authoring || handoff || order ||
+      score: countMatches(text, rule.keywords) || authoring || handoff || order || sourceAppraisal ||
         (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
-      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring || handoff || order
+      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring || handoff || order || sourceAppraisal
     };
   }).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
   const scoredRules = scoreRules(query);
-  const capabilityQueries = options.capabilityQueries.length ? options.capabilityQueries : [query];
+  const capabilityQueries = options.capabilityQueries.length ? options.capabilityQueries : inferred.length ? inferred : [query];
   const multipleObjectives = capabilityQueries.length > 1;
   const assessments = capabilityQueries.map(objective => {
     const rules = scoreRules(objective);
@@ -1746,6 +1785,17 @@ function route(query, repoRoot, options) {
 
   return {
     query,
+    ...(!guardedRouting(options) && (taskHeadingView(query) !== query || runtimeWorkContext(query) !== query || inferred.length) ? {
+      request_intake: {
+        basis: "Bounded lexical task/exclusion views; not translation, semantic completeness or authorization.",
+        task_query: taskHeadingView(query),
+        runtime_relevance_query: runtimeWorkContext(query),
+        objectives: multipleObjectives ? (inferred.length ? "inferred_task_clauses" : "caller_declared") : "single",
+        original_constraints_in: "query",
+        semantic_completeness_verified: false,
+        authority_changed: false
+      }
+    } : {}),
     capability_query: capabilityQuery,
     ...(multipleObjectives ? {
       capability_queries: capabilityQueries,
@@ -1753,7 +1803,8 @@ function route(query, repoRoot, options) {
         query, status: decision.status, reason_code: decision.reason_code,
         matched_capability_routes: decision.matched_capability_routes
       })),
-      capability_assessment_basis: "Caller-declared objectives with lexical matching; objective completeness and semantic correctness remain unverified."
+      capability_assessment_basis: (inferred.length ? "Inferred task clauses" : "Caller-declared objectives") +
+        " with lexical matching; objective completeness and semantic correctness remain unverified."
     } : {}),
     repo_root: repoRoot,
     ...(taskContext ? { task_context: taskContext } : {}),

@@ -389,9 +389,12 @@ try {
       const directory = path.join(__dirname, provider, "controls-doctrine-operator");
       const skill = fs.readFileSync(path.join(directory, "SKILL.md"), "utf8");
       assert(skill.includes("per-objective assessments as well as the combined gap/cell decision"));
+      assert(skill.includes("inspect `request_intake` and each objective assessment"));
+      assert(skill.includes("Bounded English clause extraction is a suggestion, not semantic completeness."));
       assert(skill.includes("otherwise mark assembly incomplete, not ready for a cold start"));
       const routing = fs.readFileSync(path.join(directory, "references/document-routing.md"), "utf8");
       assert(routing.includes("A request-level gap does not mean every objective is uncovered."));
+      assert(routing.includes("Do not forward the shortened relevance view as the user's complete request."));
     }
   });
   fixture("required-read completion and advance reporting reach both clients and reviewer input", () => {

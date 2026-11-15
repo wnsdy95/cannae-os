@@ -220,6 +220,14 @@ development cases; no withheld/native execution or loaded-byte claim is added.
 The templates are author-aware, not independently blind. SR01 closes only the
 freeze/baseline criterion; the source-bound authoring evaluation remains open.
 
+The [English intake development](completion-backlog.md#english-intake-development-2026-11-15)
+binds paired local comparisons of heading/exclusion views and inferred task
+clauses. Original constraints, explicit sources, technical review and declared
+authority remain separate from matching views. Both skill entrypoints and routing
+references require operator appraisal of inferred objectives. Local expectations
+improve from 14/24 to 22/24; Korean and reserved evaluation remain open, with no
+new native or independent semantic-coverage claim.
+
 The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 binds native route/read records, delivered source bytes and separate operator
 appraisal. Optional-guide selection is observed; source-body byte counts are not

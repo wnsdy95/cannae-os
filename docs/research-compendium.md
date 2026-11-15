@@ -48,6 +48,16 @@ keeps selection, actual delivery and semantic quality separate. Withheld templat
 are operator-authored, not independently blind; no withheld execution, native
 transfer or operational authority is inferred from these local engineering checks.
 
+The [first English intake change](completion-backlog.md#english-intake-development-2026-11-15)
+addresses four observed wording/compound defects without replacing original task
+text. It also exposes a decomposition risk: source-policy review and a draft's
+readiness are valid supporting work, while a pronoun-based design review needs
+its preceding context. Keep those distinctions rather than inventing independent
+domains or erasing genuine uncovered tasks. The mirrored instruction now requires
+checking inferred clauses and their constraints before forwarding. The 22/24
+development expectation matches are local paired routing evidence only; literal
+Korean, withheld evaluation and actual-client behavior remain unverified here.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

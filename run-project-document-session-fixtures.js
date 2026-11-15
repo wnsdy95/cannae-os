@@ -63,6 +63,10 @@ try {
       assert.equal(route.original_task, request.task); assert(route.query.includes(request.task));
       assert.equal(route.required_source_count, 18); assert.equal(route.documents.length, 19);
       assert.equal(route.capability_assessments.length, 2); assert.equal(route.capability_routing.status, "gap_detected");
+      assert.equal(route.request_intake.objectives, "caller_declared");
+      assert.equal(route.request_intake.original_constraints_in, "query");
+      assert.equal(route.request_intake.semantic_completeness_verified, false);
+      assert.equal(route.request_intake.authority_changed, false);
       assert.equal(route.operating_mode.role, "S6"); assert.equal(route.task_context.id, "RECEIVING-TEST");
       assert.equal(route.task_context.repository_binding, "withheld");
       for (const value of [root, __dirname, skill, ".cannae/document-drafts", "reference-only.md", "synthetic-unread-value"]) assert(!JSON.stringify(route).includes(value), value);
@@ -176,6 +180,9 @@ try {
         assert(!result.isError); const routed = result.structuredContent;
         assert.equal(routed.required_source_count, 18); assert(!JSON.stringify(result).includes(root));
         assert.equal(routed.reading_selection.access_authorized, false);
+        assert.equal(routed.request_intake.objectives, "caller_declared");
+        assert.equal(routed.request_intake.original_constraints_in, "query");
+        assert.equal(routed.request_intake.authority_changed, false);
         assert.equal(routed.reading_selection.required_reading_assessed, false);
         assert(routed.reading_selection.documents.some(row => row.reasons.some(reason => reason.kind === "source_argument")));
         if (phase === "review") {

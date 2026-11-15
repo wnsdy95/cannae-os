@@ -37,8 +37,9 @@ objective in `--capability-query` and the complete requested work, including
 glossary/SOP housekeeping and prohibitions, in the task query. Route distinct
 domain objectives separately rather than omitting one. A glossary or document
 format match does not establish expertise in the work being described. The
-router does not infer this semantic separation; a combined query can still hide
-an uncovered domain behind a supporting route.
+router now suggests bounded English task-clause separation when no objectives
+are declared. It does not establish semantic completeness; unrecognized or
+context-dependent wording can still hide a domain behind a supporting route.
 Do not rewrite an issued mission objective or patch its receipts to obtain this
 separation; an existing guarded mission retains its exact rerouting procedure.
 
@@ -55,6 +56,31 @@ an ambiguous guarded operation before dispatch, not by silently removing gates.
 
 ### Inspecting Reading Selection
 
+Direct `request_intake` records matching-only views for a recognized leading
+`Task:`, `Request:`, `Assignment:` or `Objective:` label and known exclusions.
+The full `query` remains the source of intent and constraints. These views do
+not change role, authority, assigned sources, selected controls or read access.
+Do not forward the shortened relevance view as the user's complete request.
+The document session carries these views alongside its required explicit
+objective declarations. A returned view is neither an access grant nor a new
+assignment; retain the prepared original and current assigned source profile.
+
+When no `--capability-query` is supplied, bounded English action clauses joined
+by sentences, semicolons, `and`, `then` or `also` can produce separate
+`capability_assessments`. Check the `objectives` provenance: inferred clauses
+are suggestions, not USER declarations. Inspect every original objective and
+prohibition before forwarding; a covered SOP cannot clear an uncovered analysis.
+Source-policy review and explicitly qualified draft-readiness checks remain
+document/source work, not unsupported domains or unit readiness.
+Quoted text and deictic steps such as "Review its design" are not independently
+split because their meaning depends on context. Other languages still require
+the documented faithful English-query path. If extraction is absent or wrong,
+review explicit per-objective declarations without deleting the original request.
+Detected automatic compound intake cannot issue a guarded receipt or artifact;
+use the original mission's reviewed tasking process, not an omitted objective
+or single merged declaration. Existing caller declarations retain their exact
+parent/mission meaning and still require completeness review.
+
 For direct analysis, add `--explain-reading` before `--` while retaining the exact
 task, all objectives and the declared delegation. The optional `reading_selection`
 reports the actual selection paths without changing recommendations or commands.
@@ -65,7 +91,7 @@ Inspect all reasons for a path. A route can conditionally omit a specialist manu
 while a role or source argument still retains it. Use the row's `recommended`
 value for the combined outcome, not one reason's `selected` flag. Route
 `objective_indexes` are zero-based into `objective_queries`; they describe the
-caller's declarations, not automatic objective extraction or semantic coverage.
+declared or inferred clauses, not verified semantic coverage.
 An omitted route recommendation is neither missing doctrine nor denied access.
 
 `source_argument` means an actual `--source` argument, potentially supplied by
@@ -596,7 +622,8 @@ inputs still add their references; a prohibition on implementation does not
 cancel an assigned technical review or required source.
 
 The router recognizes a bounded set of complete English exclusions, such as
-"Do not build a dashboard", "Dashboard development is deferred", and complete
+"Do not build a dashboard", "Do not publish or build a dashboard",
+"Exclude dashboard and server work", "Dashboard development is deferred", and complete
 noun lists like "no publication, dashboard or service work". Platform items may
 carry development, implementation or work suffixes, including coordinated
 service/server nouns: "Dashboard and service development remain deferred" and

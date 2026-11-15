@@ -101,6 +101,7 @@ function createDocumentSession(options) {
           operating_mode: routed.operating_mode, matched_routes: routed.matched_routes, capability_routing: routed.capability_routing,
           ...(routed.capability_queries ? { capability_queries: routed.capability_queries, capability_assessments: routed.capability_assessments,
             capability_assessment_basis: routed.capability_assessment_basis } : {}),
+          ...(routed.request_intake ? { request_intake: routed.request_intake } : {}),
           task_references: routed.task_references, recommended_documents: routed.recommended_documents, validation_commands: routed.validation_commands,
           reading_selection: routed.reading_selection,
           ...(state.data.terminology_requirements ? { terminology_requirements: state.data.terminology_requirements } : {}),
